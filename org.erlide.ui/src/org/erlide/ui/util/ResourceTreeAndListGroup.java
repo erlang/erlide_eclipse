@@ -89,11 +89,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 *            If true then use the height hint to make this group big enough
 	 * 
 	 */
-	public ResourceTreeAndListGroup(Composite parent, Object rootObject,
-			ITreeContentProvider treeContentProvider,
-			ILabelProvider treeLabelProvider,
-			IStructuredContentProvider listContentProvider,
-			ILabelProvider listLabelProvider, int style, boolean useHeightHint) {
+	public ResourceTreeAndListGroup(final Composite parent,
+			final Object rootObject,
+			final ITreeContentProvider treeContentProvider,
+			final ILabelProvider treeLabelProvider,
+			final IStructuredContentProvider listContentProvider,
+			final ILabelProvider listLabelProvider, final int style,
+			final boolean useHeightHint) {
 
 		root = rootObject;
 		this.treeContentProvider = treeContentProvider;
@@ -128,7 +130,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param listener
 	 *            ICheckStateListener
 	 */
-	public void addCheckStateListener(ICheckStateListener listener) {
+	public void addCheckStateListener(final ICheckStateListener listener) {
 		addListenerObject(listener);
 	}
 
@@ -140,7 +142,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            java.lang.Object
 	 */
-	protected boolean areAllChildrenWhiteChecked(Object treeElement) {
+	protected boolean areAllChildrenWhiteChecked(final Object treeElement) {
 		final Object[] children = treeContentProvider.getChildren(treeElement);
 		for (int i = 0; i < children.length; ++i) {
 			if (!whiteCheckedTreeItems.contains(children[i])) {
@@ -159,7 +161,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            java.lang.Object
 	 */
-	protected boolean areAllElementsChecked(Object treeElement) {
+	protected boolean areAllElementsChecked(final Object treeElement) {
 		final List<Object> checkedElements = checkedStateStore.get(treeElement);
 		if (checkedElements == null) {
 			return false;
@@ -172,7 +174,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Iterate through the passed elements which are being realized for the
 	 * first time and check each one in the tree viewer as appropriate
 	 */
-	protected void checkNewTreeElements(Object[] elements) {
+	protected void checkNewTreeElements(final Object[] elements) {
 		for (int i = 0; i < elements.length; ++i) {
 			final Object currentElement = elements[i];
 			final boolean checked = checkedStateStore
@@ -219,8 +221,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param useHeightHint
 	 *            If true yse the preferredHeight.
 	 */
-	protected void createContents(Composite parent, int style,
-			boolean useHeightHint) {
+	protected void createContents(final Composite parent, final int style,
+			final boolean useHeightHint) {
 		// group pane
 		folderComposite = new Composite(parent, style);
 		folderComposite.setFont(parent.getFont());
@@ -241,7 +243,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Create this group's list viewer.
 	 */
-	protected void createListViewer(Composite parent, boolean useHeightHint) {
+	protected void createListViewer(final Composite parent,
+			final boolean useHeightHint) {
 		listViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
 		final GridData data = new GridData(GridData.FILL_BOTH);
 		if (useHeightHint) {
@@ -257,7 +260,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Create this group's tree viewer.
 	 */
-	protected void createTreeViewer(Composite parent, boolean useHeightHint) {
+	protected void createTreeViewer(final Composite parent,
+			final boolean useHeightHint) {
 		final Tree tree = new Tree(parent, SWT.CHECK | SWT.BORDER);
 		final GridData data = new GridData(GridData.FILL_BOTH);
 		if (useHeightHint) {
@@ -278,16 +282,17 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Returns a boolean indicating whether the passed tree element should be at
 	 * LEAST gray-checked. Note that this method does not consider whether it
 	 * should be white-checked, so a specified tree item which should be
-	 * white-checked will result in a <code>true</code> answer from this
-	 * method. To determine whether a tree item should be white-checked use
-	 * method #determineShouldBeWhiteChecked(Object).
+	 * white-checked will result in a <code>true</code> answer from this method.
+	 * To determine whether a tree item should be white-checked use method
+	 * #determineShouldBeWhiteChecked(Object).
 	 * 
 	 * @param treeElement
 	 *            java.lang.Object
 	 * @return boolean
 	 * @see #determineShouldBeWhiteChecked(Object)
 	 */
-	protected boolean determineShouldBeAtLeastGrayChecked(Object treeElement) {
+	protected boolean determineShouldBeAtLeastGrayChecked(
+			final Object treeElement) {
 		// if any list items associated with treeElement are checked then it
 		// retains its gray-checked status regardless of its children
 		final List<Object> checked = checkedStateStore.get(treeElement);
@@ -319,7 +324,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            java.lang.Object
 	 */
-	protected boolean determineShouldBeWhiteChecked(Object treeElement) {
+	protected boolean determineShouldBeWhiteChecked(final Object treeElement) {
 		return areAllChildrenWhiteChecked(treeElement)
 				&& areAllElementsChecked(treeElement);
 	}
@@ -331,7 +336,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            java.lang.Object
 	 */
-	protected void determineWhiteCheckedDescendents(Object treeElement) {
+	protected void determineWhiteCheckedDescendents(final Object treeElement) {
 		// always go through all children first since their white-checked
 		// statuses will be needed to determine the white-checked status for
 		// this tree element
@@ -409,9 +414,10 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param monitor
 	 *            IProgressMonitor or null that the cancel is polled for
 	 */
-	private void findAllSelectedListElements(Object treeElement,
-			String parentLabel, boolean addAll, IElementFilter filter,
-			IProgressMonitor monitor) throws InterruptedException {
+	private void findAllSelectedListElements(final Object treeElement,
+			final String parentLabel, final boolean addAll,
+			final IElementFilter filter, final IProgressMonitor monitor)
+			throws InterruptedException {
 
 		String fullLabel = null;
 		if (monitor != null && monitor.isCanceled()) {
@@ -460,8 +466,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param result
 	 *            java.util.Collection
 	 */
-	private void findAllWhiteCheckedItems(Object treeElement,
-			Collection<Object> result) {
+	private void findAllWhiteCheckedItems(final Object treeElement,
+			final Collection<Object> result) {
 
 		if (whiteCheckedTreeItems.contains(treeElement)) {
 			result.add(treeElement);
@@ -487,15 +493,15 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * then based on the supplied ElementFilter. If monitor is cancelled then
 	 * return null
 	 * 
-	 * @param filter -
-	 *            the filter for the data
+	 * @param filter
+	 *            - the filter for the data
 	 * @param monitor
 	 *            IProgressMonitor or null
 	 * @throws InterruptedException
 	 *             If the find is interrupted.
 	 */
-	public void getAllCheckedListItems(IElementFilter filter,
-			IProgressMonitor monitor) throws InterruptedException {
+	public void getAllCheckedListItems(final IElementFilter filter,
+			final IProgressMonitor monitor) throws InterruptedException {
 
 		// Iterate through the children of the root as the root is not in the
 		// store
@@ -519,13 +525,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 		final IElementFilter passThroughFilter = new IElementFilter() {
 
-			public void filterElements(Collection<?> elements,
-					IProgressMonitor monitor) {
+			public void filterElements(final Collection<?> elements,
+					final IProgressMonitor monitor) {
 				returnValue.addAll(elements);
 			}
 
-			public void filterElements(Object[] elements,
-					IProgressMonitor monitor) {
+			public void filterElements(final Object[] elements,
+					final IProgressMonitor monitor) {
 				for (int i = 0; i < elements.length; i++) {
 					returnValue.add(elements[i]);
 				}
@@ -574,13 +580,14 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Get the full label of the treeElement (its name and its parent's name).
 	 * 
-	 * @param treeElement -
-	 *            the element being exported
-	 * @param parentLabel -
-	 *            the label of the parent, can be null
+	 * @param treeElement
+	 *            - the element being exported
+	 * @param parentLabel
+	 *            - the label of the parent, can be null
 	 * @return String
 	 */
-	protected String getFullLabel(Object treeElement, String parentLabel) {
+	protected String getFullLabel(final Object treeElement,
+			final String parentLabel) {
 		String label = parentLabel;
 		if (parentLabel == null) {
 			label = ""; //$NON-NLS-1$
@@ -602,7 +609,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            java.lang.Object
 	 */
-	protected int getListItemsSize(Object treeElement) {
+	protected int getListItemsSize(final Object treeElement) {
 		final Object[] elements = listContentProvider.getElements(treeElement);
 		return elements.length;
 	}
@@ -620,7 +627,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Logically gray-check all ancestors of treeItem by ensuring that they
 	 * appear in the checked table
 	 */
-	protected void grayCheckHierarchy(Object treeElement) {
+	protected void grayCheckHierarchy(final Object treeElement) {
 
 		// expand the element first to make sure we have populated for it
 		expandTreeElement(treeElement);
@@ -642,7 +649,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Set the checked state of self and all ancestors appropriately. Do not
 	 * white check anyone - this is only done down a hierarchy.
 	 */
-	private void grayUpdateHierarchy(Object treeElement) {
+	private void grayUpdateHierarchy(final Object treeElement) {
 
 		final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(treeElement);
 
@@ -664,7 +671,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * 
 	 * @param element
 	 */
-	public void initialCheckListItem(Object element) {
+	public void initialCheckListItem(final Object element) {
 		final Object parent = treeContentProvider.getParent(element);
 		selectAndReveal(parent);
 		// Check the element in the viewer as if it had been manually checked
@@ -681,12 +688,12 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * 
 	 * @param element
 	 */
-	public void initialCheckTreeItem(Object element) {
+	public void initialCheckTreeItem(final Object element) {
 		treeItemChecked(element, true);
 		selectAndReveal(element);
 	}
 
-	private void selectAndReveal(Object treeElement) {
+	private void selectAndReveal(final Object treeElement) {
 		treeViewer.reveal(treeElement);
 		final IStructuredSelection selection = new StructuredSelection(
 				treeElement);
@@ -708,8 +715,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * is changed by the user. Do not try and update the hierarchy if we are
 	 * building the initial list.
 	 */
-	protected void listItemChecked(Object listElement, boolean state,
-			boolean updatingFromSelection) {
+	protected void listItemChecked(final Object listElement,
+			final boolean state, final boolean updatingFromSelection) {
 		List<Object> checkedListItems = checkedStateStore
 				.get(currentTreeSelection);
 		// If it has not been expanded do so as the selection of list items will
@@ -804,8 +811,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * appear in the checked table. Add any elements to the selectedNodes so we
 	 * can track that has been done.
 	 */
-	private void primeHierarchyForSelection(Object item,
-			Set<Object> selectedNodes) {
+	private void primeHierarchyForSelection(final Object item,
+			final Set<Object> selectedNodes) {
 
 		// Only prime it if we haven't visited yet
 		if (selectedNodes.contains(item)) {
@@ -831,7 +838,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param listener
 	 *            ICheckStateListener
 	 */
-	public void removeCheckStateListener(ICheckStateListener listener) {
+	public void removeCheckStateListener(final ICheckStateListener listener) {
 		removeListenerObject(listener);
 	}
 
@@ -841,7 +848,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param event
 	 *            SelectionChangedEvent
 	 */
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		final IStructuredSelection selection = (IStructuredSelection) event
 				.getSelection();
 		final Object selectedElement = selection.getFirstElement();
@@ -889,7 +896,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param treeElement
 	 *            the element being updated
 	 */
-	void setListForWhiteSelection(Object treeElement) {
+	void setListForWhiteSelection(final Object treeElement) {
 
 		final Object[] listItems = listContentProvider.getElements(treeElement);
 		final List<Object> listItemsChecked = new ArrayList<Object>();
@@ -908,8 +915,9 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param labelProvider
 	 *            ILabelProvider
 	 */
-	public void setListProviders(IStructuredContentProvider contentProvider,
-			ILabelProvider labelProvider) {
+	public void setListProviders(
+			final IStructuredContentProvider contentProvider,
+			final ILabelProvider labelProvider) {
 		listViewer.setContentProvider(contentProvider);
 		listViewer.setLabelProvider(labelProvider);
 	}
@@ -919,7 +927,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * 
 	 * @param comparator
 	 */
-	public void setListComparator(ViewerComparator comparator) {
+	public void setListComparator(final ViewerComparator comparator) {
 		listViewer.setComparator(comparator);
 	}
 
@@ -929,7 +937,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * 
 	 * @param newRoot
 	 */
-	public void setRoot(Object newRoot) {
+	public void setRoot(final Object newRoot) {
 		root = newRoot;
 		initialize();
 	}
@@ -938,7 +946,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Set the checked state of the passed tree element appropriately, and do so
 	 * recursively to all of its child tree elements as well
 	 */
-	protected void setTreeChecked(Object treeElement, boolean state) {
+	protected void setTreeChecked(final Object treeElement, final boolean state) {
 
 		if (treeElement.equals(currentTreeSelection)) {
 			listViewer.setAllChecked(state);
@@ -973,8 +981,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param labelProvider
 	 *            ILabelProvider
 	 */
-	public void setTreeProviders(ITreeContentProvider contentProvider,
-			ILabelProvider labelProvider) {
+	public void setTreeProviders(final ITreeContentProvider contentProvider,
+			final ILabelProvider labelProvider) {
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(labelProvider);
 	}
@@ -984,7 +992,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * 
 	 * @param sorter
 	 */
-	public void setTreeComparator(ViewerComparator comparator) {
+	public void setTreeComparator(final ViewerComparator comparator) {
 		treeViewer.setComparator(comparator);
 	}
 
@@ -997,7 +1005,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * @param isWhiteChecked
 	 *            boolean
 	 */
-	protected void setWhiteChecked(Object treeElement, boolean isWhiteChecked) {
+	protected void setWhiteChecked(final Object treeElement,
+			final boolean isWhiteChecked) {
 		if (isWhiteChecked) {
 			if (!whiteCheckedTreeItems.contains(treeElement)) {
 				whiteCheckedTreeItems.add(treeElement);
@@ -1010,14 +1019,14 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Handle the collapsing of an element in a tree viewer
 	 */
-	public void treeCollapsed(TreeExpansionEvent event) {
+	public void treeCollapsed(final TreeExpansionEvent event) {
 		// We don't need to do anything with this
 	}
 
 	/**
 	 * Handle the expansionsion of an element in a tree viewer
 	 */
-	public void treeExpanded(TreeExpansionEvent event) {
+	public void treeExpanded(final TreeExpansionEvent event) {
 		expandTreeElement(event.getElement());
 	}
 
@@ -1025,7 +1034,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 * Callback that's invoked when the checked status of an item in the tree is
 	 * changed by the user.
 	 */
-	protected void treeItemChecked(Object treeElement, boolean state) {
+	protected void treeItemChecked(final Object treeElement, final boolean state) {
 
 		// recursively adjust all child tree elements appropriately
 		setTreeChecked(treeElement, state);
@@ -1049,7 +1058,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Logically un-gray-check all ancestors of treeItem iff appropriate.
 	 */
-	protected void ungrayCheckHierarchy(Object treeElement) {
+	protected void ungrayCheckHierarchy(final Object treeElement) {
 		if (!determineShouldBeAtLeastGrayChecked(treeElement)) {
 			checkedStateStore.remove(treeElement);
 		}
@@ -1063,7 +1072,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * Set the checked state of self and all ancestors appropriately
 	 */
-	protected void updateHierarchy(Object treeElement) {
+	protected void updateHierarchy(final Object treeElement) {
 
 		final boolean whiteChecked = determineShouldBeWhiteChecked(treeElement);
 		final boolean shouldBeAtLeastGray = determineShouldBeAtLeastGrayChecked(treeElement);
@@ -1094,7 +1103,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	 *            empty list). If a tree element does not have any selected
 	 *            items, do not include the element in the Map.
 	 */
-	public void updateSelections(Map<Object, List<Object>> items) {
+	public void updateSelections(final Map<Object, List<Object>> items) {
 		// We are replacing all selected items with the given selected items,
 		// so reinitialize everything.
 		listViewer.setAllChecked(false);
@@ -1140,7 +1149,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * 
 	 */
-	public static void enableFolderComposite(boolean enabled) {
+	public static void enableFolderComposite(final boolean enabled) {
 		folderComposite.setEnabled(enabled);
 	}
 

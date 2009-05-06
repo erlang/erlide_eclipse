@@ -29,11 +29,11 @@ public class StringButtonDialogField extends StringDialogField {
 
 	private String fBrowseButtonLabel;
 
-	private IStringButtonAdapter fStringButtonAdapter;
+	private final IStringButtonAdapter fStringButtonAdapter;
 
 	private boolean fButtonEnabled;
 
-	public StringButtonDialogField(IStringButtonAdapter adapter) {
+	public StringButtonDialogField(final IStringButtonAdapter adapter) {
 		super();
 		fStringButtonAdapter = adapter;
 		fBrowseButtonLabel = "!Browse...!"; //$NON-NLS-1$
@@ -43,7 +43,7 @@ public class StringButtonDialogField extends StringDialogField {
 	/**
 	 * Sets the label of the button.
 	 */
-	public void setButtonLabel(String label) {
+	public void setButtonLabel(final String label) {
 		fBrowseButtonLabel = label;
 	}
 
@@ -62,7 +62,7 @@ public class StringButtonDialogField extends StringDialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		final Label label = getLabelControl(parent);
@@ -83,7 +83,8 @@ public class StringButtonDialogField extends StringDialogField {
 		return 3;
 	}
 
-	protected static GridData gridDataForButton(Button button, int span) {
+	protected static GridData gridDataForButton(final Button button,
+			final int span) {
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.grabExcessHorizontalSpace = false;
@@ -101,7 +102,7 @@ public class StringButtonDialogField extends StringDialogField {
 	 *            The parent composite or <code>null</code> if the widget has
 	 *            already been created.
 	 */
-	public Button getChangeControl(Composite parent) {
+	public Button getChangeControl(final Composite parent) {
 		if (fBrowseButton == null) {
 			assertCompositeNotNull(parent);
 
@@ -111,11 +112,11 @@ public class StringButtonDialogField extends StringDialogField {
 			fBrowseButton.setEnabled(isEnabled() && fButtonEnabled);
 			fBrowseButton.addSelectionListener(new SelectionListener() {
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 					changeControlPressed();
 				}
 
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					changeControlPressed();
 				}
 			});
@@ -129,7 +130,7 @@ public class StringButtonDialogField extends StringDialogField {
 	/**
 	 * Sets the enable state of the button.
 	 */
-	public void enableButton(boolean enable) {
+	public void enableButton(final boolean enable) {
 		if (isOkToUse(fBrowseButton)) {
 			fBrowseButton.setEnabled(isEnabled() && enable);
 		}

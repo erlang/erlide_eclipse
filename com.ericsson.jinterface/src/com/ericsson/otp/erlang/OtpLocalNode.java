@@ -74,7 +74,7 @@ public class OtpLocalNode extends AbstractNode {
      * Set the Epmd socket after publishing this nodes listen port to Epmd.
      * 
      * @param s
-     *                The socket connecting this node to Epmd.
+     *            The socket connecting this node to Epmd.
      */
     protected void setEpmd(final java.net.Socket s) {
 	epmd = s;

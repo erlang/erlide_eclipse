@@ -14,36 +14,36 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	final String close;
 
 	// Initialize the strings for this tuple type.
-	protected BaseTuple(String open, String separator, String close) {
+	protected BaseTuple(final String open, final String separator, final String close) {
 		this.open = open;
 		this.separator = separator;
 		this.close = close;
 	}
 
 	// Add elements to the tuple. Supports dot-chaining.
-	protected BaseTuple addElement(Object o) {
+	protected BaseTuple addElement(final Object o) {
 		this.elements.add(o);
 		return this;
 	}
 
-	public Object get(int i) {
+	public Object get(final int i) {
 		return this.elements.get(i);
 	}
 
-	protected BaseTuple addElement(int i) {
+	protected BaseTuple addElement(final int i) {
 		return addElement(Integer.valueOf(i));
 	}
 
 	// Compare two tuples. All elements must be equal.
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj == null) {
 			return false;
 		}
 		if (!(obj instanceof BaseTuple)) {
 			return false;
 		}
-		BaseTuple that = (BaseTuple) obj;
+		final BaseTuple that = (BaseTuple) obj;
 		if (that.elements.size() != this.elements.size()) {
 			return false;
 		}
@@ -59,7 +59,7 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	@Override
 	public int hashCode() {
 		int result = 0;
-		Iterator<Object> it = this.elements.iterator();
+		final Iterator<Object> it = this.elements.iterator();
 		while (it.hasNext()) {
 			result = result * 37 + it.next().hashCode();
 		}
@@ -70,8 +70,8 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	// specified in the constructor.
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder(this.open);
-		Iterator<Object> it = this.elements.iterator();
+		final StringBuilder result = new StringBuilder(this.open);
+		final Iterator<Object> it = this.elements.iterator();
 		while (it.hasNext()) {
 			result.append(it.next());
 			if (it.hasNext()) {
@@ -84,10 +84,10 @@ public abstract class BaseTuple implements Comparable<BaseTuple> {
 	// Order by the most significant element first.
 	// The tuples must agree in size and type.
 	@SuppressWarnings("unchecked")
-	public int compareTo(BaseTuple that) {
+	public int compareTo(final BaseTuple that) {
 		for (int i = 0; i < this.elements.size(); ++i) {
-			int compare = ((Comparable<Object>) this.elements.get(i))
-					.compareTo(that.elements.get(i));
+			final int compare = ((Comparable<Object>) this.elements.get(i))
+			.compareTo(that.elements.get(i));
 			if (compare != 0) {
 				return compare;
 			}

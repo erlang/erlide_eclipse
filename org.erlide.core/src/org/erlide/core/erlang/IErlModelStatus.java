@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -52,8 +52,8 @@ public interface IErlModelStatus extends IStatus {
 	/**
 	 * Returns the path associated with the failure (see specification of the
 	 * status code), or <code>null</code> if the failure is not one of
-	 * <code>DEVICE_PATH</code>, <code>INVALID_PATH</code>,<code>PATH_OUTSIDE_PROJECT</code>,
-	 * or <code>RELATIVE_PATH</code>.
+	 * <code>DEVICE_PATH</code>, <code>INVALID_PATH</code>,
+	 * <code>PATH_OUTSIDE_PROJECT</code>, or <code>RELATIVE_PATH</code>.
 	 * 
 	 * @return the path that caused the failure, or <code>null</code> if none
 	 * @see ErlModelStatusConstants#DEVICE_PATH
@@ -78,7 +78,8 @@ public interface IErlModelStatus extends IStatus {
 	/**
 	 * Returns whether this status indicates that a Erlang model element does
 	 * not exist. This convenience method is equivalent to
-	 * <code>getCode() == IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>.
+	 * <code>getCode() == IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
+	 * .
 	 * 
 	 * @return <code>true</code> if the status code indicates that a Erlang
 	 *         model element does not exist

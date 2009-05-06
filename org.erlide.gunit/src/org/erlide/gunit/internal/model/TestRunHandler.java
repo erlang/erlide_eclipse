@@ -37,7 +37,7 @@ public class TestRunHandler extends DefaultHandler {
 
 	private TestCaseElement fTestCase;
 
-	private Stack<Boolean> fNotRun = new Stack<Boolean>();
+	private final Stack<Boolean> fNotRun = new Stack<Boolean>();
 
 	private StringBuffer fFailureBuffer;
 
@@ -57,12 +57,12 @@ public class TestRunHandler extends DefaultHandler {
 
 	}
 
-	public TestRunHandler(TestRunSession testRunSession) {
+	public TestRunHandler(final TestRunSession testRunSession) {
 		this.fTestRunSession = testRunSession;
 	}
 
 	@Override
-	public void setDocumentLocator(Locator locator) {
+	public void setDocumentLocator(final Locator locator) {
 		this.fLocator = locator;
 	}
 
@@ -71,15 +71,15 @@ public class TestRunHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName,
-			Attributes attributes) throws SAXException {
+	public void startElement(final String uri, final String localName, final String qName,
+			final Attributes attributes) throws SAXException {
 		if (qName.equals(IXMLTags.NODE_TESTRUN)) {
 			if (this.fTestRunSession == null) {
-				String name = attributes.getValue(IXMLTags.ATTR_NAME);
-				String project = attributes.getValue(IXMLTags.ATTR_PROJECT);
+				final String name = attributes.getValue(IXMLTags.ATTR_NAME);
+				final String project = attributes.getValue(IXMLTags.ATTR_PROJECT);
 				IErlProject javaProject = null;
 				if (project != null) {
-					IErlModel javaModel = ErlangCore.getModel();
+					final IErlModel javaModel = ErlangCore.getModel();
 					javaProject = javaModel.getErlangProject(project);
 					if (!javaProject.exists()) {
 						javaProject = null;
@@ -98,7 +98,7 @@ public class TestRunHandler extends DefaultHandler {
 			// NODE_TESTSUITE
 
 		} else if (qName.equals(IXMLTags.NODE_TESTSUITE)) {
-			String name = attributes.getValue(IXMLTags.ATTR_NAME);
+			final String name = attributes.getValue(IXMLTags.ATTR_NAME);
 
 			if (this.fTestRunSession == null) {
 				// support standalone suites and Ant's 'junitreport' task:
@@ -106,11 +106,11 @@ public class TestRunHandler extends DefaultHandler {
 				this.fTestSuite = this.fTestRunSession.getTestRoot();
 			}
 
-			String pack = attributes.getValue(IXMLTags.ATTR_PACKAGE);
-			String suiteName = pack == null ? name : pack + "." + name; //$NON-NLS-1$
+			final String pack = attributes.getValue(IXMLTags.ATTR_PACKAGE);
+			final String suiteName = pack == null ? name : pack + "." + name; //$NON-NLS-1$
 			this.fTestSuite = (TestSuiteElement) this.fTestRunSession
-					.createTestElement(this.fTestSuite, getNextId(), suiteName,
-							true, 0);
+			.createTestElement(this.fTestSuite, getNextId(), suiteName,
+					true, 0);
 			this.fNotRun.push(Boolean.valueOf(attributes
 					.getValue(IXMLTags.ATTR_INCOMPLETE)));
 
@@ -119,11 +119,11 @@ public class TestRunHandler extends DefaultHandler {
 			// not interested
 
 		} else if (qName.equals(IXMLTags.NODE_TESTCASE)) {
-			String name = attributes.getValue(IXMLTags.ATTR_NAME);
-			String classname = attributes.getValue(IXMLTags.ATTR_CLASSNAME);
+			final String name = attributes.getValue(IXMLTags.ATTR_NAME);
+			final String classname = attributes.getValue(IXMLTags.ATTR_CLASSNAME);
 			this.fTestCase = (TestCaseElement) this.fTestRunSession
-					.createTestElement(this.fTestSuite, getNextId(), name + '('
-							+ classname + ')', false, 0);
+			.createTestElement(this.fTestSuite, getNextId(), name + '('
+					+ classname + ')', false, 0);
 			this.fNotRun.push(Boolean.valueOf(attributes
 					.getValue(IXMLTags.ATTR_INCOMPLETE)));
 			this.fTestCase.setIgnored(Boolean.valueOf(
@@ -160,8 +160,8 @@ public class TestRunHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length)
-			throws SAXException {
+	public void characters(final char[] ch, final int start, final int length)
+	throws SAXException {
 		if (this.fInExpected) {
 			this.fExpectedBuffer.append(ch, start, length);
 
@@ -174,8 +174,8 @@ public class TestRunHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
+	public void endElement(final String uri, final String localName, final String qName)
+	throws SAXException {
 		if (qName.equals(IXMLTags.NODE_TESTRUN)) {
 			// OK
 
@@ -219,12 +219,12 @@ public class TestRunHandler extends DefaultHandler {
 		}
 	}
 
-	private void handleTestElementEnd(TestElement testElement) {
-		boolean completed = this.fNotRun.pop() != Boolean.TRUE;
+	private void handleTestElementEnd(final TestElement testElement) {
+		final boolean completed = this.fNotRun.pop() != Boolean.TRUE;
 		this.fTestRunSession.registerTestEnded(testElement, completed);
 	}
 
-	private void handleFailure(TestElement testElement) {
+	private void handleFailure(final TestElement testElement) {
 		if (this.fFailureBuffer != null) {
 			this.fTestRunSession.registerTestFailed(testElement, this.fStatus,
 					this.fFailureBuffer.toString(),
@@ -237,11 +237,11 @@ public class TestRunHandler extends DefaultHandler {
 		}
 	}
 
-	private String toString(StringBuffer buffer) {
+	private String toString(final StringBuffer buffer) {
 		return buffer != null ? buffer.toString() : null;
 	}
 
-	private void handleUnknownNode(String qName) throws SAXException {
+	private void handleUnknownNode(final String qName) throws SAXException {
 		// TODO: just log if debug option is enabled?
 		String msg = "unknown node '" + qName + "'"; //$NON-NLS-1$//$NON-NLS-2$
 		if (this.fLocator != null) {
@@ -251,12 +251,12 @@ public class TestRunHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void error(SAXParseException e) throws SAXException {
+	public void error(final SAXParseException e) throws SAXException {
 		throw e;
 	}
 
 	@Override
-	public void warning(SAXParseException e) throws SAXException {
+	public void warning(final SAXParseException e) throws SAXException {
 		throw e;
 	}
 

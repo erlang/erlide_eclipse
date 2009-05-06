@@ -151,13 +151,13 @@ public class ErlangConsoleView extends ViewPart implements
 
 	@Override
 	public void createPartControl(final Composite parent) {
-		Composite container = parent;
+		final Composite container = parent;
 		container.setLayout(new GridLayout(2, false));
 
-		Label label = new Label(container, SWT.SHADOW_NONE);
+		final Label label = new Label(container, SWT.SHADOW_NONE);
 		label.setText("Erlang backend node");
 		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
-		Combo combo = backends.getCombo();
+		final Combo combo = backends.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 		backends.setContentProvider(new BackendContentProvider());
@@ -210,7 +210,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
+				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
 						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
 				if ((e.character != (char) 0) || isHistoryCommand) {
 					createInputField(e.character);
@@ -221,13 +221,13 @@ public class ErlangConsoleView extends ViewPart implements
 		initializeToolBar();
 	}
 
-	void createInputField(char first) {
+	void createInputField(final char first) {
 		if (first == SWT.ESC) {
 			return;
 		}
 		consoleText.setSelection(consoleText.getCharCount());
-		Rectangle rect = consoleText.getClientArea();
-		Point relpos = consoleText.getLocationAtOffset(consoleText
+		final Rectangle rect = consoleText.getClientArea();
+		final Point relpos = consoleText.getLocationAtOffset(consoleText
 				.getCharCount());
 
 		final Shell container = new Shell(consoleText.getShell(), SWT.MODELESS);
@@ -241,8 +241,9 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.setParent(container);
 		container.setAlpha(220);
 
-		int b = 1;
-		Point screenPos = consoleText.toDisplay(relpos.x - b, relpos.y - b);
+		final int b = 1;
+		final Point screenPos = consoleText.toDisplay(relpos.x - b, relpos.y
+				- b);
 		container.setLocation(screenPos);
 		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
 
@@ -251,18 +252,19 @@ public class ErlangConsoleView extends ViewPart implements
 
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
+				final boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
 				if (e.keyCode == 13 && isInputComplete()) {
 					sendInput();
 					container.close();
 					e.doit = false;
 				} else if (e.keyCode == 13) {
-					Rectangle loc = container.getBounds();
-					int topIndex = consoleInput.getTopIndex();
-					int lineCount = consoleInput.getLineCount();
-					int lineHeight = consoleInput.getLineHeight();
-					int visibleLines = loc.height / lineHeight;
-					int maxLines = consoleText.getSize().y / lineHeight - 1;
+					final Rectangle loc = container.getBounds();
+					final int topIndex = consoleInput.getTopIndex();
+					final int lineCount = consoleInput.getLineCount();
+					final int lineHeight = consoleInput.getLineHeight();
+					final int visibleLines = loc.height / lineHeight;
+					final int maxLines = consoleText.getSize().y / lineHeight
+							- 1;
 					if (topIndex + visibleLines - 1 <= lineCount
 							&& visibleLines < maxLines) {
 						container.setBounds(loc.x, loc.y - lineHeight,
@@ -273,7 +275,7 @@ public class ErlangConsoleView extends ViewPart implements
 					if (navIndex > 0) {
 						navIndex--;
 					}
-					String s = (history.size() > navIndex) ? history
+					final String s = (history.size() > navIndex) ? history
 							.get(navIndex) : "";
 					consoleInput.setText(s);
 					consoleInput.setSelection(consoleInput.getText().length());
@@ -295,7 +297,7 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 		consoleInput.addFocusListener(new FocusAdapter() {
 			@Override
-			public void focusLost(FocusEvent e) {
+			public void focusLost(final FocusEvent e) {
 				// container.close();
 			}
 		});
@@ -317,13 +319,13 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	private void fixPosition(final Shell container) {
-		Rectangle loc = container.getBounds();
-		int lineCount = consoleInput.getLineCount();
-		int lineHeight = consoleInput.getLineHeight();
-		int visibleLines = loc.height / lineHeight;
-		int maxLines = consoleText.getSize().y / lineHeight - 1;
-		int lines = Math.max(Math.min(maxLines, lineCount) - visibleLines,
-				visibleLines);
+		final Rectangle loc = container.getBounds();
+		final int lineCount = consoleInput.getLineCount();
+		final int lineHeight = consoleInput.getLineHeight();
+		final int visibleLines = loc.height / lineHeight;
+		final int maxLines = consoleText.getSize().y / lineHeight - 1;
+		final int lines = Math.max(
+				Math.min(maxLines, lineCount) - visibleLines, visibleLines);
 		if (visibleLines - 1 <= lineCount) {
 			container.setBounds(loc.x, loc.y - lineHeight * lines, loc.width,
 					loc.height + lineHeight * lines);
@@ -332,7 +334,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	boolean isInputComplete() {
 		try {
-			String str = consoleInput.getText();
+			final String str = consoleInput.getText();
 			final OtpErlangObject o = ErlideBackend.parseString(str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
@@ -344,7 +346,7 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	protected void sendInput() {
-		String s = consoleInput.getText();
+		final String s = consoleInput.getText();
 		input(s);
 		consoleInput.setText("");
 		refreshView();
@@ -378,7 +380,7 @@ public class ErlangConsoleView extends ViewPart implements
 		return colors[0];
 	}
 
-	public void input(String data) {
+	public void input(final String data) {
 		model.input(data);
 		shell.send(data);
 		addToHistory(data.trim());
@@ -443,7 +445,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	private void initializeToolBar() {
 		final IActionBars bars = getViewSite().getActionBars();
-		IToolBarManager toolBarManager = bars.getToolBarManager();
+		final IToolBarManager toolBarManager = bars.getToolBarManager();
 		{
 			action = new Action("New Action") {
 				@Override
@@ -459,12 +461,12 @@ public class ErlangConsoleView extends ViewPart implements
 			toolBarManager.add(action);
 		}
 
-		IMenuManager menuManager = bars.getMenuManager();
+		final IMenuManager menuManager = bars.getMenuManager();
 		menuManager.add(action);
 
 	}
 
-	public void changed(ErlConsoleModel erlConsoleModel) {
+	public void changed(final ErlConsoleModel erlConsoleModel) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				refreshView();

@@ -81,7 +81,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		public void elementsChanged(final Object[] updatedElements) {
 			final TableViewer viewer = getViewer();
 			final int elementLimit = getElementLimit();
-			boolean tableLimited = elementLimit != -1;
+			final boolean tableLimited = elementLimit != -1;
 			for (int i = 0; i < updatedElements.length; i++) {
 				if (fResult.getMatchCount(updatedElements[i]) > 0) {
 					if (viewer.testFindItem(updatedElements[i]) != null) {
@@ -347,7 +347,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
+		 * @see
+		 * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
 		 */
 		@Override
 		public int category(final Object element) {

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -22,14 +22,14 @@ public class IoRequest {
 	private String message;
 	private int start;
 
-	public IoRequest(OtpErlangTuple obj) {
+	public IoRequest(final OtpErlangTuple obj) {
 
 		try {
-			OtpErlangObject o = obj.elementAt(0);
+			final OtpErlangObject o = obj.elementAt(0);
 			if (o instanceof OtpErlangString) {
 				message = ((OtpErlangString) o).stringValue();
 			} else if (o instanceof OtpErlangList) {
-				OtpErlangList l = (OtpErlangList) o;
+				final OtpErlangList l = (OtpErlangList) o;
 				if (l.arity() == 0) {
 					message = "";
 				} else {
@@ -40,19 +40,19 @@ public class IoRequest {
 			}
 
 			leader = (OtpErlangPid) obj.elementAt(1);
-			OtpErlangObject s = obj.elementAt(2);
+			final OtpErlangObject s = obj.elementAt(2);
 			if (s instanceof OtpErlangPid) {
 				sender = (OtpErlangPid) s;
 			} else {
 				sender = new OtpErlangPid("s", 0, 0, 0);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			message = null;
 		}
 	}
 
 	// used for input text
-	public IoRequest(String msg) {
+	public IoRequest(final String msg) {
 		message = msg;
 		leader = new OtpErlangPid("s", 0, 0, 0);
 		sender = new OtpErlangPid("s", 0, 0, 0);
@@ -75,19 +75,19 @@ public class IoRequest {
 		return sender;
 	}
 
-	void setLeader(OtpErlangPid leader) {
+	void setLeader(final OtpErlangPid leader) {
 		this.leader = leader;
 	}
 
-	void setMessage(String message) {
+	void setMessage(final String message) {
 		this.message = message;
 	}
 
-	void setSender(OtpErlangPid sender) {
+	void setSender(final OtpErlangPid sender) {
 		this.sender = sender;
 	}
 
-	public void setStart(int start) {
+	public void setStart(final int start) {
 		this.start = start;
 	}
 

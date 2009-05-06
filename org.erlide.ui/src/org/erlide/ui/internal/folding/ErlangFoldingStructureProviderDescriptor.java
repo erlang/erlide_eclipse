@@ -53,7 +53,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 	 *            the configuration element to read
 	 */
 	public ErlangFoldingStructureProviderDescriptor(
-			IConfigurationElement element) {
+			final IConfigurationElement element) {
 		fElement = element;
 		fId = element.getAttribute(ID);
 		Assert.isLegal(fId != null);

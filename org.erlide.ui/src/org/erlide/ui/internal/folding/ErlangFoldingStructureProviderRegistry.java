@@ -52,7 +52,7 @@ public class ErlangFoldingStructureProviderRegistry {
 	 *         none can be found
 	 */
 	public ErlangFoldingStructureProviderDescriptor getFoldingProviderDescriptor(
-			String id) {
+			final String id) {
 		synchronized (this) {
 			ensureRegistered();
 			return fDescriptors.get(id);
@@ -103,7 +103,7 @@ public class ErlangFoldingStructureProviderRegistry {
 		final IConfigurationElement[] elements = registry
 				.getConfigurationElementsFor(ErlideUIPlugin.PLUGIN_ID,
 						EXTENSION_POINT);
-		for (IConfigurationElement element : elements) {
+		for (final IConfigurationElement element : elements) {
 			final ErlangFoldingStructureProviderDescriptor desc = new ErlangFoldingStructureProviderDescriptor(
 					element);
 			map.put(desc.getId(), desc);

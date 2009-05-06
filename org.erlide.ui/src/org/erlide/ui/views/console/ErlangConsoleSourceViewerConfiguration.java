@@ -47,7 +47,7 @@ final class ErlangConsoleSourceViewerConfiguration extends
 
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(
-			ISourceViewer sourceViewer, String contentType) {
+			final ISourceViewer sourceViewer, final String contentType) {
 		return null;
 	}
 

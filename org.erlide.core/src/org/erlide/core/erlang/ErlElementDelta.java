@@ -10,9 +10,9 @@ public class ErlElementDelta implements IErlElementDelta {
 
 	private int fFlags;
 
-	private IErlElement fElement;
+	private final IErlElement fElement;
 
-	private ArrayList<ErlElementDelta> fChildren;
+	private final ArrayList<ErlElementDelta> fChildren;
 
 	private ArrayList<IResourceDelta> fResourceDeltas;
 
@@ -31,7 +31,8 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * @param flags
 	 * @param element
 	 */
-	public ErlElementDelta(int kind, int flags, IErlElement element) {
+	public ErlElementDelta(final int kind, final int flags,
+			final IErlElement element) {
 		this(kind, flags, element, new ArrayList<ErlElementDelta>(0),
 				new ArrayList<IResourceDelta>(0));
 	}
@@ -42,8 +43,8 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * @param element
 	 * @param children
 	 */
-	public ErlElementDelta(int kind, int flags, IErlElement element,
-			ArrayList<ErlElementDelta> children) {
+	public ErlElementDelta(final int kind, final int flags,
+			final IErlElement element, final ArrayList<ErlElementDelta> children) {
 		this(kind, flags, element, children, new ArrayList<IResourceDelta>(0));
 	}
 
@@ -54,9 +55,10 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * @param children
 	 * @param resourceDeltas
 	 */
-	public ErlElementDelta(int kind, int flags, IErlElement element,
-			ArrayList<ErlElementDelta> children,
-			ArrayList<IResourceDelta> resourceDeltas) {
+	public ErlElementDelta(final int kind, final int flags,
+			final IErlElement element,
+			final ArrayList<ErlElementDelta> children,
+			final ArrayList<IResourceDelta> resourceDeltas) {
 		super();
 		fKind = kind;
 		fFlags = flags;
@@ -65,7 +67,7 @@ public class ErlElementDelta implements IErlElementDelta {
 		fResourceDeltas = resourceDeltas;
 	}
 
-	public IErlElementDelta[] getChildren(int kind) {
+	public IErlElementDelta[] getChildren(final int kind) {
 		final ArrayList<IErlElementDelta> children = new ArrayList<IErlElementDelta>(
 				0);
 		for (int i = 0; i < fChildren.size(); ++i) {
@@ -98,7 +100,8 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * Creates the delta tree for the given element and delta, and then inserts
 	 * the tree as an affected child of this node.
 	 */
-	public void insertDeltaTree(IErlElement element, ErlElementDelta delta) {
+	public void insertDeltaTree(final IErlElement element,
+			final ErlElementDelta delta) {
 		final ErlElementDelta childDelta = createDeltaTree(element, delta);
 		if (!equalsAndSameParent(element, getElement())) {
 			addAffectedChild(childDelta);
@@ -110,8 +113,8 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * and the root of this delta tree. Returns the root of the created delta
 	 * tree.
 	 */
-	protected ErlElementDelta createDeltaTree(IErlElement element,
-			ErlElementDelta delta) {
+	protected ErlElementDelta createDeltaTree(final IErlElement element,
+			final ErlElementDelta delta) {
 		ErlElementDelta childDelta = delta;
 		final ArrayList<IErlElement> ancestors = getAncestors(element);
 		if (ancestors == null) {
@@ -154,7 +157,7 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * JC: this sucks a little bit, too much code, as always... (from C model,
 	 * not my fault)
 	 */
-	protected void addAffectedChild(ErlElementDelta child) {
+	protected void addAffectedChild(final ErlElementDelta child) {
 		switch (fKind) {
 		case ADDED:
 		case REMOVED:
@@ -228,7 +231,7 @@ public class ErlElementDelta implements IErlElementDelta {
 					// child was changed then changed -> it is changed
 				case CHANGED:
 					final IErlElementDelta[] children = child.getChildren(ALL);
-					for (IErlElementDelta element : children) {
+					for (final IErlElementDelta element : children) {
 						final ErlElementDelta childsChild = (ErlElementDelta) element;
 						((ErlElementDelta) existingChild)
 								.addAffectedChild(childsChild);
@@ -254,7 +257,7 @@ public class ErlElementDelta implements IErlElementDelta {
 		}
 	}
 
-	private ArrayList<IErlElement> getAncestors(IErlElement element) {
+	private ArrayList<IErlElement> getAncestors(final IErlElement element) {
 		IErlElement parent = element.getParent();
 		if (parent == null) {
 			return null;
@@ -274,17 +277,18 @@ public class ErlElementDelta implements IErlElementDelta {
 	/**
 	 * Returns whether the two elements are equals and have the same parent.
 	 */
-	protected boolean equalsAndSameParent(IErlElement e1, IErlElement e2) {
+	protected boolean equalsAndSameParent(final IErlElement e1,
+			final IErlElement e2) {
 		IErlElement parent1;
-		return e1.equals(e2) && ((parent1 = e1.getParent()) != null) &&
-				parent1.equals(e2.getParent());
+		return e1.equals(e2) && ((parent1 = e1.getParent()) != null)
+				&& parent1.equals(e2.getParent());
 	}
 
 	/**
 	 * Adds the child delta to the collection of affected children. If the child
 	 * is already in the collection, walk down the hierarchy.
 	 */
-	public void addResourceDelta(IResourceDelta child) {
+	public void addResourceDelta(final IResourceDelta child) {
 		switch (fKind) {
 		case ADDED:
 		case REMOVED:
@@ -306,14 +310,14 @@ public class ErlElementDelta implements IErlElementDelta {
 	 * create the root delta and then a change operation should call this
 	 * method.
 	 */
-	public void changed(IErlElement element, int flag) {
+	public void changed(final IErlElement element, final int flag) {
 		final ErlElementDelta changedDelta = new ErlElementDelta(0, 0, element);
 		changedDelta.fKind = CHANGED;
 		changedDelta.fFlags |= flag;
 		insertDeltaTree(element, changedDelta);
 	}
 
-	public IErlElementDelta findElement(IErlElement element) {
+	public IErlElementDelta findElement(final IErlElement element) {
 		if (fElement.equals(element)) {
 			return this;
 		}

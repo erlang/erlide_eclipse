@@ -30,13 +30,13 @@ public class SelectionButtonDialogField extends DialogField {
 
 	private DialogField[] fAttachedDialogFields;
 
-	private int fButtonStyle;
+	private final int fButtonStyle;
 
 	/**
 	 * Creates a selection button. Allowed button styles: SWT.RADIO, SWT.CHECK,
 	 * SWT.TOGGLE, SWT.PUSH
 	 */
-	public SelectionButtonDialogField(int buttonStyle) {
+	public SelectionButtonDialogField(final int buttonStyle) {
 		super();
 		fIsSelected = false;
 		fAttachedDialogFields = null;
@@ -47,7 +47,7 @@ public class SelectionButtonDialogField extends DialogField {
 	 * Attaches a field to the selection state of the selection button. The
 	 * attached field will be disabled if the selection button is not selected.
 	 */
-	public void attachDialogField(DialogField dialogField) {
+	public void attachDialogField(final DialogField dialogField) {
 		attachDialogFields(new DialogField[] { dialogField });
 	}
 
@@ -55,20 +55,20 @@ public class SelectionButtonDialogField extends DialogField {
 	 * Attaches fields to the selection state of the selection button. The
 	 * attached fields will be disabled if the selection button is not selected.
 	 */
-	public void attachDialogFields(DialogField[] dialogFields) {
+	public void attachDialogFields(final DialogField[] dialogFields) {
 		fAttachedDialogFields = dialogFields;
-		for (DialogField element : dialogFields) {
+		for (final DialogField element : dialogFields) {
 			element.setEnabled(fIsSelected);
 		}
 	}
 
 	/**
-	 * Returns <code>true</code> is teh gived field is attached to the
-	 * selection button.
+	 * Returns <code>true</code> is teh gived field is attached to the selection
+	 * button.
 	 */
-	public boolean isAttached(DialogField editor) {
+	public boolean isAttached(final DialogField editor) {
 		if (fAttachedDialogFields != null) {
-			for (DialogField element : fAttachedDialogFields) {
+			for (final DialogField element : fAttachedDialogFields) {
 				if (element == editor) {
 					return true;
 				}
@@ -83,7 +83,7 @@ public class SelectionButtonDialogField extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		final Button button = getSelectionButton(parent);
@@ -118,7 +118,7 @@ public class SelectionButtonDialogField extends DialogField {
 	 *            The parent composite when called the first time, or
 	 *            <code>null</code> after.
 	 */
-	public Button getSelectionButton(Composite group) {
+	public Button getSelectionButton(final Composite group) {
 		if (fButton == null) {
 			assertCompositeNotNull(group);
 
@@ -129,11 +129,11 @@ public class SelectionButtonDialogField extends DialogField {
 			fButton.setSelection(fIsSelected);
 			fButton.addSelectionListener(new SelectionListener() {
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 					doWidgetSelected(e);
 				}
 
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					doWidgetSelected(e);
 				}
 			});
@@ -141,18 +141,18 @@ public class SelectionButtonDialogField extends DialogField {
 		return fButton;
 	}
 
-	protected void doWidgetSelected(SelectionEvent e) {
+	protected void doWidgetSelected(final SelectionEvent e) {
 		if (isOkToUse(fButton)) {
 			changeValue(fButton.getSelection());
 		}
 	}
 
-	private void changeValue(boolean newState) {
+	private void changeValue(final boolean newState) {
 		if (fIsSelected != newState) {
 			fIsSelected = newState;
 			if (fAttachedDialogFields != null) {
 				boolean focusSet = false;
-				for (DialogField element : fAttachedDialogFields) {
+				for (final DialogField element : fAttachedDialogFields) {
 					element.setEnabled(fIsSelected);
 					if (fIsSelected && !focusSet) {
 						focusSet = element.setFocus();
@@ -177,7 +177,7 @@ public class SelectionButtonDialogField extends DialogField {
 	/**
 	 * Sets the selection state of the button.
 	 */
-	public void setSelection(boolean selected) {
+	public void setSelection(final boolean selected) {
 		changeValue(selected);
 		if (isOkToUse(fButton)) {
 			fButton.setSelection(selected);

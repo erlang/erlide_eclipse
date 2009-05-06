@@ -11,7 +11,7 @@
 package org.erlide.ui.prefs.tickets;
 
 public class TicketStatus {
-	public TicketStatus(boolean ok2, int id2) {
+	public TicketStatus(final boolean ok2, final int id2) {
 		ok = ok2;
 		id = id2;
 	}

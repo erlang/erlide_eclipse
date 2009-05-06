@@ -75,15 +75,16 @@ public class BalloonWindow {
 	boolean addedGlobalListener;
 	final ArrayList<Listener> selectionListeners = new ArrayList<Listener>();
 
-	public BalloonWindow(Shell parent, int style) {
+	public BalloonWindow(final Shell parent, final int style) {
 		this(null, parent, style);
 	}
 
-	public BalloonWindow(Display display, int style) {
+	public BalloonWindow(final Display display, final int style) {
 		this(display, null, style);
 	}
 
-	private BalloonWindow(Display display, Shell parent, final int style) {
+	private BalloonWindow(final Display display, final Shell parent,
+			final int style) {
 		this.style = style;
 		final int shellStyle = style & (SWT.ON_TOP | SWT.TOOL);
 		shell = (display != null) ? new Shell(display, SWT.NO_TRIM | shellStyle)
@@ -101,8 +102,8 @@ public class BalloonWindow {
 
 		final Listener globalListener = new Listener() {
 
-			public void handleEvent(Event event) {
-				Widget w = event.widget;
+			public void handleEvent(final Event event) {
+				final Widget w = event.widget;
 				for (int i = selectionControls.size() - 1; i >= 0; i--) {
 					if (selectionControls.get(i) == w) {
 						if ((style & SWT.CLOSE) != 0) {
@@ -120,7 +121,7 @@ public class BalloonWindow {
 
 		shell.addListener(SWT.Show, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (!addedGlobalListener) {
 					shell.getDisplay().addFilter(SWT.MouseDown, globalListener);
 					addedGlobalListener = true;
@@ -130,7 +131,7 @@ public class BalloonWindow {
 
 		shell.addListener(SWT.Hide, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (addedGlobalListener) {
 					shell.getDisplay().removeFilter(SWT.MouseDown,
 							globalListener);
@@ -141,7 +142,7 @@ public class BalloonWindow {
 
 		shell.addListener(SWT.Dispose, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				if (addedGlobalListener) {
 					shell.getDisplay().removeFilter(SWT.MouseDown,
 							globalListener);
@@ -157,11 +158,11 @@ public class BalloonWindow {
 	 * The background, title image and title text are included by default.
 	 */
 
-	public void addSelectionControl(Control c) {
+	public void addSelectionControl(final Control c) {
 		selectionControls.add(c);
 	}
 
-	public void addListener(int type, Listener l) {
+	public void addListener(final int type, final Listener l) {
 		if (type == SWT.Selection) {
 			selectionListeners.add(l);
 		}
@@ -173,7 +174,7 @@ public class BalloonWindow {
 	 * SWT.RIGHT|SWT.BOTTOM
 	 */
 
-	public void setAnchor(int anchor) {
+	public void setAnchor(final int anchor) {
 		switch (anchor) {
 		case SWT.NONE:
 		case SWT.LEFT | SWT.TOP:
@@ -187,49 +188,49 @@ public class BalloonWindow {
 		preferredAnchor = anchor;
 	}
 
-	public void setAutoAnchor(boolean autoAnchor) {
+	public void setAutoAnchor(final boolean autoAnchor) {
 		this.autoAnchor = autoAnchor;
 	}
 
-	public void setLocation(int x, int y) {
+	public void setLocation(final int x, final int y) {
 		locX = x;
 		locY = y;
 	}
 
-	public void setLocation(Point p) {
+	public void setLocation(final Point p) {
 		locX = p.x;
 		locY = p.y;
 	}
 
-	public void setText(String title) {
+	public void setText(final String title) {
 		shell.setText(title);
 	}
 
-	public void setImage(Image image) {
+	public void setImage(final Image image) {
 		shell.setImage(image);
 	}
 
-	public void setMargins(int marginLeft, int marginRight, int marginTop,
-			int marginBottom) {
+	public void setMargins(final int marginLeft, final int marginRight,
+			final int marginTop, final int marginBottom) {
 		this.marginLeft = marginLeft;
 		this.marginRight = marginRight;
 		this.marginTop = marginTop;
 		this.marginBottom = marginBottom;
 	}
 
-	public void setMargins(int marginX, int marginY) {
+	public void setMargins(final int marginX, final int marginY) {
 		setMargins(marginX, marginX, marginY, marginY);
 	}
 
-	public void setMargins(int margin) {
+	public void setMargins(final int margin) {
 		setMargins(margin, margin, margin, margin);
 	}
 
-	public void setTitleSpacing(int titleSpacing) {
+	public void setTitleSpacing(final int titleSpacing) {
 		this.titleSpacing = titleSpacing;
 	}
 
-	public void setTitleWidgetSpacing(int titleImageSpacing) {
+	public void setTitleWidgetSpacing(final int titleImageSpacing) {
 		titleWidgetSpacing = titleImageSpacing;
 	}
 
@@ -252,13 +253,13 @@ public class BalloonWindow {
 				titleLabel.setBackground(shell.getBackground());
 				titleLabel.setForeground(shell.getForeground());
 				final FontData[] fds = shell.getFont().getFontData();
-				for (FontData element : fds) {
+				for (final FontData element : fds) {
 					element.setStyle(element.getStyle() | SWT.BOLD);
 				}
 				final Font font = new Font(shell.getDisplay(), fds);
 				titleLabel.addListener(SWT.Dispose, new Listener() {
 
-					public void handleEvent(Event event) {
+					public void handleEvent(final Event event) {
 						font.dispose();
 					}
 				});
@@ -277,7 +278,7 @@ public class BalloonWindow {
 				titleImageLabel.setBounds(titleImage.getBounds());
 				titleImageLabel.addListener(SWT.Paint, new Listener() {
 
-					public void handleEvent(Event event) {
+					public void handleEvent(final Event event) {
 						event.gc.drawImage(titleImage, 0, 0);
 					}
 				});
@@ -303,7 +304,7 @@ public class BalloonWindow {
 						closeBG, closeFG);
 				shell.addListener(SWT.Dispose, new Listener() {
 
-					public void handleEvent(Event event) {
+					public void handleEvent(final Event event) {
 						closeImage.dispose();
 					}
 				});
@@ -315,7 +316,7 @@ public class BalloonWindow {
 				closeItem.setImage(closeImage);
 				closeItem.addListener(SWT.Selection, new Listener() {
 
-					public void handleEvent(Event event) {
+					public void handleEvent(final Event event) {
 						shell.close();
 					}
 				});
@@ -409,7 +410,7 @@ public class BalloonWindow {
 		shell.setRegion(region);
 		shell.addListener(SWT.Dispose, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				region.dispose();
 			}
 		});
@@ -417,7 +418,7 @@ public class BalloonWindow {
 		final int[] outline = createOutline(shellSize, anchor, false);
 		shell.addListener(SWT.Paint, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				event.gc.drawPolygon(outline);
 			}
 		});
@@ -463,14 +464,15 @@ public class BalloonWindow {
 		shell.close();
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		if (visible) {
 			prepareForOpen();
 		}
 		shell.setVisible(visible);
 	}
 
-	private static int[] createOutline(Point size, int anchor, boolean outer) {
+	private static int[] createOutline(final Point size, final int anchor,
+			final boolean outer) {
 		final int o = outer ? 1 : 0;
 		final int w = size.x + o;
 		final int h = size.y + o;
@@ -661,8 +663,8 @@ public class BalloonWindow {
 		}
 	}
 
-	private static final Image createCloseImage(Display display, Color bg,
-			Color fg) {
+	private static final Image createCloseImage(final Display display,
+			final Color bg, final Color fg) {
 		final int size = 11, off = 1;
 		final Image image = new Image(display, size, size);
 		final GC gc = new GC(image);

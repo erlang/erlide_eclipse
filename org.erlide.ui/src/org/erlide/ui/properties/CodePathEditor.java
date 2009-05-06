@@ -20,14 +20,15 @@ import org.eclipse.swt.widgets.Composite;
 
 public class CodePathEditor extends ListEditor {
 
-	public CodePathEditor(String name, String labelText, Composite parent) {
+	public CodePathEditor(final String name, final String labelText,
+			final Composite parent) {
 		init(name, labelText);
 		createControl(parent);
 	}
 
 	@Override
-	protected String createList(String[] items) {
-		StringBuffer path = new StringBuffer(""); //$NON-NLS-1$
+	protected String createList(final String[] items) {
+		final StringBuffer path = new StringBuffer(""); //$NON-NLS-1$
 
 		for (int i = 0; i < items.length; i++) {
 			path.append(items[i]);
@@ -42,10 +43,10 @@ public class CodePathEditor extends ListEditor {
 	}
 
 	@Override
-	protected String[] parseString(String stringList) {
-		StringTokenizer st = new StringTokenizer(stringList, File.pathSeparator
-				+ "\r\n");//$NON-NLS-1$
-		List<String> v = new ArrayList<String>();
+	protected String[] parseString(final String stringList) {
+		final StringTokenizer st = new StringTokenizer(stringList,
+				File.pathSeparator + "\r\n");//$NON-NLS-1$
+		final List<String> v = new ArrayList<String>();
 		while (st.hasMoreElements()) {
 			v.add((String) st.nextElement());
 		}

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -29,7 +29,7 @@ public class RpcUtil {
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = Boolean
-			.getBoolean("org.erlide.checkrpc");
+	.getBoolean("org.erlide.checkrpc");
 
 	/**
 	 * Convenience method to send a remote message.
@@ -39,8 +39,8 @@ public class RpcUtil {
 	 * @param msg
 	 * @throws RpcException
 	 */
-	public static void send(OtpNode node, OtpErlangPid pid, Object msg)
-			throws RpcException {
+	public static void send(final OtpNode node, final OtpErlangPid pid, final Object msg)
+	throws RpcException {
 		final OtpMbox mbox = node.createMbox();
 		try {
 			if (mbox != null) {
@@ -63,7 +63,7 @@ public class RpcUtil {
 	 * @param msg
 	 * @throws RpcException
 	 */
-	public static void send(final OtpNode node, String peer, String name,
+	public static void send(final OtpNode node, final String peer, final String name,
 			final Object msg) throws RpcException {
 		final OtpMbox mbox = node.createMbox();
 		try {
@@ -91,11 +91,11 @@ public class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static OtpErlangObject rpcCall(final OtpNode node, String peer,
-			OtpErlangObject gleader, final String module, final String fun,
-			final int timeout, final String signature, Object... args0)
-			throws RpcException {
-		RpcFuture future = sendRpcCall(node, peer, gleader, module, fun,
+	public static OtpErlangObject rpcCall(final OtpNode node, final String peer,
+			final OtpErlangObject gleader, final String module, final String fun,
+			final int timeout, final String signature, final Object... args0)
+	throws RpcException {
+		final RpcFuture future = sendRpcCall(node, peer, gleader, module, fun,
 				signature, args0);
 		OtpErlangObject result;
 		result = future.get(timeout);
@@ -109,13 +109,13 @@ public class RpcUtil {
 	 * Calls a function that supports sending progress reports back. The first
 	 * argument is implicit and is the pid where the reports are to be sent.
 	 */
-	public static void rpcCallWithProgress(RpcResultCallback callback,
-			final OtpNode node, String peer, OtpErlangObject gleader,
+	public static void rpcCallWithProgress(final RpcResultCallback callback,
+			final OtpNode node, final String peer, final OtpErlangObject gleader,
 			final String module, final String fun, final int timeout,
-			final String signature, Object... args0) throws RpcException {
-		Object[] args = new Object[args0.length + 1];
+			final String signature, final Object... args0) throws RpcException {
+		final Object[] args = new Object[args0.length + 1];
 		System.arraycopy(args0, 0, args, 1, args0.length);
-		OtpMbox mbox = node.createMbox();
+		final OtpMbox mbox = node.createMbox();
 		args[0] = mbox.self();
 		new RpcResultReceiver(mbox, callback);
 		rpcCast(node, peer, gleader, module, fun, signature, args);
@@ -134,9 +134,9 @@ public class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static RpcFuture sendRpcCall(final OtpNode node, String peer,
-			OtpErlangObject gleader, final String module, final String fun,
-			final String signature, Object... args0) throws RpcException {
+	public static RpcFuture sendRpcCall(final OtpNode node, final String peer,
+			final OtpErlangObject gleader, final String module, final String fun,
+			final String signature, final Object... args0) throws RpcException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
@@ -156,8 +156,8 @@ public class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static OtpErlangObject getRpcResult(OtpMbox mbox)
-			throws RpcException {
+	public static OtpErlangObject getRpcResult(final OtpMbox mbox)
+	throws RpcException {
 		return getRpcResult(mbox, INFINITY);
 	}
 
@@ -169,8 +169,8 @@ public class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static OtpErlangObject getRpcResult(OtpMbox mbox, long timeout)
-			throws RpcException {
+	public static OtpErlangObject getRpcResult(final OtpMbox mbox, final long timeout)
+	throws RpcException {
 		assert mbox != null;
 
 		OtpErlangObject res = null;
@@ -203,7 +203,7 @@ public class RpcUtil {
 	}
 
 	private static OtpErlangObject buildRpcCall(final OtpErlangPid pid,
-			OtpErlangObject gleader, final String module, final String fun,
+			final OtpErlangObject gleader, final String module, final String fun,
 			final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
@@ -223,9 +223,9 @@ public class RpcUtil {
 	 * @param args0
 	 * @throws RpcException
 	 */
-	public static void rpcCast(final OtpNode node, String peer,
-			OtpErlangObject gleader, final String module, final String fun,
-			final String signature, Object... args0) throws RpcException {
+	public static void rpcCast(final OtpNode node, final String peer,
+			final OtpErlangObject gleader, final String module, final String fun,
+			final String signature, final Object... args0) throws RpcException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
@@ -260,7 +260,7 @@ public class RpcUtil {
 		return args;
 	}
 
-	private static OtpErlangObject buildRpcCastMsg(OtpErlangObject gleader,
+	private static OtpErlangObject buildRpcCastMsg(final OtpErlangObject gleader,
 			final String module, final String fun, final OtpErlangObject[] args) {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
@@ -270,18 +270,18 @@ public class RpcUtil {
 				new OtpErlangAtom("cast"), m, f, a, gleader));
 	}
 
-	private static void log(String s) {
+	private static void log(final String s) {
 		System.out.println("RpcUtil: " + s);
 	}
 
-	private static void debug(String s) {
+	private static void debug(final String s) {
 		if (VERBOSE) {
 			log(s);
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private static void warn(Exception e) {
+	private static void warn(final Exception e) {
 		log(e.getMessage());
 		e.printStackTrace();
 	}

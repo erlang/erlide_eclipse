@@ -19,8 +19,8 @@ public class ErlideCommonDragAdapterAssistant extends
 	}
 
 	@Override
-	public boolean setDragData(DragSourceEvent anEvent,
-			IStructuredSelection selection) {
+	public boolean setDragData(final DragSourceEvent anEvent,
+			final IStructuredSelection selection) {
 		// TODO Auto-generated method stub
 		return false;
 	}

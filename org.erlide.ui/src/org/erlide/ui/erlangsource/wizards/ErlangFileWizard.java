@@ -84,11 +84,11 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 		final String skeleton = fPage.getSkeleton();
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 
-			public void run(IProgressMonitor monitor)
+			public void run(final IProgressMonitor monitor)
 					throws InvocationTargetException {
 				try {
 					doFinish(containerName, fileName, skeleton, monitor);
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
 					monitor.done();

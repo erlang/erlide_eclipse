@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
@@ -25,28 +25,28 @@ public class ObjRefCache {
 	private static int refid1 = 0;
 	private static int refid2 = 0;
 
-	public static OtpErlangRef registerTarget(Object obj) {
+	public static OtpErlangRef registerTarget(final Object obj) {
 		if (obj == null) {
 			return new OtpErlangRef(JRpcUtil.REF_NODE, new int[] { 0, 0, 0 }, 0);
 		}
 
-		Set<Entry<OtpErlangRef, WeakReference<Object>>> entries = objects
-				.entrySet();
-		for (Entry<OtpErlangRef, WeakReference<Object>> entry : entries) {
+		final Set<Entry<OtpErlangRef, WeakReference<Object>>> entries = objects
+		.entrySet();
+		for (final Entry<OtpErlangRef, WeakReference<Object>> entry : entries) {
 			if (entry.getValue().get() == obj) {
 				return entry.getKey();
 			}
 		}
-		OtpErlangRef ref = mkref();
+		final OtpErlangRef ref = mkref();
 		objects.put(ref, new WeakReference<Object>(obj));
 		return ref;
 	}
 
-	public static Object getTarget(OtpErlangRef ref) {
+	public static Object getTarget(final OtpErlangRef ref) {
 		return objects.get(ref).get();
 	}
 
-	public static void unregisterTarget(OtpErlangRef ref) {
+	public static void unregisterTarget(final OtpErlangRef ref) {
 		objects.remove(ref);
 	}
 

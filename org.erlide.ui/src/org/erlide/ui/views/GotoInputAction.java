@@ -17,7 +17,7 @@ class GotoInputAction extends Action {
 
 	// private AbstractInfoView fInfoView;
 
-	public GotoInputAction(AbstractInfoView infoView) {
+	public GotoInputAction(final AbstractInfoView infoView) {
 		Assert.isNotNull(infoView);
 		// fInfoView = infoView;
 

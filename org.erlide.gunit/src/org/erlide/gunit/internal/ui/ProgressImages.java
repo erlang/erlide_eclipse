@@ -24,9 +24,9 @@ public class ProgressImages {
 
 	private static final String OK = "ss"; //$NON-NLS-1$
 
-	private Image[] fOKImages = new Image[PROGRESS_STEPS];
+	private final Image[] fOKImages = new Image[PROGRESS_STEPS];
 
-	private Image[] fFailureImages = new Image[PROGRESS_STEPS];
+	private final Image[] fFailureImages = new Image[PROGRESS_STEPS];
 
 	private void load() {
 		if (isLoaded()) {
@@ -34,15 +34,15 @@ public class ProgressImages {
 		}
 
 		for (int i = 0; i < PROGRESS_STEPS; i++) {
-			String okname = BASE + OK + Integer.toString(i + 1) + ".gif"; //$NON-NLS-1$ 
+			final String okname = BASE + OK + Integer.toString(i + 1) + ".gif"; //$NON-NLS-1$
 			this.fOKImages[i] = createImage(okname);
-			String failurename = BASE + FAILURE + Integer.toString(i + 1)
-					+ ".gif"; //$NON-NLS-1$ 
+			final String failurename = BASE + FAILURE + Integer.toString(i + 1)
+			+ ".gif"; //$NON-NLS-1$
 			this.fFailureImages[i] = createImage(failurename);
 		}
 	}
 
-	private Image createImage(String name) {
+	private Image createImage(final String name) {
 		return GUnitPlugin.getImageDescriptor(name).createImage();
 	}
 
@@ -59,7 +59,7 @@ public class ProgressImages {
 		}
 	}
 
-	public Image getImage(int current, int total, int errors, int failures) {
+	public Image getImage(final int current, final int total, final int errors, final int failures) {
 		if (!isLoaded()) {
 			load();
 		}

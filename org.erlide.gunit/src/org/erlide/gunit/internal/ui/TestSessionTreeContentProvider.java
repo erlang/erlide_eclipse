@@ -24,7 +24,7 @@ public class TestSessionTreeContentProvider implements ITreeContentProvider {
 	public void dispose() {
 	}
 
-	public Object[] getChildren(Object parentElement) {
+	public Object[] getChildren(final Object parentElement) {
 		if (parentElement instanceof TestSuiteElement) {
 			return ((TestSuiteElement) parentElement).getChildren();
 		} else {
@@ -32,15 +32,15 @@ public class TestSessionTreeContentProvider implements ITreeContentProvider {
 		}
 	}
 
-	public Object[] getElements(Object inputElement) {
+	public Object[] getElements(final Object inputElement) {
 		return ((TestRoot) inputElement).getChildren();
 	}
 
-	public Object getParent(Object element) {
+	public Object getParent(final Object element) {
 		return ((TestElement) element).getParent();
 	}
 
-	public boolean hasChildren(Object element) {
+	public boolean hasChildren(final Object element) {
 		if (element instanceof TestSuiteElement) {
 			return ((TestSuiteElement) element).getChildren().length != 0;
 		} else {
@@ -48,6 +48,6 @@ public class TestSessionTreeContentProvider implements ITreeContentProvider {
 		}
 	}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 	}
 }

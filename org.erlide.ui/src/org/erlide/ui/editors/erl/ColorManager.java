@@ -36,7 +36,7 @@ public class ColorManager implements IColorManager {
 	 * Flag which tells if the colors are automatically disposed when the
 	 * current display gets disposed.
 	 */
-	private boolean fAutoDisposeOnDisplayDispose;
+	private final boolean fAutoDisposeOnDisplayDispose;
 
 	/**
 	 * Creates a new Java color manager which automatically disposes the
@@ -50,17 +50,18 @@ public class ColorManager implements IColorManager {
 	 * Creates a new Java color manager.
 	 * 
 	 * @param autoDisposeOnDisplayDispose
-	 * 		if <code>true</code> the color manager automatically disposes all
-	 * 		managed colors when the current display gets disposed and all calls
-	 * 		to {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
-	 * 		are ignored.
+	 *            if <code>true</code> the color manager automatically disposes
+	 *            all managed colors when the current display gets disposed and
+	 *            all calls to
+	 *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
+	 *            are ignored.
 	 * 
 	 */
-	public ColorManager(boolean autoDisposeOnDisplayDispose) {
+	public ColorManager(final boolean autoDisposeOnDisplayDispose) {
 		fAutoDisposeOnDisplayDispose = autoDisposeOnDisplayDispose;
 	}
 
-	public void dispose(Display display) {
+	public void dispose(final Display display) {
 		final Map<RGB, Color> colorTable = fDisplayTable.get(display);
 		if (colorTable != null) {
 			final Iterator<Color> e = colorTable.values().iterator();
@@ -76,7 +77,7 @@ public class ColorManager implements IColorManager {
 	/*
 	 * @see IColorManager#getColor(RGB)
 	 */
-	public Color getColor(RGB rgb) {
+	public Color getColor(final RGB rgb) {
 
 		if (rgb == null) {
 			return null;
@@ -118,7 +119,7 @@ public class ColorManager implements IColorManager {
 	/*
 	 * @see IColorManager#getColor(String)
 	 */
-	public Color getColor(String key) {
+	public Color getColor(final String key) {
 
 		if (key == null) {
 			return null;

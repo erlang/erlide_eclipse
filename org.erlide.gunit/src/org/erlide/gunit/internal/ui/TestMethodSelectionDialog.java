@@ -26,7 +26,7 @@ import org.erlide.gunit.internal.Messages;
  */
 public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 
-	private IErlElement fElement;
+	private final IErlElement fElement;
 
 	// public static class TestReferenceCollector extends SearchRequestor {
 	// Set fResult = new HashSet(200);
@@ -43,7 +43,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 	// }
 	// }
 
-	public TestMethodSelectionDialog(Shell shell, IErlElement element) {
+	public TestMethodSelectionDialog(final Shell shell, final IErlElement element) {
 		super(shell, null);// new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_PARAMETERS
 		// | JavaElementLabelProvider.SHOW_POST_QUALIFIED));
@@ -54,7 +54,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 	 * @see Windows#configureShell
 	 */
 	@Override
-	protected void configureShell(Shell newShell) {
+	protected void configureShell(final Shell newShell) {
 		super.configureShell(newShell);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 				IGUnitHelpContextIds.TEST_SELECTION_DIALOG);
@@ -66,7 +66,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 	@Override
 	public int open() {
 		Object[] elements;
-		IErlModule testType = findTestType();
+		final IErlModule testType = findTestType();
 
 		if (testType == null) {
 			return CANCEL;
@@ -74,24 +74,24 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 
 		try {
 			elements = searchTestMethods(this.fElement, testType);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			return CANCEL;
-		} catch (InvocationTargetException e) {
+		} catch (final InvocationTargetException e) {
 			MessageDialog.openError(getParentShell(),
 					GUnitMessages.TestMethodSelectionDialog_error_title, e
-							.getTargetException().getMessage());
+					.getTargetException().getMessage());
 			return CANCEL;
 		}
 
 		if (elements.length == 0) {
-			String msg = Messages.format(
+			final String msg = Messages.format(
 					GUnitMessages.TestMethodSelectionDialog_notfound_message,
 					this.fElement.getName());
 			MessageDialog
-					.openInformation(
-							getParentShell(),
-							GUnitMessages.TestMethodSelectionDialog_no_tests_title,
-							msg);
+			.openInformation(
+					getParentShell(),
+					GUnitMessages.TestMethodSelectionDialog_no_tests_title,
+					msg);
 			return CANCEL;
 		}
 		setElements(elements);
@@ -140,7 +140,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 		return null;
 	}
 
-	private IErlModule selectTestType(Set<IErlModule> result) {
+	private IErlModule selectTestType(final Set<IErlModule> result) {
 		// ILabelProvider labelProvider = new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_PARAMETERS
 		// | JavaElementLabelProvider.SHOW_ROOT);

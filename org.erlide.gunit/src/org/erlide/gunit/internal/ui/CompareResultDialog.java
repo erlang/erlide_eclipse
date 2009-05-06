@@ -57,13 +57,13 @@ public class CompareResultDialog extends TrayDialog {
 	private static final String PREFIX_SUFFIX_PROPERTY = "org.erlide.gunit.internal.ui.CompareResultDialog.prefixSuffix"; //$NON-NLS-1$
 
 	private static class CompareResultMergeViewer extends TextMergeViewer {
-		private CompareResultMergeViewer(Composite parent, int style,
-				CompareConfiguration configuration) {
+		private CompareResultMergeViewer(final Composite parent, final int style,
+				final CompareConfiguration configuration) {
 			super(parent, style, configuration);
 		}
 
 		@Override
-		protected void createControls(Composite composite) {
+		protected void createControls(final Composite composite) {
 			super.createControls(composite);
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
 					IGUnitHelpContextIds.RESULT_COMPARE_DIALOG);
@@ -77,63 +77,63 @@ public class CompareResultDialog extends TrayDialog {
 		// }
 
 		@Override
-		protected void configureTextViewer(TextViewer textViewer) {
+		protected void configureTextViewer(final TextViewer textViewer) {
 			if (textViewer instanceof SourceViewer) {
-				int[] prefixSuffixOffsets = (int[]) getCompareConfiguration()
-						.getProperty(PREFIX_SUFFIX_PROPERTY);
+				final int[] prefixSuffixOffsets = (int[]) getCompareConfiguration()
+				.getProperty(PREFIX_SUFFIX_PROPERTY);
 				((SourceViewer) textViewer)
-						.configure(new CompareResultViewerConfiguration(
-								prefixSuffixOffsets));
+				.configure(new CompareResultViewerConfiguration(
+						prefixSuffixOffsets));
 			}
 		}
 	}
 
 	private static class CompareResultViewerConfiguration extends
-			SourceViewerConfiguration {
+	SourceViewerConfiguration {
 		private static class SimpleDamagerRepairer implements
-				IPresentationDamager, IPresentationRepairer {
+		IPresentationDamager, IPresentationRepairer {
 			private IDocument fDocument;
 
 			private final int[] fPrefixSuffixOffsets2;
 
-			public SimpleDamagerRepairer(int[] prefixSuffixOffsets) {
+			public SimpleDamagerRepairer(final int[] prefixSuffixOffsets) {
 				this.fPrefixSuffixOffsets2 = prefixSuffixOffsets;
 			}
 
-			public void setDocument(IDocument document) {
+			public void setDocument(final IDocument document) {
 				this.fDocument = document;
 			}
 
-			public IRegion getDamageRegion(ITypedRegion partition,
-					DocumentEvent event, boolean changed) {
+			public IRegion getDamageRegion(final ITypedRegion partition,
+					final DocumentEvent event, final boolean changed) {
 				return new Region(0, this.fDocument.getLength());
 			}
 
-			public void createPresentation(TextPresentation presentation,
-					ITypedRegion damage) {
-				int prefix = this.fPrefixSuffixOffsets2[0];
-				int suffix = this.fPrefixSuffixOffsets2[1];
-				TextAttribute attr = new TextAttribute(Display.getDefault()
+			public void createPresentation(final TextPresentation presentation,
+					final ITypedRegion damage) {
+				final int prefix = this.fPrefixSuffixOffsets2[0];
+				final int suffix = this.fPrefixSuffixOffsets2[1];
+				final TextAttribute attr = new TextAttribute(Display.getDefault()
 						.getSystemColor(SWT.COLOR_RED), null, SWT.BOLD);
 				presentation.addStyleRange(new StyleRange(prefix,
 						this.fDocument.getLength() - suffix - prefix, attr
-								.getForeground(), attr.getBackground(), attr
-								.getStyle()));
+						.getForeground(), attr.getBackground(), attr
+						.getStyle()));
 			}
 
 		}
 
 		private final int[] fPrefixSuffixOffsets;
 
-		public CompareResultViewerConfiguration(int[] prefixSuffixOffsets) {
+		public CompareResultViewerConfiguration(final int[] prefixSuffixOffsets) {
 			this.fPrefixSuffixOffsets = prefixSuffixOffsets;
 		}
 
 		@Override
 		public IPresentationReconciler getPresentationReconciler(
-				ISourceViewer sourceViewer) {
-			PresentationReconciler reconciler = new PresentationReconciler();
-			SimpleDamagerRepairer dr = new SimpleDamagerRepairer(
+				final ISourceViewer sourceViewer) {
+			final PresentationReconciler reconciler = new PresentationReconciler();
+			final SimpleDamagerRepairer dr = new SimpleDamagerRepairer(
 					this.fPrefixSuffixOffsets);
 			reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 			reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
@@ -142,10 +142,10 @@ public class CompareResultDialog extends TrayDialog {
 	}
 
 	private static class CompareElement implements ITypedElement,
-			IEncodedStreamContentAccessor {
-		private String fContent;
+	IEncodedStreamContentAccessor {
+		private final String fContent;
 
-		public CompareElement(String content) {
+		public CompareElement(final String content) {
 			this.fContent = content;
 		}
 
@@ -164,7 +164,7 @@ public class CompareResultDialog extends TrayDialog {
 		public InputStream getContents() {
 			try {
 				return new ByteArrayInputStream(this.fContent.getBytes("UTF-8")); //$NON-NLS-1$
-			} catch (UnsupportedEncodingException e) {
+			} catch (final UnsupportedEncodingException e) {
 				return new ByteArrayInputStream(this.fContent.getBytes());
 			}
 		}
@@ -188,13 +188,13 @@ public class CompareResultDialog extends TrayDialog {
 	 */
 	private final int[] fPrefixSuffix = new int[2];
 
-	public CompareResultDialog(Shell parentShell, TestElement element) {
+	public CompareResultDialog(final Shell parentShell, final TestElement element) {
 		super(parentShell);
 		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX);
 		setFailedTest(element);
 	}
 
-	private void setFailedTest(TestElement failedTest) {
+	private void setFailedTest(final TestElement failedTest) {
 		this.fTestName = failedTest.getTestName();
 		this.fExpected = failedTest.getExpected();
 		this.fActual = failedTest.getActual();
@@ -213,7 +213,7 @@ public class CompareResultDialog extends TrayDialog {
 	}
 
 	private void computePrefixSuffix() {
-		int end = Math.min(this.fExpected.length(), this.fActual.length());
+		final int end = Math.min(this.fExpected.length(), this.fActual.length());
 		int i = 0;
 		for (; i < end; i++) {
 			if (this.fExpected.charAt(i) != this.fActual.charAt(i)) {
@@ -235,7 +235,7 @@ public class CompareResultDialog extends TrayDialog {
 	}
 
 	@Override
-	protected void configureShell(Shell newShell) {
+	protected void configureShell(final Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(GUnitMessages.CompareResultDialog_title);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
@@ -243,42 +243,42 @@ public class CompareResultDialog extends TrayDialog {
 	}
 
 	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
+	protected void createButtonsForButtonBar(final Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID,
 				GUnitMessages.CompareResultDialog_labelOK, true);
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout();
+	protected Control createDialogArea(final Composite parent) {
+		final Composite composite = (Composite) super.createDialogArea(parent);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		composite.setLayout(layout);
 
-		CompareViewerPane pane = new CompareViewerPane(composite, SWT.BORDER
+		final CompareViewerPane pane = new CompareViewerPane(composite, SWT.BORDER
 				| SWT.FLAT);
 		pane.setText(this.fTestName);
-		GridData data = new GridData(GridData.FILL_HORIZONTAL
+		final GridData data = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.FILL_VERTICAL);
 		data.widthHint = convertWidthInCharsToPixels(120);
 		data.heightHint = convertHeightInCharsToPixels(13);
 		pane.setLayoutData(data);
 
-		Control previewer = createPreviewer(pane);
+		final Control previewer = createPreviewer(pane);
 		pane.setContent(previewer);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		final GridData gd = new GridData(GridData.FILL_BOTH);
 		previewer.setLayoutData(gd);
 		applyDialogFont(parent);
 		return composite;
 	}
 
-	private Control createPreviewer(Composite parent) {
+	private Control createPreviewer(final Composite parent) {
 		final CompareConfiguration compareConfiguration = new CompareConfiguration();
 		compareConfiguration
-				.setLeftLabel(GUnitMessages.CompareResultDialog_expectedLabel);
+		.setLeftLabel(GUnitMessages.CompareResultDialog_expectedLabel);
 		compareConfiguration.setLeftEditable(false);
 		compareConfiguration
-				.setRightLabel(GUnitMessages.CompareResultDialog_actualLabel);
+		.setRightLabel(GUnitMessages.CompareResultDialog_actualLabel);
 		compareConfiguration.setRightEditable(false);
 		compareConfiguration.setProperty(
 				CompareConfiguration.IGNORE_WHITESPACE, Boolean.FALSE);
@@ -289,9 +289,9 @@ public class CompareResultDialog extends TrayDialog {
 				compareConfiguration);
 		setCompareViewerInput();
 
-		Control control = this.fViewer.getControl();
+		final Control control = this.fViewer.getControl();
 		control.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				compareConfiguration.dispose();
 			}
 		});
@@ -305,7 +305,7 @@ public class CompareResultDialog extends TrayDialog {
 		}
 	}
 
-	public void setInput(TestElement failedTest) {
+	public void setInput(final TestElement failedTest) {
 		setFailedTest(failedTest);
 		setCompareViewerInput();
 	}

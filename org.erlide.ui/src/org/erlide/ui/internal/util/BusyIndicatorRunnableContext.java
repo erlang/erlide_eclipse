@@ -36,11 +36,12 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
 
 			Throwable fThrowable;
 
-			public ThreadContext(IRunnableWithProgress runnable) {
+			public ThreadContext(final IRunnableWithProgress runnable) {
 				this(runnable, "BusyCursorRunnableContext-Thread"); //$NON-NLS-1$
 			}
 
-			protected ThreadContext(IRunnableWithProgress runnable, String name) {
+			protected ThreadContext(final IRunnableWithProgress runnable,
+					final String name) {
 				super(name);
 				fRunnable = runnable;
 			}
@@ -74,11 +75,12 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
 
 		public Throwable fThrowable;
 
-		private boolean fFork;
+		private final boolean fFork;
 
-		private IRunnableWithProgress fRunnable;
+		private final IRunnableWithProgress fRunnable;
 
-		public BusyRunnable(boolean fork, IRunnableWithProgress runnable) {
+		public BusyRunnable(final boolean fork,
+				final IRunnableWithProgress runnable) {
 			fFork = fork;
 			fRunnable = runnable;
 		}
@@ -134,9 +136,9 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
 	/*
 	 * (non-Javadoc) Method declared on IRunnableContext.
 	 */
-	public void run(boolean fork, boolean cancelable,
-			IRunnableWithProgress runnable) throws InvocationTargetException,
-			InterruptedException {
+	public void run(final boolean fork, final boolean cancelable,
+			final IRunnableWithProgress runnable)
+			throws InvocationTargetException, InterruptedException {
 		final BusyRunnable busyRunnable = new BusyRunnable(fork, runnable);
 		BusyIndicator.showWhile(null, busyRunnable);
 		final Throwable throwable = busyRunnable.fThrowable;

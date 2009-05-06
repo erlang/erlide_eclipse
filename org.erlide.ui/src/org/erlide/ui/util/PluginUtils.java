@@ -43,8 +43,8 @@ public final class PluginUtils {
 	 *         either a resource of some other type or a non-resource
 	 * @see IResource#getType()
 	 */
-	public static boolean allResourcesAreOfType(IStructuredSelection selection,
-			int resourceMask) {
+	public static boolean allResourcesAreOfType(
+			final IStructuredSelection selection, final int resourceMask) {
 		final Iterator<?> resources = selection.iterator();
 		while (resources.hasNext()) {
 			final Object next = resources.next();
@@ -72,7 +72,7 @@ public final class PluginUtils {
 	 * @see IResource#getType()
 	 */
 	public static IStructuredSelection allResources(
-			IStructuredSelection selection, int resourceMask) {
+			final IStructuredSelection selection, final int resourceMask) {
 		final Iterator<?> adaptables = selection.iterator();
 		final List<IResource> result = new ArrayList<IResource>();
 		while (adaptables.hasNext()) {
@@ -105,7 +105,8 @@ public final class PluginUtils {
 	 *         <code>false</code> otherwise
 	 * @see IResource#getType()
 	 */
-	public static boolean resourceIsType(IResource resource, int resourceMask) {
+	public static boolean resourceIsType(final IResource resource,
+			final int resourceMask) {
 		return (resource.getType() & resourceMask) != 0;
 	}
 }

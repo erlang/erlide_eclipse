@@ -34,11 +34,12 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction(java.lang.String,
-	 *      int)
+	 * @see
+	 * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction
+	 * (java.lang.String, int)
 	 */
-	public void addFunction(String name, int arity) {
-		for (Object element0 : fInstances) {
+	public void addFunction(final String name, final int arity) {
+		for (final Object element0 : fInstances) {
 			final ExportsVariableResolver element = (ExportsVariableResolver) element0;
 			element.doAddFunction(name, arity);
 		}
@@ -47,10 +48,12 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions()
+	 * @see
+	 * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions
+	 * ()
 	 */
 	public void clearFunctions() {
-		for (Object element0 : fInstances) {
+		for (final Object element0 : fInstances) {
 			final ExportsVariableResolver element = (ExportsVariableResolver) element0;
 			element.doClearFunctions();
 		}
@@ -59,11 +62,14 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable,
-	 *      org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#resolve
+	 * (org.eclipse.jface.text.templates.TemplateVariable,
+	 * org.eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	public void resolve(TemplateVariable variable, TemplateContext context) {
+	public void resolve(final TemplateVariable variable,
+			final TemplateContext context) {
 		final StringBuilder buff = new StringBuilder();
 
 		for (final Iterator<Object[]> iter = functions.iterator(); iter

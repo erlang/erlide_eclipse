@@ -31,7 +31,7 @@ import org.erlide.gunit.internal.model.TestElement;
  * Copies a test failure stack trace to the clipboard.
  */
 public class GUnitCopyAction extends Action {
-	private FailureTrace fView;
+	private final FailureTrace fView;
 
 	private final Clipboard fClipboard;
 
@@ -43,7 +43,7 @@ public class GUnitCopyAction extends Action {
 	 * @param view
 	 * @param clipboard
 	 */
-	public GUnitCopyAction(FailureTrace view, Clipboard clipboard) {
+	public GUnitCopyAction(final FailureTrace view, final Clipboard clipboard) {
 		super(GUnitMessages.CopyTrace_action_label);
 		Assert.isNotNull(clipboard);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
@@ -57,7 +57,7 @@ public class GUnitCopyAction extends Action {
 	 */
 	@Override
 	public void run() {
-		String trace = this.fView.getTrace();
+		final String trace = this.fView.getTrace();
 		String source = null;
 		if (trace != null) {
 			source = convertLineTerminators(trace);
@@ -68,12 +68,12 @@ public class GUnitCopyAction extends Action {
 			return;
 		}
 
-		TextTransfer plainTextTransfer = TextTransfer.getInstance();
+		final TextTransfer plainTextTransfer = TextTransfer.getInstance();
 		try {
 			this.fClipboard.setContents(
 					new String[] { convertLineTerminators(source) },
 					new Transfer[] { plainTextTransfer });
-		} catch (SWTError e) {
+		} catch (final SWTError e) {
 			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
 			}
@@ -86,21 +86,21 @@ public class GUnitCopyAction extends Action {
 		}
 	}
 
-	public void handleTestSelected(TestElement test) {
+	public void handleTestSelected(final TestElement test) {
 		this.fTestElement = test;
 	}
 
-	private String convertLineTerminators(String in) {
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
-		StringReader stringReader = new StringReader(in);
-		BufferedReader bufferedReader = new BufferedReader(stringReader);
+	private String convertLineTerminators(final String in) {
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter);
+		final StringReader stringReader = new StringReader(in);
+		final BufferedReader bufferedReader = new BufferedReader(stringReader);
 		String line;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
 				printWriter.println(line);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return in; // return the trace unfiltered
 		}
 		return stringWriter.toString();

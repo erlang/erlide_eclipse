@@ -26,9 +26,9 @@ public class NewErlangProjectProperties {
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
 	private String output;
-	private Map<String, String> compilerOptions = new HashMap<String, String>();
-	private List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
-	private List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
+	private final Map<String, String> compilerOptions = new HashMap<String, String>();
+	private final List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
+	private final List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
 	private RuntimeVersion requiredRuntimeVersion;
 
 	public NewErlangProjectProperties() {
@@ -36,10 +36,10 @@ public class NewErlangProjectProperties {
 		// TODO fixme
 	}
 
-	public NewErlangProjectProperties(ErlangProjectProperties old) {
+	public NewErlangProjectProperties(final ErlangProjectProperties old) {
 		requiredRuntimeVersion = old.getRuntimeVersion();
 		if (!requiredRuntimeVersion.isDefined()) {
-			RuntimeInfo runtimeInfo = old.getRuntimeInfo();
+			final RuntimeInfo runtimeInfo = old.getRuntimeInfo();
 			if (runtimeInfo != null) {
 				requiredRuntimeVersion = runtimeInfo.getVersion();
 			}
@@ -50,43 +50,44 @@ public class NewErlangProjectProperties {
 		output = old.getOutputDir();
 		compilerOptions.put("debug_info", "true");
 
-		IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
+		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 
-		String exmodf = old.getExternalModulesFile();
+		final String exmodf = old.getExternalModulesFile();
 		IPath ff = pvman.resolvePath(new Path(exmodf));
-		List<String> externalModules = PreferencesUtils.readFile(ff.toString());
-		List<SourceLocation> sloc = makeSourceLocations(externalModules);
+		final List<String> externalModules = PreferencesUtils.readFile(ff
+				.toString());
+		final List<SourceLocation> sloc = makeSourceLocations(externalModules);
 
-		String exincf = old.getExternalModulesFile();
+		final String exincf = old.getExternalModulesFile();
 		ff = pvman.resolvePath(new Path(exincf));
 		// List<String> exinc = PreferencesUtils.readFile(ff.toString());
-		List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
+		final List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
-		LibraryLocation loc = new LibraryLocation(sloc, externalIncludes, null,
-				null);
+		final LibraryLocation loc = new LibraryLocation(sloc, externalIncludes,
+				null, null);
 		dependencies.add(loc);
 	}
 
 	private List<SourceLocation> makeSourceLocations(
-			List<String> externalModules) {
-		List<SourceLocation> result = new ArrayList<SourceLocation>();
+			final List<String> externalModules) {
+		final List<SourceLocation> result = new ArrayList<SourceLocation>();
 
-		List<String> modules = new ArrayList<String>();
-		for (String mod : externalModules) {
+		final List<String> modules = new ArrayList<String>();
+		for (final String mod : externalModules) {
 			if (mod.endsWith(".erlidex")) {
-				List<String> mods = PreferencesUtils.readFile(mod);
+				final List<String> mods = PreferencesUtils.readFile(mod);
 				modules.addAll(mods);
 			} else {
 				modules.add(mod);
 			}
 		}
 
-		Map<String, List<String>> grouped = new HashMap<String, List<String>>();
-		for (String mod : modules) {
-			int i = mod.lastIndexOf('/');
-			String path = mod.substring(0, i);
-			String file = mod.substring(i + 1);
+		final Map<String, List<String>> grouped = new HashMap<String, List<String>>();
+		for (final String mod : modules) {
+			final int i = mod.lastIndexOf('/');
+			final String path = mod.substring(0, i);
+			final String file = mod.substring(i + 1);
 
 			System.out.println("FOUND: '" + path + "' '" + file + "'");
 			List<String> pval = grouped.get(path);
@@ -98,18 +99,18 @@ public class NewErlangProjectProperties {
 		}
 		System.out.println(grouped);
 
-		for (Entry<String, List<String>> loc : grouped.entrySet()) {
-			SourceLocation location = new SourceLocation(loc.getKey(), loc
-					.getValue(), null, null, null, null);
+		for (final Entry<String, List<String>> loc : grouped.entrySet()) {
+			final SourceLocation location = new SourceLocation(loc.getKey(),
+					loc.getValue(), null, null, null, null);
 			result.add(location);
 		}
 
 		return result;
 	}
 
-	private List<SourceLocation> mkSources(String[] sourceDirs) {
-		List<SourceLocation> result = new ArrayList<SourceLocation>();
-		for (String src : sourceDirs) {
+	private List<SourceLocation> mkSources(final String[] sourceDirs) {
+		final List<SourceLocation> result = new ArrayList<SourceLocation>();
+		for (final String src : sourceDirs) {
 			result.add(new SourceLocation(src, null, null, null, null, null));
 		}
 		return result;
@@ -142,9 +143,9 @@ public class NewErlangProjectProperties {
 
 	@SuppressWarnings("unchecked")
 	private static <U, T extends U> Collection<T> filter(
-			Collection<U> dependencies2, Class<T> class1) {
-		List<T> result = new ArrayList<T>();
-		for (U oo : dependencies2) {
+			final Collection<U> dependencies2, final Class<T> class1) {
+		final List<T> result = new ArrayList<T>();
+		for (final U oo : dependencies2) {
 			if (oo.getClass().equals(class1)) {
 				result.add((T) oo);
 			}
@@ -165,22 +166,26 @@ public class NewErlangProjectProperties {
 		return requiredRuntimeVersion;
 	}
 
-	public void load(IEclipsePreferences root) throws BackingStoreException {
+	public void load(final IEclipsePreferences root)
+			throws BackingStoreException {
 		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
 		requiredRuntimeVersion = new RuntimeVersion(root.get(
 				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
 		includes = PreferencesUtils.unpackList(root.get(
 				ProjectPreferencesConstants.INCLUDES, ""));
-		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
+		final Preferences srcNode = root
+				.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();
-		for (String src : srcNode.childrenNames()) {
-			IEclipsePreferences sn = (IEclipsePreferences) srcNode.node(src);
-			SourceLocation loc = new SourceLocation(sn);
+		for (final String src : srcNode.childrenNames()) {
+			final IEclipsePreferences sn = (IEclipsePreferences) srcNode
+					.node(src);
+			final SourceLocation loc = new SourceLocation(sn);
 			sources.add(loc);
 		}
 	}
 
-	public void store(IEclipsePreferences root) throws BackingStoreException {
+	public void store(final IEclipsePreferences root)
+			throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		if (requiredRuntimeVersion != null) {
@@ -189,8 +194,9 @@ public class NewErlangProjectProperties {
 		}
 		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
 				.packList(includes));
-		Preferences srcNode = root.node(ProjectPreferencesConstants.SOURCES);
-		for (SourceLocation loc : sources) {
+		final Preferences srcNode = root
+				.node(ProjectPreferencesConstants.SOURCES);
+		for (final SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
 					.getId())));
 		}

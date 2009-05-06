@@ -53,7 +53,7 @@ class MessageDialogPage extends DialogPage {
 		 * @param parent
 		 *            the Composite that the children will be created in
 		 */
-		public void createContents(Composite parent) {
+		public void createContents(final Composite parent) {
 			messageComposite = new Composite(parent, SWT.NONE);
 			final GridLayout messageLayout = new GridLayout();
 			messageLayout.numColumns = 2;
@@ -100,7 +100,7 @@ class MessageDialogPage extends DialogPage {
 		 * @param layoutData
 		 *            the layoutData for the message area composite.
 		 */
-		public void setMessageLayoutData(Object layoutData) {
+		public void setMessageLayoutData(final Object layoutData) {
 			messageComposite.setLayoutData(layoutData);
 		}
 
@@ -115,7 +115,7 @@ class MessageDialogPage extends DialogPage {
 		 *            IMessageProvider.NONE show the title.
 		 * @see IMessageProvider
 		 */
-		public void updateText(String newMessage, int newType) {
+		public void updateText(final String newMessage, final int newType) {
 			Image newImage = null;
 			boolean showingError = false;
 			switch (newType) {
@@ -181,7 +181,7 @@ class MessageDialogPage extends DialogPage {
 		 * @param color
 		 *            The color to be use in the message area.
 		 */
-		private void setMessageColors(Color color) {
+		private void setMessageColors(final Color color) {
 			messageText.setBackground(color);
 			messageComposite.setBackground(color);
 			messageImageLabel.setBackground(color);
@@ -199,11 +199,11 @@ class MessageDialogPage extends DialogPage {
 
 	MessageRegion fMessageRegion;
 
-	public MessageDialogPage(Composite parent) {
+	public MessageDialogPage(final Composite parent) {
 		createControl(parent);
 	}
 
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		final Composite composite1 = new Composite(parent, SWT.NONE);
 		final GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
@@ -218,13 +218,13 @@ class MessageDialogPage extends DialogPage {
 	}
 
 	@Override
-	public void setMessage(String newMessage, int newType) {
+	public void setMessage(final String newMessage, final int newType) {
 		super.setMessage(newMessage, newType);
 		fMessageRegion.updateText(newMessage, newType);
 	}
 
 	@Override
-	public void setErrorMessage(String newMessage) {
+	public void setErrorMessage(final String newMessage) {
 		super.setErrorMessage(newMessage);
 		fMessageRegion.updateText(newMessage, IMessageProvider.ERROR);
 	}

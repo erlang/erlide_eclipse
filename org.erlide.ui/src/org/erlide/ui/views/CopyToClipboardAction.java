@@ -29,7 +29,7 @@ class CopyToClipboardAction extends SelectionDispatchAction {
 
 	private Clipboard fClipboard;
 
-	public CopyToClipboardAction(IWorkbenchSite site) {
+	public CopyToClipboardAction(final IWorkbenchSite site) {
 		super(site);
 
 		setText("Copy");
@@ -52,12 +52,12 @@ class CopyToClipboardAction extends SelectionDispatchAction {
 	}
 
 	@Override
-	public void selectionChanged(ITextSelection selection) {
+	public void selectionChanged(final ITextSelection selection) {
 		setEnabled(selection != null && selection.getLength() > 0);
 	}
 
 	@Override
-	public void run(ITextSelection selection) {
+	public void run(final ITextSelection selection) {
 		fClipboard = new Clipboard(getShell().getDisplay());
 		try {
 			copyToClipboard(selection, 0);
@@ -66,7 +66,8 @@ class CopyToClipboardAction extends SelectionDispatchAction {
 		}
 	}
 
-	private void copyToClipboard(ITextSelection selection, int repeatCount) {
+	private void copyToClipboard(final ITextSelection selection,
+			final int repeatCount) {
 		try {
 			fClipboard.setContents(new String[] { selection.getText() },
 					new Transfer[] { TextTransfer.getInstance() });

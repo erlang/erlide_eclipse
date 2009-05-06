@@ -21,14 +21,15 @@ public class BugReportAction implements IWorkbenchWindowActionDelegate {
 	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window) {
+	public void init(final IWorkbenchWindow window) {
 	}
 
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		SFProjectSupport.openBugsReport();
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
 	}
 
 }

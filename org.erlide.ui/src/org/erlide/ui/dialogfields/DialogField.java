@@ -45,7 +45,7 @@ public class DialogField {
 	/**
 	 * Sets the label of the dialog field.
 	 */
-	public void setLabelText(String labeltext) {
+	public void setLabelText(final String labeltext) {
 		fLabelText = labeltext;
 		if (isOkToUse(fLabel)) {
 			fLabel.setText(labeltext);
@@ -57,7 +57,7 @@ public class DialogField {
 	/**
 	 * Defines the listener for this dialog field.
 	 */
-	public final void setDialogFieldListener(IDialogFieldListener listener) {
+	public final void setDialogFieldListener(final IDialogFieldListener listener) {
 		fDialogFieldListener = listener;
 	}
 
@@ -73,8 +73,8 @@ public class DialogField {
 	// ------- focus management
 
 	/**
-	 * Tries to set the focus to the dialog field. Returns <code>true</code>
-	 * if the dialog field can take focus. To be reimplemented by dialog field
+	 * Tries to set the focus to the dialog field. Returns <code>true</code> if
+	 * the dialog field can take focus. To be reimplemented by dialog field
 	 * implementors.
 	 */
 	public boolean setFocus() {
@@ -84,7 +84,7 @@ public class DialogField {
 	/**
 	 * Posts <code>setFocus</code> to the display event queue.
 	 */
-	public void postSetFocusOnDialogField(Display display) {
+	public void postSetFocusOnDialogField(final Display display) {
 		if (display != null) {
 			display.asyncExec(new Runnable() {
 
@@ -103,7 +103,7 @@ public class DialogField {
 	 * dialog field will adjust its controls' spans to the number of columns
 	 * given. To be reimplemented by dialog field implementors.
 	 */
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		final Label label = getLabelControl(parent);
@@ -120,7 +120,7 @@ public class DialogField {
 		return 1;
 	}
 
-	protected static GridData gridDataForLabel(int span) {
+	protected static GridData gridDataForLabel(final int span) {
 		final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		gd.horizontalSpan = span;
 		return gd;
@@ -135,7 +135,7 @@ public class DialogField {
 	 *            The parent composite or <code>null</code> if the widget has
 	 *            already been created.
 	 */
-	public Label getLabelControl(Composite parent) {
+	public Label getLabelControl(final Composite parent) {
 		if (fLabel == null) {
 			assertCompositeNotNull(parent);
 
@@ -159,7 +159,7 @@ public class DialogField {
 	 * @param parent
 	 *            The parent composite
 	 */
-	public static Control createEmptySpace(Composite parent) {
+	public static Control createEmptySpace(final Composite parent) {
 		return createEmptySpace(parent, 1);
 	}
 
@@ -170,7 +170,8 @@ public class DialogField {
 	 * @param parent
 	 *            The parent composite
 	 */
-	public static Control createEmptySpace(Composite parent, int span) {
+	public static Control createEmptySpace(final Composite parent,
+			final int span) {
 		final Label label = new Label(parent, SWT.LEFT);
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.BEGINNING;
@@ -186,7 +187,7 @@ public class DialogField {
 	/**
 	 * Tests is the control is not <code>null</code> and not disposed.
 	 */
-	protected final boolean isOkToUse(Control control) {
+	protected final boolean isOkToUse(final Control control) {
 		return (control != null) && (Display.getCurrent() != null)
 				&& !control.isDisposed();
 	}
@@ -196,7 +197,7 @@ public class DialogField {
 	/**
 	 * Sets the enable state of the dialog field.
 	 */
-	public final void setEnabled(boolean enabled) {
+	public final void setEnabled(final boolean enabled) {
 		if (enabled != fEnabled) {
 			fEnabled = enabled;
 			updateEnableState();
@@ -228,12 +229,12 @@ public class DialogField {
 		return fEnabled;
 	}
 
-	protected final void assertCompositeNotNull(Composite comp) {
+	protected final void assertCompositeNotNull(final Composite comp) {
 		Assert.isNotNull(comp,
 				"uncreated control requested with composite null"); //$NON-NLS-1$
 	}
 
-	protected final void assertEnoughColumns(int nColumns) {
+	protected final void assertEnoughColumns(final int nColumns) {
 		Assert.isTrue(nColumns >= getNumberOfControls(),
 				"given number of columns is too small"); //$NON-NLS-1$
 	}

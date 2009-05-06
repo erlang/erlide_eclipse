@@ -33,7 +33,7 @@ public class RpcResultReceiver implements Runnable {
 	private final RpcResultCallback callback;
 	private final OtpMbox mbox;
 
-	public RpcResultReceiver(OtpMbox box, RpcResultCallback callback) {
+	public RpcResultReceiver(final OtpMbox box, final RpcResultCallback callback) {
 		this.callback = callback;
 		mbox = box;
 		new Thread(this, "rpc");
@@ -47,9 +47,9 @@ public class RpcResultReceiver implements Runnable {
 				msg = mbox.receive(3000);
 				if (msg != null) {
 					if (msg instanceof OtpErlangTuple) {
-						OtpErlangTuple tuple = (OtpErlangTuple) msg;
-						String tag = ((OtpErlangAtom) tuple.elementAt(0))
-								.atomValue();
+						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
+						final String tag = ((OtpErlangAtom) tuple.elementAt(0))
+						.atomValue();
 						if ("start".equals(tag)) {
 							callback.start(tuple.elementAt(1));
 						} else if ("stop".equals(tag)) {
@@ -60,7 +60,7 @@ public class RpcResultReceiver implements Runnable {
 						}
 					}
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		} while (!done || Thread.interrupted());

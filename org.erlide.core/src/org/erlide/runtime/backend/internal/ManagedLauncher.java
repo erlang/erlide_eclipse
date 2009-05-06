@@ -23,7 +23,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	public ManagedLauncher() {
 	}
 
-	public void setBackend(Backend backend) {
+	public void setBackend(final Backend backend) {
 		this.backend = backend;
 	}
 
@@ -41,14 +41,14 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 		stop();
 	}
 
-	public void initializeRuntime(ILaunch launch) {
+	public void initializeRuntime(final ILaunch launch) {
 		startRuntime(launch);
 	}
 
 	IStreamsProxy streamsProxy;
 	private ErtsProcess erts;
 
-	private void startRuntime(ILaunch launch) {
+	private void startRuntime(final ILaunch launch) {
 		final RuntimeInfo info = backend.getInfo();
 		if (info == null) {
 			ErlLogger.error("Trying to start backend '%s' with null info",
@@ -56,29 +56,31 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 			return;
 		}
 
-		String cmd = info.getCmdLine();
+		final String cmd = info.getCmdLine();
 
 		ErlLogger.debug("START node :> " + cmd);
 		final File workingDirectory = new File(info.getWorkingDir());
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
-			Runnable watcher = new Runnable() {
+			final Runnable watcher = new Runnable() {
 				@SuppressWarnings("boxing")
 				public void run() {
 					try {
-						int v = fRuntime.waitFor();
+						final int v = fRuntime.waitFor();
 						final String msg = "Backend '%s' terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
 
 						if ((v > 1) && ErlideUtil.isEricssonUser()) {
-							String plog = ErlideUtil.fetchPlatformLog();
-							String elog = ErlideUtil.fetchErlideLog();
-							String delim = "\n==================================\n";
-							File report = new File(ErlideUtil.getLocation());
+							final String plog = ErlideUtil.fetchPlatformLog();
+							final String elog = ErlideUtil.fetchErlideLog();
+							final String delim = "\n==================================\n";
+							final File report = new File(ErlideUtil
+									.getLocation());
 							try {
 								report.createNewFile();
-								OutputStream out = new FileOutputStream(report);
-								PrintWriter pw = new PrintWriter(out);
+								final OutputStream out = new FileOutputStream(
+										report);
+								final PrintWriter pw = new PrintWriter(out);
 								try {
 									pw.println(String.format(msg, info
 											.getNodeName(), v));
@@ -91,14 +93,14 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 									pw.flush();
 									out.close();
 								}
-							} catch (IOException e) {
+							} catch (final IOException e) {
 								ErlLogger.warn(e);
 							}
 
 						}
 
 						backend.setExitStatus(v);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						ErlLogger.warn("Backend watcher was interrupted");
 					}
 				}

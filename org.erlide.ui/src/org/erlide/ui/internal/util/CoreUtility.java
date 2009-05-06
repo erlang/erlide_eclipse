@@ -29,8 +29,9 @@ public final class CoreUtility {
 	 * exist. <code> org.eclipse.ui.dialogs.ContainerGenerator</code> is too
 	 * heavy (creates a runnable)
 	 */
-	public static void createFolder(IFolder folder, boolean force,
-			boolean local, IProgressMonitor monitor) throws CoreException {
+	public static void createFolder(final IFolder folder, final boolean force,
+			final boolean local, final IProgressMonitor monitor)
+			throws CoreException {
 		if (!folder.exists()) {
 			final IContainer parent = folder.getParent();
 			if (parent instanceof IFolder) {

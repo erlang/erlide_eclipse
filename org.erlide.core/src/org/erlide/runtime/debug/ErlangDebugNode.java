@@ -13,7 +13,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
 public class ErlangDebugNode extends ErlangDebugElement implements
-        IDebugTarget, IErlangDebugNode {
+		IDebugTarget, IErlangDebugNode {
 
 	private final String fNodeName;
 	private final List<ErlangProcess> fShownProcesses;
@@ -88,12 +88,12 @@ public class ErlangDebugNode extends ErlangDebugElement implements
 	}
 
 	public void breakpointChanged(final IBreakpoint breakpoint,
-	        final IMarkerDelta delta) {
+			final IMarkerDelta delta) {
 		fErlangDebugTarget.breakpointChanged(breakpoint, delta);
 	}
 
 	public void breakpointRemoved(final IBreakpoint breakpoint,
-	        final IMarkerDelta delta) {
+			final IMarkerDelta delta) {
 		fErlangDebugTarget.breakpointRemoved(breakpoint, delta);
 	}
 
@@ -112,7 +112,7 @@ public class ErlangDebugNode extends ErlangDebugElement implements
 	}
 
 	public IMemoryBlock getMemoryBlock(final long startAddress,
-	        final long length) throws DebugException {
+			final long length) throws DebugException {
 		return fErlangDebugTarget.getMemoryBlock(startAddress, length);
 	}
 

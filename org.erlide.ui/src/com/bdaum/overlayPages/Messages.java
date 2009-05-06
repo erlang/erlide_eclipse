@@ -29,17 +29,17 @@ public class Messages {
 			notRead = false;
 			try {
 				fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			}
 		}
 
 		return fgResourceBundle;
 	}
 
-	public static String getString(String key) {
+	public static String getString(final String key) {
 		try {
 			return getResourceBundle().getString(key);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
 		}
 	}

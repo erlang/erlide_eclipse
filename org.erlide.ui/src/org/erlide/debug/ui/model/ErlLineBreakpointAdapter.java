@@ -36,8 +36,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints
 	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
-	public void toggleLineBreakpoints(IWorkbenchPart part, ISelection selection)
-			throws CoreException {
+	public void toggleLineBreakpoints(final IWorkbenchPart part,
+			final ISelection selection) throws CoreException {
 		final ITextEditor textEditor = getEditor(part);
 		if (textEditor != null) {
 			final IResource resource = (IResource) textEditor.getEditorInput()
@@ -59,7 +59,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 				}
 			}
 			// create line breakpoint (doc line numbers start at 0)
-			ErlangLineBreakpoint lineBreakpoint = new ErlangLineBreakpoint();
+			final ErlangLineBreakpoint lineBreakpoint = new ErlangLineBreakpoint();
 			lineBreakpoint.createMarker(resource, lineNumber + 1);
 			DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(
 					lineBreakpoint);
@@ -73,8 +73,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * canToggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart,
 	 * org.eclipse.jface.viewers.ISelection)
 	 */
-	public boolean canToggleLineBreakpoints(IWorkbenchPart part,
-			ISelection selection) {
+	public boolean canToggleLineBreakpoints(final IWorkbenchPart part,
+			final ISelection selection) {
 		return getEditor(part) != null;
 	}
 
@@ -87,7 +87,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * @return the editor being used to edit a PDA file, associated with the
 	 *         given part, or <code>null</code> if none
 	 */
-	private ITextEditor getEditor(IWorkbenchPart part) {
+	private ITextEditor getEditor(final IWorkbenchPart part) {
 		if (part instanceof ErlangEditor) {
 			return (ITextEditor) part;
 		}
@@ -101,8 +101,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleMethodBreakpoints
 	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
-	public void toggleMethodBreakpoints(IWorkbenchPart part,
-			ISelection selection) throws CoreException {
+	public void toggleMethodBreakpoints(final IWorkbenchPart part,
+			final ISelection selection) throws CoreException {
 	}
 
 	/*
@@ -112,8 +112,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * canToggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart,
 	 * org.eclipse.jface.viewers.ISelection)
 	 */
-	public boolean canToggleMethodBreakpoints(IWorkbenchPart part,
-			ISelection selection) {
+	public boolean canToggleMethodBreakpoints(final IWorkbenchPart part,
+			final ISelection selection) {
 		return false;
 	}
 
@@ -124,8 +124,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleWatchpoints
 	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
-	public void toggleWatchpoints(IWorkbenchPart part, ISelection selection)
-			throws CoreException {
+	public void toggleWatchpoints(final IWorkbenchPart part,
+			final ISelection selection) throws CoreException {
 	}
 
 	/*
@@ -135,8 +135,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	 * org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleWatchpoints
 	 * (org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
-	public boolean canToggleWatchpoints(IWorkbenchPart part,
-			ISelection selection) {
+	public boolean canToggleWatchpoints(final IWorkbenchPart part,
+			final ISelection selection) {
 		return false;
 	}
 }

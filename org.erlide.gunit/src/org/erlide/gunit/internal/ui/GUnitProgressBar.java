@@ -40,45 +40,45 @@ public class GUnitProgressBar extends Canvas {
 
 	private int fColorBarWidth = 0;
 
-	private Color fOKColor;
+	private final Color fOKColor;
 
-	private Color fFailureColor;
+	private final Color fFailureColor;
 
-	private Color fStoppedColor;
+	private final Color fStoppedColor;
 
 	private boolean fError;
 
 	private boolean fStopped = false;
 
-	public GUnitProgressBar(Composite parent) {
+	public GUnitProgressBar(final Composite parent) {
 		super(parent, SWT.NONE);
 
 		addControlListener(new ControlAdapter() {
 			@Override
-			public void controlResized(ControlEvent e) {
+			public void controlResized(final ControlEvent e) {
 				GUnitProgressBar.this.fColorBarWidth = scale(GUnitProgressBar.this.fCurrentTickCount);
 				redraw();
 			}
 		});
 		addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
+			public void paintControl(final PaintEvent e) {
 				paint(e);
 			}
 		});
 		addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				GUnitProgressBar.this.fFailureColor.dispose();
 				GUnitProgressBar.this.fOKColor.dispose();
 				GUnitProgressBar.this.fStoppedColor.dispose();
 			}
 		});
-		Display display = parent.getDisplay();
+		final Display display = parent.getDisplay();
 		this.fFailureColor = new Color(display, 159, 63, 63);
 		this.fOKColor = new Color(display, 95, 191, 95);
 		this.fStoppedColor = new Color(display, 120, 120, 120);
 	}
 
-	public void setMaximum(int max) {
+	public void setMaximum(final int max) {
 		this.fMaxTickCount = max;
 	}
 
@@ -91,11 +91,11 @@ public class GUnitProgressBar extends Canvas {
 		redraw();
 	}
 
-	public void reset(boolean hasErrors, boolean stopped, int ticksDone,
-			int maximum) {
-		boolean noChange = this.fError == hasErrors && this.fStopped == stopped
-				&& this.fCurrentTickCount == ticksDone
-				&& this.fMaxTickCount == maximum;
+	public void reset(final boolean hasErrors, final boolean stopped, final int ticksDone,
+			final int maximum) {
+		final boolean noChange = this.fError == hasErrors && this.fStopped == stopped
+		&& this.fCurrentTickCount == ticksDone
+		&& this.fMaxTickCount == maximum;
 		this.fError = hasErrors;
 		this.fStopped = stopped;
 		this.fCurrentTickCount = ticksDone;
@@ -106,16 +106,16 @@ public class GUnitProgressBar extends Canvas {
 		}
 	}
 
-	private void paintStep(int startX, int endX) {
-		GC gc = new GC(this);
+	private void paintStep(int startX, final int endX) {
+		final GC gc = new GC(this);
 		setStatusColor(gc);
-		Rectangle rect = getClientArea();
+		final Rectangle rect = getClientArea();
 		startX = Math.max(1, startX);
 		gc.fillRectangle(startX, 1, endX - startX, rect.height - 2);
 		gc.dispose();
 	}
 
-	private void setStatusColor(GC gc) {
+	private void setStatusColor(final GC gc) {
 		if (this.fStopped) {
 			gc.setBackground(this.fStoppedColor);
 		} else if (this.fError) {
@@ -130,9 +130,9 @@ public class GUnitProgressBar extends Canvas {
 		redraw();
 	}
 
-	private int scale(int value) {
+	private int scale(final int value) {
 		if (this.fMaxTickCount > 0) {
-			Rectangle r = getClientArea();
+			final Rectangle r = getClientArea();
 			if (r.width != 0) {
 				return Math.max(0, value * (r.width - 2) / this.fMaxTickCount);
 			}
@@ -140,8 +140,8 @@ public class GUnitProgressBar extends Canvas {
 		return value;
 	}
 
-	private void drawBevelRect(GC gc, int x, int y, int w, int h,
-			Color topleft, Color bottomright) {
+	private void drawBevelRect(final GC gc, final int x, final int y, final int w, final int h,
+			final Color topleft, final Color bottomright) {
 		gc.setForeground(topleft);
 		gc.drawLine(x, y, x + w - 1, y);
 		gc.drawLine(x, y, x, y + h - 1);
@@ -151,11 +151,11 @@ public class GUnitProgressBar extends Canvas {
 		gc.drawLine(x, y + h, x + w, y + h);
 	}
 
-	private void paint(PaintEvent event) {
-		GC gc = event.gc;
-		Display disp = getDisplay();
+	private void paint(final PaintEvent event) {
+		final GC gc = event.gc;
+		final Display disp = getDisplay();
 
-		Rectangle rect = getClientArea();
+		final Rectangle rect = getClientArea();
 		gc.fillRectangle(rect);
 		drawBevelRect(gc, rect.x, rect.y, rect.width - 1, rect.height - 1, disp
 				.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW), disp
@@ -167,9 +167,9 @@ public class GUnitProgressBar extends Canvas {
 	}
 
 	@Override
-	public Point computeSize(int wHint, int hHint, boolean changed) {
+	public Point computeSize(final int wHint, final int hHint, final boolean changed) {
 		checkWidget();
-		Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		final Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		if (wHint != SWT.DEFAULT) {
 			size.x = wHint;
 		}
@@ -179,7 +179,7 @@ public class GUnitProgressBar extends Canvas {
 		return size;
 	}
 
-	public void step(int failures) {
+	public void step(final int failures) {
 		this.fCurrentTickCount++;
 		int x = this.fColorBarWidth;
 
@@ -195,7 +195,7 @@ public class GUnitProgressBar extends Canvas {
 		paintStep(x, this.fColorBarWidth);
 	}
 
-	public void refresh(boolean hasErrors) {
+	public void refresh(final boolean hasErrors) {
 		this.fError = hasErrors;
 		redraw();
 	}

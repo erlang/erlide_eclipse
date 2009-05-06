@@ -28,13 +28,13 @@ public class TestSessionLabelProvider extends LabelProvider {
 
 	private final int fLayoutMode;
 
-	public TestSessionLabelProvider(TestRunnerViewPart testRunnerPart,
-			int layoutMode) {
+	public TestSessionLabelProvider(final TestRunnerViewPart testRunnerPart,
+			final int layoutMode) {
 		this.fTestRunnerPart = testRunnerPart;
 		this.fLayoutMode = layoutMode;
 	}
 
-	private String getSimpleLabel(Object element) {
+	private String getSimpleLabel(final Object element) {
 		if (element instanceof ITestCaseElement) {
 			return ((ITestCaseElement) element).getTestMethodName();
 		} else if (element instanceof ITestSuiteElement) {
@@ -44,44 +44,44 @@ public class TestSessionLabelProvider extends LabelProvider {
 	}
 
 	@Override
-	public String getText(Object element) {
-		String label = getSimpleLabel(element);
+	public String getText(final Object element) {
+		final String label = getSimpleLabel(element);
 		if (label == null) {
 			return element.toString();
 		}
 		if (this.fLayoutMode == TestRunnerViewPart.LAYOUT_HIERARCHICAL) {
 			if (((ITestElement) element).getParentContainer() instanceof ITestRunSession) {
-				String testKindDisplayName = this.fTestRunnerPart
-						.getTestKindDisplayName();
+				final String testKindDisplayName = this.fTestRunnerPart
+				.getTestKindDisplayName();
 				if (testKindDisplayName != null) {
 					return Messages
-							.format(
-									GUnitMessages.TestSessionLabelProvider_testName_JUnitVersion,
-									new Object[] { label, testKindDisplayName });
+					.format(
+							GUnitMessages.TestSessionLabelProvider_testName_JUnitVersion,
+							new Object[] { label, testKindDisplayName });
 				}
 			}
 		} else {
 			if (element instanceof ITestCaseElement) {
-				String className = ((ITestCaseElement) element)
-						.getTestClassName();
+				final String className = ((ITestCaseElement) element)
+				.getTestClassName();
 				return Messages
-						.format(
-								GUnitMessages.TestSessionLabelProvider_testMethodName_className,
-								new Object[] { label, className });
+				.format(
+						GUnitMessages.TestSessionLabelProvider_testMethodName_className,
+						new Object[] { label, className });
 			}
 		}
 		return label;
 	}
 
 	@Override
-	public Image getImage(Object element) {
+	public Image getImage(final Object element) {
 		if (element instanceof TestCaseElement) {
-			TestCaseElement testCaseElement = ((TestCaseElement) element);
+			final TestCaseElement testCaseElement = ((TestCaseElement) element);
 			if (testCaseElement.isIgnored()) {
 				return this.fTestRunnerPart.fTestIgnoredIcon;
 			}
 
-			Status status = testCaseElement.getStatus();
+			final Status status = testCaseElement.getStatus();
 			if (status.isNotRun()) {
 				return this.fTestRunnerPart.fTestIcon;
 			} else if (status.isRunning()) {
@@ -97,7 +97,7 @@ public class TestSessionLabelProvider extends LabelProvider {
 			}
 
 		} else if (element instanceof TestSuiteElement) {
-			Status status = ((TestSuiteElement) element).getStatus();
+			final Status status = ((TestSuiteElement) element).getStatus();
 			if (status.isNotRun()) {
 				return this.fTestRunnerPart.fSuiteIcon;
 			} else if (status.isRunning()) {

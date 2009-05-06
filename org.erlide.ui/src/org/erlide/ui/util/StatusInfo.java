@@ -44,7 +44,7 @@ public class StatusInfo implements IStatus {
 	 *            the message of this status. Applies only for ERROR, WARNING
 	 *            and INFO.
 	 */
-	public StatusInfo(int severity, String message) {
+	public StatusInfo(final int severity, final String message) {
 		fStatusMessage = message;
 		fSeverity = severity;
 	}
@@ -100,7 +100,7 @@ public class StatusInfo implements IStatus {
 	 *            the error message which can be an empty string, but not
 	 *            <code>null</code>
 	 */
-	public void setError(String errorMessage) {
+	public void setError(final String errorMessage) {
 		Assert.isNotNull(errorMessage);
 		fStatusMessage = errorMessage;
 		fSeverity = IStatus.ERROR;
@@ -113,7 +113,7 @@ public class StatusInfo implements IStatus {
 	 *            the warning message which can be an empty string, but not
 	 *            <code>null</code>
 	 */
-	public void setWarning(String warningMessage) {
+	public void setWarning(final String warningMessage) {
 		Assert.isNotNull(warningMessage);
 		fStatusMessage = warningMessage;
 		fSeverity = IStatus.WARNING;
@@ -126,7 +126,7 @@ public class StatusInfo implements IStatus {
 	 *            the info message which can be an empty string, but not
 	 *            <code>null</code>
 	 */
-	public void setInfo(String infoMessage) {
+	public void setInfo(final String infoMessage) {
 		Assert.isNotNull(infoMessage);
 		fStatusMessage = infoMessage;
 		fSeverity = IStatus.INFO;
@@ -143,7 +143,7 @@ public class StatusInfo implements IStatus {
 	/*
 	 * @see IStatus#matches(int)
 	 */
-	public boolean matches(int severityMask) {
+	public boolean matches(final int severityMask) {
 		return (fSeverity & severityMask) != 0;
 	}
 

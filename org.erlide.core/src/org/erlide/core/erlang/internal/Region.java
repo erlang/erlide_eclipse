@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -39,7 +39,7 @@ public class Region implements IRegion {
 	/**
 	 * @see IRegion#add(IErlElement)
 	 */
-	public void add(IErlElement element) {
+	public void add(final IErlElement element) {
 		if (!contains(element)) {
 			// "new" element added to region
 			removeAllChildren(element);
@@ -51,7 +51,7 @@ public class Region implements IRegion {
 	/**
 	 * @see IRegion
 	 */
-	public boolean contains(IErlElement element) {
+	public boolean contains(final IErlElement element) {
 
 		final int size = fRootElements.size();
 		final ArrayList<IErlElement> parents = getAncestors(element);
@@ -76,7 +76,7 @@ public class Region implements IRegion {
 	 * order.
 	 * 
 	 */
-	private ArrayList<IErlElement> getAncestors(IErlElement element) {
+	private ArrayList<IErlElement> getAncestors(final IErlElement element) {
 		final ArrayList<IErlElement> parents = new ArrayList<IErlElement>();
 		IErlElement parent = element.getParent();
 		while (parent != null) {
@@ -103,7 +103,7 @@ public class Region implements IRegion {
 	/**
 	 * @see IRegion#remove(IErlElement)
 	 */
-	public boolean remove(IErlElement element) {
+	public boolean remove(final IErlElement element) {
 
 		removeAllChildren(element);
 		return fRootElements.remove(element);
@@ -116,7 +116,7 @@ public class Region implements IRegion {
 	 * <p>
 	 * Children are all children, not just direct children.
 	 */
-	private void removeAllChildren(IErlElement element) {
+	private void removeAllChildren(final IErlElement element) {
 		if (element instanceof IParent) {
 			final ArrayList<IErlElement> newRootElements = new ArrayList<IErlElement>();
 			for (int i = 0, size = fRootElements.size(); i < size; i++) {

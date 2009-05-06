@@ -8,7 +8,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class ErlidePairMatch {
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject match(int offset, String module)
+	public static OtpErlangObject match(final int offset, final String module)
 			throws BackendException {
 		OtpErlangObject r1;
 		r1 = ErlangCore.getBackendManager().getIdeBackend().call(

@@ -20,11 +20,11 @@ public abstract class ScratchAction extends Action implements
 
 	private ScratchEditor fEditor;
 
-	public ScratchAction(ScratchEditor editor) {
+	public ScratchAction(final ScratchEditor editor) {
 		setEditor(editor);
 	}
 
-	public void setEditor(ScratchEditor editor) {
+	public void setEditor(final ScratchEditor editor) {
 		if (fEditor != null) {
 			fEditor.removeScratchStateChangedListener(this);
 		}

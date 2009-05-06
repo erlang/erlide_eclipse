@@ -34,29 +34,30 @@ public class MockupPreferenceStore implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addPropertyChangeListener(IPropertyChangeListener listener) {
+	public void addPropertyChangeListener(final IPropertyChangeListener listener) {
 		fListeners.add(listener);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removePropertyChangeListener(IPropertyChangeListener listener) {
+	public void removePropertyChangeListener(
+			final IPropertyChangeListener listener) {
 		fListeners.remove(listener);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean contains(String name) {
+	public boolean contains(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void firePropertyChangeEvent(String name, Object oldValue,
-			Object newValue) {
+	public void firePropertyChangeEvent(final String name,
+			final Object oldValue, final Object newValue) {
 		firePropertyChangeEvent(this, name, oldValue, newValue);
 	}
 
@@ -74,12 +75,12 @@ public class MockupPreferenceStore implements IPreferenceStore {
 	 * @param newValue
 	 *            The property's new value
 	 */
-	public void firePropertyChangeEvent(Object source, String name,
-			Object oldValue, Object newValue) {
+	public void firePropertyChangeEvent(final Object source, final String name,
+			final Object oldValue, final Object newValue) {
 		final PropertyChangeEvent event = new PropertyChangeEvent(source, name,
 				oldValue, newValue);
 		final Object[] listeners = fListeners.getListeners();
-		for (Object element : listeners) {
+		for (final Object element : listeners) {
 			((IPropertyChangeListener) element).propertyChange(event);
 		}
 	}
@@ -87,91 +88,91 @@ public class MockupPreferenceStore implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean getBoolean(String name) {
+	public boolean getBoolean(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean getDefaultBoolean(String name) {
+	public boolean getDefaultBoolean(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getDefaultDouble(String name) {
+	public double getDefaultDouble(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public float getDefaultFloat(String name) {
+	public float getDefaultFloat(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getDefaultInt(String name) {
+	public int getDefaultInt(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public long getDefaultLong(String name) {
+	public long getDefaultLong(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getDefaultString(String name) {
+	public String getDefaultString(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getDouble(String name) {
+	public double getDouble(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public float getFloat(String name) {
+	public float getFloat(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getInt(String name) {
+	public int getInt(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public long getLong(String name) {
+	public long getLong(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getString(String name) {
+	public String getString(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isDefault(String name) {
+	public boolean isDefault(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -186,98 +187,98 @@ public class MockupPreferenceStore implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void putValue(String name, String value) {
+	public void putValue(final String name, final String value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, double value) {
+	public void setDefault(final String name, final double value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, float value) {
+	public void setDefault(final String name, final float value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, int value) {
+	public void setDefault(final String name, final int value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, long value) {
+	public void setDefault(final String name, final long value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, String defaultObject) {
+	public void setDefault(final String name, final String defaultObject) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, boolean value) {
+	public void setDefault(final String name, final boolean value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setToDefault(String name) {
+	public void setToDefault(final String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, double value) {
+	public void setValue(final String name, final double value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, float value) {
+	public void setValue(final String name, final float value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, int value) {
+	public void setValue(final String name, final int value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, long value) {
+	public void setValue(final String name, final long value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, String value) {
+	public void setValue(final String name, final String value) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, boolean value) {
+	public void setValue(final String name, final boolean value) {
 		throw new UnsupportedOperationException();
 	}
 

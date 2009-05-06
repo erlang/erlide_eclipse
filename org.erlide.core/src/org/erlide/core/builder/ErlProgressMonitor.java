@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -22,7 +22,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	// private OtpMbox mbox;
 
 	/** The wrapped progress monitor. */
-	private IProgressMonitor progressMonitor;
+	private final IProgressMonitor progressMonitor;
 
 	/**
 	 * Creates a new wrapper around the given monitor.
@@ -30,7 +30,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * @param monitor
 	 *            the progress monitor to forward to
 	 */
-	protected ErlProgressMonitor(IProgressMonitor monitor) {
+	protected ErlProgressMonitor(final IProgressMonitor monitor) {
 		progressMonitor = monitor;
 	}
 
@@ -41,7 +41,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#beginTask(String, int)
 	 */
-	public void beginTask(String name, int totalWork) {
+	public void beginTask(final String name, final int totalWork) {
 		progressMonitor.beginTask(name, totalWork);
 	}
 
@@ -86,7 +86,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#internalWorked(double)
 	 */
-	public void internalWorked(double work) {
+	public void internalWorked(final double work) {
 		progressMonitor.internalWorked(work);
 	}
 
@@ -109,7 +109,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * @see IProgressMonitorWithBlocking#setBlocked(IStatus)
 	 * @since 3.0
 	 */
-	public void setBlocked(IStatus reason) {
+	public void setBlocked(final IStatus reason) {
 		if (progressMonitor instanceof IProgressMonitorWithBlocking) {
 			((IProgressMonitorWithBlocking) progressMonitor).setBlocked(reason);
 		}
@@ -122,7 +122,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#setCanceled(boolean)
 	 */
-	public void setCanceled(boolean b) {
+	public void setCanceled(final boolean b) {
 		progressMonitor.setCanceled(b);
 	}
 
@@ -133,7 +133,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#setTaskName(String)
 	 */
-	public void setTaskName(String name) {
+	public void setTaskName(final String name) {
 		progressMonitor.setTaskName(name);
 	}
 
@@ -144,7 +144,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#subTask(String)
 	 */
-	public void subTask(String name) {
+	public void subTask(final String name) {
 		progressMonitor.subTask(name);
 	}
 
@@ -155,7 +155,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
 	 * 
 	 * @see IProgressMonitor#worked(int)
 	 */
-	public void worked(int work) {
+	public void worked(final int work) {
 		progressMonitor.worked(work);
 	}
 

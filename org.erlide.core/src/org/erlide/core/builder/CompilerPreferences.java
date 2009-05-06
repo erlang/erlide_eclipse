@@ -25,7 +25,8 @@ public class CompilerPreferences {
 
 	public void store() {
 		// FIXME
-		PreferencesHelper helper = new PreferencesHelper(ErlangPlugin.PLUGIN_ID);
+		final PreferencesHelper helper = new PreferencesHelper(
+				ErlangPlugin.PLUGIN_ID);
 		helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO, debugInfo);
 		helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 				warnModuleNotOnSourcePath);
@@ -57,7 +58,8 @@ public class CompilerPreferences {
 
 		// FIXME
 
-		PreferencesHelper helper = new PreferencesHelper(ErlangPlugin.PLUGIN_ID);
+		final PreferencesHelper helper = new PreferencesHelper(
+				ErlangPlugin.PLUGIN_ID);
 		debugInfo = helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 				true);
 		warnModuleNotOnSourcePath = helper.getBoolean(

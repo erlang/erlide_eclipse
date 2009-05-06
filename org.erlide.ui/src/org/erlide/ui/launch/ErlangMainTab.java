@@ -326,7 +326,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
 	private final ModifyListener fBasicModifyListener = new ModifyListener() {
 		@SuppressWarnings("synthetic-access")
-		public void modifyText(ModifyEvent evt) {
+		public void modifyText(final ModifyEvent evt) {
 			updateLaunchConfigurationDialog();
 		}
 	};

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -33,53 +33,53 @@ public class Bindings {
 		this.bindings = new HashMap<String, OtpErlangObject>();
 	}
 
-	public Bindings(Bindings other) {
+	public Bindings(final Bindings other) {
 		this();
 		merge(other);
 	}
 
-	public void merge(Bindings other) {
+	public void merge(final Bindings other) {
 		this.bindings.putAll(other.bindings);
 	}
 
-	public OtpErlangObject get(String name) {
+	public OtpErlangObject get(final String name) {
 		return this.bindings.get(name);
 	}
 
-	public long getLong(String name) throws OtpErlangException {
-		OtpErlangObject r = get(name);
+	public long getLong(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangLong) {
 			return ((OtpErlangLong) r).longValue();
 		}
 		throw new OtpErlangException("value is not an integer");
 	}
 
-	public String getAtom(String name) throws OtpErlangException {
-		OtpErlangObject r = get(name);
+	public String getAtom(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangAtom) {
 			return ((OtpErlangAtom) r).atomValue();
 		}
 		throw new OtpErlangException("value is not an atom");
 	}
 
-	public String getString(String name) throws OtpErlangException {
-		OtpErlangObject r = get(name);
+	public String getString(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangString) {
 			return ((OtpErlangString) r).stringValue();
 		}
 		throw new OtpErlangException("value is not a string");
 	}
 
-	public OtpErlangObject[] getList(String name) throws OtpErlangException {
-		OtpErlangObject r = get(name);
+	public OtpErlangObject[] getList(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangList) {
 			return ((OtpErlangList) r).elements();
 		}
 		throw new OtpErlangException("value is not a list");
 	}
 
-	public OtpErlangObject[] getTuple(String name) throws OtpErlangException {
-		OtpErlangObject r = get(name);
+	public OtpErlangObject[] getTuple(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangTuple) {
 			return ((OtpErlangTuple) r).elements();
 		}
@@ -87,12 +87,12 @@ public class Bindings {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getAs(String name, Class<T> cls) throws RpcException {
-		OtpErlangObject v = get(name);
+	public <T> T getAs(final String name, final Class<T> cls) throws RpcException {
+		final OtpErlangObject v = get(name);
 		return (T) RpcConverter.erlang2java(v, cls);
 	}
 
-	public void put(String name, OtpErlangObject value) {
+	public void put(final String name, final OtpErlangObject value) {
 		this.bindings.put(name, value);
 	}
 

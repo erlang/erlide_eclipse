@@ -217,7 +217,7 @@ public class ErlangProjectImportWizardPage extends
 
 		final SelectionListener listener = new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				handleTypesEditButtonPressed();
 			}
 		};

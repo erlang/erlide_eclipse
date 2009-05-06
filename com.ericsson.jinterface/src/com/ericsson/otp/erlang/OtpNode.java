@@ -1,4 +1,4 @@
-/* 
+/*
  * %CopyrightBegin%
  * 
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.

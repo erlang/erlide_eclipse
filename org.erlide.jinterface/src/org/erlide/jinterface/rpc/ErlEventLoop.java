@@ -5,11 +5,11 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlEventLoop implements Runnable {
 
-	private IErlEventHandler fHandler;
+	private final IErlEventHandler fHandler;
 
 	private Thread t;
 
-	public ErlEventLoop(IErlEventHandler h) {
+	public ErlEventLoop(final IErlEventHandler h) {
 		this.fHandler = h;
 	}
 

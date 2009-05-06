@@ -30,7 +30,7 @@ public class OtpPatternCons extends OtpErlangObject {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof OtpPatternCons)) {
 			return false;
 		}
@@ -43,7 +43,7 @@ public class OtpPatternCons extends OtpErlangObject {
 	}
 
 	@Override
-	public void encode(OtpOutputStream arg0) {
+	public void encode(final OtpOutputStream arg0) {
 		// throw new NotImplementedException();
 	}
 

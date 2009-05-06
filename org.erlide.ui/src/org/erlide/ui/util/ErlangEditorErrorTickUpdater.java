@@ -43,7 +43,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
 	 * @see IProblemChangedListener#problemsChanged(IResource[], boolean)
 	 */
 	public void problemsChanged(final IResource[] changedResources,
-			boolean isMarkerChange) {
+			final boolean isMarkerChange) {
 		if (!isMarkerChange) {
 			return;
 		}

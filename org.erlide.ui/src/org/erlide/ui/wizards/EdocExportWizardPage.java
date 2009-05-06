@@ -46,11 +46,11 @@ public class EdocExportWizardPage extends WizardPage {
 
 	static class TableLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
-		public String getColumnText(Object element, int columnIndex) {
+		public String getColumnText(final Object element, final int columnIndex) {
 			return ((IProject) element).getName();
 		}
 
-		public Image getColumnImage(Object element, int columnIndex) {
+		public Image getColumnImage(final Object element, final int columnIndex) {
 			return null;
 		}
 	}
@@ -89,15 +89,15 @@ public class EdocExportWizardPage extends WizardPage {
 	private Text destination;
 	private Table table;
 
-	protected EdocExportWizardPage(String pageName,
-			IStructuredSelection selection) {
+	protected EdocExportWizardPage(final String pageName,
+			final IStructuredSelection selection) {
 		super(pageName);
 		setTitle("eDoc export (work in progress!)");
 		setDescription("Select the projects and files for which you want to generate eDoc documentation");
 	}
 
-	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
+	public void createControl(final Composite parent) {
+		final Composite composite = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout = new GridLayout();
 		composite.setLayout(gridLayout);
 		setControl(composite);
@@ -138,16 +138,16 @@ public class EdocExportWizardPage extends WizardPage {
 	}
 
 	public Collection<IProject> getSelectedResources() {
-		ArrayList<IProject> result = new ArrayList<IProject>();
-		Object[] sel = checkboxTableViewer.getCheckedElements();
-		for (Object o : sel) {
+		final ArrayList<IProject> result = new ArrayList<IProject>();
+		final Object[] sel = checkboxTableViewer.getCheckedElements();
+		for (final Object o : sel) {
 			result.add((IProject) o);
 		}
 		return result;
 	}
 
 	public Map<String, OtpErlangObject> getOptions() {
-		HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
+		final HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
 		result.put("dir", new OtpErlangString(destination.getText()));
 		// result.put("preprocess", new OtpErlangBoolean(false));
 		return result;

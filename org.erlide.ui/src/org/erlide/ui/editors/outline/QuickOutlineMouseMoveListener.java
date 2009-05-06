@@ -27,12 +27,12 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
 
 	private TreeItem fLastItem;
 
-	private TreeViewer fTreeViewer;
+	private final TreeViewer fTreeViewer;
 
 	/**
 	 * 
 	 */
-	public QuickOutlineMouseMoveListener(TreeViewer treeViewer) {
+	public QuickOutlineMouseMoveListener(final TreeViewer treeViewer) {
 		fLastItem = null;
 		fTreeViewer = treeViewer;
 	}
@@ -40,29 +40,31 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events.MouseEvent)
+	 * @see
+	 * org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events
+	 * .MouseEvent)
 	 */
-	public void mouseMove(MouseEvent e) {
-		Tree tree = fTreeViewer.getTree();
+	public void mouseMove(final MouseEvent e) {
+		final Tree tree = fTreeViewer.getTree();
 		if (tree.equals(e.getSource())) {
-			Object o = tree.getItem(new Point(e.x, e.y));
+			final Object o = tree.getItem(new Point(e.x, e.y));
 			if (o instanceof TreeItem) {
 				if (!o.equals(fLastItem)) {
 					fLastItem = (TreeItem) o;
 					tree.setSelection(new TreeItem[] { fLastItem });
 				} else if (e.y < tree.getItemHeight() / 4) {
 					// Scroll up
-					Point p = tree.toDisplay(e.x, e.y);
-					Item item = fTreeViewer.scrollUp(p.x, p.y);
+					final Point p = tree.toDisplay(e.x, e.y);
+					final Item item = fTreeViewer.scrollUp(p.x, p.y);
 					if (item instanceof TreeItem) {
 						fLastItem = (TreeItem) item;
 						tree.setSelection(new TreeItem[] { fLastItem });
 					}
-				} else if (e.y > tree.getBounds().height -
-						tree.getItemHeight() / 4) {
+				} else if (e.y > tree.getBounds().height - tree.getItemHeight()
+						/ 4) {
 					// Scroll down
-					Point p = tree.toDisplay(e.x, e.y);
-					Item item = fTreeViewer.scrollDown(p.x, p.y);
+					final Point p = tree.toDisplay(e.x, e.y);
+					final Item item = fTreeViewer.scrollDown(p.x, p.y);
 					if (item instanceof TreeItem) {
 						fLastItem = (TreeItem) item;
 						tree.setSelection(new TreeItem[] { fLastItem });

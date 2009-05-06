@@ -39,7 +39,7 @@ public final class ErlangXref {
 	 * xref:analyze(erlide, {call, {M, F, A}}).
 	 */
 
-	public static void start(Backend b) {
+	public static void start(final Backend b) {
 		try {
 			b.call("erlide_xref", "start", "");
 		} catch (final Exception e) {
@@ -48,7 +48,7 @@ public final class ErlangXref {
 
 	}
 
-	public static void stop(Backend b) {
+	public static void stop(final Backend b) {
 		try {
 			b.call("erlide_xref", "stop", "");
 		} catch (final Exception e) {
@@ -57,9 +57,9 @@ public final class ErlangXref {
 
 	}
 
-	public static void addProject(Backend b, IErlProject project) {
+	public static void addProject(final Backend b, final IErlProject project) {
 		try {
-			IPath outputLocation = project.getProject().getFolder(
+			final IPath outputLocation = project.getProject().getFolder(
 					project.getOutputLocation()).getLocation();
 			b
 					.call("erlide_xref", "add_project", "s", outputLocation
@@ -70,7 +70,7 @@ public final class ErlangXref {
 
 	}
 
-	public static void update(Backend b) {
+	public static void update(final Backend b) {
 		try {
 			b.call("erlide_xref", "update", "");
 		} catch (final Exception e) {
@@ -80,18 +80,18 @@ public final class ErlangXref {
 	}
 
 	@SuppressWarnings("boxing")
-	public static FunctionRef[] functionUse(Backend b, String mod, String fun,
-			int arity) {
+	public static FunctionRef[] functionUse(final Backend b, final String mod,
+			final String fun, final int arity) {
 		try {
-			OtpErlangObject r = b.call(10000, "erlide_xref", "function_use",
-					"aai", mod, fun, arity);
-			Bindings bind = ErlUtils.match("{ok, L}", r);
+			final OtpErlangObject r = b.call(10000, "erlide_xref",
+					"function_use", "aai", mod, fun, arity);
+			final Bindings bind = ErlUtils.match("{ok, L}", r);
 			if (bind == null) {
 				return new FunctionRef[0];
 			}
-			OtpErlangList l = (OtpErlangList) bind.get("L");
-			List<FunctionRef> result = new ArrayList<FunctionRef>();
-			for (OtpErlangObject e : l.elements()) {
+			final OtpErlangList l = (OtpErlangList) bind.get("L");
+			final List<FunctionRef> result = new ArrayList<FunctionRef>();
+			for (final OtpErlangObject e : l.elements()) {
 				result.add(new FunctionRef(e));
 			}
 			return result.toArray(new FunctionRef[result.size()]);

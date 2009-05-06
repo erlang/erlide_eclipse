@@ -23,8 +23,8 @@ import org.erlide.ui.ErlideUIPlugin;
 
 /**
  * The default exception handler shows an error dialog when one of its handle
- * methods is called. If the passed exception is a <code>CoreException</code>
- * an error dialog pops up showing the exception's status information. For a
+ * methods is called. If the passed exception is a <code>CoreException</code> an
+ * error dialog pops up showing the exception's status information. For a
  * <code>InvocationTargetException</code> a normal message dialog pops up
  * showing the exception's message. Additionally the exception is written to the
  * platform log.
@@ -34,8 +34,8 @@ public class ExceptionHandler {
 	private static final ExceptionHandler fgInstance = new ExceptionHandler();
 
 	/**
-	 * Handles the given <code>CoreException</code>. The workbench shell is
-	 * used as a parent for the dialog window.
+	 * Handles the given <code>CoreException</code>. The workbench shell is used
+	 * as a parent for the dialog window.
 	 * 
 	 * @param e
 	 *            the <code>CoreException</code> to be handled
@@ -44,7 +44,8 @@ public class ExceptionHandler {
 	 * @param message
 	 *            message to be displayed by the dialog window
 	 */
-	public static void handle(CoreException e, String title, String message) {
+	public static void handle(final CoreException e, final String title,
+			final String message) {
 		handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
 	}
 
@@ -60,14 +61,14 @@ public class ExceptionHandler {
 	 * @param message
 	 *            message to be displayed by the dialog window
 	 */
-	public static void handle(CoreException e, Shell parent, String title,
-			String message) {
+	public static void handle(final CoreException e, final Shell parent,
+			final String title, final String message) {
 		fgInstance.perform(e, parent, title, message);
 	}
 
 	/**
-	 * Handles the given <code>InvocationTargetException</code>. The
-	 * workbench shell is used as a parent for the dialog window.
+	 * Handles the given <code>InvocationTargetException</code>. The workbench
+	 * shell is used as a parent for the dialog window.
 	 * 
 	 * @param e
 	 *            the <code>InvocationTargetException</code> to be handled
@@ -76,8 +77,8 @@ public class ExceptionHandler {
 	 * @param message
 	 *            message to be displayed by the dialog window
 	 */
-	public static void handle(InvocationTargetException e, String title,
-			String message) {
+	public static void handle(final InvocationTargetException e,
+			final String title, final String message) {
 		handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
 	}
 
@@ -93,16 +94,16 @@ public class ExceptionHandler {
 	 * @param message
 	 *            message to be displayed by the dialog window
 	 */
-	public static void handle(InvocationTargetException e, Shell parent,
-			String title, String message) {
+	public static void handle(final InvocationTargetException e,
+			final Shell parent, final String title, final String message) {
 		fgInstance.perform(e, parent, title, message);
 	}
 
 	// ---- Hooks for subclasses to control exception handling
 	// ------------------------------------
 
-	protected void perform(CoreException e, Shell shell, String title,
-			String message) {
+	protected void perform(final CoreException e, final Shell shell,
+			final String title, final String message) {
 		final IStatus status = e.getStatus();
 		ErlideUIPlugin.log(e);
 		if (status != null) {
@@ -112,8 +113,8 @@ public class ExceptionHandler {
 		}
 	}
 
-	protected void perform(InvocationTargetException e, Shell shell,
-			String title, String message) {
+	protected void perform(final InvocationTargetException e,
+			final Shell shell, final String title, final String message) {
 		final Throwable target = e.getTargetException();
 		if (target instanceof CoreException) {
 			perform((CoreException) target, shell, title, message);
@@ -127,8 +128,8 @@ public class ExceptionHandler {
 		}
 	}
 
-	private void displayMessageDialog(String exceptionMessage, Shell shell,
-			String title, String message) {
+	private void displayMessageDialog(final String exceptionMessage,
+			final Shell shell, final String title, final String message) {
 		final StringWriter msg = new StringWriter();
 		if (message != null) {
 			msg.write(message);

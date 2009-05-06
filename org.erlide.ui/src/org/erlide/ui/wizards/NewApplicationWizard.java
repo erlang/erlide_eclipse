@@ -37,9 +37,10 @@ public class NewApplicationWizard extends Wizard implements INewWizard {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-	 *      org.eclipse.jface.viewers.IStructuredSelection)
+	 * org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(final IWorkbench workbench,
+			final IStructuredSelection selection) {
 		// TODO Auto-generated method stub
 
 	}

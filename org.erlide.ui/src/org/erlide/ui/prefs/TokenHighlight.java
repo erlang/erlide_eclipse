@@ -32,7 +32,7 @@ public enum TokenHighlight {
 
 	private final HighlightStyle defaultData;
 
-	private TokenHighlight(RGB color, int style) {
+	private TokenHighlight(final RGB color, final int style) {
 		defaultData = new HighlightStyle(color, style);
 	}
 

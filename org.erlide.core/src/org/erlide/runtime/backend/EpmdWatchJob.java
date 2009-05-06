@@ -25,9 +25,9 @@ public class EpmdWatchJob extends Job {
 
 	private static final int defaultInterval = 2000;
 	private int interval = defaultInterval;
-	private EpmdWatcher watcher;
+	private final EpmdWatcher watcher;
 
-	public EpmdWatchJob(EpmdWatcher aWatcher, int anInterval) {
+	public EpmdWatchJob(final EpmdWatcher aWatcher, final int anInterval) {
 		super("Checking EPMD for new backends");
 		assert (aWatcher != null);
 
@@ -38,12 +38,12 @@ public class EpmdWatchJob extends Job {
 		setPriority(SHORT);
 	}
 
-	public EpmdWatchJob(EpmdWatcher watcher) {
+	public EpmdWatchJob(final EpmdWatcher watcher) {
 		this(watcher, defaultInterval);
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus run(final IProgressMonitor monitor) {
 
 		watcher.checkEpmd();
 
@@ -51,7 +51,7 @@ public class EpmdWatchJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	public void setInterval(int interval) {
+	public void setInterval(final int interval) {
 		this.interval = interval;
 	}
 

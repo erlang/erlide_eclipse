@@ -30,7 +30,7 @@ public interface ITestElement {
 	public static final class ProgressState {
 		/** state that describes that the test element has not started */
 		public static final ProgressState NOT_STARTED = new ProgressState(
-				"Not Started"); //$NON-NLS-1$
+		"Not Started"); //$NON-NLS-1$
 
 		/** state that describes that the test element has is running */
 		public static final ProgressState RUNNING = new ProgressState("Running"); //$NON-NLS-1$
@@ -43,11 +43,11 @@ public interface ITestElement {
 
 		/** state that describes that the test element has completed */
 		public static final ProgressState COMPLETED = new ProgressState(
-				"Completed"); //$NON-NLS-1$
+		"Completed"); //$NON-NLS-1$
 
-		private String fName;
+		private final String fName;
 
-		private ProgressState(String name) {
+		private ProgressState(final String name) {
 			fName = name;
 		}
 
@@ -76,9 +76,9 @@ public interface ITestElement {
 		/** state that describes that the test result is 'Ignored' */
 		public static final Result IGNORED = new Result("Ignored"); //$NON-NLS-1$
 
-		private String fName;
+		private final String fName;
 
-		private Result(String name) {
+		private Result(final String name) {
 			fName = name;
 		}
 
@@ -100,7 +100,7 @@ public interface ITestElement {
 
 		private final String fTrace;
 
-		public FailureTrace(String trace, String expected, String actual) {
+		public FailureTrace(final String trace, final String expected, final String actual) {
 			fActual = actual;
 			fExpected = expected;
 			fTrace = trace;

@@ -37,7 +37,7 @@ public class ErlConsoleModel implements IDisposable {
 
 	private final List<IoRequest> requests;
 	private final List<ErlConsoleModelListener> listeners;
-	private ConsoleEventHandler handler;
+	private final ConsoleEventHandler handler;
 	private int pos = 0;
 
 	public ErlConsoleModel() {
@@ -53,7 +53,7 @@ public class ErlConsoleModel implements IDisposable {
 		}
 	}
 
-	public void input(String s) {
+	public void input(final String s) {
 		final IoRequest req = new IoRequest(s);
 		req.setStart(pos);
 		pos += req.getLength();
@@ -61,7 +61,7 @@ public class ErlConsoleModel implements IDisposable {
 		notifyListeners();
 	}
 
-	public int add(OtpErlangObject msg) {
+	public int add(final OtpErlangObject msg) {
 		if (!(msg instanceof OtpErlangTuple)) {
 			return 0;
 		}
@@ -83,7 +83,7 @@ public class ErlConsoleModel implements IDisposable {
 		return req.getLength();
 	}
 
-	public IoRequest findAtPos(int pos) {
+	public IoRequest findAtPos(final int pos) {
 		synchronized (requests) {
 			for (final IoRequest req : requests) {
 				if (req.getStart() <= pos
@@ -95,7 +95,7 @@ public class ErlConsoleModel implements IDisposable {
 		}
 	}
 
-	public List<IoRequest> getAllFrom(OtpErlangPid sender) {
+	public List<IoRequest> getAllFrom(final OtpErlangPid sender) {
 		final List<IoRequest> result = new ArrayList<IoRequest>(10);
 		for (final IoRequest element : requests) {
 			if (element.getSender().equals(sender)) {
@@ -105,7 +105,7 @@ public class ErlConsoleModel implements IDisposable {
 		return result;
 	}
 
-	public void add(List<OtpErlangObject> msgs) {
+	public void add(final List<OtpErlangObject> msgs) {
 		for (final OtpErlangObject element : msgs) {
 			add(element);
 		}
@@ -116,18 +116,19 @@ public class ErlConsoleModel implements IDisposable {
 		listeners.clear();
 	}
 
-	public synchronized void addListener(ErlConsoleModelListener listener) {
+	public synchronized void addListener(final ErlConsoleModelListener listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 
-	public synchronized void removeListener(ErlConsoleModelListener listener) {
+	public synchronized void removeListener(
+			final ErlConsoleModelListener listener) {
 		listeners.remove(listener);
 	}
 
 	private void notifyListeners() {
-		for (ErlConsoleModelListener listener : listeners) {
+		for (final ErlConsoleModelListener listener : listeners) {
 			listener.changed(this);
 		}
 	}

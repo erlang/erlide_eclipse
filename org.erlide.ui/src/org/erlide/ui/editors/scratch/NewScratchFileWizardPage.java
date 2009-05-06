@@ -39,7 +39,7 @@ public class NewScratchFileWizardPage extends WizardNewFileCreationPage {
 
 	private static final String fgDefaultExtension = ".epage"; //$NON-NLS-1$
 
-	public NewScratchFileWizardPage(IStructuredSelection selection) {
+	public NewScratchFileWizardPage(final IStructuredSelection selection) {
 		super("createScrapBookPage", selection); //$NON-NLS-1$
 		setTitle(ScratchMessages.getString("NewScratchFileWizardPage.title")); //$NON-NLS-1$
 	}
@@ -95,7 +95,7 @@ public class NewScratchFileWizardPage extends WizardNewFileCreationPage {
 	@Override
 	protected boolean validatePage() {
 		// check whether file with extension doesn't exist
-		boolean valid = super.validatePage();
+		final boolean valid = super.validatePage();
 		if (!valid) {
 			return false;
 		}
@@ -134,10 +134,12 @@ public class NewScratchFileWizardPage extends WizardNewFileCreationPage {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		// WorkbenchHelp.setHelp(getControl(),
 		// IJavaDebugHelpContextIds.NEW_SNIPPET_WIZARD_PAGE);

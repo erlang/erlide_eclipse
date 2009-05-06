@@ -36,13 +36,13 @@ public abstract class OpenEditorAction extends Action {
 
 	private final boolean fActivate;
 
-	protected OpenEditorAction(TestRunnerViewPart testRunner,
-			String testClassName) {
+	protected OpenEditorAction(final TestRunnerViewPart testRunner,
+			final String testClassName) {
 		this(testRunner, testClassName, true);
 	}
 
-	public OpenEditorAction(TestRunnerViewPart testRunner, String className,
-			boolean activate) {
+	public OpenEditorAction(final TestRunnerViewPart testRunner, final String className,
+			final boolean activate) {
 		super(GUnitMessages.OpenEditorAction_action_label);
 		this.fClassName = className;
 		this.fTestRunner = testRunner;
@@ -54,26 +54,26 @@ public abstract class OpenEditorAction extends Action {
 	 */
 	@Override
 	public void run() {
-		ITextEditor textEditor = null;
+		final ITextEditor textEditor = null;
 		try {
-			IErlElement element = findElement(getLaunchedProject(),
+			final IErlElement element = findElement(getLaunchedProject(),
 					this.fClassName);
 			if (element == null) {
 				MessageDialog
-						.openError(
-								getShell(),
-								GUnitMessages.OpenEditorAction_error_cannotopen_title,
-								GUnitMessages.OpenEditorAction_error_cannotopen_message);
+				.openError(
+						getShell(),
+						GUnitMessages.OpenEditorAction_error_cannotopen_title,
+						GUnitMessages.OpenEditorAction_error_cannotopen_message);
 				return;
 			}
 			// textEditor = (ITextEditor) JavaUI.openInEditor(element,
 			// fActivate,
 			// false);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			ErrorDialog.openError(getShell(),
 					GUnitMessages.OpenEditorAction_error_dialog_title,
 					GUnitMessages.OpenEditorAction_error_dialog_message, e
-							.getStatus());
+					.getStatus());
 			return;
 		}
 		if (textEditor == null) {
@@ -105,7 +105,7 @@ public abstract class OpenEditorAction extends Action {
 	protected abstract void reveal(ITextEditor editor);
 
 	protected final IErlModule findType(final IErlProject project,
-			String className) throws ErlModelException {
+			final String className) throws ErlModelException {
 		final IErlModule[] result = { null };
 		// final String dottedName = className.replace('$', '.'); // for nested
 		// // classes...
@@ -163,9 +163,9 @@ public abstract class OpenEditorAction extends Action {
 		return result[0];
 	}
 
-	private IErlModule internalFindType(IErlProject project, String className,
-			Set<IErlProject> visitedProjects, IProgressMonitor monitor)
-			throws ErlModelException {
+	private IErlModule internalFindType(final IErlProject project, final String className,
+			final Set<IErlProject> visitedProjects, final IProgressMonitor monitor)
+	throws ErlModelException {
 		try {
 			if (visitedProjects.contains(project)) {
 				return null;
@@ -180,13 +180,13 @@ public abstract class OpenEditorAction extends Action {
 			// fix for bug 87492: visit required projects explicitly to also
 			// find not exported types
 			visitedProjects.add(project);
-			IErlModel javaModel = project.getModel();
-			String[] requiredProjectNames = project.getRequiredProjectNames();
-			IProgressMonitor reqMonitor = new SubProgressMonitor(monitor, 1);
+			final IErlModel javaModel = project.getModel();
+			final String[] requiredProjectNames = project.getRequiredProjectNames();
+			final IProgressMonitor reqMonitor = new SubProgressMonitor(monitor, 1);
 			reqMonitor.beginTask("", requiredProjectNames.length);
 			for (int i = 0; i < requiredProjectNames.length; i++) {
-				IErlProject requiredProject = javaModel
-						.getErlangProject(requiredProjectNames[i]);
+				final IErlProject requiredProject = javaModel
+				.getErlangProject(requiredProjectNames[i]);
 				if (requiredProject.exists()) {
 					type = internalFindType(requiredProject, className,
 							visitedProjects, new SubProgressMonitor(reqMonitor,

@@ -40,7 +40,7 @@ public class OtpErlangExit extends OtpErlangException {
      * Create an OtpErlangExit exception with the given reason.
      * 
      * @param reason
-     *                the reason this exit signal has been sent.
+     *            the reason this exit signal has been sent.
      */
     public OtpErlangExit(final OtpErlangObject reason) {
 	super(reason.toString());
@@ -54,7 +54,7 @@ public class OtpErlangExit extends OtpErlangException {
      * </p>
      * 
      * @param reason
-     *                the reason this exit signal has been sent.
+     *            the reason this exit signal has been sent.
      * 
      * @see #OtpErlangExit(OtpErlangObject)
      */
@@ -66,10 +66,10 @@ public class OtpErlangExit extends OtpErlangException {
      * Create an OtpErlangExit exception with the given reason and sender pid.
      * 
      * @param reason
-     *                the reason this exit signal has been sent.
+     *            the reason this exit signal has been sent.
      * 
      * @param pid
-     *                the pid that sent this exit.
+     *            the pid that sent this exit.
      */
     public OtpErlangExit(final OtpErlangObject reason, final OtpErlangPid pid) {
 	super(reason.toString());
@@ -84,10 +84,10 @@ public class OtpErlangExit extends OtpErlangException {
      * </p>
      * 
      * @param reason
-     *                the reason this exit signal has been sent.
+     *            the reason this exit signal has been sent.
      * 
      * @param pid
-     *                the pid that sent this exit.
+     *            the pid that sent this exit.
      * 
      * @see #OtpErlangExit(OtpErlangObject, OtpErlangPid)
      */

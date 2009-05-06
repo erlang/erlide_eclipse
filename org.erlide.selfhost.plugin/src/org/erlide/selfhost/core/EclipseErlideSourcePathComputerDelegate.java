@@ -13,20 +13,20 @@ import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
 import org.erlide.runtime.ErlangSourcePathComputerDelegate;
 
 public class EclipseErlideSourcePathComputerDelegate implements
-		ISourcePathComputerDelegate {
+ISourcePathComputerDelegate {
 
 	public ISourceContainer[] computeSourceContainers(
 			final ILaunchConfiguration configuration,
 			final IProgressMonitor monitor) throws CoreException {
 		final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
 
-		JavaSourcePathComputer javaDelegate = new JavaSourcePathComputer();
-		ISourceContainer[] javas = javaDelegate.computeSourceContainers(
+		final JavaSourcePathComputer javaDelegate = new JavaSourcePathComputer();
+		final ISourceContainer[] javas = javaDelegate.computeSourceContainers(
 				configuration, monitor);
 		containers.addAll(Arrays.asList(javas));
 
-		ErlangSourcePathComputerDelegate erlDelegate = new ErlangSourcePathComputerDelegate();
-		ISourceContainer[] erls = erlDelegate.computeSourceContainers(
+		final ErlangSourcePathComputerDelegate erlDelegate = new ErlangSourcePathComputerDelegate();
+		final ISourceContainer[] erls = erlDelegate.computeSourceContainers(
 				configuration, monitor);
 		containers.addAll(Arrays.asList(erls));
 

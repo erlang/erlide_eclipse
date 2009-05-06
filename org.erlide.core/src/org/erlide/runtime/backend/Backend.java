@@ -55,7 +55,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	private static int DEFAULT_TIMEOUT;
 	{
-		String t = System.getProperty("erlide.rpc.timeout", "9000");
+		final String t = System.getProperty("erlide.rpc.timeout", "9000");
 		if ("infinity".equals(t)) {
 			DEFAULT_TIMEOUT = RpcUtil.INFINITY;
 		} else {
@@ -204,9 +204,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	public RpcResult call_noexception(final int timeout, final String m,
 			final String f, final String signature, final Object... args) {
 		try {
-			OtpErlangObject result = makeCall(timeout, m, f, signature, args);
+			final OtpErlangObject result = makeCall(timeout, m, f, signature,
+					args);
 			return new RpcResult(result);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			return RpcResult.error(e.getMessage());
 		}
 	}
@@ -216,7 +217,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			throws BackendException {
 		try {
 			return makeAsyncCall(m, f, signature, args);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			throw new BackendException(e);
 		}
 	}
@@ -225,7 +226,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			final Object... args) throws BackendException {
 		try {
 			makeCast(m, f, signature, args);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			throw new BackendException(e);
 		}
 	}
@@ -260,12 +261,12 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
 	}
 
-	public OtpErlangObject call(final int timeout, OtpErlangObject gleader,
-			final String m, final String f, final String signature,
-			final Object... a) throws BackendException {
+	public OtpErlangObject call(final int timeout,
+			final OtpErlangObject gleader, final String m, final String f,
+			final String signature, final Object... a) throws BackendException {
 		try {
 			return makeCall(timeout, gleader, m, f, signature, a);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			throw new BackendException(e);
 		}
 	}
@@ -323,11 +324,12 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 	}
 
 	private OtpErlangObject makeCall(final int timeout,
-			OtpErlangObject gleader, final String module, final String fun,
-			final String signature, final Object... args0) throws RpcException {
+			final OtpErlangObject gleader, final String module,
+			final String fun, final String signature, final Object... args0)
+			throws RpcException {
 		checkAvailability();
-		OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader, module,
-				fun, timeout, signature, args0);
+		final OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader,
+				module, fun, timeout, signature, args0);
 		return result;
 	}
 
@@ -337,7 +339,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 				args0);
 	}
 
-	private RpcFuture makeAsyncCall(OtpErlangObject gleader,
+	private RpcFuture makeAsyncCall(final OtpErlangObject gleader,
 			final String module, final String fun, final String signature,
 			final Object... args0) throws RpcException {
 		checkAvailability();
@@ -360,7 +362,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
 	}
 
-	private void makeCast(OtpErlangObject gleader, final String module,
+	private void makeCast(final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
 			throws RpcException {
 		checkAvailability();
@@ -570,8 +572,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			if (outDir.length() > 0) {
 				ErlLogger.debug("backend %s: add path %s", getName(), outDir);
 				addPath(false/* prefs.getUsePathZ() */, outDir);
-				File f = new File(outDir);
-				for (File b : f.listFiles()) {
+				final File f = new File(outDir);
+				for (final File b : f.listFiles()) {
 					ErlangCode.load(this, b.getName());
 				}
 			}

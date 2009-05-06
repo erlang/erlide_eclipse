@@ -61,7 +61,7 @@ public final class ErlangCode {
 				final OtpErlangObject rr = backend.call("filename", "join",
 						"x", new OtpErlangList(new OtpErlangString(path)));
 				path = ((OtpErlangString) rr).stringValue();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				// ignore
 			}
 			backend.call("code", "del_path", null, new OtpErlangString(path));
@@ -77,7 +77,7 @@ public final class ErlangCode {
 				final OtpErlangObject rr = backend.call("filename", "join",
 						"x", new OtpErlangList(new OtpErlangString(path)));
 				path = ((OtpErlangString) rr).stringValue();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				// ignore
 			}
 			backend.call("code", "del_path", "s", path);
@@ -102,7 +102,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void load(Backend backend, String name) {
+	public static void load(final Backend backend, String name) {
 		if (name.endsWith(".beam")) {
 			name = name.substring(0, name.length() - 5);
 		}

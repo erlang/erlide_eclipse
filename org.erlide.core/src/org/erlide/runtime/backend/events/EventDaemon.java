@@ -26,12 +26,12 @@ public class EventDaemon implements BackendListener {
 	boolean DEBUG = "true".equals(System.getProperty("erlide.event.daemon"));
 
 	private final class HandlerJob extends Job {
-		HandlerJob(String name) {
+		HandlerJob(final String name) {
 			super(name);
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor) {
+		protected IStatus run(final IProgressMonitor monitor) {
 			try {
 				OtpErlangObject msg = null;
 				do {
@@ -42,7 +42,7 @@ public class EventDaemon implements BackendListener {
 								ErlLogger.debug("MSG: %s", msg);
 							}
 							synchronized (listenersLock) {
-								for (EventHandler handler : fListeners) {
+								for (final EventHandler handler : fListeners) {
 									handler.handleMsg(msg);
 								}
 							}

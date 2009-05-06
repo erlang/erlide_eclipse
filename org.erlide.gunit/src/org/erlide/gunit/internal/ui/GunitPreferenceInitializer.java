@@ -24,24 +24,24 @@ public class GunitPreferenceInitializer extends AbstractPreferenceInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void initializeDefaultPreferences() {
-		Preferences prefs = GUnitPlugin.getDefault().getPluginPreferences();
+		final Preferences prefs = GUnitPlugin.getDefault().getPluginPreferences();
 		prefs.setDefault(GUnitPreferencesConstants.DO_FILTER_STACK, true);
 		prefs.setDefault(GUnitPreferencesConstants.SHOW_ON_ERROR_ONLY, false);
 		prefs.setDefault(GUnitPreferencesConstants.ENABLE_ASSERTIONS, false);
 
-		List<String> defaults = GUnitPreferencesConstants
-				.createDefaultStackFiltersList();
-		String[] filters = defaults.toArray(new String[defaults.size()]);
-		String active = GUnitPreferencesConstants.serializeList(filters);
+		final List<String> defaults = GUnitPreferencesConstants
+		.createDefaultStackFiltersList();
+		final String[] filters = defaults.toArray(new String[defaults.size()]);
+		final String active = GUnitPreferencesConstants.serializeList(filters);
 		prefs.setDefault(GUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST,
 				active);
 		prefs.setDefault(GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST,
-				""); //$NON-NLS-1$
+		""); //$NON-NLS-1$
 		prefs.setDefault(GUnitPreferencesConstants.MAX_TEST_RUNS, 10);
 
 		prefs.setDefault(GUnitPreferencesConstants.JUNIT3_JAVADOC,
-				"http://www.junit.org/junit/javadoc/3.8.1"); //$NON-NLS-1$
+		"http://www.junit.org/junit/javadoc/3.8.1"); //$NON-NLS-1$
 		prefs.setDefault(GUnitPreferencesConstants.JUNIT4_JAVADOC,
-				"http://www.junit.org/junit/javadoc/4.3"); //$NON-NLS-1$
+		"http://www.junit.org/junit/javadoc/4.3"); //$NON-NLS-1$
 	}
 }

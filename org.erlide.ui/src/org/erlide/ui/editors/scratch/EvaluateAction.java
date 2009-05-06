@@ -19,7 +19,7 @@ import org.erlide.ui.ErlideUIDebugImages;
  */
 public class EvaluateAction extends ScratchAction {
 
-	public EvaluateAction(ScratchEditor editor) {
+	public EvaluateAction(final ScratchEditor editor) {
 		super(editor);
 
 		setText(ScratchMessages.getString("EvaluateAction.label")); //$NON-NLS-1$
@@ -47,7 +47,7 @@ public class EvaluateAction extends ScratchAction {
 	/**
 	 * @see IScratchStateChangedListener#scratchStateChanged(ScratchEditor)
 	 */
-	public void scratchStateChanged(ScratchEditor editor) {
+	public void scratchStateChanged(final ScratchEditor editor) {
 		setEnabled(editor != null);
 	}
 }

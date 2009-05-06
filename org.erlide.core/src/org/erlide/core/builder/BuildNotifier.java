@@ -45,7 +45,7 @@ public class BuildNotifier {
 		fixedWarningCount = 0;
 	}
 
-	public BuildNotifier(IProgressMonitor monitor, IProject project) {
+	public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
 		fMonitor = monitor;
 		fCancelling = false;
 		fNewErrorCount = newErrorCount;
@@ -59,7 +59,7 @@ public class BuildNotifier {
 	/**
 	 * Notification before a compile that a unit is about to be compiled.
 	 */
-	public void aboutToCompile(IResource unit) {
+	public void aboutToCompile(final IResource unit) {
 		checkCancel();
 		final String message = BuilderMessages
 				.bind(BuilderMessages.build_compiling, unit.getParent()
@@ -103,7 +103,7 @@ public class BuildNotifier {
 	 * Notification while within a compile that a unit has finished being
 	 * compiled.
 	 */
-	public void compiled(IResource unit) {
+	public void compiled(final IResource unit) {
 		final String message = BuilderMessages
 				.bind(BuilderMessages.build_compiling, unit.getParent()
 						.getFullPath());
@@ -214,7 +214,7 @@ public class BuildNotifier {
 	 * should not check cancel again while this is true, to avoid
 	 * OperationCanceledException being thrown at an inopportune time.
 	 */
-	public void setCancelling(boolean cancelling) {
+	public void setCancelling(final boolean cancelling) {
 		fCancelling = cancelling;
 	}
 
@@ -222,11 +222,11 @@ public class BuildNotifier {
 	 * Sets the amount of progress to report for compiling each compilation
 	 * unit.
 	 */
-	public void setProgressPerCompilationUnit(float progress) {
+	public void setProgressPerCompilationUnit(final float progress) {
 		progressPerCompilationUnit = progress;
 	}
 
-	public void subTask(String message) {
+	public void subTask(final String message) {
 		final String pm = problemsMessage();
 		final String msg = pm.length() == 0 ? message : pm + " " + message; //$NON-NLS-1$
 
@@ -241,8 +241,8 @@ public class BuildNotifier {
 		previousSubtask = msg;
 	}
 
-	protected void updateProblemCounts(IProblem[] newProblems) {
-		for (IProblem element : newProblems) {
+	protected void updateProblemCounts(final IProblem[] newProblems) {
+		for (final IProblem element : newProblems) {
 			if (element.isError()) {
 				fNewErrorCount++;
 			} else {
@@ -255,8 +255,8 @@ public class BuildNotifier {
 	 * Update the problem counts from one compilation result given the old and
 	 * new problems, either of which may be null.
 	 */
-	protected void updateProblemCounts(IMarker[] oldProblems,
-			IProblem[] newProblems) {
+	protected void updateProblemCounts(final IMarker[] oldProblems,
+			final IProblem[] newProblems) {
 		if (newProblems != null) {
 			next: for (final IProblem newProblem : newProblems) {
 				if (newProblem.getID() == IProblem.Task) {
@@ -319,7 +319,7 @@ public class BuildNotifier {
 		}
 	}
 
-	public void updateProgress(float newPercentComplete) {
+	public void updateProgress(final float newPercentComplete) {
 		if (newPercentComplete > percentComplete) {
 			percentComplete = Math.min(newPercentComplete, 1.0f);
 			final int work = Math.round(percentComplete * fTotalWork);
@@ -336,7 +336,7 @@ public class BuildNotifier {
 		}
 	}
 
-	public void updateProgressDelta(float percentWorked) {
+	public void updateProgressDelta(final float percentWorked) {
 		updateProgress(percentComplete + percentWorked);
 	}
 }

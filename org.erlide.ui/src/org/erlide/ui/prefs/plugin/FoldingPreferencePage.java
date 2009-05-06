@@ -11,7 +11,8 @@ public final class FoldingPreferencePage extends
 		AbstractConfigurationBlockPreferencePage {
 
 	/*
-	 * @see org.eclipse.ui.internal.editors.text.AbstractConfigureationBlockPreferencePage#getHelpId()
+	 * @seeorg.eclipse.ui.internal.editors.text.
+	 * AbstractConfigureationBlockPreferencePage#getHelpId()
 	 */
 	@Override
 	protected String getHelpId() {
@@ -19,7 +20,9 @@ public final class FoldingPreferencePage extends
 	}
 
 	/*
-	 * @see org.eclipse.ui.internal.editors.text.AbstractConfigurationBlockPreferencePage#setDescription()
+	 * @see
+	 * org.eclipse.ui.internal.editors.text.AbstractConfigurationBlockPreferencePage
+	 * #setDescription()
 	 */
 	@Override
 	protected void setDescription() {
@@ -28,7 +31,8 @@ public final class FoldingPreferencePage extends
 	}
 
 	/*
-	 * @see org.org.eclipse.ui.internal.editors.text.AbstractConfigurationBlockPreferencePage#setPreferenceStore()
+	 * @seeorg.org.eclipse.ui.internal.editors.text.
+	 * AbstractConfigurationBlockPreferencePage#setPreferenceStore()
 	 */
 	@Override
 	protected void setPreferenceStore() {
@@ -36,16 +40,19 @@ public final class FoldingPreferencePage extends
 	}
 
 	@Override
-	protected Label createDescriptionLabel(Composite parent) {
+	protected Label createDescriptionLabel(final Composite parent) {
 		return null; // no description for new look.
 	}
 
 	/*
-	 * @see org.eclipse.ui.internal.editors.text.AbstractConfigureationBlockPreferencePage#createConfigurationBlock(org.eclipse.ui.internal.editors.text.OverlayPreferenceStore)
+	 * @seeorg.eclipse.ui.internal.editors.text.
+	 * AbstractConfigureationBlockPreferencePage
+	 * #createConfigurationBlock(org.eclipse
+	 * .ui.internal.editors.text.OverlayPreferenceStore)
 	 */
 	@Override
 	protected IPreferenceConfigurationBlock createConfigurationBlock(
-			OverlayPreferenceStore overlayPreferenceStore) {
+			final OverlayPreferenceStore overlayPreferenceStore) {
 		return new FoldingConfigurationBlock(overlayPreferenceStore);
 	}
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -25,15 +25,15 @@ import java.util.Map;
  */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 	private static final long serialVersionUID = -5423610637179253987L;
-	private int max;
+	private final int max;
 
-	public LRUCache(int MAX_ENTRIES) {
+	public LRUCache(final int MAX_ENTRIES) {
 		super(MAX_ENTRIES, .75F, true);
 		max = MAX_ENTRIES;
 	}
 
 	@Override
-	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+	protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
 		return size() > max;
 	}
 }

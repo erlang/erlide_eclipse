@@ -66,12 +66,12 @@ public final class GUnitModel {
 		 * a TestRunner once to a launch. Once a test runner is connected, it is
 		 * removed from the set.
 		 */
-		private HashSet<ILaunch> fTrackedLaunches = new HashSet<ILaunch>(20);
+		private final HashSet<ILaunch> fTrackedLaunches = new HashSet<ILaunch>(20);
 
 		/*
 		 * @see ILaunchListener#launchAdded(ILaunch)
 		 */
-		public void launchAdded(ILaunch launch) {
+		public void launchAdded(final ILaunch launch) {
 			this.fTrackedLaunches.add(launch);
 		}
 
@@ -100,20 +100,20 @@ public final class GUnitModel {
 				return;
 			}
 
-			ILaunchConfiguration config = launch.getLaunchConfiguration();
+			final ILaunchConfiguration config = launch.getLaunchConfiguration();
 			if (config == null) {
 				return;
 			}
 
 			final IErlProject javaProject = GUnitLaunchConfigurationConstants
-					.getErlProject(config);
+			.getErlProject(config);
 			if (javaProject == null) {
 				return;
 			}
 
 			// test whether the launch defines the JUnit attributes
-			String portStr = launch
-					.getAttribute(GUnitLaunchConfigurationConstants.ATTR_PORT);
+			final String portStr = launch
+			.getAttribute(GUnitLaunchConfigurationConstants.ATTR_PORT);
 			if (portStr == null) {
 				return;
 			}
@@ -125,35 +125,35 @@ public final class GUnitModel {
 						connectTestRunner(launch, javaProject, port);
 					}
 				});
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				return;
 			}
 		}
 
-		private void connectTestRunner(ILaunch launch, IErlProject javaProject,
-				int port) {
+		private void connectTestRunner(final ILaunch launch, final IErlProject javaProject,
+				final int port) {
 			showTestRunnerViewPartInActivePage(findTestRunnerViewPartInActivePage());
 
 			// TODO: Do notifications have to be sent in UI thread?
 			// Check concurrent access to fTestRunSessions (no problem inside
 			// asyncExec())
-			int maxCount = GUnitPlugin.getDefault().getPreferenceStore()
-					.getInt(GUnitPreferencesConstants.MAX_TEST_RUNS);
+			final int maxCount = GUnitPlugin.getDefault().getPreferenceStore()
+			.getInt(GUnitPreferencesConstants.MAX_TEST_RUNS);
 			int toDelete = GUnitModel.this.fTestRunSessions.size() - maxCount;
 			while (toDelete > 0) {
 				toDelete--;
-				TestRunSession session = GUnitModel.this.fTestRunSessions
-						.removeLast();
+				final TestRunSession session = GUnitModel.this.fTestRunSessions
+				.removeLast();
 				notifyTestRunSessionRemoved(session);
 			}
 
-			TestRunSession testRunSession = new TestRunSession(launch,
+			final TestRunSession testRunSession = new TestRunSession(launch,
 					javaProject, port);
 			addTestRunSession(testRunSession);
 		}
 
 		private TestRunnerViewPart showTestRunnerViewPartInActivePage(
-				TestRunnerViewPart testRunner) {
+				final TestRunnerViewPart testRunner) {
 			IWorkbenchPart activePart = null;
 			IWorkbenchPage page = null;
 			try {
@@ -169,8 +169,8 @@ public final class GUnitModel {
 				activePart = page.getActivePart();
 				// show the result view if it isn't shown yet
 				return (TestRunnerViewPart) page
-						.showView(TestRunnerViewPart.NAME);
-			} catch (PartInitException pie) {
+				.showView(TestRunnerViewPart.NAME);
+			} catch (final PartInitException pie) {
 				GUnitPlugin.log(pie);
 				return null;
 			} finally {
@@ -182,7 +182,7 @@ public final class GUnitModel {
 		}
 
 		private TestRunnerViewPart findTestRunnerViewPartInActivePage() {
-			IWorkbenchPage page = GUnitPlugin.getActivePage();
+			final IWorkbenchPage page = GUnitPlugin.getActivePage();
 			if (page == null) {
 				return null;
 			}
@@ -215,8 +215,8 @@ public final class GUnitModel {
 	 * Starts the model (called by the {@link GUnitPlugin} on startup).
 	 */
 	public void start() {
-		ILaunchManager launchManager = DebugPlugin.getDefault()
-				.getLaunchManager();
+		final ILaunchManager launchManager = DebugPlugin.getDefault()
+		.getLaunchManager();
 		launchManager.addLaunchListener(this.fLaunchListener);
 
 		/*
@@ -251,12 +251,12 @@ public final class GUnitModel {
 	 * Stops the model (called by the {@link GUnitPlugin} on shutdown).
 	 */
 	public void stop() {
-		ILaunchManager launchManager = DebugPlugin.getDefault()
-				.getLaunchManager();
+		final ILaunchManager launchManager = DebugPlugin.getDefault()
+		.getLaunchManager();
 		launchManager.removeLaunchListener(this.fLaunchListener);
 
-		File historyDirectory = GUnitPlugin.getHistoryDirectory();
-		File[] swapFiles = historyDirectory.listFiles();
+		final File historyDirectory = GUnitPlugin.getHistoryDirectory();
+		final File[] swapFiles = historyDirectory.listFiles();
 		if (swapFiles != null) {
 			for (int i = 0; i < swapFiles.length; i++) {
 				swapFiles[i].delete();
@@ -276,11 +276,11 @@ public final class GUnitModel {
 		// }
 	}
 
-	public void addTestRunSessionListener(ITestRunSessionListener listener) {
+	public void addTestRunSessionListener(final ITestRunSessionListener listener) {
 		this.fTestRunSessionListeners.add(listener);
 	}
 
-	public void removeTestRunSessionListener(ITestRunSessionListener listener) {
+	public void removeTestRunSessionListener(final ITestRunSessionListener listener) {
 		this.fTestRunSessionListeners.remove(listener);
 	}
 
@@ -304,7 +304,7 @@ public final class GUnitModel {
 	 * @param testRunSession
 	 *            the session to add
 	 */
-	public void addTestRunSession(TestRunSession testRunSession) {
+	public void addTestRunSession(final TestRunSession testRunSession) {
 		Assert.isNotNull(testRunSession);
 		Assert.isLegal(!this.fTestRunSessions.contains(testRunSession));
 		this.fTestRunSessions.addFirst(testRunSession);
@@ -320,42 +320,42 @@ public final class GUnitModel {
 	 * @throws CoreException
 	 *             if the import failed
 	 */
-	public static TestRunSession importTestRunSession(File file)
-			throws CoreException {
+	public static TestRunSession importTestRunSession(final File file)
+	throws CoreException {
 		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			// parserFactory.setValidating(true); // TODO: add DTD and debug
 			// flag
-			SAXParser parser = parserFactory.newSAXParser();
-			TestRunHandler handler = new TestRunHandler();
+			final SAXParser parser = parserFactory.newSAXParser();
+			final TestRunHandler handler = new TestRunHandler();
 			parser.parse(file, handler);
-			TestRunSession session = handler.getTestRunSession();
+			final TestRunSession session = handler.getTestRunSession();
 			GUnitPlugin.getModel().addTestRunSession(session);
 			return session;
-		} catch (ParserConfigurationException e) {
+		} catch (final ParserConfigurationException e) {
 			throwImportError(file, e);
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			throwImportError(file, e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throwImportError(file, e);
 		}
 		return null; // does not happen
 	}
 
-	public static void importIntoTestRunSession(File swapFile,
-			TestRunSession testRunSession) throws CoreException {
+	public static void importIntoTestRunSession(final File swapFile,
+			final TestRunSession testRunSession) throws CoreException {
 		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			// parserFactory.setValidating(true); // TODO: add DTD and debug
 			// flag
-			SAXParser parser = parserFactory.newSAXParser();
-			TestRunHandler handler = new TestRunHandler(testRunSession);
+			final SAXParser parser = parserFactory.newSAXParser();
+			final TestRunHandler handler = new TestRunHandler(testRunSession);
 			parser.parse(swapFile, handler);
-		} catch (ParserConfigurationException e) {
+		} catch (final ParserConfigurationException e) {
 			throwImportError(swapFile, e);
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			throwImportError(swapFile, e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throwImportError(swapFile, e);
 		}
 	}
@@ -369,40 +369,40 @@ public final class GUnitModel {
 	 *            the destination
 	 * @throws CoreException
 	 */
-	public static void exportTestRunSession(TestRunSession testRunSession,
-			File file) throws CoreException {
+	public static void exportTestRunSession(final TestRunSession testRunSession,
+			final File file) throws CoreException {
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(file);
 			exportTestRunSession(testRunSession, out);
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throwExportError(file, e);
-		} catch (TransformerConfigurationException e) {
+		} catch (final TransformerConfigurationException e) {
 			throwExportError(file, e);
-		} catch (TransformerException e) {
+		} catch (final TransformerException e) {
 			throwExportError(file, e);
 		} finally {
 			if (out != null) {
 				try {
 					out.close();
-				} catch (IOException e2) {
+				} catch (final IOException e2) {
 					GUnitPlugin.log(e2);
 				}
 			}
 		}
 	}
 
-	public static void exportTestRunSession(TestRunSession testRunSession,
-			OutputStream out) throws TransformerFactoryConfigurationError,
+	public static void exportTestRunSession(final TestRunSession testRunSession,
+			final OutputStream out) throws TransformerFactoryConfigurationError,
 			TransformerException {
 
-		Transformer transformer = TransformerFactory.newInstance()
-				.newTransformer();
-		InputSource inputSource = new InputSource();
-		SAXSource source = new SAXSource(new TestRunSessionSerializer(
+		final Transformer transformer = TransformerFactory.newInstance()
+		.newTransformer();
+		final InputSource inputSource = new InputSource();
+		final SAXSource source = new SAXSource(new TestRunSessionSerializer(
 				testRunSession), inputSource);
-		StreamResult result = new StreamResult(out);
+		final StreamResult result = new StreamResult(out);
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 		/*
@@ -416,26 +416,26 @@ public final class GUnitModel {
 		try {
 			transformer.setOutputProperty(
 					"{http://xml.apache.org/xalan/indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			// no indentation today...
 		}
 		transformer.transform(source, result);
 	}
 
-	private static void throwExportError(File file, Exception e)
-			throws CoreException {
+	private static void throwExportError(final File file, final Exception e)
+	throws CoreException {
 		throw new CoreException(new org.eclipse.core.runtime.Status(
 				IStatus.ERROR, GUnitPlugin.getPluginId(), Messages.format(
 						ModelMessages.JUnitModel_could_not_write, file
-								.getAbsolutePath()), e));
+						.getAbsolutePath()), e));
 	}
 
-	private static void throwImportError(File file, Exception e)
-			throws CoreException {
+	private static void throwImportError(final File file, final Exception e)
+	throws CoreException {
 		throw new CoreException(new org.eclipse.core.runtime.Status(
 				IStatus.ERROR, GUnitPlugin.getPluginId(), Messages.format(
 						ModelMessages.JUnitModel_could_not_read, file
-								.getAbsolutePath()), e));
+						.getAbsolutePath()), e));
 	}
 
 	/**
@@ -448,35 +448,35 @@ public final class GUnitModel {
 	 * @param testRunSession
 	 *            the session to remove
 	 */
-	public void removeTestRunSession(TestRunSession testRunSession) {
-		boolean existed = this.fTestRunSessions.remove(testRunSession);
+	public void removeTestRunSession(final TestRunSession testRunSession) {
+		final boolean existed = this.fTestRunSessions.remove(testRunSession);
 		if (existed) {
 			notifyTestRunSessionRemoved(testRunSession);
 		}
 		testRunSession.removeSwapFile();
 	}
 
-	private void notifyTestRunSessionRemoved(TestRunSession testRunSession) {
+	private void notifyTestRunSessionRemoved(final TestRunSession testRunSession) {
 		testRunSession.stopTestRun();
-		ILaunch launch = testRunSession.getLaunch();
+		final ILaunch launch = testRunSession.getLaunch();
 		if (launch != null) {
-			ILaunchManager launchManager = DebugPlugin.getDefault()
-					.getLaunchManager();
+			final ILaunchManager launchManager = DebugPlugin.getDefault()
+			.getLaunchManager();
 			launchManager.removeLaunch(launch);
 		}
 
-		Object[] listeners = this.fTestRunSessionListeners.getListeners();
+		final Object[] listeners = this.fTestRunSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
 			((ITestRunSessionListener) listeners[i])
-					.sessionRemoved(testRunSession);
+			.sessionRemoved(testRunSession);
 		}
 	}
 
-	private void notifyTestRunSessionAdded(TestRunSession testRunSession) {
-		Object[] listeners = this.fTestRunSessionListeners.getListeners();
+	private void notifyTestRunSessionAdded(final TestRunSession testRunSession) {
+		final Object[] listeners = this.fTestRunSessionListeners.getListeners();
 		for (int i = 0; i < listeners.length; ++i) {
 			((ITestRunSessionListener) listeners[i])
-					.sessionAdded(testRunSession);
+			.sessionAdded(testRunSession);
 		}
 	}
 

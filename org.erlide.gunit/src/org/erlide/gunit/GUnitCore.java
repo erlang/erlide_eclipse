@@ -40,7 +40,7 @@ public class GUnitCore {
 	 *            the listener to be added
 	 * @since 3.3
 	 */
-	public static void addTestRunListener(TestRunListener listener) {
+	public static void addTestRunListener(final TestRunListener listener) {
 		GUnitPlugin.getDefault().getNewTestRunListeners().add(listener);
 	}
 
@@ -51,7 +51,7 @@ public class GUnitCore {
 	 *            the listener to be removed
 	 * @since 3.3
 	 */
-	public static void removeTestRunListener(TestRunListener listener) {
+	public static void removeTestRunListener(final TestRunListener listener) {
 		GUnitPlugin.getDefault().getNewTestRunListeners().remove(listener);
 	}
 }

@@ -82,7 +82,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * @exception java.lang.IllegalArgumentException
      *                if the array is empty (null) or contains null elements.
      */
-    public OtpErlangTuple(OtpErlangObject[] elems, final int start,
+    public OtpErlangTuple(final OtpErlangObject[] elems, final int start,
 	    final int count) {
 	if (elems == null) {
 	    throw new java.lang.IllegalArgumentException(
@@ -241,7 +241,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 
     @Override
     protected int doHashCode() {
-	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(9);
+	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(9);
 	final int a = arity();
 	hash.combine(a);
 	for (int i = 0; i < a; i++) {

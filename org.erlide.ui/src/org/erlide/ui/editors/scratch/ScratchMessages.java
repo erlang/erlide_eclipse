@@ -24,7 +24,7 @@ public class ScratchMessages {
 	private ScratchMessages() {
 	}
 
-	public static String getString(String key) {
+	public static String getString(final String key) {
 		try {
 			return fgResourceBundle.getString(key);
 		} catch (final MissingResourceException e) {
@@ -38,7 +38,7 @@ public class ScratchMessages {
 	 * @param key
 	 *            the string used to get the bundle value, must not be null
 	 */
-	public static String getFormattedString(String key, Object arg) {
+	public static String getFormattedString(final String key, Object arg) {
 		String format = null;
 		try {
 			format = fgResourceBundle.getString(key);

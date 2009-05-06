@@ -36,11 +36,14 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateVariable,
-	 *      org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateVariable,
+	 * org.eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	public void resolve(TemplateVariable variable, TemplateContext theContext) {
+	public void resolve(final TemplateVariable variable,
+			final TemplateContext theContext) {
 		variable.setValue(fModule);
 	}
 
@@ -55,15 +58,15 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 	 * @param module
 	 *            The module to set.
 	 */
-	public void setModule(String module) {
-		for (Object element0 : fInstances) {
+	public void setModule(final String module) {
+		for (final Object element0 : fInstances) {
 			final ModuleVariableResolver element = (ModuleVariableResolver) element0;
 			element.doSetModule(module);
 		}
 		fModule = module;
 	}
 
-	void doSetModule(String module) {
+	void doSetModule(final String module) {
 		fModule = module;
 	}
 

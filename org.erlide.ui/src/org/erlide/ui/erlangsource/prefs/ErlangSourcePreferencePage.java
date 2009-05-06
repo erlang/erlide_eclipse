@@ -105,7 +105,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 
 	}
 
@@ -133,7 +133,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * .swt.widgets.Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		final Composite top = new Composite(parent, SWT.LEFT);
 		top.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -225,7 +225,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
 	 * .swt.events.SelectionEvent)
 	 */
-	public void widgetDefaultSelected(SelectionEvent e) {
+	public void widgetDefaultSelected(final SelectionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
@@ -237,7 +237,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
 	 * .events.SelectionEvent)
 	 */
-	public void widgetSelected(SelectionEvent e) {
+	public void widgetSelected(final SelectionEvent e) {
 		if (e.getSource() == new_button) {
 			/* final ErlangSourceTemplateDialog diag = */
 			new ErlangSourceTemplateDialog(getShell(), resourceBundle);
@@ -271,7 +271,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 					final TemplatePersistenceData[] data = ErlangSourceContextTypeComment
 							.getDefault().getTemplateStore().getTemplateData(
 									true);
-					for (TemplatePersistenceData element : data) {
+					for (final TemplatePersistenceData element : data) {
 						if (element.getTemplate().getContextTypeId().equals(
 								o[i])) {
 							list.add(element);
@@ -341,7 +341,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		}
 	}
 
-	private void export(TemplatePersistenceData[] templates) {
+	private void export(final TemplatePersistenceData[] templates) {
 		final FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
 		dialog.setText("Exporting " + templates.length + " templates.");
 		dialog.setFilterExtensions(new String[] { "*.xml" });
@@ -385,13 +385,13 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		}
 	}
 
-	private boolean confirmOverwrite(File file) {
+	private boolean confirmOverwrite(final File file) {
 		return MessageDialog.openQuestion(getShell(), "Overwrite file?",
 				"Are you sure that you want to overwrite "
 						+ file.getAbsolutePath());
 	}
 
-	private void openWriteErrorDialog(Exception e) {
+	private void openWriteErrorDialog(final Exception e) {
 		final String title = "Error!";
 		final String message = "An unexpected exception has been raised"
 				+ e.getLocalizedMessage();
@@ -405,7 +405,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(
 	 * org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		final StructuredSelection selection = (StructuredSelection) event
 				.getSelection();
 		if (selection.getFirstElement() instanceof TemplatePersistenceData) {
@@ -435,7 +435,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		 * org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 		 */
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			if (element instanceof String) {
 				return resourceBundle.getString((String) element);
 			}
@@ -454,7 +454,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements(
 		 * java.lang.Object)
 		 */
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			final Iterator<?> it = ErlangSourceContextTypeComment.getDefault()
 					.getContextTypeRegistry().contextTypes();
 			final ArrayList<String> al = new ArrayList<String>();
@@ -477,17 +477,18 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 		 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
 		 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
 		}
 
-		public Object[] getChildren(Object parentElement) {
+		public Object[] getChildren(final Object parentElement) {
 			if (parentElement instanceof String) {
 
 				final TemplatePersistenceData[] templates = ErlangSourceContextTypeComment
 						.getDefault().getTemplateStore().getTemplateData(false);
 
 				final ArrayList<TemplatePersistenceData> list = new ArrayList<TemplatePersistenceData>();
-				for (TemplatePersistenceData element : templates) {
+				for (final TemplatePersistenceData element : templates) {
 					if (element.getTemplate().getContextTypeId().equals(
 							parentElement)) {
 						list.add(element);
@@ -501,7 +502,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 
 		/* FIXME: Is convert needed ? */
 		@SuppressWarnings("unused")
-		private TemplatePersistenceData[] convert(Template[] templates) {
+		private TemplatePersistenceData[] convert(final Template[] templates) {
 			final TemplatePersistenceData[] temp = new TemplatePersistenceData[templates.length];
 			for (int i = 0; i < templates.length; i++) {
 				temp[i] = new TemplatePersistenceData(templates[i], true);
@@ -509,7 +510,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			return temp;
 		}
 
-		public Object getParent(Object element) {
+		public Object getParent(final Object element) {
 			if (element instanceof String) {
 				return null;
 			}
@@ -518,7 +519,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 			return child.getTemplate().getContextTypeId();
 		}
 
-		public boolean hasChildren(Object element) {
+		public boolean hasChildren(final Object element) {
 			return element instanceof String;
 		}
 	}

@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
@@ -18,9 +18,9 @@ import org.erlide.runtime.ErlLogger;
 
 public class DummyProcess implements IProcess {
 
-	private ILaunch fLaunch;
+	private final ILaunch fLaunch;
 
-	public DummyProcess(ILaunch launch) {
+	public DummyProcess(final ILaunch launch) {
 		super();
 		fLaunch = launch;
 	}
@@ -38,10 +38,10 @@ public class DummyProcess implements IProcess {
 		return null;
 	}
 
-	public void setAttribute(String key, String value) {
+	public void setAttribute(final String key, final String value) {
 	}
 
-	public String getAttribute(String key) {
+	public String getAttribute(final String key) {
 		return "?" + key;
 	}
 
@@ -50,7 +50,7 @@ public class DummyProcess implements IProcess {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(final Class adapter) {
 		ErlLogger.debug("--> adapt as " + adapter.getName());
 		return null;
 	}

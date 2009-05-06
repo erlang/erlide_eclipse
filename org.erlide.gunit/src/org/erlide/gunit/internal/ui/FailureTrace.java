@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Sebastian Davids: sdavids@gmx.de bug 37333, 26653 
+ *     Sebastian Davids: sdavids@gmx.de bug 37333, 26653
  *     Johan Walles: walles@mailblocks.com bug 68737
  *******************************************************************************/
 package org.erlide.gunit.internal.ui;
@@ -39,9 +39,9 @@ public class FailureTrace implements IMenuListener {
 
 	static final String FRAME_PREFIX = "at "; //$NON-NLS-1$
 
-	private Table fTable;
+	private final Table fTable;
 
-	private TestRunnerViewPart fTestRunner;
+	private final TestRunnerViewPart fTestRunner;
 
 	private String fInputTrace;
 
@@ -49,16 +49,16 @@ public class FailureTrace implements IMenuListener {
 
 	private TestElement fFailure;
 
-	private CompareResultsAction fCompareAction;
+	private final CompareResultsAction fCompareAction;
 
 	private final FailureTableDisplay fFailureTableDisplay;
 
-	public FailureTrace(Composite parent, Clipboard clipboard,
-			TestRunnerViewPart testRunner, ToolBar toolBar) {
+	public FailureTrace(final Composite parent, final Clipboard clipboard,
+			final TestRunnerViewPart testRunner, final ToolBar toolBar) {
 		Assert.isNotNull(clipboard);
 
 		// fill the failure trace viewer toolbar
-		ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
+		final ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
 		failureToolBarmanager.add(new EnableStackFilterAction(this));
 		this.fCompareAction = new CompareResultsAction(this);
 		this.fCompareAction.setEnabled(false);
@@ -70,15 +70,15 @@ public class FailureTrace implements IMenuListener {
 		this.fTestRunner = testRunner;
 		this.fClipboard = clipboard;
 
-		OpenStrategy handler = new OpenStrategy(this.fTable);
+		final OpenStrategy handler = new OpenStrategy(this.fTable);
 		handler.addOpenListener(new IOpenEventListener() {
-			public void handleOpen(SelectionEvent e) {
+			public void handleOpen(final SelectionEvent e) {
 				if (FailureTrace.this.fTable.getSelectionIndex() == 0
 						&& FailureTrace.this.fFailure.isComparisonFailure()) {
 					FailureTrace.this.fCompareAction.run();
 				}
 				if (FailureTrace.this.fTable.getSelection().length != 0) {
-					Action a = createOpenEditorAction(getSelectedText());
+					final Action a = createOpenEditorAction(getSelectedText());
 					if (a != null) {
 						a.run();
 					}
@@ -92,21 +92,21 @@ public class FailureTrace implements IMenuListener {
 	}
 
 	private void initMenu() {
-		MenuManager menuMgr = new MenuManager();
+		final MenuManager menuMgr = new MenuManager();
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(this);
-		Menu menu = menuMgr.createContextMenu(this.fTable);
+		final Menu menu = menuMgr.createContextMenu(this.fTable);
 		this.fTable.setMenu(menu);
 	}
 
-	public void menuAboutToShow(IMenuManager manager) {
+	public void menuAboutToShow(final IMenuManager manager) {
 		if (this.fTable.getSelectionCount() > 0) {
-			Action a = createOpenEditorAction(getSelectedText());
+			final Action a = createOpenEditorAction(getSelectedText());
 			if (a != null) {
 				manager.add(a);
 			}
 			manager
-					.add(new GUnitCopyAction(FailureTrace.this, this.fClipboard));
+			.add(new GUnitCopyAction(FailureTrace.this, this.fClipboard));
 		}
 		// fix for bug 68058
 		if (this.fFailure != null && this.fFailure.isComparisonFailure()) {
@@ -122,14 +122,14 @@ public class FailureTrace implements IMenuListener {
 		return this.fTable.getSelection()[0].getText();
 	}
 
-	private Action createOpenEditorAction(String traceLine) {
+	private Action createOpenEditorAction(final String traceLine) {
 		try {
 			String testName = traceLine;
 			testName = testName.substring(testName.indexOf(FRAME_PREFIX));
 			testName = testName.substring(FRAME_PREFIX.length(),
 					testName.lastIndexOf('(')).trim();
 			testName = testName.substring(0, testName.lastIndexOf('.'));
-			int innerSeparatorIndex = testName.indexOf('$');
+			final int innerSeparatorIndex = testName.indexOf('$');
 			if (innerSeparatorIndex != -1) {
 				testName = testName.substring(0, innerSeparatorIndex);
 			}
@@ -137,14 +137,14 @@ public class FailureTrace implements IMenuListener {
 			String lineNumber = traceLine;
 			lineNumber = lineNumber.substring(lineNumber.indexOf(':') + 1,
 					lineNumber.lastIndexOf(')'));
-			int line = Integer.valueOf(lineNumber).intValue();
+			final int line = Integer.valueOf(lineNumber).intValue();
 			// fix for bug 37333
-			String cuName = traceLine.substring(traceLine.lastIndexOf('(') + 1,
+			final String cuName = traceLine.substring(traceLine.lastIndexOf('(') + 1,
 					traceLine.lastIndexOf(':'));
 			return new OpenEditorAtLineAction(this.fTestRunner, cuName,
 					testName, line);
-		} catch (NumberFormatException e) {
-		} catch (IndexOutOfBoundsException e) {
+		} catch (final NumberFormatException e) {
+		} catch (final IndexOutOfBoundsException e) {
 		}
 		return null;
 	}
@@ -171,7 +171,7 @@ public class FailureTrace implements IMenuListener {
 	 * @param test
 	 *            the failed test
 	 */
-	public void showFailure(TestElement test) {
+	public void showFailure(final TestElement test) {
 		this.fFailure = test;
 		String trace = ""; //$NON-NLS-1$
 		updateEnablement(test);
@@ -185,8 +185,8 @@ public class FailureTrace implements IMenuListener {
 		updateTable(trace);
 	}
 
-	public void updateEnablement(TestElement test) {
-		boolean enableCompare = test != null && test.isComparisonFailure();
+	public void updateEnablement(final TestElement test) {
+		final boolean enableCompare = test != null && test.isComparisonFailure();
 		this.fCompareAction.setEnabled(enableCompare);
 		if (enableCompare) {
 			this.fCompareAction.updateOpenDialog(test);
@@ -219,9 +219,9 @@ public class FailureTrace implements IMenuListener {
 	 * @param text
 	 *            the informational message to be shown
 	 */
-	public void setInformation(String text) {
+	public void setInformation(final String text) {
 		clear();
-		TableItem tableItem = this.fFailureTableDisplay.newTableItem();
+		final TableItem tableItem = this.fFailureTableDisplay.newTableItem();
 		tableItem.setText(text);
 	}
 

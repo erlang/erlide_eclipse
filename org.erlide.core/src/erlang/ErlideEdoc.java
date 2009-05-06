@@ -23,11 +23,11 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideEdoc {
 
-	public static void files(Collection<String> files,
-			Map<String, OtpErlangObject> options) throws RpcException,
+	public static void files(final Collection<String> files,
+			final Map<String, OtpErlangObject> options) throws RpcException,
 			BackendException {
-		Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		OtpErlangObject opts = RpcConverter.encodeMap(options);
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		final OtpErlangObject opts = RpcConverter.encodeMap(options);
 		b.call(15000, "edoc", "files", "lsx", files, opts);
 	}
 }

@@ -23,7 +23,7 @@ public class Separator extends DialogField {
 
 	private Label fSeparator;
 
-	private int fStyle;
+	private final int fStyle;
 
 	public Separator() {
 		this(SWT.NONE);
@@ -31,10 +31,9 @@ public class Separator extends DialogField {
 
 	/**
 	 * @param style
-	 *            of the separator. See <code>Label</code> for possible
-	 *            styles.
+	 *            of the separator. See <code>Label</code> for possible styles.
 	 */
-	public Separator(int style) {
+	public Separator(final int style) {
 		super();
 		fStyle = style;
 	}
@@ -47,7 +46,8 @@ public class Separator extends DialogField {
 	 * @param height
 	 *            The height of the separator
 	 */
-	public Control[] doFillIntoGrid(Composite parent, int nColumns, int height) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns,
+			final int height) {
 		assertEnoughColumns(nColumns);
 
 		final Control separator = getSeparator(parent);
@@ -60,7 +60,7 @@ public class Separator extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		return doFillIntoGrid(parent, nColumns, 4);
 	}
 
@@ -72,7 +72,8 @@ public class Separator extends DialogField {
 		return 1;
 	}
 
-	protected static GridData gridDataForSeperator(int span, int height) {
+	protected static GridData gridDataForSeperator(final int span,
+			final int height) {
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.verticalAlignment = GridData.BEGINNING;
@@ -90,7 +91,7 @@ public class Separator extends DialogField {
 	 *            The parent composite or <code>null</code> if the widget has
 	 *            already been created.
 	 */
-	public Control getSeparator(Composite parent) {
+	public Control getSeparator(final Composite parent) {
 		if (fSeparator == null) {
 			assertCompositeNotNull(parent);
 			fSeparator = new Label(parent, fStyle);

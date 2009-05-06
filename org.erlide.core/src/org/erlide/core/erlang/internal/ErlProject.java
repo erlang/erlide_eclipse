@@ -87,7 +87,7 @@ public class ErlProject extends Openable implements IErlProject {
 	 */
 	private IResource[] nonErlangResources;
 
-	private ErlangProjectProperties properties;
+	private final ErlangProjectProperties properties;
 
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());

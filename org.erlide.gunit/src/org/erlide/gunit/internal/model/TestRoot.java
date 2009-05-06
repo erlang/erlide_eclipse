@@ -16,7 +16,7 @@ public class TestRoot extends TestSuiteElement {
 
 	private final ITestRunSession fSession;
 
-	public TestRoot(ITestRunSession session) {
+	public TestRoot(final ITestRunSession session) {
 		super(null, "-1", session.getTestRunName(), 1); //$NON-NLS-1$
 		this.fSession = session;
 	}

@@ -19,9 +19,9 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 public class GotoAnnotationAction extends TextEditorAction {
 
-	private boolean fForward;
+	private final boolean fForward;
 
-	public GotoAnnotationAction(String prefix, boolean forward) {
+	public GotoAnnotationAction(final String prefix, final boolean forward) {
 		super(ErlangEditorMessages.getBundleForConstructedKeys(), prefix, null);
 
 		fForward = forward;
@@ -41,7 +41,7 @@ public class GotoAnnotationAction extends TextEditorAction {
 	}
 
 	@Override
-	public void setEditor(ITextEditor editor) {
+	public void setEditor(final ITextEditor editor) {
 		if (editor instanceof ErlangEditor) {
 			super.setEditor(editor);
 		}

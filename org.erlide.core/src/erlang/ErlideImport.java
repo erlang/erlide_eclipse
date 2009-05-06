@@ -28,7 +28,7 @@ public class ErlideImport {
 	 * 
 	 * @return
 	 */
-	public static ErlProjectImport importProject(Backend b,
+	public static ErlProjectImport importProject(final Backend b,
 			final String prefix, final List<String> importSources) {
 		OtpErlangObject res = null;
 		try {

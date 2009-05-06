@@ -1,11 +1,10 @@
 package org.erlide.runtime.backend.exceptions;
 
-
 public class NoBackendException extends BackendException {
 
 	private static final long serialVersionUID = 1L;
 
-	public NoBackendException(Exception e) {
+	public NoBackendException(final Exception e) {
 		super(e);
 	}
 

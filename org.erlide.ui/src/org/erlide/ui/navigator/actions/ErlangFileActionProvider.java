@@ -23,14 +23,16 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator.ICommonActionExtensionSite)
+	 * @see
+	 * org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator
+	 * .ICommonActionExtensionSite)
 	 */
 	@Override
-	public void init(ICommonActionExtensionSite aSite) {
+	public void init(final ICommonActionExtensionSite aSite) {
 
-		ICommonViewerSite viewSite = aSite.getViewSite();
+		final ICommonViewerSite viewSite = aSite.getViewSite();
 		if (viewSite instanceof ICommonViewerWorkbenchSite) {
-			ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
+			final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
 			openAction = new OpenErlangAction(workbenchSite.getPage(),
 					workbenchSite.getSelectionProvider());
 		}
@@ -39,10 +41,12 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
+	 * @see
+	 * org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars
+	 * )
 	 */
 	@Override
-	public void fillActionBars(IActionBars actionBars) {
+	public void fillActionBars(final IActionBars actionBars) {
 		/* Set up the property open action when enabled. */
 		if (openAction.isEnabled()) {
 			actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN,
@@ -53,10 +57,12 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
+	 * @see
+	 * org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.
+	 * action.IMenuManager)
 	 */
 	@Override
-	public void fillContextMenu(IMenuManager menu) {
+	public void fillContextMenu(final IMenuManager menu) {
 		if (openAction.isEnabled()) {
 			menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, openAction);
 		}

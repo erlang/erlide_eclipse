@@ -51,7 +51,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 	 * @param partitioning
 	 *            the partitioning to match within
 	 */
-	public ErlangPairMatcher(String[] strings, String partitioning) {
+	public ErlangPairMatcher(final String[] strings, final String partitioning) {
 		Assert.isLegal(strings.length % 2 == 0);
 		Assert.isNotNull(partitioning);
 		fPairs = new StringPairs(strings);
@@ -72,18 +72,18 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 	 * @param chars
 	 *            a list of characters
 	 */
-	public ErlangPairMatcher(String[] strings) {
+	public ErlangPairMatcher(final String[] strings) {
 		this(strings, IDocumentExtension3.DEFAULT_PARTITIONING);
 	}
 
 	/* @see ICharacterPairMatcher#match(IDocument, int) */
-	public IRegion match(IDocument doc, int offset) {
+	public IRegion match(final IDocument doc, final int offset) {
 		if (doc == null || offset < 0 || offset > doc.getLength()) {
 			return null;
 		}
 		try {
 			return performMatch(doc, offset);
-		} catch (BadLocationException ble) {
+		} catch (final BadLocationException ble) {
 			return null;
 		}
 	}
@@ -91,7 +91,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 	/*
 	 * Performs the actual work of matching for #match(IDocument, int).
 	 */
-	private IRegion performMatch(IDocument doc, int offset)
+	private IRegion performMatch(final IDocument doc, final int offset)
 			throws BadLocationException {
 		if (offset <= 0) {
 			return null;
@@ -116,7 +116,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 				fPartitioning, adjustedOffset, false);
 		final DocumentPartitionAccessor partDoc = new DocumentPartitionAccessor(
 				doc, fPartitioning, partition);
-		int endOffset = findMatchingPeer(partDoc, prevString, fPairs
+		final int endOffset = findMatchingPeer(partDoc, prevString, fPairs
 				.getMatching(prevString), isForward, isForward ? doc
 				.getLength()
 				- prevString.length() + 1 : -1, searchStartPosition);
@@ -149,9 +149,9 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 	 * @return the index of the end character if it was found, otherwise -1
 	 * @throws BadLocationException
 	 */
-	private int findMatchingPeer(DocumentPartitionAccessor doc, String start,
-			String end, boolean searchForward, int boundary, int startPos)
-			throws BadLocationException {
+	private int findMatchingPeer(final DocumentPartitionAccessor doc,
+			final String start, final String end, final boolean searchForward,
+			final int boundary, final int startPos) throws BadLocationException {
 		int pos = startPos;
 		final int length = start.length();
 		while (pos != boundary) {
@@ -206,8 +206,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 * @param partition
 		 *            the partition managed by this document
 		 */
-		public DocumentPartitionAccessor(IDocument doc, String partitioning,
-				String partition) {
+		public DocumentPartitionAccessor(final IDocument doc,
+				final String partitioning, final String partition) {
 			fDocument = doc;
 			fPartitioning = partitioning;
 			fPartition = partition;
@@ -223,7 +223,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 * @return the character at the offset
 		 * @throws BadLocationException
 		 */
-		public String get(int pos, int length) throws BadLocationException {
+		public String get(final int pos, final int length)
+				throws BadLocationException {
 			return fDocument.get(pos, length);
 		}
 
@@ -239,7 +240,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 * @return true exactly if the position represents a valid match
 		 * @throws BadLocationException
 		 */
-		public boolean isMatch(int pos, String end) throws BadLocationException {
+		public boolean isMatch(final int pos, final String end)
+				throws BadLocationException {
 			return get(pos, end.length()).equals(end) && inPartition(pos);
 		}
 
@@ -251,7 +253,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            an offset within this document
 		 * @return true if the offset is within this document's partition
 		 */
-		public boolean inPartition(int pos) {
+		public boolean inPartition(final int pos) {
 			final ITypedRegion partition = getPartition(pos);
 			return partition != null && partition.getType().equals(fPartition);
 		}
@@ -266,7 +268,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            the direction of the search
 		 * @return the next position to query
 		 */
-		public int getNextPosition(int pos, boolean searchForward) {
+		public int getNextPosition(final int pos, final boolean searchForward) {
 			final ITypedRegion partition = getPartition(pos);
 			if (partition == null) {
 				return simpleIncrement(pos, searchForward);
@@ -275,12 +277,12 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 				return simpleIncrement(pos, searchForward);
 			}
 			if (searchForward) {
-				int end = partition.getOffset() + partition.getLength();
+				final int end = partition.getOffset() + partition.getLength();
 				if (pos < end) {
 					return end;
 				}
 			} else {
-				int offset = partition.getOffset();
+				final int offset = partition.getOffset();
 				if (pos > offset) {
 					return offset - 1;
 				}
@@ -288,7 +290,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 			return simpleIncrement(pos, searchForward);
 		}
 
-		private int simpleIncrement(int pos, boolean searchForward) {
+		private int simpleIncrement(final int pos, final boolean searchForward) {
 			return pos + (searchForward ? 1 : -1);
 		}
 
@@ -301,21 +303,21 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 * @return positioning information about the region containing the
 		 *         position
 		 */
-		private ITypedRegion getPartition(int pos) {
+		private ITypedRegion getPartition(final int pos) {
 			if (fCachedPartition == null || !contains(fCachedPartition, pos)) {
 				Assert.isTrue(pos >= 0 && pos <= fDocument.getLength());
 				try {
 					fCachedPartition = TextUtilities.getPartition(fDocument,
 							fPartitioning, pos, false);
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 					fCachedPartition = null;
 				}
 			}
 			return fCachedPartition;
 		}
 
-		private static boolean contains(IRegion region, int pos) {
-			int offset = region.getOffset();
+		private static boolean contains(final IRegion region, final int pos) {
+			final int offset = region.getOffset();
 			return offset <= pos && pos < offset + region.getLength();
 		}
 
@@ -328,7 +330,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
 		private final String[] fPairs;
 
-		public StringPairs(String[] strings) {
+		public StringPairs(final String[] strings) {
 			fPairs = strings;
 		}
 
@@ -340,7 +342,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            a character
 		 * @return true exactly if the character occurs in one of the pairs
 		 */
-		public boolean contains(String s) {
+		public boolean contains(final String s) {
 			return getAllCharacters().contains(s);
 		}
 
@@ -351,7 +353,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 */
 		private Set<String> getAllCharacters() {
 			if (fStringsCache == null) {
-				Set<String> set = new HashSet<String>();
+				final Set<String> set = new HashSet<String>();
 				for (int i = 0; i < fPairs.length; i++) {
 					set.add(fPairs[i]);
 				}
@@ -370,7 +372,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            the direction of the search
 		 * @return whether or not the character opens a character pair
 		 */
-		public boolean isOpeningString(String s, boolean searchForward) {
+		public boolean isOpeningString(final String s,
+				final boolean searchForward) {
 			for (int i = 0; i < fPairs.length; i += 2) {
 				if (searchForward && getStartString(i).equals(s)) {
 					return true;
@@ -388,7 +391,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            a string
 		 * @return true exactly if the string is a start string
 		 */
-		public boolean isStartString(String s) {
+		public boolean isStartString(final String s) {
 			return this.isOpeningString(s, true);
 		}
 
@@ -399,7 +402,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 		 *            a string occurring in a string pair
 		 * @return the matching string
 		 */
-		public String getMatching(String s) {
+		public String getMatching(final String s) {
 			for (int i = 0; i < fPairs.length; i += 2) {
 				if (getStartString(i).equals(s)) {
 					return getEndString(i);
@@ -411,11 +414,11 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 			return "";
 		}
 
-		private String getStartString(int i) {
+		private String getStartString(final int i) {
 			return fPairs[i];
 		}
 
-		private String getEndString(int i) {
+		private String getEndString(final int i) {
 			return fPairs[i + 1];
 		}
 

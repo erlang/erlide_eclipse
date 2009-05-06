@@ -18,9 +18,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EnableStackFilterAction extends Action {
 
-	private FailureTrace fView;
+	private final FailureTrace fView;
 
-	public EnableStackFilterAction(FailureTrace view) {
+	public EnableStackFilterAction(final FailureTrace view) {
 		super(GUnitMessages.EnableStackFilterAction_action_label);
 		setDescription(GUnitMessages.EnableStackFilterAction_action_description);
 		setToolTipText(GUnitMessages.EnableStackFilterAction_action_tooltip);

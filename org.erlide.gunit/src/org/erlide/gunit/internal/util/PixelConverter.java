@@ -20,10 +20,10 @@ import org.eclipse.swt.widgets.Control;
  */
 public class PixelConverter {
 
-	private FontMetrics fFontMetrics;
+	private final FontMetrics fFontMetrics;
 
-	public PixelConverter(Control control) {
-		GC gc = new GC(control);
+	public PixelConverter(final Control control) {
+		final GC gc = new GC(control);
 		gc.setFont(control.getFont());
 		this.fFontMetrics = gc.getFontMetrics();
 		gc.dispose();
@@ -32,28 +32,28 @@ public class PixelConverter {
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertHeightInCharsToPixels(int)
 	 */
-	public int convertHeightInCharsToPixels(int chars) {
+	public int convertHeightInCharsToPixels(final int chars) {
 		return Dialog.convertHeightInCharsToPixels(this.fFontMetrics, chars);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertHorizontalDLUsToPixels(int)
 	 */
-	public int convertHorizontalDLUsToPixels(int dlus) {
+	public int convertHorizontalDLUsToPixels(final int dlus) {
 		return Dialog.convertHorizontalDLUsToPixels(this.fFontMetrics, dlus);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertVerticalDLUsToPixels(int)
 	 */
-	public int convertVerticalDLUsToPixels(int dlus) {
+	public int convertVerticalDLUsToPixels(final int dlus) {
 		return Dialog.convertVerticalDLUsToPixels(this.fFontMetrics, dlus);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.DialogPage#convertWidthInCharsToPixels(int)
 	 */
-	public int convertWidthInCharsToPixels(int chars) {
+	public int convertWidthInCharsToPixels(final int chars) {
 		return Dialog.convertWidthInCharsToPixels(this.fFontMetrics, chars);
 	}
 

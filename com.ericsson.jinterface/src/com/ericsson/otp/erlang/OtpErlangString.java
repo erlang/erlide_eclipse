@@ -49,10 +49,10 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      *             according to Erlang.
      */
     public OtpErlangString(final OtpErlangList list) throws OtpErlangException {
-	String s = list.stringValue();
+	final String s = list.stringValue();
 	final int n = s.length();
 	for (int i = 0; i < n; i = s.offsetByCodePoints(i, 1)) {
-	    int cp = s.codePointAt(i);
+	    final int cp = s.codePointAt(i);
 	    if (!isValidCodePoint(cp)) {
 		throw new OtpErlangRangeException("Invalid CodePoint: " + cp);
 	    }

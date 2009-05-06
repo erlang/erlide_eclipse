@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
@@ -82,7 +82,7 @@ public class ErlangProjectNature implements IProjectNature {
 	 * 
 	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
 	 */
-	public void setProject(IProject lproject) {
+	public void setProject(final IProject lproject) {
 		project = lproject;
 	}
 
@@ -92,7 +92,7 @@ public class ErlangProjectNature implements IProjectNature {
 	 * @param commands
 	 * @return
 	 */
-	private boolean hasBuildSpec(ICommand[] commands) {
+	private boolean hasBuildSpec(final ICommand[] commands) {
 		return getBuildSpecCount(commands) != 0;
 	}
 
@@ -102,9 +102,9 @@ public class ErlangProjectNature implements IProjectNature {
 	 * @param commands
 	 * @return
 	 */
-	private int getBuildSpecCount(ICommand[] commands) {
+	private int getBuildSpecCount(final ICommand[] commands) {
 		int count = 0;
-		for (ICommand element : commands) {
+		for (final ICommand element : commands) {
 			if (ErlangPlugin.BUILDER_ID.equals(element.getBuilderName())) {
 				count++;
 			}

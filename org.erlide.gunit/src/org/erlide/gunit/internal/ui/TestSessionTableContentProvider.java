@@ -21,21 +21,21 @@ import org.erlide.gunit.internal.model.TestSuiteElement;
 import org.erlide.gunit.model.ITestElement;
 
 public class TestSessionTableContentProvider implements
-		IStructuredContentProvider {
+IStructuredContentProvider {
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 	}
 
-	public Object[] getElements(Object inputElement) {
-		ArrayList<ITestElement> all = new ArrayList<ITestElement>();
+	public Object[] getElements(final Object inputElement) {
+		final ArrayList<ITestElement> all = new ArrayList<ITestElement>();
 		addAll(all, (TestRoot) inputElement);
 		return all.toArray();
 	}
 
-	private void addAll(ArrayList<ITestElement> all, TestSuiteElement suite) {
-		ITestElement[] children = suite.getChildren();
+	private void addAll(final ArrayList<ITestElement> all, final TestSuiteElement suite) {
+		final ITestElement[] children = suite.getChildren();
 		for (int i = 0; i < children.length; i++) {
-			ITestElement element = children[i];
+			final ITestElement element = children[i];
 			if (element instanceof TestSuiteElement) {
 				if (((TestSuiteElement) element).getSuiteStatus()
 						.isErrorOrFailure()) {

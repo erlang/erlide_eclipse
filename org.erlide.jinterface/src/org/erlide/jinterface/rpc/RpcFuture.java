@@ -15,10 +15,10 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public class RpcFuture {
 
-	private OtpMbox mbox;
+	private final OtpMbox mbox;
 	private OtpErlangObject result = null;
 
-	public RpcFuture(OtpMbox mbox) {
+	public RpcFuture(final OtpMbox mbox) {
 		this.mbox = mbox;
 	}
 
@@ -29,7 +29,7 @@ public class RpcFuture {
 		return get(RpcUtil.INFINITY);
 	}
 
-	public OtpErlangObject get(long timeout) throws RpcException {
+	public OtpErlangObject get(final long timeout) throws RpcException {
 		if (isDone()) {
 			return result;
 		}

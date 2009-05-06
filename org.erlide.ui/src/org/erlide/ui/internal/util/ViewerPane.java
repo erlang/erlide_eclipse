@@ -25,9 +25,9 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class ViewerPane extends ViewForm {
 
-	private ToolBarManager fToolBarManager;
+	private final ToolBarManager fToolBarManager;
 
-	public ViewerPane(Composite parent, int style) {
+	public ViewerPane(final Composite parent, final int style) {
 		super(parent, style);
 
 		marginWidth = 0;
@@ -44,7 +44,7 @@ public class ViewerPane extends ViewForm {
 	/**
 	 * Sets the receiver's title text.
 	 */
-	public void setText(String label) {
+	public void setText(final String label) {
 		final CLabel cl = (CLabel) getTopLeft();
 		cl.setText(label);
 	}
@@ -57,7 +57,7 @@ public class ViewerPane extends ViewForm {
 	/**
 	 * Sets the receiver's title image.
 	 */
-	public void setImage(Image image) {
+	public void setImage(final Image image) {
 		final CLabel cl = (CLabel) getTopLeft();
 		cl.setImage(image);
 	}

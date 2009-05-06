@@ -100,7 +100,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 	 */
 	public static void addErrorMarkers(final IMarkerGenerator mg,
 			final IResource resource, final OtpErlangList errorList) {
-		for (OtpErlangObject odata : errorList.elements()) {
+		for (final OtpErlangObject odata : errorList.elements()) {
 			final OtpErlangTuple data = (OtpErlangTuple) odata;
 
 			final String msg = ((OtpErlangString) data.elementAt(2))

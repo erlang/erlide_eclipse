@@ -53,10 +53,10 @@ public class ErlangSourceViewerUpdater {
 			 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
 			 * (org.eclipse.jface.util.PropertyChangeEvent)
 			 */
-			public void propertyChange(PropertyChangeEvent event) {
+			public void propertyChange(final PropertyChangeEvent event) {
 				if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
 						.getProperty())) {
-					Font font = JFaceResources
+					final Font font = JFaceResources
 							.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
 					viewer.getTextWidget().setFont(font);
 				}
@@ -69,7 +69,7 @@ public class ErlangSourceViewerUpdater {
 			 * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
 			 * (org.eclipse.jface.util.PropertyChangeEvent)
 			 */
-			public void propertyChange(PropertyChangeEvent event) {
+			public void propertyChange(final PropertyChangeEvent event) {
 				// if (configuration.affectsTextPresentation(event)) {
 				// configuration.handlePropertyChangeEvent(event);
 				// viewer.invalidateTextPresentation();
@@ -83,7 +83,7 @@ public class ErlangSourceViewerUpdater {
 			 * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse
 			 * .swt.events.DisposeEvent)
 			 */
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				preferenceStore
 						.removePropertyChangeListener(propertyChangeListener);
 				JFaceResources.getFontRegistry().removeListener(

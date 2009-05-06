@@ -32,7 +32,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
 	protected ICharacterPairMatcher fPairMatcher;
 
-	public DoubleClickStrategy(ICharacterPairMatcher matcher) {
+	public DoubleClickStrategy(final ICharacterPairMatcher matcher) {
 		fPairMatcher = matcher;
 	}
 
@@ -41,7 +41,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	 * 
 	 * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.ITextViewer)
 	 */
-	public void doubleClicked(ITextViewer part) {
+	public void doubleClicked(final ITextViewer part) {
 		final int offset = part.getSelectedRange().x;
 
 		if (offset < 0) {
@@ -67,7 +67,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	 * @param caretPos
 	 * @return
 	 */
-	protected boolean selectComment(int caretPos) {
+	protected boolean selectComment(final int caretPos) {
 		final IDocument doc = fText.getDocument();
 		final int startPos;
 		final int endPos;
@@ -132,7 +132,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	 * @param caretPos
 	 * @return
 	 */
-	protected boolean selectWord(int caretPos) {
+	protected boolean selectWord(final int caretPos) {
 
 		final IDocument doc = fText.getDocument();
 		final int startPos;
@@ -183,7 +183,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	 * @param stopPos
 	 *            the ending pos
 	 */
-	private void selectRange(int startPos, int stopPos) {
+	private void selectRange(final int startPos, final int stopPos) {
 		final int offset = startPos + 1;
 		final int length = stopPos - offset;
 		fText.setSelectedRange(offset, length);

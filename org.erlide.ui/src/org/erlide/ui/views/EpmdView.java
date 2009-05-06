@@ -26,22 +26,23 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 	class TreeContentProvider implements IStructuredContentProvider,
 			ITreeContentProvider {
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
 		}
 
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			if (model == null) {
 				return new Object[] {};
 			}
 			return model.keySet().toArray();
 		}
 
-		public Object[] getChildren(Object parentElement) {
+		public Object[] getChildren(final Object parentElement) {
 			if (parentElement instanceof String) {
-				String host = (String) parentElement;
+				final String host = (String) parentElement;
 				final List<String> h = model.get(host);
 				if (h != null) {
 					return h.toArray();
@@ -50,11 +51,11 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 			return new Object[] {};
 		}
 
-		public Object getParent(Object element) {
+		public Object getParent(final Object element) {
 			return null;
 		}
 
-		public boolean hasChildren(Object element) {
+		public boolean hasChildren(final Object element) {
 			return getChildren(element).length > 0;
 		}
 
@@ -62,12 +63,12 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 
 	class TreeLabelProvider extends LabelProvider {
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			return super.getText(element);
 		}
 
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			return null;
 		}
 	}
@@ -81,7 +82,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		treeViewer = new TreeViewer(parent, SWT.BORDER);
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(final DoubleClickEvent event) {
@@ -105,8 +106,8 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 		// .getToolBarManager();
 	}
 
-	public void updateNodeStatus(String host, List<String> started,
-			List<String> stopped) {
+	public void updateNodeStatus(final String host, final List<String> started,
+			final List<String> stopped) {
 		model = epmdWatcher.getData();
 		Display.getDefault().asyncExec(new Runnable() {
 

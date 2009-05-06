@@ -28,14 +28,14 @@ public class TextualTrace {
 
 	private final String fTrace;
 
-	public TextualTrace(String trace, String[] filterPatterns) {
+	public TextualTrace(final String trace, final String[] filterPatterns) {
 		super();
 		this.fTrace = filterStack(trace, filterPatterns);
 	}
 
-	public void display(ITraceDisplay display, int maxLabelLength) {
-		StringReader stringReader = new StringReader(this.fTrace);
-		BufferedReader bufferedReader = new BufferedReader(stringReader);
+	public void display(final ITraceDisplay display, final int maxLabelLength) {
+		final StringReader stringReader = new StringReader(this.fTrace);
+		final BufferedReader bufferedReader = new BufferedReader(stringReader);
 		String line;
 
 		try {
@@ -50,17 +50,17 @@ public class TextualTrace {
 
 			// the stack frames of the trace
 			while ((line = readLine(bufferedReader)) != null) {
-				int type = isAStackFrame(line) ? LINE_TYPE_STACKFRAME
+				final int type = isAStackFrame(line) ? LINE_TYPE_STACKFRAME
 						: LINE_TYPE_NORMAL;
 				displayWrappedLine(display, maxLabelLength, line, type);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			display.addTraceLine(LINE_TYPE_NORMAL, this.fTrace);
 		}
 	}
 
-	private void displayWrappedLine(ITraceDisplay display, int maxLabelLength,
-			String line, int type) {
+	private void displayWrappedLine(final ITraceDisplay display, final int maxLabelLength,
+			final String line, final int type) {
 		final int labelLength = line.length();
 		if (labelLength < maxLabelLength) {
 			display.addTraceLine(type, line);
@@ -70,7 +70,7 @@ public class TextualTrace {
 			display.addTraceLine(type, line.substring(0, maxLabelLength));
 			int offset = maxLabelLength;
 			while (offset < labelLength) {
-				int nextOffset = Math.min(labelLength, offset + maxLabelLength);
+				final int nextOffset = Math.min(labelLength, offset + maxLabelLength);
 				display.addTraceLine(LINE_TYPE_NORMAL, line.substring(offset,
 						nextOffset));
 				offset = nextOffset;
@@ -78,7 +78,7 @@ public class TextualTrace {
 		}
 	}
 
-	private boolean filterLine(String[] patterns, String line) {
+	private boolean filterLine(final String[] patterns, final String line) {
 		String pattern;
 		int len;
 		for (int i = (patterns.length - 1); i >= 0; --i) {
@@ -108,37 +108,37 @@ public class TextualTrace {
 		return false;
 	}
 
-	private String filterStack(String stackTrace, String[] filterPatterns) {
+	private String filterStack(final String stackTrace, final String[] filterPatterns) {
 		if (filterPatterns.length == 0 || stackTrace == null) {
 			return stackTrace;
 		}
 
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(stringWriter);
-		StringReader stringReader = new StringReader(stackTrace);
-		BufferedReader bufferedReader = new BufferedReader(stringReader);
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter);
+		final StringReader stringReader = new StringReader(stackTrace);
+		final BufferedReader bufferedReader = new BufferedReader(stringReader);
 
 		String line;
-		String[] patterns = filterPatterns;
+		final String[] patterns = filterPatterns;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
 				if (!filterLine(patterns, line)) {
 					printWriter.println(line);
 				}
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return stackTrace; // return the stack unfiltered
 		}
 		return stringWriter.toString();
 	}
 
-	private boolean isAStackFrame(String itemLabel) {
+	private boolean isAStackFrame(final String itemLabel) {
 		// heuristic for detecting a stack frame - works for JDK
 		return itemLabel.indexOf(" at ") >= 0; //$NON-NLS-1$
 	}
 
-	private String readLine(BufferedReader bufferedReader) throws IOException {
-		String readLine = bufferedReader.readLine();
+	private String readLine(final BufferedReader bufferedReader) throws IOException {
+		final String readLine = bufferedReader.readLine();
 		return readLine == null ? null : readLine.replace('\t', ' ');
 	}
 }

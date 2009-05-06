@@ -18,9 +18,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ScrollLockAction extends Action {
 
-	private TestRunnerViewPart fRunnerViewPart;
+	private final TestRunnerViewPart fRunnerViewPart;
 
-	public ScrollLockAction(TestRunnerViewPart viewer) {
+	public ScrollLockAction(final TestRunnerViewPart viewer) {
 		super(GUnitMessages.ScrollLockAction_action_label);
 		this.fRunnerViewPart = viewer;
 		setToolTipText(GUnitMessages.ScrollLockAction_action_tooltip);

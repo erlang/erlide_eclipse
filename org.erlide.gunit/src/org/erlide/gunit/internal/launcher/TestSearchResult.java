@@ -21,7 +21,7 @@ public class TestSearchResult {
 
 	private final ITestKind fTestKind;
 
-	public TestSearchResult(IErlModule[] types, ITestKind testKind) {
+	public TestSearchResult(final IErlModule[] types, final ITestKind testKind) {
 		this.fTypes = types;
 		this.fTestKind = testKind;
 	}

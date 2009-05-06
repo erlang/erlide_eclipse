@@ -23,28 +23,28 @@ public class CompositeActionGroup extends ActionGroup {
 	public CompositeActionGroup() {
 	}
 
-	public CompositeActionGroup(ActionGroup[] groups) {
+	public CompositeActionGroup(final ActionGroup[] groups) {
 		setGroups(groups);
 	}
 
-	protected void setGroups(ActionGroup[] groups) {
+	protected void setGroups(final ActionGroup[] groups) {
 		Assert.isTrue(fGroups == null);
 		Assert.isNotNull(groups);
 		fGroups = groups;
 	}
 
-	public ActionGroup get(int index) {
+	public ActionGroup get(final int index) {
 		if (fGroups == null) {
 			return null;
 		}
 		return fGroups[index];
 	}
 
-	public void addGroup(ActionGroup group) {
+	public void addGroup(final ActionGroup group) {
 		if (fGroups == null) {
 			fGroups = new ActionGroup[] { group };
 		} else {
-			ActionGroup[] newGroups = new ActionGroup[fGroups.length + 1];
+			final ActionGroup[] newGroups = new ActionGroup[fGroups.length + 1];
 			System.arraycopy(fGroups, 0, newGroups, 0, fGroups.length);
 			newGroups[fGroups.length] = group;
 			fGroups = newGroups;
@@ -63,7 +63,7 @@ public class CompositeActionGroup extends ActionGroup {
 	}
 
 	@Override
-	public void fillActionBars(IActionBars actionBars) {
+	public void fillActionBars(final IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if (fGroups == null) {
 			return;
@@ -74,7 +74,7 @@ public class CompositeActionGroup extends ActionGroup {
 	}
 
 	@Override
-	public void fillContextMenu(IMenuManager menu) {
+	public void fillContextMenu(final IMenuManager menu) {
 		super.fillContextMenu(menu);
 		if (fGroups == null) {
 			return;
@@ -85,7 +85,7 @@ public class CompositeActionGroup extends ActionGroup {
 	}
 
 	@Override
-	public void setContext(ActionContext context) {
+	public void setContext(final ActionContext context) {
 		super.setContext(context);
 		if (fGroups == null) {
 			return;

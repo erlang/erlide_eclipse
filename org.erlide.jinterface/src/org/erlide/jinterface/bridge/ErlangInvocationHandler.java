@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 
 public class ErlangInvocationHandler implements InvocationHandler {
 
-	public ErlangInvocationHandler(Class<?> c, Object args) {
+	public ErlangInvocationHandler(final Class<?> c, final Object args) {
 	}
 
-	public Object invoke(Object proxy, Method method, Object[] args)
-			throws Throwable {
+	public Object invoke(final Object proxy, final Method method, final Object[] args)
+	throws Throwable {
 
 		System.out.format(">> wrap: %s.%s(%s)", proxy.toString(), method
 				.getName(), args);

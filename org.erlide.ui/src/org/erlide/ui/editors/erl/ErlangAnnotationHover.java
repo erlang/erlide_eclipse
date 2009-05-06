@@ -27,7 +27,8 @@ import org.eclipse.jface.text.source.projection.AnnotationBag;
 
 public class ErlangAnnotationHover implements IAnnotationHover {
 
-	public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
+	public String getHoverInfo(final ISourceViewer sourceViewer,
+			final int lineNumber) {
 		final List<Annotation> anns = getErlangAnnotationsForLine(sourceViewer,
 				lineNumber);
 		if (anns != null) {
@@ -63,8 +64,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		return null;
 	}
 
-	private List<Annotation> getErlangAnnotationsForLine(ISourceViewer viewer,
-			int line) {
+	private List<Annotation> getErlangAnnotationsForLine(
+			final ISourceViewer viewer, final int line) {
 		final IAnnotationModel model = getAnnotationModel(viewer);
 		if (model == null) {
 			return null;
@@ -105,7 +106,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		return erlAnnotations;
 	}
 
-	private IAnnotationModel getAnnotationModel(ISourceViewer viewer) {
+	private IAnnotationModel getAnnotationModel(final ISourceViewer viewer) {
 		if (viewer instanceof ISourceViewerExtension2) {
 			final ISourceViewerExtension2 extension = (ISourceViewerExtension2) viewer;
 			return extension.getVisualAnnotationModel();
@@ -113,7 +114,8 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 		return viewer.getAnnotationModel();
 	}
 
-	private boolean isRulerLine(Position position, IDocument document, int line) {
+	private boolean isRulerLine(final Position position,
+			final IDocument document, final int line) {
 		if (position.getOffset() > -1 && position.getLength() > -1) {
 			try {
 				return line == document.getLineOfOffset(position.getOffset());
@@ -127,7 +129,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	 * Formats a message as HTML text.
 	 */
 	@SuppressWarnings("restriction")
-	private String formatSingleMessage(String message) {
+	private String formatSingleMessage(final String message) {
 		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter
@@ -140,7 +142,7 @@ public class ErlangAnnotationHover implements IAnnotationHover {
 	 * Formats several message as HTML text.
 	 */
 	@SuppressWarnings("restriction")
-	private String formatMultipleMessages(List<String> messages) {
+	private String formatMultipleMessages(final List<String> messages) {
 		final StringBuffer buffer = new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter

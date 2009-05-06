@@ -43,7 +43,7 @@ public abstract class TestElement implements ITestElement {
 
 		private final int fOldCode;
 
-		private Status(String name, int oldCode) {
+		private Status(final String name, final int oldCode) {
 			this.fName = name;
 			this.fOldCode = oldCode;
 		}
@@ -83,20 +83,20 @@ public abstract class TestElement implements ITestElement {
 
 		public boolean isRunning() {
 			return this == RUNNING || this == RUNNING_FAILURE
-					|| this == RUNNING_ERROR;
+			|| this == RUNNING_ERROR;
 		}
 
 		public boolean isDone() {
 			return this == OK || this == FAILURE || this == ERROR;
 		}
 
-		public static Status combineStatus(Status one, Status two) {
-			Status progress = combineProgress(one, two);
-			Status error = combineError(one, two);
+		public static Status combineStatus(final Status one, final Status two) {
+			final Status progress = combineProgress(one, two);
+			final Status error = combineError(one, two);
 			return combineProgressAndErrorStatus(progress, error);
 		}
 
-		private static Status combineProgress(Status one, Status two) {
+		private static Status combineProgress(final Status one, final Status two) {
 			if (one.isNotRun() && two.isNotRun()) {
 				return NOT_RUN;
 			} else if (one.isDone() && two.isDone()) {
@@ -109,7 +109,7 @@ public abstract class TestElement implements ITestElement {
 			}
 		}
 
-		private static Status combineError(Status one, Status two) {
+		private static Status combineError(final Status one, final Status two) {
 			if (one.isError() || two.isError()) {
 				return ERROR;
 			} else if (one.isFailure() || two.isFailure()) {
@@ -119,8 +119,8 @@ public abstract class TestElement implements ITestElement {
 			}
 		}
 
-		private static Status combineProgressAndErrorStatus(Status progress,
-				Status error) {
+		private static Status combineProgressAndErrorStatus(final Status progress,
+				final Status error) {
 			if (progress.isDone()) {
 				if (error.isError()) {
 					return ERROR;
@@ -152,7 +152,7 @@ public abstract class TestElement implements ITestElement {
 		 *            one of {@link ITestRunListener2}'s STATUS_* constants
 		 * @return the Status
 		 */
-		public static Status convert(int oldStatus) {
+		public static Status convert(final int oldStatus) {
 			return OLD_CODE[oldStatus];
 		}
 
@@ -206,7 +206,7 @@ public abstract class TestElement implements ITestElement {
 	 * @param testName
 	 *            the test name
 	 */
-	public TestElement(TestSuiteElement parent, String id, String testName) {
+	public TestElement(final TestSuiteElement parent, final String id, final String testName) {
 		Assert.isNotNull(id);
 		Assert.isNotNull(testName);
 		this.fParent = parent;
@@ -232,7 +232,7 @@ public abstract class TestElement implements ITestElement {
 	 * 
 	 * @see org.erlide.gunit.ITestElement#getTestResult()
 	 */
-	public Result getTestResult(boolean includeChildren) {
+	public Result getTestResult(final boolean includeChildren) {
 		return getStatus().convertToResult();
 	}
 
@@ -263,7 +263,7 @@ public abstract class TestElement implements ITestElement {
 	 * @see org.erlide.gunit.model.ITestElement#getFailureTrace()
 	 */
 	public FailureTrace getFailureTrace() {
-		Result testResult = getTestResult(false);
+		final Result testResult = getTestResult(false);
 		if (testResult == Result.ERROR || testResult == Result.FAILURE) {
 			return new FailureTrace(this.fTrace, this.fExpected, this.fActual);
 		}
@@ -285,24 +285,24 @@ public abstract class TestElement implements ITestElement {
 		return this.fTestName;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.fTestName = name;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(final Status status) {
 		// TODO: notify about change?
 		// TODO: multiple errors/failures per test
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=125296
 
 		this.fStatus = status;
-		TestSuiteElement parent = getParent();
+		final TestSuiteElement parent = getParent();
 		if (parent != null) {
 			parent.childChangedStatus(this, status);
 		}
 	}
 
-	public void setStatus(Status status, String trace, String expected,
-			String actual) {
+	public void setStatus(final Status status, final String trace, final String expected,
+			final String actual) {
 		// TODO: notify about change?
 		// TODO: multiple errors/failures per test
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=125296
@@ -341,7 +341,7 @@ public abstract class TestElement implements ITestElement {
 	}
 
 	private String extractClassName(String testNameString) {
-		int index = testNameString.indexOf('(');
+		final int index = testNameString.indexOf('(');
 		if (index < 0) {
 			return testNameString;
 		}

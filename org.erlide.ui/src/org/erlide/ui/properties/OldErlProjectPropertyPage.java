@@ -155,7 +155,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final RowData rd_runtimeVersion = new RowData();
 		rd_runtimeVersion.width = 64;
 		runtimeVersion.setLayoutData(rd_runtimeVersion);
-		String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
+		final String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
 		runtimeVersion.setItems(versions);
 		runtimeVersion.select(Arrays.binarySearch(versions,
 				BackendManager.DEFAULT_VERSION));
@@ -252,13 +252,13 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		output.setText(prefs.getOutputDir());
 		RuntimeVersion rv = prefs.getRuntimeVersion();
 		if (!rv.isDefined()) {
-			RuntimeInfo runtimeInfo = prefs.getRuntimeInfo();
+			final RuntimeInfo runtimeInfo = prefs.getRuntimeInfo();
 			if (runtimeInfo != null) {
 				rv = runtimeInfo.getVersion();
 			}
 		}
-		String[] items = runtimeVersion.getItems();
-		RuntimeVersion asMinor = rv.asMinor();
+		final String[] items = runtimeVersion.getItems();
+		final RuntimeVersion asMinor = rv.asMinor();
 		runtimeVersion.select(Arrays.binarySearch(items, asMinor.toString()));
 
 		if (ErlideUtil.isTest()) {
@@ -273,7 +273,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		ErlangCore.getRuntimeInfoManager().removeListener(this);
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
-		IProject project = (IProject) prj.getAdapter(IProject.class);
+		final IProject project = (IProject) prj.getAdapter(IProject.class);
 		final ErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 
@@ -295,7 +295,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	}
 
 	private final Listener modifyListener = new Listener() {
-		public void handleEvent(Event e) {
+		public void handleEvent(final Event e) {
 			setValid(testPageComplete());
 		}
 	};
@@ -331,7 +331,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getDefaultRuntime();
 		if (defaultRuntime != null) {
 			int db = 0;
-			for (String info : runtimes) {
+			for (final String info : runtimes) {
 				if (info.equals(defaultRuntime.getName())) {
 					break;
 				}

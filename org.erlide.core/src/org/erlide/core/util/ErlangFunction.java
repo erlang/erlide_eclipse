@@ -65,7 +65,7 @@ public class ErlangFunction {
 			final ErlangFunction f = (ErlangFunction) obj;
 			if (f.name.equals(name)) {
 				return f.arity == arity || f.arity == IErlModel.UNKNOWN_ARITY
-				        || arity == IErlModel.UNKNOWN_ARITY;
+						|| arity == IErlModel.UNKNOWN_ARITY;
 			}
 		}
 		return false;

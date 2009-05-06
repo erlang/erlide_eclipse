@@ -57,29 +57,30 @@ public class ErlLoggerView extends ViewPart {
 	 */
 
 	static class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer v, final Object oldInput,
+				final Object newInput) {
 		}
 
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object parent) {
+		public Object[] getElements(final Object parent) {
 			return new String[] { "One", "Two", "Three" };
 		}
 	}
 
 	static class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
+		public String getColumnText(final Object obj, final int index) {
 			return getText(obj);
 		}
 
-		public Image getColumnImage(Object obj, int index) {
+		public Image getColumnImage(final Object obj, final int index) {
 			return getImage(obj);
 		}
 
 		@Override
-		public Image getImage(Object obj) {
+		public Image getImage(final Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
 					ISharedImages.IMG_OBJ_ELEMENT);
 		}
@@ -99,7 +100,7 @@ public class ErlLoggerView extends ViewPart {
 	 * it.
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
@@ -113,38 +114,38 @@ public class ErlLoggerView extends ViewPart {
 	}
 
 	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		final MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				ErlLoggerView.this.fillContextMenu(manager);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+		final Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
 	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
+		final IActionBars bars = getViewSite().getActionBars();
 		fillLocalPullDown(bars.getMenuManager());
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
 		manager.add(action2);
 	}
 
-	void fillContextMenu(IMenuManager manager) {
+	void fillContextMenu(final IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(action2);
 	}
@@ -174,8 +175,8 @@ public class ErlLoggerView extends ViewPart {
 		doubleClickAction = new Action() {
 			@Override
 			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection) selection)
+				final ISelection selection = viewer.getSelection();
+				final Object obj = ((IStructuredSelection) selection)
 						.getFirstElement();
 				showMessage("Double-click detected on " + obj.toString());
 			}
@@ -184,13 +185,13 @@ public class ErlLoggerView extends ViewPart {
 
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
+			public void doubleClick(final DoubleClickEvent event) {
 				doubleClickAction.run();
 			}
 		});
 	}
 
-	void showMessage(String message) {
+	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
 				"Erlang Logger", message);
 	}

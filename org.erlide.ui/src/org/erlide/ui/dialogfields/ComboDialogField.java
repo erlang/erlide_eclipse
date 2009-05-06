@@ -35,9 +35,9 @@ public class ComboDialogField extends DialogField {
 
 	private ModifyListener fModifyListener;
 
-	private int fFlags;
+	private final int fFlags;
 
-	public ComboDialogField(int flags) {
+	public ComboDialogField(final int flags) {
 		super();
 		fText = ""; //$NON-NLS-1$
 		fItems = new String[0];
@@ -51,7 +51,7 @@ public class ComboDialogField extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		final Label label = getLabelControl(parent);
@@ -70,7 +70,7 @@ public class ComboDialogField extends DialogField {
 		return 2;
 	}
 
-	protected static GridData gridDataForCombo(int span) {
+	protected static GridData gridDataForCombo(final int span) {
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.grabExcessHorizontalSpace = false;
@@ -97,25 +97,25 @@ public class ComboDialogField extends DialogField {
 	 * Creates or returns the created combo control.
 	 * 
 	 * @param parent
-	 *            The parent composite or <code>null</code> when the widget
-	 *            has already been created.
+	 *            The parent composite or <code>null</code> when the widget has
+	 *            already been created.
 	 */
-	public Combo getComboControl(Composite parent) {
+	public Combo getComboControl(final Composite parent) {
 		if (fComboControl == null) {
 			assertCompositeNotNull(parent);
 			fModifyListener = new ModifyListener() {
 
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(final ModifyEvent e) {
 					doModifyText(e);
 				}
 			};
 			final SelectionListener selectionListener = new SelectionListener() {
 
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					doSelectionChanged(e);
 				}
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 				}
 			};
 
@@ -135,7 +135,7 @@ public class ComboDialogField extends DialogField {
 		return fComboControl;
 	}
 
-	protected void doModifyText(ModifyEvent e) {
+	protected void doModifyText(final ModifyEvent e) {
 		if (isOkToUse(fComboControl)) {
 			fText = fComboControl.getText();
 			fSelectionIndex = fComboControl.getSelectionIndex();
@@ -143,7 +143,7 @@ public class ComboDialogField extends DialogField {
 		dialogFieldChanged();
 	}
 
-	protected void doSelectionChanged(SelectionEvent e) {
+	protected void doSelectionChanged(final SelectionEvent e) {
 		if (isOkToUse(fComboControl)) {
 			fItems = fComboControl.getItems();
 			fText = fComboControl.getText();
@@ -177,7 +177,7 @@ public class ComboDialogField extends DialogField {
 	/**
 	 * Sets the combo items. Triggers a dialog-changed event.
 	 */
-	public void setItems(String[] items) {
+	public void setItems(final String[] items) {
 		fItems = items;
 		if (isOkToUse(fComboControl)) {
 			fComboControl.setItems(items);
@@ -195,7 +195,7 @@ public class ComboDialogField extends DialogField {
 	/**
 	 * Sets the text. Triggers a dialog-changed event.
 	 */
-	public void setText(String text) {
+	public void setText(final String text) {
 		fText = text;
 		if (isOkToUse(fComboControl)) {
 			fComboControl.setText(text);
@@ -207,7 +207,7 @@ public class ComboDialogField extends DialogField {
 	/**
 	 * Selects an item.
 	 */
-	public boolean selectItem(int index) {
+	public boolean selectItem(final int index) {
 		boolean success = false;
 		if (isOkToUse(fComboControl)) {
 			fComboControl.select(index);
@@ -228,7 +228,7 @@ public class ComboDialogField extends DialogField {
 	/**
 	 * Selects an item.
 	 */
-	public boolean selectItem(String name) {
+	public boolean selectItem(final String name) {
 		for (int i = 0; i < fItems.length; i++) {
 			if (fItems[i].equals(name)) {
 				return selectItem(i);
@@ -244,7 +244,7 @@ public class ComboDialogField extends DialogField {
 	/**
 	 * Sets the text without triggering a dialog-changed event.
 	 */
-	public void setTextWithoutUpdate(String text) {
+	public void setTextWithoutUpdate(final String text) {
 		fText = text;
 		if (isOkToUse(fComboControl)) {
 			fComboControl.removeModifyListener(fModifyListener);

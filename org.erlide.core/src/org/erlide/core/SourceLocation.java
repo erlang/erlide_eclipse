@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -31,10 +31,11 @@ public final class SourceLocation extends CodePathLocation {
 	private Map<String, String> compilerOptions = new HashMap<String, String>();
 	private Map<String, Map<String, String>> fileCompilerOptions = new HashMap<String, Map<String, String>>();
 
-	public SourceLocation(String directory, List<String> includePatterns,
-			List<String> excludePatterns, String output,
-			Map<String, String> compilerOptions,
-			Map<String, Map<String, String>> fileCompilerOptions) {
+	public SourceLocation(final String directory,
+			final List<String> includePatterns,
+			final List<String> excludePatterns, final String output,
+			final Map<String, String> compilerOptions,
+			final Map<String, Map<String, String>> fileCompilerOptions) {
 		super();
 		Assert.isLegal(directory != null,
 				"SourceLocation requires a non-null directory");
@@ -54,7 +55,7 @@ public final class SourceLocation extends CodePathLocation {
 		}
 	}
 
-	public SourceLocation(IEclipsePreferences sn) {
+	public SourceLocation(final IEclipsePreferences sn) {
 		super();
 		load(sn);
 	}
@@ -84,14 +85,15 @@ public final class SourceLocation extends CodePathLocation {
 	}
 
 	@Override
-	public void load(IEclipsePreferences root) {
+	public void load(final IEclipsePreferences root) {
 		directory = root.get(ProjectPreferencesConstants.DIRECTORY, null);
 		Assert.isLegal(directory != null,
 				"SourceLocation requires a non-null directory");
 	}
 
 	@Override
-	public void store(IEclipsePreferences root) throws BackingStoreException {
+	public void store(final IEclipsePreferences root)
+			throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.DIRECTORY, directory);
 

@@ -94,7 +94,7 @@ class OtpMD5 {
 	return a + b & 0xFFFFFFFFL;
     }
 
-    private long not(long x) {
+    private long not(final long x) {
 	return ~x & 0xFFFFFFFFL;
     }
 

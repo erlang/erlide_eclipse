@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -46,7 +46,7 @@ public final class BuilderMessages extends NLS {
 	 *            the message to be manipulated
 	 * @return the manipulated String
 	 */
-	public static String bind(String message) {
+	public static String bind(final String message) {
 		return bind(message, null);
 	}
 
@@ -60,7 +60,7 @@ public final class BuilderMessages extends NLS {
 	 *            the object to be inserted into the message
 	 * @return the manipulated String
 	 */
-	public static String bind(String message, Object binding) {
+	public static String bind(final String message, final Object binding) {
 		return bind(message, new Object[] { binding });
 	}
 
@@ -76,7 +76,8 @@ public final class BuilderMessages extends NLS {
 	 *            A second object to be inserted into the message
 	 * @return the manipulated String
 	 */
-	public static String bind(String message, Object binding1, Object binding2) {
+	public static String bind(final String message, final Object binding1,
+			final Object binding2) {
 		return bind(message, new Object[] { binding1, binding2 });
 	}
 
@@ -90,7 +91,7 @@ public final class BuilderMessages extends NLS {
 	 *            An array of objects to be inserted into the message
 	 * @return the manipulated String
 	 */
-	public static String bind(String message, Object[] bindings) {
+	public static String bind(final String message, final Object[] bindings) {
 		return MessageFormat.format(message, bindings);
 	}
 }

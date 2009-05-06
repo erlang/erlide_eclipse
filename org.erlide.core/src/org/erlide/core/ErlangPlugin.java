@@ -167,7 +167,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
-		Object version = getBundle().getHeaders().get("Bundle-Version");
+		final Object version = getBundle().getHeaders().get("Bundle-Version");
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntime();
@@ -208,20 +208,20 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	public static void initializeAfterLoad(final IProgressMonitor monitor) {
 		final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
-			public void run(IProgressMonitor progressMonitor)
+			public void run(final IProgressMonitor progressMonitor)
 					throws CoreException {
 				IProject[] projects;
 				// projects = model.getJavaProjects();
-				IWorkspace root = ResourcesPlugin.getWorkspace();
+				final IWorkspace root = ResourcesPlugin.getWorkspace();
 				projects = root.getRoot().getProjects();
 
 				if (projects != null) {
-					for (IProject project : projects) {
+					for (final IProject project : projects) {
 						try {
 							if (project.hasNature(ErlangPlugin.NATURE_ID)) {
 								project.touch(progressMonitor);
 							}
-						} catch (CoreException e) {
+						} catch (final CoreException e) {
 							// could not touch this project: ignore
 						}
 					}

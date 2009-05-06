@@ -17,17 +17,18 @@ import org.eclipse.jface.text.source.Annotation;
 
 public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
 
-	public boolean canAssist(IQuickAssistInvocationContext invocationContext) {
+	public boolean canAssist(
+			final IQuickAssistInvocationContext invocationContext) {
 		return false;
 	}
 
-	public boolean canFix(Annotation annotation) {
+	public boolean canFix(final Annotation annotation) {
 		return true;
 	}
 
 	public ICompletionProposal[] computeQuickAssistProposals(
-			IQuickAssistInvocationContext invocationContext) {
-		ICompletionProposal[] result = new ICompletionProposal[] { new NoCompletionsProposal() };
+			final IQuickAssistInvocationContext invocationContext) {
+		final ICompletionProposal[] result = new ICompletionProposal[] { new NoCompletionsProposal() };
 		return result;
 	}
 

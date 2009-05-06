@@ -15,13 +15,14 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
 	@SuppressWarnings("unchecked")
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public Object getAdapter(final Object adaptableObject,
+			final Class adapterType) {
 		if (adaptableObject instanceof ErlangEditor) {
-			ErlangEditor editorPart = (ErlangEditor) adaptableObject;
-			IResource resource = (IResource) editorPart.getEditorInput()
+			final ErlangEditor editorPart = (ErlangEditor) adaptableObject;
+			final IResource resource = (IResource) editorPart.getEditorInput()
 					.getAdapter(IResource.class);
 			if (resource != null) {
-				String extension = resource.getFileExtension();
+				final String extension = resource.getFileExtension();
 				if (extension != null && "erl".equals(extension)) {
 					return new ErlLineBreakpointAdapter();
 				}

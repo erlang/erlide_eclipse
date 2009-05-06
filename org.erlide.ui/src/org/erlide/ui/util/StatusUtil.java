@@ -25,7 +25,7 @@ public class StatusUtil {
 	 * severe than ok. If the two stati have the same severity, the second is
 	 * returned.
 	 */
-	public static IStatus getMoreSevere(IStatus s1, IStatus s2) {
+	public static IStatus getMoreSevere(final IStatus s1, final IStatus s2) {
 		if (s1.getSeverity() > s2.getSeverity()) {
 			return s1;
 		}
@@ -36,7 +36,7 @@ public class StatusUtil {
 	 * Finds the most severe status from a array of stati. An error is more
 	 * severe than a warning, and a warning is more severe than ok.
 	 */
-	public static IStatus getMostSevere(IStatus[] status) {
+	public static IStatus getMostSevere(final IStatus[] status) {
 		IStatus max = null;
 		for (final IStatus curr : status) {
 			if (curr.matches(IStatus.ERROR)) {
@@ -52,7 +52,8 @@ public class StatusUtil {
 	/**
 	 * Applies the status to the status line of a dialog page.
 	 */
-	public static void applyToStatusLine(DialogPage page, IStatus status) {
+	public static void applyToStatusLine(final DialogPage page,
+			final IStatus status) {
 		String message = status.getMessage();
 		switch (status.getSeverity()) {
 		case IStatus.OK:

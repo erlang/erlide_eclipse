@@ -14,15 +14,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class LogEventHandler extends EventHandler {
 
 	@Override
-	protected void doHandleMsg(OtpErlangObject msg) throws Exception {
+	protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
 		OtpErlangObject log = getStandardEvent(msg, "log");
 		if (log != null) {
 			try {
-				Bindings b = ErlUtils.match("{K:a,M}", log);
-				String kind = ((OtpErlangAtom) b.get("K")).atomValue();
-				OtpErlangObject amsg = b.get("M");
+				final Bindings b = ErlUtils.match("{K:a,M}", log);
+				final String kind = ((OtpErlangAtom) b.get("K")).atomValue();
+				final OtpErlangObject amsg = b.get("M");
 				ErlLogger.debug("%s: %s", kind, amsg);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				ErlLogger.error(e);
 			}
 		}

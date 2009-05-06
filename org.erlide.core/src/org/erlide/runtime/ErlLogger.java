@@ -33,13 +33,13 @@ public class ErlLogger {
 
 	{
 		// This is not run?!?
-		String lvl = System.getProperty("erlide.logger.level");
+		final String lvl = System.getProperty("erlide.logger.level");
 		minLevel = (lvl == null ? Level.INFO : Level.parse(lvl.toUpperCase()))
 				.intValue();
 	}
 
 	private static StackTraceElement getCaller() {
-		StackTraceElement[] st = Thread.currentThread().getStackTrace();
+		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
 		StackTraceElement el = null;
 		int i = 2;
 		do {
@@ -48,7 +48,8 @@ public class ErlLogger {
 		return el;
 	}
 
-	private static void log(Level kind, String fmt, Object... o) {
+	private static void log(final Level kind, final String fmt,
+			final Object... o) {
 		if (kind.intValue() < minLevel) {
 			return;
 		}
@@ -62,7 +63,7 @@ public class ErlLogger {
 						+ str);
 	}
 
-	private static void log(Level kind, Exception e) {
+	private static void log(final Level kind, final Exception e) {
 		if (kind.intValue() < minLevel) {
 			return;
 		}
@@ -77,9 +78,9 @@ public class ErlLogger {
 						+ str, e);
 	}
 
-	public static void erlangLog(String module, int line, String skind,
-			String fmt, Object... o) {
-		Level kind = Level.parse(skind);
+	public static void erlangLog(final String module, final int line,
+			final String skind, final String fmt, final Object... o) {
+		final Level kind = Level.parse(skind);
 		if (kind.intValue() < minLevel) {
 			return;
 		}
@@ -88,35 +89,35 @@ public class ErlLogger {
 				"(" + module + ":" + line + ") : " + str);
 	}
 
-	public static void debug(String fmt, Object... o) {
+	public static void debug(final String fmt, final Object... o) {
 		log(Level.FINEST, fmt, o);
 	}
 
-	public static void info(String fmt, Object... o) {
+	public static void info(final String fmt, final Object... o) {
 		log(Level.INFO, fmt, o);
 	}
 
-	public static void warn(String fmt, Object... o) {
+	public static void warn(final String fmt, final Object... o) {
 		log(Level.WARNING, fmt, o);
 	}
 
-	public static void error(String fmt, Object... o) {
+	public static void error(final String fmt, final Object... o) {
 		log(Level.SEVERE, fmt, o);
 	}
 
-	public static void debug(Exception e) {
+	public static void debug(final Exception e) {
 		log(Level.FINEST, e);
 	}
 
-	public static void info(Exception e) {
+	public static void info(final Exception e) {
 		log(Level.INFO, e);
 	}
 
-	public static void warn(Exception e) {
+	public static void warn(final Exception e) {
 		log(Level.WARNING, e);
 	}
 
-	public static void error(Exception e) {
+	public static void error(final Exception e) {
 		log(Level.SEVERE, e);
 	}
 
@@ -126,50 +127,52 @@ public class ErlLogger {
 		private static final String format = "{0,time,HH:mm:ss,SSS}";
 		private MessageFormat formatter;
 
-		private Object[] args = new Object[1];
+		private final Object[] args = new Object[1];
 
-		private String lineSeparator = System.getProperty("line.separator");
+		private final String lineSeparator = System
+				.getProperty("line.separator");
 
 		@Override
-		public synchronized String format(LogRecord record) {
-			StringBuffer sb = new StringBuffer();
+		public synchronized String format(final LogRecord record) {
+			final StringBuffer sb = new StringBuffer();
 			// Minimize memory allocations here.
 			dat.setTime(record.getMillis());
 			args[0] = dat;
-			StringBuffer text = new StringBuffer();
+			final StringBuffer text = new StringBuffer();
 			if (formatter == null) {
 				formatter = new MessageFormat(format);
 			}
 			formatter.format(args, text, null);
 			sb.append(text);
 			sb.append(" ");
-			String message = formatMessage(record);
+			final String message = formatMessage(record);
 			sb.append(record.getLevel().toString().charAt(0));
 			sb.append(": ");
 			sb.append(message);
 			sb.append(lineSeparator);
 			if (record.getThrown() != null) {
 				try {
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
+					final StringWriter sw = new StringWriter();
+					final PrintWriter pw = new PrintWriter(sw);
 					record.getThrown().printStackTrace(pw);
 					pw.close();
 					sb.append(sw.toString());
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 				}
 			}
 			return sb.toString();
 		}
 	}
 
-	public static void trace(String traceOption, String fmt, Object... args) {
+	public static void trace(final String traceOption, final String fmt,
+			final Object... args) {
 		if (!Platform.inDebugMode()) {
 			return;
 		}
-		String globalTraceValue = Platform
+		final String globalTraceValue = Platform
 				.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
-		String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/"
-				+ traceOption);
+		final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION
+				+ "/" + traceOption);
 		if (null != globalTraceValue && globalTraceValue.equals("true")
 				&& null != value && value.equals("true")) {
 			debug(fmt, args);

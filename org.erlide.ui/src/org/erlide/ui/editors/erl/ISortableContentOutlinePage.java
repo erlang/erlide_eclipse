@@ -19,8 +19,8 @@ public interface ISortableContentOutlinePage extends IContentOutlinePage {
 	/**
 	 * Turns sorting on or off
 	 * 
-	 * @param sorting -
-	 *            boolean value indicating if sorting should be enabled
+	 * @param sorting
+	 *            - boolean value indicating if sorting should be enabled
 	 */
 	public void sort(boolean sorting);
 

@@ -33,10 +33,12 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	protected String resolve(TemplateContext context) {
+	protected String resolve(final TemplateContext context) {
 		final StringBuilder buff = new StringBuilder();
 		buff.append((fArity != 0) ? "_Arg0" : "");
 		for (int i = 1; i < fArity; i++) {
@@ -56,7 +58,7 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
 	 * @param arity
 	 *            The arity to set.
 	 */
-	public void setArity(int arity) {
+	public void setArity(final int arity) {
 		fArity = arity;
 	}
 }

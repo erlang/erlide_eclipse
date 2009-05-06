@@ -14,7 +14,7 @@ import org.erlide.ui.util.OverlayPreferenceStore;
 abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
 		implements IWorkbenchPreferencePage {
 
-	private IPreferenceConfigurationBlock fConfigurationBlock;
+	private final IPreferenceConfigurationBlock fConfigurationBlock;
 
 	private OverlayPreferenceStore fOverlayStore;
 
@@ -41,14 +41,14 @@ abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
 	/*
 	 * @see IWorkbenchPreferencePage#init()
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 	/*
 	 * @see PreferencePage#createControl(Composite)
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		super.createControl(parent);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
 				getHelpId());
@@ -58,7 +58,7 @@ abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 
 		fOverlayStore.load();
 		fOverlayStore.start();

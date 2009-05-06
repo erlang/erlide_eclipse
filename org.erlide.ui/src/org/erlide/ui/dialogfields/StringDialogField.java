@@ -41,7 +41,7 @@ public class StringDialogField extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		final Label label = getLabelControl(parent);
@@ -60,7 +60,7 @@ public class StringDialogField extends DialogField {
 		return 2;
 	}
 
-	protected static GridData gridDataForText(int span) {
+	protected static GridData gridDataForText(final int span) {
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.FILL;
 		gd.grabExcessHorizontalSpace = false;
@@ -88,15 +88,15 @@ public class StringDialogField extends DialogField {
 	 * Creates or returns the created text control.
 	 * 
 	 * @param parent
-	 *            The parent composite or <code>null</code> when the widget
-	 *            has already been created.
+	 *            The parent composite or <code>null</code> when the widget has
+	 *            already been created.
 	 */
-	public Text getTextControl(Composite parent) {
+	public Text getTextControl(final Composite parent) {
 		if (fTextControl == null) {
 			assertCompositeNotNull(parent);
 			fModifyListener = new ModifyListener() {
 
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(final ModifyEvent e) {
 					doModifyText(e);
 				}
 			};
@@ -112,7 +112,7 @@ public class StringDialogField extends DialogField {
 		return fTextControl;
 	}
 
-	protected void doModifyText(ModifyEvent e) {
+	protected void doModifyText(final ModifyEvent e) {
 		if (isOkToUse(fTextControl)) {
 			fText = fTextControl.getText();
 		}
@@ -144,7 +144,7 @@ public class StringDialogField extends DialogField {
 	/**
 	 * Sets the text. Triggers a dialog-changed event.
 	 */
-	public void setText(String text) {
+	public void setText(final String text) {
 		fText = text;
 		if (isOkToUse(fTextControl)) {
 			fTextControl.setText(text);
@@ -156,7 +156,7 @@ public class StringDialogField extends DialogField {
 	/**
 	 * Sets the text without triggering a dialog-changed event.
 	 */
-	public void setTextWithoutUpdate(String text) {
+	public void setTextWithoutUpdate(final String text) {
 		fText = text;
 		if (isOkToUse(fTextControl)) {
 			fTextControl.removeModifyListener(fModifyListener);

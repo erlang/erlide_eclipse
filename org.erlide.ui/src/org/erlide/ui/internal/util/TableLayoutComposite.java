@@ -38,12 +38,12 @@ public class TableLayoutComposite extends Composite {
 	/**
 	 * Creates a new <code>TableLayoutComposite</code>.
 	 */
-	public TableLayoutComposite(Composite parent, int style) {
+	public TableLayoutComposite(final Composite parent, final int style) {
 		super(parent, style);
 		addControlListener(new ControlAdapter() {
 
 			@Override
-			public void controlResized(ControlEvent e) {
+			public void controlResized(final ControlEvent e) {
 				final Rectangle area = getClientArea();
 				final Table table = (Table) getChildren()[0];
 				final Point preferredSize = computeTableSize(table);
@@ -65,14 +65,14 @@ public class TableLayoutComposite extends Composite {
 	 * @param data
 	 *            the column layout data
 	 */
-	public void addColumnData(ColumnLayoutData data) {
+	public void addColumnData(final ColumnLayoutData data) {
 		columns.add(data);
 	}
 
 	// ---- Helpers
 	// -------------------------------------------------------------------------------------
 
-	protected Point computeTableSize(Table table) {
+	protected Point computeTableSize(final Table table) {
 		final Point result = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
 		int width = 0;
@@ -95,8 +95,8 @@ public class TableLayoutComposite extends Composite {
 		return result;
 	}
 
-	protected void layoutTable(Table table, int width, Rectangle area,
-			boolean increase) {
+	protected void layoutTable(final Table table, final int width,
+			final Rectangle area, final boolean increase) {
 		if (width <= 1) {
 			return;
 		}

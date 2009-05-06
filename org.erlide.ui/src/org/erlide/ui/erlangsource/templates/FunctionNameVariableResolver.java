@@ -33,10 +33,12 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	protected String resolve(TemplateContext context) {
+	protected String resolve(final TemplateContext context) {
 		return getFunctionName();
 	}
 
@@ -51,7 +53,7 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
 	 * @param functionName
 	 *            The functionName to set.
 	 */
-	public void setFunctionName(String functionName) {
+	public void setFunctionName(final String functionName) {
 		fFunctionName = functionName;
 	}
 }

@@ -40,20 +40,20 @@ public class GUnitStatus implements IStatus {
 	 *            The message of the status. Applies only for ERROR, WARNING and
 	 *            INFO.
 	 */
-	public GUnitStatus(int severity, String message) {
+	public GUnitStatus(final int severity, final String message) {
 		this.fStatusMessage = message;
 		this.fSeverity = severity;
 	}
 
-	public static IStatus createError(String message) {
+	public static IStatus createError(final String message) {
 		return new GUnitStatus(IStatus.ERROR, message);
 	}
 
-	public static IStatus createWarning(String message) {
+	public static IStatus createWarning(final String message) {
 		return new GUnitStatus(IStatus.WARNING, message);
 	}
 
-	public static IStatus createInfo(String message) {
+	public static IStatus createInfo(final String message) {
 		return new GUnitStatus(IStatus.INFO, message);
 	}
 
@@ -98,7 +98,7 @@ public class GUnitStatus implements IStatus {
 	 * @param errorMessage
 	 *            the error message (can be empty, but not null)
 	 */
-	public void setError(String errorMessage) {
+	public void setError(final String errorMessage) {
 		Assert.isNotNull(errorMessage);
 		this.fStatusMessage = errorMessage;
 		this.fSeverity = IStatus.ERROR;
@@ -110,7 +110,7 @@ public class GUnitStatus implements IStatus {
 	 * @param warningMessage
 	 *            the warning message (can be empty, but not null)
 	 */
-	public void setWarning(String warningMessage) {
+	public void setWarning(final String warningMessage) {
 		Assert.isNotNull(warningMessage);
 		this.fStatusMessage = warningMessage;
 		this.fSeverity = IStatus.WARNING;
@@ -122,7 +122,7 @@ public class GUnitStatus implements IStatus {
 	 * @param infoMessage
 	 *            the info message (can be empty, but not null)
 	 */
-	public void setInfo(String infoMessage) {
+	public void setInfo(final String infoMessage) {
 		Assert.isNotNull(infoMessage);
 		this.fStatusMessage = infoMessage;
 		this.fSeverity = IStatus.INFO;
@@ -139,7 +139,7 @@ public class GUnitStatus implements IStatus {
 	/*
 	 * @see IStatus#matches(int)
 	 */
-	public boolean matches(int severityMask) {
+	public boolean matches(final int severityMask) {
 		return (this.fSeverity & severityMask) != 0;
 	}
 

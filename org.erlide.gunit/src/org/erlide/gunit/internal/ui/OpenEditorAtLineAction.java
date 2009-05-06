@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Sebastian Davids: sdavids@gmx.de bug 37333 Failure Trace cannot 
+ *     Sebastian Davids: sdavids@gmx.de bug 37333 Failure Trace cannot
  * 			navigate to non-public class in CU throwing Exception
  *******************************************************************************/
 package org.erlide.gunit.internal.ui;
@@ -25,10 +25,10 @@ import org.erlide.core.erlang.IErlProject;
  */
 public class OpenEditorAtLineAction extends OpenEditorAction {
 
-	private int fLineNumber;
+	private final int fLineNumber;
 
-	public OpenEditorAtLineAction(TestRunnerViewPart testRunner, String cuName,
-			String className, int line) {
+	public OpenEditorAtLineAction(final TestRunnerViewPart testRunner, final String cuName,
+			final String className, final int line) {
 		super(testRunner, className);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.OPENEDITORATLINE_ACTION);
@@ -36,23 +36,23 @@ public class OpenEditorAtLineAction extends OpenEditorAction {
 	}
 
 	@Override
-	protected void reveal(ITextEditor textEditor) {
+	protected void reveal(final ITextEditor textEditor) {
 		if (this.fLineNumber >= 0) {
 			try {
-				IDocument document = textEditor.getDocumentProvider()
-						.getDocument(textEditor.getEditorInput());
+				final IDocument document = textEditor.getDocumentProvider()
+				.getDocument(textEditor.getEditorInput());
 				textEditor.selectAndReveal(document
 						.getLineOffset(this.fLineNumber - 1), document
 						.getLineLength(this.fLineNumber - 1));
-			} catch (BadLocationException x) {
+			} catch (final BadLocationException x) {
 				// marker refers to invalid text position -> do nothing
 			}
 		}
 	}
 
 	@Override
-	protected IErlElement findElement(IErlProject project, String className)
-			throws CoreException {
+	protected IErlElement findElement(final IErlProject project, final String className)
+	throws CoreException {
 		return findType(project, className);
 	}
 

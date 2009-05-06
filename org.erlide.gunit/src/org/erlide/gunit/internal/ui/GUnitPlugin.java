@@ -55,13 +55,13 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.erlide.gunit"; //$NON-NLS-1$
 
 	public static final String ID_EXTENSION_POINT_TESTRUN_LISTENERS = PLUGIN_ID
-			+ "." + "testRunListeners"; //$NON-NLS-1$ //$NON-NLS-2$
+	+ "." + "testRunListeners"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static final String ID_EXTENSION_POINT_JUNIT_LAUNCHCONFIGS = PLUGIN_ID
-			+ "." + "junitLaunchConfigs"; //$NON-NLS-1$ //$NON-NLS-2$
+	+ "." + "junitLaunchConfigs"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static final String ID_EXTENSION_POINT_TEST_KINDS = PLUGIN_ID
-			+ "." + "internal_testKinds"; //$NON-NLS-1$ //$NON-NLS-2$
+	+ "." + "internal_testKinds"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public final static String TEST_SUPERCLASS_NAME = "junit.framework.TestCase"; //$NON-NLS-1$
 
@@ -92,7 +92,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	/**
 	 * List storing the registered test run listeners
 	 */
-	private ListenerList/* <TestRunListener> */fNewTestRunListeners;
+	private final ListenerList/* <TestRunListener> */fNewTestRunListeners;
 
 	/**
 	 * List storing the registered JUnit launch configuration types
@@ -113,7 +113,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	public static Shell getActiveWorkbenchShell() {
-		IWorkbenchWindow workBenchWindow = getActiveWorkbenchWindow();
+		final IWorkbenchWindow workBenchWindow = getActiveWorkbenchWindow();
 		if (workBenchWindow == null) {
 			return null;
 		}
@@ -129,7 +129,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 		if (fgPlugin == null) {
 			return null;
 		}
-		IWorkbench workBench = fgPlugin.getWorkbench();
+		final IWorkbench workBench = fgPlugin.getWorkbench();
 		if (workBench == null) {
 			return null;
 		}
@@ -137,7 +137,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	public static IWorkbenchPage getActivePage() {
-		IWorkbenchWindow activeWorkbenchWindow = getActiveWorkbenchWindow();
+		final IWorkbenchWindow activeWorkbenchWindow = getActiveWorkbenchWindow();
 		if (activeWorkbenchWindow == null) {
 			return null;
 		}
@@ -148,16 +148,16 @@ public class GUnitPlugin extends AbstractUIPlugin {
 		return PLUGIN_ID;
 	}
 
-	public static void log(Throwable e) {
+	public static void log(final Throwable e) {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Error", e)); //$NON-NLS-1$
 	}
 
-	public static void log(IStatus status) {
+	public static void log(final IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
-	public static ImageDescriptor getImageDescriptor(String relativePath) {
-		IPath path = ICONS_PATH.append(relativePath);
+	public static ImageDescriptor getImageDescriptor(final String relativePath) {
+		final IPath path = ICONS_PATH.append(relativePath);
 		return createImageDescriptor(getDefault().getBundle(), path, true);
 	}
 
@@ -170,18 +170,18 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 * @param iconName
 	 *            the icon name
 	 */
-	public static void setLocalImageDescriptors(IAction action, String iconName) {
+	public static void setLocalImageDescriptors(final IAction action, final String iconName) {
 		setImageDescriptors(action, "lcl16", iconName); //$NON-NLS-1$
 	}
 
-	private static void setImageDescriptors(IAction action, String type,
-			String relPath) {
-		ImageDescriptor id = createImageDescriptor("d" + type, relPath, false); //$NON-NLS-1$
+	private static void setImageDescriptors(final IAction action, final String type,
+			final String relPath) {
+		final ImageDescriptor id = createImageDescriptor("d" + type, relPath, false); //$NON-NLS-1$
 		if (id != null) {
 			action.setDisabledImageDescriptor(id);
 		}
 
-		ImageDescriptor descriptor = createImageDescriptor(
+		final ImageDescriptor descriptor = createImageDescriptor(
 				"e" + type, relPath, true); //$NON-NLS-1$
 		action.setHoverImageDescriptor(descriptor);
 		action.setImageDescriptor(descriptor);
@@ -194,9 +194,9 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 * 'missing image descriptor' is returned or <code>null</code>. or
 	 * <code>null</code>.
 	 */
-	private static ImageDescriptor createImageDescriptor(String pathPrefix,
-			String imageName, boolean useMissingImageDescriptor) {
-		IPath path = ICONS_PATH.append(pathPrefix).append(imageName);
+	private static ImageDescriptor createImageDescriptor(final String pathPrefix,
+			final String imageName, final boolean useMissingImageDescriptor) {
+		final IPath path = ICONS_PATH.append(pathPrefix).append(imageName);
 		return createImageDescriptor(GUnitPlugin.getDefault().getBundle(),
 				path, useMissingImageDescriptor);
 	}
@@ -214,9 +214,9 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 *         image at the given location and
 	 *         <code>useMissingImageDescriptor</code> is <code>true</code>
 	 */
-	private static ImageDescriptor createImageDescriptor(Bundle bundle,
-			IPath path, boolean useMissingImageDescriptor) {
-		URL url = FileLocator.find(bundle, path, null);
+	private static ImageDescriptor createImageDescriptor(final Bundle bundle,
+			final IPath path, final boolean useMissingImageDescriptor) {
+		final URL url = FileLocator.find(bundle, path, null);
 		if (url != null) {
 			return ImageDescriptor.createFromURL(url);
 		}
@@ -230,7 +230,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 * @see AbstractUIPlugin#start(BundleContext)
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		this.fBundleContext = context;
 		this.fGUnitModel.start();
@@ -240,7 +240,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 * @see AbstractUIPlugin#stop(BundleContext)
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(final BundleContext context) throws Exception {
 		fIsStopped = true;
 		try {
 			this.fGUnitModel.stop();
@@ -259,16 +259,16 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 */
 	private void loadLaunchConfigTypeIDs() {
 		this.fJUnitLaunchConfigTypeIDs = new ArrayList<String>();
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(ID_EXTENSION_POINT_JUNIT_LAUNCHCONFIGS);
+		final IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
+		.getExtensionPoint(ID_EXTENSION_POINT_JUNIT_LAUNCHCONFIGS);
 		if (extensionPoint == null) {
 			return;
 		}
-		IConfigurationElement[] configs = extensionPoint
-				.getConfigurationElements();
+		final IConfigurationElement[] configs = extensionPoint
+		.getConfigurationElements();
 
 		for (int i = 0; i < configs.length; i++) {
-			String configTypeID = configs[i].getAttribute("configTypeID"); //$NON-NLS-1$
+			final String configTypeID = configs[i].getAttribute("configTypeID"); //$NON-NLS-1$
 			this.fJUnitLaunchConfigTypeIDs.add(configTypeID);
 		}
 	}
@@ -292,8 +292,8 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 * @return the bundle
 	 * @since 3.2
 	 */
-	public Bundle getBundle(String bundleName) {
-		Bundle[] bundles = getBundles(bundleName, null);
+	public Bundle getBundle(final String bundleName) {
+		final Bundle[] bundles = getBundles(bundleName, null);
 		if (bundles != null && bundles.length > 0) {
 			return bundles[0];
 		}
@@ -307,17 +307,17 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	 *            the bundle name
 	 * @return the bundles of the given name
 	 */
-	public Bundle[] getBundles(String bundleName, String version) {
+	public Bundle[] getBundles(final String bundleName, final String version) {
 		Bundle[] bundles = Platform.getBundles(bundleName, version);
 		if (bundles != null) {
 			return bundles;
 		}
 
 		// Accessing unresolved bundle
-		ServiceReference serviceRef = this.fBundleContext
-				.getServiceReference(PackageAdmin.class.getName());
-		PackageAdmin admin = (PackageAdmin) this.fBundleContext
-				.getService(serviceRef);
+		final ServiceReference serviceRef = this.fBundleContext
+		.getServiceReference(PackageAdmin.class.getName());
+		final PackageAdmin admin = (PackageAdmin) this.fBundleContext
+		.getService(serviceRef);
 		bundles = admin.getBundles(bundleName, version);
 		if (bundles != null && bundles.length > 0) {
 			return bundles;
@@ -336,8 +336,8 @@ public class GUnitPlugin extends AbstractUIPlugin {
 		return fIsStopped;
 	}
 
-	public IDialogSettings getDialogSettingsSection(String name) {
-		IDialogSettings dialogSettings = getDialogSettings();
+	public IDialogSettings getDialogSettingsSection(final String name) {
+		final IDialogSettings dialogSettings = getDialogSettings();
 		IDialogSettings section = dialogSettings.getSection(name);
 		if (section == null) {
 			section = dialogSettings.addNewSection(name);
@@ -346,7 +346,7 @@ public class GUnitPlugin extends AbstractUIPlugin {
 	}
 
 	public static File getHistoryDirectory() throws IllegalStateException {
-		File historyDir = getDefault().getStateLocation().append(
+		final File historyDir = getDefault().getStateLocation().append(
 				HISTORY_DIR_NAME).toFile();
 		if (!historyDir.isDirectory()) {
 			historyDir.mkdir();

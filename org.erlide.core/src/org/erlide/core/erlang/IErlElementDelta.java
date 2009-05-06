@@ -22,37 +22,35 @@ import org.eclipse.core.resources.IResourceDelta;
  * <code>getKind</code>) and its meaning (see individual constants for a more
  * detailled description):
  * <ul>
- * <li><code>ADDED</code>- The element described by the delta has been
- * added.</li>
+ * <li><code>ADDED</code>- The element described by the delta has been added.</li>
  * <li><code>REMOVED</code>- The element described by the delta has been
- * removed. </li>
- * <li><code>CHANGED</code>- The element described by the delta has been
- * changed in some way. Specification of the type of change is provided by
+ * removed.</li>
+ * <li><code>CHANGED</code>- The element described by the delta has been changed
+ * in some way. Specification of the type of change is provided by
  * <code>getFlags</code> which returns the following values:
  * <ul>
- * <li><code>F_ADDED_TO_CLASSPATH</code>- A classpath entry corresponding to
- * the element has been added to the project's classpath. This flag is only
+ * <li><code>F_ADDED_TO_CLASSPATH</code>- A classpath entry corresponding to the
+ * element has been added to the project's classpath. This flag is only valid if
+ * the element is an <code>IPackageFragmentRoot</code>.</li>
+ * <li><code>F_CHILDREN</code>- A child of the element has changed in some way.
+ * This flag is only valid if the element is an <code>IParent</code>.</li>
+ * <li><code>F_CLASSPATH_REORDER</code>- A classpath entry corresponding to the
+ * element has changed position in the project's classpath. This flag is only
  * valid if the element is an <code>IPackageFragmentRoot</code>.</li>
- * <li><code>F_CHILDREN</code>- A child of the element has changed in some
- * way. This flag is only valid if the element is an <code>IParent</code>.</li>
- * <li><code>F_CLASSPATH_REORDER</code>- A classpath entry corresponding to
- * the element has changed position in the project's classpath. This flag is
- * only valid if the element is an <code>IPackageFragmentRoot</code>.</li>
- * <li><code>F_CLOSED</code>- The underlying <code>IProject</code> has
- * been closed. This flag is only valid if the element is an
- * <code>IErlProject</code>.</li>
- * <li><code>F_CONTENT</code>- The contents of the element have been
- * altered. This flag is only valid for elements which correspond to files.</li>
- * <li><code>F_FINE_GRAINED</code>- The delta is a fine-grained delta, that
- * is, an analysis down to the members level was done to determine if there were
+ * <li><code>F_CLOSED</code>- The underlying <code>IProject</code> has been
+ * closed. This flag is only valid if the element is an <code>IErlProject</code>
+ * .</li>
+ * <li><code>F_CONTENT</code>- The contents of the element have been altered.
+ * This flag is only valid for elements which correspond to files.</li>
+ * <li><code>F_FINE_GRAINED</code>- The delta is a fine-grained delta, that is,
+ * an analysis down to the members level was done to determine if there were
  * structural changes to members of the element.</li>
- * <li><code>F_OPENED</code>- The underlying <code>IProject</code> has
- * been opened. This flag is only valid if the element is an
- * <code>IErlProject</code>.</li>
- * <li><code>F_REMOVED_FROM_CLASSPATH</code>- A classpath entry
- * corresponding to the element has been removed from the project's classpath.
- * This flag is only valid if the element is an
- * <code>IPackageFragmentRoot</code>.</li>
+ * <li><code>F_OPENED</code>- The underlying <code>IProject</code> has been
+ * opened. This flag is only valid if the element is an <code>IErlProject</code>
+ * .</li>
+ * <li><code>F_REMOVED_FROM_CLASSPATH</code>- A classpath entry corresponding to
+ * the element has been removed from the project's classpath. This flag is only
+ * valid if the element is an <code>IPackageFragmentRoot</code>.</li>
  * </ul>
  * </li>
  * </ul>
@@ -60,9 +58,9 @@ import org.eclipse.core.resources.IResourceDelta;
  * <p>
  * Move operations are indicated by other change flags, layered on top of the
  * change flags described above. If element A is moved to become B, the delta
- * for the change in A will have status <code>REMOVED</code>, with change
- * flag <code>F_MOVED_TO</code>. In this case, <code>getMovedToElement</code>
- * on delta A will return the handle for B. The delta for B will have status
+ * for the change in A will have status <code>REMOVED</code>, with change flag
+ * <code>F_MOVED_TO</code>. In this case, <code>getMovedToElement</code> on
+ * delta A will return the handle for B. The delta for B will have status
  * <code>ADDED</code>, with change flag <code>F_MOVED_FROM</code>, and
  * <code>getMovedFromElement</code> on delta B will return the handle for A.
  * (Note, the handle to A in this case represents an element that no longer
@@ -84,16 +82,16 @@ import org.eclipse.core.resources.IResourceDelta;
  * <code>IPackageFragmentRoot</code> P/src. On the contrary, if a resource is
  * physically added, removed or changed and this resource corresponds to a
  * classpath entry of the project, then an <code>IErlElementDelta</code> with
- * the <code>ADDED</code>, <code>REMOVED</code>, or <code>CHANGED</code>
- * kind will be fired.
+ * the <code>ADDED</code>, <code>REMOVED</code>, or <code>CHANGED</code> kind
+ * will be fired.
  * </p>
  * <p>
  * No assumptions should be made on whether the erlang element delta tree is
  * rooted at the <code>IErlModel</code> level or not.
  * </p>
  * <p>
- * <code>IErlElementDelta</code> object are not valid outside the dynamic
- * scope of the notification.
+ * <code>IErlElementDelta</code> object are not valid outside the dynamic scope
+ * of the notification.
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients.
@@ -180,15 +178,15 @@ public interface IErlElementDelta {
 	int F_REORDER = 0x00100;
 
 	/**
-	 * Change flag indicating that the underlying <code>IProject</code> has
-	 * been opened. This flag is only valid if the element is an
+	 * Change flag indicating that the underlying <code>IProject</code> has been
+	 * opened. This flag is only valid if the element is an
 	 * <code>IErlProject</code>.
 	 */
 	int F_OPENED = 0x00200;
 
 	/**
-	 * Change flag indicating that the underlying <code>IProject</code> has
-	 * been closed. This flag is only valid if the element is an
+	 * Change flag indicating that the underlying <code>IProject</code> has been
+	 * closed. This flag is only valid if the element is an
 	 * <code>IErlProject</code>.
 	 */
 	int F_CLOSED = 0x00400;
@@ -200,9 +198,8 @@ public interface IErlElementDelta {
 	 * <p>
 	 * Clients can use this flag to find out if a compilation unit that have a
 	 * <code>F_CONTENT</code> change should assume that there are no finer
-	 * grained changes (<code>F_FINE_GRAINED</code> is set) or if finer
-	 * grained changes were not considered (<code>F_FINE_GRAINED</code> is
-	 * not set).
+	 * grained changes (<code>F_FINE_GRAINED</code> is set) or if finer grained
+	 * changes were not considered (<code>F_FINE_GRAINED</code> is not set).
 	 * 
 	 * 
 	 */
@@ -304,8 +301,8 @@ public interface IErlElementDelta {
 	int getFlags();
 
 	/**
-	 * Returns the kind of this delta - one of <code>ADDED</code>,<code>REMOVED</code>,
-	 * or <code>CHANGED</code>.
+	 * Returns the kind of this delta - one of <code>ADDED</code>,
+	 * <code>REMOVED</code>, or <code>CHANGED</code>.
 	 * 
 	 * @return the kind of this delta
 	 */
@@ -324,12 +321,11 @@ public interface IErlElementDelta {
 
 	/**
 	 * Returns an element describing this element in its new location, or
-	 * <code>null</code> if the <code>F_MOVED_TO</code> change flag is not
-	 * set.
+	 * <code>null</code> if the <code>F_MOVED_TO</code> change flag is not set.
 	 * 
 	 * @return an element describing this element in its new location, or
-	 *         <code>null</code> if the <code>F_MOVED_TO</code> change flag
-	 *         is not set
+	 *         <code>null</code> if the <code>F_MOVED_TO</code> change flag is
+	 *         not set
 	 */
 	IErlElement getMovedToElement();
 

@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Julien Ruaux: jruaux@octo.com 
- * 	   Vincent Massol: vmassol@octo.com 
+ *     Julien Ruaux: jruaux@octo.com
+ * 	   Vincent Massol: vmassol@octo.com
  *******************************************************************************/
 package org.erlide.gunit.internal.model;
 
@@ -32,7 +32,7 @@ import org.erlide.gunit.internal.ui.GUnitPlugin;
  */
 public class RemoteTestRunnerClient {
 	public abstract class ListenerSafeRunnable implements ISafeRunnable {
-		public void handleException(Throwable exception) {
+		public void handleException(final Throwable exception) {
 			GUnitPlugin.log(exception);
 		}
 	}
@@ -46,7 +46,7 @@ public class RemoteTestRunnerClient {
 
 	class DefaultProcessingState extends ProcessingState {
 		@Override
-		ProcessingState readMessage(String message) {
+		ProcessingState readMessage(final String message) {
 			if (message.startsWith(MessageIds.TRACE_START)) {
 				RemoteTestRunnerClient.this.fFailedTrace.setLength(0);
 				return RemoteTestRunnerClient.this.fTraceState;
@@ -63,18 +63,18 @@ public class RemoteTestRunnerClient {
 				RemoteTestRunnerClient.this.fFailedRerunTrace.setLength(0);
 				return RemoteTestRunnerClient.this.fRerunState;
 			}
-			String arg = message.substring(MessageIds.MSG_HEADER_LENGTH);
+			final String arg = message.substring(MessageIds.MSG_HEADER_LENGTH);
 			if (message.startsWith(MessageIds.TEST_RUN_START)) {
 				// version < 2 format: count
 				// version >= 2 format: count+" "+version
 				int count = 0;
-				int v = arg.indexOf(' ');
+				final int v = arg.indexOf(' ');
 				if (v == -1) {
 					RemoteTestRunnerClient.this.fVersion = "v1"; //$NON-NLS-1$
 					count = Integer.parseInt(arg);
 				} else {
 					RemoteTestRunnerClient.this.fVersion = arg.substring(v + 1);
-					String sc = arg.substring(0, v);
+					final String sc = arg.substring(0, v);
 					count = Integer.parseInt(sc);
 				}
 				notifyTestRunStarted(count);
@@ -97,12 +97,12 @@ public class RemoteTestRunnerClient {
 				return this;
 			}
 			if (message.startsWith(MessageIds.TEST_RUN_END)) {
-				long elapsedTime = Long.parseLong(arg);
+				final long elapsedTime = Long.parseLong(arg);
 				testRunEnded(elapsedTime);
 				return this;
 			}
 			if (message.startsWith(MessageIds.TEST_STOPPED)) {
-				long elapsedTime = Long.parseLong(arg);
+				final long elapsedTime = Long.parseLong(arg);
 				notifyTestRunStopped(elapsedTime);
 				shutDown();
 				return this;
@@ -130,15 +130,15 @@ public class RemoteTestRunnerClient {
 	class AppendingProcessingState extends ProcessingState {
 		private final StringBuffer fBuffer;
 
-		private String fEndString;
+		private final String fEndString;
 
-		AppendingProcessingState(StringBuffer buffer, String endString) {
+		AppendingProcessingState(final StringBuffer buffer, final String endString) {
 			this.fBuffer = buffer;
 			this.fEndString = endString;
 		}
 
 		@Override
-		ProcessingState readMessage(String message) {
+		ProcessingState readMessage(final String message) {
 			if (message.startsWith(this.fEndString)) {
 				entireStringRead();
 				return RemoteTestRunnerClient.this.fDefaultState;
@@ -169,7 +169,7 @@ public class RemoteTestRunnerClient {
 		}
 
 		@Override
-		ProcessingState readMessage(String message) {
+		ProcessingState readMessage(final String message) {
 			if (message.startsWith(MessageIds.TRACE_END)) {
 				notifyTestFailed();
 				RemoteTestRunnerClient.this.fFailedTrace.setLength(0);
@@ -178,7 +178,7 @@ public class RemoteTestRunnerClient {
 				return RemoteTestRunnerClient.this.fDefaultState;
 			}
 			RemoteTestRunnerClient.this.fFailedTrace.append(message).append(
-					'\n');
+			'\n');
 			return this;
 		}
 	}
@@ -256,7 +256,7 @@ public class RemoteTestRunnerClient {
 	 */
 	private int fFailureKind;
 
-	private boolean fDebug = false;
+	private final boolean fDebug = false;
 
 	/**
 	 * Reads the message stream from the RemoteTestRunner
@@ -264,7 +264,7 @@ public class RemoteTestRunnerClient {
 	private class ServerConnection extends Thread {
 		int fServerPort;
 
-		public ServerConnection(int port) {
+		public ServerConnection(final int port) {
 			super("ServerConnection"); //$NON-NLS-1$
 			this.fServerPort = port;
 		}
@@ -274,42 +274,42 @@ public class RemoteTestRunnerClient {
 			try {
 				if (RemoteTestRunnerClient.this.fDebug) {
 					System.out
-							.println("Creating server socket " + this.fServerPort); //$NON-NLS-1$
+					.println("Creating server socket " + this.fServerPort); //$NON-NLS-1$
 				}
 				RemoteTestRunnerClient.this.fServerSocket = new ServerSocket(
 						this.fServerPort);
 				RemoteTestRunnerClient.this.fSocket = RemoteTestRunnerClient.this.fServerSocket
-						.accept();
+				.accept();
 				try {
 					RemoteTestRunnerClient.this.fBufferedReader = new BufferedReader(
 							new InputStreamReader(
 									RemoteTestRunnerClient.this.fSocket
-											.getInputStream(), "UTF-8")); //$NON-NLS-1$
-				} catch (UnsupportedEncodingException e) {
+									.getInputStream(), "UTF-8")); //$NON-NLS-1$
+				} catch (final UnsupportedEncodingException e) {
 					RemoteTestRunnerClient.this.fBufferedReader = new BufferedReader(
 							new InputStreamReader(
 									RemoteTestRunnerClient.this.fSocket
-											.getInputStream()));
+									.getInputStream()));
 				}
 				try {
 					RemoteTestRunnerClient.this.fWriter = new PrintWriter(
 							new OutputStreamWriter(
 									RemoteTestRunnerClient.this.fSocket
-											.getOutputStream(), "UTF-8"), true); //$NON-NLS-1$
-				} catch (UnsupportedEncodingException e1) {
+									.getOutputStream(), "UTF-8"), true); //$NON-NLS-1$
+				} catch (final UnsupportedEncodingException e1) {
 					RemoteTestRunnerClient.this.fWriter = new PrintWriter(
 							new OutputStreamWriter(
 									RemoteTestRunnerClient.this.fSocket
-											.getOutputStream()), true);
+									.getOutputStream()), true);
 				}
 				String message;
 				while (RemoteTestRunnerClient.this.fBufferedReader != null
 						&& (message = readMessage(RemoteTestRunnerClient.this.fBufferedReader)) != null) {
 					receiveMessage(message);
 				}
-			} catch (SocketException e) {
+			} catch (final SocketException e) {
 				notifyTestRunTerminated();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				GUnitPlugin.log(e);
 				// fall through
 			}
@@ -324,11 +324,11 @@ public class RemoteTestRunnerClient {
 	 * @param listeners
 	 * @param port
 	 */
-	public synchronized void startListening(ITestRunListener2[] listeners,
-			int port) {
+	public synchronized void startListening(final ITestRunListener2[] listeners,
+			final int port) {
 		this.fListeners = listeners;
 		this.fPort = port;
-		ServerConnection connection = new ServerConnection(port);
+		final ServerConnection connection = new ServerConnection(port);
 		connection.start();
 	}
 
@@ -364,21 +364,21 @@ public class RemoteTestRunnerClient {
 				this.fBufferedReader.close();
 				this.fBufferedReader = null;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 		}
 		try {
 			if (this.fSocket != null) {
 				this.fSocket.close();
 				this.fSocket = null;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 		}
 		try {
 			if (this.fServerSocket != null) {
 				this.fServerSocket.close();
 				this.fServerSocket = null;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 		}
 	}
 
@@ -386,42 +386,42 @@ public class RemoteTestRunnerClient {
 		return this.fSocket != null;
 	}
 
-	private String readMessage(BufferedReader in) throws IOException {
+	private String readMessage(final BufferedReader in) throws IOException {
 		return in.readLine();
 	}
 
-	private void receiveMessage(String message) {
+	private void receiveMessage(final String message) {
 		this.fCurrentState = this.fCurrentState.readMessage(message);
 	}
 
-	private void scanOldReranMessage(String arg) {
+	private void scanOldReranMessage(final String arg) {
 		// OLD V1 format
 		// format: className" "testName" "status
 		// status: FAILURE, ERROR, OK
-		int c = arg.indexOf(" "); //$NON-NLS-1$
-		int t = arg.indexOf(" ", c + 1); //$NON-NLS-1$
-		String className = arg.substring(0, c);
-		String testName = arg.substring(c + 1, t);
-		String status = arg.substring(t + 1);
-		String testId = className + testName;
+		final int c = arg.indexOf(" "); //$NON-NLS-1$
+		final int t = arg.indexOf(" ", c + 1); //$NON-NLS-1$
+		final String className = arg.substring(0, c);
+		final String testName = arg.substring(c + 1, t);
+		final String status = arg.substring(t + 1);
+		final String testId = className + testName;
 		notifyTestReran(testId, className, testName, status);
 	}
 
-	private void scanReranMessage(String arg) {
+	private void scanReranMessage(final String arg) {
 		// format: testId" "className" "testName" "status
 		// status: FAILURE, ERROR, OK
-		int i = arg.indexOf(' ');
-		int c = arg.indexOf(' ', i + 1);
-		int t = arg.indexOf(' ', c + 1);
-		String testId = arg.substring(0, i);
-		String className = arg.substring(i + 1, c);
-		String testName = arg.substring(c + 1, t);
-		String status = arg.substring(t + 1);
+		final int i = arg.indexOf(' ');
+		final int c = arg.indexOf(' ', i + 1);
+		final int t = arg.indexOf(' ', c + 1);
+		final String testId = arg.substring(0, i);
+		final String className = arg.substring(i + 1, c);
+		final String testName = arg.substring(c + 1, t);
+		final String status = arg.substring(t + 1);
 		notifyTestReran(testId, className, testName, status);
 	}
 
-	private void notifyTestReran(String testId, String className,
-			String testName, String status) {
+	private void notifyTestReran(final String testId, final String className,
+			final String testName, final String status) {
 		int statusCode = ITestRunListener2.STATUS_OK;
 		if (status.equals("FAILURE")) {
 			statusCode = ITestRunListener2.STATUS_FAILURE;
@@ -437,8 +437,8 @@ public class RemoteTestRunnerClient {
 		notifyTestReran(testId, className, testName, statusCode, trace);
 	}
 
-	private void extractFailure(String arg, int status) {
-		String s[] = extractTestId(arg);
+	private void extractFailure(final String arg, final int status) {
+		final String s[] = extractTestId(arg);
 		this.fFailedTestId = s[0];
 		this.fFailedTest = s[1];
 		this.fFailureKind = status;
@@ -450,14 +450,14 @@ public class RemoteTestRunnerClient {
 	 * @return an array with two elements. The first one is the testId, the
 	 *         second one the testName.
 	 */
-	String[] extractTestId(String arg) {
-		String[] result = new String[2];
+	String[] extractTestId(final String arg) {
+		final String[] result = new String[2];
 		if (!hasTestId()) {
 			result[0] = arg; // use the test name as the test Id
 			result[1] = arg;
 			return result;
 		}
-		int i = arg.indexOf(',');
+		final int i = arg.indexOf(',');
 		result[0] = arg.substring(0, i);
 		result[1] = arg.substring(i + 1, arg.length());
 		return result;
@@ -478,9 +478,9 @@ public class RemoteTestRunnerClient {
 				public void run() {
 					listener.testReran(testId, className, testName, statusCode,
 							trace, RemoteTestRunnerClient.this.fExpectedResult
-									.toString(),
+							.toString(),
 							RemoteTestRunnerClient.this.fActualResult
-									.toString());
+							.toString());
 				}
 			});
 		}
@@ -488,7 +488,7 @@ public class RemoteTestRunnerClient {
 
 	private void notifyTestTreeEntry(final String treeEntry) {
 		for (int i = 0; i < this.fListeners.length; i++) {
-			ITestRunListener2 listener = this.fListeners[i];
+			final ITestRunListener2 listener = this.fListeners[i];
 			if (!hasTestId()) {
 				listener.testTreeEntry(fakeTestId(treeEntry));
 			} else {
@@ -497,10 +497,10 @@ public class RemoteTestRunnerClient {
 		}
 	}
 
-	private String fakeTestId(String treeEntry) {
+	private String fakeTestId(final String treeEntry) {
 		// extract the test name and add it as the testId
-		int index0 = treeEntry.indexOf(',');
-		String testName = treeEntry.substring(0, index0).trim();
+		final int index0 = treeEntry.indexOf(',');
+		final String testName = treeEntry.substring(0, index0).trim();
 		return testName + "," + treeEntry; //$NON-NLS-1$
 	}
 
@@ -540,7 +540,7 @@ public class RemoteTestRunnerClient {
 			final ITestRunListener2 listener = this.fListeners[i];
 			SafeRunner.run(new ListenerSafeRunnable() {
 				public void run() {
-					String s[] = extractTestId(test);
+					final String s[] = extractTestId(test);
 					listener.testEnded(s[0], s[1]);
 				}
 			});
@@ -555,7 +555,7 @@ public class RemoteTestRunnerClient {
 			final ITestRunListener2 listener = this.fListeners[i];
 			SafeRunner.run(new ListenerSafeRunnable() {
 				public void run() {
-					String s[] = extractTestId(test);
+					final String s[] = extractTestId(test);
 					listener.testStarted(s[0], s[1]);
 				}
 			});
@@ -585,16 +585,16 @@ public class RemoteTestRunnerClient {
 			SafeRunner.run(new ListenerSafeRunnable() {
 				public void run() {
 					listener
-							.testFailed(
-									RemoteTestRunnerClient.this.fFailureKind,
-									RemoteTestRunnerClient.this.fFailedTestId,
-									RemoteTestRunnerClient.this.fFailedTest,
-									RemoteTestRunnerClient.this.fFailedTrace
-											.toString(),
-									RemoteTestRunnerClient.this.fExpectedResult
-											.toString(),
-									RemoteTestRunnerClient.this.fActualResult
-											.toString());
+					.testFailed(
+							RemoteTestRunnerClient.this.fFailureKind,
+							RemoteTestRunnerClient.this.fFailedTestId,
+							RemoteTestRunnerClient.this.fFailedTest,
+							RemoteTestRunnerClient.this.fFailedTrace
+							.toString(),
+							RemoteTestRunnerClient.this.fExpectedResult
+							.toString(),
+							RemoteTestRunnerClient.this.fActualResult
+							.toString());
 				}
 			});
 		}
@@ -616,7 +616,7 @@ public class RemoteTestRunnerClient {
 		}
 	}
 
-	public void rerunTest(String testId, String className, String testName) {
+	public void rerunTest(final String testId, final String className, final String testName) {
 		if (isRunning()) {
 			this.fActualResult.setLength(0);
 			this.fExpectedResult.setLength(0);

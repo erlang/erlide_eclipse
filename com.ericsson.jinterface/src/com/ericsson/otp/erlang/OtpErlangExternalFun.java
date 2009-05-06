@@ -14,7 +14,7 @@
  * the License for the specific language governing rights and limitations
  * under the License.
  * 
- * %CopyrightEnd% 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -59,12 +59,12 @@ public class OtpErlangExternalFun extends OtpErlangObject {
 
     @Override
     protected int doHashCode() {
-	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(14);
+	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(14);
 	hash.combine(module.hashCode(), function.hashCode());
 	hash.combine(arity);
 	return hash.valueOf();
     }
-    
+
     @Override
     public String toString() {
 	return "#Fun<" + module + "." + function + "." + arity + ">";

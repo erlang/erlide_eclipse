@@ -28,7 +28,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public class CompilerPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private CompilerPreferences prefs;
+	private final CompilerPreferences prefs;
 
 	public CompilerPreferencePage() {
 		super();
@@ -39,8 +39,8 @@ public class CompilerPreferencePage extends PreferencePage implements
 	}
 
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite control = new Composite(parent, SWT.NONE);
+	protected Control createContents(final Composite parent) {
+		final Composite control = new Composite(parent, SWT.NONE);
 		control.setEnabled(false);
 		final GridLayout gridLayout_1 = new GridLayout();
 		gridLayout_1.numColumns = 2;
@@ -157,7 +157,7 @@ public class CompilerPreferencePage extends PreferencePage implements
 		super.performDefaults();
 		try {
 			prefs.load();
-		} catch (BackingStoreException e) {
+		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
 		}
 	}

@@ -49,7 +49,7 @@ import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
  * @since 3.3
  */
 public class GUnitLaunchConfigurationDelegate extends
-		ErlangLaunchConfigurationDelegate {
+ErlangLaunchConfigurationDelegate {
 
 	private boolean fKeepAlive = false;
 
@@ -67,8 +67,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	public void launch(ILaunchConfiguration configuration, String mode,
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	public void launch(final ILaunchConfiguration configuration, String mode,
+			final ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -85,17 +85,17 @@ public class GUnitLaunchConfigurationDelegate extends
 					.equals(GUnitLaunchConfigurationConstants.MODE_RUN_QUIETLY_MODE)) {
 				launch.setAttribute(
 						GUnitLaunchConfigurationConstants.ATTR_NO_DISPLAY,
-						"true"); //$NON-NLS-1$
+				"true"); //$NON-NLS-1$
 				mode = ILaunchManager.RUN_MODE;
 			}
 
 			monitor
-					.subTask(GUnitMessages.JUnitLaunchConfigurationDelegate_verifying_attriburtes_description);
+			.subTask(GUnitMessages.JUnitLaunchConfigurationDelegate_verifying_attriburtes_description);
 
 			try {
 				preLaunchCheck(configuration, launch, new SubProgressMonitor(
 						monitor, 2));
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				if (e.getStatus().getSeverity() == IStatus.CANCEL) {
 					monitor.setCanceled(true);
 					return;
@@ -108,9 +108,9 @@ public class GUnitLaunchConfigurationDelegate extends
 			}
 
 			this.fKeepAlive = mode.equals(ILaunchManager.DEBUG_MODE)
-					&& configuration.getAttribute(
-							GUnitLaunchConfigurationConstants.ATTR_KEEPRUNNING,
-							false);
+			&& configuration.getAttribute(
+					GUnitLaunchConfigurationConstants.ATTR_KEEPRUNNING,
+					false);
 			this.fPort = evaluatePort();
 			launch.setAttribute(GUnitLaunchConfigurationConstants.ATTR_PORT,
 					String.valueOf(this.fPort));
@@ -118,7 +118,7 @@ public class GUnitLaunchConfigurationDelegate extends
 			this.fTestElements = evaluateTests(configuration,
 					new SubProgressMonitor(monitor, 1));
 
-			String mainTypeName = verifyMainTypeName(configuration);
+			final String mainTypeName = verifyMainTypeName(configuration);
 			// IVMRunner runner = getVMRunner(configuration, mode);
 			//
 			// File workingDir = verifyWorkingDirectory(configuration);
@@ -208,8 +208,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 * @throws CoreException
 	 *             an exception is thrown when the verification fails
 	 */
-	protected void preLaunchCheck(ILaunchConfiguration configuration,
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	protected void preLaunchCheck(final ILaunchConfiguration configuration,
+			final ILaunch launch, final IProgressMonitor monitor) throws CoreException {
 		// try {
 		// IErlProject javaProject = getErlProject(configuration);
 		// if ((javaProject == null) || !javaProject.exists()) {
@@ -238,9 +238,9 @@ public class GUnitLaunchConfigurationDelegate extends
 		// }
 	}
 
-	private ITestKind getTestRunnerKind(ILaunchConfiguration configuration) {
-		ITestKind testKind = GUnitLaunchConfigurationConstants
-				.getTestRunnerKind(configuration);
+	private ITestKind getTestRunnerKind(final ILaunchConfiguration configuration) {
+		final ITestKind testKind = GUnitLaunchConfigurationConstants
+		.getTestRunnerKind(configuration);
 		// if (testKind.isNull()) {
 		// testKind = TestKindRegistry.getDefault().getKind(
 		// TestKindRegistry.JUNIT3_TEST_KIND_ID); // backward
@@ -258,8 +258,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 * @seeorg.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#
 	 * verifyMainTypeName(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
-	public String verifyMainTypeName(ILaunchConfiguration configuration)
-			throws CoreException {
+	public String verifyMainTypeName(final ILaunchConfiguration configuration)
+	throws CoreException {
 		return "org.erlide.gunit.internal.runner.RemoteTestRunner"; //$NON-NLS-1$
 	}
 
@@ -277,8 +277,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 * @throws CoreException
 	 *             an exception is thrown when the search for tests failed
 	 */
-	protected IErlMember[] evaluateTests(ILaunchConfiguration configuration,
-			IProgressMonitor monitor) throws CoreException {
+	protected IErlMember[] evaluateTests(final ILaunchConfiguration configuration,
+			final IProgressMonitor monitor) throws CoreException {
 		// IErlProject javaProject = getErlProject(configuration);
 		//
 		// IErlElement testTarget = getTestTarget(configuration, javaProject);
@@ -306,9 +306,9 @@ public class GUnitLaunchConfigurationDelegate extends
 		return null;
 	}
 
-	private void informAndAbort(String message, Throwable exception, int code)
-			throws CoreException {
-		IStatus status = new Status(IStatus.INFO, GUnitPlugin.PLUGIN_ID, code,
+	private void informAndAbort(final String message, final Throwable exception, final int code)
+	throws CoreException {
+		final IStatus status = new Status(IStatus.INFO, GUnitPlugin.PLUGIN_ID, code,
 				message, exception);
 		if (showStatusMessage(status)) {
 			// Status message successfully shown
@@ -339,8 +339,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 *                if unable to collect the execution arguments
 	 */
 	protected void collectExecutionArguments(
-			ILaunchConfiguration configuration, List<String> vmArguments,
-			List<String> programArguments) throws CoreException {
+			final ILaunchConfiguration configuration, final List<String> vmArguments,
+			final List<String> programArguments) throws CoreException {
 
 		// add program & VM arguments provided by getProgramArguments and
 		// getVMArguments
@@ -352,7 +352,7 @@ public class GUnitLaunchConfigurationDelegate extends
 		// programArguments.addAll(Arrays.asList(execArgs
 		// .getProgramArgumentsArray()));
 
-		String testFailureNames = configuration.getAttribute(
+		final String testFailureNames = configuration.getAttribute(
 				GUnitLaunchConfigurationConstants.ATTR_FAILURES_NAMES, ""); //$NON-NLS-1$
 
 		programArguments.add("-version"); //$NON-NLS-1$
@@ -365,14 +365,14 @@ public class GUnitLaunchConfigurationDelegate extends
 			programArguments.add(0, "-keepalive"); //$NON-NLS-1$
 		}
 
-		ITestKind testRunnerKind = getTestRunnerKind(configuration);
+		final ITestKind testRunnerKind = getTestRunnerKind(configuration);
 
 		programArguments.add("-testLoaderClass"); //$NON-NLS-1$
 		programArguments.add(testRunnerKind.getLoaderClassName());
 		programArguments.add("-loaderpluginname"); //$NON-NLS-1$
 		programArguments.add(testRunnerKind.getLoaderPluginId());
 
-		IErlMember[] testElements = this.fTestElements;
+		final IErlMember[] testElements = this.fTestElements;
 
 		// a test name was specified just run the single test
 		// if (testElements.length == 1) {
@@ -403,18 +403,18 @@ public class GUnitLaunchConfigurationDelegate extends
 		// }
 	}
 
-	private String createTestNamesFile(IErlMember[] testElements)
-			throws CoreException {
+	private String createTestNamesFile(final IErlMember[] testElements)
+	throws CoreException {
 		try {
-			File file = File.createTempFile("testNames", ".txt"); //$NON-NLS-1$ //$NON-NLS-2$
+			final File file = File.createTempFile("testNames", ".txt"); //$NON-NLS-1$ //$NON-NLS-2$
 			file.deleteOnExit();
 			BufferedWriter bw = null;
 			try {
 				bw = new BufferedWriter(new FileWriter(file));
 				for (int i = 0; i < testElements.length; i++) {
 					if (testElements[i] instanceof IErlModule) {
-						IErlModule type = (IErlModule) testElements[i];
-						String testName = type.getName();
+						final IErlModule type = (IErlModule) testElements[i];
+						final String testName = type.getName();
 						bw.write(testName);
 						bw.newLine();
 					} else {
@@ -430,7 +430,7 @@ public class GUnitLaunchConfigurationDelegate extends
 				}
 			}
 			return file.getAbsolutePath();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR,
 					GUnitPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
 		}
@@ -488,10 +488,10 @@ public class GUnitLaunchConfigurationDelegate extends
 	// return null; // not reachable
 	// }
 
-	private final String performStringSubstitution(String testTypeName)
-			throws CoreException {
+	private final String performStringSubstitution(final String testTypeName)
+	throws CoreException {
 		return VariablesPlugin.getDefault().getStringVariableManager()
-				.performStringSubstitution(testTypeName);
+		.performStringSubstitution(testTypeName);
 	}
 
 	private boolean showStatusMessage(final IStatus status) {
@@ -504,10 +504,10 @@ public class GUnitLaunchConfigurationDelegate extends
 				}
 				if (shell != null) {
 					MessageDialog
-							.openInformation(
-									shell,
-									GUnitMessages.JUnitLaunchConfigurationDelegate_dialog_title,
-									status.getMessage());
+					.openInformation(
+							shell,
+							GUnitMessages.JUnitLaunchConfigurationDelegate_dialog_title,
+							status.getMessage());
 					success[0] = true;
 				}
 			}
@@ -531,8 +531,8 @@ public class GUnitLaunchConfigurationDelegate extends
 	 * org.erlide.gunit.internal.launcher.ITestFindingAbortHandler#abort(java
 	 * .lang.String, java.lang.Throwable, int)
 	 */
-	protected void abort(String message, Throwable exception, int code)
-			throws CoreException {
+	protected void abort(final String message, final Throwable exception, final int code)
+	throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR,
 				GUnitPlugin.PLUGIN_ID, code, message, exception));
 	}

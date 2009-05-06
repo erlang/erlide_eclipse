@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
@@ -20,12 +20,12 @@ public class RpcResult {
 
 	private boolean fOk = true;
 
-	private RpcResult(boolean ok) {
+	private RpcResult(final boolean ok) {
 		fOk = ok;
 		fValue = new OtpErlangAtom("undefined");
 	}
 
-	public RpcResult(OtpErlangObject res) {
+	public RpcResult(final OtpErlangObject res) {
 		if ((res instanceof OtpErlangTuple)
 				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
 				&& ("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
@@ -54,8 +54,8 @@ public class RpcResult {
 		return "RPC:" + fOk + "=" + fValue.toString();
 	}
 
-	public static RpcResult error(String msg) {
-		RpcResult r = new RpcResult(false);
+	public static RpcResult error(final String msg) {
+		final RpcResult r = new RpcResult(false);
 		r.fValue = new OtpErlangAtom(msg);
 		return r;
 	}

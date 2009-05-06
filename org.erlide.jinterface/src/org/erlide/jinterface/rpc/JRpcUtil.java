@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -37,13 +37,13 @@ public class JRpcUtil {
 
 	private static final boolean VERBOSE = false;
 
-	public static OtpErlangObject execute(OtpErlangObject target,
-			OtpErlangObject method, OtpErlangObject[] args) {
+	public static OtpErlangObject execute(final OtpErlangObject target,
+			final OtpErlangObject method, final OtpErlangObject[] args) {
 
 		debug("EXEC:: " + target + ":" + method + " " + args + " >"
 				+ (args == null ? 0 : args.length));
 
-		MethodDescription description = getDescription(method);
+		final MethodDescription description = getDescription(method);
 
 		Object[] parms;
 		if (args != null) {
@@ -52,7 +52,7 @@ public class JRpcUtil {
 				try {
 					parms[i] = RpcConverter.erlang2java(args[i],
 							description.argTypes[i]);
-				} catch (RpcException e) {
+				} catch (final RpcException e) {
 					e.printStackTrace();
 				}
 			}
@@ -62,17 +62,17 @@ public class JRpcUtil {
 
 		if (target instanceof OtpErlangRef) {
 			// object call
-			Object rcvr = ObjRefCache.getTarget((OtpErlangRef) target);
+			final Object rcvr = ObjRefCache.getTarget((OtpErlangRef) target);
 			if (rcvr != null) {
 				try {
 					return callMethod(rcvr, description, parms);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					log("bad RPC 1: " + e.getMessage());
 					return JInterfaceFactory.mkTuple(
 							new OtpErlangAtom("error"), new OtpErlangString(
 									String
-											.format("Bad RPC: %s", e
-													.getMessage())));
+									.format("Bad RPC: %s", e
+											.getMessage())));
 				}
 
 			}
@@ -85,11 +85,11 @@ public class JRpcUtil {
 				|| target instanceof OtpErlangString
 				|| target instanceof OtpErlangBinary) {
 			// static call
-			String clazzName = asString(target);
+			final String clazzName = asString(target);
 			try {
-				Class<?> clazz = Class.forName(clazzName, true, loader);
+				final Class<?> clazz = Class.forName(clazzName, true, loader);
 				return callMethod(clazz, description, parms);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
 				return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
@@ -109,27 +109,27 @@ public class JRpcUtil {
 		if (!(target instanceof OtpErlangTuple)) {
 			target = JInterfaceFactory.mkTuple(target, new OtpErlangList());
 		}
-		OtpErlangTuple t = (OtpErlangTuple) target;
-		String name = asString(t.elementAt(0));
+		final OtpErlangTuple t = (OtpErlangTuple) target;
+		final String name = asString(t.elementAt(0));
 		Object olist = null;
 		try {
 			olist = RpcConverter.erlang2java(t.elementAt(1), String[].class);
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			// can't fail for String
 		}
 		if (olist instanceof List) {
-			List<String> arglist = (List<String>) olist;
-			Class<?>[] args = new Class<?>[arglist.size()];
+			final List<String> arglist = (List<String>) olist;
+			final Class<?>[] args = new Class<?>[arglist.size()];
 			for (int i = 0; i < args.length; i++) {
-				String arg = arglist.get(i);
+				final String arg = arglist.get(i);
 				args[i] = RpcConverter.getClassByName(arg);
 			}
 			return new MethodDescription(name, args);
 		} else if (olist instanceof Object[]) {
-			Object[] arglist = (Object[]) olist;
-			Class<?>[] args = new Class<?>[arglist.length];
+			final Object[] arglist = (Object[]) olist;
+			final Class<?>[] args = new Class<?>[arglist.length];
 			for (int i = 0; i < args.length; i++) {
-				String arg = (String) arglist[i];
+				final String arg = (String) arglist[i];
 				args[i] = RpcConverter.getClassByName(arg);
 			}
 			return new MethodDescription(name, args);
@@ -139,7 +139,7 @@ public class JRpcUtil {
 		}
 	}
 
-	private static String asString(OtpErlangObject target) {
+	private static String asString(final OtpErlangObject target) {
 		if (target instanceof OtpErlangAtom) {
 			return ((OtpErlangAtom) target).atomValue();
 		} else if (target instanceof OtpErlangString) {
@@ -151,9 +151,9 @@ public class JRpcUtil {
 		}
 	}
 
-	private static OtpErlangObject callMethod(Object rcvr,
-			MethodDescription method, Object[] args) {
-		Class<?> cls = (rcvr instanceof Class<?>) ? (Class<?>) rcvr : rcvr
+	private static OtpErlangObject callMethod(final Object rcvr,
+			final MethodDescription method, Object[] args) {
+		final Class<?> cls = (rcvr instanceof Class<?>) ? (Class<?>) rcvr : rcvr
 				.getClass();
 
 		Class<?>[] params = null;
@@ -170,7 +170,7 @@ public class JRpcUtil {
 				Constructor<?> ctr;
 				ctr = cls.getConstructor(method.argTypes);
 				// meth.setAccessible(true);
-				Object o = ctr.newInstance(args);
+				final Object o = ctr.newInstance(args);
 				debug(String.format("** %s() returned %s", ctr, o));
 
 				return RpcConverter.java2erlang(o, "x");
@@ -178,30 +178,30 @@ public class JRpcUtil {
 			Method meth;
 			meth = cls.getMethod(method.name, method.argTypes);
 			// meth.setAccessible(true);
-			Object o = meth.invoke(rcvr, args);
+			final Object o = meth.invoke(rcvr, args);
 			debug(String.format("** %s() returned %s", meth, o));
 
 			return RpcConverter.java2erlang(o, "x");
-		} catch (NoSuchMethodException e) {
-			StringBuilder paramstr = new StringBuilder();
-			for (Class<?> param : params) {
+		} catch (final NoSuchMethodException e) {
+			final StringBuilder paramstr = new StringBuilder();
+			for (final Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"can't find method %s of %s(%s)", method.name, cls
-									.getName(), paramstr)));
-		} catch (InvocationTargetException x) {
-			Throwable cause = x.getCause();
+							.getName(), paramstr)));
+		} catch (final InvocationTargetException x) {
+			final Throwable cause = x.getCause();
 			log(String.format("invocation of %s failed: %s", method.name, cause
 					.getMessage()));
 			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, cause
-									.getMessage())));
-		} catch (IllegalArgumentException x) {
-			StringBuilder paramstr = new StringBuilder();
-			for (Class<?> param : params) {
+							.getMessage())));
+		} catch (final IllegalArgumentException x) {
+			final StringBuilder paramstr = new StringBuilder();
+			for (final Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
@@ -209,10 +209,10 @@ public class JRpcUtil {
 			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, x
-									.getMessage())));
-		} catch (InstantiationException e) {
-			StringBuilder paramstr = new StringBuilder();
-			for (Class<?> param : params) {
+							.getMessage())));
+		} catch (final InstantiationException e) {
+			final StringBuilder paramstr = new StringBuilder();
+			for (final Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
@@ -220,11 +220,11 @@ public class JRpcUtil {
 			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", cls.getName(), e
-									.getMessage())));
-		} catch (IllegalAccessException e) {
+							.getMessage())));
+		} catch (final IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
-		} catch (RpcException e) {
+		} catch (final RpcException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -245,22 +245,22 @@ public class JRpcUtil {
 	 * @return
 	 */
 	@SuppressWarnings( { "unused", "unchecked" })
-	private static Object sendMessage(String message, Object target,
-			Object[] args) {
+	private static Object sendMessage(final String message, final Object target,
+			final Object[] args) {
 		try {
 			// Is this an argumentless method call?
 			if (args == null) {
 				// Get the method.
 				return target.getClass().getMethod(message, (Class[]) null)
-						.invoke(target, (Object[]) null);
+				.invoke(target, (Object[]) null);
 			}
 			// Get all methods from the target.
-			Method[] allMethods = target.getClass().getMethods();
-			List<Method> candidateMethods = new ArrayList<Method>();
+			final Method[] allMethods = target.getClass().getMethods();
+			final List<Method> candidateMethods = new ArrayList<Method>();
 
 			for (int i = 0; i < allMethods.length; i++) {
 				// Filter methods by name and length of arguments.
-				Method m = allMethods[i];
+				final Method m = allMethods[i];
 				if (m.getName().equals(message)
 						&& m.getParameterTypes().length == args.length) {
 					candidateMethods.add(m);
@@ -272,11 +272,11 @@ public class JRpcUtil {
 			}
 
 			Method callableMethod = null;
-			for (Iterator<Method> itr = candidateMethods.iterator(); itr
-					.hasNext();) {
+			for (final Iterator<Method> itr = candidateMethods.iterator(); itr
+			.hasNext();) {
 				boolean callable = true;
-				Method m = itr.next();
-				Class[] argFormalTypes = m.getParameterTypes();
+				final Method m = itr.next();
+				final Class[] argFormalTypes = m.getParameterTypes();
 				for (int i = 0; i < argFormalTypes.length; i++) {
 					if (!argFormalTypes[i].isAssignableFrom(args[i].getClass())) {
 						callable = false;
@@ -291,8 +291,8 @@ public class JRpcUtil {
 				return callableMethod.invoke(target, args);
 			}
 			throw new RuntimeException("No such method found: " + message);
-		} catch (Exception e) {
-			StringBuffer sb = new StringBuffer();
+		} catch (final Exception e) {
+			final StringBuffer sb = new StringBuffer();
 			// Build a helpful message to debug reflection issues.
 			try {
 				sb.append("ERROR: Could not send message '" + message
@@ -300,14 +300,14 @@ public class JRpcUtil {
 						+ " \n");
 
 				sb.append("\ttarget implements : \n");
-				Class[] interfaces = target.getClass().getInterfaces();
+				final Class[] interfaces = target.getClass().getInterfaces();
 				for (int j = 0; j < interfaces.length; j++) {
 					sb.append("\t\t" + interfaces[j].getName() + "\n");
 				}
 				sb.append("\n");
 
 				sb.append("\ttarget methods: \n");
-				Method[] methods = target.getClass().getMethods();
+				final Method[] methods = target.getClass().getMethods();
 				for (int j = 0; j < methods.length; j++) {
 					sb.append("\t\t" + methods[j].getName() + "\n");
 				}
@@ -319,33 +319,33 @@ public class JRpcUtil {
 						sb.append("\t\t" + args[j].getClass().getName() + "\n");
 					}
 				}
-			} catch (Exception e2) {
+			} catch (final Exception e2) {
 				throw new RuntimeException(
-						"ERROR: Could not create detailed error message for failed sendMessage() call.");
+				"ERROR: Could not create detailed error message for failed sendMessage() call.");
 			}
 			throw new RuntimeException(sb.toString());
 		}
 
 	}
 
-	private static void log(String s) {
+	private static void log(final String s) {
 		System.out.println("JRpcUtil: " + s);
 	}
 
-	private static void debug(String s) {
+	private static void debug(final String s) {
 		if (VERBOSE) {
 			log(s);
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private static void warn(Exception e) {
+	private static void warn(final Exception e) {
 		log(e.getMessage());
 		e.printStackTrace();
 	}
 
 	private static class MethodDescription {
-		public MethodDescription(String meth, Class<?>[] args) {
+		public MethodDescription(final String meth, final Class<?>[] args) {
 			this.name = meth;
 			this.argTypes = args;
 		}

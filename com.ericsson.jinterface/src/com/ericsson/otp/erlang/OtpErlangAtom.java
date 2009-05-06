@@ -38,11 +38,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * Create an atom from the given string.
      * 
      * @param atom
-     *                the string to create the atom from.
+     *            the string to create the atom from.
      * 
      * @exception java.lang.IllegalArgumentException
-     *                    if the string is empty ("") or contains more than
-     *                    {@link #maxAtomLength maxAtomLength} characters.
+     *                if the string is empty ("") or contains more than
+     *                {@link #maxAtomLength maxAtomLength} characters.
      */
     public OtpErlangAtom(final String atom) {
 	if (atom == null || atom.length() < 1) {
@@ -62,11 +62,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *                the stream containing the encoded atom.
+     *            the stream containing the encoded atom.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang atom.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang atom.
      */
     public OtpErlangAtom(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -127,7 +127,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * Determine if two atoms are equal.
      * 
      * @param o
-     *                the other object to compare to.
+     *            the other object to compare to.
      * 
      * @return true if the atoms are equal, false otherwise.
      */
@@ -146,8 +146,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * Convert this atom to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded atom should be
-     *                written.
+     *            an output stream to which the encoded atom should be written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {

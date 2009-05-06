@@ -76,7 +76,9 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.core.model.IStreamMonitor#addListener(org.eclipse.debug.core.IStreamListener)
+	 * @see
+	 * org.eclipse.debug.core.model.IStreamMonitor#addListener(org.eclipse.debug
+	 * .core.IStreamListener)
 	 */
 	public synchronized void addListener(final IStreamListener listener) {
 		fListeners.add(listener);
@@ -118,9 +120,8 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 * Continually reads from the stream.
 	 * <p>
 	 * This method, along with the <code>startReading</code> method is used to
-	 * allow <code>OutputStreamMonitor</code> to implement
-	 * <code>Runnable</code> without publicly exposing a <code>run</code>
-	 * method.
+	 * allow <code>OutputStreamMonitor</code> to implement <code>Runnable</code>
+	 * without publicly exposing a <code>run</code> method.
 	 */
 	void read() {
 		lastSleep = System.currentTimeMillis();
@@ -185,7 +186,9 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.core.model.IStreamMonitor#removeListener(org.eclipse.debug.core.IStreamListener)
+	 * @see
+	 * org.eclipse.debug.core.model.IStreamMonitor#removeListener(org.eclipse
+	 * .debug.core.IStreamListener)
 	 */
 	public synchronized void removeListener(final IStreamListener listener) {
 		fListeners.remove(listener);

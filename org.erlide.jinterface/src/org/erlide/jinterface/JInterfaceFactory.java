@@ -6,11 +6,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class JInterfaceFactory {
 
-	public static OtpErlangList mkList(OtpErlangObject... args) {
+	public static OtpErlangList mkList(final OtpErlangObject... args) {
 		return new OtpErlangList(args);
 	}
 
-	public static OtpErlangTuple mkTuple(OtpErlangObject... args) {
+	public static OtpErlangTuple mkTuple(final OtpErlangObject... args) {
 		return new OtpErlangTuple(args);
 	}
 

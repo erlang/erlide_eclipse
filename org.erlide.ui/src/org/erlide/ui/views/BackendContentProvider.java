@@ -14,8 +14,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.ErlangCore;
 
-public class BackendContentProvider implements
-		IStructuredContentProvider {
+public class BackendContentProvider implements IStructuredContentProvider {
 
 	public void dispose() {
 		// TODO unsubscribe from backend manager

@@ -40,7 +40,7 @@ public class PopupDialog {
 		// if (Workbench.getInstance()==null)
 		// return;
 		final IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		final Display display = window == null ? workbench.getDisplay()
 				: window.getShell().getDisplay();
 		// final Display display = PlatformUI.createDisplay();
@@ -65,7 +65,7 @@ public class PopupDialog {
 				win.addSelectionControl(l);
 
 				final Rectangle r = display.getBounds();
-				Rectangle rr = win.getContents().getBounds();
+				final Rectangle rr = win.getContents().getBounds();
 				if (centered) {
 					win.setLocation(r.x + r.width / 2 - rr.width / 2, r.y
 							+ r.height / 2 - rr.height / 2);
@@ -79,7 +79,7 @@ public class PopupDialog {
 		});
 		final UIJob job = new UIJob("close balloon") {
 			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
+			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (!win.getContents().isDisposed()) {
 					win.getContents().getShell().close();
 					// display.dispose();
@@ -92,11 +92,13 @@ public class PopupDialog {
 
 	}
 
-	public static void showBalloon(String title, String message, int delay) {
+	public static void showBalloon(final String title, final String message,
+			final int delay) {
 		show(title, message, delay, SWT.RIGHT | SWT.BOTTOM, false);
 	}
 
-	public static void showDialog(String title, String message, int delay) {
+	public static void showDialog(final String title, final String message,
+			final int delay) {
 		show(title, message, delay, SWT.NONE, true);
 	}
 

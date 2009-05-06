@@ -31,7 +31,7 @@ public class SelectionUtil {
 	 * @return the selected first element or null
 	 * 
 	 */
-	public static Object getSingleElement(ISelection s) {
+	public static Object getSingleElement(final ISelection s) {
 		if (!(s instanceof IStructuredSelection)) {
 			return null;
 		}

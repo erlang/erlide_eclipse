@@ -32,18 +32,18 @@ public class EpmdWatcher {
 	public EpmdWatcher() {
 		try {
 			addHost(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e) {
+		} catch (final UnknownHostException e) {
 			addHost("localhost");
 		}
 	}
 
-	private List<String> hosts = new ArrayList<String>();
-	private Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
-	private List<IEpmdListener> listeners = new ArrayList<IEpmdListener>();
-	private Map<String, List<IEpmdMonitor>> monitors = new HashMap<String, List<IEpmdMonitor>>();
+	private final List<String> hosts = new ArrayList<String>();
+	private final Map<String, List<String>> nodeMap = new HashMap<String, List<String>>();
+	private final List<IEpmdListener> listeners = new ArrayList<IEpmdListener>();
+	private final Map<String, List<IEpmdMonitor>> monitors = new HashMap<String, List<IEpmdMonitor>>();
 	private boolean epmdStarted = false;
 
-	synchronized public void addHost(String host) {
+	synchronized public void addHost(final String host) {
 		if (this.hosts.contains(host)) {
 			return;
 		}
@@ -51,40 +51,40 @@ public class EpmdWatcher {
 		this.nodeMap.put(host, new ArrayList<String>());
 	}
 
-	synchronized public void removeHost(String host) {
+	synchronized public void removeHost(final String host) {
 		this.hosts.remove(host);
 		this.nodeMap.remove(host);
 	}
 
 	public synchronized void checkEpmd() {
-		for (Entry<String, List<String>> entry : this.nodeMap.entrySet()) {
+		for (final Entry<String, List<String>> entry : this.nodeMap.entrySet()) {
 			try {
-				String host = entry.getKey();
-				List<String> nodes = entry.getValue();
+				final String host = entry.getKey();
+				final List<String> nodes = entry.getValue();
 
 				final String[] names = OtpEpmd.lookupNames(InetAddress
 						.getByName(host));
 				final List<String> labels = clean(Arrays.asList(names));
 
-				List<String> started = getDiff(labels, nodes);
-				List<String> stopped = getDiff(nodes, labels);
+				final List<String> started = getDiff(labels, nodes);
+				final List<String> stopped = getDiff(nodes, labels);
 
 				if (started.size() > 0 || stopped.size() > 0) {
-					for (IEpmdListener listener : this.listeners) {
+					for (final IEpmdListener listener : this.listeners) {
 						listener.updateNodeStatus(host, started, stopped);
 					}
-					for (String s : started) {
-						List<IEpmdMonitor> ms = this.monitors.get(s);
+					for (final String s : started) {
+						final List<IEpmdMonitor> ms = this.monitors.get(s);
 						if (ms != null) {
-							for (IEpmdMonitor m : ms) {
+							for (final IEpmdMonitor m : ms) {
 								m.nodeUp(s);
 							}
 						}
 					}
-					for (String s : stopped) {
-						List<IEpmdMonitor> ms = this.monitors.get(s);
+					for (final String s : stopped) {
+						final List<IEpmdMonitor> ms = this.monitors.get(s);
 						if (ms != null) {
-							for (IEpmdMonitor m : ms) {
+							for (final IEpmdMonitor m : ms) {
 								m.nodeDown(s);
 							}
 						}
@@ -96,7 +96,7 @@ public class EpmdWatcher {
 			} catch (final IOException e) {
 				if (this.epmdStarted) {
 					final String msg = "Erlide warning: epmd daemon went down on host "
-							+ entry.getKey() + "...";
+						+ entry.getKey() + "...";
 					// InterfacePlugin.getDefault().getLog().log(
 					// new Status(IStatus.WARNING,
 					// InterfacePlugin.PLUGIN_ID, msg));
@@ -112,7 +112,7 @@ public class EpmdWatcher {
 	 * 
 	 * @param listener
 	 */
-	public void addEpmdListener(IEpmdListener listener) {
+	public void addEpmdListener(final IEpmdListener listener) {
 		if (!this.listeners.contains(listener)) {
 			this.listeners.add(listener);
 		}
@@ -123,13 +123,13 @@ public class EpmdWatcher {
 	 * 
 	 * @param listener
 	 */
-	public void removeEpmdListener(IEpmdListener listener) {
+	public void removeEpmdListener(final IEpmdListener listener) {
 		this.listeners.remove(listener);
 	}
 
-	public static List<String> clean(List<String> list) {
-		List<String> result = new ArrayList<String>();
-		for (String label : list) {
+	public static List<String> clean(final List<String> list) {
+		final List<String> result = new ArrayList<String>();
+		for (final String label : list) {
 			if ("".equals(label)) {
 				continue;
 			}
@@ -146,8 +146,8 @@ public class EpmdWatcher {
 		return result;
 	}
 
-	private List<String> getDiff(List<String> list1, List<String> list2) {
-		List<String> result = new ArrayList<String>(list1);
+	private List<String> getDiff(final List<String> list1, final List<String> list2) {
+		final List<String> result = new ArrayList<String>(list1);
 		result.removeAll(list2);
 		return result;
 	}
@@ -162,7 +162,7 @@ public class EpmdWatcher {
 	 * @param node
 	 * @param monitor
 	 */
-	public void addMonitor(String node, IEpmdMonitor monitor) {
+	public void addMonitor(final String node, final IEpmdMonitor monitor) {
 		List<IEpmdMonitor> mons = this.monitors.get(node);
 		if (mons == null) {
 			mons = new ArrayList<IEpmdMonitor>();
@@ -180,8 +180,8 @@ public class EpmdWatcher {
 	 * @param node
 	 * @param monitor
 	 */
-	public void removeMonitor(String node, IEpmdMonitor monitor) {
-		List<IEpmdMonitor> mons = this.monitors.get(node);
+	public void removeMonitor(final String node, final IEpmdMonitor monitor) {
+		final List<IEpmdMonitor> mons = this.monitors.get(node);
 		if (mons == null) {
 			return;
 		}

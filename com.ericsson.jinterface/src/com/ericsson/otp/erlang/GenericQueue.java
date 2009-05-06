@@ -57,7 +57,7 @@ public class GenericQueue {
      * Add an object to the tail of the queue.
      * 
      * @param o
-     *                Object to insert in the queue
+     *            Object to insert in the queue
      */
     public synchronized void put(final Object o) {
 	final Bucket b = new Bucket(o);
@@ -98,11 +98,11 @@ public class GenericQueue {
      * or until timeout occurs.
      * 
      * @param timeout
-     *                Maximum time to block on queue, in ms. Use 0 to poll the
-     *                queue.
+     *            Maximum time to block on queue, in ms. Use 0 to poll the
+     *            queue.
      * 
      * @exception InterruptedException
-     *                    if the operation times out.
+     *                if the operation times out.
      * 
      * @return The object at the head of the queue, or null if none arrived in
      *         time.

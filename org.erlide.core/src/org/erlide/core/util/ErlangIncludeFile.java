@@ -10,7 +10,7 @@ public class ErlangIncludeFile {
 	 * @param systemInclude
 	 * @param filename
 	 */
-	public ErlangIncludeFile(boolean systemInclude, String filename) {
+	public ErlangIncludeFile(final boolean systemInclude, final String filename) {
 		super();
 		this.systemInclude = systemInclude;
 		this.filename = filename;

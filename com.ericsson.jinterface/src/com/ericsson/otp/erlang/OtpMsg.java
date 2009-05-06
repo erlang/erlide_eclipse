@@ -205,7 +205,7 @@ public class OtpMsg {
      * @return an Erlang term.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the byte stream could not be deserialized.
+     *                if the byte stream could not be deserialized.
      * 
      */
     public OtpErlangObject getMsg() throws OtpErlangDecodeException {

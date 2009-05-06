@@ -44,11 +44,11 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *                the stream containing the encoded value.
+     *            the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang float.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang float.
      */
     public OtpErlangDouble(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -70,7 +70,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * @return the value of this object, as a float.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value cannot be represented as a float.
+     *                if the value cannot be represented as a float.
      */
     public float floatValue() throws OtpErlangRangeException {
 	final float f = (float) d;
@@ -96,8 +96,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * Convert this double to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded value should be
-     *                written.
+     *            an output stream to which the encoded value should be written.
      */
 
     @Override
@@ -110,7 +109,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * same value.
      * 
      * @param o
-     *                the float to compare to.
+     *            the float to compare to.
      * 
      * @return true if the floats have the same value.
      */

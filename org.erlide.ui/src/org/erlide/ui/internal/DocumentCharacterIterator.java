@@ -28,7 +28,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	 * @param document
 	 *            the document backing this iterator
 	 */
-	public DocumentCharacterIterator(IDocument document) {
+	public DocumentCharacterIterator(final IDocument document) {
 		this(document, 0);
 	}
 
@@ -42,7 +42,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	 * @throws IllegalArgumentException
 	 *             if the indices are out of bounds
 	 */
-	public DocumentCharacterIterator(IDocument document, int first)
+	public DocumentCharacterIterator(final IDocument document, final int first)
 			throws IllegalArgumentException {
 		this(document, first, document.getLength());
 	}
@@ -60,8 +60,8 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	 * @throws IllegalArgumentException
 	 *             if the indices are out of bounds
 	 */
-	public DocumentCharacterIterator(IDocument document, int first, int last)
-			throws IllegalArgumentException {
+	public DocumentCharacterIterator(final IDocument document, final int first,
+			final int last) throws IllegalArgumentException {
 		if (document == null) {
 			throw new NullPointerException();
 		}
@@ -129,7 +129,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	/*
 	 * @see java.text.CharacterIterator#setIndex(int)
 	 */
-	public char setIndex(int position) {
+	public char setIndex(final int position) {
 		if (position >= getBeginIndex() && position <= getEndIndex()) {
 			fIndex = position;
 		} else {
@@ -192,7 +192,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	 *            {@inheritDoc}
 	 * @return {@inheritDoc}
 	 */
-	public char charAt(int index) {
+	public char charAt(final int index) {
 		if (index >= 0 && index < length()) {
 			try {
 				return fDocument.getChar(getBeginIndex() + index);
@@ -207,7 +207,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	/*
 	 * @see java.lang.CharSequence#subSequence(int, int)
 	 */
-	public CharSequence subSequence(int start, int end) {
+	public CharSequence subSequence(final int start, final int end) {
 		if (start < 0) {
 			throw new IndexOutOfBoundsException();
 		}

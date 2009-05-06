@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -61,15 +61,15 @@ public interface IRegion {
 
 	/**
 	 * Removes the specified element from the region and returns
-	 * <code>true</code> if successful, <code>false</code> if the remove
-	 * fails. If an ancestor of the given element is included, the remove fails
-	 * (in other words, it is not possible to selectively exclude descendants of
+	 * <code>true</code> if successful, <code>false</code> if the remove fails.
+	 * If an ancestor of the given element is included, the remove fails (in
+	 * other words, it is not possible to selectively exclude descendants of
 	 * included ancestors).
 	 * 
 	 * @param element
 	 *            the given element
-	 * @return <code>true</code> if successful, <code>false</code> if the
-	 *         remove fails
+	 * @return <code>true</code> if successful, <code>false</code> if the remove
+	 *         fails
 	 */
 	boolean remove(IErlElement element);
 }

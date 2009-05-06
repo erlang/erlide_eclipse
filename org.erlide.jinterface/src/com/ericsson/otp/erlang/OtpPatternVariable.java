@@ -21,11 +21,11 @@ public class OtpPatternVariable extends OtpErlangObject {
 
 	private static final long serialVersionUID = -1L;
 
-	private String name;
+	private final String name;
 	private Signature sign;
 
-	public OtpPatternVariable(String n) {
-		String[] v = n.split(":");
+	public OtpPatternVariable(final String n) {
+		final String[] v = n.split(":");
 		this.name = v[0];
 		if (v.length > 1) {
 			this.sign = new Signature(v[1].charAt(0));
@@ -48,7 +48,7 @@ public class OtpPatternVariable extends OtpErlangObject {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof OtpPatternVariable)) {
 			return false;
 		}
@@ -63,7 +63,7 @@ public class OtpPatternVariable extends OtpErlangObject {
 	}
 
 	@Override
-	public void encode(OtpOutputStream arg0) {
+	public void encode(final OtpOutputStream arg0) {
 		// throw new NotImplementedException();
 	}
 

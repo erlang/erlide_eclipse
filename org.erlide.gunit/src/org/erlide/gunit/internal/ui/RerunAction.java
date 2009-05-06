@@ -17,21 +17,21 @@ import org.eclipse.ui.PlatformUI;
  * Requests to rerun a test.
  */
 public class RerunAction extends Action {
-	private String fTestId;
+	private final String fTestId;
 
-	private String fClassName;
+	private final String fClassName;
 
-	private String fTestName;
+	private final String fTestName;
 
-	private TestRunnerViewPart fTestRunner;
+	private final TestRunnerViewPart fTestRunner;
 
-	private String fLaunchMode;
+	private final String fLaunchMode;
 
 	/**
 	 * Constructor for RerunAction.
 	 */
-	public RerunAction(String actionName, TestRunnerViewPart runner,
-			String testId, String className, String testName, String launchMode) {
+	public RerunAction(final String actionName, final TestRunnerViewPart runner,
+			final String testId, final String className, final String testName, final String launchMode) {
 		super(actionName);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IGUnitHelpContextIds.RERUN_ACTION);

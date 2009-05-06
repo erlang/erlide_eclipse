@@ -49,7 +49,7 @@ public class ErlModelException extends CoreException {
 	 * @see ErlModelStatusConstants
 	 * @see org.eclipse.core.runtime.IStatus#ERROR
 	 */
-	public ErlModelException(Throwable e, int code) {
+	public ErlModelException(final Throwable e, final int code) {
 		this(new ErlModelStatus(code, e));
 	}
 
@@ -62,7 +62,7 @@ public class ErlModelException extends CoreException {
 	 * @param exception
 	 *            the <code>CoreException</code>
 	 */
-	public ErlModelException(CoreException exception) {
+	public ErlModelException(final CoreException exception) {
 		super(exception.getStatus());
 		nestedCoreException = exception;
 	}
@@ -74,7 +74,7 @@ public class ErlModelException extends CoreException {
 	 * @param status
 	 *            the Erlang-specific status object
 	 */
-	public ErlModelException(IErlModelStatus status) {
+	public ErlModelException(final IErlModelStatus status) {
 		super(status);
 	}
 
@@ -86,7 +86,7 @@ public class ErlModelException extends CoreException {
 	 *            a code from IErlModelStatusConstants
 	 */
 
-	public ErlModelException(int code) {
+	public ErlModelException(final int code) {
 		super(new ErlModelStatus(code));
 	}
 
@@ -140,7 +140,7 @@ public class ErlModelException extends CoreException {
 	 *            the print stream
 	 */
 	@Override
-	public void printStackTrace(PrintStream output) {
+	public void printStackTrace(final PrintStream output) {
 		synchronized (output) {
 			super.printStackTrace(output);
 			final Throwable throwable = getException();
@@ -158,7 +158,7 @@ public class ErlModelException extends CoreException {
 	 *            the print writer
 	 */
 	@Override
-	public void printStackTrace(PrintWriter output) {
+	public void printStackTrace(final PrintWriter output) {
 		synchronized (output) {
 			super.printStackTrace(output);
 			final Throwable throwable = getException();

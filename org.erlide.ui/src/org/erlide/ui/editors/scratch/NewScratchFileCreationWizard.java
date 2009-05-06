@@ -71,9 +71,10 @@ public class NewScratchFileCreationWizard extends Wizard implements INewWizard {
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 * org.eclipse.jface.viewers.IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	public void init(final IWorkbench workbench,
+			final IStructuredSelection selection) {
 		fSelection = selection;
-		//setDefaultPageImageDescriptor(JavaDebugImages.DESC_WIZBAN_NEWSCRAPPAGE
+		// setDefaultPageImageDescriptor(JavaDebugImages.DESC_WIZBAN_NEWSCRAPPAGE
 		// );
 	}
 

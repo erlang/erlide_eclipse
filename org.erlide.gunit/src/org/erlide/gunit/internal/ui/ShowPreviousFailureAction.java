@@ -14,9 +14,9 @@ import org.eclipse.jface.action.Action;
 
 class ShowPreviousFailureAction extends Action {
 
-	private TestRunnerViewPart fPart;
+	private final TestRunnerViewPart fPart;
 
-	public ShowPreviousFailureAction(TestRunnerViewPart part) {
+	public ShowPreviousFailureAction(final TestRunnerViewPart part) {
 		super(GUnitMessages.ShowPreviousFailureAction_label);
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$

@@ -25,7 +25,7 @@ public class BackendShell {
 	private final Backend fBackend;
 	private OtpErlangPid server;
 
-	public BackendShell(Backend backend, String id) {
+	public BackendShell(final Backend backend, final String id) {
 		fBackend = backend;
 		// fId = id;
 
@@ -42,7 +42,7 @@ public class BackendShell {
 		}
 	}
 
-	public void send(String string) {
+	public void send(final String string) {
 		if (server != null) {
 			fBackend.send(server, JInterfaceFactory.mkTuple(new OtpErlangAtom(
 					"input"), new OtpErlangString(string)));

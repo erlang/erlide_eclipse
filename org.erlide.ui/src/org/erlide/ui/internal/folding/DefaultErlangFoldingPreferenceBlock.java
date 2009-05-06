@@ -38,11 +38,11 @@ public class DefaultErlangFoldingPreferenceBlock implements
 
 	private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
-		public void widgetDefaultSelected(SelectionEvent e) {
+		public void widgetDefaultSelected(final SelectionEvent e) {
 		}
 
-		public void widgetSelected(SelectionEvent e) {
-			Button button = (Button) e.widget;
+		public void widgetSelected(final SelectionEvent e) {
+			final Button button = (Button) e.widget;
 			fOverlayStore.setValue(fCheckBoxes.get(button), button
 					.getSelection());
 		}
@@ -84,7 +84,8 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#createControl(org.eclipse.swt.widgets.Group)
+	 * @seeorg.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
+	 * createControl(org.eclipse.swt.widgets.Group)
 	 */
 	public Control createControl(final Composite composite) {
 		fOverlayStore.load();
@@ -154,21 +155,27 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences#performOk()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
+	 * #performOk()
 	 */
 	public void performOk() {
 		fOverlayStore.propagate();
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences#initialize()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
+	 * #initialize()
 	 */
 	public void initialize() {
 		initializeFields();
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences#performDefaults()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
+	 * #performDefaults()
 	 */
 	public void performDefaults() {
 		fOverlayStore.loadDefaults();
@@ -176,7 +183,9 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences#dispose()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
+	 * #dispose()
 	 */
 	public void dispose() {
 		fOverlayStore.stop();

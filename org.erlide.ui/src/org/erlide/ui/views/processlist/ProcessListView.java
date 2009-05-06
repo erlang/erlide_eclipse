@@ -81,7 +81,7 @@ public class ProcessListView extends ViewPart {
 	 */
 	class ViewContentProvider implements IStructuredContentProvider {
 
-		private ProcessEventHandler handler = new ProcessEventHandler();
+		private final ProcessEventHandler handler = new ProcessEventHandler();
 
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
@@ -173,7 +173,7 @@ public class ProcessListView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(final Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+		final Composite container = new Composite(parent, SWT.NONE);
 		final GridLayout thisLayout = new GridLayout(2, false);
 		container.setLayout(thisLayout);
 		thisLayout.marginWidth = 5;
@@ -181,11 +181,11 @@ public class ProcessListView extends ViewPart {
 		thisLayout.makeColumnsEqualWidth = false;
 		thisLayout.verticalSpacing = 1;
 
-		Label label = new Label(container, SWT.SHADOW_NONE);
+		final Label label = new Label(container, SWT.SHADOW_NONE);
 		label.setText("Erlang backend node");
 
 		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
-		Combo combo = backends.getCombo();
+		final Combo combo = backends.getCombo();
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 		backends.getControl().setSize(
@@ -195,9 +195,9 @@ public class ProcessListView extends ViewPart {
 		backends.setInput(ErlangCore.getBackendManager());
 		viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
 				| SWT.FULL_SELECTION);
-		Table table = viewer.getTable();
-		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true, 2,
-				1);
+		final Table table = viewer.getTable();
+		final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false,
+				true, 2, 1);
 		table.setLayoutData(layoutData);
 		final Table t = (Table) viewer.getControl();
 		final TableColumn colPid = new TableColumn(t, SWT.LEAD);

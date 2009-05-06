@@ -85,7 +85,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			return fIsComment;
 		}
 
-		@SuppressWarnings("unused")
 		public void setIsComment(final boolean isComment) {
 			fIsComment = isComment;
 		}

@@ -14,9 +14,9 @@ import org.eclipse.jface.action.Action;
 
 class ShowNextFailureAction extends Action {
 
-	private TestRunnerViewPart fPart;
+	private final TestRunnerViewPart fPart;
 
-	public ShowNextFailureAction(TestRunnerViewPart part) {
+	public ShowNextFailureAction(final TestRunnerViewPart part) {
 		super(GUnitMessages.ShowNextFailureAction_label);
 		setDisabledImageDescriptor(GUnitPlugin
 				.getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$

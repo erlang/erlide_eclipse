@@ -23,7 +23,7 @@ public class ErlangPropertySource implements IPropertySource {
 	/**
 	 * @param editor
 	 */
-	public ErlangPropertySource(ErlangEditor editor) {
+	public ErlangPropertySource(final ErlangEditor editor) {
 	}
 
 	/**
@@ -44,21 +44,21 @@ public class ErlangPropertySource implements IPropertySource {
 	/**
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
 	 */
-	public Object getPropertyValue(Object id) {
+	public Object getPropertyValue(final Object id) {
 		return id.getClass().getName();
 	}
 
 	/**
 	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
 	 */
-	public boolean isPropertySet(Object id) {
+	public boolean isPropertySet(final Object id) {
 		return false;
 	}
 
 	/**
 	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
 	 */
-	public void resetPropertyValue(Object id) {
+	public void resetPropertyValue(final Object id) {
 
 	}
 
@@ -66,7 +66,7 @@ public class ErlangPropertySource implements IPropertySource {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object,
 	 *      java.lang.Object)
 	 */
-	public void setPropertyValue(Object id, Object value) {
+	public void setPropertyValue(final Object id, final Object value) {
 
 	}
 

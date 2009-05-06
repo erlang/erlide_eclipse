@@ -20,11 +20,11 @@ import org.erlide.gunit.internal.model.TestElement;
  */
 public class CompareResultsAction extends Action {
 
-	private FailureTrace fView;
+	private final FailureTrace fView;
 
 	private CompareResultDialog fOpenDialog;
 
-	public CompareResultsAction(FailureTrace view) {
+	public CompareResultsAction(final FailureTrace view) {
 		super(GUnitMessages.CompareResultsAction_label);
 		setDescription(GUnitMessages.CompareResultsAction_description);
 		setToolTipText(GUnitMessages.CompareResultsAction_tooltip);
@@ -44,7 +44,7 @@ public class CompareResultsAction extends Action {
 	 */
 	@Override
 	public void run() {
-		TestElement failedTest = this.fView.getFailedTest();
+		final TestElement failedTest = this.fView.getFailedTest();
 		if (this.fOpenDialog != null) {
 			this.fOpenDialog.setInput(failedTest);
 			this.fOpenDialog.getShell().setActive();
@@ -55,7 +55,7 @@ public class CompareResultsAction extends Action {
 			this.fOpenDialog.create();
 			this.fOpenDialog.getShell().addDisposeListener(
 					new DisposeListener() {
-						public void widgetDisposed(DisposeEvent e) {
+						public void widgetDisposed(final DisposeEvent e) {
 							CompareResultsAction.this.fOpenDialog = null;
 						}
 					});
@@ -64,7 +64,7 @@ public class CompareResultsAction extends Action {
 		}
 	}
 
-	public void updateOpenDialog(TestElement failedTest) {
+	public void updateOpenDialog(final TestElement failedTest) {
 		if (this.fOpenDialog != null) {
 			this.fOpenDialog.setInput(failedTest);
 		}

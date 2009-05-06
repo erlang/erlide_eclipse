@@ -23,8 +23,8 @@ import org.eclipse.ui.IWorkbenchSite;
 
 /**
  * Action that dispatches the <code>IAction#run()</code> and the
- * <code>ISelectionChangedListener#selectionChanged</code> according to the
- * type of the selection.
+ * <code>ISelectionChangedListener#selectionChanged</code> according to the type
+ * of the selection.
  * 
  * <ul>
  * <li>if selection is of type <code>ITextSelection</code> then
@@ -35,7 +35,8 @@ import org.eclipse.ui.IWorkbenchSite;
  *  selectionChanged(IStructuredSelection)</code>
  * is called.</li>
  * <li>default is to call <code>run(ISelection)</code> and <code>
- *  selectionChanged(ISelection)</code>.</li>
+ *  selectionChanged(ISelection)</code>
+ * .</li>
  * </ul>
  * 
  * <p>
@@ -58,7 +59,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param site
 	 *            the site this action is working on
 	 */
-	protected SelectionDispatchAction(IWorkbenchSite site) {
+	protected SelectionDispatchAction(final IWorkbenchSite site) {
 		Assert.isNotNull(site);
 		fSite = site;
 	}
@@ -105,13 +106,13 @@ public abstract class SelectionDispatchAction extends Action implements
 	/**
 	 * Updates the action's enablement state according to the given selection.
 	 * This default implementation calls one of the
-	 * <code>selectionChanged</code> methods depending on the type of the
-	 * passed selection.
+	 * <code>selectionChanged</code> methods depending on the type of the passed
+	 * selection.
 	 * 
 	 * @param selection
 	 *            the selection this action is working on
 	 */
-	public void update(ISelection selection) {
+	public void update(final ISelection selection) {
 		dispatchSelectionChanged(selection);
 	}
 
@@ -123,7 +124,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the new selection
 	 */
-	public void selectionChanged(IStructuredSelection selection) {
+	public void selectionChanged(final IStructuredSelection selection) {
 		selectionChanged((ISelection) selection);
 	}
 
@@ -134,7 +135,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the selection
 	 */
-	public void run(IStructuredSelection selection) {
+	public void run(final IStructuredSelection selection) {
 		run((ISelection) selection);
 	}
 
@@ -166,7 +167,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the new selection
 	 */
-	public void selectionChanged(ITextSelection selection) {
+	public void selectionChanged(final ITextSelection selection) {
 		selectionChanged((ISelection) selection);
 	}
 
@@ -177,7 +178,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the selection
 	 */
-	public void run(ITextSelection selection) {
+	public void run(final ITextSelection selection) {
 		run((ISelection) selection);
 	}
 
@@ -188,7 +189,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the new selection
 	 */
-	public void selectionChanged(ISelection selection) {
+	public void selectionChanged(final ISelection selection) {
 		setEnabled(false);
 	}
 
@@ -199,7 +200,7 @@ public abstract class SelectionDispatchAction extends Action implements
 	 * @param selection
 	 *            the selection
 	 */
-	public void run(ISelection selection) {
+	public void run(final ISelection selection) {
 	}
 
 	/*
@@ -213,11 +214,11 @@ public abstract class SelectionDispatchAction extends Action implements
 	/*
 	 * (non-Javadoc) Method declared on ISelectionChangedListener.
 	 */
-	public void selectionChanged(SelectionChangedEvent event) {
+	public void selectionChanged(final SelectionChangedEvent event) {
 		dispatchSelectionChanged(event.getSelection());
 	}
 
-	private void dispatchSelectionChanged(ISelection selection) {
+	private void dispatchSelectionChanged(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			selectionChanged((IStructuredSelection) selection);
 			// } else if (selection instanceof JavaTextSelection) {
@@ -229,7 +230,7 @@ public abstract class SelectionDispatchAction extends Action implements
 		}
 	}
 
-	private void dispatchRun(ISelection selection) {
+	private void dispatchRun(final ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			run((IStructuredSelection) selection);
 			// } else if (selection instanceof JavaTextSelection) {

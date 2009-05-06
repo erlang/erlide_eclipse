@@ -16,8 +16,9 @@ public class ToggleCommentAction extends ErlangTextEditorAction {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.actions.ErlangTextEditorAction#getTextSelection(org.eclipse.jface.text.IDocument,
-	 *      org.eclipse.jface.text.ITextSelection)
+	 * @see
+	 * org.erlide.ui.actions.ErlangTextEditorAction#getTextSelection(org.eclipse
+	 * .jface.text.IDocument, org.eclipse.jface.text.ITextSelection)
 	 */
 	@Override
 	protected ITextSelection getTextSelection(final IDocument document,

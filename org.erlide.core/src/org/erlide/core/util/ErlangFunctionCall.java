@@ -12,7 +12,7 @@ public class ErlangFunctionCall {
 	private final String parameters;
 
 	public ErlangFunctionCall(final String module, final String function,
-	        final int arity) {
+			final int arity) {
 		this.module = module;
 		this.function = function;
 		this.arity = arity;
@@ -20,7 +20,7 @@ public class ErlangFunctionCall {
 	}
 
 	public ErlangFunctionCall(final String module, final String function,
-	        final String parameters) {
+			final String parameters) {
 		this.module = module;
 		this.function = function;
 		arity = -1;

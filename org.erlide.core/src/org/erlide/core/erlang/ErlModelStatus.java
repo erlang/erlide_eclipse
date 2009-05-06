@@ -66,7 +66,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(int code) {
+	public ErlModelStatus(final int code) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
 		fElements = ErlElement.NO_ELEMENTS;
 	}
@@ -74,7 +74,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with the given corresponding elements.
 	 */
-	public ErlModelStatus(int code, IErlElement[] elements) {
+	public ErlModelStatus(final int code, final IErlElement[] elements) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
 		fElements = elements;
 		fPath = null;
@@ -83,14 +83,15 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(int code, String string) {
+	public ErlModelStatus(final int code, final String string) {
 		this(ERROR, code, string);
 	}
 
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(int severity, int code, String string) {
+	public ErlModelStatus(final int severity, final int code,
+			final String string) {
 		super(severity, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
 		fElements = ErlElement.NO_ELEMENTS;
 		fPath = null;
@@ -100,7 +101,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(int code, Throwable throwable) {
+	public ErlModelStatus(final int code, final Throwable throwable) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
 		fElements = ErlElement.NO_ELEMENTS;
 	}
@@ -108,7 +109,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(int code, IPath path) {
+	public ErlModelStatus(final int code, final IPath path) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
 		fElements = ErlElement.NO_ELEMENTS;
 		fPath = path;
@@ -117,7 +118,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with the given corresponding element.
 	 */
-	public ErlModelStatus(int code, IErlElement element) {
+	public ErlModelStatus(final int code, final IErlElement element) {
 		this(code, new IErlElement[] { element });
 	}
 
@@ -125,7 +126,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * Constructs an Erlang model status with the given corresponding element
 	 * and string
 	 */
-	public ErlModelStatus(int code, IErlElement element, String string) {
+	public ErlModelStatus(final int code, final IErlElement element,
+			final String string) {
 		this(code, new IErlElement[] { element });
 		fString = string;
 	}
@@ -134,7 +136,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * Constructs an Erlang model status with the given corresponding element
 	 * and path
 	 */
-	public ErlModelStatus(int code, IErlElement element, IPath path) {
+	public ErlModelStatus(final int code, final IErlElement element,
+			final IPath path) {
 		this(code, new IErlElement[] { element });
 		fPath = path;
 	}
@@ -143,8 +146,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * Constructs an Erlang model status with the given corresponding element,
 	 * path and string
 	 */
-	public ErlModelStatus(int code, IErlElement element, IPath path,
-			String string) {
+	public ErlModelStatus(final int code, final IErlElement element,
+			final IPath path, final String string) {
 		this(code, new IErlElement[] { element });
 		fPath = path;
 		fString = string;
@@ -153,7 +156,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Constructs an Erlang model status with no corresponding elements.
 	 */
-	public ErlModelStatus(CoreException coreException) {
+	public ErlModelStatus(final CoreException coreException) {
 		super(ERROR, ErlangPlugin.PLUGIN_ID,
 				ErlModelStatusConstants.CORE_EXCEPTION,
 				"ErlModelStatus", coreException); //$NON-NLS-1$
@@ -333,7 +336,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 			return super.getSeverity();
 		}
 		int severity = -1;
-		for (IStatus element : children) {
+		for (final IStatus element : children) {
 			final int childrenSeverity = element.getSeverity();
 			if (childrenSeverity > severity) {
 				severity = childrenSeverity;
@@ -378,11 +381,11 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * @see IStatus#matches(int)
 	 */
 	@Override
-	public boolean matches(int mask) {
+	public boolean matches(final int mask) {
 		if (!isMultiStatus()) {
 			return matches(this, mask);
 		}
-		for (IStatus element : children) {
+		for (final IStatus element : children) {
 			if (matches((ErlModelStatus) element, mask)) {
 				return true;
 			}
@@ -393,7 +396,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	/**
 	 * Helper for matches(int).
 	 */
-	protected boolean matches(ErlModelStatus status, int mask) {
+	protected boolean matches(final ErlModelStatus status, final int mask) {
 		final int severityMask = mask & 0x7;
 		final int categoryMask = mask & ~0x7;
 		final int bits = status.getBits();
@@ -407,8 +410,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * 
 	 * @see IStatus#isMultiStatus()
 	 */
-	public static IErlModelStatus newMultiStatus(int code,
-			IErlModelStatus[] children) {
+	public static IErlModelStatus newMultiStatus(final int code,
+			final IErlModelStatus[] children) {
 		final ErlModelStatus jms = new ErlModelStatus(code);
 		jms.children = children;
 		return jms;
@@ -420,7 +423,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 	 * 
 	 * @see IStatus#isMultiStatus()
 	 */
-	public static IErlModelStatus newMultiStatus(IErlModelStatus[] children) {
+	public static IErlModelStatus newMultiStatus(
+			final IErlModelStatus[] children) {
 		final ErlModelStatus jms = new ErlModelStatus();
 		jms.children = children;
 		return jms;

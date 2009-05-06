@@ -174,15 +174,15 @@ public class ErlangElementLabels {
 
 	/**
 	 * Add root path to all elements except Package Fragment Roots and Erlang
-	 * projects. e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code>
-	 * Option only applies to getElementLabel
+	 * projects. e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code> Option
+	 * only applies to getElementLabel
 	 */
 	public static final int APPEND_ROOT_PATH = 1 << 27;
 
 	/**
 	 * Add root path to all elements except Package Fragment Roots and Erlang
-	 * projects. e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code>
-	 * Option only applies to getElementLabel
+	 * projects. e.g. <code>java.lang.Vector - c:\java\lib\rt.jar</code> Option
+	 * only applies to getElementLabel
 	 */
 	public static final int PREPEND_ROOT_PATH = 1 << 28;
 
@@ -274,7 +274,7 @@ public class ErlangElementLabels {
 	private ErlangElementLabels() {
 	}
 
-	public static String getTextLabel(Object obj, int flags) {
+	public static String getTextLabel(final Object obj, final int flags) {
 		if (obj instanceof IErlElement) {
 			return getElementLabel((IErlElement) obj, flags);
 		} else if (obj instanceof IAdaptable) {
@@ -290,7 +290,8 @@ public class ErlangElementLabels {
 	/**
 	 * Returns the label for a Erlang element. Flags as defined above.
 	 */
-	public static String getElementLabel(IErlElement element, int flags) {
+	public static String getElementLabel(final IErlElement element,
+			final int flags) {
 		final StringBuilder buf = new StringBuilder(60);
 		getElementLabel(element, flags, buf);
 		return buf.toString();
@@ -299,8 +300,8 @@ public class ErlangElementLabels {
 	/**
 	 * Returns the label for a Erlang element. Flags as defined above.
 	 */
-	public static void getElementLabel(IErlElement element, int flags,
-			StringBuilder buf) {
+	public static void getElementLabel(final IErlElement element,
+			final int flags, final StringBuilder buf) {
 		/*
 		 * int type= element.getElementType(); IPackageFragmentRoot root= null;
 		 * 
@@ -343,15 +344,16 @@ public class ErlangElementLabels {
 	 * Appends the label for a method to a StringBuilder. Considers the M_*
 	 * flags.
 	 */
-	public static void getMethodLabel(IErlFunction method, int flags,
-			StringBuilder buf) {
+	public static void getMethodLabel(final IErlFunction method,
+			final int flags, final StringBuilder buf) {
 		/*
 		 * try { // return type if (getFlag(flags, M_PRE_RETURNTYPE) &&
 		 * method.exists() && !method.isConstructor()) {
-		 * buf.append(Signature.getSimpleName(Signature.toString(method.getReturnType())));
-		 * buf.append(' '); } // qualification if (getFlag(flags,
-		 * M_FULLY_QUALIFIED)) { getTypeLabel(method.getDeclaringType(),
-		 * T_FULLY_QUALIFIED | (flags & P_COMPRESSED), buf); buf.append('.'); }
+		 * buf.append(Signature.getSimpleName
+		 * (Signature.toString(method.getReturnType()))); buf.append(' '); } //
+		 * qualification if (getFlag(flags, M_FULLY_QUALIFIED)) {
+		 * getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags &
+		 * P_COMPRESSED), buf); buf.append('.'); }
 		 * 
 		 * buf.append(method.getElementName()); // parameters buf.append('(');
 		 * if (getFlag(flags, M_PARAMETER_TYPES | M_PARAMETER_NAMES)) {
@@ -374,11 +376,13 @@ public class ErlangElementLabels {
 		 * types= method.getExceptionTypes(); if (types.length > 0) {
 		 * buf.append(" throws "); //$NON-NLS-1$ for (int i= 0; i <
 		 * types.length; i++) { if (i > 0) { buf.append(COMMA_STRING); }
-		 * buf.append(Signature.getSimpleName(Signature.toString(types[i]))); } } }
+		 * buf.append(Signature.getSimpleName(Signature.toString(types[i]))); }
+		 * } }
 		 * 
 		 * if (getFlag(flags, M_APP_RETURNTYPE) && method.exists() &&
 		 * !method.isConstructor()) { buf.append(DECL_STRING);
-		 * buf.append(Signature.getSimpleName(Signature.toString(method.getReturnType()))); } //
+		 * buf.append(Signature
+		 * .getSimpleName(Signature.toString(method.getReturnType()))); } //
 		 * post qualification if (getFlag(flags, M_POST_QUALIFIED)) {
 		 * buf.append(CONCAT_STRING); getTypeLabel(method.getDeclaringType(),
 		 * T_FULLY_QUALIFIED | (flags & P_COMPRESSED), buf); } } catch
@@ -390,8 +394,8 @@ public class ErlangElementLabels {
 	 * Appends the label for a compilation unit to a StringBuilder. Considers
 	 * the CU_* flags.
 	 */
-	public static void getCompilationUnitLabel(IErlModule cu, int flags,
-			StringBuilder buf) {
+	public static void getCompilationUnitLabel(final IErlModule cu,
+			final int flags, final StringBuilder buf) {
 		/*
 		 * if (getFlag(flags, CU_QUALIFIED)) { IPackageFragment pack=
 		 * (IPackageFragment) cu.getParent(); if (!pack.isDefaultPackage()) {
@@ -417,8 +421,8 @@ public class ErlangElementLabels {
 	 * while (dot > 0) { if (dot - start > fgPkgNameLength-1) {
 	 * buf.append(fgPkgNamePrefix); if (fgPkgNameChars > 0)
 	 * buf.append(name.substring(start, Math.min(start+ fgPkgNameChars, dot)));
-	 * buf.append(fgPkgNamePostfix); } else buf.append(name.substring(start, dot +
-	 * 1)); start= dot + 1; dot= name.indexOf('.', start); }
+	 * buf.append(fgPkgNamePostfix); } else buf.append(name.substring(start, dot
+	 * + 1)); start= dot + 1; dot= name.indexOf('.', start); }
 	 * buf.append(name.substring(start)); } else {
 	 * buf.append(pack.getElementName()); } if (getFlag(flags,
 	 * P_POST_QUALIFIED)) { buf.append(CONCAT_STRING);
@@ -432,7 +436,8 @@ public class ErlangElementLabels {
 	/*
 	 * public static void getPackageFragmentRootLabel(IPackageFragmentRoot root,
 	 * int flags, StringBuilder buf) { if (root.isArchive())
-	 * getArchiveLabel(root, flags, buf); else getFolderLabel(root, flags, buf); }
+	 * getArchiveLabel(root, flags, buf); else getFolderLabel(root, flags, buf);
+	 * }
 	 */
 
 }

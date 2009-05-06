@@ -17,8 +17,8 @@ public class TicketInfo {
 	public String platformLog;
 	public String erlideLog;
 
-	public TicketInfo(String title, String body, String contact, String plog,
-			String elog) {
+	public TicketInfo(final String title, final String body,
+			final String contact, final String plog, final String elog) {
 		this.summary = title;
 		this.reporter = contact;
 		this.description = body;

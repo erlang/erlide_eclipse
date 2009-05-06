@@ -26,34 +26,34 @@ public class AssemblaHandler extends TicketHandlerImpl {
 			(byte) 185, (byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147,
 			(byte) 211, (byte) 177, 10, 93, (byte) 209, (byte) 151, 59 };
 
-	private boolean checkUser(String user) {
+	private boolean checkUser(final String user) {
 		try {
-			MessageDigest algorithm = MessageDigest.getInstance("MD5");
+			final MessageDigest algorithm = MessageDigest.getInstance("MD5");
 			algorithm.reset();
 			algorithm.update(user.getBytes());
-			byte[] messageDigest = algorithm.digest();
+			final byte[] messageDigest = algorithm.digest();
 			return Arrays.equals(messageDigest, userHash);
-		} catch (NoSuchAlgorithmException nsae) {
+		} catch (final NoSuchAlgorithmException nsae) {
 		}
 		return false;
 	}
 
-	public String infoToMessage(TicketInfo info) {
+	public String infoToMessage(final TicketInfo info) {
 		return "<ticket><summary>" + info.summary + "</summary></ticket>";
 	}
 
-	public TicketStatus parseMessage(String message) {
-		boolean ok = false;
-		int id = 0;
+	public TicketStatus parseMessage(final String message) {
+		final boolean ok = false;
+		final int id = 0;
 
-		TicketStatus result = new TicketStatus(ok, id);
+		final TicketStatus result = new TicketStatus(ok, id);
 		return result;
 	}
 
-	public URL getLoginURL(String user, String pass)
+	public URL getLoginURL(final String user, final String pass)
 			throws MalformedURLException {
 		if (checkUser(user)) {
-			String str = String.format(MYURL, user, pass);
+			final String str = String.format(MYURL, user, pass);
 			return new URL(str);
 		}
 		return null;

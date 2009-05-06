@@ -56,8 +56,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 *            the size of the resulting image
 	 * @see #setAdornments(int)
 	 */
-	public ErlangElementImageDescriptor(ImageDescriptor baseImage, int flags,
-			Point size) {
+	public ErlangElementImageDescriptor(final ImageDescriptor baseImage,
+			final int flags, final Point size) {
 		fBaseImage = baseImage;
 		Assert.isNotNull(fBaseImage);
 		fFlags = flags;
@@ -73,7 +73,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 * @param adornments
 	 *            the image descriptors adornments
 	 */
-	public void setAdornments(int adornments) {
+	public void setAdornments(final int adornments) {
 		Assert.isTrue(adornments >= 0);
 		fFlags = adornments;
 	}
@@ -95,7 +95,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 *            <code>createImage()</code>
 	 * @see ImageDescriptor#createImage()
 	 */
-	public void setImageSize(Point size) {
+	public void setImageSize(final Point size) {
 		Assert.isNotNull(size);
 		Assert.isTrue(size.x >= 0 && size.y >= 0);
 		fSize = size;
@@ -125,7 +125,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 * (non-Javadoc) Method declared on Object.
 	 */
 	@Override
-	public boolean equals(Object object) {
+	public boolean equals(final Object object) {
 		if (object == null || !this.getClass().equals(object.getClass())) {
 			return false;
 		}
@@ -147,7 +147,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	 * (non-Javadoc) Method declared in CompositeImageDescriptor
 	 */
 	@Override
-	protected void drawCompositeImage(int width, int height) {
+	protected void drawCompositeImage(final int width, final int height) {
 		final ImageData bg = getImageData(fBaseImage);
 
 		drawImage(bg, 0, 0);
@@ -157,7 +157,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 		drawBottomLeft();
 	}
 
-	private ImageData getImageData(ImageDescriptor descriptor) {
+	private ImageData getImageData(final ImageDescriptor descriptor) {
 		ImageData data = descriptor.getImageData();
 		if (data == null) {
 			data = DEFAULT_IMAGE_DATA;

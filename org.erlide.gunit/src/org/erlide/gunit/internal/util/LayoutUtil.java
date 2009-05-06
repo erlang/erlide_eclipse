@@ -89,7 +89,7 @@ public class LayoutUtil {
 	// parent.setLayout(layout);
 	// }
 
-	private static void modifyLabelSpans(Control[][] controls, int nCulumns) {
+	private static void modifyLabelSpans(final Control[][] controls, final int nCulumns) {
 		for (int i = 0; i < controls.length; i++) {
 			setHorizontalSpan(controls[i][0], nCulumns);
 		}
@@ -98,12 +98,12 @@ public class LayoutUtil {
 	/*
 	 * Sets the span of a control. Assumes that MGridData is used.
 	 */
-	public static void setHorizontalSpan(Control control, int span) {
-		Object ld = control.getLayoutData();
+	public static void setHorizontalSpan(final Control control, final int span) {
+		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).horizontalSpan = span;
 		} else if (span != 1) {
-			GridData gd = new GridData();
+			final GridData gd = new GridData();
 			gd.horizontalSpan = span;
 			control.setLayoutData(gd);
 		}
@@ -112,8 +112,8 @@ public class LayoutUtil {
 	/*
 	 * Sets the width hint of a control. Assumes that MGridData is used.
 	 */
-	public static void setWidthHint(Control control, int widthHint) {
-		Object ld = control.getLayoutData();
+	public static void setWidthHint(final Control control, final int widthHint) {
+		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).widthHint = widthHint;
 		}
@@ -122,8 +122,8 @@ public class LayoutUtil {
 	/*
 	 * Sets the horizontal indent of a control. Assumes that MGridData is used.
 	 */
-	public static void setHorizontalIndent(Control control, int horizontalIndent) {
-		Object ld = control.getLayoutData();
+	public static void setHorizontalIndent(final Control control, final int horizontalIndent) {
+		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).horizontalIndent = horizontalIndent;
 		}
@@ -135,9 +135,9 @@ public class LayoutUtil {
 	 * 
 	 * @param parent The parent composite
 	 */
-	public static Control createEmptySpace(Composite parent, int span) {
-		Label label = new Label(parent, SWT.LEFT);
-		GridData gd = new GridData();
+	public static Control createEmptySpace(final Composite parent, final int span) {
+		final Label label = new Label(parent, SWT.LEFT);
+		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.BEGINNING;
 		gd.grabExcessHorizontalSpace = false;
 		gd.horizontalSpan = span;
@@ -155,11 +155,11 @@ public class LayoutUtil {
 	 *            the button for which to set the dimension hint
 	 * @return the width hint
 	 */
-	public static int getButtonWidthHint(Button button) {
+	public static int getButtonWidthHint(final Button button) {
 		button.setFont(JFaceResources.getDialogFont());
-		PixelConverter converter = new PixelConverter(button);
-		int widthHint = converter
-				.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		final PixelConverter converter = new PixelConverter(button);
+		final int widthHint = converter
+		.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT,
 				true).x);
 	}
@@ -172,9 +172,9 @@ public class LayoutUtil {
 	 * @param button
 	 *            the button for which to set the dimension hint
 	 */
-	public static void setButtonDimensionHint(Button button) {
+	public static void setButtonDimensionHint(final Button button) {
 		Assert.isNotNull(button);
-		Object gd = button.getLayoutData();
+		final Object gd = button.getLayoutData();
 		if (gd instanceof GridData) {
 			((GridData) gd).widthHint = getButtonWidthHint(button);
 			((GridData) gd).horizontalAlignment = GridData.FILL;

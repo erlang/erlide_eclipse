@@ -29,7 +29,7 @@ public class CopyFailureListAction extends Action {
 
 	private final TestRunnerViewPart fRunner;
 
-	public CopyFailureListAction(TestRunnerViewPart runner, Clipboard clipboard) {
+	public CopyFailureListAction(final TestRunnerViewPart runner, final Clipboard clipboard) {
 		super(GUnitMessages.CopyFailureList_action_label);
 		this.fRunner = runner;
 		this.fClipboard = clipboard;
@@ -42,12 +42,12 @@ public class CopyFailureListAction extends Action {
 	 */
 	@Override
 	public void run() {
-		TextTransfer plainTextTransfer = TextTransfer.getInstance();
+		final TextTransfer plainTextTransfer = TextTransfer.getInstance();
 
 		try {
 			this.fClipboard.setContents(new String[] { getAllFailureTraces() },
 					new Transfer[] { plainTextTransfer });
-		} catch (SWTError e) {
+		} catch (final SWTError e) {
 			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
 			}
@@ -61,20 +61,20 @@ public class CopyFailureListAction extends Action {
 	}
 
 	public String getAllFailureTraces() {
-		StringBuffer buf = new StringBuffer();
-		TestElement[] failures = this.fRunner.getAllFailures();
+		final StringBuffer buf = new StringBuffer();
+		final TestElement[] failures = this.fRunner.getAllFailures();
 
-		String lineDelim = System.getProperty("line.separator", "\n"); //$NON-NLS-1$//$NON-NLS-2$
+		final String lineDelim = System.getProperty("line.separator", "\n"); //$NON-NLS-1$//$NON-NLS-2$
 		for (int i = 0; i < failures.length; i++) {
-			TestElement failure = failures[i];
+			final TestElement failure = failures[i];
 			buf.append(failure.getTestName()).append(lineDelim);
-			String failureTrace = failure.getTrace();
+			final String failureTrace = failure.getTrace();
 			if (failureTrace != null) {
 				int start = 0;
 				while (start < failureTrace.length()) {
-					int idx = failureTrace.indexOf('\n', start);
+					final int idx = failureTrace.indexOf('\n', start);
 					if (idx != -1) {
-						String line = failureTrace.substring(start, idx);
+						final String line = failureTrace.substring(start, idx);
 						buf.append(line).append(lineDelim);
 						start = idx + 1;
 					} else {

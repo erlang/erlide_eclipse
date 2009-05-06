@@ -10,7 +10,7 @@ public class AbstractTestRunner {
 
 	// private Backend fBackend;
 
-	public AbstractTestRunner(ILaunch launch) {
+	public AbstractTestRunner(final ILaunch launch) {
 		// try {
 		// String projectName = launch.getLaunchConfiguration().getAttribute(
 		// LaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
@@ -54,8 +54,8 @@ public class AbstractTestRunner {
 		// }
 	}
 
-	public List<TestElement> getTestCases(TestElement testElement) {
-		List<TestElement> testCases = new ArrayList<TestElement>();
+	public List<TestElement> getTestCases(final TestElement testElement) {
+		final List<TestElement> testCases = new ArrayList<TestElement>();
 
 		// try {
 		// OtpErlangList result = (OtpErlangList) fBackend.rpcx("gunit",
@@ -81,7 +81,7 @@ public class AbstractTestRunner {
 		return testCases;
 	}
 
-	public TestElement.Status runTest(TestElement testCase) {
+	public TestElement.Status runTest(final TestElement testCase) {
 		// try {
 		// OtpErlangObject result = fBackend.rpcx("gunit", "run_test_case",
 		// "aa", testCase.getParent().getName(), testCase.getName());

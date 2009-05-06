@@ -43,22 +43,22 @@ public interface IErlElement extends IAdaptable {
 	 * <p>
 	 * Erlang elements are handle objects that may or may not be backed by an
 	 * actual element. Erlang elements that are backed by an actual element are
-	 * said to "exist", and this method returns <code>true</code>. It is
-	 * always the case that if the element exists, then its parent also exists
+	 * said to "exist", and this method returns <code>true</code>. It is always
+	 * the case that if the element exists, then its parent also exists
 	 * (provided it has one) and includes the element as one of its children. It
 	 * is therefore possible to navigate to any existing Erlang element from the
 	 * root of the Erlang model along a chain of existing Erlang elements.
 	 * </p>
 	 * 
-	 * @return <code>true</code> if this element exists in the Erlang model,
-	 *         and <code>false</code> if this element does not exist
+	 * @return <code>true</code> if this element exists in the Erlang model, and
+	 *         <code>false</code> if this element does not exist
 	 */
 	boolean exists();
 
 	/**
 	 * Returns the first ancestor of this Erlang element that has the given
-	 * type. Returns <code>null</code> if no such an ancestor can be found.
-	 * This is a handle-only method.
+	 * type. Returns <code>null</code> if no such an ancestor can be found. This
+	 * is a handle-only method.
 	 * 
 	 * @param ancestorType
 	 *            the given type
@@ -77,10 +77,9 @@ public interface IErlElement extends IAdaptable {
 	 * <code>null</code> if there is no resource that corresponds to this
 	 * element.
 	 * <p>
-	 * For example, the corresponding resource for an <code>IErlModule</code>
-	 * is its underlying <code>IFile</code>. There are no corresponding
-	 * resources for <code>IAttributes</code>,<code>IFunctions</code>,
-	 * etc.
+	 * For example, the corresponding resource for an <code>IErlModule</code> is
+	 * its underlying <code>IFile</code>. There are no corresponding resources
+	 * for <code>IAttributes</code>,<code>IFunctions</code>, etc.
 	 * <p>
 	 * 
 	 * @return the corresponding resource, or <code>null</code> if none

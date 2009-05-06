@@ -63,9 +63,9 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 	 */
 	private final IPartListener2 fPartListener = new IPartListener2() {
 
-		public void partVisible(IWorkbenchPartReference ref) {
+		public void partVisible(final IWorkbenchPartReference ref) {
 			if (ref.getId().equals(getSite().getId())) {
-				IWorkbenchPart activePart = ref.getPage().getActivePart();
+				final IWorkbenchPart activePart = ref.getPage().getActivePart();
 				if (activePart != null) {
 					selectionChanged(activePart, ref.getPage().getSelection());
 				}
@@ -73,31 +73,31 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 			}
 		}
 
-		public void partHidden(IWorkbenchPartReference ref) {
+		public void partHidden(final IWorkbenchPartReference ref) {
 			if (ref.getId().equals(getSite().getId())) {
 				stopListeningForSelectionChanges();
 			}
 		}
 
-		public void partInputChanged(IWorkbenchPartReference ref) {
+		public void partInputChanged(final IWorkbenchPartReference ref) {
 			if (!ref.getId().equals(getSite().getId())) {
 				computeAndSetInput(ref.getPart(false));
 			}
 		}
 
-		public void partActivated(IWorkbenchPartReference ref) {
+		public void partActivated(final IWorkbenchPartReference ref) {
 		}
 
-		public void partBroughtToTop(IWorkbenchPartReference ref) {
+		public void partBroughtToTop(final IWorkbenchPartReference ref) {
 		}
 
-		public void partClosed(IWorkbenchPartReference ref) {
+		public void partClosed(final IWorkbenchPartReference ref) {
 		}
 
-		public void partDeactivated(IWorkbenchPartReference ref) {
+		public void partDeactivated(final IWorkbenchPartReference ref) {
 		}
 
-		public void partOpened(IWorkbenchPartReference ref) {
+		public void partOpened(final IWorkbenchPartReference ref) {
 		}
 	};
 
@@ -326,7 +326,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 
 	/*
 	 * @see ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(final IWorkbenchPart part,
 			final ISelection selection) {
@@ -490,12 +490,12 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 				if (info == null || info.length() == 0) {
 					return;
 				}
-				Shell shell = getSite().getShell();
+				final Shell shell = getSite().getShell();
 				if (shell.isDisposed()) {
 					return;
 				}
 
-				Display display = shell.getDisplay();
+				final Display display = shell.getDisplay();
 				if (display.isDisposed()) {
 					return;
 				}

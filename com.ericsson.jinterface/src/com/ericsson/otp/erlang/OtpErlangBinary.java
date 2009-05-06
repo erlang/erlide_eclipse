@@ -32,7 +32,7 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      * Create a binary from a byte array
      * 
      * @param bin
-     *                the array of bytes from which to create the binary.
+     *            the array of bytes from which to create the binary.
      */
     public OtpErlangBinary(final byte[] bin) {
 	super(bin);
@@ -43,11 +43,11 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      * external format.
      * 
      * @param buf
-     *                the stream containing the encoded binary.
+     *            the stream containing the encoded binary.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang binary.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang binary.
      */
     public OtpErlangBinary(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -61,7 +61,7 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      * java.io.Serializable or java.io.Externalizable.
      * 
      * @param o
-     *                the object to serialize and create this binary from.
+     *            the object to serialize and create this binary from.
      */
     public OtpErlangBinary(final Object o) {
 	super(o);
@@ -71,8 +71,8 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      * Convert this binary to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded binary should be
-     *                written.
+     *            an output stream to which the encoded binary should be
+     *            written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -84,7 +84,7 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      * same length and the array of bytes is identical.
      * 
      * @param o
-     *                the binary to compare to.
+     *            the binary to compare to.
      * 
      * @return true if the byte arrays contain the same bytes, false otherwise.
      */

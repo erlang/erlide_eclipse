@@ -90,7 +90,7 @@ public class LiveExpressionsView extends ViewPart implements
 	private static class LiveExpr {
 		String fExpr;
 
-		public LiveExpr(String s) {
+		public LiveExpr(final String s) {
 			fExpr = s;
 		}
 
@@ -115,7 +115,8 @@ public class LiveExpressionsView extends ViewPart implements
 			super();
 		}
 
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer v, final Object oldInput,
+				final Object newInput) {
 			if (newInput instanceof List<?>) {
 				exprlist = (List<?>) newInput;
 			}
@@ -125,7 +126,7 @@ public class LiveExpressionsView extends ViewPart implements
 			exprlist = null;
 		}
 
-		public Object[] getElements(Object parent) {
+		public Object[] getElements(final Object parent) {
 			return exprlist.toArray();
 		}
 
@@ -134,7 +135,7 @@ public class LiveExpressionsView extends ViewPart implements
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 
-		public String getColumnText(Object obj, int index) {
+		public String getColumnText(final Object obj, final int index) {
 			final LiveExpr e = (LiveExpr) obj;
 			if (index == 0) {
 				return e.fExpr;
@@ -147,7 +148,7 @@ public class LiveExpressionsView extends ViewPart implements
 			return "ERR: " + r.getErrorReason().toString();
 		}
 
-		public Image getColumnImage(Object obj, int index) {
+		public Image getColumnImage(final Object obj, final int index) {
 			// if (index == 0)
 			// return getImage(obj);
 			// else
@@ -155,7 +156,7 @@ public class LiveExpressionsView extends ViewPart implements
 		}
 
 		@Override
-		public Image getImage(Object obj) {
+		public Image getImage(final Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
 					ISharedImages.IMG_OBJ_ELEMENT);
 		}
@@ -180,7 +181,7 @@ public class LiveExpressionsView extends ViewPart implements
 	 * it.
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		label = new Label(parent, SWT.NULL);
 		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
 				| SWT.FULL_SELECTION);
@@ -285,7 +286,7 @@ public class LiveExpressionsView extends ViewPart implements
 
 			SourceViewerInformationControl info = null;
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				switch (event.type) {
 				case SWT.Dispose:
 				case SWT.KeyDown:
@@ -298,7 +299,8 @@ public class LiveExpressionsView extends ViewPart implements
 					break;
 				}
 				case SWT.MouseHover: {
-					TableItem item = t.getItem(new Point(event.x, event.y));
+					final TableItem item = t
+							.getItem(new Point(event.x, event.y));
 					if (item != null) {
 						String str = "??";
 						// try
@@ -306,7 +308,8 @@ public class LiveExpressionsView extends ViewPart implements
 						// str = BackendUtil.prettyPrint(bk,
 						// item.getText(1));
 						// ErlLogger.debug(str);
-						BackendEvalResult r = ErlideBackend.eval(fBackend,
+						final BackendEvalResult r = ErlideBackend.eval(
+								fBackend,
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).", null);
 						if (r.isOk()) {
@@ -334,9 +337,9 @@ public class LiveExpressionsView extends ViewPart implements
 								SWT.COLOR_INFO_BACKGROUND));
 						info.setInformation(str);
 
-						Rectangle rect = item.getBounds(1);
-						int lw = t.getGridLineWidth();
-						Point pt = t.toDisplay(rect.x + lw, rect.y + lw);
+						final Rectangle rect = item.getBounds(1);
+						final int lw = t.getGridLineWidth();
+						final Point pt = t.toDisplay(rect.x + lw, rect.y + lw);
 						info.setLocation(pt);
 						info.setSize(rect.width + lw, t.getBounds().height
 								- rect.y);
@@ -360,7 +363,7 @@ public class LiveExpressionsView extends ViewPart implements
 	IMemento memento; // @jve:decl-index=0:
 
 	@Override
-	public void init(IViewSite site, IMemento aMemento)
+	public void init(final IViewSite site, final IMemento aMemento)
 			throws PartInitException {
 		init(site);
 		memento = aMemento;
@@ -372,7 +375,7 @@ public class LiveExpressionsView extends ViewPart implements
 			return;
 		}
 		aMemento = aMemento.createChild("LiveExpressions");
-		Iterator<LiveExpr> iter = exprs.iterator();
+		final Iterator<LiveExpr> iter = exprs.iterator();
 		while (iter.hasNext()) {
 			aMemento.createChild("expression").putTextData(
 					iter.next().toString());
@@ -384,10 +387,10 @@ public class LiveExpressionsView extends ViewPart implements
 			memento = memento.getChild("LiveExpressions");
 		}
 		if (memento != null) {
-			IMemento expressions[] = memento.getChildren("expression");
+			final IMemento expressions[] = memento.getChildren("expression");
 			if (expressions.length > 0) {
 				exprs = new ArrayList<LiveExpr>(expressions.length);
-				for (IMemento element : expressions) {
+				for (final IMemento element : expressions) {
 					exprs.add(new LiveExpr(element.getTextData()));
 				}
 			}
@@ -401,25 +404,26 @@ public class LiveExpressionsView extends ViewPart implements
 
 		private final LiveExpressionsView view;
 
-		public LiveExprCellModifier(LiveExpressionsView v) {
+		public LiveExprCellModifier(final LiveExpressionsView v) {
 			view = v;
 		}
 
-		public boolean canModify(Object element, String property) {
+		public boolean canModify(final Object element, final String property) {
 			if ("expr".equals(property)) {
 				return true;
 			}
 			return false;
 		}
 
-		public Object getValue(Object element, String property) {
+		public Object getValue(final Object element, final String property) {
 			Object result = null;
 			final LiveExpr el = (LiveExpr) element;
 			result = el.fExpr;
 			return result;
 		}
 
-		public void modify(Object element, String property, Object value) {
+		public void modify(final Object element, final String property,
+				final Object value) {
 			LiveExpr el;
 			// get around bug in TableEditorImpl
 			if (element instanceof TableItem) {
@@ -437,7 +441,7 @@ public class LiveExpressionsView extends ViewPart implements
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				LiveExpressionsView.this.fillContextMenu(manager);
 			}
 		});
@@ -452,14 +456,14 @@ public class LiveExpressionsView extends ViewPart implements
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		manager.add(refreshAction);
 		manager.add(fAddAction);
 		manager.add(fRemoveAction);
 		manager.add(new Separator());
 	}
 
-	void fillContextMenu(IMenuManager manager) {
+	void fillContextMenu(final IMenuManager manager) {
 		manager.add(refreshAction);
 		manager.add(fAddAction);
 		manager.add(fRemoveAction);
@@ -467,7 +471,7 @@ public class LiveExpressionsView extends ViewPart implements
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
-	private void fillLocalToolBar(IToolBarManager manager) {
+	private void fillLocalToolBar(final IToolBarManager manager) {
 		manager.add(refreshAction);
 		manager.add(fAddAction);
 		manager.add(fRemoveAction);
@@ -515,13 +519,13 @@ public class LiveExpressionsView extends ViewPart implements
 	}
 
 	private void hookGlobalActions() {
-		IActionBars bars = getViewSite().getActionBars();
+		final IActionBars bars = getViewSite().getActionBars();
 		bars
 				.setGlobalActionHandler(ActionFactory.DELETE.getId(),
 						fRemoveAction);
 		viewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent event) {
+			public void keyPressed(final KeyEvent event) {
 				if (event.character == SWT.DEL && event.stateMask == 0
 						&& fRemoveAction.isEnabled()) {
 					fRemoveAction.run();
@@ -530,7 +534,7 @@ public class LiveExpressionsView extends ViewPart implements
 		});
 	};
 
-	void showMessage(String message) {
+	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),
 				"Process list view", message);
 	}
@@ -543,7 +547,7 @@ public class LiveExpressionsView extends ViewPart implements
 		viewer.getControl().setFocus();
 	}
 
-	public void resourceChanged(IResourceChangeEvent event) {
+	public void resourceChanged(final IResourceChangeEvent event) {
 		refreshView();
 	}
 
@@ -565,19 +569,20 @@ public class LiveExpressionsView extends ViewPart implements
 		}
 	}
 
-	public void addExpr(LiveExpr e) {
+	public void addExpr(final LiveExpr e) {
 		exprs.add(e);
 		refreshView();
 	}
 
-	public void updateExpr(LiveExpr e) {
+	public void updateExpr(final LiveExpr e) {
 		refreshView();
 	}
 
 	public void delExpr() {
-		IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+		final IStructuredSelection sel = (IStructuredSelection) viewer
+				.getSelection();
 		@SuppressWarnings("unchecked")
-		Iterator<LiveExpr> iter = sel.iterator();
+		final Iterator<LiveExpr> iter = sel.iterator();
 		while (iter.hasNext()) {
 			exprs.remove(iter.next());
 		}

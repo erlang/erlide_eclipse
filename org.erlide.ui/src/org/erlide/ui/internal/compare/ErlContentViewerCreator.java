@@ -22,7 +22,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ErlContentViewerCreator implements IViewerCreator {
 
-	public Viewer createViewer(Composite parent, CompareConfiguration mp) {
+	public Viewer createViewer(final Composite parent,
+			final CompareConfiguration mp) {
 		return new ErlMergeViewer(parent, SWT.NULL, mp);
 	}
 }

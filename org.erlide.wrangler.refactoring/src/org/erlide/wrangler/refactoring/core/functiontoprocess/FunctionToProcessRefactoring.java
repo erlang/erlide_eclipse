@@ -19,6 +19,7 @@ public class FunctionToProcessRefactoring extends WranglerRefactoring {
 		super(parameters);
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws CoreException {
@@ -29,6 +30,7 @@ public class FunctionToProcessRefactoring extends WranglerRefactoring {
 						.getEditorTabWidth());
 	}
 
+	@SuppressWarnings("boxing")
 	protected RpcResult sendSecondRPC() throws CoreException {
 		return managedBackend.call_noexception("wrangler",
 				"fun_to_process_1_eclipse", "siisxi", parameters.getFilePath(),

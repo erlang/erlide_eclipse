@@ -1,4 +1,4 @@
-#Thu Mar 05 12:24:36 CET 2009
+#Wed May 06 15:54:28 CEST 2009
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=true
@@ -42,14 +42,14 @@ cleanup.remove_unused_private_methods=true
 cleanup.remove_unused_private_types=true
 cleanup.sort_members=false
 cleanup.sort_members_all=false
-cleanup.use_blocks=true
+cleanup.use_blocks=false
 cleanup.use_blocks_only_for_return_and_throw=false
-cleanup.use_parentheses_in_expressions=true
-cleanup.use_this_for_non_static_field_access=true
+cleanup.use_parentheses_in_expressions=false
+cleanup.use_this_for_non_static_field_access=false
 cleanup.use_this_for_non_static_field_access_only_if_necessary=true
-cleanup.use_this_for_non_static_method_access=true
+cleanup.use_this_for_non_static_method_access=false
 cleanup.use_this_for_non_static_method_access_only_if_necessary=true
-cleanup_profile=_OTP JInterface
+cleanup_profile=_erlide
 cleanup_settings_version=2
 eclipse.preferences.version=1
 formatter_profile=org.eclipse.jdt.ui.default.sun_profile

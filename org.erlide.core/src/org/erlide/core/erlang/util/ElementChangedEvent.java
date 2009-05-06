@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -77,7 +77,7 @@ public class ElementChangedEvent extends EventObject {
 	 * Event type indicating the nature of this event. It can be a combination
 	 * either: - POST_CHANGE - PRE_AUTO_BUILD - POST_RECONCILE
 	 */
-	private int fType;
+	private final int fType;
 
 	/**
 	 * Creates an new element changed event (based on a
@@ -89,7 +89,7 @@ public class ElementChangedEvent extends EventObject {
 	 *            the type of delta (ADDED, REMOVED, CHANGED) this event
 	 *            contains
 	 */
-	public ElementChangedEvent(IErlElementDelta delta, int type) {
+	public ElementChangedEvent(final IErlElementDelta delta, final int type) {
 		super(delta);
 		fType = type;
 	}

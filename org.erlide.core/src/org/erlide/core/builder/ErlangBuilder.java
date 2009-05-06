@@ -117,7 +117,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					BuilderMessages.build_inconsistentProject, e
 							.getLocalizedMessage()));
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
@@ -159,7 +159,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				resourcesToBuild = fullBuild(args);
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
-				Path path = new Path(".settings/org.erlide.core.prefs");
+				final Path path = new Path(".settings/org.erlide.core.prefs");
 				if (delta.findMember(path) != null) {
 					ErlLogger
 							.info("project configuration changed: doing full rebuild");
@@ -175,10 +175,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			if (n > 0) {
 				notifier.setProgressPerCompilationUnit(1.0f / n);
-				Backend backend = ErlangCore.getBackendManager()
+				final Backend backend = ErlangCore.getBackendManager()
 						.getBuildBackend(currentProject);
 				if (backend == null) {
-					String message = "No backend with the required "
+					final String message = "No backend with the required "
 							+ "version could be found. Can't build.";
 					ErlangBuilderMarkerGenerator.addProblemMarker(
 							currentProject, null, message, 0,
@@ -186,7 +186,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					throw new BackendException(message);
 				}
 
-				for (IResource resource : resourcesToBuild) {
+				for (final IResource resource : resourcesToBuild) {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
@@ -213,7 +213,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					BuilderMessages.build_inconsistentProject, e
 							.getLocalizedMessage()));
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.error(e);
 		} finally {
 			notifier.done();
@@ -226,10 +226,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkForClashes(Backend backend) {
+	private void checkForClashes(final Backend backend) {
 		try {
 			final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
-			for (OtpErlangObject elem : res.elements()) {
+			for (final OtpErlangObject elem : res.elements()) {
 				final OtpErlangTuple t = (OtpErlangTuple) elem;
 				final String f1 = ((OtpErlangString) t.elementAt(0))
 						.stringValue();
@@ -326,7 +326,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	@SuppressWarnings("unchecked")
 	protected Set<IResource> fullBuild(final Map args) throws CoreException {
-		HashSet<IResource> result = new HashSet<IResource>();
+		final HashSet<IResource> result = new HashSet<IResource>();
 		getProject().accept(new ErlangResourceVisitor(result));
 		return result;
 	}
@@ -334,13 +334,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	@SuppressWarnings("unchecked")
 	protected Set<IResource> incrementalBuild(final Map args,
 			final IResourceDelta delta) throws CoreException {
-		HashSet<IResource> result = new HashSet<IResource>();
+		final HashSet<IResource> result = new HashSet<IResource>();
 		delta.accept(new ErlangDeltaVisitor(result));
 		return result;
 	}
 
 	public static void compileFile(final IProject project,
-			final IResource resource, Backend backend) {
+			final IResource resource, final Backend backend) {
 		final IPath projectPath = project.getLocation();
 		final ErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
@@ -562,7 +562,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	protected void compileYrlFile(final IProject project,
-			final IResource resource, Backend backend) {
+			final IResource resource, final Backend backend) {
 		// final IPath projectPath = project.getLocation();
 		// final ErlangProjectProperties prefs = new
 		// ErlangProjectProperties(project);
@@ -705,7 +705,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		private final Set<IResource> result;
 
-		public ErlangDeltaVisitor(Set<IResource> result) {
+		public ErlangDeltaVisitor(final Set<IResource> result) {
 			this.result = result;
 		}
 
@@ -841,7 +841,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		private final Set<IResource> result;
 
-		public ErlangResourceVisitor(Set<IResource> result) {
+		public ErlangResourceVisitor(final Set<IResource> result) {
 			this.result = result;
 		}
 

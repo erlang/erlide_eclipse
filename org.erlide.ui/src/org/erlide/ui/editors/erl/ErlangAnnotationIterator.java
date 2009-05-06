@@ -33,8 +33,8 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
 	 * Equivalent to
 	 * <code>RubyAnnotationIterator(model, skipIrrelevants, false)</code>.
 	 */
-	public ErlangAnnotationIterator(IAnnotationModel model,
-			boolean skipIrrelevants) {
+	public ErlangAnnotationIterator(final IAnnotationModel model,
+			final boolean skipIrrelevants) {
 		this(model, skipIrrelevants, false);
 	}
 
@@ -48,8 +48,8 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
 	 * @param returnAllAnnotations
 	 *            Whether to return non IJavaAnnotations as well
 	 */
-	public ErlangAnnotationIterator(IAnnotationModel model,
-			boolean skipIrrelevants, boolean returnAllAnnotations) {
+	public ErlangAnnotationIterator(final IAnnotationModel model,
+			final boolean skipIrrelevants, final boolean returnAllAnnotations) {
 		fReturnAllAnnotations = returnAllAnnotations;
 		if (model != null) {
 			fIterator = model.getAnnotationIterator();

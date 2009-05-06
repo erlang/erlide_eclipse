@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Control;
  * for each column. If set this grid data is used for the widget if it doesn't
  * manage its own grid data object.
  * 
- * Call one of the <code>perform</code> methods to assign the correct grid
- * data objects to a set of widgets according to the number of columns passed to
- * the layouter's constructor.
+ * Call one of the <code>perform</code> methods to assign the correct grid data
+ * objects to a set of widgets according to the number of columns passed to the
+ * layouter's constructor.
  */
 public class RowLayouter {
 
@@ -52,17 +52,17 @@ public class RowLayouter {
 
 	private final int fNumColumns;
 
-	private boolean fOrder;
+	private final boolean fOrder;
 
 	private Control fLastControl;
 
 	private GridData[] fDefaultGridDatas = new GridData[4];
 
-	public RowLayouter(int numColumns) {
+	public RowLayouter(final int numColumns) {
 		this(numColumns, false);
 	}
 
-	public RowLayouter(int numColumns, boolean order) {
+	public RowLayouter(final int numColumns, final boolean order) {
 		fNumColumns = numColumns;
 		fOrder = order;
 	}
@@ -72,19 +72,20 @@ public class RowLayouter {
 		spanGrabExcessHorizontalSpace = 1;
 	}
 
-	public void perform(Control c1) {
+	public void perform(final Control c1) {
 		perform(new Control[] { c1 }, 0);
 	}
 
-	public void perform(Control c1, Control c2, int span) {
+	public void perform(final Control c1, final Control c2, final int span) {
 		perform(new Control[] { c1, c2 }, span);
 	}
 
-	public void perform(Control c1, Control c2, Control c3, int span) {
+	public void perform(final Control c1, final Control c2, final Control c3,
+			final int span) {
 		perform(new Control[] { c1, c2, c3 }, span);
 	}
 
-	public void perform(Control[] controls, int spanColumn) {
+	public void perform(final Control[] controls, final int spanColumn) {
 		final int numColumns = numColumns();
 		Assert.isTrue(controls.length <= numColumns);
 		order(controls);
@@ -111,7 +112,7 @@ public class RowLayouter {
 		}
 	}
 
-	private void applyDelta(GridData gd) {
+	private void applyDelta(final GridData gd) {
 		if (spanHorizontalAlignment != -1) {
 			gd.horizontalAlignment = spanHorizontalAlignment;
 		}
@@ -157,7 +158,7 @@ public class RowLayouter {
 		}
 	}
 
-	public void setDefaultGridData(GridData gd, int index) {
+	public void setDefaultGridData(final GridData gd, final int index) {
 		if (index >= fDefaultGridDatas.length) {
 			final GridData[] newDatas = new GridData[index + 4];
 			System.arraycopy(fDefaultGridDatas, 0, newDatas, 0,
@@ -167,7 +168,7 @@ public class RowLayouter {
 		fDefaultGridDatas[index] = gd;
 	}
 
-	public GridData getGridData(int index) {
+	public GridData getGridData(final int index) {
 		if (index > fDefaultGridDatas.length) {
 			return null;
 		}
@@ -179,7 +180,7 @@ public class RowLayouter {
 		return fNumColumns;
 	}
 
-	protected void order(Control[] controls) {
+	protected void order(final Control[] controls) {
 		if (!fOrder) {
 			return;
 		}
@@ -190,7 +191,7 @@ public class RowLayouter {
 		}
 	}
 
-	protected GridData cloneGridData(GridData gd) {
+	protected GridData cloneGridData(final GridData gd) {
 		if (gd == null) {
 			return null;
 		}

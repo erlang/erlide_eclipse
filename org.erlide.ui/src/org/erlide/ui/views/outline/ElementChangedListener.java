@@ -25,7 +25,7 @@ class ElementChangedListener implements IElementChangedListener {
 	/**
 	 * @param page
 	 */
-	ElementChangedListener(ErlangOutlinePage page) {
+	ElementChangedListener(final ErlangOutlinePage page) {
 		this.page = page;
 	}
 
@@ -63,7 +63,7 @@ class ElementChangedListener implements IElementChangedListener {
 
 	/* FIXME: isPossibleStructuralChange -- needed, or rudiment? */
 	@SuppressWarnings("unused")
-	private boolean isPossibleStructuralChange(IErlElementDelta cuDelta) {
+	private boolean isPossibleStructuralChange(final IErlElementDelta cuDelta) {
 		if (cuDelta.getKind() != IErlElementDelta.CHANGED) {
 			return true; // add or remove
 		}

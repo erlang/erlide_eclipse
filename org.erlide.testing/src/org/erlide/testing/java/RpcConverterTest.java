@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -34,9 +34,9 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class RpcConverterTest {
 
-	private void test(Object o, String sig, OtpErlangObject expect)
-			throws RpcException {
-		OtpErlangObject result = RpcConverter.java2erlang(o, sig);
+	private void test(final Object o, final String sig, final OtpErlangObject expect)
+	throws RpcException {
+		final OtpErlangObject result = RpcConverter.java2erlang(o, sig);
 		assertTrue(expect.equals(result));
 	}
 
@@ -64,7 +64,7 @@ public class RpcConverterTest {
 
 	@Test
 	public void cvtIntegerOk_3() throws RpcException {
-		BigInteger bigInteger = new BigInteger("39799999999999999999999", 10);
+		final BigInteger bigInteger = new BigInteger("39799999999999999999999", 10);
 		test(bigInteger, "i", new OtpErlangLong(bigInteger));
 	}
 
@@ -141,48 +141,48 @@ public class RpcConverterTest {
 
 	@Test
 	public void parseSignature_0() throws RpcException {
-		String sig = null;
-		Signature[] result = Signature.parse(sig);
+		final String sig = null;
+		final Signature[] result = Signature.parse(sig);
 		assertTrue(result == null);
 	}
 
 	@Test
 	public void parseSignature_1() throws RpcException {
-		String sig = "aslsilpfd";
-		Signature[] result = Signature.parse(sig);
-		String expect = "[a, s, l(s), i, l(p), f, d]";
+		final String sig = "aslsilpfd";
+		final Signature[] result = Signature.parse(sig);
+		final String expect = "[a, s, l(s), i, l(p), f, d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_2() throws RpcException {
-		String sig = "llxi";
-		Signature[] result = Signature.parse(sig);
-		String expect = "[l(l(x)), i]";
+		final String sig = "llxi";
+		final Signature[] result = Signature.parse(sig);
+		final String expect = "[l(l(x)), i]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_3() throws RpcException {
-		String sig = "2axd";
-		Signature[] result = Signature.parse(sig);
-		String expect = "[t(a,x), d]";
+		final String sig = "2axd";
+		final Signature[] result = Signature.parse(sig);
+		final String expect = "[t(a,x), d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_4() throws RpcException {
-		String sig = "l3axl2sad";
-		Signature[] result = Signature.parse(sig);
-		String expect = "[l(t(a,x,l(t(s,a)))), d]";
+		final String sig = "l3axl2sad";
+		final Signature[] result = Signature.parse(sig);
+		final String expect = "[l(t(a,x,l(t(s,a)))), d]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
 	@Test
 	public void parseSignature_5() throws RpcException {
-		String sig = "32sadax";
-		Signature[] result = Signature.parse(sig);
-		String expect = "[t(t(s,a),d,a), x]";
+		final String sig = "32sadax";
+		final Signature[] result = Signature.parse(sig);
+		final String expect = "[t(t(s,a),d,a), x]";
 		assertTrue(Arrays.toString(result).equals(expect));
 	}
 
@@ -206,7 +206,7 @@ public class RpcConverterTest {
 
 	@Test
 	public void cvtConvertible_1() throws RpcException {
-		IConvertible x = new IConvertible() {
+		final IConvertible x = new IConvertible() {
 			public OtpErlangObject toErlangObject() {
 				return new OtpErlangAtom("__kalle__");
 			}
@@ -215,16 +215,16 @@ public class RpcConverterTest {
 	}
 
 	static class Cvt {
-		public static String fromErlangObject(OtpErlangObject obj) {
+		public static String fromErlangObject(final OtpErlangObject obj) {
 			return "hej";
 		}
 	}
 
 	@Test
 	public void cvtConvertible_2() throws RpcException {
-		Object x = "hej";
-		OtpErlangObject obj = new OtpErlangAtom("hej d�");
-		Object y = RpcConverter.erlang2java(obj, Cvt.class);
+		final Object x = "hej";
+		final OtpErlangObject obj = new OtpErlangAtom("hej d�");
+		final Object y = RpcConverter.erlang2java(obj, Cvt.class);
 		assertTrue(x.equals(y));
 	}
 

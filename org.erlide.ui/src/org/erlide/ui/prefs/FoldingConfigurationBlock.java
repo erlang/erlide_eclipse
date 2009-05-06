@@ -45,7 +45,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 		private final String fMessage;
 
-		protected ErrorPreferences(String message) {
+		protected ErrorPreferences(final String message) {
 			fMessage = message;
 		}
 
@@ -54,7 +54,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
 		 * createControl(org.eclipse.swt.widgets.Group)
 		 */
-		public Control createControl(Composite composite) {
+		public Control createControl(final Composite composite) {
 			final Composite inner = new Composite(composite, SWT.NONE);
 			inner.setLayout(new FillLayout(SWT.VERTICAL));
 
@@ -99,7 +99,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 	private final Map<String, Control> fProviderControls;
 
-	public FoldingConfigurationBlock(OverlayPreferenceStore store) {
+	public FoldingConfigurationBlock(final OverlayPreferenceStore store) {
 		Assert.isNotNull(store);
 		fStore = store;
 		fStore.addKeys(createOverlayStoreKeys());
@@ -115,7 +115,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		final ErlangFoldingStructureProviderDescriptor[] descs = reg
 				.getFoldingProviderDescriptors();
 		final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
-		for (ErlangFoldingStructureProviderDescriptor element : descs) {
+		for (final ErlangFoldingStructureProviderDescriptor element : descs) {
 			map.put(element.getId(), element);
 		}
 		return map;
@@ -144,7 +144,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 	 *            the parent composite
 	 * @return the control for the preference page
 	 */
-	public Control createControl(Composite parent) {
+	public Control createControl(final Composite parent) {
 
 		final Composite composite = new Composite(parent, SWT.NULL);
 		// assume parent page uses griddata
@@ -166,14 +166,14 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 		fFoldingCheckbox.setLayoutData(gd);
 		fFoldingCheckbox.addSelectionListener(new SelectionListener() {
 
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				final boolean enabled = fFoldingCheckbox.getSelection();
 				fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED,
 						enabled);
 				updateCheckboxDependencies();
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 		});
 
@@ -246,7 +246,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
 			 * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 			 */
-			public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			public void inputChanged(final Viewer v, final Object oldInput,
+					final Object newInput) {
 			}
 
 			/*
@@ -254,7 +255,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			 * org.eclipse.jface.viewers.IStructuredContentProvider#getElements
 			 * (java.lang.Object)
 			 */
-			public Object[] getElements(Object inputElement) {
+			public Object[] getElements(final Object inputElement) {
 				return fProviderDescriptors.values().toArray();
 			}
 		});
@@ -266,7 +267,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			 * )
 			 */
 			@Override
-			public Image getImage(Object element) {
+			public Image getImage(final Object element) {
 				return null;
 			}
 
@@ -275,14 +276,14 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 			 * org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 			 */
 			@Override
-			public String getText(Object element) {
+			public String getText(final Object element) {
 				return ((ErlangFoldingStructureProviderDescriptor) element)
 						.getName();
 			}
 		});
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent event) {
+			public void selectionChanged(final SelectionChangedEvent event) {
 				final IStructuredSelection sel = (IStructuredSelection) event
 						.getSelection();
 				if (!sel.isEmpty()) {
@@ -353,7 +354,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 	}
 
 	public void performOk() {
-		for (Object element : fProviderPreferences.values()) {
+		for (final Object element : fProviderPreferences.values()) {
 			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.performOk();
 		}
@@ -361,14 +362,14 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
 	public void performDefaults() {
 		restoreFromPreferences();
-		for (Object element : fProviderPreferences.values()) {
+		for (final Object element : fProviderPreferences.values()) {
 			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.performDefaults();
 		}
 	}
 
 	public void dispose() {
-		for (Object element : fProviderPreferences.values()) {
+		for (final Object element : fProviderPreferences.values()) {
 			final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
 			prefs.dispose();
 		}

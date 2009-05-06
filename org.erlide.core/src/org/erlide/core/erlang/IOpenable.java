@@ -38,8 +38,8 @@ public interface IOpenable {
 	 * not open has no effect.
 	 * 
 	 * <p>
-	 * Note: although <code>close</code> is exposed in the API, clients are
-	 * not expected to open and close elements - the Erlang model does this
+	 * Note: although <code>close</code> is exposed in the API, clients are not
+	 * expected to open and close elements - the Erlang model does this
 	 * automatically as elements are accessed.
 	 * 
 	 * @exception ErlModelException
@@ -52,8 +52,8 @@ public interface IOpenable {
 	 * <ul>
 	 * <li>its buffer has unsaved changes, or
 	 * <li>one of its descendants has unsaved changes, or
-	 * <li>a working copy has been created on one of this element's children
-	 * and has not yet destroyed
+	 * <li>a working copy has been created on one of this element's children and
+	 * has not yet destroyed
 	 * </ul>
 	 * 
 	 * @exception ErlModelException
@@ -144,14 +144,14 @@ public interface IOpenable {
 	 * <p>
 	 * The <code>force</code> parameter controls how this method deals with
 	 * cases where the workbench is not completely in sync with the local file
-	 * system. If <code>false</code> is specified, this method will only
-	 * attempt to overwrite a corresponding file in the local file system
-	 * provided it is in sync with the workbench. This option ensures there is
-	 * no unintended data loss; it is the recommended setting. However, if
-	 * <code>true</code> is specified, an attempt will be made to write a
-	 * corresponding file in the local file system, overwriting any existing one
-	 * if need be. In either case, if this method succeeds, the resource will be
-	 * marked as being local (even if it wasn't before).
+	 * system. If <code>false</code> is specified, this method will only attempt
+	 * to overwrite a corresponding file in the local file system provided it is
+	 * in sync with the workbench. This option ensures there is no unintended
+	 * data loss; it is the recommended setting. However, if <code>true</code>
+	 * is specified, an attempt will be made to write a corresponding file in
+	 * the local file system, overwriting any existing one if need be. In either
+	 * case, if this method succeeds, the resource will be marked as being local
+	 * (even if it wasn't before).
 	 * <p>
 	 * As a result of this operation, the element is consistent with its
 	 * underlying resource or buffer.
@@ -166,8 +166,8 @@ public interface IOpenable {
 	 *                underlying resource. Reasons include:
 	 *                <ul>
 	 *                <li>This Erlang element does not exist
-	 *                (ELEMENT_DOES_NOT_EXIST) </li>
-	 *                <li>This Erlang element is read-only (READ_ONLY)</li>
+	 *                (ELEMENT_DOES_NOT_EXIST) </li> <li>This Erlang element is
+	 *                read-only (READ_ONLY)</li>
 	 *                </ul>
 	 */
 	void save(IProgressMonitor progress, boolean force)

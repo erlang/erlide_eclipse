@@ -28,7 +28,7 @@ public class ErlUtils {
 	private ErlUtils() {
 	}
 
-	public static OtpErlangObject parse(String string) throws ParserException {
+	public static OtpErlangObject parse(final String string) throws ParserException {
 		return TermParser.parse(string);
 	}
 
@@ -46,8 +46,8 @@ public class ErlUtils {
 	 * @throws RpcException
 	 * @see org.erlide.jinterface.rpc.RpcConverter
 	 */
-	public static OtpErlangObject format(String fmt, Object... args)
-			throws ParserException, RpcException {
+	public static OtpErlangObject format(final String fmt, final Object... args)
+	throws ParserException, RpcException {
 		OtpErlangObject result;
 		result = parse(fmt);
 		List<Object> values = new ArrayList<Object>(args.length);
@@ -56,32 +56,32 @@ public class ErlUtils {
 		return result;
 	}
 
-	public static Bindings match(String pattern, String term)
-			throws ParserException {
+	public static Bindings match(final String pattern, final String term)
+	throws ParserException {
 		return match(parse(pattern), parse(term), new Bindings());
 	}
 
-	public static Bindings match(String pattern, OtpErlangObject term)
-			throws ParserException {
+	public static Bindings match(final String pattern, final OtpErlangObject term)
+	throws ParserException {
 		return match(parse(pattern), term, new Bindings());
 	}
 
-	public static Bindings match(String pattern, OtpErlangObject term,
-			Bindings bindings) throws ParserException {
+	public static Bindings match(final String pattern, final OtpErlangObject term,
+			final Bindings bindings) throws ParserException {
 		return match(parse(pattern), term, bindings);
 	}
 
-	public static Bindings match(String pattern, String term, Bindings bindings)
-			throws ParserException {
+	public static Bindings match(final String pattern, final String term, final Bindings bindings)
+	throws ParserException {
 		return match(parse(pattern), parse(term), bindings);
 	}
 
-	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term) {
+	public static Bindings match(final OtpErlangObject pattern, final OtpErlangObject term) {
 		return match(pattern, term, new Bindings());
 	}
 
-	public static Bindings match(OtpErlangObject pattern, String term)
-			throws ParserException {
+	public static Bindings match(final OtpErlangObject pattern, final String term)
+	throws ParserException {
 		return match(pattern, parse(term), new Bindings());
 	}
 
@@ -102,8 +102,8 @@ public class ErlUtils {
 	 * 
 	 * @throws RpcException
 	 */
-	public static Bindings match(OtpErlangObject pattern, OtpErlangObject term,
-			Bindings bindings) {
+	public static Bindings match(final OtpErlangObject pattern, final OtpErlangObject term,
+			final Bindings bindings) {
 		if (pattern == null && term == null) {
 			return bindings;
 		}
@@ -111,7 +111,7 @@ public class ErlUtils {
 			return null;
 		}
 		if (pattern instanceof OtpPatternVariable) {
-			OtpPatternVariable var = (OtpPatternVariable) pattern;
+			final OtpPatternVariable var = (OtpPatternVariable) pattern;
 			if (!RpcConverter.matchSignature(term, var.getSignature())) {
 				return null;
 			}
@@ -143,10 +143,10 @@ public class ErlUtils {
 		return null;
 	}
 
-	private static Bindings matchList(OtpErlangObject pattern,
-			OtpErlangObject term, Bindings bindings) {
-		OtpErlangList lpattern = (OtpErlangList) pattern;
-		OtpErlangList lterm = (OtpErlangList) term;
+	private static Bindings matchList(final OtpErlangObject pattern,
+			final OtpErlangObject term, final Bindings bindings) {
+		final OtpErlangList lpattern = (OtpErlangList) pattern;
+		final OtpErlangList lterm = (OtpErlangList) term;
 		final int patternArity = lpattern.arity();
 		final int termArity = lterm.arity();
 		if (patternArity > termArity) {
@@ -177,44 +177,44 @@ public class ErlUtils {
 		return match(lpattern.getLastTail(), lterm.getLastTail(), rez);
 	}
 
-	private static OtpErlangObject fill(OtpErlangObject template,
-			List<Object> values) throws RpcException, ParserException {
+	private static OtpErlangObject fill(final OtpErlangObject template,
+			final List<Object> values) throws RpcException, ParserException {
 		if (values.size() == 0) {
 			return template;
 		}
 		if (template instanceof OtpErlangList) {
-			OtpErlangObject[] elements = ((OtpErlangList) template).elements();
-			List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
+			final OtpErlangObject[] elements = ((OtpErlangList) template).elements();
+			final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
 					elements.length);
-			for (OtpErlangObject elem : elements) {
+			for (final OtpErlangObject elem : elements) {
 				result.add(fill(elem, values));
 			}
 			return new OtpErlangList(result.toArray(elements));
 		} else if (template instanceof OtpErlangTuple) {
-			OtpErlangObject[] elements = ((OtpErlangTuple) template).elements();
-			List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
+			final OtpErlangObject[] elements = ((OtpErlangTuple) template).elements();
+			final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
 					elements.length);
-			for (OtpErlangObject elem : elements) {
+			for (final OtpErlangObject elem : elements) {
 				result.add(fill(elem, values));
 			}
 			return new OtpErlangTuple(result.toArray(elements));
 		} else if (template instanceof OtpFormatPlaceholder) {
-			OtpFormatPlaceholder holder = (OtpFormatPlaceholder) template;
-			Object ret = values.remove(0);
-			Signature[] signs = Signature.parse(holder.getName());
+			final OtpFormatPlaceholder holder = (OtpFormatPlaceholder) template;
+			final Object ret = values.remove(0);
+			final Signature[] signs = Signature.parse(holder.getName());
 			if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
 				throw new ParserException("funny placeholder");
 			}
-			Signature sign = (signs.length == 0) ? new Signature('x')
-					: signs[0];
+			final Signature sign = (signs.length == 0) ? new Signature('x')
+			: signs[0];
 			return RpcConverter.java2erlang(ret, sign);
 		} else {
 			return template;
 		}
 	}
 
-	private static Bindings matchTuple(OtpErlangObject[] patterns,
-			OtpErlangObject[] terms, Bindings bindings, boolean list) {
+	private static Bindings matchTuple(final OtpErlangObject[] patterns,
+			final OtpErlangObject[] terms, final Bindings bindings, final boolean list) {
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
 			result = match(patterns[i], terms[i], result);

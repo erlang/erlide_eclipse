@@ -27,7 +27,7 @@ public class GUnitLaunchConfigurationConstants {
 	public static final String ID_JUNIT_APPLICATION = "org.erlide.gunit.launchconfig"; //$NON-NLS-1$
 
 	public static final String ATTR_NO_DISPLAY = GUnitPlugin.PLUGIN_ID
-			+ ".NO_DISPLAY"; //$NON-NLS-1$
+	+ ".NO_DISPLAY"; //$NON-NLS-1$
 
 	public static final String ATTR_PORT = GUnitPlugin.PLUGIN_ID + ".PORT"; //$NON-NLS-1$
 
@@ -35,38 +35,38 @@ public class GUnitLaunchConfigurationConstants {
 	 * The test method, or "" iff running the whole test type.
 	 */
 	public static final String ATTR_TEST_METHOD_NAME = GUnitPlugin.PLUGIN_ID
-			+ ".TESTNAME"; //$NON-NLS-1$
+	+ ".TESTNAME"; //$NON-NLS-1$
 
 	public static final String ATTR_KEEPRUNNING = GUnitPlugin.PLUGIN_ID
-			+ ".KEEPRUNNING_ATTR"; //$NON-NLS-1$
+	+ ".KEEPRUNNING_ATTR"; //$NON-NLS-1$
 
 	/**
 	 * The launch container, or "" iff running a single test type.
 	 */
 	public static final String ATTR_TEST_CONTAINER = GUnitPlugin.PLUGIN_ID
-			+ ".CONTAINER"; //$NON-NLS-1$
+	+ ".CONTAINER"; //$NON-NLS-1$
 
 	public static final String ATTR_FAILURES_NAMES = GUnitPlugin.PLUGIN_ID
-			+ ".FAILURENAMES"; //$NON-NLS-1$
+	+ ".FAILURENAMES"; //$NON-NLS-1$
 
 	public static final String ATTR_TEST_RUNNER_KIND = GUnitPlugin.PLUGIN_ID
-			+ ".TEST_KIND"; //$NON-NLS-1$
+	+ ".TEST_KIND"; //$NON-NLS-1$
 
 	public static ITestKind getTestRunnerKind(
-			ILaunchConfiguration launchConfiguration) {
+			final ILaunchConfiguration launchConfiguration) {
 		try {
-			String loaderId = launchConfiguration.getAttribute(
+			final String loaderId = launchConfiguration.getAttribute(
 					GUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND,
 					(String) null);
 			if (loaderId != null) {
 				return TestKindRegistry.getDefault().getKind(loaderId);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 		}
 		return ITestKind.NULL;
 	}
 
-	public static IErlProject getErlProject(ILaunchConfiguration configuration) {
+	public static IErlProject getErlProject(final ILaunchConfiguration configuration) {
 		// try {
 		// String projectName = configuration.getAttribute(
 		// IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,

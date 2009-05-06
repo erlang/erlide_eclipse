@@ -67,7 +67,7 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static boolean isSourcePathParent(IFolder con) {
+	public static boolean isSourcePathParent(final IFolder con) {
 		final IProject project = con.getProject();
 		/*
 		 * Get the project settings so that we can find the source nodes

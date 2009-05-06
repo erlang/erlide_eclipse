@@ -59,7 +59,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	private static final String TRUE = "true"; //$NON-NLS-1$
 
 	// Stores all created field editors
-	private List<FieldEditor> editors = new ArrayList<FieldEditor>();
+	private final List<FieldEditor> editors = new ArrayList<FieldEditor>();
 
 	// Stores owning element of properties
 	private IAdaptable element;
@@ -86,7 +86,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param style
 	 *            - layout style
 	 */
-	public FieldEditorOverlayPage(int style) {
+	public FieldEditorOverlayPage(final int style) {
 		super(style);
 	}
 
@@ -98,7 +98,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param style
 	 *            - layout style
 	 */
-	public FieldEditorOverlayPage(String title, int style) {
+	public FieldEditorOverlayPage(final String title, final int style) {
 		super(title, style);
 	}
 
@@ -112,7 +112,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param style
 	 *            - layout style
 	 */
-	public FieldEditorOverlayPage(String title, ImageDescriptor image, int style) {
+	public FieldEditorOverlayPage(final String title,
+			final ImageDescriptor image, final int style) {
 		super(title, image, style);
 		this.image = image;
 	}
@@ -130,7 +131,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * 
 	 * @see org.eclipse.ui.IWorkbenchPropertyPage#setElement(org.eclipse.core.runtime.IAdaptable)
 	 */
-	public void setElement(IAdaptable element) {
+	public void setElement(final IAdaptable element) {
 		this.element = element;
 	}
 
@@ -159,7 +160,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#addField(org.eclipse.jface.preference.FieldEditor)
 	 */
 	@Override
-	protected void addField(FieldEditor editor) {
+	protected void addField(final FieldEditor editor) {
 		editors.add(editor);
 		super.addField(editor);
 	}
@@ -172,7 +173,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @see org.eclipse.jface.preference.PreferencePage#createControl()
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		// Special treatment for property pages
 		if (isPropertyPage()) {
 			// Cache the page id
@@ -196,7 +197,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		if (isPropertyPage()) {
 			createSelectionGroup(parent);
 		}
@@ -210,14 +211,14 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param parent
 	 *            - the parent composite
 	 */
-	private void createSelectionGroup(Composite parent) {
-		Composite comp = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
+	private void createSelectionGroup(final Composite parent) {
+		final Composite comp = new Composite(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		comp.setLayout(layout);
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Composite radioGroup = new Composite(comp, SWT.NONE);
+		final Composite radioGroup = new Composite(comp, SWT.NONE);
 		radioGroup.setLayout(new GridLayout());
 		radioGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		useWorkspaceSettingsButton = createRadioButton(radioGroup, Messages
@@ -229,13 +230,13 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 				.getString("OverlayPage.Configure_Workspace_Settings")); //$NON-NLS-1$
 		configureButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				configureWorkspaceSettings();
 			}
 		});
 		// Set workspace/project radio buttons
 		try {
-			String use = ((IResource) getElement())
+			final String use = ((IResource) getElement())
 					.getPersistentProperty(new QualifiedName(pageId,
 							USEPROJECTSETTINGS));
 			if (TRUE.equals(use)) {
@@ -244,7 +245,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 			} else {
 				useWorkspaceSettingsButton.setSelection(true);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			useWorkspaceSettingsButton.setSelection(true);
 		}
 	}
@@ -258,12 +259,12 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 *            - the button label
 	 * @return - the new button
 	 */
-	private Button createRadioButton(Composite parent, String label) {
+	private Button createRadioButton(final Composite parent, final String label) {
 		final Button button = new Button(parent, SWT.RADIO);
 		button.setText(label);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				configureButton
 						.setEnabled(button == useWorkspaceSettingsButton);
 				updateFieldEditors();
@@ -291,7 +292,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	void updateFieldEditors() {
 		// We iterate through all field editors
-		boolean enabled = useProjectSettingsButton.getSelection();
+		final boolean enabled = useProjectSettingsButton.getSelection();
 		updateFieldEditors(enabled);
 	}
 
@@ -302,11 +303,11 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param enabled
 	 *            - true if enabled
 	 */
-	protected void updateFieldEditors(boolean enabled) {
-		Composite parent = getFieldEditorParent();
-		Iterator<FieldEditor> it = editors.iterator();
+	protected void updateFieldEditors(final boolean enabled) {
+		final Composite parent = getFieldEditorParent();
+		final Iterator<FieldEditor> it = editors.iterator();
 		while (it.hasNext()) {
-			FieldEditor editor = it.next();
+			final FieldEditor editor = it.next();
 			editor.setEnabled(enabled, parent);
 		}
 	}
@@ -320,16 +321,16 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	@Override
 	public boolean performOk() {
-		boolean result = super.performOk();
+		final boolean result = super.performOk();
 		if (result && isPropertyPage()) {
 			// Save state of radiobuttons in project properties
-			IResource resource = (IResource) getElement();
+			final IResource resource = (IResource) getElement();
 			try {
-				String value = (useProjectSettingsButton.getSelection()) ? TRUE
+				final String value = (useProjectSettingsButton.getSelection()) ? TRUE
 						: FALSE;
 				resource.setPersistentProperty(new QualifiedName(pageId,
 						USEPROJECTSETTINGS), value);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 			}
 		}
 		return result;
@@ -360,14 +361,14 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	protected void configureWorkspaceSettings() {
 		try {
 			// create a new instance of the current class
-			IPreferencePage page = this.getClass().newInstance();
+			final IPreferencePage page = this.getClass().newInstance();
 			page.setTitle(getTitle());
 			page.setImageDescriptor(image);
 			// and show it
 			showPreferencePage(pageId, page);
-		} catch (InstantiationException e) {
+		} catch (final InstantiationException e) {
 			ErlLogger.warn(e);
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			ErlLogger.warn(e);
 		}
 	}
@@ -380,9 +381,10 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 * @param page
 	 *            - the preference page
 	 */
-	protected void showPreferencePage(String id, IPreferencePage page) {
+	protected void showPreferencePage(final String id,
+			final IPreferencePage page) {
 		final IPreferenceNode targetNode = new PreferenceNode(id, page);
-		PreferenceManager manager = new PreferenceManager();
+		final PreferenceManager manager = new PreferenceManager();
 		manager.addToRoot(targetNode);
 		final PreferenceDialog dialog = new PreferenceDialog(getControl()
 				.getShell(), manager);

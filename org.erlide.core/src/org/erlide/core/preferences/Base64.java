@@ -35,7 +35,7 @@ class Base64 {
 	 *            the encoded byte array
 	 * @return the decoded byte array
 	 */
-	public static byte[] decode(byte[] data) {
+	public static byte[] decode(final byte[] data) {
 		if (data.length == 0) {
 			return data;
 		}
@@ -44,15 +44,15 @@ class Base64 {
 			lastRealDataIndex--;
 		}
 		// original data digit is 8 bits long, but base64 digit is 6 bits long
-		int padBytes = data.length - 1 - lastRealDataIndex;
-		int byteLength = data.length * 6 / 8 - padBytes;
-		byte[] result = new byte[byteLength];
+		final int padBytes = data.length - 1 - lastRealDataIndex;
+		final int byteLength = data.length * 6 / 8 - padBytes;
+		final byte[] result = new byte[byteLength];
 		// Each 4 bytes of input (encoded) we end up with 3 bytes of output
 		int dataIndex = 0;
 		int resultIndex = 0;
 		int allBits = 0;
 		// how many result chunks we can process before getting to pad bytes
-		int resultChunks = (lastRealDataIndex + 1) / 4;
+		final int resultChunks = (lastRealDataIndex + 1) / 4;
 		for (int i = 0; i < resultChunks; i++) {
 			allBits = 0;
 			// Loop 4 times gathering input bits (4 * 6 = 24)
@@ -125,8 +125,8 @@ class Base64 {
 	 *            digit (character) to convert
 	 * @return value for the digit
 	 */
-	static int decodeDigit(byte data) {
-		char charData = (char) data;
+	static int decodeDigit(final byte data) {
+		final char charData = (char) data;
 		if (charData <= 'Z' && charData >= 'A') {
 			return charData - 'A';
 		}
@@ -155,11 +155,11 @@ class Base64 {
 	 *            the encoded char array
 	 * @return the byte array that needs to be encoded
 	 */
-	public static byte[] encode(byte[] data) {
-		int sourceChunks = data.length / 3;
-		int len = ((data.length + 2) / 3) * 4;
-		byte[] result = new byte[len];
-		int extraBytes = data.length - (sourceChunks * 3);
+	public static byte[] encode(final byte[] data) {
+		final int sourceChunks = data.length / 3;
+		final int len = ((data.length + 2) / 3) * 4;
+		final byte[] result = new byte[len];
+		final int extraBytes = data.length - (sourceChunks * 3);
 		// Each 4 bytes of input (encoded) we end up with 3 bytes of output
 		int dataIndex = 0;
 		int resultIndex = 0;

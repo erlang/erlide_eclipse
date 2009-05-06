@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
@@ -18,7 +18,7 @@ import java.util.HashMap;
 /**
  * Simple template parser. Tempelates tags are in a the following form <code>
  * 
- * Some text 
+ * Some text
  * 
  * %{A-tag}%
  * 
@@ -36,22 +36,22 @@ public class TemplateParser {
 	/**
 	 * The internal hash map
 	 */
-	private HashMap<String, Object> env;
+	private final HashMap<String, Object> env;
 
 	/**
 	 * The resource to make use of
 	 */
-	private String resource;
+	private final String resource;
 
 	/**
 	 * The input
 	 */
-	private Reader input;
+	private final Reader input;
 
 	/**
 	 * The output of the buffer
 	 */
-	private StringBuilder output;
+	private final StringBuilder output;
 
 	/**
 	 * Process the specified resource
@@ -61,7 +61,7 @@ public class TemplateParser {
 	 * @throws IOException
 	 *             if an io error occures
 	 */
-	public TemplateParser(String lresource) throws IOException {
+	public TemplateParser(final String lresource) throws IOException {
 		super();
 
 		resource = lresource;
@@ -85,7 +85,7 @@ public class TemplateParser {
 	 * @param value
 	 *            the value
 	 */
-	public void addParam(String key, Object value) {
+	public void addParam(final String key, final Object value) {
 		env.put(key.toUpperCase(), value);
 	}
 
@@ -95,7 +95,7 @@ public class TemplateParser {
 	 * @param key
 	 *            The key to remove
 	 */
-	public void removeParam(String key) {
+	public void removeParam(final String key) {
 		env.remove(key.toUpperCase());
 	}
 

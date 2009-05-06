@@ -45,9 +45,9 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 
 	private CheckboxTableViewer fViewer;
 
-	private ILabelProvider fLabelProvider;
+	private final ILabelProvider fLabelProvider;
 
-	private IStructuredContentProvider fContentProvider;
+	private final IStructuredContentProvider fContentProvider;
 
 	private ISelectionStatusValidator fValidator = null;
 
@@ -73,9 +73,9 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param contentProvider
 	 *            the content provider to evaluate the tree structure
 	 */
-	public CheckedTableSelectionDialog(Shell parent,
-			ILabelProvider labelProvider,
-			IStructuredContentProvider contentProvider) {
+	public CheckedTableSelectionDialog(final Shell parent,
+			final ILabelProvider labelProvider,
+			final IStructuredContentProvider contentProvider) {
 		super(parent);
 
 		this.fLabelProvider = labelProvider;
@@ -91,7 +91,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param selection
 	 *            the initial selection.
 	 */
-	public void setInitialSelection(Object selection) {
+	public void setInitialSelection(final Object selection) {
 		setInitialSelections(new Object[] { selection });
 	}
 
@@ -101,7 +101,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param message
 	 *            the message to be displayed.
 	 */
-	public void setEmptyListMessage(String message) {
+	public void setEmptyListMessage(final String message) {
 		this.fEmptyListMessage = message;
 	}
 
@@ -111,7 +111,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param filter
 	 *            a filter.
 	 */
-	public void addFilter(ViewerFilter filter) {
+	public void addFilter(final ViewerFilter filter) {
 		if (this.fFilters == null) {
 			this.fFilters = new ArrayList<ViewerFilter>(4);
 		}
@@ -126,7 +126,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param validator
 	 *            the validator to validate the selection.
 	 */
-	public void setValidator(ISelectionStatusValidator validator) {
+	public void setValidator(final ISelectionStatusValidator validator) {
 		this.fValidator = validator;
 	}
 
@@ -136,7 +136,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param input
 	 *            the tree input.
 	 */
-	public void setInput(Object input) {
+	public void setInput(final Object input) {
 		this.fInput = input;
 	}
 
@@ -148,7 +148,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param height
 	 *            the height of the tree.
 	 */
-	public void setSize(int width, int height) {
+	public void setSize(final int width, final int height) {
 		this.fWidth = width;
 		this.fHeight = height;
 	}
@@ -212,7 +212,7 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	public void create() {
 		super.create();
 
-		List initialSelections = getInitialElementSelections();
+		final List initialSelections = getInitialElementSelections();
 		if (initialSelections.size() > 0) {
 			this.fViewer.setCheckedElements(initialSelections.toArray());
 		}
@@ -224,14 +224,14 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @see Dialog#createDialogArea(Composite)
 	 */
 	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
+	protected Control createDialogArea(final Composite parent) {
+		final Composite composite = (Composite) super.createDialogArea(parent);
 
-		Label messageLabel = createMessageArea(composite);
-		Control treeWidget = createTableViewer(composite);
-		Control buttonComposite = createSelectionButtons(composite);
+		final Label messageLabel = createMessageArea(composite);
+		final Control treeWidget = createTableViewer(composite);
+		final Control buttonComposite = createSelectionButtons(composite);
 
-		GridData data = new GridData(GridData.FILL_BOTH);
+		final GridData data = new GridData(GridData.FILL_BOTH);
 		data.widthHint = convertWidthInCharsToPixels(this.fWidth);
 		data.heightHint = convertHeightInCharsToPixels(this.fHeight);
 		treeWidget.setLayoutData(data);
@@ -245,13 +245,13 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 		return composite;
 	}
 
-	private Table createTableViewer(Composite parent) {
+	private Table createTableViewer(final Composite parent) {
 		this.fViewer = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
 
 		this.fViewer.setContentProvider(this.fContentProvider);
 		this.fViewer.setLabelProvider(this.fLabelProvider);
 		this.fViewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
+			public void checkStateChanged(final CheckStateChangedEvent event) {
 				updateOKStatus();
 			}
 		});
@@ -272,38 +272,38 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 	 * @param composite
 	 *            org.eclipse.swt.widgets.Composite
 	 */
-	private Composite createSelectionButtons(Composite composite) {
-		Composite buttonComposite = new Composite(composite, SWT.RIGHT);
-		GridLayout layout = new GridLayout();
+	private Composite createSelectionButtons(final Composite composite) {
+		final Composite buttonComposite = new Composite(composite, SWT.RIGHT);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		buttonComposite.setLayout(layout);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
+		final GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
 				| GridData.GRAB_HORIZONTAL);
 		data.grabExcessHorizontalSpace = true;
 		composite.setData(data);
 
-		Button selectButton = createButton(buttonComposite,
+		final Button selectButton = createButton(buttonComposite,
 				IDialogConstants.SELECT_ALL_ID, "select all", false);
 
 		SelectionListener listener = new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				CheckedTableSelectionDialog.this.fViewer
-						.setCheckedElements(CheckedTableSelectionDialog.this.fContentProvider
-								.getElements(CheckedTableSelectionDialog.this.fInput));
+				.setCheckedElements(CheckedTableSelectionDialog.this.fContentProvider
+						.getElements(CheckedTableSelectionDialog.this.fInput));
 				updateOKStatus();
 			}
 		};
 		selectButton.addSelectionListener(listener);
 
-		Button deselectButton = createButton(buttonComposite,
+		final Button deselectButton = createButton(buttonComposite,
 				IDialogConstants.DESELECT_ALL_ID, "deselect all", false);
 
 		listener = new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				CheckedTableSelectionDialog.this.fViewer
-						.setCheckedElements(new Object[0]);
+				.setCheckedElements(new Object[0]);
 				updateOKStatus();
 			}
 		};
@@ -311,12 +311,12 @@ public class CheckedTableSelectionDialog extends SelectionStatusDialog {
 		return buttonComposite;
 	}
 
-	private boolean evaluateIfTableEmpty(Object input) {
+	private boolean evaluateIfTableEmpty(final Object input) {
 		Object[] elements = this.fContentProvider.getElements(input);
 		if (elements.length > 0) {
 			if (this.fFilters != null) {
 				for (int i = 0; i < this.fFilters.size(); i++) {
-					ViewerFilter curr = this.fFilters.get(i);
+					final ViewerFilter curr = this.fFilters.get(i);
 					elements = curr.filter(this.fViewer, input, elements);
 				}
 			}

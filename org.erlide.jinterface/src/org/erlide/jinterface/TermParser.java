@@ -32,7 +32,7 @@ public class TermParser {
 
 	private static Map<String, OtpErlangObject> cache = new HashMap<String, OtpErlangObject>();
 
-	public static OtpErlangObject parse(String s) throws ParserException {
+	public static OtpErlangObject parse(final String s) throws ParserException {
 		OtpErlangObject value = cache.get(s);
 		if (value == null) {
 			value = parse(scan(s));
@@ -41,13 +41,13 @@ public class TermParser {
 		return value;
 	}
 
-	private static OtpErlangObject parse(List<Token> tokens)
-			throws ParserException {
+	private static OtpErlangObject parse(final List<Token> tokens)
+	throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
 		OtpErlangObject result = null;
-		Token t = tokens.remove(0);
+		final Token t = tokens.remove(0);
 		switch (t.kind) {
 		case ATOM:
 			result = new OtpErlangAtom(t.text);
@@ -82,19 +82,19 @@ public class TermParser {
 		return result;
 	}
 
-	private static OtpErlangObject parseList(List<Token> tokens,
-			Stack<OtpErlangObject> stack, OtpErlangObject tail)
-			throws ParserException {
+	private static OtpErlangObject parseList(final List<Token> tokens,
+			final Stack<OtpErlangObject> stack, OtpErlangObject tail)
+	throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
-		Token t = tokens.get(0);
+		final Token t = tokens.get(0);
 		if (t.kind == TokenKind.LISTEND) {
 			tokens.remove(0);
 			try {
 				return new OtpErlangList(stack.toArray(new OtpErlangObject[0]),
 						tail);
-			} catch (OtpErlangException e) {
+			} catch (final OtpErlangException e) {
 				e.printStackTrace();
 				// can't happen
 				return null;
@@ -113,12 +113,12 @@ public class TermParser {
 		}
 	}
 
-	private static OtpErlangObject parseTuple(List<Token> tokens,
-			Stack<OtpErlangObject> stack) throws ParserException {
+	private static OtpErlangObject parseTuple(final List<Token> tokens,
+			final Stack<OtpErlangObject> stack) throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
-		Token t = tokens.get(0);
+		final Token t = tokens.get(0);
 		if (t.kind == TokenKind.TUPLEEND) {
 			tokens.remove(0);
 			return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
@@ -151,11 +151,11 @@ public class TermParser {
 			return "<" + this.kind.toString() + ": !" + this.text + "!>";
 		}
 
-		public static Token nextToken(String s) {
+		public static Token nextToken(final String s) {
 			if (s == null || s.length() == 0) {
 				return null;
 			}
-			Token result = new Token();
+			final Token result = new Token();
 			char c;
 			int i = 0;
 			do {
@@ -235,12 +235,12 @@ public class TermParser {
 				result.end = result.start + 1;
 			}
 			result.text = s.substring(result.start, result.end);
-			char ch = result.text.charAt(0);
+			final char ch = result.text.charAt(0);
 			if (ch == '~') {
 				result.text = result.text.substring(1);
 			} else if (ch == '"' || ch == '\'') {
 				result.text = result.text
-						.substring(1, result.text.length() - 1);
+				.substring(1, result.text.length() - 1);
 			}
 			return result;
 		}
@@ -248,7 +248,7 @@ public class TermParser {
 
 	private static List<Token> scan(String s) {
 		s = s + " ";
-		List<Token> result = new ArrayList<Token>();
+		final List<Token> result = new ArrayList<Token>();
 		Token t = Token.nextToken(s);
 		while (t != null) {
 			result.add(t);

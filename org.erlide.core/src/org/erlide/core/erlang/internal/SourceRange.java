@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -21,7 +21,7 @@ public class SourceRange implements ISourceRange {
 
 	private final int fLength;
 
-	public SourceRange(int offset, int length) {
+	public SourceRange(final int offset, final int length) {
 		fOffset = offset;
 		fLength = length;
 	}
@@ -51,7 +51,7 @@ public class SourceRange implements ISourceRange {
 		return buffer.toString();
 	}
 
-	public boolean hasPosition(int position) {
+	public boolean hasPosition(final int position) {
 		return position >= fOffset && position <= fOffset + fLength;
 	}
 }

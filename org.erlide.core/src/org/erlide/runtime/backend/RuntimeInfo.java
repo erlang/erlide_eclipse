@@ -57,11 +57,11 @@ public class RuntimeInfo {
 		workingDir = location;
 	}
 
-	public static RuntimeInfo copy(RuntimeInfo o, boolean mkCopy) {
+	public static RuntimeInfo copy(final RuntimeInfo o, final boolean mkCopy) {
 		if (o == null) {
 			return null;
 		}
-		RuntimeInfo rt = new RuntimeInfo();
+		final RuntimeInfo rt = new RuntimeInfo();
 		rt.name = o.name;
 		if (mkCopy) {
 			rt.name += "_copy";
@@ -75,9 +75,9 @@ public class RuntimeInfo {
 		return rt;
 	}
 
-	public void store(Preferences root) {
-		Preferences node = root.node(getName());
-		String code = PreferencesUtils.packList(getCodePath());
+	public void store(final Preferences root) {
+		final Preferences node = root.node(getName());
+		final String code = PreferencesUtils.packList(getCodePath());
 		node.put(CODE_PATH, code);
 		node.put(HOME_DIR, getOtpHome());
 		node.put(ARGS, args);
@@ -85,13 +85,13 @@ public class RuntimeInfo {
 		node.putBoolean(MANAGED, managed);
 	}
 
-	public void load(Preferences node) {
+	public void load(final Preferences node) {
 		setName(node.name());
-		String path = node.get(CODE_PATH, "");
+		final String path = node.get(CODE_PATH, "");
 		setCodePath(PreferencesUtils.unpackList(path));
 		setOtpHome(node.get(HOME_DIR, ""));
 		args = node.get(ARGS, "");
-		String wd = node.get(WORKING_DIR, workingDir);
+		final String wd = node.get(WORKING_DIR, workingDir);
 		if (wd.length() != 0) {
 			workingDir = wd;
 		}
@@ -102,7 +102,7 @@ public class RuntimeInfo {
 		return this.args;
 	}
 
-	public void setArgs(String args) {
+	public void setArgs(final String args) {
 		this.args = args;
 	}
 
@@ -113,17 +113,17 @@ public class RuntimeInfo {
 		return this.cookie;
 	}
 
-	public void setCookie(String cookie) {
+	public void setCookie(final String cookie) {
 		this.cookie = cookie;
 	}
 
 	public String getNodeName() {
-		String suffix = unique ? "_" + BackendManager.getErlideNameSuffix()
-				: "";
+		final String suffix = unique ? "_"
+				+ BackendManager.getErlideNameSuffix() : "";
 		return this.nodeName + suffix;
 	}
 
-	public void setNodeName(String nodeName) {
+	public void setNodeName(final String nodeName) {
 		if (validateNodeName(nodeName)) {
 			this.nodeName = nodeName;
 		} else {
@@ -135,7 +135,7 @@ public class RuntimeInfo {
 		return this.managed;
 	}
 
-	public void setManaged(boolean managed) {
+	public void setManaged(final boolean managed) {
 		this.managed = managed;
 	}
 
@@ -152,7 +152,7 @@ public class RuntimeInfo {
 				: workingDir;
 	}
 
-	public void setWorkingDir(String workingDir) {
+	public void setWorkingDir(final String workingDir) {
 		this.workingDir = workingDir;
 	}
 
@@ -163,23 +163,23 @@ public class RuntimeInfo {
 	}
 
 	public String getCmdLine() {
-		String pathA = cvt(getPathA());
-		String pathZ = cvt(getPathZ());
+		final String pathA = cvt(getPathA());
+		final String pathZ = cvt(getPathZ());
 		String cmd = String.format("%s/bin/erl %s %s %s", getOtpHome(),
 				ifNotEmpty(" -pa ", pathA), ifNotEmpty(" -pz ", pathZ),
 				getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
-		boolean useLongName = System.getProperty("erlide.longname", "true")
-				.equals("true");
-		String nameTag = useLongName ? " -name " : " -sname ";
+		final boolean useLongName = System.getProperty("erlide.longname",
+				"true").equals("true");
+		final String nameTag = useLongName ? " -name " : " -sname ";
 		cmd += nameTag
 				+ BackendManager.buildNodeName(getNodeName(), useLongName)
 				+ cky;
 		return cmd;
 	}
 
-	private String ifNotEmpty(String key, String str) {
+	private String ifNotEmpty(final String key, final String str) {
 		if (str == null || str.length() == 0) {
 			return "";
 		}
@@ -197,7 +197,7 @@ public class RuntimeInfo {
 		return homeDir;
 	}
 
-	public void setOtpHome(String otpHome) {
+	public void setOtpHome(final String otpHome) {
 		homeDir = otpHome;
 		getVersion();
 	}
@@ -206,7 +206,7 @@ public class RuntimeInfo {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -214,14 +214,14 @@ public class RuntimeInfo {
 		return codePath;
 	}
 
-	public void setCodePath(List<String> path) {
+	public void setCodePath(final List<String> path) {
 		codePath = path;
 	}
 
-	protected List<String> getPathA(String marker) {
+	protected List<String> getPathA(final String marker) {
 		if (codePath != null) {
-			List<String> list = codePath;
-			int i = list.indexOf(marker);
+			final List<String> list = codePath;
+			final int i = list.indexOf(marker);
 			if (i < 0) {
 				return list;
 			}
@@ -230,10 +230,10 @@ public class RuntimeInfo {
 		return Collections.emptyList();
 	}
 
-	protected List<String> getPathZ(String marker) {
+	protected List<String> getPathZ(final String marker) {
 		if (codePath != null) {
-			List<String> list = codePath;
-			int i = list.indexOf(marker);
+			final List<String> list = codePath;
+			final int i = list.indexOf(marker);
 			if (i < 0) {
 				return Collections.emptyList();
 			}
@@ -242,17 +242,17 @@ public class RuntimeInfo {
 		return Collections.emptyList();
 	}
 
-	public static boolean validateNodeName(String name) {
+	public static boolean validateNodeName(final String name) {
 		return name != null
 				&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
 	}
 
-	public static boolean validateLocation(String path) {
+	public static boolean validateLocation(final String path) {
 		final String v = getRuntimeVersion(path);
 		return v != null;
 	}
 
-	public static String getRuntimeVersion(String path) {
+	public static String getRuntimeVersion(final String path) {
 		if (path == null) {
 			return null;
 		}
@@ -267,17 +267,17 @@ public class RuntimeInfo {
 			// now get minor version from kernel's minor version
 			final File lib = new File(path + "/lib");
 			final File[] kernels = lib.listFiles(new FileFilter() {
-				public boolean accept(File pathname) {
+				public boolean accept(final File pathname) {
 					try {
 						boolean r = pathname.isDirectory();
 						r &= pathname.getName().startsWith("kernel-");
-						String canonicalPath = pathname.getCanonicalPath()
-								.toLowerCase();
-						String absolutePath = pathname.getAbsolutePath()
+						final String canonicalPath = pathname
+								.getCanonicalPath().toLowerCase();
+						final String absolutePath = pathname.getAbsolutePath()
 								.toLowerCase();
 						r &= canonicalPath.equals(absolutePath);
 						return r;
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						return false;
 					}
 				}
@@ -285,7 +285,7 @@ public class RuntimeInfo {
 			if (kernels != null && kernels.length > 0) {
 				final int[] krnls = new int[kernels.length];
 				for (int i = 0; i < kernels.length; i++) {
-					String k = kernels[i].getName();
+					final String k = kernels[i].getName();
 					try {
 						int p = k.indexOf('.');
 						if (p < 0) {
@@ -298,12 +298,12 @@ public class RuntimeInfo {
 								krnls[i] = Integer.parseInt(k.substring(p + 1));
 							}
 						}
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						krnls[i] = 0;
 					}
 				}
 				Arrays.sort(krnls);
-				String ver = Integer.toString(krnls[krnls.length - 1]);
+				final String ver = Integer.toString(krnls[krnls.length - 1]);
 				result += "-" + ver;
 			}
 		} catch (final IOException e) {
@@ -311,7 +311,7 @@ public class RuntimeInfo {
 		return result;
 	}
 
-	private static String readstring(InputStream is) {
+	private static String readstring(final InputStream is) {
 		try {
 			is.read();
 			byte[] b = new byte[2];
@@ -326,7 +326,7 @@ public class RuntimeInfo {
 		}
 	}
 
-	public static boolean isValidOtpHome(String otpHome) {
+	public static boolean isValidOtpHome(final String otpHome) {
 		// Check if it looks like a ERL_TOP location:
 		if (otpHome == null) {
 			return false;
@@ -349,7 +349,7 @@ public class RuntimeInfo {
 		return hasErl && hasLib;
 	}
 
-	public static boolean hasCompiler(String otpHome) {
+	public static boolean hasCompiler(final String otpHome) {
 		// Check if it looks like a ERL_TOP location:
 		if (otpHome == null) {
 			return false;
@@ -369,7 +369,7 @@ public class RuntimeInfo {
 		return hasErlc;
 	}
 
-	protected static String cvt(Collection<String> path) {
+	protected static String cvt(final Collection<String> path) {
 		String result = "";
 		for (String s : path) {
 			if (s.length() > 0) {
@@ -382,7 +382,7 @@ public class RuntimeInfo {
 		return result;
 	}
 
-	public void setUniqueName(boolean unique) {
+	public void setUniqueName(final boolean unique) {
 		this.unique = unique;
 	}
 

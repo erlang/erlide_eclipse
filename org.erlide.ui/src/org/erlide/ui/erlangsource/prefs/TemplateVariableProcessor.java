@@ -28,12 +28,13 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 
 	private static final Comparator<ICompletionProposal> fgTemplateVariableProposalComparator = new Comparator<ICompletionProposal>() {
 
-		public int compare(ICompletionProposal arg0, ICompletionProposal arg1) {
+		public int compare(final ICompletionProposal arg0,
+				final ICompletionProposal arg1) {
 			return arg0.getDisplayString().compareTo(arg1.getDisplayString());
 		}
 
 		@Override
-		public boolean equals(Object arg0) {
+		public boolean equals(final Object arg0) {
 			return false;
 		}
 
@@ -49,7 +50,7 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 	/**
 	 * Sets the context type.
 	 */
-	public void setContextType(TemplateContextType contextType) {
+	public void setContextType(final TemplateContextType contextType) {
 		fContextType = contextType;
 	}
 
@@ -63,8 +64,8 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 	/*
 	 * @see IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
 	 */
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
-			int documentOffset) {
+	public ICompletionProposal[] computeCompletionProposals(
+			final ITextViewer viewer, final int documentOffset) {
 
 		if (fContextType == null) {
 			return null;
@@ -99,7 +100,7 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 	}
 
 	/* Guesses the start position of the completion */
-	private int getStart(String string, int end) {
+	private int getStart(final String string, final int end) {
 		int start = end;
 
 		if (start >= 1 && string.charAt(start - 1) == '$') {
@@ -122,8 +123,8 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 	/*
 	 * @see IContentAssistProcessor#computeContextInformation(ITextViewer, int)
 	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer,
-			int documentOffset) {
+	public IContextInformation[] computeContextInformation(
+			final ITextViewer viewer, final int documentOffset) {
 		return null;
 	}
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     IBM Corporation 
+ *     IBM Corporation
  ****************************************************************************/
 package org.erlide.core.erlang;
 
@@ -16,8 +16,8 @@ package org.erlide.core.erlang;
  * <ul>
  * <li>its location (originating source file name, source position, line
  * number),</li>
- * <li>its message description and a predicate to check its severity (warning
- * or error). </li>
+ * <li>its message description and a predicate to check its severity (warning or
+ * error).</li>
  * <li>its PLUGIN_ID : an number identifying the very nature of this problem.
  * All possible IDs are listed as constants on this interface.</li>
  * </ul>

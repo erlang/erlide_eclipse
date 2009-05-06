@@ -57,14 +57,14 @@ public class ReportPreferencePage extends PreferencePage implements
 	private Label lblDescription;
 
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite panel = new Composite(parent, SWT.NONE);
+	protected Control createContents(final Composite parent) {
+		final Composite panel = new Composite(parent, SWT.NONE);
 		panel.setLayout(new GridLayout(2, false));
 		final Label titleLabel = new Label(panel, SWT.NONE);
 		titleLabel.setAlignment(SWT.RIGHT);
 		{
-			GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER, false,
-					false, 1, 1);
+			final GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER,
+					false, false, 1, 1);
 			gridData.widthHint = 60;
 			titleLabel.setLayoutData(gridData);
 		}
@@ -82,8 +82,8 @@ public class ReportPreferencePage extends PreferencePage implements
 		this.fbody = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER
 				| SWT.WRAP);
 		{
-			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false,
-					1, 1);
+			final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
+					false, 1, 1);
 			gridData.heightHint = 150;
 			fbody.setLayoutData(gridData);
 		}
@@ -146,17 +146,17 @@ public class ReportPreferencePage extends PreferencePage implements
 		final String contact = fcontact.getText();
 		final String body = fbody.getText();
 
-		Job j = new Job("send error report") {
+		final Job j = new Job("send error report") {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
+			protected IStatus run(final IProgressMonitor monitor) {
 				String plog = "N/A";
 				String elog = "N/A";
 				if (attach) {
 					plog = ErlideUtil.fetchPlatformLog();
 					elog = ErlideUtil.fetchErlideLog();
 				}
-				TicketInfo data = new TicketInfo(title, contact, body, plog,
-						elog);
+				final TicketInfo data = new TicketInfo(title, contact, body,
+						plog, elog);
 				sendToDisk(location, data);
 				// new AssemblaHandler().send(data);
 				return Status.OK_STATUS;
@@ -173,12 +173,12 @@ public class ReportPreferencePage extends PreferencePage implements
 		sendButton.setEnabled(false);
 	}
 
-	void sendToDisk(String location, TicketInfo data) {
-		File report = new File(location);
+	void sendToDisk(final String location, final TicketInfo data) {
+		final File report = new File(location);
 		try {
 			report.createNewFile();
-			OutputStream out = new FileOutputStream(report);
-			PrintWriter pw = new PrintWriter(out);
+			final OutputStream out = new FileOutputStream(report);
+			final PrintWriter pw = new PrintWriter(out);
 			try {
 				pw.println(data.summary);
 				pw.println(data.reporter);
@@ -191,12 +191,12 @@ public class ReportPreferencePage extends PreferencePage implements
 				pw.flush();
 				out.close();
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			ErlLogger.warn(e);
 		}
 	}
 
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 }

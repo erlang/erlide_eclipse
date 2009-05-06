@@ -23,19 +23,19 @@ public class ErlideBackend {
 
 	public static void reload(final Backend backend) {
 		try {
-			OtpErlangList loaded = (OtpErlangList) backend.call("code",
+			final OtpErlangList loaded = (OtpErlangList) backend.call("code",
 					"all_loaded", "");
-			List<OtpErlangAtom> mine = new ArrayList<OtpErlangAtom>();
-			for (OtpErlangObject elem : loaded) {
-				OtpErlangTuple t = (OtpErlangTuple) elem;
-				OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
+			final List<OtpErlangAtom> mine = new ArrayList<OtpErlangAtom>();
+			for (final OtpErlangObject elem : loaded) {
+				final OtpErlangTuple t = (OtpErlangTuple) elem;
+				final OtpErlangAtom mod = (OtpErlangAtom) t.elementAt(0);
 				if (mod.atomValue().startsWith("erlide_")) {
 					// ErlLogger.debug(">>> HAD " + mod + "   " +
 					// t.elementAt(1));
 					mine.add(mod);
 				}
 			}
-			for (OtpErlangAtom mod : mine) {
+			for (final OtpErlangAtom mod : mine) {
 				// ErlLogger.debug(">>> reload " + mod);
 				backend.call("c", "l", "x", mod);
 			}
@@ -166,7 +166,7 @@ public class ErlideBackend {
 	}
 
 	public static BackendEvalResult eval(final Backend b, final String string,
-			OtpErlangObject bindings) {
+			final OtpErlangObject bindings) {
 		final BackendEvalResult result = new BackendEvalResult();
 		try {
 			OtpErlangObject r1;
@@ -285,7 +285,7 @@ public class ErlideBackend {
 		}
 	}
 
-	public static OtpErlangObject parseString(String str)
+	public static OtpErlangObject parseString(final String str)
 			throws BackendException {
 		return parseString(ErlangCore.getBackendManager().getIdeBackend(), str);
 	}

@@ -49,7 +49,7 @@ class Link {
     @Override
     public int hashCode() {
 	if (hashCodeValue == 0) {
-	    OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
+	    final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
 	    hash.combine(local.hashCode() + remote.hashCode());
 	    hashCodeValue = hash.valueOf();
 	}

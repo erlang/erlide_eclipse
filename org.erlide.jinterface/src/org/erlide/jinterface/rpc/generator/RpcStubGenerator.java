@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
@@ -38,156 +38,156 @@ import com.ericsson.otp.erlang.OtpErlangRef;
  */
 public class RpcStubGenerator {
 
-	public static String generate(Class<?> clazz, boolean onlyDeclared) {
+	public static String generate(final Class<?> clazz, final boolean onlyDeclared) {
 		return generate(clazz.getName(), clazz.getClassLoader(), onlyDeclared);
 	}
 
-	public static String generate(Class<?> clazz, ClassLoader cl,
-			boolean onlyDeclared) {
+	public static String generate(final Class<?> clazz, final ClassLoader cl,
+			final boolean onlyDeclared) {
 		return generate(clazz.getName(), cl, onlyDeclared);
 	}
 
-	public static String generate(String className, ClassLoader cl,
-			boolean onlyDeclared) {
+	public static String generate(final String className, final ClassLoader cl,
+			final boolean onlyDeclared) {
 		try {
-			Class<?> clazz = Class.forName(className, true, cl);
+			final Class<?> clazz = Class.forName(className, true, cl);
 
-			String moduleName = module(clazz);
+			final String moduleName = module(clazz);
 
 			return generate(clazz, moduleName, onlyDeclared);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			e.printStackTrace();
 			return e.getMessage();
 		}
 	}
 
 	@SuppressWarnings("boxing")
-	private static String generate(Class<?> clazz, String moduleName,
-			boolean onlyDeclared) {
-		StringBuilder buf = new StringBuilder();
+	private static String generate(final Class<?> clazz, final String moduleName,
+			final boolean onlyDeclared) {
+		final StringBuilder buf = new StringBuilder();
 		buf.append(String.format("-module(%s).%n-compile(export_all).%n%n",
 				moduleName));
 
 		// TODO add constructors
-		Constructor<?>[] constructors = onlyDeclared ? clazz
+		final Constructor<?>[] constructors = onlyDeclared ? clazz
 				.getDeclaredConstructors() : clazz.getConstructors();
-		Map<Integer, List<Constructor<?>>> cmap = new HashMap<Integer, List<Constructor<?>>>();
-		for (Constructor<?> constructor : constructors) {
-			int plen = constructor.getParameterTypes().length;
-			List<Constructor<?>> list = cmap.get(plen);
-			if (list == null) {
-				list = new ArrayList<Constructor<?>>();
-			}
-			list.add(constructor);
-			cmap.put(plen, list);
-		}
+				final Map<Integer, List<Constructor<?>>> cmap = new HashMap<Integer, List<Constructor<?>>>();
+				for (final Constructor<?> constructor : constructors) {
+					final int plen = constructor.getParameterTypes().length;
+					List<Constructor<?>> list = cmap.get(plen);
+					if (list == null) {
+						list = new ArrayList<Constructor<?>>();
+					}
+					list.add(constructor);
+					cmap.put(plen, list);
+				}
 
-		for (Entry<Integer, List<Constructor<?>>> entry : cmap.entrySet()) {
-			List<Constructor<?>> list = entry.getValue();
-			Collections.sort(list, new Comparator<Constructor<?>>() {
+				for (final Entry<Integer, List<Constructor<?>>> entry : cmap.entrySet()) {
+					final List<Constructor<?>> list = entry.getValue();
+					Collections.sort(list, new Comparator<Constructor<?>>() {
 
-				public int compare(Constructor<?> m1, Constructor<?> m2) {
-					Class<?>[] p1 = m1.getParameterTypes();
-					Class<?>[] p2 = m2.getParameterTypes();
-					for (int i = 0; i < p1.length; i++) {
-						Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
-						Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
+						public int compare(final Constructor<?> m1, final Constructor<?> m2) {
+							final Class<?>[] p1 = m1.getParameterTypes();
+							final Class<?>[] p2 = m2.getParameterTypes();
+							for (int i = 0; i < p1.length; i++) {
+								final Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
+								final Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
 
-						int result = -2;
-						if (t1 == OtpErlangRef.class) {
-							result = 1;
+								int result = -2;
+								if (t1 == OtpErlangRef.class) {
+									result = 1;
+								}
+								if (t2 == OtpErlangRef.class) {
+									result = -1;
+								}
+								if (result != -2) {
+									return result;
+								}
+							}
+							return 0;
 						}
-						if (t2 == OtpErlangRef.class) {
-							result = -1;
-						}
-						if (result != -2) {
-							return result;
+
+					});
+					for (final Constructor<?> constructor : list) {
+						printClause(clazz, buf, constructor);
+						if (list.indexOf(constructor) == list.size() - 1) {
+							buf.append(".\n\n");
+						} else {
+							buf.append(";\n");
 						}
 					}
-					return 0;
 				}
 
-			});
-			for (Constructor<?> constructor : list) {
-				printClause(clazz, buf, constructor);
-				if (list.indexOf(constructor) == list.size() - 1) {
-					buf.append(".\n\n");
-				} else {
-					buf.append(";\n");
+				final Method[] methods = onlyDeclared ? clazz.getDeclaredMethods() : clazz
+						.getMethods();
+
+				final Map<Tuple, List<Method>> mmap = new HashMap<Tuple, List<Method>>();
+				for (final Method method : methods) {
+					final int mod = method.getModifiers();
+					final boolean statik = Modifier.isStatic(mod);
+					final int plen = method.getParameterTypes().length;
+					final Tuple key = new Tuple().add(method.getName()).add(
+							statik ? plen : plen + 1);
+					List<Method> list = mmap.get(key);
+					if (list == null) {
+						list = new ArrayList<Method>();
+					}
+					list.add(method);
+					mmap.put(key, list);
 				}
-			}
-		}
 
-		Method[] methods = onlyDeclared ? clazz.getDeclaredMethods() : clazz
-				.getMethods();
+				for (final Entry<Tuple, List<Method>> entry : mmap.entrySet()) {
+					final List<Method> list = entry.getValue();
+					Collections.sort(list, new Comparator<Method>() {
 
-		Map<Tuple, List<Method>> mmap = new HashMap<Tuple, List<Method>>();
-		for (Method method : methods) {
-			int mod = method.getModifiers();
-			boolean statik = Modifier.isStatic(mod);
-			int plen = method.getParameterTypes().length;
-			Tuple key = new Tuple().add(method.getName()).add(
-					statik ? plen : plen + 1);
-			List<Method> list = mmap.get(key);
-			if (list == null) {
-				list = new ArrayList<Method>();
-			}
-			list.add(method);
-			mmap.put(key, list);
-		}
+						public int compare(final Method m1, final Method m2) {
+							final Class<?>[] p1 = getExParams(m1);
+							final Class<?>[] p2 = getExParams(m2);
+							for (int i = 0; i < p1.length; i++) {
+								final Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
+								final Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
 
-		for (Entry<Tuple, List<Method>> entry : mmap.entrySet()) {
-			List<Method> list = entry.getValue();
-			Collections.sort(list, new Comparator<Method>() {
-
-				public int compare(Method m1, Method m2) {
-					Class<?>[] p1 = getExParams(m1);
-					Class<?>[] p2 = getExParams(m2);
-					for (int i = 0; i < p1.length; i++) {
-						Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
-						Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
-
-						int result = -2;
-						if (t1 == OtpErlangRef.class) {
-							result = 1;
+								int result = -2;
+								if (t1 == OtpErlangRef.class) {
+									result = 1;
+								}
+								if (t2 == OtpErlangRef.class) {
+									result = -1;
+								}
+								if (result != -2) {
+									return result;
+								}
+							}
+							return 0;
 						}
-						if (t2 == OtpErlangRef.class) {
-							result = -1;
-						}
-						if (result != -2) {
-							return result;
+
+					});
+					for (final Method method : list) {
+						printClause(clazz, buf, method);
+						if (list.indexOf(method) == list.size() - 1) {
+							buf.append(".\n\n");
+						} else {
+							buf.append(";\n");
 						}
 					}
-					return 0;
 				}
 
-			});
-			for (Method method : list) {
-				printClause(clazz, buf, method);
-				if (list.indexOf(method) == list.size() - 1) {
-					buf.append(".\n\n");
-				} else {
-					buf.append(";\n");
-				}
-			}
-		}
-
-		return buf.toString();
+				return buf.toString();
 
 	}
 
-	private static void printClause(Class<?> clazz, StringBuilder buf,
-			Constructor<?> constructor) {
-		Class<?>[] params = constructor.getParameterTypes();
+	private static void printClause(final Class<?> clazz, final StringBuilder buf,
+			final Constructor<?> constructor) {
+		final Class<?>[] params = constructor.getParameterTypes();
 
 		buf.append("  'new'(");
 
 		printParams(true, buf, params);
 		StringBuilder guards = new StringBuilder();
-		Class<?>[] p = constructor.getParameterTypes();
+		final Class<?>[] p = constructor.getParameterTypes();
 		for (int i = 0; i < p.length; i++) {
-			String name = "P" + i;
-			String grd = mkGuard(RpcConverter.javaType2erlang(p[i]), name);
+			final String name = "P" + i;
+			final String grd = mkGuard(RpcConverter.javaType2erlang(p[i]), name);
 			guards.append(grd);
 			if ((i < p.length - 1) && grd.length() > 0) {
 				guards.append(", ");
@@ -201,8 +201,8 @@ public class RpcStubGenerator {
 		buf.append("    erlide_jrpc:call(");
 		buf.append("<<\"" + clazz.getName() + "\">>, ");
 
-		StringBuilder args = new StringBuilder();
-		Class<?>[] at = constructor.getParameterTypes();
+		final StringBuilder args = new StringBuilder();
+		final Class<?>[] at = constructor.getParameterTypes();
 		for (int i = 0; i < at.length; i++) {
 			args.append("<<\"" + at[i].getName() + "\">>");
 			if (i < at.length - 1) {
@@ -210,15 +210,15 @@ public class RpcStubGenerator {
 			}
 		}
 		buf.append("{<<\"" + constructor.getName() + "\">>, [").append(args)
-				.append("]}, [");
+		.append("]}, [");
 		printParams(true, buf, params);
 		buf.append("])");
 	}
 
-	static Class<?>[] getExParams(Method m1) {
+	static Class<?>[] getExParams(final Method m1) {
 		Class<?>[] p1 = m1.getParameterTypes();
-		int mod = m1.getModifiers();
-		boolean statik = Modifier.isStatic(mod);
+		final int mod = m1.getModifiers();
+		final boolean statik = Modifier.isStatic(mod);
 		if (!statik) {
 			p1 = new Class<?>[p1.length + 1];
 			p1[0] = m1.getDeclaringClass();
@@ -227,11 +227,11 @@ public class RpcStubGenerator {
 		return p1;
 	}
 
-	private static void printClause(Class<?> clazz, StringBuilder buf,
-			Method method) {
-		int mod = method.getModifiers();
-		boolean statik = Modifier.isStatic(mod);
-		Class<?>[] params = method.getParameterTypes();
+	private static void printClause(final Class<?> clazz, final StringBuilder buf,
+			final Method method) {
+		final int mod = method.getModifiers();
+		final boolean statik = Modifier.isStatic(mod);
+		final Class<?>[] params = method.getParameterTypes();
 
 		buf.append("  '" + method.getName() + "'(");
 		if (!statik) {
@@ -239,7 +239,7 @@ public class RpcStubGenerator {
 		}
 
 		printParams(statik, buf, params);
-		Class<?>[] p = getExParams(method);
+		final Class<?>[] p = getExParams(method);
 		boolean supported = true;
 		for (int i = 0; i < p.length; i++) {
 			if (p[i].isArray() && p[i].getComponentType().isPrimitive()) {
@@ -266,8 +266,8 @@ public class RpcStubGenerator {
 			} else {
 				buf.append("Obj, ");
 			}
-			StringBuilder args = new StringBuilder();
-			Class<?>[] at = method.getParameterTypes();
+			final StringBuilder args = new StringBuilder();
+			final Class<?>[] at = method.getParameterTypes();
 			for (int i = 0; i < at.length; i++) {
 				args.append("<<\"" + at[i].getName() + "\">>");
 				if (i < at.length - 1) {
@@ -275,7 +275,7 @@ public class RpcStubGenerator {
 				}
 			}
 			buf.append("{<<\"" + method.getName() + "\">>, [").append(args)
-					.append("]}, [");
+			.append("]}, [");
 			printParams(true, buf, params);
 			buf.append("])");
 		} else {
@@ -283,7 +283,7 @@ public class RpcStubGenerator {
 		}
 	}
 
-	private static String mkGuard(Class<?> param, String name) {
+	private static String mkGuard(final Class<?> param, final String name) {
 		if (param == OtpErlangLong.class) {
 			return "is_integer(" + name + ")";
 		}
@@ -308,8 +308,8 @@ public class RpcStubGenerator {
 		return "";
 	}
 
-	private static void printParams(boolean nohdr, StringBuilder buf,
-			Class<?>[] params) {
+	private static void printParams(final boolean nohdr, final StringBuilder buf,
+			final Class<?>[] params) {
 		if (!nohdr && params.length > 0) {
 			buf.append(", ");
 		}
@@ -321,7 +321,7 @@ public class RpcStubGenerator {
 		}
 	}
 
-	public static String module(Class<?> clazz) {
+	public static String module(final Class<?> clazz) {
 		return clazz.getName().replaceAll("\\.", "_");
 	}
 

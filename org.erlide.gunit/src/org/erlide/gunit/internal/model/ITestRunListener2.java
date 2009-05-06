@@ -84,12 +84,12 @@ public interface ITestRunListener2 {
 	 * 
 	 * <pre>
 	 *  testId,testName,isSuite,testcount
-	 *  
+	 * 
 	 *  testId: a unique id for the test
 	 *  testName: the name of the test
 	 *  isSuite: true or false depending on whether the test is a suite
-	 *  testCount: an integer indicating the number of tests 
-	 *  
+	 *  testCount: an integer indicating the number of tests
+	 * 
 	 *  Example: &quot;324968,testPass(junit.tests.MyTest),false,1&quot;
 	 * </pre>
 	 * 

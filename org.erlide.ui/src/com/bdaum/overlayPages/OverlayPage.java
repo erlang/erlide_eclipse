@@ -86,7 +86,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param title
 	 *            - title string
 	 */
-	public OverlayPage(String title) {
+	public OverlayPage(final String title) {
 		super();
 		setTitle(title);
 	}
@@ -99,7 +99,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param image
 	 *            - title image
 	 */
-	public OverlayPage(String title, ImageDescriptor image) {
+	public OverlayPage(final String title, final ImageDescriptor image) {
 		super();
 		setTitle(title);
 		setImageDescriptor(image);
@@ -132,12 +132,12 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		if (isPropertyPage()) {
 			createSelectionGroup(parent);
 		}
 		contents = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		contents.setLayout(layout);
@@ -152,14 +152,14 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param parent
 	 *            - the parent composite
 	 */
-	private void createSelectionGroup(Composite parent) {
-		Composite comp = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
+	private void createSelectionGroup(final Composite parent) {
+		final Composite comp = new Composite(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		comp.setLayout(layout);
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Composite radioGroup = new Composite(comp, SWT.NONE);
+		final Composite radioGroup = new Composite(comp, SWT.NONE);
 		radioGroup.setLayout(new GridLayout());
 		radioGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		useWorkspaceSettingsButton = createRadioButton(radioGroup, Messages
@@ -171,22 +171,22 @@ public abstract class OverlayPage extends PropertyPage implements
 				.getString("OverlayPage.Configure_Workspace_Settings")); //$NON-NLS-1$
 		configureButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				configureWorkspaceSettings();
 			}
 		});
 		// Set workspace/project radio buttons
 		try {
-			String use = ((IResource) getElement().getAdapter(IResource.class))
-					.getPersistentProperty(new QualifiedName(pageId,
-							USEPROJECTSETTINGS));
+			final String use = ((IResource) getElement().getAdapter(
+					IResource.class)).getPersistentProperty(new QualifiedName(
+					pageId, USEPROJECTSETTINGS));
 			if (TRUE.equals(use)) {
 				useProjectSettingsButton.setSelection(true);
 				configureButton.setEnabled(false);
 			} else {
 				useWorkspaceSettingsButton.setSelection(true);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			useWorkspaceSettingsButton.setSelection(true);
 		}
 	}
@@ -200,12 +200,12 @@ public abstract class OverlayPage extends PropertyPage implements
 	 *            - the button label
 	 * @return - the new button
 	 */
-	private Button createRadioButton(Composite parent, String label) {
+	private Button createRadioButton(final Composite parent, final String label) {
 		final Button button = new Button(parent, SWT.RADIO);
 		button.setText(label);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				configureButton
 						.setEnabled(button == useWorkspaceSettingsButton);
 				setControlsEnabled();
@@ -222,7 +222,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @see org.eclipse.jface.preference.PreferencePage#createControl()
 	 */
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		// Special treatment for property pages
 		if (isPropertyPage()) {
 			// Cache the page id
@@ -257,7 +257,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * Enables or disables the controls of this page
 	 */
 	void setControlsEnabled() {
-		boolean enabled = useProjectSettingsButton.getSelection();
+		final boolean enabled = useProjectSettingsButton.getSelection();
 		setControlsEnabled(enabled);
 	}
 
@@ -267,7 +267,7 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param enabled
 	 *            - true if controls shall be enabled
 	 */
-	protected void setControlsEnabled(boolean enabled) {
+	protected void setControlsEnabled(final boolean enabled) {
 		setControlsEnabled(contents, enabled);
 	}
 
@@ -280,10 +280,10 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param enabled
 	 *            - true if controls shall be enabled
 	 */
-	private void setControlsEnabled(Composite root, boolean enabled) {
-		Control[] children = root.getChildren();
+	private void setControlsEnabled(final Composite root, final boolean enabled) {
+		final Control[] children = root.getChildren();
 		for (int i = 0; i < children.length; i++) {
-			Control child = children[i];
+			final Control child = children[i];
 			if (!(child instanceof CTabFolder) && !(child instanceof TabFolder)
 					&& !(child instanceof PageBook)) {
 				child.setEnabled(enabled);
@@ -302,17 +302,17 @@ public abstract class OverlayPage extends PropertyPage implements
 	 */
 	@Override
 	public boolean performOk() {
-		boolean result = super.performOk();
+		final boolean result = super.performOk();
 		if (result && isPropertyPage()) {
 			// Save state of radiobuttons in project properties
-			IResource resource = (IResource) getElement().getAdapter(
+			final IResource resource = (IResource) getElement().getAdapter(
 					IResource.class);
 			try {
-				String value = (useProjectSettingsButton.getSelection()) ? TRUE
+				final String value = (useProjectSettingsButton.getSelection()) ? TRUE
 						: FALSE;
 				resource.setPersistentProperty(new QualifiedName(pageId,
 						USEPROJECTSETTINGS), value);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 			}
 		}
 		return result;
@@ -343,14 +343,14 @@ public abstract class OverlayPage extends PropertyPage implements
 	protected void configureWorkspaceSettings() {
 		try {
 			// create a new instance of the current class
-			IPreferencePage page = this.getClass().newInstance();
+			final IPreferencePage page = this.getClass().newInstance();
 			page.setTitle(getTitle());
 			page.setImageDescriptor(image);
 			// and show it
 			showPreferencePage(pageId, page);
-		} catch (InstantiationException e) {
+		} catch (final InstantiationException e) {
 			ErlLogger.warn(e);
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			ErlLogger.warn(e);
 		}
 	}
@@ -363,9 +363,10 @@ public abstract class OverlayPage extends PropertyPage implements
 	 * @param page
 	 *            - the preference page
 	 */
-	protected void showPreferencePage(String id, IPreferencePage page) {
+	protected void showPreferencePage(final String id,
+			final IPreferencePage page) {
 		final IPreferenceNode targetNode = new PreferenceNode(id, page);
-		PreferenceManager manager = new PreferenceManager();
+		final PreferenceManager manager = new PreferenceManager();
 		manager.addToRoot(targetNode);
 		final PreferenceDialog dialog = new PreferenceDialog(getControl()
 				.getShell(), manager);

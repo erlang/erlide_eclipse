@@ -34,14 +34,14 @@ public class IOServer implements Runnable {
 		latin1, unicode;
 	}
 
-	public IOServer(OtpMbox box, IOCallback callback) {
+	public IOServer(final OtpMbox box, final IOCallback callback) {
 		this.callback = callback;
 		mbox = box;
 		new Thread(this, "io_server");
 	}
 
 	public void run() {
-		boolean done = false;
+		final boolean done = false;
 		do {
 			OtpErlangObject msg;
 			try {
@@ -52,20 +52,20 @@ public class IOServer implements Runnable {
 							+ Thread.currentThread().getName() + " : " + msg);
 
 					if (msg instanceof OtpErlangTuple) {
-						OtpErlangTuple tuple = (OtpErlangTuple) msg;
-						String tag = ((OtpErlangAtom) tuple.elementAt(0))
-								.atomValue();
+						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
+						final String tag = ((OtpErlangAtom) tuple.elementAt(0))
+						.atomValue();
 						if ("io_request".equals(tag)) {
-							OtpErlangPid from = (OtpErlangPid) tuple
-									.elementAt(1);
-							OtpErlangObject replyAs = tuple.elementAt(2);
-							OtpErlangTuple request = (OtpErlangTuple) tuple
-									.elementAt(3);
-							OtpErlangObject reply = processRequest(from,
+							final OtpErlangPid from = (OtpErlangPid) tuple
+							.elementAt(1);
+							final OtpErlangObject replyAs = tuple.elementAt(2);
+							final OtpErlangTuple request = (OtpErlangTuple) tuple
+							.elementAt(3);
+							final OtpErlangObject reply = processRequest(from,
 									request);
-							OtpErlangTuple replyMsg = JInterfaceFactory
-									.mkTuple(new OtpErlangAtom("io_reply"),
-											replyAs, reply);
+							final OtpErlangTuple replyMsg = JInterfaceFactory
+							.mkTuple(new OtpErlangAtom("io_reply"),
+									replyAs, reply);
 							mbox.send(from, replyMsg);
 						} else {
 							System.out.println("IOServer: unknown message "
@@ -75,7 +75,7 @@ public class IOServer implements Runnable {
 						System.out.println("IOServer: unknown message " + msg);
 					}
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		} while (!done || !Thread.interrupted());
@@ -84,16 +84,16 @@ public class IOServer implements Runnable {
 	private final OtpErlangObject error = JInterfaceFactory.mkTuple(
 			new OtpErlangAtom("error"), new OtpErlangAtom("request"));
 
-	private OtpErlangObject processRequest(OtpErlangPid from,
-			OtpErlangObject arequest) {
+	private OtpErlangObject processRequest(final OtpErlangPid from,
+			final OtpErlangObject arequest) {
 		if (callback == null) {
 			return error;
 		}
 		Bindings b;
 		try {
 			if (arequest instanceof OtpErlangTuple) {
-				OtpErlangTuple request = (OtpErlangTuple) arequest;
-				String tag = ((OtpErlangAtom) request.elementAt(0)).atomValue();
+				final OtpErlangTuple request = (OtpErlangTuple) arequest;
+				final String tag = ((OtpErlangAtom) request.elementAt(0)).atomValue();
 				if ("put_chars".equals(tag)) {
 					b = ErlUtils.match("{put_chars, Chars}", request);
 					if (b != null) {
@@ -103,27 +103,27 @@ public class IOServer implements Runnable {
 
 					b = ErlUtils.match("{put_chars, Enc:a, Chars}", request);
 					if (b != null) {
-						String enc = b.getAtom("Enc");
+						final String enc = b.getAtom("Enc");
 						return callback.putChars(from, Encoding.valueOf(enc), b
 								.get("Chars"));
 					}
 
 					b = ErlUtils.match("{put_chars, M:a, F:a, A}", request);
 					if (b != null) {
-						String m = b.getAtom("M");
-						String f = b.getAtom("F");
-						OtpErlangObject[] a = b.getList("A");
+						final String m = b.getAtom("M");
+						final String f = b.getAtom("F");
+						final OtpErlangObject[] a = b.getList("A");
 						return callback
-								.putChars(from, Encoding.latin1, m, f, a);
+						.putChars(from, Encoding.latin1, m, f, a);
 					}
 
 					b = ErlUtils.match("{put_chars, Enc:a, M:a, F:a, A}",
 							request);
 					if (b != null) {
-						String enc = b.getAtom("Enc");
-						String m = b.getAtom("M");
-						String f = b.getAtom("F");
-						OtpErlangObject[] a = b.getList("A");
+						final String enc = b.getAtom("Enc");
+						final String m = b.getAtom("M");
+						final String f = b.getAtom("F");
+						final OtpErlangObject[] a = b.getList("A");
 						return callback.putChars(from, Encoding.valueOf(enc),
 								m, f, a);
 					}
@@ -136,50 +136,50 @@ public class IOServer implements Runnable {
 					}
 					b = ErlUtils.match("{get_until, Prompt, N:i}", request);
 					if (b != null) {
-						long n = b.getLong("N");
+						final long n = b.getLong("N");
 						return callback.getUntil(Encoding.latin1, b
 								.get("Prompt"), n);
 					}
 					b = ErlUtils.match("{get_until, Enc:a, Prompt}", request);
 					if (b != null) {
-						String enc = b.getAtom("Enc");
+						final String enc = b.getAtom("Enc");
 						return callback.getUntil(Encoding.valueOf(enc), b
 								.get("Prompt"));
 					}
 					b = ErlUtils.match("{get_until, Enc:a, Prompt, N:i}",
 							request);
 					if (b != null) {
-						String enc = b.getAtom("Enc");
-						long n = b.getLong("N");
+						final String enc = b.getAtom("Enc");
+						final long n = b.getLong("N");
 						return callback.getUntil(Encoding.valueOf(enc), b
 								.get("Prompt"), n);
 					}
 					b = ErlUtils.match("{get_until, Prompt, M:a, F:a, A}",
 							request);
 					if (b != null) {
-						String m = b.getAtom("M");
-						String f = b.getAtom("F");
-						OtpErlangObject[] a = b.getList("A");
+						final String m = b.getAtom("M");
+						final String f = b.getAtom("F");
+						final OtpErlangObject[] a = b.getList("A");
 						return callback.getUntil(Encoding.latin1, b
 								.get("Prompt"), m, f, a);
 					}
 					b = ErlUtils
-							.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
-									request);
+					.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
+							request);
 					if (b != null) {
-						String enc = b.getAtom("Enc");
-						String m = b.getAtom("M");
-						String f = b.getAtom("F");
-						OtpErlangObject[] a = b.getList("A");
+						final String enc = b.getAtom("Enc");
+						final String m = b.getAtom("M");
+						final String f = b.getAtom("F");
+						final OtpErlangObject[] a = b.getList("A");
 						return callback.getUntil(Encoding.valueOf(enc), b
 								.get("Prompt"), m, f, a);
 					}
 				} else if ("requests".equals(tag)) {
 					b = ErlUtils.match("{requests, Reqs:lx}", request);
 					if (b != null) {
-						OtpErlangObject[] reqs = b.getList("Reqs");
+						final OtpErlangObject[] reqs = b.getList("Reqs");
 						OtpErlangObject val = null;
-						for (OtpErlangObject r : reqs) {
+						for (final OtpErlangObject r : reqs) {
 							val = processRequest(from, r);
 							if (val == error) {
 								return error;
@@ -190,18 +190,18 @@ public class IOServer implements Runnable {
 				} else if ("setopts".equals(tag)) {
 					b = ErlUtils.match("{setopts, Opts:lx}", request);
 					if (b != null) {
-						OtpErlangObject[] opts = b.getList("Opts");
+						final OtpErlangObject[] opts = b.getList("Opts");
 						return callback.setOpts(opts);
 					}
 				} else if ("get_geometry".equals(tag)) {
 					return JInterfaceFactory.mkTuple(
 							new OtpErlangAtom("error"), new OtpErlangAtom(
-									"enotsup"));
+							"enotsup"));
 				} else {
 					return error;
 				}
 			} else if (arequest instanceof OtpErlangAtom) {
-				OtpErlangAtom tag = (OtpErlangAtom) arequest;
+				final OtpErlangAtom tag = (OtpErlangAtom) arequest;
 				if ("getopts".equals(tag)) {
 					return callback.getOpts();
 				} else {
@@ -210,9 +210,9 @@ public class IOServer implements Runnable {
 			} else {
 				return error;
 			}
-		} catch (ParserException e) {
+		} catch (final ParserException e) {
 			e.printStackTrace();
-		} catch (OtpErlangException e) {
+		} catch (final OtpErlangException e) {
 			e.printStackTrace();
 		}
 		return error;

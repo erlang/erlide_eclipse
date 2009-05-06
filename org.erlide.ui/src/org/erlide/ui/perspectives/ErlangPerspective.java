@@ -35,7 +35,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 	/**
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
-	public void createInitialLayout(IPageLayout layout) {
+	public void createInitialLayout(final IPageLayout layout) {
 		defineActions(layout);
 		defineLayout(layout);
 		defineShortcuts(layout);
@@ -46,7 +46,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 	 * 
 	 * @param layout
 	 */
-	private void defineActions(IPageLayout layout) {
+	private void defineActions(final IPageLayout layout) {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(IDebugUIConstants.DEBUG_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
@@ -58,7 +58,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 	 * @param layout
 	 *            the layout object
 	 */
-	private void defineLayout(IPageLayout layout) {
+	private void defineLayout(final IPageLayout layout) {
 		final String editorArea = layout.getEditorArea();
 
 		final IFolderLayout left = layout.createFolder("left",
@@ -83,7 +83,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
 	}
 
-	private void defineShortcuts(IPageLayout layout) {
+	private void defineShortcuts(final IPageLayout layout) {
 		// views - search
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
 

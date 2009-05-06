@@ -22,7 +22,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class CompileAction extends Action {
 
-	private IWorkbenchSite site;
+	private final IWorkbenchSite site;
 
 	public CompileAction(final IWorkbenchSite site) {
 		super("Compile file");
@@ -36,8 +36,8 @@ public class CompileAction extends Action {
 		final IErlModule module = editor.getModule();
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 
-		IResource resource = module.getResource();
-		IProject project = resource.getProject();
+		final IResource resource = module.getResource();
+		final IProject project = resource.getProject();
 		ErlangBuilder.compileFile(project, resource, b);
 	}
 

@@ -46,8 +46,8 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	/**
 	 * Creates a group without border.
 	 */
-	public SelectionButtonDialogFieldGroup(int buttonsStyle,
-			String[] buttonNames, int nColumns) {
+	public SelectionButtonDialogFieldGroup(final int buttonsStyle,
+			final String[] buttonNames, final int nColumns) {
 		this(buttonsStyle, buttonNames, nColumns, SWT.NONE);
 	}
 
@@ -56,8 +56,9 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	 * are: SWT.RADIO, SWT.CHECK, SWT.TOGGLE For border styles see
 	 * <code>Group</code>
 	 */
-	public SelectionButtonDialogFieldGroup(int buttonsStyle,
-			String[] buttonNames, int nColumns, int borderStyle) {
+	public SelectionButtonDialogFieldGroup(final int buttonsStyle,
+			final String[] buttonNames, final int nColumns,
+			final int borderStyle) {
 		super();
 
 		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
@@ -88,7 +89,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		assertEnoughColumns(nColumns);
 
 		if (fGroupBorderStyle == SWT.NONE) {
@@ -120,8 +121,8 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
 	// ------- ui creation
 
-	private Button createSelectionButton(int index, Composite group,
-			SelectionListener listener) {
+	private Button createSelectionButton(final int index,
+			final Composite group, final SelectionListener listener) {
 		final Button button = new Button(group, fButtonsStyle | SWT.LEFT);
 		button.setFont(group.getFont());
 		button.setText(fButtonNames[index]);
@@ -140,7 +141,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	 *            The parent composite when called the first time, or
 	 *            <code>null</code> after.
 	 */
-	public Composite getSelectionButtonsGroup(Composite parent) {
+	public Composite getSelectionButtonsGroup(final Composite parent) {
 		if (fButtonComposite == null) {
 			assertCompositeNotNull(parent);
 
@@ -164,11 +165,11 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
 			final SelectionListener listener = new SelectionListener() {
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 					doWidgetSelected(e);
 				}
 
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					doWidgetSelected(e);
 				}
 			};
@@ -188,17 +189,16 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	}
 
 	/**
-	 * Returns a button from the group or <code>null</code> if not yet
-	 * created.
+	 * Returns a button from the group or <code>null</code> if not yet created.
 	 */
-	public Button getSelectionButton(int index) {
+	public Button getSelectionButton(final int index) {
 		if (index >= 0 && index < fButtons.length) {
 			return fButtons[index];
 		}
 		return null;
 	}
 
-	protected void doWidgetSelected(SelectionEvent e) {
+	protected void doWidgetSelected(final SelectionEvent e) {
 		final Button button = (Button) e.widget;
 		for (int i = 0; i < fButtons.length; i++) {
 			if (fButtons[i] == button) {
@@ -217,7 +217,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	 * @param index
 	 *            The index of the button
 	 */
-	public boolean isSelected(int index) {
+	public boolean isSelected(final int index) {
 		if (index >= 0 && index < fButtonsSelected.length) {
 			return fButtonsSelected[index];
 		}
@@ -227,7 +227,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	/**
 	 * Sets the selection state of a button contained in the group.
 	 */
-	public void setSelection(int index, boolean selected) {
+	public void setSelection(final int index, final boolean selected) {
 		if (index >= 0 && index < fButtonsSelected.length) {
 			if (fButtonsSelected[index] != selected) {
 				fButtonsSelected[index] = selected;
@@ -260,7 +260,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 	/**
 	 * Sets the enable state of a button contained in the group.
 	 */
-	public void enableSelectionButton(int index, boolean enable) {
+	public void enableSelectionButton(final int index, final boolean enable) {
 		if (index >= 0 && index < fButtonsEnabled.length) {
 			fButtonsEnabled[index] = enable;
 			if (fButtons != null) {

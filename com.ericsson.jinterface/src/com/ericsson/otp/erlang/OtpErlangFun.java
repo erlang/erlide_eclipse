@@ -14,7 +14,7 @@
  * the License for the specific language governing rights and limitations
  * under the License.
  * 
- * %CopyrightEnd% 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -108,7 +108,7 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
 
     @Override
     protected int doHashCode() {
-	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(1);
+	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(1);
 	hash.combine(pid.hashCode(), module.hashCode());
 	hash.combine(arity);
 	if (md5 != null) {
@@ -117,7 +117,7 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
 	hash.combine(index);
 	hash.combine(uniq);
 	if (freeVars != null) {
-	    for (OtpErlangObject o : freeVars) {
+	    for (final OtpErlangObject o : freeVars) {
 		hash.combine(o.hashCode(), 1);
 	    }
 	}

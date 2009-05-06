@@ -43,7 +43,7 @@ import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
 /**
  * @author Lukas Larsson
  * 
- * An ErlangSource Generation editing dialog.
+ *         An ErlangSource Generation editing dialog.
  */
 public class ErlangSourceTemplateDialog extends StatusDialog implements
 		SelectionListener {
@@ -66,7 +66,8 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 
 	private Button fVariables;
 
-	public ErlangSourceTemplateDialog(Shell shell, ResourceBundle bundle) {
+	public ErlangSourceTemplateDialog(final Shell shell,
+			final ResourceBundle bundle) {
 		super(shell);
 
 		rb = bundle;
@@ -86,8 +87,8 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 		open();
 	}
 
-	public ErlangSourceTemplateDialog(Shell shell, ResourceBundle bundle,
-			TemplatePersistenceData template) {
+	public ErlangSourceTemplateDialog(final Shell shell,
+			final ResourceBundle bundle, final TemplatePersistenceData template) {
 		super(shell);
 
 		rb = bundle;
@@ -105,10 +106,12 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	@Override
-	protected Control createDialogArea(Composite parent) {
+	protected Control createDialogArea(final Composite parent) {
 		final Composite top = new Composite(parent, SWT.NONE);
 		top.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		top.setLayout(new GridLayout(4, false));
@@ -151,12 +154,13 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
+			 * @seeorg.eclipse.jface.text.source.SourceViewerConfiguration#
+			 * getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
 			 */
 			@Override
 			public IContentAssistant getContentAssistant(
-					ISourceViewer sourceViewer) {
-				ContentAssistant assistant = new ContentAssistant();
+					final ISourceViewer sourceViewer) {
+				final ContentAssistant assistant = new ContentAssistant();
 				assistant.enableAutoActivation(true);
 				assistant.enableAutoInsert(true);
 				assistant.setContentAssistProcessor(fTemplateProcessor,
@@ -181,7 +185,7 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 
 		fPreview.prependVerifyKeyListener(new VerifyKeyListener() {
 
-			public void verifyKey(VerifyEvent event) {
+			public void verifyKey(final VerifyEvent event) {
 				handleVerifyKeyPressed(event);
 			}
 		});
@@ -209,7 +213,7 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 						fTemplate.getTemplate().getContextTypeId()));
 	}
 
-	void handleVerifyKeyPressed(VerifyEvent event) {
+	void handleVerifyKeyPressed(final VerifyEvent event) {
 		if (!event.doit) {
 			return;
 		}
@@ -255,9 +259,11 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
+	 * .swt.events.SelectionEvent)
 	 */
-	public void widgetDefaultSelected(SelectionEvent e) {
+	public void widgetDefaultSelected(final SelectionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
@@ -265,9 +271,11 @@ public class ErlangSourceTemplateDialog extends StatusDialog implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 * @see
+	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
+	 * .events.SelectionEvent)
 	 */
-	public void widgetSelected(SelectionEvent e) {
+	public void widgetSelected(final SelectionEvent e) {
 		fPreview.getTextWidget().setFocus();
 		fPreview.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
 	}

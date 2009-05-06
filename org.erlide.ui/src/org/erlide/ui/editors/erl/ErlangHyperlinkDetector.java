@@ -79,7 +79,8 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
 				return null;
 			}
-			return new IHyperlink[] { new ErlangSubHyperlink(editor, erlPartition) };
+			return new IHyperlink[] { new ErlangSubHyperlink(editor,
+					erlPartition) };
 		} catch (final BadLocationException e) {
 			return null;
 		}

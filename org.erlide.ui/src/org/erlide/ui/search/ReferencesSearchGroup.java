@@ -53,10 +53,10 @@ public class ReferencesSearchGroup extends ActionGroup {
 	// fFindReferencesInWorkingSetAction;
 
 	/**
-	 * Creates a new <code>ReferencesSearchGroup</code>. The group requires
-	 * that the selection provided by the site's selection provider is of type
-	 * <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>.
+	 * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
+	 * the selection provided by the site's selection provider is of type <code>
+	 * org.eclipse.jface.viewers.IStructuredSelection</code>
+	 * .
 	 * 
 	 * @param site
 	 *            the view part that owns this action group

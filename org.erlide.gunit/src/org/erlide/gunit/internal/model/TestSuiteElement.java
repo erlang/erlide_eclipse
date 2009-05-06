@@ -19,12 +19,12 @@ import org.erlide.gunit.model.ITestSuiteElement;
 
 public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 
-	private List<ITestElement> fChildren;
+	private final List<ITestElement> fChildren;
 
 	private Status fChildrenStatus;
 
-	public TestSuiteElement(TestSuiteElement parent, String id,
-			String testName, int childrenCount) {
+	public TestSuiteElement(final TestSuiteElement parent, final String id,
+			final String testName, final int childrenCount) {
 		super(parent, id, testName);
 		this.fChildren = new ArrayList<ITestElement>(childrenCount);
 	}
@@ -35,7 +35,7 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	 * @see org.erlide.gunit.ITestElement#getTestResult()
 	 */
 	@Override
-	public Result getTestResult(boolean includeChildren) {
+	public Result getTestResult(final boolean includeChildren) {
 		if (includeChildren) {
 			return getStatus().convertToResult();
 		} else {
@@ -61,13 +61,13 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 		return this.fChildren.toArray(new ITestElement[this.fChildren.size()]);
 	}
 
-	public void addChild(TestElement child) {
+	public void addChild(final TestElement child) {
 		this.fChildren.add(child);
 	}
 
 	@Override
 	public Status getStatus() {
-		Status suiteStatus = getSuiteStatus();
+		final Status suiteStatus = getSuiteStatus();
 		if (this.fChildrenStatus != null) {
 			// must combine children and suite status here, since failures can
 			// occur e.g. in @AfterClass
@@ -78,9 +78,9 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	}
 
 	private Status getCumulatedStatus() {
-		TestElement[] children = this.fChildren
-				.toArray(new TestElement[this.fChildren.size()]); // copy list
-																	// to
+		final TestElement[] children = this.fChildren
+		.toArray(new TestElement[this.fChildren.size()]); // copy list
+		// to
 		// avoid
 		// concurreny
 		// problems
@@ -91,7 +91,7 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 		Status cumulated = children[0].getStatus();
 
 		for (int i = 1; i < children.length; i++) {
-			Status childStatus = children[i].getStatus();
+			final Status childStatus = children[i].getStatus();
 			cumulated = Status.combineStatus(cumulated, childStatus);
 		}
 		// not necessary, see special code in Status.combineProgress()
@@ -105,15 +105,15 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 		return super.getStatus();
 	}
 
-	public void childChangedStatus(TestElement child, Status childStatus) {
-		int childCount = this.fChildren.size();
+	public void childChangedStatus(final TestElement child, final Status childStatus) {
+		final int childCount = this.fChildren.size();
 		if (child == this.fChildren.get(0) && childStatus.isRunning()) {
 			// is first child, and is running -> copy status
 			internalSetChildrenStatus(childStatus);
 			return;
 		}
-		TestElement lastChild = (TestElement) this.fChildren
-				.get(childCount - 1);
+		final TestElement lastChild = (TestElement) this.fChildren
+		.get(childCount - 1);
 		if (child == lastChild) {
 			if (childStatus.isDone()) {
 				// all children done, collect cumulative status
@@ -146,12 +146,12 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 		}
 	}
 
-	private void internalSetChildrenStatus(Status status) {
+	private void internalSetChildrenStatus(final Status status) {
 		if (this.fChildrenStatus == status) {
 			return;
 		}
 		this.fChildrenStatus = status;
-		TestSuiteElement parent = getParent();
+		final TestSuiteElement parent = getParent();
 		if (parent != null) {
 			parent.childChangedStatus(this, getStatus());
 		}

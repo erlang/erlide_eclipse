@@ -18,12 +18,12 @@ import org.eclipse.swt.graphics.ImageData;
   */
 public class ImageImageDescriptor extends ImageDescriptor {
 
-	private Image fImage;
+	private final Image fImage;
 
 	/**
 	 * Constructor for ImagImageDescriptor.
 	 */
-	public ImageImageDescriptor(Image image) {
+	public ImageImageDescriptor(final Image image) {
 		super();
 		fImage = image;
 	}
@@ -44,7 +44,7 @@ public class ImageImageDescriptor extends ImageDescriptor {
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		return (obj != null) && getClass().equals(obj.getClass())
 				&& fImage.equals(((ImageImageDescriptor) obj).fImage);
 	}

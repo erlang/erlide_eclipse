@@ -25,22 +25,22 @@ public class RpcTest extends AbstractErlangTest {
 
 	@Test
 	public void testRpc() {
-		OtpErlangAtom a = new OtpErlangAtom("1");
-		OtpErlangLong b = new OtpErlangLong(2);
-		OtpErlangLong c = new OtpErlangLong(3);
-		OtpErlangList l1 = JInterfaceFactory.mkList(a, b, c);
+		final OtpErlangAtom a = new OtpErlangAtom("1");
+		final OtpErlangLong b = new OtpErlangLong(2);
+		final OtpErlangLong c = new OtpErlangLong(3);
+		final OtpErlangList l1 = JInterfaceFactory.mkList(a, b, c);
 
-		OtpErlangList l2 = JInterfaceFactory.mkList(c, b, a);
-		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
+		final OtpErlangList l2 = JInterfaceFactory.mkList(c, b, a);
+		final OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 		assertTrue(rr.equals(l2));
 	}
 
 	@Test
 	public void testStringResult() {
-		OtpErlangString l1 = new OtpErlangString("abc");
+		final OtpErlangString l1 = new OtpErlangString("abc");
 
-		OtpErlangString l2 = new OtpErlangString("cba");
-		OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
+		final OtpErlangString l2 = new OtpErlangString("cba");
+		final OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 
 		assertTrue(rr.equals(l2));
 	}

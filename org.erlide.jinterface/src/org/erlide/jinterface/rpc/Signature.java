@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -50,7 +50,7 @@ public class Signature {
 	}
 
 	public static synchronized Signature[] parse(final String signature)
-			throws RpcException {
+	throws RpcException {
 		if (signature == null) {
 			return null;
 		}
@@ -86,7 +86,7 @@ public class Signature {
 	}
 
 	private static ParseState parseOne(final String signature)
-			throws RpcException {
+	throws RpcException {
 		final char crt = signature.charAt(0);
 		if ("xidabrjfpso".indexOf(crt) >= 0) {
 			return new ParseState(new Signature(crt), signature.substring(1));
@@ -109,7 +109,7 @@ public class Signature {
 	}
 
 	/** To be used only by the unit tests. */
-	public static void setUseCache(boolean use) {
+	public static void setUseCache(final boolean use) {
 		useCache = use;
 	}
 

@@ -205,7 +205,7 @@ public class CodeManager implements IRegistryChangeListener {
 								.lastSegment();
 						// ErlLogger.debug(" " + m);
 						try {
-							boolean ok = loadBeam(m, b.getEntry(s));
+							final boolean ok = loadBeam(m, b.getEntry(s));
 							if (!ok) {
 								ErlLogger.error("Could not load %s", m);
 							}
@@ -240,7 +240,7 @@ public class CodeManager implements IRegistryChangeListener {
 	public void register(final ICodeBundle p) {
 		if (codeBundles.indexOf(p) < 0) {
 			codeBundles.add(p);
-			String ebinDir = p.getEbinDir();
+			final String ebinDir = p.getEbinDir();
 			if (ebinDir != null) {
 				final String localDir = ebinDir.replaceAll("\\\\", "/");
 				final boolean accessible = ErlideUtil.isAccessible(fBackend,
@@ -267,7 +267,7 @@ public class CodeManager implements IRegistryChangeListener {
 	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
 	 */
 	public void unregister(final ICodeBundle p) {
-		String ebinDir = p.getEbinDir();
+		final String ebinDir = p.getEbinDir();
 		if (ebinDir != null) {
 			final String localDir = ebinDir.replaceAll("\\\\", "/");
 			ErlLogger.debug("removing %s from code path for %s", localDir,

@@ -22,8 +22,8 @@ public class MinimizedFileSystemElement extends FileSystemElement {
 	 * @param isDirectory
 	 *            indicated if this could have children or not
 	 */
-	public MinimizedFileSystemElement(String name, FileSystemElement parent,
-			boolean isDirectory) {
+	public MinimizedFileSystemElement(final String name,
+			final FileSystemElement parent, final boolean isDirectory) {
 		super(name, parent, isDirectory);
 	}
 
@@ -31,7 +31,7 @@ public class MinimizedFileSystemElement extends FileSystemElement {
 	 * Returns a list of the files that are immediate children. Use the supplied
 	 * provider if it needs to be populated. of this folder.
 	 */
-	public AdaptableList getFiles(IImportStructureProvider provider) {
+	public AdaptableList getFiles(final IImportStructureProvider provider) {
 		if (!populated) {
 			populate(provider);
 		}
@@ -42,7 +42,7 @@ public class MinimizedFileSystemElement extends FileSystemElement {
 	 * Returns a list of the folders that are immediate children. Use the
 	 * supplied provider if it needs to be populated. of this folder.
 	 */
-	public AdaptableList getFolders(IImportStructureProvider provider) {
+	public AdaptableList getFolders(final IImportStructureProvider provider) {
 		if (!populated) {
 			populate(provider);
 		}
@@ -70,21 +70,21 @@ public class MinimizedFileSystemElement extends FileSystemElement {
 	 * @param provider
 	 *            org.eclipse.ui.wizards.datatransfer.IImportStructureProvider
 	 */
-	private void populate(IImportStructureProvider provider) {
+	private void populate(final IImportStructureProvider provider) {
 
-		Object fileSystemObject = getFileSystemObject();
+		final Object fileSystemObject = getFileSystemObject();
 
 		List<?> children = provider.getChildren(fileSystemObject);
 		if (children == null) {
 			children = new ArrayList<Object>(1);
 		}
-		Iterator<?> childrenEnum = children.iterator();
+		final Iterator<?> childrenEnum = children.iterator();
 		while (childrenEnum.hasNext()) {
-			Object child = childrenEnum.next();
+			final Object child = childrenEnum.next();
 
-			String elementLabel = provider.getLabel(child);
+			final String elementLabel = provider.getLabel(child);
 			// Create one level below
-			MinimizedFileSystemElement result = new MinimizedFileSystemElement(
+			final MinimizedFileSystemElement result = new MinimizedFileSystemElement(
 					elementLabel, this, provider.isFolder(child));
 			result.setFileSystemObject(child);
 		}

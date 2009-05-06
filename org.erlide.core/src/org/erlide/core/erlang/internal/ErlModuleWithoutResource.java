@@ -16,7 +16,9 @@ public class ErlModuleWithoutResource extends ErlModule {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.core.erlang.internal.ErlModule#getFilePath(org.eclipse.core.resources.IResource)
+	 * @see
+	 * org.erlide.core.erlang.internal.ErlModule#getFilePath(org.eclipse.core
+	 * .resources.IResource)
 	 */
 	@Override
 	protected String getFilePath() {

@@ -59,8 +59,7 @@ public class ModelUtils {
 		}
 		final String s = ErlideOpen.getExternalInclude(ErlangCore
 				.getBackendManager().getIdeBackend(), filePath,
-				externalIncludes, ErlangCore.getModel()
-						.getPathVars());
+				externalIncludes, ErlangCore.getModel().getPathVars());
 		if (s != null) {
 			return s;
 		}

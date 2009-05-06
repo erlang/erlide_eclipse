@@ -34,9 +34,11 @@ public class PreferencesAdapter implements IPreferenceStore {
 	class PropertyChangeListener implements Preferences.IPropertyChangeListener {
 
 		/*
-		 * @see org.eclipse.core.runtime.Preferences.IPropertyChangeListener#propertyChange(org.eclipse.core.runtime.Preferences.PropertyChangeEvent)
+		 * @seeorg.eclipse.core.runtime.Preferences.IPropertyChangeListener#
+		 * propertyChange
+		 * (org.eclipse.core.runtime.Preferences.PropertyChangeEvent)
 		 */
-		public void propertyChange(Preferences.PropertyChangeEvent event) {
+		public void propertyChange(final Preferences.PropertyChangeEvent event) {
 			firePropertyChangeEvent(event.getProperty(), event.getOldValue(),
 					event.getNewValue());
 		}
@@ -49,7 +51,7 @@ public class PreferencesAdapter implements IPreferenceStore {
 	private final PropertyChangeListener fListener = new PropertyChangeListener();
 
 	/** Adapted Preferences */
-	private Preferences fPreferences;
+	private final Preferences fPreferences;
 
 	/** True iff no events should be forwarded */
 	private boolean fSilent;
@@ -67,14 +69,14 @@ public class PreferencesAdapter implements IPreferenceStore {
 	 * @param preferences
 	 *            The preferences to wrap.
 	 */
-	public PreferencesAdapter(Preferences preferences) {
+	public PreferencesAdapter(final Preferences preferences) {
 		fPreferences = preferences;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addPropertyChangeListener(IPropertyChangeListener listener) {
+	public void addPropertyChangeListener(final IPropertyChangeListener listener) {
 		if (fListeners.size() == 0) {
 			fPreferences.addPropertyChangeListener(fListener);
 		}
@@ -84,7 +86,8 @@ public class PreferencesAdapter implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removePropertyChangeListener(IPropertyChangeListener listener) {
+	public void removePropertyChangeListener(
+			final IPropertyChangeListener listener) {
 		fListeners.remove(listener);
 		if (fListeners.size() == 0) {
 			fPreferences.removePropertyChangeListener(fListener);
@@ -94,20 +97,20 @@ public class PreferencesAdapter implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean contains(String name) {
+	public boolean contains(final String name) {
 		return fPreferences.contains(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void firePropertyChangeEvent(String name, Object oldValue,
-			Object newValue) {
+	public void firePropertyChangeEvent(final String name,
+			final Object oldValue, final Object newValue) {
 		if (!fSilent) {
 			final PropertyChangeEvent event = new PropertyChangeEvent(this,
 					name, oldValue, newValue);
 			final Object[] listeners = fListeners.getListeners();
-			for (Object element : listeners) {
+			for (final Object element : listeners) {
 				((IPropertyChangeListener) element).propertyChange(event);
 			}
 		}
@@ -116,91 +119,91 @@ public class PreferencesAdapter implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean getBoolean(String name) {
+	public boolean getBoolean(final String name) {
 		return fPreferences.getBoolean(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean getDefaultBoolean(String name) {
+	public boolean getDefaultBoolean(final String name) {
 		return fPreferences.getDefaultBoolean(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getDefaultDouble(String name) {
+	public double getDefaultDouble(final String name) {
 		return fPreferences.getDefaultDouble(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public float getDefaultFloat(String name) {
+	public float getDefaultFloat(final String name) {
 		return fPreferences.getDefaultFloat(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getDefaultInt(String name) {
+	public int getDefaultInt(final String name) {
 		return fPreferences.getDefaultInt(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public long getDefaultLong(String name) {
+	public long getDefaultLong(final String name) {
 		return fPreferences.getDefaultLong(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getDefaultString(String name) {
+	public String getDefaultString(final String name) {
 		return fPreferences.getDefaultString(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getDouble(String name) {
+	public double getDouble(final String name) {
 		return fPreferences.getDouble(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public float getFloat(String name) {
+	public float getFloat(final String name) {
 		return fPreferences.getFloat(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getInt(String name) {
+	public int getInt(final String name) {
 		return fPreferences.getInt(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public long getLong(String name) {
+	public long getLong(final String name) {
 		return fPreferences.getLong(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getString(String name) {
+	public String getString(final String name) {
 		return fPreferences.getString(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isDefault(String name) {
+	public boolean isDefault(final String name) {
 		return fPreferences.isDefault(name);
 	}
 
@@ -214,7 +217,7 @@ public class PreferencesAdapter implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void putValue(String name, String value) {
+	public void putValue(final String name, final String value) {
 		try {
 			fSilent = true;
 			fPreferences.setValue(name, value);
@@ -226,91 +229,91 @@ public class PreferencesAdapter implements IPreferenceStore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, double value) {
+	public void setDefault(final String name, final double value) {
 		fPreferences.setDefault(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, float value) {
+	public void setDefault(final String name, final float value) {
 		fPreferences.setDefault(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, int value) {
+	public void setDefault(final String name, final int value) {
 		fPreferences.setDefault(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, long value) {
+	public void setDefault(final String name, final long value) {
 		fPreferences.setDefault(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, String defaultObject) {
+	public void setDefault(final String name, final String defaultObject) {
 		fPreferences.setDefault(name, defaultObject);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setDefault(String name, boolean value) {
+	public void setDefault(final String name, final boolean value) {
 		fPreferences.setDefault(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setToDefault(String name) {
+	public void setToDefault(final String name) {
 		fPreferences.setToDefault(name);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, double value) {
+	public void setValue(final String name, final double value) {
 		fPreferences.setValue(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, float value) {
+	public void setValue(final String name, final float value) {
 		fPreferences.setValue(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, int value) {
+	public void setValue(final String name, final int value) {
 		fPreferences.setValue(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, long value) {
+	public void setValue(final String name, final long value) {
 		fPreferences.setValue(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, String value) {
+	public void setValue(final String name, final String value) {
 		fPreferences.setValue(name, value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setValue(String name, boolean value) {
+	public void setValue(final String name, final boolean value) {
 		fPreferences.setValue(name, value);
 	}
 }

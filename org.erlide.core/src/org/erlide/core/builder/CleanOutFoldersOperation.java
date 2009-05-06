@@ -23,7 +23,7 @@ class CleanOutFoldersOperation implements IWorkspaceRunnable {
 
 	private static final IResourceProxyVisitor folderCleaner = new FolderCleaner();
 
-	private IProject project;
+	private final IProject project;
 
 	CleanOutFoldersOperation(final IProject project) {
 		this.project = project;

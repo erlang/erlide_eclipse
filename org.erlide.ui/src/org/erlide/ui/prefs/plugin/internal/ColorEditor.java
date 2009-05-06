@@ -54,7 +54,7 @@ public class ColorEditor {
 	 * @param parent
 	 *            the parent composite of this color editor
 	 */
-	public ColorEditor(Composite parent) {
+	public ColorEditor(final Composite parent) {
 		fButton = new Button(parent, SWT.PUSH);
 		fExtent = computeImageSize(parent);
 		fImage = new Image(parent.getDisplay(), fExtent.x, fExtent.y);
@@ -68,7 +68,7 @@ public class ColorEditor {
 		fButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
-			public void widgetSelected(SelectionEvent event) {
+			public void widgetSelected(final SelectionEvent event) {
 				final ColorDialog colorDialog = new ColorDialog(fButton
 						.getShell());
 				colorDialog.setRGB(fColorValue);
@@ -82,7 +82,7 @@ public class ColorEditor {
 
 		fButton.addDisposeListener(new DisposeListener() {
 
-			public void widgetDisposed(DisposeEvent event) {
+			public void widgetDisposed(final DisposeEvent event) {
 				if (fImage != null) {
 					fImage.dispose();
 					fImage = null;
@@ -110,7 +110,7 @@ public class ColorEditor {
 	 * @param rgb
 	 *            the new value for the rgb color value
 	 */
-	public void setColorValue(RGB rgb) {
+	public void setColorValue(final RGB rgb) {
 		fColorValue = rgb;
 		updateColorImage();
 	}
@@ -154,7 +154,7 @@ public class ColorEditor {
 	 *            the window on which to render the image
 	 * @return the point with the image size
 	 */
-	protected Point computeImageSize(Control window) {
+	protected Point computeImageSize(final Control window) {
 		final GC gc = new GC(window);
 		final Font f = JFaceResources.getFontRegistry().get(
 				JFaceResources.DEFAULT_FONT);

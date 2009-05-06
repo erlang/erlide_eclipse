@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Source viewer based implementation of
- * {@link org.eclipse.jface.text.IInformationControl}. Displays information in
- * a source viewer.
+ * {@link org.eclipse.jface.text.IInformationControl}. Displays information in a
+ * source viewer.
  * 
  * 
  */
@@ -56,7 +56,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	private StyledText fText;
 
 	/** The control's source viewer */
-	private SourceViewer fViewer;
+	private final SourceViewer fViewer;
 
 	/** The optional status field. */
 	private Label fStatusField;
@@ -82,7 +82,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @param symbolicFontName
 	 *            the symbolic font name
 	 */
-	public SourceViewerInformationControl(Shell parent, String symbolicFontName) {
+	public SourceViewerInformationControl(final Shell parent,
+			final String symbolicFontName) {
 		this(parent, SWT.NO_TRIM | SWT.TOOL, SWT.NONE, symbolicFontName, null);
 	}
 
@@ -105,8 +106,9 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 *            the text to be used in the optional status field or
 	 *            <code>null</code> if the status field should be hidden
 	 */
-	public SourceViewerInformationControl(Shell parent, int shellStyle,
-			int style, String symbolicFontName, String statusFieldText) {
+	public SourceViewerInformationControl(final Shell parent,
+			final int shellStyle, final int style,
+			final String symbolicFontName, final String statusFieldText) {
 		GridLayout layout;
 		GridData gd;
 
@@ -153,13 +155,13 @@ public class SourceViewerInformationControl implements IInformationControl,
 
 		fText.addKeyListener(new KeyListener() {
 
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(final KeyEvent e) {
 				if (e.character == 0x1B) {
 					fShell.dispose();
 				}
 			}
 
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(final KeyEvent e) {
 			}
 		});
 
@@ -167,8 +169,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 		if (statusFieldText != null) {
 
 			// Horizontal separator line
-			fSeparator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL |
-					SWT.LINE_DOT);
+			fSeparator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL
+					| SWT.LINE_DOT);
 			fSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 			// Status field label
@@ -176,15 +178,15 @@ public class SourceViewerInformationControl implements IInformationControl,
 			fStatusField.setText(statusFieldText);
 			final Font font = fStatusField.getFont();
 			final FontData[] fontDatas = font.getFontData();
-			for (FontData element : fontDatas) {
+			for (final FontData element : fontDatas) {
 				element.setHeight(element.getHeight() * 9 / 10);
 			}
 			fStatusTextFont = new Font(fStatusField.getDisplay(), fontDatas);
 			fStatusField.setFont(fStatusTextFont);
-			final GridData gd2 = new GridData(GridData.FILL_VERTICAL |
-					GridData.FILL_HORIZONTAL |
-					GridData.HORIZONTAL_ALIGN_BEGINNING |
-					GridData.VERTICAL_ALIGN_BEGINNING);
+			final GridData gd2 = new GridData(GridData.FILL_VERTICAL
+					| GridData.FILL_HORIZONTAL
+					| GridData.HORIZONTAL_ALIGN_BEGINNING
+					| GridData.VERTICAL_ALIGN_BEGINNING);
 			fStatusField.setLayoutData(gd2);
 
 			fStatusField.setForeground(display
@@ -202,7 +204,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @param input
 	 *            the input object
 	 */
-	public void setInput(Object input) {
+	public void setInput(final Object input) {
 		if (input instanceof String) {
 			setInformation((String) input);
 		} else {
@@ -213,7 +215,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#setInformation(String)
 	 */
-	public void setInformation(String content) {
+	public void setInformation(final String content) {
 		if (content == null) {
 			fViewer.setInput(null);
 			return;
@@ -226,14 +228,16 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#setVisible(boolean)
 	 */
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		fShell.setVisible(visible);
 	}
 
 	/*
-	 * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+	 * @see
+	 * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt
+	 * .events.DisposeEvent)
 	 */
-	public void widgetDisposed(DisposeEvent event) {
+	public void widgetDisposed(final DisposeEvent event) {
 		if (fStatusTextFont != null && !fStatusTextFont.isDisposed()) {
 			fStatusTextFont.dispose();
 		}
@@ -257,7 +261,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#setSize(int, int)
 	 */
-	public void setSize(int width, int height) {
+	public void setSize(final int width, final int height) {
 
 		if (fStatusField != null) {
 			final GridData gd = (GridData) fViewer.getTextWidget()
@@ -278,7 +282,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#setLocation(Point)
 	 */
-	public void setLocation(Point location) {
+	public void setLocation(final Point location) {
 		final Rectangle trim = fShell.computeTrim(0, 0, 0, 0);
 		final Point textLocation = fText.getLocation();
 		location.x += trim.x - textLocation.x;
@@ -289,7 +293,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#setSizeConstraints(int, int)
 	 */
-	public void setSizeConstraints(int maxWidth, int maxHeight) {
+	public void setSizeConstraints(final int maxWidth, final int maxHeight) {
 		fMaxWidth = maxWidth;
 		fMaxHeight = maxHeight;
 	}
@@ -307,28 +311,28 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#addDisposeListener(DisposeListener)
 	 */
-	public void addDisposeListener(DisposeListener listener) {
+	public void addDisposeListener(final DisposeListener listener) {
 		fShell.addDisposeListener(listener);
 	}
 
 	/*
 	 * @see IInformationControl#removeDisposeListener(DisposeListener)
 	 */
-	public void removeDisposeListener(DisposeListener listener) {
+	public void removeDisposeListener(final DisposeListener listener) {
 		fShell.removeDisposeListener(listener);
 	}
 
 	/*
 	 * @see IInformationControl#setForegroundColor(Color)
 	 */
-	public void setForegroundColor(Color foreground) {
+	public void setForegroundColor(final Color foreground) {
 		fText.setForeground(foreground);
 	}
 
 	/*
 	 * @see IInformationControl#setBackgroundColor(Color)
 	 */
-	public void setBackgroundColor(Color background) {
+	public void setBackgroundColor(final Color background) {
 		fText.setBackground(background);
 	}
 
@@ -350,14 +354,14 @@ public class SourceViewerInformationControl implements IInformationControl,
 	/*
 	 * @see IInformationControl#addFocusListener(FocusListener)
 	 */
-	public void addFocusListener(FocusListener listener) {
+	public void addFocusListener(final FocusListener listener) {
 		fText.addFocusListener(listener);
 	}
 
 	/*
 	 * @see IInformationControl#removeFocusListener(FocusListener)
 	 */
-	public void removeFocusListener(FocusListener listener) {
+	public void removeFocusListener(final FocusListener listener) {
 		fText.removeFocusListener(listener);
 	}
 

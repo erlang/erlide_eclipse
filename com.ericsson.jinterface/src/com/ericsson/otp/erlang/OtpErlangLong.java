@@ -23,11 +23,11 @@ import java.math.BigInteger;
 /**
  * Provides a Java representation of Erlang integral types. Erlang does not
  * distinguish between different integral types, however this class and its
- * subclasses {@link OtpErlangByte}, {@link OtpErlangChar},
- * {@link OtpErlangInt} , and {@link OtpErlangShort} attempt to map the Erlang
- * types onto the various Java integral types. Two additional classes,
- * {@link OtpErlangUInt} and {@link OtpErlangUShort} are provided for Corba
- * compatibility. See the documentation for IC for more information.
+ * subclasses {@link OtpErlangByte}, {@link OtpErlangChar}, {@link OtpErlangInt}
+ * , and {@link OtpErlangShort} attempt to map the Erlang types onto the various
+ * Java integral types. Two additional classes, {@link OtpErlangUInt} and
+ * {@link OtpErlangUShort} are provided for Corba compatibility. See the
+ * documentation for IC for more information.
  */
 public class OtpErlangLong extends OtpErlangObject implements Serializable,
 	Cloneable {
@@ -41,7 +41,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * Create an Erlang integer from the given value.
      * 
      * @param l
-     *                the long value to use.
+     *            the long value to use.
      */
     public OtpErlangLong(final long l) {
 	val = l;
@@ -51,7 +51,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * Create an Erlang integer from the given value.
      * 
      * @param val
-     *                the long value to use.
+     *            the long value to use.
      */
     public OtpErlangLong(final BigInteger v) {
 	if (v == null) {
@@ -69,11 +69,11 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *                the stream containing the encoded value.
+     *            the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang integer.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
      */
     public OtpErlangLong(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -213,7 +213,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the value of this number, as an int.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as an int.
+     *                if the value is too large to be represented as an int.
      */
     public int intValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -232,8 +232,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the value of this number, as an int.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as an int,
-     *                    or if the value is negative.
+     *                if the value is too large to be represented as an int, or
+     *                if the value is negative.
      */
     public int uIntValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -254,8 +254,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the value of this number, as a short.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as a
-     *                    short.
+     *                if the value is too large to be represented as a short.
      */
     public short shortValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -275,8 +274,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the value of this number, as a short.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as a
-     *                    short, or if the value is negative.
+     *                if the value is too large to be represented as a short, or
+     *                if the value is negative.
      */
     public short uShortValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -298,7 +297,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the char value of this number.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as a char.
+     *                if the value is too large to be represented as a char.
      */
     public char charValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -318,7 +317,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * @return the byte value of this number.
      * 
      * @exception OtpErlangRangeException
-     *                    if the value is too large to be represented as a byte.
+     *                if the value is too large to be represented as a byte.
      */
     public byte byteValue() throws OtpErlangRangeException {
 	final long l = longValue();
@@ -351,8 +350,8 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * Convert this number to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded number should be
-     *                written.
+     *            an output stream to which the encoded number should be
+     *            written.
      */
 
     @Override
@@ -369,7 +368,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      * same value.
      * 
      * @param o
-     *                the number to compare to.
+     *            the number to compare to.
      * 
      * @return true if the numbers have the same value.
      */

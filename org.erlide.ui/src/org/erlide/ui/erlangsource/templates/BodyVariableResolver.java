@@ -33,10 +33,12 @@ public class BodyVariableResolver extends TemplateVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org.eclipse.jface.text.templates.TemplateContext)
+	 * @see
+	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+	 * .eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	protected String resolve(TemplateContext context) {
+	protected String resolve(final TemplateContext context) {
 		return fBody;
 	}
 
@@ -51,7 +53,7 @@ public class BodyVariableResolver extends TemplateVariableResolver {
 	 * @param body
 	 *            The body to set.
 	 */
-	public void setBody(String body) {
+	public void setBody(final String body) {
 		fBody = body;
 	}
 }

@@ -14,7 +14,7 @@
  * the License for the specific language governing rights and limitations
  * under the License.
  * 
- * %CopyrightEnd% 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 

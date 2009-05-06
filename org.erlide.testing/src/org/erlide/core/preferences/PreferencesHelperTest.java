@@ -28,10 +28,10 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void nextContexts_1() {
-		IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
+		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
-		IScopeContext item = new ConfigurationScope();
-		IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext item = new ConfigurationScope();
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(1, val.length);
 		Assert.assertEquals(new DefaultScope(), val[0]);
@@ -39,20 +39,20 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void nextContexts_2() {
-		IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
+		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
-		IScopeContext item = new DefaultScope();
-		IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext item = new DefaultScope();
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(0, val.length);
 	}
 
 	@Test
 	public void nextContexts_3() {
-		IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
+		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
-		IScopeContext item = new InstanceScope();
-		IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext item = new InstanceScope();
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(2, val.length);
 		Assert.assertEquals(new ConfigurationScope(), val[0]);
@@ -61,16 +61,16 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void string_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		helper.putString(KEY, "smurf");
-		String res = helper.getString(KEY, "default");
+		final String res = helper.getString(KEY, "default");
 		Assert.assertEquals("smurf", res);
 	}
 
 	@Test
 	public void default_0() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		helper.putString(KEY, "balm");
 		String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
@@ -83,7 +83,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void default_1() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		new DefaultScope().getNode(QUALIFIER).put(KEY, "balm");
 		helper.putString(KEY, "balm");
@@ -97,7 +97,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void default_2() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
 		helper.putString(KEY, "balm");
@@ -111,7 +111,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void default_3() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
 		new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
 		helper.putString(KEY, "smurf");
@@ -125,51 +125,51 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void byteArray_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
-		byte[] val = new byte[] { 1, 3, 5, 7 };
+		final byte[] val = new byte[] { 1, 3, 5, 7 };
 		helper.putByteArray(KEY, val);
-		byte[] res = helper.getByteArray(KEY, null);
+		final byte[] res = helper.getByteArray(KEY, null);
 		Assert.assertEquals(Arrays.toString(val), Arrays.toString(res));
 	}
 
 	@Test
 	public void double_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
-		double val = 3.1415926d;
+		final double val = 3.1415926d;
 		helper.putDouble(KEY, val);
-		double res = helper.getDouble(KEY, Double.NaN);
+		final double res = helper.getDouble(KEY, Double.NaN);
 		Assert.assertEquals(val, res, 1e-5);
 	}
 
 	@Test
 	public void float_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
-		float val = 3.1415926f;
+		final float val = 3.1415926f;
 		helper.putFloat(KEY, val);
-		float res = helper.getFloat(KEY, Float.NaN);
+		final float res = helper.getFloat(KEY, Float.NaN);
 		Assert.assertEquals(val, res, 1e-5);
 	}
 
 	@Test
 	public void long_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
-		long val = 314159260;
+		final long val = 314159260;
 		helper.putLong(KEY, val);
-		long res = helper.getLong(KEY, Long.MIN_VALUE);
+		final long res = helper.getLong(KEY, Long.MIN_VALUE);
 		Assert.assertEquals(val, res);
 	}
 
 	@Test
 	public void int_set() {
-		PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
+		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER,
 				new InstanceScope());
-		int val = 314159;
+		final int val = 314159;
 		helper.putInt(KEY, val);
-		int res = helper.getInt(KEY, Integer.MIN_VALUE);
+		final int res = helper.getInt(KEY, Integer.MIN_VALUE);
 		Assert.assertEquals(val, res);
 	}
 

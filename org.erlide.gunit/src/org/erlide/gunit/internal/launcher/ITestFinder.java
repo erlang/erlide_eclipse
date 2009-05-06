@@ -26,12 +26,12 @@ import org.erlide.core.erlang.IErlModule;
  */
 public interface ITestFinder {
 	ITestFinder NULL = new ITestFinder() {
-		public void findTestsInContainer(IErlElement element,
-				Set<IErlModule> result, IProgressMonitor pm) {
+		public void findTestsInContainer(final IErlElement element,
+				final Set<IErlModule> result, final IProgressMonitor pm) {
 			// do nothing
 		}
 
-		public boolean isTest(IErlModule type) {
+		public boolean isTest(final IErlModule type) {
 			return false;
 		}
 	};

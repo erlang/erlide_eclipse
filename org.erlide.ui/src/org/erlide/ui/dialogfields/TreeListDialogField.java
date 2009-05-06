@@ -90,8 +90,8 @@ public class TreeListDialogField extends DialogField {
 	 * @param adapter
 	 *            Can be <code>null</code>.
 	 */
-	public TreeListDialogField(ITreeListAdapter adapter, String[] buttonLabels,
-			ILabelProvider lprovider) {
+	public TreeListDialogField(final ITreeListAdapter adapter,
+			final String[] buttonLabels, final ILabelProvider lprovider) {
 		super();
 		fTreeAdapter = adapter;
 
@@ -127,7 +127,7 @@ public class TreeListDialogField extends DialogField {
 	 * button will then behandled internally. (enable state, button invocation
 	 * behaviour)
 	 */
-	public void setRemoveButtonIndex(int removeButtonIndex) {
+	public void setRemoveButtonIndex(final int removeButtonIndex) {
 		Assert.isTrue(removeButtonIndex < fButtonLabels.length);
 		fRemoveButtonIndex = removeButtonIndex;
 	}
@@ -137,7 +137,7 @@ public class TreeListDialogField extends DialogField {
 	 * constructor. The behaviour of the button marked as the 'up' button will
 	 * then behandled internally. (enable state, button invocation behaviour)
 	 */
-	public void setUpButtonIndex(int upButtonIndex) {
+	public void setUpButtonIndex(final int upButtonIndex) {
 		Assert.isTrue(upButtonIndex < fButtonLabels.length);
 		fUpButtonIndex = upButtonIndex;
 	}
@@ -148,7 +148,7 @@ public class TreeListDialogField extends DialogField {
 	 * will then be handled internally. (enable state, button invocation
 	 * behaviour)
 	 */
-	public void setDownButtonIndex(int downButtonIndex) {
+	public void setDownButtonIndex(final int downButtonIndex) {
 		Assert.isTrue(downButtonIndex < fButtonLabels.length);
 		fDownButtonIndex = downButtonIndex;
 	}
@@ -159,11 +159,11 @@ public class TreeListDialogField extends DialogField {
 	 * @param viewerSorter
 	 *            The viewerSorter to set
 	 */
-	public void setViewerSorter(ViewerSorter viewerSorter) {
+	public void setViewerSorter(final ViewerSorter viewerSorter) {
 		fViewerSorter = viewerSorter;
 	}
 
-	public void setTreeExpansionLevel(int level) {
+	public void setTreeExpansionLevel(final int level) {
 		fTreeExpandLevel = level;
 		if (isOkToUse(fTreeControl) && fTreeExpandLevel > 0) {
 			fTree.expandToLevel(level);
@@ -172,7 +172,7 @@ public class TreeListDialogField extends DialogField {
 
 	// ------ adapter communication
 
-	private void buttonPressed(int index) {
+	private void buttonPressed(final int index) {
 		if (!managedButtonPressed(index) && fTreeAdapter != null) {
 			fTreeAdapter.customButtonPressed(this, index);
 		}
@@ -183,7 +183,7 @@ public class TreeListDialogField extends DialogField {
 	 * 
 	 * @return Returns true if button has been handled.
 	 */
-	protected boolean managedButtonPressed(int index) {
+	protected boolean managedButtonPressed(final int index) {
 		if (index == fRemoveButtonIndex) {
 			remove();
 		} else if (index == fUpButtonIndex) {
@@ -202,7 +202,7 @@ public class TreeListDialogField extends DialogField {
 	 * @see DialogField#doFillIntoGrid
 	 */
 	@Override
-	public Control[] doFillIntoGrid(Composite parent, int nColumns) {
+	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
 		final PixelConverter converter = new PixelConverter(parent);
 
 		assertEnoughColumns(nColumns);
@@ -248,7 +248,7 @@ public class TreeListDialogField extends DialogField {
 	 * Sets the minimal width of the buttons. Must be called after widget
 	 * creation.
 	 */
-	public void setButtonsMinWidth(int minWidth) {
+	public void setButtonsMinWidth(final int minWidth) {
 		if (fLastSeparator != null) {
 			((GridData) fLastSeparator.getLayoutData()).widthHint = minWidth;
 		}
@@ -264,7 +264,7 @@ public class TreeListDialogField extends DialogField {
 	 *            The parent composite when called the first time, or
 	 *            <code>null</code> after.
 	 */
-	public Control getTreeControl(Composite parent) {
+	public Control getTreeControl(final Composite parent) {
 		if (fTreeControl == null) {
 			assertCompositeNotNull(parent);
 
@@ -274,7 +274,7 @@ public class TreeListDialogField extends DialogField {
 			fTreeControl.addKeyListener(new KeyAdapter() {
 
 				@Override
-				public void keyPressed(KeyEvent e) {
+				public void keyPressed(final KeyEvent e) {
 					handleKeyPressed(e);
 				}
 			});
@@ -313,13 +313,13 @@ public class TreeListDialogField extends DialogField {
 		return style;
 	}
 
-	protected TreeViewer createTreeViewer(Composite parent) {
+	protected TreeViewer createTreeViewer(final Composite parent) {
 		final Tree tree = new Tree(parent, getTreeStyle());
 		return new TreeViewer(tree);
 	}
 
-	protected Button createButton(Composite parent, String label,
-			SelectionListener listener) {
+	protected Button createButton(final Composite parent, final String label,
+			final SelectionListener listener) {
 		final Button button = new Button(parent, SWT.PUSH);
 		button.setText(label);
 		button.addSelectionListener(listener);
@@ -334,7 +334,7 @@ public class TreeListDialogField extends DialogField {
 		return button;
 	}
 
-	private Label createSeparator(Composite parent) {
+	private Label createSeparator(final Composite parent) {
 		final Label separator = new Label(parent, SWT.NONE);
 		separator.setVisible(false);
 		final GridData gd = new GridData();
@@ -353,17 +353,17 @@ public class TreeListDialogField extends DialogField {
 	 *            The parent composite when called the first time, or
 	 *            <code>null</code> after.
 	 */
-	public Composite getButtonBox(Composite parent) {
+	public Composite getButtonBox(final Composite parent) {
 		if (fButtonsControl == null) {
 			assertCompositeNotNull(parent);
 
 			final SelectionListener listener = new SelectionListener() {
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 					doButtonSelected(e);
 				}
 
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					doButtonSelected(e);
 				}
 			};
@@ -399,7 +399,7 @@ public class TreeListDialogField extends DialogField {
 		return fButtonsControl;
 	}
 
-	protected void doButtonSelected(SelectionEvent e) {
+	protected void doButtonSelected(final SelectionEvent e) {
 		if (fButtonControls != null) {
 			for (int i = 0; i < fButtonControls.length; i++) {
 				if (e.widget == fButtonControls[i]) {
@@ -414,7 +414,7 @@ public class TreeListDialogField extends DialogField {
 	 * Handles key events in the table viewer. Specifically when the delete key
 	 * is pressed.
 	 */
-	protected void handleKeyPressed(KeyEvent event) {
+	protected void handleKeyPressed(final KeyEvent event) {
 		if (event.character == SWT.DEL && event.stateMask == 0) {
 			if (fRemoveButtonIndex != -1
 					&& isButtonEnabled(fTree.getSelection(), fRemoveButtonIndex)) {
@@ -451,7 +451,7 @@ public class TreeListDialogField extends DialogField {
 		}
 	}
 
-	protected boolean containsAttributes(List<Object> selected) {
+	protected boolean containsAttributes(final List<Object> selected) {
 		for (int i = 0; i < selected.size(); i++) {
 			if (!fElements.contains(selected.get(i))) {
 				return true;
@@ -460,9 +460,10 @@ public class TreeListDialogField extends DialogField {
 		return false;
 	}
 
-	protected boolean getManagedButtonState(ISelection sel, int index) {
+	protected boolean getManagedButtonState(final ISelection sel,
+			final int index) {
 		final List<Object> selected = getSelectedElements();
-		boolean hasAttributes = containsAttributes(selected);
+		final boolean hasAttributes = containsAttributes(selected);
 		if (index == fRemoveButtonIndex) {
 			return !selected.isEmpty() && !hasAttributes;
 		} else if (index == fUpButtonIndex) {
@@ -480,7 +481,7 @@ public class TreeListDialogField extends DialogField {
 	protected void updateEnableState() {
 		super.updateEnableState();
 
-		boolean enabled = isEnabled();
+		final boolean enabled = isEnabled();
 		if (isOkToUse(fTreeControl)) {
 			if (!enabled) {
 				fSelectionWhenEnabled = fTree.getSelection();
@@ -497,14 +498,14 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Sets a button enabled or disabled.
 	 */
-	public void enableButton(int index, boolean enable) {
+	public void enableButton(final int index, final boolean enable) {
 		if (fButtonsEnabled != null && index < fButtonsEnabled.length) {
 			fButtonsEnabled[index] = enable;
 			updateButtonState();
 		}
 	}
 
-	private boolean isButtonEnabled(ISelection sel, int index) {
+	private boolean isButtonEnabled(final ISelection sel, final int index) {
 		final boolean extraState = getManagedButtonState(sel, index);
 		return isEnabled() && extraState && fButtonsEnabled[index];
 	}
@@ -514,7 +515,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Sets the elements shown in the list.
 	 */
-	public void setElements(List<Object> elements) {
+	public void setElements(final List<Object> elements) {
 		fElements = new ArrayList<Object>(elements);
 		refresh();
 		if (isOkToUse(fTreeControl)) {
@@ -534,21 +535,21 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Gets the element shown at the given index.
 	 */
-	public Object getElement(int index) {
+	public Object getElement(final int index) {
 		return fElements.get(index);
 	}
 
 	/**
 	 * Gets the index of an element in the list or -1 if element is not in list.
 	 */
-	public int getIndexOfElement(Object elem) {
+	public int getIndexOfElement(final Object elem) {
 		return fElements.indexOf(elem);
 	}
 
 	/**
 	 * Replace an element.
 	 */
-	public void replaceElement(Object oldElement, Object newElement) {
+	public void replaceElement(final Object oldElement, final Object newElement) {
 		final int idx = fElements.indexOf(oldElement);
 		if (idx != -1) {
 			fElements.set(idx, newElement);
@@ -574,7 +575,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Adds an element at the end of the tree list.
 	 */
-	public void addElement(Object element) {
+	public void addElement(final Object element) {
 		if (fElements.contains(element)) {
 			return;
 		}
@@ -589,7 +590,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Adds elements at the end of the tree list.
 	 */
-	public void addElements(List<Object> elements) {
+	public void addElements(final List<Object> elements) {
 		final int nElements = elements.size();
 
 		if (nElements > 0) {
@@ -617,7 +618,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Adds an element at a position.
 	 */
-	public void insertElementAt(Object element, int index) {
+	public void insertElementAt(final Object element, final int index) {
 		if (fElements.contains(element)) {
 			return;
 		}
@@ -646,7 +647,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Removes an element from the list.
 	 */
-	public void removeElement(Object element) {
+	public void removeElement(final Object element) {
 		if (fElements.remove(element)) {
 			if (isOkToUse(fTreeControl)) {
 				fTree.remove(element);
@@ -660,7 +661,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Removes elements from the list.
 	 */
-	public void removeElements(List<Object> elements) {
+	public void removeElements(final List<Object> elements) {
 		if (elements.size() > 0) {
 			fElements.removeAll(elements);
 			if (isOkToUse(fTreeControl)) {
@@ -677,7 +678,7 @@ public class TreeListDialogField extends DialogField {
 		return fElements.size();
 	}
 
-	public void selectElements(ISelection selection) {
+	public void selectElements(final ISelection selection) {
 		fSelectionWhenEnabled = selection;
 		if (isOkToUse(fTreeControl)) {
 			fTree.setSelection(selection, true);
@@ -730,7 +731,7 @@ public class TreeListDialogField extends DialogField {
 	/**
 	 * Refreshes the tree.
 	 */
-	public void refresh(Object element) {
+	public void refresh(final Object element) {
 		if (isOkToUse(fTreeControl)) {
 			fTree.refresh(element);
 		}
@@ -738,7 +739,8 @@ public class TreeListDialogField extends DialogField {
 
 	// ------- list maintenance
 
-	private List<Object> moveUp(List<Object> elements, List<Object> move) {
+	private List<Object> moveUp(final List<Object> elements,
+			final List<Object> move) {
 		final int nElements = elements.size();
 		final List<Object> res = new ArrayList<Object>(nElements);
 		Object floating = null;
@@ -759,21 +761,21 @@ public class TreeListDialogField extends DialogField {
 		return res;
 	}
 
-	private void moveUp(List<Object> toMoveUp) {
+	private void moveUp(final List<Object> toMoveUp) {
 		if (toMoveUp.size() > 0) {
 			setElements(moveUp(fElements, toMoveUp));
 			fTree.reveal(toMoveUp.get(0));
 		}
 	}
 
-	private void moveDown(List<Object> toMoveDown) {
+	private void moveDown(final List<Object> toMoveDown) {
 		if (toMoveDown.size() > 0) {
 			setElements(reverse(moveUp(reverse(fElements), toMoveDown)));
 			fTree.reveal(toMoveDown.get(toMoveDown.size() - 1));
 		}
 	}
 
-	private List<Object> reverse(List<Object> p) {
+	private List<Object> reverse(final List<Object> p) {
 		final List<Object> reverse = new ArrayList<Object>(p.size());
 		for (int i = p.size() - 1; i >= 0; i--) {
 			reverse.add(p.get(i));
@@ -793,7 +795,7 @@ public class TreeListDialogField extends DialogField {
 		moveDown(getSelectedElements());
 	}
 
-	private boolean canMoveUp(List<Object> selectedElements) {
+	private boolean canMoveUp(final List<Object> selectedElements) {
 		if (isOkToUse(fTreeControl)) {
 			int nSelected = selectedElements.size();
 			final int nElements = fElements.size();
@@ -807,7 +809,7 @@ public class TreeListDialogField extends DialogField {
 		return false;
 	}
 
-	private boolean canMoveDown(List<Object> selectedElements) {
+	private boolean canMoveDown(final List<Object> selectedElements) {
 		if (isOkToUse(fTreeControl)) {
 			int nSelected = selectedElements.size();
 			for (int i = fElements.size() - 1; i >= 0 && nSelected > 0; i--) {
@@ -838,7 +840,7 @@ public class TreeListDialogField extends DialogField {
 		return result;
 	}
 
-	public void expandElement(Object element, int level) {
+	public void expandElement(final Object element, final int level) {
 		if (isOkToUse(fTreeControl)) {
 			fTree.expandToLevel(element, level);
 		}
@@ -853,22 +855,23 @@ public class TreeListDialogField extends DialogField {
 
 		// ------- ITreeContentProvider Interface ------------
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
 			// will never happen
 		}
 
-		public boolean isDeleted(Object element) {
+		public boolean isDeleted(final Object element) {
 			return false;
 		}
 
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object obj) {
+		public Object[] getElements(final Object obj) {
 			return fElements.toArray();
 		}
 
-		public Object[] getChildren(Object element) {
+		public Object[] getChildren(final Object element) {
 			if (fTreeAdapter != null) {
 				return fTreeAdapter.getChildren(TreeListDialogField.this,
 						element);
@@ -876,7 +879,7 @@ public class TreeListDialogField extends DialogField {
 			return NO_ELEMENTS;
 		}
 
-		public Object getParent(Object element) {
+		public Object getParent(final Object element) {
 			if (!fElements.contains(element) && fTreeAdapter != null) {
 				return fTreeAdapter
 						.getParent(TreeListDialogField.this, element);
@@ -884,7 +887,7 @@ public class TreeListDialogField extends DialogField {
 			return fParentElement;
 		}
 
-		public boolean hasChildren(Object element) {
+		public boolean hasChildren(final Object element) {
 			if (fTreeAdapter != null) {
 				return fTreeAdapter.hasChildren(TreeListDialogField.this,
 						element);
@@ -894,29 +897,31 @@ public class TreeListDialogField extends DialogField {
 
 		// ------- ISelectionChangedListener Interface ------------
 
-		public void selectionChanged(SelectionChangedEvent event) {
+		public void selectionChanged(final SelectionChangedEvent event) {
 			doListSelected(event);
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
+		 * @see
+		 * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
+		 * .jface.viewers.DoubleClickEvent)
 		 */
-		public void doubleClick(DoubleClickEvent event) {
+		public void doubleClick(final DoubleClickEvent event) {
 			doDoubleClick(event);
 		}
 
 	}
 
-	protected void doListSelected(SelectionChangedEvent event) {
+	protected void doListSelected(final SelectionChangedEvent event) {
 		updateButtonState();
 		if (fTreeAdapter != null) {
 			fTreeAdapter.selectionChanged(this);
 		}
 	}
 
-	protected void doDoubleClick(DoubleClickEvent event) {
+	protected void doDoubleClick(final DoubleClickEvent event) {
 		if (fTreeAdapter != null) {
 			fTreeAdapter.doubleClicked(this);
 		}

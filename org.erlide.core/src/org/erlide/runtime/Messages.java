@@ -19,11 +19,11 @@ import java.text.MessageFormat;
  */
 public final class Messages {
 
-	public static String format(String message, Object object) {
+	public static String format(final String message, final Object object) {
 		return MessageFormat.format(message, new Object[] { object });
 	}
 
-	public static String format(String message, Object[] objects) {
+	public static String format(final String message, final Object[] objects) {
 		return MessageFormat.format(message, objects);
 	}
 

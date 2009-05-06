@@ -27,8 +27,8 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class FindReferencesAction extends FindAction {
 
 	/**
-	 * Creates a new <code>FindReferencesAction</code>. The action requires
-	 * that the selection provided by the site's selection provider is of type
+	 * Creates a new <code>FindReferencesAction</code>. The action requires that
+	 * the selection provided by the site's selection provider is of type
 	 * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
 	 * 
 	 * @param site

@@ -71,8 +71,8 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param selection
 	 *            the current resource selection
 	 */
-	protected ErlangWizardResourceImportPage(String name,
-			IStructuredSelection selection) {
+	protected ErlangWizardResourceImportPage(final String name,
+			final IStructuredSelection selection) {
 		super(name);
 
 		// Initialize to null
@@ -113,7 +113,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/**
 	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 
 		initializeDialogUnits(parent);
 
@@ -186,7 +186,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	/**
 	 * Create the import source selection widget
 	 */
-	protected void createFileSelectionGroup(Composite parent) {
+	protected void createFileSelectionGroup(final Composite parent) {
 
 		// Just create with a dummy root.
 		selectionGroup = new ResourceTreeAndListGroup(
@@ -197,7 +197,7 @@ public abstract class ErlangWizardResourceImportPage extends
 				DialogUtil.inRegularFontMode(parent));
 
 		final ICheckStateListener listener = new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
+			public void checkStateChanged(final CheckStateChangedEvent event) {
 				updateWidgetEnablements();
 			}
 		};
@@ -288,8 +288,8 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * filtered by the IElementFilter.
 	 * 
 	 */
-	protected void getSelectedResources(IElementFilter filter,
-			IProgressMonitor monitor) throws InterruptedException {
+	protected void getSelectedResources(final IElementFilter filter,
+			final IProgressMonitor monitor) throws InterruptedException {
 		selectionGroup.getAllCheckedListItems(filter, monitor);
 	}
 
@@ -393,7 +393,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param value
 	 *            boolean
 	 */
-	protected void setAllSelections(boolean value) {
+	protected void setAllSelections(final boolean value) {
 		selectionGroup.setAllSelections(value);
 	}
 
@@ -404,7 +404,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param value
 	 *            String
 	 */
-	public void setContainerFieldValue(String value) {
+	public void setContainerFieldValue(final String value) {
 		if (value != null) {
 			containerNameField = value;
 		}
@@ -523,7 +523,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @return <code>true</code> if the source location conflicts with the
 	 *         destination resource, <code>false</code> if not
 	 */
-	protected boolean sourceConflictsWithDestination(IPath sourcePath) {
+	protected boolean sourceConflictsWithDestination(final IPath sourcePath) {
 		return false;
 	}
 

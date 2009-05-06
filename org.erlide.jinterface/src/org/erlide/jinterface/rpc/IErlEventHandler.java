@@ -20,7 +20,7 @@ public interface IErlEventHandler {
 	boolean isTerminated();
 
 	OtpErlangObject receiveEvent(int timeout) throws OtpErlangExit,
-			OtpErlangDecodeException;
+	OtpErlangDecodeException;
 
 	int getTimeout();
 

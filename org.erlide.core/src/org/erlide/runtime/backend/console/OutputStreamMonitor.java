@@ -34,7 +34,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * The stream being monitored (connected system out or err).
 	 */
-	private InputStream fStream;
+	private final InputStream fStream;
 
 	/**
 	 * A collection of listeners
@@ -49,7 +49,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * The local copy of the stream contents
 	 */
-	private StringBuffer fContents;
+	private final StringBuffer fContents;
 
 	/**
 	 * The thread which reads from the stream
@@ -73,7 +73,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 * Creates an output stream monitor on the given stream (connected to system
 	 * out or err).
 	 */
-	public OutputStreamMonitor(InputStream stream) {
+	public OutputStreamMonitor(final InputStream stream) {
 		fStream = new BufferedInputStream(stream, 8192);
 		fContents = new StringBuffer();
 	}
@@ -81,9 +81,11 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.core.model.IStreamMonitor#addListener(org.eclipse.debug.core.IStreamListener)
+	 * @see
+	 * org.eclipse.debug.core.model.IStreamMonitor#addListener(org.eclipse.debug
+	 * .core.IStreamListener)
 	 */
-	public synchronized void addListener(IStreamListener listener) {
+	public synchronized void addListener(final IStreamListener listener) {
 		fListeners.add(listener);
 	}
 
@@ -106,7 +108,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * Notifies the listeners that text has been appended to the stream.
 	 */
-	private void fireStreamAppended(String text) {
+	private void fireStreamAppended(final String text) {
 		getNotifier().notifyAppend(text);
 	}
 
@@ -123,9 +125,8 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 * Continually reads from the stream.
 	 * <p>
 	 * This method, along with the <code>startReading</code> method is used to
-	 * allow <code>OutputStreamMonitor</code> to implement
-	 * <code>Runnable</code> without publicly exposing a <code>run</code>
-	 * method.
+	 * allow <code>OutputStreamMonitor</code> to implement <code>Runnable</code>
+	 * without publicly exposing a <code>run</code> method.
 	 */
 	protected void read() {
 		lastSleep = System.currentTimeMillis();
@@ -187,9 +188,11 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.debug.core.model.IStreamMonitor#removeListener(org.eclipse.debug.core.IStreamListener)
+	 * @see
+	 * org.eclipse.debug.core.model.IStreamMonitor#removeListener(org.eclipse
+	 * .debug.core.IStreamListener)
 	 */
-	public synchronized void removeListener(IStreamListener listener) {
+	public synchronized void removeListener(final IStreamListener listener) {
 		fListeners.remove(listener);
 	}
 
@@ -213,7 +216,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * @see org.eclipse.debug.core.model.IFlushableStreamMonitor#setBuffered(boolean)
 	 */
-	public synchronized void setBuffered(boolean buffer) {
+	public synchronized void setBuffered(final boolean buffer) {
 		fBuffered = buffer;
 	}
 
@@ -244,7 +247,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 		/**
 		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
 		 */
-		public void handleException(Throwable exception) {
+		public void handleException(final Throwable exception) {
 			DebugPlugin.log(exception);
 		}
 
@@ -255,13 +258,13 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			fListener.streamAppended(fText, OutputStreamMonitor.this);
 		}
 
-		public void notifyAppend(String text) {
+		public void notifyAppend(final String text) {
 			if (text == null) {
 				return;
 			}
 			fText = text;
 			final Object[] copiedListeners = fListeners.toArray();
-			for (Object element : copiedListeners) {
+			for (final Object element : copiedListeners) {
 				fListener = (IStreamListener) element;
 				SafeRunner.run(this);
 			}

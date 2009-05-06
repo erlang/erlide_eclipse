@@ -44,7 +44,7 @@ public class TestKindRegistry {
 
 	private ArrayList<TestKind> fTestKinds;
 
-	private TestKindRegistry(IExtensionPoint point) {
+	private TestKindRegistry(final IExtensionPoint point) {
 		this.fPoint = point;
 	}
 
@@ -58,15 +58,15 @@ public class TestKindRegistry {
 			return;
 		}
 
-		ArrayList<TestKind> items = new ArrayList<TestKind>();
-		for (Iterator<IConfigurationElement> iter = getConfigurationElements()
+		final ArrayList<TestKind> items = new ArrayList<TestKind>();
+		for (final Iterator<IConfigurationElement> iter = getConfigurationElements()
 				.iterator(); iter.hasNext();) {
-			IConfigurationElement element = iter.next();
+			final IConfigurationElement element = iter.next();
 			items.add(new TestKind(element));
 		}
 
 		Collections.sort(items, new Comparator<TestKind>() {
-			public int compare(TestKind kind0, TestKind kind1) {
+			public int compare(final TestKind kind0, final TestKind kind1) {
 
 				if (kind0.precedes(kind1)) {
 					return -1;
@@ -81,10 +81,10 @@ public class TestKindRegistry {
 	}
 
 	public List<String> getDisplayNames() {
-		ArrayList<String> result = new ArrayList<String>();
-		List<TestKind> testTypes = getAllKinds();
-		for (Iterator<TestKind> iter = testTypes.iterator(); iter.hasNext();) {
-			ITestKind type = iter.next();
+		final ArrayList<String> result = new ArrayList<String>();
+		final List<TestKind> testTypes = getAllKinds();
+		for (final Iterator<TestKind> iter = testTypes.iterator(); iter.hasNext();) {
+			final ITestKind type = iter.next();
 			result.add(type.getDisplayName());
 		}
 		return result;
@@ -95,11 +95,11 @@ public class TestKindRegistry {
 	 *            an id, can be <code>null</code>
 	 * @return a TestKind, ITestKind.NULL if not available
 	 */
-	public ITestKind getKind(String testKindId) {
+	public ITestKind getKind(final String testKindId) {
 		if (testKindId != null) {
-			for (Iterator<TestKind> iter = getAllKinds().iterator(); iter
-					.hasNext();) {
-				TestKind kind = iter.next();
+			for (final Iterator<TestKind> iter = getAllKinds().iterator(); iter
+			.hasNext();) {
+				final TestKind kind = iter.next();
 				if (testKindId.equals(kind.getId())) {
 					return kind;
 				}
@@ -108,24 +108,24 @@ public class TestKindRegistry {
 		return ITestKind.NULL;
 	}
 
-	public static String getContainerTestKindId(IErlElement element) {
+	public static String getContainerTestKindId(final IErlElement element) {
 		// FIXME
 		return "";
 	}
 
-	public static ITestKind getContainerTestKind(IErlElement element) {
+	public static ITestKind getContainerTestKind(final IErlElement element) {
 		return getDefault().getKind(getContainerTestKindId(element));
 	}
 
 	private ArrayList<IConfigurationElement> getConfigurationElements() {
-		ArrayList<IConfigurationElement> items = new ArrayList<IConfigurationElement>();
-		IExtension[] extensions = this.fPoint.getExtensions();
+		final ArrayList<IConfigurationElement> items = new ArrayList<IConfigurationElement>();
+		final IExtension[] extensions = this.fPoint.getExtensions();
 		for (int i = 0; i < extensions.length; i++) {
-			IExtension extension = extensions[i];
-			IConfigurationElement[] elements = extension
-					.getConfigurationElements();
+			final IExtension extension = extensions[i];
+			final IConfigurationElement[] elements = extension
+			.getConfigurationElements();
 			for (int j = 0; j < elements.length; j++) {
-				IConfigurationElement element = elements[j];
+				final IConfigurationElement element = elements[j];
 				items.add(element);
 			}
 		}
@@ -133,10 +133,10 @@ public class TestKindRegistry {
 	}
 
 	public String getAllKindIds() {
-		List<TestKind> allKinds = getAllKinds();
+		final List<TestKind> allKinds = getAllKinds();
 		String returnThis = ""; //$NON-NLS-1$
-		for (Iterator<TestKind> iter = allKinds.iterator(); iter.hasNext();) {
-			ITestKind kind = iter.next();
+		for (final Iterator<TestKind> iter = allKinds.iterator(); iter.hasNext();) {
+			final ITestKind kind = iter.next();
 			returnThis += "(" + kind.getId() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return returnThis;

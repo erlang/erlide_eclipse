@@ -18,7 +18,7 @@ public class TestCaseElement extends TestElement implements ITestCaseElement {
 
 	private boolean fIgnored;
 
-	public TestCaseElement(TestSuiteElement parent, String id, String testName) {
+	public TestCaseElement(final TestSuiteElement parent, final String id, final String testName) {
 		super(parent, id, testName);
 		Assert.isNotNull(parent);
 	}
@@ -31,7 +31,7 @@ public class TestCaseElement extends TestElement implements ITestCaseElement {
 	 * @see org.erlide.gunit.internal.runner.MessageIds#IGNORED_TEST_PREFIX
 	 */
 	public String getTestMethodName() {
-		String testName = getTestName();
+		final String testName = getTestName();
 		int index = testName.indexOf('(');
 		if (index > 0) {
 			return testName.substring(0, index);
@@ -52,7 +52,7 @@ public class TestCaseElement extends TestElement implements ITestCaseElement {
 		return getClassName();
 	}
 
-	public void setIgnored(boolean ignored) {
+	public void setIgnored(final boolean ignored) {
 		this.fIgnored = ignored;
 	}
 

@@ -10,12 +10,12 @@ public class Tuple extends BaseTuple {
 
 	// Add generic elements to the tuple.
 	// Supports dot-chaining.
-	public Tuple add(Object o) {
+	public Tuple add(final Object o) {
 		super.addElement(o);
 		return this;
 	}
 
-	public Tuple add(int i) {
+	public Tuple add(final int i) {
 		super.addElement(i);
 		return this;
 	}

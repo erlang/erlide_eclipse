@@ -31,7 +31,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
 	 * org.eclipse.jface.text.contentassist.ICompletionProposal#apply(org.eclipse
 	 * .jface.text.IDocument)
 	 */
-	public void apply(IDocument document) {
+	public void apply(final IDocument document) {
 		// do nothing
 	}
 
@@ -72,7 +72,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
 	 * org.eclipse.jface.text.contentassist.ICompletionProposal#getSelection
 	 * (org.eclipse.jface.text.IDocument)
 	 */
-	public Point getSelection(IDocument document) {
+	public Point getSelection(final IDocument document) {
 		return null;
 	}
 

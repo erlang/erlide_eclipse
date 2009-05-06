@@ -37,8 +37,8 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 
 	IWorkbenchWindow fWorkbench;
 
-	private void run(IStructuredSelection selection) {
-		IErlElement[] elements = getSelectedElements(selection);
+	private void run(final IStructuredSelection selection) {
+		final IErlElement[] elements = getSelectedElements(selection);
 		if (elements.length == 0) {
 			MessageDialog.openInformation(getShell(),
 					GUnitMessages.GotoReferencedTestAction_dialog_title,
@@ -47,15 +47,15 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		}
 		try {
 			run(elements);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			ErrorDialog.openError(getShell(),
 					GUnitMessages.GotoReferencedTestAction_dialog_title,
 					GUnitMessages.GotoReferencedTestAction_dialog_error, e
-							.getStatus());
+					.getStatus());
 		}
 	}
 
-	private void run(ITextSelection ITextSelection) {
+	private void run(final ITextSelection ITextSelection) {
 		// try {
 		// JavaEditor editor = getActiveEditor();
 		// if (editor == null) {
@@ -84,8 +84,8 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		// }
 	}
 
-	private void run(IErlElement[] elements) throws PartInitException,
-			ErlModelException {
+	private void run(final IErlElement[] elements) throws PartInitException,
+	ErlModelException {
 		// IErlElement element = elements[0];
 		//
 		// SelectionStatusDialog dialog = new TestMethodSelectionDialog(
@@ -109,20 +109,20 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		// openElement((IErlElement) result);
 	}
 
-	private void openElement(IErlElement result) throws ErlModelException,
-			PartInitException {
+	private void openElement(final IErlElement result) throws ErlModelException,
+	PartInitException {
 		// IEditorPart part = JavaUI.openInEditor(result);
 		// JavaUI.revealInEditor(part, result);
 	}
 
-	private IErlElement[] getSelectedElements(IStructuredSelection selection) {
-		List<?> elements = selection.toList();
-		int size = elements.size();
+	private IErlElement[] getSelectedElements(final IStructuredSelection selection) {
+		final List<?> elements = selection.toList();
+		final int size = elements.size();
 		if (size == 0) {
 			return new IErlElement[0];
 		}
 
-		ArrayList<IErlElement> result = new ArrayList<IErlElement>(size);
+		final ArrayList<IErlElement> result = new ArrayList<IErlElement>(size);
 
 		for (int i = 0; i < size; i++) {
 			// Object e = elements.get(i);
@@ -146,7 +146,7 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		return result.toArray(new IErlElement[result.size()]);
 	}
 
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		if (this.fSelection instanceof IStructuredSelection) {
 			run((IStructuredSelection) this.fSelection);
 		} else if (this.fSelection instanceof ITextSelection) {
@@ -154,7 +154,7 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action, final ISelection selection) {
 		this.fSelection = selection;
 		action.setEnabled(getActiveEditor() != null);
 	}
@@ -169,12 +169,12 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window) {
+	public void init(final IWorkbenchWindow window) {
 		this.fWorkbench = window;
 	}
 
 	private ErlangEditor getActiveEditor() {
-		IEditorPart editor = this.fWorkbench.getActivePage().getActiveEditor();
+		final IEditorPart editor = this.fWorkbench.getActivePage().getActiveEditor();
 		if (editor instanceof ErlangEditor) {
 			return (ErlangEditor) editor;
 		}

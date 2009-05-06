@@ -43,16 +43,15 @@ public class OtpNodeStatus {
      * Notify about remote node status changes.
      * 
      * @param node
-     *                the node whose status change is being indicated by this
-     *                call.
+     *            the node whose status change is being indicated by this call.
      * 
      * @param up
-     *                true if the node has come up, false if it has gone down.
+     *            true if the node has come up, false if it has gone down.
      * 
      * @param info
-     *                additional info that may be available, for example an
-     *                exception that was raised causing the event in question
-     *                (may be null).
+     *            additional info that may be available, for example an
+     *            exception that was raised causing the event in question (may
+     *            be null).
      * 
      */
     public void remoteStatus(final String node, final boolean up,
@@ -63,16 +62,15 @@ public class OtpNodeStatus {
      * Notify about local node exceptions.
      * 
      * @param node
-     *                the node whose status change is being indicated by this
-     *                call.
+     *            the node whose status change is being indicated by this call.
      * 
      * @param up
-     *                true if the node has come up, false if it has gone down.
+     *            true if the node has come up, false if it has gone down.
      * 
      * @param info
-     *                additional info that may be available, for example an
-     *                exception that was raised causing the event in question
-     *                (may be null).
+     *            additional info that may be available, for example an
+     *            exception that was raised causing the event in question (may
+     *            be null).
      */
     public void localStatus(final String node, final boolean up,
 	    final Object info) {
@@ -82,16 +80,16 @@ public class OtpNodeStatus {
      * Notify about failed connection attempts.
      * 
      * @param node
-     *                The name of the remote node
+     *            The name of the remote node
      * 
      * @param incoming
-     *                The direction of the connection attempt, i.e. true for
-     *                incoming, false for outgoing.
+     *            The direction of the connection attempt, i.e. true for
+     *            incoming, false for outgoing.
      * 
      * @param info
-     *                additional info that may be available, for example an
-     *                exception that was raised causing the event in question
-     *                (may be null).
+     *            additional info that may be available, for example an
+     *            exception that was raised causing the event in question (may
+     *            be null).
      */
     public void connAttempt(final String node, final boolean incoming,
 	    final Object info) {

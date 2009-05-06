@@ -26,11 +26,11 @@ public class DialogUtil {
 	 * Open an error style dialog for PartInitException by including any extra
 	 * information from the nested CoreException if present.
 	 */
-	public static void openError(Shell parent, String title, String message,
-			PartInitException exception) {
+	public static void openError(final Shell parent, final String title,
+			final String message, final PartInitException exception) {
 		// Check for a nested CoreException
 		CoreException nestedException = null;
-		IStatus status = exception.getStatus();
+		final IStatus status = exception.getStatus();
 		if (status != null && status.getException() instanceof CoreException) {
 			nestedException = (CoreException) status.getException();
 		}
@@ -53,10 +53,10 @@ public class DialogUtil {
 	 */
 	public static String removeAccel(String label) {
 
-		int startBracket = label.indexOf("(&"); //$NON-NLS-1$
+		final int startBracket = label.indexOf("(&"); //$NON-NLS-1$
 		// Non latin accelerator?
 		if (startBracket >= 0) {
-			int endBracket = label.indexOf(')');
+			final int endBracket = label.indexOf(')');
 
 			// If there is more than one character it is not an accelerator
 			if ((endBracket - startBracket) == 3) {
@@ -65,7 +65,7 @@ public class DialogUtil {
 			}
 		}
 
-		int i = label.indexOf('&');
+		final int i = label.indexOf('&');
 		if (i >= 0) {
 			label = label.substring(0, i) + label.substring(i + 1);
 		}
@@ -81,10 +81,10 @@ public class DialogUtil {
 	 *            The Composite whose Font will be queried.
 	 * @return int The result of the display size divided by the font size.
 	 */
-	public static int availableRows(Composite parent) {
+	public static int availableRows(final Composite parent) {
 
-		int fontHeight = (parent.getFont().getFontData())[0].getHeight();
-		int displayHeight = parent.getDisplay().getClientArea().height;
+		final int fontHeight = (parent.getFont().getFontData())[0].getHeight();
+		final int displayHeight = parent.getDisplay().getClientArea().height;
 
 		return displayHeight / fontHeight;
 	}
@@ -99,7 +99,7 @@ public class DialogUtil {
 	 * @return boolean. True if there are more than 50 lines of possible text in
 	 *         the display.
 	 */
-	public static boolean inRegularFontMode(Composite parent) {
+	public static boolean inRegularFontMode(final Composite parent) {
 
 		return availableRows(parent) > 50;
 	}

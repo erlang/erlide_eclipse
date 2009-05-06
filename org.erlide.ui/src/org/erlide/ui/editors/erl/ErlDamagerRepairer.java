@@ -22,7 +22,7 @@ import org.erlide.runtime.ErlLogger;
 
 public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 
-	public ErlDamagerRepairer(ITokenScanner scanner) {
+	public ErlDamagerRepairer(final ITokenScanner scanner) {
 		super(scanner);
 	}
 
@@ -31,8 +31,8 @@ public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 	 * ITypedRegion)
 	 */
 	@Override
-	public void createPresentation(TextPresentation presentation,
-			ITypedRegion region) {
+	public void createPresentation(final TextPresentation presentation,
+			final ITypedRegion region) {
 
 		if (fScanner == null) {
 			// will be removed if deprecated constructor will be removed
@@ -55,7 +55,7 @@ public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 				try {
 					ErlLogger.warn("null token from '%s'>>>", fDocument.get(
 							lastStart, region.getLength()));
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 					ErlLogger.warn("null token from '%s'", fDocument.get());
 				}
 				break;

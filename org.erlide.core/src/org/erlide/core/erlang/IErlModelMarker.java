@@ -67,8 +67,8 @@ public interface IErlModelMarker {
 	String ID = "id"; //$NON-NLS-1$
 
 	/**
-	 * Flags marker attribute (value <code>"flags"</code>). Reserved for
-	 * future use.
+	 * Flags marker attribute (value <code>"flags"</code>). Reserved for future
+	 * use.
 	 */
 	String FLAGS = "flags"; //$NON-NLS-1$
 
@@ -78,8 +78,8 @@ public interface IErlModelMarker {
 	 * used to recognize those markers in the workspace that flag problems
 	 * detected by the Erlang tooling during classpath setting.
 	 */
-	String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID +
-			".buildpath_problem"; //$NON-NLS-1$
+	String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".buildpath_problem"; //$NON-NLS-1$
 
 	/**
 	 * Path entry problem marker type (value
@@ -87,13 +87,13 @@ public interface IErlModelMarker {
 	 * used to recognize those markers in the workspace that flag problems
 	 * detected by the Erlang tooling during classpath setting.
 	 */
-	String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID +
-			".pathentry_problem"; //$NON-NLS-1$
+	String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".pathentry_problem"; //$NON-NLS-1$
 
 	/**
 	 * PathEntry file format marker attribute (value
-	 * <code>"PathEntryFileFormat"</code>). Used only on pathentry store
-	 * problem markers. The value of this attribute is either "true" or "false".
+	 * <code>"PathEntryFileFormat"</code>). Used only on pathentry store problem
+	 * markers. The value of this attribute is either "true" or "false".
 	 * 
 	 */
 	public static final String PATHENTRY_FILE_FORMAT = "pathEntryFileFormat"; //$NON-NLS-1$

@@ -23,7 +23,7 @@ public class TestKind implements ITestKind {
 
 	private ITestFinder fFinder;
 
-	public TestKind(IConfigurationElement element) {
+	public TestKind(final IConfigurationElement element) {
 		this.fElement = element;
 		this.fFinder = null;
 	}
@@ -35,8 +35,8 @@ public class TestKind implements ITestKind {
 		if (this.fFinder == null) {
 			try {
 				this.fFinder = (ITestFinder) this.fElement
-						.createExecutableExtension(FINDER_CLASS_NAME);
-			} catch (CoreException e1) {
+				.createExecutableExtension(FINDER_CLASS_NAME);
+			} catch (final CoreException e1) {
 				GUnitPlugin.log(e1);
 				this.fFinder = ITestFinder.NULL;
 			}
@@ -80,7 +80,7 @@ public class TestKind implements ITestKind {
 	 * @see org.erlide.gunit.internal.launcher.ITestKind#getPrecededKindId()
 	 */
 	public String getPrecededKindId() {
-		String attribute = getAttribute(PRECEDES);
+		final String attribute = getAttribute(PRECEDES);
 		return attribute == null ? "" : attribute; //$NON-NLS-1$
 	}
 
@@ -91,13 +91,13 @@ public class TestKind implements ITestKind {
 		return false;
 	}
 
-	protected String getAttribute(String attributeName) {
+	protected String getAttribute(final String attributeName) {
 		return this.fElement.getAttribute(attributeName);
 	}
 
-	boolean precedes(ITestKind otherKind) {
+	boolean precedes(final ITestKind otherKind) {
 		final String precededKindId = getPrecededKindId();
-		String[] ids = precededKindId.split(","); //$NON-NLS-1$
+		final String[] ids = precededKindId.split(","); //$NON-NLS-1$
 		for (int i = 0; i < ids.length; i++) {
 			if (ids[i].equals(otherKind.getId())) {
 				return true;

@@ -44,7 +44,7 @@ public abstract class TestRunListener {
 	 * @param session
 	 *            the session that has just started.
 	 */
-	public void sessionStarted(ITestRunSession session) {
+	public void sessionStarted(final ITestRunSession session) {
 	}
 
 	/**
@@ -59,7 +59,7 @@ public abstract class TestRunListener {
 	 * @param session
 	 *            the test
 	 */
-	public void sessionFinished(ITestRunSession session) {
+	public void sessionFinished(final ITestRunSession session) {
 	}
 
 	/**
@@ -73,7 +73,7 @@ public abstract class TestRunListener {
 	 * @param testCaseElement
 	 *            the test that has started to run
 	 */
-	public void testCaseStarted(ITestCaseElement testCaseElement) {
+	public void testCaseStarted(final ITestCaseElement testCaseElement) {
 	}
 
 	/**
@@ -87,6 +87,6 @@ public abstract class TestRunListener {
 	 * @param testCaseElement
 	 *            the test that has finished running
 	 */
-	public void testCaseFinished(ITestCaseElement testCaseElement) {
+	public void testCaseFinished(final ITestCaseElement testCaseElement) {
 	}
 }

@@ -30,11 +30,12 @@ public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction(java.lang.String,
-	 *      int)
+	 * @see
+	 * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction
+	 * (java.lang.String, int)
 	 */
-	public void addFunction(String name, int arity) {
-		for (Object element0 : fInstances) {
+	public void addFunction(final String name, final int arity) {
+		for (final Object element0 : fInstances) {
 			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
 			element.doAddFunction(name, arity);
 		}
@@ -43,10 +44,12 @@ public class LocalFunctionsVariableResolver extends FunctionVariableResolver {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions()
+	 * @see
+	 * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions
+	 * ()
 	 */
 	public void clearFunctions() {
-		for (Object element0 : fInstances) {
+		for (final Object element0 : fInstances) {
 			final LocalFunctionsVariableResolver element = (LocalFunctionsVariableResolver) element0;
 			element.doClearFunctions();
 		}

@@ -43,7 +43,7 @@ public class ImageDescriptorRegistry {
 	 *            the display the images managed by this registry are allocated
 	 *            for
 	 */
-	public ImageDescriptorRegistry(Display display) {
+	public ImageDescriptorRegistry(final Display display) {
 		fDisplay = display;
 		Assert.isNotNull(fDisplay);
 		hookDisplay();
@@ -81,7 +81,7 @@ public class ImageDescriptorRegistry {
 	 * Disposes all images managed by this registry.
 	 */
 	public void dispose() {
-		for (Object element : fRegistry.values()) {
+		for (final Object element : fRegistry.values()) {
 			final Image image = (Image) element;
 			image.dispose();
 		}

@@ -21,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses( { ErlRpcTest.class, PatternMatchTest.class, CoreTests.class,
-		RuntimeTests.class, JInterfaceTest.class })
-public class JavaTests {
+	RuntimeTests.class, JInterfaceTest.class })
+	public class JavaTests {
 
 }

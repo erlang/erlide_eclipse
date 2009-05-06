@@ -18,11 +18,12 @@ public class NewErlangModuleAction extends ActionDelegate {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.actions.ActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.ui.actions.ActionDelegate#selectionChanged(org.eclipse.jface
+	 * .action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
-	public void selectionChanged(IAction action, ISelection sel) {
+	public void selectionChanged(final IAction action, final ISelection sel) {
 		if (sel instanceof IStructuredSelection) {
 			selection = (IStructuredSelection) sel;
 		} else {
@@ -31,14 +32,15 @@ public class NewErlangModuleAction extends ActionDelegate {
 	}
 
 	@Override
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		// Create the Wizard
-		ErlangFileWizard wizard = new ErlangFileWizard();
+		final ErlangFileWizard wizard = new ErlangFileWizard();
 		wizard.init(getWorkbench(), selection);
 
 		// Create the wizard dialog
-		Shell shell = getWorkbench().getActiveWorkbenchWindow().getShell();
-		WizardDialog dialog = new WizardDialog(shell, wizard);
+		final Shell shell = getWorkbench().getActiveWorkbenchWindow()
+				.getShell();
+		final WizardDialog dialog = new WizardDialog(shell, wizard);
 		// Open the wizard dialog
 		dialog.open();
 	}
@@ -50,9 +52,11 @@ public class NewErlangModuleAction extends ActionDelegate {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+	 * @see
+	 * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse
+	 * .jface.viewers.IStructuredSelection)
 	 */
-	public void selectionChanged(IStructuredSelection aSelection) {
+	public void selectionChanged(final IStructuredSelection aSelection) {
 		this.selection = aSelection;
 	}
 }

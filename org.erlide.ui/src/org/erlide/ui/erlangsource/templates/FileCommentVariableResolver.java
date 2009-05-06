@@ -30,7 +30,7 @@ public class FileCommentVariableResolver extends TemplateVariableResolver {
 	 * .eclipse.jface.text.templates.TemplateContext)
 	 */
 	@Override
-	protected String resolve(TemplateContext context) {
+	protected String resolve(final TemplateContext context) {
 		final Template template = ErlangSourceContextTypeComment.getDefault()
 				.getTemplateStore().getTemplateData(
 						"org.erlide.ui.erlangsource.filecomment").getTemplate();

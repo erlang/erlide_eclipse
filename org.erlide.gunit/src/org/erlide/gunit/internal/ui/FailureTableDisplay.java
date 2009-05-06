@@ -24,22 +24,22 @@ public class FailureTableDisplay implements ITraceDisplay {
 	private final Table fTable;
 
 	private final Image fExceptionIcon = TestRunnerViewPart
-			.createImage("obj16/exc_catch.gif"); //$NON-NLS-1$
+	.createImage("obj16/exc_catch.gif"); //$NON-NLS-1$
 
 	private final Image fStackIcon = TestRunnerViewPart
-			.createImage("obj16/stkfrm_obj.gif"); //$NON-NLS-1$
+	.createImage("obj16/stkfrm_obj.gif"); //$NON-NLS-1$
 
-	public FailureTableDisplay(Table table) {
+	public FailureTableDisplay(final Table table) {
 		this.fTable = table;
 		this.fTable.getParent().addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				disposeIcons();
 			}
 		});
 	}
 
-	public void addTraceLine(int lineType, String label) {
-		TableItem tableItem = newTableItem();
+	public void addTraceLine(final int lineType, final String label) {
+		final TableItem tableItem = newTableItem();
 		switch (lineType) {
 		case TextualTrace.LINE_TYPE_EXCEPTION:
 			tableItem.setImage(this.fExceptionIcon);

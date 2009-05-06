@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
@@ -23,8 +23,8 @@ public class ErtsProcessFactory implements IProcessFactory {
 	public static final String ID = "org.erlide.core.backend.ertsprocessfactory";
 
 	@SuppressWarnings("unchecked")
-	public IProcess newProcess(ILaunch launch, Process process, String label,
-			Map attributes) {
+	public IProcess newProcess(final ILaunch launch, final Process process,
+			final String label, final Map attributes) {
 		// ErlLogger.debug("#* ProcFact: " + label + " " + attributes);
 
 		return new ErtsProcess(launch, process, label, attributes);

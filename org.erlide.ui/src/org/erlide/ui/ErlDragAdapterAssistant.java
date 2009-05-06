@@ -16,8 +16,8 @@ public class ErlDragAdapterAssistant extends CommonDragAdapterAssistant {
 	}
 
 	@Override
-	public boolean setDragData(DragSourceEvent anEvent,
-			IStructuredSelection selection) {
+	public boolean setDragData(final DragSourceEvent anEvent,
+			final IStructuredSelection selection) {
 		return false;
 	}
 

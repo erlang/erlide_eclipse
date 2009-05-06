@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -43,11 +43,11 @@ import com.ericsson.otp.erlang.OtpNode;
 public class RpcInterfaceGenerator {
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		try {
-			OtpNode node = new OtpNode("dummy");
+			final OtpNode node = new OtpNode("dummy");
 
-			OtpMbox mbox = node.createMbox();
+			final OtpMbox mbox = node.createMbox();
 			OtpErlangObject res = null;
 			try {
 				// try {
@@ -60,14 +60,14 @@ public class RpcInterfaceGenerator {
 				// node.closeMbox(mbox);
 				// }
 				res = mbox.receive(1000);
-			} catch (OtpErlangExit e) {
+			} catch (final OtpErlangExit e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (OtpErlangDecodeException e) {
+			} catch (final OtpErlangDecodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			OtpErlangTuple r = (OtpErlangTuple) res;
+			final OtpErlangTuple r = (OtpErlangTuple) res;
 			res = r.elementAt(1);
 			List<OtpErlangObject> l = null;
 			try {
@@ -76,30 +76,30 @@ public class RpcInterfaceGenerator {
 				System.out.println(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
 
-			} catch (RpcException e) {
+			} catch (final RpcException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static String generate(OtpNode node, String module, String pkg,
-			boolean convert, List<OtpErlangObject> l) {
-		StringBuilder b = new StringBuilder();
+	public static String generate(final OtpNode node, final String module, final String pkg,
+			final boolean convert, final List<OtpErlangObject> l) {
+		final StringBuilder b = new StringBuilder();
 		try {
 			generate(b, module, pkg, convert, l);
-		} catch (OtpErlangRangeException e) {
+		} catch (final OtpErlangRangeException e) {
 			e.printStackTrace();
 		}
 		return b.toString();
 	}
 
-	private static void generate(StringBuilder b, String module, String pkg,
-			boolean convert, List<OtpErlangObject> l)
-			throws OtpErlangRangeException {
-		String cls = toJavaClassName(module);
+	private static void generate(final StringBuilder b, final String module, final String pkg,
+			final boolean convert, final List<OtpErlangObject> l)
+	throws OtpErlangRangeException {
+		final String cls = toJavaClassName(module);
 
 		b.append("package " + pkg + ";\n");
 		b.append("\n");
@@ -109,10 +109,10 @@ public class RpcInterfaceGenerator {
 
 		b.append("public interface " + cls + " {\n");
 
-		for (OtpErlangObject item : l) {
-			OtpErlangTuple t = (OtpErlangTuple) item;
-			String name = ((OtpErlangAtom) t.elementAt(0)).atomValue();
-			int arity = ((OtpErlangLong) t.elementAt(1)).intValue();
+		for (final OtpErlangObject item : l) {
+			final OtpErlangTuple t = (OtpErlangTuple) item;
+			final String name = ((OtpErlangAtom) t.elementAt(0)).atomValue();
+			final int arity = ((OtpErlangLong) t.elementAt(1)).intValue();
 			b.append("  OtpErlangObject " + name + "(");
 			for (int i = 0; i < arity; i++) {
 				b.append("OtpErlangObject arg" + i);
@@ -128,12 +128,12 @@ public class RpcInterfaceGenerator {
 		b.append("////////////////////////////////////////////////////\n");
 	}
 
-	private static String toJavaClassName(String module) {
+	private static String toJavaClassName(final String module) {
 		return module;
 		// module.substring(0, 1).toUpperCase() + module.substring(1);
 	}
 
-	public static Class<?> javaType2erlang(Class<?> obj) {
+	public static Class<?> javaType2erlang(final Class<?> obj) {
 		if (obj.isArray()) {
 			return OtpErlangTuple.class;
 		}

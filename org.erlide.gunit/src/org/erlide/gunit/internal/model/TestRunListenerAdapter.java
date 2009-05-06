@@ -22,7 +22,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 
 	private final TestRunSession fSession;
 
-	public TestRunListenerAdapter(TestRunSession session) {
+	public TestRunListenerAdapter(final TestRunSession session) {
 		this.fSession = session;
 	}
 
@@ -31,28 +31,28 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	}
 
 	private void fireSessionStarted() {
-		Object[] listeners = getListeners();
+		final Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			((TestRunListener) listeners[i]).sessionStarted(this.fSession);
 		}
 	}
 
 	private void fireSessionFinished() {
-		Object[] listeners = getListeners();
+		final Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			((TestRunListener) listeners[i]).sessionFinished(this.fSession);
 		}
 	}
 
-	private void fireTestCaseStarted(ITestCaseElement testCaseElement) {
-		Object[] listeners = getListeners();
+	private void fireTestCaseStarted(final ITestCaseElement testCaseElement) {
+		final Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			((TestRunListener) listeners[i]).testCaseStarted(testCaseElement);
 		}
 	}
 
-	private void fireTestCaseFinished(ITestCaseElement testCaseElement) {
-		Object[] listeners = getListeners();
+	private void fireTestCaseFinished(final ITestCaseElement testCaseElement) {
+		final Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			((TestRunListener) listeners[i]).testCaseFinished(testCaseElement);
 		}
@@ -74,7 +74,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * @see
 	 * org.erlide.gunit.internal.model.ITestSessionListener#sessionEnded(long)
 	 */
-	public void sessionEnded(long elapsedTime) {
+	public void sessionEnded(final long elapsedTime) {
 		fireSessionFinished();
 		this.fSession.swapOut();
 	}
@@ -85,7 +85,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * @see
 	 * org.erlide.gunit.internal.model.ITestSessionListener#sessionStopped(long)
 	 */
-	public void sessionStopped(long elapsedTime) {
+	public void sessionStopped(final long elapsedTime) {
 		fireSessionFinished();
 		this.fSession.swapOut();
 	}
@@ -107,7 +107,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.ITestSessionListener#testAdded(org.erlide
 	 * .gunit.internal.model.TestElement)
 	 */
-	public void testAdded(TestElement testElement) {
+	public void testAdded(final TestElement testElement) {
 		// do nothing
 	}
 
@@ -127,7 +127,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.ITestSessionListener#testStarted(org.
 	 * erlide.gunit.internal.model.TestCaseElement)
 	 */
-	public void testStarted(TestCaseElement testCaseElement) {
+	public void testStarted(final TestCaseElement testCaseElement) {
 		fireTestCaseStarted(testCaseElement);
 	}
 
@@ -138,7 +138,7 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.ITestSessionListener#testEnded(org.erlide
 	 * .gunit.internal.model.TestCaseElement)
 	 */
-	public void testEnded(TestCaseElement testCaseElement) {
+	public void testEnded(final TestCaseElement testCaseElement) {
 		fireTestCaseFinished(testCaseElement);
 	}
 
@@ -151,8 +151,8 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.TestElement.Status, java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
-	public void testFailed(TestElement testElement, Status status,
-			String trace, String expected, String actual) {
+	public void testFailed(final TestElement testElement, final Status status,
+			final String trace, final String expected, final String actual) {
 		// ignore
 	}
 
@@ -165,8 +165,8 @@ public class TestRunListenerAdapter implements ITestSessionListener {
 	 * org.erlide.gunit.internal.model.TestElement.Status, java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
-	public void testReran(TestCaseElement testCaseElement, Status status,
-			String trace, String expectedResult, String actualResult) {
+	public void testReran(final TestCaseElement testCaseElement, final Status status,
+			final String trace, final String expectedResult, final String actualResult) {
 		// ignore
 	}
 

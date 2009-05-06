@@ -64,8 +64,8 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 * org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.ui.IEditorPart,
 	 * java.lang.String)
 	 */
-	public void launch(IEditorPart editor, String mode) {
-		IErlElement element = null;
+	public void launch(final IEditorPart editor, final String mode) {
+		final IErlElement element = null;
 		// FIXME
 		// JavaUI.getEditorInputJavaElement(editor .getEditorInput());
 		if (element != null) {
@@ -82,7 +82,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 * org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.jface.viewers
 	 * .ISelection, java.lang.String)
 	 */
-	public void launch(ISelection selection, String mode) {
+	public void launch(final ISelection selection, final String mode) {
 		if (selection instanceof IStructuredSelection) {
 			launch(((IStructuredSelection) selection).toArray(), mode);
 		} else {
@@ -90,7 +90,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 		}
 	}
 
-	private void launch(Object[] elements, String mode) {
+	private void launch(final Object[] elements, final String mode) {
 		// try {
 		// IErlElement elementToLaunch = null;
 		//
@@ -212,24 +212,24 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 * @throws InterruptedException
 	 */
 	private ILaunchConfiguration chooseConfiguration(
-			List<ILaunchConfiguration> configList, String mode)
-			throws InterruptedException {
-		IDebugModelPresentation labelProvider = DebugUITools
-				.newDebugModelPresentation();
-		ElementListSelectionDialog dialog = new ElementListSelectionDialog(
+			final List<ILaunchConfiguration> configList, final String mode)
+	throws InterruptedException {
+		final IDebugModelPresentation labelProvider = DebugUITools
+		.newDebugModelPresentation();
+		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
 				getShell(), labelProvider);
 		dialog.setElements(configList.toArray());
 		dialog
-				.setTitle(GUnitMessages.JUnitLaunchShortcut_message_selectConfiguration);
+		.setTitle(GUnitMessages.JUnitLaunchShortcut_message_selectConfiguration);
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			dialog
-					.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectDebugConfiguration);
+			.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectDebugConfiguration);
 		} else {
 			dialog
-					.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectRunConfiguration);
+			.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectRunConfiguration);
 		}
 		dialog.setMultipleSelection(false);
-		int result = dialog.open();
+		final int result = dialog.open();
 		if (result == Window.OK) {
 			return (ILaunchConfiguration) dialog.getFirstResult();
 		}
@@ -261,7 +261,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 * @return a launch configuration working copy for the given element
 	 */
 	protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(
-			IErlElement element) throws CoreException {
+			final IErlElement element) throws CoreException {
 		final String testName;
 		// final String mainTypeQualifiedName;
 		// final String containerHandleId;
@@ -301,10 +301,10 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 		//
 		// String testKindId = TestKindRegistry.getContainerTestKindId(element);
 		//
-		ILaunchConfigurationType configType = getLaunchManager()
-				.getLaunchConfigurationType(getLaunchConfigurationTypeId());
+		final ILaunchConfigurationType configType = getLaunchManager()
+		.getLaunchConfigurationType(getLaunchConfigurationTypeId());
 		testName = element.getName();
-		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
+		final ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
 				getLaunchManager().generateUniqueLaunchConfigurationNameFrom(
 						testName));
 
@@ -337,45 +337,45 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 */
 	protected String[] getAttributeNamesToCompare() {
 		return new String[] {
-		// IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-		// GUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
-		// IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-		// GUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME
+				// IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+				// GUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
+				// IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+				// GUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME
 		};
 	}
 
-	private static boolean hasSameAttributes(ILaunchConfiguration config1,
-			ILaunchConfiguration config2, String[] attributeToCompare) {
+	private static boolean hasSameAttributes(final ILaunchConfiguration config1,
+			final ILaunchConfiguration config2, final String[] attributeToCompare) {
 		try {
 			for (int i = 0; i < attributeToCompare.length; i++) {
-				String val1 = config1.getAttribute(attributeToCompare[i],
+				final String val1 = config1.getAttribute(attributeToCompare[i],
 						EMPTY_STRING);
-				String val2 = config2.getAttribute(attributeToCompare[i],
+				final String val2 = config2.getAttribute(attributeToCompare[i],
 						EMPTY_STRING);
 				if (!val1.equals(val2)) {
 					return false;
 				}
 			}
 			return true;
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			// ignore access problems here, return false
 		}
 		return false;
 	}
 
 	private ILaunchConfiguration findExistingLaunchConfiguration(
-			ILaunchConfigurationWorkingCopy temporary, String mode)
-			throws InterruptedException, CoreException {
-		ILaunchConfigurationType configType = temporary.getType();
+			final ILaunchConfigurationWorkingCopy temporary, final String mode)
+	throws InterruptedException, CoreException {
+		final ILaunchConfigurationType configType = temporary.getType();
 
-		ILaunchConfiguration[] configs = getLaunchManager()
-				.getLaunchConfigurations(configType);
-		String[] attributeToCompare = getAttributeNamesToCompare();
+		final ILaunchConfiguration[] configs = getLaunchManager()
+		.getLaunchConfigurations(configType);
+		final String[] attributeToCompare = getAttributeNamesToCompare();
 
-		ArrayList<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>(
+		final ArrayList<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>(
 				configs.length);
 		for (int i = 0; i < configs.length; i++) {
-			ILaunchConfiguration config = configs[i];
+			final ILaunchConfiguration config = configs[i];
 			if (hasSameAttributes(config, temporary, attributeToCompare)) {
 				candidateConfigs.add(config);
 			}
@@ -389,7 +389,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 		// Otherwise, if there is more than one config associated with the
 		// IErlModule, prompt the
 		// user to choose one.
-		int candidateCount = candidateConfigs.size();
+		final int candidateCount = candidateConfigs.size();
 		if (candidateCount == 0) {
 			return null;
 		} else if (candidateCount == 1) {
@@ -399,7 +399,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 			// cancelled the dialog, in which case this method returns null,
 			// since cancelling the dialog should also cancel launching
 			// anything.
-			ILaunchConfiguration config = chooseConfiguration(candidateConfigs,
+			final ILaunchConfiguration config = chooseConfiguration(candidateConfigs,
 					mode);
 			if (config != null) {
 				return config;

@@ -6,7 +6,7 @@ import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourceLookupPartici
 import org.erlide.runtime.ErlangSourceLookupParticipant;
 
 public class EclipseErlideSourceLookupDirector extends
-		AbstractSourceLookupDirector {
+AbstractSourceLookupDirector {
 
 	public void initializeParticipants() {
 		addParticipants(new ISourceLookupParticipant[] {

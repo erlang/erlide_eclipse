@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -19,7 +19,8 @@ public class ErlMessage extends ErlMember implements IErlMessage {
 	private final String message;
 	private final MessageKind fKind;
 
-	protected ErlMessage(IErlElement parent, MessageKind kind, String name) {
+	protected ErlMessage(final IErlElement parent, final MessageKind kind,
+			final String name) {
 		super(parent, name);
 		fKind = kind;
 		message = name;

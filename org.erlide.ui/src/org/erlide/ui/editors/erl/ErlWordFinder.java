@@ -36,7 +36,7 @@ public class ErlWordFinder {
 	 * @param offset
 	 * @return
 	 */
-	public static IRegion findWord(IDocument document, int offset) {
+	public static IRegion findWord(final IDocument document, final int offset) {
 
 		int start = -2;
 		int end = -1;
@@ -55,7 +55,7 @@ public class ErlWordFinder {
 			start = pos;
 
 			pos = offset;
-			int length = document.getLength();
+			final int length = document.getLength();
 
 			while (pos < length) {
 				c = document.getChar(pos);
@@ -66,7 +66,7 @@ public class ErlWordFinder {
 			}
 			end = pos;
 
-		} catch (BadLocationException x) {
+		} catch (final BadLocationException x) {
 		}
 
 		if (start >= -1 && end > -1) {

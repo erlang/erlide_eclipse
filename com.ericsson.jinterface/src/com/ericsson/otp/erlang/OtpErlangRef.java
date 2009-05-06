@@ -41,7 +41,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * Create a unique Erlang ref belonging to the local node.
      * 
      * @param self
-     *                the local node.
+     *            the local node.
      * 
      * @deprecated use OtpLocalNode:createRef() instead
      */
@@ -59,11 +59,11 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *                the stream containing the encoded ref.
+     *            the stream containing the encoded ref.
      * 
      * @exception OtpErlangDecodeException
-     *                    if the buffer does not contain a valid external
-     *                    representation of an Erlang ref.
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang ref.
      */
     public OtpErlangRef(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -79,15 +79,14 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * Create an old style Erlang ref from its components.
      * 
      * @param node
-     *                the nodename.
+     *            the nodename.
      * 
      * @param id
-     *                an arbitrary number. Only the low order 18 bits will be
-     *                used.
+     *            an arbitrary number. Only the low order 18 bits will be used.
      * 
      * @param creation
-     *                another arbitrary number. Only the low order 2 bits will
-     *                be used.
+     *            another arbitrary number. Only the low order 2 bits will be
+     *            used.
      */
     public OtpErlangRef(final String node, final int id, final int creation) {
 	this.node = node;
@@ -100,17 +99,17 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * Create a new style Erlang ref from its components.
      * 
      * @param node
-     *                the nodename.
+     *            the nodename.
      * 
      * @param ids
-     *                an array of arbitrary numbers. Only the low order 18 bits
-     *                of the first number will be used. If the array contains
-     *                only one number, an old style ref will be written instead.
-     *                At most three numbers will be read from the array.
+     *            an array of arbitrary numbers. Only the low order 18 bits of
+     *            the first number will be used. If the array contains only one
+     *            number, an old style ref will be written instead. At most
+     *            three numbers will be read from the array.
      * 
      * @param creation
-     *                another arbitrary number. Only the low order 2 bits will
-     *                be used.
+     *            another arbitrary number. Only the low order 2 bits will be
+     *            used.
      */
     public OtpErlangRef(final String node, final int[] ids, final int creation) {
 	this.node = node;
@@ -201,8 +200,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * Convert this ref to the equivalent Erlang external representation.
      * 
      * @param buf
-     *                an output stream to which the encoded ref should be
-     *                written.
+     *            an output stream to which the encoded ref should be written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -215,7 +213,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      * and first id numnber are equal.
      * 
      * @param o
-     *                the other ref to compare to.
+     *            the other ref to compare to.
      * 
      * @return true if the refs are equal, false otherwise.
      */
@@ -241,20 +239,20 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
     /**
      * Compute the hashCode value for a given ref. This function is compatible
      * with equal.
-     *
+     * 
      * @return the hashCode of the node.
      **/
 
     @Override
     protected int doHashCode() {
-	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(7);
+	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(7);
 	hash.combine(creation, ids[0]);
 	if (isNewRef()) {
 	    hash.combine(ids[1], ids[2]);
 	}
 	return hash.valueOf();
     }
-    
+
     @Override
     public Object clone() {
 	final OtpErlangRef newRef = (OtpErlangRef) super.clone();

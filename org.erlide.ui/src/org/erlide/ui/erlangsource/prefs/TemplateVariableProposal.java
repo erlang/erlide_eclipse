@@ -27,13 +27,13 @@ import org.erlide.ui.ErlideUIPlugin;
  */
 public class TemplateVariableProposal implements ICompletionProposal {
 
-	private TemplateVariableResolver fVariable;
+	private final TemplateVariableResolver fVariable;
 
-	private int fOffset;
+	private final int fOffset;
 
-	private int fLength;
+	private final int fLength;
 
-	private ITextViewer fViewer;
+	private final ITextViewer fViewer;
 
 	private Point fSelection;
 
@@ -49,8 +49,8 @@ public class TemplateVariableProposal implements ICompletionProposal {
 	 * @param viewer
 	 *            the viewer
 	 */
-	public TemplateVariableProposal(TemplateVariableResolver variable,
-			int offset, int length, ITextViewer viewer) {
+	public TemplateVariableProposal(final TemplateVariableResolver variable,
+			final int offset, final int length, final ITextViewer viewer) {
 		fVariable = variable;
 		fOffset = offset;
 		fLength = length;
@@ -60,7 +60,7 @@ public class TemplateVariableProposal implements ICompletionProposal {
 	/*
 	 * @see ICompletionProposal#apply(IDocument)
 	 */
-	public void apply(IDocument document) {
+	public void apply(final IDocument document) {
 
 		try {
 			final String variable = "dollar".equals(fVariable.getType()) ? "$$" : "${" + fVariable.getType() + '}'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -82,7 +82,7 @@ public class TemplateVariableProposal implements ICompletionProposal {
 	/*
 	 * @see ICompletionProposal#getSelection(IDocument)
 	 */
-	public Point getSelection(IDocument document) {
+	public Point getSelection(final IDocument document) {
 		return fSelection;
 	}
 

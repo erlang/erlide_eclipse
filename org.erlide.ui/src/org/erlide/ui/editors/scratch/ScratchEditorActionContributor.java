@@ -36,14 +36,16 @@ public class ScratchEditorActionContributor extends
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
+	 * @see
+	 * org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org
+	 * .eclipse.jface.action.IToolBarManager)
 	 */
 	@Override
-	public void contributeToToolBar(IToolBarManager toolBarManager) {
+	public void contributeToToolBar(final IToolBarManager toolBarManager) {
 
 		if (fStopAction == null || fEvaluateAction == null) {
-			toolBarManager.add(new Separator(
-					ErlideUIConstants.EVALUATION_GROUP));
+			toolBarManager
+					.add(new Separator(ErlideUIConstants.EVALUATION_GROUP));
 			return;
 		}
 		toolBarManager.add(fEvaluateAction);
@@ -54,10 +56,12 @@ public class ScratchEditorActionContributor extends
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorActionBarContributor#setActiveEditor(org.eclipse.ui.IEditorPart)
+	 * @see
+	 * org.eclipse.ui.IEditorActionBarContributor#setActiveEditor(org.eclipse
+	 * .ui.IEditorPart)
 	 */
 	@Override
-	public void setActiveEditor(IEditorPart part) {
+	public void setActiveEditor(final IEditorPart part) {
 
 		super.setActiveEditor(part);
 		fScratchEditor = null;
@@ -73,7 +77,7 @@ public class ScratchEditorActionContributor extends
 		fStopAction = new StopAction(fScratchEditor);
 	}
 
-	protected void updateStatus(ScratchEditor editor) {
+	protected void updateStatus(final ScratchEditor editor) {
 		String message = ""; //$NON-NLS-1$
 		if (editor != null && editor.isEvaluating()) {
 			message = ScratchMessages

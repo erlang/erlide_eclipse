@@ -99,8 +99,8 @@ public class SWTUtil {
 	}
 
 	/**
-	 * Sets width and height hint for the button control. <b>Note:</b> This is
-	 * a NOP if the button's layout data is not an instance of
+	 * Sets width and height hint for the button control. <b>Note:</b> This is a
+	 * NOP if the button's layout data is not an instance of
 	 * <code>GridData</code>.
 	 * 
 	 * @param the

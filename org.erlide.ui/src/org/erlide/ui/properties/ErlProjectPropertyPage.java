@@ -52,12 +52,12 @@ public class ErlProjectPropertyPage extends PropertyPage {
 	}
 
 	private TabFolder tabFolder;
-	private List<FieldEditor> editors = new ArrayList<FieldEditor>();
+	private final List<FieldEditor> editors = new ArrayList<FieldEditor>();
 
 	@Override
-	protected Control createContents(Composite aparent) {
-		Composite parent = new Composite(aparent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+	protected Control createContents(final Composite aparent) {
+		final Composite parent = new Composite(aparent, SWT.NONE);
+		final GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		parent.setLayout(layout);
@@ -80,7 +80,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		sourceComposite.setLayout(gridLayout);
 		sourceTab.setControl(sourceComposite);
 
-		String root = getProject().getLocation().toString();
+		final String root = getProject().getLocation().toString();
 		editors.add(new ProjectPathEditor(
 				ProjectPreferencesConstants.SOURCE_DIRS,
 				"Source directories for this project:", "New", root,
@@ -130,13 +130,13 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		backendComposite.setLayout(new GridLayout());
 		buildTab.setControl(backendComposite);
 
-		Collection<RuntimeInfo> rs = ErlangCore.getRuntimeInfoManager()
+		final Collection<RuntimeInfo> rs = ErlangCore.getRuntimeInfoManager()
 				.getRuntimes();
-		List<String[]> vv = new ArrayList<String[]>();
-		for (RuntimeInfo ri : rs) {
+		final List<String[]> vv = new ArrayList<String[]>();
+		for (final RuntimeInfo ri : rs) {
 			vv.add(new String[] { ri.getName(), ri.getName() });
 		}
-		String[][] values = vv.toArray(new String[][] {});
+		final String[][] values = vv.toArray(new String[][] {});
 
 		final Composite rtComposite = createComposite(backendComposite);
 		editors.add(new ComboFieldEditor("runtimes", "Installations", values,
@@ -178,7 +178,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 	}
 
 	private void initFieldEditors() {
-		for (FieldEditor editor : editors) {
+		for (final FieldEditor editor : editors) {
 			editor.setPage(this);
 			editor.setPreferenceStore(getPreferenceStore());
 			editor.load();
@@ -187,7 +187,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 
 	@Override
 	protected void performDefaults() {
-		for (FieldEditor editor : editors) {
+		for (final FieldEditor editor : editors) {
 			editor.loadDefault();
 		}
 		super.performDefaults();
@@ -195,7 +195,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 
 	@Override
 	public boolean performOk() {
-		for (FieldEditor editor : editors) {
+		for (final FieldEditor editor : editors) {
 			editor.store();
 		}
 		return super.performOk();

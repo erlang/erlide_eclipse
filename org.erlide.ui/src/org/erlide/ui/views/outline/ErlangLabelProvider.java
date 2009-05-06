@@ -49,7 +49,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * @param imageFlags
 	 *            Flags defined in <code>JavaElementImageProvider</code>.
 	 */
-	public ErlangLabelProvider(long textFlags, int imageFlags) {
+	public ErlangLabelProvider(final long textFlags, final int imageFlags) {
 		fImageLabelProvider = new ErlangElementImageProvider();
 		fLabelDecorators = null;
 
@@ -60,7 +60,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	/**
 	 * Adds a decorator to the label provider
 	 */
-	public void addLabelDecorator(ILabelDecorator decorator) {
+	public void addLabelDecorator(final ILabelDecorator decorator) {
 		if (fLabelDecorators == null) {
 			fLabelDecorators = new ArrayList<ILabelDecorator>(2);
 		}
@@ -73,7 +73,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * @param textFlags
 	 *            The textFlags to set
 	 */
-	public final void setTextFlags(long textFlags) {
+	public final void setTextFlags(final long textFlags) {
 		fTextFlags = textFlags;
 	}
 
@@ -83,7 +83,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * @param imageFlags
 	 *            The imageFlags to set
 	 */
-	public final void setImageFlags(int imageFlags) {
+	public final void setImageFlags(final int imageFlags) {
 		fImageFlags = imageFlags;
 	}
 
@@ -111,7 +111,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @return Returns a int
 	 */
-	protected int evaluateImageFlags(Object element) {
+	protected int evaluateImageFlags(final Object element) {
 		return getImageFlags();
 	}
 
@@ -121,11 +121,11 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @return Returns a int
 	 */
-	protected long evaluateTextFlags(Object element) {
+	protected long evaluateTextFlags(final Object element) {
 		return getTextFlags();
 	}
 
-	protected Image decorateImage(Image image, Object element) {
+	protected Image decorateImage(Image image, final Object element) {
 		if (fLabelDecorators != null && image != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
 				final ILabelDecorator decorator = fLabelDecorators.get(i);
@@ -140,14 +140,14 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @see ILabelProvider#getImage
 	 */
-	public Image getImage(Object element) {
+	public Image getImage(final Object element) {
 		final Image result = fImageLabelProvider.getImageLabel(element,
 				evaluateImageFlags(element));
 
 		return decorateImage(result, element);
 	}
 
-	protected String decorateText(String text, Object element) {
+	protected String decorateText(String text, final Object element) {
 		if (fLabelDecorators != null && text.length() > 0) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
 				final ILabelDecorator decorator = fLabelDecorators.get(i);
@@ -162,7 +162,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @see ILabelProvider#getText
 	 */
-	public String getText(Object element) {
+	public String getText(final Object element) {
 		return decorateText(element.toString(), element);
 	}
 
@@ -196,7 +196,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @see IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */
-	public void addListener(ILabelProviderListener listener) {
+	public void addListener(final ILabelProviderListener listener) {
 		if (fLabelDecorators != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
 				final ILabelDecorator decorator = fLabelDecorators.get(i);
@@ -211,7 +211,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @see IBaseLabelProvider#isLabelProperty(Object, String)
 	 */
-	public boolean isLabelProperty(Object element, String property) {
+	public boolean isLabelProperty(final Object element, final String property) {
 		return true;
 	}
 
@@ -220,7 +220,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	 * 
 	 * @see IBaseLabelProvider#removeListener(ILabelProviderListener)
 	 */
-	public void removeListener(ILabelProviderListener listener) {
+	public void removeListener(final ILabelProviderListener listener) {
 		if (fLabelDecorators != null) {
 			for (int i = 0; i < fLabelDecorators.size(); i++) {
 				final ILabelDecorator decorator = fLabelDecorators.get(i);
@@ -230,8 +230,8 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 		fListeners.remove(listener);
 	}
 
-	public static ILabelDecorator[] getDecorators(boolean errortick,
-			ILabelDecorator extra) {
+	public static ILabelDecorator[] getDecorators(final boolean errortick,
+			final ILabelDecorator extra) {
 		if (errortick) {
 			if (extra == null) {
 				return new ILabelDecorator[] {};
@@ -247,18 +247,20 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
+	 * @see
+	 * org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 	 */
-	public Color getForeground(Object element) {
+	public Color getForeground(final Object element) {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
+	 * @see
+	 * org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 	 */
-	public Color getBackground(Object element) {
+	public Color getBackground(final Object element) {
 		return null;
 	}
 
@@ -274,7 +276,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 	protected void fireLabelProviderChanged(
 			final LabelProviderChangedEvent event) {
 		final Object[] listeners = fListeners.getListeners();
-		for (Object element : listeners) {
+		for (final Object element : listeners) {
 			final ILabelProviderListener l = (ILabelProviderListener) element;
 			SafeRunner.run(new SafeRunnable() {
 

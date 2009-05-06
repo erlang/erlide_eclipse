@@ -24,9 +24,9 @@ public final class LayoutUtil {
 	/**
 	 * Calculates the number of columns needed by field editors
 	 */
-	public static int getNumberOfColumns(DialogField[] editors) {
+	public static int getNumberOfColumns(final DialogField[] editors) {
 		int nCulumns = 0;
-		for (DialogField element : editors) {
+		for (final DialogField element : editors) {
 			nCulumns = Math.max(element.getNumberOfControls(), nCulumns);
 		}
 		return nCulumns;
@@ -39,8 +39,8 @@ public final class LayoutUtil {
 	 *            Defines if the label of all fields should be on top of the
 	 *            fields
 	 */
-	public static void doDefaultLayout(Composite parent, DialogField[] editors,
-			boolean labelOnTop) {
+	public static void doDefaultLayout(final Composite parent,
+			final DialogField[] editors, final boolean labelOnTop) {
 		doDefaultLayout(parent, editors, labelOnTop, 0, 0);
 	}
 
@@ -55,8 +55,9 @@ public final class LayoutUtil {
 	 * @param marginHeight
 	 *            The margin height to be used by the composite
 	 */
-	public static void doDefaultLayout(Composite parent, DialogField[] editors,
-			boolean labelOnTop, int marginWidth, int marginHeight) {
+	public static void doDefaultLayout(final Composite parent,
+			final DialogField[] editors, final boolean labelOnTop,
+			final int marginWidth, final int marginHeight) {
 		int nColumns = getNumberOfColumns(editors);
 		final Control[][] controls = new Control[editors.length][];
 		for (int i = 0; i < editors.length; i++) {
@@ -82,8 +83,9 @@ public final class LayoutUtil {
 		parent.setLayout(layout);
 	}
 
-	private static void modifyLabelSpans(Control[][] controls, int nCulumns) {
-		for (Control[] element : controls) {
+	private static void modifyLabelSpans(final Control[][] controls,
+			final int nCulumns) {
+		for (final Control[] element : controls) {
 			setHorizontalSpan(element[0], nCulumns);
 		}
 	}
@@ -91,7 +93,7 @@ public final class LayoutUtil {
 	/**
 	 * Sets the span of a control. Assumes that GridData is used.
 	 */
-	public static void setHorizontalSpan(Control control, int span) {
+	public static void setHorizontalSpan(final Control control, final int span) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).horizontalSpan = span;
@@ -105,7 +107,7 @@ public final class LayoutUtil {
 	/**
 	 * Sets the width hint of a control. Assumes that GridData is used.
 	 */
-	public static void setWidthHint(Control control, int widthHint) {
+	public static void setWidthHint(final Control control, final int widthHint) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).widthHint = widthHint;
@@ -115,7 +117,7 @@ public final class LayoutUtil {
 	/**
 	 * Sets the heightHint hint of a control. Assumes that GridData is used.
 	 */
-	public static void setHeightHint(Control control, int heightHint) {
+	public static void setHeightHint(final Control control, final int heightHint) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).heightHint = heightHint;
@@ -125,7 +127,8 @@ public final class LayoutUtil {
 	/**
 	 * Sets the horizontal indent of a control. Assumes that GridData is used.
 	 */
-	public static void setHorizontalIndent(Control control, int horizontalIndent) {
+	public static void setHorizontalIndent(final Control control,
+			final int horizontalIndent) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).horizontalIndent = horizontalIndent;
@@ -136,7 +139,7 @@ public final class LayoutUtil {
 	 * Sets the horizontal grabbing of a control to true. Assumes that GridData
 	 * is used.
 	 */
-	public static void setHorizontalGrabbing(Control control) {
+	public static void setHorizontalGrabbing(final Control control) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).grabExcessHorizontalSpace = true;

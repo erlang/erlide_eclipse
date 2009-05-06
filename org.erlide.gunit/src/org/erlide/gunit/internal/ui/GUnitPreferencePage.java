@@ -70,12 +70,12 @@ import org.erlide.ui.util.SWTUtil;
  * filter patterns.
  */
 public class GUnitPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+IWorkbenchPreferencePage {
 
 	private static final String DEFAULT_NEW_FILTER_TEXT = ""; //$NON-NLS-1$
 
 	private static final Image IMG_CUNIT = ErlideUIPlugin.getDefault()
-			.getImage(ErlideUIConstants.IMG_FOLDER_LABEL);
+	.getImage(ErlideUIConstants.IMG_FOLDER_LABEL);
 
 	private static final Image IMG_PKG = ErlideUIPlugin.getDefault().getImage(
 			ISharedImages.IMG_OBJ_FOLDER);
@@ -120,7 +120,7 @@ public class GUnitPreferencePage extends PreferencePage implements
 
 		private boolean fChecked;
 
-		public Filter(String name, boolean checked) {
+		public Filter(final String name, final boolean checked) {
 			setName(name);
 			setChecked(checked);
 		}
@@ -129,7 +129,7 @@ public class GUnitPreferencePage extends PreferencePage implements
 			return this.fName;
 		}
 
-		public void setName(String name) {
+		public void setName(final String name) {
 			this.fName = name;
 		}
 
@@ -137,17 +137,17 @@ public class GUnitPreferencePage extends PreferencePage implements
 			return this.fChecked;
 		}
 
-		public void setChecked(boolean checked) {
+		public void setChecked(final boolean checked) {
 			this.fChecked = checked;
 		}
 
 		@Override
-		public boolean equals(Object o) {
+		public boolean equals(final Object o) {
 			if (!(o instanceof Filter)) {
 				return false;
 			}
 
-			Filter other = (Filter) o;
+			final Filter other = (Filter) o;
 			return (getName().equals(other.getName()));
 		}
 
@@ -163,9 +163,9 @@ public class GUnitPreferencePage extends PreferencePage implements
 	private static class FilterViewerSorter extends ViewerComparator {
 		@SuppressWarnings("unchecked")
 		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			ILabelProvider lprov = (ILabelProvider) ((ContentViewer) viewer)
-					.getLabelProvider();
+		public int compare(final Viewer viewer, final Object e1, final Object e2) {
+			final ILabelProvider lprov = (ILabelProvider) ((ContentViewer) viewer)
+			.getLabelProvider();
 			String name1 = lprov.getText(e1);
 			String name2 = lprov.getText(e2);
 			if (name1 == null) {
@@ -177,8 +177,8 @@ public class GUnitPreferencePage extends PreferencePage implements
 			}
 
 			if (name1.length() > 0 && name2.length() > 0) {
-				char char1 = name1.charAt(name1.length() - 1);
-				char char2 = name2.charAt(name2.length() - 1);
+				final char char1 = name1.charAt(name1.length() - 1);
+				final char char2 = name2.charAt(name2.length() - 1);
 				if (char1 == '*' && char1 != char2) {
 					return -1;
 				}
@@ -195,22 +195,22 @@ public class GUnitPreferencePage extends PreferencePage implements
 	 * Label provider for Filter model objects
 	 */
 	private static class FilterLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+	ITableLabelProvider {
 
-		public String getColumnText(Object object, int column) {
+		public String getColumnText(final Object object, final int column) {
 			return (column == 0) ? ((Filter) object).getName() : "";
 		}
 
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			return ((Filter) element).getName();
 		}
 
-		public Image getColumnImage(Object object, int column) {
-			String name = ((Filter) object).getName();
+		public Image getColumnImage(final Object object, final int column) {
+			final String name = ((Filter) object).getName();
 			if (name.endsWith(".*")
 					|| name
-							.equals(GUnitMessages.JUnitMainTab_label_defaultpackage)) {
+					.equals(GUnitMessages.JUnitMainTab_label_defaultpackage)) {
 				// package
 				return IMG_PKG;
 			} else if ("".equals(name)) {
@@ -239,27 +239,27 @@ public class GUnitPreferencePage extends PreferencePage implements
 	 * Filter.
 	 */
 	private class StackFilterContentProvider implements
-			IStructuredContentProvider {
+	IStructuredContentProvider {
 
 		private List<Filter> fFilters;
 
 		public StackFilterContentProvider() {
-			List<String> active = createActiveStackFiltersList();
-			List<String> inactive = createInactiveStackFiltersList();
+			final List<String> active = createActiveStackFiltersList();
+			final List<String> inactive = createInactiveStackFiltersList();
 			populateFilters(active, inactive);
 		}
 
 		public void setDefaults() {
 			GUnitPreferencePage.this.fFilterViewer.remove(this.fFilters
 					.toArray());
-			List<String> active = GUnitPreferencesConstants
-					.createDefaultStackFiltersList();
-			List<String> inactive = new ArrayList<String>();
+			final List<String> active = GUnitPreferencesConstants
+			.createDefaultStackFiltersList();
+			final List<String> inactive = new ArrayList<String>();
 			populateFilters(active, inactive);
 		}
 
-		protected void populateFilters(List<String> activeList,
-				List<String> inactiveList) {
+		protected void populateFilters(final List<String> activeList,
+				final List<String> inactiveList) {
 			this.fFilters = new ArrayList<Filter>(activeList.size()
 					+ inactiveList.size());
 			populateList(activeList, true);
@@ -268,17 +268,17 @@ public class GUnitPreferencePage extends PreferencePage implements
 			}
 		}
 
-		protected void populateList(List<String> list, boolean checked) {
-			Iterator<String> iterator = list.iterator();
+		protected void populateList(final List<String> list, final boolean checked) {
+			final Iterator<String> iterator = list.iterator();
 
 			while (iterator.hasNext()) {
-				String name = iterator.next();
+				final String name = iterator.next();
 				addFilter(name, checked);
 			}
 		}
 
-		public Filter addFilter(String name, boolean checked) {
-			Filter filter = new Filter(name, checked);
+		public Filter addFilter(final String name, final boolean checked) {
+			final Filter filter = new Filter(name, checked);
 			if (!this.fFilters.contains(filter)) {
 				this.fFilters.add(filter);
 				GUnitPreferencePage.this.fFilterViewer.add(filter);
@@ -290,12 +290,12 @@ public class GUnitPreferencePage extends PreferencePage implements
 		}
 
 		public void saveFilters() {
-			List<String> active = new ArrayList<String>(this.fFilters.size());
-			List<String> inactive = new ArrayList<String>(this.fFilters.size());
-			Iterator<Filter> iterator = this.fFilters.iterator();
+			final List<String> active = new ArrayList<String>(this.fFilters.size());
+			final List<String> inactive = new ArrayList<String>(this.fFilters.size());
+			final Iterator<Filter> iterator = this.fFilters.iterator();
 			while (iterator.hasNext()) {
-				Filter filter = iterator.next();
-				String name = filter.getName();
+				final Filter filter = iterator.next();
+				final String name = filter.getName();
 				if (filter.isChecked()) {
 					active.add(name);
 				} else {
@@ -312,26 +312,26 @@ public class GUnitPreferencePage extends PreferencePage implements
 					GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST, pref);
 		}
 
-		public void removeFilters(Object[] filters) {
+		public void removeFilters(final Object[] filters) {
 			for (int i = (filters.length - 1); i >= 0; --i) {
-				Filter filter = (Filter) filters[i];
+				final Filter filter = (Filter) filters[i];
 				this.fFilters.remove(filter);
 			}
 			GUnitPreferencePage.this.fFilterViewer.remove(filters);
 			updateActions();
 		}
 
-		public void toggleFilter(Filter filter) {
-			boolean newState = !filter.isChecked();
+		public void toggleFilter(final Filter filter) {
+			final boolean newState = !filter.isChecked();
 			filter.setChecked(newState);
 			GUnitPreferencePage.this.fFilterViewer.setChecked(filter, newState);
 		}
 
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			return this.fFilters.toArray();
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 		}
 
 		public void dispose() {
@@ -346,17 +346,17 @@ public class GUnitPreferencePage extends PreferencePage implements
 	}
 
 	@Override
-	protected Control createContents(Composite parent) {
+	protected Control createContents(final Composite parent) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
 				IGUnitHelpContextIds.JUNIT_PREFERENCE_PAGE);
 
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
+		final Composite composite = new Composite(parent, SWT.NULL);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		composite.setLayout(layout);
-		GridData data = new GridData();
+		final GridData data = new GridData();
 		data.verticalAlignment = GridData.FILL;
 		data.horizontalAlignment = GridData.FILL;
 		composite.setLayoutData(data);
@@ -369,26 +369,26 @@ public class GUnitPreferencePage extends PreferencePage implements
 	/*
 	 * Create a group to contain the step filter related widgets
 	 */
-	private void createStackFilterPreferences(Composite composite) {
+	private void createStackFilterPreferences(final Composite composite) {
 		this.fFilterViewerLabel = new Label(composite, SWT.SINGLE | SWT.LEFT);
 		this.fFilterViewerLabel
-				.setText(GUnitMessages.JUnitPreferencePage_filter_label);
+		.setText(GUnitMessages.JUnitPreferencePage_filter_label);
 
-		Composite container = new Composite(composite, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		final Composite container = new Composite(composite, SWT.NONE);
+		final GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		container.setLayout(layout);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		final GridData gd = new GridData(GridData.FILL_BOTH);
 		container.setLayoutData(gd);
 
 		createFilterTable(container);
 		createStepFilterButtons(container);
 	}
 
-	private void createFilterTable(Composite container) {
-		TableLayoutComposite layouter = new TableLayoutComposite(container,
+	private void createFilterTable(final Composite container) {
+		final TableLayoutComposite layouter = new TableLayoutComposite(container,
 				SWT.NONE);
 		layouter.addColumnData(new ColumnWeightData(100));
 		layouter.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -406,27 +406,27 @@ public class GUnitPreferencePage extends PreferencePage implements
 		// input just needs to be non-null
 		this.fFilterViewer.setInput(this);
 		this.fFilterViewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				Filter filter = (Filter) event.getElement();
+			public void checkStateChanged(final CheckStateChangedEvent event) {
+				final Filter filter = (Filter) event.getElement();
 				GUnitPreferencePage.this.fStackFilterContentProvider
-						.toggleFilter(filter);
+				.toggleFilter(filter);
 			}
 		});
 		this.fFilterViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						ISelection selection = event.getSelection();
-						GUnitPreferencePage.this.fRemoveFilterButton
-								.setEnabled(!selection.isEmpty());
-					}
-				});
+		.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final ISelection selection = event.getSelection();
+				GUnitPreferencePage.this.fRemoveFilterButton
+				.setEnabled(!selection.isEmpty());
+			}
+		});
 	}
 
-	private void createStepFilterButtons(Composite container) {
-		Composite buttonContainer = new Composite(container, SWT.NONE);
+	private void createStepFilterButtons(final Composite container) {
+		final Composite buttonContainer = new Composite(container, SWT.NONE);
 		GridData gd = new GridData(GridData.FILL_VERTICAL);
 		buttonContainer.setLayoutData(gd);
-		GridLayout buttonLayout = new GridLayout();
+		final GridLayout buttonLayout = new GridLayout();
 		buttonLayout.numColumns = 1;
 		buttonLayout.marginHeight = 0;
 		buttonLayout.marginWidth = 0;
@@ -434,57 +434,57 @@ public class GUnitPreferencePage extends PreferencePage implements
 
 		this.fAddFilterButton = new Button(buttonContainer, SWT.PUSH);
 		this.fAddFilterButton
-				.setText(GUnitMessages.JUnitPreferencePage_addfilterbutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_addfilterbutton_label);
 		this.fAddFilterButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_addfilterbutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_addfilterbutton_tooltip);
 		gd = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.VERTICAL_ALIGN_BEGINNING);
 		this.fAddFilterButton.setLayoutData(gd);
 		LayoutUtil.setButtonDimensionHint(this.fAddFilterButton);
 		this.fAddFilterButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				editFilter();
 			}
 		});
 
 		this.fAddTypeButton = new Button(buttonContainer, SWT.PUSH);
 		this.fAddTypeButton
-				.setText(GUnitMessages.JUnitPreferencePage_addtypebutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_addtypebutton_label);
 		this.fAddTypeButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_addtypebutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_addtypebutton_tooltip);
 		gd = getButtonGridData(this.fAddTypeButton);
 		this.fAddTypeButton.setLayoutData(gd);
 		LayoutUtil.setButtonDimensionHint(this.fAddTypeButton);
 		this.fAddTypeButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				addType();
 			}
 		});
 
 		this.fAddPackageButton = new Button(buttonContainer, SWT.PUSH);
 		this.fAddPackageButton
-				.setText(GUnitMessages.JUnitPreferencePage_addpackagebutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_addpackagebutton_label);
 		this.fAddPackageButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_addpackagebutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_addpackagebutton_tooltip);
 		gd = getButtonGridData(this.fAddPackageButton);
 		this.fAddPackageButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(this.fAddPackageButton);
 		this.fAddPackageButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				addPackage();
 			}
 		});
 
 		this.fRemoveFilterButton = new Button(buttonContainer, SWT.PUSH);
 		this.fRemoveFilterButton
-				.setText(GUnitMessages.JUnitPreferencePage_removefilterbutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_removefilterbutton_label);
 		this.fRemoveFilterButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_removefilterbutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_removefilterbutton_tooltip);
 		gd = getButtonGridData(this.fRemoveFilterButton);
 		this.fRemoveFilterButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(this.fRemoveFilterButton);
 		this.fRemoveFilterButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				removeFilters();
 			}
 		});
@@ -492,44 +492,44 @@ public class GUnitPreferencePage extends PreferencePage implements
 
 		this.fEnableAllButton = new Button(buttonContainer, SWT.PUSH);
 		this.fEnableAllButton
-				.setText(GUnitMessages.JUnitPreferencePage_enableallbutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_enableallbutton_label);
 		this.fEnableAllButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_enableallbutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_enableallbutton_tooltip);
 		gd = getButtonGridData(this.fEnableAllButton);
 		this.fEnableAllButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(this.fEnableAllButton);
 		this.fEnableAllButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				checkAllFilters(true);
 			}
 		});
 
 		this.fDisableAllButton = new Button(buttonContainer, SWT.PUSH);
 		this.fDisableAllButton
-				.setText(GUnitMessages.JUnitPreferencePage_disableallbutton_label);
+		.setText(GUnitMessages.JUnitPreferencePage_disableallbutton_label);
 		this.fDisableAllButton
-				.setToolTipText(GUnitMessages.JUnitPreferencePage_disableallbutton_tooltip);
+		.setToolTipText(GUnitMessages.JUnitPreferencePage_disableallbutton_tooltip);
 		gd = getButtonGridData(this.fDisableAllButton);
 		this.fDisableAllButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(this.fDisableAllButton);
 		this.fDisableAllButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			public void handleEvent(final Event e) {
 				checkAllFilters(false);
 			}
 		});
 
 	}
 
-	private GridData getButtonGridData(Button button) {
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL
+	private GridData getButtonGridData(final Button button) {
+		final GridData gd = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.VERTICAL_ALIGN_BEGINNING);
-		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		final int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		gd.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT,
 				SWT.DEFAULT, true).x);
 		return gd;
 	}
 
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 	/**
@@ -560,7 +560,7 @@ public class GUnitPreferencePage extends PreferencePage implements
 		}
 
 		this.fEditorText = new Text(this.fFilterTable, textStyles);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		final GridData gd = new GridData(GridData.FILL_BOTH);
 		this.fEditorText.setLayoutData(gd);
 
 		// set the editor
@@ -575,15 +575,15 @@ public class GUnitPreferencePage extends PreferencePage implements
 		this.fEditorText.setFocus();
 	}
 
-	private void setEditorListeners(Text text) {
+	private void setEditorListeners(final Text text) {
 		// CR means commit the changes, ESC means abort and don't commit
 		text.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent event) {
+			public void keyReleased(final KeyEvent event) {
 				if (event.character == SWT.CR) {
 					if (GUnitPreferencePage.this.fInvalidEditorText != null) {
 						GUnitPreferencePage.this.fEditorText
-								.setText(GUnitPreferencePage.this.fInvalidEditorText);
+						.setText(GUnitPreferencePage.this.fInvalidEditorText);
 						GUnitPreferencePage.this.fInvalidEditorText = null;
 					} else {
 						validateChangeAndCleanup();
@@ -597,10 +597,10 @@ public class GUnitPreferencePage extends PreferencePage implements
 		// Consider loss of focus on the editor to mean the same as CR
 		text.addFocusListener(new FocusAdapter() {
 			@Override
-			public void focusLost(FocusEvent event) {
+			public void focusLost(final FocusEvent event) {
 				if (GUnitPreferencePage.this.fInvalidEditorText != null) {
 					GUnitPreferencePage.this.fEditorText
-							.setText(GUnitPreferencePage.this.fInvalidEditorText);
+					.setText(GUnitPreferencePage.this.fInvalidEditorText);
 					GUnitPreferencePage.this.fInvalidEditorText = null;
 				} else {
 					validateChangeAndCleanup();
@@ -611,29 +611,29 @@ public class GUnitPreferencePage extends PreferencePage implements
 		// traverse away to dialog's default button. Without this, hitting
 		// CR in the text field closes the entire dialog.
 		text.addListener(SWT.Traverse, new Listener() {
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				event.doit = false;
 			}
 		});
 	}
 
 	private void validateChangeAndCleanup() {
-		String trimmedValue = this.fEditorText.getText().trim();
+		final String trimmedValue = this.fEditorText.getText().trim();
 		// if the new value is blank, remove the filter
 		if (trimmedValue.length() < 1) {
 			removeNewFilter();
 		} else if (!validateEditorInput(trimmedValue)) {
 			this.fInvalidEditorText = trimmedValue;
 			this.fEditorText
-					.setText(GUnitMessages.JUnitPreferencePage_invalidstepfilterreturnescape);
+			.setText(GUnitMessages.JUnitPreferencePage_invalidstepfilterreturnescape);
 			getShell().getDisplay().beep();
 			return;
 			// otherwise, commit the new value if not a duplicate
 		} else {
-			Object[] filters = this.fStackFilterContentProvider
-					.getElements(null);
+			final Object[] filters = this.fStackFilterContentProvider
+			.getElements(null);
 			for (int i = 0; i < filters.length; i++) {
-				Filter filter = (Filter) filters[i];
+				final Filter filter = (Filter) filters[i];
 				if (filter.getName().equals(trimmedValue)) {
 					removeNewFilter();
 					cleanupEditor();
@@ -664,7 +664,7 @@ public class GUnitPreferencePage extends PreferencePage implements
 
 	private void removeNewFilter() {
 		this.fStackFilterContentProvider
-				.removeFilters(new Object[] { this.fNewStackFilter });
+		.removeFilters(new Object[] { this.fNewStackFilter });
 	}
 
 	/*
@@ -675,15 +675,15 @@ public class GUnitPreferencePage extends PreferencePage implements
 	 * corresponding to an existing type or package (and this is probably not
 	 * even desirable).
 	 */
-	private boolean validateEditorInput(String trimmedValue) {
-		char firstChar = trimmedValue.charAt(0);
+	private boolean validateEditorInput(final String trimmedValue) {
+		final char firstChar = trimmedValue.charAt(0);
 		if ((!(Character.isJavaIdentifierStart(firstChar)) || (firstChar == '*'))) {
 			return false;
 		}
 
-		int length = trimmedValue.length();
+		final int length = trimmedValue.length();
 		for (int i = 1; i < length; i++) {
-			char c = trimmedValue.charAt(i);
+			final char c = trimmedValue.charAt(i);
 			if (!Character.isJavaIdentifierPart(c)) {
 				if (c == '.' && i != (length - 1)) {
 					continue;
@@ -764,13 +764,13 @@ public class GUnitPreferencePage extends PreferencePage implements
 	}
 
 	private void removeFilters() {
-		IStructuredSelection selection = (IStructuredSelection) this.fFilterViewer
-				.getSelection();
+		final IStructuredSelection selection = (IStructuredSelection) this.fFilterViewer
+		.getSelection();
 		this.fStackFilterContentProvider.removeFilters(selection.toArray());
 	}
 
-	private void checkAllFilters(boolean check) {
-		Object[] filters = this.fStackFilterContentProvider.getElements(null);
+	private void checkAllFilters(final boolean check) {
+		final Object[] filters = this.fStackFilterContentProvider.getElements(null);
 		for (int i = (filters.length - 1); i >= 0; --i) {
 			((Filter) filters[i]).setChecked(check);
 		}
@@ -809,9 +809,9 @@ public class GUnitPreferencePage extends PreferencePage implements
 	 * @return list
 	 */
 	protected List<String> createInactiveStackFiltersList() {
-		String[] strings = GUnitPreferencePage
-				.parseList(getPreferenceStore().getString(
-						GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST));
+		final String[] strings = GUnitPreferencePage
+		.parseList(getPreferenceStore().getString(
+				GUnitPreferencesConstants.PREF_INACTIVE_FILTERS_LIST));
 		return Arrays.asList(strings);
 	}
 
@@ -820,33 +820,33 @@ public class GUnitPreferencePage extends PreferencePage implements
 			return;
 		}
 
-		boolean enabled = this.fFilterViewer.getTable().getItemCount() > 0;
+		final boolean enabled = this.fFilterViewer.getTable().getItemCount() > 0;
 		this.fEnableAllButton.setEnabled(enabled);
 		this.fDisableAllButton.setEnabled(enabled);
 	}
 
 	public static String[] getFilterPatterns() {
-		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
+		final IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
 		return GUnitPreferencePage.parseList(store
 				.getString(GUnitPreferencesConstants.PREF_ACTIVE_FILTERS_LIST));
 	}
 
 	public static boolean getFilterStack() {
-		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
+		final IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
 		return store.getBoolean(GUnitPreferencesConstants.DO_FILTER_STACK);
 	}
 
-	public static void setFilterStack(boolean filter) {
-		IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
+	public static void setFilterStack(final boolean filter) {
+		final IPreferenceStore store = GUnitPlugin.getDefault().getPreferenceStore();
 		store.setValue(GUnitPreferencesConstants.DO_FILTER_STACK, filter);
 	}
 
 	/*
 	 * Parses the comma separated string into an array of strings
 	 */
-	private static String[] parseList(String listString) {
-		List<String> list = new ArrayList<String>(10);
-		StringTokenizer tokenizer = new StringTokenizer(listString, ","); //$NON-NLS-1$
+	private static String[] parseList(final String listString) {
+		final List<String> list = new ArrayList<String>(10);
+		final StringTokenizer tokenizer = new StringTokenizer(listString, ","); //$NON-NLS-1$
 		while (tokenizer.hasMoreTokens()) {
 			list.add(tokenizer.nextToken());
 		}

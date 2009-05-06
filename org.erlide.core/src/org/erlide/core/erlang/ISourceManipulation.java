@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -31,13 +31,12 @@ public interface ISourceManipulation {
 	 *            or <code>null</code> if the copy should be inserted as the
 	 *            last child of the container
 	 * @param rename
-	 *            the new name for the element, or <code>null</code> if the
-	 *            copy retains the name of this element
+	 *            the new name for the element, or <code>null</code> if the copy
+	 *            retains the name of this element
 	 * @param replace
-	 *            <code>true</code> if any existing child in the container
-	 *            with the target name should be replaced, and
-	 *            <code>false</code> to throw an exception in the event of a
-	 *            name collision
+	 *            <code>true</code> if any existing child in the container with
+	 *            the target name should be replaced, and <code>false</code> to
+	 *            throw an exception in the event of a name collision
 	 * @param monitor
 	 *            a progress monitor
 	 * @exception ErlModelException
@@ -45,8 +44,8 @@ public interface ISourceManipulation {
 	 *                <ul>
 	 *                <li>This Erlang element, container element, or sibling
 	 *                does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *                <li>A <code>CoreException</code> occurred while
-	 *                updating an underlying resource
+	 *                <li>A <code>CoreException</code> occurred while updating
+	 *                an underlying resource
 	 *                <li>The container is of an incompatible type
 	 *                (INVALID_DESTINATION)
 	 *                <li>The sibling is not a child of the given container
@@ -55,8 +54,7 @@ public interface ISourceManipulation {
 	 *                <li>A child in the container already exists with the same
 	 *                name (NAME_COLLISION) and <code>replace</code> has been
 	 *                specified as <code>false</code>
-	 *                <li>The container or this element is read-only
-	 *                (READ_ONLY)
+	 *                <li>The container or this element is read-only (READ_ONLY)
 	 *                </ul>
 	 * 
 	 * @exception IllegalArgumentException
@@ -78,9 +76,9 @@ public interface ISourceManipulation {
 	 *                if this element could not be deleted. Reasons include:
 	 *                <ul>
 	 *                <li>This Erlang element does not exist
-	 *                (ELEMENT_DOES_NOT_EXIST) </li>
-	 *                <li>A <code>CoreException</code> occurred while
-	 *                updating an underlying resource (CORE_EXCEPTION)</li>
+	 *                (ELEMENT_DOES_NOT_EXIST)</li>
+	 *                <li>A <code>CoreException</code> occurred while updating
+	 *                an underlying resource (CORE_EXCEPTION)</li>
 	 *                <li>This element is read-only (READ_ONLY)</li>
 	 *                </ul>
 	 */
@@ -100,10 +98,9 @@ public interface ISourceManipulation {
 	 *            the new name for the element, or <code>null</code> if the
 	 *            element retains its name
 	 * @param replace
-	 *            <code>true</code> if any existing child in the container
-	 *            with the target name should be replaced, and
-	 *            <code>false</code> to throw an exception in the event of a
-	 *            name collision
+	 *            <code>true</code> if any existing child in the container with
+	 *            the target name should be replaced, and <code>false</code> to
+	 *            throw an exception in the event of a name collision
 	 * @param monitor
 	 *            a progress monitor
 	 * @exception ErlModelException
@@ -111,8 +108,8 @@ public interface ISourceManipulation {
 	 *                <ul>
 	 *                <li>This Erlang element, container element, or sibling
 	 *                does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-	 *                <li>A <code>CoreException</code> occurred while
-	 *                updating an underlying resource
+	 *                <li>A <code>CoreException</code> occurred while updating
+	 *                an underlying resource
 	 *                <li>The container is of an incompatible type
 	 *                (INVALID_DESTINATION)
 	 *                <li>The sibling is not a child of the given container
@@ -121,8 +118,7 @@ public interface ISourceManipulation {
 	 *                <li>A child in the container already exists with the same
 	 *                name (NAME_COLLISION) and <code>replace</code> has been
 	 *                specified as <code>false</code>
-	 *                <li>The container or this element is read-only
-	 *                (READ_ONLY)
+	 *                <li>The container or this element is read-only (READ_ONLY)
 	 *                </ul>
 	 * 
 	 * @exception IllegalArgumentException
@@ -137,8 +133,8 @@ public interface ISourceManipulation {
 	 * @param name
 	 *            the new name for the element
 	 * @param replace
-	 *            <code>true</code> if any existing element with the target
-	 *            name should be replaced, and <code>false</code> to throw an
+	 *            <code>true</code> if any existing element with the target name
+	 *            should be replaced, and <code>false</code> to throw an
 	 *            exception in the event of a name collision
 	 * @param monitor
 	 *            a progress monitor
@@ -146,9 +142,9 @@ public interface ISourceManipulation {
 	 *                if this element could not be renamed. Reasons include:
 	 *                <ul>
 	 *                <li>This Erlang element does not exist
-	 *                (ELEMENT_DOES_NOT_EXIST) </li>
-	 *                <li>A <code>CoreException</code> occurred while
-	 *                updating an underlying resource
+	 *                (ELEMENT_DOES_NOT_EXIST)</li>
+	 *                <li>A <code>CoreException</code> occurred while updating
+	 *                an underlying resource
 	 *                <li>The new name is invalid (INVALID_NAME)
 	 *                <li>A child in the container already exists with the same
 	 *                name (NAME_COLLISION) and <code>replace</code> has been

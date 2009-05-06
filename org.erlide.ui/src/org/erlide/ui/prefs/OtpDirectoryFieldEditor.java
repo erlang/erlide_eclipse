@@ -17,7 +17,8 @@ import org.erlide.runtime.backend.RuntimeInfo;
 
 public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 
-	public OtpDirectoryFieldEditor(String name, String label, Composite parent) {
+	public OtpDirectoryFieldEditor(final String name, final String label,
+			final Composite parent) {
 		init(name, label);
 		setErrorMessage("\"Erlang Home\" location isn't an Erlang root directory");
 		setChangeButtonText(JFaceResources.getString("openBrowse")); //$NON-NLS-1$

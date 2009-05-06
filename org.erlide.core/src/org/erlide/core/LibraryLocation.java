@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -24,16 +24,18 @@ import org.osgi.service.prefs.BackingStoreException;
 public final class LibraryLocation extends DependencyLocation {
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
-	private String output;
+	private final String output;
 	private List<LibraryLocation> libraries = new ArrayList<LibraryLocation>();
 
-	public LibraryLocation(List<SourceLocation> sources, List<String> includes,
-			String output, List<LibraryLocation> libraries) {
+	public LibraryLocation(final List<SourceLocation> sources,
+			final List<String> includes, final String output,
+			final List<LibraryLocation> libraries) {
 		this(sources, includes, output, libraries, null);
 	}
 
-	public LibraryLocation(List<SourceLocation> sources, List<String> includes,
-			String output, List<LibraryLocation> libraries, EnumSet<Kind> kind) {
+	public LibraryLocation(final List<SourceLocation> sources,
+			final List<String> includes, final String output,
+			final List<LibraryLocation> libraries, final EnumSet<Kind> kind) {
 		super(kind);
 		if (sources != null) {
 			this.sources = sources;
@@ -68,17 +70,18 @@ public final class LibraryLocation extends DependencyLocation {
 	}
 
 	@Override
-	public void load(IEclipsePreferences root) {
+	public void load(final IEclipsePreferences root) {
 
 	}
 
 	@Override
-	public void store(IEclipsePreferences root) throws BackingStoreException {
+	public void store(final IEclipsePreferences root)
+			throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
-		IEclipsePreferences node = (IEclipsePreferences) root
+		final IEclipsePreferences node = (IEclipsePreferences) root
 				.node(ProjectPreferencesConstants.SOURCES);
-		for (SourceLocation loc : sources) {
+		for (final SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) node.node(loc.getDirectory()));
 		}
 		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils

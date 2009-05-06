@@ -41,25 +41,26 @@ extends StatusDialog implements IListAdapter<String> {
 
 	public static class StringLabelProvider implements ILabelProvider {
 
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			return null;
 		}
 
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			return (String) element;
 		}
 
-		public void addListener(ILabelProviderListener listener) {
+		public void addListener(final ILabelProviderListener listener) {
 		}
 
 		public void dispose() {
 		}
 
-		public boolean isLabelProperty(Object element, String property) {
+		public boolean isLabelProperty(final Object element,
+				final String property) {
 			return false;
 		}
 
-		public void removeListener(ILabelProviderListener listener) {
+		public void removeListener(final ILabelProviderListener listener) {
 		}
 
 	}
@@ -72,12 +73,13 @@ extends StatusDialog implements IListAdapter<String> {
 	private StringButtonDialogField fOtpHome;
 	private ListDialogField<String> fCodePath;
 	private StringDialogField fArgs;
-	private boolean returnNew;
+	private final boolean returnNew;
 
 	private final IStatus[] fStatuses;
 
-	public AddRuntimeDialog(IAddDialogRequestor<RuntimeInfo> requestor,
-			Shell shell, RuntimeInfo editedVM, boolean returnNew) {
+	public AddRuntimeDialog(final IAddDialogRequestor<RuntimeInfo> requestor,
+			final Shell shell, final RuntimeInfo editedVM,
+			final boolean returnNew) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		fRequestor = requestor;
@@ -93,7 +95,7 @@ extends StatusDialog implements IListAdapter<String> {
 	 * @see Windows#configureShell
 	 */
 	@Override
-	protected void configureShell(Shell newShell) {
+	protected void configureShell(final Shell newShell) {
 		super.configureShell(newShell);
 		// PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 		// IJavaDebugHelpContextIds.EDIT_JRE_DIALOG);
@@ -102,14 +104,14 @@ extends StatusDialog implements IListAdapter<String> {
 	protected void createFieldListeners() {
 		fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
 
-			public void dialogFieldChanged(DialogField field) {
+			public void dialogFieldChanged(final DialogField field) {
 				setLocationStatus(validateLocation());
 				updateStatusLine();
 			}
 		});
 		fName.setDialogFieldListener(new IDialogFieldListener() {
 
-			public void dialogFieldChanged(DialogField field) {
+			public void dialogFieldChanged(final DialogField field) {
 				setNameStatus(validateName());
 				updateStatusLine();
 			}
@@ -121,10 +123,10 @@ extends StatusDialog implements IListAdapter<String> {
 	}
 
 	@Override
-	protected Control createDialogArea(Composite ancestor) {
+	protected Control createDialogArea(final Composite ancestor) {
 		fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
-			public void changeControlPressed(DialogField field) {
+			public void changeControlPressed(final DialogField field) {
 				browseForInstallDir();
 			}
 		});
@@ -260,7 +262,7 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 	}
 
-	protected void storeValues(RuntimeInfo runtime) {
+	protected void storeValues(final RuntimeInfo runtime) {
 		runtime.setOtpHome(fOtpHome.getText());
 		runtime.setName(fName.getText());
 		runtime.setCodePath(fCodePath.getElements());
@@ -268,15 +270,15 @@ extends StatusDialog implements IListAdapter<String> {
 		runtime.setArgs(argString);
 	}
 
-	protected void setNameStatus(IStatus status) {
+	protected void setNameStatus(final IStatus status) {
 		fStatuses[0] = status;
 	}
 
-	protected void setNodeNameStatus(IStatus status) {
+	protected void setNodeNameStatus(final IStatus status) {
 		fStatuses[1] = status;
 	}
 
-	protected void setLocationStatus(IStatus status) {
+	protected void setLocationStatus(final IStatus status) {
 		fStatuses[2] = status;
 	}
 
@@ -288,7 +290,7 @@ extends StatusDialog implements IListAdapter<String> {
 	 *            the status.
 	 */
 	@Override
-	protected void updateButtonsEnableState(IStatus status) {
+	protected void updateButtonsEnableState(final IStatus status) {
 		final Button ok = getButton(IDialogConstants.OK_ID);
 		if (ok != null && !ok.isDisposed()) {
 			ok.setEnabled(status.getSeverity() == IStatus.OK);
@@ -299,7 +301,7 @@ extends StatusDialog implements IListAdapter<String> {
 	 * @see org.eclipse.jface.dialogs.Dialog#setButtonLayoutData(org.eclipse.swt.widgets.Button)
 	 */
 	@Override
-	protected void setButtonLayoutData(Button button) {
+	protected void setButtonLayoutData(final Button button) {
 		super.setButtonLayoutData(button);
 	}
 
@@ -332,7 +334,7 @@ extends StatusDialog implements IListAdapter<String> {
 	 * .Point)
 	 */
 	@Override
-	protected Point getInitialLocation(Point initialSize) {
+	protected Point getInitialLocation(final Point initialSize) {
 		// Point initialLocation = DialogSettingsHelper
 		// .getInitialLocation(getDialogSettingsSectionName());
 		// if (initialLocation != null)
@@ -355,7 +357,8 @@ extends StatusDialog implements IListAdapter<String> {
 		// getDialogSettingsSectionName(), size);
 	}
 
-	public void customButtonPressed(ListDialogField<String> field, int index) {
+	public void customButtonPressed(final ListDialogField<String> field,
+			final int index) {
 		switch (index) {
 		case 0:
 			addPath(field);
@@ -374,11 +377,11 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 	}
 
-	private void moveDown(ListDialogField<String> field) {
-		List<String> sel = field.getSelectedElements();
+	private void moveDown(final ListDialogField<String> field) {
+		final List<String> sel = field.getSelectedElements();
 		if (sel.size() == 1) {
-			String value = sel.get(0);
-			int pos = field.getIndexOfElement(value);
+			final String value = sel.get(0);
+			final int pos = field.getIndexOfElement(value);
 			if (pos < field.getSize() - 1) {
 				field.removeElement(value);
 				field.addElement(value, pos + 1);
@@ -388,11 +391,11 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 	}
 
-	private void moveUp(ListDialogField<String> field) {
-		List<String> sel = field.getSelectedElements();
+	private void moveUp(final ListDialogField<String> field) {
+		final List<String> sel = field.getSelectedElements();
 		if (sel.size() == 1) {
-			String value = sel.get(0);
-			int pos = field.getIndexOfElement(value);
+			final String value = sel.get(0);
+			final int pos = field.getIndexOfElement(value);
 			if (pos > 0) {
 				field.removeElement(value);
 				field.addElement(value, pos - 1);
@@ -402,30 +405,30 @@ extends StatusDialog implements IListAdapter<String> {
 		}
 	}
 
-	private void removePath(ListDialogField<String> field) {
-		List<String> sel = field.getSelectedElements();
+	private void removePath(final ListDialogField<String> field) {
+		final List<String> sel = field.getSelectedElements();
 		field.removeElements(sel);
 	}
 
-	private void addPath(ListDialogField<String> field) {
-		InputDialog dlg = new InputDialog(new Shell(), "Add path",
+	private void addPath(final ListDialogField<String> field) {
+		final InputDialog dlg = new InputDialog(new Shell(), "Add path",
 				"Enter a path to be added to ", "", null);
 		dlg.setBlockOnOpen(true);
 		dlg.open();
-		String value = dlg.getValue();
+		final String value = dlg.getValue();
 
 		if (value != null && value.length() > 0) {
-			File f = new File(value);
+			final File f = new File(value);
 			if (f.exists()) {
 				field.addElement(value);
 			}
 		}
 	}
 
-	public void doubleClicked(ListDialogField<String> field) {
+	public void doubleClicked(final ListDialogField<String> field) {
 	}
 
-	public void selectionChanged(ListDialogField<String> field) {
+	public void selectionChanged(final ListDialogField<String> field) {
 	}
 
 	protected void browseForInstallDir() {
@@ -436,7 +439,7 @@ extends StatusDialog implements IListAdapter<String> {
 		final String newPath = dialog.open();
 		if (newPath != null) {
 			fOtpHome.setText(newPath);
-			File f = new File(newPath);
+			final File f = new File(newPath);
 			if (fName.getText().equals("")) {
 				fName.setText(f.getName());
 			}

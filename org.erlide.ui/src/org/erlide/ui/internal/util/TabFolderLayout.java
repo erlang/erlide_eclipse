@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Layout;
 public class TabFolderLayout extends Layout {
 
 	@Override
-	protected Point computeSize(Composite composite, int wHint, int hHint,
-			boolean flushCache) {
+	protected Point computeSize(final Composite composite, final int wHint,
+			final int hHint, final boolean flushCache) {
 		if (wHint != SWT.DEFAULT && hHint != SWT.DEFAULT) {
 			return new Point(wHint, hHint);
 		}
@@ -49,11 +49,11 @@ public class TabFolderLayout extends Layout {
 	}
 
 	@Override
-	protected void layout(Composite composite, boolean flushCache) {
+	protected void layout(final Composite composite, final boolean flushCache) {
 		final Rectangle rect = composite.getClientArea();
 
 		final Control[] children = composite.getChildren();
-		for (Control element : children) {
+		for (final Control element : children) {
 			element.setBounds(rect);
 		}
 	}

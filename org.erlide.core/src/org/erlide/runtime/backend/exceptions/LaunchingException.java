@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  * 
@@ -33,7 +33,7 @@ public class LaunchingException extends Exception {
 	 * @param message
 	 *            The message to pass up
 	 */
-	public LaunchingException(String message) {
+	public LaunchingException(final String message) {
 		super(message);
 	}
 
@@ -45,7 +45,7 @@ public class LaunchingException extends Exception {
 	 * @param cause
 	 *            The cause
 	 */
-	public LaunchingException(String message, Throwable cause) {
+	public LaunchingException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
@@ -55,7 +55,7 @@ public class LaunchingException extends Exception {
 	 * @param cause
 	 *            The cause.
 	 */
-	public LaunchingException(Throwable cause) {
+	public LaunchingException(final Throwable cause) {
 		super(cause);
 	}
 

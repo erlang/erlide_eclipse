@@ -29,7 +29,7 @@ public class HighlightStyle {
 		return color;
 	}
 
-	public void setColor(RGB color) {
+	public void setColor(final RGB color) {
 		this.color = color;
 	}
 
@@ -37,11 +37,11 @@ public class HighlightStyle {
 		return style;
 	}
 
-	public void setStyle(int style) {
+	public void setStyle(final int style) {
 		this.style = style;
 	}
 
-	public HighlightStyle(RGB color, int style) {
+	public HighlightStyle(final RGB color, final int style) {
 		this.color = color;
 		this.style = style;
 	}
@@ -49,14 +49,14 @@ public class HighlightStyle {
 	public HighlightStyle() {
 	}
 
-	public void store(IEclipsePreferences node) {
+	public void store(final IEclipsePreferences node) {
 		if (node != null) {
 			node.put(COLOR_KEY, StringConverter.asString(getColor()));
 			node.putInt(STYLE_KEY, style);
 		}
 	}
 
-	public void load(IEclipsePreferences node, HighlightStyle def) {
+	public void load(final IEclipsePreferences node, final HighlightStyle def) {
 		// dflt = def;
 		if (node != null) {
 			color = StringConverter.asRGB(node.get(COLOR_KEY, StringConverter
@@ -65,19 +65,19 @@ public class HighlightStyle {
 		}
 	}
 
-	public void load(String qualifier, HighlightStyle def) {
-		IPreferencesService service = Platform.getPreferencesService();
+	public void load(final String qualifier, final HighlightStyle def) {
+		final IPreferencesService service = Platform.getPreferencesService();
 		// dflt = def;
 		color = StringConverter.asRGB(service.getString(qualifier, COLOR_KEY,
 				StringConverter.asString(def.getColor()), null));
 		style = service.getInt(qualifier, STYLE_KEY, def.getStyle(), null);
 	}
 
-	public boolean hasStyle(int flag) {
+	public boolean hasStyle(final int flag) {
 		return (style & flag) == flag;
 	}
 
-	public void setStyle(int flag, boolean b) {
+	public void setStyle(final int flag, final boolean b) {
 		if (b) {
 			style |= flag;
 		} else {

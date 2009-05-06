@@ -23,9 +23,10 @@ public class EmptyErlangFoldingPreferenceBlock implements
 	// TODO fattar ju inget av detta, varf?r skapar de kontroller h?r??
 	// TODO m?ste dessutom uppdatera alla @see referenser
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#createControl(org.eclipse.swt.widgets.Group)
+	 * @seeorg.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
+	 * createControl(org.eclipse.swt.widgets.Group)
 	 */
-	public Control createControl(Composite composite) {
+	public Control createControl(final Composite composite) {
 		final Composite inner = new Composite(composite, SWT.NONE);
 		inner.setLayout(new GridLayout(3, false));
 
@@ -50,25 +51,33 @@ public class EmptyErlangFoldingPreferenceBlock implements
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#initialize()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
+	 * initialize()
 	 */
 	public void initialize() {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#performOk()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
+	 * performOk()
 	 */
 	public void performOk() {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#performDefaults()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
+	 * performDefaults()
 	 */
 	public void performDefaults() {
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#dispose()
+	 * @see
+	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
+	 * dispose()
 	 */
 	public void dispose() {
 	}

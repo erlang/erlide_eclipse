@@ -47,12 +47,12 @@ public class TestRunSessionSerializer implements XMLReader {
 	 * @param testRunSession
 	 *            the test run session to serialize
 	 */
-	public TestRunSessionSerializer(TestRunSession testRunSession) {
+	public TestRunSessionSerializer(final TestRunSession testRunSession) {
 		Assert.isNotNull(testRunSession);
 		this.fTestRunSession = testRunSession;
 	}
 
-	public void parse(InputSource input) throws IOException, SAXException {
+	public void parse(final InputSource input) throws IOException, SAXException {
 		if (this.fHandler == null) {
 			throw new SAXException("ContentHandler missing"); //$NON-NLS-1$
 		}
@@ -62,12 +62,12 @@ public class TestRunSessionSerializer implements XMLReader {
 		this.fHandler.endDocument();
 	}
 
-	private void handleTestRun(TestRunSession testRunSession)
-			throws SAXException {
-		AttributesImpl atts = new AttributesImpl();
+	private void handleTestRun(final TestRunSession testRunSession)
+	throws SAXException {
+		final AttributesImpl atts = new AttributesImpl();
 		addCDATA(atts, IXMLTags.ATTR_NAME, this.fTestRunSession
 				.getTestRunName());
-		IErlProject project = this.fTestRunSession.getLaunchedProject();
+		final IErlProject project = this.fTestRunSession.getLaunchedProject();
 		if (project != null) {
 			addCDATA(atts, IXMLTags.ATTR_PROJECT, project.getName());
 		}
@@ -83,8 +83,8 @@ public class TestRunSessionSerializer implements XMLReader {
 				.getIgnoredCount());
 		startElement(IXMLTags.NODE_TESTRUN, atts);
 
-		TestRoot testRoot = this.fTestRunSession.getTestRoot();
-		ITestElement[] topSuites = testRoot.getChildren();
+		final TestRoot testRoot = this.fTestRunSession.getTestRoot();
+		final ITestElement[] topSuites = testRoot.getChildren();
 		for (int i = 0; i < topSuites.length; i++) {
 			handleTestElement(topSuites[i]);
 		}
@@ -92,12 +92,12 @@ public class TestRunSessionSerializer implements XMLReader {
 		endElement(IXMLTags.NODE_TESTRUN);
 	}
 
-	private void handleTestElement(ITestElement testElement)
-			throws SAXException {
+	private void handleTestElement(final ITestElement testElement)
+	throws SAXException {
 		if (testElement instanceof TestSuiteElement) {
-			TestSuiteElement testSuiteElement = (TestSuiteElement) testElement;
+			final TestSuiteElement testSuiteElement = (TestSuiteElement) testElement;
 
-			AttributesImpl atts = new AttributesImpl();
+			final AttributesImpl atts = new AttributesImpl();
 			addCDATA(atts, IXMLTags.ATTR_NAME, testSuiteElement
 					.getSuiteTypeName());
 			// addCDATA(atts, IXMLTags.ATTR_TIME,
@@ -111,16 +111,16 @@ public class TestRunSessionSerializer implements XMLReader {
 			startElement(IXMLTags.NODE_TESTSUITE, atts);
 			addFailure(testElement);
 
-			ITestElement[] children = testSuiteElement.getChildren();
+			final ITestElement[] children = testSuiteElement.getChildren();
 			for (int i = 0; i < children.length; i++) {
 				handleTestElement(children[i]);
 			}
 			endElement(IXMLTags.NODE_TESTSUITE);
 
 		} else if (testElement instanceof TestCaseElement) {
-			TestCaseElement testCaseElement = (TestCaseElement) testElement;
+			final TestCaseElement testCaseElement = (TestCaseElement) testElement;
 
-			AttributesImpl atts = new AttributesImpl();
+			final AttributesImpl atts = new AttributesImpl();
 			addCDATA(atts, IXMLTags.ATTR_NAME, testCaseElement
 					.getTestMethodName());
 			addCDATA(atts, IXMLTags.ATTR_CLASSNAME, testCaseElement
@@ -146,17 +146,17 @@ public class TestRunSessionSerializer implements XMLReader {
 
 	}
 
-	private void addFailure(ITestElement testElement) throws SAXException {
-		FailureTrace failureTrace = testElement.getFailureTrace();
+	private void addFailure(final ITestElement testElement) throws SAXException {
+		final FailureTrace failureTrace = testElement.getFailureTrace();
 		if (failureTrace != null) {
-			AttributesImpl failureAtts = new AttributesImpl();
+			final AttributesImpl failureAtts = new AttributesImpl();
 			// addCDATA(failureAtts, IXMLTags.ATTR_MESSAGE, xx);
 			// addCDATA(failureAtts, IXMLTags.ATTR_TYPE, xx);
-			String failureKind = testElement.getTestResult(false) == Result.ERROR ? IXMLTags.NODE_ERROR
+			final String failureKind = testElement.getTestResult(false) == Result.ERROR ? IXMLTags.NODE_ERROR
 					: IXMLTags.NODE_FAILURE;
 			startElement(failureKind, failureAtts);
-			String expected = failureTrace.getExpected();
-			String actual = failureTrace.getActual();
+			final String expected = failureTrace.getExpected();
+			final String actual = failureTrace.getActual();
 			if (expected != null) {
 				startElement(IXMLTags.NODE_EXPECTED, NO_ATTS);
 				this.fHandler.characters(expected.toCharArray(), 0, expected
@@ -169,29 +169,29 @@ public class TestRunSessionSerializer implements XMLReader {
 						.length());
 				endElement(IXMLTags.NODE_ACTUAL);
 			}
-			String trace = failureTrace.getTrace();
+			final String trace = failureTrace.getTrace();
 			this.fHandler.characters(trace.toCharArray(), 0, trace.length());
 			endElement(failureKind);
 		}
 	}
 
-	private void startElement(String name, Attributes atts) throws SAXException {
+	private void startElement(final String name, final Attributes atts) throws SAXException {
 		this.fHandler.startElement(EMPTY, name, name, atts);
 	}
 
-	private void endElement(String name) throws SAXException {
+	private void endElement(final String name) throws SAXException {
 		this.fHandler.endElement(EMPTY, name, name);
 	}
 
-	private static void addCDATA(AttributesImpl atts, String name, int value) {
+	private static void addCDATA(final AttributesImpl atts, final String name, final int value) {
 		addCDATA(atts, name, Integer.toString(value));
 	}
 
-	private static void addCDATA(AttributesImpl atts, String name, String value) {
+	private static void addCDATA(final AttributesImpl atts, final String name, final String value) {
 		atts.addAttribute(EMPTY, EMPTY, name, CDATA, value);
 	}
 
-	public void setContentHandler(ContentHandler handler) {
+	public void setContentHandler(final ContentHandler handler) {
 		this.fHandler = handler;
 	}
 
@@ -199,7 +199,7 @@ public class TestRunSessionSerializer implements XMLReader {
 		return this.fHandler;
 	}
 
-	public void setErrorHandler(ErrorHandler handler) {
+	public void setErrorHandler(final ErrorHandler handler) {
 		this.fErrorHandler = handler;
 	}
 
@@ -209,34 +209,34 @@ public class TestRunSessionSerializer implements XMLReader {
 
 	// ignored:
 
-	public void parse(String systemId) throws IOException, SAXException {
+	public void parse(final String systemId) throws IOException, SAXException {
 	}
 
-	public void setDTDHandler(DTDHandler handler) {
+	public void setDTDHandler(final DTDHandler handler) {
 	}
 
 	public DTDHandler getDTDHandler() {
 		return null;
 	}
 
-	public void setEntityResolver(EntityResolver resolver) {
+	public void setEntityResolver(final EntityResolver resolver) {
 	}
 
 	public EntityResolver getEntityResolver() {
 		return null;
 	}
 
-	public void setProperty(java.lang.String name, java.lang.Object value) {
+	public void setProperty(final java.lang.String name, final java.lang.Object value) {
 	}
 
-	public Object getProperty(java.lang.String name) {
+	public Object getProperty(final java.lang.String name) {
 		return null;
 	}
 
-	public void setFeature(java.lang.String name, boolean value) {
+	public void setFeature(final java.lang.String name, final boolean value) {
 	}
 
-	public boolean getFeature(java.lang.String name) {
+	public boolean getFeature(final java.lang.String name) {
 		return false;
 	}
 }

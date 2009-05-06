@@ -14,14 +14,14 @@ import org.erlide.ui.wizards.NewErlangProject;
 
 public class NewErlangProjectAction implements IViewActionDelegate {
 
-	private IStructuredSelection selection = StructuredSelection.EMPTY;
+	private final IStructuredSelection selection = StructuredSelection.EMPTY;
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
 	 */
-	public void init(IViewPart view) {
+	public void init(final IViewPart view) {
 		// TODO Auto-generated method stub
 	}
 
@@ -30,14 +30,15 @@ public class NewErlangProjectAction implements IViewActionDelegate {
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		// Create the Wizard
-		NewErlangProject wizard = new NewErlangProject();
+		final NewErlangProject wizard = new NewErlangProject();
 		wizard.init(getWorkbench(), selection);
 
 		// Create the wizard dialog
-		Shell shell = getWorkbench().getActiveWorkbenchWindow().getShell();
-		WizardDialog dialog = new WizardDialog(shell, wizard);
+		final Shell shell = getWorkbench().getActiveWorkbenchWindow()
+				.getShell();
+		final WizardDialog dialog = new WizardDialog(shell, wizard);
 		// Open the wizard dialog
 		dialog.open();
 
@@ -53,10 +54,12 @@ public class NewErlangProjectAction implements IViewActionDelegate {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @see
+	 * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
+	 * .IAction, org.eclipse.jface.viewers.ISelection)
 	 */
-	public void selectionChanged(IAction action, ISelection aSelection) {
+	public void selectionChanged(final IAction action,
+			final ISelection aSelection) {
 		// TODO Auto-generated method stub
 
 	}

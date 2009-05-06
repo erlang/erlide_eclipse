@@ -71,14 +71,14 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		runtimeLabel.setLayoutData(new GridData());
 		runtimeLabel.setText("Runtime");
 
-		List<String> rtl = new ArrayList<String>();
-		for (RuntimeInfo r : runtimes) {
+		final List<String> rtl = new ArrayList<String>();
+		for (final RuntimeInfo r : runtimes) {
 			rtl.add(r.getName());
 		}
-		String[] rts = rtl.toArray(new String[] {});
-		RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
+		final String[] rts = rtl.toArray(new String[] {});
+		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
-		int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
+		final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
 				defaultRuntime.getName());
 
 		runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);
@@ -101,7 +101,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		nameText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
 			public void modifyText(final ModifyEvent e) {
-				boolean isRemote = nameText.getText().contains("@");
+				final boolean isRemote = nameText.getText().contains("@");
 				startNodeCheckbox.setEnabled(!isRemote);
 				if (isRemote) {
 					startNodeCheckbox.setSelection(false);
@@ -161,24 +161,24 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			runtimesCombo.setText("");
 		}
 		try {
-			String node = config.getAttribute(ErlLaunchAttributes.NODE_NAME,
-					"");
+			final String node = config.getAttribute(
+					ErlLaunchAttributes.NODE_NAME, "");
 			nameText.setText(node);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			nameText.setText("");
 		}
 		try {
-			String cookie = config
-					.getAttribute(ErlLaunchAttributes.COOKIE, "");
+			final String cookie = config.getAttribute(
+					ErlLaunchAttributes.COOKIE, "");
 			cookieText.setText(cookie);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			cookieText.setText("");
 		}
 		try {
-			boolean startMe = config.getAttribute(
+			final boolean startMe = config.getAttribute(
 					ErlLaunchAttributes.START_ME, false);
 			startNodeCheckbox.setSelection(startMe);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			startNodeCheckbox.setSelection(false);
 		}
 	}

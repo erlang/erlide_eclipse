@@ -36,14 +36,14 @@ public class CounterPanel extends Composite {
 	protected int fIgnoredCount;
 
 	private final Image fErrorIcon = TestRunnerViewPart
-			.createImage("ovr16/error_ovr.gif"); //$NON-NLS-1$
+	.createImage("ovr16/error_ovr.gif"); //$NON-NLS-1$
 
 	private final Image fFailureIcon = TestRunnerViewPart
-			.createImage("ovr16/failed_ovr.gif"); //$NON-NLS-1$
+	.createImage("ovr16/failed_ovr.gif"); //$NON-NLS-1$
 
-	public CounterPanel(Composite parent) {
+	public CounterPanel(final Composite parent) {
 		super(parent, SWT.WRAP);
-		GridLayout gridLayout = new GridLayout();
+		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 9;
 		gridLayout.makeColumnsEqualWidth = false;
 		gridLayout.marginWidth = 0;
@@ -55,10 +55,10 @@ public class CounterPanel extends Composite {
 				GUnitMessages.CounterPanel_label_errors, this.fErrorIcon, " 0 "); //$NON-NLS-1$
 		this.fNumberOfFailures = createLabel(
 				GUnitMessages.CounterPanel_label_failures, this.fFailureIcon,
-				" 0 "); //$NON-NLS-1$
+		" 0 "); //$NON-NLS-1$
 
 		addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
+			public void widgetDisposed(final DisposeEvent e) {
 				disposeIcons();
 			}
 		});
@@ -69,7 +69,7 @@ public class CounterPanel extends Composite {
 		this.fFailureIcon.dispose();
 	}
 
-	private Text createLabel(String name, Image image, String init) {
+	private Text createLabel(final String name, final Image image, final String init) {
 		Label label = new Label(this, SWT.NONE);
 		if (image != null) {
 			image.setBackground(label.getBackground());
@@ -82,7 +82,7 @@ public class CounterPanel extends Composite {
 		label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		// label.setFont(JFaceResources.getBannerFont());
 
-		Text value = new Text(this, SWT.READ_ONLY);
+		final Text value = new Text(this, SWT.READ_ONLY);
 		value.setText(init);
 		// bug: 39661 Junit test counters do not repaint correctly [JUnit]
 		value.setBackground(getDisplay().getSystemColor(
@@ -99,7 +99,7 @@ public class CounterPanel extends Composite {
 		this.fTotal = 0;
 	}
 
-	public void setTotal(int value) {
+	public void setTotal(final int value) {
 		this.fTotal = value;
 	}
 
@@ -107,12 +107,12 @@ public class CounterPanel extends Composite {
 		return this.fTotal;
 	}
 
-	public void setRunValue(int value, int ignoredCount) {
+	public void setRunValue(final int value, final int ignoredCount) {
 		String runString;
 		if (ignoredCount == 0) {
 			runString = Messages.format(GUnitMessages.CounterPanel_runcount,
 					new String[] { Integer.toString(value),
-							Integer.toString(this.fTotal) });
+					Integer.toString(this.fTotal) });
 		} else {
 			runString = Messages.format(
 					GUnitMessages.CounterPanel_runcount_ignored, new String[] {
@@ -132,12 +132,12 @@ public class CounterPanel extends Composite {
 		this.fIgnoredCount = ignoredCount;
 	}
 
-	public void setErrorValue(int value) {
+	public void setErrorValue(final int value) {
 		this.fNumberOfErrors.setText(Integer.toString(value));
 		redraw();
 	}
 
-	public void setFailureValue(int value) {
+	public void setFailureValue(final int value) {
 		this.fNumberOfFailures.setText(Integer.toString(value));
 		redraw();
 	}

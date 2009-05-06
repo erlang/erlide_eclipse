@@ -23,9 +23,11 @@ public class ScratchDocumentSetupParticipant implements
 	}
 
 	/*
-	 * @see org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument)
+	 * @see
+	 * org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse
+	 * .jface.text.IDocument)
 	 */
-	public void setup(IDocument document) {
+	public void setup(final IDocument document) {
 		if (document != null) {
 			// JavaTextTools tools=
 			// ErlangPlugin.getDefault().getJavaTextTools();

@@ -29,8 +29,8 @@ public class GUnitTabGroup extends AbstractLaunchConfigurationTabGroup {
 	 * org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(org.eclipse
 	 * .debug.ui.ILaunchConfigurationDialog, java.lang.String)
 	 */
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
+	public void createTabs(final ILaunchConfigurationDialog dialog, final String mode) {
+		final ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new GUnitLaunchConfigurationTab(), new SourceLookupTab(),
 				new EnvironmentTab(), new CommonTab() };
 		setTabs(tabs);
@@ -44,7 +44,7 @@ public class GUnitTabGroup extends AbstractLaunchConfigurationTabGroup {
 	 * org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	@Override
-	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
+	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
 		super.setDefaults(config);
 	}
 }

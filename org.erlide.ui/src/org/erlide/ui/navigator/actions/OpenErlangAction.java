@@ -25,8 +25,8 @@ public class OpenErlangAction extends Action {
 	 * @param selectionProvider
 	 *            The selection provider
 	 */
-	public OpenErlangAction(IWorkbenchPage p,
-			ISelectionProvider selectionProvider) {
+	public OpenErlangAction(final IWorkbenchPage p,
+			final ISelectionProvider selectionProvider) {
 		setText(Messages.getString("OpenErlangAction.0")); //$NON-NLS-1$
 		provider = selectionProvider;
 	}
@@ -38,9 +38,9 @@ public class OpenErlangAction extends Action {
 	 */
 	@Override
 	public boolean isEnabled() {
-		ISelection selection = provider.getSelection();
+		final ISelection selection = provider.getSelection();
 		if (!selection.isEmpty()) {
-			IStructuredSelection sSelection = (IStructuredSelection) selection;
+			final IStructuredSelection sSelection = (IStructuredSelection) selection;
 			if (sSelection.size() == 1
 					&& sSelection.getFirstElement() instanceof IErlElement) {
 				element = ((IErlElement) sSelection.getFirstElement());
@@ -63,9 +63,9 @@ public class OpenErlangAction extends Action {
 				final IEditorPart part = EditorUtility.openInEditor(element,
 						true);
 				EditorUtility.revealInEditor(part, element);
-			} catch (PartInitException e) {
+			} catch (final PartInitException e) {
 				ErlLogger.warn(e);
-			} catch (ErlModelException e) {
+			} catch (final ErlModelException e) {
 				ErlLogger.warn(e);
 			}
 		}

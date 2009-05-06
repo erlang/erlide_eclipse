@@ -26,7 +26,7 @@ public interface ITestKind {
 		}
 
 		@Override
-		protected String getAttribute(String arg0) {
+		protected String getAttribute(final String arg0) {
 			return null;
 		}
 

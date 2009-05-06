@@ -24,7 +24,7 @@ public class InitializeAfterLoadJob extends UIJob {
 	}
 
 	@Override
-	public IStatus runInUIThread(IProgressMonitor monitor) {
+	public IStatus runInUIThread(final IProgressMonitor monitor) {
 		ErlangPlugin.initializeAfterLoad(monitor);
 
 		return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID, IStatus.OK,

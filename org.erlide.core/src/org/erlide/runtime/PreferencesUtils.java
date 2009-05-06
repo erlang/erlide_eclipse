@@ -14,21 +14,21 @@ public final class PreferencesUtils {
 
 	private static final String SEP = ";";
 
-	public static String packList(Iterable<String> list) {
-		StringBuilder result = new StringBuilder();
-		for (String s : list) {
+	public static String packList(final Iterable<String> list) {
+		final StringBuilder result = new StringBuilder();
+		for (final String s : list) {
 			result.append(s).append(SEP);
 		}
 		return result.toString();
 	}
 
-	public static List<String> unpackList(String string) {
+	public static List<String> unpackList(final String string) {
 		return unpackList(string, SEP);
 	}
 
 	public static String packArray(final String[] strs) {
-		StringBuilder result = new StringBuilder();
-		for (String s : strs) {
+		final StringBuilder result = new StringBuilder();
+		for (final String s : strs) {
 			result.append(s).append(SEP);
 		}
 		return result.toString();
@@ -38,23 +38,24 @@ public final class PreferencesUtils {
 		return unpackList(str).toArray(new String[0]);
 	}
 
-	public static void clearAll(IEclipsePreferences root)
+	public static void clearAll(final IEclipsePreferences root)
 			throws BackingStoreException {
 		root.clear();
-		for (String n : root.childrenNames()) {
+		for (final String n : root.childrenNames()) {
 			root.node(n).removeNode();
 		}
 	}
 
-	public static List<String> readFile(String file) {
-		List<String> res = new ArrayList<String>();
+	public static List<String> readFile(final String file) {
+		final List<String> res = new ArrayList<String>();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			final BufferedReader reader = new BufferedReader(new FileReader(
+					file));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				res.add(line);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 		}
 		return res;
 	}
@@ -62,9 +63,9 @@ public final class PreferencesUtils {
 	private PreferencesUtils() {
 	}
 
-	public static List<String> unpackList(String string, String sep) {
-		String[] v = string.split(sep);
-		List<String> result = new ArrayList<String>(Arrays.asList(v));
+	public static List<String> unpackList(final String string, final String sep) {
+		final String[] v = string.split(sep);
+		final List<String> result = new ArrayList<String>(Arrays.asList(v));
 		return result;
 	}
 

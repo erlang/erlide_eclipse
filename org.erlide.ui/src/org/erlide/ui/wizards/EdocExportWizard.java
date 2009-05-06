@@ -47,7 +47,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 
 		final Collection<IProject> projects = page.getSelectedResources();
 		final Map<String, OtpErlangObject> options = page.getOptions();
-		for (IProject prj : projects) {
+		for (final IProject prj : projects) {
 			if (!prj.isAccessible()) {
 				ErlLogger.debug("EDOC: " + prj.getName()
 						+ " is not accessible, skipping.");
@@ -55,19 +55,20 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 			}
 			ErlLogger.debug("EDOC: " + prj.getName());
 			try {
-				IFolder dest = prj.getFolder(page.getDestination());
+				final IFolder dest = prj.getFolder(page.getDestination());
 				if (!dest.exists()) {
 					dest.create(true, true, null);
 				}
 				options.put("dir", new OtpErlangString(dest.getLocation()
 						.toString()));
 				final List<String> files = new ArrayList<String>();
-				ErlangProjectProperties props = new ErlangProjectProperties(prj);
-				for (String dir : props.getSourceDirs()) {
-					IFolder folder = prj.getFolder(dir);
+				final ErlangProjectProperties props = new ErlangProjectProperties(
+						prj);
+				for (final String dir : props.getSourceDirs()) {
+					final IFolder folder = prj.getFolder(dir);
 					if (folder.isAccessible()) {
 						folder.accept(new IResourceVisitor() {
-							public boolean visit(IResource resource)
+							public boolean visit(final IResource resource)
 									throws CoreException {
 								if ("erl".equals(resource.getFileExtension())) {
 									if (resource.isAccessible()) {
@@ -82,10 +83,10 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 				}
 				try {
 					ErlideEdoc.files(files, options);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				ErlLogger.warn(e);
 			}
 		}

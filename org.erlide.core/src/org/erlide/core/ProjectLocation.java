@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -25,11 +25,11 @@ import org.osgi.service.prefs.BackingStoreException;
 public final class ProjectLocation extends DependencyLocation {
 	private IProject project;
 
-	public ProjectLocation(IProject project) {
+	public ProjectLocation(final IProject project) {
 		this(project, null);
 	}
 
-	public ProjectLocation(IProject project, EnumSet<Kind> kind) {
+	public ProjectLocation(final IProject project, final EnumSet<Kind> kind) {
 		super(kind);
 		Assert.isLegal(project != null,
 				"ProjectLocation requires a non-null project");
@@ -41,9 +41,9 @@ public final class ProjectLocation extends DependencyLocation {
 	}
 
 	@Override
-	public void load(IEclipsePreferences root) {
-		String projectName = root
-				.get(ProjectPreferencesConstants.PROJECT, null);
+	public void load(final IEclipsePreferences root) {
+		final String projectName = root.get(
+				ProjectPreferencesConstants.PROJECT, null);
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		project = workspace.getRoot().getProject(projectName);
 		Assert.isLegal(project != null,
@@ -51,7 +51,8 @@ public final class ProjectLocation extends DependencyLocation {
 	}
 
 	@Override
-	public void store(IEclipsePreferences root) throws BackingStoreException {
+	public void store(final IEclipsePreferences root)
+			throws BackingStoreException {
 		PreferencesUtils.clearAll(root);
 		root.put(ProjectPreferencesConstants.PROJECT, project.getName());
 	}

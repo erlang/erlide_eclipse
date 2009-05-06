@@ -37,7 +37,7 @@ public class TestSelectionDialog extends TwoPaneElementSelector {
 	// }
 	// }
 
-	public TestSelectionDialog(Shell shell, IErlModule[] types) {
+	public TestSelectionDialog(final Shell shell, final IErlModule[] types) {
 		super(shell, null, null); // new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_BASICS
 		// | JavaElementLabelProvider.SHOW_OVERLAY_ICONS),
@@ -49,7 +49,7 @@ public class TestSelectionDialog extends TwoPaneElementSelector {
 	 * @see org.eclipse.jface.window.Window#configureShell(Shell)
 	 */
 	@Override
-	protected void configureShell(Shell newShell) {
+	protected void configureShell(final Shell newShell) {
 		super.configureShell(newShell);
 		// PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, new
 		// Object[] { IJavaHelpContextIds.MAINTYPE_SELECTION_DIALOG });

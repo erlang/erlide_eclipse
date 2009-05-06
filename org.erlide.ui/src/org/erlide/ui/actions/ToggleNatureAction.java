@@ -34,7 +34,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		if (fSelection instanceof IStructuredSelection) {
 			for (final Iterator<?> it = ((IStructuredSelection) fSelection)
 					.iterator(); it.hasNext();) {
@@ -60,7 +60,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
 	 * .IAction, org.eclipse.jface.viewers.ISelection)
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
 		fSelection = selection;
 	}
 
@@ -71,7 +72,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
 	 * action.IAction, org.eclipse.ui.IWorkbenchPart)
 	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+	public void setActivePart(final IAction action,
+			final IWorkbenchPart targetPart) {
 	}
 
 	/**
@@ -80,7 +82,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 	 * @param project
 	 *            to have sample nature added or removed
 	 */
-	private void toggleNature(IProject project) {
+	private void toggleNature(final IProject project) {
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
@@ -100,7 +102,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 					// remove code path to backend
 					final String out = project.getLocation().append(
 							prefs.getOutputDir()).toString();
-					for (Backend b : ErlangCore.getBackendManager()
+					for (final Backend b : ErlangCore.getBackendManager()
 							.getExecutionBackends(project)) {
 						b.removePath(prefs.getUsePathZ(), out);
 					}
@@ -118,7 +120,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			// add code path to backend
 			final String out = project.getLocation().append(
 					prefs.getOutputDir()).toString();
-			for (Backend b : ErlangCore.getBackendManager()
+			for (final Backend b : ErlangCore.getBackendManager()
 					.getExecutionBackends(project)) {
 				b.addPath(prefs.getUsePathZ(), out);
 			}

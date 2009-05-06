@@ -191,12 +191,12 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 	protected boolean performIncrementalBuild() {
 		final IRunnableWithProgress r = new IRunnableWithProgress() {
 
-			public void run(IProgressMonitor pm)
+			public void run(final IProgressMonitor pm)
 					throws InvocationTargetException {
 				try {
 					getErlProject().getProject().build(
 							IncrementalProjectBuilder.INCREMENTAL_BUILD, pm);
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					throw new InvocationTargetException(e);
 				}
 			}
@@ -244,13 +244,13 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 		final Runnable r = new Runnable() {
 
 			public void run() {
-				Shell shell = getShell();
+				final Shell shell = getShell();
 				if (fScratchStateListeners != null && shell != null
 						&& !shell.isDisposed()) {
-					List<IScratchStateChangedListener> v = new ArrayList<IScratchStateChangedListener>(
+					final List<IScratchStateChangedListener> v = new ArrayList<IScratchStateChangedListener>(
 							fScratchStateListeners);
 					for (int i = 0; i < v.size(); i++) {
-						IScratchStateChangedListener l = v.get(i);
+						final IScratchStateChangedListener l = v.get(i);
 						l.scratchStateChanged(ScratchEditor.this);
 					}
 				}
@@ -353,7 +353,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 					getSourceViewer().getDocument().replace(fScratchStart, 0,
 							errorString.toString());
 					selectAndReveal(fScratchStart, errorString.length());
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 				}
 			}
 		};
@@ -513,7 +513,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			@Override
 			public void execute(final IProgressMonitor monitor)
 					throws CoreException {
-				IDocumentProvider dp = getDocumentProvider();
+				final IDocumentProvider dp = getDocumentProvider();
 				dp.saveDocument(monitor, newInput, dp
 						.getDocument(getEditorInput()), true);
 			}
@@ -587,7 +587,7 @@ public class ScratchEditor extends AbstractDecoratedTextEditor {
 			public void run() {
 				try {
 					getSourceViewer().getDocument().replace(offset, 0, text);
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 				}
 				selectAndReveal(offset, text.length());
 			}

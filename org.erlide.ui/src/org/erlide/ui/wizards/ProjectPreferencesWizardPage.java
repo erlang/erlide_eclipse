@@ -65,7 +65,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	 * 
 	 * @param pageName
 	 */
-	public ProjectPreferencesWizardPage(String pageName) {
+	public ProjectPreferencesWizardPage(final String pageName) {
 		super(pageName);
 	}
 
@@ -76,15 +76,15 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	 * @param title
 	 * @param titleImage
 	 */
-	public ProjectPreferencesWizardPage(String pageName, String title,
-			ImageDescriptor titleImage) {
+	public ProjectPreferencesWizardPage(final String pageName,
+			final String title, final ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 	}
 
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		prefs = new ErlangProjectProperties();
 
 		// create the composite to hold the widgets
@@ -95,7 +95,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		gl.numColumns = 3;
 		composite.setLayout(gl);
 
-		String resourceString = ErlideUIPlugin
+		final String resourceString = ErlideUIPlugin
 				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
 		final Label outLabel = new Label(composite, SWT.NONE);
@@ -119,9 +119,9 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		uz.setSelection(prefs.getUsePathZ());
 		uz.addListener(SWT.Modify, nameModifyListener);
 
-		Label l1 = new Label(composite, SWT.NONE);
+		final Label l1 = new Label(composite, SWT.NONE);
 		l1.setText("sources");
-		String resourceString2 = ErlideUIPlugin
+		final String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
@@ -131,7 +131,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		source.setText(prefs.getSourceDirsString());
 		source.addListener(SWT.Modify, nameModifyListener);
 
-		String resourceString3 = ErlideUIPlugin
+		final String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
 		final Label includesLabel = new Label(composite, SWT.NONE);
 		includesLabel.setText("includes");
@@ -170,7 +170,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		discoverBtn.setText("Discover paths...");
 		discoverBtn.addListener(SWT.Selection, new Listener() {
 
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				discoverPaths();
 			}
 		});
@@ -198,7 +198,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		}
 	}
 
-	private String[] dirs(List<String> list, IPath ref) {
+	private String[] dirs(final List<String> list, final IPath ref) {
 		final int n = ref.segmentCount();
 		final List<String> res = new ArrayList<String>(10);
 		for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
@@ -216,11 +216,12 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		return res.toArray(new String[res.size()]);
 	}
 
-	private List<String> search(String ext, File file) {
+	private List<String> search(final String ext, final File file) {
 		return search(ext, file, new ArrayList<String>());
 	}
 
-	private List<String> search(String ext, File file, List<String> list) {
+	private List<String> search(final String ext, final File file,
+			final List<String> list) {
 		if (file.isFile()) {
 			final IPath path = new Path(file.getPath());
 			if (path.getFileExtension() != null
@@ -260,11 +261,12 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 	private final Listener nameModifyListener = new Listener() {
 
-		public void handleEvent(Event e) {
+		public void handleEvent(final Event e) {
 			prefs.setOutputDir(output.getText());
 			prefs.setSourceDirsString(source.getText());
 			prefs.setIncludeDirsString(include.getText());
-			RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
+			final RuntimeVersion rv = new RuntimeVersion(runtimeVersion
+					.getText());
 			prefs.setRuntimeVersion(rv);
 			prefs.setExternalModulesFile(externalModules.getText());
 			prefs.setExternalIncludesFile(externalIncludes.getText());
@@ -278,16 +280,16 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	}
 
 	private void createExternalModuleEditor(final Composite parent) {
-		Composite composite = parent;
+		final Composite composite = parent;
 
-		String resourceString4 = "External modules file";
+		final String resourceString4 = "External modules file";
 		final Label label = new Label(composite, SWT.NONE);
 		label.setBackground(SWTResourceManager.getColor(255, 255, 183));
 		label.setText(resourceString4 + ":");
 		externalModules = new Text(composite, SWT.BORDER);
 		externalModules.setToolTipText("enter a list of folders");
 		externalModules.setText(prefs.getExternalModulesFile());
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gd.minimumWidth = 50;
 		gd.widthHint = 384;
 		externalModules.setLayoutData(gd);
@@ -296,7 +298,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		externalModulesBrowse.setText("Browse...");
 		externalModulesBrowse.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent evt) {
+			public void widgetSelected(final SelectionEvent evt) {
 				handleExternalModulesBrowseSelected();
 			}
 
@@ -304,16 +306,16 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	}
 
 	private void createExternalIncludeEditor(final Composite parent) {
-		Composite composite = parent;
+		final Composite composite = parent;
 
-		String resourceString4 = "External includes file";
+		final String resourceString4 = "External includes file";
 		final Label label = new Label(composite, SWT.NONE);
 		label.setBackground(SWTResourceManager.getColor(255, 255, 183));
 		label.setText(resourceString4 + ":");
 		externalIncludes = new Text(composite, SWT.BORDER);
 		externalIncludes.setToolTipText("enter a list of folders");
 		externalIncludes.setText(prefs.getExternalModulesFile());
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gd.minimumWidth = 50;
 		gd.widthHint = 384;
 		externalIncludes.setLayoutData(gd);
@@ -322,7 +324,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		externalIncludesBrowse.setText("Browse...");
 		externalIncludesBrowse.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent evt) {
+			public void widgetSelected(final SelectionEvent evt) {
 				handleExternalIncludesBrowseSelected();
 			}
 
@@ -336,11 +338,11 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		} else {
 			last = last.trim();
 		}
-		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+		final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
 		dialog.setText("Select file with external modules");
 		dialog.setFileName(last);
 		dialog.setFilterExtensions(new String[] { "*.erlidex" });
-		String result = dialog.open();
+		final String result = dialog.open();
 		if (result == null) {
 			return;
 		}
@@ -354,11 +356,11 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		} else {
 			last = last.trim();
 		}
-		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+		final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
 		dialog.setText("Select file with external include files");
 		dialog.setFileName(last);
 		dialog.setFilterExtensions(new String[] { "*.erlidex" });
-		String result = dialog.open();
+		final String result = dialog.open();
 		if (result == null) {
 			return;
 		}

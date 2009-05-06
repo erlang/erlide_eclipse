@@ -28,8 +28,8 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		super();
 	}
 
-	public TicketStatus send(TicketInfo info) {
-		String msg = infoToMessage(info);
+	public TicketStatus send(final TicketInfo info) {
+		final String msg = infoToMessage(info);
 		try {
 			URL url = getLoginURL(System
 					.getProperty("erlide.assembla.user", ""), System
@@ -39,10 +39,10 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 			}
 			login(url);
 			url = getURL();
-			String resp = post(url, msg);
-			TicketStatus result = parseMessage(resp);
+			final String resp = post(url, msg);
+			final TicketStatus result = parseMessage(resp);
 			return result;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			ErlLogger.warn(e);
 			return new TicketStatus(false, 0);
 		}
@@ -64,12 +64,13 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 
 		conn = url.openConnection(proxy);
 		conn.setDoOutput(true);
-		OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+		final OutputStreamWriter wr = new OutputStreamWriter(conn
+				.getOutputStream());
 		wr.write(message);
 		wr.flush();
 
 		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
+		final BufferedReader rd = new BufferedReader(new InputStreamReader(conn
 				.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {
@@ -95,7 +96,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		conn = url.openConnection(proxy);
 
 		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn
+		final BufferedReader rd = new BufferedReader(new InputStreamReader(conn
 				.getInputStream()));
 		String line;
 		while ((line = rd.readLine()) != null) {

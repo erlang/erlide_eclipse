@@ -24,13 +24,13 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	private final int minor;
 	private final int micro;
 
-	public RuntimeVersion(RuntimeVersion other) {
+	public RuntimeVersion(final RuntimeVersion other) {
 		major = other.major;
 		minor = other.minor;
 		micro = other.micro;
 	}
 
-	public RuntimeVersion(int major, int minor, int micro) {
+	public RuntimeVersion(final int major, final int minor, final int micro) {
 		Assert.isTrue(major >= UNUSED);
 		Assert.isTrue(minor >= UNUSED);
 		Assert.isTrue(micro >= UNUSED);
@@ -39,15 +39,15 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 		this.micro = micro;
 	}
 
-	public RuntimeVersion(int major, int minor) {
+	public RuntimeVersion(final int major, final int minor) {
 		this(major, minor, UNUSED);
 	}
 
-	public RuntimeVersion(int major) {
+	public RuntimeVersion(final int major) {
 		this(major, UNUSED, UNUSED);
 	}
 
-	public RuntimeVersion(String version) {
+	public RuntimeVersion(final String version) {
 		if (version == null || version.length() == 0) {
 			this.major = UNUSED;
 			this.minor = UNUSED;
@@ -63,7 +63,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 				i++;
 			}
 		} while (c >= '0' && c <= '9' && i < version.length());
-		String substring = version.substring(1, i);
+		final String substring = version.substring(1, i);
 		major = Integer.parseInt(substring);
 		if (i < version.length()) {
 			c = version.charAt(i);
@@ -100,15 +100,15 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	}
 
 	@Override
-	public boolean equals(Object v) {
+	public boolean equals(final Object v) {
 		if (!(v instanceof RuntimeVersion)) {
 			return false;
 		}
-		RuntimeVersion other = (RuntimeVersion) v;
+		final RuntimeVersion other = (RuntimeVersion) v;
 		return compareTo(other) == 0;
 	}
 
-	public int compareTo(RuntimeVersion o) {
+	public int compareTo(final RuntimeVersion o) {
 		if (major == o.major) {
 			if (minor == o.minor) {
 				if (micro == o.micro) {
@@ -128,11 +128,11 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 		return major != UNUSED;
 	}
 
-	public boolean isCompatible(RuntimeVersion other) {
+	public boolean isCompatible(final RuntimeVersion other) {
 		return compareTo(other) >= 0;
 	}
 
-	public boolean isReleaseCompatible(RuntimeVersion other) {
+	public boolean isReleaseCompatible(final RuntimeVersion other) {
 		return major == other.major && isCompatible(other);
 	}
 

@@ -63,24 +63,24 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				.removePreferenceChangeListener(this);
 	}
 
-	public ErlangProjectProperties load(IEclipsePreferences node) {
+	public ErlangProjectProperties load(final IEclipsePreferences node) {
 		if (project == null) {
 			return this;
 		}
 
 		if ("true".equals(System.getProperty("erlide.newprops"))) {
-			NewErlangProjectProperties npp = new NewErlangProjectProperties();
+			final NewErlangProjectProperties npp = new NewErlangProjectProperties();
 			try {
 				npp.load((IEclipsePreferences) node.node("test"));
 				npp.store((IEclipsePreferences) node.node("new_test"));
-			} catch (BackingStoreException e) {
+			} catch (final BackingStoreException e) {
 				e.printStackTrace();
 			}
 		}
 
 		final IFile cp = project.getFile(CODEPATH_FILENAME);
 		if (cp.exists()) {
-			String msg = "Found old configuration file %s for project %s, please remove it.";
+			final String msg = "Found old configuration file %s for project %s, please remove it.";
 			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
 
@@ -100,8 +100,8 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				runtimeVersion = new RuntimeVersion(
 						ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
 			} else {
-				RuntimeInfo ri = ErlangCore.getRuntimeInfoManager().getRuntime(
-						runtimeName);
+				final RuntimeInfo ri = ErlangCore.getRuntimeInfoManager()
+						.getRuntime(runtimeName);
 				if (ri != null) {
 					runtimeVersion = new RuntimeVersion(ri.getVersion());
 				} else {
@@ -121,17 +121,17 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return this;
 	}
 
-	public void store(IEclipsePreferences node) {
+	public void store(final IEclipsePreferences node) {
 		if (project == null) {
 			return;
 		}
 
 		if ("true".equals(System.getProperty("erlide.newprops"))) {
-			NewErlangProjectProperties npp = new NewErlangProjectProperties(
+			final NewErlangProjectProperties npp = new NewErlangProjectProperties(
 					this);
 			try {
 				npp.store((IEclipsePreferences) node.node("test"));
-			} catch (BackingStoreException e) {
+			} catch (final BackingStoreException e) {
 				e.printStackTrace();
 			}
 		}
@@ -299,8 +299,8 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	}
 
 	public RuntimeInfo getRuntimeInfo() {
-		RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager().getRuntime(
-				runtimeVersion, runtimeName);
+		final RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager()
+				.getRuntime(runtimeVersion, runtimeName);
 		RuntimeInfo rt = null;
 		if (runtime != null) {
 			rt = RuntimeInfo.copy(runtime, false);
@@ -323,7 +323,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		return runtimeVersion;
 	}
 
-	public void preferenceChange(PreferenceChangeEvent event) {
+	public void preferenceChange(final PreferenceChangeEvent event) {
 		final IEclipsePreferences root = new ProjectScope(project)
 				.getNode(ErlangPlugin.PLUGIN_ID);
 		load(root);
@@ -333,7 +333,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		// + event.getNewValue() + " ... " + event.getSource());
 	}
 
-	public void setRuntimeVersion(RuntimeVersion runtimeVersion) {
+	public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
 		this.runtimeVersion = runtimeVersion;
 	}
 }
