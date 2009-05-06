@@ -70,7 +70,7 @@ public class RPCMessage {
 	 *             error
 	 */
 	protected void checkOkResultCases(OtpErlangTuple tuple)
-			throws WranglerRefactoringException {
+			throws WranglerException {
 		if (!tuple.elementAt(0).toString().equals("ok")) {
 			if (tuple.elementAt(1) instanceof OtpErlangString) {
 				String message = ((OtpErlangString) tuple.elementAt(1))

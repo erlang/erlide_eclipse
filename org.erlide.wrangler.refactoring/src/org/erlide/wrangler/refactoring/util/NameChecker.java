@@ -38,4 +38,8 @@ public class NameChecker {
 		}
 	}
 
+	public static boolean checkIsProcess(String s) {
+		return checkIsAtom(s);
+	}
+
 }

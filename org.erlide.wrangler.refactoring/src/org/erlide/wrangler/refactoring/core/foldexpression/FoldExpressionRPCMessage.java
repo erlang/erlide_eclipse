@@ -5,7 +5,7 @@ import java.util.List;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.core.FileResourceChanges;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
-import org.erlide.wrangler.refactoring.core.exception.WranglerRefactoringException;
+import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -27,7 +27,7 @@ public class FoldExpressionRPCMessage extends RPCMessage {
 
 	@Override
 	protected void checkOkResultCases(OtpErlangTuple tuple)
-			throws WranglerRefactoringException {
+			throws WranglerException {
 		/**
 		 * checks if there is any error, in case of true throws an exception
 		 */

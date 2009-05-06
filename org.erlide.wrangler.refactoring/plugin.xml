@@ -49,6 +49,12 @@
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
          </action>
          <action
+               class="org.erlide.wrangler.refactoring.core.renameprocess.RenameProcessAction"
+               id="org.erlide.wranglerrefactoring.renameprocess"
+               label="%renameProcessName"
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+         </action>
+         <action
                class="org.erlide.wrangler.refactoring.core.renamemodule.RenameModuleAction"
                definitionId="org.erlide.wrangler.refactoring.renameModule"
                id="org.erlide.wranglerrefactoring.renamemodule"
@@ -82,6 +88,13 @@
                id="org.erlide.wranglerrefactoring.movefunction"
                label="%moveFunctionName"
                menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.core.functiontoprocess.FunctionToProcessAction"
+               id="org.erlide.wranglerrefactoring.functiontoprocess"
+               label="%funToProcessName"
+               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup"
+               style="push">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.core.tupleparameters.TupleParametersAction"

@@ -19,6 +19,7 @@ import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
+import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -74,6 +75,8 @@ public abstract class WranglerRefactoring extends Refactoring {
 
 		try {
 			doRefactoring();
+		} catch (WranglerWarningException e) {
+			rs = RefactoringStatus.createWarningStatus(e.getMessage());
 		} catch (WranglerException e) {
 			String s = e.getLocalizedMessage();
 			rs = RefactoringStatus.createFatalErrorStatus(s);
@@ -140,6 +143,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	protected RPCMessage convertRpcResultToRPCMessage(RpcResult res)
 			throws WranglerException {
 		RPCMessage m = new RPCMessage(res);
+		message = m;
 		m.checkIsOK();
 		return m;
 	}
@@ -202,20 +206,12 @@ public abstract class WranglerRefactoring extends Refactoring {
 		String filePath = parameters.getFilePath();
 		ErlLogger.debug("selected file for " + getName() + " refactoring:"
 				+ filePath);
-		// TODO: remove this try block, beacuse it is unneccessary
-		try {
-			RpcResult res = sendRPC(filePath, parameters.getSearchPath());
-			ErlLogger.debug("raw result: " + res);
-			RPCMessage m = convertRpcResultToRPCMessage(res);
-			ErlLogger.debug("RpcResult converted to RpcMessage");
-			message = m;
 
-		} catch (WranglerException e) {
-			throw e;
-		} catch (CoreException e) {
-			ErlLogger.error(e);
-			throw e;
-		}
+		RpcResult res = sendRPC(filePath, parameters.getSearchPath());
+		ErlLogger.debug("raw result: " + res);
+
+		convertRpcResultToRPCMessage(res);
+		ErlLogger.debug("RpcResult converted to RpcMessage");
 	}
 
 	/**
