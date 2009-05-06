@@ -44,7 +44,7 @@
          get_var_exports/1, get_env_vars/1, get_bound_vars/1, get_free_vars/1, 
          get_client_files/2, expand_files/2, get_modules_by_file/1,
          reset_attrs/1, update_ann/2,parse_annotate_file_1/5, parse_annotate_file/3,
-         parse_annotate_file/4,write_refactored_files/1,
+         parse_annotate_file/4,write_refactored_files/1, write_refactored_files_for_preview/1,
          build_lib_side_effect_tab/1, build_local_side_effect_tab/2,
 	 build_scc_callgraph/1,build_callercallee_callgraph/1, has_side_effect/3,
          callback_funs/1,auto_imported_bifs/0, called_funs/3, file_format/1]).
@@ -174,7 +174,6 @@ until(F, [H | T], Others) ->
 %% @see full_buTP/2
 %% @see once_tdTU/3
 
-%%-spec(stop_tdTP(Function::function(), Tree::syntaxTree(), Others::[term()])->  syntaxTree()).
 -spec(stop_tdTP/3::(fun((syntaxTree(), any()) ->
 			       {anyterm(), boolean()}), syntaxTree(), anyterm()) ->
 	     {anyterm(), boolean()}).
@@ -237,7 +236,7 @@ full_buTP(Fun, Tree, Others) ->
 %% @see pos_to_fun_def/2.
 
 -spec (pos_to_fun_name(Node::syntaxTree(), Pos::pos()) ->
-                        {ok, {atom(), atom(), integer(), pos(), pos()}} | {error, string()}).
+	      {ok, {atom(), atom(), integer(), pos(), pos()}} | {error, string()}).
 pos_to_fun_name(Node, Pos) ->
     case once_tdTU(fun pos_to_fun_name_1/2, Node, Pos) of
       {_, false} -> {error, "You have not selected a function name!"};
@@ -265,7 +264,7 @@ pos_to_fun_name_1(Node, Pos = {Ln, Col}) ->
 %% @see pos_to_fun_name/2.
 
 -spec(pos_to_fun_def(Node::syntaxTree(), Pos::pos()) 
-                     -> {ok, syntaxTree()} | {error, string()}).
+      -> {ok, syntaxTree()} | {error, string()}).
 pos_to_fun_def(Node, Pos) ->
     case once_tdTU(fun pos_to_fun_def_1/2, Node, Pos) of
       {_, false} -> {error, "You have not selected a function definition!"};
@@ -342,8 +341,7 @@ pos_to_var_name_1(Node, _Pos = {Ln, Col}) ->
 %% @see pos_to_fun_def/2
 %% @see pos_to_var_name/2
 
--spec(pos_to_expr(Tree::syntaxTree(), Start::pos(), End::pos()) ->
-                  {ok, syntaxTree()} | {error, string()}).
+-spec(pos_to_expr(Tree::syntaxTree(), Start::pos(), End::pos()) ->{ok, syntaxTree()} | {error, string()}).
 pos_to_expr(Tree, Start, End) ->
     Es =pos_to_syntax_units(Tree, Start, End, fun is_expr/1),
     case Es of
@@ -352,8 +350,7 @@ pos_to_expr(Tree, Start, End) ->
     end.
 
 
--spec(pos_to_syntax_units(Tree::syntaxTree(),  Start::pos(), End::pos(), F::function()) ->
-	     [syntaxTree()]).
+-spec(pos_to_syntax_units(Tree::syntaxTree(),  Start::pos(), End::pos(), F::function()) ->[syntaxTree()]).
 pos_to_syntax_units(Tree, Start, End, F) ->
     Res = pos_to_syntax_units_1(Tree, Start, End, F),
     filter_syntax_units(Res).
@@ -581,7 +578,7 @@ is_pattern(Node) ->
 %%
 %% @doc Return the start and end location of the syntax phrase in the code.
 
-%% -spec(get_range(Node::syntaxTree())-> {pos(), pos()}).
+-spec(get_range(Node::syntaxTree())-> {pos(), pos()}).
 get_range(Node) ->
     As = refac_syntax:get_ann(Node),
     case lists:keysearch(range, 1, As) of
@@ -822,6 +819,37 @@ write_refactored_files(Files) ->
 	_ -> throw({error, "Wrangler failed to rewrite the refactored files."})
     end.
 
+write_refactored_files_for_preview(Files) ->
+    F = fun(FileAST) ->
+		case FileAST of 
+		    {{FileName,NewFileName}, AST} ->
+			FileFormat = file_format(FileName),
+			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp",  %% .erl.swp or .swp.erl?
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
+			    ok -> {{FileName,NewFileName, false},SwpFileName};
+			    _  -> error
+			end;			
+		    {{FileName,NewFileName, IsNew}, AST} ->
+			FileFormat = file_format(FileName),
+			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp", 
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
+			    ok -> {{FileName,NewFileName, IsNew},SwpFileName};
+			    _  -> error
+			end
+		    end
+	end,
+    FilePairs = lists:map(F, Files),
+    case lists:any(fun(R) -> R == error end, FilePairs) of 
+	true -> lists:foreach(fun(P) ->
+				      case P of 
+					  error -> ok;
+					  {_,SwpF} -> file:delete(SwpF)
+				      end
+			      end, FilePairs),
+		throw({error, "Wrangler failed to output the refactoring result."});
+	_ -> wrangler_preview_server:add_files(FilePairs)
+    end.
+
 %% =====================================================================
 %% @spec tokenize(File::filename()) -> [token()]
 %% @doc Tokenize an Erlang file into a list of tokens.
@@ -837,8 +865,7 @@ tokenize(File, WithLayout, TabWidth) ->
 			 Ts
 	end.
 
--spec(concat_toks(Toks::[token()]) ->
-	      string()).
+-spec(concat_toks(Toks::[token()]) ->string()).
 concat_toks(Toks) ->
     concat_toks(Toks, "").
 
@@ -850,13 +877,18 @@ concat_toks([T|Ts], Acc) ->
 			  concat_toks(Ts, [S|Acc]);
 	 {qatom, _, V} -> S=atom_to_list(V),
 			  concat_toks(Ts, [S|Acc]);
-	{string, _, V} -> concat_toks(Ts,["\"", V, "\""|Acc]);
-       	{char, _, V} when is_integer(V)-> concat_toks(Ts,[io_lib:write_char(V)|Acc]);
-	{_, _, V} -> concat_toks(Ts, [V|Acc]);
- 	{dot, _} ->concat_toks(Ts, ['.'|Acc]);
-	{V, _} -> 
+	 {string, _, V} -> concat_toks(Ts,["\"", V, "\""|Acc]);
+	 {char, _, V} when is_integer(V) and (V =< 127)-> concat_toks(Ts,[io_lib:write_char(V)|Acc]);
+	 {char, _, V} when is_integer(V) ->
+	     {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
+	     [Str] = io_lib:fwrite("~.8B", [Num]),
+	     S = "$\\"++Str,
+	     concat_toks(Ts, [S|Acc]); 
+	 {_, _, V} -> concat_toks(Ts, [V|Acc]);
+	 {dot, _} ->concat_toks(Ts, ['.'|Acc]);
+	 {V, _} -> 
 	     concat_toks(Ts, [V|Acc])
-    end.
+     end.
 
 %% =====================================================================
 %% @spec parse_annotate_file(FName::filename(), ByPassPreP::bool(), SearchPaths::[dir()])

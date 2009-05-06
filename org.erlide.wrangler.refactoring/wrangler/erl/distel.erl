@@ -16,14 +16,6 @@
 
 -export([rpc_entry/3, gl_proxy/1]).
 
-to_atom(X) -> list_to_atom(to_list(X)).
-     
-to_list(X) when is_binary(X) -> binary_to_list(X);
-to_list(X) when is_integer(X)-> integer_to_list(X);
-to_list(X) when is_float(X)  -> float_to_list(X);
-to_list(X) when is_atom(X)   -> atom_to_list(X);
-to_list(X) when is_list(X)   -> X.		%Assumed to be a string
-
 %% ----------------------------------------------------------------------
 %% RPC entry point, adapting the group_leader protocol.
 
@@ -41,7 +33,7 @@ rpc_entry(M, F, A) ->
     apply(M,F,A).
 
 gl_name(Pid) ->
-    to_atom(flatten(io_lib:format("distel_gl_for_~p", [Pid]))).
+    list_to_atom((flatten(io_lib:format("distel_gl_for_~p", [Pid])))).
 
 gl_proxy(GL) ->
     receive

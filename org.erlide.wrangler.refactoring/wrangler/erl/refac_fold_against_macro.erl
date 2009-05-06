@@ -18,7 +18,7 @@
 
 -module(refac_fold_against_macro).
 
--export([fold_against_macro/5, fold_against_macro_1/9, fold_against_macro_eclipse/5]).
+-export([fold_against_macro/5, fold_against_macro_1/4, fold_against_macro_eclipse/5]).
 
 
 -export([fold_against_macro/6]).
@@ -78,23 +78,24 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 	    {error, "You have not selected a macro definition, or the selected macro definition does not have a syntactially well-formed body!"}
     end.
 
--spec(fold_against_macro_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree(), [dir()], integer()) ->
-	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
-fold_against_macro_1(FileName, StartLine, StartCol, EndLine, EndCol, MacroApp1, MacroDef1, SearchPaths, TabWidth) ->
-    MacroApp = binary_to_term(list_to_binary(MacroApp1)),
-    MacroDef = binary_to_term(list_to_binary(MacroDef1)),
+-spec(fold_against_macro_1/4::(filename(), [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}], [dir()], integer()) ->
+	     {ok, [filename()]}).
+fold_against_macro_1(FileName, CandidatesToFold, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    AnnAST1 = fold_against_macro_1_1(AnnAST, CandidatesToFold),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}]),
+    {ok, [FileName]}.
+   
+fold_against_macro_1_1(AnnAST, []) ->
+    AnnAST;
+fold_against_macro_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol,MacroApp0, MacroDef0}|Tail] ) ->
+    MacroApp = binary_to_term(list_to_binary(MacroApp0)),
+    MacroDef = binary_to_term(list_to_binary(MacroDef0)),
     Args = refac_syntax:attribute_arguments(MacroDef),
     MacroBody = tl(Args),
     TMacroApp=transform(MacroApp),
     AnnAST1 = refac_new_macro:replace_expr_with_macro(AnnAST, {MacroBody, {StartLine, StartCol}, {EndLine, EndCol}}, TMacroApp),
-    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),
-    {ok, {AnnAST2, _Info2}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),    
-    Candidates = search_candidate_exprs(AnnAST2, MacroDef),
-    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, MacroApp2, MacroDef}
-	       || {{{StartLine1, StartCol1}, {EndLine1, EndCol1}}, MacroApp2} <- Candidates,
-		  StartLine1 >= StartLine],
-    {ok, Regions}.
+    fold_against_macro_1_1(AnnAST1, Tail).
 
 
 search_candidate_exprs(AnnAST, MacroDef) ->

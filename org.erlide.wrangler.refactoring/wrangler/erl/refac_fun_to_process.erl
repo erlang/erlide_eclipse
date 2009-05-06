@@ -64,11 +64,11 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 					     Results = fun_to_process_in_client_modules(ClientFiles, ModName, FunName, Arity, ProcessName1, SearchPaths),
 					     case Editor of 
 						 emacs ->
-						     refac_util:write_refactored_files([{{FName, FName}, AnnAST2} | Results]),
+						     refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST2} | Results]),
 						     ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 						     ChangedFiles = [FName | ChangedClientFiles],
-						     ?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
-							       [ChangedFiles]),
+						     ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+								  [ChangedFiles]),
 						     {ok, ChangedFiles};
 						 eclipse ->
 						     Results1 = [{{FName, FName}, AnnAST2} | Results],
@@ -79,7 +79,10 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 					 false ->
 					     case Editor of 
 						 emacs ->
-						     refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]), {ok, [FName]};
+						     refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST2}]),
+						     ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+								  [FName]),								    
+						     {ok, [FName]};
 	 					 eclipse ->
 						     Res = [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST2)}],
 						     {ok, Res}

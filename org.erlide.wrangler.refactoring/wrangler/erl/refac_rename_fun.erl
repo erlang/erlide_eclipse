@@ -78,34 +78,28 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					lists:member({NewName1, Arity}, refac_util:auto_imported_bifs())
 					of
 					true ->
-					    {error,
-					     NewName ++ "/" ++ integer_to_list(Arity) ++ " is already in scope."};
+					    {error, NewName ++ "/" ++ integer_to_list(Arity) ++ " is already in scope."};
 					_ ->
 					    case is_callback_fun(Info, Fun, Arity) of
 						true ->
-						    {error,
-						     "The refactorer does not support renaming "
-						     "of callback function names."};
+						    {error, "The refactorer does not support renaming of callback function names."};
 						_ ->
 						    ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
 						    {AnnAST1, _C} = rename_fun(AnnAST, {Mod, Fun, Arity}, {DefinePos, NewName1}),
 						    %%check_atoms(AnnAST1, Fun),
 						    case refac_util:is_exported({Fun, Arity}, Info) of
 							true ->
-							    ?wrangler_io("\nChecking client modules in the following "
-								      "search paths: \n~p\n",
-								      [SearchPaths]),
+							    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
 							    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
 							    try rename_fun_in_client_modules(ClientFiles, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth) of 
 								Results -> 
 								    case Editor of 
 									emacs ->
-									    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1} | Results]),
+									    refac_util:write_refactored_files_for_preview([{{FileName,FileName},AnnAST1} | Results]),
 									    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-									    ChangedFiles = [FileName | ChangedClientFiles],
-									    ?wrangler_io("The following files have been changed "
-											 "by this refactoring:\n~p\n",
-											 [ChangedFiles]),
+									    ChangedFiles = [FileName |ChangedClientFiles],
+									    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+											 [ChangedFiles]),								    
 									    {ok, ChangedFiles};
 									eclipse ->
 									    Results1 = [{{FileName, FileName}, AnnAST1} | Results],
@@ -119,7 +113,10 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 							false ->
 							    case Editor of 
 								emacs ->
-								    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]), {ok, [FileName]};
+								    refac_util:write_refactored_files_for_preview([{{FileName,FileName},AnnAST1}]),
+								    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+										 [FileName]),								    
+								    {ok, [FileName]};
 								eclipse ->
 								    Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 								    {ok, Res}
@@ -128,17 +125,14 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					    end
 				    end;
 				_ -> case Editor of 
-					 emacs -> refac_util:write_refactored_files([{{FileName, FileName}, AnnAST}]), {ok, []};
+					 emacs -> {ok, []};
 					 eclipse ->
  					     Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST)}],
 					     {ok, Res}
 				     end
 			    end;
 		       true ->
-			    {error,
-			     "This function is not defined in this "
-			     "module; please go to the module where "
-			     "it is defined for renaming."}
+			    {error, "This function is not defined in this module; please go to the module where it is defined for renaming."}
 		    end;
 		{error, _Reason} -> {error, "You have not selected a function name!"}
 	    end;

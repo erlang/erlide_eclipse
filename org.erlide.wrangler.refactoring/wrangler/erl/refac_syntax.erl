@@ -1357,7 +1357,10 @@ integer_value(Node) ->
 %% @see integer/1
 
 integer_literal(Node) ->
-    V = integer_value(Node),
+    V = case unwrap(Node) of 
+	    {integer, _, Value} -> Value;
+	    Node1 -> data(Node1)
+	end,
     case is_list(V) of 
 	true -> V;
 	_ -> integer_to_list(V)

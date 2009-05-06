@@ -54,10 +54,10 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					  check_atoms(FileName, ProcessName, SearchPaths, TabWidth),
 					  case Editor of 
 					      emacs ->
-						  refac_util:write_refactored_files(Results),
+						  refac_util:write_refactored_files_for_preview(Results),
 						  ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-						  ?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
-							    [ChangedFiles]),
+						  ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+							       [ChangedFiles]),
 						  {ok, ChangedFiles};
 					      eclipse ->
 						  Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName,
@@ -68,7 +68,7 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 				      {error, Reason} ->
 					  {error, Reason}
 				  end;
-			      _ -> {error, "The new process name is the same as the process name selected!"}
+		      _ -> {error, "The new process name is the same as the process name selected!"}
 			  end;
 		{error, Reason} -> {error, Reason}
 	    end;
@@ -92,10 +92,10 @@ rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWid
     check_atoms(FileName, OldProcessName, SearchPaths, TabWidth),
     case Editor of 
 	emacs ->
-	    refac_util:write_refactored_files(Results),
+	    refac_util:write_refactored_files_for_preview(Results),
 	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-	    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
-		      [ChangedFiles]),
+	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+			 [ChangedFiles]),
 	    {ok, ChangedFiles};
 	eclipse ->
 	    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, 

@@ -76,8 +76,7 @@ get_ast(Key={_FileName, _ByPassPreP, _SearchPaths, _TabWidth, _FileFormat}) ->
 
  
 -type(modifyTime()::{{integer(), integer(), integer()},{integer(), integer(), integer()}}).
--spec(update_ast/2::({filename(),boolean(), [dir()], integer(), atom()}, {syntaxTree(), moduleInfo(), modifyTime()}) ->
-	     ok).
+-spec(update_ast/2::({filename(),boolean(), [dir()], integer(), atom()}, {syntaxTree(), moduleInfo(), modifyTime()}) -> ok).
 update_ast(Key={_FileName, _ByPassPreP, _SearchPaths, _TabWidth, _FileFormat}, {AnnAST, Info, Time}) ->
     gen_server:cast(wrangler_ast_server, {update, {Key, {AnnAST, Info, Time}}}).
  
@@ -91,7 +90,7 @@ update_ast(Key={_FileName, _ByPassPreP, _SearchPaths, _TabWidth, _FileFormat}, {
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
 
--spec(handle_call/3::({get,{filename(), boolean(), [dir()], integer()}}, any(), #state{}) -> {reply, {ok, {syntaxTree(), moduleInfo()}}, #state{}}).
+-spec(handle_call/3::({get,{filename(), boolean(), [dir()], integer(), atom()}}, any(), #state{}) -> {reply, {ok, {syntaxTree(), moduleInfo()}}, #state{}}).
 handle_call({get, Key}, _From, State) ->
     {Reply, State1} = get_ast(Key, State),
     {reply, Reply, State1}.
@@ -114,8 +113,7 @@ handle_cast({update, {Key, {AnnAST, Info, Time}}}, State) ->
 %%                                       {stop, Reason, State}
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
--spec(handle_info/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+-spec(handle_info/2::(any(), #state{}) -> {noreply, #state{}}).
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -143,7 +141,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%--------------------------------------------------------------------
 %%% Internal functions
 %%--------------------------------------------------------------------
--spec(get_ast/2::({filename(),boolean(), [dir()], integer(), atom()}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).	     
+-spec(get_ast/2::({filename(),boolean(), [dir()], integer(), atom()}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).      
+
+get_ast({FileName, false, SearchPaths, TabWidth, FileFormat}, State) -> %% always re-parse; otherwise need to check the change time of .hrl files.
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, false, SearchPaths, TabWidth, FileFormat),
+    log_errors(FileName, Info),
+    {{ok, {AnnAST, Info}}, State};	
 get_ast(Key={FileName,ByPassPreP, SearchPaths, TabWidth, FileFormat}, State=#state{dets_tab=TabFile, asts=ASTs}) ->
     case TabFile of 
 	none -> 

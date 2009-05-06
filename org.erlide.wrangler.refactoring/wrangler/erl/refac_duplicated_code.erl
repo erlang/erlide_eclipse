@@ -145,8 +145,8 @@ loop(Port) ->
 %% </p>
 %% ====================================================================================
 
-%% -spec(duplicated_code_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
-%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+-spec(duplicated_code_eclipse/5::(dir(), integer(), integer(), integer(),  dir()) ->
+ 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
 duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTreeExec) ->
      MinLength = case MinLength1 =< 1 of
@@ -193,8 +193,8 @@ duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     ?debug("Clones:\n~p\n", [Cs6]),
     {ok, "Duplicated code detection finished."}.
 
-%%-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
-%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+-spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
+	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
 
 duplicated_code_1(DirFileList, MinLength, MinClones, TabWidth) ->
     {Cs5, _} = duplicated_code_detection(DirFileList, MinClones,

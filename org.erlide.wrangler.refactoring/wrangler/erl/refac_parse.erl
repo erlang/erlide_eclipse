@@ -320,7 +320,8 @@ mapl(_, []) ->
 %%  Convert between the abstract form of a term and a term.
 
 normalise({char,_,C}) -> C;
-normalise({integer,_,I}) -> I;
+normalise({integer,_,I}) when is_list(I) -> list_to_integer(I);
+normalise({integer, _,I}) -> I;
 normalise({float,_,F}) -> F;
 normalise({atom,_,A}) -> A;
 normalise({string,_,S}) -> S;

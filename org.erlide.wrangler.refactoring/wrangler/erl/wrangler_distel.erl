@@ -80,6 +80,12 @@ duplicated_code_in_dirs(SearchPaths, MinLines, MinClones, TabWidth) ->
 expression_search(FName, StartLine, StartCol, EndLine, EndCol, TabWidth) ->
     wrangler:expression_search(FName, {StartLine, StartCol}, {EndLine, EndCol}, TabWidth).
 
+-spec(similar_expression_search/7::(filename(), integer(), integer(), integer(), integer(),[dir()], integer()) ->
+	     {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
+similar_expression_search(FName, StartLine, StartCol, EndLine, EndCol, SearchPaths, TabWidth) ->
+    wrangler:similar_expression_search(FName, {StartLine, StartCol}, {EndLine, EndCol}, SearchPaths, TabWidth).
+
+
 -spec(fun_extraction/7::(filename(), integer(), integer(), integer(), integer(), string(), integer()) ->
 	      {error, string()} | {ok, string()}).
 
@@ -149,6 +155,9 @@ uninstrument_prog(FName, SearchPaths, TabWidth) ->
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, add_a_tag, [FileName, Line, Col, Tag, SearchPaths, TabWidth], SearchPaths).
 
+-spec(normalise_record_expr/5::(filename(), integer(), integer(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
+normalise_record_expr(FileName, Line, Col, SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler, normalise_record_expr, [FileName, Line, Col, SearchPaths, TabWidth], SearchPaths).
 
 -spec(register_pid/8::(filename(), integer(), integer(), integer(),integer(), string(), [dir()], integer()) ->
     {error, string()}|{ok, [filename()]}).

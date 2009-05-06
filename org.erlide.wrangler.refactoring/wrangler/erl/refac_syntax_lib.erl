@@ -945,29 +945,26 @@ vann_fun_expr_clause(C, Env) ->
 vann_clauses_join(Env) ->
     fun (C, {Bound, Free}) ->
 	    {C1, Bound1, Free1} = vann_clause(C, Env),
-	    Bd1 = ordsets:filter(fun ({V, _}) ->
-					 case lists:keysearch(V, 1,
-							      ordsets:to_list(Bound1))
-					     of
-					   {value, _} -> true;
-					   false -> false
-					 end
-				 end,
-				 Bound),
-	    Bd2 = ordsets:filter(fun ({V, _}) ->
-					 case lists:keysearch(V, 1,
-							      ordsets:to_list(Bound))
-					     of
-					   {value, _} -> true;
-					   false -> false
-					 end
-				 end,
-				 Bound1),
-	    {C1,
-	     {ordsets:union(Bd1, Bd2), ordsets:union(Free, Free1)}};
-	%%    originl code.
-	%%       {C1, {ordsets:intersection(Bound, Bound1),
-	%%             ordsets:union(Free, Free1)}};
+ %% 	    Bd1 = ordsets:filter(fun ({V, _}) ->
+%%  					 case lists:keysearch(V, 1,
+%%  							      ordsets:to_list(Bound1))
+%%  					     of
+%%  					   {value, _} -> true;
+%%  					   false -> false
+%%  					 end
+%%  				 end,
+%%  				 Bound),
+%%  	    Bd2 = ordsets:filter(fun ({V, _}) ->
+%%  					 case lists:keysearch(V, 1,
+%%  							      ordsets:to_list(Bound))
+%%  					     of
+%%  					   {value, _} -> true;
+%%  					   false -> false
+%%  					 end
+%%  				 end,
+%%  				 Bound1),
+	    
+	    {C1,{ordsets:union(Bound, Bound1), ordsets:union(Free, Free1)}};
 	(C, false) ->
 	    {C1, Bound, Free} = vann_clause(C, Env),
 	    {C1, {Bound, Free}}

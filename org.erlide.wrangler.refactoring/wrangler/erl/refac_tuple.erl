@@ -125,10 +125,10 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
 							 length(Parameters), Mod, TabWidth),
 	    case Editor of
 		emacs ->
-		    refac_util:write_refactored_files([{{File, File}, AnnAST2} | Results]),
+		    refac_util:write_refactored_files_for_preview([{{File, File}, AnnAST2} | Results]),
 		    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 		    ChangedFiles = [File | ChangedClientFiles],
-		    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+		    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
 		    ?wrangler_io("WARNING: Please check the implicit function calls!",[]),
 		    {ok, ChangedFiles};
 		eclipse ->
@@ -142,9 +142,9 @@ performe_refactoring(AnnAST, Info, Parameters, FunName, Arity, FunNode, C, Mod,
 	false ->
 	    case Editor of
 		emacs ->
-		    refac_util:write_refactored_files([{{File, File}, AnnAST2}]),
+		    refac_util:write_refactored_files_for_preview([{{File, File}, AnnAST2}]),
 		    ChangedFiles = [File],
-		    ?wrangler_io("The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+		    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
 		    ?wrangler_io("WARNING: Please check the implicit function calls!",[]),
 		    {ok, ChangedFiles};
 		eclipse -> Res = [{File, File, refac_prettypr:print_ast(refac_util:file_format(File),AnnAST2)}], {ok, Res}

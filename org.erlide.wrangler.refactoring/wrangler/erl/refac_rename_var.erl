@@ -81,15 +81,14 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					_ ->
 					    case cond_check(AnnAST1, DefinePos, NewName1) of
 						{true, _} ->
-						    {error,
-						     "New name already declared in the same scope."};
-							{_, true} -> {error, "New name could cause name shadowing."};
+						    {error, "New name already declared in the same scope."};
+						{_, true} -> {error, "New name could cause name shadowing."};
 						_ ->
 						    {AnnAST2, _Changed} = rename(AnnAST1, DefinePos, NewName1),
 						    case Editor of 
 							emacs ->
-							    refac_util:write_refactored_files([{{FName, FName}, AnnAST2}]),
-							    {ok, "Refactor succeeded"};
+							    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST2}]),
+							    {ok, [FName]};
 							eclipse ->
 							    {ok, [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST2)}]}
 						    end 
@@ -98,8 +97,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 			       true ->
 				    case Editor of 
 					emacs ->
-					    refac_util:write_refactored_files([{{FName, FName}, AnnAST1}]),
-					    {ok, "Refactor succeeded"};
+					    {ok, []};
 					_ ->
 					    {ok, [{FName, FName, refac_prettypr:print_ast(refac_util:file_format(FName),AnnAST1)}]}  
 				    end

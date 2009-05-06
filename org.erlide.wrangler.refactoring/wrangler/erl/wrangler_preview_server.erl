@@ -18,12 +18,12 @@
 
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %%%-------------------------------------------------------------------
--module(wrangler_undo_server).
+-module(wrangler_preview_server).
 
 -behaviour(gen_server).
 
 %% API
--export([start_undo_server/0, undo/0, add_to_history/1]).
+-export([commit/0, abort/0, add_files/1, start_preview_server/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -31,26 +31,31 @@
 
 -include("../include/wrangler.hrl").
 
--record(state, {history=[]}).
+-record(state, {files=[]}).
 
 %%====================================================================
 %% API
 %%====================================================================
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-start_undo_server() ->
+start_preview_server() ->
     process_flag(trap_exit, true),
-    gen_server:start_link({local, refactor_undo}, ?MODULE, [], []).
+    gen_server:start_link({local, wrangler_preview_server}, ?MODULE, [], []).
 
--spec(undo/0::() ->
+-spec(commit/0::() ->
 	     {ok, [filename()]}).
-undo() ->
-    gen_server:call(refactor_undo, undo).
+commit() ->
+    gen_server:call(wrangler_preview_server, commit).
+
+-spec(abort/0::() ->{ok, [filename()]}).
+
+abort() ->
+    gen_server:call(wrangler_preview_server, abort).
    
--spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
+-spec(add_files/1::([filename()]) -> ok).
 	     
-add_to_history(Files)->
-    gen_server:cast(refactor_undo, {add, Files}).
+add_files(Files)->
+    gen_server:cast(wrangler_preview_server, {add, Files}).
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -74,26 +79,37 @@ init([]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
-handle_call(undo, _From, State=#state{history=History}) ->
-    case History of 
-	[] ->
-	    {reply, {error, "No more history to undo!"}, State};
-	[H|T] -> 
-	    ok = undo_files(H),
-	    Modified = lists:map(fun({{OldFileName, NewFileName,_}, _Con})->
-					 [OldFileName, NewFileName] end,H),
-	    {reply,{ok, Modified}, #state{history=T}}
-    end.
 
+handle_call(abort, _From, #state{files=Files}) ->
+    SwpFiles = lists:flatmap(fun({{F1, F2, IsNew},Swp}) -> 
+				 case IsNew of 
+				     false -> [Swp];
+				     _ -> case F1==F2 of 
+					      true ->[F1, Swp];
+					      _ -> [F1, F2, Swp]
+					  end
+				 end
+			 end, Files),
+    {reply, {ok, SwpFiles}, #state{files=[]}};
+
+handle_call(commit, _From, #state{files=Files}) ->
+    OldFiles = lists:map(fun({{F1,F2,IsNew}, _Swp}) -> {F1,F2,IsNew} end, Files),
+    FilesToBackup = lists:map(fun({F1, F2, IsNew}) ->
+				      {ok, Bin} = file:read_file(F1), {{F1, F2, IsNew}, Bin}
+			      end, OldFiles),
+    wrangler_undo_server:add_to_history(FilesToBackup),
+    lists:foreach(fun({{_F1,F2, _IsNew},Swp}) -> file:copy(Swp, F2) end, Files),
+    Files1 = lists:map(fun({{F1,F2, IsNew}, Swp}) -> [F1, F2, Swp, IsNew] end, Files),
+    {reply, {ok, Files1}, #state{files=[]}}.
+    
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
 %%                                      {noreply, State, Timeout} |
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast({add, Files},_State=#state{history=History}) ->
-    History1=lists:sublist([Files|History],20),
-    {noreply, #state{history=History1}}.
+handle_cast({add, Files},_State=#state{files=_Files}) ->
+    {noreply, #state{files=Files}}.
 	
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |
@@ -121,28 +137,3 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%--------------------------------------------------------------------
-%%% Internal functions
-%%--------------------------------------------------------------------
-undo_files(Files) -> 
-    case Files of 
-	[] ->
-	    ok;
-	[{{OldFileName,NewFileName, IsNew}, Content}|T] -> 
-	    case OldFileName == NewFileName of
-		true -> case IsNew  of 
-			    true -> file:delete(NewFileName),
-				    undo_files(T);
-			    _ ->  file:write_file(OldFileName, Content),
-				  undo_files(T)
-			end;
-		false -> case IsNew of 
-			     true -> file:delete(OldFileName),
-				     file:delete(NewFileName),
-				     undo_files(T);
-			     _ ->  file:write_file(OldFileName, Content),
-				   file:delete(NewFileName),
-				   undo_files(T)
-			 end
-	        end
-    end.

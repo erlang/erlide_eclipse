@@ -76,11 +76,11 @@ rename_mod(FileName, NewName,SearchPaths, TabWidth, Editor) ->
 									   OldModName, NewModName,SearchPaths, TabWidth),
 				    case Editor of 
 					emacs ->
-					    refac_util:write_refactored_files([{{FileName, NewFileName}, AnnAST1}|Results]),
+					    refac_util:write_refactored_files_for_preview([{{FileName, NewFileName}, AnnAST1}|Results]),
 					    ChangedClientFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
 					    ChangedFiles = [FileName | ChangedClientFiles],
 					    ?wrangler_io
-					       ("The following files have been changed by this refactoring:\n~p\n",
+					       ("The following files are to be changed by this refactoring:\n~p\n",
 						[ChangedFiles]),
 					    {ok, ChangedFiles};
 					eclipse ->

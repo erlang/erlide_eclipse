@@ -81,6 +81,7 @@
 
 -export([gen_fun_1/8, gen_fun_1_eclipse/8, gen_fun_2_eclipse/8]).
 
+-define(DEFAULT_RANGE, {?DEFAULT_LOC, ?DEFAULT_LOC}).
 %% =====================================================================
 %% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[string()])-> term()
 %%         Pos = {integer(), integer()}
@@ -122,8 +123,8 @@ generalise(FileName, Start={Line, Col}, End={Line1, Col1}, ParName, SearchPaths,
 						   _ ->AnnAST1=gen_fun(ModName, AnnAST, ParName1, FunName, FunArity, FunDefPos,Info, Exp1, SideEffect),
 						       case Editor of 
 							   emacs ->
-							       refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-							       {ok, "Refactor succeeded"};
+							       refac_util:write_refactored_files_for_preview([{{FileName,FileName}, AnnAST1}]),
+							       {ok, [FileName]};
 							   eclipse  ->
 							       Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
 							       {ok, Res}
@@ -204,16 +205,18 @@ gen_cond_analysis(Fun, Exp, ParName) ->
     if (Exp_Export_Vars /=[]) ->
 	    {error, "The selected expression exports locally declared variable(s)!"};
        true -> Cs = refac_syntax:function_clauses(Fun),
-	       Vars0 = lists:foldl(fun(C,Accum)->Accum++
-						     refac_syntax_lib:fold(fun(C1, A) -> A++refac_util:get_bound_vars(C1) end, [],C)
-						     ++Exp_Free_Vars end, [], Cs),
-	       Vars= lists:map(fun({X,_Y})->X end, Vars0),
-	       case lists:member(ParName, Vars) of 
-		   true ->
-		       {error, ("The given parameter name conflicts with the existing parameters or"++
-				" will change the semantics of the function to be generalised!")};
-		   _ ->
-		      ok
+	       Vars0 = lists:foldl(fun(C,Accum)->Accum++ refac_util:get_bound_vars(C) end, [], Cs),
+	       case Exp_Free_Vars -- Vars0 of 
+		   [] ->
+		       Vars= lists:map(fun({X,_Y})->X end, Vars0),
+		       case lists:member(ParName, Vars) of 
+			   true ->
+			       {error, ("The given parameter name conflicts with the existing parameters or"++
+					" will change the semantics of the function to be generalised!")};
+			   _ ->
+			       ok
+		       end;
+		   _ -> {error, "The selected expression contains locally declared free variable(s)!"}
 	       end
     end.
 
@@ -267,9 +270,6 @@ gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, TabWidth, E
 -spec(gen_fun_2_eclipse/8::(filename(), atom(), atom(), integer(), pos(), syntaxTree(), [dir()], integer()) 
 	  ->{ok, [{filename(), filename(),string()}]}|{unknown_side_effect, {atom(),atom(),integer(), pos(), syntaxTree()}}).
 gen_fun_2_eclipse(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth) ->
-    gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths, TabWidth, eclipse).
-
-gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,TabWidth, Editor) ->
     %% somehow I couldn't pass AST to elisp part, as some occurrences of 'nil' were turned into '[]'.
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {ok, ModName} = get_module_name(Info),
@@ -277,24 +277,11 @@ gen_fun_2(FileName, ParName1, FunName, FunArity, FunDefPos, Exp, SearchPaths,Tab
     case SideEffect of  
 	false ->AnnAST1=gen_fun(ModName, AnnAST, ParName1, 
 				FunName, FunArity, FunDefPos,Info, Exp, SideEffect),
-		case Editor of 
-		    emacs ->
-			refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-			{ok, "Refactor succeeded"};
-		    eclipse ->
-			Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
-			{ok, Res}
-		end;
-	true -> AnnAST1=gen_fun(ModName, AnnAST, ParName1, 
-				FunName, FunArity, FunDefPos,Info, Exp, SideEffect),
-		case Editor of 
-		    emacs ->
-			refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}]),
-			{ok, "Refactor succeeded"};
-		    eclipse ->
-			Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
-			{ok, Res}
-		end;
+		Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
+		{ok, Res};		
+	true -> AnnAST1=gen_fun(ModName, AnnAST, ParName1,FunName, FunArity, FunDefPos,Info, Exp, SideEffect),
+		Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}],
+		{ok, Res};		
 	unknown ->
 	    {unknown_side_effect, {ParName1, FunName, FunArity, FunDefPos,Exp}}
     end.	  
@@ -404,11 +391,11 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 	      Arguments = refac_syntax:application_arguments(Tree),
 	      case application_info(Tree) of 
 		  {{none, FunName}, Arity} ->
-		      Exp1 = refac_util:update_ann(Exp, {range, {0, 0}}),
+		      Exp1 = refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 		      Arguments1 = Arguments ++ [Exp1],
 		      {refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator, Arguments1)), false}; 
 		  {{ModName, FunName}, Arity} ->
-		      Exp1 = refac_util:update_ann(Exp, {range, {0,0}}),
+		      Exp1 = refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 		      Arguments1 = Arguments ++ [Exp1],
 		      {refac_syntax:copy_attrs(Tree, refac_syntax:application(Operator, Arguments1)), false};
 		  {{_, apply},2} ->
@@ -421,7 +408,7 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 			      A = refac_syntax:integer_value(refac_syntax:arity_qualifier_argument(Name)),
 			      case {B, A} of 
 				  {FunName, Arity} ->
-				      Exp1 = refac_util:update_ann(Exp, {range, {0,0}}),
+				      Exp1 = refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 				      case refac_syntax:type(T) of 
 					  list -> Args1 = refac_syntax:copy_attrs(T, refac_syntax:list( refac_syntax:list_elements(T) ++[Exp1]));
 					  _ -> Op = refac_syntax:operator('++'),
@@ -451,7 +438,7 @@ do_add_actual_parameter(Tree, {FunName, Arity, Exp, Info}) ->
 					  list ->
 					      case refac_syntax:list_length(Args) of 
 						  Arity ->
-						      Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
+						      Exp1 =refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 						      Args1 =refac_syntax:copy_attrs(Args, 
 										     refac_syntax:list(refac_syntax:list_elements(Args) ++[Exp1])),
 						      {refac_syntax:copy_pos(Tree, (refac_syntax:copy_attrs(Tree, 
@@ -538,7 +525,7 @@ transform_spawn_call(Node,{FunName, Arity, Exp, Info}) ->
 			list ->
 			    case refac_syntax:list_length(Args) of 
 				Arity ->
-				    Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
+				    Exp1 =refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 				    Args1 =refac_syntax:copy_attrs(Args, 
 								   refac_syntax:list(refac_syntax:list_elements(Args)++[Exp1])), 
 				    App = if length(Arguments) == 4 ->
@@ -549,7 +536,7 @@ transform_spawn_call(Node,{FunName, Arity, Exp, Info}) ->
 				_ -> {Node, false}
 			    end;
 			nil -> if Arity==0 ->
-				    Exp1 =refac_util:update_ann(Exp, {range, {0,0}}),
+				    Exp1 =refac_util:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 				    Args1 =refac_syntax:copy_attrs(Args, 
 								   refac_syntax:list(refac_syntax:list_elements(Args) ++[Exp1])), 
 

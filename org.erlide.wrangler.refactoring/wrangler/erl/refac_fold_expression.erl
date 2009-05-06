@@ -41,7 +41,7 @@
 %% =============================================================================================
 -module(refac_fold_expression).
 
--export([fold_expr_by_loc/5, fold_expression_1/9,
+-export([fold_expr_by_loc/5, fold_expression_1/4,
 	 fold_expr_by_loc_eclipse/5, fold_expression_1_eclipse/5,
 	 fold_expression_2_eclipse/7, fold_expression_1/5,
 	 fold_expr_by_name/7, fold_expr_by_name_eclipse/7,
@@ -69,10 +69,9 @@ fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
     fold_expression(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 
 fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
-    {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
-    {value, {module, CurrentModName}} = lists:keysearch(module, 1, Info),
+    {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of 
-	{ok, {Mod, FunName, _Arity, FunClauseDef, ClauseIndex}} ->
+	{ok, {Mod, FunName, _Arity, FunClauseDef, _ClauseIndex}} ->
 	    case side_condition_analysis(FunClauseDef) of 
 		ok ->			    
 		    Candidates = search_candidate_exprs(AnnAST, {Mod, Mod}, FunName, FunClauseDef),
@@ -81,11 +80,12 @@ fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 			_ -> case Editor of 
 				 emacs ->
 				     FunClauseDef1 = binary_to_list(term_to_binary(FunClauseDef)),
-				     Regions = lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}},NewExp}) ->
-								 NewExp1 = binary_to_list(term_to_binary(NewExp)),
-								 {StartLine, StartCol, EndLine,EndCol, NewExp1, {FileName, CurrentModName, FunClauseDef1, ClauseIndex}} end, 
-							 Candidates),
-				     {ok, Regions};
+				     Candidates1 = lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}},NewExp}) ->
+								    NewExp1 = binary_to_list(term_to_binary(NewExp)),
+								     {StartLine, StartCol, EndLine, EndCol, NewExp1, FunClauseDef1}
+							     end,
+							     Candidates),
+				     {ok, Candidates1};
 				 eclipse ->  {ok, {FunClauseDef, Candidates}}
 			     end			      
 		    end;				 
@@ -163,13 +163,13 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, T
 			_ ->
 			    Regions = case Editor of
 					emacs ->
-					    FunClauseDef1 = binary_to_list(term_to_binary(FunClauseDef)),
-					    lists:map(fun ({{{StartLine, StartCol}, {EndLine, EndCol}}, NewExp}) ->
-							      NewExp1 = binary_to_list(term_to_binary(NewExp)),
-							      {StartLine, StartCol, EndLine, EndCol, NewExp1, {FileName1, Mod, FunClauseDef1, ClauseIndex}}
-						      end,
-						      Candidates);
-					eclipse -> Candidates
+					      FunClauseDef1 = binary_to_list(term_to_binary(FunClauseDef)),
+					      lists:map(fun({{{StartLine, StartCol}, {EndLine, EndCol}},NewExp}) ->
+								NewExp1 = binary_to_list(term_to_binary(NewExp)),
+								{StartLine, StartCol, EndLine, EndCol, NewExp1, FunClauseDef1}
+							end,
+							Candidates);
+					  eclipse -> Candidates
 				      end,
 			    {ok, Regions}
 		      end;
@@ -200,48 +200,26 @@ fold_expression_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, 
 fold_expression_1_eclipse_1(AnnAST, _Body,  []) -> 
     AnnAST;
 fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}|Tail]) ->
-    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call_eclipse/2, AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
+    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
     fold_expression_1_eclipse_1(AnnAST1, Body, Tail).
     
     
 
--spec(fold_expression_1/9::(filename(), integer(), integer(), integer(), integer(), syntaxTree(), {filename(),atom(), syntaxTree(), integer()}, [dir()], integer()) ->
-	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {filename(), atom(), syntaxTree(), integer()}}]}).
-fold_expression_1(FileName, StartLine, StartCol, EndLine, EndCol, NewExp0, {FunDefFileName, FunDefMod, FunClauseDef0, ClauseIndex}, SearchPaths, TabWidth) -> 
-    NewExp= binary_to_term(list_to_binary(NewExp0)),
-    FunClauseDef = binary_to_term(list_to_binary(FunClauseDef0)),
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    {value, {module, CurrentMod}} = lists:keysearch(module, 1, Info),
-    FunCall = case refac_syntax:type(NewExp) of 
-		  application -> NewExp;
-		  match_expr -> refac_syntax:match_expr_body(NewExp)
-	      end,
-    Op = refac_syntax:application_operator(FunCall),
-    FunName = case refac_syntax:type(Op) of 
-		  atom ->refac_syntax:atom_value(Op);
-		  module_qualifier ->
-		       refac_syntax:atom_value(refac_syntax:module_qualifier_body(Op))
-	      end,
-    Arity = length(refac_syntax:application_arguments(FunCall)),		   
-    Body = refac_syntax:clause_body(FunClauseDef),
-    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, AnnAST, {Body, NewExp, {{StartLine, StartCol}, {EndLine, EndCol}}}),
-    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}]),  
-    {ok, {AnnAST2, _Info2}} = refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
-    {ok, {AnnAST3, _Info3}} = refac_util:parse_annotate_file(FunDefFileName,true, SearchPaths, TabWidth),
-    case get_fun_clause_def(AnnAST3, FunName, Arity, ClauseIndex) of 
-	{ok, {_Mod, _FunName, _Arity, FunClauseDef1}} ->
-	    Candidates = search_candidate_exprs(AnnAST2, {FunDefMod, CurrentMod}, FunName, FunClauseDef1),
-	    FunClauseDef2 = binary_to_list(term_to_binary(FunClauseDef1)),
-	    Regions = [{StartLine1, StartCol1, EndLine1, EndCol1, binary_to_list(term_to_binary(FunCall1)), 
-			{FunDefFileName, FunDefMod, FunClauseDef2, ClauseIndex}} 
-		       || {{{StartLine1, StartCol1}, {EndLine1, EndCol1}}, FunCall1}<-Candidates,
-			  StartLine1 >= StartLine],
-	    {ok,  Regions};
-	{error, _Reason} ->
-	    {error, "You have not selected a function definition."}  %% THIS SHOULD NOT HAPPEN.
-    end.
-  
+fold_expression_1(FileName, CandidatesToFold, SearchPaths, TabWidth) ->
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    AnnAST1= fold_expression_1_1(AnnAST,  CandidatesToFold),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}]),
+    {ok, [FileName]}.
 
+fold_expression_1_1(AnnAST, []) -> 
+    AnnAST;
+fold_expression_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol, Exp0, FunClauseDef0}|Tail]) ->
+    FunClauseDef = binary_to_term(list_to_binary(FunClauseDef0)),
+    Exp = binary_to_term(list_to_binary(Exp0)),
+    Body = refac_syntax:clause_body(FunClauseDef),
+    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, AnnAST, {Body, {{{StartLine, StartCol}, {EndLine, EndCol}}, Exp}}),
+    fold_expression_1_1(AnnAST1,Tail).
+    
 
 -spec(fold_expression_2_eclipse/7::(filename(), atom(),integer(), integer(), integer(), [dir()], integer()) -> 
 	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
@@ -295,22 +273,22 @@ side_condition_analysis(FunClauseDef) ->
 %% ==========================================================================================================================
  
 
-do_replace_expr_with_fun_call_eclipse(Tree, {Expr, {Range, NewExp}})->
+do_replace_expr_with_fun_call(Tree, {Expr, {Range, NewExp}})->
     case length(Expr) of 
-	1 -> do_replace_expr_with_fun_call_eclipse_1(Tree, {Range, NewExp});
-	_  -> do_replace_expr_with_fun_call_eclipse_2(Tree, {Range, NewExp})
+	1 -> do_replace_expr_with_fun_call_1(Tree, {Range, NewExp});
+	_  -> do_replace_expr_with_fun_call_2(Tree, {Range, NewExp})
     end.
 						   
 
 
-do_replace_expr_with_fun_call_eclipse_1(Tree, {Range, NewExp}) ->
+do_replace_expr_with_fun_call_1(Tree, {Range, NewExp}) ->
     case refac_util:get_range(Tree) of 
  	Range ->
 	     {NewExp, true};
  	_  -> {Tree, false}
      end.
  	
-do_replace_expr_with_fun_call_eclipse_2(Tree, {{StartLoc, EndLoc}, NewExp}) ->
+do_replace_expr_with_fun_call_2(Tree, {{StartLoc, EndLoc}, NewExp}) ->
       case refac_syntax:type(Tree) of
 	clause ->
 	    Exprs = refac_syntax:clause_body(Tree),
@@ -341,51 +319,6 @@ do_replace_expr_with_fun_call_eclipse_2(Tree, {{StartLoc, EndLoc}, NewExp}) ->
 	_  -> {Tree, false}
     end.
     
-
-do_replace_expr_with_fun_call(Tree, {Expr,NewExp, Range})->
-    case length(Expr) of 
-	1 -> do_replace_expr_with_fun_call_1(Tree, {NewExp, Range});
-	_  -> do_replace_expr_with_fun_call_2(Tree, {NewExp, Range})
-    end.
-	    
-
-do_replace_expr_with_fun_call_1(Tree, {NewExp, Range}) ->
-     case refac_util:get_range(Tree) of 
- 	Range ->
-	    {NewExp, true};
- 	_  -> {Tree, false}
-     end.
-    
-do_replace_expr_with_fun_call_2(Tree, {NewExp, {StartLoc, EndLoc}}) -> 
-   case refac_syntax:type(Tree) of
-	clause ->
-	    Exprs = refac_syntax:clause_body(Tree),
-	    {Exprs1, Exprs2} = lists:splitwith(fun(E) -> element(1,refac_util:get_range(E)) =/= StartLoc end, Exprs),
-	    {NewBody, Modified} = case Exprs2 of 
-				      [] -> {Exprs, false};
-				      _ -> {_Exprs21, Exprs22} = lists:splitwith(fun(E) -> element(2, refac_util:get_range(E)) =/= EndLoc end, Exprs),
-					   case Exprs22 of 
-					       [] -> {Exprs, false};  %% THIS SHOULD NOT HAPPEN.
-					       _ -> {Exprs1++[NewExp|tl(Exprs22)], true}
-					   end
-				  end,
-	    Pats = refac_syntax:clause_patterns(Tree),
-	    G = refac_syntax:clause_guard(Tree),
-	    {refac_syntax:copy_pos(Tree, refac_syntax:copy_attrs(Tree, refac_syntax:clause(Pats, G, NewBody))), Modified};
-	block_expr ->
-	    Exprs = refac_syntax:block_expr_body(Tree),
-	    {Exprs1, Exprs2} = lists:splitwith(fun(E) -> element(1,refac_util:get_range(E)) =/= StartLoc end, Exprs),
-	    {NewBody, Modified} = case Exprs2 of 
-				      [] -> {Exprs, false};
-				      _ -> {_Exprs21, Exprs22} = lists:splitwith(fun(E) -> element(2, refac_util:get_range(E)) =/= EndLoc end, Exprs),
-					   case Exprs22 of 
-					       [] -> {Exprs, false};  %% THIS SHOULD NOT HAPPEN.
-					       _ -> {Exprs1++[NewExp|tl(Exprs22)], true}
-					   end
-				  end,
-	    {refac_syntax:copy_pos(Tree, refac_syntax:copy_attrs(Tree, refac_syntax:block_expr(NewBody))), Modified};	 
-	_  -> {Tree, false}
-    end.
 
 %% =============================================================================================
 %% Search expression/expression sequence with are instances of of the selected function clause.

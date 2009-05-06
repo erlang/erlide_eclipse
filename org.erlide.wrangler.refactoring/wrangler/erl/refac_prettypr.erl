@@ -552,7 +552,14 @@ lay_2(Node,Ctxt) ->
       integer -> text(refac_syntax:integer_literal(Node));
       float ->
 	  text(tidy_float(refac_syntax:float_literal(Node)));
-      char -> text(refac_syntax:char_literal(Node));
+      char -> 
+	    V = refac_syntax:char_value(Node),
+	    case is_integer(V) and (V>127) of 
+		true -> {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
+			[CharStr] = io_lib:fwrite("~.8B", [Num]),
+			text("$\\"++CharStr);
+		_ ->text(refac_syntax:char_literal(Node))
+	    end;
       string ->  %% done;
 	    Str = refac_syntax:string_literal(Node),
 	    case lists:keysearch(toks,1,refac_syntax:get_ann(Node)) of
@@ -1211,16 +1218,12 @@ tidy_float_2([]) -> [].
 %% =====================================================================
 
 get_start_line(Node) ->
-    case refac_util:get_range(Node) of
-      {{L,_C},_} -> L;
-      _ -> 0
-    end.
-
+    {{L, _C}, _}= refac_util:get_range(Node),
+    L.
+  
 get_end_line(Node) ->
-    case refac_util:get_range(Node) of
-      {_,{L,_C}} -> L;
-      _ -> 0
-    end.
+    {_, {L, _C}} =refac_util:get_range(Node),
+    L.
 
 horizontal([D]) -> D;
 horizontal([D| Ds]) -> beside(beside(D, nil()),horizontal(Ds));
