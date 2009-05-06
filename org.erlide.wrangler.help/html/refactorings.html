@@ -116,15 +116,15 @@
 		on the left-hand side is generalised on the expression <code> 1 </code>, and the result is 
 		shown on the right-hand side.</p> 
 		<pre><code>	
-		       ```    -module (test).                          -module (test). 
-		              -export([f/1]).                          -export([f/1]).
-		       
-		              add_one ([H|T]) ->                       add_one (N, [H|T]) ->
-		                 [H+1 | add_one(T)];                      [H+N | add_one(N,T)];
-		              add_one ([]) -> [].                      add_one (N, []) -> [].
-		
-		              f(X) -> add_one(X).                      f(X) -> add_one(1,X)
-		       ''' 
+```    -module (test).                          -module (test). 
+       -export([f/1]).                          -export([f/1]).
+   
+       add_one ([H|T]) ->                       add_one (N, [H|T]) ->
+          [H+1 | add_one(T)];                      [H+N | add_one(N,T)];
+       add_one ([]) -> [].                      add_one (N, []) -> [].
+
+       f(X) -> add_one(X).                      f(X) -> add_one(1,X)
+''' 
 		</code></pre>
 		
 		<p> In the case that the selected expression has a side-effect, the refactorer will wrap this expression 
@@ -132,17 +132,17 @@
 		in the following example, in which function <code>repeat/1</code> is generalised on the expression 
 		<code>io:format("Hello\n")</code>.</p>
 		<pre><code>
-		```   -module (test).                          -module (test).                          
-		      -export([f/0]).                          -export([f/0]).
-		
-		      repeat(0) -> ok;                         repeat(A, 0) -> ok;
-		      repeat(N) ->                             repeat(A, N) ->
-		      io:format("Hello\n"),                    A( ),
-		      repeat(N-1).                             repeat(A,N-1).
-		
-		      f() -> repeat(5).                        f( ) -> 
-		                                                   repeat (fun( )->io:format ("Hello\n") end, 5).
-		'''
+```    -module (test).                          -module (test).                          
+       -export([f/0]).                          -export([f/0]).
+
+       repeat(0) -> ok;                         repeat(A, 0) -> ok;
+       repeat(N) ->                             repeat(A, N) ->
+          io:format("Hello\n"),                    A( ),
+       repeat(N-1).                             repeat(A,N-1).
+
+       f() -> repeat(5).                        f( ) -> 
+                                                   repeat (fun( )->io:format ("Hello\n") end, 5).
+'''
 		</code></pre>
 		
 		<p> This refactoring <em>only </em> affects the module in which the refactoring is initialised. In the case that 
@@ -206,6 +206,74 @@
 		Usage: simply select the  <em> Detect duplicated code  </em> from the <em>Refactor</em> menu, 
 		then an input dialog appears which is for typing the necessary parameters. Finally the 'Duplicated code' view appears in the bottom of the workbench, where double clicking on the found expressions 
 		results to highlightion of the according code part in the editor. Results are grouped by duplications and modules.
+		</p>
+	<h2><a name="Rename process">Rename process</a></h2>
+	Rename a registered process with a new name supplied by the user.
+		<p> To apply this refactoring, point the cursor to the process name, then select
+		<em>Rename process</em> from the  <em>Refactor</em> menu, after that, Wrangler will prompt
+		to enter the new process name.
+		</p>
+		<p> This refactoring has a global effect, i.e. it needs to check the whole program for places where the 
+		original process name is used.
+		</p>
+		<p> The following <em> side-conditions </em> apply to this refactoring:
+		<ul>
+			<li> The new process name should not be the atom 'undefined' </li>
+			<li> The new process name should not have been used as a process name in the program under consideration.  </li>
+			<li> Since there are some cases where Wrangler cannot infer whether an atom represents a process name or not, for example, 
+			a process name in a message, it would be help the refactoring process to select the process name from expressions, such as 
+			registration expressions, where it is easier for Wrangler to infer that the atom is a process name.</li>
+		</ul>
+		</p>
+	<h2><a name="Function to process">Function to process</a></h2>
+	Turn a function into a server process.
+		<p>This refactoring turns a function into a server process, and all the function calls to this function into process communication.
+		Turning a function into a server process provides potential for memorisation of calculated values, adding states to the process, etc.
+		</p>
+		<p> The following example shows the application of this refactoring to the function <code>f/2</code> on the 
+		left-hand side, and the result is shown on the right-hand side.</p><p>
+		<pre><code>
+
+``` f(add,X,Y) -> X +Y;                        f_rpc(RegName, Request) ->                  
+    f(sub,X,Y) -> X - Y.                            Fun = fun() ->
+                                                                try  
+    g(X, Y) ->                                                     register(RegName, self())
+        f(add, X,Y)*f(sub, X, Y).                               catch 
+                                                                   true -> f();
+                                                                   error:_ -> already_running
+                                                                end
+                                                          end,
+                                                    Spawn(Fun),
+                                                    RegName ! {self(), Request},
+                                                    receive {RegName, Response} -> Response end.
+
+                                                f() ->
+                                                  receive
+                                                     {From, {add, X, Y}} -> From ! {f, X + Y}, f();
+                                                     {From, {sub, X, Y}} -> From ! {f, X - Y}, f()
+                                                  end.
+
+                                               g(X, Y) ->
+                                                  f_rpc(f, {add, X, Y}) * f_rpc(f, {sub, X, Y}).
+
+'''
+   		</code></pre>
+		</p>The following side-conditions apply to this refactoring:<p>
+		<ul>
+			<li> The process name provided by the user should be lexically legal, and not conflict with existing process names. </li>   
+			<li> The function should not be a recursive function, either directly or indirectly. </li>
+			<li> The current function or functions called by this function should not register the <code>Pid</code> returned by <code>self()</code>. </li>
+		</ul>
+			</p>
+		<p>
+		Wrangler generates the new function name and the rpc function name automatically, but the user could always rename it afterwards.
+		Suppose the original function is <code>f/n</code>, then the new function name would be <code>f/0</code> and the <code>rpc</code> 
+		function name would be <code>f_rpc/2</code>; if any conflicts occur, <code>'_i'</code> will be attached to the end of the function
+		name where <code>i</code> is a smallest number that makes the name fresh.
+		</p>
+		<p> To apply this refactoring, point the cursor to the function of interest, then select 
+		<em>Convert Function to Process</em> from the <em>Refactor</em> menu, after that, Wrangler will prompt 
+		 to enter the process registration name.
 		</p>
 
 	</body>

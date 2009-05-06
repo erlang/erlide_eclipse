@@ -22,5 +22,9 @@
       </topic>
       <topic href="html/refactorings.html#Duplicated code detection" label="Duplicated code detection">
       </topic>
+      <topic href="html/refactorings.html#Rename process" label="Rename process">
+      </topic>
+      <topic href="html/refactorings.html#Function to process" label="Function to process">
+      </topic>
    </topic>
 </toc>
