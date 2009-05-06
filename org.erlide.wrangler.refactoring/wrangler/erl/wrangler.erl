@@ -726,4 +726,3 @@ try_refactoring(Mod, Fun, Args) ->
  	_E1:_E2->
 	     {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
      end.
-
