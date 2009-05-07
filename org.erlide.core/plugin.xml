@@ -73,7 +73,8 @@
       <breakpoint
             class="org.erlide.runtime.debug.ErlangLineBreakpoint"
             id="erlang.lineBreakpoint"
-            markerType="org.erlide.core.erlang.lineBreakpoint.marker"/>
+            markerType="org.erlide.core.erlang.lineBreakpoint.marker"
+            name="%erlangLineBreakpoint.name"/>
    </extension>
   <extension
          id="erlang.lineBreakpoint.marker"
