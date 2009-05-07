@@ -207,6 +207,8 @@ skip_expr([#token{kind=T} | Before]) when T =:= '{'; T =:= '['; T =:= '('; T =:=
         false ->
             A
     end;
+skip_expr([#token{kind='fun'}, #token{kind=atom}, #token{kind='/'}, #token{} | Rest]) ->
+    Rest;
 skip_expr([Tup | Rest]) ->
     case is_block_start_token(Tup) of
         true ->
