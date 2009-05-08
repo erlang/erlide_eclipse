@@ -11,4 +11,4 @@ Export-Package: org.erlide.core,
  org.erlide.runtime.backend,
  org.erlide.testing.erlang
 Require-Bundle: org.junit4;bundle-version="4.3.1",
- org.erlide.testing;bundle-version="0.5.1"
+ org.erlide.testing

@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.testing.java;
+package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 

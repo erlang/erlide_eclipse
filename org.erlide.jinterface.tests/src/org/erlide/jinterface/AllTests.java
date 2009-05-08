@@ -8,17 +8,19 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core;
+package org.erlide.jinterface;
 
-import org.erlide.core.preferences.PreferencesHelperTest;
-import org.erlide.runtime.backend.RuntimeInfoTest;
-import org.erlide.runtime.backend.RuntimeVersionTest;
+import org.erlide.jinterface.java.ErlRpcTest;
+import org.erlide.jinterface.java.JInterfaceTest;
+import org.erlide.jinterface.java.PatternMatchTest;
+import org.erlide.jinterface.java.RpcConverterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { PreferencesHelperTest.class, RuntimeInfoTest.class,
-		RuntimeVersionTest.class })
-public class CoreTests {
+@SuiteClasses( { PatternMatchTest.class, JInterfaceTest.class,
+		RpcConverterTest.class, ErlRpcTest.class })
+public class AllTests {
 
 }

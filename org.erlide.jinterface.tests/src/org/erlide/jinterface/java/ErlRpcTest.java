@@ -1,4 +1,4 @@
-package org.erlide.testing.java;
+package org.erlide.jinterface.java;
 
 import org.junit.Test;
 
