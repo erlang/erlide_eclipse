@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.erlide.testing;
 
+import org.erlide.testing.java.ErlRpcTest;
 import org.erlide.testing.java.JInterfaceTest;
 import org.erlide.testing.java.PatternMatchTest;
+import org.erlide.testing.java.RpcConverterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { PatternMatchTest.class, JInterfaceTest.class })
+@SuiteClasses( { PatternMatchTest.class, JInterfaceTest.class,
+		RpcConverterTest.class, ErlRpcTest.class })
 public class JavaTests {
 
 }
