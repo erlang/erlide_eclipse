@@ -318,7 +318,7 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.setFocus();
 	}
 
-	private void fixPosition(final Shell container) {
+	void fixPosition(final Shell container) {
 		final Rectangle loc = container.getBounds();
 		final int lineCount = consoleInput.getLineCount();
 		final int lineHeight = consoleInput.getLineHeight();

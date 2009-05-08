@@ -20,7 +20,7 @@ import org.erlide.runtime.debug.IErlangBreakpoint;
 public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
 
 	private IWorkbenchPart fPart;
-	private IErlangBreakpoint fBreakpoint;
+	IErlangBreakpoint fBreakpoint;
 
 	/**
 	 * @see IActionDelegate#run(IAction)

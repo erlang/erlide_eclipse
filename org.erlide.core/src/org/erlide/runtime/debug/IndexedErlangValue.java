@@ -189,7 +189,6 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 					cb = cd.decode(ByteBuffer.wrap(bytes));
 					break;
 				} catch (final CharacterCodingException e) {
-					cb = null;
 				}
 			}
 			if (cb != null && cb.length() > 0) {

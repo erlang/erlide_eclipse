@@ -85,7 +85,7 @@ public class EdocView extends AbstractInfoView {
 	private Browser fBrowser;
 
 	/** The text widget. */
-	private StyledText fText;
+	StyledText fText;
 
 	/** The information presenter. */
 	private DefaultInformationControl.IInformationPresenterExtension fPresenter;
@@ -97,7 +97,7 @@ public class EdocView extends AbstractInfoView {
 	private SelectAllAction fSelectAllAction;
 
 	/** The Browser widget */
-	private boolean fIsUsingBrowserWidget;
+	boolean fIsUsingBrowserWidget;
 
 	private static URL fgStyleSheet;
 

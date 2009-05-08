@@ -20,7 +20,7 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 public class ErlangLineBreakpointPropertyPage extends
 		ErlangBreakpointPropertyPage {
 
-	private Button fEnableConditionButton;
+	Button fEnableConditionButton;
 	private BreakpointConditionEditor fConditionEditor;
 
 	// private Button fConditionIsTrue;
@@ -273,7 +273,7 @@ public class ErlangLineBreakpointPropertyPage extends
 	 * 
 	 * @param enabled
 	 */
-	private void setConditionEnabled(final boolean enabled) {
+	void setConditionEnabled(final boolean enabled) {
 		fConditionEditor.setEnabled(enabled);
 		// fSuspendWhenLabel.setEnabled(enabled);
 		// fConditionIsTrue.setEnabled(enabled);

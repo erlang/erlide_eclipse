@@ -321,7 +321,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	private static final int META_EXIT_AT = 3;
 	private static final int META_TRACE_OUTPUT = 4;
 
-	private void handleMetaEvent(final OtpErlangPid metaPid,
+	void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
 		// ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
 		// ")");
@@ -439,7 +439,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		}
 	}
 
-	private void handleIntEvent(final OtpErlangTuple intEvent) {
+	void handleIntEvent(final OtpErlangTuple intEvent) {
 		final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
 		final String event = a.atomValue();
 		if (event.equals("new_break")) {

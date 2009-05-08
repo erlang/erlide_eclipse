@@ -1124,9 +1124,9 @@ public class ErlangProjectImportWizardPage extends
 		// as part of the above progress dialog operation since the operation
 		// forks
 		// a new process.
-		if (selectionMap != null) {
-			updateSelections(selectionMap);
-		}
+		// if (selectionMap != null) {
+		updateSelections(selectionMap);
+		// }
 	}
 
 	/*

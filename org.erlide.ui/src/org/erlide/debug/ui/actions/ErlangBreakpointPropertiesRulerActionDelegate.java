@@ -32,7 +32,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * Clients may refer to this class as an action delegate in plug-in XML.
  * </p>
  * 
- * @since 3.2
  * @noinstantiate This class is not intended to be instantiated by clients.
  * @noextend This class is not intended to be subclassed by clients.
  */

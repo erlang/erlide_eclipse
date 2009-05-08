@@ -36,7 +36,7 @@ public class OtpErlangList extends OtpErlangObject implements
 
     private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
-    final private OtpErlangObject[] elems;
+    final OtpErlangObject[] elems;
 
     private OtpErlangObject lastTail = null;
 
@@ -334,7 +334,7 @@ public class OtpErlangList extends OtpErlangObject implements
 	return iterator(0);
     }
 
-    private Iterator<OtpErlangObject> iterator(final int start) {
+    Iterator<OtpErlangObject> iterator(final int start) {
 	return new Itr(start);
     }
 
@@ -411,7 +411,7 @@ public class OtpErlangList extends OtpErlangObject implements
 
 	private final OtpErlangList parent;
 
-	private SubList(final OtpErlangList parent, final int start) {
+	SubList(final OtpErlangList parent, final int start) {
 	    super();
 	    this.parent = parent;
 	    this.start = start;
@@ -479,7 +479,7 @@ public class OtpErlangList extends OtpErlangObject implements
 	 */
 	private int cursor;
 
-	private Itr(final int cursor) {
+	Itr(final int cursor) {
 	    this.cursor = cursor;
 	}
 

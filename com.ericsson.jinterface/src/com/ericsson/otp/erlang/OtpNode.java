@@ -74,7 +74,7 @@ public class OtpNode extends OtpLocalNode {
     OtpNodeStatus handler;
 
     // flags
-    private int flags = 0;
+    int flags = 0;
 
     /**
      * <p>
@@ -314,13 +314,13 @@ public class OtpNode extends OtpLocalNode {
      * OtpNodeStatus} handler object contains callback methods, that will be
      * called when certain events occur.
      * 
-     * @param handler
+     * @param aHandler
      *            the callback object to register. To clear the handler, specify
      *            null as the handler to use.
      * 
      */
-    public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
-	this.handler = handler;
+    public synchronized void registerStatusHandler(final OtpNodeStatus aHandler) {
+	this.handler = aHandler;
     }
 
     /**

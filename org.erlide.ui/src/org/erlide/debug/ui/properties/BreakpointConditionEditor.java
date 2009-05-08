@@ -38,7 +38,7 @@ import org.erlide.ui.editors.erl.IErlangPartitions;
  */
 public class BreakpointConditionEditor {
 
-	private SourceViewer fViewer;
+	SourceViewer fViewer;
 	// private IContentAssistProcessor fCompletionProcessor;
 	private String fOldValue;
 	private String fErrorMessage;

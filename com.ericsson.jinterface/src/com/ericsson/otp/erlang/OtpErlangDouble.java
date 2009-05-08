@@ -120,7 +120,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
 	    return false;
 	}
 
-	final OtpErlangDouble d = (OtpErlangDouble) o;
-	return this.d == d.d;
+	final OtpErlangDouble dd = (OtpErlangDouble) o;
+	return this.d == dd.d;
     }
 }

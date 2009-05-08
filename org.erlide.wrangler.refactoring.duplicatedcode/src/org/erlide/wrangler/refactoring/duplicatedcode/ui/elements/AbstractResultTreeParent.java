@@ -14,8 +14,9 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 	 */
 
 	public void addChild(AbstractResultTreeObject child) {
-		if (children == null)
+		if (children == null) {
 			children = new ArrayList<AbstractResultTreeObject>();
+		}
 		children.add(child);
 		child.setParent(this);
 	}
@@ -28,11 +29,12 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 	}
 
 	public AbstractResultTreeObject[] getChildren() {
-		if (children != null)
-			return (AbstractResultTreeObject[]) children
-					.toArray(new AbstractResultTreeObject[children.size()]);
-		else
+		if (children != null) {
+			return children.toArray(new AbstractResultTreeObject[children
+					.size()]);
+		} else {
 			return new AbstractResultTreeObject[0];
+		}
 	}
 
 	public boolean hasChildren() {

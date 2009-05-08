@@ -42,6 +42,7 @@ public class ErlangBreakpointPropertiesRulerAction extends
 								final ISelectionChangedListener listener) {
 						}
 
+						@SuppressWarnings("synthetic-access")
 						public ISelection getSelection() {
 							return new StructuredSelection(getBreakpoint());
 						}

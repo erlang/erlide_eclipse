@@ -57,7 +57,7 @@ public final class BackendManager implements IEpmdListener {
 	private final Object fLocalBackendLock = new Object();
 	private final Map<IProject, Set<Backend>> fExecutionBackends;
 	private final Map<String, Backend> fBuildBackends;
-	private final List<BackendListener> fListeners;
+	final List<BackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
 	private final EpmdWatcher epmdWatcher;

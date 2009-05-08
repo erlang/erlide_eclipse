@@ -351,7 +351,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		doLaunch(configuration, mode, launch, true);
 	}
 
-	private void runInitial(final String module, final String function,
+	void runInitial(final String module, final String function,
 			final String args, final Backend backend) {
 		try {
 			if (module.length() > 0 && function.length() > 0) {

@@ -21,13 +21,19 @@ public class DuplicateCodeInputDialog extends Dialog {
 	private String title;
 
 	private int minToks;
+
 	private int minClones;
+
 	private boolean workOnlyInCurrentFile;
-	private boolean isFinished = false;
+
+	boolean isFinished = false;
 
 	private Button okButton;
+
 	private Text minToksText;
+
 	private Text minClonesText;
+
 	private Button onlyInFileCheckBoxButton;
 
 	private Text errorMessageText;
@@ -164,15 +170,15 @@ public class DuplicateCodeInputDialog extends Dialog {
 	}
 
 	protected void validateInput() {
-		String errorMessage = null;
+		String errorMsg = null;
 		try {
 			workOnlyInCurrentFile = !onlyInFileCheckBoxButton.getSelection();
 			minToks = Integer.parseInt(minToksText.getText());
 			minClones = Integer.parseInt(minClonesText.getText());
 			setErrorMessage(null);
 		} catch (Exception e) {
-			errorMessage = "Minimal number of clones and tokens should be integers.";
-			setErrorMessage(errorMessage);
+			errorMsg = "Minimal number of clones and tokens should be integers.";
+			setErrorMessage(errorMsg);
 		}
 
 	}

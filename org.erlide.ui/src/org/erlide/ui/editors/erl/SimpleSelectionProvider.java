@@ -25,7 +25,6 @@ import org.erlide.ui.actions.SelectionDispatchAction;
  * Instances of this class can be used as special selection provider for
  * {@link SelectionDispatchAction}s
  * 
- * @since 3.4
  */
 public class SimpleSelectionProvider implements ISelectionProvider {
 

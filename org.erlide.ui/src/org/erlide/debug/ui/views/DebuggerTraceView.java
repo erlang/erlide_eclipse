@@ -112,8 +112,8 @@ public class DebuggerTraceView extends ViewPart implements
 	}
 
 	protected static final Object[] NO_CHILDREN = new Object[0];
-	private TreeViewer viewer;
-	private ErlangDebugTarget debugTarget;
+	TreeViewer viewer;
+	ErlangDebugTarget debugTarget;
 
 	public DebuggerTraceView() {
 		// TODO Auto-generated constructor stub
@@ -573,7 +573,7 @@ public class DebuggerTraceView extends ViewPart implements
 		}
 	}
 
-	private Object getSelectedInTree() {
+	Object getSelectedInTree() {
 		final ISelection selection = viewer.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection ss = (IStructuredSelection) selection;

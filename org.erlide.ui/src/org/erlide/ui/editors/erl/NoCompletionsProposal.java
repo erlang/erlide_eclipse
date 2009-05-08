@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Point;
  * Applying this proposal does nothing.
  * </p>
  * 
- * @since 3.3
  */
 public final class NoCompletionsProposal implements ICompletionProposal {
 
