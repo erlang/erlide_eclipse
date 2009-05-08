@@ -8,13 +8,17 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.preferences;
+package org.erlide.core;
 
+import org.erlide.core.preferences.PreferencesHelperTest;
+import org.erlide.runtime.backend.RuntimeInfoTest;
+import org.erlide.runtime.backend.RuntimeVersionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { PreferencesHelperTest.class })
+@Suite.SuiteClasses( { PreferencesHelperTest.class, RuntimeInfoTest.class,
+		RuntimeVersionTest.class })
 public class CoreTests {
 
 }

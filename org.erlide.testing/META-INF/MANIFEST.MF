@@ -5,16 +5,7 @@ Bundle-SymbolicName: org.erlide.testing;singleton:=true
 Bundle-Version: 0.5.1.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
-Bundle-Activator: org.erlide.testing.ErlideTestingPlugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.erlide.jinterface,
- org.erlide.core,
- org.erlide.ui,
- org.junit4,
- org.eclipse.debug.core,
- org.eclipse.debug.ui;bundle-version="3.3.2",
- org.eclipse.ui;bundle-version="3.3.1"
+Require-Bundle: org.junit4
 Bundle-ClassPath: erlide-testing.jar,
  lib/hamcrest-all-1.1.jar,
  lib/jbehave-core-2.1.jar,
