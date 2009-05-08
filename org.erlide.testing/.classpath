@@ -6,5 +6,12 @@
 	<classpathentry kind="lib" path="lib/jbehave-core-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/mockito-all-1.6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ericsson.jinterface"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.jinterface"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.selfhost.plugin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.ui"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.wrangler.refactoring"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.wrangler.refactoring.duplicatedcode"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

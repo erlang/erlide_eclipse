@@ -180,7 +180,7 @@ public class RpcConverter {
 				}
 				if (obj instanceof OtpErlangString) {
 					final byte[] s = ((OtpErlangString) obj).stringValue()
-					.getBytes();
+							.getBytes();
 					final Object arr = Array.newInstance(
 							cls.getComponentType(), s.length);
 
@@ -204,7 +204,7 @@ public class RpcConverter {
 				}
 				if (obj instanceof OtpErlangList) {
 					final OtpErlangObject[] els = ((OtpErlangList) obj)
-					.elements();
+							.elements();
 					final StringBuilder res = new StringBuilder();
 					for (final OtpErlangObject el : els) {
 						if (el instanceof OtpErlangLong) {
@@ -264,7 +264,7 @@ public class RpcConverter {
 			if (Collection.class.isAssignableFrom(cls)) {
 				if (obj instanceof OtpErlangList) {
 					final OtpErlangObject[] list = ((OtpErlangList) obj)
-					.elements();
+							.elements();
 					final Object[] olist = new Object[list.length];
 					for (int i = 0; i < list.length; i++) {
 						olist[i] = erlang2java(list[i], list[i].getClass());
@@ -358,7 +358,7 @@ public class RpcConverter {
 		if (obj instanceof Collection<?>) {
 			if (type.kind == 'l') {
 				final Object[] v = ((Collection<?>) obj)
-				.toArray(new Object[] {});
+						.toArray(new Object[] {});
 				final OtpErlangObject[] vv = new OtpErlangObject[v.length];
 				for (int i = 0; i < v.length; i++) {
 					vv[i] = java2erlang(v[i], type.content[0]);
@@ -578,14 +578,14 @@ public class RpcConverter {
 	}
 
 	private static void failConversion(final Object obj, final Signature type)
-	throws RpcException {
+			throws RpcException {
 		// System.out.println("+++++++ "
 		// + String.format("Bad conversion required: %s(%s) - %s", obj
 		// .getClass().getName(), obj.toString(), type));
 
 		throw new RpcException(String.format(
 				"Bad conversion required: %s(%s) - %s", obj.getClass()
-				.getName(), obj.toString(), type.toString()));
+						.getName(), obj.toString(), type.toString()));
 	}
 
 	public static boolean isCheckConversion() {
@@ -615,7 +615,8 @@ public class RpcConverter {
 		return matchSignature(term, Signature.parse(signature)[0]);
 	}
 
-	public static OtpErlangObject encodeMap(final Map<String, OtpErlangObject> map) {
+	public static OtpErlangObject encodeMap(
+			final Map<String, OtpErlangObject> map) {
 		final Set<Entry<String, OtpErlangObject>> v = map.entrySet();
 		final OtpErlangObject[] vv = new OtpErlangObject[v.size()];
 		int i = 0;

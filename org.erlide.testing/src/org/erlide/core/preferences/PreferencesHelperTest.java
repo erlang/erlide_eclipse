@@ -31,7 +31,8 @@ public class PreferencesHelperTest {
 		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
 		final IScopeContext item = new ConfigurationScope();
-		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
+				item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(1, val.length);
 		Assert.assertEquals(new DefaultScope(), val[0]);
@@ -42,7 +43,8 @@ public class PreferencesHelperTest {
 		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
 		final IScopeContext item = new DefaultScope();
-		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
+				item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(0, val.length);
 	}
@@ -52,7 +54,8 @@ public class PreferencesHelperTest {
 		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
 				new ConfigurationScope(), new DefaultScope() };
 		final IScopeContext item = new InstanceScope();
-		final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
+		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
+				item);
 		Assert.assertNotNull(val);
 		Assert.assertEquals(2, val.length);
 		Assert.assertEquals(new ConfigurationScope(), val[0]);

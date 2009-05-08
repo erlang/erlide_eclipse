@@ -34,8 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class RpcConverterTest {
 
-	private void test(final Object o, final String sig, final OtpErlangObject expect)
-	throws RpcException {
+	private void test(final Object o, final String sig,
+			final OtpErlangObject expect) throws RpcException {
 		final OtpErlangObject result = RpcConverter.java2erlang(o, sig);
 		assertTrue(expect.equals(result));
 	}
@@ -64,7 +64,8 @@ public class RpcConverterTest {
 
 	@Test
 	public void cvtIntegerOk_3() throws RpcException {
-		final BigInteger bigInteger = new BigInteger("39799999999999999999999", 10);
+		final BigInteger bigInteger = new BigInteger("39799999999999999999999",
+				10);
 		test(bigInteger, "i", new OtpErlangLong(bigInteger));
 	}
 

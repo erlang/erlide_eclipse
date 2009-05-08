@@ -55,7 +55,7 @@ public class JInterfaceTest {
 	public void sublist_4b() throws ParserException {
 		final OtpErlangList r = (OtpErlangList) TermParser.parse("[1,2,3,4]");
 		final OtpErlangObject ss = r.getNthTail(4);
-		Assert.assertEquals(null, ss);
+		Assert.assertEquals(new OtpErlangList(), ss);
 	}
 
 	@Test
