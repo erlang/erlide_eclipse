@@ -6,3 +6,5 @@ Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.jinterface;bundle-version="0.5.2.qualifier"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit4
+Export-Package: org.erlide.testing
