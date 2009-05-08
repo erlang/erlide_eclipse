@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -255,6 +256,10 @@ extends StatusDialog implements IListAdapter<String> {
 	private void doOkPressed() {
 		if (returnNew) {
 			final RuntimeInfo info = new RuntimeInfo();
+			final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
+					.getRoot();
+			final String location = wroot.getLocation().toPortableString();
+			info.setWorkingDir(location);
 			storeValues(info);
 			fRequestor.itemAdded(info);
 		} else {

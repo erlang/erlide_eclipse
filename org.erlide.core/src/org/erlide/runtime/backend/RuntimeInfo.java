@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
@@ -51,10 +49,6 @@ public class RuntimeInfo {
 		super();
 		codePath = new ArrayList<String>();
 		codePath.add(DEFAULT_MARKER);
-
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final String location = root.getLocation().toPortableString();
-		workingDir = location;
 	}
 
 	public static RuntimeInfo copy(final RuntimeInfo o, final boolean mkCopy) {

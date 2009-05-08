@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -135,6 +136,10 @@ public final class ErlangCore {
 				final RuntimeInfo rt = new RuntimeInfo();
 				rt.setOtpHome(root.getPath());
 				rt.setName(root.getName());
+				final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
+						.getRoot();
+				final String location = wroot.getLocation().toPortableString();
+				rt.setWorkingDir(location);
 				getRuntimeInfoManager().addRuntime(rt);
 			}
 		}

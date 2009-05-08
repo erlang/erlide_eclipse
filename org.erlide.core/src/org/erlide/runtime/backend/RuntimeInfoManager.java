@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -97,6 +99,10 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			ErlLogger.debug("** converting old workspace Erlang settings");
 
 			final RuntimeInfo rt = new RuntimeInfo();
+			final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
+					.getRoot();
+			final String location = wroot.getLocation().toPortableString();
+			rt.setWorkingDir(location);
 			rt.setOtpHome(oldVal);
 			rt.setName(OLD_NAME);
 			rt.setNodeName(rt.getName());

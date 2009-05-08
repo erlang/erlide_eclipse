@@ -37,7 +37,7 @@
    </extension>
    <extension
          id="problemmarker"
-         name="Erlang problem"
+         name="Erlang Problems"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="true"/>
