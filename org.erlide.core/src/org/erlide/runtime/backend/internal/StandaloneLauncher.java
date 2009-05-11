@@ -1,15 +1,12 @@
 package org.erlide.runtime.backend.internal;
 
-import org.eclipse.debug.core.ILaunch;
 import org.erlide.runtime.backend.Backend;
 
 public class StandaloneLauncher implements RuntimeLauncher {
 
 	private Backend backend;
-	private ILaunch launch;
 
-	public StandaloneLauncher(ILaunch aLaunch) {
-		launch = aLaunch;
+	public StandaloneLauncher() {
 	}
 
 	public void setBackend(final Backend backend) {

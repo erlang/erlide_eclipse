@@ -13,7 +13,7 @@ public final class RuntimeLauncherFactory {
 	}
 
 	public static RuntimeLauncher createStandaloneLauncher(final ILaunch launch) {
-		StandaloneLauncher launcher = new StandaloneLauncher(launch);
+		StandaloneLauncher launcher = new StandaloneLauncher();
 		return launcher;
 	}
 
