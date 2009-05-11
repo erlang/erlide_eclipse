@@ -37,6 +37,7 @@ import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.EpmdWatcher;
 import org.erlide.jinterface.IEpmdListener;
+import org.erlide.runtime.EpmdWatchJob;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;

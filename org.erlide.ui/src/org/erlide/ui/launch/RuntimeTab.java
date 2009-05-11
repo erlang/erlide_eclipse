@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.ErlLaunchAttributes;
+import org.erlide.runtime.ErlLaunchAttributes;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.ui.util.SWTUtil;
 

@@ -2,6 +2,7 @@ package org.erlide.wrangler.refactoring.core.renameprocess;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -65,7 +66,7 @@ public class RenameProcessRefactoring extends WranglerRefactoring {
 		try {
 			message.checkIsOK();
 		} catch (WranglerException e) {
-			throw new CoreException(new Status(Status.ERROR,
+			throw new CoreException(new Status(IStatus.ERROR,
 					org.erlide.wrangler.refactoring.Activator.PLUGIN_ID, e
 							.getMessage()));
 

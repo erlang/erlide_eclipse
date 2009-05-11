@@ -21,6 +21,7 @@ public class SyntaxColorPreviewHighlightScanner extends ErlHighlightScanner {
 			this.th = th;
 		}
 
+		@SuppressWarnings("synthetic-access")
 		@Override
 		public Color getForeground() {
 			return fColorManager.getColor(styles.get(th).getColor());

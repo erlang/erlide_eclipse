@@ -6,8 +6,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.pde.ui.launcher.EclipseApplicationLaunchConfiguration;
-import org.erlide.runtime.backend.ErlLaunchAttributes;
-import org.erlide.runtime.backend.ErlangLaunchConfigurationDelegate;
+import org.erlide.runtime.ErlLaunchAttributes;
+import org.erlide.runtime.ErlangLaunchConfigurationDelegate;
 
 public class EclipseErlideLaunchConfiguration extends
 EclipseApplicationLaunchConfiguration {

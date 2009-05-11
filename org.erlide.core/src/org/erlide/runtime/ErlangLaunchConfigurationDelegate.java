@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Jakob Cederlund
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.runtime;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +54,8 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.JInterfaceFactory;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlDebugConstants;
