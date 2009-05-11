@@ -8,14 +8,12 @@ public final class RuntimeLauncherFactory {
 	}
 
 	public static RuntimeLauncher createManagedLauncher(final ILaunch launch) {
-		ManagedLauncher launcher = new ManagedLauncher();
-		launcher.initializeRuntime(launch);
+		ManagedLauncher launcher = new ManagedLauncher(launch);
 		return launcher;
 	}
 
 	public static RuntimeLauncher createStandaloneLauncher(final ILaunch launch) {
-		StandaloneLauncher launcher = new StandaloneLauncher();
-		launcher.initializeRuntime(launch);
+		StandaloneLauncher launcher = new StandaloneLauncher(launch);
 		return launcher;
 	}
 

@@ -28,7 +28,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * Listens to resource deltas and filters for marker changes of type
@@ -162,7 +162,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 			// JavaPlugin.getDefault().getCompilationUnitDocumentProvider()
 			// .addGlobalAnnotationModelListener(this);
-			// FIXME använd nån slags Erlide model-listener
+			// FIXME anvï¿½nd nï¿½n slags Erlide model-listener
 		}
 		fListeners.add(listener);
 	}
@@ -176,7 +176,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 			// JavaPlugin.getDefault().getCompilationUnitDocumentProvider()
 			// .removeGlobalAnnotationModelListener(this);
-			// FIXME använd nån slags Erlide model-listener
+			// FIXME anvï¿½nd nï¿½n slags Erlide model-listener
 		}
 	}
 

@@ -24,7 +24,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -137,7 +137,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 	 *            the command
 	 */
 
-	// FIXME flytta en del av denna logik till erlang!! (t.ex. sŒ vill man inte
+	// FIXME flytta en del av denna logik till erlang!! (t.ex. sï¿½ vill man inte
 	// vara "elektrisk" i kommentarer)
 	public void customizeDocumentCommand(final IDocument d,
 			final DocumentCommand c) {

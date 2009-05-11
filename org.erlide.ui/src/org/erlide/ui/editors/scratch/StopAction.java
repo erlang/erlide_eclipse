@@ -11,7 +11,7 @@
 package org.erlide.ui.editors.scratch;
 
 import org.eclipse.jface.action.IAction;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 
 /**

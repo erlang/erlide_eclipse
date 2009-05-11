@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;

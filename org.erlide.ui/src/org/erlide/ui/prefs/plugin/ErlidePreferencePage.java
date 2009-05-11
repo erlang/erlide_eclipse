@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Button;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;

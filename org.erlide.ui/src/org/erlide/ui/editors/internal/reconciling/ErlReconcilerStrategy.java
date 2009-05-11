@@ -17,7 +17,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
 

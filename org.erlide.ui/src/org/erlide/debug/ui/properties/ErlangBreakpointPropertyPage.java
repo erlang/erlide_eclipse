@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.debug.IErlangBreakpoint;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;

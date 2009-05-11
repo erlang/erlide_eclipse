@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.jinterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,12 +23,9 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Platform;
-
 public class ErlLogger {
 
-	private static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.launching/debug";
+	public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.launching/debug";
 	private static int minLevel = Level.FINEST.intValue();
 
 	{
@@ -164,38 +161,21 @@ public class ErlLogger {
 		}
 	}
 
-	public static void trace(final String traceOption, final String fmt,
-			final Object... args) {
-		if (!Platform.inDebugMode()) {
-			return;
-		}
-		final String globalTraceValue = Platform
-				.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
-		final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION
-				+ "/" + traceOption);
-		if (null != globalTraceValue && globalTraceValue.equals("true")
-				&& null != value && value.equals("true")) {
-			debug(fmt, args);
-		}
-	}
-
-	public static void init() {
+	public static void init(final String dir, final boolean debug) {
 		Handler fh;
 		try {
 			final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
 			final Logger logger = Logger.getLogger("org.erlide");
 
-			String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-					.toPortableString();
-			dir = dir == null ? "c:/" : dir;
-			fh = new FileHandler(dir + "_erlide.log");
+			String aDir = (dir == null) ? "./" : dir;
+			fh = new FileHandler(aDir + "_erlide.log");
 			fh.setFormatter(erlSimpleFormatter);
 			fh.setLevel(java.util.logging.Level.FINEST);
 			logger.addHandler(fh);
 
 			final ConsoleHandler consoleHandler = new ConsoleHandler();
 			consoleHandler.setFormatter(erlSimpleFormatter);
-			final Level lvl = Platform.inDebugMode() ? java.util.logging.Level.FINEST
+			final Level lvl = debug ? java.util.logging.Level.FINEST
 					: java.util.logging.Level.SEVERE;
 			consoleHandler.setLevel(lvl);
 			logger.addHandler(consoleHandler);

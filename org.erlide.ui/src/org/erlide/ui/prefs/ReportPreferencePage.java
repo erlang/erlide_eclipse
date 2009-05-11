@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.prefs.tickets.TicketInfo;
 
 import com.swtdesigner.SWTResourceManager;

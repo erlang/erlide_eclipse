@@ -21,11 +21,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.BundleContext;
 
@@ -156,7 +157,8 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		ErlLogger.init();
+		ErlLogger.init(ResourcesPlugin.getWorkspace().getRoot().getLocation()
+				.toPortableString(), Platform.inDebugMode());
 		ErlLogger.debug("Starting CORE " + Thread.currentThread());
 		super.start(context);
 

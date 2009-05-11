@@ -25,7 +25,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,

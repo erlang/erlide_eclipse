@@ -18,9 +18,9 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.ErlUtils;
 import org.erlide.jinterface.ParserException;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

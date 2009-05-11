@@ -50,7 +50,7 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;

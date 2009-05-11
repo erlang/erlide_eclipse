@@ -13,7 +13,7 @@ package org.erlide.ui.launch;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 

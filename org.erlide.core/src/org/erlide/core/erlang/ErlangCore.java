@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfo;

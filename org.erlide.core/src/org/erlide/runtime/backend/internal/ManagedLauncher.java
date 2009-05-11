@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErtsProcess;
@@ -19,8 +19,10 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
 	Process fRuntime;
 	Backend backend;
+	private ILaunch launch;
 
-	public ManagedLauncher() {
+	public ManagedLauncher(ILaunch aLaunch) {
+		launch = aLaunch;
 	}
 
 	public void setBackend(final Backend backend) {
@@ -41,7 +43,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 		stop();
 	}
 
-	public void initializeRuntime(final ILaunch launch) {
+	public void initializeRuntime() {
 		startRuntime(launch);
 	}
 

@@ -58,7 +58,7 @@ import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * The <code>ErlModelManager</code> manages instances of <code>IErlModel</code>.

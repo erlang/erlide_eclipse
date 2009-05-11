@@ -32,7 +32,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlStructureCreator implements IStructureCreator {

@@ -7,8 +7,8 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.ErlUtils;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

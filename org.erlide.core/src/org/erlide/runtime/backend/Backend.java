@@ -15,11 +15,11 @@ import java.net.Socket;
 import java.util.Collection;
 
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
@@ -484,6 +484,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public void initializeRuntime() {
 		dispose(true);
+		launcher.initializeRuntime();
 		fShellManager = new BackendShellManager(this);
 	}
 

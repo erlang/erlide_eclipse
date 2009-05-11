@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendListener;
 

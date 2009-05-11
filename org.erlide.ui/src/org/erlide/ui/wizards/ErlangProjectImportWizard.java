@@ -45,7 +45,7 @@ import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.PluginUtils;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 

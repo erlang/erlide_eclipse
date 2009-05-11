@@ -6,8 +6,10 @@ import org.erlide.runtime.backend.Backend;
 public class StandaloneLauncher implements RuntimeLauncher {
 
 	private Backend backend;
+	private ILaunch launch;
 
-	public StandaloneLauncher() {
+	public StandaloneLauncher(ILaunch aLaunch) {
+		launch = aLaunch;
 	}
 
 	public void setBackend(final Backend backend) {
@@ -21,7 +23,7 @@ public class StandaloneLauncher implements RuntimeLauncher {
 	public void stop() {
 	}
 
-	public void initializeRuntime(final ILaunch launch) {
+	public void initializeRuntime() {
 	}
 
 }

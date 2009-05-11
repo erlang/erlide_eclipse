@@ -22,7 +22,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.util.ErlangFunctionCall;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

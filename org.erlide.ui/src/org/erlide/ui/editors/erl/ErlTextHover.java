@@ -66,7 +66,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;

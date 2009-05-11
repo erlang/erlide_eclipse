@@ -47,7 +47,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.util.ErlangIncludeFile;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 

@@ -25,7 +25,7 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

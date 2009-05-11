@@ -16,7 +16,7 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 

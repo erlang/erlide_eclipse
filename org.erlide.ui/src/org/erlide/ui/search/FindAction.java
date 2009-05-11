@@ -25,7 +25,7 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;

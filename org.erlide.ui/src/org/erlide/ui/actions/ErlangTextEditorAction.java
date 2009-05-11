@@ -24,7 +24,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.Util;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.editors.erl.ErlangEditor;

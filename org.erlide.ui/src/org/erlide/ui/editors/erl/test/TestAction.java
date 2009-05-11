@@ -13,7 +13,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

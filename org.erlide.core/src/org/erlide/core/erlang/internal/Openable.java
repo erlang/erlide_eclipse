@@ -24,7 +24,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IOpenable;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * Abstract class for implementations of Erlang elements which are IOpenable.

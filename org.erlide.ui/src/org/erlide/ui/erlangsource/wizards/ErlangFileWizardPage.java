@@ -43,7 +43,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeLayout;

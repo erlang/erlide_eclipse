@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.runtime.debug.ErlangProcess;
