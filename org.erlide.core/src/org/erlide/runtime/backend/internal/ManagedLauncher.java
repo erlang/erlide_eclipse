@@ -20,6 +20,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	Process fRuntime;
 	Backend backend;
 	private ILaunch launch;
+	IStreamsProxy streamsProxy;
 
 	public ManagedLauncher(ILaunch aLaunch) {
 		launch = aLaunch;
@@ -46,9 +47,6 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	public void initializeRuntime() {
 		startRuntime(launch);
 	}
-
-	IStreamsProxy streamsProxy;
-	private ErtsProcess erts;
 
 	private void startRuntime(final ILaunch launch) {
 		final RuntimeInfo info = backend.getInfo();
@@ -112,8 +110,8 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 			thread.start();
 
 			if (launch != null) {
-				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
-						null);
+				ErtsProcess erts = new ErtsProcess(launch, fRuntime, info
+						.getNodeName(), null);
 				launch.addProcess(erts);
 			}
 		} catch (final IOException e) {
