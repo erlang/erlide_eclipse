@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +48,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
@@ -66,6 +68,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+import erlang.ErlangCode;
 import erlang.ErlideDebug;
 
 public class ErlangLaunchConfigurationDelegate extends
@@ -157,7 +160,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			final Backend backend = ErlangCore.getBackendManager().create(rt,
 					options, launch);
 			// launch.addProcess(null);
-			backend.registerProjects(projects);
+			registerProjects(backend, projects);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// add debug target
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
@@ -209,6 +212,27 @@ public class ErlangLaunchConfigurationDelegate extends
 							+ nodeName, null);
 			throw new DebugException(s);
 		}
+	}
+
+	private static void registerProjects(final Backend backend,
+			final Collection<IProject> projects) {
+		for (final IProject project : projects) {
+			ErlangCore.getBackendManager().addExecution(project, backend);
+			final ErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(project);
+			final String outDir = project.getLocation().append(
+					prefs.getOutputDir()).toOSString();
+			if (outDir.length() > 0) {
+				ErlLogger.debug("backend %s: add path %s", backend.getName(),
+						outDir);
+				backend.addPath(false/* prefs.getUsePathZ() */, outDir);
+				final File f = new File(outDir);
+				for (final File file : f.listFiles()) {
+					ErlangCode.load(backend, file.getName());
+				}
+			}
+		}
+
 	}
 
 	public static List<String> addBreakpointProjectsAndModules(

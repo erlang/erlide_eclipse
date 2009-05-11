@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.debug.core.ILaunch;
-import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -380,7 +376,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 			fNode.close();
 			fNode = null;
 		}
-		initializeRuntime(null);
+		initializeRuntime();
 		final Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
 				.getPlugins();
 		for (final ICodeBundle bundle : plugins) {
@@ -486,9 +482,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		return fPeer;
 	}
 
-	public void initializeRuntime(final ILaunch launch) {
+	public void initializeRuntime() {
 		dispose(true);
-		launcher.initializeRuntime(launch);
 		fShellManager = new BackendShellManager(this);
 	}
 
@@ -560,25 +555,6 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public void addPath(final boolean usePathZ, final String path) {
 		fCodeManager.addPath(usePathZ, path);
-	}
-
-	public void registerProjects(final Collection<IProject> projects) {
-		for (final IProject project : projects) {
-			ErlangCore.getBackendManager().addExecution(project, this);
-			final ErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-			final String outDir = project.getLocation().append(
-					prefs.getOutputDir()).toOSString();
-			if (outDir.length() > 0) {
-				ErlLogger.debug("backend %s: add path %s", getName(), outDir);
-				addPath(false/* prefs.getUsePathZ() */, outDir);
-				final File f = new File(outDir);
-				for (final File b : f.listFiles()) {
-					ErlangCode.load(this, b.getName());
-				}
-			}
-		}
-
 	}
 
 	public void setTrapExit(final boolean trapexit) {

@@ -123,19 +123,19 @@ public final class BackendManager implements IEpmdListener {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
 			b = new Backend(info, RuntimeLauncherFactory
-					.createStandaloneLauncher());
+					.createStandaloneLauncher(launch));
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
 			b = new Backend(info, RuntimeLauncherFactory
-					.createManagedLauncher());
+					.createManagedLauncher(launch));
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
 			return null;
 		}
 
-		b.initializeRuntime(launch);
+		b.initializeRuntime();
 		b.connectAndRegister(fPlugins);
 		b.initErlang();
 		b.setDebug(options.contains(BackendOptions.DEBUG));
