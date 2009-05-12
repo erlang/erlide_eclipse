@@ -80,6 +80,7 @@ public final class FullBackend extends Backend implements IDisposable {
 	}
 
 	public void connectAndRegister(Collection<ICodeBundle> plugins) {
+		connect();
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
 				getCodeManager().register(element);
