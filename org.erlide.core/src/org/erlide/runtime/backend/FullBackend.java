@@ -14,10 +14,10 @@ import java.util.Collection;
 
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.IDisposable;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;

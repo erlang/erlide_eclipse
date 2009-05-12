@@ -18,7 +18,6 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.IDisposable;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;

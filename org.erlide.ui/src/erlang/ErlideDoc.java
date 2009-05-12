@@ -58,7 +58,7 @@ public class ErlideDoc {
 		// try {
 		// // commented out since target doesn't exist
 		// // res = b.rpcx("erlide_otp_doc", "get_otp_doc_location", "");
-		// // return Util.stringValue(res);
+		// // return CoreUtil.stringValue(res);
 		// } catch (final RpcException e) {
 		// ErlLogger.warn(e);
 		// } catch (final BackendException e) {

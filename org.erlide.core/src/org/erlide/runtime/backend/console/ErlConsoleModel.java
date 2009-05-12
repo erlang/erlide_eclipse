@@ -13,7 +13,7 @@ package org.erlide.runtime.backend.console;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.runtime.IDisposable;
+import org.erlide.backend.IDisposable;
 import org.erlide.runtime.backend.events.EventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

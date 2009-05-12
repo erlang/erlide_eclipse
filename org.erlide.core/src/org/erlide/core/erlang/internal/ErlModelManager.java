@@ -57,7 +57,7 @@ import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
-import org.erlide.core.util.Util;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -255,7 +255,7 @@ public final class ErlModelManager implements IErlModelManager {
 			String initialText = null;
 			if (file.exists()) {
 				try {
-					initialText = new String(Util
+					initialText = new String(CoreUtil
 							.getResourceContentsAsCharArray(file));
 				} catch (final Exception e) {
 					initialText = "";
@@ -601,7 +601,7 @@ public final class ErlModelManager implements IErlModelManager {
 		// vStats.toArray(stats);
 		// throw new CoreException(new MultiStatus(ErlangCore.PLUGIN_ID,
 		// IStatus.ERROR, stats,
-		// Util.bind("build.cannotSaveStates"), null)); //$NON-NLS-1$
+		// CoreUtil.bind("build.cannotSaveStates"), null)); //$NON-NLS-1$
 		// }
 	}
 

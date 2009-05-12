@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.erlide.backend.Backend;
-import org.erlide.runtime.IDisposable;
+import org.erlide.backend.IDisposable;
 
 public class BackendShellManager implements IShellManager, IDisposable {
 

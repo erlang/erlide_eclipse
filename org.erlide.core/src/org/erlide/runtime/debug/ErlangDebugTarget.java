@@ -331,7 +331,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		final int what = getMetaWhat(event);
 		if (what == META_TRACE_OUTPUT) {
 			final OtpErlangObject o = metaEvent.elementAt(1);
-			// final String s = Util.ioListToString(o).trim();
+			// final String s = CoreUtil.ioListToString(o).trim();
 			// final String s = o.toString();
 			addToTraceList((OtpErlangTuple) o);
 			final DebugEvent traceChangedEvent = new DebugEvent(this,

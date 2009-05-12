@@ -9,12 +9,12 @@ import java.io.PrintWriter;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.Backend;
+import org.erlide.backend.IDisposable;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.backend.RuntimeLauncher;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.ErtsProcess;
-import org.erlide.runtime.IDisposable;
 
 public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
