@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.osgi.util.NLS;
 import org.erlide.core.erlang.IProblem;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -61,9 +62,8 @@ public class BuildNotifier {
 	 */
 	public void aboutToCompile(final IResource unit) {
 		checkCancel();
-		final String message = BuilderMessages
-				.bind(BuilderMessages.build_compiling, unit.getParent()
-						.getFullPath());
+		final String message = NLS.bind(BuilderMessages.build_compiling, unit
+				.getParent().getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug(message);
@@ -104,9 +104,8 @@ public class BuildNotifier {
 	 * compiled.
 	 */
 	public void compiled(final IResource unit) {
-		final String message = BuilderMessages
-				.bind(BuilderMessages.build_compiling, unit.getParent()
-						.getFullPath());
+		final String message = NLS.bind(BuilderMessages.build_compiling, unit
+				.getParent().getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug(message);
@@ -150,7 +149,7 @@ public class BuildNotifier {
 				if (fNewErrorCount == 1) {
 					buffer.append(BuilderMessages.build_oneError);
 				} else {
-					buffer.append(BuilderMessages.bind(
+					buffer.append(NLS.bind(
 							BuilderMessages.build_multipleErrors, String
 									.valueOf(fNewErrorCount)));
 				}
@@ -162,7 +161,7 @@ public class BuildNotifier {
 				if (fNewWarningCount == 1) {
 					buffer.append(BuilderMessages.build_oneWarning);
 				} else {
-					buffer.append(BuilderMessages.bind(
+					buffer.append(NLS.bind(
 							BuilderMessages.build_multipleWarnings, String
 									.valueOf(fNewWarningCount)));
 				}
@@ -185,7 +184,7 @@ public class BuildNotifier {
 					if (fFixedErrorCount == 1) {
 						buffer.append(BuilderMessages.build_oneError);
 					} else {
-						buffer.append(BuilderMessages.bind(
+						buffer.append(NLS.bind(
 								BuilderMessages.build_multipleErrors, String
 										.valueOf(fFixedErrorCount)));
 					}
@@ -197,7 +196,7 @@ public class BuildNotifier {
 					if (fFixedWarningCount == 1) {
 						buffer.append(BuilderMessages.build_oneWarning);
 					} else {
-						buffer.append(BuilderMessages.bind(
+						buffer.append(NLS.bind(
 								BuilderMessages.build_multipleWarnings, String
 										.valueOf(fFixedWarningCount)));
 					}

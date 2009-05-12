@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.ErlangCode;
@@ -113,14 +114,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final CoreException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+			marker.setAttribute(IMarker.MESSAGE, NLS.bind(
 					BuilderMessages.build_inconsistentProject, e
 							.getLocalizedMessage()));
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+			marker.setAttribute(IMarker.MESSAGE, NLS.bind(
 					BuilderMessages.build_inconsistentProject, e
 							.getLocalizedMessage()));
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
@@ -209,7 +210,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final CoreException e) {
 			ErlLogger.error(e);
 			final IMarker marker = currentProject.createMarker(PROBLEM_MARKER);
-			marker.setAttribute(IMarker.MESSAGE, BuilderMessages.bind(
+			marker.setAttribute(IMarker.MESSAGE, NLS.bind(
 					BuilderMessages.build_inconsistentProject, e
 							.getLocalizedMessage()));
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);

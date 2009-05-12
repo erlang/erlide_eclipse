@@ -10,7 +10,7 @@ public class StandaloneLauncher implements RuntimeLauncher {
 	public StandaloneLauncher() {
 	}
 
-	public void setRuntime(final Backend backend) {
+	public void setBackend(final Backend backend) {
 		this.backend = backend;
 	}
 

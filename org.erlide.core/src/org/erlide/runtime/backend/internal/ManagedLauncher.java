@@ -27,7 +27,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 		launch = aLaunch;
 	}
 
-	public void setRuntime(final Backend backend) {
+	public void setBackend(final Backend backend) {
 		this.backend = backend;
 	}
 

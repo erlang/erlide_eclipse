@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
-import java.text.MessageFormat;
-
 import org.eclipse.osgi.util.NLS;
 
 public final class BuilderMessages extends NLS {
@@ -38,60 +36,4 @@ public final class BuilderMessages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, BuilderMessages.class);
 	}
 
-	/**
-	 * Bind the given message's substitution locations with the given string
-	 * values.
-	 * 
-	 * @param message
-	 *            the message to be manipulated
-	 * @return the manipulated String
-	 */
-	public static String bind(final String message) {
-		return bind(message, null);
-	}
-
-	/**
-	 * Bind the given message's substitution locations with the given string
-	 * values.
-	 * 
-	 * @param message
-	 *            the message to be manipulated
-	 * @param binding
-	 *            the object to be inserted into the message
-	 * @return the manipulated String
-	 */
-	public static String bind(final String message, final Object binding) {
-		return bind(message, new Object[] { binding });
-	}
-
-	/**
-	 * Bind the given message's substitution locations with the given string
-	 * values.
-	 * 
-	 * @param message
-	 *            the message to be manipulated
-	 * @param binding1
-	 *            An object to be inserted into the message
-	 * @param binding2
-	 *            A second object to be inserted into the message
-	 * @return the manipulated String
-	 */
-	public static String bind(final String message, final Object binding1,
-			final Object binding2) {
-		return bind(message, new Object[] { binding1, binding2 });
-	}
-
-	/**
-	 * Bind the given message's substitution locations with the given string
-	 * values.
-	 * 
-	 * @param message
-	 *            the message to be manipulated
-	 * @param bindings
-	 *            An array of objects to be inserted into the message
-	 * @return the manipulated String
-	 */
-	public static String bind(final String message, final Object[] bindings) {
-		return MessageFormat.format(message, bindings);
-	}
 }

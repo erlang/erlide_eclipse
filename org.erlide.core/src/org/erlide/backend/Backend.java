@@ -66,7 +66,7 @@ public class Backend {
 		}
 		fInfo = info;
 		this.launcher = launcher;
-		this.launcher.setRuntime(this);
+		this.launcher.setBackend(this);
 	}
 
 	public void connect() {
@@ -340,7 +340,7 @@ public class Backend {
 		RpcUtil.rpcCast(fNode, fPeer, gleader, module, fun, signature, args0);
 	}
 
-	private synchronized void restart() {
+	public synchronized void restart() {
 		exitStatus = -1;
 		if (fAvailable) {
 			return;

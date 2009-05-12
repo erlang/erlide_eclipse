@@ -3,7 +3,7 @@ package org.erlide.backend;
 
 public interface RuntimeLauncher {
 
-	public void setRuntime(Backend backend);
+	public void setBackend(Backend backend);
 
 	public void initializeRuntime();
 
