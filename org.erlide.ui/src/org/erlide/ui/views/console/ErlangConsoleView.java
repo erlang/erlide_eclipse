@@ -55,7 +55,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.console.BackendShell;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
@@ -109,7 +109,7 @@ public class ErlangConsoleView extends ViewPart implements
 	SourceViewer consoleInputViewer;
 	ErlConsoleModel model;
 	BackendShell shell;
-	Backend backend;
+	FullBackend backend;
 	private Action action;
 
 	private ComboViewer backends;

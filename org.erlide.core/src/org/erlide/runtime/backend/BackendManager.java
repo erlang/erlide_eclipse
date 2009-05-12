@@ -49,10 +49,10 @@ public final class BackendManager extends OtpNodeStatus implements
 			"R11B-3", "R11B-4", "R11B-5", "R12B-1", "R12B-2", "R12B-3",
 			"R12B-4", "R12B-5", "R13" };
 
-	private volatile Backend fLocalBackend;
+	private volatile FullBackend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
-	private final Map<IProject, Set<Backend>> fExecutionBackends;
-	private final Map<String, Backend> fBuildBackends;
+	private final Map<IProject, Set<FullBackend>> fExecutionBackends;
+	private final Map<String, FullBackend> fBuildBackends;
 	final List<BackendListener> fListeners;
 	private final List<ICodeBundle> fPlugins;
 
@@ -77,8 +77,8 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	private BackendManager() {
 		fLocalBackend = null;
-		fExecutionBackends = new HashMap<IProject, Set<Backend>>();
-		fBuildBackends = new HashMap<String, Backend>();
+		fExecutionBackends = new HashMap<IProject, Set<FullBackend>>();
+		fBuildBackends = new HashMap<String, FullBackend>();
 		fListeners = new ArrayList<BackendListener>();
 		fPlugins = new ArrayList<ICodeBundle>();
 
@@ -87,24 +87,24 @@ public final class BackendManager extends OtpNodeStatus implements
 		new EpmdWatchJob(epmdWatcher).schedule(100);
 	}
 
-	public Backend create(final RuntimeInfo info,
+	public FullBackend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
 			throws BackendException {
 
 		final String nodeName = info.getNodeName();
 		final boolean exists = findRunningNode(nodeName);
-		Backend b = null;
+		FullBackend b = null;
 
 		final boolean isRemoteNode = nodeName.contains("@");
 		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
-			b = new Backend(info, RuntimeLauncherFactory
+			b = new FullBackend(info, RuntimeLauncherFactory
 					.createStandaloneLauncher(launch));
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
-			b = new Backend(info, RuntimeLauncherFactory
+			b = new FullBackend(info, RuntimeLauncherFactory
 					.createManagedLauncher(launch));
 		}
 		if (b == null) {
@@ -137,7 +137,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			return fLocalBackend;
 		}
 		final String version = info.getVersion().asMajor().toString();
-		Backend b = fBuildBackends.get(version);
+		FullBackend b = fBuildBackends.get(version);
 		if (b == null) {
 
 			info.setNodeName(System.getProperty("user.name") + "_" + version);
@@ -149,8 +149,9 @@ public final class BackendManager extends OtpNodeStatus implements
 		return b;
 	}
 
-	public synchronized Set<Backend> getExecutionBackends(final IProject project) {
-		final Set<Backend> bs = fExecutionBackends.get(project);
+	public synchronized Set<FullBackend> getExecutionBackends(
+			final IProject project) {
+		final Set<FullBackend> bs = fExecutionBackends.get(project);
 		if (bs == null) {
 			return Collections.emptySet();
 		}
@@ -165,7 +166,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		 */
 	}
 
-	public Backend getIdeBackend() {
+	public FullBackend getIdeBackend() {
 		if (fLocalBackend == null) {
 			synchronized (fLocalBackendLock) {
 				if (fLocalBackend == null) {
@@ -239,10 +240,10 @@ public final class BackendManager extends OtpNodeStatus implements
 		public void run() throws Exception {
 			switch (fType) {
 			case ADDED:
-				fListener.backendAdded(fChanged);
+				fListener.runtimeAdded(fChanged);
 				break;
 			case REMOVED:
-				fListener.backendRemoved(fChanged);
+				fListener.runtimeRemoved(fChanged);
 				break;
 			}
 		}
@@ -268,11 +269,11 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public Backend[] getAllBackends() {
-		final Set<Backend> ebs = new HashSet<Backend>();
-		for (final Set<Backend> b : fExecutionBackends.values()) {
+		final Set<FullBackend> ebs = new HashSet<FullBackend>();
+		for (final Set<FullBackend> b : fExecutionBackends.values()) {
 			ebs.addAll(b);
 		}
-		for (final Backend b : fBuildBackends.values()) {
+		for (final FullBackend b : fBuildBackends.values()) {
 			ebs.add(b);
 		}
 		final Object[] eb = ebs.toArray();
@@ -294,7 +295,7 @@ public final class BackendManager extends OtpNodeStatus implements
 				fLocalBackend.checkCodePath();
 			}
 			forEachProjectBackend(new BackendVisitor() {
-				public void run(final Backend b) {
+				public void run(final FullBackend b) {
 					b.getCodeManager().register(p);
 					b.checkCodePath();
 				}
@@ -308,7 +309,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			fLocalBackend.getCodeManager().unregister(p);
 		}
 		forEachProjectBackend(new BackendVisitor() {
-			public void run(final Backend b) {
+			public void run(final FullBackend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
@@ -338,10 +339,10 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public synchronized void addExecution(final IProject project,
-			final Backend b) {
-		Set<Backend> list = fExecutionBackends.get(project);
+			final FullBackend b) {
+		Set<FullBackend> list = fExecutionBackends.get(project);
 		if (list == null) {
-			list = new HashSet<Backend>();
+			list = new HashSet<FullBackend>();
 			fExecutionBackends.put(project, list);
 		}
 		list.add(b);
@@ -349,9 +350,9 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public synchronized void removeExecution(final IProject project,
 			final Backend b) {
-		Set<Backend> list = fExecutionBackends.get(project);
+		Set<FullBackend> list = fExecutionBackends.get(project);
 		if (list == null) {
-			list = new HashSet<Backend>();
+			list = new HashSet<FullBackend>();
 			fExecutionBackends.put(project, list);
 		}
 		list.remove(b);
@@ -378,7 +379,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	public void remoteNodeStatus(final String node, final boolean up,
 			final Object info) {
 		if (!up) {
-			for (final Entry<IProject, Set<Backend>> e : fExecutionBackends
+			for (final Entry<IProject, Set<FullBackend>> e : fExecutionBackends
 					.entrySet()) {
 				for (final Backend be : e.getValue()) {
 					final String bnode = be.getInfo().getNodeName();

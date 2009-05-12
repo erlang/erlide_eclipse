@@ -144,7 +144,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		include.addListener(SWT.Modify, nameModifyListener);
 
 		final Label nodeNameLabel = new Label(composite, SWT.NONE);
-		nodeNameLabel.setText("Runtime version");
+		nodeNameLabel.setText("Backend version");
 
 		runtimeVersion = new Combo(composite, SWT.READ_ONLY);
 		final GridData gd_backendName = new GridData(SWT.LEFT, SWT.CENTER,

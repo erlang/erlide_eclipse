@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
+ * Copyright (c) 2009 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * which accompanies this distribution, and is available
+ * at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -20,11 +20,8 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
@@ -41,10 +38,7 @@ import com.ericsson.otp.erlang.SignatureException;
 import erlang.ErlangCode;
 import erlang.ErlideBackend;
 
-/**
- * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
- */
-public final class Backend implements IDisposable {
+public class Backend {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "300"));
@@ -59,13 +53,11 @@ public final class Backend implements IDisposable {
 		}
 	}
 
-	private final CodeManager fCodeManager;
 	boolean fAvailable = false;
 
 	private OtpMbox ftRpcBox; // incoming rpc and events
 	private OtpNode fNode;
 	private String fPeer;
-	private IShellManager fShellManager;
 	private String fCurrentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
@@ -82,11 +74,9 @@ public final class Backend implements IDisposable {
 			throw new BackendException(
 					"Can't create backend without runtime information");
 		}
-		fCodeManager = new CodeManager(this);
-		fShellManager = new BackendShellManager(this);
 		fInfo = info;
 		this.launcher = launcher;
-		this.launcher.setBackend(this);
+		this.launcher.setRuntime(this);
 	}
 
 	public void connect() {
@@ -152,9 +142,6 @@ public final class Backend implements IDisposable {
 
 		if (fNode != null) {
 			fNode.close();
-		}
-		if (fShellManager instanceof IDisposable) {
-			((IDisposable) fShellManager).dispose();
 		}
 		if (eventDaemon != null) {
 			eventDaemon.stop();
@@ -315,10 +302,6 @@ public final class Backend implements IDisposable {
 		}
 	}
 
-	CodeManager getCodeManager() {
-		return fCodeManager;
-	}
-
 	private OtpErlangObject makeCall(final int timeout, final String module,
 			final String fun, final String signature, final Object... args0)
 			throws RpcException, SignatureException {
@@ -452,10 +435,6 @@ public final class Backend implements IDisposable {
 		return eventBox.receive(timeout);
 	}
 
-	public IShellManager getShellManager() {
-		return fShellManager;
-	}
-
 	public void initErlang() {
 		final boolean inited = ErlideBackend.init(this, getEventPid());
 		if (!inited) {
@@ -490,7 +469,6 @@ public final class Backend implements IDisposable {
 	public void initializeRuntime() {
 		dispose(true);
 		launcher.initializeRuntime();
-		fShellManager = new BackendShellManager(this);
 	}
 
 	public void setRemoteRex(final OtpErlangPid watchdog) {
@@ -502,13 +480,6 @@ public final class Backend implements IDisposable {
 
 	public void connectAndRegister(final Collection<ICodeBundle> plugins) {
 		connect();
-		if (plugins != null) {
-			for (final ICodeBundle element : plugins) {
-				getCodeManager().register(element);
-			}
-		}
-		getCodeManager().registerBundles();
-		checkCodePath();
 	}
 
 	public void checkCodePath() {
@@ -534,14 +505,6 @@ public final class Backend implements IDisposable {
 
 	public String getJavaNodeName() {
 		return fNode.node();
-	}
-
-	public void removePath(final boolean usePathZ, final String path) {
-		fCodeManager.removePath(usePathZ, path);
-	}
-
-	public void addPath(final boolean usePathZ, final String path) {
-		fCodeManager.addPath(usePathZ, path);
 	}
 
 	public void setTrapExit(final boolean trapexit) {

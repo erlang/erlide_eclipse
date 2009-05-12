@@ -169,7 +169,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	// public String getStatus() {
 	// final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
-	// fBackend, fPid, "status");
+	// runtime, fPid, "status");
 	// if (res != null) {
 	// return res.atomValue();
 	// }

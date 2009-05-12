@@ -54,7 +54,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		final GridLayout topLayout = new GridLayout();
 		comp.setLayout(topLayout);
 
-		final Group runtimeGroup = SWTUtil.createGroup(comp, "Runtime", 1,
+		final Group runtimeGroup = SWTUtil.createGroup(comp, "Backend", 1,
 				GridData.FILL_HORIZONTAL);
 		final GridData gd_runtimeGroup = new GridData(SWT.FILL, SWT.CENTER,
 				false, false);
@@ -69,7 +69,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
 		final Label runtimeLabel = new Label(runtimeGroup, SWT.NONE);
 		runtimeLabel.setLayoutData(new GridData());
-		runtimeLabel.setText("Runtime");
+		runtimeLabel.setText("Backend");
 
 		final List<String> rtl = new ArrayList<String>();
 		for (final RuntimeInfo r : runtimes) {

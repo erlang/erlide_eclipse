@@ -244,7 +244,8 @@ public class ErlideBackend {
 		}
 	}
 
-	public static String getScriptId(final Backend b) throws BackendException {
+	public static String getScriptId(final Backend b)
+			throws BackendException {
 		OtpErlangObject r;
 		r = b.call("init", "script_id", "");
 		if (r instanceof OtpErlangTuple) {

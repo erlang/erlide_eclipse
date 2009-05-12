@@ -26,7 +26,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 		launch = aLaunch;
 	}
 
-	public void setBackend(final Backend backend) {
+	public void setRuntime(final Backend backend) {
 		this.backend = backend;
 	}
 
@@ -118,7 +118,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 			ErlLogger.error(e);
 		}
 
-		// streamsProxy = new StreamsProxy(fRuntime, null);
+		// streamsProxy = new StreamsProxy(runtime, null);
 	}
 
 }

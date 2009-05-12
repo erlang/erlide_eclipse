@@ -80,8 +80,8 @@ public final class ErlangXref {
 	}
 
 	@SuppressWarnings("boxing")
-	public static FunctionRef[] functionUse(final Backend b, final String mod,
-			final String fun, final int arity) {
+	public static FunctionRef[] functionUse(final Backend b,
+			final String mod, final String fun, final int arity) {
 		try {
 			final OtpErlangObject r = b.call(10000, "erlide_xref",
 					"function_use", "aai", mod, fun, arity);

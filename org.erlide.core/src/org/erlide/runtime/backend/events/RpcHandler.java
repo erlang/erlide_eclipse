@@ -17,10 +17,10 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcHandler extends EventHandler {
-	private final Backend fBackend;
+	private final Backend fRuntime;
 
-	public RpcHandler(final Backend backend) {
-		fBackend = backend;
+	public RpcHandler(final Backend runtime) {
+		fRuntime = runtime;
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class RpcHandler extends EventHandler {
 	}
 
 	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
-		fBackend.send(from, JInterfaceFactory.mkTuple(
+		fRuntime.send(from, JInterfaceFactory.mkTuple(
 				new OtpErlangAtom("reply"), result));
 	}
 

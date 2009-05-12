@@ -592,7 +592,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						if (metaPid != null) {
 							putMetaPid(metaPid, pid);
 						}
-						// ErlideDebug.tracing(fBackend, true, metaPid);
+						// ErlideDebug.tracing(runtime, true, metaPid);
 					}
 				} else {
 					ErlLogger.debug("other event: " + msg);

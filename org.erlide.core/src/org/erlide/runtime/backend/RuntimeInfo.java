@@ -152,7 +152,7 @@ public class RuntimeInfo {
 
 	@Override
 	public String toString() {
-		return String.format("Runtime<%s/%s (%s) %s [%s]>", getName(),
+		return String.format("Backend<%s/%s (%s) %s [%s]>", getName(),
 				getNodeName(), getOtpHome(), getVersion(), getArgs());
 	}
 

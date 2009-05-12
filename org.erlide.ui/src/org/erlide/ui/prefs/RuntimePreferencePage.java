@@ -112,7 +112,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 	private int fSortColumn = 0;
 
 	/**
-	 * Selection listeners (checked Runtime changes)
+	 * Selection listeners (checked Backend changes)
 	 */
 	private final ListenerList fSelectionListeners = new ListenerList();
 
@@ -491,10 +491,10 @@ public class RuntimePreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Sets the checked Runtime, possible <code>null</code>
+	 * Sets the checked Backend, possible <code>null</code>
 	 * 
 	 * @param vm
-	 *            Runtime or <code>null</code>
+	 *            Backend or <code>null</code>
 	 */
 	public void setCheckedRuntime(final RuntimeInfo vm) {
 		if (vm == null) {
@@ -505,9 +505,9 @@ public class RuntimePreferencePage extends PreferencePage implements
 	}
 
 	/**
-	 * Returns the checked Runtime or <code>null</code> if none.
+	 * Returns the checked Backend or <code>null</code> if none.
 	 * 
-	 * @return the checked Runtime or <code>null</code> if none
+	 * @return the checked Backend or <code>null</code> if none
 	 */
 	public RuntimeInfo getCheckedRuntime() {
 		final Object[] objects = fRuntimeList.getCheckedElements();
@@ -636,7 +636,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 		erlideLabel
 				.setToolTipText("The erlide runtime is used for IDE purposes, not for running project code.");
 		erlideLabel
-				.setText("Runtime used by Erlide itself (restart is required)");
+				.setText("Backend used by Erlide itself (restart is required)");
 
 		erlideCombo = new ComboViewer(composite, SWT.READ_ONLY);
 		erlideCombo.setLabelProvider(new RuntimeLabelProvider());

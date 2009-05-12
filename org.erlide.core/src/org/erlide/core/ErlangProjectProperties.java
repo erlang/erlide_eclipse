@@ -22,7 +22,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.ProjectPreferencesConstants;
-import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
@@ -220,7 +220,7 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 	public void setUsePathZ(final boolean pz) {
 		final boolean z = Boolean.parseBoolean(usePathZ);
 		if (z != pz) {
-			for (final Backend b : ErlangCore.getBackendManager()
+			for (final FullBackend b : ErlangCore.getBackendManager()
 					.getExecutionBackends(project)) {
 
 				final String p = project.getLocation().append(outputDir)

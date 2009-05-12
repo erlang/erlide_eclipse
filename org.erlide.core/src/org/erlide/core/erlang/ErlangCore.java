@@ -39,8 +39,8 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 
@@ -498,7 +498,7 @@ public final class ErlangCore {
 							.getProjectProperties(project);
 					final String path = project.getLocation().append(
 							prefs.getOutputDir()).toString();
-					final Backend b = ErlangCore.getBackendManager()
+					final FullBackend b = ErlangCore.getBackendManager()
 							.getIdeBackend();
 					if (b != null) {
 						b.addPath(prefs.getUsePathZ(), path);

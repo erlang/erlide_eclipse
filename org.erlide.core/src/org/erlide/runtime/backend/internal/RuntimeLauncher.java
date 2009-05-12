@@ -4,7 +4,7 @@ import org.erlide.runtime.backend.Backend;
 
 public interface RuntimeLauncher {
 
-	public void setBackend(Backend backend);
+	public void setRuntime(Backend backend);
 
 	public void initializeRuntime();
 
