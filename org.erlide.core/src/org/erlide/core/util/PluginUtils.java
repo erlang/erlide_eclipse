@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.PreferencesUtils;
 
 /**
  * Simple utility functions

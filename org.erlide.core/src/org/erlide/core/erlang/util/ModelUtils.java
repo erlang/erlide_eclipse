@@ -13,6 +13,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.Backend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModel;
@@ -24,7 +25,6 @@ import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideOpen;
 

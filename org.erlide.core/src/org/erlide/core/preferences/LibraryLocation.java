@@ -17,7 +17,6 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.runtime.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class LibraryLocation extends DependencyLocation {

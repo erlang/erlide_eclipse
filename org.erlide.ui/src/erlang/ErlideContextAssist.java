@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.core.erlang.util.Util;
-import org.erlide.runtime.backend.Backend;
+import org.erlide.backend.Backend;
+import org.erlide.core.util.Util;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

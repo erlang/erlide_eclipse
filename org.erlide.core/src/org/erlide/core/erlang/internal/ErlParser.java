@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import org.erlide.backend.Backend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
-import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.backend;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,12 +17,11 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-
 
 /**
  * 
@@ -99,7 +98,7 @@ public final class BackendUtil {
 		return "jerlide_" + fUniqueId;
 	}
 
-	static String getErlideNameSuffix() {
+	public static String getErlideNameSuffix() {
 		String fUniqueId;
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final String location = root.getLocation().toPortableString();

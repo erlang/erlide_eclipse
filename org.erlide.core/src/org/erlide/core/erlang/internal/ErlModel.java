@@ -46,9 +46,9 @@ import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.PreferencesUtils;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.PreferencesUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.backend;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.runtime.PreferencesUtils;
+import org.erlide.core.preferences.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfo {

@@ -3,12 +3,12 @@ package erlang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.erlang.util.Util;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendEvalResult;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
-import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.exceptions.NoBackendException;
 

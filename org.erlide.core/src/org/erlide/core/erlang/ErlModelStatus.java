@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlElement;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 
 /**
  * @see IErlModelStatus

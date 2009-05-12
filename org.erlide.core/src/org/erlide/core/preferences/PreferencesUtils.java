@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.core.preferences;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.erlang.util;
+package org.erlide.core.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatusConstants;
+import org.erlide.core.erlang.util.Assert;
+import org.erlide.core.erlang.util.CharOperation;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

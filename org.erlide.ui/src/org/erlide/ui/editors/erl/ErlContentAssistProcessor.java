@@ -28,6 +28,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
+import org.erlide.backend.Backend;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -45,7 +46,6 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.util.ErlangFunction;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
 

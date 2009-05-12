@@ -6,7 +6,7 @@ import java.util.List;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

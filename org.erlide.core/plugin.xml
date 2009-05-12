@@ -58,13 +58,13 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.runtime.ErlangSourcePathComputerDelegate"
+            class="org.erlide.runtime.launch.ErlangSourcePathComputerDelegate"
             id="org.erlide.core.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.erlide.runtime.ErlangSourceLookupDirector"
+            class="org.erlide.runtime.launch.ErlangSourceLookupDirector"
             id="org.erlide.core.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>

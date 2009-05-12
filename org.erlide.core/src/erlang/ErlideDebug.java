@@ -5,11 +5,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendUtil;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.debug.ErlDebugConstants;
 

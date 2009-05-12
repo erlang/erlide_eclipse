@@ -10,7 +10,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
-import org.erlide.runtime.ErlangSourcePathComputerDelegate;
+import org.erlide.runtime.launch.ErlangSourcePathComputerDelegate;
 
 public class EclipseErlideSourcePathComputerDelegate implements
 ISourcePathComputerDelegate {

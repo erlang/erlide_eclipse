@@ -1,6 +1,5 @@
-package org.erlide.runtime.backend.internal;
+package org.erlide.backend;
 
-import org.erlide.runtime.backend.Backend;
 
 public interface RuntimeLauncher {
 

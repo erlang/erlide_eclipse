@@ -50,10 +50,10 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.erlide.backend.BackendEvalResult;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.IContextMenuConstants;
 

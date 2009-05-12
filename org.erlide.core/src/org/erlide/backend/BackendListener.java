@@ -8,7 +8,8 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.backend;
+
 
 public interface BackendListener {
 

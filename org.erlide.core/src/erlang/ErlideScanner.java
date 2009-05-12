@@ -6,7 +6,7 @@ import java.util.List;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.runtime.backend.exceptions.BackendException;

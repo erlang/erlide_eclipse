@@ -18,13 +18,12 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.erlide.backend.RuntimeInfo;
+import org.erlide.backend.RuntimeVersion;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.FullBackend;
-import org.erlide.runtime.backend.RuntimeInfo;
-import org.erlide.runtime.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectProperties implements IPreferenceChangeListener {

@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.Backend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.erlang.ErlModelException;
@@ -48,7 +49,6 @@ import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

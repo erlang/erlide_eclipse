@@ -13,7 +13,7 @@ package org.erlide.ui.prefs;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.runtime.backend.RuntimeInfo;
+import org.erlide.backend.RuntimeInfo;
 
 public class OtpDirectoryFieldEditor extends DirectoryFieldEditor {
 

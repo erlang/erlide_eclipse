@@ -12,8 +12,8 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.fail;
 
+import org.erlide.backend.Backend;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.Backend;
 import org.junit.After;
 import org.junit.Before;
 

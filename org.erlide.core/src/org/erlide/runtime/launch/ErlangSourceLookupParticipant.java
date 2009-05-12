@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.launch;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;

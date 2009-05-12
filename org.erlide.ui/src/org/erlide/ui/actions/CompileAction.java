@@ -14,10 +14,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.backend.Backend;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class CompileAction extends Action {

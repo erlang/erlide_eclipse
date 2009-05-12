@@ -13,10 +13,10 @@ package org.erlide.ui.util;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendListener;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendListener;
-import org.erlide.runtime.backend.Backend;
 
 public class BackendManagerPopup implements BackendListener {
 

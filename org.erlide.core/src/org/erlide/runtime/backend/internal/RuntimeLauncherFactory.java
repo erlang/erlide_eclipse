@@ -1,6 +1,7 @@
 package org.erlide.runtime.backend.internal;
 
 import org.eclipse.debug.core.ILaunch;
+import org.erlide.backend.RuntimeLauncher;
 
 public final class RuntimeLauncherFactory {
 

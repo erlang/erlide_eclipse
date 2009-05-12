@@ -21,7 +21,7 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.Util;
+import org.erlide.core.util.Util;
 
 /**
  * Abstract class for Erlang elements which implement ISourceReference.

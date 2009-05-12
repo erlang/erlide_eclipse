@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.erlide.backend.RuntimeInfo;
 import org.junit.Test;
 
 public class RuntimeInfoTest {

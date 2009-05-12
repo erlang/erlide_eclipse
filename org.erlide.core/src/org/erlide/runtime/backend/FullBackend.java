@@ -12,6 +12,9 @@ package org.erlide.runtime.backend;
 
 import java.util.Collection;
 
+import org.erlide.backend.Backend;
+import org.erlide.backend.RuntimeInfo;
+import org.erlide.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
@@ -20,7 +23,6 @@ import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
-import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]

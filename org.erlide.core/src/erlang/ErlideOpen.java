@@ -3,9 +3,9 @@ package erlang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.erlang.util.Util;
+import org.erlide.backend.Backend;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangList;

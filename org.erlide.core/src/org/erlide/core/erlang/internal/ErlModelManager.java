@@ -56,8 +56,8 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
-import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**

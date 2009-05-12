@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.backend;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -20,8 +20,8 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
+import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -65,7 +65,7 @@ public class Backend {
 	private boolean stopped = false;
 	private int restarted = 0;
 
-	Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
+	protected Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		if (info == null) {
 			throw new BackendException(
@@ -477,7 +477,8 @@ public class Backend {
 		}
 	}
 
-	void setAvailable(final boolean up) {
+	// todo: should this be public?
+	public void setAvailable(final boolean up) {
 		fAvailable = up;
 	}
 
