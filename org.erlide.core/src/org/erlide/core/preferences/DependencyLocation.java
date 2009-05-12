@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core;
+package org.erlide.core.preferences;
 
 import java.util.Collection;
 import java.util.EnumSet;

@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.runtime.backend.FullBackend;
 
 public class ToggleNatureAction implements IObjectActionDelegate {

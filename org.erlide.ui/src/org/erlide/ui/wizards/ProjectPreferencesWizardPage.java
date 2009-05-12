@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.ErlangProjectProperties;
+import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.RuntimeVersion;

@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.core.preferences;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.runtime.PreferencesUtils;
-import org.erlide.runtime.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;

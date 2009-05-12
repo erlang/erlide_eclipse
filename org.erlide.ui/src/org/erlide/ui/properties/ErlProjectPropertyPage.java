@@ -33,7 +33,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.ProjectPreferencesConstants;
+import org.erlide.core.preferences.ProjectPreferencesConstants;
 import org.erlide.runtime.backend.RuntimeInfo;
 
 /*TODO ...this should implement IworkspacePreferencePage if it's going to be 
