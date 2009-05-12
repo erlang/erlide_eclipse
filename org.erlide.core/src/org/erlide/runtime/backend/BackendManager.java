@@ -28,11 +28,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.EpmdWatcher;
@@ -253,10 +250,7 @@ public final class BackendManager implements IEpmdListener {
 		 * Throwable)
 		 */
 		public void handleException(final Throwable exception) {
-			final IStatus status = new Status(IStatus.ERROR,
-					ErlangPlugin.PLUGIN_ID, 1, "backend listener exception",
-					exception);
-			ErlangPlugin.log(status);
+			ErlLogger.error(exception);
 		}
 
 		/*

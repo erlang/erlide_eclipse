@@ -335,7 +335,8 @@ public class ErlangConsoleView extends ViewPart implements
 	boolean isInputComplete() {
 		try {
 			final String str = consoleInput.getText();
-			final OtpErlangObject o = ErlideBackend.parseString(str);
+			final OtpErlangObject o = ErlideBackend.parseString(ErlangCore
+					.getBackendManager().getIdeBackend(), str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;
 			}

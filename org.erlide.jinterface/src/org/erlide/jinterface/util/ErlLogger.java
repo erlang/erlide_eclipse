@@ -60,19 +60,19 @@ public class ErlLogger {
 						+ str);
 	}
 
-	private static void log(final Level kind, final Exception e) {
+	private static void log(final Level kind, final Throwable exception) {
 		if (kind.intValue() < minLevel) {
 			return;
 		}
 		final StackTraceElement el = getCaller();
-		final String str = e.getMessage();
+		final String str = exception.getMessage();
 
 		Logger.getLogger("org.erlide").logp(
 				kind,
 				el.getClassName(),
 				el.getMethodName(),
 				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str, e);
+						+ str, exception);
 	}
 
 	public static void erlangLog(final String module, final int line,
@@ -102,20 +102,20 @@ public class ErlLogger {
 		log(Level.SEVERE, fmt, o);
 	}
 
-	public static void debug(final Exception e) {
+	public static void debug(final Throwable e) {
 		log(Level.FINEST, e);
 	}
 
-	public static void info(final Exception e) {
+	public static void info(final Throwable e) {
 		log(Level.INFO, e);
 	}
 
-	public static void warn(final Exception e) {
+	public static void warn(final Throwable e) {
 		log(Level.WARNING, e);
 	}
 
-	public static void error(final Exception e) {
-		log(Level.SEVERE, e);
+	public static void error(final Throwable exception) {
+		log(Level.SEVERE, exception);
 	}
 
 	public static class ErlSimpleFormatter extends Formatter {
