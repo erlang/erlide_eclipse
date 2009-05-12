@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Collection;
 
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
@@ -387,12 +386,8 @@ public final class Backend implements IDisposable {
 			fNode = null;
 		}
 		initializeRuntime();
-		final Collection<ICodeBundle> plugins = ErlangCore.getBackendManager()
-				.getPlugins();
-		for (final ICodeBundle bundle : plugins) {
-			getCodeManager().unregister(bundle);
-		}
-		connectAndRegister(plugins);
+		// we still remember the plugins from the former instance
+		connectAndRegister(null);
 		initErlang();
 	}
 
@@ -512,6 +507,7 @@ public final class Backend implements IDisposable {
 				getCodeManager().register(element);
 			}
 		}
+		getCodeManager().registerBundles();
 		checkCodePath();
 	}
 

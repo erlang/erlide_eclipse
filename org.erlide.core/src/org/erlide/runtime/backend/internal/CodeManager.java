@@ -239,27 +239,31 @@ public class CodeManager implements IRegistryChangeListener {
 	public void register(final ICodeBundle p) {
 		if (codeBundles.indexOf(p) < 0) {
 			codeBundles.add(p);
-			final String ebinDir = p.getEbinDir();
-			if (ebinDir != null) {
-				final String localDir = ebinDir.replaceAll("\\\\", "/");
-				final boolean accessible = ErlideUtil.isAccessible(fBackend,
-						localDir);
-				if (accessible) {
-					ErlLogger.debug("adding %s to code path for %s", localDir,
-							fBackend.getInfo());
-					ErlangCode.addPathA(fBackend, localDir);
-				} else {
-					ErlLogger.debug("loading %s for %s", p.getBundle()
-							.getSymbolicName(), fBackend.getInfo());
-					loadPluginCode(p);
-				}
+			registerBundle(p);
+		}
+	}
+
+	private void registerBundle(final ICodeBundle p) {
+		final String ebinDir = p.getEbinDir();
+		if (ebinDir != null) {
+			final String localDir = ebinDir.replaceAll("\\\\", "/");
+			final boolean accessible = ErlideUtil.isAccessible(fBackend,
+					localDir);
+			if (accessible) {
+				ErlLogger.debug("adding %s to code path for %s", localDir,
+						fBackend.getInfo());
+				ErlangCode.addPathA(fBackend, localDir);
 			} else {
-				ErlLogger.warn("Could not find 'ebin' in bundle %s.", p
-						.getBundle().getSymbolicName());
+				ErlLogger.debug("loading %s for %s", p.getBundle()
+						.getSymbolicName(), fBackend.getInfo());
 				loadPluginCode(p);
 			}
-			p.start();
+		} else {
+			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p
+					.getBundle().getSymbolicName());
+			loadPluginCode(p);
 		}
+		p.start();
 	}
 
 	/**
@@ -346,6 +350,12 @@ public class CodeManager implements IRegistryChangeListener {
 		ErlLogger.debug("??"
 				+ event.getExtensionDeltas()[0].getExtensionPoint()
 						.getUniqueIdentifier());
+	}
+
+	public void registerBundles() {
+		for (ICodeBundle p : codeBundles) {
+			registerBundle(p);
+		}
 	}
 
 }
