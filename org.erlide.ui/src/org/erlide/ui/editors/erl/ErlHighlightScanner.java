@@ -26,7 +26,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;

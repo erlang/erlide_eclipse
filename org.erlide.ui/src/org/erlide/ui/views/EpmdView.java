@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.EpmdWatcher;
-import org.erlide.jinterface.IEpmdListener;
+import org.erlide.jinterface.util.EpmdWatcher;
+import org.erlide.jinterface.util.IEpmdListener;
 
 public class EpmdView extends ViewPart implements IEpmdListener {
 

@@ -4,10 +4,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.jinterface.JInterfaceFactory;
-import org.erlide.jinterface.rpc.JRpcUtil;
+import org.erlide.jinterface.util.JRpcUtil;
 import org.erlide.runtime.backend.Backend;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;

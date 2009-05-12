@@ -1,8 +1,5 @@
-package org.erlide.jinterface;
+package com.ericsson.otp.erlang;
 
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class JInterfaceFactory {
 

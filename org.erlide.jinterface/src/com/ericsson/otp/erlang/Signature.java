@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.rpc;
+package com.ericsson.otp.erlang;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class Signature {
 	}
 
 	public static synchronized Signature[] parse(final String signature)
-	throws RpcException {
+			throws SignatureException {
 		if (signature == null) {
 			return null;
 		}
@@ -86,7 +86,7 @@ public class Signature {
 	}
 
 	private static ParseState parseOne(final String signature)
-	throws RpcException {
+			throws SignatureException {
 		final char crt = signature.charAt(0);
 		if ("xidabrjfpso".indexOf(crt) >= 0) {
 			return new ParseState(new Signature(crt), signature.substring(1));
@@ -104,7 +104,7 @@ public class Signature {
 			}
 			return new ParseState(new Signature('t', sub), s);
 		} else {
-			throw new RpcException("unknown signature code: " + crt);
+			throw new SignatureException("unknown signature code: " + crt);
 		}
 	}
 

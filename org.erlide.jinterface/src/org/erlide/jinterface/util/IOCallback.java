@@ -8,9 +8,9 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.util;
 
-import org.erlide.jinterface.rpc.IOServer.Encoding;
+import org.erlide.jinterface.util.IOServer.Encoding;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ericsson.otp.erlang;
 
-import org.erlide.jinterface.rpc.Signature;
 
 /**
  * Provides a Java representation of Erlang variables.

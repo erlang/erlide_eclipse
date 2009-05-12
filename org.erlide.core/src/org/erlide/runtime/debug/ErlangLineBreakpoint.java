@@ -25,7 +25,7 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideDebug;

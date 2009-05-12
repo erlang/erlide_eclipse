@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface;
+package org.erlide.jinterface.util;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,7 +27,7 @@ import com.ericsson.otp.erlang.OtpEpmd;
  * registered.
  * 
  */
-public class EpmdWatcher {
+public final class EpmdWatcher {
 
 	public EpmdWatcher() {
 		try {
@@ -96,7 +96,7 @@ public class EpmdWatcher {
 			} catch (final IOException e) {
 				if (this.epmdStarted) {
 					final String msg = "Erlide warning: epmd daemon went down on host "
-						+ entry.getKey() + "...";
+							+ entry.getKey() + "...";
 					// InterfacePlugin.getDefault().getLog().log(
 					// new Status(IStatus.WARNING,
 					// InterfacePlugin.PLUGIN_ID, msg));
@@ -146,7 +146,8 @@ public class EpmdWatcher {
 		return result;
 	}
 
-	private List<String> getDiff(final List<String> list1, final List<String> list2) {
+	private List<String> getDiff(final List<String> list1,
+			final List<String> list2) {
 		final List<String> result = new ArrayList<String>(list1);
 		result.removeAll(list2);
 		return result;

@@ -3,7 +3,7 @@
  */
 package org.erlide.core.erlang;
 
-import org.erlide.jinterface.rpc.IConvertible;
+import org.erlide.jinterface.util.IConvertible;
 
 /**
  * @author jakob

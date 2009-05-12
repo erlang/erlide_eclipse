@@ -12,9 +12,9 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.assertTrue;
 
-import org.erlide.jinterface.JInterfaceFactory;
 import org.junit.Test;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;

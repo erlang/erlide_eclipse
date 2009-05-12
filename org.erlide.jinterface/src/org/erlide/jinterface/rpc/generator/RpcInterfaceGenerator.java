@@ -13,8 +13,8 @@ package org.erlide.jinterface.rpc.generator;
 import java.io.IOException;
 import java.util.List;
 
-import org.erlide.jinterface.rpc.RpcConverter;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.util.RpcConverter;
+import org.erlide.jinterface.util.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;

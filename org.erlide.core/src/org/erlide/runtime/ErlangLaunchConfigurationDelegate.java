@@ -53,8 +53,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.JInterfaceFactory;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
@@ -64,6 +63,7 @@ import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;

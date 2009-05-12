@@ -42,7 +42,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 
 /**
  * Handle for an Erlang Project.

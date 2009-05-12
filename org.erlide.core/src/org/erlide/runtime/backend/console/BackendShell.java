@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.backend.console;
 
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.JInterfaceFactory;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;

@@ -8,14 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface;
+package org.erlide.jinterface.util;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.erlide.jinterface.rpc.RpcConverter;
-import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

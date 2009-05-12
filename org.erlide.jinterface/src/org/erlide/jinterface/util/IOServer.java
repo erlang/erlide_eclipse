@@ -8,13 +8,10 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.util;
 
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlUtils;
-import org.erlide.jinterface.JInterfaceFactory;
-import org.erlide.jinterface.ParserException;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;

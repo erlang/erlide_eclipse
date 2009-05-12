@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.erlide.jinterface.rpc.RpcConverter;
+import org.erlide.jinterface.util.RpcConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;

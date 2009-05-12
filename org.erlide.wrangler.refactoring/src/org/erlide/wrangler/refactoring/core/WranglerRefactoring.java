@@ -13,14 +13,14 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.JInterfaceFactory;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangTuple;

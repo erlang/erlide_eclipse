@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.ErlUtils;
+import org.erlide.jinterface.util.Bindings;
+import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.runtime.backend.Backend;
 
 import com.ericsson.otp.erlang.OtpErlangList;

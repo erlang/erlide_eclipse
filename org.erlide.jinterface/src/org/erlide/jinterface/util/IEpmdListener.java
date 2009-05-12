@@ -1,4 +1,4 @@
-package org.erlide.jinterface;
+package org.erlide.jinterface.util;
 
 import java.util.List;
 

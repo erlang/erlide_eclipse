@@ -43,7 +43,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangProjectProperties;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.PreferencesUtils;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ICodeBundle;

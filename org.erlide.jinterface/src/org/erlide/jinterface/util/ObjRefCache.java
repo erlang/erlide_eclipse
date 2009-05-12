@@ -8,13 +8,14 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.util;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
 
 import com.ericsson.otp.erlang.OtpErlangRef;
 

@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.util.ErlideUtil;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.ErtsProcess;

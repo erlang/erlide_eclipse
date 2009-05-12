@@ -23,7 +23,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.util.ErlangIncludeFile;
 import org.erlide.core.util.ResourceUtil;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
 
 import erlang.ErlideOpen;

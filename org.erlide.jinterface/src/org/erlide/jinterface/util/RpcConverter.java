@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.util;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.erlide.jinterface.JInterfaceFactory;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangByte;
@@ -36,6 +36,8 @@ import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.Signature;
+import com.ericsson.otp.erlang.SignatureException;
 
 /**
  * Helps converting Java values to Erlang terms, and back. The type information
@@ -303,7 +305,11 @@ public class RpcConverter {
 	 */
 	public static OtpErlangObject java2erlang(final Object obj,
 			final String type) throws RpcException {
-		return java2erlang(obj, Signature.parse(type)[0]);
+		try {
+			return java2erlang(obj, Signature.parse(type)[0]);
+		} catch (SignatureException e) {
+			throw new RpcException(e);
+		}
 	}
 
 	@SuppressWarnings("boxing")
@@ -612,7 +618,11 @@ public class RpcConverter {
 
 	public static boolean matchSignature(final OtpErlangObject term,
 			final String signature) throws RpcException {
-		return matchSignature(term, Signature.parse(signature)[0]);
+		try {
+			return matchSignature(term, Signature.parse(signature)[0]);
+		} catch (SignatureException e) {
+			throw new RpcException(e);
+		}
 	}
 
 	public static OtpErlangObject encodeMap(

@@ -1,4 +1,4 @@
-package org.erlide.jinterface.rpc;
+package org.erlide.jinterface.util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
