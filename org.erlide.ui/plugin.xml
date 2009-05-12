@@ -16,15 +16,6 @@
             symbolicFontName="org.eclipse.jface.textfont">
          <contentTypeBinding contentTypeId="org.erlide.core.content.erlang"/>
       </editor>
-      <editor
-            class="org.erlide.ui.editors.scratch.ScratchEditor"
-            contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
-            extensions="erlscratch"
-            icon="icons/erlang_srcFile.gif"
-            id="org.erlide.ui.editors.erl.ErlangScratchEditor"
-            name="Erlang Scratch editor"
-            symbolicFontName="org.eclipse.jface.textfont">
-      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
