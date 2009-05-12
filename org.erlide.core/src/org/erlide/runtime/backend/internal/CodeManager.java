@@ -27,7 +27,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
-import org.erlide.runtime.backend.BackendUtil;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.Bundle;
 
@@ -226,7 +225,7 @@ public class CodeManager implements IRegistryChangeListener {
 				final String decl = stub.getAttribute("onlyDeclared");
 				// ErlLogger.debug(" STUB: %s %s", stub.getAttribute("class"),
 				// decl);
-				BackendUtil.generateRpcStub(stub.getAttribute("class"),
+				ErlideBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
 						fBackend);
 			}

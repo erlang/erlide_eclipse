@@ -11,7 +11,6 @@
 package org.erlide.runtime.backend;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,8 +24,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.ILaunch;
@@ -42,7 +39,8 @@ import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;
 import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
-public final class BackendManager implements IEpmdListener {
+public final class BackendManager extends OtpNodeStatus implements
+		IEpmdListener {
 
 	public static final String DEFAULT_VERSION = "R12B";
 	public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
@@ -89,25 +87,6 @@ public final class BackendManager implements IEpmdListener {
 		new EpmdWatchJob(epmdWatcher).schedule(100);
 	}
 
-	public static String getJavaNodeName() {
-		final String fUniqueId = getTimeSuffix();
-		return "jerlide_" + fUniqueId;
-	}
-
-	static String getErlideNameSuffix() {
-		String fUniqueId;
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final String location = root.getLocation().toPortableString();
-		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF);
-		return fUniqueId;
-	}
-
-	private static String getTimeSuffix() {
-		String fUniqueId;
-		fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
-		return fUniqueId;
-	}
-
 	public Backend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
 			throws BackendException {
@@ -136,6 +115,7 @@ public final class BackendManager implements IEpmdListener {
 		b.initializeRuntime();
 		b.connectAndRegister(fPlugins);
 		b.initErlang();
+		b.registerStatusHandler(this);
 		b.setDebug(options.contains(BackendOptions.DEBUG));
 		b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
 
@@ -194,11 +174,13 @@ public final class BackendManager implements IEpmdListener {
 									.getErlideRuntime(), false);
 					if (erlideRuntime != null) {
 						try {
-							final String defLabel = getLabelProperty();
+							final String defLabel = BackendUtil
+									.getLabelProperty();
 							if (defLabel != null) {
 								erlideRuntime.setNodeName(defLabel);
 							} else {
-								erlideRuntime.setNodeName(getErlideNameSuffix()
+								erlideRuntime.setNodeName(BackendUtil
+										.getErlideNameSuffix()
 										+ "_erlide");
 							}
 							erlideRuntime.setCookie("erlide");
@@ -217,10 +199,6 @@ public final class BackendManager implements IEpmdListener {
 			}
 		}
 		return fLocalBackend;
-	}
-
-	public static String getLabelProperty() {
-		return System.getProperty("erlide.label", null);
 	}
 
 	public void addBackendListener(final BackendListener listener) {
@@ -344,56 +322,17 @@ public final class BackendManager implements IEpmdListener {
 		// TODO which backends?
 	}
 
-	public static String buildNodeName(final String label,
-			final boolean longName) {
-		if (label.indexOf('@') > 0) {
-			// ignore unique here?
-			return label;
-		}
-		if (longName) {
-			final String host = getHost();
-			return label + "@" + host;
-		} else {
-			return label;
-		}
-	}
-
-	public static String getHost() {
-		String host;
-		try {
-			host = InetAddress.getLocalHost().getHostName();
-			if (System.getProperty("erlide.host") != null) {
-				final int dot = host.indexOf(".");
-				if (dot != -1) {
-					host = host.substring(0, dot);
-				}
-			}
-		} catch (final IOException e) {
-			host = "localhost";
-			ErlLogger.error(e);
-		}
-		return host;
-	}
-
 	public synchronized void updateNodeStatus(final String host,
 			final List<String> started, final List<String> stopped) {
 		for (final String b : started) {
 			final String name = b + "@" + host;
 			ErlLogger.info("(epmd) started: '%s'", name);
-			for (final Backend bb : getAllBackends()) {
-				if (bb != null) {
-					((OtpNodeStatus) bb).remoteStatus(name, true, null);
-				}
-			}
+			remoteStatus(name, true, null);
 		}
 		for (final String b : stopped) {
 			final String name = b + "@" + host;
 			ErlLogger.info("(epmd) stopped: '%s'", name);
-			for (final Backend bb : getAllBackends()) {
-				if (bb != null) {
-					((OtpNodeStatus) bb).remoteStatus(name, false, null);
-				}
-			}
+			remoteStatus(name, false, null);
 		}
 
 	}
@@ -443,7 +382,7 @@ public final class BackendManager implements IEpmdListener {
 					.entrySet()) {
 				for (final Backend be : e.getValue()) {
 					final String bnode = be.getInfo().getNodeName();
-					if (buildNodeName(bnode, true).equals(node)) {
+					if (BackendUtil.buildNodeName(bnode, true).equals(node)) {
 						removeExecution(e.getKey(), be);
 						break;
 					}
@@ -457,6 +396,31 @@ public final class BackendManager implements IEpmdListener {
 			backend.dispose();
 		}
 
+	}
+
+	@Override
+	public void remoteStatus(final String node, final boolean up,
+			final Object info) {
+		// final String dir = up ? "up" : "down";
+		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
+
+		for (final Backend bb : getAllBackends()) {
+			if (bb != null) {
+				if (node.equals(bb.getPeer())) {
+					bb.setAvailable(up);
+				}
+			}
+		}
+
+		remoteNodeStatus(node, up, info);
+	}
+
+	@Override
+	public void connAttempt(final String node, final boolean incoming,
+			final Object info) {
+		final String direction = incoming ? "in" : "out";
+		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
+				direction, info));
 	}
 
 }

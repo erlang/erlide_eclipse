@@ -113,7 +113,7 @@ public class RuntimeInfo {
 
 	public String getNodeName() {
 		final String suffix = unique ? "_"
-				+ BackendManager.getErlideNameSuffix() : "";
+				+ BackendUtil.getErlideNameSuffix() : "";
 		return this.nodeName + suffix;
 	}
 
@@ -167,8 +167,7 @@ public class RuntimeInfo {
 		final boolean useLongName = System.getProperty("erlide.longname",
 				"true").equals("true");
 		final String nameTag = useLongName ? " -name " : " -sname ";
-		cmd += nameTag
-				+ BackendManager.buildNodeName(getNodeName(), useLongName)
+		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
 				+ cky;
 		return cmd;
 	}

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.erlang.util.Util;
+import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.TypeConverter;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendEvalResult;
 import org.erlide.runtime.backend.exceptions.BackendException;
@@ -282,6 +284,18 @@ public class ErlideBackend {
 			b.call("erlide_backend", "start_tracer", "s", logname);
 		} catch (final BackendException e) {
 		}
+	}
+
+	public static void generateRpcStub(final String className,
+			final boolean onlyDeclared, final Backend b) {
+		generateRpcStub(TypeConverter.getClassByName(className), onlyDeclared,
+				b);
+	}
+
+	public static void generateRpcStub(final Class<?> cls,
+			final boolean onlyDeclared, final Backend b) {
+		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
+		generateRpcStub(b, s);
 	}
 
 }

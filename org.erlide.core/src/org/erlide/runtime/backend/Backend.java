@@ -45,7 +45,7 @@ import erlang.ErlideBackend;
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public final class Backend extends OtpNodeStatus implements IDisposable {
+public final class Backend implements IDisposable {
 
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "300"));
@@ -108,9 +108,9 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 			final String cookie = getInfo().getCookie();
 			if (cookie == null) {
-				fNode = new OtpNode(BackendManager.getJavaNodeName());
+				fNode = new OtpNode(BackendUtil.getJavaNodeName());
 			} else {
-				fNode = new OtpNode(BackendManager.getJavaNodeName(), cookie);
+				fNode = new OtpNode(BackendUtil.getJavaNodeName(), cookie);
 			}
 			final String nodeCookie = fNode.cookie();
 			final int len = nodeCookie.length();
@@ -118,8 +118,7 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 					: nodeCookie;
 			ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed,
 					len, cookie);
-			fNode.registerStatusHandler(this);
-			fPeer = BackendManager.buildNodeName(label, true);
+			fPeer = BackendUtil.buildNodeName(label, true);
 
 			ftRpcBox = fNode.createMbox("rex");
 			int tries = 20;
@@ -525,28 +524,8 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 		}
 	}
 
-	@Override
-	public void remoteStatus(final String node, final boolean up,
-			final Object info) {
-		// final String dir = up ? "up" : "down";
-		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
-		if (node.equals(fPeer)) {
-			setAvailable(up);
-		}
-		ErlangCore.getBackendManager().remoteNodeStatus(node, up, info);
-	}
-
-	private void setAvailable(final boolean up) {
-		// TODO notify others? BackendManager?
+	void setAvailable(final boolean up) {
 		fAvailable = up;
-	}
-
-	@Override
-	public void connAttempt(final String node, final boolean incoming,
-			final Object info) {
-		final String direction = incoming ? "in" : "out";
-		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
-				direction, info));
 	}
 
 	public void setDebug(final boolean b) {
@@ -592,6 +571,10 @@ public final class Backend extends OtpNodeStatus implements IDisposable {
 
 	public OtpMbox createMbox() {
 		return fNode.createMbox();
+	}
+
+	public void registerStatusHandler(OtpNodeStatus handler) {
+		fNode.registerStatusHandler(handler);
 	}
 
 }
