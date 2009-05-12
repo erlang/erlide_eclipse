@@ -34,6 +34,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.util.ErlangFunctionCall;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.events.EventHandler;
 
 import com.ericsson.otp.erlang.JInterfaceFactory;
@@ -98,7 +99,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	// private final WaitingForDebuggerListener waiter;
 
-	public ErlangDebugTarget(final ILaunch launch, final Backend b,
+	public ErlangDebugTarget(final ILaunch launch, final FullBackend b,
 			final Collection<IProject> projects, final int debugFlags)
 			throws DebugException {
 		super(null);

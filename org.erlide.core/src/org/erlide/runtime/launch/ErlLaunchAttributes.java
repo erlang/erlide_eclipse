@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.launch;
 
 import org.erlide.core.ErlangPlugin;
 

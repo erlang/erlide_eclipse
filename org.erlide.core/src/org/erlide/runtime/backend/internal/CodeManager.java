@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.Bundle;
 
@@ -37,15 +37,15 @@ import erlang.ErlideBackend;
 
 public class CodeManager implements IRegistryChangeListener {
 
-	private final Backend fBackend;
+	private final FullBackend fBackend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
 
 	private final List<ICodeBundle> codeBundles;
 
-	// only to be called by Backend
-	public CodeManager(final Backend b) {
+	// only to be called by FullBackend
+	public CodeManager(final FullBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
@@ -259,8 +259,8 @@ public class CodeManager implements IRegistryChangeListener {
 				loadPluginCode(p);
 			}
 		} else {
-			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p
-					.getBundle().getSymbolicName());
+			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()
+					.getSymbolicName());
 			loadPluginCode(p);
 		}
 		p.start();

@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Jakob Cederlund
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.launch;
 
 import java.io.File;
 import java.util.ArrayList;

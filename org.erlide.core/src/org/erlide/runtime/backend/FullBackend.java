@@ -16,8 +16,10 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.console.IShellManager;
+import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.CodeManager;
+import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 /**
@@ -27,6 +29,7 @@ public final class FullBackend extends Backend implements IDisposable {
 
 	private final CodeManager fCodeManager;
 	private IShellManager fShellManager;
+	private EventDaemon eventDaemon;
 
 	FullBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
@@ -46,6 +49,9 @@ public final class FullBackend extends Backend implements IDisposable {
 		super.dispose(restart);
 		if (fShellManager instanceof IDisposable) {
 			((IDisposable) fShellManager).dispose();
+		}
+		if (eventDaemon != null) {
+			eventDaemon.stop();
 		}
 	}
 
@@ -81,5 +87,18 @@ public final class FullBackend extends Backend implements IDisposable {
 		}
 		getCodeManager().registerBundles();
 		checkCodePath();
+	}
+
+	public EventDaemon getEventDaemon() {
+		return eventDaemon;
+	}
+
+	@Override
+	public void initErlang() {
+		super.initErlang();
+
+		eventDaemon = new EventDaemon(this);
+		eventDaemon.start();
+		eventDaemon.addListener(new LogEventHandler());
 	}
 }

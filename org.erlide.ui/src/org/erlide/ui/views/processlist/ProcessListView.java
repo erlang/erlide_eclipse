@@ -44,7 +44,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.BackendVisitor;
 import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.events.EventHandler;
@@ -89,14 +88,14 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public void dispose() {
-			final Backend backend = getBackend();
+			final FullBackend backend = getBackend();
 			if (backend != null) {
 				backend.getEventDaemon().removeListener(handler);
 			}
 		}
 
 		public Object[] getElements(final Object parent) {
-			final Backend bk = getBackend();
+			final FullBackend bk = getBackend();
 			if (bk == null) {
 				return new OtpErlangObject[] {};
 			}
@@ -227,7 +226,7 @@ public class ProcessListView extends ViewPart {
 		t.setHeaderVisible(true);
 
 		// TODO this is wrong - all backends should be inited
-		final Backend ideBackend = ErlangCore.getBackendManager()
+		final FullBackend ideBackend = ErlangCore.getBackendManager()
 				.getIdeBackend();
 		if (ideBackend != null) {
 			ErlideProclist.processListInit(ideBackend);
@@ -346,14 +345,14 @@ public class ProcessListView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public Backend getBackend() {
+	public FullBackend getBackend() {
 		final IStructuredSelection sel = (IStructuredSelection) backends
 				.getSelection();
 		if (sel.getFirstElement() != null) {
-			final Backend b = (Backend) sel.getFirstElement();
+			final FullBackend b = (FullBackend) sel.getFirstElement();
 			return b;
 		}
-		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		final FullBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (b != null) {
 			backends.setSelection(new StructuredSelection(b));
 			return b;

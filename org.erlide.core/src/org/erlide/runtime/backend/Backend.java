@@ -20,9 +20,7 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.erlide.runtime.backend.internal.RuntimeLauncher;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -61,7 +59,6 @@ public class Backend {
 	private String fCurrentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
-	private EventDaemon eventDaemon;
 	private final RuntimeLauncher launcher;
 	private boolean trapexit;
 	private int exitStatus = -1;
@@ -143,9 +140,6 @@ public class Backend {
 		if (fNode != null) {
 			fNode.close();
 		}
-		if (eventDaemon != null) {
-			eventDaemon.stop();
-		}
 
 		if (restart) {
 			return;
@@ -153,10 +147,6 @@ public class Backend {
 		if (launcher instanceof IDisposable) {
 			((IDisposable) launcher).dispose();
 		}
-	}
-
-	public EventDaemon getEventDaemon() {
-		return eventDaemon;
 	}
 
 	/**
@@ -440,10 +430,6 @@ public class Backend {
 		if (!inited) {
 			setAvailable(false);
 		}
-		eventDaemon = new EventDaemon(this);
-		eventDaemon.start();
-
-		eventDaemon.addListener(new LogEventHandler());
 	}
 
 	/*

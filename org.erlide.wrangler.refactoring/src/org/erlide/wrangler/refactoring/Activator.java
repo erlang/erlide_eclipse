@@ -13,7 +13,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.Backend;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -69,7 +69,7 @@ public class Activator extends AbstractUIPlugin {
 			ErlLogger
 					.debug("Wrangler beam files found at: " + wranglerEbinPath);
 
-			Backend mb = ErlangCore.getBackendManager().getIdeBackend();
+			FullBackend mb = ErlangCore.getBackendManager().getIdeBackend();
 
 			ErlLogger.debug("Managed backend found:" + mb.getJavaNodeName());
 
