@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlModelStatusConstants;
@@ -41,7 +42,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideBackend;
 
 /**
  * Root of Erlang element handle hierarchy.

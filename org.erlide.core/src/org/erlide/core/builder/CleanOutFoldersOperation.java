@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.util.ResourceUtil;
+import org.erlide.core.erlang.util.ResourceUtil;
 
 /**
  * <p>

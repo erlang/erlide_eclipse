@@ -37,9 +37,9 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.util.ErlangFunction;
-import org.erlide.core.util.ErlangIncludeFile;
-import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

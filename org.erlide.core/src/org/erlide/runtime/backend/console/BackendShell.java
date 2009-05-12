@@ -18,7 +18,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-import erlang.ErlideReshd;
 
 public class BackendShell {
 

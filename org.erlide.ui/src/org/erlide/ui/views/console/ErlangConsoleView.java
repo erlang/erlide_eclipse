@@ -53,6 +53,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.FullBackend;
@@ -70,7 +71,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-import erlang.ErlideBackend;
 
 public class ErlangConsoleView extends ViewPart implements
 		ErlConsoleModelListener {

@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Jakob C
  *******************************************************************************/
-package org.erlide.core.util;
+package org.erlide.core.erlang.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,7 +44,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.preferences.PreferencesUtils;
+import org.erlide.core.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.runtime.backend.exceptions.BackendException;

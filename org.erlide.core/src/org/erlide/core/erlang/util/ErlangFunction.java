@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.core.erlang.util;
 
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.internal.ErlFunction;

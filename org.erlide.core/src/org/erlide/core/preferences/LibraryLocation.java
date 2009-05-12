@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.core.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class LibraryLocation extends DependencyLocation {
@@ -75,7 +76,7 @@ public final class LibraryLocation extends DependencyLocation {
 	@Override
 	public void store(final IEclipsePreferences root)
 			throws BackingStoreException {
-		PreferencesUtils.clearAll(root);
+		clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		final IEclipsePreferences node = (IEclipsePreferences) root
 				.node(ProjectPreferencesConstants.SOURCES);

@@ -1,4 +1,4 @@
-package org.erlide.core.preferences;
+package org.erlide.core.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.osgi.service.prefs.BackingStoreException;
 
 public final class PreferencesUtils {
 
@@ -36,14 +33,6 @@ public final class PreferencesUtils {
 
 	public static String[] unpackArray(final String str) {
 		return unpackList(str).toArray(new String[0]);
-	}
-
-	public static void clearAll(final IEclipsePreferences root)
-			throws BackingStoreException {
-		root.clear();
-		for (final String n : root.childrenNames()) {
-			root.node(n).removeNode();
-		}
 	}
 
 	public static List<String> readFile(final String file) {

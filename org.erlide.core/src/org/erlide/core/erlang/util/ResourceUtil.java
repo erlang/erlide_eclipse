@@ -4,7 +4,7 @@
  *
  * cvs-id : $Id$
  */
-package org.erlide.core.util;
+package org.erlide.core.erlang.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.Assert;
+import org.erlide.core.util.Assert;
 
 /**
  * <p>

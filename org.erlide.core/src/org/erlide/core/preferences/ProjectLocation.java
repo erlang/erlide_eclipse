@@ -51,7 +51,7 @@ public final class ProjectLocation extends DependencyLocation {
 	@Override
 	public void store(final IEclipsePreferences root)
 			throws BackingStoreException {
-		PreferencesUtils.clearAll(root);
+		clearAll(root);
 		root.put(ProjectPreferencesConstants.PROJECT, project.getName());
 	}
 

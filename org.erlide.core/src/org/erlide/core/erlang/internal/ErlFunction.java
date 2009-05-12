@@ -16,7 +16,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangFunction;
 
 /**
  * 

@@ -44,7 +44,7 @@ import org.erlide.backend.RuntimeInfoManager;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
 import org.erlide.runtime.backend.ICodeBundle;

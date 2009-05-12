@@ -39,8 +39,8 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.util.ErlideUtil;
 import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 

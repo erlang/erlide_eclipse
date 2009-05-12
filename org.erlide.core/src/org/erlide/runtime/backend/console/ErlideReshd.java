@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.runtime.backend.console;
 
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendUtil;

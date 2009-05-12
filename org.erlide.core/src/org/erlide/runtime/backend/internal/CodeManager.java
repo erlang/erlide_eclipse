@@ -23,8 +23,10 @@ import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.backend.ErlangCode;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.ICodeBundle;
@@ -32,8 +34,6 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-import erlang.ErlangCode;
-import erlang.ErlideBackend;
 
 public class CodeManager implements IRegistryChangeListener {
 

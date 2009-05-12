@@ -22,8 +22,6 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.util.ErlangIncludeFile;
-import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideOpen;

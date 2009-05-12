@@ -14,7 +14,8 @@ Bundle-ClassPath: erlide-testing.jar,
  lib/jbehave-core-2.1.jar,
  lib/mockito-all-1.6.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.hamcrest,
+Export-Package: org.erlide.testing,
+ org.hamcrest,
  org.hamcrest.beans;uses:="org.hamcrest",
  org.hamcrest.collection;uses:="org.hamcrest",
  org.hamcrest.core;uses:="org.hamcrest",

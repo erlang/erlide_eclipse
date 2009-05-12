@@ -1,10 +1,8 @@
-package erlang;
+package org.erlide.backend;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendEvalResult;
 import org.erlide.core.util.Util;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;

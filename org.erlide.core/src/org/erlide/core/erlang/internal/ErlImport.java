@@ -3,7 +3,7 @@ package org.erlide.core.erlang.internal;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;

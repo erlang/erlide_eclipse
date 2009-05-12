@@ -3,7 +3,7 @@
  */
 package org.erlide.core.erlang;
 
-import org.erlide.core.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangFunction;
 
 /**
  * @author jakob

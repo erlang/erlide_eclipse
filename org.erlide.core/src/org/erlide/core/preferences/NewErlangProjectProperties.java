@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.backend.RuntimeVersion;
+import org.erlide.core.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -184,7 +185,7 @@ public class NewErlangProjectProperties {
 
 	public void store(final IEclipsePreferences root)
 			throws BackingStoreException {
-		PreferencesUtils.clearAll(root);
+		CodePathLocation.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output);
 		if (requiredRuntimeVersion != null) {
 			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION,

@@ -11,6 +11,7 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
@@ -31,7 +32,6 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideBackend;
 import erlang.ErlideNoparse;
 
 public final class ErlParser {

@@ -106,7 +106,7 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompileAction;

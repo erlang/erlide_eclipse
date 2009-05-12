@@ -51,6 +51,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.backend.BackendEvalResult;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
@@ -60,7 +61,6 @@ import org.erlide.ui.util.IContextMenuConstants;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-import erlang.ErlideBackend;
 
 /**
  * An editor for Erlang scratchs.

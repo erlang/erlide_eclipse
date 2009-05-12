@@ -48,13 +48,14 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlangCode;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
@@ -71,7 +72,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlangCode;
 import erlang.ErlideDebug;
 
 public class ErlangLaunchConfigurationDelegate extends

@@ -10,8 +10,8 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.core.util.ErlideUtil;
 
 import erlang.OpenResult;
 

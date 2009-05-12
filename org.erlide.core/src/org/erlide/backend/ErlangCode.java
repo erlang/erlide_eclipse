@@ -1,8 +1,6 @@
-package erlang;
+package org.erlide.backend;
 
-import org.erlide.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -39,7 +37,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void addPathA(final FullBackend backend, final String path) {
+	public static void addPathA(final Backend backend, final String path) {
 		try {
 			backend.call("code", "add_patha", "s", path);
 		} catch (final Exception e) {
@@ -47,7 +45,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void addPathZ(final FullBackend backend, final String path) {
+	public static void addPathZ(final Backend backend, final String path) {
 		try {
 			backend.call("code", "add_pathz", "s", path);
 		} catch (final Exception e) {
@@ -55,7 +53,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void removePathZ(final FullBackend backend, String path) {
+	public static void removePathZ(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			try {
@@ -71,7 +69,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void removePathA(final FullBackend backend, String path) {
+	public static void removePathA(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			try {

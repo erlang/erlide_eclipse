@@ -47,10 +47,10 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.util.ErlangFunction;
-import org.erlide.core.util.ErlangIncludeFile;
-import org.erlide.core.util.ResourceUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -413,7 +413,7 @@ public class ErlModelUtils {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName);
 			if (r != null
-					&& !org.erlide.core.util.PluginUtils.isOnSourcePath(r
+					&& !org.erlide.core.erlang.util.PluginUtils.isOnSourcePath(r
 							.getParent())) {
 				r = null;
 			}

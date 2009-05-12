@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.backend.ErlangCode;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
@@ -18,7 +19,6 @@ import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import erlang.ErlangCode;
 
 /**
  * The activator class controls the plug-in life cycle

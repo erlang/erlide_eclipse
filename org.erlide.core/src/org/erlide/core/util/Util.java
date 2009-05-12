@@ -32,9 +32,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlModelStatusConstants;
-import org.erlide.core.erlang.util.Assert;
-import org.erlide.core.erlang.util.CharOperation;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -689,19 +686,16 @@ public final class Util {
 
 	/**
 	 * Returns the given file's contents as a byte array.
+	 * 
+	 * @throws CoreException
+	 * @throws IOException
 	 */
 	public static byte[] getResourceContentsAsByteArray(final IFile file)
-			throws ErlModelException {
+			throws CoreException, IOException {
 		InputStream stream = null;
-		try {
-			stream = new BufferedInputStream(file.getContents(true));
-		} catch (final CoreException e) {
-			throw new ErlModelException(e);
-		}
+		stream = new BufferedInputStream(file.getContents(true));
 		try {
 			return Util.getInputStreamAsByteArray(stream, -1);
-		} catch (final IOException e) {
-			throw new ErlModelException(e, ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();
@@ -713,9 +707,14 @@ public final class Util {
 
 	/**
 	 * Returns the given file's contents as a character array.
+	 * 
+	 * @throws CoreException
+	 * @throws IOException
+	 * 
+	 * @throws ErlModelException
 	 */
 	public static char[] getResourceContentsAsCharArray(final IFile file)
-			throws ErlModelException {
+			throws IOException, CoreException {
 		// Get encoding from file
 		String encoding = null;
 		try {
@@ -727,19 +726,12 @@ public final class Util {
 	}
 
 	public static char[] getResourceContentsAsCharArray(final IFile file,
-			final String encoding) throws ErlModelException {
+			final String encoding) throws IOException, CoreException {
 		// Get resource contents
 		InputStream stream = null;
-		try {
-			stream = new BufferedInputStream(file.getContents(true));
-		} catch (final CoreException e) {
-			throw new ErlModelException(e,
-					ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST);
-		}
+		stream = new BufferedInputStream(file.getContents(true));
 		try {
 			return Util.getInputStreamAsCharArray(stream, -1, encoding);
-		} catch (final IOException e) {
-			throw new ErlModelException(e, ErlModelStatusConstants.IO_EXCEPTION);
 		} finally {
 			try {
 				stream.close();

@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.util.ErlangFunction;
-import org.erlide.core.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlangIncludeFile;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or

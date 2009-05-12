@@ -33,8 +33,6 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-import erlang.ErlangCode;
-import erlang.ErlideBackend;
 
 public class Backend {
 

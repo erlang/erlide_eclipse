@@ -92,7 +92,7 @@ public final class SourceLocation extends CodePathLocation {
 	@Override
 	public void store(final IEclipsePreferences root)
 			throws BackingStoreException {
-		PreferencesUtils.clearAll(root);
+		clearAll(root);
 		root.put(ProjectPreferencesConstants.DIRECTORY, directory);
 
 	}

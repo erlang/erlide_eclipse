@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.core.preferences.PreferencesUtils;
+import org.erlide.core.util.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfo {

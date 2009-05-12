@@ -61,6 +61,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendEvalResult;
+import org.erlide.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
@@ -69,7 +70,6 @@ import org.erlide.ui.views.SourceViewerInformationControl;
 
 import com.ericsson.otp.erlang.OtpErlangString;
 
-import erlang.ErlideBackend;
 
 /**
  * @author Vlad Dumitrescu

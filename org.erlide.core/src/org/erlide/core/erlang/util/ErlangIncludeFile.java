@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.core.erlang.util;
 
 public class ErlangIncludeFile {
 

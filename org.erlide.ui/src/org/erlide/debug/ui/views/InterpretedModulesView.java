@@ -28,7 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.erlide.backend.Backend;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.util.ErlideUtil;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.runtime.ErtsProcess;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugElement;

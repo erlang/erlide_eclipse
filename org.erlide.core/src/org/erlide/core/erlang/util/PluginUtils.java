@@ -7,7 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
-package org.erlide.core.util;
+package org.erlide.core.erlang.util;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.preferences.PreferencesUtils;
+import org.erlide.core.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**

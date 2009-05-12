@@ -35,4 +35,13 @@ public abstract class CodePathLocation {
 
 	public abstract void store(IEclipsePreferences root)
 			throws BackingStoreException;
+
+	public static void clearAll(final IEclipsePreferences root)
+			throws BackingStoreException {
+		root.clear();
+		for (final String n : root.childrenNames()) {
+			root.node(n).removeNode();
+		}
+	}
+
 }
