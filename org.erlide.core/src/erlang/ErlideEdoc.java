@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.util.RpcConverter;
-import org.erlide.jinterface.util.RpcException;
+import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.util.TypeConverter;
 import org.erlide.runtime.backend.Backend;
 import org.erlide.runtime.backend.exceptions.BackendException;
 
@@ -27,7 +27,7 @@ public class ErlideEdoc {
 			final Map<String, OtpErlangObject> options) throws RpcException,
 			BackendException {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		final OtpErlangObject opts = RpcConverter.encodeMap(options);
+		final OtpErlangObject opts = TypeConverter.encodeMap(options);
 		b.call(15000, "edoc", "files", "lsx", files, opts);
 	}
 }

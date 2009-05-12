@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.erlide.jinterface.util.RpcConverter;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -84,9 +84,9 @@ public class ErlangBridge {
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
 		throws Throwable {
 			final OtpErlangObject[] eargs = new OtpErlangObject[args.length + 1];
-			eargs[0] = RpcConverter.java2erlang(proxy, "x");
+			eargs[0] = TypeConverter.java2erlang(proxy, "x");
 			for (int i = 0; i < args.length; i++) {
-				eargs[i + 1] = RpcConverter.java2erlang(args[i], "x");
+				eargs[i + 1] = TypeConverter.java2erlang(args[i], "x");
 			}
 			// OtpErlangObject msg = RpcUtil.buildRpcCall(this.mbox.self(),
 			// this.module, method.getName(), eargs);

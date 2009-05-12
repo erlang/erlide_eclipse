@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-import org.erlide.jinterface.util.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;

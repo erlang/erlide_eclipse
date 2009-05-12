@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.erlide.jinterface.util.RpcConverter;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDouble;
@@ -90,8 +90,8 @@ public class RpcStubGenerator {
 							final Class<?>[] p1 = m1.getParameterTypes();
 							final Class<?>[] p2 = m2.getParameterTypes();
 							for (int i = 0; i < p1.length; i++) {
-								final Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
-								final Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
+								final Class<?> t1 = TypeConverter.javaType2erlang(p1[i]);
+								final Class<?> t2 = TypeConverter.javaType2erlang(p2[i]);
 
 								int result = -2;
 								if (t1 == OtpErlangRef.class) {
@@ -144,8 +144,8 @@ public class RpcStubGenerator {
 							final Class<?>[] p1 = getExParams(m1);
 							final Class<?>[] p2 = getExParams(m2);
 							for (int i = 0; i < p1.length; i++) {
-								final Class<?> t1 = RpcConverter.javaType2erlang(p1[i]);
-								final Class<?> t2 = RpcConverter.javaType2erlang(p2[i]);
+								final Class<?> t1 = TypeConverter.javaType2erlang(p1[i]);
+								final Class<?> t2 = TypeConverter.javaType2erlang(p2[i]);
 
 								int result = -2;
 								if (t1 == OtpErlangRef.class) {
@@ -187,7 +187,7 @@ public class RpcStubGenerator {
 		final Class<?>[] p = constructor.getParameterTypes();
 		for (int i = 0; i < p.length; i++) {
 			final String name = "P" + i;
-			final String grd = mkGuard(RpcConverter.javaType2erlang(p[i]), name);
+			final String grd = mkGuard(TypeConverter.javaType2erlang(p[i]), name);
 			guards.append(grd);
 			if ((i < p.length - 1) && grd.length() > 0) {
 				guards.append(", ");

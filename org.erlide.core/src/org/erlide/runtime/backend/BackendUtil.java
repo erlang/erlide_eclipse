@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.erlang.util.Util;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
-import org.erlide.jinterface.util.RpcConverter;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -44,7 +44,7 @@ public class BackendUtil {
 
 	public static void generateRpcStub(final String className,
 			final boolean onlyDeclared, final Backend b) {
-		generateRpcStub(RpcConverter.getClassByName(className), onlyDeclared, b);
+		generateRpcStub(TypeConverter.getClassByName(className), onlyDeclared, b);
 	}
 
 	public static void generateRpcStub(final Class<?> cls,

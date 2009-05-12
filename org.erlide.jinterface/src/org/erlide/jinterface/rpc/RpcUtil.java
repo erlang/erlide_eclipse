@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-import org.erlide.jinterface.util.RpcConverter;
-import org.erlide.jinterface.util.RpcException;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -44,14 +43,14 @@ public class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static void send(final OtpNode node, final OtpErlangPid pid,
-			final Object msg) throws RpcException {
+			final Object msg) throws SignatureException {
 		final OtpMbox mbox = node.createMbox();
 		try {
 			if (mbox != null) {
 				if (CHECK_RPC) {
 					debug("SEND :: " + pid + " " + msg);
 				}
-				mbox.send(pid, RpcConverter.java2erlang(msg, "x"));
+				mbox.send(pid, TypeConverter.java2erlang(msg, "x"));
 			}
 		} finally {
 			node.closeMbox(mbox);
@@ -68,14 +67,14 @@ public class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static void send(final OtpNode node, final String peer,
-			final String name, final Object msg) throws RpcException {
+			final String name, final Object msg) throws SignatureException {
 		final OtpMbox mbox = node.createMbox();
 		try {
 			if (mbox != null) {
 				if (CHECK_RPC) {
 					debug("SEND :: " + name + " " + msg);
 				}
-				mbox.send(name, peer, RpcConverter.java2erlang(msg, "x"));
+				mbox.send(name, peer, TypeConverter.java2erlang(msg, "x"));
 			}
 		} finally {
 			node.closeMbox(mbox);
@@ -98,7 +97,8 @@ public class RpcUtil {
 	public static OtpErlangObject rpcCall(final OtpNode node,
 			final String peer, final OtpErlangObject gleader,
 			final String module, final String fun, final int timeout,
-			final String signature, final Object... args0) throws RpcException {
+			final String signature, final Object... args0) throws RpcException,
+			SignatureException {
 		final RpcFuture future = sendRpcCall(node, peer, gleader, module, fun,
 				signature, args0);
 		OtpErlangObject result;
@@ -117,7 +117,7 @@ public class RpcUtil {
 			final OtpNode node, final String peer,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final int timeout, final String signature,
-			final Object... args0) throws RpcException {
+			final Object... args0) throws SignatureException {
 		final Object[] args = new Object[args0.length + 1];
 		System.arraycopy(args0, 0, args, 1, args0.length);
 		final OtpMbox mbox = node.createMbox();
@@ -142,7 +142,7 @@ public class RpcUtil {
 	public static RpcFuture sendRpcCall(final OtpNode node, final String peer,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-			throws RpcException {
+			throws SignatureException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
@@ -232,7 +232,7 @@ public class RpcUtil {
 	public static void rpcCast(final OtpNode node, final String peer,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-			throws RpcException {
+			throws SignatureException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
@@ -244,33 +244,29 @@ public class RpcUtil {
 	}
 
 	private static OtpErlangObject[] convertArgs(final String signature,
-			Object... args0) throws RpcException {
+			Object... args0) throws SignatureException {
 		if (args0 == null) {
 			args0 = new OtpErlangObject[] {};
 		}
 
 		Signature[] type;
-		try {
-			type = Signature.parse(signature);
-			if (type == null) {
-				type = new Signature[args0.length];
-				for (int i = 0; i < args0.length; i++) {
-					type[i] = new Signature('x');
-				}
+		type = Signature.parse(signature);
+		if (type == null) {
+			type = new Signature[args0.length];
+			for (int i = 0; i < args0.length; i++) {
+				type[i] = new Signature('x');
 			}
-			if (type.length != args0.length) {
-				throw new RpcException(
-						"Signature doesn't match parameter number: "
-								+ type.length + "/" + args0.length);
-			}
-			final OtpErlangObject[] args = new OtpErlangObject[args0.length];
-			for (int i = 0; i < args.length; i++) {
-				args[i] = RpcConverter.java2erlang(args0[i], type[i]);
-			}
-			return args;
-		} catch (SignatureException e) {
-			throw new RpcException(e);
 		}
+		if (type.length != args0.length) {
+			throw new SignatureException(
+					"Signature doesn't match parameter number: " + type.length
+							+ "/" + args0.length);
+		}
+		final OtpErlangObject[] args = new OtpErlangObject[args0.length];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = TypeConverter.java2erlang(args0[i], type[i]);
+		}
+		return args;
 	}
 
 	private static OtpErlangObject buildRpcCastMsg(

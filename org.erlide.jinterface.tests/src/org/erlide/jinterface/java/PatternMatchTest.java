@@ -11,10 +11,10 @@ package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlUtils;
-import org.erlide.jinterface.ParserException;
-import org.erlide.jinterface.TermParser;
+import org.erlide.jinterface.util.Bindings;
+import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParser;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -52,21 +52,24 @@ public class PatternMatchTest {
 
 	@Test
 	public void testFormatParser_list() throws Exception {
-		final OtpErlangObject value = ErlUtils.format("[~a,2,~a]", "hej", "brr");
+		final OtpErlangObject value = ErlUtils
+				.format("[~a,2,~a]", "hej", "brr");
 		final OtpErlangObject expected = ErlUtils.parse("[hej,2,brr]");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testFormatParser_tuple() throws Exception {
-		final OtpErlangObject value = ErlUtils.format("{~a,2,~a}", "hej", "brr");
+		final OtpErlangObject value = ErlUtils
+				.format("{~a,2,~a}", "hej", "brr");
 		final OtpErlangObject expected = ErlUtils.parse("{hej,2,brr}");
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testFormatParser_full() throws Exception {
-		final OtpErlangObject value = ErlUtils.format("[~a,{2,~a},5]", "hej", "brr");
+		final OtpErlangObject value = ErlUtils.format("[~a,{2,~a},5]", "hej",
+				"brr");
 		final OtpErlangObject expected = ErlUtils.parse("[hej,{2,brr},5]");
 		Assert.assertEquals(expected, value);
 	}

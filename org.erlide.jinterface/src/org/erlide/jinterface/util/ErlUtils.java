@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -41,13 +40,12 @@ public class ErlUtils {
 	 * Items beginning with ~ are placeholders that will be replaced with the
 	 * corresponding argument (from left to right). The text after the ~ is the
 	 * type signature of the argument, so that automatic conversion Java->Erlang
-	 * can be done. See RpcConverter.java2erlang for details.
+	 * can be done. See TypeConverter.java2erlang for details.
 	 * 
-	 * @throws RpcException
-	 * @see org.erlide.jinterface.util.RpcConverter
+	 * @see org.erlide.jinterface.util.TypeConverter
 	 */
 	public static OtpErlangObject format(final String fmt, final Object... args)
-			throws ParserException, RpcException {
+			throws ParserException, SignatureException {
 		OtpErlangObject result;
 		result = parse(fmt);
 		List<Object> values = new ArrayList<Object>(args.length);
@@ -102,7 +100,6 @@ public class ErlUtils {
 	 * map of variable names to matched values. <br>
 	 * TODO should we throw an exception instead?
 	 * 
-	 * @throws RpcException
 	 */
 	public static Bindings match(final OtpErlangObject pattern,
 			final OtpErlangObject term, final Bindings bindings) {
@@ -114,7 +111,7 @@ public class ErlUtils {
 		}
 		if (pattern instanceof OtpPatternVariable) {
 			final OtpPatternVariable var = (OtpPatternVariable) pattern;
-			if (!RpcConverter.matchSignature(term, var.getSignature())) {
+			if (!TypeConverter.matchSignature(term, var.getSignature())) {
 				return null;
 			}
 			if (var.getName().equals("_")) {
@@ -180,7 +177,8 @@ public class ErlUtils {
 	}
 
 	private static OtpErlangObject fill(final OtpErlangObject template,
-			final List<Object> values) throws RpcException, ParserException {
+			final List<Object> values) throws SignatureException,
+			ParserException {
 		if (values.size() == 0) {
 			return template;
 		}
@@ -205,17 +203,13 @@ public class ErlUtils {
 		} else if (template instanceof OtpFormatPlaceholder) {
 			final OtpFormatPlaceholder holder = (OtpFormatPlaceholder) template;
 			final Object ret = values.remove(0);
-			try {
-				final Signature[] signs = Signature.parse(holder.getName());
-				if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
-					throw new ParserException("funny placeholder");
-				}
-				final Signature sign = (signs.length == 0) ? new Signature('x')
-						: signs[0];
-				return RpcConverter.java2erlang(ret, sign);
-			} catch (SignatureException e) {
-				throw new RpcException(e);
+			final Signature[] signs = Signature.parse(holder.getName());
+			if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
+				throw new ParserException("funny placeholder");
 			}
+			final Signature sign = (signs.length == 0) ? new Signature('x')
+					: signs[0];
+			return TypeConverter.java2erlang(ret, sign);
 		} else {
 			return template;
 		}

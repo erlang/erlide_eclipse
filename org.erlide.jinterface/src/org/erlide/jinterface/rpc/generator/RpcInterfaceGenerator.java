@@ -13,8 +13,7 @@ package org.erlide.jinterface.rpc.generator;
 import java.io.IOException;
 import java.util.List;
 
-import org.erlide.jinterface.util.RpcConverter;
-import org.erlide.jinterface.util.RpcException;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -29,6 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
+import com.ericsson.otp.erlang.SignatureException;
 
 /**
  * Takes a module name and generates a java interface that can be used with
@@ -71,12 +71,12 @@ public class RpcInterfaceGenerator {
 			res = r.elementAt(1);
 			List<OtpErlangObject> l = null;
 			try {
-				l = (List<OtpErlangObject>) RpcConverter.erlang2java(res,
+				l = (List<OtpErlangObject>) TypeConverter.erlang2java(res,
 						List.class);
 				System.out.println(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
 
-			} catch (final RpcException e) {
+			} catch (final SignatureException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -85,8 +85,9 @@ public class RpcInterfaceGenerator {
 		}
 	}
 
-	public static String generate(final OtpNode node, final String module, final String pkg,
-			final boolean convert, final List<OtpErlangObject> l) {
+	public static String generate(final OtpNode node, final String module,
+			final String pkg, final boolean convert,
+			final List<OtpErlangObject> l) {
 		final StringBuilder b = new StringBuilder();
 		try {
 			generate(b, module, pkg, convert, l);
@@ -96,9 +97,9 @@ public class RpcInterfaceGenerator {
 		return b.toString();
 	}
 
-	private static void generate(final StringBuilder b, final String module, final String pkg,
-			final boolean convert, final List<OtpErlangObject> l)
-	throws OtpErlangRangeException {
+	private static void generate(final StringBuilder b, final String module,
+			final String pkg, final boolean convert,
+			final List<OtpErlangObject> l) throws OtpErlangRangeException {
 		final String cls = toJavaClassName(module);
 
 		b.append("package " + pkg + ";\n");

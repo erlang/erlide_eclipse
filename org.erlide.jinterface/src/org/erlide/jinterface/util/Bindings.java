@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -22,6 +21,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.SignatureException;
 
 public class Bindings {
 
@@ -68,7 +68,8 @@ public class Bindings {
 		throw new OtpErlangException("value is not a string");
 	}
 
-	public OtpErlangObject[] getList(final String name) throws OtpErlangException {
+	public OtpErlangObject[] getList(final String name)
+			throws OtpErlangException {
 		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangList) {
 			return ((OtpErlangList) r).elements();
@@ -76,7 +77,8 @@ public class Bindings {
 		throw new OtpErlangException("value is not a list");
 	}
 
-	public OtpErlangObject[] getTuple(final String name) throws OtpErlangException {
+	public OtpErlangObject[] getTuple(final String name)
+			throws OtpErlangException {
 		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangTuple) {
 			return ((OtpErlangTuple) r).elements();
@@ -85,9 +87,10 @@ public class Bindings {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getAs(final String name, final Class<T> cls) throws RpcException {
+	public <T> T getAs(final String name, final Class<T> cls)
+			throws SignatureException {
 		final OtpErlangObject v = get(name);
-		return (T) RpcConverter.erlang2java(v, cls);
+		return (T) TypeConverter.erlang2java(v, cls);
 	}
 
 	public void put(final String name, final OtpErlangObject value) {

@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-
 import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -73,7 +72,7 @@ import com.ericsson.otp.erlang.SignatureException;
  * </dl>
  * 
  */
-public class RpcConverter {
+public final class TypeConverter {
 
 	public static Class<?> getClassByName(final String arg) {
 		if (arg.equals("char")) {
@@ -148,7 +147,7 @@ public class RpcConverter {
 
 	@SuppressWarnings("boxing")
 	public static Object erlang2java(final OtpErlangObject obj,
-			final Class<?> cls) throws RpcException {
+			final Class<?> cls) throws SignatureException {
 		try {
 			if (cls == obj.getClass()) {
 				return obj;
@@ -218,7 +217,7 @@ public class RpcConverter {
 					}
 					return res.toString();
 				}
-				throw new RpcException("wrong arg type "
+				throw new SignatureException("wrong arg type "
 						+ obj.getClass().getName()
 						+ ", can't convert to String");
 			}
@@ -245,7 +244,7 @@ public class RpcConverter {
 						return res;
 					}
 				}
-				throw new RpcException("wrong arg type "
+				throw new SignatureException("wrong arg type "
 						+ obj.getClass().getName() + ", can't convert to "
 						+ cls.getCanonicalName());
 			}
@@ -259,7 +258,7 @@ public class RpcConverter {
 						return false;
 					}
 				}
-				throw new RpcException("wrong arg type "
+				throw new SignatureException("wrong arg type "
 						+ obj.getClass().getName() + ", can't convert to "
 						+ cls.getCanonicalName());
 			}
@@ -273,7 +272,7 @@ public class RpcConverter {
 					}
 					return Arrays.asList(olist);
 				}
-				throw new RpcException("wrong arg type "
+				throw new SignatureException("wrong arg type "
 						+ obj.getClass().getName() + ", can't convert to "
 						+ cls.getCanonicalName());
 			}
@@ -281,15 +280,15 @@ public class RpcConverter {
 				if (!((OtpErlangRef) obj).node().equals(JRpcUtil.REF_NODE)) {
 					return ObjRefCache.getTarget((OtpErlangRef) obj);
 				}
-				throw new RpcException("wrong arg type "
+				throw new SignatureException("wrong arg type "
 						+ obj.getClass().getName() + ", can't convert to "
 						+ cls.getCanonicalName());
 			}
 			return obj;
-		} catch (final RpcException e) {
+		} catch (final SignatureException e) {
 			throw e;
 		} catch (final Exception e) {
-			throw new RpcException(e);
+			throw new SignatureException(e);
 		}
 	}
 
@@ -304,17 +303,13 @@ public class RpcConverter {
 	 * @throws ConversionException
 	 */
 	public static OtpErlangObject java2erlang(final Object obj,
-			final String type) throws RpcException {
-		try {
-			return java2erlang(obj, Signature.parse(type)[0]);
-		} catch (SignatureException e) {
-			throw new RpcException(e);
-		}
+			final String type) throws SignatureException {
+		return java2erlang(obj, Signature.parse(type)[0]);
 	}
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject java2erlang(final Object obj,
-			final Signature type) throws RpcException {
+			final Signature type) throws SignatureException {
 		if (type.kind == 'x') {
 			return java2erlang(obj);
 		}
@@ -384,7 +379,7 @@ public class RpcConverter {
 			return (OtpErlangObject) obj;
 		}
 		if (obj instanceof OtpErlangObject) {
-			if (RpcConverter.isCheckConversion()) {
+			if (TypeConverter.isCheckConversion()) {
 				StackTraceElement el = null;
 				StackTraceElement[] st = null;
 				try {
@@ -529,7 +524,7 @@ public class RpcConverter {
 			return (OtpErlangObject) obj;
 		}
 		if (obj instanceof OtpErlangObject) {
-			if (RpcConverter.isCheckConversion()) {
+			if (TypeConverter.isCheckConversion()) {
 				StackTraceElement el = null;
 				StackTraceElement[] st = null;
 				try {
@@ -584,12 +579,12 @@ public class RpcConverter {
 	}
 
 	private static void failConversion(final Object obj, final Signature type)
-			throws RpcException {
+			throws SignatureException {
 		// System.out.println("+++++++ "
 		// + String.format("Bad conversion required: %s(%s) - %s", obj
 		// .getClass().getName(), obj.toString(), type));
 
-		throw new RpcException(String.format(
+		throw new SignatureException(String.format(
 				"Bad conversion required: %s(%s) - %s", obj.getClass()
 						.getName(), obj.toString(), type.toString()));
 	}
@@ -617,12 +612,8 @@ public class RpcConverter {
 	}
 
 	public static boolean matchSignature(final OtpErlangObject term,
-			final String signature) throws RpcException {
-		try {
-			return matchSignature(term, Signature.parse(signature)[0]);
-		} catch (SignatureException e) {
-			throw new RpcException(e);
-		}
+			final String signature) throws SignatureException {
+		return matchSignature(term, Signature.parse(signature)[0]);
 	}
 
 	public static OtpErlangObject encodeMap(
