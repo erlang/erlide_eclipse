@@ -41,12 +41,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

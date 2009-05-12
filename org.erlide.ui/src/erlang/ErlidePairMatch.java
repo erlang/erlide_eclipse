@@ -1,7 +1,7 @@
 package erlang;
 
+import org.erlide.backend.BackendException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

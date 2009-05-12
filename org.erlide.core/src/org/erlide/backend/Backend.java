@@ -12,7 +12,6 @@ package org.erlide.backend;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Collection;
 
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -20,8 +19,6 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.IDisposable;
-import org.erlide.runtime.backend.ICodeBundle;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -32,7 +29,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
-
 
 public class Backend {
 
@@ -358,7 +354,8 @@ public class Backend {
 		}
 		initializeRuntime();
 		// we still remember the plugins from the former instance
-		connectAndRegister(null);
+		// FIXME: connectAndRegister(null);
+		connect();
 		initErlang();
 	}
 
@@ -460,10 +457,6 @@ public class Backend {
 			getEventBox().link(watchdog);
 		} catch (final OtpErlangExit e) {
 		}
-	}
-
-	public void connectAndRegister(final Collection<ICodeBundle> plugins) {
-		connect();
 	}
 
 	public void checkCodePath() {

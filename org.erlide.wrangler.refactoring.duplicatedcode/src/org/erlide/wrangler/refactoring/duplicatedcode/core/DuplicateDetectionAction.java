@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.backend.BackendException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

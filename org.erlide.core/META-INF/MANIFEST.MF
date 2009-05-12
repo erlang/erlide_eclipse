@@ -40,7 +40,6 @@ Export-Package: erlang,
  org.erlide.runtime.backend,
  org.erlide.runtime.backend.console,
  org.erlide.runtime.backend.events,
- org.erlide.runtime.backend.exceptions,
  org.erlide.runtime.backend.internal;x-internal:=true,
  org.erlide.runtime.debug;
   uses:="com.ericsson.otp.erlang,

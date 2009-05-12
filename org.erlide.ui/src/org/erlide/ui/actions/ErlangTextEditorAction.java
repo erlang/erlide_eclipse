@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlModelException;
@@ -26,7 +27,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
 

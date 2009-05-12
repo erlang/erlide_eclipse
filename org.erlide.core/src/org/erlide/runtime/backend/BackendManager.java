@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendListener;
 import org.erlide.backend.BackendUtil;
 import org.erlide.backend.RuntimeInfo;
@@ -37,7 +38,6 @@ import org.erlide.jinterface.util.EpmdWatcher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
 import org.erlide.runtime.EpmdWatchJob;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;
 
 import com.ericsson.otp.erlang.OtpEpmd;

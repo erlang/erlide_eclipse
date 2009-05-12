@@ -7,8 +7,6 @@ import org.erlide.core.util.Util;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
-import org.erlide.runtime.backend.exceptions.BackendException;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

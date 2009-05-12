@@ -7,21 +7,23 @@
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
-package org.erlide.runtime.backend.exceptions;
+package org.erlide.backend;
 
 /**
+ * Simple top level exception
  * 
+ * $Revision$ $Date$
  * 
- * @author Eric Merritt [cyberlync at gmail dot com]
+ * @author Eric Merritt
  */
-public class ErlangExeNotFoundException extends Exception {
+public class BackendException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
-	public ErlangExeNotFoundException() {
+	public BackendException() {
 		super();
 	}
 
@@ -31,7 +33,7 @@ public class ErlangExeNotFoundException extends Exception {
 	 * @param message
 	 *            The message to pass up
 	 */
-	public ErlangExeNotFoundException(final String message) {
+	public BackendException(final String message) {
 		super(message);
 	}
 
@@ -43,8 +45,7 @@ public class ErlangExeNotFoundException extends Exception {
 	 * @param cause
 	 *            The cause
 	 */
-	public ErlangExeNotFoundException(final String message,
-			final Throwable cause) {
+	public BackendException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
@@ -54,7 +55,8 @@ public class ErlangExeNotFoundException extends Exception {
 	 * @param cause
 	 *            The cause.
 	 */
-	public ErlangExeNotFoundException(final Throwable cause) {
+	public BackendException(final Throwable cause) {
 		super(cause);
 	}
+
 }

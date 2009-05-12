@@ -1,8 +1,8 @@
 package erlang;
 
 import org.erlide.backend.Backend;
+import org.erlide.backend.NoBackendException;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.exceptions.NoBackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

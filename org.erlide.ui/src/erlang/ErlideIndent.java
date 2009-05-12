@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.erlide.backend.Backend;
-import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

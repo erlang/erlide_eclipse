@@ -1,6 +1,6 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
-import org.erlide.runtime.backend.exceptions.BackendException;
+import org.erlide.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

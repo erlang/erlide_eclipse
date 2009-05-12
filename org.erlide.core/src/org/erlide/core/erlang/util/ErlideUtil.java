@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
@@ -47,7 +48,6 @@ import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.core.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ICodeBundle;
-import org.erlide.runtime.backend.exceptions.BackendException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -18,7 +19,6 @@ import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.exceptions.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
