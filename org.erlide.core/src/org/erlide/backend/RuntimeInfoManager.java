@@ -66,7 +66,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			root = getRootPreferenceNode();
 
 			for (final RuntimeInfo rt : fRuntimes.values()) {
-				rt.store(root);
+				RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
+				rtl.store(root);
 			}
 			if (defaultRuntimeName != null) {
 				root.put("default", defaultRuntimeName);
@@ -146,19 +147,19 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			final RuntimeInfo rt = new RuntimeInfo();
 			rt.setName(defName);
 			final String path = ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.CODE_PATH, "", null);
+					+ RuntimeInfoLoader.CODE_PATH, "", null);
 			rt.setCodePath(PreferencesUtils.unpackList(path));
 			rt.setOtpHome(ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.HOME_DIR, "", null));
-			rt.setArgs(ps.getString(DEFAULT_ID, "default_" + RuntimeInfo.ARGS,
-					"", null));
+					+ RuntimeInfoLoader.HOME_DIR, "", null));
+			rt.setArgs(ps.getString(DEFAULT_ID, "default_"
+					+ RuntimeInfoLoader.ARGS, "", null));
 			final String wd = ps.getString(DEFAULT_ID, "default_"
-					+ RuntimeInfo.WORKING_DIR, "", null);
+					+ RuntimeInfoLoader.WORKING_DIR, "", null);
 			if (wd.length() != 0) {
 				rt.setWorkingDir(wd);
 			}
 			rt.setManaged(ps.getBoolean(DEFAULT_ID, "default_"
-					+ RuntimeInfo.MANAGED, true, null));
+					+ RuntimeInfoLoader.MANAGED, true, null));
 			addRuntime(rt);
 		}
 		defaultRuntimeName = defName;
@@ -175,7 +176,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			children = root.childrenNames();
 			for (final String name : children) {
 				final RuntimeInfo rt = new RuntimeInfo();
-				rt.load(root.node(name));
+				RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
+				rtl.load(root.node(name));
 				fRuntimes.put(name, rt);
 			}
 		} catch (final BackingStoreException e) {

@@ -11,7 +11,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
-import org.erlide.backend.BackendUtil;
+import org.erlide.backend.BackendUtils;
 
 public class ErlangSourcePathComputerDelegate implements
 		ISourcePathComputerDelegate {
@@ -22,7 +22,7 @@ public class ErlangSourcePathComputerDelegate implements
 		final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
 		final String projectNames = configuration.getAttribute(
 				ErlLaunchAttributes.PROJECTS, "");
-		final IProject[] projects = BackendUtil.getProjects(projectNames);
+		final IProject[] projects = BackendUtils.getProjects(projectNames);
 		for (final IProject p : projects) {
 			containers.add(new ProjectSourceContainer(p, false));
 		}

@@ -31,6 +31,7 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendListener;
 import org.erlide.backend.BackendUtil;
+import org.erlide.backend.BackendUtils;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.ErlangProjectProperties;
@@ -184,7 +185,7 @@ public final class BackendManager extends OtpNodeStatus implements
 							if (defLabel != null) {
 								erlideRuntime.setNodeName(defLabel);
 							} else {
-								erlideRuntime.setNodeName(BackendUtil
+								erlideRuntime.setNodeName(BackendUtils
 										.getErlideNameSuffix()
 										+ "_erlide");
 							}
