@@ -11,7 +11,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
-import org.erlide.backend.BackendUtils;
+import org.erlide.core.erlang.util.BackendUtils;
 
 public class ErlangSourcePathComputerDelegate implements
 		ISourcePathComputerDelegate {

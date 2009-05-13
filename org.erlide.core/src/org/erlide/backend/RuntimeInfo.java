@@ -21,16 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.core.util.PreferencesUtils;
-import org.osgi.service.prefs.Preferences;
-
 public class RuntimeInfo {
-	static final String CODE_PATH = "codePath";
-	static final String HOME_DIR = "homeDir";
-	static final String ARGS = "args";
-	static final String WORKING_DIR = "workingDir";
-	static final String MANAGED = "managed";
-
 	public static final String DEFAULT_MARKER = "*DEFAULT*";
 
 	private String homeDir = "";
@@ -69,29 +60,6 @@ public class RuntimeInfo {
 		return rt;
 	}
 
-	public void store(final Preferences root) {
-		final Preferences node = root.node(getName());
-		final String code = PreferencesUtils.packList(getCodePath());
-		node.put(CODE_PATH, code);
-		node.put(HOME_DIR, getOtpHome());
-		node.put(ARGS, args);
-		node.put(WORKING_DIR, workingDir);
-		node.putBoolean(MANAGED, managed);
-	}
-
-	public void load(final Preferences node) {
-		setName(node.name());
-		final String path = node.get(CODE_PATH, "");
-		setCodePath(PreferencesUtils.unpackList(path));
-		setOtpHome(node.get(HOME_DIR, ""));
-		args = node.get(ARGS, "");
-		final String wd = node.get(WORKING_DIR, workingDir);
-		if (wd.length() != 0) {
-			workingDir = wd;
-		}
-		managed = node.getBoolean(MANAGED, true);
-	}
-
 	public String getArgs() {
 		return this.args;
 	}
@@ -112,8 +80,8 @@ public class RuntimeInfo {
 	}
 
 	public String getNodeName() {
-		final String suffix = unique ? "_"
-				+ BackendUtil.getErlideNameSuffix() : "";
+		final String suffix = unique ? "_" + BackendUtil.getErlideNameSuffix()
+				: "";
 		return this.nodeName + suffix;
 	}
 

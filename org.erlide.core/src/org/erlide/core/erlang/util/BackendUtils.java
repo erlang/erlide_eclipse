@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.core.erlang.util;
 
 import java.util.ArrayList;
 import java.util.List;
