@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Duplicated code detection fragment
 Bundle-SymbolicName: org.erlide.wrangler.refactoring.duplicatedcode;singleton:=true
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -11,5 +11,5 @@ Export-Package: org.erlide.wrangler.refactoring.duplicatedcode,
  org.erlide.wrangler.refactoring.duplicatedcode.ui,
  org.erlide.wrangler.refactoring.duplicatedcode.ui.elements,
  org.erlide.wrangler.refactoring.util
-Eclipse-PlatformFilter:  (& (osgi.arch=x86)  (|(osgi.os=linux) (osgi.os=win32)) )
+Eclipse-PlatformFilter:  (& (osgi.arch=x86)  (|(osgi.os=linux) (osgi.os=win32) (osgi.os=macosx)) )
 

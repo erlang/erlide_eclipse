@@ -15,6 +15,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
+import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.DuplicatesUIManager;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 
@@ -40,6 +41,8 @@ public abstract class AbstractDuplicatesSearcherAction implements
 				} else {
 					displayErrorNotification(result.getErrorMessage());
 				}
+			} catch (WranglerWarningException e) {
+
 			} catch (BackendException e) {
 				displayErrorNotification(rpcErrorMsg);
 			} catch (CoreException e) {
@@ -58,7 +61,7 @@ public abstract class AbstractDuplicatesSearcherAction implements
 	}
 
 	protected abstract IResultParser callRefactoring() throws BackendException,
-			CoreException, IOException;
+			CoreException, IOException, WranglerWarningException;
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		parameter.setSelection(selection);

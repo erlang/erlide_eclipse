@@ -3,11 +3,17 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendException;
+import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -20,15 +26,14 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 	@SuppressWarnings("boxing")
 	@Override
 	protected IResultParser callRefactoring() throws BackendException,
-			CoreException, IOException {
+			CoreException, IOException, WranglerWarningException {
 		String functionName;
 		OtpErlangObject result;
 
-		// FIXME: add parameter file
-		Path pluginPath = org.erlide.wrangler.refactoring.Activator
-				.getPluginPath();
-		String suffixPath = pluginPath.append("wrangler").append("bin")
-				.toOSString();
+		// getting the path of the fragment
+
+		String suffixPath = getSuffixPath();
+		ErlLogger.debug("Suffix binary at: " + suffixPath);
 
 		if (onlyInfile) {
 			functionName = "duplicated_code_in_buffer_eclipse";
@@ -43,6 +48,39 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 		}
 
 		return new DuplicateDetectionParser(result, parameter);
+	}
+
+	private String getSuffixPath() throws IOException, WranglerWarningException {
+		Bundle[] bs = Platform
+				.getFragments(Platform
+						.getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
+		if (bs.length < 1) {
+			ErlLogger.debug("Fragment is not loaded?! No C binary is run.");
+			return "";
+		}
+		Bundle fragment = bs[0];
+		java.net.URL url = FileLocator.find(fragment, new Path(""), null);
+		url = FileLocator.resolve(url);
+		IPath path = new Path(url.getPath());
+		path = path.append("wrangler");
+		path = path.append("bin");
+
+		String os = Platform.getOS();
+		if (os.equals(Platform.OS_LINUX)) {
+			path = path.append("linux");
+			path = path.append("suffixtree");
+		} else if (os.equals(Platform.OS_WIN32)) {
+			path = path.append("win32");
+			path = path.append("suffixtree.exe");
+		} else if (os.equals(Platform.OS_MACOSX)) {
+			path = path.append("macosx");
+			path = path.append("suffixtree");
+		} else {
+			ErlLogger.debug("Not supported OS found, no C binary is used.");
+			return "";
+		}
+
+		return path.toOSString();
 	}
 
 	@Override
