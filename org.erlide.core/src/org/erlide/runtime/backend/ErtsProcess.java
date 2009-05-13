@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.backend;
 
 import java.io.IOException;
 import java.util.HashMap;

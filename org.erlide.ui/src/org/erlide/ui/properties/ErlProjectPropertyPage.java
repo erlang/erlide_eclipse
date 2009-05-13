@@ -31,10 +31,10 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.erlide.backend.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.ProjectPreferencesConstants;
+import org.erlide.jinterface.backend.RuntimeInfo;
 
 /*TODO ...this should implement IworkspacePreferencePage if it's going to be 
  * used as "default erlang project" page...*/

@@ -8,11 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.jinterface.backend;
 
 import java.util.Arrays;
 
-import org.erlide.backend.util.Assert;
+import org.erlide.jinterface.backend.util.Assert;
 
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 

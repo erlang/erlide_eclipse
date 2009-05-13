@@ -12,7 +12,7 @@ package org.erlide.core.erlang;
 
 import java.util.Collection;
 
-import org.erlide.backend.IDisposable;
+import org.erlide.jinterface.backend.IDisposable;
 
 public interface IErlScanner extends IDisposable {
 

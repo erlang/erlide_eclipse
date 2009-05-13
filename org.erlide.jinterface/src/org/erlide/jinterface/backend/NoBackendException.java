@@ -1,4 +1,4 @@
-package org.erlide.backend;
+package org.erlide.jinterface.backend;
 
 
 public class NoBackendException extends BackendException {

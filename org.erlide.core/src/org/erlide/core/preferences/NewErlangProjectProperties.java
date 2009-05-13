@@ -14,9 +14,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.backend.RuntimeInfo;
-import org.erlide.backend.RuntimeVersion;
-import org.erlide.backend.util.PreferencesUtils;
+import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.jinterface.backend.RuntimeVersion;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 

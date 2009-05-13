@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-public interface BackendVisitor {
 
-	void run(FullBackend b);
+public interface FullBackendVisitor {
+
+	void visit(FullBackend b);
 
 }

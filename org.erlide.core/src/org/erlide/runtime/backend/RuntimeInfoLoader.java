@@ -8,9 +8,10 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.runtime.backend;
 
-import org.erlide.backend.util.PreferencesUtils;
+import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfoLoader {

@@ -1,9 +1,9 @@
 package org.erlide.core.erlang.internal;
 
-import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMacroDef;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.jinterface.backend.util.Util;
 
 public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 

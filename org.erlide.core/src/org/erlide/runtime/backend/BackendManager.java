@@ -27,18 +27,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendListener;
-import org.erlide.backend.BackendUtil;
-import org.erlide.backend.RuntimeInfo;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.BackendUtil;
+import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.EpmdWatcher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
-import org.erlide.runtime.EpmdWatchJob;
 import org.erlide.runtime.backend.internal.RuntimeLauncherFactory;
 
 import com.ericsson.otp.erlang.OtpEpmd;
@@ -300,8 +299,8 @@ public final class BackendManager extends OtpNodeStatus implements
 				fLocalBackend.getCodeManager().register(p);
 				fLocalBackend.checkCodePath();
 			}
-			forEachProjectBackend(new BackendVisitor() {
-				public void run(final FullBackend b) {
+			forEachProjectBackend(new FullBackendVisitor() {
+				public void visit(final FullBackend b) {
 					b.getCodeManager().register(p);
 					b.checkCodePath();
 				}
@@ -314,8 +313,8 @@ public final class BackendManager extends OtpNodeStatus implements
 		if (fLocalBackend != null) {
 			fLocalBackend.getCodeManager().unregister(p);
 		}
-		forEachProjectBackend(new BackendVisitor() {
-			public void run(final FullBackend b) {
+		forEachProjectBackend(new FullBackendVisitor() {
+			public void visit(final FullBackend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
@@ -325,7 +324,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		return Collections.unmodifiableCollection(fPlugins);
 	}
 
-	public void forEachProjectBackend(final BackendVisitor visitor) {
+	public void forEachProjectBackend(final FullBackendVisitor visitor) {
 		// TODO which backends?
 	}
 

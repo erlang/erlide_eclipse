@@ -3,10 +3,10 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendException;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;

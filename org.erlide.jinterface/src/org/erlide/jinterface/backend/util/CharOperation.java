@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.backend.util;
+package org.erlide.jinterface.backend.util;
 
 /**
  * This class is a collection of helper methods to manipulate char arrays.

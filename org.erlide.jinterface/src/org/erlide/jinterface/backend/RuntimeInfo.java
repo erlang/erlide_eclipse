@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.jinterface.backend;
 
 import java.io.File;
 import java.io.FileFilter;

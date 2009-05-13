@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.jinterface.backend;
 
 import java.io.IOException;
 import java.net.Socket;

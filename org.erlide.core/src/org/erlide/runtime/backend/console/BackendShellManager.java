@@ -13,8 +13,8 @@ package org.erlide.runtime.backend.console;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.erlide.backend.Backend;
-import org.erlide.backend.IDisposable;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.IDisposable;
 
 public class BackendShellManager implements IShellManager, IDisposable {
 

@@ -6,9 +6,9 @@ import java.util.TreeMap;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.ui.editors.erl.AutoIndentStrategy;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;

@@ -1,7 +1,7 @@
 package org.erlide.runtime.backend.internal;
 
-import org.erlide.backend.Backend;
-import org.erlide.backend.RuntimeLauncher;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.RuntimeLauncher;
 
 public class StandaloneLauncher implements RuntimeLauncher {
 
