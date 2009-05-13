@@ -12,13 +12,13 @@ package org.erlide.core.erlang.internal;
 
 import org.erlide.backend.Backend;
 import org.erlide.backend.ErlideBackend;
+import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;

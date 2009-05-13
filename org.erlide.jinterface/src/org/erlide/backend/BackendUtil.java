@@ -12,7 +12,7 @@ package org.erlide.backend;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.erlide.core.util.Util;
+import org.erlide.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

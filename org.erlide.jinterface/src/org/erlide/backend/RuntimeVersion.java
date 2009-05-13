@@ -12,7 +12,7 @@ package org.erlide.backend;
 
 import java.util.Arrays;
 
-import org.erlide.core.util.Assert;
+import org.erlide.backend.util.Assert;
 
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.backend.Backend;
 import org.erlide.backend.ErlideBackend;
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
 import org.erlide.core.erlang.ErlModelStatusConstants;
@@ -34,7 +35,6 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

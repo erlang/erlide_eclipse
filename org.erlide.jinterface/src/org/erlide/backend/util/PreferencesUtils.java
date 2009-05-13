@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.backend.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

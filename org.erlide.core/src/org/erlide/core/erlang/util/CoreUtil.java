@@ -16,9 +16,9 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.backend.util.CharOperation;
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.util.CharOperation;
-import org.erlide.core.util.Util;
 
 public class CoreUtil {
 	/**

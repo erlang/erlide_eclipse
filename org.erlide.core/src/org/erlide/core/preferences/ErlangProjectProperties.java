@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.backend.RuntimeInfo;
 import org.erlide.backend.RuntimeVersion;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.FullBackend;
 import org.osgi.service.prefs.BackingStoreException;

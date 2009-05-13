@@ -34,9 +34,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.backend.RuntimeVersion;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.ErlangProjectProperties;
-import org.erlide.core.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.swtdesigner.SWTResourceManager;

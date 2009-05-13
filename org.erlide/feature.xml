@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.6.0.qualifier"
+      version="0.6.1.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core"
       image="erlang120.gif">
@@ -296,6 +296,7 @@ litigation.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"/>
+         fragment="true"
+         unpack="false"/>
 
 </feature>

@@ -1,6 +1,6 @@
 package erlang;
 
-import org.erlide.core.util.Util;
+import org.erlide.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

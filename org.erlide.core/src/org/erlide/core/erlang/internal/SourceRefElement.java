@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -21,7 +22,6 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.util.Util;
 
 /**
  * Abstract class for Erlang elements which implement ISourceReference.

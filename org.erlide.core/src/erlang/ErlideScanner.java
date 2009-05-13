@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.backend.BackendException;
+import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
