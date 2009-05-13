@@ -34,7 +34,8 @@ public class RuntimeInfo {
 	private RuntimeVersion version;
 	private String name;
 	private List<String> codePath;
-	private boolean unique = false;
+
+	private String suffix = "";
 
 	public RuntimeInfo() {
 		super();
@@ -80,9 +81,11 @@ public class RuntimeInfo {
 	}
 
 	public String getNodeName() {
-		final String suffix = unique ? "_" + BackendUtil.getErlideNameSuffix()
-				: "";
 		return this.nodeName + suffix;
+	}
+
+	public void setNodeNameSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	public void setNodeName(final String nodeName) {
@@ -341,10 +344,6 @@ public class RuntimeInfo {
 			}
 		}
 		return result;
-	}
-
-	public void setUniqueName(final boolean unique) {
-		this.unique = unique;
 	}
 
 }

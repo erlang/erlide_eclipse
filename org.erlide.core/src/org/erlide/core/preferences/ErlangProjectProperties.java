@@ -41,8 +41,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
 	private String runtimeName = null;
 
-	private boolean fUnique = true;
-
 	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
 
 	public ErlangProjectProperties() {
@@ -110,8 +108,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 				}
 			}
 		}
-		fUnique = Boolean.parseBoolean(node.get(
-				ProjectPreferencesConstants.MK_UNIQUE, "true"));
 		externalModulesFile = node.get(
 				ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
 				ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
@@ -156,8 +152,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 			} else {
 				node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
 			}
-			node.put(ProjectPreferencesConstants.MK_UNIQUE, Boolean
-					.toString(fUnique));
 			// TODO remove these later
 			node.remove("backend_cookie");
 			node.remove("backend_node");
@@ -304,7 +298,6 @@ public class ErlangProjectProperties implements IPreferenceChangeListener {
 		RuntimeInfo rt = null;
 		if (runtime != null) {
 			rt = RuntimeInfo.copy(runtime, false);
-			rt.setUniqueName(fUnique);
 		}
 		return rt;
 	}

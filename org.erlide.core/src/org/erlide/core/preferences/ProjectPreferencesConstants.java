@@ -42,8 +42,6 @@ public final class ProjectPreferencesConstants {
 	public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
 	public static final String DEFAULT_EXTERNAL_MODULES = "";
 
-	public static final String MK_UNIQUE = "make_unique";
-
 	public static final String PROJECT_TYPE = "type";
 	public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
 

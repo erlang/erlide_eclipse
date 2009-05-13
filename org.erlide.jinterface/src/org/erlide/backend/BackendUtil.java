@@ -11,12 +11,7 @@ package org.erlide.backend;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -41,25 +36,6 @@ public final class BackendUtil {
 			return v.elementAt(1);
 		}
 		return v;
-	}
-
-	public static IProject[] getProjects(final String attribute) {
-		final String[] projectNames = attribute.split(";");
-		return getProjects(projectNames);
-	}
-
-	public static IProject[] getProjects(final String[] projectNames) {
-		final List<IProject> projects = new ArrayList<IProject>();
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		for (final String s : projectNames) {
-			if (s != null && s.length() > 0) {
-				final IProject p = root.getProject(s);
-				if (p != null) {
-					projects.add(p);
-				}
-			}
-		}
-		return projects.toArray(new IProject[projects.size()]);
 	}
 
 	public static String buildNodeName(final String label,
@@ -96,14 +72,6 @@ public final class BackendUtil {
 	public static String getJavaNodeName() {
 		final String fUniqueId = BackendUtil.getTimeSuffix();
 		return "jerlide_" + fUniqueId;
-	}
-
-	public static String getErlideNameSuffix() {
-		String fUniqueId;
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final String location = root.getLocation().toPortableString();
-		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF);
-		return fUniqueId;
 	}
 
 	public static String getLabelProperty() {
