@@ -11,9 +11,15 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -34,14 +40,18 @@ import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.editors.erl.ErlTextHover.PresenterControlCreator;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
+import org.osgi.framework.Bundle;
 
 /**
  * The editor configurator
@@ -56,6 +66,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	protected final IColorManager colorManager;
 	private ICharacterPairMatcher fBracketMatcher;
 	private ErlReconciler reconciler;
+	private IInformationControlCreator fPresenterControlCreator;
+	private static URL fgStyleSheet;
 
 	/**
 	 * Default configuration constructor
@@ -72,6 +84,18 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		super(store);
 		colorManager = lcolorManager;
 		editor = leditor;
+		initStyleSheet();
+	}
+
+	private void initStyleSheet() {
+		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (fgStyleSheet != null) {
+			try {
+				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+			} catch (final Exception e) {
+			}
+		}
 	}
 
 	/**
@@ -236,10 +260,25 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				return new DefaultInformationControl(parent,
-						new HTMLTextPresenter(true));
+				if (BrowserInformationControl.isAvailable(parent)) {
+					BrowserInformationControl info = new BrowserInformationControl(
+							parent, JFaceResources.DIALOG_FONT, EditorsUI
+									.getTooltipAffordanceString());
+					return info;
+				} else {
+					return new DefaultInformationControl(parent, EditorsUI
+							.getTooltipAffordanceString(),
+							new HTMLTextPresenter(true));
+				}
 			}
 		};
+	}
+
+	public IInformationControlCreator getInformationPresenterControlCreator() {
+		if (fPresenterControlCreator == null) {
+			fPresenterControlCreator = new PresenterControlCreator();
+		}
+		return fPresenterControlCreator;
 	}
 
 	@Override

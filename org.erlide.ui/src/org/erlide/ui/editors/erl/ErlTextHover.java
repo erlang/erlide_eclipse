@@ -185,71 +185,60 @@ public class ErlTextHover implements ITextHover,
 		protected IInformationControl doCreateInformationControl(
 				final Shell parent) {
 			if (BrowserInformationControl.isAvailable(parent)) {
-				try {
-					final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
+				final ToolBarManager tbm = new ToolBarManager(SWT.FLAT);
 
-					final String font = JFaceResources.DIALOG_FONT;
-					final BrowserInformationControl iControl = new BrowserInformationControl(
-							parent, font, tbm);
+				final String font = JFaceResources.DIALOG_FONT;
+				final BrowserInformationControl iControl = new BrowserInformationControl(
+						parent, font, tbm);
 
-					final BackAction backAction = new BackAction(iControl);
-					backAction.setEnabled(false);
-					tbm.add(backAction);
-					final ForwardAction forwardAction = new ForwardAction(
-							iControl);
-					tbm.add(forwardAction);
-					forwardAction.setEnabled(false);
+				final BackAction backAction = new BackAction(iControl);
+				backAction.setEnabled(false);
+				tbm.add(backAction);
+				final ForwardAction forwardAction = new ForwardAction(iControl);
+				tbm.add(forwardAction);
+				forwardAction.setEnabled(false);
 
-					final ShowInJavadocViewAction showInJavadocViewAction = new ShowInJavadocViewAction(
-							iControl);
-					tbm.add(showInJavadocViewAction);
-					final OpenDeclarationAction openDeclarationAction = new OpenDeclarationAction(
-							iControl);
-					tbm.add(openDeclarationAction);
+				final ShowInEdocViewAction showInEdocViewAction = new ShowInEdocViewAction(
+						iControl);
+				tbm.add(showInEdocViewAction);
+				final OpenDeclarationAction openDeclarationAction = new OpenDeclarationAction(
+						iControl);
+				tbm.add(openDeclarationAction);
 
-					final SimpleSelectionProvider selectionProvider = new SimpleSelectionProvider();
-					// OpenExternalBrowserAction openExternalJavadocAction = new
-					// OpenExternalBrowserAction(
-					// parent.getDisplay(), selectionProvider);
-					// selectionProvider
-					// .addSelectionChangedListener(openExternalJavadocAction);
-					// selectionProvider.setSelection(new
-					// StructuredSelection());
-					// tbm.add(openExternalJavadocAction);
+				final SimpleSelectionProvider selectionProvider = new SimpleSelectionProvider();
+				// OpenExternalBrowserAction openExternalJavadocAction = new
+				// OpenExternalBrowserAction(
+				// parent.getDisplay(), selectionProvider);
+				// selectionProvider
+				// .addSelectionChangedListener(openExternalJavadocAction);
+				// selectionProvider.setSelection(new
+				// StructuredSelection());
+				// tbm.add(openExternalJavadocAction);
 
-					final IInputChangedListener inputChangeListener = new IInputChangedListener() {
-						public void inputChanged(final Object newInput) {
-							backAction.update();
-							forwardAction.update();
-							if (newInput == null) {
-								selectionProvider
-										.setSelection(new StructuredSelection());
-							} else if (newInput instanceof BrowserInformationControlInput) {
-								final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
-								final Object inputElement = input
-										.getInputElement();
-								selectionProvider
-										.setSelection(new StructuredSelection(
-												inputElement));
-								final boolean hasInputElement = inputElement != null;
-								showInJavadocViewAction
-										.setEnabled(hasInputElement);
-								openDeclarationAction
-										.setEnabled(hasInputElement);
-							}
+				final IInputChangedListener inputChangeListener = new IInputChangedListener() {
+					public void inputChanged(final Object newInput) {
+						backAction.update();
+						forwardAction.update();
+						if (newInput == null) {
+							selectionProvider
+									.setSelection(new StructuredSelection());
+						} else if (newInput instanceof BrowserInformationControlInput) {
+							final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
+							final Object inputElement = input.getInputElement();
+							selectionProvider
+									.setSelection(new StructuredSelection(
+											inputElement));
+							final boolean hasInputElement = inputElement != null;
+							showInEdocViewAction.setEnabled(hasInputElement);
+							openDeclarationAction.setEnabled(hasInputElement);
 						}
-					};
-					iControl.addInputChangeListener(inputChangeListener);
+					}
+				};
+				iControl.addInputChangeListener(inputChangeListener);
 
-					tbm.update(true);
+				tbm.update(true);
 
-					return iControl;
-				} catch (final NoSuchMethodError e) {
-					// API changed in 3.4
-					return new DefaultInformationControl(parent, EditorsUI
-							.getTooltipAffordanceString(),
-							new HTMLTextPresenter(true));
-				}
+				return iControl;
 			} else {
 				return new DefaultInformationControl(parent, EditorsUI
 						.getTooltipAffordanceString(), new HTMLTextPresenter(
@@ -280,21 +269,14 @@ public class ErlTextHover implements ITextHover,
 		protected IInformationControl doCreateInformationControl(
 				final Shell parent) {
 			if (BrowserInformationControl.isAvailable(parent)) {
-				try {
-					return new BrowserInformationControl(parent,
-							JFaceResources.DIALOG_FONT, EditorsUI
-									.getTooltipAffordanceString()) {
-						@Override
-						public IInformationControlCreator getInformationPresenterControlCreator() {
-							return fInformationPresenterControlCreator;
-						}
-					};
-				} catch (final NoSuchMethodError e) {
-					// API changed in 3.4
-					return new DefaultInformationControl(parent, EditorsUI
-							.getTooltipAffordanceString(),
-							new HTMLTextPresenter(true));
-				}
+				return new BrowserInformationControl(parent,
+						JFaceResources.DIALOG_FONT, EditorsUI
+								.getTooltipAffordanceString()) {
+					@Override
+					public IInformationControlCreator getInformationPresenterControlCreator() {
+						return fInformationPresenterControlCreator;
+					}
+				};
 			} else {
 				return new DefaultInformationControl(parent, EditorsUI
 						.getTooltipAffordanceString(), new HTMLTextPresenter(
@@ -570,10 +552,10 @@ public class ErlTextHover implements ITextHover,
 	 * Action that shows the current hover contents in the Javadoc view.
 	 */
 	@SuppressWarnings("restriction")
-	private static final class ShowInJavadocViewAction extends Action {
+	private static final class ShowInEdocViewAction extends Action {
 		private final BrowserInformationControl fInfoControl;
 
-		public ShowInJavadocViewAction(
+		public ShowInEdocViewAction(
 				final BrowserInformationControl infoControl) {
 			fInfoControl = infoControl;
 			setText("Show in eDoc view");
