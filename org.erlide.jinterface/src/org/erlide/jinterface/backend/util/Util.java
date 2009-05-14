@@ -1554,9 +1554,9 @@ public final class Util {
 
 				// resize contents if needed
 				if (contentsLength + amountRequested > contents.length) {
-					System.arraycopy(contents, 0,
-							contents = new char[contentsLength
-									+ amountRequested], 0, contentsLength);
+					final char[] old = contents;
+					contents = new char[contentsLength + amountRequested];
+					System.arraycopy(old, 0, contents, 0, contentsLength);
 				}
 
 				// read as many chars as possible
@@ -1579,8 +1579,9 @@ public final class Util {
 			}
 			// resize contents if necessary
 			if (contentsLength < contents.length) {
+				final char[] old = contents;
 				contents = new char[contentsLength];
-				System.arraycopy(contents, start, contents, 0, contentsLength);
+				System.arraycopy(old, start, contents, 0, contentsLength);
 			}
 		} else {
 			contents = new char[length];
