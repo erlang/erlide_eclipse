@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
@@ -83,6 +84,9 @@ public class ErlModule extends Openable implements IErlModule {
 		logBuildStructure(underlyingResource);
 		final String path = getFilePath();
 		final String erlidePath = getErlidePath();
+		if (scanner == null) {
+			parsed = false;
+		}
 		final boolean initialParse = !parsed;
 		final String text = initialParse ? initialText : "";
 		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath);
@@ -113,7 +117,11 @@ public class ErlModule extends Openable implements IErlModule {
 	 * @return
 	 */
 	protected String getFilePath() {
-		return fFile.getLocation().toString();
+		final IPath location = fFile.getLocation();
+		if (location == null) {
+			return null;
+		}
+		return location.toString();
 	}
 
 	// public IErlElement getElementAt(final int position)
@@ -372,6 +380,9 @@ public class ErlModule extends Openable implements IErlModule {
 	private IErlScanner getNewScanner() {
 		final String path = getFilePath();
 		final String erlidePath = getErlidePath();
+		if (path == null || erlidePath == null) {
+			return null;
+		}
 		return new ErlScanner(this, initialText, path, erlidePath);
 	}
 
@@ -394,7 +405,9 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		if (!fIgnoreNextReconcile) {
 			getScanner();
-			scanner.replaceText(offset, removeLength, newText);
+			if (scanner != null) {
+				scanner.replaceText(offset, removeLength, newText);
+			}
 			if (mon != null) {
 				mon.worked(1);
 			}
@@ -531,6 +544,7 @@ public class ErlModule extends Openable implements IErlModule {
 	public void resetParser(final String newText) {
 		scanner = null;
 		initialText = newText;
+		parsed = false;
 		setStructureKnown(false);
 	}
 
