@@ -119,7 +119,7 @@
             id="org.erlide.ui.views.eval.LiveExpressionsView"
             name="Live Expressions"/>
       <view
-            category="org.erlide.views"
+            category="org.eclipse.debug.ui"
             class="org.erlide.ui.views.TraceLogView"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.TraceLogView"
@@ -497,6 +497,10 @@
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.erlide.debug.ui.commands.ToggleDebugTracing">
       </command>
+      <command
+            id="org.erlide.ui.actions.clearCache"
+            name="Clear Cache">
+      </command>
 
  </extension>
  <extension
@@ -647,6 +651,7 @@
              class="org.erlide.debug.ui.actions.ToggleDebugTracingAction"
              definitionId="org.erlide.debug.ui.commands.ToggleDebugTracing"
              helpContextId="toggle_debug_tracing_action_context"
+             icon="icons/full/etool16/debuggerTrace.gif"
              id="org.erlide.debug.ui.actions.ToggleDebugTracing"
              label="%toggleDebugTracing.label"
              menubarPath="org.eclipse.ui.run/erlideGroup">
@@ -1022,15 +1027,41 @@
             category="org.eclipse.debug.ui"
             class="org.erlide.debug.ui.views.DebuggerTraceView"
             icon="icons/file.gif"
-            id="org.erlide.ui.debug.debuggerTraceView"
+            id="org.erlide.debug.ui.views.debuggerTraceView"
             name="Debugger Trace">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.erlide.debug.ui.views.DebuggerTraceViewActions"
+            targetID="org.erlide.debug.ui.views.debuggerTraceView">
+         <action
+               class="org.erlide.debug.ui.actions.DebugTraceAsLaunchAction"
+               disabledIcon="icons/full/dtool16/run_exc.gif"
+               icon="icons/full/etool16/run_exc.gif"
+               id="org.erlide.debug.ui.actions.DebugTraceAsLaunch"
+               label="%DebugTraceAsLaunch.label"
+               style="push"
+               toolbarPath="debugTraceToolbar"
+               tooltip="%DebugTraceAsLaunch.toolTip">
+            <enablement>
+               <objectClass
+                     name="org.eclipse.debug.core.model.IDebugTarget">
+               </objectClass>
+            </enablement>
+         </action>
+      </viewContribution>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
             class="org.erlide.debug.ui.model.ErlDebugModelPresentation"
             id="org.erlide.debug.model"/>
+      <debugModelPresentation
+            class="org.erlide.debug.ui.tracing.DebugTraceDebugModelPresentation"
+            id="org.erlide.debug.trace.model">
+      </debugModelPresentation>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -1047,12 +1078,21 @@
             id="org.erlide.debug.ui.debugging"
             name="Debugging Erlang"
             parentId="org.eclipse.debug.ui.debugging"/>
+      <context
+            description="Replaying Erlang Trace"
+            id="org.erlide.debug.ui.debugging.trace"
+            name="Debugging Trace"
+            parentId="org.eclipse.debug.ui.debugging"/>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelContextBindings">
       <modelContextBinding
             contextId="org.erlide.debug.ui.debugging"
             debugModelId="org.erlide.debug.model"/>
+      <modelContextBinding
+            contextId="org.erlide.debug.ui.debugging.trace"
+            debugModelId="org.erlide.debug.trace.model">
+      </modelContextBinding>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -1077,7 +1117,7 @@
                visible="true">
          </view>
          <view
-               id="org.erlide.ui.debug.debuggerTraceView"
+               id="org.erlide.debug.ui.views.debuggerTraceView"
                relationship="stack"
                visible="true">
          </view>
@@ -1129,6 +1169,13 @@
             name="Erlang application"
             sourceLocatorId="org.erlide.core.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.erlide.debug.ui.tracing.DebugTraceLaunchConfigurationDelegate"
+            id="org.erlide.runtime.debug.launchDebugTrace"
+            modes="debug"
+            name="Erlang Debug Trace"
+            public="false">
       </launchConfigurationType>
    </extension>
    <extension

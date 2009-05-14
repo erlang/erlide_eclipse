@@ -109,6 +109,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.ClearCacheAction;
 import org.erlide.ui.actions.CompileAction;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -195,6 +196,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private CompileAction compileAction;
 
 	private ScannerListener scannerListener;
+
+	private ClearCacheAction clearCacheAction;
 
 	/**
 	 * Simple constructor
@@ -387,6 +390,18 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// IErlangHelpContextIds.INDENT_ACTION);
 		}
 
+		if (ErlideUtil.isClearCacheAvailable()) {
+			clearCacheAction = new ClearCacheAction(ErlangEditorMessages
+					.getBundleForConstructedKeys(), "ClearCache.", this);
+			clearCacheAction
+					.setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
+			setAction("ClearCache", clearCacheAction);
+			markAsStateDependentAction("ClearCache", true);
+			markAsSelectionDependentAction("ClearCache", true);
+			// PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
+			// IErlangHelpContextIds.INDENT_ACTION);
+		}
+
 		final Action action = new IndentAction(ErlangEditorMessages
 				.getBundleForConstructedKeys(), "Indent.", this);
 		setAction("IndentOnTab", action);
@@ -419,6 +434,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		if (ErlideUtil.isTest()) {
 			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
+		}
+		if (ErlideUtil.isClearCacheAvailable()) {
+			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
+					clearCacheAction);
 		}
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
@@ -1365,7 +1384,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the position of the found annotation
 	 * @return the found annotation
 	 */
-	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
 			final boolean forward, final Position annotationPosition) {
 
@@ -1400,9 +1418,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			if (forward && p.offset == offset || !forward
 					&& p.offset + p.getLength() == offset + length) {
 				// || p.includes(offset))
-				if (containingAnnotation == null
-						|| (forward && p.length >= containingAnnotationPosition.length)
-						|| (!forward && p.length < containingAnnotationPosition.length)) {
+				if (containingAnnotation == null || forward
+						&& p.length >= containingAnnotationPosition.length
+						|| !forward
+						&& p.length < containingAnnotationPosition.length) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1591,6 +1610,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void doSave(final IProgressMonitor progressMonitor) {
 		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
+		resetParser();
+	}
+
+	public void resetParser() {
 		getModule().resetParser(getDocument().get());
 		((EditorConfiguration) getSourceViewerConfiguration())
 				.resetReconciler();
