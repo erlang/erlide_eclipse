@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendException;
-import org.erlide.core.util.Util;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -50,6 +50,7 @@ public class ErlideContextAssist {
 		return false;
 	}
 
+	@SuppressWarnings("boxing")
 	public static OtpErlangList getFunctionHead(final Backend b,
 			final String name, final int arity) {
 		try {

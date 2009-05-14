@@ -394,4 +394,8 @@ public class ErlideUtil {
 		}
 	}
 
+	public static boolean isClearCacheAvailable() {
+		return true;
+	}
+
 }
