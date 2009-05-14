@@ -210,6 +210,11 @@ public class ErlideUtil {
 		return test != null && "true".equals(test);
 	}
 
+	public static boolean isClearCacheAvailable() {
+		final String test = System.getProperty("erlide.clearCacheAvailable");
+		return test != null && "true".equals(test);
+	}
+
 	public static boolean isEricssonUser() {
 		final String dev = System.getProperty("erlide.ericsson.user");
 		if (dev != null && !"true".equals(dev)) {
@@ -392,10 +397,6 @@ public class ErlideUtil {
 		} else {
 			return s;
 		}
-	}
-
-	public static boolean isClearCacheAvailable() {
-		return true;
 	}
 
 }
