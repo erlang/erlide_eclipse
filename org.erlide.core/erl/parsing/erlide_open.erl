@@ -54,14 +54,18 @@ open(Mod, Offset, ExternalModules, PathVars) ->
     end.
 
 try_open(Mod, Offset, TokensWComments, BeforeReversed, ExternalModules, PathVars) ->
-    Tokens = erlide_text:strip_comments(TokensWComments),
-    ?D(Tokens),
-    o_tokens(Tokens, ExternalModules, PathVars, BeforeReversed),
-    case BeforeReversed of
-        [] ->
-            not_found;
-        [B | Rest] ->
-            try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
+    case erlide_text:strip_comments(TokensWComments) of
+	[#token{offset=O} | _] = Tokens when O =< Offset ->
+	    ?D(Tokens),
+	    o_tokens(Tokens, ExternalModules, PathVars, BeforeReversed),
+	    case BeforeReversed of
+		[] ->
+		    not_found;
+		[B | Rest] ->
+		    try_open(Mod, Offset, [B | TokensWComments], Rest, ExternalModules, PathVars)
+	    end;
+	_ ->
+	    ok
     end.
 
 has_prefix(Prefix, FileName) ->
