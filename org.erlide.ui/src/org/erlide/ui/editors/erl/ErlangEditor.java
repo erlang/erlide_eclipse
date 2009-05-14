@@ -143,60 +143,33 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		IOutlineSelectionHandler {
 
 	private ColorManager colorManager;
-
 	private ErlangOutlinePage myOutlinePage;
-
 	private IPropertySource myPropertySource;
-
 	private ProjectionSupport fProjectionSupport;
-
 	private IErlangFoldingStructureProvider fProjectionModelUpdater;
-
 	private OpenAction openAction;
-
 	private IndentAction indentAction;
-
 	private ToggleCommentAction toggleCommentAction;
-
 	private TestAction testAction;
-
 	/** The selection changed listeners */
 	private EditorSelectionChangedListener fEditorSelectionChangedListener;
-
 	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
-
 	private InformationPresenter fInformationPresenter;
-
 	private ShowOutlineAction fShowOutline;
-
 	private Object fSelection;
-
 	/** Preference key for matching brackets */
 	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
-
 	/** Preference key for matching brackets color */
 	protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-
 	/** The bracket inserter. */
 	private ErlangEditorBracketInserter fBracketInserter = null;
-
 	private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
-
 	private ActionGroup fActionGroups;
-
 	private ActionGroup fContextMenuGroup;
-
 	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
-
-	// private String fExternalModules = null;
-	// private String fExternalIncludes;
-
 	ToggleFoldingRunner fFoldingRunner;
-
 	private CompileAction compileAction;
-
 	private ScannerListener scannerListener;
-
 	private ClearCacheAction clearCacheAction;
 
 	/**

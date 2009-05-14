@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -48,6 +52,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -77,6 +82,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private final IErlModule module;
 	// private final String externalModules;
 	// private final String externalIncludes;
+	private static URL fgStyleSheet;
 
 	private static final int DECLARED_FUNCTIONS = 1;
 	private static final int EXTERNAL_FUNCTIONS = 2;
@@ -102,6 +108,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		this.module = module;
 		// this.externalModules = externalModules;
 		// this.externalIncludes = externalIncludes;
+		initStyleSheet();
 	}
 
 	public ICompletionProposal[] computeCompletionProposals(
@@ -450,6 +457,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
+	@SuppressWarnings("restriction")
 	private void addFunctionProposalsWithDoc(final int offset,
 			final String aprefix, final List<ICompletionProposal> result,
 			final OtpErlangObject res, final IErlImport erlImport,
@@ -467,20 +475,28 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				String funWithParameters = arityOnly ? funWithArity
 						: ((OtpErlangString) f.elementAt(1)).stringValue();
 				final OtpErlangList parOffsets = (OtpErlangList) f.elementAt(2);
-				String docStr = null;
+				StringBuffer docStr = null;
 				if (f.arity() > 3) {
 					final OtpErlangObject elt = f.elementAt(3);
 					if (elt instanceof OtpErlangString) {
-						docStr = ((OtpErlangString) elt).stringValue();
+						docStr = new StringBuffer(((OtpErlangString) elt)
+								.stringValue());
+						if (docStr.length() > 0) {
+							HTMLPrinter.insertPageProlog(docStr, 0,
+									fgStyleSheet);
+							HTMLPrinter.addPageEpilog(docStr);
+						}
 					}
 				}
+
 				funWithParameters = funWithParameters.substring(aprefix
 						.length());
 				final List<Point> offsetsAndLengths = new ArrayList<Point>();
 				if (!arityOnly) {
 					addOffsetsAndLengths(parOffsets, offset, offsetsAndLengths);
 				}
-				addFunctionCompletion(offset, result, funWithArity, docStr,
+				addFunctionCompletion(offset, result, funWithArity,
+						docStr == null ? null : docStr.toString(),
 						funWithParameters, offsetsAndLengths);
 			}
 		}
@@ -768,4 +784,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	// public void pathVariableChanged(final IPathVariableChangeEvent event) {
 	// initPathVars();
 	// }
+	private void initStyleSheet() {
+		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+		if (fgStyleSheet != null) {
+			try {
+				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+			} catch (final Exception e) {
+			}
+		}
+	}
+
 }
