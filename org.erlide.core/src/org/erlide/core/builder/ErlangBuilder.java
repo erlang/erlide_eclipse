@@ -36,9 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.internal.BuildNotifier;
-import org.erlide.core.builder.internal.BuilderMessages;
-import org.erlide.core.builder.internal.ErlangBuilderMarkerGenerator;
+import org.erlide.core.IMarkerGenerator;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
@@ -520,6 +518,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					return;
 				}
 				final IErlScanner s = m.getScanner();
+				if (s == null) {
+					return;
+				}
 				final Collection<IErlComment> cl = s.getComments();
 				for (final IErlComment c : cl) {
 					final String name = c.getName();
