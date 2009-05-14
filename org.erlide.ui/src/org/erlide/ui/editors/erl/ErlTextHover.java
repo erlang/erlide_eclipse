@@ -53,6 +53,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -93,7 +94,11 @@ public class ErlTextHover implements ITextHover,
 		if (fEditor != null) {
 			fEditor.reconcileNow();
 		}
-		final ErlToken token = fModule.getScanner().getTokenAt(offset);
+		final IErlScanner scanner = fModule.getScanner();
+		if (scanner == null) {
+			return null;
+		}
+		final ErlToken token = scanner.getTokenAt(offset);
 		if (token == null) {
 			return null;
 		}
