@@ -15,4 +15,7 @@ public interface IErlFunctionClause extends IErlMember {
 	public String getHead();
 
 	public String getFunctionName();
+
+	int getArity();
+
 }

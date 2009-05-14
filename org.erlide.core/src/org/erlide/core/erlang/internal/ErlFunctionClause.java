@@ -11,6 +11,7 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
@@ -52,5 +53,10 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
 	public String getFunctionName() {
 		return getParent().getName();
+	}
+
+	public int getArity() {
+		final IErlFunction f = (IErlFunction) getParent();
+		return f.getArity();
 	}
 }

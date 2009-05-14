@@ -19,9 +19,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
  * @author Vlad Dumitrescu
  */
 public interface IErlFunction extends IErlFunctionClause, IParent {
-
-	int getArity();
-
 	boolean isExported();
 
 	List<IErlFunctionClause> getClauses();
