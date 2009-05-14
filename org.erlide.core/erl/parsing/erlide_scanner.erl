@@ -1,4 +1,4 @@
- %% Author: jakob
+%% Author: jakob
 %% Created: 24 apr 2008
 %% Description: 
 -module(erlide_scanner).
@@ -100,7 +100,9 @@ match_test(Module, Text) ->
         Text ->
             "match\n";
         ModText -> 
-            "text mismatch!\n-----------------\""++ModText++"\"\n----------------\n\""++Text++"\"\n"
+            "text mismatch!"++
+		  "\n(Scanner text)----------------\n\"" ++ ModText ++
+		"\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
     end.
 
 scan_test(Module) ->
@@ -493,10 +495,12 @@ do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, Modules) ->
     NewMod = do_scan_uncached(Mod, ModuleFileName, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
-    ?Debug({rescan, _Mod}),
+    ?D({rescan, _Mod}),
     Modules;
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath}, Modules) ->
+    ?D({initial_scan, Mod}),
     {Cached, NewMod} = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
+    ?D({done, Mod}),
     {{ok, Cached}, [NewMod | lists:keydelete(Mod, #module.name, Modules)]};
 do_cmd(all, [], Modules) ->
     {Modules, Modules};
@@ -513,7 +517,6 @@ do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
     ?D({replace_text, Mod, Offset, RemoveLength, NewText}),
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     NewMod = replace_text(Module, Offset, RemoveLength, NewText),
-    ?D(NewMod),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
 do_cmd(get_text, Mod, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
@@ -535,9 +538,7 @@ do_cmd(get_token_window, {Mod, Offset, Before, After}, Modules) ->
     {get_token_window(Module, Offset, Before, After), Modules}.
 
 tokens_to_string(T) ->
-    ?D(T),
     S = tokens_to_string(T, []),
-    ?D(S),
     S.
 
 token_to_string(#token{text=Text}) when is_list(Text) ->
