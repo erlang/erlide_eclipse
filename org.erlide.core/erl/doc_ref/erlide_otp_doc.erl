@@ -12,6 +12,8 @@
          get_proposals/3,
          get_all_doc_dirs/0]).
 
+-export([fix_proposals/3]).
+
 -include_lib("kernel/include/file.hrl").
 
 %% -define(DEBUG, 1).
