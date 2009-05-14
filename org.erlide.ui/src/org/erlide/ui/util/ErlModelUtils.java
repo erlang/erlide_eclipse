@@ -53,7 +53,6 @@ import org.erlide.core.preferences.ErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import erlang.ErlideOpen;
@@ -413,8 +412,8 @@ public class ErlModelUtils {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName);
 			if (r != null
-					&& !org.erlide.core.erlang.util.PluginUtils.isOnSourcePath(r
-							.getParent())) {
+					&& !org.erlide.core.erlang.util.PluginUtils
+							.isOnSourcePath(r.getParent())) {
 				r = null;
 			}
 		}
@@ -480,34 +479,6 @@ public class ErlModelUtils {
 		}
 		EditorUtility.revealInEditor(editor, typespec);
 		return true;
-	}
-
-	public static void disposeScanner(final ErlangEditor editor) {
-		final IErlModule mod = getModule(editor);
-		if (mod != null) {
-			mod.disposeScanner();
-		}
-	}
-
-	public static void disposeParser(final ErlangEditor editor) {
-		final IErlModule mod = getModule(editor);
-		if (mod != null) {
-			mod.disposeParser();
-		}
-	}
-
-	public static void disposeModule(final ErlangEditor editor) {
-		final IErlModule mod = getModule(editor);
-		if (mod != null) {
-			mod.dispose();
-		}
-	}
-
-	public static void reenableScanner(final ErlangEditor editor) {
-		final IErlModule mod = getModule(editor);
-		if (mod != null) {
-			mod.reenableScanner();
-		}
 	}
 
 	public static List<IErlModule> getModulesWithReferencedProjects(
