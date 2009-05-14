@@ -10,7 +10,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.erlide.core.ErlangProjectNature">
+               class="org.erlide.core.internal.ErlangProjectNature">
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>

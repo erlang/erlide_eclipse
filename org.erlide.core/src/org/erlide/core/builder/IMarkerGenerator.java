@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IResource;
 

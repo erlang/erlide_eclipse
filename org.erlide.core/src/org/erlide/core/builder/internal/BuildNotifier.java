@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
+import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.IProblem;
 import org.erlide.jinterface.util.ErlLogger;
 

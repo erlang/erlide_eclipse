@@ -8,13 +8,13 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import org.eclipse.osgi.util.NLS;
 
 public final class BuilderMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.erlide.core.builder.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.erlide.core.builder.internal.messages"; //$NON-NLS-1$
 
 	private BuilderMessages() {
 	}

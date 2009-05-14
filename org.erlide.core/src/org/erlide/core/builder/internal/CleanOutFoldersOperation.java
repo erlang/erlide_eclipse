@@ -1,5 +1,5 @@
 // Copyright (c) 2003-2004 by Leif Frenzel - see http://leiffrenzel.de
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;

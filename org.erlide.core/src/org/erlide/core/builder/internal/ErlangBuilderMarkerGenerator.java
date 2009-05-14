@@ -1,13 +1,14 @@
 /**
  *
  */
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.IMarkerGenerator;
+import org.erlide.core.builder.ErlangBuilder;
+import org.erlide.core.builder.IMarkerGenerator;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -16,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
+public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 
 	public void addMarker(final IResource file, final IResource compiledFile,
 			final String errorDesc, final int lineNumber, final int severity,
@@ -25,7 +26,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 				errorDesc, lineNumber, severity);
 	}
 
-	static IResource findResourceByName(final IContainer container,
+	public static IResource findResourceByName(final IContainer container,
 			final String fileName) {
 		try {
 			for (final IResource r : container.members()) {
@@ -46,7 +47,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 		return null;
 	}
 
-	static boolean comparePath(final String p1, final String p2) {
+	public static boolean comparePath(final String p1, final String p2) {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		if (WINDOWS) {
 			return p1.equalsIgnoreCase(p2);
@@ -55,7 +56,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 		}
 	}
 
-	static IResource findResource(final IContainer container,
+	public static IResource findResource(final IContainer container,
 			final String fileName) {
 		try {
 			for (final IResource r : container.members()) {
@@ -75,7 +76,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 		return null;
 	}
 
-	static void addTaskMarker(final IResource file,
+	public static void addTaskMarker(final IResource file,
 			final IResource compiledFile, final String message, int lineNumber,
 			final int priority) {
 		try {
@@ -154,7 +155,7 @@ class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 		}
 	}
 
-	static void addProblemMarker(final IResource file,
+	public static void addProblemMarker(final IResource file,
 			final IResource compiledFile, final String message, int lineNumber,
 			final int severity) {
 		try {
