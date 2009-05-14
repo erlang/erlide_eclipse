@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Map;
 
 import org.erlide.jinterface.util.TypeConverter;
 
@@ -23,14 +22,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 
 public class ErlangBridge {
-
-	@SuppressWarnings( { "boxing", "unchecked" })
-	public static void main(final String[] args) {
-		final Map<String, Integer> o = (Map<String, Integer>) newInstance(Map.class,
-				"wolf", null);
-		o.put("dd", 44);
-
-	}
 
 	/**
 	 * Given an interface, an erlang node name and a module name, construct an
@@ -43,7 +34,8 @@ public class ErlangBridge {
 	 * @param module
 	 * @return
 	 */
-	public static Object newInstance(final Class<?> intf, final String node, final String module) {
+	public static Object newInstance(final Class<?> intf, final String node,
+			final String module) {
 		try {
 			return Proxy.newProxyInstance(intf.getClassLoader(),
 					new Class[] { intf }, new ErlangBridgeHandler(intf
@@ -67,7 +59,8 @@ public class ErlangBridge {
 		private final OtpMbox mbox;
 		private OtpNode lnode;
 
-		public ErlangBridgeHandler(final String intf, final String node, final String module) {
+		public ErlangBridgeHandler(final String intf, final String node,
+				final String module) {
 			this.module = module;
 			if (module == null) {
 				this.module = intf;
@@ -81,8 +74,8 @@ public class ErlangBridge {
 			this.mbox = this.lnode.createMbox();
 		}
 
-		public Object invoke(final Object proxy, final Method method, final Object[] args)
-		throws Throwable {
+		public Object invoke(final Object proxy, final Method method,
+				final Object[] args) throws Throwable {
 			final OtpErlangObject[] eargs = new OtpErlangObject[args.length + 1];
 			eargs[0] = TypeConverter.java2erlang(proxy, "x");
 			for (int i = 0; i < args.length; i++) {
