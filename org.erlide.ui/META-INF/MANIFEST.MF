@@ -10,18 +10,18 @@ Bundle-Localization: plugin
 Export-Package: com.bdaum.overlayPages;x-internal:=true,
  com.novocode.naf.swt.custom;x-internal:=true,
  com.swtdesigner;x-internal:=true,
- erlang,
- org.erlide.debug.ui.actions,
- org.erlide.debug.ui.model;
+ erlang;x-internal:=true,
+ org.erlide.debug.ui.actions;x-internal:=true,
+ org.erlide.debug.ui.model;x-internal:=true;
   uses:="com.ericsson.otp.erlang,
    org.eclipse.debug.core.model,
    org.erlide.runtime.backend,
    org.eclipse.core.resources,
    org.eclipse.debug.core",
- org.erlide.debug.ui.properties,
- org.erlide.debug.ui.utils,
- org.erlide.debug.ui.views,
- org.erlide.ui;x-internal:=true;
+ org.erlide.debug.ui.properties;x-internal:=true,
+ org.erlide.debug.ui.utils;x-internal:=true,
+ org.erlide.debug.ui.views;x-internal:=true,
+ org.erlide.ui;x-friends:="org.erlide.gunit";
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.ui.navigator,
@@ -39,7 +39,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.ui.progress,
    org.eclipse.jface.dialogs",
- org.erlide.ui.actions;
+ org.erlide.ui.actions;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.ui.texteditor,
    org.eclipse.ui.navigator,
@@ -54,12 +54,12 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.jface.util,
    org.eclipse.swt.widgets",
- org.erlide.ui.dialogfields;
+ org.erlide.ui.dialogfields;x-internal:=true;
   uses:="org.eclipse.swt.events,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.swt.layout",
- org.erlide.ui.editors.erl;
+ org.erlide.ui.editors.erl;x-friends:="org.erlide.gunit";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
@@ -89,14 +89,14 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.util,
    org.eclipse.swt.widgets,
    org.eclipse.ui.editors.text",
- org.erlide.ui.editors.erl.test,
- org.erlide.ui.editors.folding;
+ org.erlide.ui.editors.erl.test;x-internal:=true,
+ org.erlide.ui.editors.folding;x-internal:=true;
   uses:="org.eclipse.ui.texteditor,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang,
    org.eclipse.jface.text.source.projection",
  org.erlide.ui.editors.internal.reconciling;x-internal:=true,
- org.erlide.ui.editors.outline;
+ org.erlide.ui.editors.outline;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.jface.action,
    org.erlide.ui.editors.erl,
@@ -106,7 +106,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.erlide.ui.util,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.editors.util;
+ org.erlide.ui.editors.util;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.swt.events,
@@ -115,7 +115,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang",
- org.erlide.ui.erlangsource.prefs;
+ org.erlide.ui.erlangsource.prefs;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.swt.events,
    org.eclipse.ui,
@@ -128,8 +128,8 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.erlangsource.templates;uses:="org.eclipse.jface.text.templates.persistence,org.eclipse.jface.text.templates",
- org.erlide.ui.erlangsource.wizards;
+ org.erlide.ui.erlangsource.templates;x-internal:=true;uses:="org.eclipse.jface.text.templates.persistence,org.eclipse.jface.text.templates",
+ org.erlide.ui.erlangsource.wizards;x-internal:=true;
   uses:="org.eclipse.jface.wizard,
    org.eclipse.core.runtime,
    org.eclipse.swt.events,
@@ -140,14 +140,14 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
  org.erlide.ui.internal.util;x-friends:="org.erlide.gunit",
- org.erlide.ui.launch;
+ org.erlide.ui.launch;x-friends:="org.erlide.selfhost.plugin";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,
    org.eclipse.ui,
    org.eclipse.swt.graphics,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets",
- org.erlide.ui.navigator;
+ org.erlide.ui.navigator;x-internal:=true;
   uses:="org.erlide.ui.internal,
    org.eclipse.core.runtime,
    org.eclipse.ui.navigator,
@@ -156,13 +156,13 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.graphics,
    org.eclipse.jface.viewers,
    org.erlide.core.erlang",
- org.erlide.ui.navigator.actions;
+ org.erlide.ui.navigator.actions;x-internal:=true;
   uses:="org.eclipse.jface.action,
    org.eclipse.ui.navigator,
    org.eclipse.ui,
    org.eclipse.jface.viewers",
- org.erlide.ui.perspectives;uses:="org.eclipse.ui",
- org.erlide.ui.prefs;
+ org.erlide.ui.perspectives;x-internal:=true;uses:="org.eclipse.ui",
+ org.erlide.ui.prefs;x-internal:=true;
   uses:="org.erlide.runtime.backend,
    org.eclipse.core.runtime,
    org.eclipse.ui,
@@ -175,7 +175,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.erlide.ui.util,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.prefs.plugin;
+ org.erlide.ui.prefs.plugin;x-internal:=true;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.ui,
@@ -190,8 +190,8 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
  org.erlide.ui.prefs.plugin.internal;x-internal:=true,
- org.erlide.ui.prefs.tickets,
- org.erlide.ui.properties;
+ org.erlide.ui.prefs.tickets;x-internal:=true,
+ org.erlide.ui.properties;x-internal:=true;
   uses:="org.erlide.runtime.backend,
    org.eclipse.core.runtime,
    org.eclipse.jface.preference,
@@ -203,7 +203,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.core.runtime.preferences,
    org.eclipse.swt.widgets",
  org.erlide.ui.properties.internal;x-internal:=true,
- org.erlide.ui.search;
+ org.erlide.ui.search;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.resource,
@@ -247,7 +247,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs,
    org.erlide.core.erlang",
- org.erlide.ui.views;
+ org.erlide.ui.views;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.erlide.runtime.backend,
    org.eclipse.jface.text.source,
@@ -264,8 +264,8 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.ui.editors.text",
- org.erlide.ui.views.console,
- org.erlide.ui.views.eval;
+ org.erlide.ui.views.console;x-internal:=true,
+ org.erlide.ui.views.eval;x-internal:=true;
   uses:="org.eclipse.jface.action,
    org.erlide.runtime.backend,
    org.eclipse.ui,
@@ -274,7 +274,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.ui.part,
    org.eclipse.swt.widgets",
- org.erlide.ui.views.outline;
+ org.erlide.ui.views.outline;x-friends:="org.erlide.gunit";
   uses:="org.eclipse.jface.text,
    org.eclipse.ui.texteditor,
    org.eclipse.core.runtime,
@@ -290,7 +290,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang",
- org.erlide.ui.views.processlist;
+ org.erlide.ui.views.processlist;x-internal:=true;
   uses:="org.eclipse.jface.action,
    org.erlide.runtime.backend,
    com.ericsson.otp.erlang,
@@ -298,7 +298,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.viewers,
    org.eclipse.ui.part,
    org.eclipse.swt.widgets",
- org.erlide.ui.wizards;
+ org.erlide.ui.wizards;x-internal:=true;
   uses:="org.eclipse.jface.wizard,
    org.eclipse.core.runtime,
    org.eclipse.jface.resource,

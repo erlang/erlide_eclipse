@@ -46,7 +46,7 @@ Export-Package: erlang,
    org.erlide.runtime.backend,
    org.eclipse.core.resources,
    org.eclipse.debug.core",
- org.erlide.runtime.launch;x-friends:="org.erlide.ui,org.erlide.selfhost.plugin"
+ org.erlide.runtime.launch;x-friends:="org.erlide.ui,org.erlide.selfhost.plugin,org.erlide.gunit"
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.jinterface,

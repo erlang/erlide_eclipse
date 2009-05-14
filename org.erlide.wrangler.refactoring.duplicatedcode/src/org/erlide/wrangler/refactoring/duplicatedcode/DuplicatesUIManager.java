@@ -29,6 +29,7 @@ public class DuplicatesUIManager {
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		try {
 
+			@SuppressWarnings("unused")
 			IViewPart view = window
 					.getActivePage()
 					.showView(
