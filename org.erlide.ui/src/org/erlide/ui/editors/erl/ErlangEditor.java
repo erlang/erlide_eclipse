@@ -236,9 +236,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void disposeModule() {
-		ErlModelUtils.disposeScanner(this);
-		ErlModelUtils.disposeParser(this);
-		ErlModelUtils.disposeModule(this);
+		final IErlModule module = getModule();
+		if (module != null) {
+			module.disposeScanner();
+			module.disposeParser();
+			module.dispose();
+		}
 	}
 
 	public ICharacterPairMatcher getBracketMatcher() {
@@ -660,7 +663,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// TODO should we use model events here?
 			myOutlinePage.setInput(input);
 		}
-		ErlModelUtils.reenableScanner(this);
+		if (getModule() != null) {
+			getModule().reenableScanner();
+		}
 		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
 
 		document = provider.getDocument(input);
@@ -1587,9 +1592,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void resetParser() {
-		getModule().resetParser(getDocument().get());
-		((EditorConfiguration) getSourceViewerConfiguration())
-				.resetReconciler();
+		try {
+			final IErlModule module = getModule();
+			if (module != null) {
+				module.resetParser(getDocument().get());
+				module.open(null);
+				((EditorConfiguration) getSourceViewerConfiguration())
+						.resetReconciler();
+			}
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void reconcileNow() {
