@@ -15,7 +15,7 @@
 %%
 %% Exported Functions
 %%
--export([get_variables/2, check_record/1]).
+-export([get_variables/2, check_record/1, get_function_head/2]).
 
 %%
 %% API Functions
@@ -99,5 +99,6 @@ check_record_tokens(L, _) ->
 	Rest ->
 	    check_record_tokens(Rest, false)
     end.
-    
 
+get_function_head(Fun, Arity) ->
+    erlide_otp_doc:fix_proposals([{Fun, Arity}], [""], 0).
