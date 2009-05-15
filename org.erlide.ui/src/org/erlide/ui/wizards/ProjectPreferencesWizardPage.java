@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
@@ -58,7 +58,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	private Button externalModulesBrowse;
 	private Button externalIncludesBrowse;
 
-	ErlangProjectProperties prefs;
+	OldErlangProjectProperties prefs;
 
 	/**
 	 * Constructor inherited from parent
@@ -85,7 +85,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(final Composite parent) {
-		prefs = new ErlangProjectProperties();
+		prefs = new OldErlangProjectProperties();
 
 		// create the composite to hold the widgets
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -275,7 +275,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		}
 	};
 
-	public ErlangProjectProperties getPrefs() {
+	public OldErlangProjectProperties getPrefs() {
 		return prefs;
 	}
 

@@ -39,7 +39,7 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
@@ -154,7 +154,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	private boolean validateFinish() {
 		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
 				+ "|");
-		final ErlangProjectProperties prefs = buildPage.getPrefs();
+		final OldErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().trim().length() == 0) {
 			reportError(ErlideUIPlugin
 					.getResourceString("wizard.errors.buildpath"));
@@ -203,14 +203,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			monitor.subTask(ErlideUIPlugin
 					.getResourceString("wizards.messages.creatingfiles"));
 
-			final ErlangProjectProperties bprefs = buildPage.getPrefs();
+			final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
 			buildPaths(monitor, root, project, new String[] { bprefs
 					.getOutputDir() });
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
 			buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 			prefs.copyFrom(bprefs);
 			final IEclipsePreferences node = new ProjectScope(project)

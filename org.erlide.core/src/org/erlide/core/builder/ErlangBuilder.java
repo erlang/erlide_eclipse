@@ -49,7 +49,7 @@ import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlangCode;
@@ -99,7 +99,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			initializeBuilder();
 			removeProblemsAndTasksFor(currentProject);
 
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(currentProject);
 			final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
 			if (bf.exists()) {
@@ -254,7 +254,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final Exception e) {
 		}
 		try {
-			final ErlangProjectProperties pp = ErlangCore
+			final OldErlangProjectProperties pp = ErlangCore
 					.getProjectProperties(currentProject);
 			final String[] sd = pp.getSourceDirs();
 			final String[] dirList = new String[sd.length];
@@ -345,7 +345,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	public static void compileFile(final IProject project,
 			final IResource resource, final Backend backend) {
 		final IPath projectPath = project.getLocation();
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 
 		final String s = resource.getFileExtension();
@@ -490,7 +490,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	 */
 	private static List<String> getIncludeDirs(final IProject project,
 			final List<String> includeDirs) {
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final String[] incs = prefs.getIncludeDirs();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
@@ -570,8 +570,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	protected void compileYrlFile(final IProject project,
 			final IResource resource, final Backend backend) {
 		// final IPath projectPath = project.getLocation();
-		// final ErlangProjectProperties prefs = new
-		// ErlangProjectProperties(project);
+		// final OldErlangProjectProperties prefs = new
+		// OldErlangProjectProperties(project);
 
 		deleteMarkers(resource);
 		// try {
@@ -633,7 +633,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	public static boolean isInCodePath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
 		final String[] srcs = prefs.getSourceDirs();
@@ -651,7 +651,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	static boolean isInExtCodePath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
 		final String[] srcs = prefs.getSourceDirs();
@@ -682,7 +682,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	static boolean isInOutputPath(final IResource resource,
 			final IProject project) {
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getLocation();
 
@@ -719,7 +719,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(my_project);
 
 			if (resource.getType() == IResource.FILE

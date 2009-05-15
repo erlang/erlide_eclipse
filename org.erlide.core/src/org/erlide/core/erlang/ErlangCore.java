@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -98,7 +98,7 @@ public final class ErlangCore {
 		return BackendManager.getDefault();
 	}
 
-	public static ErlangProjectProperties getProjectProperties(
+	public static OldErlangProjectProperties getProjectProperties(
 			final IProject project) {
 		return getModelManager().getErlangModel().getErlangProject(
 				project.getName()).getProperties();
@@ -494,7 +494,7 @@ public final class ErlangCore {
 			try {
 				if (project.isOpen()
 						&& project.hasNature(ErlangPlugin.NATURE_ID)) {
-					final ErlangProjectProperties prefs = ErlangCore
+					final OldErlangProjectProperties prefs = ErlangCore
 							.getProjectProperties(project);
 					final String path = project.getLocation().append(
 							prefs.getOutputDir()).toString();

@@ -52,7 +52,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlangCode;
@@ -221,7 +221,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager().addExecution(project, backend);
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 			final String outDir = project.getLocation().append(
 					prefs.getOutputDir()).toOSString();

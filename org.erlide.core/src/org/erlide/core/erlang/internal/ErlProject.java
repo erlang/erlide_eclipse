@@ -40,7 +40,7 @@ import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -87,13 +87,13 @@ public class ErlProject extends Openable implements IErlProject {
 	 */
 	private IResource[] nonErlangResources;
 
-	private final ErlangProjectProperties properties;
+	private final OldErlangProjectProperties properties;
 
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
 		fProject = project;
 		nonErlangResources = null;
-		properties = new ErlangProjectProperties(fProject);
+		properties = new OldErlangProjectProperties(fProject);
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class ErlProject extends Openable implements IErlProject {
 	public IPath getOutputLocation(final boolean createMarkers,
 			final boolean logProblems) throws ErlModelException {
 
-		final ErlangProjectProperties props = ErlangCore
+		final OldErlangProjectProperties props = ErlangCore
 				.getProjectProperties(getProject());
 		return new Path(props.getOutputDir());
 	}
@@ -694,7 +694,7 @@ public class ErlProject extends Openable implements IErlProject {
 		return true;
 	}
 
-	public ErlangProjectProperties getProperties() {
+	public OldErlangProjectProperties getProperties() {
 		return properties;
 	}
 }

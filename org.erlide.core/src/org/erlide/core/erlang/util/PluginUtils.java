@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -56,7 +56,7 @@ public class PluginUtils {
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
 				.getSourceDirsString());
@@ -74,7 +74,7 @@ public class PluginUtils {
 		/*
 		 * Get the project settings so that we can find the source nodes
 		 */
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
 				.getSourceDirsString());

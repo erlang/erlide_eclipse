@@ -13,7 +13,6 @@ package org.erlide.core.preferences;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +25,6 @@ public final class SourceLocation extends CodePathLocation {
 	private List<String> includePatterns = new ArrayList<String>();
 	private List<String> excludePatterns = new ArrayList<String>();
 	private String output;
-	private Map<String, String> compilerOptions = new HashMap<String, String>();
-	private Map<String, Map<String, String>> fileCompilerOptions = new HashMap<String, Map<String, String>>();
 
 	public SourceLocation(final String directory,
 			final List<String> includePatterns,
@@ -45,12 +42,6 @@ public final class SourceLocation extends CodePathLocation {
 			this.excludePatterns = excludePatterns;
 		}
 		this.output = output;
-		if (compilerOptions != null) {
-			this.compilerOptions = compilerOptions;
-		}
-		if (fileCompilerOptions != null) {
-			this.fileCompilerOptions = fileCompilerOptions;
-		}
 	}
 
 	public SourceLocation(final IEclipsePreferences sn) {
@@ -72,14 +63,6 @@ public final class SourceLocation extends CodePathLocation {
 
 	public String getOutput() {
 		return output;
-	}
-
-	public Map<String, String> getCompilerOptions() {
-		return Collections.unmodifiableMap(compilerOptions);
-	}
-
-	public Map<String, Map<String, String>> getFileCompilerOptions() {
-		return Collections.unmodifiableMap(fileCompilerOptions);
 	}
 
 	@Override

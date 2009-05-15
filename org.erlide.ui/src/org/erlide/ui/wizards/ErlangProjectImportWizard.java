@@ -44,7 +44,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -293,13 +293,13 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			monitor.subTask(ErlideUIPlugin
 					.getResourceString("wizards.messages.creatingfiles"));
 
-			// final ErlangProjectProperties bprefs = buildPage.getPrefs();
+			// final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
 			// buildPaths(monitor, root, project);
 			// buildPaths(monitor, root, project);
 			// buildPaths(monitor, root, project);
 
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 
 			// String[] directories = findErlDirectories();

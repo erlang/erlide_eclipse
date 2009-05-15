@@ -22,7 +22,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.runtime.backend.FullBackend;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
@@ -86,7 +86,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
-			final ErlangProjectProperties prefs = ErlangCore
+			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 
 			for (int i = 0; i < natures.length; ++i) {

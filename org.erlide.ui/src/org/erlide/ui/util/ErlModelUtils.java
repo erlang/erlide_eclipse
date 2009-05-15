@@ -49,7 +49,7 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -355,7 +355,7 @@ public class ErlModelUtils {
 		}
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		for (final String includeDir : prefs.getIncludeDirs()) {
 			IPath p = new Path(includeDir).append(filePath);

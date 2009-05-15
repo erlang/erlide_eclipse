@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
@@ -128,7 +128,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public Backend getBuildBackend(final IProject project)
 			throws BackendException {
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
 		if (info == null) {

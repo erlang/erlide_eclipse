@@ -26,7 +26,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -62,7 +62,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 				options.put("dir", new OtpErlangString(dest.getLocation()
 						.toString()));
 				final List<String> files = new ArrayList<String>();
-				final ErlangProjectProperties props = new ErlangProjectProperties(
+				final OldErlangProjectProperties props = new OldErlangProjectProperties(
 						prj);
 				for (final String dir : props.getSourceDirs()) {
 					final IFolder folder = prj.getFolder(dir);

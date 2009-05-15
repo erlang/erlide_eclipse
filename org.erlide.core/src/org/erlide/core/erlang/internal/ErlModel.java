@@ -46,7 +46,7 @@ import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -509,7 +509,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlProject p = ErlangCore.getModel().getErlangProject(
 				project.getName());
 
-		final ErlangProjectProperties props = p.getProperties();
+		final OldErlangProjectProperties props = p.getProperties();
 
 		final IFile file = project.getFile(".");
 		if (!file.isLinked()) {
@@ -612,7 +612,7 @@ public class ErlModel extends Openable implements IErlModel {
 		}
 		final String global = s;
 		if (project != null) {
-			final ErlangProjectProperties prefs = project.getProperties();
+			final OldErlangProjectProperties prefs = project.getProperties();
 			final String projprefs = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? prefs
 					.getExternalIncludesFile()
 					: prefs.getExternalModulesFile();

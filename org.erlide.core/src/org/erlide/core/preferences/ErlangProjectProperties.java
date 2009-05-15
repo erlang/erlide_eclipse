@@ -1,332 +1,205 @@
-/*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Vlad Dumitrescu
- *******************************************************************************/
-
 package org.erlide.core.preferences;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
 import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
-public class ErlangProjectProperties implements IPreferenceChangeListener {
+public class ErlangProjectProperties {
 
-	private IProject project;
-
-	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
-	private String usePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
-	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
-	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
-	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
-	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-	private RuntimeVersion runtimeVersion = new RuntimeVersion(
-			ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-	private String runtimeName = null;
-
-	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
+	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
+	private List<String> includes = new ArrayList<String>();
+	private String output;
+	private final List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
+	private final List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
+	private RuntimeVersion requiredRuntimeVersion;
+	private final Map<String, String> macros = new HashMap<String, String>();
 
 	public ErlangProjectProperties() {
+		output = "ebin";
+		// TODO fixme
 	}
 
-	public ErlangProjectProperties(final IProject prj) {
-		super();
-		project = prj;
-		final IEclipsePreferences root = new ProjectScope(project)
-				.getNode(ErlangPlugin.PLUGIN_ID);
-		root.addPreferenceChangeListener(this);
-		// TODO load() should not be in constructor!
-		load(root);
-	}
-
-	public void dispose() {
-		new ProjectScope(project).getNode(ErlangPlugin.PLUGIN_ID)
-				.removePreferenceChangeListener(this);
-	}
-
-	public ErlangProjectProperties load(final IEclipsePreferences node) {
-		if (project == null) {
-			return this;
-		}
-
-		if ("true".equals(System.getProperty("erlide.newprops"))) {
-			final NewErlangProjectProperties npp = new NewErlangProjectProperties();
-			try {
-				npp.load((IEclipsePreferences) node.node("test"));
-				npp.store((IEclipsePreferences) node.node("new_test"));
-			} catch (final BackingStoreException e) {
-				e.printStackTrace();
+	public ErlangProjectProperties(final OldErlangProjectProperties old) {
+		requiredRuntimeVersion = old.getRuntimeVersion();
+		if (!requiredRuntimeVersion.isDefined()) {
+			final RuntimeInfo runtimeInfo = old.getRuntimeInfo();
+			if (runtimeInfo != null) {
+				requiredRuntimeVersion = runtimeInfo.getVersion();
 			}
 		}
 
-		final IFile cp = project.getFile(CODEPATH_FILENAME);
-		if (cp.exists()) {
-			final String msg = "Found old configuration file %s for project %s, please remove it.";
-			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
-		}
+		sources = mkSources(old.getSourceDirs());
+		includes = PreferencesUtils.unpackList(old.getIncludeDirsString());
+		output = old.getOutputDir();
 
-		sourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
-				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-		includeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
-				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
-				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-		usePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
-				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
-		runtimeVersion = new RuntimeVersion(node.get(
-				ProjectPreferencesConstants.RUNTIME_VERSION, null));
-		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
-		if (!runtimeVersion.isDefined()) {
-			if (runtimeName == null) {
-				runtimeVersion = new RuntimeVersion(
-						ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+
+		final String exmodf = old.getExternalModulesFile();
+		IPath ff = pvman.resolvePath(new Path(exmodf));
+		final List<String> externalModules = PreferencesUtils.readFile(ff
+				.toString());
+		final List<SourceLocation> sloc = makeSourceLocations(externalModules);
+
+		final String exincf = old.getExternalModulesFile();
+		ff = pvman.resolvePath(new Path(exincf));
+		// List<String> exinc = PreferencesUtils.readFile(ff.toString());
+		final List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
+
+		final LibraryLocation loc = new LibraryLocation(sloc, externalIncludes,
+				null, null);
+		dependencies.add(loc);
+	}
+
+	private List<SourceLocation> makeSourceLocations(
+			final List<String> externalModules) {
+		final List<SourceLocation> result = new ArrayList<SourceLocation>();
+
+		final List<String> modules = new ArrayList<String>();
+		for (final String mod : externalModules) {
+			if (mod.endsWith(".erlidex")) {
+				final List<String> mods = PreferencesUtils.readFile(mod);
+				modules.addAll(mods);
 			} else {
-				final RuntimeInfo ri = ErlangCore.getRuntimeInfoManager()
-						.getRuntime(runtimeName);
-				if (ri != null) {
-					runtimeVersion = new RuntimeVersion(ri.getVersion());
-				} else {
-					runtimeVersion = new RuntimeVersion(
-							ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-				}
-			}
-		}
-		externalModulesFile = node.get(
-				ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-				ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
-		externalIncludesFile = node.get(
-				ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-				ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
-		return this;
-	}
-
-	public void store(final IEclipsePreferences node) {
-		if (project == null) {
-			return;
-		}
-
-		if ("true".equals(System.getProperty("erlide.newprops"))) {
-			final NewErlangProjectProperties npp = new NewErlangProjectProperties(
-					this);
-			try {
-				npp.store((IEclipsePreferences) node.node("test"));
-			} catch (final BackingStoreException e) {
-				e.printStackTrace();
+				modules.add(mod);
 			}
 		}
 
-		node.removePreferenceChangeListener(this);
+		final Map<String, List<String>> grouped = new HashMap<String, List<String>>();
+		for (final String mod : modules) {
+			final int i = mod.lastIndexOf('/');
+			final String path = mod.substring(0, i);
+			final String file = mod.substring(i + 1);
 
-		try {
-			node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
-			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
-			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
-			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
-			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-					externalIncludesFile);
-			if (runtimeVersion.isDefined()) {
-				node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
-						runtimeVersion.asMinor().toString());
-			} else {
-				node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
+			System.out.println("FOUND: '" + path + "' '" + file + "'");
+			List<String> pval = grouped.get(path);
+			if (pval == null) {
+				pval = new ArrayList<String>();
 			}
-			if (runtimeName != null) {
-				node.put(ProjectPreferencesConstants.RUNTIME_NAME, runtimeName);
-			} else {
-				node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
-			}
-			// TODO remove these later
-			node.remove("backend_cookie");
-			node.remove("backend_node");
-			// end todo
-			node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
-					externalModulesFile);
-
-			try {
-				node.flush();
-			} catch (final BackingStoreException e1) {
-			}
-		} finally {
-			node.addPreferenceChangeListener(this);
+			pval.add(file);
+			grouped.put(path.toString(), pval);
 		}
-	}
+		System.out.println(grouped);
 
-	public String getIncludeDirsString() {
-		return includeDirs;
-	}
-
-	public void setIncludeDirsString(final String dirs) {
-		includeDirs = dirs;
-	}
-
-	public String[] getIncludeDirs() {
-		return PreferencesUtils.unpackArray(includeDirs);
-	}
-
-	public void setIncludeDirs(final String[] dirs) {
-		includeDirs = PreferencesUtils.packArray(dirs);
-	}
-
-	public String getOutputDir() {
-		return outputDir;
-	}
-
-	public void setOutputDir(final String dir) {
-		if (!outputDir.equals(dir)) {
-			// try {
-			// final Backend b = ErlangCore.getBackendManager()
-			// .getBuildBackend(project);
-			// String p =
-			// project.getLocation().append(outputDir).toString();
-			// b.removePath(getUsePathZ(), p);
-			//
-			// p = project.getLocation().append(dir).toString();
-			// b.addPath(getUsePathZ(), p);
-
-			outputDir = dir;
-			// } catch (final BackendException e) {
-			// ErlLogger.warn(e);
-			// }
+		for (final Entry<String, List<String>> loc : grouped.entrySet()) {
+			final SourceLocation location = new SourceLocation(loc.getKey(),
+					loc.getValue(), null, null, null, null);
+			result.add(location);
 		}
+
+		return result;
 	}
 
-	public boolean getUsePathZ() {
-		return Boolean.parseBoolean(usePathZ);
+	private List<SourceLocation> mkSources(final String[] sourceDirs) {
+		final List<SourceLocation> result = new ArrayList<SourceLocation>();
+		for (final String src : sourceDirs) {
+			result.add(new SourceLocation(src, null, null, null, null, null));
+		}
+		return result;
 	}
 
-	public void setUsePathZ(final boolean pz) {
-		final boolean z = Boolean.parseBoolean(usePathZ);
-		if (z != pz) {
-			for (final FullBackend b : ErlangCore.getBackendManager()
-					.getExecutionBackends(project)) {
+	public Collection<SourceLocation> getSources() {
+		return Collections.unmodifiableCollection(sources);
+	}
 
-				final String p = project.getLocation().append(outputDir)
-						.toString();
-				b.removePath(z, p);
-				b.addPath(pz, p);
+	public Collection<String> getIncludes() {
+		return Collections.unmodifiableCollection(includes);
+	}
+
+	public String getOutput() {
+		return output;
+	}
+
+	public Collection<DependencyLocation> getDependencies() {
+		return Collections.unmodifiableCollection(dependencies);
+	}
+
+	public Collection<ProjectLocation> getProjects() {
+		return Collections.unmodifiableCollection(filter(dependencies,
+				ProjectLocation.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <U, T extends U> Collection<T> filter(
+			final Collection<U> dependencies2, final Class<T> class1) {
+		final List<T> result = new ArrayList<T>();
+		for (final U oo : dependencies2) {
+			if (oo.getClass().equals(class1)) {
+				result.add((T) oo);
 			}
 		}
-		usePathZ = Boolean.toString(pz);
+		return result;
 	}
 
-	public String getSourceDirsString() {
-		return sourceDirs;
+	public Collection<LibraryLocation> getLibraries() {
+		return Collections.unmodifiableCollection(filter(dependencies,
+				LibraryLocation.class));
 	}
 
-	public void setSourceDirsString(final String dirs) {
-		sourceDirs = dirs;
+	public Collection<WeakReference<CodePathLocation>> getCodePathOrder() {
+		return Collections.unmodifiableCollection(codePathOrder);
 	}
 
-	public String[] getSourceDirs() {
-		return PreferencesUtils.unpackArray(sourceDirs);
+	public RuntimeVersion getRequiredRuntimeVersion() {
+		return requiredRuntimeVersion;
 	}
 
-	public void setSourceDirs(final String[] dirs) {
-		sourceDirs = PreferencesUtils.packArray(dirs);
+	public Map<String, String> getMacros() {
+		return macros;
 	}
 
-	public String buildCommandLine() {
-		if (project != null) {
-			final String incs = buildIncludeDirs(getIncludeDirs());
-			return " -pa " + project.getLocation().append(outputDir) + incs;
+	public void load(final IEclipsePreferences root)
+			throws BackingStoreException {
+		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
+		requiredRuntimeVersion = new RuntimeVersion(root.get(
+				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
+		includes = PreferencesUtils.unpackList(root.get(
+				ProjectPreferencesConstants.INCLUDES, ""));
+		final Preferences srcNode = root
+				.node(ProjectPreferencesConstants.SOURCES);
+		sources.clear();
+		for (final String src : srcNode.childrenNames()) {
+			final IEclipsePreferences sn = (IEclipsePreferences) srcNode
+					.node(src);
+			final SourceLocation loc = new SourceLocation(sn);
+			sources.add(loc);
 		}
-		return "";
 	}
 
-	public String buildIncludeDirs(final String[] dirs) {
-		final StringBuilder incs = new StringBuilder();
-		for (final String element : dirs) {
-			final IPath loc = project.getLocation();
-			IPath inc = new Path(element);
-			ErlLogger.debug("* " + inc);
-			if (!inc.isAbsolute()) {
-				ErlLogger.debug("  not abs!");
-				inc = loc.append(inc);
-				ErlLogger.debug("  " + inc);
-			}
-			incs.append(" -I").append(inc.toString());
+	public void store(final IEclipsePreferences root)
+			throws BackingStoreException {
+		CodePathLocation.clearAll(root);
+		root.put(ProjectPreferencesConstants.OUTPUT, output);
+		if (requiredRuntimeVersion != null) {
+			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION,
+					requiredRuntimeVersion.toString());
 		}
-		return incs.toString();
-	}
-
-	public void copyFrom(final ErlangProjectProperties bprefs) {
-		includeDirs = bprefs.includeDirs;
-		sourceDirs = bprefs.sourceDirs;
-		outputDir = bprefs.outputDir;
-	}
-
-	public String getExternalIncludesFile() {
-		return externalIncludesFile;
-	}
-
-	public void setExternalIncludesFile(final String file) {
-		externalIncludesFile = file;
-	}
-
-	public IProject getProject() {
-		return project;
-	}
-
-	public void setExternalModulesFile(final String externalModules) {
-		this.externalModulesFile = externalModules;
-	}
-
-	public String getExternalModulesFile() {
-		return externalModulesFile;
-	}
-
-	public RuntimeInfo getRuntimeInfo() {
-		final RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager()
-				.getRuntime(runtimeVersion, runtimeName);
-		RuntimeInfo rt = null;
-		if (runtime != null) {
-			rt = RuntimeInfo.copy(runtime, false);
+		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
+				.packList(includes));
+		final Preferences srcNode = root
+				.node(ProjectPreferencesConstants.SOURCES);
+		for (final SourceLocation loc : sources) {
+			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
+					.getId())));
 		}
-		return rt;
+
+		root.flush();
 	}
 
-	public boolean hasSourceDir(final IPath fullPath) {
-		final String f = fullPath.removeFirstSegments(1).toString();
-		for (final String s : getSourceDirs()) {
-			if (s.equals(f)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public RuntimeVersion getRuntimeVersion() {
-		return runtimeVersion;
-	}
-
-	public void preferenceChange(final PreferenceChangeEvent event) {
-		final IEclipsePreferences root = new ProjectScope(project)
-				.getNode(ErlangPlugin.PLUGIN_ID);
-		load(root);
-		// System.out.println("!!! project preferences " + event.getNode() +
-		// ": "
-		// + event.getKey() + " " + event.getOldValue() + " "
-		// + event.getNewValue() + " ... " + event.getSource());
-	}
-
-	public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
-		this.runtimeVersion = runtimeVersion;
-	}
 }

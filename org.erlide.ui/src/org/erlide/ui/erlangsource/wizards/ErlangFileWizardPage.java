@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour;
 import org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment;
@@ -189,7 +189,7 @@ public class ErlangFileWizardPage extends WizardPage implements
 				} else {
 					container = ((IResource) obj).getParent();
 				}
-				final ErlangProjectProperties pp = ErlangCore
+				final OldErlangProjectProperties pp = ErlangCore
 						.getProjectProperties(((IResource) obj).getProject());
 				String txt;
 				if (pp.hasSourceDir(container.getFullPath())) {

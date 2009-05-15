@@ -38,7 +38,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.ErlangProjectProperties;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeInfoListener;
 import org.erlide.jinterface.backend.RuntimeVersion;
@@ -108,7 +108,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		uz = new Button(composite, SWT.CHECK);
 		uz.setToolTipText("place at end of code:path");
 		uz.setText("place last in path");
-		uz.setLayoutData(new GridData());
 		uz.addListener(SWT.Modify, modifyListener);
 
 		final Label l1 = new Label(composite, SWT.NONE);
@@ -129,7 +128,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setLayoutData(new GridData());
 		includesLabel.setText("Include directories:");
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
@@ -243,7 +241,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	protected void performDefaults() {
 		// Populate the owner text field with the default value
 		final IAdaptable prj = getElement();
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 
 		uz.setSelection(prefs.getUsePathZ());
@@ -274,7 +272,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		// store the value in the owner text field
 		final IAdaptable prj = getElement();
 		final IProject project = (IProject) prj.getAdapter(IProject.class);
-		final ErlangProjectProperties prefs = ErlangCore
+		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 
 		prefs.setOutputDir(output.getText());
