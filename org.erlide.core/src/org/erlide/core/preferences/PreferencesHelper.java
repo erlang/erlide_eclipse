@@ -89,7 +89,7 @@ public class PreferencesHelper {
 	public void putBoolean(final String key, final boolean value) {
 		final String def = service
 				.getString(qualifier, key, null, nextContexts);
-		if (def == null || Boolean.getBoolean(def) != value) {
+		if (def == null || Boolean.parseBoolean(def) != value) {
 			storeContext.getNode(qualifier).putBoolean(key, value);
 		}
 	}
@@ -172,6 +172,10 @@ public class PreferencesHelper {
 
 	public void removeNode(final String key) throws BackingStoreException {
 		remove(key, storeContext);
+	}
+
+	public void flush() throws BackingStoreException {
+		storeContext.getNode(qualifier).flush();
 	}
 
 }

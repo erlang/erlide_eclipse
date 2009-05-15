@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -33,9 +34,10 @@ public class ErlideBuilder {
 			final String fn, final String outputdir,
 			final List<String> includedirs) {
 		try {
-			// FIXME add an option for the compiler options
+			CompilerPreferences prefs = new CompilerPreferences();
+			prefs.load();
 			return backend.call(30000, "erlide_builder", "compile", "sslsla",
-					fn, outputdir, includedirs, new String[] { "debug_info" });
+					fn, outputdir, includedirs, prefs.export());
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;
