@@ -1,6 +1,38 @@
-body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt; }
-SPAN.bold_code { font-family: courier; font-weight: bold; }
-SPAN.code { font-family: courier; font-weight: normal; }
+/* Font definitions */
+html         { font-family: sans-serif; font-size: 9pt; font-style: normal; font-weight: normal; }
+body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt { font-size:1em; }
+pre				{ font-family: monospace; }
+
+SPAN.bold_code { font-family: monospace; font-weight: bold; }
+SPAN.code { font-family: monospace; font-weight: normal; }
+
+/* Margins */
+body	     { overflow: auto; margin-top: 0px; margin-bottom: 0.5em; margin-left: 0.3em; margin-right: 0px; }
+h1           { margin-top: 0.3em; margin-bottom: 0.04em; }	
+h2           { margin-top: 2em; margin-bottom: 0.25em; }
+h3           { margin-top: 1.7em; margin-bottom: 0.25em; }
+h4           { margin-top: 2em; margin-bottom: 0.3em; }
+h5           { margin-top: 0px; margin-bottom: 0px; }
+p            { margin-top: 1em; margin-bottom: 1em; }
+pre	         { margin-left: 0.6em; }
+ul	         { margin-top: 0px; margin-bottom: 1em; }
+li	         { margin-top: 0px; margin-bottom: 0px; } 
+li p	     { margin-top: 0px; margin-bottom: 0px; } 
+ol	         { margin-top: 0px; margin-bottom: 1em; }
+dl	         { margin-top: 0px; margin-bottom: 1em; }
+dt	         { margin-top: 0px; margin-bottom: 0px; font-weight: bold; }
+dd	         { margin-top: 0px; margin-bottom: 0px; }
+
+/* Styles and colors */
+a:link	     { color: #0000FF; }
+a:hover	     { color: #000080; }
+a:visited    { text-decoration: underline; }
+h4           { font-style: italic; }
+strong	     { font-weight: bold; }
+em	         { font-style: italic; }
+var	         { font-style: italic; }
+th	         { font-weight: bold; }
+
 .note, .warning { border: 1px solid black; margin: 1em 3em; }
 .note .label {
 	background: #30D42A;
@@ -30,16 +62,8 @@ SPAN.code { font-family: courier; font-weight: normal; }
 }
 .example
 {
-	background-color: #EEEEFF;
-}
-A:link {text-decoration: none; color: black; font-family: courier; }
-A:visited {text-decoration: none; color: black; font-family: courier; }
-A:active {text-decoration: none; color: black; font-family: courier;}
-A:hover {text-decoration: none; color: black; font-family: courier; }
-PRE
-{
-	font-family: courier;
-	font-weight: normal;
+	background-color: #FFFFBB;
+	border-left: 1px solid #BBBBFF;
 }
 .REFBODY
 {
