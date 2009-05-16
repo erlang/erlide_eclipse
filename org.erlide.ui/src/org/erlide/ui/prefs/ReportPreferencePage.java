@@ -111,7 +111,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				postReport();
 			}
 		});
-		sendButton.setText("   Send!   ");
+		sendButton.setText("Create report");
 		responseLabel = new Label(panel, SWT.CENTER);
 		responseLabel.setVisible(false);
 		responseLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
