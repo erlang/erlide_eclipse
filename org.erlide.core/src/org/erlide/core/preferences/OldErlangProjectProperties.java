@@ -123,8 +123,8 @@ public class OldErlangProjectProperties implements IPreferenceChangeListener {
 		}
 
 		if ("true".equals(System.getProperty("erlide.newprops"))) {
-			final ErlangProjectProperties npp = new ErlangProjectProperties(
-					this);
+			final ErlangProjectProperties npp = PropertiesUtils
+					.convertOld(this);
 			try {
 				npp.store((IEclipsePreferences) node.node("test"));
 			} catch (final BackingStoreException e) {
