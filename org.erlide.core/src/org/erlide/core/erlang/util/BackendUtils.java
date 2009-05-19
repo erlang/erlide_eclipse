@@ -41,7 +41,9 @@ public class BackendUtils {
 		String fUniqueId;
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final String location = root.getLocation().toPortableString();
-		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF);
+		String user = System.getProperty("user.name");
+		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF) + "_"
+				+ user;
 		return fUniqueId;
 	}
 

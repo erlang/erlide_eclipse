@@ -143,8 +143,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		final String version = info.getVersion().asMajor().toString();
 		FullBackend b = fBuildBackends.get(version);
 		if (b == null) {
-
-			info.setNodeName(System.getProperty("user.name") + "_" + version);
+			info.setNodeName(version);
 			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameSuffix());
 			// will add workspace unique id
 
