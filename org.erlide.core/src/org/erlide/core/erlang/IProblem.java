@@ -18,16 +18,16 @@ package org.erlide.core.erlang;
  * number),</li>
  * <li>its message description and a predicate to check its severity (warning or
  * error).</li>
- * <li>its PLUGIN_ID : an number identifying the very nature of this problem.
- * All possible IDs are listed as constants on this interface.</li>
+ * <li>its id : an number identifying the very nature of this problem. All
+ * possible IDs are listed as constants on this interface.</li>
  * </ul>
  * 
  * Note: the compiler produces IProblems internally, which are turned into
  * markers by the ErlangBuilder so as to persist problem descriptions. This
  * explains why there is no API allowing to reach IProblem detected when
  * compiling. However, the Erlang problem markers carry equivalent information
- * to IProblem, in particular their PLUGIN_ID (attribute "id") is set to one of
- * the IDs defined on this interface.
+ * to IProblem, in particular their id (attribute "id") is set to one of the IDs
+ * defined on this interface.
  * 
  */
 public interface IProblem {
@@ -125,9 +125,9 @@ public interface IProblem {
 	void setSourceStart(int sourceStart);
 
 	/**
-	 * Problem Categories The high bits of a problem PLUGIN_ID contains
-	 * information about the category of a problem. For example, (problemID &
-	 * TypeRelated) != 0, indicates that this problem is type related.
+	 * Problem Categories The high bits of a problem ID contains information
+	 * about the category of a problem. For example, (problemID & TypeRelated)
+	 * != 0, indicates that this problem is type related.
 	 * 
 	 * A problem category can help to implement custom problem filters. Indeed,
 	 * when numerous problems are listed, focusing on import related problems
@@ -148,7 +148,7 @@ public interface IProblem {
 
 	/**
 	 * Mask to use in order to filter out the category portion of the problem
-	 * PLUGIN_ID.
+	 * ID.
 	 */
 	int IgnoreCategoriesMask = 0xFFFFFF;
 
@@ -159,9 +159,9 @@ public interface IProblem {
 	 */
 
 	/**
-	 * PLUGIN_ID reserved for referencing an internal error inside the
-	 * ErlangCore implementation which may be surfaced as a problem associated
-	 * with the compilation unit which caused it to occur.
+	 * ID reserved for referencing an internal error inside the ErlangCore
+	 * implementation which may be surfaced as a problem associated with the
+	 * compilation unit which caused it to occur.
 	 */
 	int Unclassified = 0;
 
@@ -188,64 +188,15 @@ public interface IProblem {
 	// methods
 	int NotExportedFunction = FunctionRelated + 101;
 
-	// operators
-	int InvalidOperator = Internal + 160;
-
-	// statements
-	int CodeCannotBeReached = Internal + 161;
-
-	// switch
-	int DuplicateCase = FunctionRelated + 170;
-
-	// throw
-	int CannotThrowNull = Internal + 177;
-
-	// assignment
-	int AssignmentHasNoEffect = Internal + 178;
-
-	int PossibleAccidentalBooleanAssignment = Internal + 179;
-
 	// miscellaneous
 	int ParsingError = Syntax + Internal + 204;
 
-	int ParsingErrorNoSuggestion = Syntax + Internal + 205;
-
-	int InvalidUnaryExpression = Syntax + Internal + 206;
-
 	// syntax errors
-	int ParsingErrorOnKeyword = Syntax + Internal + 209;
-
-	int ParsingErrorOnKeywordNoSuggestion = Syntax + Internal + 210;
-
 	int UnmatchedBracket = Syntax + Internal + 220;
 
 	int MissingSemiColon = Syntax + Internal + 224;
 
-	int ParsingErrorInsertTokenBefore = Syntax + Internal + 230;
-
-	int ParsingErrorInsertTokenAfter = Syntax + Internal + 231;
-
-	int ParsingErrorDeleteToken = Syntax + Internal + 232;
-
-	int ParsingErrorDeleteTokens = Syntax + Internal + 233;
-
-	int ParsingErrorMergeTokens = Syntax + Internal + 234;
-
-	int ParsingErrorInvalidToken = Syntax + Internal + 235;
-
-	int ParsingErrorMisplacedConstruct = Syntax + Internal + 236;
-
-	int ParsingErrorReplaceTokens = Syntax + Internal + 237;
-
-	int ParsingErrorNoSuggestionForTokens = Syntax + Internal + 238;
-
 	int ParsingErrorUnexpectedEOF = Syntax + Internal + 239;
-
-	int ParsingErrorInsertToComplete = Syntax + Internal + 240;
-
-	int ParsingErrorInsertToCompleteScope = Syntax + Internal + 241;
-
-	int ParsingErrorInsertToCompletePhrase = Syntax + Internal + 242;
 
 	// scanner errors
 	int EndOfSource = Syntax + Internal + 250;

@@ -72,13 +72,6 @@ public final class ErlangCore {
 	 */
 	public static final String USER_LIBRARY_CONTAINER_ID = "org.erlide.core.USER_LIBRARY"; //$NON-NLS-1$
 
-	/**
-	 * Possible configurable option value.
-	 * 
-	 * @see #getDefaultOptions()
-	 */
-	public static final String CLEAN = "clean"; //$NON-NLS-1$
-
 	public static final int EXTERNAL_MODULES = 1;
 	public static final int EXTERNAL_INCLUDES = 2;
 

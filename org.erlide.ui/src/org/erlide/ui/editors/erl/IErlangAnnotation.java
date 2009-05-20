@@ -18,7 +18,6 @@ import java.util.Iterator;
  * Interface of annotations representing markers and problems.
  * 
  * @see org.eclipse.core.resources.IMarker
- * @see org.eclipse.jdt.core.compiler.IProblem
  */
 public interface IErlangAnnotation {
 

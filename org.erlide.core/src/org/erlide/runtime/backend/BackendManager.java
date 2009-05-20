@@ -162,14 +162,6 @@ public final class BackendManager extends OtpNodeStatus implements
 		return Collections.unmodifiableSet(bs);
 	}
 
-	public void remove(final IProject project) {
-		/*
-		 * final String name = getBackendName(project); // TODO if (not used
-		 * anymore) fLocalBackends.remove(name);
-		 * fProjectBackendMap.remove(project);
-		 */
-	}
-
 	public FullBackend getIdeBackend() {
 		if (fLocalBackend == null) {
 			synchronized (fLocalBackendLock) {
