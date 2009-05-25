@@ -1,154 +1,116 @@
-@import url(http://yui.yahooapis.com/2.5.2/build/reset/reset-min.css);
-@import url(http://yui.yahooapis.com/2.5.2/build/fonts/fonts-min.css);
-@import url(http://yui.yahooapis.com/2.5.2/build/base/base-min.css);
-.sect1, .sect2, .sect3, .sect4
-{
-	padding-left: 1em;
-	/*[empty]font-size:;*/
+P.Code {
+	display: block;
+	text-align: left;
+	text-indent: 0.00pt;
+	margin-top: 0.000000pt;
+	margin-bottom: 0.000000pt;
+	margin-right: 0.000000pt;
+	margin-left: 15pt;
+	font-weight: normal;
+	font-style: normal;
+	color: #4444CC;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-transform: none;
+	font-family: "Courier New", Courier, monospace;
 }
-H3
-{
-	font-size: 14pt;
-}
-H2
-{
-	font-size: 18pt;
-}
-.command
-{
-	font-family: monospace;
-}
-.screen
-{
-	border: 1px dotted #0000DD;
-}
-.toc DL
-{
-	margin-top: 0;
-	margin-bottom: 0;
-}
-.toc
-{
-	border: 1px dotted #000000;
-	background-color: #EFF3F5;
-	margin-left: 2em;
-	margin-right: 2em;
-	padding-left: 1em;
-	padding-right: 1em;
-}
-.term
-{
+H6.CaptionFigColumn {
+	display: block;
+	text-align: left;
+	text-indent: 0.000000pt;
+	margin-top: 3.000000pt;
+	margin-bottom: 11.000000pt;
+	margin-right: 0.000000pt;
+	margin-left: 0.000000pt;
+	font-size: 75%;
 	font-weight: bold;
-	background-color: #BDE6F8;
-	padding: 2px;
+	font-style: Italic;
+	color: #000000;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-transform: none;
 }
-DIV.ABSTRACT
-{
-	/*[disabled]border:2px solid #000000;*/
-	/*[disabled]padding-left:10pt;*/
-	/*[disabled]padding-right:10pt;*/
+P.Note {
+	display: block;
+	text-align: left;
+	text-indent: 0pt;
+	margin-top: 19.500000pt;
+	margin-bottom: 19.500000pt;
+	margin-right: 0.000000pt;
+	margin-left: 30pt;
+	font-size: 110%;
+	font-weight: normal;
+	font-style: Italic;
+	color: #000000;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-transform: none;
 }
-PRE.SCREEN
-{
-	/*[disabled]font-family:monospace;*/
-	/*[disabled]white-space:pre;*/
-	/*[disabled]width:100%;*/
-	/*[disabled]background-color:#FFFFCC;*/
-	/*[disabled]border:1px dotted #009999;*/
-	/*[disabled]padding-left:15pt;*/
+EM.UILabel {
+	font-weight: Bold;
+	font-style: normal;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-transform: none;
 }
-PRE.PROGRAMLISTING
-{
-	/*[disabled]font-family:monospace;*/
-	/*[disabled]white-space:pre;*/
-	/*[disabled]width:100%;*/
-	/*[disabled]color:#000000;*/
-	/*[disabled]background-color:#F9F9F9;*/
-	/*[disabled]border:1px dashed #2F6FAB;*/
-	/*[disabled]padding-left:15pt;*/
+EM.CodeName {
+	font-weight: Bold;
+	font-style: normal;
+	text-decoration: none;
+	vertical-align: baseline;
+	text-transform: none;
+	font-family: "Courier New", Courier, monospace;
 }
-.note, .warning, .important
-{
-	font-style: italic;
-	border: 1px dashed #000000;
-	width: 70%;
-	margin-left: 15%;
-	background-color: #D8DAE9;
-	padding-left: 1em;
+UL.NavList {
+	margin-left: 1.5em;
+	padding-left: 0px;
+	list-style-type: none;
 }
-.warning, .important
-{
-	border-color: #FF0000;
+
+body, html { border: 0px }
+
+
+/* following font face declarations need to be removed for DBCS */
+
+body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt {font-family: Arial, Helvetica, sans-serif; color: #000000}
+pre, code		{ font-family: "Courier New", Courier, monospace;}
+
+/* end font face declarations */
+
+@media print {
+	html { font-size: 12pt }
 }
-.bold
-{
-	font-weight: bold;
+
+body	     { font-size: 83%; background: #FFFFFF; margin-bottom: 1em }
+h1           { font-size: 180%; margin-top: 5px; margin-bottom: 1px }	
+h2           { font-size: 140%; margin-top: 25px; margin-bottom: 3px }
+h3           { font-size: 110%; margin-top: 20px; margin-bottom: 3px }
+h4           { font-size: 100%; margin-top: 20px; margin-bottom: 3px; font-style: italic }
+p            { margin-top: 10px; margin-bottom: 10px }
+pre          { font-size: 93%; margin-left: 6; color: #4444CC }
+code         { font-size: 93%; } 
+table        { font-size: 100% } /* needed for quirks mode */
+a:link	     { color: #0000FF }
+a:hover	     { color: #000080 }
+a:visited    { text-decoration: underline }
+ul	     { margin-top: 10px; margin-bottom: 10px; }
+li	     { margin-top: 5px; margin-bottom: 5px; } 
+li p	     { margin-top: 5px; margin-bottom: 5px; }
+ol	     { margin-top: 10px; margin-bottom: 10px; }
+dl	     { margin-top: 10px; margin-bottom: 10px; }
+dt	     { margin-top: 5px; margin-bottom: 5px; font-weight: bold; }
+dd	     { margin-top: 5px; margin-bottom: 5px; }
+strong	     { font-weight: bold}
+em	     { font-style: italic}
+var	     { font-style: italic}
+div.revision { border-left-style: solid; border-left-width: thin; 
+				   border-left-color: #7B68EE; padding-left:5 }
+th	     { font-weight: bold }
+
+a.command-link {
 }
-TABLE.TIP
-{
-	/*[disabled]font-style:italic;*/
-	/*[disabled]border:1px solid #000000;*/
-	/*[disabled]width:70%;*/
-	/*[disabled]margin-left:15%;*/
-}
-TABLE.WARNING
-{
-	/*[disabled]font-style:italic;*/
-	/*[disabled]font-weight:bold;*/
-	/*[disabled]border:4px ridge #FF0000;*/
-	/*[disabled]width:70%;*/
-	/*[disabled]margin-left:15%;*/
-}
-DIV.VARIABLELIST
-{
-	/*[disabled]font-style:normal;*/
-	/*[disabled]font-weight:normal;*/
-	/*[disabled]padding-left:20px;*/
-}
-.VARLISTENTRY
-{
-	/*[disabled]font-weight:bold;*/
-	/*[disabled]margin-top:10px;*/
-	/*[disabled]color:#FFFFFF;*/
-	/*[disabled]background-color:#A0A0D0;*/
-	/*[disabled]border:1px solid #606090;*/
-	/*[disabled]padding:1px;*/
-}
-A.link
-{
-	background: transparent url(../images/external.png) no-repeat right center;
-	padding-right: 12px;
-}
-DIV.imagelink A.link
-{
-	background: transparent;
-	padding-right: 0px;
-}
-DIV.NAVFOOTER
-{
-	display: none;
-}
-DIV.NAVHEADER
-{
-	display: none;
-}
-CODE
-{
-	background-color: #FFFFCC;
-}
-.screen
-{
-	background-color: #FFFFCC;
-	padding-left: 1em;
-	padding-top: 0.5em;
-	white-space: pre;
-}
-.userinput
-{
-	color: #0000FF;
-}
-.guimenu, .guisubmenu, .guimenuitem
-{
-	background-color: #DDDDCC;
-	font-family: monospace;
+a.command-link img {
+	border-width: 0px;
+	border-style: none;
+	vertical-align: middle;
 }
