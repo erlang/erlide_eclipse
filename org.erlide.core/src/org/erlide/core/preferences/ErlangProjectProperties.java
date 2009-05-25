@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.jinterface.backend.RuntimeVersion;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -22,8 +23,8 @@ public class ErlangProjectProperties {
 	private RuntimeVersion requiredRuntimeVersion;
 
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
-	private List<String> includes = new ArrayList<String>();
-	private String output;
+	private List<IPath> includes = new ArrayList<IPath>();
+	private IPath output;
 	private boolean allowOutputPerSource = false;
 	private final List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
 	private final List<CodePathLocation> codePathOrder = new ArrayList<CodePathLocation>();
@@ -36,16 +37,16 @@ public class ErlangProjectProperties {
 		return Collections.unmodifiableCollection(sources);
 	}
 
-	public Collection<String> getIncludes() {
+	public Collection<IPath> getIncludes() {
 		return Collections.unmodifiableCollection(includes);
 	}
 
-	public String getOutput() {
+	public IPath getOutput() {
 		return output;
 	}
 
-	public String setOutput(String output) {
-		return this.output = output;
+	public void setOutput(IPath output) {
+		this.output = output;
 	}
 
 	public Collection<DependencyLocation> getDependencies() {
@@ -101,35 +102,35 @@ public class ErlangProjectProperties {
 	}
 
 	public void load(final IEclipsePreferences root)
-			throws BackingStoreException {
-		output = root.get(ProjectPreferencesConstants.OUTPUT, "ebin");
+	throws BackingStoreException {
+		output = new Path(root.get(ProjectPreferencesConstants.OUTPUT, "ebin"));
 		requiredRuntimeVersion = new RuntimeVersion(root.get(
 				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
-		includes = PreferencesUtils.unpackList(root.get(
+		includes = PathSerializer.unpackList(root.get(
 				ProjectPreferencesConstants.INCLUDES, ""));
 		final Preferences srcNode = root
-				.node(ProjectPreferencesConstants.SOURCES);
+		.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();
 		for (final String src : srcNode.childrenNames()) {
 			final IEclipsePreferences sn = (IEclipsePreferences) srcNode
-					.node(src);
+			.node(src);
 			final SourceLocation loc = new SourceLocation(sn);
 			sources.add(loc);
 		}
 	}
 
 	public void store(final IEclipsePreferences root)
-			throws BackingStoreException {
+	throws BackingStoreException {
 		CodePathLocation.clearAll(root);
-		root.put(ProjectPreferencesConstants.OUTPUT, output);
+		root.put(ProjectPreferencesConstants.OUTPUT, output.toPortableString());
 		if (requiredRuntimeVersion != null) {
 			root.put(ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION,
 					requiredRuntimeVersion.toString());
 		}
-		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
+		root.put(ProjectPreferencesConstants.INCLUDES, PathSerializer
 				.packList(includes));
 		final Preferences srcNode = root
-				.node(ProjectPreferencesConstants.SOURCES);
+		.node(ProjectPreferencesConstants.SOURCES);
 		for (final SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
 					.getId())));

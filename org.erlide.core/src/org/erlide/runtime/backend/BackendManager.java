@@ -44,14 +44,14 @@ import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManager extends OtpNodeStatus implements
-		IEpmdListener {
+IEpmdListener {
 
 	public static final String DEFAULT_VERSION = "R12B";
 	public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
-			"R11B", "R12B", "R13" };
+		"R11B", "R12B", "R13" };
 	public static final String[] SUPPORTED_VERSIONS = new String[] { "",
-			"R11B-3", "R11B-4", "R11B-5", "R12B-1", "R12B-2", "R12B-3",
-			"R12B-4", "R12B-5", "R13" };
+		"R11B-3", "R11B-4", "R11B-5", "R12B-1", "R12B-2", "R12B-3",
+		"R12B-4", "R12B-5", "R13" };
 
 	private volatile FullBackend fLocalBackend;
 	private final Object fLocalBackendLock = new Object();
@@ -93,7 +93,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public FullBackend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
-			throws BackendException {
+	throws BackendException {
 
 		final String nodeName = info.getNodeName();
 		final boolean exists = findRunningNode(nodeName);
@@ -127,16 +127,16 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public Backend getBuildBackend(final IProject project)
-			throws BackendException {
+	throws BackendException {
 		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
+		.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
 		if (info == null) {
 			ErlLogger.info("Project %s has no runtime info, using ide", project
 					.getName());
 			if (fLocalBackend == null) {
 				throw new BackendException(
-						"IDE backend is not created - check configuration!");
+				"IDE backend is not created - check configuration!");
 			}
 			return fLocalBackend;
 		}
@@ -145,6 +145,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		if (b == null) {
 			info.setNodeName(version);
 			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameSuffix());
+			info.setCookie("erlide");
 			// will add workspace unique id
 
 			b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
@@ -168,11 +169,11 @@ public final class BackendManager extends OtpNodeStatus implements
 				if (fLocalBackend == null) {
 					final RuntimeInfo erlideRuntime = RuntimeInfo.copy(
 							ErlangCore.getRuntimeInfoManager()
-									.getErlideRuntime(), false);
+							.getErlideRuntime(), false);
 					if (erlideRuntime != null) {
 						try {
 							final String defLabel = BackendUtil
-									.getLabelProperty();
+							.getLabelProperty();
 							if (defLabel != null) {
 								erlideRuntime.setNodeName(defLabel);
 							} else {
@@ -190,7 +191,7 @@ public final class BackendManager extends OtpNodeStatus implements
 						}
 					} else {
 						ErlLogger
-								.error("There is no erlideRuntime defined! Could not start IDE backend.");
+						.error("There is no erlideRuntime defined! Could not start IDE backend.");
 					}
 				}
 			}

@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -56,7 +57,7 @@ public final class ProjectLocation extends DependencyLocation {
 	}
 
 	@Override
-	public Collection<String> getIncludes() {
+	public Collection<IPath> getIncludes() {
 		// TODO Auto-generated method stub
 		return null; // ErlangCore.getModel().getErlangProject(project.getName()).getProperties();
 	}
@@ -68,7 +69,7 @@ public final class ProjectLocation extends DependencyLocation {
 	}
 
 	@Override
-	public String getOutput() {
+	public IPath getOutput() {
 		// TODO Auto-generated method stub
 		return null;
 	}

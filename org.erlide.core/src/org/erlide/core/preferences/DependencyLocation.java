@@ -13,6 +13,8 @@ package org.erlide.core.preferences;
 import java.util.Collection;
 import java.util.EnumSet;
 
+import org.eclipse.core.runtime.IPath;
+
 public abstract class DependencyLocation extends CodePathLocation {
 	public enum Kind {
 		COMPILE_TIME, RUN_TIME
@@ -22,9 +24,9 @@ public abstract class DependencyLocation extends CodePathLocation {
 
 	public abstract Collection<SourceLocation> getSources();
 
-	public abstract Collection<String> getIncludes();
+	public abstract Collection<IPath> getIncludes();
 
-	public abstract String getOutput();
+	public abstract IPath getOutput();
 
 	public abstract Collection<DependencyLocation> getDependencies();
 

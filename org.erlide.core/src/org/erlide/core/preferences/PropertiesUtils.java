@@ -38,10 +38,10 @@ public class PropertiesUtils {
 		result.addSources(mkSources(old.getSourceDirs()));
 		result.addIncludes(PreferencesUtils.unpackList(old
 				.getIncludeDirsString()));
-		result.setOutput(old.getOutputDir());
+		result.setOutput(new Path(old.getOutputDir()));
 
 		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
+		.getPathVariableManager();
 
 		final String exmodf = old.getExternalModulesFile();
 		IPath ff = pvman.resolvePath(new Path(exmodf));
@@ -52,7 +52,7 @@ public class PropertiesUtils {
 		final String exincf = old.getExternalModulesFile();
 		ff = pvman.resolvePath(new Path(exincf));
 		// List<String> exinc = PreferencesUtils.readFile(ff.toString());
-		final List<String> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
+		final List<IPath> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
 		final LibraryLocation loc = new LibraryLocation(sloc, externalIncludes,
 				null, null);

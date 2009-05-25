@@ -30,7 +30,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public class CompilerPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private final CompilerPreferences prefs;
+	final CompilerPreferences prefs;
 
 	public CompilerPreferencePage() {
 		super();

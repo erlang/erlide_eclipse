@@ -16,24 +16,24 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class LibraryLocation extends DependencyLocation {
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
-	private List<String> includes = new ArrayList<String>();
-	private final String output;
+	private List<IPath> includes = new ArrayList<IPath>();
+	private final IPath output;
 	private List<DependencyLocation> libraries = new ArrayList<DependencyLocation>();
 
 	public LibraryLocation(final List<SourceLocation> sources,
-			final List<String> includes, final String output,
+			final List<IPath> includes, final IPath output,
 			final List<DependencyLocation> libraries) {
 		this(sources, includes, output, libraries, null);
 	}
 
 	public LibraryLocation(final List<SourceLocation> sources,
-			final List<String> includes, final String output,
+			final List<IPath> includes, final IPath output,
 			final List<DependencyLocation> libraries, final EnumSet<Kind> kind) {
 		super(kind);
 		if (sources != null) {
@@ -54,12 +54,12 @@ public final class LibraryLocation extends DependencyLocation {
 	}
 
 	@Override
-	public Collection<String> getIncludes() {
+	public Collection<IPath> getIncludes() {
 		return Collections.unmodifiableCollection(includes);
 	}
 
 	@Override
-	public String getOutput() {
+	public IPath getOutput() {
 		return output;
 	}
 
@@ -75,17 +75,18 @@ public final class LibraryLocation extends DependencyLocation {
 
 	@Override
 	public void store(final IEclipsePreferences root)
-			throws BackingStoreException {
+	throws BackingStoreException {
 		clearAll(root);
-		root.put(ProjectPreferencesConstants.OUTPUT, output);
+		root.put(ProjectPreferencesConstants.OUTPUT, output.toPortableString());
 		final IEclipsePreferences node = (IEclipsePreferences) root
-				.node(ProjectPreferencesConstants.SOURCES);
+		.node(ProjectPreferencesConstants.SOURCES);
 		for (final SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) node.node(loc.getDirectory()));
 		}
-		root.put(ProjectPreferencesConstants.INCLUDES, PreferencesUtils
+		root.put(ProjectPreferencesConstants.INCLUDES, PathSerializer
 				.packList(includes));
 		root.flush();
 	}
+
 
 }
