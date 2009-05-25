@@ -26,7 +26,7 @@ public abstract class DependencyLocation extends CodePathLocation {
 
 	public abstract String getOutput();
 
-	public abstract Collection<LibraryLocation> getLibraries();
+	public abstract Collection<DependencyLocation> getDependencies();
 
 	public DependencyLocation(EnumSet<Kind> kind) {
 		if (kind == null) {

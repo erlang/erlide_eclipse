@@ -62,7 +62,7 @@ public final class ProjectLocation extends DependencyLocation {
 	}
 
 	@Override
-	public Collection<LibraryLocation> getLibraries() {
+	public Collection<DependencyLocation> getDependencies() {
 		// TODO Auto-generated method stub
 		return null;
 	}

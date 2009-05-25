@@ -24,17 +24,17 @@ public final class LibraryLocation extends DependencyLocation {
 	private List<SourceLocation> sources = new ArrayList<SourceLocation>();
 	private List<String> includes = new ArrayList<String>();
 	private final String output;
-	private List<LibraryLocation> libraries = new ArrayList<LibraryLocation>();
+	private List<DependencyLocation> libraries = new ArrayList<DependencyLocation>();
 
 	public LibraryLocation(final List<SourceLocation> sources,
 			final List<String> includes, final String output,
-			final List<LibraryLocation> libraries) {
+			final List<DependencyLocation> libraries) {
 		this(sources, includes, output, libraries, null);
 	}
 
 	public LibraryLocation(final List<SourceLocation> sources,
 			final List<String> includes, final String output,
-			final List<LibraryLocation> libraries, final EnumSet<Kind> kind) {
+			final List<DependencyLocation> libraries, final EnumSet<Kind> kind) {
 		super(kind);
 		if (sources != null) {
 			this.sources = sources;
@@ -64,7 +64,7 @@ public final class LibraryLocation extends DependencyLocation {
 	}
 
 	@Override
-	public Collection<LibraryLocation> getLibraries() {
+	public Collection<DependencyLocation> getDependencies() {
 		return Collections.unmodifiableCollection(libraries);
 	}
 
