@@ -139,7 +139,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		loadPrefs(root);
 	}
 
-	private void loadDefaultPrefs() {
+	private synchronized void loadDefaultPrefs() {
 		final IPreferencesService ps = Platform.getPreferencesService();
 		final String DEFAULT_ID = "org.erlide";
 
@@ -168,7 +168,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		defaultRuntimeName = defName;
 	}
 
-	private void loadPrefs(final IEclipsePreferences root) {
+	private synchronized void loadPrefs(final IEclipsePreferences root) {
 		final String defrt = root.get("default", null);
 		if (defrt != null) {
 			defaultRuntimeName = defrt;
@@ -240,11 +240,11 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		notifyListeners();
 	}
 
-	public String getDefaultRuntimeName() {
+	public synchronized String getDefaultRuntimeName() {
 		return this.defaultRuntimeName;
 	}
 
-	public void setDefaultRuntime(final String name) {
+	public synchronized void setDefaultRuntime(final String name) {
 		this.defaultRuntimeName = name;
 		notifyListeners();
 	}

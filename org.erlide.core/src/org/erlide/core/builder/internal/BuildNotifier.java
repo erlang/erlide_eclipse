@@ -35,10 +35,10 @@ public class BuildNotifier {
 	protected int fTotalWork;
 	protected String previousSubtask;
 
-	public static int newErrorCount = 0;
-	public static int fixedErrorCount = 0;
-	public static int newWarningCount = 0;
-	public static int fixedWarningCount = 0;
+	static int newErrorCount = 0;
+	static int fixedErrorCount = 0;
+	static int newWarningCount = 0;
+	static int fixedWarningCount = 0;
 
 	public static void resetProblemCounters() {
 		newErrorCount = 0;

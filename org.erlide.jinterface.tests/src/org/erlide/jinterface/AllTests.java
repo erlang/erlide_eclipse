@@ -13,10 +13,11 @@ package org.erlide.jinterface;
 import org.erlide.jinterface.java.ErlRpcTest;
 import org.erlide.jinterface.java.JInterfaceTest;
 import org.erlide.jinterface.java.PatternMatchTest;
-import org.erlide.jinterface.java.RpcConverterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ericsson.otp.erlang.RpcConverterTest;
 
 @RunWith(Suite.class)
 @SuiteClasses( { PatternMatchTest.class, JInterfaceTest.class,

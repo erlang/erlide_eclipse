@@ -120,7 +120,7 @@ public class PreferencesHelper {
 	public void putDouble(final String key, final double value) {
 		final double def = service.getDouble(qualifier, key, Double.NaN,
 				nextContexts);
-		if (Double.isNaN(def) || def != value) {
+		if (Double.isNaN(def) || (Double.compare(def, value) != 0)) {
 			storeContext.getNode(qualifier).putDouble(key, value);
 		}
 	}
@@ -136,7 +136,7 @@ public class PreferencesHelper {
 	public void putInt(final String key, final int value) {
 		final int def = service.getInt(qualifier, key, Integer.MIN_VALUE,
 				nextContexts);
-		if (def == Integer.MIN_VALUE || def != value) {
+		if (def == Integer.MIN_VALUE || (Double.compare(def, value) != 0)) {
 			storeContext.getNode(qualifier).putInt(key, value);
 		}
 	}

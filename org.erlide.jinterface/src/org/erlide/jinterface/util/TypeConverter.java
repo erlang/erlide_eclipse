@@ -450,7 +450,7 @@ public final class TypeConverter {
 				failConversion(obj, type);
 			}
 		}
-		if ("j".equals(type)) {
+		if (type.kind == 'j') {
 			return ObjRefCache.registerTarget(obj);
 		}
 		failConversion(obj, type);

@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.java;
+package com.ericsson.otp.erlang;
 
 import static org.junit.Assert.assertTrue;
 

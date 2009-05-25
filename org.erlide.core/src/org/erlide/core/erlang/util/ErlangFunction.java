@@ -2,6 +2,7 @@ package org.erlide.core.erlang.util;
 
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.internal.ErlFunction;
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -56,9 +57,11 @@ public class ErlangFunction {
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof String) {
+			ErlLogger.warn("ErlangFunction compared to String %s", obj);
 			return toString().equals(obj);
 		}
 		if (obj instanceof OtpErlangTuple) {
+			ErlLogger.warn("ErlangFunction compared to OETuple %s", obj);
 			return new ErlangFunction((OtpErlangTuple) obj).equals(this);
 		}
 		if (obj instanceof ErlangFunction) {

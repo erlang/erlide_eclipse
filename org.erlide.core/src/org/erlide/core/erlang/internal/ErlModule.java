@@ -278,7 +278,7 @@ public class ErlModule extends Openable implements IErlModule {
 		comments.clear();
 	}
 
-	public long getTimestamp() {
+	public synchronized long getTimestamp() {
 		return timestamp;
 	}
 
@@ -541,7 +541,7 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 	}
 
-	public void resetParser(final String newText) {
+	public synchronized void resetParser(final String newText) {
 		scanner = null;
 		initialText = newText;
 		parsed = false;

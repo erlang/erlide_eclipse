@@ -42,7 +42,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 /**
  * Root of Erlang element handle hierarchy.
  * 
@@ -312,6 +311,32 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return this;
 	}
 
+	static class NoResourceSchedulingRule implements ISchedulingRule {
+
+		public IPath fPath;
+
+		public NoResourceSchedulingRule(final IPath path) {
+			fPath = path;
+		}
+
+		public boolean contains(final ISchedulingRule rule) {
+			if (rule instanceof NoResourceSchedulingRule) {
+				return fPath
+						.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
+			}
+			return false;
+		}
+
+		public boolean isConflicting(final ISchedulingRule rule) {
+			if (rule instanceof NoResourceSchedulingRule) {
+				final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
+				return fPath.isPrefixOf(otherPath)
+						|| otherPath.isPrefixOf(fPath);
+			}
+			return false;
+		}
+	}
+
 	/*
 	 * (non-Edoc)
 	 * 
@@ -320,31 +345,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public ISchedulingRule getSchedulingRule() {
 		final IResource resource = getResource();
 		if (resource == null) {
-			class NoResourceSchedulingRule implements ISchedulingRule {
-
-				public IPath fPath;
-
-				public NoResourceSchedulingRule(final IPath path) {
-					fPath = path;
-				}
-
-				public boolean contains(final ISchedulingRule rule) {
-					if (rule instanceof NoResourceSchedulingRule) {
-						return fPath
-								.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
-					}
-					return false;
-				}
-
-				public boolean isConflicting(final ISchedulingRule rule) {
-					if (rule instanceof NoResourceSchedulingRule) {
-						final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
-						return fPath.isPrefixOf(otherPath)
-								|| otherPath.isPrefixOf(fPath);
-					}
-					return false;
-				}
-			}
 			return new NoResourceSchedulingRule(getResource()
 					.getProjectRelativePath());
 		}

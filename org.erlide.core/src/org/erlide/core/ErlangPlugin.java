@@ -208,30 +208,32 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	}
 
 	public static void initializeAfterLoad(final IProgressMonitor monitor) {
-		final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-			public void run(final IProgressMonitor progressMonitor)
-					throws CoreException {
-				IProject[] projects;
-				// projects = model.getJavaProjects();
-				final IWorkspace root = ResourcesPlugin.getWorkspace();
-				projects = root.getRoot().getProjects();
-
-				if (projects != null) {
-					for (final IProject project : projects) {
-						try {
-							if (project.hasNature(ErlangPlugin.NATURE_ID)) {
-								project.touch(progressMonitor);
-							}
-						} catch (final CoreException e) {
-							// could not touch this project: ignore
-						}
-					}
-				}
-			}
-		};
 		try {
 			if (TOUCH_ALL_ERLANG_PROJECTS_ON_LAUNCH) {
+				final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+					public void run(final IProgressMonitor progressMonitor)
+							throws CoreException {
+						IProject[] projects;
+						// projects = model.getJavaProjects();
+						final IWorkspace root = ResourcesPlugin.getWorkspace();
+						projects = root.getRoot().getProjects();
+
+						if (projects != null) {
+							for (final IProject project : projects) {
+								try {
+									if (project
+											.hasNature(ErlangPlugin.NATURE_ID)) {
+										project.touch(progressMonitor);
+									}
+								} catch (final CoreException e) {
+									// could not touch this project: ignore
+								}
+							}
+						}
+					}
+				};
+
 				final long millis0 = System.currentTimeMillis();
 				ResourcesPlugin.getWorkspace().run(runnable, monitor);
 				final long millis = System.currentTimeMillis() - millis0;

@@ -173,8 +173,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			final int n = resourcesToBuild.size();
 			if (BuilderUtils.isDebugging()) {
-				ErlLogger.debug("Will compile %d resource(s): %s", new Integer(
-						n), resourcesToBuild.toString());
+				ErlLogger.debug("Will compile %d resource(s): %s", Integer
+						.valueOf(n), resourcesToBuild.toString());
 			}
 			if (n > 0) {
 				notifier.setProgressPerCompilationUnit(1.0f / n);

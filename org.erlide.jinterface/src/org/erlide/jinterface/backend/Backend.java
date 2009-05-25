@@ -317,7 +317,7 @@ public class Backend {
 				signature, args0);
 	}
 
-	private void checkAvailability() throws RpcException {
+	private synchronized void checkAvailability() throws RpcException {
 		if (!fAvailable) {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();

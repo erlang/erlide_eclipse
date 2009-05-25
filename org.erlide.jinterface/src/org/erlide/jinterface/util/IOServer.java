@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
-
 import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -51,18 +50,18 @@ public class IOServer implements Runnable {
 					if (msg instanceof OtpErlangTuple) {
 						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
 						final String tag = ((OtpErlangAtom) tuple.elementAt(0))
-						.atomValue();
+								.atomValue();
 						if ("io_request".equals(tag)) {
 							final OtpErlangPid from = (OtpErlangPid) tuple
-							.elementAt(1);
+									.elementAt(1);
 							final OtpErlangObject replyAs = tuple.elementAt(2);
 							final OtpErlangTuple request = (OtpErlangTuple) tuple
-							.elementAt(3);
+									.elementAt(3);
 							final OtpErlangObject reply = processRequest(from,
 									request);
 							final OtpErlangTuple replyMsg = JInterfaceFactory
-							.mkTuple(new OtpErlangAtom("io_reply"),
-									replyAs, reply);
+									.mkTuple(new OtpErlangAtom("io_reply"),
+											replyAs, reply);
 							mbox.send(from, replyMsg);
 						} else {
 							System.out.println("IOServer: unknown message "
@@ -90,7 +89,8 @@ public class IOServer implements Runnable {
 		try {
 			if (arequest instanceof OtpErlangTuple) {
 				final OtpErlangTuple request = (OtpErlangTuple) arequest;
-				final String tag = ((OtpErlangAtom) request.elementAt(0)).atomValue();
+				final String tag = ((OtpErlangAtom) request.elementAt(0))
+						.atomValue();
 				if ("put_chars".equals(tag)) {
 					b = ErlUtils.match("{put_chars, Chars}", request);
 					if (b != null) {
@@ -111,7 +111,7 @@ public class IOServer implements Runnable {
 						final String f = b.getAtom("F");
 						final OtpErlangObject[] a = b.getList("A");
 						return callback
-						.putChars(from, Encoding.latin1, m, f, a);
+								.putChars(from, Encoding.latin1, m, f, a);
 					}
 
 					b = ErlUtils.match("{put_chars, Enc:a, M:a, F:a, A}",
@@ -161,8 +161,8 @@ public class IOServer implements Runnable {
 								.get("Prompt"), m, f, a);
 					}
 					b = ErlUtils
-					.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
-							request);
+							.match("{get_until, Enc: a, Prompt, M:a, F:a, A}",
+									request);
 					if (b != null) {
 						final String enc = b.getAtom("Enc");
 						final String m = b.getAtom("M");
@@ -193,13 +193,13 @@ public class IOServer implements Runnable {
 				} else if ("get_geometry".equals(tag)) {
 					return JInterfaceFactory.mkTuple(
 							new OtpErlangAtom("error"), new OtpErlangAtom(
-							"enotsup"));
+									"enotsup"));
 				} else {
 					return error;
 				}
 			} else if (arequest instanceof OtpErlangAtom) {
 				final OtpErlangAtom tag = (OtpErlangAtom) arequest;
-				if ("getopts".equals(tag)) {
+				if ("getopts".equals(tag.atomValue())) {
 					return callback.getOpts();
 				} else {
 					return error;
