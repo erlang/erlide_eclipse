@@ -124,7 +124,6 @@ import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.ErlangEditorErrorTickUpdater;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 import org.erlide.ui.views.outline.ErlangContentProvider;

@@ -330,7 +330,8 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.swt,
  org.erlide.jinterface,
  org.erlide.core,
- com.ericsson.jinterface
+ com.ericsson.jinterface,
+ org.eclipse.core.expressions;bundle-version="3.4.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

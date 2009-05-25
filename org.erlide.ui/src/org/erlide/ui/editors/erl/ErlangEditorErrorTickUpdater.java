@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.util;
+package org.erlide.ui.editors.erl;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -17,8 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.navigator.ErlangFileLabelProvider;
+import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.IProblemChangedListener;
 
 /**
  * The <code>JavaEditorErrorTickUpdater</code> will register as a

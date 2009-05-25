@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class RpcHandler extends EventHandler {
+public final class RpcHandler extends EventHandler {
 	private final Backend fRuntime;
 
 	public RpcHandler(final Backend runtime) {

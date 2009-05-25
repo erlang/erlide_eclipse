@@ -58,7 +58,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.FullBackend;
-import org.erlide.runtime.backend.console.BackendShell;
+import org.erlide.runtime.backend.IShell;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
 import org.erlide.runtime.backend.console.IoRequest;
@@ -70,7 +70,6 @@ import org.erlide.ui.views.BackendLabelProvider;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-
 
 public class ErlangConsoleView extends ViewPart implements
 		ErlConsoleModelListener {
@@ -108,7 +107,7 @@ public class ErlangConsoleView extends ViewPart implements
 	SourceViewer consoleOutputViewer;
 	SourceViewer consoleInputViewer;
 	ErlConsoleModel model;
-	BackendShell shell;
+	IShell shell;
 	FullBackend backend;
 	private Action action;
 

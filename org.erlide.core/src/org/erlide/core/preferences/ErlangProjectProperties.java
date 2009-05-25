@@ -1,6 +1,5 @@
 package org.erlide.core.preferences;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class ErlangProjectProperties {
 	private String output;
 	private boolean allowOutputPerSource = false;
 	private final List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
-	private final List<WeakReference<CodePathLocation>> codePathOrder = new ArrayList<WeakReference<CodePathLocation>>();
+	private final List<CodePathLocation> codePathOrder = new ArrayList<CodePathLocation>();
 	private final Map<String, String> macros = new HashMap<String, String>();
 
 	public ErlangProjectProperties() {
@@ -89,7 +88,7 @@ public class ErlangProjectProperties {
 				LibraryLocation.class));
 	}
 
-	public Collection<WeakReference<CodePathLocation>> getCodePathOrder() {
+	public Collection<CodePathLocation> getCodePathOrder() {
 		return Collections.unmodifiableCollection(codePathOrder);
 	}
 

@@ -19,7 +19,6 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.console.BackendShellManager;
-import org.erlide.runtime.backend.console.IShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
