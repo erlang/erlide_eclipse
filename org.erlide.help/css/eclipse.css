@@ -4,6 +4,15 @@
 .sect1, .sect2, .sect3, .sect4
 {
 	padding-left: 1em;
+	/*[empty]font-size:;*/
+}
+H3
+{
+	font-size: 14pt;
+}
+H2
+{
+	font-size: 18pt;
 }
 .command
 {
@@ -20,7 +29,7 @@
 }
 .toc
 {
-	border: 1px dotted;
+	border: 1px dotted #000000;
 	background-color: #EFF3F5;
 	margin-left: 2em;
 	margin-right: 2em;
@@ -30,10 +39,12 @@
 .term
 {
 	font-weight: bold;
+	background-color: #BDE6F8;
+	padding: 2px;
 }
 DIV.ABSTRACT
 {
-	/*[disabled]border:2px solid;*/
+	/*[disabled]border:2px solid #000000;*/
 	/*[disabled]padding-left:10pt;*/
 	/*[disabled]padding-right:10pt;*/
 }
@@ -51,7 +62,7 @@ PRE.PROGRAMLISTING
 	/*[disabled]font-family:monospace;*/
 	/*[disabled]white-space:pre;*/
 	/*[disabled]width:100%;*/
-	/*[disabled]color:black;*/
+	/*[disabled]color:#000000;*/
 	/*[disabled]background-color:#F9F9F9;*/
 	/*[disabled]border:1px dashed #2F6FAB;*/
 	/*[disabled]padding-left:15pt;*/
@@ -67,7 +78,7 @@ PRE.PROGRAMLISTING
 }
 .warning, .important
 {
-	border-color: red;
+	border-color: #FF0000;
 }
 .bold
 {
@@ -103,15 +114,15 @@ DIV.VARIABLELIST
 	/*[disabled]border:1px solid #606090;*/
 	/*[disabled]padding:1px;*/
 }
-a.link
+A.link
 {
-	background:transparent url(../images/external.png) no-repeat right center;
-	padding-right:12px;
+	background: transparent url(../images/external.png) no-repeat right center;
+	padding-right: 12px;
 }
 DIV.imagelink A.link
 {
-	background:transparent;
-	padding-right:0px;
+	background: transparent;
+	padding-right: 0px;
 }
 DIV.NAVFOOTER
 {
@@ -134,7 +145,7 @@ CODE
 }
 .userinput
 {
-	color: blue;
+	color: #0000FF;
 }
 .guimenu, .guisubmenu, .guimenuitem
 {
