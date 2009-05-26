@@ -71,12 +71,6 @@ public class ErlProject extends Openable implements IErlProject {
 	protected static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
 	/**
-	 * An empty array of strings indicating that a project doesn't have any
-	 * prerequesite projects.
-	 */
-	protected static final String[] NO_PREREQUISITES = new String[0];
-
-	/**
 	 * The platform project this <code>IErlProject</code> is based on
 	 */
 	protected IProject fProject;
@@ -153,20 +147,6 @@ public class ErlProject extends Openable implements IErlProject {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Computes the collection of modules (local ones) and set it on the given
-	 * info.
-	 * 
-	 * @param info
-	 *            ErlProjectElementInfo
-	 * @throws ErlModelException
-	 */
-	public void computeChildren(final ErlProject info) throws ErlModelException {
-		// TODO fix this
-		info.setNonErlangResources(null);
-		info.setChildren(new ArrayList<IErlElement>());
 	}
 
 	/**

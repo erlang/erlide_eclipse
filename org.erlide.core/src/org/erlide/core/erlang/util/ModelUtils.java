@@ -143,7 +143,7 @@ public class ModelUtils {
 				}
 			}
 			if (re != null && re instanceof IFile) {
-				m = ErlModelManager.getDefault().getErlangModel().getModule(
+				m = ErlModelManager.getDefault().getErlangModel().findModule(
 						(IFile) re);
 				if (m != null && !modulesDone.contains(m)) {
 					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,

@@ -12,28 +12,29 @@ import org.erlide.jinterface.backend.RuntimeVersion;
  * 
  */
 public class Test {
-	public class Application {
+	public class ProjectInfo {
+		public Collection<SourceApplicationInfo> sources;
+		public Collection<LibraryInfo> libraries;
+	}
+
+	public class LibraryInfo {
+		public Collection<ApplicationInfo> apps;
+	}
+
+	public class SystemLibraryInfo extends LibraryInfo {
+		public RuntimeVersion version;
+	}
+
+	public class ApplicationInfo {
 		public IPath includeLocation;
 		public IPath binariesLocation;
 	}
 
-	public class SourceApplication extends Application {
+	public class SourceApplicationInfo extends ApplicationInfo {
 		public IPath sourceLocation;
-		public Library buildDependencies;
-	}
 
-	public class Library {
-		public Collection<Application> apps;
-	}
-
-	public class SystemLibrary extends Library { // ?
-		public RuntimeVersion version;
-	}
-
-	public class Project {
-		public Collection<Library> libraries;
-		public Library sourceCode;
+		// how do we refer to these? (externally)
+		public Collection<ApplicationInfo> buildDependencies;
 	}
 
 }
-

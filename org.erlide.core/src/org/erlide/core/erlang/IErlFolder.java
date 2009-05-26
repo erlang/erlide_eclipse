@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 
 /**
- * An Erlang folder is a collection of colder with erlang files It knows whether
- * it is on the compile path
+ * An Erlang folder is a collection of colder with erlang files. It knows
+ * whether it is on the compile path
  * 
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IFolder)
  */

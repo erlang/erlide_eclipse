@@ -71,7 +71,7 @@ public class ErlModelUtils {
 		final IErlModel model = ErlangCore.getModel();
 		try {
 			model.open(null);
-			return model.getModule(file);
+			return model.findModule(file);
 		} catch (final ErlModelException e) {
 		}
 		return null;
@@ -81,7 +81,7 @@ public class ErlModelUtils {
 		final IErlModel model = ErlangCore.getModel();
 		try {
 			model.open(null);
-			return model.getModule(moduleName);
+			return model.findModule(moduleName);
 		} catch (final ErlModelException e) {
 		}
 		return null;

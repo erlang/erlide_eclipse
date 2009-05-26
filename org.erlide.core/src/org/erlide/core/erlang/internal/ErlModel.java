@@ -471,7 +471,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return null;
 	}
 
-	public IErlModule getModule(final IFile file) {
+	public IErlModule findModule(final IFile file) {
 		IErlElement element = findElement(file, false);
 		if (element == null) {
 			// Ok, if it's not found, we'll try to build it...
@@ -485,7 +485,7 @@ public class ErlModel extends Openable implements IErlModel {
 		return (IErlProject) e;
 	}
 
-	public IErlModule getModule(final String name) {
+	public IErlModule findModule(final String name) {
 		for (final IErlElement e : getChildren()) {
 			if (e instanceof IErlProject) {
 				final IErlProject p = (IErlProject) e;

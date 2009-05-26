@@ -425,7 +425,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 					ErlLogger.warn(e);
 				}
 			} else {
-				m = model.getModule(i + ".erl");
+				m = model.findModule(i + ".erl");
 			}
 			if (m != null) {
 				if (!interpretedModules.contains(m)) {

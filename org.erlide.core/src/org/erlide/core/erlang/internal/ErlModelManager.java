@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,18 +32,13 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.ErlangCoreOptions;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlFolder;
@@ -54,10 +48,10 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
-import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -472,20 +466,6 @@ public final class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * Returns the File to use for saving and restoring the last built state for
-	 * the given project.
-	 */
-	@SuppressWarnings("unused")
-	private File getSerializationFile(final IProject project) {
-		if (!project.exists()) {
-			return null;
-		}
-		final IPath workingLocation = project
-				.getWorkingLocation(ErlangPlugin.PLUGIN_ID);
-		return workingLocation.append("state.dat").toFile(); //$NON-NLS-1$
-	}
-
-	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#prepareToSave(org.eclipse.core.resources.ISaveContext)
 	 */
 	public void prepareToSave(final ISaveContext context) {
@@ -606,71 +586,6 @@ public final class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * Record the order in which to build the Erlang projects (batch build).
-	 * This order is based on the projects classpath settings.
-	 */
-	protected void setBuildOrder(final String[] erlangBuildOrder)
-			throws ErlModelException {
-
-		// optional behaviour
-		// possible value of index 0 is Compute
-		if (!ErlangCoreOptions.COMPUTE.equals(ErlangCore
-				.getOption(ErlangCoreOptions.CORE_ERLANG_BUILD_ORDER))) {
-			return; // cannot be customized at project level
-		}
-
-		if (erlangBuildOrder == null || erlangBuildOrder.length <= 1) {
-			return;
-		}
-
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		final IWorkspaceDescription description = workspace.getDescription();
-		final String[] wksBuildOrder = description.getBuildOrder();
-
-		String[] newOrder;
-		if (wksBuildOrder == null) {
-			newOrder = erlangBuildOrder;
-		} else {
-			// remove projects which are already mentionned in Erlang builder
-			// order
-			final int erlangCount = erlangBuildOrder.length;
-			// create a set for fast check
-			final HashMap<String, String> newSet = new HashMap<String, String>(
-					erlangCount);
-			for (int i = 0; i < erlangCount; i++) {
-				newSet.put(erlangBuildOrder[i], erlangBuildOrder[i]);
-			}
-			int removed = 0;
-			final int oldCount = wksBuildOrder.length;
-			for (int i = 0; i < oldCount; i++) {
-				if (newSet.containsKey(wksBuildOrder[i])) {
-					wksBuildOrder[i] = null;
-					removed++;
-				}
-			}
-			// add Erlang ones first
-			newOrder = new String[oldCount - removed + erlangCount];
-			System.arraycopy(erlangBuildOrder, 0, newOrder, 0, erlangCount);
-			// Erlang projects are built first
-
-			// copy previous items in their respective order
-			int index = erlangCount;
-			for (int i = 0; i < oldCount; i++) {
-				if (wksBuildOrder[i] != null) {
-					newOrder[index++] = wksBuildOrder[i];
-				}
-			}
-		}
-		// commit the new build order out
-		description.setBuildOrder(newOrder);
-		try {
-			workspace.setDescription(description);
-		} catch (final CoreException e) {
-			throw new ErlModelException(e);
-		}
-	}
-
-	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#shutdown()
 	 */
 	public void shutdown() {
@@ -784,7 +699,7 @@ public final class ErlModelManager implements IErlModelManager {
 	}
 
 	/**
-	 * Fire C Model deltas, flushing them after the fact. If the firing mode has
+	 * Fire Model deltas, flushing them after the fact. If the firing mode has
 	 * been turned off, this has no effect.
 	 */
 	private void fire(final IErlElementDelta customDeltas, final int eventType) {
@@ -835,25 +750,6 @@ public final class ErlModelManager implements IErlModelManager {
 			}
 		}
 	}
-
-	// private void firePreAutoBuildDelta(IErlElementDelta deltaToNotify,
-	// IElementChangedListener[] listeners, int[] listenerMask, int
-	// listenerCount) {
-	//
-	// if (verbose) {
-	// ErlLogger.debug("FIRING PRE_AUTO_BUILD Delta [" +
-	// Thread.currentThread() +
-	// "]:"); //$NON-NLS-1$//$NON-NLS-2$
-	// ErlLogger.debug(deltaToNotify == null ? "<NONE>" :
-	// deltaToNotify.toString());
-	// //$NON-NLS-1$
-	// }
-	// if (deltaToNotify != null) {
-	// notifyListeners(deltaToNotify, ElementChangedEvent.PRE_AUTO_BUILD,
-	// listeners,
-	// listenerMask, listenerCount);
-	// }
-	// }
 
 	private void firePostChangeDelta(final IErlElementDelta deltaToNotify,
 			final IElementChangedListener[] listeners,

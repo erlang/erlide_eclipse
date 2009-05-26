@@ -108,7 +108,7 @@ public class ErlideNoparse {
 				if (file == null) {
 					continue;
 				}
-				final IErlModule module = ErlangCore.getModel().getModule(file);
+				final IErlModule module = ErlangCore.getModel().findModule(file);
 				for (final OtpErlangObject o : funs.elements()) {
 					final OtpErlangTuple t2 = (OtpErlangTuple) o;
 					final OtpErlangTuple ft = (OtpErlangTuple) t2.elementAt(0);

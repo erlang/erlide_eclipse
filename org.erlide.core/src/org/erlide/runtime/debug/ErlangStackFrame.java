@@ -68,7 +68,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		}
 		this.bindings = frames;
 		final IErlModel model = ErlModelManager.getDefault().getErlangModel();
-		final IErlModule m = model.getModule(module);
+		final IErlModule m = model.findModule(module);
 		clauseHead = null;
 		if (m != null) {
 			try {

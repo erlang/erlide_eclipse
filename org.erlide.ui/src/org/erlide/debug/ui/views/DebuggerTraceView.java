@@ -258,7 +258,7 @@ public class DebuggerTraceView extends ViewPart implements
 
 		IEditorPart part = null;
 		final IErlModel model = ErlangCore.getModel();
-		final IErlModule m = model.getModule(module);
+		final IErlModule m = model.findModule(module);
 		IEditorInput input = null;
 		try {
 			input = EditorUtility.getEditorInput(m);

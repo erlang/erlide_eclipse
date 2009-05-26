@@ -70,7 +70,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
 		final IErlModel model = ErlModelManager.getDefault().getErlangModel();
 		if (resource instanceof IFile) {
 			final IFile file = (IFile) resource;
-			final IErlModule m = model.getModule(file);
+			final IErlModule m = model.findModule(file);
 			if (m != null) {
 				try {
 					m.open(null);

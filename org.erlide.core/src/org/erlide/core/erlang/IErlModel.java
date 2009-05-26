@@ -298,9 +298,9 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	IErlProject findProject(IProject p);
 
-	IErlModule getModule(IFile file);
+	IErlModule findModule(IFile file);
 
-	IErlModule getModule(String name);
+	IErlModule findModule(String name);
 
 	public IErlElement innermostThat(final IErlElement el,
 			final IErlangFirstThat firstThat);
