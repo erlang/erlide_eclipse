@@ -115,7 +115,7 @@ quick_recomment_forms(Tree, Cs) ->
 recomment_forms(Tree, Cs) ->
     recomment_forms(Tree, Cs, true).
 
-recomment_forms(Tree, Cs, Insert) when list(Tree) ->
+recomment_forms(Tree, Cs, Insert) when is_list(Tree) ->
     recomment_forms(refac_syntax:form_list(Tree), Cs, Insert);
 recomment_forms(Tree, Cs, Insert) ->
     case refac_syntax:type(Tree) of
@@ -736,15 +736,15 @@ minpos2(X) ->
 
 get_line(Node) ->
     case refac_syntax:get_pos(Node) of
-	L when integer(L) ->
+	L when is_integer(L) ->
 	    L;
-	{L, _} when integer(L) ->
+	{L, _} when is_integer(L) ->
 	    L;
-	{_, L} when integer(L) ->
+	{_, L} when is_integer(L) ->
 	    L;
-	{L, _, _} when integer(L) ->
+	{L, _, _} when is_integer(L) ->
 	    L;
-	{_, L, _} when integer(L) ->
+	{_, L, _} when is_integer(L) ->
 	    L;
 	Pos ->
 	    exit({bad_position, Pos})
