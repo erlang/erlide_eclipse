@@ -199,7 +199,12 @@ public class RpcUtil {
 			if (!(res instanceof OtpErlangTuple)) {
 				throw new RpcException(res.toString());
 			}
-			res = ((OtpErlangTuple) res).elementAt(1);
+			OtpErlangTuple t = (OtpErlangTuple) res;
+			if (t.arity() != 2) {
+				throw new RpcException(res.toString());
+			}
+			res = t.elementAt(1);
+
 		} catch (final OtpErlangExit e) {
 			throw new RpcException(e);
 		} catch (final OtpErlangDecodeException e) {

@@ -7,17 +7,17 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 
 /**
  * Temporary code, to see how things hang together.
- * 
- * @author Vlad
- * 
  */
 public class Test {
+
 	public class ProjectInfo {
 		public Collection<SourceApplicationInfo> sources;
 		public Collection<LibraryInfo> libraries;
+		public IPath systemLibraryRef;
 	}
 
 	public class LibraryInfo {
+		public IPath root;
 		public Collection<ApplicationInfo> apps;
 	}
 
@@ -26,15 +26,14 @@ public class Test {
 	}
 
 	public class ApplicationInfo {
+		public IPath root;
+		public IPath sourceLocation;
 		public IPath includeLocation;
 		public IPath binariesLocation;
 	}
 
 	public class SourceApplicationInfo extends ApplicationInfo {
-		public IPath sourceLocation;
-
-		// how do we refer to these? (externally)
-		public Collection<ApplicationInfo> buildDependencies;
+		public Collection<IPath> buildDependencyRefs;
 	}
 
 }

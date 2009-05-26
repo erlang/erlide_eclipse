@@ -211,9 +211,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	 * @param type
 	 *            - one of the constants defined by IErlElement
 	 */
-	public ArrayList<? extends IErlElement> getChildrenOfType(final Kind type)
+	public List<? extends IErlElement> getChildrenOfType(final Kind type)
 			throws ErlModelException {
-		final ArrayList<IErlElement> list = new ArrayList<IErlElement>();
+		final List<IErlElement> list = new ArrayList<IErlElement>();
 		for (final IErlElement i : getChildren()) {
 			if (i.getKind() == type) {
 				list.add(i);

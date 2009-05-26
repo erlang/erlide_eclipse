@@ -120,7 +120,7 @@ public class ErlProject extends Openable implements IErlProject {
 		try {
 			final IContainer c = (IContainer) underlyingResource;
 			final IResource[] elems = c.members();
-			final ArrayList<IErlElement> children = new ArrayList<IErlElement>(
+			final List<IErlElement> children = new ArrayList<IErlElement>(
 					elems.length);
 			final IErlModelManager modelManager = ErlangCore.getModelManager();
 			for (final IResource element : elems) {

@@ -11,6 +11,7 @@
 package org.erlide.ui.launch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -64,7 +65,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		createProjectsGroup(comp);
 		createStartGroup(comp);
 
-		List<IErlProject> projects;
+		Collection<IErlProject> projects;
 		try {
 			projects = ErlangCore.getModel().getErlangProjects();
 			final List<String> ps = new ArrayList<String>();

@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -205,8 +206,8 @@ public class ErlModel extends Openable implements IErlModel {
 	 * @see IErlModel
 	 */
 	@SuppressWarnings("unchecked")
-	public List<IErlProject> getErlangProjects() throws ErlModelException {
-		final ArrayList<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(Kind.PROJECT);
+	public Collection<IErlProject> getErlangProjects() throws ErlModelException {
+		final List<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(Kind.PROJECT);
 		return list;
 	}
 

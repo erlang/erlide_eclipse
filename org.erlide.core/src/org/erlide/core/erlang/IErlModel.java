@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -148,7 +148,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 * @throws ErlModelException
 	 *             if this request fails.
 	 */
-	List<IErlProject> getErlangProjects() throws ErlModelException;
+	Collection<IErlProject> getErlangProjects() throws ErlModelException;
 
 	/**
 	 * Returns an array of non-Erlang resources (that is, non-Erlang projects)
