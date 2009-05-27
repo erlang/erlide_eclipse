@@ -316,6 +316,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
 Require-Bundle: org.eclipse.compare,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
+ org.eclipse.core.expressions;bundle-version="3.4.0",
  org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
@@ -330,8 +331,7 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.swt,
  org.erlide.jinterface,
  org.erlide.core,
- com.ericsson.jinterface,
- org.eclipse.core.expressions;bundle-version="3.4.1"
+ com.ericsson.jinterface
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

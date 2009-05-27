@@ -18,7 +18,7 @@ import org.osgi.service.prefs.Preferences;
  * Project properties.
  * 
  */
-public class ErlangProjectProperties {
+public final class ErlangProjectProperties {
 
 	private RuntimeVersion requiredRuntimeVersion;
 
@@ -102,25 +102,25 @@ public class ErlangProjectProperties {
 	}
 
 	public void load(final IEclipsePreferences root)
-	throws BackingStoreException {
+			throws BackingStoreException {
 		output = new Path(root.get(ProjectPreferencesConstants.OUTPUT, "ebin"));
 		requiredRuntimeVersion = new RuntimeVersion(root.get(
 				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
 		includes = PathSerializer.unpackList(root.get(
 				ProjectPreferencesConstants.INCLUDES, ""));
 		final Preferences srcNode = root
-		.node(ProjectPreferencesConstants.SOURCES);
+				.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();
 		for (final String src : srcNode.childrenNames()) {
 			final IEclipsePreferences sn = (IEclipsePreferences) srcNode
-			.node(src);
+					.node(src);
 			final SourceLocation loc = new SourceLocation(sn);
 			sources.add(loc);
 		}
 	}
 
 	public void store(final IEclipsePreferences root)
-	throws BackingStoreException {
+			throws BackingStoreException {
 		CodePathLocation.clearAll(root);
 		root.put(ProjectPreferencesConstants.OUTPUT, output.toPortableString());
 		if (requiredRuntimeVersion != null) {
@@ -130,7 +130,7 @@ public class ErlangProjectProperties {
 		root.put(ProjectPreferencesConstants.INCLUDES, PathSerializer
 				.packList(includes));
 		final Preferences srcNode = root
-		.node(ProjectPreferencesConstants.SOURCES);
+				.node(ProjectPreferencesConstants.SOURCES);
 		for (final SourceLocation loc : sources) {
 			loc.store((IEclipsePreferences) srcNode.node(Integer.toString(loc
 					.getId())));
