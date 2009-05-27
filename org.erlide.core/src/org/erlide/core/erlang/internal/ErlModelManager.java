@@ -81,7 +81,7 @@ public final class ErlModelManager implements IErlModelManager {
 	/**
 	 * The singleton manager
 	 */
-	private static final ErlModelManager MANAGER = new ErlModelManager();
+	private static ErlModelManager instance = null;
 
 	/**
 	 * Queue of deltas created explicitly by the model that have yet to be
@@ -461,8 +461,11 @@ public final class ErlModelManager implements IErlModelManager {
 	/**
 	 * Returns the singleton ErlModelManager
 	 */
-	public static final IErlModelManager getDefault() {
-		return MANAGER;
+	public static synchronized final IErlModelManager getDefault() {
+		if (instance == null) {
+			instance = new ErlModelManager();
+		}
+		return instance;
 	}
 
 	/**
