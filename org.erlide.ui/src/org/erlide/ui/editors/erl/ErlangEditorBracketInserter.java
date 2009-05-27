@@ -120,16 +120,6 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 				// ignore and return
 			}
 		}
-
-		/**
-		 * Returns the position category.
-		 * 
-		 * @return the position category
-		 */
-		public String getCategory() {
-			return fCategory;
-		}
-
 	}
 
 	private boolean fCloseBraces = false;

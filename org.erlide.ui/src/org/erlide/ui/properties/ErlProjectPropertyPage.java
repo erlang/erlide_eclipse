@@ -316,6 +316,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		for (final RuntimeInfo ri : rs) {
 			vv.add(new String[] { ri.getName(), ri.getName() });
 		}
+		@SuppressWarnings("unused")
 		final String[][] values = vv.toArray(new String[][] {});
 
 		final TabItem librariesTab = new TabItem(tabFolder, SWT.NONE);

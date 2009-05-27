@@ -87,6 +87,9 @@ public class ErlideUtil {
 		return false;
 	}
 
+	/**
+	 * @noreference This method is not intended to be referenced by clients.
+	 */
 	public static void unpackBeamFiles(final ICodeBundle p) {
 		final String location = p.getEbinDir();
 		if (location == null) {

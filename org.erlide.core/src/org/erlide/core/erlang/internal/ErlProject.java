@@ -627,13 +627,6 @@ public class ErlProject extends Openable implements IErlProject {
 		return nonErlangResources;
 	}
 
-	/**
-	 * Set the fNonErlangResources to res value
-	 */
-	private void setNonErlangResources(final IResource[] resources) {
-		nonErlangResources = resources;
-	}
-
 	// public IErlModule getModule(final String name) throws ErlModelException {
 	// if (!hasChildren()) {
 	// open(null);

@@ -85,10 +85,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			return fIsComment;
 		}
 
-		public void setIsComment(final boolean isComment) {
-			fIsComment = isComment;
-		}
-
 		/*
 		 * @see java.lang.Object#toString()
 		 */

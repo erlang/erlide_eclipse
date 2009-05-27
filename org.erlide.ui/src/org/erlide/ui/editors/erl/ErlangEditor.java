@@ -1361,6 +1361,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 *            the position of the found annotation
 	 * @return the found annotation
 	 */
+	@SuppressWarnings("null")
 	private Annotation getNextAnnotation(final int offset, final int length,
 			final boolean forward, final Position annotationPosition) {
 
@@ -1395,10 +1396,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			if (forward && p.offset == offset || !forward
 					&& p.offset + p.getLength() == offset + length) {
 				// || p.includes(offset))
-				if (containingAnnotation == null || forward
-						&& p.length >= containingAnnotationPosition.length
-						|| !forward
-						&& p.length < containingAnnotationPosition.length) {
+				if ((containingAnnotation == null)
+						|| (forward && (p.length >= containingAnnotationPosition.length))
+						|| (!forward && (p.length < containingAnnotationPosition.length))) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;

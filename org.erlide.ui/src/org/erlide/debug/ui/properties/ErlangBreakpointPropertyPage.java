@@ -56,7 +56,8 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 	/**
 	 * the hit count error message
 	 */
-	private static final String fgHitCountErrorMessage = "Hit count must be a positive integer";
+	// private static final String fgHitCountErrorMessage =
+	// "Hit count must be a positive integer";
 
 	/**
 	 * Store the breakpoint properties.
