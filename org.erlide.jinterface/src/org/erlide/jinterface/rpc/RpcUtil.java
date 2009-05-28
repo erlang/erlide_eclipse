@@ -194,7 +194,7 @@ public class RpcUtil {
 				mbox.close();
 			}
 			if (res == null) {
-				throw new RpcTimeoutException("");
+				throw new RpcTimeoutException();
 			}
 			if (!(res instanceof OtpErlangTuple)) {
 				throw new RpcException(res.toString());
