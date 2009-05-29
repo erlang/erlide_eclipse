@@ -38,6 +38,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementVisitor;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModelManager;
@@ -55,6 +56,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.FunctionRef;
 
 /**
  * Implementation of
@@ -640,5 +643,22 @@ public class ErlModel extends Openable implements IErlModel {
 			fCachedPathVars = new OtpErlangList(objects);
 		}
 		return fCachedPathVars;
+	}
+
+	public IErlFunction findFunction(FunctionRef r) {
+		IErlModule m = findModule(r.module);
+		try {
+			for (IErlElement c : m.getChildren()) {
+				if (c instanceof IErlFunction) {
+					IErlFunction f = (IErlFunction) c;
+					if (f.getName().equals(r.function)
+							&& f.getArity() == r.arity) {
+						return f;
+					}
+				}
+			}
+		} catch (ErlModelException e) {
+		}
+		return null;
 	}
 }

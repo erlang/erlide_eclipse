@@ -15,30 +15,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public final class ErlangXref {
 
-	private ErlangXref() {
-	}
-
-	/*
-	 * add_project(ProjectDir) -> xref:add_application(erlide, ProjectDir).
-	 * 
-	 * update() -> xref:update(erlide).
-	 * 
-	 * analyze(Module) when is_atom(Module) -> xref:m(Module); analyze(Dir) when
-	 * is_list(Dir) -> xref:d(Dir).
-	 * 
-	 * module_use(Module) when is_atom(Module) -> xref:analyze(erlide,
-	 * {module_use, Module}).
-	 * 
-	 * module_call(Module) when is_atom(Module) -> xref:analyze(erlide,
-	 * {module_call, Module}).
-	 * 
-	 * function_use({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
-	 * xref:analyze(erlide, {use, {M, F, A}}).
-	 * 
-	 * function_call({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
-	 * xref:analyze(erlide, {call, {M, F, A}}).
-	 */
-
 	public static void start(final Backend b) {
 		try {
 			b.call("erlide_xref", "start", "");
@@ -61,9 +37,8 @@ public final class ErlangXref {
 		try {
 			final IPath outputLocation = project.getProject().getFolder(
 					project.getOutputLocation()).getLocation();
-			b
-					.call("erlide_xref", "add_project", "s", outputLocation
-							.toString());
+			String loc = outputLocation.toString();
+			b.call("erlide_xref", "add_project", "s", loc);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -80,11 +55,11 @@ public final class ErlangXref {
 	}
 
 	@SuppressWarnings("boxing")
-	public static FunctionRef[] functionUse(final Backend b,
-			final String mod, final String fun, final int arity) {
+	public static FunctionRef[] functionUse(final Backend b, final String mod,
+			final String fun, final int arity) {
 		try {
-			final OtpErlangObject r = b.call(10000, "erlide_xref",
-					"function_use", "aai", mod, fun, arity);
+			final OtpErlangObject r = b.call("erlide_xref", "function_use",
+					"aai", mod, fun, arity);
 			final Bindings bind = ErlUtils.match("{ok, L}", r);
 			if (bind == null) {
 				return new FunctionRef[0];
@@ -99,6 +74,13 @@ public final class ErlangXref {
 			ErlLogger.debug(e);
 		}
 		return null;
+	}
+
+	private ErlangXref() {
+	}
+
+	public static FunctionRef[] functionUse(Backend b, FunctionRef ref) {
+		return functionUse(b, ref.module, ref.function, ref.arity);
 	}
 
 }

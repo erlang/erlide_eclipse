@@ -118,4 +118,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	 * @param newText
 	 */
 	void resetParser(String newText);
+
+	String getModuleName();
 }

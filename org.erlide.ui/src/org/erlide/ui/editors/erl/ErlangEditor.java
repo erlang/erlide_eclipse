@@ -109,6 +109,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.actions.CallHierarchyAction;
 import org.erlide.ui.actions.ClearCacheAction;
 import org.erlide.ui.actions.CompileAction;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -170,6 +171,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private CompileAction compileAction;
 	private ScannerListener scannerListener;
 	private ClearCacheAction clearCacheAction;
+	private CallHierarchyAction callhierarchy;
 
 	/**
 	 * Simple constructor
@@ -365,6 +367,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// IErlangHelpContextIds.INDENT_ACTION);
 		}
 
+		callhierarchy = new CallHierarchyAction(this, getModule());
+		callhierarchy
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
+		setAction("Call hierarchy", callhierarchy);
+
 		if (ErlideUtil.isClearCacheAvailable()) {
 			clearCacheAction = new ClearCacheAction(ErlangEditorMessages
 					.getBundleForConstructedKeys(), "ClearCache.", this);
@@ -414,6 +421,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
 					clearCacheAction);
 		}
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, callhierarchy);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,

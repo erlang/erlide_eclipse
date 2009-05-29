@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
+import erlang.FunctionRef;
+
 /**
  * Represent the root Erlang element corresponding to the workspace. Since there
  * is only one such root element, it is commonly referred to as <em>the</em>
@@ -308,4 +310,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	String getExternal(IErlProject erlProject, int externalFlag);
 
 	OtpErlangList getPathVars();
+
+	IErlFunction findFunction(FunctionRef r);
 }

@@ -453,7 +453,7 @@ public class ErlModule extends Openable implements IErlModule {
 		fIgnoreNextPostReconcile = true;
 	}
 
-	private String getModuleName() {
+	public String getModuleName() {
 		return ErlideUtil.withoutExtension(getName());
 	}
 
@@ -548,4 +548,8 @@ public class ErlModule extends Openable implements IErlModule {
 		setStructureKnown(false);
 	}
 
+	@Override
+	public IErlModule getModule() {
+		return this;
+	}
 }

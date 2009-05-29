@@ -255,8 +255,9 @@ public final class ErlModelManager implements IErlModelManager {
 					initialText = "";
 				}
 			}
-			final IErlModule module = new ErlModule(parent, file.getName(),
-					initialText, file);
+			String name = file.getName();
+			final IErlModule module = new ErlModule(parent, name, initialText,
+					file);
 			if (parent != null && parent instanceof IParent) {
 				((IParent) parent).addChild(module);
 			}

@@ -501,6 +501,10 @@
             id="org.erlide.ui.actions.clearCache"
             name="Clear Cache">
       </command>
+      <command
+            id="org.erlide.ui.actions.callhierarchy"
+            name="Call hierarchy">
+      </command>
 
  </extension>
  <extension
@@ -564,6 +568,18 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+G">
+      </key>
+      <key
+            commandId="org.erlide.ui.actions.clearCache"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+K">
+      </key>
+      <key
+            commandId="org.erlide.ui.actions.callhierarchy"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+H">
       </key>
 
  </extension>
@@ -1029,6 +1045,14 @@
             icon="icons/file.gif"
             id="org.erlide.debug.ui.views.debuggerTraceView"
             name="Debugger Trace">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.erlide.ui.views.CallHierarchyView"
+            id="org.erlide.ui.callhierarchy"
+            name="Call Hierarchy"
+            restorable="true">
       </view>
    </extension>
    <extension

@@ -22,4 +22,6 @@ public class IErlangEditorActionDefinitionIds {
 	public static final String CLEAR_CACHE = "org.erlide.ui.actions.clearCache";
 	public static final String OPEN = "org.erlide.ui.actions.open";
 	public static final String COMPILE = "org.erlide.ui.actions.compile";
+	public static final String CALLHIERARCHY = "org.erlide.ui.actions.callhierarchy";
+
 }
