@@ -122,6 +122,8 @@ public class CallHierarchyView extends ViewPart {
 			composite.setLayout(new GridLayout(2, false));
 			{
 				lblRoot = new Label(composite, SWT.NONE);
+				lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+						false, 1, 1));
 				lblRoot.setText("<no function>");
 			}
 			{
