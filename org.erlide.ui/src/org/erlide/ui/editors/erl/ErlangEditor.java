@@ -370,7 +370,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		callhierarchy = new CallHierarchyAction(this, getModule());
 		callhierarchy
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
-		setAction("Call hierarchy", callhierarchy);
+		setAction("CallHierarchy", callhierarchy);
+		markAsStateDependentAction("CallHierarchy", true);
+		markAsSelectionDependentAction("CallHierarchy", true);
 
 		if (ErlideUtil.isClearCacheAvailable()) {
 			clearCacheAction = new ClearCacheAction(ErlangEditorMessages

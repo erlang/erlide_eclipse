@@ -648,6 +648,7 @@ public class ErlModel extends Openable implements IErlModel {
 	public IErlFunction findFunction(FunctionRef r) {
 		IErlModule m = findModule(r.module);
 		try {
+			m.open(null);
 			for (IErlElement c : m.getChildren()) {
 				if (c instanceof IErlFunction) {
 					IErlFunction f = (IErlFunction) c;

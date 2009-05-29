@@ -68,9 +68,11 @@ public class CallHierarchyView extends ViewPart {
 	private class TreeContentProvider implements ITreeContentProvider {
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			IErlFunction fun = (IErlFunction) newInput;
-			lblRoot.setText(fun.getModule().getModuleName() + " : "
-					+ fun.getNameWithArity());
+			if (newInput instanceof IErlFunction) {
+				IErlFunction fun = (IErlFunction) newInput;
+				lblRoot.setText(fun.getModule().getModuleName() + " : "
+						+ fun.getNameWithArity());
+			}
 		}
 
 		public void dispose() {
@@ -85,6 +87,9 @@ public class CallHierarchyView extends ViewPart {
 			FunctionRef ref = new FunctionRef(parent);
 			Backend b = ErlangCore.getBackendManager().getIdeBackend();
 			FunctionRef[] children = ErlangXref.functionUse(b, ref);
+			if (children == null) {
+				return new IErlFunction[0];
+			}
 			List<IErlFunction> result = new ArrayList<IErlFunction>();
 			for (FunctionRef r : children) {
 				IErlFunction fun = parent.getModel().findFunction(r);
@@ -92,12 +97,12 @@ public class CallHierarchyView extends ViewPart {
 					result.add(fun);
 				}
 			}
-			return result.toArray(new IErlFunction[children.length]);
+
+			return result.toArray(new IErlFunction[result.size()]);
 		}
 
 		public Object getParent(Object element) {
-			IErlFunction el = (IErlFunction) element;
-			return el.getParent();
+			return null;
 		}
 
 		public boolean hasChildren(Object element) {
@@ -183,7 +188,7 @@ public class CallHierarchyView extends ViewPart {
 			return;
 		}
 		treeViewer.setInput(ref);
-		treeViewer.expandToLevel(2);
+		// treeViewer.expandToLevel(2);
 		treeViewer.refresh();
 	}
 

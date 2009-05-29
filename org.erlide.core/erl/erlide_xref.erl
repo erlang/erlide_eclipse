@@ -15,25 +15,21 @@
 start() ->
 	spawn(fun() ->
 				  erlang:yield(),
-				  erlide_log:logp(erlang:now()),
 				  xref:start(erlide), 
-				  erlide_log:logp(erlang:now()),
-				  %erlide_log:log("-- xref initialization started."),
-%% 				  X= xref:add_release(erlide, code:lib_dir(),
-%% 									  [{name, otp}, {verbose, false}, {warnings,false}]),
-				  %				  X=1,
-				  %erlide_log:logp({"xref initialization done. ",X})
-				  erlide_log:logp(erlang:now()),
+				  xref:set_default(erlide, [{verbose,false},{warnings,false}]),
+				  %% 				  X= xref:add_release(erlide, code:lib_dir(),
+				  %% 									  [{name, otp}]),
 				  ok
 		  end),
-				  erlide_log:logp({">>>",erlang:now()}),
 	ok.
 
 stop() ->
 	xref:stop(erlide).
 
 add_project(ProjectDir) ->
-	xref:add_application(erlide, ProjectDir).
+	R=xref:add_application(erlide, ProjectDir),
+	R.
+
 
 update() ->
 	xref:update(erlide).
@@ -53,7 +49,8 @@ function_use({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
 	xref:analyze(erlide, {use, {M, F, A}}).
 
 function_use(M, F, A) when is_atom(M), is_atom(F), is_integer(A) ->
-	xref:analyze(erlide, {use, {M, F, A}}).
+	R=xref:analyze(erlide, {use, {M, F, A}}),
+	R.
 
 function_call({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
 	xref:analyze(erlide, {call, {M, F, A}}).
