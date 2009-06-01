@@ -16,11 +16,7 @@ List of user visible changes between 0.6.0 and 0.6.2 (r2723)
 
 	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
 
-	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
-
 	http://www.assembla.com/spaces/erlide/tickets/367-completion---better-layout-of-documentation
-
-	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
 
 	Added null-test for scanner (can get null scanner from reconciler and builder when deleting resources)
 
@@ -28,9 +24,7 @@ List of user visible changes between 0.6.0 and 0.6.2 (r2723)
 
 	added support for setting debug_info and export_all options on Compiler
 
-	http://www.assembla.com/spaces/erlide/tickets/376-call-hierarchy--proof-of-concept
-
-	added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
+	http://www.assembla.com/spaces/erlide/tickets/376-call-hierarchy--proof-of-concept: added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
 
 
 List of user visible changes between 0.5.3 and 0.6.0 (r2571)
