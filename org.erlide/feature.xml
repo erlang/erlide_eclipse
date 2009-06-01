@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.6.1.qualifier"
+      version="0.6.2.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core"
       image="erlang120.gif">

@@ -1,3 +1,38 @@
+List of user visible changes between 0.6.0 and 0.6.2 (r2723)
+
+	fixed exception in getErlideRuntime when installing for the first time
+
+	duplicated code detection made to work in both Linux and Windows
+
+	Wrangler code-base update
+
+	http://www.assembla.com/spaces/erlide/tickets/344-navigation---F3-goes-wrong-if-call-contains-fun----a-1-
+
+	http://www.assembla.com/spaces/erlide/tickets/343-debugger---breakpoints---group-on-type-gives-Others-(type-unspecified)
+
+	work on https://www.assembla.com/spaces/erlide/tickets/367-completion---better-layout-of-documentation
+
+	http://www.assembla.com/spaces/erlide/tickets/365-hover-over-non-folded-comment-shows-popup
+
+	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
+
+	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
+
+	http://www.assembla.com/spaces/erlide/tickets/367-completion---better-layout-of-documentation
+
+	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
+
+	Added null-test for scanner (can get null scanner from reconciler and builder when deleting resources)
+
+	better looking edoc 
+
+	added support for setting debug_info and export_all options on Compiler
+
+	http://www.assembla.com/spaces/erlide/tickets/376-call-hierarchy--proof-of-concept
+
+	added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
+
+
 List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     fixed [erlide-Bugs-2771703 ] Can't start Erlide beyond 0.5.0
@@ -12,7 +47,7 @@ List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     http://www.assembla.com/spaces/erlide/tickets/356-indent---cmd-i-crashes-if--Insert-spaces-for-tabs--is-selected
 
-    https://erlide.assembla.com/spaces/erlide/tickets/357-reconciler-can-hang-the-whole-eclipse
+    http://erlide.assembla.com/spaces/erlide/tickets/357-reconciler-can-hang-the-whole-eclipse
 
     work on #2777890: Editor hangs
 
