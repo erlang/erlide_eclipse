@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -32,7 +33,6 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
-import org.osgi.service.prefs.Preferences;
 
 public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
@@ -92,8 +92,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 	public synchronized void load() {
 		fRuntimes.clear();
 
-		loadDefaultPrefs();
-
 		// TODO remove this later
 		final String OLD_NAME = "erts";
 		final IEclipsePreferences old = new InstanceScope()
@@ -122,20 +120,10 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		}
 		//
 
-		// TODO remove this later
-		IEclipsePreferences root = new InstanceScope()
+		IEclipsePreferences root = new DefaultScope()
 				.getNode("org.erlide.launching/runtimes");
 		loadPrefs(root);
-		try {
-			final Preferences p = root.parent();
-			root.removeNode();
-			p.flush();
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
-		}
-		//
-
-		root = getRootPreferenceNode();
+		root = new InstanceScope().getNode("org.erlide.launching/runtimes");
 		loadPrefs(root);
 	}
 
