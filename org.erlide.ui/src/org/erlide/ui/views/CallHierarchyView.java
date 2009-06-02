@@ -89,10 +89,7 @@ public class CallHierarchyView extends ViewPart {
 
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof String) {
-				if (parentElement != input) {
-					return new Object[0];
-				}
-				return new Object[] { new String((String) parentElement) };
+				return new Object[0];
 			}
 			IErlFunction parent = (IErlFunction) parentElement;
 			FunctionRef ref = new FunctionRef(parent);
