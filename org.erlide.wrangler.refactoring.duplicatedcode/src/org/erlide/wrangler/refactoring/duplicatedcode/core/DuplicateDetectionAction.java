@@ -69,9 +69,9 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 		if (os.equals(Platform.OS_LINUX)) {
 			path = path.append("linux");
 			path = path.append("suffixtree");
-		/*} else if (os.equals(Platform.OS_WIN32)) {
+		} else if (os.equals(Platform.OS_WIN32)) {
 			path = path.append("win32");
-			path = path.append("suffixtree.exe");*/
+			path = path.append("suffixtree.exe");
 		} else if (os.equals(Platform.OS_MACOSX)) {
 			path = path.append("macosx");
 			path = path.append("suffixtree");
