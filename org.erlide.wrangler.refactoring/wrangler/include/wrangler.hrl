@@ -22,7 +22,7 @@
 -define(ModuleGraphTab, wrangler_modulegraph_tab).
 
 -define(DEFAULT_TABWIDTH, 8).  %% default number of characters represented by a Tab key.
--define(EMACS, false).
+%%-define(EMACS, false).
 
 
 
