@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -33,16 +34,17 @@ public final class ErlangXref {
 
 	}
 
-	public static void addProject(final Backend b, final IErlProject project) {
+	public static RpcFuture addProject(final Backend b,
+			final IErlProject project) {
 		try {
 			final IPath outputLocation = project.getProject().getFolder(
 					project.getOutputLocation()).getLocation();
 			String loc = outputLocation.toString();
-			b.call("erlide_xref", "add_project", "s", loc);
+			return b.async_call("erlide_xref", "add_project", "s", loc);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
-
+		return null;
 	}
 
 	public static void update(final Backend b) {
@@ -51,7 +53,6 @@ public final class ErlangXref {
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
-
 	}
 
 	@SuppressWarnings("boxing")

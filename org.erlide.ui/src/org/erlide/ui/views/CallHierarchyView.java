@@ -67,11 +67,16 @@ public class CallHierarchyView extends ViewPart {
 
 	private class TreeContentProvider implements ITreeContentProvider {
 
+		private Object input;
+
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			input = newInput;
 			if (newInput instanceof IErlFunction) {
 				IErlFunction fun = (IErlFunction) newInput;
 				lblRoot.setText(fun.getModule().getModuleName() + " : "
 						+ fun.getNameWithArity());
+			} else if (input instanceof String) {
+				lblRoot.setText((String) input);
 			}
 		}
 
@@ -83,12 +88,21 @@ public class CallHierarchyView extends ViewPart {
 		}
 
 		public Object[] getChildren(Object parentElement) {
+			if (parentElement instanceof String) {
+				if (parentElement != input) {
+					return new Object[0];
+				}
+				return new Object[] { new String((String) parentElement) };
+			}
 			IErlFunction parent = (IErlFunction) parentElement;
 			FunctionRef ref = new FunctionRef(parent);
 			Backend b = ErlangCore.getBackendManager().getIdeBackend();
 			FunctionRef[] children = ErlangXref.functionUse(b, ref);
 			if (children == null) {
-				return new IErlFunction[0];
+				return new Object[0];
+			}
+			if (parentElement == input && children.length == 0) {
+				return new Object[] { "<no callers>" };
 			}
 			List<IErlFunction> result = new ArrayList<IErlFunction>();
 			for (FunctionRef r : children) {
@@ -97,7 +111,6 @@ public class CallHierarchyView extends ViewPart {
 					result.add(fun);
 				}
 			}
-
 			return result.toArray(new IErlFunction[result.size()]);
 		}
 
@@ -145,7 +158,7 @@ public class CallHierarchyView extends ViewPart {
 				}
 			}
 			{
-				treeViewer = new TreeViewer(composite, SWT.BORDER);
+				treeViewer = new TreeViewer(composite, SWT.NONE);
 				treeViewer.setLabelProvider(new ViewerLabelProvider());
 				treeViewer.setContentProvider(new TreeContentProvider());
 				tree = treeViewer.getTree();
@@ -191,6 +204,14 @@ public class CallHierarchyView extends ViewPart {
 		}
 		treeViewer.setInput(ref);
 		// treeViewer.expandToLevel(2);
+		treeViewer.refresh();
+	}
+
+	public void setMessage(String msg) {
+		if (msg == null) {
+			return;
+		}
+		treeViewer.setInput(msg);
 		treeViewer.refresh();
 	}
 

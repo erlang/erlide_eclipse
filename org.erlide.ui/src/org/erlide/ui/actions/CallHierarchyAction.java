@@ -10,19 +10,27 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.views.CallHierarchyView;
 
@@ -44,7 +52,6 @@ public class CallHierarchyAction extends Action {
 	public void run() {
 		IErlElement el = editor.getElementAt(editor.getViewer()
 				.getSelectedRange().x, false);
-		FunctionRef ref = null;
 		IErlFunction f = null;
 		if (el instanceof IErlFunction) {
 			f = (IErlFunction) el;
@@ -59,23 +66,50 @@ public class CallHierarchyAction extends Action {
 		if (i > 0) {
 			name = name.substring(0, i);
 		}
-		ref = new FunctionRef(name, f.getFunctionName(), f.getArity());
+		final FunctionRef ref = new FunctionRef(name, f.getFunctionName(), f
+				.getArity());
 
 		IWorkbenchWindow dw = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
-		IWorkbenchPage page = dw.getActivePage();
-		try {
-			Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			ErlangXref.addProject(b, module.getProject());
+		final IWorkbenchPage page = dw.getActivePage();
 
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		try {
 			IViewPart p = page.showView("org.erlide.ui.callhierarchy");
 			CallHierarchyView cvh = (CallHierarchyView) p
 					.getAdapter(CallHierarchyView.class);
-			cvh.setRoot(module.getModel().findFunction(ref));
+
+			cvh.setMessage("<computing... project "
+					+ module.getProject().getName() + ">");
 		} catch (PartInitException e) {
 			ErlLogger.error("could not open Call hierarchy view: ", e
 					.getMessage());
+			return;
 		}
+		final RpcFuture result = ErlangXref.addProject(b, module.getProject());
 
+		Job job = new UIJob("call hierarchy updater") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				try {
+					if (result.get(1) == null) {
+						schedule(100);
+					}
+				} catch (RpcException e1) {
+					e1.printStackTrace();
+				}
+				IViewPart p;
+				try {
+					p = page.showView("org.erlide.ui.callhierarchy");
+					final CallHierarchyView cvh = (CallHierarchyView) p
+							.getAdapter(CallHierarchyView.class);
+					cvh.setRoot(module.getModel().findFunction(ref));
+				} catch (PartInitException e) {
+					e.printStackTrace();
+				}
+				return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID, "done");
+			}
+		};
+		job.schedule(100);
 	}
 }
