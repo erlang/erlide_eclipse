@@ -240,7 +240,8 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				if (BrowserInformationControl.isAvailable(parent)) {
+				if (parent.getText().length() == 0
+						&& BrowserInformationControl.isAvailable(parent)) {
 					BrowserInformationControl info = new BrowserInformationControl(
 							parent, JFaceResources.DIALOG_FONT, EditorsUI
 									.getTooltipAffordanceString()) {
@@ -257,13 +258,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 				}
 			}
 		};
-	}
-
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		if (fPresenterControlCreator == null) {
-			fPresenterControlCreator = new PresenterControlCreator();
-		}
-		return fPresenterControlCreator;
 	}
 
 	@Override
