@@ -20,7 +20,7 @@ import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.ui.ErlideUIPlugin;
 
-public abstract class AsyncCaller implements Runnable {
+public abstract class AsyncCaller<T> implements Runnable {
 	private long interval;
 
 	public AsyncCaller() {
@@ -31,16 +31,16 @@ public abstract class AsyncCaller implements Runnable {
 		this.interval = interval;
 	}
 
-	protected Object prepare() {
+	protected T prepare() {
 		return null;
 	}
 
 	protected abstract RpcFuture call() throws BackendException;
 
-	protected abstract void handleResult(Object context, RpcFuture result);
+	protected abstract void handleResult(T context, RpcFuture result);
 
 	public void run() {
-		final Object context = prepare();
+		final T context = prepare();
 		try {
 			final RpcFuture result = call();
 			if (result == null) {
@@ -57,6 +57,9 @@ public abstract class AsyncCaller implements Runnable {
 						e.printStackTrace();
 					}
 					handleResult(context, result);
+					if (monitor.isCanceled()) {
+						return Status.CANCEL_STATUS;
+					}
 					return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID,
 							"done");
 				}
