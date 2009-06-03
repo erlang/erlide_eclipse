@@ -1,6 +1,8 @@
 package org.erlide.wrangler.refactoring.core.tupletorecord;
 
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 
@@ -27,10 +29,11 @@ public class TupleToRecordRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
-		return managedBackend.call_noexception("wrangler",
-				"tuple_to_record_eclipse", "siiiissxi", filePath, parameters
-						.getStartLine(), parameters.getStartColumn(),
-				parameters.getEndLine(), parameters.getEndColumn(), newName,
-				newParametersName, searchPath, parameters.getEditorTabWidth());
+		Backend b = BackendManager.getDefault().getIdeBackend();
+		return b.call_noexception("wrangler", "tuple_to_record_eclipse",
+				"siiiissxi", filePath, parameters.getStartLine(), parameters
+						.getStartColumn(), parameters.getEndLine(), parameters
+						.getEndColumn(), newName, newParametersName,
+				searchPath, parameters.getEditorTabWidth());
 	}
 }

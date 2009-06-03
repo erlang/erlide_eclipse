@@ -10,10 +10,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.DuplicatesUIManager;
@@ -24,15 +21,11 @@ public abstract class AbstractDuplicatesSearcherAction implements
 
 	protected final String rpcErrorMsg = "An error occured during the refactoring!";
 	protected RefactoringParameters parameter = new RefactoringParameters();
-	protected Backend backend;
 
 	public void run(IAction action) {
 		if (getUserInput()) {
 			try {
 				IResultParser result;
-
-				ErlangCore.getBackendManager();
-				backend = BackendManager.getDefault().getIdeBackend();
 
 				result = callRefactoring();
 				if (result.isSuccessful()) {

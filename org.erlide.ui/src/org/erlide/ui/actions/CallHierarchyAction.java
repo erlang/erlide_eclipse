@@ -78,7 +78,7 @@ public class CallHierarchyAction extends Action {
 					CallHierarchyView cvh = (CallHierarchyView) p
 							.getAdapter(CallHierarchyView.class);
 
-					cvh.setMessage("<computing... project "
+					cvh.setMessage("<searching... project "
 							+ module.getProject().getName() + ">");
 					return cvh;
 				} catch (PartInitException e) {

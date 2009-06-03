@@ -1,6 +1,8 @@
 package org.erlide.wrangler.refactoring.core.funextraction;
 
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 
@@ -25,9 +27,10 @@ public class FunExtractionRefactoring extends WranglerRefactoring {
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
 				.getEndColumn());
-		return managedBackend.call_noexception("wrangler",
-				"fun_extraction_eclipse", "sxxsi", filePath, startPos, endPos,
-				newName, parameters.getEditorTabWidth());
+		Backend b = BackendManager.getDefault().getIdeBackend();
+		return b.call_noexception("wrangler", "fun_extraction_eclipse",
+				"sxxsi", filePath, startPos, endPos, newName, parameters
+						.getEditorTabWidth());
 	}
 
 }

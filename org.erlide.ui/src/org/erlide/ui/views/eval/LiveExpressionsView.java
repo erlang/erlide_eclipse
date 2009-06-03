@@ -63,13 +63,13 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendEvalResult;
 import org.erlide.jinterface.backend.ErlideBackend;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
 import com.ericsson.otp.erlang.OtpErlangString;
-
 
 /**
  * @author Vlad Dumitrescu
@@ -85,7 +85,6 @@ public class LiveExpressionsView extends ViewPart implements
 	private Action refreshAction;
 	private Action fAddAction;
 	Action fRemoveAction;
-	Backend fBackend;
 
 	private static class LiveExpr {
 		String fExpr;
@@ -140,8 +139,9 @@ public class LiveExpressionsView extends ViewPart implements
 			if (index == 0) {
 				return e.fExpr;
 			}
-			final BackendEvalResult r = ErlideBackend.eval(fBackend, e.fExpr
-					+ ".", null);
+			Backend b = ErlangCore.getBackendManager().getIdeBackend();
+			final BackendEvalResult r = ErlideBackend.eval(b, e.fExpr + ".",
+					null);
 			if (r.isOk()) {
 				return r.getValue().toString();
 			}
@@ -173,7 +173,6 @@ public class LiveExpressionsView extends ViewPart implements
 				IResourceChangeEvent.POST_BUILD);
 
 		// TODO make the backend configurable (as for console)
-		fBackend = ErlangCore.getBackendManager().getIdeBackend();
 	}
 
 	/**
@@ -309,7 +308,7 @@ public class LiveExpressionsView extends ViewPart implements
 						// item.getText(1));
 						// ErlLogger.debug(str);
 						final BackendEvalResult r = ErlideBackend.eval(
-								fBackend,
+								BackendManager.getDefault().getIdeBackend(),
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).", null);
 						if (r.isOk()) {

@@ -4,8 +4,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
@@ -70,9 +72,10 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
 				.getEndColumn());
-		return managedBackend.call_noexception("wrangler",
-				"generalise_eclipse", "sxxsxi", filePath, startPos, endPos,
-				newName, searchPath, parameters.getEditorTabWidth());
+		Backend b = BackendManager.getDefault().getIdeBackend();
+		return b.call_noexception("wrangler", "generalise_eclipse", "sxxsxi",
+				filePath, startPos, endPos, newName, searchPath, parameters
+						.getEditorTabWidth());
 	}
 
 	@Override
@@ -94,10 +97,11 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise1() throws WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
-		RpcResult r = managedBackend.call_noexception("wrangler",
-				"gen_fun_1_eclipse", "xsxxxxxi", b, parameters.getFilePath(),
-				this.parName, this.funName, this.arity, this.defPos,
-				this.expression, parameters.getEditorTabWidth());
+		Backend backend = BackendManager.getDefault().getIdeBackend();
+		RpcResult r = backend.call_noexception("wrangler", "gen_fun_1_eclipse",
+				"xsxxxxxi", b, parameters.getFilePath(), this.parName,
+				this.funName, this.arity, this.defPos, this.expression,
+				parameters.getEditorTabWidth());
 		ErlLogger.debug("gen_fun_1_eclipse returned:\n" + r);
 		return convertRpcResultToRPCMessage(r);
 
@@ -106,11 +110,11 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise2() throws WranglerException,
 			CoreException {
-		RpcResult r = managedBackend.call_noexception("wrangler",
-				"gen_fun_2_eclipse", "sxxxxxxi", parameters.getFilePath(),
-				this.parName, this.funName, this.arity, this.defPos,
-				this.expression, parameters.getSearchPath(), parameters
-						.getEditorTabWidth());
+		Backend b = BackendManager.getDefault().getIdeBackend();
+		RpcResult r = b.call_noexception("wrangler", "gen_fun_2_eclipse",
+				"sxxxxxxi", parameters.getFilePath(), this.parName,
+				this.funName, this.arity, this.defPos, this.expression,
+				parameters.getSearchPath(), parameters.getEditorTabWidth());
 		ErlLogger.debug("gen_fun_2 returned:\n" + r);
 		return convertRpcResultToRPCMessage(r);
 	}
