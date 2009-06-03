@@ -130,16 +130,16 @@ public class RuntimeInfo {
 	public String getCmdLine() {
 		final String pathA = cvt(getPathA());
 		final String pathZ = cvt(getPathZ());
-		String cmd = String.format("%s/bin/erl %s %s %s", getOtpHome(),
+		String cmd = String.format("\"%s/bin/erl\" %s %s %s", getOtpHome(),
 				ifNotEmpty(" -pa ", pathA), ifNotEmpty(" -pz ", pathZ),
 				getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean useLongName = System.getProperty("erlide.longname",
-				"true").equals("true");
+		"true").equals("true");
 		final String nameTag = useLongName ? " -name " : " -sname ";
 		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
-				+ cky;
+		+ cky;
 		return cmd;
 	}
 
@@ -208,7 +208,7 @@ public class RuntimeInfo {
 
 	public static boolean validateNodeName(final String name) {
 		return name != null
-				&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+		&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
 	}
 
 	public static boolean validateLocation(final String path) {
@@ -236,9 +236,9 @@ public class RuntimeInfo {
 						boolean r = pathname.isDirectory();
 						r &= pathname.getName().startsWith("kernel-");
 						final String canonicalPath = pathname
-								.getCanonicalPath().toLowerCase();
+						.getCanonicalPath().toLowerCase();
 						final String absolutePath = pathname.getAbsolutePath()
-								.toLowerCase();
+						.toLowerCase();
 						r &= canonicalPath.equals(absolutePath);
 						return r;
 					} catch (final IOException e) {
