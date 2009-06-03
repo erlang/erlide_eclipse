@@ -246,7 +246,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			this.erlideRuntime = runtime;
 			notifyListeners();
 			// this creates infinite recursion!
-			// BackendManager.getDefault().getIdeBackend().stop();
+			// BackendManagerImpl.getDefault().getIdeBackend().stop();
 		}
 	}
 

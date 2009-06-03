@@ -173,7 +173,9 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntime();
-		ErlangCore.getBackendManager().register(this);
+		ErlangCore.getBackendManager().addPlugin(this);
+
+		// FIXME remove this when console works with many backends
 		ErlangCore.registerOpenProjects();
 
 		ErlLogger.debug("Started CORE");

@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
 import org.osgi.framework.Bundle;
@@ -36,7 +36,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
 		String suffixPath = getSuffixPath();
 		ErlLogger.debug("Suffix binary at: " + suffixPath);
-		Backend backend = BackendManager.getDefault().getIdeBackend();
+		Backend backend = ErlangCore.getBackendManager().getIdeBackend();
 
 		if (onlyInfile) {
 			functionName = "duplicated_code_in_buffer_eclipse";

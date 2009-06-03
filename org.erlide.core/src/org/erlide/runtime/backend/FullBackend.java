@@ -32,7 +32,7 @@ public final class FullBackend extends Backend implements IDisposable {
 	private IShellManager fShellManager;
 	private EventDaemon eventDaemon;
 
-	FullBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
+	public FullBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		super(info, launcher);
 		fCodeManager = new CodeManager(this);
@@ -56,7 +56,7 @@ public final class FullBackend extends Backend implements IDisposable {
 		}
 	}
 
-	CodeManager getCodeManager() {
+	public CodeManager getCodeManager() {
 		return fCodeManager;
 	}
 

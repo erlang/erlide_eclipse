@@ -63,7 +63,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendEvalResult;
 import org.erlide.jinterface.backend.ErlideBackend;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -308,7 +307,7 @@ public class LiveExpressionsView extends ViewPart implements
 						// item.getText(1));
 						// ErlLogger.debug(str);
 						final BackendEvalResult r = ErlideBackend.eval(
-								BackendManager.getDefault().getIdeBackend(),
+								ErlangCore.getBackendManager().getIdeBackend(),
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).", null);
 						if (r.isOk()) {

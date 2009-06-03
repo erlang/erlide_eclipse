@@ -446,7 +446,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// final OtpErlangBinary code = (OtpErlangBinary) t
 					// .elementAt(2);
 					// for (Backend b :
-					// BackendManager.getDefault().getExecution(
+					// BackendManagerImpl.getDefault().getExecution(
 					// project)) {
 					// distributeModule(b, beamf, code);
 					// }

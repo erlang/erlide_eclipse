@@ -4,10 +4,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.core.exception.WranglerException;
@@ -72,7 +72,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 				parameters.getStartColumn());
 		OtpErlangTuple endPos = createPos(parameters.getEndLine(), parameters
 				.getEndColumn());
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "generalise_eclipse", "sxxsxi",
 				filePath, startPos, endPos, newName, searchPath, parameters
 						.getEditorTabWidth());
@@ -97,7 +97,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise1() throws WranglerException {
 		OtpErlangBoolean b = new OtpErlangBoolean(this.hasSideEffect);
-		Backend backend = BackendManager.getDefault().getIdeBackend();
+		Backend backend = ErlangCore.getBackendManager().getIdeBackend();
 		RpcResult r = backend.call_noexception("wrangler", "gen_fun_1_eclipse",
 				"xsxxxxxi", b, parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,
@@ -110,7 +110,7 @@ public class GeneraliseRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	public GeneraliseRPCMessage callGeneralise2() throws WranglerException,
 			CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		RpcResult r = b.call_noexception("wrangler", "gen_fun_2_eclipse",
 				"sxxxxxxi", parameters.getFilePath(), this.parName,
 				this.funName, this.arity, this.defPos, this.expression,

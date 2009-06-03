@@ -1,8 +1,8 @@
 package org.erlide.wrangler.refactoring.core.renamefunction;
 
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.rename.RenameRefactoring;
 
@@ -22,7 +22,7 @@ public class RenameFunctionRefactoring extends RenameRefactoring {
 	@SuppressWarnings("boxing")
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath) {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "rename_fun_eclipse", "siisxi",
 				filePath, parameters.getStartLine(), parameters
 						.getStartColumn(), newName, searchPath, parameters

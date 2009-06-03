@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -28,7 +28,7 @@ public class RenameProcessRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "rename_process_eclipse",
 				"siisxi", parameters.getFilePath(), parameters.getStartLine(),
 				parameters.getStartColumn(), newName, parameters
@@ -37,7 +37,7 @@ public class RenameProcessRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	protected RpcResult sendSecondRPC() throws CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "rename_process_1_eclipse",
 				"sssxi", parameters.getFilePath(),
 				((ProcessRPCMessage) message).getUndecidabels(), newName,

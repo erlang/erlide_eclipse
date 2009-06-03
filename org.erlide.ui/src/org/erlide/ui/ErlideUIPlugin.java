@@ -126,8 +126,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		JRpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
-		ErlangCore.getBackendManager().register(ErlangPlugin.getDefault());
-		ErlangCore.getBackendManager().register(this);
+		ErlangCore.getBackendManager().addPlugin(ErlangPlugin.getDefault());
+		ErlangCore.getBackendManager().addPlugin(this);
 
 		new InitializeAfterLoadJob().schedule();
 

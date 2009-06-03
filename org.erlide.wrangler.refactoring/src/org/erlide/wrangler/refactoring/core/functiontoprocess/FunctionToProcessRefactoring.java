@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ltk.core.refactoring.Change;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -26,7 +26,7 @@ public class FunctionToProcessRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "fun_to_process_eclipse",
 				"siisxi", parameters.getFilePath(), parameters.getStartLine(),
 				parameters.getStartColumn(), newName, parameters
@@ -35,7 +35,7 @@ public class FunctionToProcessRefactoring extends WranglerRefactoring {
 
 	@SuppressWarnings("boxing")
 	protected RpcResult sendSecondRPC() throws CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "fun_to_process_1_eclipse",
 				"siisxi", parameters.getFilePath(), parameters.getStartLine(),
 				parameters.getStartColumn(), newName, parameters

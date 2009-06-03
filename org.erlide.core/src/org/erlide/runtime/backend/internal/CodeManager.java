@@ -19,12 +19,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IRegistryChangeEvent;
-import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -34,10 +33,9 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
+public class CodeManager {
 
-public class CodeManager implements IRegistryChangeListener {
-
-	private final FullBackend fBackend;
+	private final Backend fBackend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
@@ -129,31 +127,6 @@ public class CodeManager implements IRegistryChangeListener {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#getPathA()
-	 */
-	public List<String> getPathA() {
-		return getPath(pathA);
-	}
-
-	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#getPathZ()
-	 */
-	public List<String> getPathZ() {
-		return getPath(pathZ);
-	}
-
-	private List<String> getPath(final List<PathItem> l) {
-		final List<String> r = new ArrayList<String>(l.size());
-		for (int i = 0; i < l.size(); i++) {
-			final String p = l.get(i).path;
-			if (p != null) {
-				r.add(p);
-			}
-		}
-		return r;
-	}
-
-	/**
 	 * @param moduleName
 	 * @param beamPath
 	 * @return boolean
@@ -178,7 +151,7 @@ public class CodeManager implements IRegistryChangeListener {
 		// see FindSupport.findInFragments
 
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
-		reg.addRegistryChangeListener(this);
+		// reg.addRegistryChangeListener(this);
 		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
 				ErlangPlugin.PLUGIN_ID, "codepath");
 		for (final IConfigurationElement el : els) {
@@ -234,7 +207,7 @@ public class CodeManager implements IRegistryChangeListener {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#register(ICodeBundle)
+	 * @see org.erlide.runtime.backend.ICodeManager#addPlugin(ICodeBundle)
 	 */
 	public void register(final ICodeBundle p) {
 		if (codeBundles.indexOf(p) < 0) {
@@ -344,12 +317,6 @@ public class CodeManager implements IRegistryChangeListener {
 		} else {
 			removePathA(path);
 		}
-	}
-
-	public void registryChanged(final IRegistryChangeEvent event) {
-		ErlLogger.debug("??"
-				+ event.getExtensionDeltas()[0].getExtensionPoint()
-						.getUniqueIdentifier());
 	}
 
 	public void registerBundles() {

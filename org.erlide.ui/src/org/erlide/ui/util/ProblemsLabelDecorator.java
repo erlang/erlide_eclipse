@@ -71,10 +71,6 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 	private ListenerList fListeners;
 	private IProblemChangedListener fProblemChangedListener;
 
-	// private IProblemChangedListener fProblemChangedListener;
-	// private Collection fListeners;
-	// private ISourceRange fCachedRange;
-
 	/*
 	 * Creates decorator with a shared image registry.
 	 * 

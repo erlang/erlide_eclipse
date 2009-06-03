@@ -6,9 +6,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.wrangler.refactoring.core.RPCMessage;
 import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
@@ -61,7 +61,7 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 	@Override
 	protected RpcResult sendRPC(String filePath, OtpErlangList searchPath)
 			throws CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		return b.call_noexception("wrangler", "fold_expression_1_eclipse",
 				"sxxxi", filePath, funClauseDef, selectedPositions, parameters
 						.getSearchPath(), parameters.getEditorTabWidth());
@@ -70,7 +70,7 @@ public class FoldExpressionRefactoring extends WranglerRefactoring {
 	@SuppressWarnings("boxing")
 	private RPCMessage callFoldExpression() throws WranglerException,
 			CoreException {
-		Backend b = BackendManager.getDefault().getIdeBackend();
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		RpcResult res = b.call_noexception("wrangler",
 				"fold_expr_by_loc_eclipse", "siixi", parameters.getFilePath(),
 				parameters.getStartLine(), parameters.getStartColumn(),
