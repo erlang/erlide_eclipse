@@ -130,9 +130,10 @@ public class RuntimeInfo {
 	public String getCmdLine() {
 		final String pathA = cvt(getPathA());
 		final String pathZ = cvt(getPathZ());
-		String cmd = String.format("\"%s/bin/erl\" %s %s %s", getOtpHome(),
-				ifNotEmpty(" -pa ", pathA), ifNotEmpty(" -pz ", pathZ),
-				getArgs());
+		String msg = "\"%s/bin/erl\" %s %s %s";
+		String pa = ifNotEmpty("-pa ", pathA);
+		String pz = ifNotEmpty("-pz ", pathZ);
+		String cmd = String.format(msg, getOtpHome(), pa, pz, getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean useLongName = System.getProperty("erlide.longname",
