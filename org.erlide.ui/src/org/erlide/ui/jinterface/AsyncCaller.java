@@ -21,7 +21,7 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.ui.ErlideUIPlugin;
 
 public abstract class AsyncCaller<T> implements Runnable {
-	private long interval;
+	long interval;
 
 	public AsyncCaller() {
 		this(100);

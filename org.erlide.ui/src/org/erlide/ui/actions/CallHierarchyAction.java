@@ -35,7 +35,7 @@ import erlang.FunctionRef;
 public class CallHierarchyAction extends Action {
 
 	private ErlangEditor editor;
-	private IErlModule module;
+	IErlModule module;
 
 	public CallHierarchyAction(ErlangEditor erlangEditor, IErlModule module) {
 		super("Call hierarchy");

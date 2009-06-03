@@ -44,11 +44,11 @@ import erlang.ErlangXref;
 import erlang.FunctionRef;
 
 public class CallHierarchyView extends ViewPart {
-	private Tree tree;
-	private TreeViewer treeViewer;
-	private Label lblRoot;
+	Tree tree;
+	TreeViewer treeViewer;
+	Label lblRoot;
 
-	private static class ViewerLabelProvider extends LabelProvider {
+	static class ViewerLabelProvider extends LabelProvider {
 		@Override
 		public Image getImage(Object element) {
 			return super.getImage(element);
@@ -65,7 +65,7 @@ public class CallHierarchyView extends ViewPart {
 		}
 	}
 
-	private class TreeContentProvider implements ITreeContentProvider {
+	class TreeContentProvider implements ITreeContentProvider {
 
 		private Object input;
 
