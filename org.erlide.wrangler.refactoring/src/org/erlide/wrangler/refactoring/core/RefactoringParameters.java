@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -17,6 +18,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -185,18 +190,31 @@ public class RefactoringParameters {
 	 * @throws CoreException
 	 */
 	public OtpErlangList getSearchPath() throws CoreException {
-		ArrayList<IContainer> containers = new ArrayList<IContainer>();
-		findDirectories(file.getProject(), containers);
-		ArrayList<OtpErlangString> directryPathList = new ArrayList<OtpErlangString>();
-		for (IContainer c : containers) {
-			directryPathList.add(new OtpErlangString(c.getLocation()
-					.toOSString()));
-		}
+		/*
+		 * ArrayList<IContainer> containers = new ArrayList<IContainer>();
+		 * findDirectories(file.getProject(), containers);
+		 * ArrayList<OtpErlangString> directryPathList = new
+		 * ArrayList<OtpErlangString>(); for (IContainer c : containers) {
+		 * directryPathList.add(new OtpErlangString(c.getLocation()
+		 * .toOSString())); }
+		 * 
+		 * OtpErlangString[] t = new OtpErlangString[0]; final OtpErlangList
+		 * searchPathList = new OtpErlangList(directryPathList .toArray(t));
+		 * return searchPathList;
+		 */
 
-		OtpErlangString[] t = new OtpErlangString[0];
-		final OtpErlangList searchPathList = new OtpErlangList(directryPathList
-				.toArray(t));
-		return searchPathList;
+		IErlModel model = ErlangCore.getModel();
+		IErlProject p = model.getErlangProject(file.getProject().getName());
+		OldErlangProjectProperties prop = p.getProperties();
+		IPath projectLocation = p.getProject().getLocation();
+		String[] sourcDirs = prop.getSourceDirs();
+		OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.length];
+		for (int i = 0; i < sourcDirs.length; ++i) {
+			searchPath[i] = new OtpErlangString(projectLocation.append(
+					sourcDirs[i]).toOSString());
+		}
+		return new OtpErlangList(searchPath);
+
 	}
 
 	private void findDirectories(IContainer c, ArrayList<IContainer> containers)
