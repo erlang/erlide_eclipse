@@ -24,7 +24,7 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class OldErlangProjectProperties implements IPreferenceChangeListener {
@@ -214,7 +214,7 @@ public class OldErlangProjectProperties implements IPreferenceChangeListener {
 	public void setUsePathZ(final boolean pz) {
 		final boolean z = Boolean.parseBoolean(usePathZ);
 		if (z != pz) {
-			for (final FullBackend b : ErlangCore.getBackendManager()
+			for (final ErlideBackend b : ErlangCore.getBackendManager()
 					.getExecutionBackends(project)) {
 
 				final String p = project.getLocation().append(outputDir)

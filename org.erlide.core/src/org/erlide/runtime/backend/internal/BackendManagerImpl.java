@@ -37,8 +37,8 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.EpmdWatchJob;
-import org.erlide.runtime.backend.FullBackend;
-import org.erlide.runtime.backend.FullBackendVisitor;
+import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.runtime.backend.ErlideBackendVisitor;
 import org.erlide.runtime.backend.ICodeBundle;
 
 import com.ericsson.otp.erlang.OtpEpmd;
@@ -47,10 +47,10 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 public final class BackendManagerImpl extends OtpNodeStatus implements
 		IEpmdListener, BackendManager {
 
-	private volatile FullBackend ideBackend;
+	private volatile ErlideBackend ideBackend;
 	private final Object ideBackendLock = new Object();
-	private final Map<IProject, Set<FullBackend>> executionBackends;
-	private final Map<String, FullBackend> buildBackends;
+	private final Map<IProject, Set<ErlideBackend>> executionBackends;
+	private final Map<String, ErlideBackend> buildBackends;
 	final List<BackendListener> listeners;
 	private final List<ICodeBundle> plugins;
 
@@ -67,8 +67,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 	private BackendManagerImpl() {
 		ideBackend = null;
-		executionBackends = new HashMap<IProject, Set<FullBackend>>();
-		buildBackends = new HashMap<String, FullBackend>();
+		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
+		buildBackends = new HashMap<String, ErlideBackend>();
 		listeners = new ArrayList<BackendListener>();
 		plugins = new ArrayList<ICodeBundle>();
 
@@ -77,24 +77,24 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		new EpmdWatchJob(epmdWatcher).schedule(100);
 	}
 
-	public FullBackend create(final RuntimeInfo info,
+	public ErlideBackend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
 			throws BackendException {
 
 		final String nodeName = info.getNodeName();
 		final boolean exists = findRunningNode(nodeName);
-		FullBackend b = null;
+		ErlideBackend b = null;
 
 		final boolean isRemoteNode = nodeName.contains("@");
 		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
-			b = new FullBackend(info, RuntimeLauncherFactory
+			b = new ErlideBackend(info, RuntimeLauncherFactory
 					.createStandaloneLauncher(launch));
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
-			b = new FullBackend(info, RuntimeLauncherFactory
+			b = new ErlideBackend(info, RuntimeLauncherFactory
 					.createManagedLauncher(launch));
 		}
 		if (b == null) {
@@ -103,7 +103,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		}
 
 		b.initializeRuntime();
-		b.connectAndRegister(plugins);
+		b.connect();
+		b.register(plugins);
 		b.initErlang();
 		b.registerStatusHandler(this);
 		b.setDebug(options.contains(BackendOptions.DEBUG));
@@ -127,7 +128,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			return ideBackend;
 		}
 		final String version = info.getVersion().asMajor().toString();
-		FullBackend b = buildBackends.get(version);
+		ErlideBackend b = buildBackends.get(version);
 		if (b == null) {
 			info.setNodeName(version);
 			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameSuffix());
@@ -140,16 +141,16 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		return b;
 	}
 
-	public synchronized Set<FullBackend> getExecutionBackends(
+	public synchronized Set<ErlideBackend> getExecutionBackends(
 			final IProject project) {
-		final Set<FullBackend> bs = executionBackends.get(project);
+		final Set<ErlideBackend> bs = executionBackends.get(project);
 		if (bs == null) {
 			return Collections.emptySet();
 		}
 		return Collections.unmodifiableSet(bs);
 	}
 
-	public FullBackend getIdeBackend() {
+	public ErlideBackend getIdeBackend() {
 		if (ideBackend == null) {
 			synchronized (ideBackendLock) {
 				if (ideBackend == null) {
@@ -195,11 +196,11 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	}
 
 	public Backend[] getAllBackends() {
-		final Set<FullBackend> ebs = new HashSet<FullBackend>();
-		for (final Set<FullBackend> b : executionBackends.values()) {
+		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
+		for (final Set<ErlideBackend> b : executionBackends.values()) {
 			ebs.addAll(b);
 		}
-		for (final FullBackend b : buildBackends.values()) {
+		for (final ErlideBackend b : buildBackends.values()) {
 			ebs.add(b);
 		}
 		final Object[] eb = ebs.toArray();
@@ -220,8 +221,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 				ideBackend.getCodeManager().register(p);
 				ideBackend.checkCodePath();
 			}
-			forEachProjectBackend(new FullBackendVisitor() {
-				public void visit(final FullBackend b) {
+			forEachProjectBackend(new ErlideBackendVisitor() {
+				public void visit(final ErlideBackend b) {
 					b.getCodeManager().register(p);
 					b.checkCodePath();
 				}
@@ -234,14 +235,14 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		if (ideBackend != null) {
 			ideBackend.getCodeManager().unregister(p);
 		}
-		forEachProjectBackend(new FullBackendVisitor() {
-			public void visit(final FullBackend b) {
+		forEachProjectBackend(new ErlideBackendVisitor() {
+			public void visit(final ErlideBackend b) {
 				b.getCodeManager().unregister(p);
 			}
 		});
 	}
 
-	public void forEachProjectBackend(final FullBackendVisitor visitor) {
+	public void forEachProjectBackend(final ErlideBackendVisitor visitor) {
 		// TODO which backends?
 	}
 
@@ -261,10 +262,10 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	}
 
 	public synchronized void addExecutionBackend(final IProject project,
-			final FullBackend b) {
-		Set<FullBackend> list = executionBackends.get(project);
+			final ErlideBackend b) {
+		Set<ErlideBackend> list = executionBackends.get(project);
 		if (list == null) {
-			list = new HashSet<FullBackend>();
+			list = new HashSet<ErlideBackend>();
 			executionBackends.put(project, list);
 		}
 		list.add(b);
@@ -272,9 +273,9 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 	public synchronized void removeExecutionBackend(final IProject project,
 			final Backend b) {
-		Set<FullBackend> list = executionBackends.get(project);
+		Set<ErlideBackend> list = executionBackends.get(project);
 		if (list == null) {
-			list = new HashSet<FullBackend>();
+			list = new HashSet<ErlideBackend>();
 			executionBackends.put(project, list);
 		}
 		list.remove(b);
@@ -301,7 +302,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	public void remoteNodeStatus(final String node, final boolean up,
 			final Object info) {
 		if (!up) {
-			for (final Entry<IProject, Set<FullBackend>> e : executionBackends
+			for (final Entry<IProject, Set<ErlideBackend>> e : executionBackends
 					.entrySet()) {
 				for (final Backend be : e.getValue()) {
 					final String bnode = be.getInfo().getNodeName();

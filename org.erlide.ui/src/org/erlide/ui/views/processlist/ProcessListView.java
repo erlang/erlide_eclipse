@@ -44,8 +44,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.FullBackendVisitor;
-import org.erlide.runtime.backend.FullBackend;
+import org.erlide.runtime.backend.ErlideBackendVisitor;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.events.EventHandler;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
@@ -88,14 +88,14 @@ public class ProcessListView extends ViewPart {
 		}
 
 		public void dispose() {
-			final FullBackend backend = getBackend();
+			final ErlideBackend backend = getBackend();
 			if (backend != null) {
 				backend.getEventDaemon().removeListener(handler);
 			}
 		}
 
 		public Object[] getElements(final Object parent) {
-			final FullBackend bk = getBackend();
+			final ErlideBackend bk = getBackend();
 			if (bk == null) {
 				return new OtpErlangObject[] {};
 			}
@@ -226,14 +226,14 @@ public class ProcessListView extends ViewPart {
 		t.setHeaderVisible(true);
 
 		// TODO this is wrong - all backends should be inited
-		final FullBackend ideBackend = ErlangCore.getBackendManager()
+		final ErlideBackend ideBackend = ErlangCore.getBackendManager()
 				.getIdeBackend();
 		if (ideBackend != null) {
 			ErlideProclist.processListInit(ideBackend);
 		}
 		ErlangCore.getBackendManager().forEachProjectBackend(
-				new FullBackendVisitor() {
-					public void visit(final FullBackend b) {
+				new ErlideBackendVisitor() {
+					public void visit(final ErlideBackend b) {
 						ErlideProclist.processListInit(b);
 					}
 				});
@@ -345,14 +345,14 @@ public class ProcessListView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public FullBackend getBackend() {
+	public ErlideBackend getBackend() {
 		final IStructuredSelection sel = (IStructuredSelection) backends
 				.getSelection();
 		if (sel.getFirstElement() != null) {
-			final FullBackend b = (FullBackend) sel.getFirstElement();
+			final ErlideBackend b = (ErlideBackend) sel.getFirstElement();
 			return b;
 		}
-		final FullBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (b != null) {
 			backends.setSelection(new StructuredSelection(b));
 			return b;

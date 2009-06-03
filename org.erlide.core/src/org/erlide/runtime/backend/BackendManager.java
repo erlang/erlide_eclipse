@@ -38,24 +38,24 @@ public interface BackendManager {
 		DEBUG, AUTOSTART, TRAP_EXIT
 	};
 
-	public FullBackend create(final RuntimeInfo info,
+	public ErlideBackend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
 			throws BackendException;
 
 	public Backend getBuildBackend(final IProject project)
 			throws BackendException;
 
-	public Set<FullBackend> getExecutionBackends(final IProject project);
+	public Set<ErlideBackend> getExecutionBackends(final IProject project);
 
-	public FullBackend getIdeBackend();
+	public ErlideBackend getIdeBackend();
 
 	public Backend[] getAllBackends();
 
-	public void addExecutionBackend(final IProject project, final FullBackend b);
+	public void addExecutionBackend(final IProject project, final ErlideBackend b);
 
 	public void removeExecutionBackend(final IProject project, final Backend b);
 
-	public void forEachProjectBackend(final FullBackendVisitor visitor);
+	public void forEachProjectBackend(final ErlideBackendVisitor visitor);
 
 	public void addBackendListener(final BackendListener listener);
 

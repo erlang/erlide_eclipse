@@ -11,8 +11,8 @@
 package org.erlide.runtime.backend;
 
 
-public interface FullBackendVisitor {
+public interface ErlideBackendVisitor {
 
-	void visit(FullBackend b);
+	void visit(ErlideBackend b);
 
 }

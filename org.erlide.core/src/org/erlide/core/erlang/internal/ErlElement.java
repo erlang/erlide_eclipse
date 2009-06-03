@@ -33,7 +33,7 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlideBackend;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -634,7 +634,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 			try {
 				final Backend b = ErlangCore.getBackendManager()
 						.getIdeBackend();
-				return ErlideBackend.prettyPrint(b, e);
+				return ErlBackend.prettyPrint(b, e);
 			} catch (final Exception e1) {
 				return "?";
 			}

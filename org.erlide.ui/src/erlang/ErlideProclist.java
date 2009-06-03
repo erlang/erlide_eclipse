@@ -28,7 +28,8 @@ public class ErlideProclist {
 			return new OtpErlangList();
 		}
 		try {
-			return (OtpErlangList) b.call(MODULE_NAME, "process_list", "");
+			OtpErlangObject result = b.call(MODULE_NAME, "process_list", "");
+			return (OtpErlangList) result;
 		} catch (final NoBackendException e) {
 			ErlLogger.debug(e);
 		} catch (final Exception e) {

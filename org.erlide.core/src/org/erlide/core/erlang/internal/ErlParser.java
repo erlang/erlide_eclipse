@@ -17,7 +17,7 @@ import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlideBackend;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
@@ -177,7 +177,7 @@ public final class ErlParser {
 		if ("error".equals(typeS)) {
 			final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-			final String msg = ErlideBackend.format_error(ErlangCore
+			final String msg = ErlBackend.format_error(ErlangCore
 					.getBackendManager().getIdeBackend(), er);
 
 			final ErlMessage e = new ErlMessage(parent,
@@ -488,7 +488,7 @@ public final class ErlParser {
 			return new OtpErlangList(res);
 		}
 		try {
-			return ErlideBackend.concreteSyntax(ErlangCore.getBackendManager()
+			return ErlBackend.concreteSyntax(ErlangCore.getBackendManager()
 					.getIdeBackend(), val);
 		} catch (final Exception e) {
 			return val;

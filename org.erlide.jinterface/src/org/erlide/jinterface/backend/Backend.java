@@ -352,8 +352,6 @@ public class Backend {
 			fNode = null;
 		}
 		initializeRuntime();
-		// we still remember the plugins from the former instance
-		// FIXME: connectAndRegister(null);
 		connect();
 		initErlang();
 	}
@@ -373,7 +371,7 @@ public class Backend {
 	public String getCurrentVersion() {
 		if (fCurrentVersion == null) {
 			try {
-				fCurrentVersion = ErlideBackend.getScriptId(this);
+				fCurrentVersion = ErlBackend.getScriptId(this);
 			} catch (final Exception e) {
 			}
 		}
@@ -420,7 +418,7 @@ public class Backend {
 	}
 
 	public void initErlang() {
-		final boolean inited = ErlideBackend.init(this, getEventPid());
+		final boolean inited = ErlBackend.init(this, getEventPid());
 		if (!inited) {
 			setAvailable(false);
 		}

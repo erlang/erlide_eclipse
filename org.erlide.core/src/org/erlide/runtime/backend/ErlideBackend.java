@@ -26,13 +26,13 @@ import org.erlide.runtime.backend.internal.LogEventHandler;
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
-public final class FullBackend extends Backend implements IDisposable {
+public final class ErlideBackend extends Backend implements IDisposable {
 
 	private final CodeManager fCodeManager;
 	private IShellManager fShellManager;
 	private EventDaemon eventDaemon;
 
-	public FullBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
+	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		super(info, launcher);
 		fCodeManager = new CodeManager(this);
@@ -70,6 +70,14 @@ public final class FullBackend extends Backend implements IDisposable {
 		fShellManager = new BackendShellManager(this);
 	}
 
+	@Override
+	public synchronized void restart() {
+		super.restart();
+		getCodeManager().registerBundles();
+		// initErlang();
+		// fixme eventdaemon
+	}
+
 	public void removePath(final boolean usePathZ, final String path) {
 		fCodeManager.removePath(usePathZ, path);
 	}
@@ -78,8 +86,7 @@ public final class FullBackend extends Backend implements IDisposable {
 		fCodeManager.addPath(usePathZ, path);
 	}
 
-	public void connectAndRegister(Collection<ICodeBundle> plugins) {
-		connect();
+	public void register(Collection<ICodeBundle> plugins) {
 		if (plugins != null) {
 			for (final ICodeBundle element : plugins) {
 				getCodeManager().register(element);

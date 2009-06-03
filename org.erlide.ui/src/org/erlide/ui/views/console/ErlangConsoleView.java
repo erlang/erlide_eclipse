@@ -55,9 +55,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlideBackend;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.IShell;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
@@ -108,7 +108,7 @@ public class ErlangConsoleView extends ViewPart implements
 	SourceViewer consoleInputViewer;
 	ErlConsoleModel model;
 	IShell shell;
-	FullBackend backend;
+	ErlideBackend backend;
 	private Action action;
 
 	private ComboViewer backends;
@@ -334,7 +334,7 @@ public class ErlangConsoleView extends ViewPart implements
 	boolean isInputComplete() {
 		try {
 			final String str = consoleInput.getText();
-			final OtpErlangObject o = ErlideBackend.parseString(ErlangCore
+			final OtpErlangObject o = ErlBackend.parseString(ErlangCore
 					.getBackendManager().getIdeBackend(), str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
 				return false;

@@ -58,7 +58,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugNode;
@@ -160,7 +160,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		System.out.println("---------------");
 
 		try {
-			final FullBackend backend = ErlangCore.getBackendManager().create(
+			final ErlideBackend backend = ErlangCore.getBackendManager().create(
 					rt, options, launch);
 			// launch.addProcess(null);
 			registerProjects(backend, projects);
@@ -217,7 +217,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		}
 	}
 
-	private static void registerProjects(final FullBackend backend,
+	private static void registerProjects(final ErlideBackend backend,
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager().addExecutionBackend(project, backend);

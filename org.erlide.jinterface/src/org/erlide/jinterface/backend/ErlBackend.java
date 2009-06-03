@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideBackend {
+public class ErlBackend {
 
 	public static void reload(final Backend backend) {
 		try {

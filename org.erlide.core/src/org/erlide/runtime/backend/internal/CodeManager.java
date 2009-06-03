@@ -25,9 +25,9 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlangCode;
-import org.erlide.jinterface.backend.ErlideBackend;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.Bundle;
 
@@ -42,8 +42,8 @@ public class CodeManager {
 
 	private final List<ICodeBundle> codeBundles;
 
-	// only to be called by FullBackend
-	public CodeManager(final FullBackend b) {
+	// only to be called by ErlideBackend
+	public CodeManager(final ErlideBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
@@ -137,7 +137,7 @@ public class CodeManager {
 		if (bin == null) {
 			return false;
 		}
-		return ErlideBackend.loadBeam(fBackend, moduleName, bin);
+		return ErlBackend.loadBeam(fBackend, moduleName, bin);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -198,7 +198,7 @@ public class CodeManager {
 				final String decl = stub.getAttribute("onlyDeclared");
 				// ErlLogger.debug(" STUB: %s %s", stub.getAttribute("class"),
 				// decl);
-				ErlideBackend.generateRpcStub(stub.getAttribute("class"),
+				ErlBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
 						fBackend);
 			}
