@@ -15,6 +15,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -29,11 +34,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
@@ -45,6 +52,7 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.prefs.RuntimePreferencePage;
 import org.erlide.ui.properties.internal.MockupPreferenceStore;
 
 public class OldErlProjectPropertyPage extends PropertyPage implements
@@ -75,7 +83,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	@Override
 	protected Control createContents(final Composite parent) {
 		if (ErlangCore.getRuntimeInfoManager().getDefaultRuntime() == null) {
-			ErlideUIPlugin.openPreferencePage();
+			openPreferencePage();
 		}
 
 		mockPrefs = new MockupPreferenceStore();
@@ -340,4 +348,22 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		}
 	}
 
+	private static void openPreferencePage() {
+		final IPreferencePage page = new RuntimePreferencePage();
+		final PreferenceManager mgr = new PreferenceManager();
+		final IPreferenceNode node = new PreferenceNode("1", page);
+		mgr.addToRoot(node);
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		display.asyncExec(new Runnable() {
+
+			public void run() {
+				final PreferenceDialog dialog = new PreferenceDialog(display
+						.getActiveShell(), mgr);
+				dialog.create();
+				dialog.setMessage(page.getTitle());
+				dialog.open();
+				ErlangCore.getRuntimeInfoManager().load();
+			}
+		});
+	}
 }

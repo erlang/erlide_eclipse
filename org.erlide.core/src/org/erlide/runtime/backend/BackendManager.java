@@ -51,9 +51,9 @@ public interface BackendManager {
 
 	public Backend[] getAllBackends();
 
-	public void addExecution(final IProject project, final FullBackend b);
+	public void addExecutionBackend(final IProject project, final FullBackend b);
 
-	public void removeExecution(final IProject project, final Backend b);
+	public void removeExecutionBackend(final IProject project, final Backend b);
 
 	public void forEachProjectBackend(final FullBackendVisitor visitor);
 
@@ -80,5 +80,4 @@ public interface BackendManager {
 
 	public void connAttempt(final String node, final boolean incoming,
 			final Object info);
-
 }

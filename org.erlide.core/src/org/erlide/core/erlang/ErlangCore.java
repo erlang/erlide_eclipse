@@ -40,8 +40,8 @@ import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.FullBackend;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.backend.internal.BackendManagerImpl;
 
@@ -66,12 +66,6 @@ public final class ErlangCore {
 	 * Name of the handle id attribute in a Erlang marker.
 	 */
 	public static final String ATT_HANDLE_ID = "org.erlide.core.erlang.internal.ErlModelManager.handleId"; //$NON-NLS-1$
-
-	/**
-	 * Name of the User Library Container id.
-	 * 
-	 */
-	public static final String USER_LIBRARY_CONTAINER_ID = "org.erlide.core.USER_LIBRARY"; //$NON-NLS-1$
 
 	public static final int EXTERNAL_MODULES = 1;
 	public static final int EXTERNAL_INCLUDES = 2;
@@ -112,7 +106,7 @@ public final class ErlangCore {
 	 * </ul>
 	 * 
 	 */
-	public static void initializeRuntime() {
+	public static void initializeRuntimesList() {
 		if (getRuntimeInfoManager().getDefaultRuntime() != null) {
 			// TODO should we always run his check?
 			return;
@@ -536,7 +530,7 @@ public final class ErlangCore {
 	 * @throws CoreException
 	 *             if the <code>IMarker.setAttribute</code> on the marker fails
 	 */
-	public void configureErlangElementMarker(final IMarker marker,
+	public static void configureErlangElementMarker(final IMarker marker,
 			final IErlElement element) throws CoreException {
 		// if (element instanceof IMember)
 		// element = ((IMember) element).getClassFile();
@@ -629,4 +623,6 @@ public final class ErlangCore {
 		}
 	}
 
+	private ErlangCore() {
+	}
 }

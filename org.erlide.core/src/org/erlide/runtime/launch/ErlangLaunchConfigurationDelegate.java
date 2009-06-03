@@ -220,7 +220,7 @@ public class ErlangLaunchConfigurationDelegate extends
 	private static void registerProjects(final FullBackend backend,
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
-			ErlangCore.getBackendManager().addExecution(project, backend);
+			ErlangCore.getBackendManager().addExecutionBackend(project, backend);
 			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 			final String outDir = project.getLocation().append(

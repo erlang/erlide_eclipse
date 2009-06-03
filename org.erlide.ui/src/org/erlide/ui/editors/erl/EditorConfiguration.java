@@ -59,7 +59,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	protected final IColorManager colorManager;
 	private ICharacterPairMatcher fBracketMatcher;
 	private ErlReconciler reconciler;
-	private IInformationControlCreator fPresenterControlCreator;
 
 	/**
 	 * Default configuration constructor

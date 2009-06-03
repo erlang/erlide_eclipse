@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
@@ -196,64 +194,6 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		listeners.remove(listener);
 	}
 
-	/**
-	 * Notifies a backend listener of additions or removals
-	 */
-	class BackendChangeNotifier implements ISafeRunnable {
-
-		private BackendListener fListener;
-
-		private BackendEvent fType;
-
-		private Backend fChanged;
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.
-		 * Throwable)
-		 */
-		public void handleException(final Throwable exception) {
-			ErlLogger.error(exception);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.core.runtime.ISafeRunnable#run()
-		 */
-		public void run() throws Exception {
-			switch (fType) {
-			case ADDED:
-				fListener.runtimeAdded(fChanged);
-				break;
-			case REMOVED:
-				fListener.runtimeRemoved(fChanged);
-				break;
-			}
-		}
-
-		/**
-		 * Notifies the given listener of the adds/removes
-		 */
-		public void notify(final Backend b, final BackendEvent type) {
-			if (listeners == null) {
-				return;
-			}
-
-			fChanged = b;
-			fType = type;
-			final Object[] copiedListeners = listeners.toArray();
-			for (final Object element : copiedListeners) {
-				fListener = (BackendListener) element;
-				SafeRunner.run(this);
-			}
-			fChanged = null;
-			fListener = null;
-		}
-	}
-
 	public Backend[] getAllBackends() {
 		final Set<FullBackend> ebs = new HashSet<FullBackend>();
 		for (final Set<FullBackend> b : executionBackends.values()) {
@@ -320,7 +260,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 	}
 
-	public synchronized void addExecution(final IProject project,
+	public synchronized void addExecutionBackend(final IProject project,
 			final FullBackend b) {
 		Set<FullBackend> list = executionBackends.get(project);
 		if (list == null) {
@@ -330,7 +270,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		list.add(b);
 	}
 
-	public synchronized void removeExecution(final IProject project,
+	public synchronized void removeExecutionBackend(final IProject project,
 			final Backend b) {
 		Set<FullBackend> list = executionBackends.get(project);
 		if (list == null) {
@@ -366,7 +306,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 				for (final Backend be : e.getValue()) {
 					final String bnode = be.getInfo().getNodeName();
 					if (BackendUtil.buildNodeName(bnode, true).equals(node)) {
-						removeExecution(e.getKey(), be);
+						removeExecutionBackend(e.getKey(), be);
 						break;
 					}
 				}
@@ -406,4 +346,22 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 				direction, info));
 	}
 
+	void notifyBackendChange(final Backend b, final BackendEvent type) {
+		if (listeners == null) {
+			return;
+		}
+
+		final Object[] copiedListeners = listeners.toArray();
+		for (final Object element : copiedListeners) {
+			BackendListener listener = (BackendListener) element;
+			switch (type) {
+			case ADDED:
+				listener.runtimeAdded(b);
+				break;
+			case REMOVED:
+				listener.runtimeRemoved(b);
+				break;
+			}
+		}
+	}
 }
