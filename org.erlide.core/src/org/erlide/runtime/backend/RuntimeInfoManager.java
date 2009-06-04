@@ -123,7 +123,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		//
 
 		IEclipsePreferences root = new DefaultScope()
-				.getNode("org.erlide.core/runtimes");
+				.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
 		loadPrefs(root);
 		root = getRootPreferenceNode();
 		loadPrefs(root);
