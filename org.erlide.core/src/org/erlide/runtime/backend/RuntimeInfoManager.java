@@ -92,6 +92,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 	public synchronized void load() {
 		fRuntimes.clear();
 
+		loadDefaultPrefs();
+
 		// TODO remove this later
 		final String OLD_NAME = "erts";
 		final IEclipsePreferences old = new InstanceScope()
@@ -121,9 +123,9 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		//
 
 		IEclipsePreferences root = new DefaultScope()
-				.getNode("org.erlide.launching/runtimes");
+				.getNode("org.erlide.core/runtimes");
 		loadPrefs(root);
-		root = new InstanceScope().getNode("org.erlide.launching/runtimes");
+		root = getRootPreferenceNode();
 		loadPrefs(root);
 	}
 
