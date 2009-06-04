@@ -44,7 +44,7 @@ public class BackendUtils {
 		String user = System.getProperty("user.name");
 		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF) + "_"
 				+ user;
-		return fUniqueId;
+		return fUniqueId.replaceAll("[^a-zA-Z0-9_-]", "");
 	}
 
 }
