@@ -24,30 +24,30 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.backend.ErlBackend;
+import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.CodeManager;
 import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManager {
+public class CodeManagerImpl implements CodeManager {
 
 	private final Backend fBackend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
 
-	private final List<ICodeBundle> codeBundles;
+	private final List<CodeBundle> registeredBundles;
 
 	// only to be called by ErlideBackend
-	public CodeManager(final ErlideBackend b) {
+	public CodeManagerImpl(final ErlideBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
-		codeBundles = new ArrayList<ICodeBundle>(10);
+		registeredBundles = new ArrayList<CodeBundle>(10);
 	}
 
 	private PathItem findItem(final List<PathItem> l, final String p) {
@@ -62,7 +62,7 @@ public class CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#addPathA(java.lang.String)
+	 * @see org.erlide.runtime.backend.CodeManager#addPathA(java.lang.String)
 	 */
 	private void addPathA(final String path) {
 		if (addPath(pathA, path)) {
@@ -71,7 +71,7 @@ public class CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#addPathZ(java.lang.String)
+	 * @see org.erlide.runtime.backend.CodeManager#addPathZ(java.lang.String)
 	 */
 	private void addPathZ(final String path) {
 		if (addPath(pathZ, path)) {
@@ -94,7 +94,7 @@ public class CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#removePathA(java.lang.String)
+	 * @see org.erlide.runtime.backend.CodeManager#removePathA(java.lang.String)
 	 */
 	private void removePathA(final String path) {
 		if (removePath(pathA, path)) {
@@ -103,7 +103,7 @@ public class CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#removePathZ(java.lang.String)
+	 * @see org.erlide.runtime.backend.CodeManager#removePathZ(java.lang.String)
 	 */
 	private void removePathZ(final String path) {
 		if (removePath(pathZ, path)) {
@@ -141,7 +141,7 @@ public class CodeManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadPluginCode(final ICodeBundle p) {
+	private void loadPluginCode(final CodeBundle p) {
 
 		final Bundle b = p.getBundle();
 		ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
@@ -207,16 +207,17 @@ public class CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#addPlugin(ICodeBundle)
+	 * @see org.erlide.runtime.backend.CodeManager#addPlugin(CodeBundle)
 	 */
-	public void register(final ICodeBundle p) {
-		if (codeBundles.indexOf(p) < 0) {
-			codeBundles.add(p);
+	public void register(final Bundle b, String location) {
+		CodeBundle p = new CodeBundle(b, location);
+		if (registeredBundles.indexOf(p) < 0) {
+			registeredBundles.add(p);
 			registerBundle(p);
 		}
 	}
 
-	private void registerBundle(final ICodeBundle p) {
+	private void registerBundle(final CodeBundle p) {
 		final String ebinDir = p.getEbinDir();
 		if (ebinDir != null) {
 			final String localDir = ebinDir.replaceAll("\\\\", "/");
@@ -236,25 +237,31 @@ public class CodeManager {
 					.getSymbolicName());
 			loadPluginCode(p);
 		}
-		p.start();
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.ICodeManager#unregister(ICodeBundle)
+	 * @see org.erlide.runtime.backend.CodeManager#unregister(CodeBundle)
 	 */
-	public void unregister(final ICodeBundle p) {
-		final String ebinDir = p.getEbinDir();
-		if (ebinDir != null) {
-			final String localDir = ebinDir.replaceAll("\\\\", "/");
-			ErlLogger.debug("removing %s from code path for %s", localDir,
-					fBackend.getInfo());
+	public void unregister(final Bundle b) {
+		CodeBundle p = findBundle(b);
+		if (p == null) {
+			return;
 		}
-		codeBundles.remove(p);
+		registeredBundles.remove(p);
 		unloadPluginCode(p);
 	}
 
+	private CodeBundle findBundle(Bundle b) {
+		for (CodeBundle p : registeredBundles) {
+			if (p.getBundle() == b) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
-	private void unloadPluginCode(final ICodeBundle p) {
+	private void unloadPluginCode(final CodeBundle p) {
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
 
@@ -320,7 +327,7 @@ public class CodeManager {
 	}
 
 	public void registerBundles() {
-		for (ICodeBundle p : codeBundles) {
+		for (CodeBundle p : registeredBundles) {
 			registerBundle(p);
 		}
 	}

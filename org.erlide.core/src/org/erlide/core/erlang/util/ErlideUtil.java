@@ -47,7 +47,6 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -90,10 +89,9 @@ public class ErlideUtil {
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
-	public static void unpackBeamFiles(final ICodeBundle p) {
-		final String location = p.getEbinDir();
+	public static void unpackBeamFiles(final Bundle b, String location) {
 		if (location == null) {
-			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()
+			ErlLogger.warn("Could not find 'ebin' in bundle %s.", b
 					.getSymbolicName());
 			return;
 		}
@@ -103,11 +101,10 @@ public class ErlideUtil {
 			if (fn.charAt(0) == '.') {
 				continue;
 			}
-			final File b = new File(fn);
-			b.delete();
+			final File f = new File(fn);
+			f.delete();
 		}
 
-		final Bundle b = p.getBundle();
 		ErlLogger.debug("unpacking plugin " + b.getSymbolicName() + " in "
 				+ location);
 
@@ -197,10 +194,6 @@ public class ErlideUtil {
 			}
 		}
 		return null;
-	}
-
-	public static String getEbinDir(final Bundle bundle) {
-		return getPath("ebin", bundle);
 	}
 
 	public static boolean isDeveloper() {

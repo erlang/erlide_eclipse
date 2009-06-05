@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ICodeBundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -39,7 +38,7 @@ import org.osgi.framework.BundleContext;
  * @author jakob
  */
 
-public class ErlangPlugin extends Plugin implements ICodeBundle {
+public class ErlangPlugin extends Plugin {
 
 	/**
 	 * The plugin id
@@ -127,7 +126,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		ErlangCore.getBackendManager().removePlugin(this);
+		ErlangCore.getBackendManager().removeBundle(getBundle());
 		try {
 			try {
 				// savePluginPreferences();
@@ -173,7 +172,7 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();
-		ErlangCore.getBackendManager().addPlugin(this);
+		ErlangCore.getBackendManager().addBundle(getBundle(), "ebin");
 
 		// FIXME remove this when console works with many backends
 		ErlangCore.registerOpenProjects();
@@ -258,13 +257,6 @@ public class ErlangPlugin extends Plugin implements ICodeBundle {
 		if (getDefault().isDebugging()) {
 			ErlLogger.debug(message);
 		}
-	}
-
-	public void start() {
-	}
-
-	public String getEbinDir() {
-		return ErlideUtil.getEbinDir(getBundle());
 	}
 
 }

@@ -20,6 +20,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.EpmdWatcher;
+import org.osgi.framework.Bundle;
 
 public interface BackendManager {
 
@@ -51,7 +52,8 @@ public interface BackendManager {
 
 	public Backend[] getAllBackends();
 
-	public void addExecutionBackend(final IProject project, final ErlideBackend b);
+	public void addExecutionBackend(final IProject project,
+			final ErlideBackend b);
 
 	public void removeExecutionBackend(final IProject project, final Backend b);
 
@@ -61,9 +63,9 @@ public interface BackendManager {
 
 	public void removeBackendListener(final BackendListener listener);
 
-	public void addPlugin(final ICodeBundle p);
+	public void addBundle(final Bundle p, String ebin);
 
-	public void removePlugin(final ICodeBundle p);
+	public void removeBundle(final Bundle b);
 
 	public void updateNodeStatus(final String host, final List<String> started,
 			final List<String> stopped);
@@ -80,4 +82,5 @@ public interface BackendManager {
 
 	public void connAttempt(final String node, final boolean incoming,
 			final Object info);
+
 }

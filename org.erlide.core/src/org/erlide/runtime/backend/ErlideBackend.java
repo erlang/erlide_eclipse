@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-import java.util.Collection;
-
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.IDisposable;
@@ -20,8 +18,9 @@ import org.erlide.jinterface.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
-import org.erlide.runtime.backend.internal.CodeManager;
+import org.erlide.runtime.backend.internal.CodeManagerImpl;
 import org.erlide.runtime.backend.internal.LogEventHandler;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
@@ -35,7 +34,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		super(info, launcher);
-		fCodeManager = new CodeManager(this);
+		fCodeManager = new CodeManagerImpl(this);
 		fShellManager = new BackendShellManager(this);
 	}
 
@@ -86,16 +85,6 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		fCodeManager.addPath(usePathZ, path);
 	}
 
-	public void register(Collection<ICodeBundle> plugins) {
-		if (plugins != null) {
-			for (final ICodeBundle element : plugins) {
-				getCodeManager().register(element);
-			}
-		}
-		getCodeManager().registerBundles();
-		checkCodePath();
-	}
-
 	public EventDaemon getEventDaemon() {
 		return eventDaemon;
 	}
@@ -107,5 +96,11 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		eventDaemon = new EventDaemon(this);
 		eventDaemon.start();
 		eventDaemon.addListener(new LogEventHandler());
+	}
+
+	public void register(Bundle bundle, String ebinDir) {
+		getCodeManager().register(bundle, ebinDir);
+		getCodeManager().registerBundles();
+		checkCodePath();
 	}
 }

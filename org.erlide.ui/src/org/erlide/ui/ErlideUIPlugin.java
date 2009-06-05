@@ -40,7 +40,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
-import org.erlide.runtime.backend.ICodeBundle;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
@@ -54,7 +53,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
+public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * The plugin id
@@ -118,8 +117,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		JRpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
-		ErlangCore.getBackendManager().addPlugin(ErlangPlugin.getDefault());
-		ErlangCore.getBackendManager().addPlugin(this);
+		ErlangCore.getBackendManager().addBundle(
+				ErlangPlugin.getDefault().getBundle(), "ebin");
+		ErlangCore.getBackendManager().addBundle(getBundle(), "ebin");
 
 		new InitializeAfterLoadJob().schedule();
 
@@ -140,8 +140,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		ErlangCore.getBackendManager().removePlugin(this);
 		super.stop(context);
+		ErlangCore.getBackendManager().removeBundle(getBundle());
 		plugin = null;
 	}
 
@@ -369,9 +369,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 		}
 	}
 
-	public void start() {
-	}
-
 	public static void createStandardGroups(final IMenuManager menu) {
 		if (!menu.isEmpty()) {
 			return;
@@ -405,10 +402,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin implements ICodeBundle {
 			fProblemMarkerManager = new ProblemMarkerManager();
 		}
 		return fProblemMarkerManager;
-	}
-
-	public String getEbinDir() {
-		return ErlideUtil.getEbinDir(getBundle());
 	}
 
 	public static IEclipsePreferences getPrefsNode() {

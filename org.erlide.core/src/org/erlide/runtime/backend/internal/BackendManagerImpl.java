@@ -39,7 +39,7 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.EpmdWatchJob;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.ErlideBackendVisitor;
-import org.erlide.runtime.backend.ICodeBundle;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
@@ -52,7 +52,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	private final Map<IProject, Set<ErlideBackend>> executionBackends;
 	private final Map<String, ErlideBackend> buildBackends;
 	final List<BackendListener> listeners;
-	private final List<ICodeBundle> plugins;
+	private final List<CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
 
@@ -70,7 +70,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
 		buildBackends = new HashMap<String, ErlideBackend>();
 		listeners = new ArrayList<BackendListener>();
-		plugins = new ArrayList<ICodeBundle>();
+		codeBundles = new ArrayList<CodeBundle>();
 
 		epmdWatcher = new EpmdWatcher();
 		epmdWatcher.addEpmdListener(this);
@@ -104,7 +104,9 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 		b.initializeRuntime();
 		b.connect();
-		b.register(plugins);
+		for (CodeBundle bb : codeBundles) {
+			b.register(bb.getBundle(), bb.getEbinDir());
+		}
 		b.initErlang();
 		b.registerStatusHandler(this);
 		b.setDebug(options.contains(BackendOptions.DEBUG));
@@ -214,32 +216,46 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		return res;
 	}
 
-	public void addPlugin(final ICodeBundle p) {
-		if (plugins.indexOf(p) < 0) {
-			plugins.add(p);
+	public void addBundle(final Bundle b, final String ebin) {
+		final CodeBundle p = new CodeBundle(b, ebin);
+		if (codeBundles.indexOf(p) < 0) {
+			codeBundles.add(p);
 			if (ideBackend != null) {
-				ideBackend.getCodeManager().register(p);
+				ideBackend.getCodeManager().register(b, ebin);
 				ideBackend.checkCodePath();
 			}
 			forEachProjectBackend(new ErlideBackendVisitor() {
-				public void visit(final ErlideBackend b) {
-					b.getCodeManager().register(p);
-					b.checkCodePath();
+				public void visit(final ErlideBackend bb) {
+					bb.getCodeManager().register(b, ebin);
+					bb.checkCodePath();
 				}
 			});
 		}
 	}
 
-	public void removePlugin(final ICodeBundle p) {
-		plugins.remove(p);
+	public void removeBundle(final Bundle b) {
+		final CodeBundle p = findBundle(b);
+		if (p == null) {
+			return;
+		}
+		codeBundles.remove(p);
 		if (ideBackend != null) {
-			ideBackend.getCodeManager().unregister(p);
+			ideBackend.getCodeManager().unregister(b);
 		}
 		forEachProjectBackend(new ErlideBackendVisitor() {
-			public void visit(final ErlideBackend b) {
-				b.getCodeManager().unregister(p);
+			public void visit(final ErlideBackend bb) {
+				bb.getCodeManager().unregister(b);
 			}
 		});
+	}
+
+	private CodeBundle findBundle(Bundle b) {
+		for (CodeBundle p : codeBundles) {
+			if (p.getBundle() == b) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	public void forEachProjectBackend(final ErlideBackendVisitor visitor) {
