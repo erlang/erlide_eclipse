@@ -45,61 +45,52 @@ public class CodeManager {
 	// only to be called by ErlideBackend
 	public CodeManager(final ErlideBackend b) {
 		backend = b;
-		pathA = new ArrayList<PathItem>(10);
-		pathZ = new ArrayList<PathItem>(10);
-		registeredBundles = new ArrayList<CodeBundle>(10);
+		pathA = new ArrayList<PathItem>();
+		pathZ = new ArrayList<PathItem>();
+		registeredBundles = new ArrayList<CodeBundle>();
 	}
 
-	private PathItem findItem(final List<PathItem> l, final String p) {
-		final Iterator<PathItem> i = l.iterator();
-		while (i.hasNext()) {
-			final PathItem it = i.next();
-			if (it.path.equals(p)) {
-				return it;
+	public void addPath(final boolean usePathZ, final String path) {
+		if (usePathZ) {
+			if (addPath(pathZ, path)) {
+				ErlangCode.addPathZ(backend, path);
+			}
+		} else {
+			if (addPath(pathA, path)) {
+				ErlangCode.addPathA(backend, path);
 			}
 		}
-		return null;
 	}
 
-	private void addPathA(final String path) {
-		if (addPath(pathA, path)) {
-			ErlangCode.addPathA(backend, path);
-		}
-	}
-
-	private void addPathZ(final String path) {
-		if (addPath(pathZ, path)) {
-			ErlangCode.addPathZ(backend, path);
+	public void removePath(final String path) {
+		if (removePath(pathA, path)) {
+			ErlangCode.removePath(backend, path);
 		}
 	}
 
-	private boolean addPath(final List<PathItem> l, final String path) {
-		if (path == null) {
-			return false;
+	public void reRegisterBundles() {
+		for (CodeBundle p : registeredBundles) {
+			registerBundle(p);
 		}
-
-		final PathItem it = findItem(l, path);
-		if (it == null) {
-			l.add(new PathItem(path));
-			return true;
-		}
-		it.incRef();
-		return false;
 	}
 
-	private boolean removePath(final List<PathItem> l, final String path) {
-		if (path == null) {
-			return false;
+	public void register(final Bundle b) {
+		CodeBundle p = findBundle(b);
+		if (p == null) {
+			return;
 		}
-		final PathItem it = findItem(l, path);
-		if (it != null) {
-			it.decRef();
-			if (it.ref <= 0) {
-				l.remove(it);
-				return true;
-			}
+		p = new CodeBundle(b);
+		registeredBundles.add(p);
+		registerBundle(p);
+	}
+
+	public void unregister(final Bundle b) {
+		CodeBundle p = findBundle(b);
+		if (p == null) {
+			return;
 		}
-		return false;
+		registeredBundles.remove(p);
+		unloadPluginCode(p);
 	}
 
 	/**
@@ -107,7 +98,7 @@ public class CodeManager {
 	 * @param beamPath
 	 * @return boolean
 	 */
-	protected boolean loadBeam(final String moduleName, final URL beamPath) {
+	private boolean loadBeam(final String moduleName, final URL beamPath) {
 		final OtpErlangBinary bin = ErlideUtil.getBeamBinary(moduleName,
 				beamPath);
 		if (bin == null) {
@@ -150,7 +141,7 @@ public class CodeManager {
 					if (path.getFileExtension() != null
 							&& "beam".compareTo(path.getFileExtension()) == 0) {
 						final String m = path.removeFileExtension()
-								.lastSegment();
+						.lastSegment();
 						// ErlLogger.debug(" " + m);
 						try {
 							final boolean ok = loadBeam(m, b.getEntry(s));
@@ -183,17 +174,38 @@ public class CodeManager {
 				// decl);
 				ErlBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
-						backend);
+								backend);
 			}
 		}
 	}
 
-	public void register(final Bundle b) {
-		CodeBundle p = new CodeBundle(b);
-		if (registeredBundles.indexOf(p) < 0) {
-			registeredBundles.add(p);
-			registerBundle(p);
+	private boolean addPath(final List<PathItem> l, final String path) {
+		if (path == null) {
+			return false;
 		}
+
+		final PathItem it = findItem(l, path);
+		if (it == null) {
+			l.add(new PathItem(path));
+			return true;
+		}
+		it.incRef();
+		return false;
+	}
+
+	private boolean removePath(final List<PathItem> l, final String path) {
+		if (path == null) {
+			return false;
+		}
+		final PathItem it = findItem(l, path);
+		if (it != null) {
+			it.decRef();
+			if (it.ref <= 0) {
+				l.remove(it);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void registerBundle(final CodeBundle p) {
@@ -220,22 +232,21 @@ public class CodeManager {
 		}
 	}
 
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#unregister(CodeBundle)
-	 */
-	public void unregister(final Bundle b) {
-		CodeBundle p = findBundle(b);
-		if (p == null) {
-			return;
-		}
-		registeredBundles.remove(p);
-		unloadPluginCode(p);
-	}
-
 	private CodeBundle findBundle(Bundle b) {
 		for (CodeBundle p : registeredBundles) {
 			if (p.getBundle() == b) {
 				return p;
+			}
+		}
+		return null;
+	}
+
+	private PathItem findItem(final List<PathItem> l, final String p) {
+		final Iterator<PathItem> i = l.iterator();
+		while (i.hasNext()) {
+			final PathItem it = i.next();
+			if (it.path.equals(p)) {
+				return it;
 			}
 		}
 		return null;
@@ -291,24 +302,5 @@ public class CodeManager {
 		}
 	}
 
-	public void addPath(final boolean usePathZ, final String path) {
-		if (usePathZ) {
-			addPathZ(path);
-		} else {
-			addPathA(path);
-		}
-	}
-
-	public void removePath(final String path) {
-		if (removePath(pathA, path)) {
-			ErlangCode.removePath(backend, path);
-		}
-	}
-
-	public void registerBundles() {
-		for (CodeBundle p : registeredBundles) {
-			registerBundle(p);
-		}
-	}
 
 }

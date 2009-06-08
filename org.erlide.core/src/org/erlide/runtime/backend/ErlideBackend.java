@@ -68,7 +68,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	@Override
 	public synchronized void restart() {
 		super.restart();
-		codeManager.registerBundles();
+		codeManager.reRegisterBundles();
 		// initErlang();
 		// fixme eventdaemon
 	}
