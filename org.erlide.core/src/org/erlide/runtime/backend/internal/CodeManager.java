@@ -76,7 +76,7 @@ public class CodeManager {
 
 	public void register(final Bundle b) {
 		CodeBundle p = findBundle(b);
-		if (p == null) {
+		if (p != null) {
 			return;
 		}
 		p = new CodeBundle(b);

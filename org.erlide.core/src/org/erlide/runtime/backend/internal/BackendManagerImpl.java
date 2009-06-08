@@ -46,7 +46,7 @@ import com.ericsson.otp.erlang.OtpEpmd;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public final class BackendManagerImpl extends OtpNodeStatus implements
-		IEpmdListener, BackendManager {
+IEpmdListener, BackendManager {
 
 	private volatile ErlideBackend ideBackend;
 	private final Object ideBackendLock = new Object();
@@ -80,7 +80,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 	public ErlideBackend create(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
-			throws BackendException {
+	throws BackendException {
 
 		final String nodeName = info.getNodeName();
 		final boolean exists = findRunningNode(nodeName);
@@ -117,16 +117,16 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	}
 
 	public Backend getBuildBackend(final IProject project)
-			throws BackendException {
+	throws BackendException {
 		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
+		.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
 		if (info == null) {
 			ErlLogger.info("Project %s has no runtime info, using ide", project
 					.getName());
 			if (ideBackend == null) {
 				throw new BackendException(
-						"IDE backend is not created - check configuration!");
+				"IDE backend is not created - check configuration!");
 			}
 			return ideBackend;
 		}
@@ -160,11 +160,11 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 
 					final RuntimeInfo erlideRuntime = RuntimeInfo.copy(
 							ErlangCore.getRuntimeInfoManager()
-									.getErlideRuntime(), false);
+							.getErlideRuntime(), false);
 					if (erlideRuntime != null) {
 						try {
 							final String defLabel = BackendUtil
-									.getLabelProperty();
+							.getLabelProperty();
 							if (defLabel != null) {
 								erlideRuntime.setNodeName(defLabel);
 							} else {
@@ -182,7 +182,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 						}
 					} else {
 						ErlLogger
-								.error("There is no erlideRuntime defined! Could not start IDE backend.");
+						.error("There is no erlideRuntime defined! Could not start IDE backend.");
 					}
 				}
 			}
@@ -219,14 +219,12 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			return;
 		}
 		p = new CodeBundle(b);
-		if (codeBundles.indexOf(p) < 0) {
-			codeBundles.add(p);
-			forEachBackend(new ErlideBackendVisitor() {
-				public void visit(final ErlideBackend bb) {
-					bb.register(b);
-				}
-			});
-		}
+		codeBundles.add(p);
+		forEachBackend(new ErlideBackendVisitor() {
+			public void visit(final ErlideBackend bb) {
+				bb.register(b);
+			}
+		});
 	}
 
 	public void removeBundle(final Bundle b) {
