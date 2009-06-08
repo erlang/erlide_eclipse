@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.JInterfaceFactory;
@@ -27,8 +28,6 @@ import com.ericsson.otp.erlang.SignatureException;
 
 public class RpcUtil {
 	public static final int INFINITY = -1;
-
-	private static final boolean VERBOSE = true;
 
 	// use this for debugging
 	private static final boolean CHECK_RPC = Boolean
@@ -285,20 +284,13 @@ public class RpcUtil {
 				new OtpErlangAtom("cast"), m, f, a, gleader));
 	}
 
-	private static void log(final String s) {
-		System.out.println("RpcUtil: " + s);
-	}
-
 	private static void debug(final String s) {
-		if (VERBOSE) {
-			log(s);
-		}
+		ErlLogger.debug(s);
 	}
 
 	@SuppressWarnings("unused")
 	private static void warn(final Exception e) {
-		log(e.getMessage());
-		e.printStackTrace();
+		ErlLogger.debug(e);
 	}
 
 	private RpcUtil() {

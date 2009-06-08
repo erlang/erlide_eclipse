@@ -456,16 +456,7 @@ public class Backend {
 		}
 	}
 
-	public void checkCodePath() {
-		try {
-			call("code", "get_path", "");
-		} catch (final Throwable e) {
-			ErlLogger.warn("error getting path for %s: %s", getName(), e
-					.getMessage());
-		}
-	}
-
-	// todo: should this be public?
+	// TODO should this be public?
 	public void setAvailable(final boolean up) {
 		fAvailable = up;
 	}

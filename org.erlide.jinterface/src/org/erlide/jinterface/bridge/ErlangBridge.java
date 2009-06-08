@@ -84,7 +84,7 @@ public class ErlangBridge {
 			// OtpErlangObject msg = RpcUtil.buildRpcCall(this.mbox.self(),
 			// this.module, method.getName(), eargs);
 			//
-			// System.out.println("-->" + msg);
+			// ErlLogger.debug("-->" + msg);
 			// mbox.send("rex", node, msg);
 			// OtpErlangTuple res = (OtpErlangTuple) this.mbox.receive(5000);
 			// if (res == null) {

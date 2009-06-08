@@ -13,6 +13,7 @@ package org.erlide.jinterface.rpc.generator;
 import java.io.IOException;
 import java.util.List;
 
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -73,7 +74,7 @@ public class RpcInterfaceGenerator {
 			try {
 				l = (List<OtpErlangObject>) TypeConverter.erlang2java(res,
 						List.class);
-				System.out.println(generate(node, "erlang",
+				ErlLogger.debug(generate(node, "erlang",
 						"org.erlide.jinterface.erlangrpc", false, l));
 
 			} catch (final SignatureException e) {

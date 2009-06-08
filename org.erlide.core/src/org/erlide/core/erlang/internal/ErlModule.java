@@ -501,7 +501,7 @@ public class ErlModule extends Openable implements IErlModule {
 		final Set<IErlModule> result = new HashSet<IErlModule>();
 		final IErlProject project = getProject();
 		for (final IErlModule m : project.getModules()) {
-			System.out.println(m);
+			ErlLogger.debug(m.toString());
 			final boolean wasOpen = m.isOpen();
 			if (!wasOpen) {
 				m.open(null);

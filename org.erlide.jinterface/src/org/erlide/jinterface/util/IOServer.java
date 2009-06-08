@@ -44,8 +44,8 @@ public class IOServer implements Runnable {
 				msg = mbox.receive(3000);
 				if (msg != null) {
 
-					System.out.println("IOS "
-							+ Thread.currentThread().getName() + " : " + msg);
+					ErlLogger.debug("IOS " + Thread.currentThread().getName()
+							+ " : " + msg);
 
 					if (msg instanceof OtpErlangTuple) {
 						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
@@ -64,11 +64,10 @@ public class IOServer implements Runnable {
 											replyAs, reply);
 							mbox.send(from, replyMsg);
 						} else {
-							System.out.println("IOServer: unknown message "
-									+ msg);
+							ErlLogger.debug("IOServer: unknown message " + msg);
 						}
 					} else {
-						System.out.println("IOServer: unknown message " + msg);
+						ErlLogger.debug("IOServer: unknown message " + msg);
 					}
 				}
 			} catch (final Exception e) {

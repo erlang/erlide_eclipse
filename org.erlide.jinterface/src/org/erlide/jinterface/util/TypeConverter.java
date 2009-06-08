@@ -102,7 +102,7 @@ public final class TypeConverter {
 		try {
 			return Class.forName(arg, true, JRpcUtil.loader);
 		} catch (final ClassNotFoundException e) {
-			System.out.println("Rpc TypeConverter: can't find class " + arg);
+			ErlLogger.warn("Rpc TypeConverter: can't find class " + arg);
 			return Object.class;
 		}
 	}
@@ -415,12 +415,12 @@ public final class TypeConverter {
 						}
 					}
 				}
-				System.out.println(" *** deprecated use of java2erlang: "
+				ErlLogger.debug(" *** deprecated use of java2erlang: "
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
-					System.out.println("$$$");
+					ErlLogger.debug("$$$");
 					for (final StackTraceElement ste : st) {
-						System.out.println("   " + ste);
+						ErlLogger.debug("   " + ste);
 					}
 				}
 			}
@@ -558,12 +558,12 @@ public final class TypeConverter {
 						}
 					}
 				}
-				System.out.println(" *** deprecated use of java2erlang: "
+				ErlLogger.debug(" *** deprecated use of java2erlang: "
 						+ obj.getClass().getSimpleName() + " " + el);
 				if (el == null) {
-					System.out.println("$$$");
+					ErlLogger.debug("$$$");
 					for (final StackTraceElement ste : st) {
-						System.out.println("   " + ste);
+						ErlLogger.debug("   " + ste);
 					}
 				}
 			}
@@ -583,7 +583,7 @@ public final class TypeConverter {
 
 	private static void failConversion(final Object obj, final Signature type)
 			throws SignatureException {
-		// System.out.println("+++++++ "
+		// ErlLogger.debug("+++++++ "
 		// + String.format("Bad conversion required: %s(%s) - %s", obj
 		// .getClass().getName(), obj.toString(), type));
 

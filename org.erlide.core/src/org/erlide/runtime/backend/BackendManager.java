@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -50,14 +51,14 @@ public interface BackendManager {
 
 	public ErlideBackend getIdeBackend();
 
-	public Backend[] getAllBackends();
+	public Collection<ErlideBackend> getAllBackends();
 
 	public void addExecutionBackend(final IProject project,
 			final ErlideBackend b);
 
 	public void removeExecutionBackend(final IProject project, final Backend b);
 
-	public void forEachProjectBackend(final ErlideBackendVisitor visitor);
+	public void forEachBackend(final ErlideBackendVisitor visitor);
 
 	public void addBackendListener(final BackendListener listener);
 

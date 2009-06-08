@@ -320,10 +320,6 @@ public class OldErlangProjectProperties implements IPreferenceChangeListener {
 		final IEclipsePreferences root = new ProjectScope(project)
 				.getNode(ErlangPlugin.PLUGIN_ID);
 		load(root);
-		// System.out.println("!!! project preferences " + event.getNode() +
-		// ": "
-		// + event.getKey() + " " + event.getOldValue() + " "
-		// + event.getNewValue() + " ... " + event.getSource());
 	}
 
 	public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {

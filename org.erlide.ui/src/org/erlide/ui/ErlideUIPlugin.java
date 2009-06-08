@@ -115,9 +115,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		// set this classloader to be used with erlang rpc
 		JRpcUtil.loader = getClass().getClassLoader();
 
-		// we must ensure this
-		// ErlangCore.getBackendManager().addBundle(
-		// ErlangPlugin.getDefault().getBundle());
 		ErlangCore.getBackendManager().addBundle(getBundle());
 
 		new InitializeAfterLoadJob().schedule();

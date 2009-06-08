@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
+ * Copyright (c) 2009 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * which accompanies this distribution, and is available
+ * at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -28,13 +28,12 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.CodeManager;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManagerImpl implements CodeManager {
+public class CodeManagerImpl {
 
 	private final Backend fBackend;
 
@@ -62,18 +61,12 @@ public class CodeManagerImpl implements CodeManager {
 		return null;
 	}
 
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#addPathA(java.lang.String)
-	 */
 	private void addPathA(final String path) {
 		if (addPath(pathA, path)) {
 			ErlangCode.addPathA(fBackend, path);
 		}
 	}
 
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#addPathZ(java.lang.String)
-	 */
 	private void addPathZ(final String path) {
 		if (addPath(pathZ, path)) {
 			ErlangCode.addPathZ(fBackend, path);
@@ -172,6 +165,12 @@ public class CodeManagerImpl implements CodeManager {
 			}
 		}
 
+		// loadStubCode(b, reg);
+		// ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
+	}
+
+	@SuppressWarnings("unused")
+	private void loadStubCode(final Bundle b, final IExtensionRegistry reg) {
 		// load all stub code
 		final IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
 				ErlangPlugin.PLUGIN_ID, "javaRpcStubs");
@@ -179,19 +178,16 @@ public class CodeManagerImpl implements CodeManager {
 			final IContributor c = stub.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String decl = stub.getAttribute("onlyDeclared");
-				// ErlLogger.debug(" STUB: %s %s", stub.getAttribute("class"),
+				// ErlLogger.debug(" STUB: %s %s",
+				// stub.getAttribute("class"),
 				// decl);
 				ErlBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
 						fBackend);
 			}
 		}
-		// ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
 	}
 
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#addPlugin(CodeBundle)
-	 */
 	public void register(final Bundle b) {
 		CodeBundle p = new CodeBundle(b);
 		if (registeredBundles.indexOf(p) < 0) {
@@ -225,7 +221,7 @@ public class CodeManagerImpl implements CodeManager {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.CodeManager#unregister(CodeBundle)
+	 * @see org.erlide.runtime.backend.CodeManagerImpl#unregister(CodeBundle)
 	 */
 	public void unregister(final Bundle b) {
 		CodeBundle p = findBundle(b);

@@ -56,9 +56,9 @@ public class TestAction extends TextEditorAction {
 		Set<IErlModule> deps;
 		try {
 			deps = module.getDirectDependents();
-			System.out.println(deps.toString());
+			ErlLogger.debug(deps.toString());
 			deps = module.getAllDependents();
-			System.out.println(deps.toString());
+			ErlLogger.debug(deps.toString());
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}

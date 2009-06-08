@@ -142,26 +142,26 @@ public class ErlangLaunchConfigurationDelegate extends
 			options.add(BackendOptions.AUTOSTART);
 		}
 
-		System.out.println("Debug:: about to start a backend in " + mode
+		ErlLogger.info("Debug:: about to start a backend in " + mode
 				+ " mode, with attributes::");
-		System.out.println("  projects: " + Arrays.toString(projectNames));
-		System.out.println("  module: " + module);
-		System.out.println("  function: " + function);
-		System.out.println("  args: " + args);
+		ErlLogger.info("  projects: " + Arrays.toString(projectNames));
+		ErlLogger.info("  module: " + module);
+		ErlLogger.info("  function: " + function);
+		ErlLogger.info("  args: " + args);
 
-		System.out.println("  runtime: " + runtime);
-		System.out.println("  node name: " + nodeName);
-		System.out.println("  cookie: " + cookie);
-		System.out.println("  debugFlags: " + debugFlags);
-		System.out.println("  interpretedModules: " + interpretedModules);
+		ErlLogger.info("  runtime: " + runtime);
+		ErlLogger.info("  node name: " + nodeName);
+		ErlLogger.info("  cookie: " + cookie);
+		ErlLogger.info("  debugFlags: " + debugFlags);
+		ErlLogger.info("  interpretedModules: " + interpretedModules);
 		if (startMe) {
-			System.out.println("  * start it if not running");
+			ErlLogger.info("  * start it if not running");
 		}
-		System.out.println("---------------");
+		ErlLogger.info("---------------");
 
 		try {
-			final ErlideBackend backend = ErlangCore.getBackendManager().create(
-					rt, options, launch);
+			final ErlideBackend backend = ErlangCore.getBackendManager()
+					.create(rt, options, launch);
 			// launch.addProcess(null);
 			registerProjects(backend, projects);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -220,7 +220,8 @@ public class ErlangLaunchConfigurationDelegate extends
 	private static void registerProjects(final ErlideBackend backend,
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
-			ErlangCore.getBackendManager().addExecutionBackend(project, backend);
+			ErlangCore.getBackendManager()
+					.addExecutionBackend(project, backend);
 			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 			final String outDir = project.getLocation().append(

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.erlide.ui.views;
 
+import java.util.Collection;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.backend.ErlideBackend;
 
 public class BackendContentProvider implements IStructuredContentProvider {
 
@@ -27,6 +30,8 @@ public class BackendContentProvider implements IStructuredContentProvider {
 	}
 
 	public Object[] getElements(final Object inputElement) {
-		return ErlangCore.getBackendManager().getAllBackends();
+		Collection<ErlideBackend> bs = ErlangCore.getBackendManager()
+				.getAllBackends();
+		return bs.toArray(new ErlideBackend[bs.size()]);
 	}
 }

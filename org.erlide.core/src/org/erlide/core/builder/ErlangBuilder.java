@@ -350,7 +350,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		final String s = resource.getFileExtension();
 		if (!s.equals("erl")) {
-			System.out.println("?!?!");
+			ErlLogger.warn("trying to compile " + resource.getName() + "?!?!");
 		}
 
 		deleteMarkers(resource);

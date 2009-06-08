@@ -30,7 +30,7 @@ public class ErlConsoleModel implements IDisposable {
 			if (event == null) {
 				return;
 			}
-			// System.out.println(">>> " + event);
+			// ErlLogger.debug(">>> " + event);
 			add(event);
 		}
 	}

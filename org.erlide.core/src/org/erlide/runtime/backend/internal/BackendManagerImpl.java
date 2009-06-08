@@ -13,6 +13,7 @@ package org.erlide.runtime.backend.internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -197,37 +198,32 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		listeners.remove(listener);
 	}
 
-	public Backend[] getAllBackends() {
+	public Collection<ErlideBackend> getAllBackends() {
 		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
+		ErlideBackend ide = getIdeBackend();
+		if (ide != null) {
+			ebs.add(ide);
+		}
 		for (final Set<ErlideBackend> b : executionBackends.values()) {
 			ebs.addAll(b);
 		}
 		for (final ErlideBackend b : buildBackends.values()) {
 			ebs.add(b);
 		}
-		final Object[] eb = ebs.toArray();
-		final Backend b = getIdeBackend();
-		final int x = (b == null) ? 0 : 1;
-		final Backend[] res = new Backend[eb.length + x];
-		System.arraycopy(eb, 0, res, 0, eb.length);
-		if (b != null) {
-			res[eb.length] = b;
-		}
-		return res;
+		return ebs;
 	}
 
 	public void addBundle(final Bundle b) {
-		final CodeBundle p = new CodeBundle(b);
+		CodeBundle p = findBundle(b);
+		if (p != null) {
+			return;
+		}
+		p = new CodeBundle(b);
 		if (codeBundles.indexOf(p) < 0) {
 			codeBundles.add(p);
-			if (ideBackend != null) {
-				ideBackend.getCodeManager().register(b);
-				ideBackend.checkCodePath();
-			}
-			forEachProjectBackend(new ErlideBackendVisitor() {
+			forEachBackend(new ErlideBackendVisitor() {
 				public void visit(final ErlideBackend bb) {
-					bb.getCodeManager().register(b);
-					bb.checkCodePath();
+					bb.register(b);
 				}
 			});
 		}
@@ -239,12 +235,9 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			return;
 		}
 		codeBundles.remove(p);
-		if (ideBackend != null) {
-			ideBackend.getCodeManager().unregister(b);
-		}
-		forEachProjectBackend(new ErlideBackendVisitor() {
+		forEachBackend(new ErlideBackendVisitor() {
 			public void visit(final ErlideBackend bb) {
-				bb.getCodeManager().unregister(b);
+				bb.unregister(b);
 			}
 		});
 	}
@@ -258,8 +251,10 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		return null;
 	}
 
-	public void forEachProjectBackend(final ErlideBackendVisitor visitor) {
-		// TODO which backends?
+	public void forEachBackend(final ErlideBackendVisitor visitor) {
+		for (ErlideBackend b : getAllBackends()) {
+			visitor.visit(b);
+		}
 	}
 
 	public synchronized void updateNodeStatus(final String host,

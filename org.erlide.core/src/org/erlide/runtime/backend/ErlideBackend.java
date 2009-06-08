@@ -27,7 +27,7 @@ import org.osgi.framework.Bundle;
  */
 public final class ErlideBackend extends Backend implements IDisposable {
 
-	private final CodeManager fCodeManager;
+	private final CodeManagerImpl fCodeManager;
 	private IShellManager fShellManager;
 	private EventDaemon eventDaemon;
 
@@ -55,7 +55,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		}
 	}
 
-	public CodeManager getCodeManager() {
+	private CodeManagerImpl getCodeManager() {
 		return fCodeManager;
 	}
 
@@ -100,7 +100,10 @@ public final class ErlideBackend extends Backend implements IDisposable {
 
 	public void register(Bundle bundle) {
 		getCodeManager().register(bundle);
-		// getCodeManager().registerBundles();
-		checkCodePath();
 	}
+
+	public void unregister(Bundle b) {
+		getCodeManager().unregister(b);
+	}
+
 }

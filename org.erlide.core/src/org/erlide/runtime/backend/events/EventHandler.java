@@ -30,7 +30,6 @@ public abstract class EventHandler {
 
 	public OtpErlangObject getStandardEvent(final OtpErlangObject msg,
 			final String id) {
-		// System.out.println("***********************************");
 		try {
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			OtpErlangObject el0 = t.elementAt(0);

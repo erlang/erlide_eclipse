@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.jinterface.util.ErlLogger;
 
 public class PropertiesUtils {
 	public static ErlangProjectProperties convertOld(
@@ -41,7 +42,7 @@ public class PropertiesUtils {
 		result.setOutput(new Path(old.getOutputDir()));
 
 		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
-		.getPathVariableManager();
+				.getPathVariableManager();
 
 		final String exmodf = old.getExternalModulesFile();
 		IPath ff = pvman.resolvePath(new Path(exmodf));
@@ -82,7 +83,7 @@ public class PropertiesUtils {
 			final String path = mod.substring(0, i);
 			final String file = mod.substring(i + 1);
 
-			System.out.println("FOUND: '" + path + "' '" + file + "'");
+			ErlLogger.debug("FOUND: '" + path + "' '" + file + "'");
 			List<String> pval = grouped.get(path);
 			if (pval == null) {
 				pval = new ArrayList<String>();
@@ -90,7 +91,7 @@ public class PropertiesUtils {
 			pval.add(file);
 			grouped.put(path.toString(), pval);
 		}
-		System.out.println(grouped);
+		ErlLogger.debug(grouped.toString());
 
 		for (final Entry<String, List<String>> loc : grouped.entrySet()) {
 			final SourceLocation location = new SourceLocation(loc.getKey(),

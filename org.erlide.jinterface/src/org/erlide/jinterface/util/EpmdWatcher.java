@@ -100,7 +100,7 @@ public final class EpmdWatcher {
 					// InterfacePlugin.getDefault().getLog().log(
 					// new Status(IStatus.WARNING,
 					// InterfacePlugin.PLUGIN_ID, msg));
-					System.out.println(msg);
+					ErlLogger.warn(msg);
 					this.epmdStarted = false;
 				}
 			}

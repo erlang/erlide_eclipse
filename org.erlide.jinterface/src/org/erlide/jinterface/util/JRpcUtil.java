@@ -35,8 +35,6 @@ public class JRpcUtil {
 	// we can access even the UI classes (which are actually most interesting)
 	public static ClassLoader loader = JRpcUtil.class.getClassLoader();
 
-	private static final boolean VERBOSE = false;
-
 	public static OtpErlangObject execute(final OtpErlangObject target,
 			final OtpErlangObject method, final OtpErlangObject[] args) {
 
@@ -329,13 +327,11 @@ public class JRpcUtil {
 	}
 
 	private static void log(final String s) {
-		System.out.println("JRpcUtil: " + s);
+		ErlLogger.info("JRpcUtil: " + s);
 	}
 
 	private static void debug(final String s) {
-		if (VERBOSE) {
-			log(s);
-		}
+		ErlLogger.debug("JRpcUtil: " + s);
 	}
 
 	@SuppressWarnings("unused")

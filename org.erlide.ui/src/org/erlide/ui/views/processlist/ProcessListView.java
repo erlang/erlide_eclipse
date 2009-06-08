@@ -231,7 +231,7 @@ public class ProcessListView extends ViewPart {
 		if (ideBackend != null) {
 			ErlideProclist.processListInit(ideBackend);
 		}
-		ErlangCore.getBackendManager().forEachProjectBackend(
+		ErlangCore.getBackendManager().forEachBackend(
 				new ErlideBackendVisitor() {
 					public void visit(final ErlideBackend b) {
 						ErlideProclist.processListInit(b);

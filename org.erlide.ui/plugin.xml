@@ -725,17 +725,6 @@
           contentTypeId="org.erlide.core.content.erlang"/>
  </extension>
    <extension
-         point="org.erlide.core.javaRpcStubs">
-      <stub
-            class="java.util.Map"
-            onlyDeclared="true">
-      </stub>
-      <stub
-            class="org.eclipse.ui.PlatformUI"
-            onlyDeclared="true">
-      </stub>
-   </extension>
-   <extension
          point="org.eclipse.ui.navigator.viewer">
        <viewer
             viewerId="org.erlide.ui.views.navigator.view">

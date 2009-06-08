@@ -75,7 +75,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		String line;
 		while ((line = rd.readLine()) != null) {
 			// Process line...
-			System.out.println(line);
+			ErlLogger.debug(line);
 		}
 		wr.close();
 		rd.close();
@@ -101,7 +101,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		String line;
 		while ((line = rd.readLine()) != null) {
 			// Process line...
-			System.out.println(line);
+			ErlLogger.debug(line);
 		}
 		rd.close();
 	}
