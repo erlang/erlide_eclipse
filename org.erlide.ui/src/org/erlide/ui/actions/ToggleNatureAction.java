@@ -104,7 +104,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 							prefs.getOutputDir()).toString();
 					for (final ErlideBackend b : ErlangCore.getBackendManager()
 							.getExecutionBackends(project)) {
-						b.removePath(prefs.getUsePathZ(), out);
+						b.removePath(out);
 					}
 					return;
 				}

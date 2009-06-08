@@ -219,7 +219,7 @@ public class OldErlangProjectProperties implements IPreferenceChangeListener {
 
 				final String p = project.getLocation().append(outputDir)
 						.toString();
-				b.removePath(z, p);
+				b.removePath(p);
 				b.addPath(pz, p);
 			}
 		}

@@ -20,7 +20,7 @@ public interface CodeManager {
 
 	void addPath(final boolean usePathZ, final String path);
 
-	void removePath(final boolean usePathZ, final String path);
+	void removePath(final String path);
 
 	void registerBundles();
 

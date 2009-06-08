@@ -77,8 +77,8 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		// fixme eventdaemon
 	}
 
-	public void removePath(final boolean usePathZ, final String path) {
-		fCodeManager.removePath(usePathZ, path);
+	public void removePath(final String path) {
+		fCodeManager.removePath(path);
 	}
 
 	public void addPath(final boolean usePathZ, final String path) {

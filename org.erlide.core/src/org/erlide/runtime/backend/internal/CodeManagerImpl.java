@@ -321,12 +321,9 @@ public class CodeManagerImpl implements CodeManager {
 		}
 	}
 
-	public void removePath(final boolean usePathZ, final String path) {
-		if (usePathZ) {
-			removePathZ(path);
-		} else {
-			removePathA(path);
-		}
+	public void removePath(final String path) {
+		removePathZ(path);
+		removePathA(path);
 	}
 
 	public void registerBundles() {
