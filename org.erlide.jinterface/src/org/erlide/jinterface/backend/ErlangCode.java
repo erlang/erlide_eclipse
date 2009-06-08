@@ -52,23 +52,7 @@ public final class ErlangCode {
 		}
 	}
 
-	public static void removePathZ(final Backend backend, String path) {
-		try {
-			// workaround for bug in code:del_path
-			try {
-				final OtpErlangObject rr = backend.call("filename", "join",
-						"x", new OtpErlangList(new OtpErlangString(path)));
-				path = ((OtpErlangString) rr).stringValue();
-			} catch (final Exception e) {
-				// ignore
-			}
-			backend.call("code", "del_path", null, new OtpErlangString(path));
-		} catch (final Exception e) {
-			ErlLogger.debug(e);
-		}
-	}
-
-	public static void removePathA(final Backend backend, String path) {
+	public static void removePath(final Backend backend, String path) {
 		try {
 			// workaround for bug in code:del_path
 			try {

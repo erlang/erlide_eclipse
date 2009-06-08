@@ -94,24 +94,6 @@ public class CodeManagerImpl implements CodeManager {
 		return false;
 	}
 
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#removePathA(java.lang.String)
-	 */
-	private void removePathA(final String path) {
-		if (removePath(pathA, path)) {
-			ErlangCode.removePathA(fBackend, path);
-		}
-	}
-
-	/**
-	 * @see org.erlide.runtime.backend.CodeManager#removePathZ(java.lang.String)
-	 */
-	private void removePathZ(final String path) {
-		if (removePath(pathZ, path)) {
-			ErlangCode.removePathZ(fBackend, path);
-		}
-	}
-
 	private boolean removePath(final List<PathItem> l, final String path) {
 		if (path == null) {
 			return false;
@@ -322,8 +304,9 @@ public class CodeManagerImpl implements CodeManager {
 	}
 
 	public void removePath(final String path) {
-		removePathZ(path);
-		removePathA(path);
+		if (removePath(pathA, path)) {
+			ErlangCode.removePath(fBackend, path);
+		}
 	}
 
 	public void registerBundles() {
