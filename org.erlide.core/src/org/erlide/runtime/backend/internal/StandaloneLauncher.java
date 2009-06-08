@@ -5,17 +5,10 @@ import org.erlide.jinterface.backend.RuntimeLauncher;
 
 public class StandaloneLauncher implements RuntimeLauncher {
 
-	private Backend backend;
-
 	public StandaloneLauncher() {
 	}
 
 	public void setBackend(final Backend backend) {
-		this.backend = backend;
-	}
-
-	public void connect() {
-		backend.doConnect(backend.getName());
 	}
 
 	public void stop() {

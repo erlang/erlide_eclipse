@@ -7,8 +7,6 @@ public interface RuntimeLauncher {
 
 	public void initializeRuntime();
 
-	public void connect();
-
 	public void stop();
 
 }

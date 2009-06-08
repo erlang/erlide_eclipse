@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.IDisposable;
@@ -21,7 +20,6 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	Process fRuntime;
 	Backend backend;
 	private ILaunch launch;
-	IStreamsProxy streamsProxy;
 
 	public ManagedLauncher(ILaunch aLaunch) {
 		launch = aLaunch;
@@ -29,10 +27,6 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
 	public void setBackend(final Backend backend) {
 		this.backend = backend;
-	}
-
-	public void connect() {
-		backend.doConnect(backend.getName());
 	}
 
 	public void stop() {

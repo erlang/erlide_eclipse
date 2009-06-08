@@ -32,7 +32,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	private EventDaemon eventDaemon;
 
 	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
-			throws BackendException {
+	throws BackendException {
 		super(info, launcher);
 		codeManager = new CodeManager(this);
 		shellManager = new BackendShellManager(this);
@@ -100,6 +100,11 @@ public final class ErlideBackend extends Backend implements IDisposable {
 
 	public void unregister(Bundle b) {
 		codeManager.unregister(b);
+	}
+
+	public void setTrapExit(boolean contains) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

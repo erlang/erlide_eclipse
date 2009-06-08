@@ -44,25 +44,24 @@ public class Backend {
 		}
 	}
 
-	boolean fAvailable = false;
+	boolean available = false;
 
-	private OtpMbox ftRpcBox; // incoming rpc and events
+	private OtpMbox eventBox; // incoming rpc and events
 	private OtpNode fNode;
 	private String fPeer;
-	private String fCurrentVersion;
+	private String currentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
 	private final RuntimeLauncher launcher;
-	private boolean trapexit;
 	private int exitStatus = -1;
 	private boolean stopped = false;
 	private int restarted = 0;
 
 	protected Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
-			throws BackendException {
+	throws BackendException {
 		if (info == null) {
 			throw new BackendException(
-					"Can't create backend without runtime information");
+			"Can't create backend without runtime information");
 		}
 		fInfo = info;
 		this.launcher = launcher;
@@ -70,7 +69,7 @@ public class Backend {
 	}
 
 	public void connect() {
-		launcher.connect();
+		doConnect(getName());
 	}
 
 	public boolean ping() {
@@ -99,27 +98,27 @@ public class Backend {
 					len, cookie);
 			fPeer = BackendUtil.buildNodeName(label, true);
 
-			ftRpcBox = fNode.createMbox("rex");
+			eventBox = fNode.createMbox("rex");
 			int tries = 20;
-			while (!fAvailable && tries > 0) {
-				fAvailable = fNode.ping(fPeer, RETRY_DELAY + (20 - tries)
+			while (!available && tries > 0) {
+				available = fNode.ping(fPeer, RETRY_DELAY + (20 - tries)
 						* RETRY_DELAY / 5);
 				tries--;
 			}
-			fAvailable &= ErlangCode.waitForCodeServer(this);
+			available &= ErlangCode.waitForCodeServer(this);
 
-			if (fAvailable) {
+			if (available) {
 				ErlLogger.debug("connected!");
 			} else {
 				ErlLogger
-						.error("could not connect to backend! Please check runtime settings.");
+				.error("could not connect to backend! Please check runtime settings.");
 			}
 
 		} catch (final Exception e) {
 			ErlLogger.error(e);
-			fAvailable = false;
+			available = false;
 			ErlLogger
-					.error("could not connect to backend! Please check runtime settings.");
+			.error("could not connect to backend! Please check runtime settings.");
 		}
 	}
 
@@ -140,16 +139,6 @@ public class Backend {
 		if (launcher instanceof IDisposable) {
 			((IDisposable) launcher).dispose();
 		}
-	}
-
-	/**
-	 * @see Backend#call
-	 * @deprecated
-	 */
-	@Deprecated
-	public RpcResult rpc(final String m, final String f,
-			final String signature, final Object... a) {
-		return call_noexception(m, f, signature, a);
 	}
 
 	/**
@@ -181,7 +170,7 @@ public class Backend {
 
 	public RpcFuture async_call(final String m, final String f,
 			final String signature, final Object... args)
-			throws BackendException {
+	throws BackendException {
 		try {
 			return makeAsyncCall(m, f, signature, args);
 		} catch (final RpcException e) {
@@ -212,23 +201,13 @@ public class Backend {
 	}
 
 	/**
-	 * @see Backend#callx
-	 * @deprecated
-	 */
-	@Deprecated
-	public OtpErlangObject rpcx(final String m, final String f,
-			final String signature, final Object... a) throws BackendException {
-		return call(m, f, signature, a);
-	}
-
-	/**
 	 * typed RPC with timeout, throws Exception
 	 * 
 	 * @throws ConversionException
 	 */
 	public OtpErlangObject call(final int timeout, final String m,
 			final String f, final String signature, final Object... a)
-			throws BackendException {
+	throws BackendException {
 		return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
 	}
 
@@ -245,24 +224,13 @@ public class Backend {
 	}
 
 	/**
-	 * @see Backend#callx
-	 * @deprecated
-	 */
-	@Deprecated
-	public OtpErlangObject rpcx(final String m, final String f,
-			final int timeout, final String signature, final Object... a)
-			throws BackendException {
-		return call(timeout, m, f, signature, a);
-	}
-
-	/**
 	 * 
 	 * @param msg
 	 * @param dbgPid
 	 * @throws ConversionException
 	 */
 	public void send(final OtpErlangPid pid, final Object msg) {
-		if (!fAvailable) {
+		if (!available) {
 			return;
 		}
 		try {
@@ -274,7 +242,7 @@ public class Backend {
 	}
 
 	public void send(final String name, final Object msg) {
-		if (!fAvailable) {
+		if (!available) {
 			return;
 		}
 		try {
@@ -287,7 +255,7 @@ public class Backend {
 
 	private OtpErlangObject makeCall(final int timeout, final String module,
 			final String fun, final String signature, final Object... args0)
-			throws RpcException, SignatureException {
+	throws RpcException, SignatureException {
 		return makeCall(timeout, new OtpErlangAtom("user"), module, fun,
 				signature, args0);
 	}
@@ -295,7 +263,7 @@ public class Backend {
 	private OtpErlangObject makeCall(final int timeout,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-			throws RpcException, SignatureException {
+	throws RpcException, SignatureException {
 		checkAvailability();
 		final OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader,
 				module, fun, timeout, signature, args0);
@@ -318,7 +286,7 @@ public class Backend {
 	}
 
 	private synchronized void checkAvailability() throws RpcException {
-		if (!fAvailable) {
+		if (!available) {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
@@ -329,20 +297,20 @@ public class Backend {
 
 	private void makeCast(final String module, final String fun,
 			final String signature, final Object... args0)
-			throws SignatureException, RpcException {
+	throws SignatureException, RpcException {
 		makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
 	}
 
 	private void makeCast(final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-			throws SignatureException, RpcException {
+	throws SignatureException, RpcException {
 		checkAvailability();
 		RpcUtil.rpcCast(fNode, fPeer, gleader, module, fun, signature, args0);
 	}
 
 	public synchronized void restart() {
 		exitStatus = -1;
-		if (fAvailable) {
+		if (available) {
 			return;
 		}
 		restarted++;
@@ -357,7 +325,7 @@ public class Backend {
 	}
 
 	private OtpMbox getEventBox() {
-		return ftRpcBox;
+		return eventBox;
 	}
 
 	public OtpErlangPid getEventPid() {
@@ -369,13 +337,13 @@ public class Backend {
 	}
 
 	public String getCurrentVersion() {
-		if (fCurrentVersion == null) {
+		if (currentVersion == null) {
 			try {
-				fCurrentVersion = ErlBackend.getScriptId(this);
+				currentVersion = ErlBackend.getScriptId(this);
 			} catch (final Exception e) {
 			}
 		}
-		return fCurrentVersion;
+		return currentVersion;
 	}
 
 	private static final int EPMD_PORT = 4369;
@@ -402,15 +370,14 @@ public class Backend {
 		} while (!ok && tries > 0);
 		if (!ok) {
 			final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-					+ "  Possibly your host's entry in /etc/hosts is wrong.";
+				+ "  Possibly your host's entry in /etc/hosts is wrong.";
 			ErlLogger.error(msg);
 			throw new BackendException(msg);
 		}
 	}
 
 	public OtpErlangObject receiveEvent(final long timeout)
-			throws OtpErlangExit, OtpErlangDecodeException {
-		final OtpMbox eventBox = getEventBox();
+	throws OtpErlangExit, OtpErlangDecodeException {
 		if (eventBox == null) {
 			return null;
 		}
@@ -424,11 +391,6 @@ public class Backend {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.erlide.runtime.backend.Backend#getInfo()
-	 */
 	public RuntimeInfo getInfo() {
 		return fInfo;
 	}
@@ -449,7 +411,7 @@ public class Backend {
 		launcher.initializeRuntime();
 	}
 
-	public void setRemoteRex(final OtpErlangPid watchdog) {
+	protected void setRemoteRex(final OtpErlangPid watchdog) {
 		try {
 			getEventBox().link(watchdog);
 		} catch (final OtpErlangExit e) {
@@ -458,7 +420,7 @@ public class Backend {
 
 	// TODO should this be public?
 	public void setAvailable(final boolean up) {
-		fAvailable = up;
+		available = up;
 	}
 
 	public void setDebug(final boolean b) {
@@ -473,14 +435,6 @@ public class Backend {
 		return fNode.node();
 	}
 
-	public void setTrapExit(final boolean trapexit) {
-		this.trapexit = trapexit;
-	}
-
-	public boolean getTrapExit() {
-		return trapexit;
-	}
-
 	public void stop() {
 		stopped = true;
 		launcher.stop();
@@ -492,10 +446,6 @@ public class Backend {
 
 	public boolean isStopped() {
 		return stopped;
-	}
-
-	public OtpMbox createMbox() {
-		return fNode.createMbox();
 	}
 
 	public void registerStatusHandler(OtpNodeStatus handler) {
