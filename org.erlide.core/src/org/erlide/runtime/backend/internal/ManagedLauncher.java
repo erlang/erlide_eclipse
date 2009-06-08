@@ -40,14 +40,13 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 	}
 
 	public void initializeRuntime() {
-		startRuntime(launch);
+		startRuntime();
 	}
 
-	private void startRuntime(final ILaunch launch) {
+	private void startRuntime() {
 		final RuntimeInfo info = backend.getInfo();
 		if (info == null) {
-			ErlLogger.error("Trying to start backend '%s' with null info",
-					backend.getName());
+			ErlLogger.error("Trying to start backend with null info");
 			return;
 		}
 

@@ -328,7 +328,6 @@ IEpmdListener, BackendManager {
 		if (backend != null && backend != ideBackend) {
 			backend.dispose();
 		}
-
 	}
 
 	@Override
@@ -344,7 +343,6 @@ IEpmdListener, BackendManager {
 				}
 			}
 		}
-
 		remoteNodeStatus(node, up, info);
 	}
 
