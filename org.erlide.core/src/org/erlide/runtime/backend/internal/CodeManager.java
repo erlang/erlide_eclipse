@@ -33,7 +33,7 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManagerImpl {
+public class CodeManager {
 
 	private final Backend fBackend;
 
@@ -43,7 +43,7 @@ public class CodeManagerImpl {
 	private final List<CodeBundle> registeredBundles;
 
 	// only to be called by ErlideBackend
-	public CodeManagerImpl(final ErlideBackend b) {
+	public CodeManager(final ErlideBackend b) {
 		fBackend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
@@ -221,7 +221,7 @@ public class CodeManagerImpl {
 	}
 
 	/**
-	 * @see org.erlide.runtime.backend.CodeManagerImpl#unregister(CodeBundle)
+	 * @see org.erlide.runtime.backend.CodeManager#unregister(CodeBundle)
 	 */
 	public void unregister(final Bundle b) {
 		CodeBundle p = findBundle(b);

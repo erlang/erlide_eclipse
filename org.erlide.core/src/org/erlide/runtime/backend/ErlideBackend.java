@@ -18,7 +18,7 @@ import org.erlide.jinterface.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
-import org.erlide.runtime.backend.internal.CodeManagerImpl;
+import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
 import org.osgi.framework.Bundle;
 
@@ -27,14 +27,14 @@ import org.osgi.framework.Bundle;
  */
 public final class ErlideBackend extends Backend implements IDisposable {
 
-	private final CodeManagerImpl fCodeManager;
+	private final CodeManager fCodeManager;
 	private IShellManager fShellManager;
 	private EventDaemon eventDaemon;
 
 	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		super(info, launcher);
-		fCodeManager = new CodeManagerImpl(this);
+		fCodeManager = new CodeManager(this);
 		fShellManager = new BackendShellManager(this);
 	}
 
@@ -55,7 +55,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		}
 	}
 
-	private CodeManagerImpl getCodeManager() {
+	private CodeManager getCodeManager() {
 		return fCodeManager;
 	}
 
