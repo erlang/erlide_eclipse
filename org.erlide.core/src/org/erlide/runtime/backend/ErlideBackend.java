@@ -27,15 +27,15 @@ import org.osgi.framework.Bundle;
  */
 public final class ErlideBackend extends Backend implements IDisposable {
 
-	private final CodeManager fCodeManager;
-	private IShellManager fShellManager;
+	private final CodeManager codeManager;
+	private IShellManager shellManager;
 	private EventDaemon eventDaemon;
 
 	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
 			throws BackendException {
 		super(info, launcher);
-		fCodeManager = new CodeManager(this);
-		fShellManager = new BackendShellManager(this);
+		codeManager = new CodeManager(this);
+		shellManager = new BackendShellManager(this);
 	}
 
 	@Override
@@ -47,42 +47,38 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
 		super.dispose(restart);
-		if (fShellManager instanceof IDisposable) {
-			((IDisposable) fShellManager).dispose();
+		if (shellManager instanceof IDisposable) {
+			((IDisposable) shellManager).dispose();
 		}
 		if (eventDaemon != null) {
 			eventDaemon.stop();
 		}
 	}
 
-	private CodeManager getCodeManager() {
-		return fCodeManager;
-	}
-
 	public IShellManager getShellManager() {
-		return fShellManager;
+		return shellManager;
 	}
 
 	@Override
 	public void initializeRuntime() {
 		super.initializeRuntime();
-		fShellManager = new BackendShellManager(this);
+		shellManager = new BackendShellManager(this);
 	}
 
 	@Override
 	public synchronized void restart() {
 		super.restart();
-		getCodeManager().registerBundles();
+		codeManager.registerBundles();
 		// initErlang();
 		// fixme eventdaemon
 	}
 
 	public void removePath(final String path) {
-		fCodeManager.removePath(path);
+		codeManager.removePath(path);
 	}
 
 	public void addPath(final boolean usePathZ, final String path) {
-		fCodeManager.addPath(usePathZ, path);
+		codeManager.addPath(usePathZ, path);
 	}
 
 	public EventDaemon getEventDaemon() {
@@ -99,11 +95,11 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	}
 
 	public void register(Bundle bundle) {
-		getCodeManager().register(bundle);
+		codeManager.register(bundle);
 	}
 
 	public void unregister(Bundle b) {
-		getCodeManager().unregister(b);
+		codeManager.unregister(b);
 	}
 
 }

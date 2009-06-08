@@ -35,7 +35,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public class CodeManager {
 
-	private final Backend fBackend;
+	private final Backend backend;
 
 	private final List<PathItem> pathA;
 	private final List<PathItem> pathZ;
@@ -44,7 +44,7 @@ public class CodeManager {
 
 	// only to be called by ErlideBackend
 	public CodeManager(final ErlideBackend b) {
-		fBackend = b;
+		backend = b;
 		pathA = new ArrayList<PathItem>(10);
 		pathZ = new ArrayList<PathItem>(10);
 		registeredBundles = new ArrayList<CodeBundle>(10);
@@ -63,13 +63,13 @@ public class CodeManager {
 
 	private void addPathA(final String path) {
 		if (addPath(pathA, path)) {
-			ErlangCode.addPathA(fBackend, path);
+			ErlangCode.addPathA(backend, path);
 		}
 	}
 
 	private void addPathZ(final String path) {
 		if (addPath(pathZ, path)) {
-			ErlangCode.addPathZ(fBackend, path);
+			ErlangCode.addPathZ(backend, path);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class CodeManager {
 		if (bin == null) {
 			return false;
 		}
-		return ErlBackend.loadBeam(fBackend, moduleName, bin);
+		return ErlBackend.loadBeam(backend, moduleName, bin);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -121,7 +121,7 @@ public class CodeManager {
 
 		final Bundle b = p.getBundle();
 		ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-				+ fBackend.getInfo().getName());
+				+ backend.getInfo().getName());
 
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
@@ -134,7 +134,7 @@ public class CodeManager {
 			final IContributor c = el.getContributor();
 			if (c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
-				final String ver = fBackend.getCurrentVersion();
+				final String ver = backend.getCurrentVersion();
 				Enumeration e = b.getEntryPaths(dir_path + "/" + ver);
 				if (e == null || !e.hasMoreElements()) {
 					e = b.getEntryPaths(dir_path);
@@ -183,7 +183,7 @@ public class CodeManager {
 				// decl);
 				ErlBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
-						fBackend);
+						backend);
 			}
 		}
 	}
@@ -201,15 +201,15 @@ public class CodeManager {
 		if (ebinDirs != null) {
 			for (String ebinDir : ebinDirs) {
 				final String localDir = ebinDir.replaceAll("\\\\", "/");
-				final boolean accessible = ErlideUtil.isAccessible(fBackend,
+				final boolean accessible = ErlideUtil.isAccessible(backend,
 						localDir);
 				if (accessible) {
 					ErlLogger.debug("adding %s to code path for %s", localDir,
-							fBackend.getInfo());
-					ErlangCode.addPathA(fBackend, localDir);
+							backend.getInfo());
+					ErlangCode.addPathA(backend, localDir);
 				} else {
 					ErlLogger.debug("loading %s for %s", p.getBundle()
-							.getSymbolicName(), fBackend.getInfo());
+							.getSymbolicName(), backend.getInfo());
 					loadPluginCode(p);
 				}
 			}
@@ -247,7 +247,7 @@ public class CodeManager {
 		// see FindSupport.findInFragments
 
 		final Bundle b = p.getBundle();
-		final String ver = fBackend.getCurrentVersion();
+		final String ver = backend.getCurrentVersion();
 		Enumeration e = b.getEntryPaths("/ebin/" + ver);
 		if (e == null) {
 			return;
@@ -268,7 +268,7 @@ public class CodeManager {
 	}
 
 	private void unloadBeam(final String moduleName) {
-		ErlangCode.delete(fBackend, moduleName);
+		ErlangCode.delete(backend, moduleName);
 	}
 
 	private static class PathItem {
@@ -301,7 +301,7 @@ public class CodeManager {
 
 	public void removePath(final String path) {
 		if (removePath(pathA, path)) {
-			ErlangCode.removePath(fBackend, path);
+			ErlangCode.removePath(backend, path);
 		}
 	}
 
