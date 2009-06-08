@@ -34,7 +34,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -117,9 +116,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		JRpcUtil.loader = getClass().getClassLoader();
 
 		// we must ensure this
-		ErlangCore.getBackendManager().addBundle(
-				ErlangPlugin.getDefault().getBundle(), "ebin");
-		ErlangCore.getBackendManager().addBundle(getBundle(), "ebin");
+		// ErlangCore.getBackendManager().addBundle(
+		// ErlangPlugin.getDefault().getBundle());
+		ErlangCore.getBackendManager().addBundle(getBundle());
 
 		new InitializeAfterLoadJob().schedule();
 

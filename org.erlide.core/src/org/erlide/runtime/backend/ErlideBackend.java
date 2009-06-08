@@ -98,9 +98,9 @@ public final class ErlideBackend extends Backend implements IDisposable {
 		eventDaemon.addListener(new LogEventHandler());
 	}
 
-	public void register(Bundle bundle, String ebinDir) {
-		getCodeManager().register(bundle, ebinDir);
-		getCodeManager().registerBundles();
+	public void register(Bundle bundle) {
+		getCodeManager().register(bundle);
+		// getCodeManager().registerBundles();
 		checkCodePath();
 	}
 }

@@ -63,7 +63,7 @@ public interface BackendManager {
 
 	public void removeBackendListener(final BackendListener listener);
 
-	public void addBundle(final Bundle p, String ebin);
+	public void addBundle(final Bundle p);
 
 	public void removeBundle(final Bundle b);
 

@@ -172,7 +172,7 @@ public class ErlangPlugin extends Plugin {
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();
-		ErlangCore.getBackendManager().addBundle(getBundle(), "ebin");
+		ErlangCore.getBackendManager().addBundle(getBundle());
 
 		// FIXME remove this when console works with many backends
 		ErlangCore.registerOpenProjects();

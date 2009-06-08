@@ -12,6 +12,7 @@ package org.erlide.runtime.backend.internal;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -209,8 +210,8 @@ public class CodeManagerImpl implements CodeManager {
 	/**
 	 * @see org.erlide.runtime.backend.CodeManager#addPlugin(CodeBundle)
 	 */
-	public void register(final Bundle b, String location) {
-		CodeBundle p = new CodeBundle(b, location);
+	public void register(final Bundle b) {
+		CodeBundle p = new CodeBundle(b);
 		if (registeredBundles.indexOf(p) < 0) {
 			registeredBundles.add(p);
 			registerBundle(p);
@@ -218,19 +219,21 @@ public class CodeManagerImpl implements CodeManager {
 	}
 
 	private void registerBundle(final CodeBundle p) {
-		final String ebinDir = p.getEbinDir();
-		if (ebinDir != null) {
-			final String localDir = ebinDir.replaceAll("\\\\", "/");
-			final boolean accessible = ErlideUtil.isAccessible(fBackend,
-					localDir);
-			if (accessible) {
-				ErlLogger.debug("adding %s to code path for %s", localDir,
-						fBackend.getInfo());
-				ErlangCode.addPathA(fBackend, localDir);
-			} else {
-				ErlLogger.debug("loading %s for %s", p.getBundle()
-						.getSymbolicName(), fBackend.getInfo());
-				loadPluginCode(p);
+		final Collection<String> ebinDirs = p.getEbinDirs();
+		if (ebinDirs != null) {
+			for (String ebinDir : ebinDirs) {
+				final String localDir = ebinDir.replaceAll("\\\\", "/");
+				final boolean accessible = ErlideUtil.isAccessible(fBackend,
+						localDir);
+				if (accessible) {
+					ErlLogger.debug("adding %s to code path for %s", localDir,
+							fBackend.getInfo());
+					ErlangCode.addPathA(fBackend, localDir);
+				} else {
+					ErlLogger.debug("loading %s for %s", p.getBundle()
+							.getSymbolicName(), fBackend.getInfo());
+					loadPluginCode(p);
+				}
 			}
 		} else {
 			ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()

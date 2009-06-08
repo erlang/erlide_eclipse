@@ -89,12 +89,6 @@
             id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
    <extension
-         point="org.erlide.core.codepath">
-      <bundle_dir
-            path="/ebin">
-      </bundle_dir>
-   </extension>
-   <extension
          id="org.erlide.core.erlang.lineBreakpoint.marker"
          name="Erlang Line Breakpoint Marker"
          point="org.eclipse.core.resources.markers">

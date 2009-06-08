@@ -1259,5 +1259,11 @@
             searchResultClass="org.erlide.ui.search.ErlangSearchResult">
       </viewPage>
    </extension-->
+   <extension
+         point="org.erlide.core.codepath">
+      <bundle_dir
+            path="/ebin">
+      </bundle_dir>
+   </extension>
 
 </plugin>

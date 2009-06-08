@@ -14,7 +14,7 @@ import org.osgi.framework.Bundle;
 
 public interface CodeManager {
 
-	void register(final Bundle p, String location);
+	void register(final Bundle p);
 
 	void unregister(final Bundle p);
 

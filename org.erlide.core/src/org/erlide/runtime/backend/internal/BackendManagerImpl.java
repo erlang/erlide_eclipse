@@ -105,7 +105,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		b.initializeRuntime();
 		b.connect();
 		for (CodeBundle bb : codeBundles) {
-			b.register(bb.getBundle(), bb.getEbinDir());
+			b.register(bb.getBundle());
 		}
 		b.initErlang();
 		b.registerStatusHandler(this);
@@ -216,17 +216,17 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		return res;
 	}
 
-	public void addBundle(final Bundle b, final String ebin) {
-		final CodeBundle p = new CodeBundle(b, ebin);
+	public void addBundle(final Bundle b) {
+		final CodeBundle p = new CodeBundle(b);
 		if (codeBundles.indexOf(p) < 0) {
 			codeBundles.add(p);
 			if (ideBackend != null) {
-				ideBackend.getCodeManager().register(b, ebin);
+				ideBackend.getCodeManager().register(b);
 				ideBackend.checkCodePath();
 			}
 			forEachProjectBackend(new ErlideBackendVisitor() {
 				public void visit(final ErlideBackend bb) {
-					bb.getCodeManager().register(b, ebin);
+					bb.getCodeManager().register(b);
 					bb.checkCodePath();
 				}
 			});
