@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class BackendManagerPopup implements BackendListener {
@@ -31,7 +31,7 @@ public class BackendManagerPopup implements BackendListener {
 		ErlangCore.getBackendManager().addBackendListener(fInstance);
 	}
 
-	public void runtimeAdded(final Backend b) {
+	public void runtimeAdded(final BackendNode b) {
 		ErlLogger.debug("$$ added backend " + b.getInfo().getName());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();
@@ -44,7 +44,7 @@ public class BackendManagerPopup implements BackendListener {
 		});
 	}
 
-	public void runtimeRemoved(final Backend b) {
+	public void runtimeRemoved(final BackendNode b) {
 		ErlLogger.debug("$$ removed backend " + b.getInfo().getName());
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final Display display = workbench.getDisplay();

@@ -41,17 +41,6 @@ public class ErlBackend {
 		}
 	}
 
-	public static boolean init(final Backend backend, final OtpErlangPid jRex) {
-		try {
-			// reload(backend);
-			backend.call("erlide_backend", "init", "p", jRex);
-			return true;
-		} catch (final Exception e) {
-			ErlLogger.error(e);
-			return false;
-		}
-	}
-
 	public static String format_error(final Backend b,
 			final OtpErlangObject object) {
 		final OtpErlangTuple err = (OtpErlangTuple) object;
@@ -188,7 +177,7 @@ public class ErlBackend {
 		return result;
 	}
 
-	public static void generateRpcStub(final Backend b, final String s) {
+	public static void generateRpcStub(final BackendNode b, final String s) {
 		// try {
 		// final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 		// if (!r.isOk()) {
@@ -240,19 +229,6 @@ public class ErlBackend {
 		}
 	}
 
-	public static String getScriptId(final Backend b)
-			throws BackendException {
-		OtpErlangObject r;
-		r = b.call("init", "script_id", "");
-		if (r instanceof OtpErlangTuple) {
-			final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-			if (rr instanceof OtpErlangString) {
-				return ((OtpErlangString) rr).stringValue();
-			}
-		}
-		return "";
-	}
-
 	public static String prettyPrint(final Backend b, final OtpErlangObject e)
 			throws BackendException {
 		OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
@@ -284,13 +260,13 @@ public class ErlBackend {
 	}
 
 	public static void generateRpcStub(final String className,
-			final boolean onlyDeclared, final Backend b) {
+			final boolean onlyDeclared, final BackendNode b) {
 		generateRpcStub(TypeConverter.getClassByName(className), onlyDeclared,
 				b);
 	}
 
 	public static void generateRpcStub(final Class<?> cls,
-			final boolean onlyDeclared, final Backend b) {
+			final boolean onlyDeclared, final BackendNode b) {
 		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		generateRpcStub(b, s);
 	}

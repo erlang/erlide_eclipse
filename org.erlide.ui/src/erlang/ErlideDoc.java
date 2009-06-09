@@ -6,6 +6,7 @@ import java.util.List;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -53,7 +54,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static String getOtpDocLoation(final Backend b) {
+	public static String getOtpDocLoation(final BackendNode b) {
 		// OtpErlangObject res = null;
 		// try {
 		// // commented out since target doesn't exist

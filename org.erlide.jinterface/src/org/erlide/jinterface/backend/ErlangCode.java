@@ -5,35 +5,11 @@ import org.erlide.jinterface.util.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 public final class ErlangCode {
 
 	private ErlangCode() {
-	}
-
-	public static boolean waitForCodeServer(final Backend backend) {
-		try {
-			OtpErlangObject r;
-			int i = 10;
-			do {
-				r = backend.call("erlang", "whereis", "a", "code_server");
-				Thread.sleep(200);
-				i--;
-			} while (!(r instanceof OtpErlangPid) && i > 0);
-			if (!(r instanceof OtpErlangPid)) {
-				ErlLogger.error("code server did not start in time for %s",
-						backend.getInfo().getName());
-				return false;
-			}
-			ErlLogger.debug("code server started");
-			return true;
-		} catch (final Exception e) {
-			ErlLogger.error("error starting code server for %s: %s", backend
-					.getInfo().getName(), e.getMessage());
-			return false;
-		}
 	}
 
 	public static void addPathA(final Backend backend, final String path) {

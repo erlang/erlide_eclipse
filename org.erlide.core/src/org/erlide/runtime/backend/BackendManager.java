@@ -19,6 +19,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.EpmdWatcher;
 import org.osgi.framework.Bundle;
@@ -56,7 +57,7 @@ public interface BackendManager {
 	public void addExecutionBackend(final IProject project,
 			final ErlideBackend b);
 
-	public void removeExecutionBackend(final IProject project, final Backend b);
+	public void removeExecutionBackend(final IProject project, final BackendNode b);
 
 	public void forEachBackend(final ErlideBackendVisitor visitor);
 
@@ -76,7 +77,7 @@ public interface BackendManager {
 	public void remoteNodeStatus(final String node, final boolean up,
 			final Object info);
 
-	public void dispose(final Backend backend);
+	public void dispose(final BackendNode backend);
 
 	public void remoteStatus(final String node, final boolean up,
 			final Object info);

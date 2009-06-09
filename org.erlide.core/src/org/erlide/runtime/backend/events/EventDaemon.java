@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -85,10 +86,10 @@ public class EventDaemon implements BackendListener {
 		fStopJob = true;
 	}
 
-	public void runtimeAdded(final Backend b) {
+	public void runtimeAdded(final BackendNode b) {
 	}
 
-	public void runtimeRemoved(final Backend b) {
+	public void runtimeRemoved(final BackendNode b) {
 		if (b == runtime) {
 			stop();
 			runtime = null;

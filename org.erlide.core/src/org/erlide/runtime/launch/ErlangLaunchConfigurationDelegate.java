@@ -55,6 +55,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
@@ -291,7 +292,7 @@ public class ErlangLaunchConfigurationDelegate extends
 	 *            the execution backend
 	 * @return
 	 */
-	private OtpErlangBinary getBeam(final String module, final Backend backend) {
+	private OtpErlangBinary getBeam(final String module, final BackendNode backend) {
 		final Bundle b = ErlangPlugin.getDefault().getBundle();
 		final String beamname = module + ".beam";
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
