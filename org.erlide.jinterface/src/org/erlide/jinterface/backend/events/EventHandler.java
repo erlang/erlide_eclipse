@@ -1,4 +1,4 @@
-package org.erlide.runtime.backend.events;
+package org.erlide.jinterface.backend.events;
 
 import java.util.List;
 

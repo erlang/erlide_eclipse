@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.jinterface.backend.IDisposable;
-import org.erlide.runtime.backend.events.EventHandler;
+import org.erlide.jinterface.backend.events.EventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

@@ -38,7 +38,6 @@ Export-Package: erlang,
    org.eclipse.debug.core",
  org.erlide.runtime.backend,
  org.erlide.runtime.backend.console;x-friends:="org.erlide.ui",
- org.erlide.runtime.backend.events,
  org.erlide.runtime.backend.internal;x-internal:=true,
  org.erlide.runtime.debug;x-friends:="org.erlide.ui";
   uses:="com.ericsson.otp.erlang,

@@ -140,6 +140,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
  org.erlide.ui.internal.util;x-friends:="org.erlide.gunit",
+ org.erlide.ui.jinterface,
  org.erlide.ui.launch;x-friends:="org.erlide.selfhost.plugin";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,

@@ -1,14 +1,13 @@
-package org.erlide.runtime.backend.events;
+package org.erlide.jinterface.backend.events;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -25,13 +24,8 @@ public class EventDaemon implements BackendListener {
 
 	boolean DEBUG = "true".equals(System.getProperty("erlide.event.daemon"));
 
-	private final class HandlerJob extends Job {
-		HandlerJob(final String name) {
-			super(name);
-		}
-
-		@Override
-		protected IStatus run(final IProgressMonitor monitor) {
+	private final class HandlerJob implements Runnable {
+		public void run() {
 			try {
 				OtpErlangObject msg = null;
 				do {
@@ -56,7 +50,6 @@ public class EventDaemon implements BackendListener {
 						ErlLogger.warn(e);
 					}
 				} while (!fStopJob);
-				return Status.OK_STATUS;
 			} finally {
 				synchronized (handlersLock) {
 					handlers.clear();
@@ -72,13 +65,13 @@ public class EventDaemon implements BackendListener {
 	public synchronized void start() {
 		fStopJob = false;
 
-		ErlangCore.getBackendManager().addBackendListener(this);
-		addHandler(new RpcHandler(runtime));
+		// ErlangCore.getBackendManager().addBackendListener(this);
 
-		final Job handlerJob = new HandlerJob("Erlang event daemon");
-		handlerJob.setSystem(true);
-		handlerJob.setPriority(Job.SHORT);
-		handlerJob.schedule();
+		Executor executor = new ThreadPoolExecutor(1, 4, 5, TimeUnit.SECONDS,
+				new ArrayBlockingQueue<Runnable>(5));
+		executor.execute(new HandlerJob());
+
+		addHandler(new RpcHandler(runtime, executor));
 	}
 
 	public synchronized void stop() {

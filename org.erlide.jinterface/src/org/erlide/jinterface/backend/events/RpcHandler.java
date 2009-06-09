@@ -1,9 +1,7 @@
-package org.erlide.runtime.backend.events;
+package org.erlide.jinterface.backend.events;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import java.util.concurrent.Executor;
+
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.JRpcUtil;
 
@@ -18,9 +16,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class RpcHandler extends EventHandler {
 	private final Backend fRuntime;
+	private Executor executor;
 
-	public RpcHandler(final Backend runtime) {
-		fRuntime = runtime;
+	public RpcHandler(final Backend runtime, Executor executor) {
+		this.fRuntime = runtime;
+		this.executor = executor;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public final class RpcHandler extends EventHandler {
 				if ("call".equals(kind.atomValue())) {
 					final OtpErlangList args = buildArgs(t.elementAt(3));
 					final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
-					executeRpc(new Runnable() {
+					executor.execute(new Runnable() {
 						public void run() {
 							final OtpErlangObject result = JRpcUtil.execute(
 									receiver, target, args.elements());
@@ -48,7 +48,7 @@ public final class RpcHandler extends EventHandler {
 					final OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
 					final OtpErlangList args = buildArgs(t.elementAt(4));
 					// TODO how to mark this as executable in UI thread?
-					executeRpc(new Runnable() {
+					executor.execute(new Runnable() {
 						public void run() {
 							final OtpErlangObject result = JRpcUtil.execute(
 									receiver, target, args.elements());
@@ -58,7 +58,7 @@ public final class RpcHandler extends EventHandler {
 
 				} else if ("cast".equals(kind.atomValue())) {
 					final OtpErlangList args = buildArgs(t.elementAt(3));
-					executeRpc(new Runnable() {
+					executor.execute(new Runnable() {
 						public void run() {
 							JRpcUtil.execute(receiver, target, args.elements());
 						}
@@ -90,19 +90,6 @@ public final class RpcHandler extends EventHandler {
 	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
 		fRuntime.send(from, JInterfaceFactory.mkTuple(
 				new OtpErlangAtom("reply"), result));
-	}
-
-	public void executeRpc(final Runnable runnable) {
-		final Job job = new Job("rpc") {
-			@Override
-			protected IStatus run(final IProgressMonitor monitor) {
-				runnable.run();
-				return Status.OK_STATUS;
-			}
-		};
-		job.setSystem(true);
-		job.setPriority(Job.SHORT);
-		job.schedule();
 	}
 
 }

@@ -13,6 +13,8 @@ package org.erlide.jinterface.backend;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.erlide.jinterface.backend.events.EventDaemon;
+import org.erlide.jinterface.backend.events.LogEventHandler;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
@@ -56,6 +58,7 @@ public class Backend {
 	private String fPeer;
 	private int restarted = 0;
 	private boolean stopped = false;
+	private EventDaemon eventDaemon;
 
 	public IShellManager getShellManager() {
 		return shellManager;
@@ -206,6 +209,9 @@ public class Backend {
 		if (fNode != null) {
 			fNode.close();
 		}
+		if (eventDaemon != null) {
+			eventDaemon.stop();
+		}
 		if (restart) {
 			return;
 		}
@@ -326,6 +332,9 @@ public class Backend {
 		if (!inited) {
 			setAvailable(false);
 		}
+		eventDaemon = new EventDaemon(this);
+		eventDaemon.start();
+		eventDaemon.addHandler(new LogEventHandler());
 	}
 
 	public void initializeRuntime() {
@@ -482,6 +491,10 @@ public class Backend {
 					.getName(), e.getMessage());
 			return false;
 		}
+	}
+
+	public EventDaemon getEventDaemon() {
+		return eventDaemon;
 	}
 
 }
