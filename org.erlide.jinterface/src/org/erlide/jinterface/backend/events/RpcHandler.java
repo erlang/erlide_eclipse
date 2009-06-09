@@ -1,9 +1,7 @@
 package org.erlide.jinterface.backend.events;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.JRpcUtil;
@@ -20,8 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public final class RpcHandler extends EventHandler {
 	private final Backend fRuntime;
 
-	private Executor executor = new ThreadPoolExecutor(0, 4, 5,
-			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1000));
+	private Executor executor = Executors.newFixedThreadPool(1);
 
 	public RpcHandler(final Backend runtime) {
 		this.fRuntime = runtime;
@@ -73,7 +70,7 @@ public final class RpcHandler extends EventHandler {
 	}
 
 	private static OtpErlangList buildArgs(final OtpErlangObject a)
-			throws Exception {
+	throws Exception {
 		final OtpErlangList args;
 		if (a instanceof OtpErlangList) {
 			args = (OtpErlangList) a;

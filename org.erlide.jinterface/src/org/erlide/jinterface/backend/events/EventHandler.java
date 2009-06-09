@@ -1,6 +1,8 @@
 package org.erlide.jinterface.backend.events;
 
 import java.util.Collection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -9,6 +11,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public abstract class EventHandler {
+
+	private Executor executor = Executors.newSingleThreadExecutor();
 
 	public final void handleMsgs(final Collection<OtpErlangObject> msgs) {
 		for (final OtpErlangObject msg : msgs) {
@@ -20,12 +24,16 @@ public abstract class EventHandler {
 		if (msg == null) {
 			return;
 		}
-		try {
-			doHandleMsg(msg);
-		} catch (final Exception e) {
-			ErlLogger.debug(e);
-			// ignore unrecognized messages
-		}
+		executor.execute(new Runnable() {
+			public void run() {
+				try {
+					doHandleMsg(msg);
+				} catch (final Exception e) {
+					ErlLogger.debug(e);
+					// ignore unrecognized messages
+				}
+			}
+		});
 	}
 
 	protected abstract void doHandleMsg(OtpErlangObject msg) throws Exception;

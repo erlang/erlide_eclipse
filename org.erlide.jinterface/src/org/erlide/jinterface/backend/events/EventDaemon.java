@@ -1,12 +1,7 @@
 package org.erlide.jinterface.backend.events;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendListener;
@@ -21,8 +16,6 @@ public class EventDaemon implements BackendListener {
 	volatile boolean stopped = false;
 	List<EventHandler> handlers = new ArrayList<EventHandler>();
 	final Object handlersLock = new Object();
-	private final Executor executor = new ThreadPoolExecutor(1, 3, 5,
-			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
 	final static boolean DEBUG = "true".equals(System
 			.getProperty("erlide.event.daemon"));
@@ -40,30 +33,27 @@ public class EventDaemon implements BackendListener {
 				final List<OtpErlangObject> msgs = new ArrayList<OtpErlangObject>();
 				do {
 					try {
-						msg = backend.receiveEvent(10);
+						msg = backend.receiveEvent(200);
 						if (msg != null) {
-							if (DEBUG) {
-								ErlLogger.debug("MSG: %s", msg);
-							}
 							msgs.add(msg);
 							// if there are more queued events, retrieve them
 							do {
 								msg = backend.receiveEvent(0);
 								if (msg != null) {
-									if (DEBUG) {
-										ErlLogger.debug("MSG: %s", msg);
-									}
 									msgs.add(msg);
 								}
 							} while (msg != null && !stopped);
 						}
 						if (msgs.size() != 0) {
-							synchronized (handlersLock) {
-								for (final EventHandler handler : handlers) {
-									handler.handleMsgs(msgs);
+							if (DEBUG) {
+								for (OtpErlangObject m : msgs) {
+									ErlLogger.debug("MSG: %s", m);
 								}
-								msgs.clear();
 							}
+							for (final EventHandler handler : getHandlers()) {
+								handler.handleMsgs(msgs);
+							}
+							msgs.clear();
 						}
 					} catch (final OtpErlangExit e) {
 						if (!backend.isStopped()) {
@@ -88,7 +78,7 @@ public class EventDaemon implements BackendListener {
 
 	public synchronized void start() {
 		stopped = false;
-		executor.execute(new HandlerJob(runtime));
+		new Thread(new HandlerJob(runtime)).start();
 		addHandler(new RpcHandler(runtime));
 	}
 
@@ -107,7 +97,9 @@ public class EventDaemon implements BackendListener {
 	}
 
 	public List<EventHandler> getHandlers() {
-		return Collections.unmodifiableList(handlers);
+		synchronized (handlersLock) {
+			return new ArrayList<EventHandler>(handlers);
+		}
 	}
 
 	public void addHandler(final EventHandler l) {
