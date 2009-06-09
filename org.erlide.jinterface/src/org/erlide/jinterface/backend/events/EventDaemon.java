@@ -3,8 +3,8 @@ package org.erlide.jinterface.backend.events;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -17,23 +17,30 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class EventDaemon implements BackendListener {
 
-	Backend runtime = null;
+	private Backend runtime;
 	volatile boolean stopped = false;
 	List<EventHandler> handlers = new ArrayList<EventHandler>();
 	final Object handlersLock = new Object();
-	private final static Executor executor = new ThreadPoolExecutor(1, 4, 5,
-			TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+	private final Executor executor = new ThreadPoolExecutor(1, 3, 5,
+			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-	boolean DEBUG = true;// "true".equals(System.getProperty("erlide.event.daemon"));
+	final static boolean DEBUG = "true".equals(System
+			.getProperty("erlide.event.daemon"));
 
 	private final class HandlerJob implements Runnable {
+		private Backend backend;
+
+		public HandlerJob(Backend backend) {
+			this.backend = backend;
+		}
+
 		public void run() {
 			try {
 				OtpErlangObject msg = null;
 				final List<OtpErlangObject> msgs = new ArrayList<OtpErlangObject>();
 				do {
 					try {
-						msg = runtime.receiveEvent(10);
+						msg = backend.receiveEvent(10);
 						if (msg != null) {
 							if (DEBUG) {
 								ErlLogger.debug("MSG: %s", msg);
@@ -41,7 +48,7 @@ public class EventDaemon implements BackendListener {
 							msgs.add(msg);
 							// if there are more queued events, retrieve them
 							do {
-								msg = runtime.receiveEvent(0);
+								msg = backend.receiveEvent(0);
 								if (msg != null) {
 									if (DEBUG) {
 										ErlLogger.debug("MSG: %s", msg);
@@ -59,7 +66,7 @@ public class EventDaemon implements BackendListener {
 							}
 						}
 					} catch (final OtpErlangExit e) {
-						if (!runtime.isStopped()) {
+						if (!backend.isStopped()) {
 							// backend crashed -- restart?
 							ErlLogger.warn(e);
 						}
@@ -81,8 +88,8 @@ public class EventDaemon implements BackendListener {
 
 	public synchronized void start() {
 		stopped = false;
-		executor.execute(new HandlerJob());
-		addHandler(new RpcHandler(runtime, executor));
+		executor.execute(new HandlerJob(runtime));
+		addHandler(new RpcHandler(runtime));
 	}
 
 	public synchronized void stop() {

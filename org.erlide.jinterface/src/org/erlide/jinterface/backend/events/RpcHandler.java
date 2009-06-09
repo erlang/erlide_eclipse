@@ -1,6 +1,9 @@
 package org.erlide.jinterface.backend.events;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.JRpcUtil;
@@ -16,11 +19,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class RpcHandler extends EventHandler {
 	private final Backend fRuntime;
-	private Executor executor;
 
-	public RpcHandler(final Backend runtime, Executor executor) {
+	private Executor executor = new ThreadPoolExecutor(0, 4, 5,
+			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1000));
+
+	public RpcHandler(final Backend runtime) {
 		this.fRuntime = runtime;
-		this.executor = executor;
 	}
 
 	@Override
