@@ -81,11 +81,7 @@ public class EventDaemon implements BackendListener {
 
 	public synchronized void start() {
 		stopped = false;
-
-		// ErlangCore.getBackendManager().addBackendListener(this);
-
 		executor.execute(new HandlerJob());
-
 		addHandler(new RpcHandler(runtime, executor));
 	}
 

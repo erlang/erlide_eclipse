@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.IDisposable;
@@ -65,7 +66,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	@Override
 	public void initErlang() {
 		super.initErlang();
-
+		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
 	}
 
 	public void register(Bundle bundle) {
