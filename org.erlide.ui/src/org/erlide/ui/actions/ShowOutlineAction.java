@@ -3,6 +3,7 @@ package org.erlide.ui.actions;
 import java.util.ResourceBundle;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -19,10 +20,11 @@ public class ShowOutlineAction extends TextEditorAction {
 	public void run() {
 		if (getTextEditor() instanceof ErlangEditor) {
 			final ErlangEditor editor = (ErlangEditor) getTextEditor();
+			Shell parent = getTextEditor().getSite().getShell();
 			final QuickOutlinePopupDialog quickOutlinePopupDialog = new QuickOutlinePopupDialog(
-					getTextEditor().getSite().getShell(), SWT.NONE, editor,
-					editor, editor);
-			quickOutlinePopupDialog.setVisible(true);
+					parent, SWT.NONE, editor, editor, editor);
+
+			quickOutlinePopupDialog.open();
 		}
 	}
 }
