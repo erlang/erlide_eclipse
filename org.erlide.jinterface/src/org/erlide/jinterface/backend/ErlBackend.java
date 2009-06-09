@@ -177,7 +177,7 @@ public class ErlBackend {
 		return result;
 	}
 
-	public static void generateRpcStub(final BackendNode b, final String s) {
+	public static void generateRpcStub(final Backend b, final String s) {
 		// try {
 		// final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
 		// if (!r.isOk()) {
@@ -260,13 +260,13 @@ public class ErlBackend {
 	}
 
 	public static void generateRpcStub(final String className,
-			final boolean onlyDeclared, final BackendNode b) {
+			final boolean onlyDeclared, final Backend b) {
 		generateRpcStub(TypeConverter.getClassByName(className), onlyDeclared,
 				b);
 	}
 
 	public static void generateRpcStub(final Class<?> cls,
-			final boolean onlyDeclared, final BackendNode b) {
+			final boolean onlyDeclared, final Backend b) {
 		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
 		generateRpcStub(b, s);
 	}

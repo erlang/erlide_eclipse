@@ -49,7 +49,7 @@ public final class ProjectPreferencesConstants {
 
 	public static final String SOURCES = "sources";
 	public static final String BACKEND_COOKIE = "backendCookie";
-	public static final String BACKEND_NODE_NAME = "backendNodeName";
+	public static final String BACKEND_NODE_NAME = "BackendName";
 	public static final String REQUIRED_BACKEND_VERSION = "requiredBackendVersion";
 	public static final String OUTPUT = "output";
 	public static final String INCLUDES = "includes";

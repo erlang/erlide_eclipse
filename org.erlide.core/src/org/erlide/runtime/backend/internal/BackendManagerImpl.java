@@ -31,7 +31,6 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
-import org.erlide.jinterface.backend.BackendNode;
 import org.erlide.jinterface.backend.BackendUtil;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.EpmdWatcher;
@@ -282,7 +281,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	}
 
 	public synchronized void removeExecutionBackend(final IProject project,
-			final BackendNode b) {
+			final Backend b) {
 		Set<ErlideBackend> list = executionBackends.get(project);
 		if (list == null) {
 			list = new HashSet<ErlideBackend>();
@@ -314,7 +313,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		if (!up) {
 			for (final Entry<IProject, Set<ErlideBackend>> e : executionBackends
 					.entrySet()) {
-				for (final BackendNode be : e.getValue()) {
+				for (final Backend be : e.getValue()) {
 					final String bnode = be.getInfo().getNodeName();
 					if (BackendUtil.buildNodeName(bnode, true).equals(node)) {
 						removeExecutionBackend(e.getKey(), be);
@@ -325,7 +324,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		}
 	}
 
-	public void dispose(final BackendNode backend) {
+	public void dispose(final Backend backend) {
 		if (backend != null && backend != ideBackend) {
 			backend.dispose();
 		}
@@ -337,7 +336,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		// final String dir = up ? "up" : "down";
 		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
 
-		for (final BackendNode bb : getAllBackends()) {
+		for (final Backend bb : getAllBackends()) {
 			if (bb != null) {
 				if (node.equals(bb.getPeer())) {
 					bb.setAvailable(up);
@@ -355,7 +354,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 				direction, info));
 	}
 
-	void notifyBackendChange(final BackendNode b, final BackendEvent type) {
+	void notifyBackendChange(final Backend b, final BackendEvent type) {
 		if (listeners == null) {
 			return;
 		}
