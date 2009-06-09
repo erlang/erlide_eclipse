@@ -8,25 +8,18 @@ import java.io.PrintWriter;
 
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErtsProcess;
 
-public class ManagedLauncher implements RuntimeLauncher, IDisposable {
+public class ManagedLauncher implements IDisposable {
 
 	Process fRuntime;
-	Backend backend;
 	private ILaunch launch;
 
 	public ManagedLauncher(ILaunch aLaunch) {
 		launch = aLaunch;
-	}
-
-	public void setBackend(final Backend backend) {
-		this.backend = backend;
 	}
 
 	public void stop() {
@@ -39,12 +32,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 		stop();
 	}
 
-	public void initializeRuntime() {
-		startRuntime();
-	}
-
-	private void startRuntime() {
-		final RuntimeInfo info = backend.getInfo();
+	public void startRuntime(final RuntimeInfo info) {
 		if (info == null) {
 			ErlLogger.error("Trying to start backend with null info");
 			return;
@@ -93,7 +81,7 @@ public class ManagedLauncher implements RuntimeLauncher, IDisposable {
 
 						}
 
-						backend.setExitStatus(v);
+						// FIXME backend.setExitStatus(v);
 					} catch (final InterruptedException e) {
 						ErlLogger.warn("Backend watcher was interrupted");
 					}

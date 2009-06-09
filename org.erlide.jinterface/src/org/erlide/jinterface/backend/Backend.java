@@ -52,20 +52,16 @@ public class Backend {
 	private String currentVersion;
 	private final RuntimeInfo fInfo;
 	private boolean fDebug;
-	private final RuntimeLauncher launcher;
 	private int exitStatus = -1;
 	private boolean stopped = false;
 	private int restarted = 0;
 
-	protected Backend(final RuntimeInfo info, final RuntimeLauncher launcher)
-	throws BackendException {
+	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
 			throw new BackendException(
-			"Can't create backend without runtime information");
+					"Can't create backend without runtime information");
 		}
 		fInfo = info;
-		this.launcher = launcher;
-		this.launcher.setBackend(this);
 	}
 
 	public void connect() {
@@ -111,14 +107,14 @@ public class Backend {
 				ErlLogger.debug("connected!");
 			} else {
 				ErlLogger
-				.error("could not connect to backend! Please check runtime settings.");
+						.error("could not connect to backend! Please check runtime settings.");
 			}
 
 		} catch (final Exception e) {
 			ErlLogger.error(e);
 			available = false;
 			ErlLogger
-			.error("could not connect to backend! Please check runtime settings.");
+					.error("could not connect to backend! Please check runtime settings.");
 		}
 	}
 
@@ -135,9 +131,6 @@ public class Backend {
 
 		if (restart) {
 			return;
-		}
-		if (launcher instanceof IDisposable) {
-			((IDisposable) launcher).dispose();
 		}
 	}
 
@@ -170,7 +163,7 @@ public class Backend {
 
 	public RpcFuture async_call(final String m, final String f,
 			final String signature, final Object... args)
-	throws BackendException {
+			throws BackendException {
 		try {
 			return makeAsyncCall(m, f, signature, args);
 		} catch (final RpcException e) {
@@ -207,7 +200,7 @@ public class Backend {
 	 */
 	public OtpErlangObject call(final int timeout, final String m,
 			final String f, final String signature, final Object... a)
-	throws BackendException {
+			throws BackendException {
 		return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
 	}
 
@@ -255,7 +248,7 @@ public class Backend {
 
 	private OtpErlangObject makeCall(final int timeout, final String module,
 			final String fun, final String signature, final Object... args0)
-	throws RpcException, SignatureException {
+			throws RpcException, SignatureException {
 		return makeCall(timeout, new OtpErlangAtom("user"), module, fun,
 				signature, args0);
 	}
@@ -263,7 +256,7 @@ public class Backend {
 	private OtpErlangObject makeCall(final int timeout,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-	throws RpcException, SignatureException {
+			throws RpcException, SignatureException {
 		checkAvailability();
 		final OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader,
 				module, fun, timeout, signature, args0);
@@ -297,13 +290,13 @@ public class Backend {
 
 	private void makeCast(final String module, final String fun,
 			final String signature, final Object... args0)
-	throws SignatureException, RpcException {
+			throws SignatureException, RpcException {
 		makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
 	}
 
 	private void makeCast(final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args0)
-	throws SignatureException, RpcException {
+			throws SignatureException, RpcException {
 		checkAvailability();
 		RpcUtil.rpcCast(fNode, fPeer, gleader, module, fun, signature, args0);
 	}
@@ -370,14 +363,14 @@ public class Backend {
 		} while (!ok && tries > 0);
 		if (!ok) {
 			final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-				+ "  Possibly your host's entry in /etc/hosts is wrong.";
+					+ "  Possibly your host's entry in /etc/hosts is wrong.";
 			ErlLogger.error(msg);
 			throw new BackendException(msg);
 		}
 	}
 
 	public OtpErlangObject receiveEvent(final long timeout)
-	throws OtpErlangExit, OtpErlangDecodeException {
+			throws OtpErlangExit, OtpErlangDecodeException {
 		if (eventBox == null) {
 			return null;
 		}
@@ -408,7 +401,6 @@ public class Backend {
 
 	public void initializeRuntime() {
 		dispose(true);
-		launcher.initializeRuntime();
 	}
 
 	protected void setRemoteRex(final OtpErlangPid watchdog) {
@@ -437,7 +429,6 @@ public class Backend {
 
 	public void stop() {
 		stopped = true;
-		launcher.stop();
 	}
 
 	public void setExitStatus(final int v) {

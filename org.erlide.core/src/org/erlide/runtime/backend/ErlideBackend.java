@@ -14,7 +14,6 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeLauncher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
@@ -31,9 +30,9 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	private IShellManager shellManager;
 	private EventDaemon eventDaemon;
 
-	public ErlideBackend(final RuntimeInfo info, final RuntimeLauncher launcher)
+	public ErlideBackend(final RuntimeInfo info)
 	throws BackendException {
-		super(info, launcher);
+		super(info);
 		codeManager = new CodeManager(this);
 		shellManager = new BackendShellManager(this);
 	}
