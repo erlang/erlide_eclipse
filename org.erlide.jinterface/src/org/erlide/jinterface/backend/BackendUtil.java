@@ -69,7 +69,7 @@ public final class BackendUtil {
 		return host;
 	}
 
-	public static String getJavaNodeName() {
+	public static String createJavaNodeName() {
 		final String fUniqueId = BackendUtil.getTimeSuffix();
 		return "jerlide_" + fUniqueId;
 	}

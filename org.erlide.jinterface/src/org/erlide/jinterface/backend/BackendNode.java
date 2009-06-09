@@ -33,6 +33,8 @@ public class BackendNode {
 	private static final OtpErlangAtom GLEADER = new OtpErlangAtom("user");
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
 			"erlide.connect.delay", "300"));
+	private static final int EPMD_PORT = 4369;
+
 	protected boolean available = false;
 	protected OtpMbox eventBox;
 	protected OtpNode fNode;
@@ -43,7 +45,6 @@ public class BackendNode {
 	protected int exitStatus = -1;
 	private boolean stopped = false;
 	protected int restarted = 0;
-	private static final int EPMD_PORT = 4369;
 
 	public void connect() {
 		doConnect(getName());
@@ -63,9 +64,9 @@ public class BackendNode {
 
 			final String cookie = getInfo().getCookie();
 			if (cookie == null) {
-				fNode = new OtpNode(BackendUtil.getJavaNodeName());
+				fNode = new OtpNode(BackendUtil.createJavaNodeName());
 			} else {
-				fNode = new OtpNode(BackendUtil.getJavaNodeName(), cookie);
+				fNode = new OtpNode(BackendUtil.createJavaNodeName(), cookie);
 			}
 			final String nodeCookie = fNode.cookie();
 			final int len = nodeCookie.length();
