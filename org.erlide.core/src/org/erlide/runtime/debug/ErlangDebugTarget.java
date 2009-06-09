@@ -112,7 +112,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fLocalProcesses = new ArrayList<ErlangProcess>();
 		interpretedModules = new HashSet<String>();
 
-		b.getEventDaemon().addListener(new DebugEventHandler());
+		b.getEventDaemon().addHandler(new DebugEventHandler());
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);

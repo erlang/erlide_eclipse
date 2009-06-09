@@ -110,7 +110,6 @@ public class BackendNode {
 		if (fNode != null) {
 			fNode.close();
 		}
-
 		if (restart) {
 			return;
 		}

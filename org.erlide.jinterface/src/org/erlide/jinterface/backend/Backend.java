@@ -34,6 +34,17 @@ public class Backend extends BackendNode {
 			DEFAULT_TIMEOUT = Integer.parseInt(t);
 		}
 	}
+	private IShellManager shellManager;
+
+	public IShellManager getShellManager() {
+		return shellManager;
+	}
+
+	@Override
+	public void initializeRuntime() {
+		super.initializeRuntime();
+		shellManager = new BackendShellManager(this);
+	}
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		super(info);
@@ -212,6 +223,14 @@ public class Backend extends BackendNode {
 			return null;
 		}
 		return eventBox.receive(timeout);
+	}
+
+	@Override
+	public void dispose() {
+		if (shellManager instanceof IDisposable) {
+			((IDisposable) shellManager).dispose();
+		}
+		super.dispose();
 	}
 
 }

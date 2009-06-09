@@ -90,7 +90,7 @@ public class ProcessListView extends ViewPart {
 		public void dispose() {
 			final ErlideBackend backend = getBackend();
 			if (backend != null) {
-				backend.getEventDaemon().removeListener(handler);
+				backend.getEventDaemon().removeHandler(handler);
 			}
 		}
 
@@ -99,7 +99,7 @@ public class ProcessListView extends ViewPart {
 			if (bk == null) {
 				return new OtpErlangObject[] {};
 			}
-			bk.getEventDaemon().addListener(handler);
+			bk.getEventDaemon().addHandler(handler);
 
 			final OtpErlangList r = ErlideProclist.getProcessList(bk);
 			if (r.arity() == 0) {

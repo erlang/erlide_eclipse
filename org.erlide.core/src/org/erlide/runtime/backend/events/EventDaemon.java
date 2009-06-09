@@ -21,8 +21,8 @@ public class EventDaemon implements BackendListener {
 
 	Backend runtime = null;
 	volatile boolean fStopJob = false;
-	List<EventHandler> fListeners = new ArrayList<EventHandler>();
-	final Object listenersLock = new Object();
+	List<EventHandler> handlers = new ArrayList<EventHandler>();
+	final Object handlersLock = new Object();
 
 	boolean DEBUG = "true".equals(System.getProperty("erlide.event.daemon"));
 
@@ -42,8 +42,8 @@ public class EventDaemon implements BackendListener {
 							if (DEBUG) {
 								ErlLogger.debug("MSG: %s", msg);
 							}
-							synchronized (listenersLock) {
-								for (final EventHandler handler : fListeners) {
+							synchronized (handlersLock) {
+								for (final EventHandler handler : handlers) {
 									handler.handleMsg(msg);
 								}
 							}
@@ -59,8 +59,8 @@ public class EventDaemon implements BackendListener {
 				} while (!fStopJob);
 				return Status.OK_STATUS;
 			} finally {
-				synchronized (listenersLock) {
-					fListeners.clear();
+				synchronized (handlersLock) {
+					handlers.clear();
 				}
 			}
 		}
@@ -74,7 +74,7 @@ public class EventDaemon implements BackendListener {
 		fStopJob = false;
 
 		ErlangCore.getBackendManager().addBackendListener(this);
-		addListener(new RpcHandler(runtime));
+		addHandler(new RpcHandler(runtime));
 
 		final Job handlerJob = new HandlerJob("Erlang event daemon");
 		handlerJob.setSystem(true);
@@ -96,21 +96,21 @@ public class EventDaemon implements BackendListener {
 		}
 	}
 
-	public List<EventHandler> getListeners() {
-		return Collections.unmodifiableList(fListeners);
+	public List<EventHandler> getHandlers() {
+		return Collections.unmodifiableList(handlers);
 	}
 
-	public void addListener(final EventHandler l) {
-		synchronized (listenersLock) {
-			if (!fListeners.contains(l)) {
-				fListeners.add(l);
+	public void addHandler(final EventHandler l) {
+		synchronized (handlersLock) {
+			if (!handlers.contains(l)) {
+				handlers.add(l);
 			}
 		}
 	}
 
-	public void removeListener(final EventHandler l) {
-		synchronized (listenersLock) {
-			fListeners.remove(l);
+	public void removeHandler(final EventHandler l) {
+		synchronized (handlersLock) {
+			handlers.remove(l);
 		}
 	}
 }

@@ -8,14 +8,10 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend.console;
+package org.erlide.jinterface.backend;
 
 import java.util.Collection;
 import java.util.HashMap;
-
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IDisposable;
-import org.erlide.runtime.backend.IShellManager;
 
 public class BackendShellManager implements IShellManager, IDisposable {
 

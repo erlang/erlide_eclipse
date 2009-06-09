@@ -56,9 +56,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
+import org.erlide.jinterface.backend.IShell;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.backend.IShell;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
 import org.erlide.runtime.backend.console.IoRequest;
@@ -125,7 +125,7 @@ public class ErlangConsoleView extends ViewPart implements
 					if (backend == null) {
 						schedule(400);
 					} else {
-						backend.getEventDaemon().addListener(handler);
+						backend.getEventDaemon().addHandler(handler);
 						shell = backend.getShellManager().openShell("main");
 					}
 					return Status.OK_STATUS;
@@ -143,7 +143,7 @@ public class ErlangConsoleView extends ViewPart implements
 
 	@Override
 	public void dispose() {
-		backend.getEventDaemon().removeListener(model.getHandler());
+		backend.getEventDaemon().removeHandler(model.getHandler());
 		model.dispose();
 		super.dispose();
 	}

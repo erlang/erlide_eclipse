@@ -15,7 +15,6 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.console.BackendShellManager;
 import org.erlide.runtime.backend.events.EventDaemon;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.erlide.runtime.backend.internal.LogEventHandler;
@@ -27,14 +26,11 @@ import org.osgi.framework.Bundle;
 public final class ErlideBackend extends Backend implements IDisposable {
 
 	private final CodeManager codeManager;
-	private IShellManager shellManager;
 	private EventDaemon eventDaemon;
 
-	public ErlideBackend(final RuntimeInfo info)
-	throws BackendException {
+	public ErlideBackend(final RuntimeInfo info) throws BackendException {
 		super(info);
 		codeManager = new CodeManager(this);
-		shellManager = new BackendShellManager(this);
 	}
 
 	@Override
@@ -46,22 +42,14 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
 		super.dispose(restart);
-		if (shellManager instanceof IDisposable) {
-			((IDisposable) shellManager).dispose();
-		}
 		if (eventDaemon != null) {
 			eventDaemon.stop();
 		}
 	}
 
-	public IShellManager getShellManager() {
-		return shellManager;
-	}
-
 	@Override
 	public void initializeRuntime() {
 		super.initializeRuntime();
-		shellManager = new BackendShellManager(this);
 	}
 
 	@Override
@@ -90,7 +78,7 @@ public final class ErlideBackend extends Backend implements IDisposable {
 
 		eventDaemon = new EventDaemon(this);
 		eventDaemon.start();
-		eventDaemon.addListener(new LogEventHandler());
+		eventDaemon.addHandler(new LogEventHandler());
 	}
 
 	public void register(Bundle bundle) {
