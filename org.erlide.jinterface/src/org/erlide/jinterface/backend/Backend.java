@@ -47,7 +47,6 @@ public class Backend {
 			DEFAULT_TIMEOUT = Integer.parseInt(t);
 		}
 	}
-	private IShellManager shellManager;
 	private boolean available = false;
 	private String currentVersion;
 	private OtpMbox eventBox;
@@ -59,10 +58,7 @@ public class Backend {
 	private int restarted = 0;
 	private boolean stopped = false;
 	private EventDaemon eventDaemon;
-
-	public IShellManager getShellManager() {
-		return shellManager;
-	}
+	private IShellManager shellManager;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -495,6 +491,10 @@ public class Backend {
 
 	public EventDaemon getEventDaemon() {
 		return eventDaemon;
+	}
+
+	public IShellManager getShellManager() {
+		return shellManager;
 	}
 
 }
