@@ -52,6 +52,10 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	}
 
 	public RuntimeVersion(final String version) {
+		this(version, null);
+	}
+
+	public RuntimeVersion(final String version, final String aMicro) {
 		if (version == null || version.length() == 0) {
 			this.major = UNUSED;
 			this.minor = UNUSED;
@@ -73,22 +77,27 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 			c = version.charAt(i);
 			minor = Arrays.binarySearch(minorMap, c);
 			i++;
-			int n = version.indexOf('-');
-			// micro = UNUSED;
-			if (n >= 0) {
-				micro = Integer.parseInt(version.substring(n + 1));
-			} else if (i < version.length()) {
-				micro = Integer.parseInt(version.substring(i));
+			if (major >= 13) {
+				if (i < version.length()) {
+					micro = Integer.parseInt(version.substring(i));
+				} else {
+					micro = 0;
+				}
 			} else {
-				micro = UNUSED;
+				if (aMicro != null) {
+					micro = Integer.parseInt(aMicro);
+				} else {
+					int n = version.indexOf('-');
+					if (n == -1) {
+						micro = UNUSED;
+					} else {
+						micro=Integer.parseInt(version.substring(n+1));
+					}
+				}
 			}
 		} else {
 			minor = UNUSED;
 			micro = UNUSED;
-		}
-		if (major == 13) {
-			// hack for R13
-			micro--;
 		}
 		Assert.isTrue(major >= UNUSED);
 		Assert.isTrue(minor >= UNUSED);
@@ -229,7 +238,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	public static RuntimeVersion getVersion(String homeDir) {
 		String label = RuntimeVersion.getRuntimeVersion(homeDir);
 		String micro = RuntimeVersion.getMicroRuntimeVersion(homeDir);
-		return new RuntimeVersion(label + "-" + micro);
+		return new RuntimeVersion(label, micro);
 	}
 
 }

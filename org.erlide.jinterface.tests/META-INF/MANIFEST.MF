@@ -10,4 +10,5 @@ Require-Bundle: org.junit4;bundle-version="4.3.1",
  org.erlide.testing;bundle-version="0.5.1"
 Export-Package: com.ericsson.otp.erlang;x-friends:="org.erlide.testing",
  org.erlide.jinterface;x-friends:="org.erlide.testing",
- org.erlide.jinterface.java;x-friends:="org.erlide.testing"
+ org.erlide.jinterface.java;x-friends:="org.erlide.testing",
+ org.erlide.runtime.backend;x-friends:="org.erlide.testing"

@@ -63,4 +63,39 @@ public class RuntimeVersionTest {
 		Assert.assertEquals(true, test1.compareTo(test2) < 0);
 	}
 
+	@Test
+	public void compare_1a() {
+		final RuntimeVersion test1 = new RuntimeVersion("R13");
+		final RuntimeVersion test2 = new RuntimeVersion("R12");
+		Assert.assertEquals(true, test1.compareTo(test2) > 0);
+	}
+
+	@Test
+	public void compare_2a() {
+		final RuntimeVersion test1 = new RuntimeVersion("R13");
+		final RuntimeVersion test2 = new RuntimeVersion("R13A");
+		Assert.assertEquals(true, test1.compareTo(test2) < 0);
+	}
+
+	@Test
+	public void compare_3a() {
+		final RuntimeVersion test1 = new RuntimeVersion("R13A");
+		final RuntimeVersion test2 = new RuntimeVersion("R13B");
+		Assert.assertEquals(true, test1.compareTo(test2) < 0);
+	}
+
+	@Test
+	public void compare_4a() {
+		final RuntimeVersion test1 = new RuntimeVersion("R13A01");
+		final RuntimeVersion test2 = new RuntimeVersion("R13A02");
+		Assert.assertEquals(true, test1.compareTo(test2) < 0);
+	}
+
+	@Test
+	public void compare_5a() {
+		final RuntimeVersion test1 = new RuntimeVersion("R13A03");
+		final RuntimeVersion test2 = new RuntimeVersion("R13B01");
+		Assert.assertEquals(true, test1.compareTo(test2) < 0);
+	}
+
 }
