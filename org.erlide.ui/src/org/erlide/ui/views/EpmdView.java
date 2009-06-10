@@ -1,5 +1,6 @@
 package org.erlide.ui.views;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -106,8 +107,8 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 		// .getToolBarManager();
 	}
 
-	public void updateNodeStatus(final String host, final List<String> started,
-			final List<String> stopped) {
+	public void updateNodeStatus(final String host, final Collection<String> started,
+			final Collection<String> stopped) {
 		model = epmdWatcher.getData();
 		Display.getDefault().asyncExec(new Runnable() {
 

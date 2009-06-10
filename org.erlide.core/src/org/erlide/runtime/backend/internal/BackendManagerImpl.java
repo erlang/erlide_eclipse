@@ -256,7 +256,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 	}
 
 	public synchronized void updateNodeStatus(final String host,
-			final List<String> started, final List<String> stopped) {
+			final Collection<String> started, final Collection<String> stopped) {
 		for (final String b : started) {
 			final String name = b + "@" + host;
 			ErlLogger.info("(epmd) started: '%s'", name);
@@ -308,7 +308,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		return epmdWatcher;
 	}
 
-	public void remoteNodeStatus(final String node, final boolean up,
+	private void remoteNodeStatus(final String node, final boolean up,
 			final Object info) {
 		if (!up) {
 			for (final Entry<IProject, Set<ErlideBackend>> e : executionBackends

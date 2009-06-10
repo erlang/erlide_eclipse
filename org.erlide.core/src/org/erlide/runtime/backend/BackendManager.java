@@ -11,7 +11,6 @@
 package org.erlide.runtime.backend;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -68,20 +67,8 @@ public interface BackendManager {
 
 	public void removeBundle(final Bundle b);
 
-	public void updateNodeStatus(final String host, final List<String> started,
-			final List<String> stopped);
-
 	public EpmdWatcher getEpmdWatcher();
 
-	public void remoteNodeStatus(final String node, final boolean up,
-			final Object info);
-
 	public void dispose(final Backend backend);
-
-	public void remoteStatus(final String node, final boolean up,
-			final Object info);
-
-	public void connAttempt(final String node, final boolean incoming,
-			final Object info);
 
 }
