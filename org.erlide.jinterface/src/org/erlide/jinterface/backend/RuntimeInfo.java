@@ -11,12 +11,9 @@
 package org.erlide.jinterface.backend;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +55,7 @@ public class RuntimeInfo {
 		rt.homeDir = o.homeDir;
 		rt.workingDir = o.workingDir;
 		rt.nodeName = o.nodeName;
+		rt.version = o.version;
 		return rt;
 	}
 
@@ -124,7 +122,7 @@ public class RuntimeInfo {
 	@Override
 	public String toString() {
 		return String.format("Backend<%s/%s (%s) %s [%s]>", getName(),
-				getNodeName(), getOtpHome(), getVersion(), getArgs());
+				getNodeName(), getOtpHome(), version, getArgs());
 	}
 
 	public String getCmdLine() {
@@ -141,10 +139,10 @@ public class RuntimeInfo {
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean useLongName = System.getProperty("erlide.longname",
-				"true").equals("true");
+		"true").equals("true");
 		final String nameTag = useLongName ? " -name " : " -sname ";
 		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
-				+ cky;
+		+ cky;
 		return cmd;
 	}
 
@@ -155,20 +153,13 @@ public class RuntimeInfo {
 		return key + str;
 	}
 
-	public RuntimeVersion getVersion() {
-		if (version == null) {
-			version = new RuntimeVersion(getRuntimeVersion(homeDir));
-		}
-		return version;
-	}
-
 	public String getOtpHome() {
 		return homeDir;
 	}
 
 	public void setOtpHome(final String otpHome) {
 		homeDir = otpHome;
-		getVersion();
+		version = RuntimeVersion.getVersion(otpHome);
 	}
 
 	public String getName() {
@@ -213,74 +204,15 @@ public class RuntimeInfo {
 
 	public static boolean validateNodeName(final String name) {
 		return name != null
-				&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+		&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
 	}
 
 	public static boolean validateLocation(final String path) {
-		final String v = getRuntimeVersion(path);
+		final String v = RuntimeVersion.getRuntimeVersion(path);
 		return v != null;
 	}
 
-	public static String getRuntimeVersion(final String path) {
-		if (path == null) {
-			return null;
-		}
-		String result = null;
-		final File boot = new File(path + "/bin/start.boot");
-		try {
-			final FileInputStream is = new FileInputStream(boot);
-			is.skip(14);
-			readstring(is);
-			result = readstring(is);
-
-			// now get minor version from kernel's minor version
-			final File lib = new File(path + "/lib");
-			final File[] kernels = lib.listFiles(new FileFilter() {
-				public boolean accept(final File pathname) {
-					try {
-						boolean r = pathname.isDirectory();
-						r &= pathname.getName().startsWith("kernel-");
-						final String canonicalPath = pathname
-								.getCanonicalPath().toLowerCase();
-						final String absolutePath = pathname.getAbsolutePath()
-								.toLowerCase();
-						r &= canonicalPath.equals(absolutePath);
-						return r;
-					} catch (final IOException e) {
-						return false;
-					}
-				}
-			});
-			if (kernels != null && kernels.length > 0) {
-				final int[] krnls = new int[kernels.length];
-				for (int i = 0; i < kernels.length; i++) {
-					final String k = kernels[i].getName();
-					try {
-						int p = k.indexOf('.');
-						if (p < 0) {
-							krnls[i] = 0;
-						} else {
-							p = k.indexOf('.', p + 1);
-							if (p < 0) {
-								krnls[i] = 0;
-							} else {
-								krnls[i] = Integer.parseInt(k.substring(p + 1));
-							}
-						}
-					} catch (final Exception e) {
-						krnls[i] = 0;
-					}
-				}
-				Arrays.sort(krnls);
-				final String ver = Integer.toString(krnls[krnls.length - 1]);
-				result += "-" + ver;
-			}
-		} catch (final IOException e) {
-		}
-		return result;
-	}
-
-	private static String readstring(final InputStream is) {
+	static String readstring(final InputStream is) {
 		try {
 			is.read();
 			byte[] b = new byte[2];
@@ -349,6 +281,10 @@ public class RuntimeInfo {
 			}
 		}
 		return result;
+	}
+
+	public RuntimeVersion getVersion() {
+		return version;
 	}
 
 }

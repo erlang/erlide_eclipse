@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.erlide.jinterface.backend.util.Assert;
@@ -22,7 +26,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
 	private final int major;
 	private final int minor;
-	private final int micro;
+	private int micro;
 
 	public RuntimeVersion(final RuntimeVersion other) {
 		major = other.major;
@@ -69,15 +73,22 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 			c = version.charAt(i);
 			minor = Arrays.binarySearch(minorMap, c);
 			i++;
-			if (i < version.length()) {
-				Assert.isTrue(version.charAt(i) == '-');
-				micro = Integer.parseInt(version.substring(i + 1));
+			int n = version.indexOf('-');
+			// micro = UNUSED;
+			if (n >= 0) {
+				micro = Integer.parseInt(version.substring(n + 1));
+			} else if (i < version.length()) {
+				micro = Integer.parseInt(version.substring(i));
 			} else {
 				micro = UNUSED;
 			}
 		} else {
 			minor = UNUSED;
 			micro = UNUSED;
+		}
+		if (major == 13) {
+			// hack for R13
+			micro--;
 		}
 		Assert.isTrue(major >= UNUSED);
 		Assert.isTrue(minor >= UNUSED);
@@ -148,4 +159,77 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 	public int hashCode() {
 		return super.hashCode();
 	}
+
+	public static String getRuntimeVersion(final String path) {
+		if (path == null) {
+			return null;
+		}
+		String result = null;
+		final File boot = new File(path + "/bin/start.boot");
+		try {
+			final FileInputStream is = new FileInputStream(boot);
+			is.skip(14);
+			RuntimeInfo.readstring(is);
+			result = RuntimeInfo.readstring(is);
+		} catch (final IOException e) {
+		}
+		return result;
+	}
+
+	public static String getMicroRuntimeVersion(final String path) {
+		if (path == null) {
+			return null;
+		}
+		String result = null;
+
+		// now get micro version from kernel's minor version
+		final File lib = new File(path + "/lib");
+		final File[] kernels = lib.listFiles(new FileFilter() {
+			public boolean accept(final File pathname) {
+				try {
+					boolean r = pathname.isDirectory();
+					r &= pathname.getName().startsWith("kernel-");
+					final String canonicalPath = pathname.getCanonicalPath()
+					.toLowerCase();
+					final String absolutePath = pathname.getAbsolutePath()
+					.toLowerCase();
+					r &= canonicalPath.equals(absolutePath);
+					return r;
+				} catch (final IOException e) {
+					return false;
+				}
+			}
+		});
+		if (kernels != null && kernels.length > 0) {
+			final int[] krnls = new int[kernels.length];
+			for (int i = 0; i < kernels.length; i++) {
+				final String k = kernels[i].getName();
+				try {
+					int p = k.indexOf('.');
+					if (p < 0) {
+						krnls[i] = 0;
+					} else {
+						p = k.indexOf('.', p + 1);
+						if (p < 0) {
+							krnls[i] = 0;
+						} else {
+							krnls[i] = Integer.parseInt(k.substring(p + 1));
+						}
+					}
+				} catch (final Exception e) {
+					krnls[i] = 0;
+				}
+			}
+			Arrays.sort(krnls);
+			result = Integer.toString(krnls[krnls.length - 1]);
+		}
+		return result;
+	}
+
+	public static RuntimeVersion getVersion(String homeDir) {
+		String label = RuntimeVersion.getRuntimeVersion(homeDir);
+		String micro = RuntimeVersion.getMicroRuntimeVersion(homeDir);
+		return new RuntimeVersion(label + "-" + micro);
+	}
+
 }
