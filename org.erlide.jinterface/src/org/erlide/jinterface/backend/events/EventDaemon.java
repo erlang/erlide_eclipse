@@ -36,13 +36,16 @@ public class EventDaemon implements BackendListener {
 						msg = backend.receiveEvent(200);
 						if (msg != null) {
 							msgs.add(msg);
-							// if there are more queued events, retrieve them
+							// if there are more queued events, retrieve not
+							// more than 10 of them
+							int count = 0;
 							do {
 								msg = backend.receiveEvent(0);
 								if (msg != null) {
 									msgs.add(msg);
+									count++;
 								}
-							} while (msg != null && !stopped);
+							} while (count < 10 && msg != null && !stopped);
 						}
 						if (msgs.size() != 0) {
 							if (DEBUG) {
