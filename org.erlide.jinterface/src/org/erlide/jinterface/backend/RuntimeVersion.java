@@ -91,7 +91,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 					if (n == -1) {
 						micro = UNUSED;
 					} else {
-						micro=Integer.parseInt(version.substring(n+1));
+						micro = Integer.parseInt(version.substring(n + 1));
 					}
 				}
 			}
@@ -113,7 +113,17 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 		if (minor != UNUSED) {
 			result += minorMap[minor];
 			if (micro != UNUSED) {
-				result += "-" + Integer.toString(micro);
+				String m = Integer.toString(micro);
+				if (major < 13) {
+					result += "-" + m;
+				} else {
+					if (micro != 0) {
+						if (m.length() == 1) {
+							m = "0" + m;
+						}
+						result += m;
+					}
+				}
 			}
 		}
 		return result;
@@ -199,9 +209,9 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 					boolean r = pathname.isDirectory();
 					r &= pathname.getName().startsWith("kernel-");
 					final String canonicalPath = pathname.getCanonicalPath()
-					.toLowerCase();
+							.toLowerCase();
 					final String absolutePath = pathname.getAbsolutePath()
-					.toLowerCase();
+							.toLowerCase();
 					r &= canonicalPath.equals(absolutePath);
 					return r;
 				} catch (final IOException e) {
