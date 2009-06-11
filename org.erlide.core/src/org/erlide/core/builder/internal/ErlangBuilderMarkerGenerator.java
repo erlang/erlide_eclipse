@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.builder.IMarkerGenerator;
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -102,56 +103,61 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 	public static void addErrorMarkers(final IMarkerGenerator mg,
 			final IResource resource, final OtpErlangList errorList) {
 		for (final OtpErlangObject odata : errorList.elements()) {
-			final OtpErlangTuple data = (OtpErlangTuple) odata;
+			try {
+				final OtpErlangTuple data = (OtpErlangTuple) odata;
 
-			final String msg = ((OtpErlangString) data.elementAt(2))
-					.stringValue();
-			final String fileName = ((OtpErlangString) data.elementAt(1))
-					.stringValue();
-			IResource res = resource;
-			if (!comparePath(resource.getLocation().toString(), fileName)) {
-				res = findResource(resource.getProject(), fileName);
-				if (res == null) {
-					// the error is in a hrl file that is not in the project
+				final String msg = ((OtpErlangString) data.elementAt(2))
+						.stringValue();
+				final String fileName = ((OtpErlangString) data.elementAt(1))
+						.stringValue();
+				IResource res = resource;
+				if (!comparePath(resource.getLocation().toString(), fileName)) {
+					res = findResource(resource.getProject(), fileName);
+					if (res == null) {
+						// the error is in a hrl file that is not in the project
 
-					// try {
-					// final String includeFile = ErlModelUtils
-					// .findIncludeFile(project, res.getName(),
-					// fExternalIncludes, pathVars);
-					// if (includeFile != null) {
-					// r = EditorUtility.openExternal(includeFile);
-					// }
-					// } catch (final Exception e) {
-					// ErlLogger.warn(e);
-					// }
+						// try {
+						// final String includeFile = ErlModelUtils
+						// .findIncludeFile(project, res.getName(),
+						// fExternalIncludes, pathVars);
+						// if (includeFile != null) {
+						// r = EditorUtility.openExternal(includeFile);
+						// }
+						// } catch (final Exception e) {
+						// ErlLogger.warn(e);
+						// }
 
-					res = resource;
+						res = resource;
+					}
 				}
-			}
-			int line = 0;
-			if (data.elementAt(0) instanceof OtpErlangLong) {
+				int line = 0;
+				if (data.elementAt(0) instanceof OtpErlangLong) {
+					try {
+						line = ((OtpErlangLong) data.elementAt(0)).intValue();
+					} catch (final OtpErlangRangeException e) {
+					}
+				}
+				int sev = IMarker.SEVERITY_INFO;
 				try {
-					line = ((OtpErlangLong) data.elementAt(0)).intValue();
+					switch (((OtpErlangLong) data.elementAt(3)).intValue()) {
+					case 0:
+						sev = IMarker.SEVERITY_ERROR;
+						break;
+					case 1:
+						sev = IMarker.SEVERITY_WARNING;
+						break;
+					default:
+						sev = IMarker.SEVERITY_INFO;
+						break;
+					}
 				} catch (final OtpErlangRangeException e) {
 				}
-			}
-			int sev = IMarker.SEVERITY_INFO;
-			try {
-				switch (((OtpErlangLong) data.elementAt(3)).intValue()) {
-				case 0:
-					sev = IMarker.SEVERITY_ERROR;
-					break;
-				case 1:
-					sev = IMarker.SEVERITY_WARNING;
-					break;
-				default:
-					sev = IMarker.SEVERITY_INFO;
-					break;
-				}
-			} catch (final OtpErlangRangeException e) {
-			}
 
-			mg.addMarker(res, resource, msg, line, sev, "");
+				mg.addMarker(res, resource, msg, line, sev, "");
+			} catch (Exception e) {
+				ErlLogger.warn(e);
+				ErlLogger.warn("got: %s", odata);
+			}
 		}
 	}
 
