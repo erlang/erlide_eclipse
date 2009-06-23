@@ -476,6 +476,8 @@
             id="org.erlide.ui.actions.console.input"
             name="Erlang console 1"/>
       <command
+            category="org.erlide.ui.erlideCategory"
+            description="Indent code"
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
       <command
@@ -485,6 +487,8 @@
             id="org.erlide.ui.actions.show.outline"
             name="Show outline"/>
       <command
+            category="org.erlide.ui.erlideCategory"
+            description="Toggle Comment"
             id="org.erlide.ui.actions.togglecomment"
             name="Toggle Comment"/>
       <command
@@ -498,13 +502,21 @@
             id="org.erlide.debug.ui.commands.ToggleDebugTracing">
       </command>
       <command
+            category="org.erlide.ui.erlideCategory"
+            description="Clear Cache"
             id="org.erlide.ui.actions.clearCache"
             name="Clear Cache">
       </command>
       <command
+            category="org.erlide.ui.erlideCategory"
+            description="Call hierarchy"
             id="org.erlide.ui.actions.callhierarchy"
             name="Call hierarchy">
       </command>
+      <category
+            id="org.erlide.ui.erlideCategory"
+            name="ErlIDE">
+      </category>
 
  </extension>
  <extension
@@ -573,7 +585,7 @@
             commandId="org.erlide.ui.actions.clearCache"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+K">
+            sequence="M1+M2+M3+K">
       </key>
       <key
             commandId="org.erlide.ui.actions.callhierarchy"
