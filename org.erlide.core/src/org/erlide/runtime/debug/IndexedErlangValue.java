@@ -174,9 +174,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		if (b.size() > 0) {
 			final byte[] bytes = b.binaryValue();
 			// FIXME: why are the character decoders so forgiving? I'd like to
-			// test
-			// for UTF-16 too, but the decoders never throws on anything, and
-			// looksLikeISOLatin shouldn't be needed...
+			// test for UTF-16 too, but the decoders never throws on anything,
+			// and looksLikeISOLatin shouldn't be needed...
 			final String[] css1 = { "UTF-8", "ISO-8859-1" };
 			final String[] css2 = { "UTF-8" };
 			final String[] tryCharsets = looksLikeISOLatin(bytes) ? css1 : css2;
@@ -186,6 +185,11 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 				cd.onMalformedInput(CodingErrorAction.REPORT);
 				cd.onUnmappableCharacter(CodingErrorAction.REPORT);
 				try {
+					for (int i = 0; i < bytes.length; ++i) {
+						if (bytes[i] < 32) {
+							throw new CharacterCodingException();
+						}
+					}
 					cb = cd.decode(ByteBuffer.wrap(bytes));
 					break;
 				} catch (final CharacterCodingException e) {
