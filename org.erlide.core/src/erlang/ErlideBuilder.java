@@ -46,9 +46,13 @@ public class ErlideBuilder {
 
 	public static OtpErlangList getSourceClashes(final Backend backend,
 			final String[] dirList) throws BackendException {
-		final OtpErlangList res = (OtpErlangList) backend.call(
-				"erlide_builder", "source_clash", "ls", (Object) dirList);
-		return res;
+		final OtpErlangObject res = backend.call("erlide_builder",
+				"source_clash", "ls", (Object) dirList);
+		if (res instanceof OtpErlangList) {
+			return (OtpErlangList) res;
+		}
+		throw new BackendException(
+				"bad result from erlide_builder:source_clash: " + res);
 	}
 
 	public static OtpErlangList getCodeClashes(final Backend b)
