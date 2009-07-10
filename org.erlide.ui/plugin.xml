@@ -476,7 +476,7 @@
             id="org.erlide.ui.actions.console.input"
             name="Erlang console 1"/>
       <command
-            category="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlideCategory"
             description="Indent code"
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
@@ -487,7 +487,7 @@
             id="org.erlide.ui.actions.show.outline"
             name="Show outline"/>
       <command
-            category="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlideCategory"
             description="Toggle Comment"
             id="org.erlide.ui.actions.togglecomment"
             name="Toggle Comment"/>
@@ -502,13 +502,13 @@
             id="org.erlide.debug.ui.commands.ToggleDebugTracing">
       </command>
       <command
-            category="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlideCategory"
             description="Clear Cache"
             id="org.erlide.ui.actions.clearCache"
             name="Clear Cache">
       </command>
       <command
-            category="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlideCategory"
             description="Call hierarchy"
             id="org.erlide.ui.actions.callhierarchy"
             name="Call hierarchy">
