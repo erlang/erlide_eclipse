@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.ui.validator;
 
 public class AtomValidator implements IValidator {
 
-	@Override
 	public boolean isValid(String s) {
 		if (s.length() == 0) {
 			return false;

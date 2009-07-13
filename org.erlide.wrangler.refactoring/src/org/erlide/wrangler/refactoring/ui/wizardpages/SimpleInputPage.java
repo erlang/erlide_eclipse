@@ -1,7 +1,5 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
-
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -15,12 +13,15 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 public class SimpleInputPage extends InputPage {
 	protected String labelText;
+
 	protected String inputErrorMsg;
 
 	IValidator validator;
 
 	protected Label inputLabel;
+
 	protected Text inputText;
+
 	protected Composite composite;
 
 	public SimpleInputPage(String name, String description, String labelText,
@@ -34,7 +35,6 @@ public class SimpleInputPage extends InputPage {
 
 	}
 
-	@Override
 	public void createControl(Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 
@@ -60,7 +60,6 @@ public class SimpleInputPage extends InputPage {
 
 		inputText.addModifyListener(new ModifyListener() {
 
-			@Override
 			public void modifyText(ModifyEvent e) {
 				isInputValid();
 			}

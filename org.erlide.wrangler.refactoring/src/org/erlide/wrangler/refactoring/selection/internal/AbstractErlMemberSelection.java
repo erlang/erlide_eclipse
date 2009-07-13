@@ -12,12 +12,12 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		implements IErlMemberSelection {
 
 	protected ITextSelection textSelection;
+
 	protected IDocument document;
 
 	public AbstractErlMemberSelection() {
 	}
 
-	@Override
 	public IDocument getDocument() {
 		return document;
 	}
@@ -27,13 +27,13 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 				.getSelectionProvider().getSelection());
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
 		document = editor.getDocumentProvider().getDocument(input);
-		IFile file = input.getFile();
-		store(selection, file, document);
+		IFile afile = input.getFile();
+		store(selection, afile, document);
 	}
 
-	protected void store(ITextSelection selection, IFile file,
-			IDocument document) {
-		this.file = file;
+	protected void store(ITextSelection selection, IFile afile,
+			IDocument adocument) {
+		this.file = afile;
 		textSelection = selection;
 	}
 
@@ -41,7 +41,6 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 	 * @Override public ITextEditor getEditor() { return editor; }
 	 */
 
-	@Override
 	public SelectionKind getKind() {
 		Kind k = getErlElement().getKind();
 		if (k == Kind.CLAUSE)

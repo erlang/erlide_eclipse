@@ -47,7 +47,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 		return textSelection.getStartLine() + 1;
 	}
 
-	@Override
 	public IErlElement getErlElement() {
 		IErlModule module = (IErlModule) ErlangCore.getModel()
 				.findElement(file);
@@ -64,7 +63,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 		return module;
 	}
 
-	@Override
 	public IErlRange getMemberRange() {
 		try {
 			if (getErlElement() instanceof IErlMember) {
@@ -92,14 +90,12 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 		return getSelectionRange();
 	}
 
-	@Override
 	public IErlRange getSelectionRange() {
 		return new ErlRange(getStartLine(), getStartCol(), getEndLine(),
 				getEndCol(), textSelection.getOffset(), textSelection
 						.getLength());
 	}
 
-	@Override
 	public SelectionKind getDetailedKind() {
 		if (getKind() == SelectionKind.FUNCTION
 				|| getKind() == SelectionKind.FUNCTION_CLAUSE) {

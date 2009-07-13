@@ -8,7 +8,6 @@ public class InfoPage extends WranglerPage {
 		super(name);
 	}
 
-	@Override
 	public void createControl(Composite parent) {
 		// TODO Auto-generated method stub
 

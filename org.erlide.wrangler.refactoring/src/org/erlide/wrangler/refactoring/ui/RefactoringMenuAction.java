@@ -2,8 +2,6 @@ package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
 
-
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
@@ -34,7 +32,6 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class RefactoringMenuAction extends AbstractWranglerAction {
 
-	@Override
 	public void run(IAction action) {
 		GlobalParameters.setSelection(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getSelection());

@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import java.util.ArrayList;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -15,9 +14,13 @@ import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 public class ComboInputPage extends InputPage {
 
 	protected String labelText;
+
 	protected Composite composite;
+
 	protected Label inputLabel;
+
 	protected ArrayList<String> moduleNames;
+
 	protected Combo selectionList;
 
 	public ComboInputPage(String name, String description, String labelText,
@@ -30,7 +33,6 @@ public class ComboInputPage extends InputPage {
 		setPageComplete(false);
 	}
 
-	@Override
 	public void createControl(Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 

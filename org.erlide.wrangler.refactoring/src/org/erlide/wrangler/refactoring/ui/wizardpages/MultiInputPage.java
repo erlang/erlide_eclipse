@@ -9,7 +9,6 @@ public class MultiInputPage extends InputPage {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public void createControl(Composite parent) {
 		// TODO Auto-generated method stub
 

@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.backend.internal;
 
-
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
@@ -10,6 +9,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public abstract class AbstractRpcMessage implements IRpcMessage {
 	protected boolean isSuccessful = false;
+
 	protected String errorMessage = "";
 
 	/**
@@ -37,12 +37,10 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 	protected abstract void parseRefactoringMessage(OtpErlangTuple resultTuple)
 			throws WranglerException;
 
-	@Override
 	public String getMessage() {
 		return errorMessage;
 	}
 
-	@Override
 	public boolean isSuccessful() {
 		return isSuccessful;
 	}

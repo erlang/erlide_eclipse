@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 
-
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -15,7 +14,6 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
 
 	protected ArrayList<ChangedFile> changedFiles = null;
 
-	@Override
 	public ArrayList<ChangedFile> getRefactoringChangeset() {
 		return changedFiles;
 	}

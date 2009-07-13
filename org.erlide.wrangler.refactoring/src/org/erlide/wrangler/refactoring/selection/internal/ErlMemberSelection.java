@@ -11,6 +11,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class ErlMemberSelection extends AbstractErlMemberSelection {
 	protected IErlElement element;
+
 	protected IErlMember member;
 
 	public ErlMemberSelection(IErlElement element, IFile file,
@@ -40,7 +41,6 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 		return member.getLineEnd() + 1;
 	}
 
-	@Override
 	public IErlElement getErlElement() {
 		return element;
 	}
@@ -55,12 +55,10 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 		return member.getLineStart() + 1;
 	}
 
-	@Override
 	public IErlRange getMemberRange() {
 		return getSelectionRange();
 	}
 
-	@Override
 	public IErlRange getSelectionRange() {
 		IErlRange range;
 		try {
@@ -74,7 +72,6 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 		return range;
 	}
 
-	@Override
 	public SelectionKind getDetailedKind() {
 		return getKind();
 	}

@@ -28,11 +28,9 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class PopupMenuAction implements IObjectActionDelegate {
 
-	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 
-	@Override
 	public void run(IAction action) {
 		GlobalParameters.setSelection(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getSelection());
@@ -104,7 +102,6 @@ public class PopupMenuAction implements IObjectActionDelegate {
 
 	}
 
-	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

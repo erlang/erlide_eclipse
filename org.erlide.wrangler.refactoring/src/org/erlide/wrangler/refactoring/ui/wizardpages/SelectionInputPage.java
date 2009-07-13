@@ -21,11 +21,13 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class SelectionInputPage extends InputPage {
 	FoldExpressionRefactoring foldrefactoring;
+
 	String labelText, description;
 
 	HashMap<Button, IErlRange> checkButtons;
 
 	Composite composite;
+
 	Label inputLabel;
 
 	public SelectionInputPage(String name, String description,
@@ -36,7 +38,6 @@ public class SelectionInputPage extends InputPage {
 		foldrefactoring = refac;
 	}
 
-	@Override
 	public void createControl(Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 

@@ -12,17 +12,14 @@ public class ErlModuleSelection extends AbstractErlSelection {
 		this.file = file;
 	}
 
-	@Override
 	public IErlElement getErlElement() {
 		return module;
 	}
 
-	@Override
 	public SelectionKind getDetailedKind() {
 		return getKind();
 	}
 
-	@Override
 	public SelectionKind getKind() {
 		return SelectionKind.MODULE;
 	}
