@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.wrangler.refactoring.core.RefactoringParameters;
-import org.erlide.wrangler.refactoring.core.exception.WranglerRefactoringException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeInstanceElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedFileElement;
-import org.erlide.wrangler.refactoring.util.EditorUtil;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
+import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -22,19 +21,19 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
-	public DuplicateDetectionParser(OtpErlangObject obj,
-			RefactoringParameters parameter) {
-		super(obj, parameter);
+	public DuplicateDetectionParser(OtpErlangObject obj) {
+		super(obj);
 	}
 
 	// [{ [{ {filename(), integer(), integer()} , {filename(), integer(),
 	// integer()} }], integer(), integer()}]
-	public void parse(OtpErlangObject object, RefactoringParameters parameter) {
+	public void parse(OtpErlangObject object) {
 		try {
 			// TODO testing all cases
 			if (object instanceof OtpErlangTuple) {
 				OtpErlangTuple objectTuple = (OtpErlangTuple) object;
-				setUnSuccessful(((OtpErlangString)objectTuple.elementAt(1)).stringValue());
+				setUnSuccessful(((OtpErlangString) objectTuple.elementAt(1))
+						.stringValue());
 
 			} else {
 				OtpErlangList resultList = (OtpErlangList) object;
@@ -56,7 +55,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 	}
 
 	protected DuplicatedCodeElement parseDuplicates(OtpErlangObject object)
-			throws OtpErlangRangeException, WranglerRefactoringException {
+			throws OtpErlangRangeException, WranglerException {
 		OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
 		OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple
 				.elementAt(0);
@@ -78,9 +77,9 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
 			String fileNameStr = fileName.stringValue();
-			IFile file = EditorUtil.geFileFromPath(fileNameStr);
-			DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(file,
-					startLine.intValue(), startCol.intValue(), endLine
+			IFile file = WranglerUtils.geFileFromPath(fileNameStr);
+			DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
+					file, startLine.intValue(), startCol.intValue(), endLine
 							.intValue(), endCol.intValue() + 1);
 			if (values.containsKey(file)) {
 				values.get(file).add(instance);
@@ -91,12 +90,13 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			}
 		}
 
-		DuplicatedCodeElement result = new DuplicatedCodeElement(values.entrySet().iterator()
-				.next().getValue().get(0));
+		DuplicatedCodeElement result = new DuplicatedCodeElement(values
+				.entrySet().iterator().next().getValue().get(0));
 
 		for (Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values
 				.entrySet()) {
-			DuplicatedFileElement dupFile = new DuplicatedFileElement(entry.getKey());
+			DuplicatedFileElement dupFile = new DuplicatedFileElement(entry
+					.getKey());
 			for (DuplicatedCodeInstanceElement instance : entry.getValue()) {
 				dupFile.addChild(instance);
 			}

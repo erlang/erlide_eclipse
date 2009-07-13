@@ -3,15 +3,15 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.erlide.wrangler.refactoring.util.EditorUtil;
+import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 	private int startOffset;
 	private int endOffset;
 	private String codePartString;
-	private IFile containingFile;
-	private int startLine;
+	private final IFile containingFile;
+	private final int startLine;
 
 	// private ITextEditor containingEditor;
 
@@ -20,13 +20,13 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 		this.containingFile = containingFile;
 		this.startLine = startLine;
-		IDocument doc = EditorUtil.getDocument(containingFile);
+		IDocument doc = WranglerUtils.getDocument(containingFile);
 		try {
-			this.startOffset = EditorUtil.calculateOffset(startLine,
-					startColumn, doc) - 1;
-			this.endOffset = EditorUtil
-					.calculateOffset(endLine, endColumn, doc) - 2;
-			this.codePartString = EditorUtil.getTextSegment(startOffset,
+			this.startOffset = WranglerUtils.calculateOffsetFromPosition(
+					startLine, startColumn, doc);
+			this.endOffset = WranglerUtils.calculateOffsetFromPosition(endLine,
+					endColumn, doc);
+			this.codePartString = WranglerUtils.getTextSegment(startOffset,
 					endOffset, doc);
 		} catch (BadLocationException e) {
 			e.printStackTrace();

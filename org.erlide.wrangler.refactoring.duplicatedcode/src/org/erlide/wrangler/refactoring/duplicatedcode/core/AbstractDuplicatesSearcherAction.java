@@ -10,17 +10,16 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.wrangler.refactoring.core.RefactoringParameters;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.DuplicatesUIManager;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
+import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
+import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 public abstract class AbstractDuplicatesSearcherAction implements
 		IEditorActionDelegate {
 
 	protected final String rpcErrorMsg = "An error occured during the refactoring!";
-	protected RefactoringParameters parameter = new RefactoringParameters();
 
 	public void run(IAction action) {
 		if (getUserInput()) {
@@ -36,7 +35,7 @@ public abstract class AbstractDuplicatesSearcherAction implements
 				}
 			} catch (WranglerWarningException e) {
 
-			} catch (BackendException e) {
+			} catch (WranglerRpcParsingException e) {
 				displayErrorNotification(rpcErrorMsg);
 			} catch (CoreException e) {
 				displayErrorNotification(rpcErrorMsg);
@@ -53,15 +52,16 @@ public abstract class AbstractDuplicatesSearcherAction implements
 		DuplicatesUIManager.setRefactoringResults(duplicatedCode);
 	}
 
-	protected abstract IResultParser callRefactoring() throws BackendException,
-			CoreException, IOException, WranglerWarningException;
+	protected abstract IResultParser callRefactoring()
+			throws WranglerRpcParsingException, CoreException, IOException,
+			WranglerWarningException;
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		parameter.setSelection(selection);
+		GlobalParameters.setSelection(selection);
 	}
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		parameter.setEditorPart(targetEditor);
+		GlobalParameters.setEditor(targetEditor);
 	}
 
 	void displayErrorNotification(String errorMsg) {

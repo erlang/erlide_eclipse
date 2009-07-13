@@ -19,7 +19,6 @@ import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -80,6 +79,7 @@ public class Activator extends AbstractUIPlugin {
 
 			RpcResult res = mb.call_noexception("code", "load_file", "a",
 					"wrangler");
+			res = mb.call_noexception("code", "load_file", "a", "refac_util");
 			ErlLogger.debug("Wrangler's path is added to Erlang with result:"
 					+ res.isOk() + "\t raw:" + res);
 

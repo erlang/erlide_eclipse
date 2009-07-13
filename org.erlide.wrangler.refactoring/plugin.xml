@@ -4,112 +4,112 @@
    <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
-            id="org.erlide.wranglerrefactoring.erlideContributor"
+            id="org.erlide.wrangler.refactoring.erlideContributor"
             targetID="org.erlide.ui.editors.erl.ErlangEditor">
          <menu
-               id="org.erlide.wranglerrefactoring.refactormenu"
+               id="org.erlide.wrangler.refactoring.refactormenu"
                label="%RefactoringMenu_Label"
                path="edit">
             <groupMarker
-                  name="org.erlide.wranglerrefactoring.renameGroup">
+                  name="org.erlide.wrangler.refactoring.renameGroup">
             </groupMarker>
             <separator
-                  name="org.erlide.wranglerrefactoring.separator1">
+                  name="org.erlide.wrangler.refactoring.separator1">
             </separator>
             <groupMarker
-                  name="org.erlide.wranglerrefactoring.searchGroup">
+                  name="org.erlide.wrangler.refactoring.searchGroup">
             </groupMarker>
             <separator
                   name="org.erlide.wrangler.refactoring.separator2">
             </separator>
             <groupMarker
-                  name="org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+                  name="org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
             </groupMarker>
             <separator
-                  name="org.erlide.wranglerrefactoring.separator3">
+                  name="org.erlide.wrangler.refactoring.separator3">
             </separator>
             <groupMarker
-                  name="org.erlide.wranglerrefactoring.tupleGroup">
+                  name="org.erlide.wrangler.refactoring.tupleGroup">
             </groupMarker>
          </menu>
          <action
-               class="org.erlide.wrangler.refactoring.core.renamevariable.RenameVariableAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                definitionId="org.erlide.wrangler.refactoring.renameVariable"
                enablesFor="?"
-               id="org.erlide.wranglerrefactoring.renamevariable"
+               id="org.erlide.wrangler.refactoring.renamevariable"
                label="%renameVariableName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.renameGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.renamefunction.RenameFunctionAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                definitionId="org.erlide.wrangler.refactoring.renameFunction"
                enablesFor="?"
-               id="org.erlide.wranglerrefactoring.renamefunction"
+               id="org.erlide.wrangler.refactoring.renamefunction"
                label="%renameFunctionName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.renameGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.renameprocess.RenameProcessAction"
-               id="org.erlide.wranglerrefactoring.renameprocess"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.renameprocess"
                label="%renameProcessName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.renameGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.renamemodule.RenameModuleAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                definitionId="org.erlide.wrangler.refactoring.renameModule"
-               id="org.erlide.wranglerrefactoring.renamemodule"
+               id="org.erlide.wrangler.refactoring.renamemodule"
                label="%renameModuleName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.renameGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.renameGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.generalise.GeneraliseAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                enablesFor="+"
-               id="org.erlide.wranglerrefactoring.generalise"
+               id="org.erlide.wrangler.refactoring.generalise"
                label="%generaliseName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.funextraction.FunExtractionAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                enablesFor="+"
-               id="org.erlide.wranglerrefactoring.funExtraction"
+               id="org.erlide.wrangler.refactoring.extractfunction"
                label="%funExtractionName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.foldexpression.FoldExpressionAction"
-               id="org.erlide.wranglerrefactoring.foldexpressio"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.foldexpression"
                label="%foldExpressionName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.movefunction.MoveFunctionAction"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                definitionId="org.erlide.wrangler.refactoring.moveFunction"
                enablesFor="?"
-               id="org.erlide.wranglerrefactoring.movefunction"
+               id="org.erlide.wrangler.refactoring.movefunction"
                label="%moveFunctionName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.functiontoprocess.FunctionToProcessAction"
-               id="org.erlide.wranglerrefactoring.functiontoprocess"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.functiontoprocess"
                label="%funToProcessName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.reorganizeFunctionGroup"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup"
                style="push">
          </action>
          <action
-               class="org.erlide.wrangler.refactoring.core.tupleparameters.TupleParametersAction"
-               enablesFor="?"
-               id="org.erlide.wranglerrefactoring.tuplefunctonparameters"
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               enablesFor="+"
+               id="org.erlide.wrangler.refactoring.tuplefunctonparameters"
                label="%tupleFunParamsName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.tupleGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.tupleGroup">
          </action>
          <!-- Experimental
          <action
                class="org.erlide.wrangler.refactoring.core.tupletorecord.TupleToRecordAction"
                enablesFor="+"
-               id="org.erlide.wranglerrefactoring.tupletorecord"
+               id="org.erlide.wrangler.refactoring.tupletorecord"
                label="%tupleToRecordName"
-               menubarPath="org.erlide.wranglerrefactoring.refactormenu/org.erlide.wranglerrefactoring.tupleGroup">
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.tupleGroup">
          </action>
          -->
       </editorContribution>
@@ -167,6 +167,66 @@
             id="org.erlide.wrangler.refactoring.moveFunction"
             name="Move function">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.wrangler.refactoring.functionclausecontribution"
+            objectClass="org.erlide.core.erlang.IErlFunctionClause">
+         <menu
+               id="org.erlide.wrangler.refactoring.functionclausecontribution.menu"
+               label="Refactor">
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.popup.function">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               definitionId="org.erlide.wrangler.refactoring.renameFunction"
+               id="org.erlide.wrangler.refactoring.popupmenu.renamefunction"
+               label="%rename"
+               menubarPath="org.erlide.wrangler.refactoring.functionclausecontribution.menu/org.erlide.wrangler.refactoring.popup.function">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               definitionId="org.erlide.wrangler.refactoring.moveFunction"
+               id="org.erlide.wrangler.refactoring.popupmenu.movefunction"
+               label="%moveFunctionName"
+               menubarPath="org.erlide.wrangler.refactoring.functionclausecontribution.menu/org.erlide.wrangler.refactoring.popup.function">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               id="org.erlide.wrangler.refactoring.popupmenu.functiontoprocess"
+               label="%funToProcessName"
+               menubarPath="org.erlide.wrangler.refactoring.functionclausecontribution.menu/org.erlide.wrangler.refactoring.popup.function">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               id="org.erlide.wrangler.refactoring.popupmenu.foldexpression"
+               label="%foldExpressionName"
+               menubarPath="org.erlide.wrangler.refactoring.functionclausecontribution.menu/org.erlide.wrangler.refactoring.popup.function">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.wrangler.refactoring.modulecontribution"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="org.erlide.wrangler.refactoring.modulecontribution.menu"
+               label="Refactor">
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.popup.module">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               definitionId="org.erlide.wrangler.refactoring.renameModule"
+               id="org.erlide.wrangler.refactoring.popupmenu.renamemodule"
+               label="%rename"
+               menubarPath="org.erlide.wrangler.refactoring.modulecontribution.menu/org.erlide.wrangler.refactoring.popup.module">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>

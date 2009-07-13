@@ -1,22 +1,30 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
+import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
+import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
+import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
+import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
-	@SuppressWarnings("boxing")
 	@Override
-	protected IResultParser callRefactoring() throws BackendException {
-		Backend backend = ErlangCore.getBackendManager().getIdeBackend();
-		OtpErlangObject result = backend.call("wrangler", "expression_search",
-				"sxxi", parameter.getFilePath(), parameter.getStartPos(),
-				parameter.getEndPos(), parameter.getEditorTabWidth());
-
-		return new ExpressionSearchParser(result, parameter);
+	protected IResultParser callRefactoring()
+			throws WranglerRpcParsingException {
+		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+				.getWranglerSelection();
+		WranglerRefactoringBackend backend = WranglerBackendManager
+				.getRefactoringBackend();
+		RpcResult result = backend.callWithoutParser("expression_search",
+				"sxxi", sel.getFilePath(), sel.getSelectionRange()
+						.getStartPos(), sel.getSelectionRange().getEndPos(),
+				GlobalParameters.getTabWidth());
+		if (result.isOk())
+			return new ExpressionSearchParser(result.getValue());
+		else
+			throw new WranglerRpcParsingException("RPC error");
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class DuplicateCodeInputDialog extends Dialog {
 
-	private String title;
+	private final String title;
 
 	private int minToks;
 
@@ -37,9 +37,6 @@ public class DuplicateCodeInputDialog extends Dialog {
 	private Button onlyInFileCheckBoxButton;
 
 	private Text errorMessageText;
-
-	@SuppressWarnings("unused")
-	private String errorMessage;
 
 	public DuplicateCodeInputDialog(Shell parentShell, String dialogTitle) {
 		super(parentShell);
@@ -184,7 +181,6 @@ public class DuplicateCodeInputDialog extends Dialog {
 	}
 
 	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
 		if (errorMessageText != null && !errorMessageText.isDisposed()) {
 			errorMessageText.setText(errorMessage == null ? " \n "
 					: errorMessage);

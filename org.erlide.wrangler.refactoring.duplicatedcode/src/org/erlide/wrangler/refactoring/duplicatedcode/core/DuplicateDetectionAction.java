@@ -2,6 +2,7 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
 
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -9,15 +10,16 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
+import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
+import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
+import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.osgi.framework.Bundle;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
@@ -27,30 +29,36 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected IResultParser callRefactoring() throws BackendException,
-			CoreException, IOException, WranglerWarningException {
+	protected IResultParser callRefactoring()
+			throws WranglerRpcParsingException, CoreException, IOException,
+			WranglerWarningException {
 		String functionName;
-		OtpErlangObject result;
+		RpcResult result;
 
 		// getting the path of the fragment
 
 		String suffixPath = getSuffixPath();
 		ErlLogger.debug("Suffix binary at: " + suffixPath);
-		Backend backend = ErlangCore.getBackendManager().getIdeBackend();
+		WranglerRefactoringBackend backend = WranglerBackendManager
+				.getRefactoringBackend();
+		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+				.getWranglerSelection();
 
 		if (onlyInfile) {
 			functionName = "duplicated_code_in_buffer_eclipse";
-			result = backend.call("wrangler", functionName, "siiis", parameter
-					.getFilePath(), minToks, minClones, parameter
-					.getEditorTabWidth(), suffixPath);
+			result = backend.callWithoutParser(functionName, "siiis", sel
+					.getFilePath(), minToks, minClones, GlobalParameters
+					.getTabWidth(), suffixPath);
 		} else {
 			functionName = "duplicated_code_in_dirs_eclipse";
-			result = backend.call("wrangler", functionName, "xiiis", parameter
-					.getSearchPath(), minToks, minClones, parameter
-					.getEditorTabWidth(), suffixPath);
+			result = backend.callWithoutParser(functionName, "xiiis", sel
+					.getSearchPath(), minToks, minClones, GlobalParameters
+					.getTabWidth(), suffixPath);
 		}
 
-		return new DuplicateDetectionParser(result, parameter);
+		if (!result.isOk())
+			throw new WranglerRpcParsingException("Rpc error");
+		return new DuplicateDetectionParser(result.getValue());
 	}
 
 	private String getSuffixPath() throws IOException, WranglerWarningException {

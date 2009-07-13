@@ -3,9 +3,12 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.erlide.wrangler.refactoring.core.RefactoringParameters;
+
+import org.eclipse.core.resources.IFile;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeInstanceElement;
+import org.erlide.wrangler.refactoring.selection.IErlSelection;
+import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -15,12 +18,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ExpressionSearchParser extends AbstractDuplicatesParser {
 
-	public ExpressionSearchParser(OtpErlangObject obj,
-			RefactoringParameters parameter) {
-		super(obj, parameter);
+	public ExpressionSearchParser(OtpErlangObject obj) {
+		super(obj);
 	}
 
-	public void parse(OtpErlangObject object, RefactoringParameters parameter) {
+	public void parse(OtpErlangObject object) {
 		try {
 			OtpErlangTuple res = (OtpErlangTuple) object;
 
@@ -48,9 +50,11 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 				endLine = (OtpErlangLong) actPos.elementAt(2);
 				endColumn = (OtpErlangLong) actPos.elementAt(3);
 
-				instances.add(new DuplicatedCodeInstanceElement(parameter
-						.getFile(), startLine.intValue(), startColumn
-						.intValue(), endLine.intValue(), endColumn.intValue()));
+				IErlSelection sel = GlobalParameters.getWranglerSelection();
+				instances.add(new DuplicatedCodeInstanceElement((IFile) sel
+						.getErlElement().getResource(), startLine.intValue(),
+						startColumn.intValue(), endLine.intValue(), endColumn
+								.intValue()));
 			}
 
 			DuplicatedCodeInstanceElement defaultInstance = instances.get(0);

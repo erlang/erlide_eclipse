@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler Refactor plug-in
 Bundle-SymbolicName: org.erlide.wrangler.refactoring;singleton:=true
-Bundle-Version: 0.6.1.qualifier
+Bundle-Version: 0.8.0.qualifier
 Bundle-ClassPath: wrangler.jar
 Bundle-Activator: org.erlide.wrangler.refactoring.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
@@ -17,30 +17,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
  org.erlide.core
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",
- org.erlide.wrangler.refactoring.core;
-  uses:="com.ericsson.otp.erlang,
-   org.eclipse.jface.viewers,
-   org.eclipse.jface.text,
-   org.eclipse.ui.texteditor,
-   org.erlide.runtime.backend,
-   org.eclipse.ltk.core.refactoring,
-   org.eclipse.core.resources,
-   org.eclipse.core.runtime,
-   org.eclipse.ui",
- org.erlide.wrangler.refactoring.core.exception,
- org.erlide.wrangler.refactoring.core.foldexpression,
- org.erlide.wrangler.refactoring.core.functiontoprocess,
- org.erlide.wrangler.refactoring.core.funextraction,
- org.erlide.wrangler.refactoring.core.generalise,
- org.erlide.wrangler.refactoring.core.movefunction,
- org.erlide.wrangler.refactoring.core.rename,
- org.erlide.wrangler.refactoring.core.renamefunction,
- org.erlide.wrangler.refactoring.core.renamemodule,
- org.erlide.wrangler.refactoring.core.renameprocess,
- org.erlide.wrangler.refactoring.core.renamevariable,
- org.erlide.wrangler.refactoring.core.tupleparameters,
- org.erlide.wrangler.refactoring.core.tupletorecord,
- org.erlide.wrangler.refactoring.ui;
+ org.erlide.wrangler.refactoring.exception;
   uses:="org.eclipse.jface.viewers,
    org.erlide.wrangler.refactoring.core,
    org.eclipse.ltk.ui.refactoring,
@@ -48,8 +25,9 @@ Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi
    org.eclipse.swt.layout,
    org.eclipse.swt.widgets,
    org.eclipse.ui",
- org.erlide.wrangler.refactoring.util;x-internal:=true;uses:="org.incava.util.diff",
+ org.erlide.wrangler.refactoring.util,
  org.incava.util.diff;x-internal:=true
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.erlide.wrangler.refactoring.util
