@@ -9,7 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ericsson.jinterface"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.jinterface"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.selfhost.plugin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.ui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.wrangler.refactoring"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.erlide.wrangler.refactoring.duplicatedcode"/>
