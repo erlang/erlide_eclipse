@@ -202,7 +202,7 @@ public class ResourceUtil {
 	}
 
 	public static IProject getExternalFilesProject() {
-		final String prjName = "External Files";
+		final String prjName = "External_Files";
 		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 		final IProject project = ws.getRoot().getProject(prjName);
 		if (!project.exists()) {
