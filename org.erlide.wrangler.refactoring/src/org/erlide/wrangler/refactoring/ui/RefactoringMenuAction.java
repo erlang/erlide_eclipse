@@ -23,7 +23,7 @@ import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
-import org.erlide.wrangler.refactoring.ui.wizardpages.HackedSimpleInpuPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.HackedSimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
@@ -113,7 +113,7 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.generalise")) {
 			refactoring = new GeneraliseFunctionRefactoring();
-			pages.add(new HackedSimpleInpuPage("Generalise function",
+			pages.add(new HackedSimpleInputPage("Generalise function",
 					"Please type the new parameter name!",
 					"New parameter name:",
 					"New parameter name must be a valid Erlang variable name!",

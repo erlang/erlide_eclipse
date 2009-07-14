@@ -7,9 +7,9 @@ import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactori
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
-public class HackedSimpleInpuPage extends SimpleInputPage {
+public class HackedSimpleInputPage extends SimpleInputPage {
 
-	public HackedSimpleInpuPage(String name, String description,
+	public HackedSimpleInputPage(String name, String description,
 			String labelText, String inputErrorMsg, IValidator validator) {
 		super(name, description, labelText, inputErrorMsg, validator);
 

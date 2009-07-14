@@ -2,15 +2,13 @@ package org.erlide.wrangler.refactoring.ui.wizard;
 
 import java.util.ArrayList;
 
-
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
 
 public class DefaultWranglerRefactoringWizard extends
 		AbstractWranglerRefactoringWizard {
 
-	ArrayList<WranglerPage> pages;
+	private ArrayList<WranglerPage> pages;
 
 	public DefaultWranglerRefactoringWizard(Refactoring refactoring, int flags,
 			ArrayList<WranglerPage> pages) {
