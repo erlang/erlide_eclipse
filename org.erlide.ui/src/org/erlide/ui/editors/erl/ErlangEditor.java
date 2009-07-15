@@ -272,6 +272,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		private String getScannerModuleName() {
+			//FIXME what if getModule() returns null? ticket #406
 			return ErlScanner.createScannerModuleName(getModule());
 		}
 	}
