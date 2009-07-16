@@ -97,14 +97,14 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		// TODO remove this later
 		final String OLD_NAME = "erts";
 		final IEclipsePreferences old = new InstanceScope()
-		.getNode("org.erlide.basic/");
+				.getNode("org.erlide.basic/");
 		final String oldVal = old.get("otp_home", null);
 		if (oldVal != null) {
 			ErlLogger.debug("** converting old workspace Erlang settings");
 
 			final RuntimeInfo rt = new RuntimeInfo();
 			final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
-			.getRoot();
+					.getRoot();
 			final String location = wroot.getLocation().toPortableString();
 			rt.setWorkingDir(location);
 			rt.setOtpHome(oldVal);
@@ -123,7 +123,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		//
 
 		IEclipsePreferences root = new DefaultScope()
-		.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+				.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
 		loadPrefs(root);
 		root = getRootPreferenceNode();
 		loadPrefs(root);
@@ -180,7 +180,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		if (getDefaultRuntime() == null) {
 			if (defaultRuntimeName == null && fRuntimes.size() > 0) {
 				defaultRuntimeName = fRuntimes.values().iterator().next()
-				.getName();
+						.getName();
 			}
 		}
 		final RuntimeInfo rt = getRuntime(root.get("erlide", null));
@@ -189,7 +189,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
 	protected IEclipsePreferences getRootPreferenceNode() {
 		return new InstanceScope()
-		.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+				.getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
 	}
 
 	public void setRuntimes(final Collection<RuntimeInfo> elements) {
@@ -308,7 +308,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		final List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
 		for (final RuntimeInfo info : getRuntimes()) {
 			final RuntimeVersion v = info.getVersion();
-			if (v.equals(vsn)) {
+			if (v.isReleaseCompatible(vsn)) {
 				result.add(info);
 			}
 		}
