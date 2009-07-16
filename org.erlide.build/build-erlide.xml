@@ -17,7 +17,8 @@
 	</tstamp>
 
 	<property name="allFeatures" value="org.erlide"/>
-	<property name="topLevelElementId" value="org.erlide.sdk"/>
+	<property name="topLevelElementId" value="org.erlide"/>
+	<!--property name="topLevelElementId" value="org.erlide.sdk"/-->
 	
 	<property name="outputUpdateJars" value="false"/>
 	<property name="buildType" value="N"/>
@@ -47,7 +48,7 @@
     	<copy todir="${buildDirectory}/features">
     		<fileset dir="..">
 			  <include name="org.erlide/**"/>
-    		  <include name="org.erlide.sdk/**"/>
+    		  <!--include name="org.erlide.sdk/**"/-->
 			</fileset>
     	</copy>
     	
