@@ -52,6 +52,9 @@ public interface BackendManager {
 
 	public Collection<ErlideBackend> getAllBackends();
 
+	public boolean isCompatibleBackend(final IProject project,
+			final ErlideBackend b);
+
 	public void addExecutionBackend(final IProject project,
 			final ErlideBackend b);
 

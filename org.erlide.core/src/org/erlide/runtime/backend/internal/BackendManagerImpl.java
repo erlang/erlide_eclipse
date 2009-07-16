@@ -33,6 +33,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.backend.BackendUtil;
 import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.util.EpmdWatcher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
@@ -141,6 +142,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			b = create(info, EnumSet.of(BackendOptions.AUTOSTART), null);
 			buildBackends.put(version, b);
 		}
+		ErlLogger.info("BUILD project %s on %s", project.getName(), info
+				.getVersion());
 		return b;
 	}
 
@@ -268,6 +271,13 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			remoteStatus(name, false, null);
 		}
 
+	}
+
+	public boolean isCompatibleBackend(final IProject project,
+			final ErlideBackend b) {
+		RuntimeVersion projectVersion = ErlangCore
+				.getProjectProperties(project).getRuntimeVersion();
+		return b.getInfo().getVersion().isCompatible(projectVersion);
 	}
 
 	public synchronized void addExecutionBackend(final IProject project,

@@ -40,7 +40,7 @@ event(Id, Msg) ->
 manager(State) ->
 	receive
 		{add, Service, Pid} ->
-			Old = lists:keytake(Service, 1, State),
+			Old = keytake(Service, 1, State),
 			State2 = case Old of 
 						 false ->
 							 [{Service, [Pid]}];
@@ -84,3 +84,12 @@ notify(Service, Message) when is_atom(Service) ->
 		end,
 	[Pid ! Message || Pid <-L],
 	ok.
+
+keytake(Key, N, L) when is_integer(N), N > 0 ->
+    keytake(Key, N, L, []).
+
+keytake(Key, N, [H|T], L) when element(N, H) == Key ->
+    {value, H, lists:reverse(L, T)};
+keytake(Key, N, [H|T], L) ->
+    keytake(Key, N, T, [H|L]);
+keytake(_K, _N, [], _L) -> false.

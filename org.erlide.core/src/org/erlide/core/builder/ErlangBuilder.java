@@ -451,24 +451,24 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// distributeModule(b, beamf, code);
 					// }
 					ErlideBuilder.loadModule(project, beamf);
+
+					if (br != null) {
+						br.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+					}
+					br = project.findMember(new Path(prefs.getOutputDir()));
+					if (br != null) {
+						br.refreshLocal(IResource.DEPTH_ONE, null);
+					}
+
+					// process compilation messages
+					final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+					ErlangBuilderMarkerGenerator.addErrorMarkers(generator,
+							resource, l);
 				} else {
 					ErlLogger.debug(">>>> compile error..."
 							+ resource.getName() + "\n    " + t);
 				}
 
-				if (br != null) {
-					br.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-				}
-				br = project.findMember(new Path(prefs.getOutputDir()));
-				if (br != null) {
-					br.refreshLocal(IResource.DEPTH_ONE, null);
-				}
-
-				// ErlLogger.debug("t = " + t);
-				// process compilation messages
-				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-				ErlangBuilderMarkerGenerator.addErrorMarkers(generator,
-						resource, l);
 			} else {
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("skipping %s", resource.getName());
