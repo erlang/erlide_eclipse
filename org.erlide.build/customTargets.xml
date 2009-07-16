@@ -5,11 +5,11 @@
 	<target name="allElements">
 		<ant antfile="${genericTargets}" target="${target}" >
 			<property name="type" value="feature" />
-			<property name="id" value="org.erlide.sdk" />
+			<property name="id" value="org.erlide" />
 		</ant>
 	</target>
 	
-	<target name="assemble.org.erlide.sdk">
+	<target name="assemble.org.erlide">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
 			<property name="zipargs" value="" />
 		</ant>
@@ -125,7 +125,7 @@
     	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
 
 		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
-		<property name="version.full" value="${versions.org.erlide.sdk}-${buildType}"/>
+		<property name="version.full" value="${versions.org.erlide}-${buildType}"/>
 
        <antcall target="-generateUpdateSite"/>
     	<antcall target="-createNightlyBuildSiteXml"/>
