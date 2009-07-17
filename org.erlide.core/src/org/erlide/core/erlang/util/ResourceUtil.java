@@ -154,7 +154,11 @@ public class ResourceUtil {
 	// }
 
 	private static IResource recursiveFindNamedResource(
-			final IContainer container, final String name) throws CoreException {
+			final IContainer container, final String name,
+			ContainerFilter filter) throws CoreException {
+		if (filter != null && !filter.accept(container)) {
+			return null;
+		}
 		if (!container.isAccessible()) {
 			return null;
 		}
@@ -166,7 +170,7 @@ public class ResourceUtil {
 		for (final IResource element : members) {
 			r = element;
 			if (r instanceof IContainer) {
-				r = recursiveFindNamedResource((IContainer) r, name);
+				r = recursiveFindNamedResource((IContainer) r, name, filter);
 				if (r != null) {
 					return r;
 				}
@@ -177,14 +181,15 @@ public class ResourceUtil {
 
 	// FIXME can't we use erlang model instead?
 	public static IResource recursiveFindNamedResourceWithReferences(
-			final IContainer container, final String name) throws CoreException {
-		final IResource r = recursiveFindNamedResource(container, name);
+			final IContainer container, final String name,
+			ContainerFilter filter) throws CoreException {
+		final IResource r = recursiveFindNamedResource(container, name, filter);
 		if (r != null) {
 			return r;
 		}
 		final IProject project = container.getProject();
 		for (final IProject p : project.getReferencedProjects()) {
-			final IResource r1 = recursiveFindNamedResource(p, name);
+			final IResource r1 = recursiveFindNamedResource(p, name, filter);
 			if (r1 != null) {
 				return r1;
 			}

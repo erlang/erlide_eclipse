@@ -199,7 +199,9 @@ public class ErlModelUtils {
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
-							.getFilenameLastPart());
+							.getFilenameLastPart(),
+							org.erlide.core.erlang.util.PluginUtils
+									.getIncludePathFilter(project));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -249,7 +251,9 @@ public class ErlModelUtils {
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
-							.getFilenameLastPart());
+							.getFilenameLastPart(),
+							org.erlide.core.erlang.util.PluginUtils
+									.getIncludePathFilter(project));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -301,7 +305,9 @@ public class ErlModelUtils {
 			for (final ErlangIncludeFile element : includes) {
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart());
+								element.getFilenameLastPart(),
+								org.erlide.core.erlang.util.PluginUtils
+										.getIncludePathFilter(project));
 				if (re == null) {
 					try {
 						String s = element.getFilename();
@@ -410,7 +416,8 @@ public class ErlModelUtils {
 		IResource r = null;
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
-					modFileName);
+					modFileName, org.erlide.core.erlang.util.PluginUtils
+							.getSourcePathFilter(project));
 			if (r != null
 					&& !org.erlide.core.erlang.util.PluginUtils
 							.isOnSourcePath(r.getParent())) {

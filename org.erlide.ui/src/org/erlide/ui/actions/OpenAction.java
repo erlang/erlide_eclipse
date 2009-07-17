@@ -323,7 +323,8 @@ public class OpenAction extends SelectionDispatchAction {
 		} else if (res.isInclude()) {
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res
-							.getName());
+							.getName(), org.erlide.core.erlang.util.PluginUtils
+							.getIncludePathFilter(project));
 			if (r == null) {
 				try {
 					final String includeFile = ErlModelUtils.findIncludeFile(

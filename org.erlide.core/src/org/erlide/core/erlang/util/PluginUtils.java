@@ -73,6 +73,27 @@ public class PluginUtils {
 		return false;
 	}
 
+	public static boolean isOnIncludePath(IContainer con) {
+		final IProject project = con.getProject();
+		/*
+		 * Get the project settings so that we can find the source nodes
+		 */
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final String[] includePaths = prefs.getIncludeDirs();
+		final IPath path = con.getFullPath();
+		for (final String i : includePaths) {
+			if (i.equals(".")) {
+				if (project.getFullPath().equals(path)) {
+					return true;
+				}
+			} else if (project.getFolder(i).getFullPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean isSourcePathParent(final IFolder con) {
 		final IProject project = con.getProject();
 		/*
@@ -105,5 +126,23 @@ public class PluginUtils {
 			return true;
 		}
 		return false;
+	}
+
+	public static ContainerFilter getIncludePathFilter(IProject project) {
+		return new ContainerFilter() {
+			public boolean accept(IContainer container) {
+				return org.erlide.core.erlang.util.PluginUtils
+						.isOnIncludePath(container);
+			}
+		};
+	}
+
+	public static ContainerFilter getSourcePathFilter(IProject project) {
+		return new ContainerFilter() {
+			public boolean accept(IContainer container) {
+				return org.erlide.core.erlang.util.PluginUtils
+						.isOnSourcePath(container);
+			}
+		};
 	}
 }

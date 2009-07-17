@@ -122,7 +122,9 @@ public class ModelUtils {
 			IProject project = null;
 			for (final IProject p : projects) {
 				re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
-						element.getFilenameLastPart());
+						element.getFilenameLastPart(),
+						org.erlide.core.erlang.util.PluginUtils
+								.getIncludePathFilter(project));
 				if (re != null) {
 					project = p;
 					break;
@@ -137,7 +139,8 @@ public class ModelUtils {
 						s = findIncludeFile(project, s, externalIncludes);
 					}
 					re = ResourceUtil.recursiveFindNamedResourceWithReferences(
-							project, s);
+							project, s, org.erlide.core.erlang.util.PluginUtils
+									.getIncludePathFilter(project));
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
