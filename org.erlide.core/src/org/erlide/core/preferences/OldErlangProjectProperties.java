@@ -308,6 +308,9 @@ public class OldErlangProjectProperties implements IPreferenceChangeListener {
 			if (s.equals(f)) {
 				return true;
 			}
+			if (fullPath.segmentCount() == 1 && s.equals(".")) {
+				return true;
+			}
 		}
 		return false;
 	}

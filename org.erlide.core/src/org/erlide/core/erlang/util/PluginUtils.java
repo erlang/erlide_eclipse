@@ -62,7 +62,11 @@ public class PluginUtils {
 				.getSourceDirsString());
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
-			if (project.getFolder(i).getFullPath().equals(path)) {
+			if (i.equals(".")) {
+				if (project.getFullPath().equals(path)) {
+					return true;
+				}
+			} else if (project.getFolder(i).getFullPath().equals(path)) {
 				return true;
 			}
 		}
@@ -93,8 +97,9 @@ public class PluginUtils {
 		}
 		final String globalTraceValue = Platform
 				.getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION);
-		final String value = Platform.getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION
-				+ "/" + traceOption);
+		final String value = Platform
+				.getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION + "/"
+						+ traceOption);
 		if (null != globalTraceValue && globalTraceValue.equals("true")
 				&& null != value && value.equals("true")) {
 			return true;
