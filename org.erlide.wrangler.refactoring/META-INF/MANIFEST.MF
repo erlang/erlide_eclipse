@@ -25,6 +25,7 @@ Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi
    org.eclipse.swt.layout,
    org.eclipse.swt.widgets,
    org.eclipse.ui",
+ org.erlide.wrangler.refactoring.selection,
  org.erlide.wrangler.refactoring.util,
  org.incava.util.diff;x-internal:=true
 Bundle-Localization: plugin
