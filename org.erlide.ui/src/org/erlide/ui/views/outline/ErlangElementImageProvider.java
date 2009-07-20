@@ -30,11 +30,9 @@ import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
- * Default strategy of the Java plugin for the construction of Java element
+ * Default strategy of the Erlang plugin for the construction of Erlang element
  * icons.
  */
-/* FIXME: Add usage or remove DESC_OBJ_PROJECT_* */
-/* FIXME: Add usage or remove useLightIcons */
 @SuppressWarnings("unused")
 public class ErlangElementImageProvider {
 

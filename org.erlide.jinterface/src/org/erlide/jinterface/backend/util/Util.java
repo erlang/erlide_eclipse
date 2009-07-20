@@ -694,13 +694,15 @@ public final class Util {
 	 * @return a boolean
 	 */
 	public static boolean isValidModuleFileName(final String name) {
-		// FIXME
-		return true;
+		if (!name.endsWith(".erl")) {
+			return false;
+		}
+		int pos = name.lastIndexOf('.');
+		return isValidModuleName(name.substring(0, pos));
 	}
 
 	public static boolean isValidModuleName(final String name) {
-		// FIXME
-		return true;
+		return name.matches("[a-z][a-zA-Z0-9_]*");
 	}
 
 	// /**

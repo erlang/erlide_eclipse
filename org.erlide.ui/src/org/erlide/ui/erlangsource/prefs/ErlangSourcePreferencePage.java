@@ -26,7 +26,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
 import org.eclipse.jface.text.templates.persistence.TemplateReaderWriter;
@@ -498,16 +497,6 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 				return list.toArray();
 			}
 			return new Object[0];
-		}
-
-		/* FIXME: Is convert needed ? */
-		@SuppressWarnings("unused")
-		private TemplatePersistenceData[] convert(final Template[] templates) {
-			final TemplatePersistenceData[] temp = new TemplatePersistenceData[templates.length];
-			for (int i = 0; i < templates.length; i++) {
-				temp[i] = new TemplatePersistenceData(templates[i], true);
-			}
-			return temp;
 		}
 
 		public Object getParent(final Object element) {

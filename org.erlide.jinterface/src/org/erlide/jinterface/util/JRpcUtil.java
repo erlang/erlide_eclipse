@@ -220,11 +220,10 @@ public class JRpcUtil {
 							"invocation of %s failed: %s", cls.getName(), e
 									.getMessage())));
 		} catch (final IllegalAccessException e) {
-			e.printStackTrace();
+			ErlLogger.error(e);
 			return null;
 		} catch (final SignatureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErlLogger.error(e);
 			return null;
 		}
 

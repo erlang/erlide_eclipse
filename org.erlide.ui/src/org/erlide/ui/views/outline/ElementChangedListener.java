@@ -61,9 +61,7 @@ class ElementChangedListener implements IElementChangedListener {
 		}
 	}
 
-	/* FIXME: isPossibleStructuralChange -- needed, or rudiment? */
-	@SuppressWarnings("unused")
-	private boolean isPossibleStructuralChange(final IErlElementDelta cuDelta) {
+	protected boolean isPossibleStructuralChange(final IErlElementDelta cuDelta) {
 		if (cuDelta.getKind() != IErlElementDelta.CHANGED) {
 			return true; // add or remove
 		}

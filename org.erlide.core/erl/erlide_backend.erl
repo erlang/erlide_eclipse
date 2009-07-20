@@ -95,7 +95,6 @@ eval(Str) ->
 	eval(Str, erl_eval:new_bindings()).
 
 eval(Str, Bindings) ->
-	%% TODO use try...catch here!
 	case catch eval_raw(Str, Bindings) of
 		{'EXIT', Reason} ->
 			{error, Reason};

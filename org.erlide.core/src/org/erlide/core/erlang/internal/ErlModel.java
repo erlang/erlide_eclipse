@@ -607,9 +607,18 @@ public class ErlModel extends Openable implements IErlModel {
 		final IPreferencesService service = Platform.getPreferencesService();
 		final String key = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? "default_external_includes"
 				: "default_external_modules";
-		// String pluginId = ErlangPlugin.PLUGIN_ID; FIXME check w. SGSN if we
-		// can change to this id instead!
-		final String pluginId = "org.erlide.ui";
+		String result = getExternal(project, externalFlag, service, key,
+				"org.erlide.ui");
+		if ("".equals(result)) {
+			result = getExternal(project, externalFlag, service, key,
+					ErlangPlugin.PLUGIN_ID);
+		}
+		return result;
+	}
+
+	private String getExternal(final IErlProject project,
+			final int externalFlag, final IPreferencesService service,
+			final String key, final String pluginId) {
 		final String s = service.getString(pluginId, key, "", null);
 		if (s.length() > 0) {
 			ErlLogger.debug("%s: '%s'", key, s);

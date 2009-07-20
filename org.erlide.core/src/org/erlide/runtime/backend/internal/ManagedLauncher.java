@@ -16,7 +16,7 @@ import org.erlide.runtime.backend.ErtsProcess;
 public class ManagedLauncher implements IDisposable {
 
 	Process fRuntime;
-	private ILaunch launch;
+	private final ILaunch launch;
 
 	public ManagedLauncher(ILaunch aLaunch) {
 		launch = aLaunch;
@@ -78,9 +78,7 @@ public class ManagedLauncher implements IDisposable {
 							} catch (final IOException e) {
 								ErlLogger.warn(e);
 							}
-
 						}
-
 						// FIXME backend.setExitStatus(v);
 					} catch (final InterruptedException e) {
 						ErlLogger.warn("Backend watcher was interrupted");

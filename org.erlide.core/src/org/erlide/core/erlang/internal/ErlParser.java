@@ -472,8 +472,8 @@ public final class ErlParser {
 	private static void setPos(final SourceRefElement e, final int line,
 			final int lastLine, final int ofs, final int len) {
 		e.setSourceRangeStart(ofs);
-		e.setSourceRangeEnd(ofs + len - 1); // FIXME: why is the token 1
-		// char too long?
+		e.setSourceRangeEnd(ofs + len - 1);
+		// FIXME: why is the token 1 char too long?
 		e.setLineStart(line);
 		e.setLineEnd(lastLine);
 	}

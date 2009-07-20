@@ -129,7 +129,7 @@ public class EdocView extends AbstractInfoView {
 			fControl = control;
 			fSelectionProvider = selectionProvider;
 
-			// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+			// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 			setEnabled(!fIsUsingBrowserWidget);
 
 			this.setText("Select All");
@@ -148,8 +148,7 @@ public class EdocView extends AbstractInfoView {
 			if (fControl instanceof StyledText) {
 				((StyledText) fControl).selectAll();
 			} else {
-				// FIXME: see
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+				// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 				// ((Browser)fControl).selectAll();
 				if (fSelectionProvider != null) {
 					fSelectionProvider.fireSelectionChanged();
@@ -189,8 +188,7 @@ public class EdocView extends AbstractInfoView {
 							}
 						});
 			} else {
-				// FIXME: see
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+				// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 				// ((Browser)fControl).addSelectionListener(new
 				// SelectionAdapter() {
 				// public void widgetSelected(SelectionEvent e) {
@@ -232,8 +230,7 @@ public class EdocView extends AbstractInfoView {
 						.getSelectionText());
 				return new TextSelection(document, 0, document.getLength());
 			}
-			// FIXME: see
-			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+			// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 			return StructuredSelection.EMPTY;
 		}
 
@@ -349,7 +346,7 @@ public class EdocView extends AbstractInfoView {
 	 */
 	@Override
 	protected IAction getSelectAllAction() {
-		// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+		// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 		if (fIsUsingBrowserWidget) {
 			return null;
 		}
@@ -365,7 +362,7 @@ public class EdocView extends AbstractInfoView {
 	 */
 	@Override
 	protected IAction getCopyToClipboardAction() {
-		// FIXME: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+		// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 		if (fIsUsingBrowserWidget) {
 			return null;
 		}

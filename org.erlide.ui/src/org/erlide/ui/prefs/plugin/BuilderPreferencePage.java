@@ -95,7 +95,7 @@ public class BuilderPreferencePage extends FieldEditorPreferencePage implements
 		// pathZ.setStringValue(prefs.getPathZ());
 
 		// longName.g(prefs.getErtsPrefs().getExtraErtsArgs());
-		// FIXME setStringValue shouldn't be used
+		// setStringValue shouldn't be used
 		// extra.setStringValue(prefs.getExtraErtsArgs());
 
 	}

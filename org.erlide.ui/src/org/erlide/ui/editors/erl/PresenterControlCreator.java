@@ -191,8 +191,7 @@ public final class PresenterControlCreator extends
 					.getInput();
 			fInfoControl.notifyDelayedInputChange(null);
 			fInfoControl.dispose();
-			// try {
-			// // FIXME: add hover location to editor navigation history?
+			// TODO: add hover location to editor navigation history?
 			try {
 				final Object element = infoInput.getInputElement();
 				if (element instanceof IErlElement) {
@@ -212,11 +211,6 @@ public final class PresenterControlCreator extends
 			} catch (final ErlModelException e) {
 				e.printStackTrace();
 			}
-			// } catch (PartInitException e) {
-			// ErlLogger.error(e);
-			// } catch (ErlModelException e) {
-			// ErlLogger.error(e);
-			// }
 		}
 	}
 

@@ -254,23 +254,6 @@ public class ErlangElementLabels {
 	 */
 	public static final String DEFAULT_PACKAGE = "(default package)";
 
-	/*
-	 * FIXME: Package name compression
-	 */
-	/*
-	 * private static String fgPkgNamePattern = ""; //$NON-NLS-1$
-	 * 
-	 * private static String fgPkgNamePrefix;
-	 * 
-	 * private static String fgPkgNamePostfix;
-	 * 
-	 * private static int fgPkgNameChars;
-	 * 
-	 * private static final int fgPkgNameLength = -1;
-	 * 
-	 * private static boolean getFlag(int flags, int flag) { return (flags &
-	 * flag) != 0; }
-	 */
 	private ErlangElementLabels() {
 	}
 

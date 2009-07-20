@@ -162,7 +162,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 			// JavaPlugin.getDefault().getCompilationUnitDocumentProvider()
 			// .addGlobalAnnotationModelListener(this);
-			// FIXME anv�nd n�n slags Erlide model-listener
+			// FIXME use some kind of Erlide model-listener
 		}
 		fListeners.add(listener);
 	}
@@ -176,7 +176,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 			// JavaPlugin.getDefault().getCompilationUnitDocumentProvider()
 			// .removeGlobalAnnotationModelListener(this);
-			// FIXME anv�nd n�n slags Erlide model-listener
+			// FIXME use some kind of Erlide model-listener
 		}
 	}
 
