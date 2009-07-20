@@ -139,10 +139,10 @@ public class RuntimeInfo {
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean useLongName = System.getProperty("erlide.longname",
-		"true").equals("true");
+				"true").equals("true");
 		final String nameTag = useLongName ? " -name " : " -sname ";
 		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
-		+ cky;
+				+ cky;
 		return cmd;
 	}
 
@@ -204,7 +204,7 @@ public class RuntimeInfo {
 
 	public static boolean validateNodeName(final String name) {
 		return name != null
-		&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+				&& name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
 	}
 
 	public static boolean validateLocation(final String path) {

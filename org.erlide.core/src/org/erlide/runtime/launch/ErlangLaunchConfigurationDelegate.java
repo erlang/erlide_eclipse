@@ -45,7 +45,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -87,24 +86,29 @@ public class ErlangLaunchConfigurationDelegate extends
 	private void doLaunch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final boolean internal) throws CoreException {
 		// try {
-		final String prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS,
-				"").trim();
-		final String[] projectNames = prjs.length() == 0 ? new String[] {}
-				: prjs.split(";");
+		String prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "")
+				.trim();
+		String[] projectNames = prjs.length() == 0 ? new String[] {} : prjs
+				.split(";");
 		final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
 				"").trim();
 		final String function = config.getAttribute(
 				ErlLaunchAttributes.FUNCTION, "").trim();
 		final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
 				"").trim();
-		final String runtime = config.getAttribute(
-				ErlLaunchAttributes.RUNTIME_NAME, "").trim();
-		final String nodeName = config.getAttribute(
-				ErlLaunchAttributes.NODE_NAME, "").trim();
+		String runtime = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+				"").trim();
+		String nodeName = config
+				.getAttribute(ErlLaunchAttributes.NODE_NAME, "").trim();
 		String cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, "")
 				.trim();
 		final boolean startMe = internal
 				|| config.getAttribute(ErlLaunchAttributes.START_ME, false);
+		String workingDir = config.getAttribute(
+				ErlLaunchAttributes.WORKING_DIR,
+				ErlLaunchAttributes.DEFAULT_WORKING_DIR).trim();
+		String xtraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
+				"").trim();
 		final int debugFlags = config.getAttribute(
 				ErlLaunchAttributes.DEBUG_FLAGS,
 				ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
@@ -132,6 +136,15 @@ public class ErlangLaunchConfigurationDelegate extends
 			cookie = "erlide";
 		}
 		rt.setCookie(cookie);
+		File d = new File(workingDir);
+		if (d.isAbsolute()) {
+			rt.setWorkingDir(workingDir);
+		} else {
+			String wspace = ResourcesPlugin.getWorkspace().getRoot()
+					.getLocation().toPortableString();
+			rt.setWorkingDir(wspace + "/" + workingDir);
+		}
+		rt.setArgs(xtraArgs);
 
 		final EnumSet<BackendOptions> options = EnumSet
 				.noneOf(BackendOptions.class);
@@ -152,6 +165,8 @@ public class ErlangLaunchConfigurationDelegate extends
 		ErlLogger.info("  runtime: " + runtime);
 		ErlLogger.info("  node name: " + nodeName);
 		ErlLogger.info("  cookie: " + cookie);
+		ErlLogger.info("  workdir: " + rt.getWorkingDir());
+		ErlLogger.info("  args: " + xtraArgs);
 		ErlLogger.info("  debugFlags: " + debugFlags);
 		ErlLogger.info("  interpretedModules: " + interpretedModules);
 		if (startMe) {
@@ -359,18 +374,6 @@ public class ErlangLaunchConfigurationDelegate extends
 			ErlLogger.warn(e);
 		}
 
-	}
-
-	public String getCmdLine(final ILaunchConfiguration configuration) {
-		try {
-			return configuration.getAttribute(IProcess.ATTR_CMDLINE, "");
-		} catch (final CoreException e) {
-			return "";
-		}
-	}
-
-	protected String getAdditionalArgs(final ILaunchConfiguration configuration) {
-		return "";
 	}
 
 	public void launchInternal(final ILaunchConfiguration configuration,

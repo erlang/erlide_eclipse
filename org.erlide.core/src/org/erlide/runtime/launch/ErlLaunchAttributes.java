@@ -33,4 +33,10 @@ public interface ErlLaunchAttributes {
 	// IErlDebugConstants
 
 	final String DEBUG_INTERPRET_MODULES = prefix + ".interpretModules";
+
+	final String WORKING_DIR = prefix + ".working_dir";
+	final String DEFAULT_WORKING_DIR = ".";
+
+	final String EXTRA_ARGS = prefix + ".extra_args";
+	final String DEFAULT_EXTRA_ARGS = "";
 }

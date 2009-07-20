@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.launch;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -39,6 +41,8 @@ import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
+	private Text argsText;
+	private Text workingDirText;
 	private Combo runtimesCombo;
 	private Button startNodeCheckbox;
 	private Text cookieText;
@@ -58,6 +62,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				GridData.FILL_HORIZONTAL);
 		final GridData gd_runtimeGroup = new GridData(SWT.FILL, SWT.CENTER,
 				false, false);
+		gd_runtimeGroup.heightHint = 252;
 		runtimeGroup.setLayoutData(gd_runtimeGroup);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -138,6 +143,40 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 
+		final Label workingDirectoryLabel = new Label(runtimeGroup, SWT.NONE);
+		final GridData gd_workingDirectoryLabel = new GridData(SWT.RIGHT,
+				SWT.CENTER, true, false);
+		workingDirectoryLabel.setLayoutData(gd_workingDirectoryLabel);
+		workingDirectoryLabel.setText("Working directory");
+
+		workingDirText = new Text(runtimeGroup, SWT.BORDER);
+		workingDirText.setToolTipText("may be relative to the workspace");
+		final GridData gd_workingDirText = new GridData(SWT.FILL, SWT.CENTER,
+				true, false);
+		workingDirText.setLayoutData(gd_workingDirText);
+		workingDirText.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
+			public void modifyText(final ModifyEvent e) {
+				updateLaunchConfigurationDialog();
+			}
+		});
+
+		final Label extraArgumentsLabel = new Label(runtimeGroup, SWT.NONE);
+		extraArgumentsLabel.setText("Extra arguments");
+
+		argsText = new Text(runtimeGroup, SWT.BORDER);
+		argsText
+				.setToolTipText("as on the command line\nBe careful about proper quoting!");
+		final GridData gd_argsText = new GridData(SWT.FILL, SWT.CENTER, true,
+				false);
+		argsText.setLayoutData(gd_argsText);
+		argsText.addModifyListener(new ModifyListener() {
+			@SuppressWarnings("synthetic-access")
+			public void modifyText(final ModifyEvent e) {
+				updateLaunchConfigurationDialog();
+			}
+		});
+
 		final Label aLabel = new Label(runtimeGroup, SWT.WRAP);
 		aLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,
 				2, 1));
@@ -150,6 +189,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				ErlLaunchAttributes.DEFAULT_RUNTIME_NAME);
 		config.setAttribute(ErlLaunchAttributes.NODE_NAME, "");
 		config.setAttribute(ErlLaunchAttributes.COOKIE, "");
+		config.setAttribute(ErlLaunchAttributes.WORKING_DIR,
+				ErlLaunchAttributes.DEFAULT_WORKING_DIR);
+		config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, "");
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
@@ -181,6 +223,21 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		} catch (final CoreException e) {
 			startNodeCheckbox.setSelection(false);
 		}
+		try {
+			final String wdir = config.getAttribute(
+					ErlLaunchAttributes.WORKING_DIR,
+					ErlLaunchAttributes.DEFAULT_WORKING_DIR);
+			workingDirText.setText(wdir);
+		} catch (final CoreException e) {
+			workingDirText.setText(ErlLaunchAttributes.DEFAULT_WORKING_DIR);
+		}
+		try {
+			final String xtra = config.getAttribute(
+					ErlLaunchAttributes.EXTRA_ARGS, "");
+			argsText.setText(xtra);
+		} catch (final CoreException e) {
+			argsText.setText("");
+		}
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
@@ -190,6 +247,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				.getSelection());
 		config.setAttribute(ErlLaunchAttributes.NODE_NAME, nameText.getText());
 		config.setAttribute(ErlLaunchAttributes.COOKIE, cookieText.getText());
+		config.setAttribute(ErlLaunchAttributes.WORKING_DIR, workingDirText
+				.getText());
+		config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, argsText.getText());
 	}
 
 	public String getName() {
@@ -198,10 +258,31 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public boolean isValid(final ILaunchConfiguration config) {
+		setErrorMessage(null);
 		if (!RuntimeInfo.validateNodeName(nameText.getText())) {
+			setErrorMessage(String.format("Node name '%s' is invalid.",
+					nameText.getText()));
 			return false;
 		}
+		String workingDir = workingDirText.getText();
+		File d = new File(workingDir);
+		if (d.isAbsolute()) {
+			if (!d.exists()) {
+				setErrorMessage(String.format(
+						"Working dir '%s' doesn't exist.", workingDir));
+				return false;
+			}
+		} else {
+			String wspace = ResourcesPlugin.getWorkspace().getRoot()
+					.getLocation().toPortableString();
+			workingDir = wspace + "/" + workingDir;
+			d = new File(workingDir);
+			if (!d.exists()) {
+				setErrorMessage(String.format(
+						"Working dir '%s' doesn't exist.", workingDir));
+				return false;
+			}
+		}
 		return true;
-
 	}
 }
