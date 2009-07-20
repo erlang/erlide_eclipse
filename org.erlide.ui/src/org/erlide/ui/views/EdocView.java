@@ -70,7 +70,7 @@ public class EdocView extends AbstractInfoView {
 	 */
 	private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
-	private static final boolean WARNING_DIALOG_ENABLED = false;
+	private static final boolean WARNING_DIALOG_ENABLED = true;
 
 	// /** Flags used to render a label in the text widget. */
 	// private static final long LABEL_FLAGS=

@@ -272,7 +272,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		private String getScannerModuleName() {
-			//FIXME what if getModule() returns null? ticket #406
+			// FIXME what if getModule() returns null? ticket #406
 			return ErlScanner.createScannerModuleName(getModule());
 		}
 	}
@@ -1490,12 +1490,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final ITextSelection selection = (ITextSelection) getSelectionProvider()
 				.getSelection();
 		final Position position = new Position(0, 0);
-		if (false) {
-			getNextAnnotation(selection.getOffset(), selection.getLength(),
-					forward, position);
-			selectAndReveal(position.getOffset(), position.getLength());
-			return null;
-		}
 		final Annotation annotation = getNextAnnotation(selection.getOffset(),
 				selection.getLength(), forward, position);
 		setStatusLineErrorMessage(null);

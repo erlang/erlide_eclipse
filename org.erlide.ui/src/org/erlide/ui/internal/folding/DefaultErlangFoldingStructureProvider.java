@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +63,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
 		private IErlElement fErlElement;
 
-		private boolean fIsComment;
+		private final boolean fIsComment;
 
 		public ErlangProjectionAnnotation(final IErlElement element,
 				final boolean isCollapsed, final boolean isComment) {
@@ -1090,29 +1089,10 @@ public class DefaultErlangFoldingStructureProvider implements
 			if (element instanceof IErlModule && element != fModule) {
 				return;
 			}
-			// TODO anropa processDelta ist�llet!!!
-			if (!true) {
-				final Map<ErlangProjectionAnnotation, Position> additions = new LinkedHashMap<ErlangProjectionAnnotation, Position>();
-				computeAdditions(fModule, additions);
-				/*
-				 * Minimize the events being sent out - as this happens in the
-				 * UI thread merge everything into one call.
-				 */
-				final List<Annotation> removals = new LinkedList<Annotation>();
-				@SuppressWarnings("unchecked")
-				final Iterator<Annotation> existing = model
-						.getAnnotationIterator();
-				while (existing.hasNext()) {
-					removals.add(existing.next());
-				}
-				model.replaceAnnotations(removals
-						.toArray(new Annotation[removals.size()]), additions);
-			} else {
-				final ErlElementDelta d = new ErlElementDelta(
-						IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-						fModule);
-				processDelta(d);
-			}
+			final ErlElementDelta d = new ErlElementDelta(
+					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+					fModule);
+			processDelta(d);
 		} finally {
 			fCachedDocument = null;
 			fCachedModel = null;

@@ -732,12 +732,7 @@ public class ErlangProjectImportWizardPage extends
 			public boolean hasChildren(final Object o) {
 				if (o instanceof MinimizedFileSystemElement) {
 					final MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
-					if (true) {
-						return getChildren(element).length > 0;
-					}
-
-					// If we have not populated then wait until asked
-					return true;
+					return getChildren(element).length > 0;
 				}
 				return false;
 			}

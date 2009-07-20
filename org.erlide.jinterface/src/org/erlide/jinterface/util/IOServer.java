@@ -37,7 +37,7 @@ public class IOServer implements Runnable {
 	}
 
 	public void run() {
-		final boolean done = false;
+		boolean done = false;
 		do {
 			OtpErlangObject msg;
 			try {
