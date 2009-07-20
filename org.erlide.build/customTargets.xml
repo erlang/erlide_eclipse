@@ -1,4 +1,4 @@
-<project name="Build specific targets and properties" default="noDefault">
+<project name="Build specific targets and properties">
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${builder}/ant-contrib.jar" />
 	<!--taskdef resource="org/pluginbuilder/anttasks/pluginbuildertasks.properties" classpath="${builder}/pluginbuilder-anttasks.jar" /-->
 

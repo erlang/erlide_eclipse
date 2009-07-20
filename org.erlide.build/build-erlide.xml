@@ -12,6 +12,8 @@
 	<property name="javacTarget" value="1.5"/>
 	<property name="javacDebugInfo" value="true"/>
 	
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
 	</tstamp>
