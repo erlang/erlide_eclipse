@@ -24,9 +24,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.DebugUITools;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.BadLocationException;
@@ -62,6 +59,9 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.eclipse.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.HTMLPrinter;
+import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -185,7 +185,6 @@ public class ErlTextHover implements ITextHover,
 			fInformationPresenterControlCreator = informationPresenterControlCreator;
 		}
 
-		@SuppressWarnings("restriction")
 		@Override
 		protected IInformationControl doCreateInformationControl(
 				final Shell parent) {
@@ -230,7 +229,6 @@ public class ErlTextHover implements ITextHover,
 		return internalGetHoverInfo(fEditor, fModule, textViewer, hoverRegion);
 	}
 
-	@SuppressWarnings("restriction")
 	private static ErlBrowserInformationControlInput internalGetHoverInfo(
 			final ErlangEditor editor, final IErlModule module,
 			final ITextViewer textViewer, final IRegion hoverRegion) {

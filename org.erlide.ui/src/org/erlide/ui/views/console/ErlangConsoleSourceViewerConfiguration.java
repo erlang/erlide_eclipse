@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.views.console;
 
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
@@ -34,6 +33,7 @@ import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
 import org.erlide.ui.editors.erl.ErlangAnnotationHover;
 import org.erlide.ui.editors.erl.ErlangPairMatcher;
+import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 
 final class ErlangConsoleSourceViewerConfiguration extends
 		TextSourceViewerConfiguration {
@@ -100,7 +100,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 			final ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
 
-			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				return new DefaultInformationControl(parent,

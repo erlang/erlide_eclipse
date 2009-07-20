@@ -2,11 +2,14 @@ package org.erlide.debug.ui.views;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.actions.ActionMessages;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -31,6 +34,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
@@ -270,12 +274,11 @@ public class DebuggerTraceView extends ViewPart implements
 				try {
 					part = page.openEditor(input, editorId);
 				} catch (final PartInitException e) {
-					DebugUIPlugin
-							.errorDialog(
-									dwindow.getShell(),
-									ActionMessages.OpenBreakpointMarkerAction_Go_to_Breakpoint_1,
-									ActionMessages.OpenBreakpointMarkerAction_Exceptions_occurred_attempting_to_open_the_editor_for_the_breakpoint_resource_2,
-									e); // 
+					errorDialog(
+							dwindow.getShell(),
+							"Go to File",
+							"Exceptions occurred attempting to open the editor for the breakpoint resource",
+							e); // 
 				}
 			}
 		}
@@ -583,4 +586,25 @@ public class DebuggerTraceView extends ViewPart implements
 		}
 		return null;
 	}
+
+	public static void errorDialog(Shell shell, String title, String message,
+			Throwable t) {
+		IStatus status;
+		if (t instanceof CoreException) {
+			status = ((CoreException) t).getStatus();
+			// if the 'message' resource string and the IStatus' message are the
+			// same,
+			// don't show both in the dialog
+			if (status != null && message.equals(status.getMessage())) {
+				message = null;
+			}
+		} else {
+			status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+					IDebugUIConstants.INTERNAL_ERROR,
+					"Error within Debug UI: ", t); //$NON-NLS-1$
+			ErlideUIPlugin.log(status);
+		}
+		ErrorDialog.openError(shell, title, message, status);
+	}
+
 }

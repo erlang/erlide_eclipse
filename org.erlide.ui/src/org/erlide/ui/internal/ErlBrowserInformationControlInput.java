@@ -11,15 +11,14 @@
 package org.erlide.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.ui.util.eclipse.BrowserInformationControlInput;
 
 /**
  * Browser input for Javadoc hover.
  * 
  * @since 3.4
  */
-@SuppressWarnings("restriction")
 public class ErlBrowserInformationControlInput extends
 		BrowserInformationControlInput {
 

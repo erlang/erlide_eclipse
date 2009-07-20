@@ -12,10 +12,6 @@ package org.erlide.ui.editors.erl;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.internal.text.html.BrowserInformationControlInput;
-import org.eclipse.jface.internal.text.html.BrowserInput;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -37,6 +33,10 @@ import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
+import org.erlide.ui.util.eclipse.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.BrowserInformationControlInput;
+import org.erlide.ui.util.eclipse.BrowserInput;
+import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 import org.erlide.ui.views.EdocView;
 
 import erlang.OpenResult;
@@ -47,7 +47,6 @@ public final class PresenterControlCreator extends
 	/**
 	 * Action to go back to the previous input in the hover control.
 	 */
-	@SuppressWarnings("restriction")
 	private static final class BackAction extends Action {
 		private final BrowserInformationControl fInfoControl;
 
@@ -92,7 +91,6 @@ public final class PresenterControlCreator extends
 	/**
 	 * Action to go forward to the next input in the hover control.
 	 */
-	@SuppressWarnings("restriction")
 	private static final class ForwardAction extends Action {
 		private final BrowserInformationControl fInfoControl;
 
@@ -136,7 +134,6 @@ public final class PresenterControlCreator extends
 	/**
 	 * Action that shows the current hover contents in the Javadoc view.
 	 */
-	@SuppressWarnings("restriction")
 	private static final class ShowInEdocViewAction extends Action {
 		private final BrowserInformationControl fInfoControl;
 
@@ -171,7 +168,6 @@ public final class PresenterControlCreator extends
 	 * 
 	 * @since 3.4
 	 */
-	@SuppressWarnings("restriction")
 	private static final class OpenDeclarationAction extends Action {
 		private final BrowserInformationControl fInfoControl;
 
@@ -214,7 +210,6 @@ public final class PresenterControlCreator extends
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	protected IInformationControl doCreateInformationControl(final Shell parent) {
 		if (BrowserInformationControl.isAvailable(parent)) {

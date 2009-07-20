@@ -12,8 +12,6 @@
 package org.erlide.ui.editors.erl;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -38,13 +36,15 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
+import org.erlide.ui.util.eclipse.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 
 /**
  * The editor configurator
@@ -236,7 +236,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			final ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
 
-			@SuppressWarnings("restriction")
 			public IInformationControl createInformationControl(
 					final Shell parent) {
 				if (parent.getText().length() == 0
@@ -315,10 +314,21 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		return new IInformationControlCreator() {
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				return new DefaultInformationControl(parent, EditorsPlugin
-						.getAdditionalInfoAffordanceString());
+				String affordance = getAdditionalInfoAffordanceString();
+				return new DefaultInformationControl(parent, affordance);
 			}
 		};
+	}
+
+	private static final String getAdditionalInfoAffordanceString() {
+		if (!EditorsUI
+				.getPreferenceStore()
+				.getBoolean(
+						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
+			return null;
+		}
+
+		return "Press 'Tab' from proposal table or click for focus";
 	}
 
 }

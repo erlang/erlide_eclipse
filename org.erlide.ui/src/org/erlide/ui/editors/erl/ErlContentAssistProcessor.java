@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -52,6 +51,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.eclipse.HTMLPrinter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -457,7 +457,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return result;
 	}
 
-	@SuppressWarnings("restriction")
 	private void addFunctionProposalsWithDoc(final int offset,
 			final String aprefix, final List<ICompletionProposal> result,
 			final OtpErlangObject res, final IErlImport erlImport,
