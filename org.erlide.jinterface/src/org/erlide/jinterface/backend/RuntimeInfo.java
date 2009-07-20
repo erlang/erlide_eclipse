@@ -34,6 +34,8 @@ public class RuntimeInfo {
 
 	private String suffix = "";
 
+	private boolean useLongName = true;
+
 	public RuntimeInfo() {
 		super();
 		codePath = new ArrayList<String>();
@@ -56,6 +58,7 @@ public class RuntimeInfo {
 		rt.workingDir = o.workingDir;
 		rt.nodeName = o.nodeName;
 		rt.version = o.version;
+		rt.useLongName = o.useLongName;
 		return rt;
 	}
 
@@ -138,9 +141,10 @@ public class RuntimeInfo {
 		String cmd = String.format(msg, erl, pa, pz, getArgs());
 		String cky = getCookie();
 		cky = cky == null ? "" : " -setcookie " + cky;
-		final boolean useLongName = System.getProperty("erlide.longname",
-				"true").equals("true");
-		final String nameTag = useLongName ? " -name " : " -sname ";
+		final boolean globalLongName = System.getProperty("erlide.longname",
+				"none").equals("true");
+		final String nameTag = (useLongName || globalLongName) ? " -name "
+				: " -sname ";
 		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
 				+ cky;
 		return cmd;
@@ -287,4 +291,12 @@ public class RuntimeInfo {
 		return version;
 	}
 
+	public void useLongName(boolean longName) {
+		useLongName = longName;
+	}
+
+	public boolean getLongName() {
+		return useLongName;
+
+	}
 }

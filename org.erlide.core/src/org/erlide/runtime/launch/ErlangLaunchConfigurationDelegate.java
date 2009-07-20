@@ -102,6 +102,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				.getAttribute(ErlLaunchAttributes.NODE_NAME, "").trim();
 		String cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, "")
 				.trim();
+		final boolean longName = config.getAttribute(
+				ErlLaunchAttributes.USE_LONG_NAME, true);
+
 		final boolean startMe = internal
 				|| config.getAttribute(ErlLaunchAttributes.START_ME, false);
 		String workingDir = config.getAttribute(
@@ -151,6 +154,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			options.add(BackendOptions.DEBUG);
 		}
+		rt.useLongName(longName);
 		if (startMe) {
 			options.add(BackendOptions.AUTOSTART);
 		}
@@ -164,6 +168,7 @@ public class ErlangLaunchConfigurationDelegate extends
 
 		ErlLogger.info("  runtime: " + runtime);
 		ErlLogger.info("  node name: " + nodeName);
+		ErlLogger.info("  long name: " + longName);
 		ErlLogger.info("  cookie: " + cookie);
 		ErlLogger.info("  workdir: " + rt.getWorkingDir());
 		ErlLogger.info("  args: " + xtraArgs);

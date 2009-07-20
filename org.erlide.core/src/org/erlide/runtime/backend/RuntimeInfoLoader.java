@@ -20,8 +20,9 @@ public class RuntimeInfoLoader {
 	static final String ARGS = "args";
 	static final String WORKING_DIR = "workingDir";
 	static final String MANAGED = "managed";
+	static final String LONG_NAME = "longName";
 
-	private RuntimeInfo info;
+	private final RuntimeInfo info;
 
 	public RuntimeInfoLoader(RuntimeInfo info) {
 		this.info = info;
@@ -35,6 +36,7 @@ public class RuntimeInfoLoader {
 		node.put(ARGS, info.getArgs());
 		node.put(WORKING_DIR, info.getWorkingDir());
 		node.putBoolean(MANAGED, info.isManaged());
+		node.putBoolean(LONG_NAME, info.getLongName());
 	}
 
 	public void load(final Preferences node) {
@@ -48,6 +50,7 @@ public class RuntimeInfoLoader {
 			info.setWorkingDir(wd);
 		}
 		info.setManaged(node.getBoolean(MANAGED, true));
+		info.useLongName(node.getBoolean(LONG_NAME, true));
 	}
 
 }

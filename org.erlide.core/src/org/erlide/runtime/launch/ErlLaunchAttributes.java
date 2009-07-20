@@ -28,6 +28,7 @@ public interface ErlLaunchAttributes {
 	final String NODE_NAME = prefix + ".nodeName";
 	final String COOKIE = prefix + ".cookie";
 	final String START_ME = prefix + ".startMe";
+	final String USE_LONG_NAME = prefix + ".longName";
 
 	final String DEBUG_FLAGS = prefix + ".debugFlags"; // @see
 	// IErlDebugConstants
@@ -38,5 +39,4 @@ public interface ErlLaunchAttributes {
 	final String DEFAULT_WORKING_DIR = ".";
 
 	final String EXTRA_ARGS = prefix + ".extra_args";
-	final String DEFAULT_EXTRA_ARGS = "";
 }

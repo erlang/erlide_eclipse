@@ -41,6 +41,8 @@ import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
+	private Button shortNameButton;
+	private Button longNameButton;
 	private Text argsText;
 	private Text workingDirText;
 	private Combo runtimesCombo;
@@ -65,12 +67,13 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		gd_runtimeGroup.heightHint = 252;
 		runtimeGroup.setLayoutData(gd_runtimeGroup);
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		gridLayout.numColumns = 3;
 		runtimeGroup.setLayout(gridLayout);
 		new Label(runtimeGroup, SWT.NONE);
 
 		final Label label = new Label(runtimeGroup, SWT.NONE);
 		label.setText("       ");
+		new Label(runtimeGroup, SWT.NONE);
 
 		final Label runtimeLabel = new Label(runtimeGroup, SWT.NONE);
 		runtimeLabel.setLayoutData(new GridData());
@@ -87,7 +90,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				defaultRuntime.getName());
 
 		runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);
-		runtimesCombo.setLayoutData(new GridData(210, SWT.DEFAULT));
+		runtimesCombo.setLayoutData(new GridData(174, SWT.DEFAULT));
 		runtimesCombo.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("synthetic-access")
 			@Override
@@ -97,12 +100,16 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		});
 		runtimesCombo.setItems(rts);
 		runtimesCombo.select(db);
+		new Label(runtimeGroup, SWT.NONE);
 
 		final Label nodeNameLabel = new Label(runtimeGroup, SWT.NONE);
 		nodeNameLabel.setText("Node name");
 
 		nameText = new Text(runtimeGroup, SWT.BORDER);
-		nameText.setLayoutData(new GridData(232, SWT.DEFAULT));
+		final GridData gd_nameText = new GridData(SWT.FILL, SWT.CENTER, false,
+				false, 2, 1);
+		gd_nameText.widthHint = 333;
+		nameText.setLayoutData(gd_nameText);
 		nameText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
 			public void modifyText(final ModifyEvent e) {
@@ -114,13 +121,34 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				updateLaunchConfigurationDialog();
 			}
 		});
+		new Label(runtimeGroup, SWT.NONE);
+
+		longNameButton = new Button(runtimeGroup, SWT.RADIO);
+		longNameButton.setLayoutData(new GridData());
+		longNameButton.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("synthetic-access")
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				updateLaunchConfigurationDialog();
+			}
+		});
+		longNameButton.setSelection(true);
+		longNameButton.setText("long name (-name)");
+
+		shortNameButton = new Button(runtimeGroup, SWT.RADIO);
+		final GridData gd_shortNamesnameButton = new GridData();
+		shortNameButton.setLayoutData(gd_shortNamesnameButton);
+		shortNameButton.setText("short name (-sname)");
 
 		final Label cookieLabel = new Label(runtimeGroup, SWT.NONE);
 		cookieLabel.setToolTipText("Leave empty to use default one");
 		cookieLabel.setText("Cookie");
 
 		cookieText = new Text(runtimeGroup, SWT.BORDER);
-		cookieText.setLayoutData(new GridData(232, SWT.DEFAULT));
+		final GridData gd_cookieText = new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 2, 1);
+		gd_cookieText.widthHint = 232;
+		cookieText.setLayoutData(gd_cookieText);
 		cookieText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
 			public void modifyText(final ModifyEvent e) {
@@ -131,7 +159,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		new Label(runtimeGroup, SWT.NONE);
 
 		startNodeCheckbox = new Button(runtimeGroup, SWT.CHECK);
-		startNodeCheckbox.setLayoutData(new GridData());
+		startNodeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
+				false, false, 2, 1));
 		startNodeCheckbox.setSelection(true);
 		startNodeCheckbox
 				.setText("Start the Erlang node if not running already");
@@ -152,7 +181,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		workingDirText = new Text(runtimeGroup, SWT.BORDER);
 		workingDirText.setToolTipText("may be relative to the workspace");
 		final GridData gd_workingDirText = new GridData(SWT.FILL, SWT.CENTER,
-				true, false);
+				true, false, 2, 1);
 		workingDirText.setLayoutData(gd_workingDirText);
 		workingDirText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
@@ -168,7 +197,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		argsText
 				.setToolTipText("as on the command line\nBe careful about proper quoting!");
 		final GridData gd_argsText = new GridData(SWT.FILL, SWT.CENTER, true,
-				false);
+				false, 2, 1);
 		argsText.setLayoutData(gd_argsText);
 		argsText.addModifyListener(new ModifyListener() {
 			@SuppressWarnings("synthetic-access")
@@ -180,6 +209,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		final Label aLabel = new Label(runtimeGroup, SWT.WRAP);
 		aLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,
 				2, 1));
+		new Label(runtimeGroup, SWT.NONE);
 
 	}
 
@@ -206,6 +236,14 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			final String node = config.getAttribute(
 					ErlLaunchAttributes.NODE_NAME, "");
 			nameText.setText(node);
+		} catch (final CoreException e) {
+			nameText.setText("");
+		}
+		try {
+			final boolean longName = config.getAttribute(
+					ErlLaunchAttributes.USE_LONG_NAME, true);
+			longNameButton.setSelection(longName);
+			shortNameButton.setSelection(!longName);
 		} catch (final CoreException e) {
 			nameText.setText("");
 		}
@@ -246,6 +284,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(ErlLaunchAttributes.START_ME, startNodeCheckbox
 				.getSelection());
 		config.setAttribute(ErlLaunchAttributes.NODE_NAME, nameText.getText());
+		config.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, longNameButton
+				.getSelection());
 		config.setAttribute(ErlLaunchAttributes.COOKIE, cookieText.getText());
 		config.setAttribute(ErlLaunchAttributes.WORKING_DIR, workingDirText
 				.getText());
