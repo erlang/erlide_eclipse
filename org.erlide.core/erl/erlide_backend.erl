@@ -29,7 +29,9 @@
 		 execute/2,
 		 
 		 compile_string/1,
-		 start_tracer/1
+		 start_tracer/1,
+		 
+		 get_module_info/1
 		]).
 
 init(JRex) ->
@@ -232,3 +234,19 @@ start_tracer(Log) when is_list(Log) ->
 	
 	TPid.
 
+get_module_info(Module) ->
+	{ok, {_, Info}} = beam_lib:chunks(Module, [compile_info, attributes]),
+	[{compile_info, CI},{attributes, A}] = Info,
+	{value, {options, Op}} = lists:keysearch(options, 1, CI),
+	["Compile info:\n",
+	 [print_opts(X) || X<-Op],
+	 "\n\n",
+	 "Attributes:\n",
+	 [io_lib:format("  ~p:   ~p~n", [K, V]) || {K,V}<-A],
+	 "\n"
+	].
+
+print_opts({K, V}) ->
+	io_lib:format("    ~p:   ~p~n", [K, V]);
+print_opts(X) ->
+	io_lib:format("    ~p~n", [X]).

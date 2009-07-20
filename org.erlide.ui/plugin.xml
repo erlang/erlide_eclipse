@@ -224,6 +224,23 @@
             </or>
          </enabledWhen>
       </page>
+      <page
+            class="org.erlide.ui.properties.ErlModulePropertyPage"
+            id="org.erlide.ui.properties.moduleInfo"
+            name="Erlang module info">
+         <enabledWhen>
+           <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IResource ">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.eclipse.core.resources.extension"
+                        value="erl">
+                  </test>
+               </and>
+          </enabledWhen>
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
