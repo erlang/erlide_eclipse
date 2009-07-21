@@ -4,7 +4,7 @@
 -module(erlide_otp_doc).
 
 -export([check_all/0,
-         get_doc_from_scan_tuples/6,
+         get_doc_from_scan_tuples/3,
          get_doc_from_fun_arity_list/3,
          get_all_links_to_other/0,
          get_exported/2,
@@ -16,7 +16,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -382,38 +382,38 @@ get_all_links_to_other() ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-get_doc_from_scan_tuples(Module, Offset, Imports, StateDir, ExternalModules, PathVars) ->
-    try
-        case erlide_open:open(Module, Offset, ExternalModules, PathVars) of
-            {external, M, Function, N, _Path} = External ->
-                ?D({open, External}),
-                case get_doc_for_external(StateDir, M, [{Function, N}]) of
-                    D when is_list(D) ->
-                        {ok, lists:flatten(D), External};
-		    _Error ->
-			External
-                end;
-            {local, Function, N} = Local ->
-                case get_doc_for_imported(StateDir, Function, N, Imports) of
-                    D when is_list(D) ->
-                        {ok, lists:flatten(D), Local};
-		    _Error ->
-			Local
-                end;
-	    {macro, Macro} ->
-		{macro, Macro};
-	    {record, Record} ->
-		{record, Record};
-            Error ->
-                ?D(Error),
-                {error, Error}
-        end
-    catch
-    	error:E ->
-            {error, E};
-        exit:E ->
-            {error, E}
-    end.
+get_doc_from_scan_tuples(Input, Imports, StateDir) ->
+	try
+		case Input of
+			{external, M, Function, N, _Path} = External ->
+				?D({open, External}),
+				case get_doc_for_external(StateDir, M, [{Function, N}]) of
+					D when is_list(D) ->
+						{ok, lists:flatten(D), External};
+					_Error ->
+						External
+				end;
+			{local, Function, N} = Local ->
+				case get_doc_for_imported(StateDir, Function, N, Imports) of
+					D when is_list(D) ->
+						{ok, lists:flatten(D), Local};
+					_Error ->
+						Local
+				end;
+			{macro, Macro} ->
+				{macro, Macro};
+			{record, Record} ->
+				{record, Record};
+			Error ->
+				?D(Error),
+				{error, Error}
+		end
+	catch
+		error:E ->
+			{error, E};
+		exit:E ->
+			{error, E}
+	end.
 
 e(E) ->
     E.

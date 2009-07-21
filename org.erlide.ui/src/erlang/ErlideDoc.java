@@ -37,16 +37,17 @@ public class ErlideDoc {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject getDocFromScan(final Backend b,
-			final int offset, final String stateDir, final String module,
-			final Collection<IErlImport> imports, final String externalModules,
-			final OtpErlangList pathVars) {
+	public static OtpErlangObject getDocFromScan(final Backend ide,
+			final Backend b, final int offset, final String stateDir,
+			final String module, final Collection<IErlImport> imports,
+			final String externalModules, final OtpErlangList pathVars) {
 		OtpErlangObject res = null;
-		// ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
+		ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
-			res = b.call("erlide_otp_doc", "get_doc_from_scan_tuples",
-					"ailossx", module, offset, imports, stateDir,
-					externalModules, pathVars);
+			OtpErlangObject input = ide.call("erlide_open", "open", "aisx",
+					module, offset, externalModules, pathVars);
+			res = b.call("erlide_otp_doc", "get_doc_from_scan_tuples", "xlos",
+					input, imports, stateDir);
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}

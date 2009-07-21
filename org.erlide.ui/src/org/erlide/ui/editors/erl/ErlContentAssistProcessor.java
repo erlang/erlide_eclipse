@@ -113,7 +113,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
-		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			final IDocument doc = viewer.getDocument();
 			String before = getBefore(doc, offset);
@@ -130,6 +129,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			String moduleOrRecord = null;
 			final IErlProject project = module == null ? null : module
 					.getProject();
+			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
+					project.getProject());
 			final IErlElement element = getElementAt(offset);
 			if (hashMarkPos >= 0
 					&& ErlideContextAssist.checkRecordCompletion(b, before

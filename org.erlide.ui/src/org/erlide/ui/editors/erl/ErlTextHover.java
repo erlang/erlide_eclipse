@@ -255,119 +255,132 @@ public class ErlTextHover implements ITextHover,
 		}
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
-		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		final IErlModel model = ErlangCore.getModel();
 		final IErlProject erlProject = module.getProject();
-		r1 = ErlideDoc.getDocFromScan(b, offset, stateDir, ErlScanner
-				.createScannerModuleName(module), fImports, model.getExternal(
-				erlProject, ErlangCore.EXTERNAL_MODULES), model.getPathVars());
-		// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
-		final OtpErlangTuple t = (OtpErlangTuple) r1;
-		if (Util.isOk(t)) {
-			final String docStr = Util.stringValue(t.elementAt(1));
-			final OpenResult or = new OpenResult(t.elementAt(2));
-			result.append(docStr);
-			element = or;
-		} else {
-			// TODO here we should check like in 'open'
-			final OtpErlangObject o0 = t.elementAt(0);
-			final OtpErlangObject o1 = t.elementAt(1);
-			if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
-				final OtpErlangAtom a0 = (OtpErlangAtom) o0;
-				final OtpErlangAtom a1 = (OtpErlangAtom) o1;
-				final String openKind = a0.atomValue();
-				if (openKind.equals("error")) {
-					return null;
-				}
-				String definedName = a1.atomValue();
-				if (definedName.charAt(0) == '?') {
-					definedName = definedName.substring(1);
-				}
-				// TODO code below should be cleaned up, we should factorize and
-				// use same code for content assist, open and hover
-				if (openKind.equals("local") || openKind.equals("external")) {
-					IErlModule m = null;
-					IErlFunction f = null;
-					OtpErlangLong arityLong = null;
-					if (openKind.equals("local")) {
-						arityLong = (OtpErlangLong) t.elementAt(2);
-						m = module;
-					} else if (openKind.equals("external")) {
-						final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
-						final String mod = definedName;
-						definedName = a2.atomValue();
-						arityLong = (OtpErlangLong) t.elementAt(3);
-						final OtpErlangString s4;
-						if (t.elementAt(4) instanceof OtpErlangString) {
-							s4 = (OtpErlangString) t.elementAt(4);
-						} else {
-							final String msg = "unrecognized value: %s, expected a string instead of %s";
-							ErlLogger.warn(msg, t, t.elementAt(4));
-							return null;
+
+		Backend ide = ErlangCore.getBackendManager().getIdeBackend();
+		try {
+			Backend b = ErlangCore.getBackendManager().getBuildBackend(
+					erlProject.getProject());
+
+			final IErlModel model = ErlangCore.getModel();
+			r1 = ErlideDoc.getDocFromScan(ide, b, offset, stateDir, ErlScanner
+					.createScannerModuleName(module), fImports, model
+					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
+					model.getPathVars());
+			// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
+			final OtpErlangTuple t = (OtpErlangTuple) r1;
+			if (Util.isOk(t)) {
+				final String docStr = Util.stringValue(t.elementAt(1));
+				final OpenResult or = new OpenResult(t.elementAt(2));
+				result.append(docStr);
+				element = or;
+			} else {
+				// TODO here we should check like in 'open'
+				final OtpErlangObject o0 = t.elementAt(0);
+				final OtpErlangObject o1 = t.elementAt(1);
+				if (o0 instanceof OtpErlangAtom && o1 instanceof OtpErlangAtom) {
+					final OtpErlangAtom a0 = (OtpErlangAtom) o0;
+					final OtpErlangAtom a1 = (OtpErlangAtom) o1;
+					final String openKind = a0.atomValue();
+					if (openKind.equals("error")) {
+						return null;
+					}
+					String definedName = a1.atomValue();
+					if (definedName.charAt(0) == '?') {
+						definedName = definedName.substring(1);
+					}
+					// TODO code below should be cleaned up, we should factorize
+					// and
+					// use same code for content assist, open and hover
+					if (openKind.equals("local") || openKind.equals("external")) {
+						IErlModule m = null;
+						IErlFunction f = null;
+						OtpErlangLong arityLong = null;
+						if (openKind.equals("local")) {
+							arityLong = (OtpErlangLong) t.elementAt(2);
+							m = module;
+						} else if (openKind.equals("external")) {
+							final OtpErlangAtom a2 = (OtpErlangAtom) t
+									.elementAt(2);
+							final String mod = definedName;
+							definedName = a2.atomValue();
+							arityLong = (OtpErlangLong) t.elementAt(3);
+							final OtpErlangString s4;
+							if (t.elementAt(4) instanceof OtpErlangString) {
+								s4 = (OtpErlangString) t.elementAt(4);
+							} else {
+								final String msg = "unrecognized value: %s, expected a string instead of %s";
+								ErlLogger.warn(msg, t, t.elementAt(4));
+								return null;
+							}
+							final String path = Util.stringValue(s4);
+							IResource r = null;
+							try {
+								r = ErlModelUtils.openExternalModule(mod, path,
+										module.getResource().getProject());
+							} catch (final CoreException e2) {
+							}
+							if (!(r instanceof IFile)) {
+								return null;
+							}
+							final IFile file = (IFile) r;
+							m = ErlModelUtils.getModule(file);
 						}
-						final String path = Util.stringValue(s4);
-						IResource r = null;
+						int arity = -1;
 						try {
-							r = ErlModelUtils.openExternalModule(mod, path,
-									module.getResource().getProject());
-						} catch (final CoreException e2) {
+							if (arityLong != null) {
+								arity = arityLong.intValue();
+							}
+						} catch (final OtpErlangRangeException e) {
 						}
-						if (!(r instanceof IFile)) {
+						final ErlangFunction erlangFunction = new ErlangFunction(
+								definedName, arity);
+						if (m == null) {
 							return null;
 						}
-						final IFile file = (IFile) r;
-						m = ErlModelUtils.getModule(file);
-					}
-					int arity = -1;
-					try {
-						if (arityLong != null) {
-							arity = arityLong.intValue();
+						try {
+							m.open(null);
+							f = ErlModelUtils.findFunction(m, erlangFunction);
+							element = f;
+						} catch (final ErlModelException e) {
 						}
-					} catch (final OtpErlangRangeException e) {
-					}
-					final ErlangFunction erlangFunction = new ErlangFunction(
-							definedName, arity);
-					if (m == null) {
-						return null;
-					}
-					try {
-						m.open(null);
-						f = ErlModelUtils.findFunction(m, erlangFunction);
-						element = f;
-					} catch (final ErlModelException e) {
-					}
-					if (f == null) {
-						return null;
-					}
-					final String comment = f.getComment();
-					if (comment == null) {
-						return null;
-					}
-					result.append(comment);
-				} else {
-					final IErlElement.Kind kindToFind = openKind
-							.equals("record") ? IErlElement.Kind.RECORD_DEF
-							: IErlElement.Kind.MACRO_DEF;
-					final IErlProject project = module.getProject();
-					final IProject proj = project == null ? null
-							: (IProject) project.getResource();
-					definedName = OpenResult.removeQuestionMark(a1.toString());
-					final String externalIncludes = model.getExternal(
-							erlProject, ErlangCore.EXTERNAL_INCLUDES);
-					IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(
-							b, proj, module, definedName, kindToFind,
-							externalIncludes);
-					if (pd == null) {
-						pd = ErlModelUtils.findPreprocessorDef(b, proj, module,
-								ErlideUtil.unquote(definedName), kindToFind,
-								externalIncludes);
-					}
-					if (pd != null) {
-						element = pd;
-						result.append(pd.getExtra());
+						if (f == null) {
+							return null;
+						}
+						final String comment = f.getComment();
+						if (comment == null) {
+							return null;
+						}
+						result.append(comment);
+					} else {
+						final IErlElement.Kind kindToFind = openKind
+								.equals("record") ? IErlElement.Kind.RECORD_DEF
+								: IErlElement.Kind.MACRO_DEF;
+						final IErlProject project = module.getProject();
+						final IProject proj = project == null ? null
+								: (IProject) project.getResource();
+						definedName = OpenResult.removeQuestionMark(a1
+								.toString());
+						final String externalIncludes = model.getExternal(
+								erlProject, ErlangCore.EXTERNAL_INCLUDES);
+						IErlPreprocessorDef pd = ErlModelUtils
+								.findPreprocessorDef(ide, proj, module,
+										definedName, kindToFind,
+										externalIncludes);
+						if (pd == null) {
+							pd = ErlModelUtils.findPreprocessorDef(ide, proj,
+									module, ErlideUtil.unquote(definedName),
+									kindToFind, externalIncludes);
+						}
+						if (pd != null) {
+							element = pd;
+							result.append(pd.getExtra());
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			ErlLogger.warn(e);
 		}
 		if (result.length() > 0) {
 			HTMLPrinter.insertPageProlog(result, 0, fgStyleSheet);
