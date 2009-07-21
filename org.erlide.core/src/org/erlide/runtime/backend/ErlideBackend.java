@@ -43,11 +43,6 @@ public final class ErlideBackend extends Backend implements IDisposable {
 	}
 
 	@Override
-	public void initializeRuntime() {
-		super.initializeRuntime();
-	}
-
-	@Override
 	public synchronized void restart() {
 		super.restart();
 		codeManager.reRegisterBundles();

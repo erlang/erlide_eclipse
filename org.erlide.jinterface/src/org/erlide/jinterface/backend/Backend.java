@@ -238,11 +238,14 @@ public class Backend {
 			eventBox = fNode.createMbox("rex");
 			int tries = 20;
 			while (!available && tries > 0) {
+				ErlLogger.debug("# try to connect...");
 				available = fNode.ping(fPeer, RETRY_DELAY + (20 - tries)
 						* RETRY_DELAY / 5);
 				tries--;
 			}
-			available &= waitForCodeServer();
+			if (available) {
+				available &= waitForCodeServer();
+			}
 
 			if (available) {
 				ErlLogger.debug("connected!");

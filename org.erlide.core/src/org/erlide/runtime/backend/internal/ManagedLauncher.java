@@ -44,6 +44,13 @@ public class ManagedLauncher implements IDisposable {
 		final File workingDirectory = new File(info.getWorkingDir());
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
+			ErlLogger.debug(fRuntime.toString());
+			try {
+				ErlLogger.debug("exit code: %d", fRuntime.exitValue());
+			} catch (IllegalThreadStateException e) {
+				ErlLogger.debug("process is running");
+			}
+
 			final Runnable watcher = new Runnable() {
 				@SuppressWarnings("boxing")
 				public void run() {
