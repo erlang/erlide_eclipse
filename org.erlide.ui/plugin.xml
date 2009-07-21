@@ -710,7 +710,7 @@
        <action
              class="org.erlide.ui.actions.ConsoleInputAction"
              definitionId="org.erlide.ui.actions.console.input"
-             icon="icons/console.gif"
+             icon="icons/full/obj16/console.gif"
              id="org.erlide.ui.actions.console.input"
              label="Console input"
              retarget="false"

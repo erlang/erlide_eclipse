@@ -20,7 +20,7 @@ public class ErlideUIConstants {
 	/**
 	 * The icon path
 	 */
-	public static final String ICON_PATH = "/icons/";
+	public static final String ICON_PATH = "/icons/full/obj16/";
 
 	/**
 	 * The console image
