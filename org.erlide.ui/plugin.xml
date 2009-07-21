@@ -10,7 +10,7 @@
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
             extensions="erl,hrl"
-            icon="icons/erlang_srcFile.gif"
+            icon="icons/full/obj16/erlang_srcFile.png"
             id="org.erlide.ui.editors.erl.ErlangEditor"
             name="%ErlangEditor.label"
             symbolicFontName="org.eclipse.jface.textfont">
@@ -48,7 +48,7 @@
             class="org.erlide.ui.wizards.NewErlangProject"
             finalPerspective="org.erlide.ui.perspectives.ErlangPerspective"
             hasPages="true"
-            icon="icons/newproject.png"
+            icon="icons/full/obj16/newproject.png"
             id="org.erlide.ui.wizards.newproject"
             name="Erlang Project"
             project="true">
@@ -151,7 +151,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.erlide.ui.perspectives.ErlangPerspective"
-            icon="icons/perspective.gif"
+            icon="icons/full/obj16/perspective.gif"
             id="org.erlide.ui.perspectives.ErlangPerspective"
             name="Erlang">
       </perspective>
@@ -303,7 +303,7 @@
     <wizard
           category="org.erlide.ui.wizards.newWizards"
           class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
-          icon="icons/erlang_NewModule.png"
+          icon="icons/full/obj16/erlang_NewModule.png"
           id="org.erlide.ui.wizards.ErlangSourceFile"
           name="Module">
       </wizard>
@@ -861,7 +861,7 @@
       <navigatorContent
             activeByDefault="true"
             contentProvider="org.erlide.ui.navigator.ErlangFileContentProvider"
-            icon="icons/erlang_editor.gif"
+            icon="icons/full/obj16/erlang_editor.gif"
             id="org.erlide.ui.navigator.erlangContent"
             labelProvider="org.erlide.ui.views.outline.ErlangLabelProvider"
             name="Erlang File Contents"
@@ -934,7 +934,7 @@
       <wizard
             category="org.erlide.ui.ErlangProjectImport.category"
             class="org.erlide.ui.wizards.ErlangProjectImportWizard"
-            icon="icons/erlang_editor.gif"
+            icon="icons/full/obj16/erlang_editor.gif"
             id="org.erlide.ui.ErlangProjectImport.wizard"
             name="Import erlang project into workspace">
          <description>
@@ -949,7 +949,7 @@
             objectClass="org.eclipse.core.resources.IResource">
          <action
                class="org.erlide.ui.actions.NewErlangModuleAction"
-               icon="icons/erlang_NewModule.png"
+               icon="icons/full/obj16/erlang_NewModule.png"
                id="org.erlide.ui.menuModuleAction"
                label="New Module"
                menubarPath="erlideMenu2">
@@ -961,7 +961,7 @@
             targetID="org.erlide.ui.views.navigator.view#PopupMenu">
          <action
                class="org.erlide.ui.actions.NewErlangProjectAction"
-               icon="icons/newproject.png"
+               icon="icons/full/obj16/newproject.png"
                id="org.erlide.ui.menuProjectAction"
                label="New Erlang Project"
                menubarPath="erlidemenu1">
@@ -1052,7 +1052,7 @@
             allowMultiple="false"
             category="org.eclipse.debug.ui"
             class="org.erlide.debug.ui.views.InterpretedModulesView"
-            icon="icons/modulenavigator.gif"
+            icon="icons/full/obj16/modulenavigator.gif"
             id="org.erlide.ui.debug.interpretedModulesView"
             name="Interpreted Modules">
       </view>
@@ -1060,7 +1060,7 @@
             allowMultiple="false"
             category="org.eclipse.debug.ui"
             class="org.erlide.debug.ui.views.DebuggerTraceView"
-            icon="icons/file.gif"
+            icon="icons/full/obj16/file.gif"
             id="org.erlide.debug.ui.views.debuggerTraceView"
             name="Debugger Trace">
       </view>

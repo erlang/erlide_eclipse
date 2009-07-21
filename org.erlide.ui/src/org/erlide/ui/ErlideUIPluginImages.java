@@ -152,7 +152,7 @@ public class ErlideUIPluginImages {
 	public static final ImageDescriptor DESC_OVR_ERROR = create(T_OVR,
 			"error_co.gif");
 
-	public static final String IMG_MODULE = NAME_PREFIX + "erlang_srcFile.gif";
+	public static final String IMG_MODULE = NAME_PREFIX + "erlang_srcFile.png";
 
 	public static final String IMG_MODULE_RESOURCE = NAME_PREFIX
 			+ "erlang_srcFileExt.gif";
