@@ -489,7 +489,7 @@ i_macro(R0, I) ->
 i_macro_rest(R0, I) ->
     case i_sniff(R0) of
 	Paren when Paren=:='('; Paren=:='{'; Paren=:='[' ->
- 	    R1 = i_kind('(', R0, I),
+ 	    R1 = i_kind(Paren, R0, I),
 	    R2 = i_parameters(R1, I),
 	    R3 = i_end_paren(R2, I),
 	    i_macro_rest(R3, I);
@@ -611,6 +611,7 @@ i_parameters(R, I) ->
 i_record([#token{kind='#'} | R0], I0) ->
     I = I0#i{in_block=false},
     R1 = i_comments(R0, I),
+    ?D(R1),
     R2 = i_atom_or_macro(R1, I),
     ?D(R2),
     case i_sniff(R2) of
@@ -620,6 +621,8 @@ i_record([#token{kind='#'} | R0], I0) ->
             ?D(R4),
             {R4, I#i.anchor};
         '{' ->
+            i_expr(R2, I, none);
+        '?' ->
             i_expr(R2, I, none);
         _ ->
             {R2, hd(R1)}
