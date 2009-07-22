@@ -43,6 +43,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -318,8 +319,13 @@ public class OpenAction extends SelectionDispatchAction {
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();
 		if (res.isExternalCall()) {
-			ErlModelUtils.openExternalFunction(res.getName(),
-					res.getFunction(), res.getPath(), project);
+			if (!ErlModelUtils.openExternalFunction(res.getName(), res
+					.getFunction(), res.getPath(), project)) {
+				ErlModelUtils.openExternalFunction(res.getName(),
+						new ErlangFunction(res.getFun(),
+								IErlModel.UNKNOWN_ARITY), res.getPath(),
+						project);
+			}
 		} else if (res.isInclude()) {
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res
@@ -352,27 +358,29 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			if (!ErlModelUtils.openFunctionInEditor(res.getFunction(), editor)) {
 				// not local imports
-				if (module == null) {
-					return;
-				}
-				final IErlImport ei = module.findImport(res.getFunction());
-				if (ei == null) {
-					return;
-				}
-				final String mod = ei.getImportModule();
 				OtpErlangObject res2 = null;
-				try {
-					res2 = ErlideOpen.getSourceFromModule(b, model
-							.getPathVars(), mod, model.getExternal(erlProject,
-							ErlangCore.EXTERNAL_MODULES));
-				} catch (final BackendException e1) {
-					ErlLogger.warn(e1);
+				String mod = null;
+				if (module != null) {
+					final IErlImport ei = module.findImport(res.getFunction());
+					if (ei != null) {
+						mod = ei.getImportModule();
+						try {
+							res2 = ErlideOpen.getSourceFromModule(b, model
+									.getPathVars(), mod, model.getExternal(
+									erlProject, ErlangCore.EXTERNAL_MODULES));
+						} catch (final BackendException e1) {
+							ErlLogger.warn(e1);
+						}
+					}
 				}
-				if (res2 instanceof OtpErlangString) {
+				if (res2 instanceof OtpErlangString && mod != null) {
 					final OtpErlangString otpErlangString = (OtpErlangString) res2;
 					final String path = otpErlangString.stringValue();
 					ErlModelUtils.openExternalFunction(mod, res.getFunction(),
 							path, project);
+				} else {
+					ErlModelUtils.openFunctionInEditor(new ErlangFunction(res
+							.getFun(), IErlModel.UNKNOWN_ARITY), editor);
 				}
 			}
 		} else if (res.isVariable()) {

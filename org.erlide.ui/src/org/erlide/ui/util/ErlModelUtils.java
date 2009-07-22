@@ -48,6 +48,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -199,9 +200,8 @@ public class ErlModelUtils {
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
-							.getFilenameLastPart(),
-							org.erlide.core.erlang.util.PluginUtils
-									.getIncludePathFilter(project));
+							.getFilenameLastPart(), PluginUtils
+							.getIncludePathFilter(project));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -251,9 +251,8 @@ public class ErlModelUtils {
 		for (final ErlangIncludeFile element : includes) {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
-							.getFilenameLastPart(),
-							org.erlide.core.erlang.util.PluginUtils
-									.getIncludePathFilter(project));
+							.getFilenameLastPart(), PluginUtils
+							.getIncludePathFilter(project));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -305,8 +304,7 @@ public class ErlModelUtils {
 			for (final ErlangIncludeFile element : includes) {
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart(),
-								org.erlide.core.erlang.util.PluginUtils
+								element.getFilenameLastPart(), PluginUtils
 										.getIncludePathFilter(project));
 				if (re == null) {
 					try {
@@ -393,7 +391,7 @@ public class ErlModelUtils {
 	 *            path to module (including .erl)
 	 * @throws CoreException
 	 */
-	public static void openExternalFunction(final String mod,
+	public static boolean openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
 			final IProject project) throws CoreException {
 		final IResource r = openExternalModule(mod, path, project);
@@ -401,13 +399,14 @@ public class ErlModelUtils {
 			final IFile f = (IFile) r;
 			try {
 				final IEditorPart editor = EditorUtility.openInEditor(f);
-				openFunctionInEditor(function, editor);
+				return openFunctionInEditor(function, editor);
 			} catch (final PartInitException e) {
 				ErlLogger.warn(e);
 			} catch (final ErlModelException e) {
 				ErlLogger.warn(e);
 			}
 		}
+		return false;
 	}
 
 	public static IResource openExternalModule(final String mod,
@@ -416,11 +415,8 @@ public class ErlModelUtils {
 		IResource r = null;
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
-					modFileName, org.erlide.core.erlang.util.PluginUtils
-							.getSourcePathFilter(project));
-			if (r != null
-					&& !org.erlide.core.erlang.util.PluginUtils
-							.isOnSourcePath(r.getParent())) {
+					modFileName, PluginUtils.getSourcePathFilter(project));
+			if (r != null && !PluginUtils.isOnSourcePath(r.getParent())) {
 				r = null;
 			}
 		}
