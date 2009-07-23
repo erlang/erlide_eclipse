@@ -61,7 +61,7 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			final String fileName) {
 		try {
 			for (final IResource r : container.members()) {
-				if (comparePath(r.getLocation().toString(), fileName)) {
+				if (comparePath(r.getName(), fileName)) {
 					return r;
 				}
 				if (r instanceof IContainer) {
@@ -114,7 +114,7 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 				if (!comparePath(resource.getLocation().toString(), fileName)) {
 					res = findResource(resource.getProject(), fileName);
 					if (res == null) {
-						// the error is in a hrl file that is not in the project
+						// TODO the error is in a file not in the project
 
 						// try {
 						// final String includeFile = ErlModelUtils

@@ -453,8 +453,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					ErlideBuilder.loadModule(project, beamf);
 
 				} else {
-					ErlLogger.debug(">>>> compile error... %s\n   %s", resource
-							.getName(), t);
+					// ErlLogger.debug(">>>> compile error... %s\n   %s",
+					// resource.getName(), t);
 				}
 				if (br != null) {
 					br.getParent().refreshLocal(IResource.DEPTH_ONE, null);
