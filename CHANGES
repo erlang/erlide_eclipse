@@ -1,3 +1,45 @@
+List of user visible changes between 0.6.2 and 0.6.4 (r2837)
+
+	The wrangler UI is completely revamped, offering much better user experience.
+
+	https://www.assembla.com/spaces/erlide/tickets/57-Honoring--file%28%29-attribute 
+	
+	https://www.assembla.com/spaces/erlide/tickets/406-ErlangEditor-getModule-can-return-null--not-all-call-sites-handle-that-case 
+	
+	https://www.assembla.com/spaces/erlide/tickets/414-console---ctrl-arrows-work-strangely 
+	
+	http://www.assembla.com/spaces/erlide/tickets/371-indent--error-after---MODULE \u2014 jakobc / detail
+	
+	http://www.assembla.com/spaces/erlide/tickets/198--go-to-definition---if-no-match-was-found-based-on---args--use-first-matching-function-name \u2014 jakobc / detail
+	
+	https://www.assembla.com/spaces/erlide/tickets/307-code-completion-and-otp-documentation-is-fetched-from-the-ide-backend--not-the-build-one 
+	
+	https://www.assembla.com/spaces/erlide/tickets/408--record%28-MODULE--%7B%7D%29-shown-incorrectly-in-outline 
+	
+	https://www.assembla.com/spaces/erlide/tickets/395-Expose-the-setting-to-use-%E2%80%93sname-instead-of-%E2%80%93name-in-the-erl-runtime-config 
+	
+	https://www.assembla.com/spaces/erlide/tickets/403-view-module_info-data-on-property-page-for-module 
+	
+	https://www.assembla.com/spaces/erlide/tickets/393-add-Run-Debug-settings--working-directory----mnesia-dir- 
+	
+	https://www.assembla.com/spaces/erlide/tickets/389-Navigates-to-External-Files-rather-than-internal-project 
+	
+	https://www.assembla.com/spaces/erlide/tickets/229-Allow-----to-be-a-valid-source-directory-%28i-e-the-project-root%29 
+	
+	https://www.assembla.com/spaces/erlide/tickets/191-After-renaming-a-module-file--it-s-still-compiled-to-a-beam-with-the-old-name 
+	
+	https://www.assembla.com/spaces/erlide/tickets/397-problems-on-R11B5 
+	
+	renamed external files project to External_Files (clearcase has problems with name with space in it) 
+	
+	filter illegal characters from node name 
+	
+	https://www.assembla.com/spaces/erlide/tickets/382-annotation-hover-should-use-default-viewer--not-the-html-one 
+	
+	http://code.google.com/p/wranglerintegration/issues/detail?id=4 is fixed \u2014 oroszgy / detail
+	
+	http://code.google.com/p/wranglerintegration/issues/detail?id=3 is fixed \u2014 oroszgy / detail
+
 List of user visible changes between 0.6.0 and 0.6.2 (r2723)
 
 	fixed exception in getErlideRuntime when installing for the first time
