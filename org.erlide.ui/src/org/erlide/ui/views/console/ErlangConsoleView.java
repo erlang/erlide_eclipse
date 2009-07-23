@@ -110,6 +110,7 @@ public class ErlangConsoleView extends ViewPart implements
 	IShell shell;
 	ErlideBackend backend;
 	private Action action;
+	private int navIndex;
 
 	private ComboViewer backends;
 
@@ -212,7 +213,7 @@ public class ErlangConsoleView extends ViewPart implements
 				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
 						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
 				if ((e.character != (char) 0) || isHistoryCommand) {
-					createInputField(e.character);
+					createInputField(e);
 					e.doit = false;
 				}
 			}
@@ -220,8 +221,8 @@ public class ErlangConsoleView extends ViewPart implements
 		initializeToolBar();
 	}
 
-	void createInputField(final char first) {
-		if (first == SWT.ESC) {
+	void createInputField(final KeyEvent first) {
+		if (first.character == SWT.ESC) {
 			return;
 		}
 		consoleText.setSelection(consoleText.getCharCount());
@@ -247,7 +248,6 @@ public class ErlangConsoleView extends ViewPart implements
 		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
 
 		consoleInput.addKeyListener(new KeyAdapter() {
-			int navIndex = history.size();
 
 			@Override
 			public void keyPressed(final KeyEvent e) {
@@ -271,20 +271,16 @@ public class ErlangConsoleView extends ViewPart implements
 						consoleInput.setTopIndex(lineCount - visibleLines + 1);
 					}
 				} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
-					if (navIndex > 0) {
-						navIndex--;
-					}
-					final String s = (history.size() > navIndex) ? history
-							.get(navIndex) : "";
+					moveUp();
+					System.out.println(" " + navIndex);
+					final String s = history.get(navIndex);
 					consoleInput.setText(s);
 					consoleInput.setSelection(consoleInput.getText().length());
 					fixPosition(container);
 				} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
-					if (navIndex < history.size()) {
-						navIndex++;
-					}
-					final String s = navIndex < history.size() ? history
-							.get(navIndex) : "";
+					moveDown();
+					System.out.println(" " + navIndex);
+					final String s = history.get(navIndex);
 					consoleInput.setText(s);
 					consoleInput.setSelection(consoleInput.getText().length());
 					fixPosition(container);
@@ -304,10 +300,20 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.setBackground(consoleText.getBackground());
 		consoleInput.setWordWrap(true);
 
-		if (first != 0) {
-			consoleInput.setText("" + first);
+		if (first.character != 0) {
+			consoleInput.setText("" + first.character);
 		} else {
-			final String s = history.size() > 0 ? history.get(0) : "";
+			String s = "";
+			if (history.size() == 0) {
+				s = "";
+			} else {
+				if (first.keyCode == SWT.ARROW_UP) {
+					navIndex = history.size() - 1;
+				} else {
+					navIndex = 0;
+				}
+				s = history.get(navIndex);
+			}
 			consoleInput.setText(s);
 			fixPosition(container);
 		}
@@ -398,9 +404,6 @@ public class ErlangConsoleView extends ViewPart implements
 	}
 
 	public void addToHistory(final String in) {
-		if (history.indexOf(in) != -1) {
-			history.remove(in);
-		}
 		history.add(in);
 		if (history.size() > 50) {
 			history.remove(0);
@@ -474,4 +477,19 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 	}
 
+	private void moveDown() {
+		if (navIndex == -1) {
+			navIndex = 0;
+		} else if (navIndex < history.size() - 1) {
+			navIndex++;
+		}
+	}
+
+	private void moveUp() {
+		if (navIndex == -1) {
+			navIndex = history.size() - 1;
+		} else if (navIndex > 0) {
+			navIndex--;
+		}
+	}
 }
