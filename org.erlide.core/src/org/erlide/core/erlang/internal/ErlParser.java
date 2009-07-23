@@ -55,7 +55,7 @@ public final class ErlParser {
 			final String initialText, final boolean initialParse,
 			final String moduleFilePath, final String erlidePath) {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		if (b == null) {
+		if (b == null || module == null) {
 			return false;
 		}
 		OtpErlangList forms = null;

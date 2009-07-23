@@ -165,6 +165,9 @@ public class ErlideScanner {
 	}
 
 	public static void notifyNew(final String module) {
+		if (module == null) {
+			return;
+		}
 		try {
 			final OtpErlangObject msg = ErlUtils.format("{new, ~a}", module);
 			ErlangCore.getBackendManager().getIdeBackend().send(

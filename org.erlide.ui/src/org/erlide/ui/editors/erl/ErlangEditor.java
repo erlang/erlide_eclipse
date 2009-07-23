@@ -272,8 +272,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		private String getScannerModuleName() {
-			// FIXME what if getModule() returns null? ticket #406
-			return ErlScanner.createScannerModuleName(getModule());
+			IErlModule module = getModule();
+			if (module == null) {
+				return null;
+			}
+			return ErlScanner.createScannerModuleName(module);
 		}
 	}
 
@@ -674,8 +677,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 		if (getModule() != null) {
 			getModule().reenableScanner();
+			fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
 		}
-		fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
 
 		document = provider.getDocument(input);
 		if (document != null) {
@@ -752,18 +755,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 */
 	public IErlElement getElementAt(final int offset, final boolean reconcile) {
 		final IErlModule module = getModule();
-		if (module != null) {
-			try {
-				if (reconcile) {
-					synchronized (module) {
-						module.open(null);
-						return module.getElementAt(offset);
-					}
-				} else if (module.isConsistent()) {
+		if (module == null) {
+			return null;
+		}
+		try {
+			if (reconcile) {
+				synchronized (module) {
+					module.open(null);
 					return module.getElementAt(offset);
 				}
-			} catch (final Exception e) {
+			} else if (module.isConsistent()) {
+				return module.getElementAt(offset);
 			}
+		} catch (final Exception e) {
 		}
 		return null;
 	}
@@ -1596,12 +1600,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void resetParser() {
 		try {
 			final IErlModule module = getModule();
-			if (module != null) {
-				module.resetParser(getDocument().get());
-				module.open(null);
-				((EditorConfiguration) getSourceViewerConfiguration())
-						.resetReconciler();
+			if (module == null) {
+				return;
 			}
+			module.resetParser(getDocument().get());
+			module.open(null);
+			((EditorConfiguration) getSourceViewerConfiguration())
+					.resetReconciler();
+
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}

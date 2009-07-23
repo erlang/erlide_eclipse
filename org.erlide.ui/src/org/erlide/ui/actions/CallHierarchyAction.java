@@ -34,7 +34,7 @@ import erlang.FunctionRef;
 
 public class CallHierarchyAction extends Action {
 
-	private ErlangEditor editor;
+	private final ErlangEditor editor;
 	IErlModule module;
 
 	public CallHierarchyAction(ErlangEditor erlangEditor, IErlModule module) {
@@ -45,6 +45,9 @@ public class CallHierarchyAction extends Action {
 
 	@Override
 	public void run() {
+		if (module == null) {
+			return;
+		}
 		IErlElement el = editor.getElementAt(editor.getViewer()
 				.getSelectedRange().x, false);
 		IErlFunction f = null;

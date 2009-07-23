@@ -43,6 +43,7 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -745,7 +746,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private void initSelections() {
 		final ISelection sel = getContainer().getSelection();
 		SearchPatternData initData = null;
-
+		IErlModule module = erlangEditor.getModule();
+		if (module == null) {
+			return;
+		}
 		if (sel instanceof IStructuredSelection) {
 			initData = tryStructuredSelection((IStructuredSelection) sel);
 		} else if (sel instanceof ITextSelection) {
@@ -761,9 +765,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				final int offset = textSel.getOffset();
 				OpenResult res;
 				try {
-					res = ErlideOpen.open(b, ErlScanner
-							.createScannerModuleName(erlangEditor.getModule()),
-							offset, "", ErlangCore.getModel().getPathVars());
+					String scannerModuleName = ErlScanner
+							.createScannerModuleName(module);
+					res = ErlideOpen.open(b, scannerModuleName, offset, "",
+							ErlangCore.getModel().getPathVars());
 				} catch (final BackendException e) {
 					res = null;
 				}

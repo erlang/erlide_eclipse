@@ -291,13 +291,15 @@ public class OpenAction extends SelectionDispatchAction {
 				.getActiveEditor();
 		editor.reconcileNow();
 		final IErlModule module = editor.getModule();
+		if (module == null) {
+			return;
+		}
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
 		try {
-			final IErlProject erlProject = module == null ? null : module
-					.getErlProject();
+			final IErlProject erlProject = module.getErlProject();
 			final IErlModel model = ErlangCore.getModel();
 			final OpenResult res = ErlideOpen.open(b, ErlScanner
 					.createScannerModuleName(editor.getModule()), offset, model

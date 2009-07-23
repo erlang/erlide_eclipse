@@ -113,6 +113,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
+		if (module == null) {
+			return new ICompletionProposal[0];
+		}
 		try {
 			final IDocument doc = viewer.getDocument();
 			String before = getBefore(doc, offset);
@@ -127,8 +130,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			int flags;
 			int pos;
 			String moduleOrRecord = null;
-			final IErlProject project = module == null ? null : module
-					.getProject();
+			final IErlProject project = module.getProject();
 			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
 					project.getProject());
 			final IErlElement element = getElementAt(offset);

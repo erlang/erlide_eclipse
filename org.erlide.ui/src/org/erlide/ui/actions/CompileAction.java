@@ -34,6 +34,9 @@ public class CompileAction extends Action {
 		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
 				.getActiveEditor();
 		final IErlModule module = editor.getModule();
+		if (module == null) {
+			return;
+		}
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 
 		final IResource resource = module.getResource();

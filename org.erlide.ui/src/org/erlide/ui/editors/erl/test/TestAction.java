@@ -39,6 +39,9 @@ public class TestAction extends TextEditorAction {
 	@Override
 	public void run() {
 		super.run();
+		if (module == null) {
+			return;
+		}
 		final ITextEditor textEditor = getTextEditor();
 		if (true) {
 			final IDocument document = textEditor.getDocumentProvider()
