@@ -746,16 +746,16 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private void initSelections() {
 		final ISelection sel = getContainer().getSelection();
 		SearchPatternData initData = null;
-		IErlModule module = erlangEditor.getModule();
-		if (module == null) {
-			return;
-		}
 		if (sel instanceof IStructuredSelection) {
 			initData = tryStructuredSelection((IStructuredSelection) sel);
 		} else if (sel instanceof ITextSelection) {
 			final IEditorPart activePart = getActiveEditor();
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
+				IErlModule module = erlangEditor.getModule();
+				if (module == null) {
+					return;
+				}
 				// TODO how in the world can we find the proper build backend?
 				final Backend b = ErlangCore.getBackendManager()
 						.getIdeBackend();
