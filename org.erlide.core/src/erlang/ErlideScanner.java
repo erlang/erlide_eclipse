@@ -140,6 +140,9 @@ public class ErlideScanner {
 	}
 
 	public static String checkAll(final String module, final String text) {
+		if (module == null) {
+			return "";
+		}
 		try {
 			final OtpErlangObject o = ErlangCore.getBackendManager()
 					.getIdeBackend().call(ERLIDE_SCANNER, "check_all", "as",
@@ -154,6 +157,9 @@ public class ErlideScanner {
 	@SuppressWarnings("boxing")
 	public static void notifyChange(final String module, final int offset,
 			final int length, final String text) {
+		if (module == null) {
+			return;
+		}
 		try {
 			final OtpErlangObject msg = ErlUtils.format(
 					"{change, ~a, ~i,  ~i, ~s}", module, offset, length, text);
