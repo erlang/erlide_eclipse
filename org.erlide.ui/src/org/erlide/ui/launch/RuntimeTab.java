@@ -214,7 +214,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(ErlLaunchAttributes.START_ME, false);
+		config.setAttribute(ErlLaunchAttributes.START_ME, true);
 		config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
 				ErlLaunchAttributes.DEFAULT_RUNTIME_NAME);
 		config.setAttribute(ErlLaunchAttributes.NODE_NAME, "");
@@ -256,7 +256,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		}
 		try {
 			final boolean startMe = config.getAttribute(
-					ErlLaunchAttributes.START_ME, false);
+					ErlLaunchAttributes.START_ME, true);
 			startNodeCheckbox.setSelection(startMe);
 		} catch (final CoreException e) {
 			startNodeCheckbox.setSelection(false);

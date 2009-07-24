@@ -106,7 +106,7 @@ public class ErlangLaunchConfigurationDelegate extends
 				ErlLaunchAttributes.USE_LONG_NAME, true);
 
 		final boolean startMe = internal
-				|| config.getAttribute(ErlLaunchAttributes.START_ME, false);
+				|| config.getAttribute(ErlLaunchAttributes.START_ME, true);
 		String workingDir = config.getAttribute(
 				ErlLaunchAttributes.WORKING_DIR,
 				ErlLaunchAttributes.DEFAULT_WORKING_DIR).trim();
@@ -182,6 +182,13 @@ public class ErlangLaunchConfigurationDelegate extends
 		try {
 			final ErlideBackend backend = ErlangCore.getBackendManager()
 					.create(rt, options, launch);
+			if (backend == null) {
+				ErlLogger.error("Launch: could not create backend!");
+				final Status s = new Status(IStatus.ERROR,
+						ErlangPlugin.PLUGIN_ID, DebugException.REQUEST_FAILED,
+						"Couldn't find the node " + nodeName, null);
+				throw new DebugException(s);
+			}
 			// launch.addProcess(null);
 			registerProjects(backend, projects);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -229,10 +236,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				runInitial(module, function, args, backend);
 			}
 		} catch (final BackendException e) {
-			ErlLogger.error("Launch: got null backend!");
+			ErlLogger.error("Launch: backend error!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
-					DebugException.REQUEST_FAILED, "Couldn't find the node "
-							+ nodeName, null);
+					DebugException.REQUEST_FAILED, e.getMessage(), null);
 			throw new DebugException(s);
 		}
 	}
