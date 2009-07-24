@@ -21,7 +21,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
@@ -31,7 +30,6 @@ import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
-import org.erlide.ui.editors.erl.ErlangAnnotationHover;
 import org.erlide.ui.editors.erl.ErlangPairMatcher;
 import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 
@@ -82,11 +80,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 				.setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
 		return asst;
-	}
-
-	@Override
-	public IAnnotationHover getAnnotationHover(final ISourceViewer sourceViewer) {
-		return new ErlangAnnotationHover();
 	}
 
 	/*

@@ -30,7 +30,6 @@ import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
@@ -218,11 +217,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 			return asst;
 		}
 		return null;
-	}
-
-	@Override
-	public IAnnotationHover getAnnotationHover(final ISourceViewer sourceViewer) {
-		return new ErlangAnnotationHover();
 	}
 
 	/*
