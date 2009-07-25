@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.builder.IMarkerGenerator;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -108,8 +109,8 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 
 				final String msg = ((OtpErlangString) data.elementAt(2))
 						.stringValue();
-				final String fileName = ((OtpErlangString) data.elementAt(1))
-						.stringValue();
+				final String fileName = (String) TypeConverter.erlang2java(data
+						.elementAt(1), String.class);
 				IResource res = resource;
 				if (!comparePath(resource.getLocation().toString(), fileName)) {
 					res = findResource(resource.getProject(), fileName);
