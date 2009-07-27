@@ -61,8 +61,6 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
-import org.eclipse.ui.internal.WorkbenchMessages;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.ui.ErlideUIPlugin;
@@ -85,11 +83,11 @@ public class FilteredModulesSelectionDialog extends
 	private final ModuleItemLabelProvider moduleItemLabelProvider;
 	private final ModuleItemDetailsLabelProvider moduleItemDetailsLabelProvider;
 	private WorkingSetFilterActionGroup workingSetFilterActionGroup;
-	private final CustomWorkingSetFilter workingSetFilter = new CustomWorkingSetFilter();
+	final CustomWorkingSetFilter workingSetFilter = new CustomWorkingSetFilter();
 	private String title;
-	private final IContainer container;
-	private final int typeMask;
-	private boolean isDerived;
+	final IContainer container;
+	final int typeMask;
+	boolean isDerived;
 
 	/**
 	 * Creates a new instance of the class
@@ -141,7 +139,7 @@ public class FilteredModulesSelectionDialog extends
 	 * @param text
 	 *            the new subtitle
 	 */
-	private void setSubtitle(String text) {
+	void setSubtitle(String text) {
 		if (text == null || text.length() == 0) {
 			getShell().setText(title);
 		} else {
@@ -314,7 +312,7 @@ public class FilteredModulesSelectionDialog extends
 			return null;
 		}
 
-		List resultToReturn = new ArrayList();
+		List<Object> resultToReturn = new ArrayList<Object>();
 
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] instanceof IResource) {
@@ -410,8 +408,8 @@ public class FilteredModulesSelectionDialog extends
 	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#getItemsComparator()
 	 */
 	@Override
-	protected Comparator getItemsComparator() {
-		return new Comparator() {
+	protected Comparator<Object> getItemsComparator() {
+		return new Comparator<Object>() {
 
 			/*
 			 * (non-Javadoc)
@@ -480,9 +478,7 @@ public class FilteredModulesSelectionDialog extends
 		 * Creates a new instance of the action.
 		 */
 		public ShowDerivedModulesAction() {
-			super(
-					IDEWorkbenchMessages.FilteredResourcesSelectionDialog_showDerivedResourcesAction,
-					IAction.AS_CHECK_BOX);
+			super("Show &Derived Modules", IAction.AS_CHECK_BOX);
 		}
 
 		@Override
@@ -635,8 +631,7 @@ public class FilteredModulesSelectionDialog extends
 	/**
 	 * A label provider for details of ResourceItem objects.
 	 */
-	private class ModuleItemDetailsLabelProvider extends
-			ModuleItemLabelProvider {
+	class ModuleItemDetailsLabelProvider extends ModuleItemLabelProvider {
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -745,7 +740,7 @@ public class FilteredModulesSelectionDialog extends
 
 		private final IProgressMonitor progressMonitor;
 
-		private final List projects;
+		private final List<IResource> projects;
 
 		/**
 		 * Creates new ResourceProxyVisitor instance.
@@ -763,13 +758,10 @@ public class FilteredModulesSelectionDialog extends
 			this.resourceFilter = resourceFilter;
 			this.progressMonitor = progressMonitor;
 			IResource[] resources = container.members();
-			this.projects = new ArrayList(Arrays.asList(resources));
+			this.projects = new ArrayList<IResource>(Arrays.asList(resources));
 
 			if (progressMonitor != null) {
-				progressMonitor
-						.beginTask(
-								WorkbenchMessages.FilteredItemsSelectionDialog_searchJob_taskName,
-								projects.size());
+				progressMonitor.beginTask("Searching", projects.size());
 			}
 		}
 
@@ -793,7 +785,9 @@ public class FilteredModulesSelectionDialog extends
 				progressMonitor.worked(1);
 			}
 
-			proxyContentProvider.add(resource, resourceFilter);
+			if ("erl".equals(resource.getFileExtension())) {
+				proxyContentProvider.add(resource, resourceFilter);
+			}
 
 			if (resource.getType() == IResource.FOLDER && resource.isDerived()
 					&& !resourceFilter.isShowDerived()) {
@@ -940,7 +934,7 @@ public class FilteredModulesSelectionDialog extends
 	 * resources - storing and restoring <code>IResource</code>s state to/from
 	 * XML (memento).
 	 */
-	private class ModuleSelectionHistory extends SelectionHistory {
+	class ModuleSelectionHistory extends SelectionHistory {
 
 		/*
 		 * (non-Javadoc)

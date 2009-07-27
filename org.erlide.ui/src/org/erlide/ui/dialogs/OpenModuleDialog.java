@@ -13,7 +13,6 @@ package org.erlide.ui.dialogs;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 /**
@@ -22,7 +21,7 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
  * 
  * @since 2.1
  */
-public class OpenModuleDialog extends FilteredResourcesSelectionDialog {
+public class OpenModuleDialog extends FilteredModulesSelectionDialog {
 
 	/**
 	 * Creates a new instance of the class.
