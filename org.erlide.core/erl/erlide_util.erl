@@ -43,7 +43,7 @@ check_cached(SourceFileName, CacheFileName, Version) ->
     SourceModDate = case file:read_file_info(SourceFileName) of
                         {ok, Info} ->
                             Info#file_info.mtime;
-                        {error, enoent} ->
+                        {error, _} ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
     ?D(SourceModDate),
