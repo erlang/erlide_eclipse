@@ -488,7 +488,7 @@
       <command
             categoryId="org.eclipse.ui.category.navigate"
             id="org.erlide.ui.actions.open.editor"
-            name="open editor"/>
+            name="Open Editor"/>
       <command
             id="org.erlide.ui.actions.console.input"
             name="Erlang console 1"/>
@@ -534,6 +534,16 @@
             id="org.erlide.ui.erlideCategory"
             name="ErlIDE">
       </category>
+      <command
+            categoryId="org.eclipse.ui.category.navigate"
+            defaultHandler="org.erlide.ui.actions.OpenModuleHandler"
+            id="org.erlide.ui.open.module"
+            name="Open Module">
+		    <commandParameter
+               id="filePath"
+               name="module name...."
+               typeId="org.eclipse.ui.ide.resourcePath"/>
+       </command>
 
  </extension>
  <extension
@@ -610,6 +620,10 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M3+H">
       </key>
+      <key
+            commandId="org.erlide.ui.open.module"
+            sequence="M1+M2+M"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
 
  </extension>
  <extension
