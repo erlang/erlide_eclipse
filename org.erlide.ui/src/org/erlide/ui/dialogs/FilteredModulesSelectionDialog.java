@@ -78,27 +78,17 @@ public class FilteredModulesSelectionDialog extends
 		FilteredItemsSelectionDialog {
 
 	private static final String DIALOG_SETTINGS = "org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog"; //$NON-NLS-1$
-
 	private static final String WORKINGS_SET_SETTINGS = "WorkingSet"; //$NON-NLS-1$
-
 	private static final String SHOW_DERIVED = "ShowDerived"; //$NON-NLS-1$
 
-	private ShowDerivedResourcesAction showDerivedResourcesAction;
-
-	private final ResourceItemLabelProvider resourceItemLabelProvider;
-
-	private final ResourceItemDetailsLabelProvider resourceItemDetailsLabelProvider;
-
+	private ShowDerivedModulesAction showDerivedModulesAction;
+	private final ModuleItemLabelProvider moduleItemLabelProvider;
+	private final ModuleItemDetailsLabelProvider moduleItemDetailsLabelProvider;
 	private WorkingSetFilterActionGroup workingSetFilterActionGroup;
-
 	private final CustomWorkingSetFilter workingSetFilter = new CustomWorkingSetFilter();
-
 	private String title;
-
 	private final IContainer container;
-
 	private final int typeMask;
-
 	private boolean isDerived;
 
 	/**
@@ -117,7 +107,7 @@ public class FilteredModulesSelectionDialog extends
 			IContainer container, int typesMask) {
 		super(shell, multi);
 
-		setSelectionHistory(new ResourceSelectionHistory());
+		setSelectionHistory(new ModuleSelectionHistory());
 
 		setTitle("Open Module");
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
@@ -126,12 +116,12 @@ public class FilteredModulesSelectionDialog extends
 		this.container = container;
 		this.typeMask = typesMask;
 
-		resourceItemLabelProvider = new ResourceItemLabelProvider();
+		moduleItemLabelProvider = new ModuleItemLabelProvider();
 
-		resourceItemDetailsLabelProvider = new ResourceItemDetailsLabelProvider();
+		moduleItemDetailsLabelProvider = new ModuleItemDetailsLabelProvider();
 
-		setListLabelProvider(resourceItemLabelProvider);
-		setDetailsLabelProvider(resourceItemDetailsLabelProvider);
+		setListLabelProvider(moduleItemLabelProvider);
+		setDetailsLabelProvider(moduleItemDetailsLabelProvider);
 	}
 
 	/*
@@ -189,7 +179,7 @@ public class FilteredModulesSelectionDialog extends
 	protected void storeDialog(IDialogSettings settings) {
 		super.storeDialog(settings);
 
-		settings.put(SHOW_DERIVED, showDerivedResourcesAction.isChecked());
+		settings.put(SHOW_DERIVED, showDerivedModulesAction.isChecked());
 
 		XMLMemento memento = XMLMemento.createWriteRoot("workingSet"); //$NON-NLS-1$
 		workingSetFilterActionGroup.saveState(memento);
@@ -218,7 +208,7 @@ public class FilteredModulesSelectionDialog extends
 		super.restoreDialog(settings);
 
 		boolean showDerived = settings.getBoolean(SHOW_DERIVED);
-		showDerivedResourcesAction.setChecked(showDerived);
+		showDerivedModulesAction.setChecked(showDerived);
 		this.isDerived = showDerived;
 
 		String setting = settings.get(WORKINGS_SET_SETTINGS);
@@ -251,8 +241,8 @@ public class FilteredModulesSelectionDialog extends
 	protected void fillViewMenu(IMenuManager menuManager) {
 		super.fillViewMenu(menuManager);
 
-		showDerivedResourcesAction = new ShowDerivedResourcesAction();
-		menuManager.add(showDerivedResourcesAction);
+		showDerivedModulesAction = new ShowDerivedModulesAction();
+		menuManager.add(showDerivedModulesAction);
 
 		workingSetFilterActionGroup = new WorkingSetFilterActionGroup(
 				getShell(), new IPropertyChangeListener() {
@@ -400,7 +390,7 @@ public class FilteredModulesSelectionDialog extends
 	 */
 	@Override
 	protected ItemsFilter createFilter() {
-		return new ResourceFilter(container, isDerived, typeMask);
+		return new ModuleFilter(container, isDerived, typeMask);
 	}
 
 	/*
@@ -470,9 +460,9 @@ public class FilteredModulesSelectionDialog extends
 	protected void fillContentProvider(AbstractContentProvider contentProvider,
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 			throws CoreException {
-		if (itemsFilter instanceof ResourceFilter) {
-			container.accept(new ResourceProxyVisitor(contentProvider,
-					(ResourceFilter) itemsFilter, progressMonitor),
+		if (itemsFilter instanceof ModuleFilter) {
+			container.accept(new ModuleProxyVisitor(contentProvider,
+					(ModuleFilter) itemsFilter, progressMonitor),
 					IResource.NONE);
 		}
 		if (progressMonitor != null) {
@@ -484,12 +474,12 @@ public class FilteredModulesSelectionDialog extends
 	/**
 	 * Sets the derived flag on the ResourceFilter instance
 	 */
-	private class ShowDerivedResourcesAction extends Action {
+	private class ShowDerivedModulesAction extends Action {
 
 		/**
 		 * Creates a new instance of the action.
 		 */
-		public ShowDerivedResourcesAction() {
+		public ShowDerivedModulesAction() {
 			super(
 					IDEWorkbenchMessages.FilteredResourcesSelectionDialog_showDerivedResourcesAction,
 					IAction.AS_CHECK_BOX);
@@ -507,7 +497,7 @@ public class FilteredModulesSelectionDialog extends
 	 * resource full path for duplicates. It uses the Platform UI label
 	 * decorator for providing extra resource info.
 	 */
-	private class ResourceItemLabelProvider extends LabelProvider implements
+	private class ModuleItemLabelProvider extends LabelProvider implements
 			ILabelProviderListener, IStyledLabelProvider {
 
 		// Need to keep our own list of listeners
@@ -518,7 +508,7 @@ public class FilteredModulesSelectionDialog extends
 		/**
 		 * Creates a new instance of the class
 		 */
-		public ResourceItemLabelProvider() {
+		public ModuleItemLabelProvider() {
 			super();
 			provider.addListener(this);
 		}
@@ -645,8 +635,8 @@ public class FilteredModulesSelectionDialog extends
 	/**
 	 * A label provider for details of ResourceItem objects.
 	 */
-	private class ResourceItemDetailsLabelProvider extends
-			ResourceItemLabelProvider {
+	private class ModuleItemDetailsLabelProvider extends
+			ModuleItemLabelProvider {
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -747,11 +737,11 @@ public class FilteredModulesSelectionDialog extends
 	 * During visit resources it updates progress monitor and adds matched
 	 * resources to ContentProvider instance.
 	 */
-	private class ResourceProxyVisitor implements IResourceProxyVisitor {
+	private class ModuleProxyVisitor implements IResourceProxyVisitor {
 
 		private final AbstractContentProvider proxyContentProvider;
 
-		private final ResourceFilter resourceFilter;
+		private final ModuleFilter resourceFilter;
 
 		private final IProgressMonitor progressMonitor;
 
@@ -765,8 +755,8 @@ public class FilteredModulesSelectionDialog extends
 		 * @param progressMonitor
 		 * @throws CoreException
 		 */
-		public ResourceProxyVisitor(AbstractContentProvider contentProvider,
-				ResourceFilter resourceFilter, IProgressMonitor progressMonitor)
+		public ModuleProxyVisitor(AbstractContentProvider contentProvider,
+				ModuleFilter resourceFilter, IProgressMonitor progressMonitor)
 				throws CoreException {
 			super();
 			this.proxyContentProvider = contentProvider;
@@ -823,7 +813,7 @@ public class FilteredModulesSelectionDialog extends
 	 * Filters resources using pattern and showDerived flag. It overrides
 	 * ItemsFilter.
 	 */
-	protected class ResourceFilter extends ItemsFilter {
+	protected class ModuleFilter extends ItemsFilter {
 
 		private boolean showDerived = false;
 
@@ -839,7 +829,7 @@ public class FilteredModulesSelectionDialog extends
 		 *            flag which determine showing derived elements
 		 * @param typeMask
 		 */
-		public ResourceFilter(IContainer container, boolean showDerived,
+		public ModuleFilter(IContainer container, boolean showDerived,
 				int typeMask) {
 			super();
 			this.filterContainer = container;
@@ -850,7 +840,7 @@ public class FilteredModulesSelectionDialog extends
 		/**
 		 * Creates new ResourceFilter instance
 		 */
-		public ResourceFilter() {
+		public ModuleFilter() {
 			super();
 			this.filterContainer = container;
 			this.showDerived = isDerived;
@@ -906,8 +896,8 @@ public class FilteredModulesSelectionDialog extends
 			if (!super.isSubFilter(filter)) {
 				return false;
 			}
-			if (filter instanceof ResourceFilter) {
-				if (this.showDerived == ((ResourceFilter) filter).showDerived) {
+			if (filter instanceof ModuleFilter) {
+				if (this.showDerived == ((ModuleFilter) filter).showDerived) {
 					return true;
 				}
 			}
@@ -926,8 +916,8 @@ public class FilteredModulesSelectionDialog extends
 			if (!super.equalsFilter(iFilter)) {
 				return false;
 			}
-			if (iFilter instanceof ResourceFilter) {
-				if (this.showDerived == ((ResourceFilter) iFilter).showDerived) {
+			if (iFilter instanceof ModuleFilter) {
+				if (this.showDerived == ((ModuleFilter) iFilter).showDerived) {
 					return true;
 				}
 			}
@@ -950,7 +940,7 @@ public class FilteredModulesSelectionDialog extends
 	 * resources - storing and restoring <code>IResource</code>s state to/from
 	 * XML (memento).
 	 */
-	private class ResourceSelectionHistory extends SelectionHistory {
+	private class ModuleSelectionHistory extends SelectionHistory {
 
 		/*
 		 * (non-Javadoc)
