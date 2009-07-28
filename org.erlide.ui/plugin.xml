@@ -622,6 +622,10 @@
       </key>
       <key
             commandId="org.erlide.ui.open.module"
+            sequence="M1+M2+M3+M"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+      <key
+            commandId="org.erlide.ui.open.module"
             sequence="M1+M2+M"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
 
