@@ -267,7 +267,7 @@ public class ErlideUtil {
 		return name.substring(0, i);
 	}
 
-	public static boolean hasERLExtension(final String name) {
+	public static boolean hasErlExtension(final String name) {
 		return nameToModuleKind(name) == ModuleKind.ERL;
 	}
 

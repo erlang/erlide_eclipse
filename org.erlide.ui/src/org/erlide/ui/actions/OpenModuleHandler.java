@@ -24,8 +24,8 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IIDEHelpContextIds;
 import org.erlide.ui.dialogs.OpenModuleDialog;
+import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 public final class OpenModuleHandler extends Action implements IHandler,
 		IWorkbenchWindowActionDelegate {
@@ -47,7 +47,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 	public OpenModuleHandler() {
 		super();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IIDEHelpContextIds.OPEN_WORKSPACE_FILE_ACTION);
+				IErlangHelpContextIds.OPEN_MODULE_ACTION);
 	}
 
 	public final void addHandlerListener(final IHandlerListener listener) {
@@ -132,15 +132,13 @@ public final class OpenModuleHandler extends Action implements IHandler,
 		final Shell parent = window.getShell();
 		final IContainer input = ResourcesPlugin.getWorkspace().getRoot();
 
-		final OpenModuleDialog dialog = new OpenModuleDialog(parent, input,
-				IResource.FILE);
+		final OpenModuleDialog dialog = new OpenModuleDialog(parent, input);
 		final int resultCode = dialog.open();
 		if (resultCode != IDialogConstants.OK_ID) {
 			return null;
 		}
 
 		final Object[] result = dialog.getResult();
-
 		return result;
 	}
 
@@ -158,7 +156,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 		try {
 			execute(new ExecutionEvent());
 		} catch (final ExecutionException e) {
-			// TODO Do something meaningful and poignant.
+			// Do nothing. Maybe show error message?
 		}
 	}
 

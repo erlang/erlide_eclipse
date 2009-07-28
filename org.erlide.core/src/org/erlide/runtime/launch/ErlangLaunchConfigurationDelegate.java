@@ -276,7 +276,7 @@ public class ErlangLaunchConfigurationDelegate extends
 			final IMarker m = bp.getMarker();
 			final IResource r = m.getResource();
 			final String name = r.getName();
-			if (ErlideUtil.hasERLExtension(name)) {
+			if (ErlideUtil.hasErlExtension(name)) {
 				final IProject p = r.getProject();
 				if (projects.contains(p)) {
 					final String s = p.getName() + ":" + name;

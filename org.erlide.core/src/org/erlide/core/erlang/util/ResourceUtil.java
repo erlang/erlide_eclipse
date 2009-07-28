@@ -52,7 +52,7 @@ public class ResourceUtil {
 
 	/**
 	 * <p>
-	 * returns whether the passed resource is an OCaml source file, as
+	 * returns whether the passed resource is an Erlang source file, as
 	 * recognized by the file extensions '.erl' and '.hrl'.
 	 * </p>
 	 */

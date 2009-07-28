@@ -44,4 +44,6 @@ public class IErlangHelpContextIds {
 
 	public static final String OPEN_MODULE_DIALOG = "openModuleDialog";
 
+	public static final String OPEN_MODULE_ACTION = "openModuleAction";
+
 }

@@ -11,6 +11,7 @@
 package org.erlide.ui.dialogs;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
@@ -19,7 +20,6 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.
  * 
- * @since 2.1
  */
 public class OpenModuleDialog extends FilteredModulesSelectionDialog {
 
@@ -33,9 +33,8 @@ public class OpenModuleDialog extends FilteredModulesSelectionDialog {
 	 * @param typesMask
 	 *            the types mask
 	 */
-	public OpenModuleDialog(Shell parentShell, IContainer container,
-			int typesMask) {
-		super(parentShell, true, container, typesMask);
+	public OpenModuleDialog(Shell parentShell, IContainer container) {
+		super(parentShell, true, container, IResource.FILE);
 		setTitle("Open module");
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parentShell,
 				IErlangHelpContextIds.OPEN_MODULE_DIALOG);

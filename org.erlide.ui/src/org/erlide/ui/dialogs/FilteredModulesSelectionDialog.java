@@ -31,8 +31,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -63,6 +61,8 @@ import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.core.erlang.util.PluginUtils;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -70,16 +70,13 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.
  * 
- * @since 3.3
  */
 public class FilteredModulesSelectionDialog extends
 		FilteredItemsSelectionDialog {
 
 	private static final String DIALOG_SETTINGS = "org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog"; //$NON-NLS-1$
 	private static final String WORKINGS_SET_SETTINGS = "WorkingSet"; //$NON-NLS-1$
-	private static final String SHOW_DERIVED = "ShowDerived"; //$NON-NLS-1$
 
-	private ShowDerivedModulesAction showDerivedModulesAction;
 	private final ModuleItemLabelProvider moduleItemLabelProvider;
 	private final ModuleItemDetailsLabelProvider moduleItemDetailsLabelProvider;
 	private WorkingSetFilterActionGroup workingSetFilterActionGroup;
@@ -87,7 +84,6 @@ public class FilteredModulesSelectionDialog extends
 	private String title;
 	final IContainer container;
 	final int typeMask;
-	boolean isDerived;
 
 	/**
 	 * Creates a new instance of the class
@@ -115,9 +111,7 @@ public class FilteredModulesSelectionDialog extends
 		this.typeMask = typesMask;
 
 		moduleItemLabelProvider = new ModuleItemLabelProvider();
-
 		moduleItemDetailsLabelProvider = new ModuleItemDetailsLabelProvider();
-
 		setListLabelProvider(moduleItemLabelProvider);
 		setDetailsLabelProvider(moduleItemDetailsLabelProvider);
 	}
@@ -177,8 +171,6 @@ public class FilteredModulesSelectionDialog extends
 	protected void storeDialog(IDialogSettings settings) {
 		super.storeDialog(settings);
 
-		settings.put(SHOW_DERIVED, showDerivedModulesAction.isChecked());
-
 		XMLMemento memento = XMLMemento.createWriteRoot("workingSet"); //$NON-NLS-1$
 		workingSetFilterActionGroup.saveState(memento);
 		workingSetFilterActionGroup.dispose();
@@ -204,10 +196,6 @@ public class FilteredModulesSelectionDialog extends
 	@Override
 	protected void restoreDialog(IDialogSettings settings) {
 		super.restoreDialog(settings);
-
-		boolean showDerived = settings.getBoolean(SHOW_DERIVED);
-		showDerivedModulesAction.setChecked(showDerived);
-		this.isDerived = showDerived;
 
 		String setting = settings.get(WORKINGS_SET_SETTINGS);
 		if (setting != null) {
@@ -238,9 +226,6 @@ public class FilteredModulesSelectionDialog extends
 	@Override
 	protected void fillViewMenu(IMenuManager menuManager) {
 		super.fillViewMenu(menuManager);
-
-		showDerivedModulesAction = new ShowDerivedModulesAction();
-		menuManager.add(showDerivedModulesAction);
 
 		workingSetFilterActionGroup = new WorkingSetFilterActionGroup(
 				getShell(), new IPropertyChangeListener() {
@@ -388,7 +373,7 @@ public class FilteredModulesSelectionDialog extends
 	 */
 	@Override
 	protected ItemsFilter createFilter() {
-		return new ModuleFilter(container, isDerived, typeMask);
+		return new ModuleFilter(container, typeMask);
 	}
 
 	/*
@@ -470,25 +455,6 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	/**
-	 * Sets the derived flag on the ResourceFilter instance
-	 */
-	private class ShowDerivedModulesAction extends Action {
-
-		/**
-		 * Creates a new instance of the action.
-		 */
-		public ShowDerivedModulesAction() {
-			super("Show &Derived Modules", IAction.AS_CHECK_BOX);
-		}
-
-		@Override
-		public void run() {
-			FilteredModulesSelectionDialog.this.isDerived = isChecked();
-			applyFilter();
-		}
-	}
-
-	/**
 	 * A label provider for ResourceDecorator objects. It creates labels with a
 	 * resource full path for duplicates. It uses the Platform UI label
 	 * decorator for providing extra resource info.
@@ -539,7 +505,6 @@ public class FilteredModulesSelectionDialog extends
 			}
 
 			IResource res = (IResource) element;
-
 			String str = res.getName();
 
 			// extra info for duplicates
@@ -562,15 +527,13 @@ public class FilteredModulesSelectionDialog extends
 				return new StyledString(super.getText(element));
 			}
 
-			IResource res = (IResource) element;
+			String text = getText(element);
+			StyledString str = new StyledString(text);
 
-			StyledString str = new StyledString(res.getName());
-
-			// extra info for duplicates
-			if (isDuplicateElement(element)) {
-				str.append(" - ", StyledString.QUALIFIER_STYLER); //$NON-NLS-1$
-				str.append(res.getParent().getFullPath().makeRelative()
-						.toString(), StyledString.QUALIFIER_STYLER);
+			int index = text.indexOf(" - ");
+			if (index != -1) {
+				str.setStyle(index, text.length() - index,
+						StyledString.QUALIFIER_STYLER);
 			}
 			return str;
 		}
@@ -668,7 +631,8 @@ public class FilteredModulesSelectionDialog extends
 				return null;
 			}
 
-			return parent.getFullPath().makeRelative().toString();
+			return parent.getProjectRelativePath().makeRelative().toString()
+					+ " - " + parent.getProject().getName();
 		}
 
 		/*
@@ -698,6 +662,7 @@ public class FilteredModulesSelectionDialog extends
 		 * 
 		 * @return the active working set
 		 */
+		@SuppressWarnings("unused")
 		public IWorkingSet getWorkingSet() {
 			return resourceWorkingSetFilter.getWorkingSet();
 		}
@@ -785,13 +750,15 @@ public class FilteredModulesSelectionDialog extends
 				progressMonitor.worked(1);
 			}
 
-			if ("erl".equals(resource.getFileExtension())) {
-				proxyContentProvider.add(resource, resourceFilter);
+			if (ResourceUtil.hasErlangExtension(resource)) {
+				IContainer container = resource.getParent();
+				if (PluginUtils.isOnSourcePath(container)
+						|| PluginUtils.isOnIncludePath(container)) {
+					proxyContentProvider.add(resource, resourceFilter);
+				}
 			}
 
-			if (resource.getType() == IResource.FOLDER && resource.isDerived()
-					&& !resourceFilter.isShowDerived()) {
-
+			if (resource.getType() == IResource.FOLDER && resource.isDerived()) {
 				return false;
 			}
 
@@ -809,10 +776,7 @@ public class FilteredModulesSelectionDialog extends
 	 */
 	protected class ModuleFilter extends ItemsFilter {
 
-		private boolean showDerived = false;
-
 		private final IContainer filterContainer;
-
 		private final int filterTypeMask;
 
 		/**
@@ -823,11 +787,9 @@ public class FilteredModulesSelectionDialog extends
 		 *            flag which determine showing derived elements
 		 * @param typeMask
 		 */
-		public ModuleFilter(IContainer container, boolean showDerived,
-				int typeMask) {
+		public ModuleFilter(IContainer container, int typeMask) {
 			super();
 			this.filterContainer = container;
-			this.showDerived = showDerived;
 			this.filterTypeMask = typeMask;
 		}
 
@@ -837,7 +799,6 @@ public class FilteredModulesSelectionDialog extends
 		public ModuleFilter() {
 			super();
 			this.filterContainer = container;
-			this.showDerived = isDerived;
 			this.filterTypeMask = typeMask;
 		}
 
@@ -871,8 +832,7 @@ public class FilteredModulesSelectionDialog extends
 				return false;
 			}
 			IResource resource = (IResource) item;
-			if ((!this.showDerived && resource.isDerived())
-					|| ((this.filterTypeMask & resource.getType()) == 0)) {
+			if ((this.filterTypeMask & resource.getType()) == 0) {
 				return false;
 			}
 			return matches(resource.getName());
@@ -891,9 +851,7 @@ public class FilteredModulesSelectionDialog extends
 				return false;
 			}
 			if (filter instanceof ModuleFilter) {
-				if (this.showDerived == ((ModuleFilter) filter).showDerived) {
-					return true;
-				}
+				return true;
 			}
 			return false;
 		}
@@ -911,38 +869,96 @@ public class FilteredModulesSelectionDialog extends
 				return false;
 			}
 			if (iFilter instanceof ModuleFilter) {
-				if (this.showDerived == ((ModuleFilter) iFilter).showDerived) {
-					return true;
-				}
+				return true;
 			}
 			return false;
-		}
-
-		/**
-		 * Check show derived flag for a filter
-		 * 
-		 * @return true if filter allow derived resources false if not
-		 */
-		public boolean isShowDerived() {
-			return showDerived;
 		}
 
 	}
 
 	/**
-	 * <code>ResourceSelectionHistory</code> provides behavior specific to
-	 * resources - storing and restoring <code>IResource</code>s state to/from
-	 * XML (memento).
+	 * Extends the <code>SelectionHistory</code>, providing support for
+	 * <code>OpenTypeHistory</code>.
 	 */
-	class ModuleSelectionHistory extends SelectionHistory {
+	protected class ModuleSelectionHistory extends SelectionHistory {
+
+		/**
+		 * Creates new instance of TypeSelectionHistory
+		 */
+		public ModuleSelectionHistory() {
+			super();
+		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
 		 * @see
 		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #restoreItemFromMemento(org.eclipse.ui.IMemento)
+		 * #accessed(java.lang.Object)
 		 */
+		@Override
+		public synchronized void accessed(Object object) {
+			super.accessed(object);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
+		 * #remove(java.lang.Object)
+		 */
+		@Override
+		public synchronized boolean remove(Object element) {
+			// OpenModuleHistory.getInstance().remove((TypeNameMatch) element);
+			return super.remove(element);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
+		 * #load(org.eclipse.ui.IMemento)
+		 */
+		@Override
+		public void load(IMemento memento) {
+			// TypeNameMatch[] types = OpenTypeHistory.getInstance()
+			// .getTypeInfos();
+			//
+			// for (int i = types.length - 1; i >= 0; i--) { // see
+			// // https://bugs.eclipse.org/bugs/show_bug.cgi?id=205314
+			// TypeNameMatch type = types[i];
+			// accessed(type);
+			// }
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
+		 * #save(org.eclipse.ui.IMemento)
+		 */
+		@Override
+		public void save(IMemento memento) {
+			persistHistory();
+		}
+
+		/**
+		 * Stores contents of the local history into persistent history
+		 * container.
+		 */
+		private synchronized void persistHistory() {
+			// if (getReturnCode() == OK) {
+			// Object[] items = getHistoryItems();
+			// for (int i = 0; i < items.length; i++) {
+			// OpenTypeHistory.getInstance().accessed(
+			// (TypeNameMatch) items[i]);
+			// }
+			// }
+		}
+
 		@Override
 		protected Object restoreItemFromMemento(IMemento element) {
 			return null;
@@ -957,6 +973,7 @@ public class FilteredModulesSelectionDialog extends
 		 */
 		@Override
 		protected void storeItemToMemento(Object item, IMemento element) {
+
 		}
 
 	}
