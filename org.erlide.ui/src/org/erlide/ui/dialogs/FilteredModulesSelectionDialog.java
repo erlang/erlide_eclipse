@@ -613,17 +613,12 @@ public class FilteredModulesSelectionDialog extends
 
 								String path;
 								IPath p = new Path(pref);
-								String first = p.segment(0);
-								IPath v = pvm.getValue(first);
-								if (v != null) {
-									path = v.append(p.removeFirstSegments(1))
-											.toString();
+								IPath v = pvm.resolvePath(p);
+								if (v.isAbsolute()) {
+									path = v.toString();
 								} else {
-									if (p.isAbsolute()) {
-										path = pref;
-									} else {
-										path = prj.getLocation() + "/" + pref;
-									}
+									path = prj.getLocation().append(v)
+											.toString();
 								}
 								proxyContentProvider.add(path, resourceFilter);
 							}
