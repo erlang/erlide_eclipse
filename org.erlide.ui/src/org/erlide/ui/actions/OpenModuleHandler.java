@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -79,16 +80,17 @@ public final class OpenModuleHandler extends Action implements IHandler,
 					} else if (result[i] instanceof String) {
 						try {
 							String path = (String) result[i];
-							IResource re = ResourceUtil
-									.recursiveFindNamedResourceWithReferences(
-											ResourcesPlugin.getWorkspace()
-													.getRoot(), path, null);
-							if (re instanceof IFile) {
-								files.add((IFile) re);
+							IFile[] cons = ResourcesPlugin.getWorkspace()
+									.getRoot().findFilesForLocation(
+											new Path(path));
+							for (IFile con : cons) {
+								if (con.getProject() != ResourceUtil
+										.getExternalFilesProject()
+										|| cons.length == 1) {
+									files.add(con);
+								}
 							}
-							if (re == null) {
-								// TODO should check if it's in any open
-								// project!
+							if (files.size() == 0) {
 								IFile file = EditorUtility.openExternal(path);
 								files.add(file);
 							}

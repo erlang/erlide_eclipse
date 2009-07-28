@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
@@ -594,6 +596,8 @@ public class FilteredModulesSelectionDialog extends
 							ErlangCore.EXTERNAL_INCLUDES);
 					files.addAll(PreferencesUtils.unpackList(extIncs));
 
+					final IPathVariableManager pvm = ResourcesPlugin
+							.getWorkspace().getPathVariableManager();
 					for (String str : files) {
 						IResource fres;
 						try {
@@ -606,7 +610,21 @@ public class FilteredModulesSelectionDialog extends
 							List<String> lines = PreferencesUtils.readFile(fres
 									.getLocation().toString());
 							for (String pref : lines) {
-								String path = prj.getLocation() + "/" + pref;
+
+								String path;
+								IPath p = new Path(pref);
+								String first = p.segment(0);
+								IPath v = pvm.getValue(first);
+								if (v != null) {
+									path = v.append(p.removeFirstSegments(1))
+											.toString();
+								} else {
+									if (p.isAbsolute()) {
+										path = pref;
+									} else {
+										path = prj.getLocation() + "/" + pref;
+									}
+								}
 								proxyContentProvider.add(path, resourceFilter);
 							}
 						}
