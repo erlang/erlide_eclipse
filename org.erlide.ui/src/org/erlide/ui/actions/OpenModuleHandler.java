@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -26,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+import org.erlide.ui.editors.util.EditorUtility;
 
 public final class OpenModuleHandler extends Action implements IHandler,
 		IWorkbenchWindowActionDelegate {
@@ -74,6 +76,15 @@ public final class OpenModuleHandler extends Action implements IHandler,
 				for (int i = 0; i < result.length; i++) {
 					if (result[i] instanceof IFile) {
 						files.add(result[i]);
+					} else if (result[i] instanceof String) {
+						IFile file;
+						try {
+							// TODO should check if it's in any open project!
+							file = EditorUtility
+									.openExternal((String) result[i]);
+							files.add(file);
+						} catch (CoreException e) {
+						}
 					}
 				}
 			}

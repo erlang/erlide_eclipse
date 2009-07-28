@@ -20,16 +20,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -61,8 +62,11 @@ import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -300,9 +304,9 @@ public class FilteredModulesSelectionDialog extends
 		List<Object> resultToReturn = new ArrayList<Object>();
 
 		for (int i = 0; i < result.length; i++) {
-			if (result[i] instanceof IResource) {
-				resultToReturn.add((result[i]));
-			}
+			// if (result[i] instanceof IResource) {
+			resultToReturn.add(result[i]);
+			// }
 		}
 
 		return resultToReturn.toArray();
@@ -350,6 +354,9 @@ public class FilteredModulesSelectionDialog extends
 	 */
 	@Override
 	public String getElementName(Object item) {
+		if (item instanceof String) {
+			return (String) item;
+		}
 		IResource resource = (IResource) item;
 		return resource.getName();
 	}
@@ -404,24 +411,24 @@ public class FilteredModulesSelectionDialog extends
 			 */
 			public int compare(Object o1, Object o2) {
 				Collator collator = Collator.getInstance();
-				IResource resource1 = (IResource) o1;
-				IResource resource2 = (IResource) o2;
-				String s1 = resource1.getName();
-				String s2 = resource2.getName();
+				String s1 = (o1 instanceof IResource) ? ((IResource) o1)
+						.getName() : (String) o1;
+				String s2 = (o2 instanceof IResource) ? ((IResource) o2)
+						.getName() : (String) o2;
 				int comparability = collator.compare(s1, s2);
 				if (comparability == 0) {
-					IPath p1 = resource1.getFullPath();
-					IPath p2 = resource2.getFullPath();
-					int c1 = p1.segmentCount();
-					int c2 = p2.segmentCount();
-					for (int i = 0; i < c1 && i < c2; i++) {
-						comparability = collator.compare(p1.segment(i), p2
-								.segment(i));
-						if (comparability != 0) {
-							return comparability;
-						}
-					}
-					comparability = c2 - c1;
+					// IPath p1 = resource1.getFullPath();
+					// IPath p2 = resource2.getFullPath();
+					// int c1 = p1.segmentCount();
+					// int c2 = p2.segmentCount();
+					// for (int i = 0; i < c1 && i < c2; i++) {
+					// comparability = collator.compare(p1.segment(i), p2
+					// .segment(i));
+					// if (comparability != 0) {
+					// return comparability;
+					// }
+					// }
+					// comparability = c2 - c1;
 				}
 
 				return comparability;
@@ -444,6 +451,7 @@ public class FilteredModulesSelectionDialog extends
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
 			throws CoreException {
 		if (itemsFilter instanceof ModuleFilter) {
+
 			container.accept(new ModuleProxyVisitor(contentProvider,
 					(ModuleFilter) itemsFilter, progressMonitor),
 					IResource.NONE);
@@ -700,11 +708,8 @@ public class FilteredModulesSelectionDialog extends
 	private class ModuleProxyVisitor implements IResourceProxyVisitor {
 
 		private final AbstractContentProvider proxyContentProvider;
-
 		private final ModuleFilter resourceFilter;
-
 		private final IProgressMonitor progressMonitor;
-
 		private final List<IResource> projects;
 
 		/**
@@ -750,16 +755,49 @@ public class FilteredModulesSelectionDialog extends
 				progressMonitor.worked(1);
 			}
 
+			if (resource.getProject() == resource) {
+				// navigate even "external" lists
+				IErlModel model = ErlangCore.getModel();
+				IProject prj = resource.getProject();
+				if (prj != null) {
+					String extMods = model.getExternal(model.findProject(prj),
+							ErlangCore.EXTERNAL_MODULES);
+					List<String> files = new ArrayList<String>();
+					files.addAll(PreferencesUtils.unpackList(extMods));
+					String extIncs = model.getExternal(model.findProject(prj),
+							ErlangCore.EXTERNAL_INCLUDES);
+					files.addAll(PreferencesUtils.unpackList(extIncs));
+
+					for (String str : files) {
+						IResource fres;
+						try {
+							fres = ResourceUtil.recursiveFindNamedResource(prj,
+									str, null);
+						} catch (CoreException e) {
+							fres = null;
+						}
+						if (fres != null) {
+							List<String> lines = PreferencesUtils.readFile(fres
+									.getLocation().toString());
+							for (String pref : lines) {
+								String path = prj.getLocation() + "/" + pref;
+								proxyContentProvider.add(path, resourceFilter);
+							}
+						}
+					}
+				}
+			}
+
+			if (resource.getType() == IResource.FOLDER && resource.isDerived()) {
+				return false;
+			}
+
 			if (ResourceUtil.hasErlangExtension(resource)) {
 				IContainer container = resource.getParent();
 				if (PluginUtils.isOnSourcePath(container)
 						|| PluginUtils.isOnIncludePath(container)) {
 					proxyContentProvider.add(resource, resourceFilter);
 				}
-			}
-
-			if (resource.getType() == IResource.FOLDER && resource.isDerived()) {
-				return false;
 			}
 
 			if (resource.getType() == IResource.FILE) {
@@ -810,6 +848,9 @@ public class FilteredModulesSelectionDialog extends
 		 */
 		@Override
 		public boolean isConsistentItem(Object item) {
+			if (item instanceof String) {
+				return true;
+			}
 			if (!(item instanceof IResource)) {
 				return false;
 			}
@@ -828,6 +869,10 @@ public class FilteredModulesSelectionDialog extends
 		 */
 		@Override
 		public boolean matchItem(Object item) {
+			if (item instanceof String) {
+				Path path = new Path((String) item);
+				return matches(path.lastSegment().toString());
+			}
 			if (!(item instanceof IResource)) {
 				return false;
 			}
