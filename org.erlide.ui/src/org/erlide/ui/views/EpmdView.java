@@ -1,5 +1,6 @@
 package org.erlide.ui.views;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 		}
 
 		public Object[] getElements(final Object inputElement) {
+			model = epmdWatcher.getData();
 			if (model == null) {
 				return new Object[] {};
 			}
@@ -45,8 +47,14 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 			if (parentElement instanceof String) {
 				final String host = (String) parentElement;
 				final List<String> h = model.get(host);
+				final List<String> res = new ArrayList<String>();
 				if (h != null) {
-					return h.toArray();
+					for (String s : h) {
+						if (!s.startsWith("jerlide_")) {
+							res.add(s);
+						}
+					}
+					return res.toArray();
 				}
 			}
 			return new Object[] {};
@@ -107,11 +115,10 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 		// .getToolBarManager();
 	}
 
-	public void updateNodeStatus(final String host, final Collection<String> started,
-			final Collection<String> stopped) {
+	public void updateNodeStatus(final String host,
+			final Collection<String> started, final Collection<String> stopped) {
 		model = epmdWatcher.getData();
 		Display.getDefault().asyncExec(new Runnable() {
-
 			public void run() {
 				treeViewer.setInput(model);
 			}
