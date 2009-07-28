@@ -95,11 +95,11 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 	}
 
 	public void init(final IWorkbench workbench,
-			final IStructuredSelection selection) {
-		this.selection = selection;
+			final IStructuredSelection aSelection) {
+		this.selection = aSelection;
 
 		final List<?> selectedResources = IDE
-				.computeSelectedResources(selection);
+				.computeSelectedResources(aSelection);
 		if (!selectedResources.isEmpty()) {
 			this.selection = new StructuredSelection(selectedResources);
 		}

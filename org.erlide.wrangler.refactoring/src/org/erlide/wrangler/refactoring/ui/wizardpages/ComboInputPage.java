@@ -67,6 +67,7 @@ public class ComboInputPage extends InputPage {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 
+			@SuppressWarnings("synthetic-access")
 			public void widgetSelected(SelectionEvent e) {
 				((SimpleOneStepWranglerRefactoring) getRefactoring())
 						.setUserInput(selectionList.getText());

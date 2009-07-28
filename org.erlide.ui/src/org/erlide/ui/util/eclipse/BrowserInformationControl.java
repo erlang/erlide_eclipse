@@ -145,7 +145,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * 
 	 * @since 3.4
 	 */
-	private boolean fCompleted = false;
+	boolean fCompleted = false;
 
 	/**
 	 * The listener to be notified when a delayed location changing event

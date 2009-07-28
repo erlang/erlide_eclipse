@@ -314,7 +314,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		};
 	}
 
-	private static final String getAdditionalInfoAffordanceString() {
+	static final String getAdditionalInfoAffordanceString() {
 		if (!EditorsUI
 				.getPreferenceStore()
 				.getBoolean(

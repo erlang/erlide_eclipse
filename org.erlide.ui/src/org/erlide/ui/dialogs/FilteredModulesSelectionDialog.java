@@ -378,7 +378,7 @@ public class FilteredModulesSelectionDialog extends
 			ILabelProviderListener, IStyledLabelProvider {
 
 		// Need to keep our own list of listeners
-		private final ListenerList listeners = new ListenerList();
+		final ListenerList listeners = new ListenerList();
 
 		WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
 
@@ -504,7 +504,7 @@ public class FilteredModulesSelectionDialog extends
 	/**
 	 * Viewer filter which filters resources due to current working set
 	 */
-	private class CustomWorkingSetFilter extends ViewerFilter {
+	class CustomWorkingSetFilter extends ViewerFilter {
 		private final ResourceWorkingSetFilter resourceWorkingSetFilter = new ResourceWorkingSetFilter();
 
 		/**

@@ -23,6 +23,7 @@ import org.erlide.wrangler.refactoring.selection.internal.ErlTextMemberSelection
 public class GlobalParameters {
 	// TODO:: handle null exceptions
 	static IEditorPart editor = null;
+
 	static IErlSelection wranglerSelection = null;;
 
 	public static int getTabWidth() {
@@ -44,8 +45,7 @@ public class GlobalParameters {
 			Workbench instance = Workbench.getInstance();
 			IWorkbenchWindow activeWorkbenchWindow = instance
 					.getActiveWorkbenchWindow();
-			editor = (ITextEditor) activeWorkbenchWindow.getActivePage()
-					.getActiveEditor();
+			editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
 		}
 		if (selection instanceof ITextSelection) {
 

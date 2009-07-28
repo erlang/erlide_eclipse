@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class HTMLPrinter {
 
-	private static RGB BG_COLOR_RGB = new RGB(255, 255, 225); // RGB value of
-																// info bg color
-																// on WindowsXP
-	private static RGB FG_COLOR_RGB = new RGB(0, 0, 0); // RGB value of info fg
-														// color on WindowsXP
+	static RGB BG_COLOR_RGB = new RGB(255, 255, 225); // RGB value of
+	// info bg color
+	// on WindowsXP
+	static RGB FG_COLOR_RGB = new RGB(0, 0, 0); // RGB value of info fg
+	// color on WindowsXP
 
 	static {
 		final Display display = Display.getDefault();

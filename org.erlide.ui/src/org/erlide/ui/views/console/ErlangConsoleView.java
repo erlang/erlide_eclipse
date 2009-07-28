@@ -110,7 +110,7 @@ public class ErlangConsoleView extends ViewPart implements
 	IShell shell;
 	ErlideBackend backend;
 	private Action action;
-	private int navIndex;
+	int navIndex;
 
 	private ComboViewer backends;
 
@@ -477,7 +477,7 @@ public class ErlangConsoleView extends ViewPart implements
 		});
 	}
 
-	private void moveDown() {
+	void moveDown() {
 		if (navIndex == -1) {
 			navIndex = 0;
 		} else if (navIndex < history.size() - 1) {
@@ -485,7 +485,7 @@ public class ErlangConsoleView extends ViewPart implements
 		}
 	}
 
-	private void moveUp() {
+	void moveUp() {
 		if (navIndex == -1) {
 			navIndex = history.size() - 1;
 		} else if (navIndex > 0) {
