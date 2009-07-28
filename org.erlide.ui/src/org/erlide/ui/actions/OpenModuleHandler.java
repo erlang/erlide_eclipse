@@ -1,7 +1,6 @@
 package org.erlide.ui.actions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.commands.ExecutionEvent;
@@ -25,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -66,7 +66,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 
 	public final Object execute(final ExecutionEvent event)
 			throws ExecutionException {
-		final List files = new ArrayList();
+		final List<IFile> files = new ArrayList<IFile>();
 
 		if (event.getParameter(PARAM_ID_FILE_PATH) == null) {
 			// Prompt the user for the resource to open.
@@ -75,14 +75,23 @@ public final class OpenModuleHandler extends Action implements IHandler,
 			if (result != null) {
 				for (int i = 0; i < result.length; i++) {
 					if (result[i] instanceof IFile) {
-						files.add(result[i]);
+						files.add((IFile) result[i]);
 					} else if (result[i] instanceof String) {
-						IFile file;
 						try {
-							// TODO should check if it's in any open project!
-							file = EditorUtility
-									.openExternal((String) result[i]);
-							files.add(file);
+							String path = (String) result[i];
+							IResource re = ResourceUtil
+									.recursiveFindNamedResourceWithReferences(
+											ResourcesPlugin.getWorkspace()
+													.getRoot(), path, null);
+							if (re instanceof IFile) {
+								files.add((IFile) re);
+							}
+							if (re == null) {
+								// TODO should check if it's in any open
+								// project!
+								IFile file = EditorUtility.openExternal(path);
+								files.add(file);
+							}
 						} catch (CoreException e) {
 						}
 					}
@@ -97,7 +106,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 				throw new ExecutionException(
 						"filePath parameter must identify a file"); //$NON-NLS-1$
 			}
-			files.add(resource);
+			files.add((IFile) resource);
 		}
 
 		if (files.size() > 0) {
@@ -114,8 +123,8 @@ public final class OpenModuleHandler extends Action implements IHandler,
 			}
 
 			try {
-				for (Iterator it = files.iterator(); it.hasNext();) {
-					IDE.openEditor(page, (IFile) it.next(), true);
+				for (IFile file : files) {
+					IDE.openEditor(page, file, true);
 				}
 			} catch (final PartInitException e) {
 				throw new ExecutionException("error opening file in editor", e); //$NON-NLS-1$

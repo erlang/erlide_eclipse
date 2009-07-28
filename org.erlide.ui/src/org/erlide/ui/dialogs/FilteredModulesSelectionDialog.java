@@ -120,11 +120,6 @@ public class FilteredModulesSelectionDialog extends
 		setDetailsLabelProvider(moduleItemDetailsLabelProvider);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.dialogs.SelectionDialog#setTitle(java.lang.String)
-	 */
 	@Override
 	public void setTitle(String title) {
 		super.setTitle(title);
@@ -145,12 +140,6 @@ public class FilteredModulesSelectionDialog extends
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#getDialogSettings()
-	 */
 	@Override
 	protected IDialogSettings getDialogSettings() {
 		IDialogSettings settings = ErlideUIPlugin.getDefault()
@@ -164,13 +153,6 @@ public class FilteredModulesSelectionDialog extends
 		return settings;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#storeDialog(org.eclipse
-	 * .jface.dialogs.IDialogSettings)
-	 */
 	@Override
 	protected void storeDialog(IDialogSettings settings) {
 		super.storeDialog(settings);
@@ -190,13 +172,6 @@ public class FilteredModulesSelectionDialog extends
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#restoreDialog(org
-	 * .eclipse.jface.dialogs.IDialogSettings)
-	 */
 	@Override
 	protected void restoreDialog(IDialogSettings settings) {
 		super.restoreDialog(settings);
@@ -220,13 +195,6 @@ public class FilteredModulesSelectionDialog extends
 		applyFilter();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#fillViewMenu(org.
-	 * eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	protected void fillViewMenu(IMenuManager menuManager) {
 		super.fillViewMenu(menuManager);
@@ -276,23 +244,11 @@ public class FilteredModulesSelectionDialog extends
 		workingSetFilterActionGroup.fillContextMenu(menuManager);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#createExtendedContentArea
-	 * (org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected Control createExtendedContentArea(Composite parent) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.dialogs.SelectionDialog#getResult()
-	 */
 	@Override
 	public Object[] getResult() {
 		Object[] result = super.getResult();
@@ -312,11 +268,6 @@ public class FilteredModulesSelectionDialog extends
 		return resultToReturn.toArray();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.window.Window#open()
-	 */
 	@Override
 	public int open() {
 		if (getInitialPattern() == null) {
@@ -345,13 +296,6 @@ public class FilteredModulesSelectionDialog extends
 		return super.open();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#getElementName(java
-	 * .lang.Object)
-	 */
 	@Override
 	public String getElementName(Object item) {
 		if (item instanceof String) {
@@ -361,54 +305,25 @@ public class FilteredModulesSelectionDialog extends
 		return resource.getName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#validateItem(java
-	 * .lang.Object)
-	 */
 	@Override
 	protected IStatus validateItem(Object item) {
 		return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#createFilter()
-	 */
 	@Override
 	protected ItemsFilter createFilter() {
 		return new ModuleFilter(container, typeMask);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#applyFilter()
-	 */
 	@Override
 	protected void applyFilter() {
 		super.applyFilter();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#getItemsComparator()
-	 */
 	@Override
 	protected Comparator<Object> getItemsComparator() {
 		return new Comparator<Object>() {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see java.util.Comparator#compare(java.lang.Object,
-			 * java.lang.Object)
-			 */
 			public int compare(Object o1, Object o2) {
 				Collator collator = Collator.getInstance();
 				String s1 = (o1 instanceof IResource) ? ((IResource) o1)
@@ -436,16 +351,6 @@ public class FilteredModulesSelectionDialog extends
 		};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#fillContentProvider
-	 * (org
-	 * .eclipse.ui.dialogs.FilteredItemsSelectionDialog.AbstractContentProvider,
-	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter,
-	 * org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void fillContentProvider(AbstractContentProvider contentProvider,
 			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
@@ -475,20 +380,11 @@ public class FilteredModulesSelectionDialog extends
 
 		WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
 
-		/**
-		 * Creates a new instance of the class
-		 */
 		public ModuleItemLabelProvider() {
 			super();
 			provider.addListener(this);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-		 */
 		@Override
 		public Image getImage(Object element) {
 			if (!(element instanceof IResource)) {
@@ -500,12 +396,6 @@ public class FilteredModulesSelectionDialog extends
 			return provider.getImage(res);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-		 */
 		@Override
 		public String getText(Object element) {
 			if (!(element instanceof IResource)) {
@@ -524,12 +414,6 @@ public class FilteredModulesSelectionDialog extends
 			return str;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @seeorg.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.
-		 * IStyledLabelProvider#getStyledText(java.lang.Object)
-		 */
 		public StyledString getStyledText(Object element) {
 			if (!(element instanceof IResource)) {
 				return new StyledString(super.getText(element));
@@ -546,11 +430,6 @@ public class FilteredModulesSelectionDialog extends
 			return str;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.viewers.LabelProvider#dispose()
-		 */
 		@Override
 		public void dispose() {
 			provider.removeListener(this);
@@ -559,37 +438,16 @@ public class FilteredModulesSelectionDialog extends
 			super.dispose();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse
-		 * .jface.viewers.ILabelProviderListener)
-		 */
 		@Override
 		public void addListener(ILabelProviderListener listener) {
 			listeners.add(listener);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.LabelProvider#removeListener(org.eclipse
-		 * .jface.viewers.ILabelProviderListener)
-		 */
 		@Override
 		public void removeListener(ILabelProviderListener listener) {
 			listeners.remove(listener);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.ILabelProviderListener#labelProviderChanged
-		 * (org.eclipse.jface.viewers.LabelProviderChangedEvent)
-		 */
 		public void labelProviderChanged(LabelProviderChangedEvent event) {
 			Object[] l = listeners.getListeners();
 			for (int i = 0; i < listeners.size(); i++) {
@@ -603,12 +461,7 @@ public class FilteredModulesSelectionDialog extends
 	 * A label provider for details of ResourceItem objects.
 	 */
 	class ModuleItemDetailsLabelProvider extends ModuleItemLabelProvider {
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-		 */
+
 		@Override
 		public Image getImage(Object element) {
 			if (!(element instanceof IResource)) {
@@ -619,12 +472,6 @@ public class FilteredModulesSelectionDialog extends
 			return provider.getImage(parent);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-		 */
 		@Override
 		public String getText(Object element) {
 			if (!(element instanceof IResource)) {
@@ -643,13 +490,6 @@ public class FilteredModulesSelectionDialog extends
 					+ " - " + parent.getProject().getName();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.ILabelProviderListener#labelProviderChanged
-		 * (org.eclipse.jface.viewers.LabelProviderChangedEvent)
-		 */
 		@Override
 		public void labelProviderChanged(LabelProviderChangedEvent event) {
 			Object[] l = super.listeners.getListeners();
@@ -685,13 +525,6 @@ public class FilteredModulesSelectionDialog extends
 			resourceWorkingSetFilter.setWorkingSet(workingSet);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers
-		 * .Viewer, java.lang.Object, java.lang.Object)
-		 */
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
@@ -735,13 +568,6 @@ public class FilteredModulesSelectionDialog extends
 			}
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceProxyVisitor#visit(org.eclipse
-		 * .core.resources.IResourceProxy)
-		 */
 		public boolean visit(IResourceProxy proxy) {
 
 			if (progressMonitor.isCanceled()) {
@@ -883,13 +709,6 @@ public class FilteredModulesSelectionDialog extends
 			return matches(resource.getName());
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @seeorg.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#
-		 * isSubFilter
-		 * (org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter)
-		 */
 		@Override
 		public boolean isSubFilter(ItemsFilter filter) {
 			if (!super.isSubFilter(filter)) {
@@ -901,13 +720,6 @@ public class FilteredModulesSelectionDialog extends
 			return false;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @seeorg.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#
-		 * equalsFilter
-		 * (org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter)
-		 */
 		@Override
 		public boolean equalsFilter(ItemsFilter iFilter) {
 			if (!super.equalsFilter(iFilter)) {
@@ -934,38 +746,17 @@ public class FilteredModulesSelectionDialog extends
 			super();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #accessed(java.lang.Object)
-		 */
 		@Override
 		public synchronized void accessed(Object object) {
 			super.accessed(object);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #remove(java.lang.Object)
-		 */
 		@Override
 		public synchronized boolean remove(Object element) {
 			// OpenModuleHistory.getInstance().remove((TypeNameMatch) element);
 			return super.remove(element);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #load(org.eclipse.ui.IMemento)
-		 */
 		@Override
 		public void load(IMemento memento) {
 			// TypeNameMatch[] types = OpenTypeHistory.getInstance()
@@ -978,13 +769,6 @@ public class FilteredModulesSelectionDialog extends
 			// }
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #save(org.eclipse.ui.IMemento)
-		 */
 		@Override
 		public void save(IMemento memento) {
 			persistHistory();
@@ -1009,13 +793,6 @@ public class FilteredModulesSelectionDialog extends
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.SelectionHistory
-		 * #storeItemToMemento(java.lang.Object, org.eclipse.ui.IMemento)
-		 */
 		@Override
 		protected void storeItemToMemento(Object item, IMemento element) {
 
