@@ -14,7 +14,6 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 	private int docLength;
 	private int crtOffset;
 	private int crtLength;
-	private IDocument crtDocument;
 
 	public IoRequestScanner(ErlConsoleModel model) {
 		Assert.isNotNull(model);
@@ -32,7 +31,6 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 			crtOffset = -1;
 		}
 		crtLength = 0;
-		crtDocument = document;
 	}
 
 	public int getTokenLength() {
@@ -70,7 +68,6 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 			crtOffset = -1;
 		}
 		crtLength = 0;
-		crtDocument = document;
 	}
 
 	private class IoRequestToken implements IToken {

@@ -134,13 +134,6 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.erlide.ui.views.console.ErlangConsoleView"
-            icon="icons/erl/erlang-notext016.gif"
-            id="org.erlide.ui.views.console"
-            name="Erlang console"/>
-      <view
-            allowMultiple="false"
-            category="org.erlide.views"
             class="org.eclipse.ui.navigator.CommonNavigator"
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"

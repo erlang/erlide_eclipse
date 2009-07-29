@@ -1,16 +1,5 @@
 package org.erlide.ui.views.console;
 
-/*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Vlad Dumitrescu
- *******************************************************************************/
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,8 +10,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -43,13 +30,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.part.IPageBookViewPage;
+import org.eclipse.ui.part.IPageSite;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
@@ -67,9 +56,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangConsoleView extends ViewPart implements
+public class ErlangConsolePage implements IPageBookViewPage,
 		ErlConsoleModelListener {
-
 	public static final String ID = "org.erlide.ui.views.console";
 
 	private static final Color[] colors = {
@@ -110,7 +98,9 @@ public class ErlangConsoleView extends ViewPart implements
 
 	private ComboViewer backends;
 
-	public ErlangConsoleView() {
+	private Composite container;
+
+	public ErlangConsolePage(IConsoleView view) {
 		super();
 		model = new ErlConsoleModel();
 		final ConsoleEventHandler handler = model.getHandler();
@@ -138,53 +128,9 @@ public class ErlangConsoleView extends ViewPart implements
 		fDoc = new ErlConsoleDocument(model);
 	}
 
-	@Override
 	public void dispose() {
 		backend.getEventDaemon().removeHandler(model.getHandler());
 		model.dispose();
-		super.dispose();
-	}
-
-	@Override
-	public void createPartControl(final Composite parent) {
-		final Composite container = parent;
-		container.setLayout(new GridLayout(2, false));
-
-		final Label label = new Label(container, SWT.SHADOW_NONE);
-		label.setText("Erlang backend node");
-		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
-		final Combo combo = backends.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
-		backends.setContentProvider(new BackendContentProvider());
-		backends.setLabelProvider(new BackendLabelProvider());
-		backends.setInput(ErlangCore.getBackendManager());
-		backends.setSelection(new StructuredSelection(backend));
-
-		consoleOutputViewer = new SourceViewer(container, null, SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
-		consoleOutputViewer.setDocument(fDoc);
-		consoleText = (StyledText) consoleOutputViewer.getControl();
-		consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
-				2, 1));
-
-		consoleOutputViewer
-				.configure(new ErlangConsoleSourceViewerConfiguration());
-
-		consoleText.setFont(JFaceResources.getTextFont());
-		consoleText.setEditable(false);
-		consoleText.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
-						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
-				if ((e.character != (char) 0) || isHistoryCommand) {
-					createInputField(e);
-					e.doit = false;
-				}
-			}
-		});
-		initializeToolBar();
 	}
 
 	void createInputField(final KeyEvent first) {
@@ -406,31 +352,26 @@ public class ErlangConsoleView extends ViewPart implements
 		consoleInput.setSelection(str.length());
 	}
 
-	@Override
-	public void setFocus() {
-	}
-
 	private void initializeToolBar() {
-		final IActionBars bars = getViewSite().getActionBars();
-		final IToolBarManager toolBarManager = bars.getToolBarManager();
-		{
-			action = new Action("New Action") {
-				@Override
-				public int getStyle() {
-					return AS_DROP_DOWN_MENU;
-				}
-			};
-			action.setText("Backends");
-			action.setToolTipText("backend list");
-			action.setImageDescriptor(PlatformUI.getWorkbench()
-					.getSharedImages().getImageDescriptor(
-							ISharedImages.IMG_OBJS_INFO_TSK));
-			toolBarManager.add(action);
-		}
-
-		final IMenuManager menuManager = bars.getMenuManager();
-		menuManager.add(action);
-
+		// final IActionBars bars = getViewSite().getActionBars();
+		// final IToolBarManager toolBarManager = bars.getToolBarManager();
+		// {
+		// action = new Action("New Action") {
+		// @Override
+		// public int getStyle() {
+		// return AS_DROP_DOWN_MENU;
+		// }
+		// };
+		// action.setText("Backends");
+		// action.setToolTipText("backend list");
+		// action.setImageDescriptor(PlatformUI.getWorkbench()
+		// .getSharedImages().getImageDescriptor(
+		// ISharedImages.IMG_OBJS_INFO_TSK));
+		// toolBarManager.add(action);
+		// }
+		//
+		// final IMenuManager menuManager = bars.getMenuManager();
+		// menuManager.add(action);
 	}
 
 	public void changed(final ErlConsoleModel erlConsoleModel) {
@@ -456,4 +397,68 @@ public class ErlangConsoleView extends ViewPart implements
 			navIndex--;
 		}
 	}
+
+	public IPageSite getSite() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void init(IPageSite site) throws PartInitException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void createControl(Composite parent) {
+		container = new Composite(parent, SWT.NONE);
+		container.setLayout(new GridLayout(2, false));
+
+		final Label label = new Label(container, SWT.SHADOW_NONE);
+		label.setText("Erlang backend node");
+		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
+		final Combo combo = backends.getCombo();
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+				1));
+		backends.setContentProvider(new BackendContentProvider());
+		backends.setLabelProvider(new BackendLabelProvider());
+		backends.setInput(ErlangCore.getBackendManager());
+		backends.setSelection(new StructuredSelection(backend));
+
+		consoleOutputViewer = new SourceViewer(container, null, SWT.V_SCROLL
+				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
+		consoleOutputViewer.setDocument(fDoc);
+		consoleText = (StyledText) consoleOutputViewer.getControl();
+		consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
+				2, 1));
+
+		consoleOutputViewer
+				.configure(new ErlangConsoleSourceViewerConfiguration());
+
+		consoleText.setFont(JFaceResources.getTextFont());
+		consoleText.setEditable(false);
+		consoleText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
+						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
+				if ((e.character != (char) 0) || isHistoryCommand) {
+					createInputField(e);
+					e.doit = false;
+				}
+			}
+		});
+		initializeToolBar();
+	}
+
+	public Control getControl() {
+		return container;
+	}
+
+	public void setActionBars(IActionBars actionBars) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setFocus() {
+	}
+
 }

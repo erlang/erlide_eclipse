@@ -8,7 +8,6 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.erlide.runtime.backend.console.ErlConsoleModel;
 
-//public class ErlConsoleDocument {
 public class ErlConsoleDocument extends Document {
 
 	public static final String OUTPUT_TYPE = "output";

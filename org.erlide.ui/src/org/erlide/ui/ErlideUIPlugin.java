@@ -32,6 +32,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
@@ -44,6 +47,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
+import org.erlide.ui.views.console.ErlangConsole;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -124,6 +128,12 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		}
 
 		ErlLogger.debug("Started UI");
+
+		ErlangConsole c = new ErlangConsole(ErlangCore.getBackendManager()
+				.getIdeBackend());
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		conMan.addConsoles(new IConsole[] { c });
 	}
 
 	/**
