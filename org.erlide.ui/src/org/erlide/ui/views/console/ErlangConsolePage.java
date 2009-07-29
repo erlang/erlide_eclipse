@@ -10,11 +10,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -27,15 +28,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
@@ -49,8 +49,6 @@ import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
 import org.erlide.runtime.backend.console.IoRequest;
 import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
-import org.erlide.ui.views.BackendContentProvider;
-import org.erlide.ui.views.BackendLabelProvider;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -352,28 +350,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 		consoleInput.setSelection(str.length());
 	}
 
-	private void initializeToolBar() {
-		// final IActionBars bars = getViewSite().getActionBars();
-		// final IToolBarManager toolBarManager = bars.getToolBarManager();
-		// {
-		// action = new Action("New Action") {
-		// @Override
-		// public int getStyle() {
-		// return AS_DROP_DOWN_MENU;
-		// }
-		// };
-		// action.setText("Backends");
-		// action.setToolTipText("backend list");
-		// action.setImageDescriptor(PlatformUI.getWorkbench()
-		// .getSharedImages().getImageDescriptor(
-		// ISharedImages.IMG_OBJS_INFO_TSK));
-		// toolBarManager.add(action);
-		// }
-		//
-		// final IMenuManager menuManager = bars.getMenuManager();
-		// menuManager.add(action);
-	}
-
 	public void changed(final ErlConsoleModel erlConsoleModel) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -399,32 +375,15 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	}
 
 	public IPageSite getSite() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void init(IPageSite site) throws PartInitException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void createControl(Composite parent) {
-		container = new Composite(parent, SWT.NONE);
-		container.setLayout(new GridLayout(2, false));
-
-		final Label label = new Label(container, SWT.SHADOW_NONE);
-		label.setText("Erlang backend node");
-		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
-		final Combo combo = backends.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
-		backends.setContentProvider(new BackendContentProvider());
-		backends.setLabelProvider(new BackendLabelProvider());
-		backends.setInput(ErlangCore.getBackendManager());
-		backends.setSelection(new StructuredSelection(backend));
-
-		consoleOutputViewer = new SourceViewer(container, null, SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
+		consoleOutputViewer = new SourceViewer(parent, null, SWT.V_SCROLL
+				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
 		consoleOutputViewer.setDocument(fDoc);
 		consoleText = (StyledText) consoleOutputViewer.getControl();
 		consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
@@ -446,16 +405,31 @@ public class ErlangConsolePage implements IPageBookViewPage,
 				}
 			}
 		});
-		initializeToolBar();
 	}
 
 	public Control getControl() {
-		return container;
+		return consoleOutputViewer.getControl();
 	}
 
-	public void setActionBars(IActionBars actionBars) {
-		// TODO Auto-generated method stub
+	public void setActionBars(IActionBars bars) {
+		final IToolBarManager toolBarManager = bars.getToolBarManager();
+		{
+			action = new Action("New Action") {
+				@Override
+				public int getStyle() {
+					return AS_DROP_DOWN_MENU;
+				}
+			};
+			action.setText("Backends");
+			action.setToolTipText("backend list");
+			action.setImageDescriptor(PlatformUI.getWorkbench()
+					.getSharedImages().getImageDescriptor(
+							ISharedImages.IMG_OBJS_INFO_TSK));
+			toolBarManager.add(action);
+		}
 
+		final IMenuManager menuManager = bars.getMenuManager();
+		menuManager.add(action);
 	}
 
 	public void setFocus() {
