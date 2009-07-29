@@ -23,6 +23,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.ColorManager;
@@ -49,12 +50,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#
-	 * getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
-	 */
 	@Override
 	public IContentAssistant getContentAssistant(
 			final ISourceViewer sourceViewer) {
@@ -118,20 +113,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 		return doubleClickStrategy;
 	}
 
-	/**
-	 * Creates and returns the fHighlightScanner
-	 * 
-	 * @return the highlighting fHighlightScanner
-	 */
-	protected ErlHighlightScanner getHighlightScanner(
-			final ISourceViewer sourceViewer) {
-		if (fHighlightScanner == null) {
-			fHighlightScanner = new ErlHighlightScanner(new ColorManager(),
-					sourceViewer);
-		}
-		return fHighlightScanner;
-	}
-
 	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
 			fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
@@ -150,13 +131,33 @@ final class ErlangConsoleSourceViewerConfiguration extends
 			final ISourceViewer sourceViewer) {
 		final PresentationReconciler reconciler = new PresentationReconciler();
 
-		final ErlHighlightScanner scan = getHighlightScanner(sourceViewer);
+		final ErlHighlightScanner scan = new ErlHighlightScanner(
+				new ColorManager(), sourceViewer, false, new RGB(240, 240, 240));
 		if (scan != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
+			reconciler.setDamager(dr, ErlConsoleDocument.INPUT_TYPE);
+			reconciler.setRepairer(dr, ErlConsoleDocument.INPUT_TYPE);
+		}
+
+		// we might want to highlight the output differently (because it might
+		// not make sense, but how do we detect it?)
+		final ErlHighlightScanner scan3 = new ErlHighlightScanner(
+				new ColorManager(), sourceViewer, false);
+		if (scan3 != null) {
+			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan3);
+			reconciler.setDamager(dr, ErlConsoleDocument.OUTPUT_TYPE);
+			reconciler.setRepairer(dr, ErlConsoleDocument.OUTPUT_TYPE);
+		}
+
+		// this is for the input field
+		final ErlHighlightScanner scan2 = new ErlHighlightScanner(
+				new ColorManager(), sourceViewer, false);
+		if (scan2 != null) {
+			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan2);
 			reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 			reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		}
+
 		return reconciler;
 	}
-
 }

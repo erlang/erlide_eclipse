@@ -24,6 +24,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.jinterface.backend.BackendException;
@@ -37,7 +38,7 @@ import org.osgi.service.prefs.Preferences;
 import erlang.ErlideScanner;
 
 /**
- * Erlang syntax fScanner
+ * Erlang syntax scanner
  * 
  * @author Eric Merritt
  */
@@ -62,6 +63,8 @@ public class ErlHighlightScanner implements ITokenScanner,
 	private int rangeLength;
 	private int rangeOffset;
 	private final ISourceViewer fSourceViewer;
+	private boolean wholeLines = true;
+	private Color bg = null;
 
 	/**
 	 * Constructs the rules that define syntax highlighting.
@@ -72,15 +75,23 @@ public class ErlHighlightScanner implements ITokenScanner,
 	 * @param fScanner
 	 */
 	public ErlHighlightScanner(final IColorManager colorManager,
-			final ISourceViewer sourceViewer) {
-		this(colorManager, sourceViewer, 0);
-		setTokens();
+			final ISourceViewer sourceViewer, boolean wholeLines) {
+		this(colorManager, sourceViewer, 0, wholeLines, null);
+	}
+
+	public ErlHighlightScanner(final IColorManager colorManager,
+			final ISourceViewer sourceViewer, boolean wholeLines, RGB back) {
+		this(colorManager, sourceViewer, 0, wholeLines, back);
 	}
 
 	protected ErlHighlightScanner(final IColorManager colorManager,
-			final ISourceViewer sourceViewer, final int x) {
+			final ISourceViewer sourceViewer, final int x, boolean wholeLines,
+			RGB back) {
 		fColorManager = colorManager;
 		fSourceViewer = sourceViewer;
+		this.wholeLines = wholeLines;
+		bg = fColorManager.getColor(back);
+		setTokens();
 	}
 
 	public void setTokens() {
@@ -104,7 +115,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 		data.load(qualifier, th.getDefaultData());
 		new InstanceScope().getNode(qualifier)
 				.addPreferenceChangeListener(this);
-		return new TextAttribute(fColorManager.getColor(data.getColor()), null,
+		return new TextAttribute(fColorManager.getColor(data.getColor()), bg,
 				data.getStyle());
 	}
 
@@ -199,11 +210,16 @@ public class ErlHighlightScanner implements ITokenScanner,
 			return;
 		}
 		try {
-			final int line1 = document.getLineOfOffset(offset);
-			final int line2 = document.getLineOfOffset(offset + length);
-			rangeOffset = document.getLineOffset(line1);
-			rangeLength = document.getLineOffset(line2) - rangeOffset
-					+ document.getLineLength(line2);
+			if (wholeLines) {
+				final int line1 = document.getLineOfOffset(offset);
+				final int line2 = document.getLineOfOffset(offset + length);
+				rangeOffset = document.getLineOffset(line1);
+				rangeLength = document.getLineOffset(line2) - rangeOffset
+						+ document.getLineLength(line2);
+			} else {
+				rangeOffset = offset;
+				rangeLength = length;
+			}
 
 			// ErlLogger.debug("setRange %s %d:%d (%d:%d)", document,
 			// rangeOffset, rangeLength, offset, length);
@@ -213,17 +229,18 @@ public class ErlHighlightScanner implements ITokenScanner,
 		} catch (final BadLocationException e) {
 			ErlLogger.warn(e);
 		}
+
 	}
 
-	private void setText(final String document) {
-		if (document == null) {
+	private void setText(final String text) {
+		if (text == null) {
 			return;
 		}
 
 		try {
 			fCrtToken = -1;
 
-			final String str = document;
+			final String str = text;
 			fTokens = ErlideScanner.lightScanString(str, rangeOffset);
 
 		} catch (final BackendException e) {
@@ -232,7 +249,8 @@ public class ErlHighlightScanner implements ITokenScanner,
 	}
 
 	public IToken nextToken() {
-		return convert(nextErlToken());
+		ErlToken nextErlToken = nextErlToken();
+		return convert(nextErlToken);
 	}
 
 	public int getTokenOffset() {
@@ -275,6 +293,9 @@ public class ErlHighlightScanner implements ITokenScanner,
 		if (tk.getKind() == null) {
 			return ErlToken.EOF;
 		}
+		if (tk.getOffset() >= rangeOffset + rangeLength) {
+			return ErlToken.EOF;
+		}
 		return fTokens.get(fCrtToken);
 	}
 
@@ -303,4 +324,5 @@ public class ErlHighlightScanner implements ITokenScanner,
 		tk.setData(attr);
 		fSourceViewer.invalidateTextPresentation();
 	}
+
 }

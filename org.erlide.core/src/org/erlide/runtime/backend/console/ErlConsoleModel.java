@@ -136,4 +136,13 @@ public class ErlConsoleModel implements IDisposable {
 	public ConsoleEventHandler getHandler() {
 		return handler;
 	}
+
+	public int getTextLength() {
+		int res = 0;
+		for (IoRequest req : getContentList()) {
+			res += req.getLength();
+		}
+		return res;
+	}
+
 }

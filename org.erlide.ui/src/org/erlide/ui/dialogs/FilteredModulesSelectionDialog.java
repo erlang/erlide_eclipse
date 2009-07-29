@@ -512,7 +512,6 @@ public class FilteredModulesSelectionDialog extends
 		 * 
 		 * @return the active working set
 		 */
-		@SuppressWarnings("unused")
 		public IWorkingSet getWorkingSet() {
 			return resourceWorkingSetFilter.getWorkingSet();
 		}

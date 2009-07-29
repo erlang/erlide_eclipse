@@ -1,5 +1,6 @@
 package org.erlide.ui.views.console;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
@@ -10,23 +11,29 @@ import org.erlide.runtime.backend.console.ErlConsoleModel;
 //public class ErlConsoleDocument {
 public class ErlConsoleDocument extends Document {
 
+	public static final String OUTPUT_TYPE = "output";
+	public static final String INPUT_TYPE = "input";
+
+	private static final String[] LEGAL_CONTENT_TYPES = new String[] {
+			INPUT_TYPE, OUTPUT_TYPE };
+
 	private final ErlConsoleModel model;
 
 	public ErlConsoleDocument(final ErlConsoleModel model) {
 		super();
+		Assert.isNotNull(model);
 		this.model = model;
 
-		@SuppressWarnings("unused")
+		setTextStore(new IoRequestStore(model));
+
 		final IDocumentPartitioner partitioner = new FastPartitioner(
-				createScanner(), new String[] { "header", "prompt", "input",
-						"comment", "text" });
-		// partitioner.connect(document);
-		// document.setDocumentPartitioner(partitioner);
+				createScanner(), LEGAL_CONTENT_TYPES);
+		partitioner.connect(this);
+		setDocumentPartitioner(partitioner);
 	}
 
 	private IPartitionTokenScanner createScanner() {
-		// TODO Auto-generated method stub
-		return null;
+		return new IoRequestScanner(model);
 	}
 
 	public ErlConsoleModel getModel() {
@@ -41,6 +48,5 @@ public class ErlConsoleDocument extends Document {
 	@Override
 	public void replace(final int pos, final int length, final String text)
 			throws BadLocationException {
-		super.replace(pos, length, text);
 	}
 }

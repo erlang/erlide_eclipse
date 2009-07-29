@@ -21,9 +21,9 @@ public class IoRequest {
 	private OtpErlangPid sender;
 	private String message;
 	private int start;
+	private final boolean output;
 
 	public IoRequest(final OtpErlangTuple obj) {
-
 		try {
 			final OtpErlangObject o = obj.elementAt(0);
 			if (o instanceof OtpErlangString) {
@@ -49,6 +49,7 @@ public class IoRequest {
 		} catch (final Exception e) {
 			message = null;
 		}
+		output = true;
 	}
 
 	// used for input text
@@ -56,11 +57,17 @@ public class IoRequest {
 		message = msg;
 		leader = new OtpErlangPid("s", 0, 0, 0);
 		sender = new OtpErlangPid("s", 0, 0, 0);
+		output = false;
 	}
 
 	@Override
 	public String toString() {
-		return "{'" + message + "', " + leader + ", " + sender + "}";
+		if (output) {
+			return "{out:: '" + message + "', " + start + "/"
+					+ message.length() + ", " + leader + ", " + sender + "}";
+		} else {
+			return "{in:: '" + message + "'}";
+		}
 	}
 
 	public OtpErlangPid getLeader() {
@@ -75,22 +82,6 @@ public class IoRequest {
 		return sender;
 	}
 
-	void setLeader(final OtpErlangPid leader) {
-		this.leader = leader;
-	}
-
-	void setMessage(final String message) {
-		this.message = message;
-	}
-
-	void setSender(final OtpErlangPid sender) {
-		this.sender = sender;
-	}
-
-	public void setStart(final int start) {
-		this.start = start;
-	}
-
 	public int getStart() {
 		return start;
 	}
@@ -99,4 +90,11 @@ public class IoRequest {
 		return message.length();
 	}
 
+	public boolean isOutput() {
+		return output;
+	}
+
+	public void setStart(int pos) {
+		start = pos;
+	}
 }

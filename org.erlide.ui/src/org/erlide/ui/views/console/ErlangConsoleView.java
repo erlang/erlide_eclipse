@@ -35,9 +35,6 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -63,7 +60,6 @@ import org.erlide.runtime.backend.console.ErlConsoleModel;
 import org.erlide.runtime.backend.console.ErlConsoleModelListener;
 import org.erlide.runtime.backend.console.IoRequest;
 import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
-import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 
@@ -177,36 +173,6 @@ public class ErlangConsoleView extends ViewPart implements
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
-		consoleText.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(final MouseEvent e) {
-				try {
-					final int ofs = consoleText.getOffsetAtLocation(new Point(
-							e.x, e.y));
-					final IoRequest req = model.findAtPos(ofs);
-					clearMarks();
-					if (req.getSender() != null) {
-						final List<IoRequest> reqs = model.getAllFrom(req
-								.getSender());
-						markRequests(reqs);
-					}
-				} catch (final Exception ex) {
-				}
-			}
-		});
-		consoleText.addMouseTrackListener(new MouseTrackAdapter() {
-			@Override
-			public void mouseHover(final MouseEvent e) {
-				try {
-					final int ofs = consoleText.getOffsetAtLocation(new Point(
-							e.x, e.y));
-					final IoRequest req = model.findAtPos(ofs);
-					consoleText.setToolTipText("sent by "
-							+ ErlangProcess.toLocalPid(req.getSender()));
-				} catch (final Exception ex) {
-				}
-			}
-		});
 		consoleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
@@ -360,15 +326,13 @@ public class ErlangConsoleView extends ViewPart implements
 
 	private void updateConsoleView() {
 		consoleText.setRedraw(false);
-		consoleText.setText("");
-		for (final IoRequest req : model.getContentList()) {
-			consoleText.append(req.getMessage());
-			if (fColored) {
-				markRequest(req);
-			}
+		try {
+			String text = fDoc.get();
+			consoleText.setText(text);
+			consoleText.setSelection(text.length());
+		} finally {
+			consoleText.setRedraw(true);
 		}
-		consoleText.setRedraw(true);
-		consoleText.setSelection(consoleText.getCharCount());
 	}
 
 	Color getColor(final OtpErlangPid sender) {

@@ -37,7 +37,7 @@ public class SyntaxColorPreviewHighlightScanner extends ErlHighlightScanner {
 	public SyntaxColorPreviewHighlightScanner(final IColorManager lmanager,
 			final ISourceViewer editorConfiguration,
 			final Map<TokenHighlight, HighlightStyle> styles) {
-		super(lmanager, editorConfiguration, 0);
+		super(lmanager, editorConfiguration, 0, true, null);
 		this.styles = styles;
 		setTokens();
 	}

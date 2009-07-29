@@ -458,11 +458,11 @@ scan_string([$"|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$"|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     scan(Cs, [], [{string,{StartPos, length(SS)+2},VS,[$"|SS]++[$"]}|Toks], inc(Pos,length(SS)+2), State, Errors);
-scan_string([$\n|_]=Cs, Stack, Toks, Pos, State, Errors) ->
-%%    scan_string(Cs, [{$\n,"\n"}|Stack], Toks, incrow0(Pos), State, Errors);
-    [StartPos, $"|S] = reverse(Stack),
-    {VS, SS} = unstack(S),
-    scan(Cs, [], [{string,{StartPos, length(SS)+1},VS,[$"|SS]}|Toks], inc(Pos,length(SS)+1), State, Errors);
+scan_string([$\n|Cs]=ACs, Stack, Toks, Pos, State, Errors) ->
+    scan_string(Cs, [{$\n,"\n"}|Stack], Toks, incrow0(Pos), State, Errors);
+%%     [StartPos, $"|S] = reverse(Stack),
+%%     {VS, SS} = unstack(S),
+%%     scan(ACs, [], [{string,{StartPos, length(SS)+1},VS,[$"|SS]}|Toks], inc(Pos,length(SS)+1), State, Errors);
 scan_string([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
     {Rest, Val, StrVal, _NewPos} ->
@@ -725,6 +725,6 @@ inc({L,P}, N) ->
 incrow({L, P}) ->
     {L+1, P+1}.
 
-%incrow0({L, P}) ->
-%    {L+1, P}.
+incrow0({L, P}) ->
+    {L+1, P}.
 
