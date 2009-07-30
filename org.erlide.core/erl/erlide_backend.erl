@@ -142,11 +142,11 @@ scan_string(S, Res, N) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 parse_string(S) ->
 	{ok, L} = scan_string(S),
-	case catch {ok, lists:map(fun(X) ->
-									  {ok, Form} = erl_parse:parse_exprs(X),
-									  Form
-							  end,
-							  L)} of
+	Fun = fun(X) ->
+				  {ok, Form} = erl_parse:parse_exprs(X),
+				  Form
+		  end,
+	case catch {ok, lists:map(Fun,	L)} of
 		{ok, Res} -> {ok, Res};
 		Err -> Err
 	end.

@@ -122,7 +122,7 @@ public class ErlBackend {
 	 * @param string
 	 * @return
 	 */
-	public static OtpErlangObject parseString(final Backend b,
+	public static OtpErlangObject parseConsoleInput(final Backend b,
 			final String string) throws BackendException {
 		OtpErlangObject r1 = null;
 		try {

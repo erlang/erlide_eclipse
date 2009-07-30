@@ -22,6 +22,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlConsoleModel implements IDisposable {
 
+	private static final int MAX_REQUESTS = 5000;
+	private static final int DELTA_REQUESTS = 500;
+
 	public class ConsoleEventHandler extends EventHandler {
 
 		@Override
@@ -53,7 +56,10 @@ public class ErlConsoleModel implements IDisposable {
 		}
 	}
 
-	public void input(final String s) {
+	public void input(String s) {
+		if (!s.endsWith("\n")) {
+			s += "\n";
+		}
 		final IoRequest req = new IoRequest(s);
 		req.setStart(pos);
 		pos += req.getLength();
@@ -61,26 +67,41 @@ public class ErlConsoleModel implements IDisposable {
 		notifyListeners();
 	}
 
-	public int add(final OtpErlangObject msg) {
+	public void add(final OtpErlangObject msg) {
+		synchronized (requests) {
+			deleteOldItems();
+			final IoRequest req = doAdd(msg);
+			if (req == null) {
+				return;
+			}
+		}
+		notifyListeners();
+	}
+
+	private IoRequest doAdd(final OtpErlangObject msg) {
 		if (!(msg instanceof OtpErlangTuple)) {
-			return 0;
+			return null;
 		}
 		final IoRequest req = new IoRequest((OtpErlangTuple) msg);
 		req.setStart(pos);
 		pos += req.getLength();
 
+		requests.add(req);
+
+		return req;
+	}
+
+	private void deleteOldItems() {
 		// TODO use a configuration for this
 		// TODO maybe we should count text lines?
-		synchronized (requests) {
-			if (requests.size() > 5000) {
-				for (int i = 0; i < 1000; i++) {
-					requests.remove(0);
-				}
+		if (requests.size() > MAX_REQUESTS) {
+			requests.subList(0, DELTA_REQUESTS).clear();
+			IoRequest first = requests.get(0);
+			int start = first.getStart();
+			for (IoRequest areq : requests) {
+				areq.setStart(areq.getStart() - start);
 			}
-			requests.add(req);
 		}
-		notifyListeners();
-		return req.getLength();
 	}
 
 	public IoRequest findAtPos(final int pos) {
@@ -96,7 +117,7 @@ public class ErlConsoleModel implements IDisposable {
 	}
 
 	public List<IoRequest> getAllFrom(final OtpErlangPid sender) {
-		final List<IoRequest> result = new ArrayList<IoRequest>(10);
+		final List<IoRequest> result = new ArrayList<IoRequest>();
 		for (final IoRequest element : requests) {
 			if (element.getSender().equals(sender)) {
 				result.add(element);
@@ -106,10 +127,13 @@ public class ErlConsoleModel implements IDisposable {
 	}
 
 	public void add(final List<OtpErlangObject> msgs) {
-		for (final OtpErlangObject element : msgs) {
-			add(element);
+		synchronized (requests) {
+			deleteOldItems();
+			for (final OtpErlangObject element : msgs) {
+				doAdd(element);
+			}
 		}
-
+		notifyListeners();
 	}
 
 	public void dispose() {
@@ -138,11 +162,23 @@ public class ErlConsoleModel implements IDisposable {
 	}
 
 	public int getTextLength() {
-		int res = 0;
-		for (IoRequest req : getContentList()) {
-			res += req.getLength();
+		synchronized (requests) {
+			int res = 0;
+			for (IoRequest req : getContentList()) {
+				res += req.getLength();
+			}
+			return res;
 		}
-		return res;
+	}
+
+	public String getText() {
+		synchronized (requests) {
+			String res = "";
+			for (IoRequest req : getContentList()) {
+				res += req.getMessage();
+			}
+			return res;
+		}
 	}
 
 }

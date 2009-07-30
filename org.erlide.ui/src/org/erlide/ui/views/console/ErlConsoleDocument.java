@@ -35,15 +35,6 @@ public class ErlConsoleDocument extends Document {
 		return new IoRequestScanner(model);
 	}
 
-	public ErlConsoleModel getModel() {
-		return model;
-	}
-
-	@Override
-	public String get() {
-		return super.get();
-	}
-
 	@Override
 	public void replace(final int pos, final int length, final String text)
 			throws BadLocationException {

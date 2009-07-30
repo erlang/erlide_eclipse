@@ -81,20 +81,25 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			new Color(Display.getDefault(), 0xFF, 0x99, 0x99),
 			new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
-	StyledText consoleText;
-	boolean fGroupByLeader;
-	boolean fColored;
-	final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
-	ErlConsoleDocument fDoc;
+	private final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(
+			250, 255, 250));
+	private final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(
+			255, 250, 250));
+
+	private StyledText consoleText;
+	private boolean fGroupByLeader;
+	private boolean fColored;
+	private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
+	private final ErlConsoleDocument fDoc;
 	final List<String> history = new ArrayList<String>(10);
-	StyledText consoleInput;
-	SourceViewer consoleOutputViewer;
-	SourceViewer consoleInputViewer;
-	ErlConsoleModel model;
-	IShell shell;
-	ErlideBackend backend;
+	private StyledText consoleInput;
+	private SourceViewer consoleOutputViewer;
+	private SourceViewer consoleInputViewer;
+	private final ErlConsoleModel model;
+	private IShell shell;
+	private final ErlideBackend backend;
 	private Action action;
-	int navIndex;
+	private int navIndex;
 
 	public ErlangConsolePage(IConsoleView view) {
 		super();
@@ -127,119 +132,128 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	public void dispose() {
 		backend.getEventDaemon().removeHandler(model.getHandler());
 		model.dispose();
+		bgColor_Err.dispose();
+		bgColor_Ok.dispose();
 	}
 
 	void createInputField(final KeyEvent first) {
 		if (first.character == SWT.ESC) {
 			return;
 		}
-		consoleText.setSelection(consoleText.getCharCount());
-		final Rectangle rect = consoleText.getClientArea();
-		final Point relpos = consoleText.getLocationAtOffset(consoleText
-				.getCharCount());
+		try {
+			String text = consoleText.getText();
+			int charCount = text.length();
+			consoleText.setCaretOffset(charCount);
+			final Rectangle rect = consoleText.getClientArea();
+			final Point relpos = consoleText.getLocationAtOffset(charCount);
 
-		final Shell container = new Shell(consoleText.getShell(), SWT.MODELESS);
-		container.setLayout(new FillLayout());
-		consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
-				| SWT.WRAP | SWT.V_SCROLL);
-		consoleInputViewer.setDocument(new Document());
-		consoleInputViewer
-				.configure(new ErlangConsoleSourceViewerConfiguration());
-		consoleInput = (StyledText) consoleInputViewer.getControl();
-		consoleInput.setParent(container);
-		container.setAlpha(220);
+			final Shell container = new Shell(consoleText.getShell(),
+					SWT.MODELESS);
+			container.setLayout(new FillLayout());
+			consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
+					| SWT.WRAP | SWT.V_SCROLL);
+			consoleInputViewer.setDocument(new Document());
+			consoleInputViewer
+					.configure(new ErlangConsoleSourceViewerConfiguration());
+			consoleInput = (StyledText) consoleInputViewer.getControl();
+			consoleInput.setParent(container);
+			container.setAlpha(220);
 
-		final int b = 1;
-		final Point screenPos = consoleText.toDisplay(relpos.x - b, relpos.y
-				- b);
-		container.setLocation(screenPos);
-		container.setSize(rect.width - relpos.x, rect.height - relpos.y);
+			final int b = 1;
+			final Point screenPos = consoleText.toDisplay(relpos.x - b,
+					relpos.y - b);
+			container.setLocation(screenPos);
+			container.setSize(rect.width - relpos.x, rect.height - relpos.y);
 
-		consoleInput.addKeyListener(new KeyAdapter() {
+			consoleInput.addKeyListener(new KeyAdapter() {
 
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				final boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
-				if (e.keyCode == 13 && isInputComplete()) {
-					sendInput();
-					container.close();
-					e.doit = false;
-				} else if (e.keyCode == 13) {
-					final Rectangle loc = container.getBounds();
-					final int topIndex = consoleInput.getTopIndex();
-					final int lineCount = consoleInput.getLineCount();
-					final int lineHeight = consoleInput.getLineHeight();
-					final int visibleLines = loc.height / lineHeight;
-					final int maxLines = consoleText.getSize().y / lineHeight
-							- 1;
-					if (topIndex + visibleLines - 1 <= lineCount
-							&& visibleLines < maxLines) {
-						container.setBounds(loc.x, loc.y - lineHeight,
-								loc.width, loc.height + lineHeight);
-						consoleInput.setTopIndex(lineCount - visibleLines + 1);
+				@Override
+				public void keyPressed(final KeyEvent e) {
+					final boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
+					if (e.keyCode == 13
+							&& isInputComplete()
+							&& consoleInput.getSelection().x == consoleInput
+									.getText().length()) {
+						sendInput();
+						container.close();
+						e.doit = false;
+					} else if (e.keyCode == 13) {
+						final Rectangle loc = container.getBounds();
+						final int topIndex = consoleInput.getTopIndex();
+						final int lineCount = consoleInput.getLineCount();
+						final int lineHeight = consoleInput.getLineHeight();
+						final int visibleLines = loc.height / lineHeight;
+						final int maxLines = consoleText.getSize().y
+								/ lineHeight - 1;
+						if (topIndex + visibleLines - 1 <= lineCount
+								&& visibleLines < maxLines) {
+							container.setBounds(loc.x, loc.y - lineHeight,
+									loc.width, loc.height + lineHeight);
+							consoleInput.setTopIndex(lineCount - visibleLines
+									+ 1);
+						}
+					} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
+						moveUp();
+						final String s = history.get(navIndex);
+						consoleInput.setText(s);
+						consoleInput.setSelection(consoleInput.getText()
+								.length());
+						fixPosition(container);
+					} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
+						moveDown();
+						final String s = history.get(navIndex);
+						consoleInput.setText(s);
+						consoleInput.setSelection(consoleInput.getText()
+								.length());
+						fixPosition(container);
+					} else if (e.keyCode == SWT.ESC) {
+						container.close();
 					}
-				} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
-					moveUp();
-					System.out.println(" " + navIndex);
-					final String s = history.get(navIndex);
-					consoleInput.setText(s);
-					consoleInput.setSelection(consoleInput.getText().length());
-					fixPosition(container);
-				} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
-					moveDown();
-					System.out.println(" " + navIndex);
-					final String s = history.get(navIndex);
-					consoleInput.setText(s);
-					consoleInput.setSelection(consoleInput.getText().length());
-					fixPosition(container);
-				} else if (e.keyCode == SWT.ESC) {
-					container.close();
 				}
-			}
-
-		});
-		consoleInput.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(final FocusEvent e) {
-				// container.close();
-			}
-		});
-		consoleInput.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (isInputComplete()) {
-					consoleInput.setBackground(new Color(Display.getCurrent(),
-							new RGB(249, 255, 249)));
-				} else {
-					consoleInput.setBackground(new Color(Display.getCurrent(),
-							new RGB(255, 249, 249)));
+			});
+			consoleInput.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(final FocusEvent e) {
+					// container.close();
 				}
-			}
-		});
-		consoleInput.setFont(consoleText.getFont());
-		consoleInput.setBackground(consoleText.getBackground());
-		consoleInput.setWordWrap(true);
+			});
+			consoleInput.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					if (isInputComplete()) {
+						consoleInput.setBackground(bgColor_Ok);
+					} else {
+						consoleInput.setBackground(bgColor_Err);
+					}
+				}
+			});
+			consoleInput.setFont(consoleText.getFont());
+			consoleInput.setBackground(consoleText.getBackground());
+			consoleInput.setWordWrap(true);
 
-		if (first.character != 0) {
-			consoleInput.setText("" + first.character);
-		} else {
-			String s = "";
-			if (history.size() == 0) {
-				s = "";
+			if (first.character != 0) {
+				consoleInput.setText("" + first.character);
 			} else {
-				if (first.keyCode == SWT.ARROW_UP) {
-					navIndex = history.size() - 1;
+				String s = "";
+				if (history.size() == 0) {
+					s = "";
 				} else {
-					navIndex = 0;
+					if (first.keyCode == SWT.ARROW_UP) {
+						navIndex = history.size() - 1;
+					} else {
+						navIndex = 0;
+					}
+					s = history.get(navIndex);
 				}
-				s = history.get(navIndex);
+				consoleInput.setText(s);
+				fixPosition(container);
 			}
-			consoleInput.setText(s);
-			fixPosition(container);
-		}
-		consoleInput.setSelection(consoleInput.getCharCount());
+			consoleInput.setSelection(consoleInput.getCharCount());
 
-		container.setVisible(true);
-		consoleInput.setFocus();
+			container.setVisible(true);
+			consoleInput.setFocus();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	void fixPosition(final Shell container) {
@@ -259,9 +273,12 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	boolean isInputComplete() {
 		try {
 			final String str = consoleInput.getText() + " ";
-			final OtpErlangObject o = ErlBackend.parseString(ErlangCore
+			final OtpErlangObject o = ErlBackend.parseConsoleInput(ErlangCore
 					.getBackendManager().getIdeBackend(), str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
+				return false;
+			}
+			if (!(o instanceof OtpErlangList)) {
 				return false;
 			}
 		} catch (final BackendException e) {
@@ -274,7 +291,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 		final String s = consoleInput.getText();
 		input(s);
 		consoleInput.setText("");
-		refreshView();
 	}
 
 	private void updateConsoleView() {
@@ -310,14 +326,17 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	}
 
 	void refreshView() {
+		// while (true) {
 		if (consoleText.isDisposed()) {
 			return;
 		}
 		try {
 			updateConsoleView();
+			// break;
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+		// }
 	}
 
 	public void addToHistory(final String in) {
@@ -423,13 +442,12 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	public void setActionBars(IActionBars bars) {
 		final IToolBarManager toolBarManager = bars.getToolBarManager();
 		{
-			action = new Action("New Action") {
+			action = new Action("Backends") {
 				@Override
 				public int getStyle() {
 					return AS_DROP_DOWN_MENU;
 				}
 			};
-			action.setText("Backends");
 			action.setToolTipText("backend list");
 			action.setImageDescriptor(PlatformUI.getWorkbench()
 					.getSharedImages().getImageDescriptor(
