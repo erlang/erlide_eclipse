@@ -86,6 +86,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	private ProblemMarkerManager fProblemMarkerManager = null;
 
+	private ErlangConsole ideConsole;
+
 	/**
 	 * The constructor.
 	 */
@@ -129,11 +131,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 		ErlLogger.debug("Started UI");
 
-		ErlangConsole c = new ErlangConsole(ErlangCore.getBackendManager()
+		ideConsole = new ErlangConsole(ErlangCore.getBackendManager()
 				.getIdeBackend());
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		conMan.addConsoles(new IConsole[] { c });
+		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = consolePlugin.getConsoleManager();
+		conMan.addConsoles(new IConsole[] { ideConsole });
 	}
 
 	/**
@@ -146,8 +148,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
 		ErlangCore.getBackendManager().removeBundle(getBundle());
+
+		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = consolePlugin.getConsoleManager();
+		conMan.removeConsoles(new IConsole[] { ideConsole });
+
+		super.stop(context);
 		plugin = null;
 	}
 

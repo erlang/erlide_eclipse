@@ -82,9 +82,9 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
 	private final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(
-			250, 255, 250));
+			245, 255, 245));
 	private final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(
-			255, 250, 250));
+			255, 245, 245));
 
 	private StyledText consoleText;
 	private boolean fGroupByLeader;

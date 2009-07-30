@@ -50,8 +50,8 @@ public class ConsoleOutputScanner implements ITokenScanner {
 		if (string.startsWith("Eshell V")) {
 			style = SWT.BOLD;
 		} else if (string.matches("^\\([^)]+\\)[0-9]+> $")) {
-			fg = fColorManager.getColor(new RGB(0, 0, 150));
-			bg = fColorManager.getColor(new RGB(255, 255, 240));
+			fg = fColorManager.getColor(new RGB(0, 0, 100));
+			bg = fColorManager.getColor(new RGB(255, 255, 230));
 			style = SWT.BOLD;
 		}
 		return new TextAttribute(fg, bg, style);
