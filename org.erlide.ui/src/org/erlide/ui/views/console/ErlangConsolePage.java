@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -23,8 +22,11 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -93,10 +95,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	ErlideBackend backend;
 	private Action action;
 	int navIndex;
-
-	private ComboViewer backends;
-
-	private Composite container;
 
 	public ErlangConsolePage(IConsoleView view) {
 		super();
@@ -206,6 +204,17 @@ public class ErlangConsolePage implements IPageBookViewPage,
 				// container.close();
 			}
 		});
+		consoleInput.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (isInputComplete()) {
+					consoleInput.setBackground(new Color(Display.getCurrent(),
+							new RGB(249, 255, 249)));
+				} else {
+					consoleInput.setBackground(new Color(Display.getCurrent(),
+							new RGB(255, 249, 249)));
+				}
+			}
+		});
 		consoleInput.setFont(consoleText.getFont());
 		consoleInput.setBackground(consoleText.getBackground());
 		consoleInput.setWordWrap(true);
@@ -249,7 +258,7 @@ public class ErlangConsolePage implements IPageBookViewPage,
 
 	boolean isInputComplete() {
 		try {
-			final String str = consoleInput.getText();
+			final String str = consoleInput.getText() + " ";
 			final OtpErlangObject o = ErlBackend.parseString(ErlangCore
 					.getBackendManager().getIdeBackend(), str);
 			if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {

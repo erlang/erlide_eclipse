@@ -21,6 +21,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
@@ -41,7 +42,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 	}
 
 	private DoubleClickStrategy doubleClickStrategy;
-	private ErlHighlightScanner fHighlightScanner;
 	private ICharacterPairMatcher fBracketMatcher;
 
 	@Override
@@ -131,8 +131,9 @@ final class ErlangConsoleSourceViewerConfiguration extends
 			final ISourceViewer sourceViewer) {
 		final PresentationReconciler reconciler = new PresentationReconciler();
 
-		final ErlHighlightScanner scan = new ErlHighlightScanner(
-				new ColorManager(), sourceViewer, false, new RGB(240, 240, 240));
+		ColorManager colorManager = new ColorManager();
+		final ITokenScanner scan = new ErlHighlightScanner(colorManager,
+				sourceViewer, false, new RGB(245, 245, 245));
 		if (scan != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
 			reconciler.setDamager(dr, ErlConsoleDocument.INPUT_TYPE);
@@ -141,8 +142,7 @@ final class ErlangConsoleSourceViewerConfiguration extends
 
 		// we might want to highlight the output differently (because it might
 		// not make sense, but how do we detect it?)
-		final ErlHighlightScanner scan3 = new ErlHighlightScanner(
-				new ColorManager(), sourceViewer, false);
+		final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
 		if (scan3 != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan3);
 			reconciler.setDamager(dr, ErlConsoleDocument.OUTPUT_TYPE);
@@ -150,8 +150,8 @@ final class ErlangConsoleSourceViewerConfiguration extends
 		}
 
 		// this is for the input field
-		final ErlHighlightScanner scan2 = new ErlHighlightScanner(
-				new ColorManager(), sourceViewer, false);
+		final ITokenScanner scan2 = new ErlHighlightScanner(colorManager,
+				sourceViewer, false);
 		if (scan2 != null) {
 			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan2);
 			reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
