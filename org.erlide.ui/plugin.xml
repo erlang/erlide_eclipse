@@ -637,6 +637,15 @@
              menubarPath="navigate/open.ext"
              retarget="true"
              tooltip="Open"/>
+             <action
+               label="Open Module"
+               helpContextId="org.erlide.ui.openModule"
+               class="org.erlide.ui.actions.OpenModuleHandler"
+               menubarPath="navigate/open.ext2"
+               id="org.erlide.action.openModule"
+               definitionId="org.erlide.ui.open.module">
+         </action>
+             
     </actionSet>
     <actionSet
           description="description"
