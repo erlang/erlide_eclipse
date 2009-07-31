@@ -14,6 +14,7 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.views.eval.LiveExpressionsView;
@@ -50,6 +51,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(IDebugUIConstants.DEBUG_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
+		layout.addActionSet("org.erlide.ui.actions.openActionSet");
 	}
 
 	/**
@@ -68,9 +70,9 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
 		final IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, (float) 0.65, editorArea);
-		// bottom.addView(ErlangConsoleView.ID);
-		bottom.addView(ProcessListView.ID);
 		bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
+		bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
+		bottom.addView(ProcessListView.ID);
 		bottom.addView(LiveExpressionsView.ID);
 		bottom.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		bottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
@@ -87,12 +89,10 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		// views - search
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
 
-		//
-		// layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
-		//
+		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
+		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 		layout.addShowViewShortcut(LiveExpressionsView.ID);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
-		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		//
 		layout.addNewWizardShortcut("org.erlide.ui.wizards.newproject");
