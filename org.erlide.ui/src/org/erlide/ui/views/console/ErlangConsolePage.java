@@ -1,6 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Vlad Dumitrescu and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available
+ * at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Vlad Dumitrescu
+ *******************************************************************************/
 package org.erlide.ui.views.console;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -91,7 +100,7 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	private boolean fColored;
 	private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 	private final ErlConsoleDocument fDoc;
-	final List<String> history = new ArrayList<String>(10);
+	private final ErlangConsoleHistory history = new ErlangConsoleHistory();
 	private StyledText consoleInput;
 	private SourceViewer consoleOutputViewer;
 	private SourceViewer consoleInputViewer;
@@ -99,7 +108,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	private IShell shell;
 	private final ErlideBackend backend;
 	private Action action;
-	private int navIndex;
 
 	public ErlangConsolePage(IConsoleView view) {
 		super();
@@ -193,15 +201,15 @@ public class ErlangConsolePage implements IPageBookViewPage,
 									+ 1);
 						}
 					} else if (historyMode && e.keyCode == SWT.ARROW_UP) {
-						moveUp();
-						final String s = history.get(navIndex);
+						history.prev();
+						final String s = history.get();
 						consoleInput.setText(s);
 						consoleInput.setSelection(consoleInput.getText()
 								.length());
 						fixPosition(container);
 					} else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
-						moveDown();
-						final String s = history.get(navIndex);
+						history.next();
+						final String s = history.get();
 						consoleInput.setText(s);
 						consoleInput.setSelection(consoleInput.getText()
 								.length());
@@ -238,11 +246,11 @@ public class ErlangConsolePage implements IPageBookViewPage,
 					s = "";
 				} else {
 					if (first.keyCode == SWT.ARROW_UP) {
-						navIndex = history.size() - 1;
+						history.gotoLast();
 					} else {
-						navIndex = 0;
+						history.gotoFirst();
 					}
-					s = history.get(navIndex);
+					s = history.get();
 				}
 				consoleInput.setText(s);
 				fixPosition(container);
@@ -322,7 +330,7 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	public void input(final String data) {
 		model.input(data);
 		shell.send(data);
-		addToHistory(data.trim());
+		this.history.addToHistory(data.trim());
 	}
 
 	void refreshView() {
@@ -337,17 +345,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			e.printStackTrace();
 		}
 		// }
-	}
-
-	public void addToHistory(final String in) {
-		history.add(in);
-		if (history.size() > 50) {
-			history.remove(0);
-		}
-	}
-
-	public List<String> getHistory() {
-		return history;
 	}
 
 	public void markRequests(final List<IoRequest> reqs) {
@@ -384,22 +381,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 				refreshView();
 			}
 		});
-	}
-
-	void moveDown() {
-		if (navIndex == -1) {
-			navIndex = 0;
-		} else if (navIndex < history.size() - 1) {
-			navIndex++;
-		}
-	}
-
-	void moveUp() {
-		if (navIndex == -1) {
-			navIndex = history.size() - 1;
-		} else if (navIndex > 0) {
-			navIndex--;
-		}
 	}
 
 	public IPageSite getSite() {
