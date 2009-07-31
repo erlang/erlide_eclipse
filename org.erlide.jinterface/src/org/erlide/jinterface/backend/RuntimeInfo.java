@@ -31,10 +31,9 @@ public class RuntimeInfo {
 	private RuntimeVersion version;
 	private String name;
 	private List<String> codePath;
-
 	private String suffix = "";
-
 	private boolean useLongName = true;
+	private boolean startShell = false;
 
 	public RuntimeInfo() {
 		super();
@@ -59,6 +58,7 @@ public class RuntimeInfo {
 		rt.nodeName = o.nodeName;
 		rt.version = o.version;
 		rt.useLongName = o.useLongName;
+		rt.startShell = o.startShell;
 		return rt;
 	}
 
@@ -140,6 +140,9 @@ public class RuntimeInfo {
 		String pz = ifNotEmpty("-pz ", pathZ);
 		String cmd = String.format(msg, erl, pa, pz, getArgs());
 		String cky = getCookie();
+		if (!startShell) {
+			cmd += " -noshell";
+		}
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean globalLongName = System.getProperty("erlide.longname",
 				"none").equals("true");
@@ -298,5 +301,13 @@ public class RuntimeInfo {
 	public boolean getLongName() {
 		return useLongName;
 
+	}
+
+	public void setStartShell(boolean startShell) {
+		this.startShell = startShell;
+	}
+
+	public boolean isStartShell() {
+		return startShell;
 	}
 }

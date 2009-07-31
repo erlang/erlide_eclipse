@@ -134,11 +134,15 @@ public class ErlangLaunchConfigurationDelegate extends
 
 		final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
 				.getRuntimeInfoManager().getRuntime(runtime), false);
+		if (rt == null) {
+			return;
+		}
 		rt.setNodeName(nodeName);
 		if (internal) {
 			cookie = "erlide";
 		}
 		rt.setCookie(cookie);
+		rt.setStartShell(true);
 		File d = new File(workingDir);
 		if (d.isAbsolute()) {
 			rt.setWorkingDir(workingDir);
