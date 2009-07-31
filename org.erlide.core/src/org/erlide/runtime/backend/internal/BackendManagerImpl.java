@@ -97,7 +97,7 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 					+ "' " + Thread.currentThread());
 			ManagedLauncher launcher = new ManagedLauncher(launch);
 			launcher.startRuntime(info);
-			b = new ErlideBackend(info);
+			b = new ErlideBackend(info, launcher.getStreamsProxy());
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
