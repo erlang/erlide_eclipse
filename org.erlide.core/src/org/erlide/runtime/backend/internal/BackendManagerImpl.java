@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -97,7 +98,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 					+ "' " + Thread.currentThread());
 			ManagedLauncher launcher = new ManagedLauncher(launch);
 			launcher.startRuntime(info);
-			b = new ErlideBackend(info, launcher.getStreamsProxy());
+			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
+			b = new ErlideBackend(info, streamsProxy);
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);

@@ -184,6 +184,7 @@ public class ErlangLaunchConfigurationDelegate extends
 		ErlLogger.info("---------------");
 
 		try {
+			launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "true");
 			final ErlideBackend backend = ErlangCore.getBackendManager()
 					.create(rt, options, launch);
 			if (backend == null) {
@@ -193,7 +194,6 @@ public class ErlangLaunchConfigurationDelegate extends
 						"Couldn't find the node " + nodeName, null);
 				throw new DebugException(s);
 			}
-			// launch.addProcess(null);
 			registerProjects(backend, projects);
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// add debug target

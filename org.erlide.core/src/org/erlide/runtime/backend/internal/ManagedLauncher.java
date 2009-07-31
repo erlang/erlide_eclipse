@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.internal.core.StreamsProxy;
@@ -51,6 +52,15 @@ public class ManagedLauncher implements IDisposable {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
 			if (launch == null) {
 				proxy = new StreamsProxy(fRuntime, "ISO-8859-1");
+			} else {
+				String capture = launch
+						.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
+
+				if (!"true".equals(capture)) {
+					proxy = new StreamsProxy(fRuntime, "ISO-8859-1");
+				}
+				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
+						null);
 			}
 			ErlLogger.debug(fRuntime.toString());
 			try {
@@ -104,11 +114,6 @@ public class ManagedLauncher implements IDisposable {
 			thread.setDaemon(false);
 			thread.start();
 
-			if (launch != null) {
-				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
-						null);
-				launch.addProcess(erts);
-			}
 		} catch (final IOException e) {
 			ErlLogger.error(e);
 		}
