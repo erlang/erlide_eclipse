@@ -686,12 +686,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return result;
 	}
 
-	protected void logBuildStructure(final IResource resource) {
-		if (ErlModelManager.verbose) {
-			ErlLogger.debug("build structure for " + resource.getLocation());
-		}
-	}
-
 	public static IErlElement getChildNamed(final IParent parent,
 			final String name) {
 		try {

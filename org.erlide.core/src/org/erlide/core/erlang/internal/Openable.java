@@ -71,8 +71,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
 	 * @param dirtyRegion
 	 *            TODO
 	 */
-	protected abstract boolean buildStructure(IProgressMonitor pm,
-			IResource underlyingResource) throws ErlModelException;
+	protected abstract boolean buildStructure(IProgressMonitor pm)
+			throws ErlModelException;
 
 	/*
 	 * Returns whether this element can be removed from the Erlang model cache
@@ -157,8 +157,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		// build the structure of the openable (this will open the buffer if
 		// needed)
 		if (!isStructureKnown()) {
-			final boolean knownStructure = buildStructure(monitor,
-					getResource());
+			final boolean knownStructure = buildStructure(monitor);
 			setStructureKnown(knownStructure);
 		}
 	}

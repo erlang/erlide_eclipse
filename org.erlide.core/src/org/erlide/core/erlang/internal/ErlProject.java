@@ -110,15 +110,15 @@ public class ErlProject extends Openable implements IErlProject {
 	 * @see Openable
 	 */
 	@Override
-	protected boolean buildStructure(final IProgressMonitor pm,
-			final IResource underlyingResource) throws ErlModelException {
-		logBuildStructure(underlyingResource);
+	protected boolean buildStructure(final IProgressMonitor pm)
+			throws ErlModelException {
+		final IResource r = getResource();
 		// check whether the Erlang project can be opened
-		if (!underlyingResource.isAccessible()) {
+		if (r == null || !r.isAccessible() || !(r instanceof IContainer)) {
 			throw newNotPresentException();
 		}
 		try {
-			final IContainer c = (IContainer) underlyingResource;
+			final IContainer c = (IContainer) r;
 			final IResource[] elems = c.members();
 			final List<IErlElement> children = new ArrayList<IErlElement>(
 					elems.length);

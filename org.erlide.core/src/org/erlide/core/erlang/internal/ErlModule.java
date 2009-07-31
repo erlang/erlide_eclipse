@@ -56,6 +56,7 @@ public class ErlModule extends Openable implements IErlModule {
 	private IErlScanner scanner;
 	private final IFile fFile;
 	private boolean parsed = false;
+	private boolean updateCaches = false;
 
 	// These are needed to ignore the initial INSERT of all text and final
 	// DELETE of all text
@@ -79,9 +80,8 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	@Override
-	protected synchronized boolean buildStructure(final IProgressMonitor pm,
-			IResource underlyingResource) throws ErlModelException {
-		logBuildStructure(underlyingResource);
+	protected synchronized boolean buildStructure(final IProgressMonitor pm)
+			throws ErlModelException {
 		final String path = getFilePath();
 		final String erlidePath = getErlidePath();
 		if (scanner == null) {
@@ -89,7 +89,8 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		final boolean initialParse = !parsed;
 		final String text = initialParse ? initialText : "";
-		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath);
+		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath,
+				updateCaches);
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -97,11 +98,9 @@ public class ErlModule extends Openable implements IErlModule {
 
 		// update timestamp (might be IResource.NULL_STAMP if original does not
 		// exist)
-		if (underlyingResource == null) {
-			underlyingResource = getResource();
-		}
-		if (underlyingResource != null && underlyingResource instanceof IFile) {
-			timestamp = ((IFile) underlyingResource).getLocalTimeStamp();
+		final IResource r = getResource();
+		if (r instanceof IFile) {
+			timestamp = ((IFile) r).getLocalTimeStamp();
 		} else {
 			timestamp = IResource.NULL_STAMP;
 		}
@@ -185,50 +184,13 @@ public class ErlModule extends Openable implements IErlModule {
 		});
 	}
 
-	// public IErlElement getElementAtLine(final int lineNumber) {
-	// for (final IErlElement child : fChildren) {
-	// if (child instanceof ISourceReference) {
-	// final ISourceReference sr = (ISourceReference) child;
-	// if (sr.getLineStart() <= lineNumber
-	// && sr.getLineEnd() >= lineNumber) {
-	// return child;
-	// }
-	// }
-	// if (child instanceof IParent) {
-	// final IParent p = (IParent) child;
-	// try {
-	// for (final IErlElement e : p.getChildren()) {
-	// if (e instanceof ISourceReference) {
-	// final ISourceReference sr = (ISourceReference) e;
-	// if (sr.getLineStart() <= lineNumber
-	// && sr.getLineEnd() >= lineNumber) {
-	// return e;
-	// }
-	// }
-	// }
-	// } catch (final ErlModelException e) {
-	// }
-	// }
-	// }
-	// return null;
-	// }
-
 	public ModuleKind getModuleKind() {
 		return moduleKind;
 	}
 
 	public IResource getResource() {
-		// final IResource parentRes = this.getParent().getResource();
-		// if (parentRes == null || !(parentRes instanceof IContainer)) {
-		// return null;
-		// }
-		// return ((IContainer) parentRes).getFile(new Path(getElementName()));
 		return fFile;
 	}
-
-	// public String getSource() throws ErlModelException {
-	// return ""; // return getBuffer().getContents();
-	// }
 
 	public ISourceRange getSourceRange() throws ErlModelException {
 		return new SourceRange(0, 0);
@@ -541,11 +503,17 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 	}
 
-	public synchronized void resetParser(final String newText) {
+	public synchronized void resetAndCacheScannerAndParser(final String newText) {
 		scanner = null;
 		initialText = newText;
 		parsed = false;
+		updateCaches = true;
 		setStructureKnown(false);
+		try {
+			buildStructure(null);
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

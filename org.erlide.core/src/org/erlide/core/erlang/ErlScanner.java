@@ -35,7 +35,7 @@ public class ErlScanner implements IErlScanner {
 		// this.moduleFileName = moduleFileName;
 		// this.erlidePath = erlidePath;
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
-				erlidePath);
+				erlidePath, false);
 	}
 
 	public static String createScannerModuleName(final IErlModule module) {

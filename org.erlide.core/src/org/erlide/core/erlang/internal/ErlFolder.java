@@ -35,11 +35,10 @@ public class ErlFolder extends Openable implements IErlFolder {
 	}
 
 	@Override
-	protected boolean buildStructure(final IProgressMonitor pm,
-			final IResource underlyingResource) throws ErlModelException {
-		logBuildStructure(underlyingResource);
+	protected boolean buildStructure(final IProgressMonitor pm)
+			throws ErlModelException {
 		final IErlModelManager manager = ErlangCore.getModelManager();
-		final IContainer c = (IContainer) underlyingResource;
+		final IContainer c = (IContainer) getResource();
 		try {
 			// FIXME this is general stuff, should we put it in, say, model or
 			// model manager?

@@ -49,11 +49,14 @@ public final class ErlParser {
 	 *            true if first time parse
 	 * @param erlidePath
 	 *            path to resource in eclipse
+	 * @param updateCaches
+	 *            update the the caches
 	 * @return -record(model, {forms, comments}).
 	 */
 	public static boolean parse(final IErlModule module,
 			final String initialText, final boolean initialParse,
-			final String moduleFilePath, final String erlidePath) {
+			final String moduleFilePath, final String erlidePath,
+			final boolean updateCaches) {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (b == null || module == null) {
 			return false;
@@ -71,7 +74,8 @@ public final class ErlParser {
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
-					moduleFilePath, initialText, stateDir, erlidePath);
+					moduleFilePath, initialText, stateDir, erlidePath,
+					updateCaches);
 		} else {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}

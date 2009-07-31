@@ -14,13 +14,9 @@
 %%
 %% Exported Functions
 %%
--export([check_and_renew_cached/4, check_and_renew_cached/5, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
+-export([check_and_renew_cached/5, check_and_renew_cached/6, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
 -export([pack/1, unpack/1]).
 -export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
-
--ifdef(DEBUG).
--compile(export_all).
--endif.
 
 %%
 %% API Functions
@@ -43,7 +39,7 @@ check_cached(SourceFileName, CacheFileName, Version) ->
     SourceModDate = case file:read_file_info(SourceFileName) of
                         {ok, Info} ->
                             Info#file_info.mtime;
-                        {error, _} ->
+                        {error, enoent} ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
     ?D(SourceModDate),
@@ -71,19 +67,32 @@ renew_cached(SourceFileName, CacheFileName, Version, Term) ->
     ?D(SourceFileName),
     renew_cache(SourceModDate, Version, CacheFileName, Term).                    
 
-check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun) ->
-    check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, fun(D) -> D end).
+check_and_renew_cached(SourceFileName, CacheFileName, Version, 
+		       RenewFun, UpdateCache) ->
+    check_and_renew_cached(SourceFileName, CacheFileName, Version,
+			   RenewFun, fun(D) -> D end, UpdateCache).
 
-check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, CachedFun) ->
+check_and_renew_cached(SourceFileName, CacheFileName, 
+		       Version, RenewFun, CachedFun, 
+		       UpdateCache) ->
+    ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
-            {cached, CachedFun(Cached)};
+            R = {cached, CachedFun(Cached)},
+	    ?D(got_cached),
+	    R;
         {no_cache, SourceModDate} ->
+	    ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
             ?D({renewing, CacheFileName}),
-            renew_cache(SourceModDate, Version, CacheFileName, Term),
-            {renewed, Term}
+	    case UpdateCache of
+		true ->
+		    renew_cache(SourceModDate, Version, CacheFileName, Term),
+		    {renewed, Term};
+		false ->
+		    {uncached, Term}
+	    end
     end.
 
 get_from_str(Text, Start) ->
@@ -171,5 +180,6 @@ read_cache_date_and_version(CacheFileName) ->
 
 read_cache(CacheFileName) ->
     {ok, B} = file:read_file(CacheFileName),
+    ?D(CacheFileName),
     <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     binary_to_term(BinTerm).

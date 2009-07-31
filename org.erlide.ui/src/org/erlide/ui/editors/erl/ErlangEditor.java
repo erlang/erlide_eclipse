@@ -272,7 +272,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		private String getScannerModuleName() {
-			IErlModule module = getModule();
+			final IErlModule module = getModule();
 			if (module == null) {
 				return null;
 			}
@@ -675,9 +675,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// TODO should we use model events here?
 			myOutlinePage.setInput(input);
 		}
-		if (getModule() != null) {
-			getModule().reenableScanner();
-			fErlangEditorErrorTickUpdater.updateEditorImage(getModule());
+		final IErlModule module = getModule();
+		if (module != null) {
+			module.reenableScanner();
+			fErlangEditorErrorTickUpdater.updateEditorImage(module);
 		}
 
 		document = provider.getDocument(input);
@@ -1409,9 +1410,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			if (forward && p.offset == offset || !forward
 					&& p.offset + p.getLength() == offset + length) {
 				// || p.includes(offset))
-				if ((containingAnnotation == null)
-						|| (forward && (p.length >= containingAnnotationPosition.length))
-						|| (!forward && (p.length < containingAnnotationPosition.length))) {
+				if (containingAnnotation == null || forward
+						&& p.length >= containingAnnotationPosition.length
+						|| !forward
+						&& p.length < containingAnnotationPosition.length) {
 					containingAnnotation = a;
 					containingAnnotationPosition = p;
 					currentAnnotation = p.length == length;
@@ -1594,20 +1596,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void doSave(final IProgressMonitor progressMonitor) {
 		// TODO: maybe this should be in a resource change listener?
 		super.doSave(progressMonitor);
-		resetParser();
+		resetAndCacheScannerAndParser();
 	}
 
-	public void resetParser() {
+	public void resetAndCacheScannerAndParser() {
 		try {
 			final IErlModule module = getModule();
 			if (module == null) {
 				return;
 			}
-			module.resetParser(getDocument().get());
+			module.resetAndCacheScannerAndParser(getDocument().get());
 			module.open(null);
-			((EditorConfiguration) getSourceViewerConfiguration())
-					.resetReconciler();
-
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
@@ -1704,7 +1703,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		/*
-		 * @seeorg.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
+		 * @see org.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
 		 * IWorkbenchPartReference)
 		 */
 		public void partVisible(final IWorkbenchPartReference partRef) {

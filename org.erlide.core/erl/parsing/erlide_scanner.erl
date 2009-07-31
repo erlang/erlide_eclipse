@@ -16,7 +16,7 @@
 %% Exported Functions
 %%
 
--export([create/2, destroy/1, initialScan/5, getTokenAt/2, getTokenWindow/4, 
+-export([create/2, destroy/1, initialScan/6, getTokenAt/2, getTokenWindow/4, 
          getTokens/1, replaceText/4, stop/0, tokens_to_string/1, light_scan_string/1]).
 
 %% called from erlide_indent
@@ -60,9 +60,9 @@ getTokenWindow(Module, Offset, Before, After)
 getTokenAt(Module, Offset) when is_atom(Module), is_integer(Offset) ->
     server_cmd(get_token_at, {Module, Offset}).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) 
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache) 
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
-    server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath}).
+    server_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache}).
 
 scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     server_cmd(scan_uncached, {ScannerName, ModuleFileName, ErlidePath}).
@@ -257,10 +257,10 @@ loop(Modules) ->
             ?MODULE:loop(NewMods)
     end.
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> do_scan(ScannerName, InitialText, ErlidePath) end,
-    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun).
+    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UpdateCache).
 
 do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     {ok, B} = file:read_file(ModuleFileName),
@@ -268,9 +268,10 @@ do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
     do_scan(ScannerName, InitialText, ErlidePath).
 
 do_scan(ScannerName, InitialText, ErlidePath) ->
+    ?D(do_scan),
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
-    ?D([ScannerName, InitialText, LineTokens]),
+    ?D([ScannerName]), % , InitialText, LineTokens]),
     #module{name=ScannerName, lines=Lines, tokens=LineTokens,
             erlide_path=ErlidePath}.
 
@@ -494,12 +495,12 @@ do_cmd(destroy, Mod, Modules) ->
 do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, Modules) ->
     NewMod = do_scan_uncached(Mod, ModuleFileName, ErlidePath),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];
-do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir}, Modules) ->   % rescan, ignore
+do_cmd(initial_scan, {_Mod, _ModuleFileName, "", _StateDir, _}, Modules) ->   % rescan, ignore
     ?D({rescan, _Mod}),
     Modules;
-do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath}, Modules) ->
+do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache}, Modules) ->
     ?D({initial_scan, Mod}),
-    {Cached, NewMod} = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath),
+    {Cached, NewMod} = initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache),
     ?D({done, Mod}),
     {{ok, Cached}, [NewMod | lists:keydelete(Mod, #module.name, Modules)]};
 do_cmd(all, [], Modules) ->
@@ -514,7 +515,7 @@ do_cmd(get_token_at, {Mod, Offset}, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {get_token_at(Module, Offset), Modules};
 do_cmd(replace_text, {Mod, Offset, RemoveLength, NewText}, Modules) ->
-    ?D({replace_text, Mod, Offset, RemoveLength, NewText}),
+    ?D({replace_text, Mod, Offset, RemoveLength, length(NewText)}),
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     NewMod = replace_text(Module, Offset, RemoveLength, NewText),
     [NewMod | lists:keydelete(Mod, #module.name, Modules)];

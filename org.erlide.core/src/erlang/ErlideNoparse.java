@@ -35,12 +35,13 @@ public class ErlideNoparse {
 	public static OtpErlangTuple initialParse(final Backend b,
 			final String scannerModuleName, final String moduleFileName,
 			final String initialText, final String stateDir,
-			final String erlidePath) {
+			final String erlidePath, final boolean updateCaches) {
 		OtpErlangTuple res = null;
 		try {
 			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE,
-					"initial_parse", "assss", scannerModuleName,
-					moduleFileName, initialText, stateDir, erlidePath);
+					"initial_parse", "asssso", scannerModuleName,
+					moduleFileName, initialText, stateDir, erlidePath,
+					updateCaches);
 			if (res.arity() > 2) {
 				ErlLogger.debug("initialParse " + res.elementAt(2));
 			}
@@ -108,7 +109,8 @@ public class ErlideNoparse {
 				if (file == null) {
 					continue;
 				}
-				final IErlModule module = ErlangCore.getModel().findModule(file);
+				final IErlModule module = ErlangCore.getModel()
+						.findModule(file);
 				for (final OtpErlangObject o : funs.elements()) {
 					final OtpErlangTuple t2 = (OtpErlangTuple) o;
 					final OtpErlangTuple ft = (OtpErlangTuple) t2.elementAt(0);

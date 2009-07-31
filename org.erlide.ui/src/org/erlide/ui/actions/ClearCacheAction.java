@@ -50,6 +50,6 @@ public class ClearCacheAction extends TextEditorAction {
 			final File cacheFile = new File(cacheFileOSPath);
 			cacheFile.delete();
 		}
-		erlangEditor.resetParser();
+		erlangEditor.resetAndCacheScannerAndParser();
 	}
 }

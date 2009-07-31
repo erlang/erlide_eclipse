@@ -101,9 +101,7 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	@Override
-	protected boolean buildStructure(final IProgressMonitor pm,
-			final IResource underlyingResource) {
-		logBuildStructure(underlyingResource);
+	protected boolean buildStructure(final IProgressMonitor pm) {
 		final IErlModelManager modelManager = ErlangCore.getModelManager();
 		// determine my children
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
@@ -654,20 +652,20 @@ public class ErlModel extends Openable implements IErlModel {
 		return fCachedPathVars;
 	}
 
-	public IErlFunction findFunction(FunctionRef r) {
-		IErlModule m = findModule(r.module);
+	public IErlFunction findFunction(final FunctionRef r) {
+		final IErlModule m = findModule(r.module);
 		try {
 			m.open(null);
-			for (IErlElement c : m.getChildren()) {
+			for (final IErlElement c : m.getChildren()) {
 				if (c instanceof IErlFunction) {
-					IErlFunction f = (IErlFunction) c;
+					final IErlFunction f = (IErlFunction) c;
 					if (f.getName().equals(r.function)
 							&& f.getArity() == r.arity) {
 						return f;
 					}
 				}
 			}
-		} catch (ErlModelException e) {
+		} catch (final ErlModelException e) {
 		}
 		return null;
 	}

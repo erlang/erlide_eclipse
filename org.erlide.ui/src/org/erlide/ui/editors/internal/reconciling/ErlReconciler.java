@@ -278,9 +278,10 @@ public class ErlReconciler implements IReconciler {
 						fDirtyRegionQueue.purgeQueue();
 					}
 					if (fDocument != null && fDocument.getLength() > 0) {
-						final DocumentEvent e = new DocumentEvent(fDocument, 0,
-								fDocument.getLength(), ""); //$NON-NLS-1$
-						createDirtyRegion(e);
+						// final DocumentEvent e = new DocumentEvent(fDocument,
+						// 0,
+						//								fDocument.getLength(), ""); //$NON-NLS-1$
+						// createDirtyRegion(e);
 						fThread.reset();
 						fThread.suspendCallerWhileDirty();
 					}
@@ -587,7 +588,6 @@ public class ErlReconciler implements IReconciler {
 	 * @see AbstractReconciler#process(DirtyRegion)
 	 */
 	protected void process(final ErlDirtyRegion dirtyRegion) {
-
 		if (dirtyRegion != null) {
 			fStrategy.reconcile(dirtyRegion);
 		} else {

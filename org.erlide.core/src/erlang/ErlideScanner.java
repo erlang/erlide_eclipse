@@ -21,15 +21,15 @@ public class ErlideScanner {
 
 	public static void initialScan(final String module,
 			final String moduleFileName, final String initialText,
-			final String erlidePath) {
+			final String erlidePath, final boolean updateCaches) {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
 			final OtpErlangObject res = ErlangCore.getBackendManager()
 					.getIdeBackend().call(ERLIDE_SCANNER, "initialScan",
-							"assss", module, moduleFileName, initialText,
-							stateDir, erlidePath);
-			ErlLogger.debug("initialScan " + res);
+							"asssso", module, moduleFileName, initialText,
+							stateDir, erlidePath, updateCaches);
+			ErlLogger.debug("initialScan " + module + " " + res);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 		}
@@ -73,9 +73,9 @@ public class ErlideScanner {
 	public static void replaceText(final String module, final int offset,
 			final int removeLength, final String newText) {
 		try {
-			final int newTextLen = newText == null ? 0 : newText.length();
-			ErlLogger.debug("replaceText %s %d %d <length %d>", module, offset,
-					removeLength, newTextLen);
+			// ErlLogger.debug("replaceText %s %d %d <length %d>", module,
+			// offset,
+			// removeLength, newTextLen);
 			// ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
 			// removeLength, newText);
 			final OtpErlangObject r = ErlangCore.getBackendManager()

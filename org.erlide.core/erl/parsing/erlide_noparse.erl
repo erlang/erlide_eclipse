@@ -8,7 +8,7 @@
 %% Exported Functions
 %%
 
--export([initial_parse/5, reparse/1]).
+-export([initial_parse/6, reparse/1]).
 
 %% server stuff, currently only for testing
 -export([modules/0, dump_module/1, dump_log/0, create/3, destroy/1, logging/1, all/0, stop/0, find/3,
@@ -23,7 +23,7 @@
 %% Include files
 %%
 
-%%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -define(CACHE_VERSION, 16).
 -define(SERVER, erlide_noparse).
@@ -73,15 +73,25 @@ stop() ->
 find(M, F, A) ->
     server_cmd(find, {external_call, {M, F, A}}).
 
-initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
+initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
     try
-    	%?D({StateDir, ModuleFileName, ErlidePath}),
-        RenewFun = fun(_F) -> do_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) end,
-        CacheFun = fun(D) -> erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath), D end,
+	?D({StateDir, ModuleFileName, ErlidePath}),
+        RenewFun = fun(_F) ->
+			   do_parse(ScannerName, ModuleFileName, InitialText,
+				    StateDir, ErlidePath, UpdateCaches) 
+		   end,
+        CacheFun = fun(D) ->
+			   erlide_scanner:initialScan(ScannerName, ModuleFileName, 
+						      InitialText, StateDir, ErlidePath, UpdateCaches), 
+			   D 
+		   end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
-        %?D(CacheFileName),
-        {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, CacheFun),
+        ?D(CacheFileName),
+        {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
+							   ?CACHE_VERSION, RenewFun, CacheFun,
+							   UpdateCaches),
         update_state(ScannerName, Res),
+	?D(updated),
         {ok, Res, Cached}
     catch
         error:Reason ->
@@ -90,7 +100,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
 
 reparse(ScannerName) ->
     try
-        Res = do_parse(ScannerName, "", "", "", ""),
+        Res = do_parse(ScannerName, "", "", "", "", false),
         update_state(ScannerName, Res),
         {ok, Res}
     catch
@@ -114,16 +124,16 @@ reparse(ScannerName) ->
 -record(macro_ref, {macro, position}).
 -record(record_ref, {record, position}).
 
-do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath) ->
-    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath),
-    %?D({do_parse, ErlidePath, length(Toks)}),
+do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches) ->
+    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches),
+    ?D({do_parse, ErlidePath, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
     %?D({UncommentToks}),
     Functions = split_after_dots(UncommentToks, [], []),
-    %?D(length(Functions)),
+    ?D(length(Functions)),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
-    %?D(length(Collected)),
+    ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
     create(ScannerName, Model, ErlidePath),
@@ -413,10 +423,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             name=Name, args=get_between_pars(Rest), head=get_head(Rest), 
             external_refs=ExternalRefs}.
 
-scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
+scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner:getTokens(ScannerName);    
-scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath) ->
-    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath),
+scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
+    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
     S = erlide_scanner:getTokens(ScannerName),
     S.
 
@@ -503,11 +513,11 @@ update_state(ScannerName, Model) ->
     server_cmd(update_state, {ScannerName, Model}).
 
 server_cmd(Command, Args) ->
-	spawn_server(),
+    spawn_server(),
     ?SERVER ! {Command, self(), Args},
-	receive
-        {Command, _Pid, Result} ->
-            Result
+    receive
+	{Command, _Pid, Result} ->
+	    Result
     end.
 
 spawn_server() ->
