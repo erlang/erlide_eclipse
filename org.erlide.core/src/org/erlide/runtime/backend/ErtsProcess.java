@@ -60,8 +60,7 @@ public class ErtsProcess extends RuntimeProcess {
 		if (!isStarted()) {
 			return;
 		}
-		final IStreamsProxy streamsProxy = getLaunch().getProcesses()[0]
-				.getStreamsProxy();
+		final IStreamsProxy streamsProxy = getStreamsProxy();
 		if (streamsProxy != null) {
 			streamsProxy.write(value);
 		}
