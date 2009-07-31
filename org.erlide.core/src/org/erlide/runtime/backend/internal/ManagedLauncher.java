@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.internal.core.StreamsProxy;
@@ -53,14 +52,9 @@ public class ManagedLauncher implements IDisposable {
 			if (launch == null) {
 				proxy = new StreamsProxy(fRuntime, "ISO-8859-1");
 			} else {
-				String capture = launch
-						.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
-
-				if (!"true".equals(capture)) {
-					proxy = new StreamsProxy(fRuntime, "ISO-8859-1");
-				}
 				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
 						null);
+				proxy = erts.getPrivateStreamsProxy();
 			}
 			ErlLogger.debug(fRuntime.toString());
 			try {
@@ -122,18 +116,5 @@ public class ManagedLauncher implements IDisposable {
 	public IStreamsProxy getStreamsProxy() {
 		return proxy;
 	}
-
-	// void startRuntime_2() throws CoreException {
-	// ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-	// ILaunchConfigurationType type = manager
-	// .getLaunchConfigurationType("org.erlide.core.launch.erlangProcess");
-	// ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null,
-	// "some erlang node");
-	// workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME, "mynode");
-	// workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, "erl5.7.2");
-	// ILaunchConfiguration configuration = workingCopy.doSave();
-	// configuration
-	// .launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-	// }
 
 }

@@ -16,10 +16,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
+import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -31,6 +33,7 @@ public class ErtsProcess extends RuntimeProcess {
 
 	@SuppressWarnings( { "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
+	private IStreamsProxy streamsProxy;
 
 	@SuppressWarnings("unchecked")
 	public ErtsProcess(final ILaunch launch, final Process process,
@@ -134,4 +137,21 @@ public class ErtsProcess extends RuntimeProcess {
 		super.terminate();
 	}
 
+	@Override
+	protected IStreamsProxy createStreamsProxy() {
+		String encoding = getLaunch().getAttribute(
+				DebugPlugin.ATTR_CONSOLE_ENCODING);
+		if (encoding == null) {
+			encoding = "ISO-8859-1";
+		}
+		streamsProxy = new StreamsProxy(getSystemProcess(), encoding);
+		return streamsProxy;
+	}
+
+	public IStreamsProxy getPrivateStreamsProxy() {
+		if (getStreamsProxy() instanceof StreamsProxy) {
+			return getStreamsProxy();
+		}
+		return streamsProxy;
+	}
 }

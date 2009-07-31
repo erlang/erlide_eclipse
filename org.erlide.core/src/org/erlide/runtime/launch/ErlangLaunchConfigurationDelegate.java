@@ -184,7 +184,9 @@ public class ErlangLaunchConfigurationDelegate extends
 		ErlLogger.info("---------------");
 
 		try {
+			// TODO set to false when ready!
 			launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "true");
+
 			final ErlideBackend backend = ErlangCore.getBackendManager()
 					.create(rt, options, launch);
 			if (backend == null) {
