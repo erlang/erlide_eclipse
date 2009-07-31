@@ -8,16 +8,16 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.prefs.tickets;
+package org.erlide.jinterface.backend.util;
 
-public class TicketInfo {
+public class ProblemData {
 	public String summary;
 	public String reporter;
 	public String description;
 	public String platformLog;
 	public String erlideLog;
 
-	public TicketInfo(final String title, final String body,
+	public ProblemData(final String title, final String body,
 			final String contact, final String plog, final String elog) {
 		this.summary = title;
 		this.reporter = contact;

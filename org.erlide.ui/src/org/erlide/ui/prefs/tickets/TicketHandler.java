@@ -13,11 +13,13 @@ package org.erlide.ui.prefs.tickets;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.erlide.jinterface.backend.util.ProblemData;
+
 public interface TicketHandler {
 
-	TicketStatus send(TicketInfo info);
+	TicketStatus send(ProblemData info);
 
-	String infoToMessage(TicketInfo info);
+	String infoToMessage(ProblemData info);
 
 	TicketStatus parseMessage(String message);
 

@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.util.ProblemData;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.prefs.tickets.TicketInfo;
 
 import com.swtdesigner.SWTResourceManager;
 
@@ -155,7 +155,7 @@ public class ReportPreferencePage extends PreferencePage implements
 					plog = ErlideUtil.fetchPlatformLog();
 					elog = ErlideUtil.fetchErlideLog();
 				}
-				final TicketInfo data = new TicketInfo(title, contact, body,
+				final ProblemData data = new ProblemData(title, contact, body,
 						plog, elog);
 				sendToDisk(location, data);
 				// new AssemblaHandler().send(data);
@@ -173,7 +173,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		sendButton.setEnabled(false);
 	}
 
-	void sendToDisk(final String location, final TicketInfo data) {
+	void sendToDisk(final String location, final ProblemData data) {
 		final File report = new File(location);
 		try {
 			report.createNewFile();

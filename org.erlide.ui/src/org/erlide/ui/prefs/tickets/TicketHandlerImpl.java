@@ -20,6 +20,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.erlide.jinterface.backend.util.ProblemData;
 import org.erlide.jinterface.util.ErlLogger;
 
 public abstract class TicketHandlerImpl implements TicketHandler {
@@ -28,7 +29,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 		super();
 	}
 
-	public TicketStatus send(final TicketInfo info) {
+	public TicketStatus send(final ProblemData info) {
 		final String msg = infoToMessage(info);
 		try {
 			URL url = getLoginURL(System

@@ -16,6 +16,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.erlide.jinterface.backend.util.ProblemData;
+
 public class AssemblaHandler extends TicketHandlerImpl {
 
 	private static final String MYURL = "http://www.assembla.com/spaces/erlide/tickets/";
@@ -38,7 +40,7 @@ public class AssemblaHandler extends TicketHandlerImpl {
 		return false;
 	}
 
-	public String infoToMessage(final TicketInfo info) {
+	public String infoToMessage(final ProblemData info) {
 		return "<ticket><summary>" + info.summary + "</summary></ticket>";
 	}
 
