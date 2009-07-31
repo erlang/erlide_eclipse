@@ -73,7 +73,7 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static boolean isOnIncludePath(IContainer con) {
+	public static boolean isOnIncludePath(final IContainer con) {
 		final IProject project = con.getProject();
 		/*
 		 * Get the project settings so that we can find the source nodes
@@ -128,20 +128,18 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static ContainerFilter getIncludePathFilter(IProject project) {
+	public static ContainerFilter getIncludePathFilter(final IProject project) {
 		return new ContainerFilter() {
-			public boolean accept(IContainer container) {
-				return org.erlide.core.erlang.util.PluginUtils
-						.isOnIncludePath(container);
+			public boolean accept(final IContainer container) {
+				return isOnIncludePath(container);
 			}
 		};
 	}
 
-	public static ContainerFilter getSourcePathFilter(IProject project) {
+	public static ContainerFilter getSourcePathFilter(final IProject project) {
 		return new ContainerFilter() {
-			public boolean accept(IContainer container) {
-				return org.erlide.core.erlang.util.PluginUtils
-						.isOnSourcePath(container);
+			public boolean accept(final IContainer container) {
+				return isOnSourcePath(container);
 			}
 		};
 	}
