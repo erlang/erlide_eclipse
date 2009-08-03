@@ -119,8 +119,7 @@ scan_test(Module) ->
 light_scan_string(S) ->
     case erlide_scan:string(S, {0, 0}) of
 	{ok, T, _} ->
-	    T2 = erlide_scan:filter_ws(T),
-	    {ok, convert_tokens(T2)};	    
+	    {ok, convert_tokens(T)};	    
 	{error, _, _} ->
 	    error
     end.
