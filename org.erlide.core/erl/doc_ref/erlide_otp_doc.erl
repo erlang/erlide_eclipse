@@ -383,37 +383,37 @@ get_all_links_to_other() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_doc_from_scan_tuples(Input, Imports, StateDir) ->
-	try
-		case Input of
-			{external, M, Function, N, _Path} = External ->
-				?D({open, External}),
-				case get_doc_for_external(StateDir, M, [{Function, N}]) of
-					D when is_list(D) ->
-						{ok, lists:flatten(D), External};
-					_Error ->
-						External
-				end;
-			{local, Function, N} = Local ->
-				case get_doc_for_imported(StateDir, Function, N, Imports) of
-					D when is_list(D) ->
-						{ok, lists:flatten(D), Local};
-					_Error ->
-						Local
-				end;
-			{macro, Macro} ->
-				{macro, Macro};
-			{record, Record} ->
-				{record, Record};
-			Error ->
-				?D(Error),
-				{error, Error}
-		end
-	catch
-		error:E ->
-			{error, E};
-		exit:E ->
-			{error, E}
-	end.
+    try
+	case Input of
+	    {external, M, Function, N, _Path} = External ->
+		?D({open, External}),
+		case get_doc_for_external(StateDir, M, [{Function, N}]) of
+		    D when is_list(D) ->
+			{ok, lists:flatten(D), External};
+		    _Error ->
+			External
+		end;
+	    {local, Function, N} = Local ->
+		case get_doc_for_imported(StateDir, Function, N, Imports) of
+		    D when is_list(D) ->
+			{ok, lists:flatten(D), Local};
+		    _Error ->
+			Local
+		end;
+	    {macro, Macro} ->
+		{macro, Macro};
+	    {record, Record} ->
+		{record, Record};
+	    Error ->
+		?D(Error),
+		{error, Error}
+	end
+    catch
+	error:E ->
+	    {error, E};
+	exit:E ->
+	    {error, E}
+    end.
 
 e(E) ->
     E.
@@ -430,7 +430,7 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
 		?D({DocFileName, IndexFileName, Renew}),
-        {_Cached, Doc} = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew),
+        {_Cached, Doc} = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew, true),
         ?D({doc, _Cached, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
