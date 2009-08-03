@@ -183,11 +183,12 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 							ideBackend = create(erlideRuntime, EnumSet
 									.of(BackendOptions.AUTOSTART), null);
 						} catch (final BackendException e) {
-							// erlideRuntime can't be null here
+							ErlLogger.error("Could not start IDE backend: "
+									+ e.getMessage());
 						}
 					} else {
-						ErlLogger
-								.error("There is no erlideRuntime defined! Could not start IDE backend.");
+						ErlLogger.error("There is no erlideRuntime defined! "
+								+ "Could not start IDE backend.");
 					}
 				}
 			}
