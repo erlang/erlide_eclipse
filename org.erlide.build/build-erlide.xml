@@ -12,7 +12,10 @@
 	<property name="javacTarget" value="1.5"/>
 	<property name="javacDebugInfo" value="true"/>
 	
-	<property name="p2.gathering" value="true"/>
+	<property name="generate.p2.metadata" value="true"/>
+	<property name="p2.metadata.repo" value="file:${buildDirectory}/repository"/>
+	<property name="p2.artifact.repo" value="file:${buildDirectory}/repository"/>
+	<property name="p2.publish.artifacts" value="false"/>
 	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
