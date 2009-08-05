@@ -120,8 +120,6 @@
 	<!-- Call External post build file if available -->
 	<!-- ==================================================== -->
 	<target name="callExternalPostBuild">
-    	<property name="UpdateSiteStagingLocation" value="${buildDirectory}/tmpUpdateSite/updateSite"/>
-    	<property name="UpdateSiteFinalLocation" value="${buildResultsDirectory}/../updateSite"/>
     	<property name="siteXmlFile" value="${UpdateSiteStagingLocation}/site.xml"/>
 
 		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
