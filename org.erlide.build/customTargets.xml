@@ -128,7 +128,7 @@
 		<property name="version.full" value="${versions.org.erlide}-${buildType}"/>
 
        	<antcall target="-generateUpdateSite"/>
-       	<antcall target="p2.generator"/>
+       	<antcall target="-p2site"/>
 
 		<antcall target="-createNightlyBuildSiteXml"/>
     	<copy todir="${UpdateSiteFinalLocation}">
