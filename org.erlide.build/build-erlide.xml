@@ -15,7 +15,9 @@
 	<property name="generate.p2.metadata" value="true"/>
 	<property name="p2.metadata.repo" value="file:${buildDirectory}/repository"/>
 	<property name="p2.artifact.repo" value="file:${buildDirectory}/repository"/>
-	<property name="p2.publish.artifacts" value="false"/>
+	<property name="p2.publish.artifacts" value="true"/>
+	<property name="p2.root.name" value="org.erlide"/>
+	<property name="p2.root.version" value="0.6.5.AAA"/>
 	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
