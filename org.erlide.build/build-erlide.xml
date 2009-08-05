@@ -21,8 +21,6 @@
 	<property name="p2.publish.artifacts" value="true"/>
 	<property name="p2.compressed" value="true"/>
 	<property name="p2.flavor" value="tooling"/>
-	<property name="p2.root.name" value="erlIDE"/>
-	<property name="p2.root.version" value="5.6.7"/>
 	
 	
 	<tstamp>
