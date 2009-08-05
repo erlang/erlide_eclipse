@@ -133,10 +133,7 @@
     	<copy todir="${UpdateSiteFinalLocation}">
     		<fileset dir="${UpdateSiteStagingLocation}" includes="**"/>
     	</copy>
-    	<copy todir="${UpdateSiteFinalLocation}">
-    		<fileset dir="${buildDirectory}/updateSiteP2" includes="**"/>
-    	</copy>
-    	<zip destfile="${buildResultsDirectory}/updateSite-${version.full}.zip" basedir="${UpdateSiteStagingLocation}"/>
+    	<zip destfile="${buildResultsDirectory}/updateSite-${version.full}.zip" basedir="${UpdateSiteFinalLocation}"/>
     	<delete dir="${UpdateSiteStagingLocation}/../.." includes="tmpUpdateSite/**" includeemptydirs="true"/>
 	</target>
 	

@@ -13,8 +13,8 @@
 	<property name="javacDebugInfo" value="true"/>
 	
 	<property name="generate.p2.metadata" value="true"/>
-	<property name="p2.metadata.repo" value="file:${buildDirectory}/updateSiteP2"/>
-	<property name="p2.artifact.repo" value="file:${buildDirectory}/updateSiteP2"/>
+	<property name="p2.metadata.repo" value="file:${buildResultsDirectory}/../updateSite"/>
+	<property name="p2.artifact.repo" value="file:${buildResultsDirectory}/../updateSite"/>
 	<property name="p2.publish.artifacts" value="true"/>
 	<property name="p2.compressed" value="true"/>
 	<property name="p2.flavor" value="tooling"/>
