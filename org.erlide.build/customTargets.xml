@@ -69,22 +69,24 @@
 	<!-- Steps to do before running assemble. -->
 	<!-- ===================================================================== -->
 	<target name="preAssemble">
+		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
+		<propertycopy name="realFeatureVersion" from="versions.org.erlide"/>
+
+		<property name="p2.root.name" value="erlIDE"/>
+		<property name="p2.root.version" value="${realFeatureVersion}"/>
+<echo>preAssemble</echo>
 	</target>
 	<!-- ===================================================================== -->
 	<!-- Steps to do after  running assemble. -->
 	<!-- ===================================================================== -->
 	<target name="postAssemble">
+		<echo>postAssemble</echo>
 	</target>
 	<!-- ===================================================================== -->
 	<!-- Steps to do before/after packaging RCP. -->
 	<!-- ===================================================================== -->
 	<target name="prePackage">
-		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
-		<propertycopy name="realFeatureVersion" from="versions.${featureId}"/>
-
-		<property name="p2.root.name" value="erlIDE"/>
-		<property name="p2.root.version" value="${realFeatureVersion}"/>
-
+		<echo>prePackage</echo>
 	</target>
 	
 	<target name="postPackage">
