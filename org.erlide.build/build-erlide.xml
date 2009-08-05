@@ -18,6 +18,8 @@
 	<property name="p2.publish.artifacts" value="true"/>
 	<property name="p2.compressed" value="true"/>
 	<property name="p2.flavor" value="tooling"/>
+	<property name="p2.root.name" value="org.erlide"/>
+	
 	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>
