@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <category-def name="stable33" label="Stable (3.4+)"/>
+   <category-def name="nightly" label="Nightly builds"/>
+</site>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://erlide.org/update">
+   <description name="erlIDE update site" url="http://erlide.org/update">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.4 and later.
    </description>
    <feature url="features/org.erlide.selfhost_0.1.1.200903311037.jar" id="org.erlide.selfhost" version="0.1.1.200903311037">
