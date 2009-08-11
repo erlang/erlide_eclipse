@@ -28,9 +28,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
+import org.erlide.jinterface.util.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -1670,7 +1672,6 @@ public final class Util {
 	 * @param o
 	 *            Erlang string or list
 	 * @return string value
-	 * @throws OtpErlangDecodeException
 	 */
 	public static String stringValue(final OtpErlangObject o) {
 		if (o instanceof OtpErlangString) {
@@ -1680,6 +1681,12 @@ public final class Util {
 			final OtpErlangList l = (OtpErlangList) o;
 			if (l.arity() == 0) {
 				return "";
+			}
+			try {
+				return l.stringValue();
+			} catch (OtpErlangException e) {
+				ErlLogger.error(e);
+				return null;
 			}
 		}
 		return null;
