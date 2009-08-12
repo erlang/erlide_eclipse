@@ -1600,16 +1600,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public void resetAndCacheScannerAndParser() {
-		try {
-			final IErlModule module = getModule();
-			if (module == null) {
-				return;
-			}
-			module.resetAndCacheScannerAndParser(getDocument().get());
-			module.open(null);
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
+		final IErlModule module = getModule();
+		if (module == null) {
+			return;
 		}
+		reconcileNow();
+		module.resetAndCacheScannerAndParser(getDocument().get());
 	}
 
 	public void reconcileNow() {
