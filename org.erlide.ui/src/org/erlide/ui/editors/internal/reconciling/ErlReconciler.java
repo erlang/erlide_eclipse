@@ -15,7 +15,6 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlReconciler implements IReconciler {
 
@@ -235,7 +234,6 @@ public class ErlReconciler implements IReconciler {
 		 * @see IDocumentListener#documentChanged(DocumentEvent)
 		 */
 		public void documentChanged(final DocumentEvent e) {
-			ErlLogger.debug("documentChanged");
 			if (!fThread.isDirty() && fThread.isAlive()) {
 				if (!fIsAllowedToModifyDocument
 						&& Thread.currentThread() == fThread) {
@@ -591,7 +589,6 @@ public class ErlReconciler implements IReconciler {
 	 * @see AbstractReconciler#process(DirtyRegion)
 	 */
 	protected void process(final ErlDirtyRegion dirtyRegion) {
-		ErlLogger.debug("process");
 		if (dirtyRegion != null) {
 			fStrategy.reconcile(dirtyRegion);
 		} else {
@@ -603,7 +600,6 @@ public class ErlReconciler implements IReconciler {
 	}
 
 	protected void postProcess() {
-		ErlLogger.debug("postProcess");
 		fStrategy.chunkReconciled();
 	}
 
@@ -641,9 +637,7 @@ public class ErlReconciler implements IReconciler {
 		synchronized (fDirtyRegionQueue) {
 			fDirtyRegionQueue.notify();
 		}
-		ErlLogger.debug("reconcileNow");
 		fThread.suspendCallerWhileDirty();
-		ErlLogger.debug("done, dirty " + fThread.isDirty());
 	}
 
 	public void reset() {
