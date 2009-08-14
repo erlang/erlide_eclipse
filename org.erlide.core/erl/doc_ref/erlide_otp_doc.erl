@@ -4,7 +4,7 @@
 -module(erlide_otp_doc).
 
 -export([check_all/0,
-         get_doc_from_scan_tuples/3,
+         get_doc/3,
          get_doc_from_fun_arity_list/3,
          get_all_links_to_other/0,
          get_exported/2,
@@ -286,8 +286,22 @@ get_doc(DocFileName, PosLens) ->
 
 get_doc_dir(Module) ->
     BeamFile = code:where_is_file(Module ++ ".beam"),
-    ModDir = filename:dirname(filename:dirname(BeamFile)),
+    ModDir = hack_erts_bad_doc_location(BeamFile),
+    ?D(ModDir),
     filename:join([ModDir, "doc", "html"]).
+
+hack_erts_bad_doc_location(BeamFile) ->
+    ?D(BeamFile),
+    Dir0 = filename:dirname(filename:dirname(BeamFile)),
+    ?D(Dir0),
+    Dir1 = filename:basename(Dir0),
+    ?D(Dir1),
+    case Dir1 of
+	"erts"++_ ->
+	    filename:join([filename:dirname(filename:dirname(Dir0)), Dir1]);
+	_ ->
+	    Dir0
+    end.    
 
 extract_doc_for_func(Doc, Func) ->
     extract_doc_for_func(Doc, Func, []).
@@ -382,7 +396,7 @@ get_all_links_to_other() ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-get_doc_from_scan_tuples(Input, Imports, StateDir) ->
+get_doc(Input, Imports, StateDir) ->
     try
 	case Input of
 	    {external, M, Function, N, _Path} = External ->
@@ -447,7 +461,8 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
 
 get_doc_for_imported(StateDir, F, A, Imports) ->
     ?D({F, A, Imports}),
-    Mod = case erl_internal:bif(F, A) of
+    ?D(get_auto_imported(atom_to_list(F))),
+    Mod = case lists:member({F, A}, get_auto_imported(atom_to_list(F))) of
               true ->
                   erlang;
               false ->
