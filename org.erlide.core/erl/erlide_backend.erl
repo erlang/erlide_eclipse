@@ -84,11 +84,11 @@ parse_term(Str) ->
 	end.
 
 parse_term_raw(Str) ->
-	erlang:display(Str),
+	%% erlide_log:logp(Str),
 	{ok, Tokens, _} = erl_scan:string(Str),
-	erlang:display(Tokens),
+	%% erlide_log:logp(Tokens),
 	R=erl_parse:parse_term(Tokens),
-	erlang:display(R),
+	%% erlide_log:logp(R),
 	R.
 
 eval(Str) ->

@@ -1,42 +1,58 @@
 package org.erlide.core.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.preferences.PreferencesHelper;
+import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.ParserException;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class CompilerPreferences {
 
 	private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID
 			+ "/compiler";
-	private boolean debugInfo;
-	private boolean useExportAll;
-	private boolean warnModuleNotOnSourcePath;
-	private boolean warnFormat;
-	private boolean warnBifClash;
-	private boolean warnExportAll;
-	private boolean warnExportVars;
-	private boolean warnShadowVars;
-	private boolean warnUnusedFunction;
-	private boolean warnDeprecatedFunction;
-	private boolean warnObsoleteGuard;
-	private boolean warnUnusedImport;
-	private boolean warnUnusedVars;
-	private boolean warnUnusedRecord;
+	// private boolean debugInfo;
+	// private boolean useExportAll;
+	// private boolean warnModuleNotOnSourcePath;
+	// private boolean warnFormat;
+	// private boolean warnBifClash;
+	// private boolean warnExportAll;
+	// private boolean warnExportVars;
+	// private boolean warnShadowVars;
+	// private boolean warnUnusedFunction;
+	// private boolean warnDeprecatedFunction;
+	// private boolean warnObsoleteGuard;
+	// private boolean warnUnusedImport;
+	// private boolean warnUnusedVars;
+	// private boolean warnUnusedRecord;
+	private String allOptions = "";
+	private PreferencesHelper helper;
+
+	public CompilerPreferences() {
+		helper = new PreferencesHelper(QUALIFIER);
+	}
+
+	public CompilerPreferences(IProject project) {
+		helper = new PreferencesHelper(QUALIFIER, project);
+	}
 
 	public void store() throws BackingStoreException {
 		// FIXME
-		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER);
-		helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO,
-				hasDebugInfo());
-		helper.putBoolean(CompilerPreferencesConstants.USE_EXPORT_ALL,
-				useExportAll());
-		helper.putBoolean(
-				CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
-				doWarnModuleNotOnSourcePath());
+		helper.putString(CompilerPreferencesConstants.ALL_OPTIONS, allOptions);
+
+		// helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO,
+		// hasDebugInfo());
+		// helper.putBoolean(CompilerPreferencesConstants.USE_EXPORT_ALL,
+		// useExportAll());
+		// helper.putBoolean(
+		// CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
+		// doWarnModuleNotOnSourcePath());
 		// helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 		// warnFormat);
 		// helper
@@ -67,15 +83,16 @@ public class CompilerPreferences {
 	public void load() throws BackingStoreException {
 
 		// FIXME
+		setAllOptions(helper.getString(
+				CompilerPreferencesConstants.ALL_OPTIONS, ""));
 
-		final PreferencesHelper helper = new PreferencesHelper(QUALIFIER);
-		setDebugInfo(helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
-				true));
-		setUseExportAll(helper.getBoolean(
-				CompilerPreferencesConstants.USE_EXPORT_ALL, false));
-		setWarnModuleNotOnSourcePath(helper.getBoolean(
-				CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
-				true));
+		// setDebugInfo(helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
+		// true));
+		// setUseExportAll(helper.getBoolean(
+		// CompilerPreferencesConstants.USE_EXPORT_ALL, false));
+		// setWarnModuleNotOnSourcePath(helper.getBoolean(
+		// CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
+		// true));
 		// warnFormat =
 		// helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 		// true);
@@ -101,44 +118,67 @@ public class CompilerPreferences {
 		// CompilerPreferencesConstants.DEBUG_INFO, true);
 	}
 
-	public void setUseExportAll(boolean useExportAll) {
-		this.useExportAll = useExportAll;
+	private void setAllOptions(String string) {
+		allOptions = string;
 	}
 
-	public boolean useExportAll() {
-		return useExportAll;
+	public String getAllOptions() {
+		return allOptions;
 	}
 
-	public void setDebugInfo(boolean debugInfo) {
-		this.debugInfo = debugInfo;
-	}
+	// public void setUseExportAll(boolean useExportAll) {
+	// this.useExportAll = useExportAll;
+	// }
+	//
+	// public boolean useExportAll() {
+	// return useExportAll;
+	// }
+	//
+	// public void setDebugInfo(boolean debugInfo) {
+	// this.debugInfo = debugInfo;
+	// }
+	//
+	// public boolean hasDebugInfo() {
+	// return debugInfo;
+	// }
 
-	public boolean hasDebugInfo() {
-		return debugInfo;
-	}
+	public OtpErlangList export() {
+		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>();
+		// if (debugInfo) {
+		// result.add("debug_info");
+		// }
+		// if (useExportAll) {
+		// result.add("export_all");
+		// }
 
-	public String[] export() {
-		List<String> result = new ArrayList<String>();
-		if (debugInfo) {
-			result.add("debug_info");
+		try {
+			result.add(ErlUtils.parse(allOptions));
+		} catch (ParserException e) {
+			try {
+				result.add(ErlUtils.parse("[" + allOptions + "]"));
+			} catch (ParserException e1) {
+				e1.printStackTrace();
+			}
 		}
-		if (useExportAll) {
-			result.add("export_all");
-		}
-		return result.toArray(new String[result.size()]);
+
+		final OtpErlangList list = new OtpErlangList(result
+				.toArray(new OtpErlangObject[0]));
+		System.out.println("EXPORT:: " + list);
+		return list;
 	}
 
 	@Override
 	public String toString() {
-		return Arrays.toString(export());
+		return export().toString();
 	}
 
-	public void setWarnModuleNotOnSourcePath(boolean warnModuleNotOnSourcePath) {
-		this.warnModuleNotOnSourcePath = warnModuleNotOnSourcePath;
-	}
-
-	public boolean doWarnModuleNotOnSourcePath() {
-		return warnModuleNotOnSourcePath;
-	}
+	// public void setWarnModuleNotOnSourcePath(boolean
+	// warnModuleNotOnSourcePath) {
+	// this.warnModuleNotOnSourcePath = warnModuleNotOnSourcePath;
+	// }
+	//
+	// public boolean doWarnModuleNotOnSourcePath() {
+	// return warnModuleNotOnSourcePath;
+	// }
 
 }

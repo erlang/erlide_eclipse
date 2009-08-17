@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -20,77 +23,139 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerPreferences;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class CompilerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
-	final CompilerPreferences prefs;
+	CompilerPreferences prefs;
+	Text text;
 
 	public CompilerPreferencePage() {
 		super();
-		setTitle("Compiler options (not fully functional yet)");
+		setTitle("Compiler options");
 		setDescription("Select the compiler options to be used.");
-		prefs = new CompilerPreferences();
 	}
 
 	@Override
 	protected Control createContents(final Composite parent) {
+		final IProject prj = (IProject) getElement().getAdapter(IProject.class);
+		if (prj == null) {
+			prefs = new CompilerPreferences();
+		} else {
+			prefs = new CompilerPreferences(prj);
+		}
+		try {
+			prefs.load();
+		} catch (BackingStoreException e1) {
+			e1.printStackTrace();
+		}
+
 		final Composite control = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout_1 = new GridLayout();
-		gridLayout_1.numColumns = 2;
 		control.setLayout(gridLayout_1);
 
-		final Button debugInfoButton = new Button(control, SWT.CHECK);
-		final GridData gd_debugInfoButton = new GridData(SWT.FILL, SWT.CENTER,
-				false, false);
-		gd_debugInfoButton.widthHint = 124;
-		debugInfoButton.setLayoutData(gd_debugInfoButton);
-		debugInfoButton.setText("Debug info");
-		debugInfoButton.setSelection(prefs.hasDebugInfo());
-		debugInfoButton.addSelectionListener(new SelectionAdapter() {
+		Link lblCompilerOptionsIn = new Link(control, SWT.NONE);
+		lblCompilerOptionsIn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				prefs.setDebugInfo(debugInfoButton.getSelection());
+				MessageBox box = new MessageBox(parent.getShell());
+				box
+						.setMessage("Until we make available a better user interface, \n"
+								+ "please enter the required options as Erlang terms. \n"
+								+ "For example, \n\n    export_all, {d, 'DEBUG'}\n\n"
+								+ "Enclosing all options in a list is also accepted.\n"
+								+ "Note: 'debug_info' is always enabled by default.");
+				box.setText("Compiler options format");
+				box.open();
 			}
 		});
+		lblCompilerOptionsIn
+				.setText("Compiler options in Erlang format       <a>details...</a>");
 
-		final Button encryptDebugInfoButton = new Button(control, SWT.CHECK);
+		text = new Text(control, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				final boolean optionsAreOk = optionsAreOk(text.getText());
+				setValid(optionsAreOk);
+			}
+		});
+		{
+			GridData gridData = new GridData(SWT.LEFT, SWT.FILL, true, true, 1,
+					1);
+			gridData.widthHint = 386;
+			gridData.heightHint = 80;
+			text.setLayoutData(gridData);
+		}
+		text.setText(prefs.getAllOptions());
+
+		Label label = new Label(control, SWT.SEPARATOR | SWT.HORIZONTAL);
+		{
+			GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
+					false, 1, 1);
+			gridData.widthHint = 399;
+			label.setLayoutData(gridData);
+		}
+
+		Group group_1 = new Group(control, SWT.NONE);
+		{
+			GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
+					false, 1, 1);
+			gridData.widthHint = 397;
+			group_1.setLayoutData(gridData);
+		}
+		group_1.setLayout(new GridLayout(2, false));
+
+		final Button debugInfoButton = new Button(group_1, SWT.CHECK);
+		debugInfoButton.setEnabled(false);
+		debugInfoButton.setText("Debug info");
+		// debugInfoButton.setSelection(prefs.hasDebugInfo());
+
+		final Button encryptDebugInfoButton = new Button(group_1, SWT.CHECK);
 		encryptDebugInfoButton.setEnabled(false);
 		encryptDebugInfoButton
 				.setToolTipText("the key will be read from an .erlang.crypt file");
-		final GridData gd_encryptDebugInfoButton = new GridData(SWT.FILL,
-				SWT.CENTER, true, false);
-		gd_encryptDebugInfoButton.heightHint = 23;
-		encryptDebugInfoButton.setLayoutData(gd_encryptDebugInfoButton);
 		encryptDebugInfoButton.setText("Encrypt debug info");
 
-		final Button btnAddexportall = new Button(control, SWT.CHECK);
-		btnAddexportall.setEnabled(true);
-		btnAddexportall.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-				false, 1, 1));
+		final Button btnAddexportall = new Button(group_1, SWT.CHECK);
+		btnAddexportall.setEnabled(false);
 		btnAddexportall.setText("Use 'export_all'");
-		btnAddexportall.setSelection(prefs.useExportAll());
+		// btnAddexportall.setSelection(prefs.useExportAll());
+		new Label(group_1, SWT.NONE);
 		btnAddexportall.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				prefs.setUseExportAll(btnAddexportall.getSelection());
+				// prefs.setUseExportAll(btnAddexportall.getSelection());
+			}
+		});
+		debugInfoButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// prefs.setDebugInfo(debugInfoButton.getSelection());
 			}
 		});
 
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
-		new Label(control, SWT.NONE);
-
 		final Group group = new Group(control, SWT.NONE);
-		group
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
-						2, 1));
+		{
+			GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false, false,
+					1, 1);
+			gridData.widthHint = 401;
+			group.setLayoutData(gridData);
+		}
 		group.setText("Warnings");
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
@@ -174,13 +239,27 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 		final Button warnForSourceButton = new Button(control, SWT.CHECK);
 		warnForSourceButton.setEnabled(false);
-		warnForSourceButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-				false, false, 2, 1));
 		warnForSourceButton
 				.setText("Warn for source files not on the project's source path");
-		warnForSourceButton.setSelection(prefs.doWarnModuleNotOnSourcePath());
+		// warnForSourceButton.setSelection(prefs.doWarnModuleNotOnSourcePath());
 
 		return control;
+	}
+
+	boolean optionsAreOk(String string) {
+		ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+		OtpErlangObject term = null;
+		try {
+			term = ErlBackend.parseTerm(b, string + " .");
+		} catch (BackendException e) {
+			try {
+				final String string2 = "[" + string + "].";
+				term = ErlBackend.parseTerm(b, string2);
+			} catch (BackendException e1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class ErlideBuilder {
 		try {
 			CompilerPreferences prefs = new CompilerPreferences();
 			prefs.load();
-			return backend.call(30000, "erlide_builder", "compile", "sslsla",
+			return backend.call(30000, "erlide_builder", "compile", "sslslx",
 					fn, outputdir, includedirs, prefs.export());
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
