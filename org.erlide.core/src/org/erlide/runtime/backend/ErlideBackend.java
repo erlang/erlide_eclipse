@@ -95,11 +95,11 @@ public final class ErlideBackend extends Backend implements IDisposable,
 
 	public void streamAppended(String text, IStreamMonitor monitor) {
 		if (monitor == proxy.getOutputStreamMonitor()) {
-			System.out.println(getName() + "OUT" + text);
+			// System.out.println(getName() + " OUT " + text);
 		} else if (monitor == proxy.getErrorStreamMonitor()) {
-			System.out.println("ERR" + text);
+			// System.out.println(getName() + " ERR " + text);
 		} else {
-			System.out.println("???" + text);
+			// System.out.println("???" + text);
 		}
 	}
 
