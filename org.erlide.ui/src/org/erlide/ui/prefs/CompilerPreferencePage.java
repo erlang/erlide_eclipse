@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,11 +22,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class CompilerPreferencePage extends PreferencePage implements
+public class CompilerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
 	final CompilerPreferences prefs;

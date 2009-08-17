@@ -72,6 +72,19 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            class="org.erlide.ui.prefs.ErlangPreferencePage"
+            id="org.erlide.ui.preferences"
+            name="Erlang"/>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.ReportPreferencePage"
+            id="org.erlide.ui.reporting"
+            name="Report problems">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
             name="Syntax coloring"
             category="org.erlide.ui.preferences.editor"
             class="org.erlide.ui.prefs.plugin.ColoringPreferencePage"
@@ -102,6 +115,26 @@
             name="%editorSmartTypingPage">
       </page>
    </extension>
+     <extension
+         point="org.eclipse.ui.preferencePages">
+       <page
+            name="Code Templates"
+            category="org.erlide.ui.preferences"
+      class="org.erlide.ui.erlangsource.prefs.ErlangSourcePreferencePage"
+            id="org.erlide.ui.preferences.codetemplate"/>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.RuntimePreferencePage"
+             id="org.erlide.ui.preferences.runtimes"
+             name="Installed runtimes">
+       </page>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.CompilerPreferencePage"
+             id="org.erlide.ui.preferences.compiler"
+             name="Compiler">
+       </page>
+  </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -172,6 +205,16 @@
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
             id="org.erlide.ui.properties.erlangProjectPropertyPage"
             name="Erlang">
+		<enabledWhen>
+ 			<adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
+		     </adapt>
+        </enabledWhen>
+      </page>
+      <page
+            class="org.erlide.ui.prefs.CompilerPreferencePage"
+            id="org.erlide.ui.properties.compilerPreferencePage"
+            name="Erlang compiler">
 		<enabledWhen>
  			<adapt type="org.eclipse.core.resources.IProject">
 		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
@@ -301,32 +344,6 @@
           name="Module">
       </wizard>
      </extension>
-     <extension
-         point="org.eclipse.ui.preferencePages">
-       <page
-            name="Code Templates"
-            category="org.erlide.ui.preferences"
-      class="org.erlide.ui.erlangsource.prefs.ErlangSourcePreferencePage"
-            id="org.erlide.ui.preferences.codetemplate"/>
-       <!--page  ...this sould implement IworkspacePreferencePage!...
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.properties.ErlProjectPropertyPage"
-             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
-             name="new Erlang project default properties">
-       </page-->
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.RuntimePreferencePage"
-             id="org.erlide.ui.preferences.runtimes"
-             name="Installed runtimes">
-       </page>
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.CompilerPreferencePage"
-             id="org.erlide.ui.preferences.compiler"
-             name="Compiler">
-       </page>
-  </extension>
   <extension
          point="org.eclipse.ui.editors.templates">
       <contextType
@@ -1038,19 +1055,6 @@
       </transfer>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="org.erlide.ui.prefs.ErlangPreferencePage"
-            id="org.erlide.ui.preferences"
-            name="Erlang"/>
-      <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.ReportPreferencePage"
-            id="org.erlide.ui.reporting"
-            name="Report problems">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             id="org.erlide.views"
@@ -1147,16 +1151,6 @@
             parentId="org.eclipse.debug.ui.debugging"/>
    </extension>
    <extension
-         point="org.eclipse.debug.ui.debugModelContextBindings">
-      <modelContextBinding
-            contextId="org.erlide.debug.ui.debugging"
-            debugModelId="org.erlide.debug.model"/>
-      <modelContextBinding
-            contextId="org.erlide.debug.ui.debugging.trace"
-            debugModelId="org.erlide.debug.trace.model">
-      </modelContextBinding>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.erlide.ui.perspectives.ErlangPerspective">
@@ -1184,6 +1178,34 @@
                visible="true">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
+            id="org.erlide.core.launch.erlangProcess"
+            modes="run, debug"
+            name="Erlang application"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.erlide.debug.ui.tracing.DebugTraceLaunchConfigurationDelegate"
+            id="org.erlide.runtime.debug.launchDebugTrace"
+            modes="debug"
+            name="Erlang Debug Trace"
+            public="false">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelContextBindings">
+      <modelContextBinding
+            contextId="org.erlide.debug.ui.debugging"
+            debugModelId="org.erlide.debug.model"/>
+      <modelContextBinding
+            contextId="org.erlide.debug.ui.debugging.trace"
+            debugModelId="org.erlide.debug.trace.model">
+      </modelContextBinding>
    </extension>
  <extension
        point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -1221,24 +1243,6 @@
             regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
          <enablement></enablement>
       </consolePatternMatchListener>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
-            id="org.erlide.core.launch.erlangProcess"
-            modes="run, debug"
-            name="Erlang application"
-            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
-      </launchConfigurationType>
-      <launchConfigurationType
-            delegate="org.erlide.debug.ui.tracing.DebugTraceLaunchConfigurationDelegate"
-            id="org.erlide.runtime.debug.launchDebugTrace"
-            modes="debug"
-            name="Erlang Debug Trace"
-            public="false">
-      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.ui.ide.resourceFilters">

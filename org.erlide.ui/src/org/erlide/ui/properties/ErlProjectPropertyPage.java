@@ -67,6 +67,12 @@ public class ErlProjectPropertyPage extends PropertyPage {
 	private FormData formData_5;
 	private FormData formData_6;
 	private FormData formData_1;
+	private FormData formData_7;
+	private FormData formData_8;
+	private FormData formData_9;
+	private FormData formData_10;
+	private FormData formData_11;
+	private FormData formData_12;
 
 	@Override
 	protected Control createContents(final Composite parent) {
@@ -86,6 +92,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			lblSourceFoldersIn = new Label(sourceComposite, SWT.NONE);
 			{
 				formData_2 = new FormData();
+				formData_2.right = new FormAttachment(100);
 				formData_2.left = new FormAttachment(0, 8);
 				lblSourceFoldersIn.setLayoutData(formData_2);
 			}
@@ -94,10 +101,9 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		{
 			btnFolder = new Button(sourceComposite, SWT.NONE);
 			formData_2.bottom = new FormAttachment(btnFolder, -6);
-			formData_2.right = new FormAttachment(btnFolder, 0, SWT.RIGHT);
 			{
 				formData_5 = new FormData();
-				formData_5.left = new FormAttachment(0, 353);
+				formData_5.right = new FormAttachment(100);
 				formData_5.width = 84;
 				btnFolder.setLayoutData(formData_5);
 			}
@@ -109,10 +115,9 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			btnSource.setEnabled(false);
 			{
 				FormData formData = new FormData();
-				formData.left = new FormAttachment(0, 353);
-				formData.right = new FormAttachment(100, -23);
+				formData.right = new FormAttachment(100);
 				formData.top = new FormAttachment(0, 62);
-				formData.width = 73;
+				formData.width = 84;
 				btnSource.setLayoutData(formData);
 			}
 			btnSource.setText("Link source...");
@@ -121,9 +126,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			btnEdit = new Button(sourceComposite, SWT.NONE);
 			{
 				formData_4 = new FormData();
-				formData_4.left = new FormAttachment(0, 353);
-				formData_4.right = new FormAttachment(100, -23);
-				formData_4.width = 73;
+				formData_4.right = new FormAttachment(100);
+				formData_4.width = 84;
 				btnEdit.setLayoutData(formData_4);
 			}
 			btnEdit.setText("Edit...");
@@ -133,9 +137,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			formData_4.bottom = new FormAttachment(btnRemove, -6);
 			{
 				FormData formData = new FormData();
-				formData.left = new FormAttachment(0, 353);
-				formData.right = new FormAttachment(100, -23);
-				formData.width = 73;
+				formData.right = new FormAttachment(100);
+				formData.width = 84;
 				formData.top = new FormAttachment(0, 134);
 				btnRemove.setLayoutData(formData);
 			}
@@ -157,17 +160,17 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			{
 				formData_3 = new FormData();
 				formData_3.left = new FormAttachment(0, 10);
-				formData_3.top = new FormAttachment(0, 268);
 				output_text.setLayoutData(formData_3);
 			}
 		}
 		{
 			btnBrowse = new Button(sourceComposite, SWT.NONE);
 			formData_3.right = new FormAttachment(btnBrowse, -6);
+			formData_3.top = new FormAttachment(0, 268);
 			{
 				FormData formData = new FormData();
-				formData.right = new FormAttachment(100, -23);
-				formData.left = new FormAttachment(0, 353);
+				formData.right = new FormAttachment(100);
+				formData.width = 84;
 				formData.bottom = new FormAttachment(output_text, 0, SWT.BOTTOM);
 				btnBrowse.setLayoutData(formData);
 			}
@@ -178,10 +181,10 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			final Tree sources_tree = treeViewer.getTree();
 			{
 				FormData formData = new FormData();
+				formData.left = new FormAttachment(0, 10);
+				formData.right = new FormAttachment(btnSource, -6);
 				formData.top = new FormAttachment(lblSourceFoldersIn, 6);
 				formData.bottom = new FormAttachment(btnAllowOutputFolders, -6);
-				formData.right = new FormAttachment(btnRemove, -6);
-				formData.left = new FormAttachment(0, 10);
 				sources_tree.setLayoutData(formData);
 			}
 		}
@@ -211,8 +214,9 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button btnAddFolder = new Button(includeComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 309);
-			formData.top = new FormAttachment(lblFoldersWithInclude, 6);
+			formData.top = new FormAttachment(lblFoldersWithInclude, 9);
+			formData.right = new FormAttachment(lblFoldersWithInclude, 0,
+					SWT.RIGHT);
 			btnAddFolder.setLayoutData(formData);
 		}
 		btnAddFolder.setText("Add folder...");
@@ -220,20 +224,22 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button btnEdit_1 = new Button(includeComposite, SWT.NONE);
 		{
 			formData_1 = new FormData();
-			formData_1.right = new FormAttachment(btnAddFolder, 0, SWT.RIGHT);
+			formData_1.right = new FormAttachment(lblFoldersWithInclude, 0,
+					SWT.RIGHT);
 			formData_1.width = 77;
 			btnEdit_1.setLayoutData(formData_1);
 		}
 		btnEdit_1.setText("Edit...");
 
 		final Button btnRemove_1 = new Button(includeComposite, SWT.NONE);
-		formData_1.bottom = new FormAttachment(100, -215);
+		formData_1.bottom = new FormAttachment(100, -216);
 		{
-			FormData formData = new FormData();
-			formData.top = new FormAttachment(btnEdit_1, 6);
-			formData.right = new FormAttachment(btnAddFolder, 0, SWT.RIGHT);
-			formData.width = 77;
-			btnRemove_1.setLayoutData(formData);
+			formData_7 = new FormData();
+			formData_7.top = new FormAttachment(btnEdit_1, 7);
+			formData_7.right = new FormAttachment(lblFoldersWithInclude, 0,
+					SWT.RIGHT);
+			formData_7.width = 77;
+			btnRemove_1.setLayoutData(formData_7);
 		}
 		btnRemove_1.setText("Remove");
 		{
@@ -242,10 +248,10 @@ public class ErlProjectPropertyPage extends PropertyPage {
 					.getList();
 			{
 				FormData formData = new FormData();
-				formData.bottom = new FormAttachment(100, -10);
 				formData.right = new FormAttachment(btnAddFolder, -6);
-				formData.top = new FormAttachment(lblFoldersWithInclude, 6);
 				formData.left = new FormAttachment(0, 10);
+				formData.bottom = new FormAttachment(100, -10);
+				formData.top = new FormAttachment(lblFoldersWithInclude, 6);
 				includes_list.setLayoutData(formData);
 			}
 		}
@@ -272,26 +278,27 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button button = new Button(dependenciesComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 319);
 			formData.top = new FormAttachment(lblProjectsOnThe, 6);
+			formData.right = new FormAttachment(lblProjectsOnThe, 0, SWT.RIGHT);
 			button.setLayoutData(formData);
 		}
 		button.setText("New Button");
 
 		final Button button_1 = new Button(dependenciesComposite, SWT.NONE);
 		{
-			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 319);
-			formData.top = new FormAttachment(button, 23);
-			button_1.setLayoutData(formData);
+			formData_8 = new FormData();
+			formData_8.right = new FormAttachment(lblProjectsOnThe, 0,
+					SWT.RIGHT);
+			button_1.setLayoutData(formData_8);
 		}
 		button_1.setText("New Button");
 
 		final Button button_2 = new Button(dependenciesComposite, SWT.NONE);
+		formData_8.bottom = new FormAttachment(button_2, -6);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 319);
-			formData.top = new FormAttachment(button_1, 6);
+			formData.top = new FormAttachment(0, 110);
+			formData.right = new FormAttachment(lblProjectsOnThe, 0, SWT.RIGHT);
 			button_2.setLayoutData(formData);
 		}
 		button_2.setText("New Button");
@@ -302,10 +309,10 @@ public class ErlProjectPropertyPage extends PropertyPage {
 					.getList();
 			{
 				FormData formData = new FormData();
-				formData.bottom = new FormAttachment(100, -6);
 				formData.right = new FormAttachment(button, -6);
-				formData.top = new FormAttachment(lblProjectsOnThe, 6);
 				formData.left = new FormAttachment(0, 10);
+				formData.bottom = new FormAttachment(100, -6);
+				formData.top = new FormAttachment(lblProjectsOnThe, 6);
 				projects_list.setLayoutData(formData);
 			}
 		}
@@ -341,8 +348,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button button_3 = new Button(librariesComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 322);
 			formData.top = new FormAttachment(lblExternalLibrariesRequired, 6);
+			formData.right = new FormAttachment(100, -10);
 			button_3.setLayoutData(formData);
 		}
 		button_3.setText("New Button");
@@ -350,26 +357,29 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button button_4 = new Button(librariesComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 322);
 			formData.top = new FormAttachment(button_3, 6);
+			formData.right = new FormAttachment(lblExternalLibrariesRequired,
+					0, SWT.RIGHT);
 			button_4.setLayoutData(formData);
 		}
 		button_4.setText("New Button");
 
 		final Button button_5 = new Button(librariesComposite, SWT.NONE);
 		{
-			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 322);
-			formData.top = new FormAttachment(button_4, 23);
-			button_5.setLayoutData(formData);
+			formData_9 = new FormData();
+			formData_9.right = new FormAttachment(lblExternalLibrariesRequired,
+					0, SWT.RIGHT);
+			button_5.setLayoutData(formData_9);
 		}
 		button_5.setText("New Button");
 
 		final Button button_6 = new Button(librariesComposite, SWT.NONE);
+		formData_9.bottom = new FormAttachment(100, -226);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 322);
 			formData.top = new FormAttachment(button_5, 6);
+			formData.right = new FormAttachment(lblExternalLibrariesRequired,
+					0, SWT.RIGHT);
 			button_6.setLayoutData(formData);
 		}
 		button_6.setText("New Button");
@@ -380,10 +390,9 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			{
 				FormData formData = new FormData();
 				formData.right = new FormAttachment(button_3, -6);
+				formData.left = new FormAttachment(0, 10);
 				formData.top = new FormAttachment(lblExternalLibrariesRequired,
 						4);
-				formData.left = new FormAttachment(
-						lblExternalLibrariesRequired, 0, SWT.LEFT);
 				formData.bottom = new FormAttachment(100, -10);
 				libraries_tree.setLayoutData(formData);
 			}
@@ -410,8 +419,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button button_7 = new Button(codepathComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 319);
 			formData.top = new FormAttachment(lblOrderOfThe, 6);
+			formData.right = new FormAttachment(lblOrderOfThe, 0, SWT.RIGHT);
 			button_7.setLayoutData(formData);
 		}
 		button_7.setText("New Button");
@@ -419,8 +428,8 @@ public class ErlProjectPropertyPage extends PropertyPage {
 		final Button button_8 = new Button(codepathComposite, SWT.NONE);
 		{
 			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 319);
 			formData.top = new FormAttachment(button_7, 6);
+			formData.right = new FormAttachment(lblOrderOfThe, 0, SWT.RIGHT);
 			button_8.setLayoutData(formData);
 		}
 		button_8.setText("New Button");
@@ -432,9 +441,9 @@ public class ErlProjectPropertyPage extends PropertyPage {
 			{
 				FormData formData = new FormData();
 				formData.right = new FormAttachment(button_7, -6);
+				formData.left = new FormAttachment(0, 10);
 				formData.bottom = new FormAttachment(100, -10);
 				formData.top = new FormAttachment(lblOrderOfThe, 6);
-				formData.left = new FormAttachment(0, 10);
 				codepath_list.setLayoutData(formData);
 			}
 		}
@@ -457,28 +466,28 @@ public class ErlProjectPropertyPage extends PropertyPage {
 
 		final Button button_9 = new Button(composite_1, SWT.NONE);
 		{
-			FormData formData = new FormData();
-			formData.top = new FormAttachment(0, 31);
-			formData.left = new FormAttachment(0, 311);
-			button_9.setLayoutData(formData);
+			formData_10 = new FormData();
+			formData_10.top = new FormAttachment(0, 31);
+			formData_10.right = new FormAttachment(100, -10);
+			button_9.setLayoutData(formData_10);
 		}
 		button_9.setText("New Button");
 
 		final Button button_10 = new Button(composite_1, SWT.NONE);
 		{
-			FormData formData = new FormData();
-			formData.left = new FormAttachment(0, 311);
-			formData.top = new FormAttachment(button_9, 20);
-			button_10.setLayoutData(formData);
+			formData_12 = new FormData();
+			formData_12.right = new FormAttachment(button_9, 0, SWT.RIGHT);
+			button_10.setLayoutData(formData_12);
 		}
 		button_10.setText("New Button");
 
 		final Button button_11 = new Button(composite_1, SWT.NONE);
+		formData_12.bottom = new FormAttachment(100, -262);
 		{
-			FormData formData = new FormData();
-			formData.top = new FormAttachment(button_10, 6);
-			formData.right = new FormAttachment(button_9, 0, SWT.RIGHT);
-			button_11.setLayoutData(formData);
+			formData_11 = new FormData();
+			formData_11.top = new FormAttachment(button_10, 6);
+			formData_11.right = new FormAttachment(button_9, 0, SWT.RIGHT);
+			button_11.setLayoutData(formData_11);
 		}
 		button_11.setText("New Button");
 		{
@@ -487,11 +496,10 @@ public class ErlProjectPropertyPage extends PropertyPage {
 					.getList();
 			{
 				FormData formData = new FormData();
-				formData.bottom = new FormAttachment(100, -10);
 				formData.right = new FormAttachment(button_9, -6);
+				formData.left = new FormAttachment(0, 10);
+				formData.bottom = new FormAttachment(100, -10);
 				formData.top = new FormAttachment(lblMacrosDefinedFor, 6);
-				formData.left = new FormAttachment(lblMacrosDefinedFor, 0,
-						SWT.LEFT);
 				macros_list.setLayoutData(formData);
 			}
 		}

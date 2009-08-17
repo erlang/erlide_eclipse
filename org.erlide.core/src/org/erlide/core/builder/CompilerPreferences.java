@@ -8,7 +8,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.preferences.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
 
-@SuppressWarnings("unused")
 public class CompilerPreferences {
 
 	private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID

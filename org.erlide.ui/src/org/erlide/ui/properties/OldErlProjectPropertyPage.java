@@ -101,7 +101,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getResourceString("wizards.labels.buildoutput");
 		// create the widgets and their grid data objects
 		final Label outLabel = new Label(composite, SWT.NONE);
-		outLabel.setText("Output directory:");
+		outLabel.setText(Messages.OldErlProjectPropertyPage_outLabel_text);
 		final GridData gd_Label = new GridData();
 		gd_Label.minimumWidth = 50;
 		outLabel.setLayoutData(gd_Label);
@@ -114,17 +114,18 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		output.addListener(SWT.Modify, modifyListener);
 		// TODO use resource!
 		uz = new Button(composite, SWT.CHECK);
-		uz.setToolTipText("place at end of code:path");
-		uz.setText("place last in path");
+		uz.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		uz.setToolTipText(Messages.OldErlProjectPropertyPage_uz_toolTipText);
+		uz.setText(Messages.OldErlProjectPropertyPage_uz_text);
 		uz.addListener(SWT.Modify, modifyListener);
 
 		final Label l1 = new Label(composite, SWT.NONE);
-		l1.setText("Source directories:");
+		l1.setText(Messages.OldErlProjectPropertyPage_l1_text);
 		final String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
-		source.setToolTipText("enter a list of folders");
+		source.setToolTipText(Messages.OldErlProjectPropertyPage_source_toolTipText);
 		gd = new GridData(SWT.FILL, SWT.TOP, false, false);
 		gd.widthHint = 325;
 		source.setLayoutData(gd);
@@ -136,10 +137,10 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setText("Include directories:");
+		includesLabel.setText(Messages.OldErlProjectPropertyPage_includesLabel_text);
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
-		include.setToolTipText("enter a list of folders");
+		include.setToolTipText(Messages.OldErlProjectPropertyPage_include_toolTipText);
 		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gd.widthHint = 313;
 		include.setLayoutData(gd);
@@ -148,7 +149,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
-		nodeNameLabel_1.setText("Build runtime version:");
+		nodeNameLabel_1.setText(Messages.OldErlProjectPropertyPage_nodeNameLabel_1_text);
 
 		final Composite composite_1 = new Composite(composite, SWT.NONE);
 		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -157,7 +158,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 		runtimeVersion = new Combo(composite_1, SWT.READ_ONLY);
 		runtimeVersion
-				.setToolTipText("Which runtime version to build with? \nEmpty means any.");
+				.setToolTipText(Messages.OldErlProjectPropertyPage_runtimeVersion_toolTipText);
 		final RowData rd_runtimeVersion = new RowData();
 		rd_runtimeVersion.width = 64;
 		runtimeVersion.setLayoutData(rd_runtimeVersion);
