@@ -90,23 +90,23 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			new Color(Display.getDefault(), 0xFF, 0x99, 0x99),
 			new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
-	private final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(
-			245, 255, 245));
-	private final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(
-			255, 245, 245));
+	final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(245, 255,
+			245));
+	final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(255, 245,
+			245));
 
-	private StyledText consoleText;
+	StyledText consoleText;
 	private boolean fGroupByLeader;
 	private boolean fColored;
 	private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
 	private final ErlConsoleDocument fDoc;
-	private final ErlangConsoleHistory history = new ErlangConsoleHistory();
-	private StyledText consoleInput;
+	final ErlangConsoleHistory history = new ErlangConsoleHistory();
+	StyledText consoleInput;
 	private SourceViewer consoleOutputViewer;
 	private SourceViewer consoleInputViewer;
 	private final ErlConsoleModel model;
 	private IShell shell;
-	private final ErlideBackend backend;
+	final ErlideBackend backend;
 	private Action action;
 
 	public ErlangConsolePage(IConsoleView view) {
@@ -230,7 +230,8 @@ public class ErlangConsolePage implements IPageBookViewPage,
 					if (isInputComplete()) {
 						consoleInput.setBackground(bgColor_Ok);
 					} else {
-						consoleInput.setBackground(bgColor_Err);
+						Color bgColorErr = bgColor_Err;
+						consoleInput.setBackground(bgColorErr);
 					}
 				}
 			});
