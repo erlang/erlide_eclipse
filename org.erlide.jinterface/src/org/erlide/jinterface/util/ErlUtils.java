@@ -232,6 +232,13 @@ public class ErlUtils {
 		return result;
 	}
 
+	/**
+	 * This is useful if a value can be anything, but we need to see it as a
+	 * string (but without any quotes if it really is a string).
+	 * 
+	 * @param target
+	 * @return
+	 */
 	public static String asString(final OtpErlangObject target) {
 		if (target instanceof OtpErlangAtom) {
 			return ((OtpErlangAtom) target).atomValue();
