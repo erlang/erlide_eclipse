@@ -40,13 +40,16 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -159,6 +162,25 @@ public class ErlideUtil {
 			final URL beamPath) {
 		try {
 			final FileInputStream s = (FileInputStream) beamPath.openStream();
+			final int sz = (int) s.getChannel().size();
+			final byte[] buf = new byte[sz];
+			try {
+				s.read(buf);
+				return new OtpErlangBinary(buf);
+			} finally {
+				s.close();
+			}
+		} catch (final IOException e) {
+			ErlLogger.warn(e);
+			return null;
+		}
+	}
+
+	public static OtpErlangBinary getBeamBinary(final String moduleName,
+			final IPath beamPath) {
+		try {
+			final FileInputStream s = new FileInputStream(beamPath
+					.toPortableString());
 			final int sz = (int) s.getChannel().size();
 			final byte[] buf = new byte[sz];
 			try {
@@ -395,4 +417,26 @@ public class ErlideUtil {
 		}
 	}
 
+	public static void loadModuleViaInput(final IProject project,
+			final String module, final ErlideBackend b)
+			throws ErlModelException, IOException {
+		final IErlProject p = ErlangCore.getModel().findProject(project);
+		final IPath outputLocation = project.getFolder(p.getOutputLocation())
+				.getFile(module + ".beam").getLocation();
+		final OtpErlangBinary bin = ErlideUtil.getBeamBinary(module,
+				outputLocation);
+		if (bin != null) {
+			String fmt = "code:load_binary(%s, %s, %s).\n";
+			StringBuffer strBin = new StringBuffer();
+			strBin.append("<<");
+			for (byte c : bin.binaryValue()) {
+				strBin.append(c).append(',');
+			}
+			strBin.deleteCharAt(strBin.length() - 1);
+			strBin.append(">>");
+			String cmd = String.format(fmt, module, module, strBin.toString(),
+					module);
+			b.input(cmd);
+		}
+	}
 }

@@ -148,8 +148,12 @@ public class RuntimeInfo {
 				"none").equals("true");
 		final String nameTag = (useLongName || globalLongName) ? " -name "
 				: " -sname ";
-		cmd += nameTag + BackendUtil.buildNodeName(getNodeName(), useLongName)
-				+ cky;
+		String nameOption = "";
+		if (!getNodeName().equals("")) {
+			nameOption = nameTag
+					+ BackendUtil.buildNodeName(getNodeName(), useLongName);
+			cmd += nameOption + cky;
+		}
 		return cmd;
 	}
 

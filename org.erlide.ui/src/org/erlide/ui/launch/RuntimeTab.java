@@ -52,6 +52,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
 	private Collection<RuntimeInfo> runtimes;
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void createControl(final Composite parent) {
 		runtimes = ErlangCore.getRuntimeInfoManager().getRuntimes();
 
@@ -118,6 +121,11 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				if (isRemote) {
 					startNodeCheckbox.setSelection(false);
 				}
+				boolean isNotDistributed = nameText.getText().trim().equals("");
+				longNameButton.setEnabled(!isNotDistributed);
+				shortNameButton.setEnabled(!isNotDistributed);
+				cookieText.setEnabled(!isNotDistributed);
+				startNodeCheckbox.setEnabled(!isNotDistributed);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -299,9 +307,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public boolean isValid(final ILaunchConfiguration config) {
 		setErrorMessage(null);
-		if (!RuntimeInfo.validateNodeName(nameText.getText())) {
-			setErrorMessage(String.format("Node name '%s' is invalid.",
-					nameText.getText()));
+		String name = nameText.getText().trim();
+		if (!name.equals("") && !RuntimeInfo.validateNodeName(name)) {
+			setErrorMessage(String.format("Node name '%s' is invalid.", name));
 			return false;
 		}
 		String workingDir = workingDirText.getText();

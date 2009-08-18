@@ -5,9 +5,11 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -61,11 +63,15 @@ public class ErlideBuilder {
 
 	public static void loadModule(final IProject project, final String module) {
 		try {
-			for (final Backend b : ErlangCore.getBackendManager()
+			for (final ErlideBackend b : ErlangCore.getBackendManager()
 					.getExecutionBackends(project)) {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
-				b.call("erlide_builder", "load", "a", module);
+				if (b.isDistributed()) {
+					b.call("erlide_builder", "load", "a", module);
+				} else {
+					ErlideUtil.loadModuleViaInput(project, module, b);
+				}
 			}
 		} catch (final Exception e) {
 			ErlLogger.debug(e);

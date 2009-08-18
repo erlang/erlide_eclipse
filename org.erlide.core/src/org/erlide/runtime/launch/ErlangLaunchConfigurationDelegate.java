@@ -12,6 +12,7 @@
 package org.erlide.runtime.launch;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +55,6 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
@@ -197,6 +197,9 @@ public class ErlangLaunchConfigurationDelegate extends
 				throw new DebugException(s);
 			}
 			registerProjects(backend, projects);
+			if (!backend.isDistributed()) {
+				return;
+			}
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// add debug target
 				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
@@ -261,10 +264,26 @@ public class ErlangLaunchConfigurationDelegate extends
 			if (outDir.length() > 0) {
 				ErlLogger.debug("backend %s: add path %s", backend.getName(),
 						outDir);
-				backend.addPath(false/* prefs.getUsePathZ() */, outDir);
+				if (backend.isDistributed()) {
+					backend.addPath(false/* prefs.getUsePathZ() */, outDir);
+				}
 				final File f = new File(outDir);
 				for (final File file : f.listFiles()) {
-					ErlangCode.load(backend, file.getName());
+					if (backend.isDistributed()) {
+						// is this needed?
+						// ErlangCode.load(backend, file.getName());
+					} else {
+						String name = file.getName();
+						name = name.substring(0, name.length() - 5);
+						try {
+							ErlideUtil.loadModuleViaInput(project, name,
+									backend);
+						} catch (ErlModelException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}

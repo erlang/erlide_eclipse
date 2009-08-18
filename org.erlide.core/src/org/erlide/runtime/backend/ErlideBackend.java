@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.IOException;
+
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -26,21 +30,22 @@ import org.osgi.framework.Bundle;
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public final class ErlideBackend extends Backend implements IDisposable,
-		IStreamListener {
+		IStreamListener, ILaunchesListener2 {
 
 	private final CodeManager codeManager;
-
 	private final IStreamsProxy proxy;
+	private final ILaunch launch;
 
 	public ErlideBackend(final RuntimeInfo info) throws BackendException {
-		this(info, null);
+		this(info, null, null);
 	}
 
-	public ErlideBackend(RuntimeInfo info, IStreamsProxy proxy)
+	public ErlideBackend(RuntimeInfo info, IStreamsProxy proxy, ILaunch launch)
 			throws BackendException {
 		super(info);
 		codeManager = new CodeManager(this);
 		this.proxy = proxy;
+		this.launch = launch;
 		if (proxy != null) {
 			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
 			errorStreamMonitor.addListener(this);
@@ -101,6 +106,33 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		} else {
 			// System.out.println("???" + text);
 		}
+	}
+
+	public boolean isDistributed() {
+		return !getInfo().getNodeName().equals("");
+	}
+
+	public void input(String s) throws IOException {
+		if (!isStopped()) {
+			proxy.write(s);
+		}
+	}
+
+	public void launchesTerminated(ILaunch[] launches) {
+		for (ILaunch aLaunch : launches) {
+			if (aLaunch == launch) {
+				stop();
+			}
+		}
+	}
+
+	public void launchesAdded(ILaunch[] launches) {
+	}
+
+	public void launchesChanged(ILaunch[] launches) {
+	}
+
+	public void launchesRemoved(ILaunch[] launches) {
 	}
 
 }

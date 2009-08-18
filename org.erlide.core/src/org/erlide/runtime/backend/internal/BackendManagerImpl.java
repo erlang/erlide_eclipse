@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.ErlangCore;
@@ -99,7 +100,8 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			ManagedLauncher launcher = new ManagedLauncher(launch);
 			launcher.startRuntime(info);
 			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
-			b = new ErlideBackend(info, streamsProxy);
+			b = new ErlideBackend(info, streamsProxy, launch);
+			DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
@@ -107,15 +109,16 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 		}
 
 		b.initializeRuntime();
-		b.connect();
-		for (CodeBundle bb : codeBundles) {
-			b.register(bb.getBundle());
+		if (b.isDistributed()) {
+			b.connect();
+			for (CodeBundle bb : codeBundles) {
+				b.register(bb.getBundle());
+			}
+			b.initErlang();
+			b.registerStatusHandler(this);
+			b.setDebug(options.contains(BackendOptions.DEBUG));
+			b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
 		}
-		b.initErlang();
-		b.registerStatusHandler(this);
-		b.setDebug(options.contains(BackendOptions.DEBUG));
-		b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
-
 		return b;
 	}
 
@@ -385,4 +388,5 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			}
 		}
 	}
+
 }
