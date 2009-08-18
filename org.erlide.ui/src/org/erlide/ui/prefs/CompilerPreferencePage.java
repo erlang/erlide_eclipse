@@ -11,6 +11,7 @@
 package org.erlide.ui.prefs;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -37,8 +38,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 public class CompilerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
@@ -53,17 +52,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	@Override
 	protected Control createContents(final Composite parent) {
-		final IProject prj = (IProject) getElement().getAdapter(IProject.class);
-		if (prj == null) {
-			prefs = new CompilerPreferences();
-		} else {
-			prefs = new CompilerPreferences(prj);
-		}
-		try {
-			prefs.load();
-		} catch (BackingStoreException e1) {
-			e1.printStackTrace();
-		}
+
+		performDefaults();
 
 		final Composite control = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout_1 = new GridLayout();
@@ -96,6 +86,11 @@ public class CompilerPreferencePage extends PropertyPage implements
 				final boolean optionsAreOk = optionsAreOk(txt);
 				setValid(optionsAreOk);
 				prefs.setAllOptions(txt);
+				if (optionsAreOk) {
+					setErrorMessage(null);
+				} else {
+					setErrorMessage("Malformed options (not Erlang terms)");
+				}
 			}
 		});
 		{
@@ -252,13 +247,12 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	boolean optionsAreOk(String string) {
 		ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
-		OtpErlangObject term = null;
 		try {
-			term = ErlBackend.parseTerm(b, string + " .");
+			ErlBackend.parseTerm(b, string + " .");
 		} catch (BackendException e) {
 			try {
 				final String string2 = "[" + string + "].";
-				term = ErlBackend.parseTerm(b, string2);
+				ErlBackend.parseTerm(b, string2);
 			} catch (BackendException e1) {
 				return false;
 			}
@@ -278,12 +272,20 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	@Override
 	protected void performDefaults() {
-		super.performDefaults();
+		IAdaptable element = getElement();
+		final IProject prj = element == null ? null : (IProject) element
+				.getAdapter(IProject.class);
+		if (prj == null) {
+			prefs = new CompilerPreferences();
+		} else {
+			prefs = new CompilerPreferences(prj);
+		}
 		try {
 			prefs.load();
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
 		}
+		super.performDefaults();
 	}
 
 	public void init(final IWorkbench workbench) {
