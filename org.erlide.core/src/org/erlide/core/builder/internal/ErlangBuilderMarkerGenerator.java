@@ -10,13 +10,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.builder.IMarkerGenerator;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
@@ -107,8 +107,7 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			try {
 				final OtpErlangTuple data = (OtpErlangTuple) odata;
 
-				final String msg = ((OtpErlangString) data.elementAt(2))
-						.stringValue();
+				final String msg = ErlUtils.asString(data.elementAt(2));
 				final String fileName = (String) TypeConverter.erlang2java(data
 						.elementAt(1), String.class);
 				IResource res = resource;

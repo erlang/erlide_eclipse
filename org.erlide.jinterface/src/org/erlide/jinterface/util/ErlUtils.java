@@ -13,8 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
 import com.ericsson.otp.erlang.OtpPatternVariable;
@@ -226,5 +230,23 @@ public class ErlUtils {
 			}
 		}
 		return result;
+	}
+
+	public static String asString(final OtpErlangObject target) {
+		if (target instanceof OtpErlangAtom) {
+			return ((OtpErlangAtom) target).atomValue();
+		} else if (target instanceof OtpErlangString) {
+			return ((OtpErlangString) target).stringValue();
+		} else if (target instanceof OtpErlangBinary) {
+			return new String(((OtpErlangBinary) target).binaryValue());
+		} else if (target instanceof OtpErlangList) {
+			try {
+				return new String(((OtpErlangList) target).stringValue());
+			} catch (OtpErlangException e) {
+				return target.toString();
+			}
+		} else {
+			return target.toString();
+		}
 	}
 }

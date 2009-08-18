@@ -83,7 +83,7 @@ public class JRpcUtil {
 				|| target instanceof OtpErlangString
 				|| target instanceof OtpErlangBinary) {
 			// static call
-			final String clazzName = asString(target);
+			final String clazzName = ErlUtils.asString(target);
 			try {
 				final Class<?> clazz = Class.forName(clazzName, true, loader);
 				return callMethod(clazz, description, parms);
@@ -108,7 +108,7 @@ public class JRpcUtil {
 			target = JInterfaceFactory.mkTuple(target, new OtpErlangList());
 		}
 		final OtpErlangTuple t = (OtpErlangTuple) target;
-		final String name = asString(t.elementAt(0));
+		final String name = ErlUtils.asString(t.elementAt(0));
 		Object olist = null;
 		try {
 			olist = TypeConverter.erlang2java(t.elementAt(1), String[].class);
@@ -134,18 +134,6 @@ public class JRpcUtil {
 		} else {
 			// TODO should throw exception
 			return null;
-		}
-	}
-
-	private static String asString(final OtpErlangObject target) {
-		if (target instanceof OtpErlangAtom) {
-			return ((OtpErlangAtom) target).atomValue();
-		} else if (target instanceof OtpErlangString) {
-			return ((OtpErlangString) target).stringValue();
-		} else if (target instanceof OtpErlangBinary) {
-			return new String(((OtpErlangBinary) target).binaryValue());
-		} else {
-			return target.toString();
 		}
 	}
 
