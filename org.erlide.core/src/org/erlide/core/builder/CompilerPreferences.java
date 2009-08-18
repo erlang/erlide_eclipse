@@ -1,15 +1,15 @@
 package org.erlide.core.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.PreferencesHelper;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.ericsson.otp.erlang.JInterfaceFactory;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -32,7 +32,7 @@ public class CompilerPreferences {
 	// private boolean warnUnusedVars;
 	// private boolean warnUnusedRecord;
 	private String allOptions = "";
-	private PreferencesHelper helper;
+	private final PreferencesHelper helper;
 
 	public CompilerPreferences() {
 		helper = new PreferencesHelper(QUALIFIER);
@@ -83,8 +83,9 @@ public class CompilerPreferences {
 	public void load() throws BackingStoreException {
 
 		// FIXME
-		setAllOptions(helper.getString(
-				CompilerPreferencesConstants.ALL_OPTIONS, ""));
+		String string = helper.getString(
+				CompilerPreferencesConstants.ALL_OPTIONS, "");
+		setAllOptions(string);
 
 		// setDebugInfo(helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 		// true));
@@ -118,7 +119,7 @@ public class CompilerPreferences {
 		// CompilerPreferencesConstants.DEBUG_INFO, true);
 	}
 
-	private void setAllOptions(String string) {
+	public void setAllOptions(String string) {
 		allOptions = string;
 	}
 
@@ -143,7 +144,6 @@ public class CompilerPreferences {
 	// }
 
 	public OtpErlangList export() {
-		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>();
 		// if (debugInfo) {
 		// result.add("debug_info");
 		// }
@@ -151,19 +151,28 @@ public class CompilerPreferences {
 		// result.add("export_all");
 		// }
 
-		try {
-			result.add(ErlUtils.parse(allOptions));
-		} catch (ParserException e) {
+		OtpErlangObject term = null;
+		Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		if (!allOptions.equals("")) {
 			try {
-				result.add(ErlUtils.parse("[" + allOptions + "]"));
-			} catch (ParserException e1) {
-				e1.printStackTrace();
+				term = ErlBackend.parseTerm(b, allOptions + ".");
+			} catch (BackendException e) {
+				try {
+					term = ErlBackend.parseTerm(b, "[" + allOptions + "].");
+				} catch (BackendException e1) {
+				}
 			}
 		}
 
-		final OtpErlangList list = new OtpErlangList(result
-				.toArray(new OtpErlangObject[0]));
-		System.out.println("EXPORT:: " + list);
+		OtpErlangList list;
+		if (term instanceof OtpErlangList) {
+			list = (OtpErlangList) term;
+		} else if (term == null) {
+			list = new OtpErlangList();
+		} else {
+			list = JInterfaceFactory.mkList(term);
+		}
+
 		return list;
 	}
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.builder.BuilderUtils;
-import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -32,12 +31,10 @@ public class ErlideBuilder {
 
 	public static OtpErlangObject compileErl(final Backend backend,
 			final String fn, final String outputdir,
-			final List<String> includedirs) {
+			final List<String> includedirs, OtpErlangList compilerOptions) {
 		try {
-			CompilerPreferences prefs = new CompilerPreferences();
-			prefs.load();
-			return backend.call(30000, "erlide_builder", "compile", "sslslx",
-					fn, outputdir, includedirs, prefs.export());
+			return backend.call(30000, "erlide_builder", "compile", "sslsx",
+					fn, outputdir, includedirs, compilerOptions);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;

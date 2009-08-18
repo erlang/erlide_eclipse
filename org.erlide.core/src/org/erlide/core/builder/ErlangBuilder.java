@@ -33,7 +33,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuildNotifier;
@@ -54,6 +56,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.util.ErlLogger;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -157,6 +160,17 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			deleteMarkers(currentProject);
 			initializeBuilder();
 
+			CompilerPreferences prefs = new CompilerPreferences(currentProject);
+			try {
+				prefs.load();
+			} catch (BackingStoreException e1) {
+				e1.printStackTrace();
+				throw new CoreException(new Status(IStatus.ERROR,
+						ErlangPlugin.PLUGIN_ID,
+						"could not retrieve compiler options"));
+			}
+			OtpErlangList compilerOptions = prefs.export();
+
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
 			if (kind == FULL_BUILD) {
 				resourcesToBuild = fullBuild(args);
@@ -193,9 +207,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
-						compileFile(currentProject, resource, backend);
+						compileFile(currentProject, resource, backend,
+								compilerOptions);
 					} else if ("yrl".equals(resource.getFileExtension())) {
-						compileYrlFile(currentProject, resource, backend);
+						compileYrlFile(currentProject, resource, backend,
+								compilerOptions);
 					} else {
 						ErlLogger.warn("Don't know how to compile: %s",
 								resource.getName());
@@ -343,7 +359,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	public static void compileFile(final IProject project,
-			final IResource resource, final Backend backend) {
+			final IResource resource, final Backend backend,
+			OtpErlangList compilerOptions) {
 		final IPath projectPath = project.getLocation();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
@@ -430,7 +447,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				}
 				OtpErlangObject r;
 				r = compileFile(backend, resource.getLocation().toString(),
-						outputDir, includeDirs);
+						outputDir, includeDirs, compilerOptions);
 				if (r == null) {
 					ErlangBuilderMarkerGenerator.addProblemMarker(resource,
 							null, "Could not compile file", 0,
@@ -572,7 +589,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	protected void compileYrlFile(final IProject project,
-			final IResource resource, final Backend backend) {
+			final IResource resource, final Backend backend,
+			OtpErlangList compilerOptions) {
 		// final IPath projectPath = project.getLocation();
 		// final OldErlangProjectProperties prefs = new
 		// OldErlangProjectProperties(project);
@@ -626,7 +644,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (br != null) {
 				br.setDerived(true);
 				// br.touch() doesn't work...
-				compileFile(project, br, backend);
+				compileFile(project, br, backend, compilerOptions);
 			}
 
 		} catch (final Exception e) {
@@ -940,11 +958,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	 */
 	protected static OtpErlangObject compileFile(final Backend backend,
 			final String fn, final String outputdir,
-			final List<String> includedirs) {
+			final List<String> includedirs, OtpErlangList compilerOptions) {
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
-		return ErlideBuilder.compileErl(backend, fn, outputdir, includedirs);
+		return ErlideBuilder.compileErl(backend, fn, outputdir, includedirs,
+				compilerOptions);
 	}
 
 	protected static OtpErlangObject compileYrlFile(final Backend backend,

@@ -14,11 +14,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.osgi.service.prefs.BackingStoreException;
+
+import com.ericsson.otp.erlang.OtpErlangList;
 
 public class CompileAction extends Action {
 
@@ -41,7 +45,16 @@ public class CompileAction extends Action {
 
 		final IResource resource = module.getResource();
 		final IProject project = resource.getProject();
-		ErlangBuilder.compileFile(project, resource, b);
+
+		CompilerPreferences prefs = new CompilerPreferences(project);
+		try {
+			prefs.load();
+		} catch (BackingStoreException e1) {
+			e1.printStackTrace();
+		}
+		OtpErlangList compilerOptions = prefs.export();
+
+		ErlangBuilder.compileFile(project, resource, b, compilerOptions);
 	}
 
 	public IWorkbenchSite getSite() {

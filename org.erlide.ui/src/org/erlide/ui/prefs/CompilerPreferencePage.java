@@ -69,29 +69,33 @@ public class CompilerPreferencePage extends PropertyPage implements
 		final GridLayout gridLayout_1 = new GridLayout();
 		control.setLayout(gridLayout_1);
 
-		Link lblCompilerOptionsIn = new Link(control, SWT.NONE);
-		lblCompilerOptionsIn.addSelectionListener(new SelectionAdapter() {
+		final String message = "Until we make available a better user interface, \n"
+				+ "please enter the required options as Erlang terms. \n"
+				+ "For example, \n\n    export_all, {d, 'DEBUG'}\n\n"
+				+ "Enclosing all options in a list is also accepted.\n\n"
+				+ "Note: Some options may not make sense here, for example \n"
+				+ "'outdir' and will be filtered out.\n";
+		Link lblCompilerOptions = new Link(control, SWT.NONE);
+		lblCompilerOptions.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox box = new MessageBox(parent.getShell());
-				box
-						.setMessage("Until we make available a better user interface, \n"
-								+ "please enter the required options as Erlang terms. \n"
-								+ "For example, \n\n    export_all, {d, 'DEBUG'}\n\n"
-								+ "Enclosing all options in a list is also accepted.\n"
-								+ "Note: 'debug_info' is always enabled by default.");
+				box.setMessage(message);
 				box.setText("Compiler options format");
 				box.open();
 			}
 		});
-		lblCompilerOptionsIn
-				.setText("Compiler options in Erlang format       <a>details...</a>");
+		lblCompilerOptions
+				.setText("Compiler options in Erlang format       <a>Important info...</a>");
+		lblCompilerOptions.setToolTipText(message);
 
 		text = new Text(control, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				final boolean optionsAreOk = optionsAreOk(text.getText());
+				String txt = text.getText().trim();
+				final boolean optionsAreOk = optionsAreOk(txt);
 				setValid(optionsAreOk);
+				prefs.setAllOptions(txt);
 			}
 		});
 		{
