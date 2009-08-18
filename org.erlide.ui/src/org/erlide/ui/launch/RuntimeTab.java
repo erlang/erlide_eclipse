@@ -126,6 +126,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				shortNameButton.setEnabled(!isNotDistributed);
 				cookieText.setEnabled(!isNotDistributed);
 				startNodeCheckbox.setEnabled(!isNotDistributed);
+				if (isNotDistributed) {
+					setMessage("The Erlang node will be started as not distributed. \n"
+							+ "The integrated debugger won't work, use the OTP one instead.");
+				} else {
+					setMessage(null);
+				}
 				updateLaunchConfigurationDialog();
 			}
 		});
