@@ -495,4 +495,13 @@ public class Backend {
 		return available;
 	}
 
+	public boolean isDistributed() {
+		return false;
+	}
+
+	public void input(String string) throws IOException {
+		// XXX
+		System.out.println("INPUT???");
+	}
+
 }

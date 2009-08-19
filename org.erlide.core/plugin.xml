@@ -99,6 +99,15 @@
             value="true">
       </persistent>
    </extension>
-
-
+  <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
+            id="org.erlide.core.launch.erlangProcess"
+            modes="run, debug"
+            name="Erlang application"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
 </plugin>

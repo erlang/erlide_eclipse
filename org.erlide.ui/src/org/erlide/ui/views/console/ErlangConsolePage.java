@@ -78,9 +78,9 @@ import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.BackendShell;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.console.IoRequest;
-import org.erlide.runtime.backend.BackendShell;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

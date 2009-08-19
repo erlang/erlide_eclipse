@@ -8,15 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.jinterface.backend;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.debug.core.IStreamListener;
-import org.eclipse.debug.core.model.IStreamMonitor;
-import org.erlide.jinterface.backend.ErlideReshd;
 import org.erlide.jinterface.backend.console.IoRequest;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.backend.events.EventHandler;
@@ -31,12 +28,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BackendShell {
 
-	private final ErlideBackend fBackend;
+	private final Backend fBackend;
 	private OtpErlangPid server;
 	private final String fId;
 	private ConsoleEventHandler handler;
 
-	public BackendShell(final ErlideBackend backend, final String id) {
+	public BackendShell(final Backend backend, final String id) {
 		fBackend = backend;
 		fId = id;
 		if (backend.isDistributed()) {
@@ -73,7 +70,7 @@ public class BackendShell {
 		}
 	}
 
-	public ErlideBackend getBackend() {
+	public Backend getBackend() {
 		return fBackend;
 	}
 
@@ -264,28 +261,6 @@ public class BackendShell {
 			}
 		}
 		return res.toString();
-	}
-
-	public int getReqNum() {
-		synchronized (requests) {
-			return requests.size();
-		}
-	}
-
-	public IStreamListener getStdListener() {
-		return new IStreamListener() {
-			public void streamAppended(String text, IStreamMonitor monitor) {
-				add(text, IoRequestKind.STDOUT);
-			}
-		};
-	}
-
-	public IStreamListener getErrListener() {
-		return new IStreamListener() {
-			public void streamAppended(String text, IStreamMonitor monitor) {
-				add(text, IoRequestKind.STDERR);
-			}
-		};
 	}
 
 }

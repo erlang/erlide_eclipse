@@ -1181,15 +1181,7 @@
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
-            id="org.erlide.core.launch.erlangProcess"
-            modes="run, debug"
-            name="Erlang application"
-            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
-      </launchConfigurationType>
-      <launchConfigurationType
+       <launchConfigurationType
             delegate="org.erlide.debug.ui.tracing.DebugTraceLaunchConfigurationDelegate"
             id="org.erlide.runtime.debug.launchDebugTrace"
             modes="debug"
@@ -1243,24 +1235,6 @@
             regex="[a-zA-Z0-9_.-]+\.[ehy]rl:[0-9]+">
          <enablement></enablement>
       </consolePatternMatchListener>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
-            id="org.erlide.core.launch.erlangProcess"
-            modes="run,debug"
-            name="Erlang application"
-            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
-      </launchConfigurationType>
-      <launchConfigurationType
-            delegate="org.erlide.debug.ui.tracing.DebugTraceLaunchConfigurationDelegate"
-            id="org.erlide.runtime.debug.launchDebugTrace"
-            modes="debug"
-            name="Erlang Debug Trace"
-            public="false">
-      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.ui.ide.resourceFilters">
