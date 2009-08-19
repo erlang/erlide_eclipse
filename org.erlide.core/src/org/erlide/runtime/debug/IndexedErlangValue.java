@@ -1,5 +1,6 @@
 package org.erlide.runtime.debug;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -23,17 +24,36 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	// FIXME JC Maybe we should use polymorphism for records?
 	protected IErlRecordDef record; // set if this value is a record
+	protected OtpErlangList list; // set if this value is a string-coded list
 
 	public IndexedErlangValue(final IDebugTarget target, final String varName,
 			final OtpErlangObject value, final ErlangProcess process,
 			final String moduleName) {
 		super(target, varName, value, process, moduleName);
 		record = checkRecord(value);
+		list = checkList(value);
+	}
+
+	private OtpErlangList checkList(final OtpErlangObject value) {
+		if (value instanceof OtpErlangString) {
+			final OtpErlangString os = (OtpErlangString) value;
+			final String s = os.stringValue();
+			try {
+				final byte[] b = s.getBytes("ISO-8859-1");
+				if (!looksLikeAscii(b)) {
+					return new OtpErlangList(s);
+				}
+			} catch (final UnsupportedEncodingException e) {
+				return new OtpErlangList(s);
+			}
+		}
+		return null;
 	}
 
 	public int getInitialOffset() {
@@ -100,13 +120,15 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	public String getValueString() throws DebugException {
 		if (record != null) {
 			return getRecordValueString(record, value);
+		} else if (list != null) {
+			return getListValueString(list);
 		} else {
 			return getValueString(value, false);
 		}
 	}
 
 	private String getValueString(final OtpErlangObject o,
-			final boolean recordCheck) {
+			final boolean recordCheck) throws DebugException {
 		if (o instanceof OtpErlangBinary) {
 			final OtpErlangBinary b = (OtpErlangBinary) o;
 			return getBinaryValueString(b);
@@ -145,7 +167,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		return b.toString();
 	}
 
-	private String getListValueString(final OtpErlangList l) {
+	private String getListValueString(final OtpErlangList l)
+			throws DebugException {
 		final StringBuilder b = new StringBuilder("[");
 		if (l.arity() > 0) {
 			for (final OtpErlangObject o : l) {
@@ -157,7 +180,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		return b.toString();
 	}
 
-	private String getTupleValueString(final OtpErlangTuple t) {
+	private String getTupleValueString(final OtpErlangTuple t)
+			throws DebugException {
 		final StringBuilder b = new StringBuilder("{");
 		if (t.arity() > 0) {
 			for (final OtpErlangObject o : t.elements()) {
@@ -173,26 +197,23 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		final StringBuilder sb = new StringBuilder("<<");
 		if (b.size() > 0) {
 			final byte[] bytes = b.binaryValue();
-			// FIXME: why are the character decoders so forgiving? I'd like to
-			// test for UTF-16 too, but the decoders never throws on anything,
-			// and looksLikeISOLatin shouldn't be needed...
-			final String[] css1 = { "UTF-8", "ISO-8859-1" };
-			final String[] css2 = { "UTF-8" };
-			final String[] tryCharsets = looksLikeISOLatin(bytes) ? css1 : css2;
 			CharBuffer cb = null;
-			for (final String csName : tryCharsets) {
-				final CharsetDecoder cd = Charset.forName(csName).newDecoder();
-				cd.onMalformedInput(CodingErrorAction.REPORT);
-				cd.onUnmappableCharacter(CodingErrorAction.REPORT);
-				try {
-					for (int i = 0; i < bytes.length; ++i) {
-						if (bytes[i] < 32) {
-							throw new CharacterCodingException();
-						}
+			// FIXME: why are the character decoders so forgiving? I'd like
+			// to test for UTF-16 too, but the decoders never throws on
+			// anything...
+			if (looksLikeAscii(bytes)) {
+				final String[] css = { "UTF-8", "ISO-8859-1" };
+				final String[] tryCharsets = css;
+				for (final String csName : tryCharsets) {
+					final CharsetDecoder cd = Charset.forName(csName)
+							.newDecoder();
+					cd.onMalformedInput(CodingErrorAction.REPORT);
+					cd.onUnmappableCharacter(CodingErrorAction.REPORT);
+					try {
+						cb = cd.decode(ByteBuffer.wrap(bytes));
+						break;
+					} catch (final CharacterCodingException e) {
 					}
-					cb = cd.decode(ByteBuffer.wrap(bytes));
-					break;
-				} catch (final CharacterCodingException e) {
 				}
 			}
 			if (cb != null && cb.length() > 0) {
@@ -214,7 +235,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		return sb.toString();
 	}
 
-	private static boolean looksLikeISOLatin(final byte[] bytes) {
+	private static boolean looksLikeAscii(final byte[] bytes) {
 		for (final byte b : bytes) {
 			if (b < 32) {
 				return false;
@@ -243,6 +264,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 				j += 256;
 			}
 			return new OtpErlangLong(j);
+		} else if (list != null) {
+			return list.elementAt(index);
 		}
 		return null;
 	}
@@ -257,6 +280,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		} else if (value instanceof OtpErlangBinary) {
 			final OtpErlangBinary bs = (OtpErlangBinary) value;
 			return bs.size();
+		} else if (list != null) {
+			return list.arity();
 		} else {
 			return -1;
 		}
