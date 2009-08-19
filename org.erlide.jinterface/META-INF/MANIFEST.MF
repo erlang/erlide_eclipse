@@ -8,6 +8,7 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.ericsson.otp.erlang,
  org.erlide.jinterface.backend,
+ org.erlide.jinterface.backend.console,
  org.erlide.jinterface.backend.events,
  org.erlide.jinterface.backend.util,
  org.erlide.jinterface.bridge,

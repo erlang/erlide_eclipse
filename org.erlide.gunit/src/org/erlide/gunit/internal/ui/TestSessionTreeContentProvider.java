@@ -13,9 +13,9 @@ package org.erlide.gunit.internal.ui;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.gunit.internal.model.TestElement;
-import org.erlide.gunit.internal.model.TestRoot;
-import org.erlide.gunit.internal.model.TestSuiteElement;
+import org.erlide.gunit.model.TestElement;
+import org.erlide.gunit.model.TestRoot;
+import org.erlide.gunit.model.TestSuiteElement;
 
 public class TestSessionTreeContentProvider implements ITreeContentProvider {
 

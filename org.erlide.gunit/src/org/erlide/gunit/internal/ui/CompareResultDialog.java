@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.gunit.internal.model.TestElement;
+import org.erlide.gunit.model.TestElement;
 
 public class CompareResultDialog extends TrayDialog {
 	private static final String PREFIX_SUFFIX_PROPERTY = "org.erlide.gunit.internal.ui.CompareResultDialog.prefixSuffix"; //$NON-NLS-1$

@@ -141,7 +141,7 @@ public class CodeManager {
 					if (path.getFileExtension() != null
 							&& "beam".compareTo(path.getFileExtension()) == 0) {
 						final String m = path.removeFileExtension()
-						.lastSegment();
+								.lastSegment();
 						// ErlLogger.debug(" " + m);
 						try {
 							final boolean ok = loadBeam(m, b.getEntry(s));
@@ -174,7 +174,7 @@ public class CodeManager {
 				// decl);
 				ErlBackend.generateRpcStub(stub.getAttribute("class"),
 						decl == null ? false : Boolean.parseBoolean(decl),
-								backend);
+						backend);
 			}
 		}
 	}
@@ -216,8 +216,8 @@ public class CodeManager {
 				final boolean accessible = ErlideUtil.isAccessible(backend,
 						localDir);
 				if (accessible) {
-					ErlLogger.debug("adding %s to code path for %s", localDir,
-							backend.getInfo());
+					ErlLogger.debug("adding %s to code path for %s:: %s",
+							localDir, backend, backend.getInfo());
 					ErlangCode.addPathA(backend, localDir);
 				} else {
 					ErlLogger.debug("loading %s for %s", p.getBundle()
@@ -301,6 +301,5 @@ public class CodeManager {
 			ref--;
 		}
 	}
-
 
 }

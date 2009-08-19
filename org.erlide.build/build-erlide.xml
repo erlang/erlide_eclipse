@@ -15,12 +15,12 @@
 	<property name="UpdateSiteStagingLocation" value="${buildDirectory}/tmpUpdateSite/updateSite"/>
 	<property name="UpdateSiteFinalLocation" value="${buildDirectory}/updateSite"/>
 	
-	<property name="generate.p2.metadata" value="false"/>
+	<!--property name="generate.p2.metadata" value="false"/>
 	<property name="p2.metadata.repo" value="file:${UpdateSiteStagingLocation}"/>
 	<property name="p2.artifact.repo" value="file:${UpdateSiteStagingLocation}"/>
 	<property name="p2.publish.artifacts" value="true"/>
 	<property name="p2.compress" value="true"/>
-	<property name="p2.flavor" value="tooling"/>
+	<property name="p2.flavor" value="tooling"/-->
 	
 	<tstamp>
 		<format property="forceContextQualifier" pattern="yyyyMMddHHmm"/>

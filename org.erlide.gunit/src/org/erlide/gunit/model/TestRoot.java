@@ -8,9 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.gunit.internal.model;
+package org.erlide.gunit.model;
 
-import org.erlide.gunit.model.ITestRunSession;
 
 public class TestRoot extends TestSuiteElement {
 

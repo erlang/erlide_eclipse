@@ -13,6 +13,8 @@ package org.erlide.gunit.internal.model;
 
 import org.eclipse.core.runtime.Assert;
 import org.erlide.gunit.model.ITestCaseElement;
+import org.erlide.gunit.model.TestElement;
+import org.erlide.gunit.model.TestSuiteElement;
 
 public class TestCaseElement extends TestElement implements ITestCaseElement {
 

@@ -309,6 +309,7 @@ public class GUnitLaunchConfigurationDelegate extends
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private void informAndAbort(final String message,
 			final Throwable exception, final int code) throws CoreException {
 		final IStatus status = new Status(IStatus.INFO, GUnitPlugin.PLUGIN_ID,
@@ -407,6 +408,7 @@ public class GUnitLaunchConfigurationDelegate extends
 		// }
 	}
 
+	@SuppressWarnings("unused")
 	private String createTestNamesFile(final IErlMember[] testElements)
 			throws CoreException {
 		try {
@@ -492,6 +494,7 @@ public class GUnitLaunchConfigurationDelegate extends
 	// return null; // not reachable
 	// }
 
+	@SuppressWarnings("unused")
 	private final String performStringSubstitution(final String testTypeName)
 			throws CoreException {
 		return VariablesPlugin.getDefault().getStringVariableManager()

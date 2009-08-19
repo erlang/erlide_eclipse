@@ -11,9 +11,10 @@
 package org.erlide.gunit.internal.model;
 
 import org.erlide.gunit.TestRunListener;
-import org.erlide.gunit.internal.model.TestElement.Status;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 import org.erlide.gunit.model.ITestCaseElement;
+import org.erlide.gunit.model.TestElement;
+import org.erlide.gunit.model.TestElement.Status;
 
 /**
  * Notifier for the callback listener API {@link TestRunListener}.

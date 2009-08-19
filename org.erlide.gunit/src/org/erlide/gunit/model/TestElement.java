@@ -9,12 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package org.erlide.gunit.internal.model;
+package org.erlide.gunit.model;
 
 import org.eclipse.core.runtime.Assert;
-import org.erlide.gunit.model.ITestElement;
-import org.erlide.gunit.model.ITestElementContainer;
-import org.erlide.gunit.model.ITestRunSession;
+import org.erlide.gunit.internal.model.ITestRunListener2;
 
 public abstract class TestElement implements ITestElement {
 	public final static class Status {

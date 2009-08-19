@@ -9,13 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package org.erlide.gunit.internal.model;
+package org.erlide.gunit.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.gunit.model.ITestElement;
-import org.erlide.gunit.model.ITestSuiteElement;
 
 public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
-import org.erlide.gunit.internal.model.TestElement;
+import org.erlide.gunit.model.TestElement;
 
 /**
  * A pane that shows a stack trace of a failed test.

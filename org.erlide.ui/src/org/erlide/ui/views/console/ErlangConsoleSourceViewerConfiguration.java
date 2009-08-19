@@ -27,6 +27,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlContentAssistProcessor;
@@ -39,6 +40,7 @@ final class ErlangConsoleSourceViewerConfiguration extends
 		TextSourceViewerConfiguration {
 
 	ErlangConsoleSourceViewerConfiguration() {
+		super();
 	}
 
 	private DoubleClickStrategy doubleClickStrategy;
@@ -130,33 +132,38 @@ final class ErlangConsoleSourceViewerConfiguration extends
 	public IPresentationReconciler getPresentationReconciler(
 			final ISourceViewer sourceViewer) {
 		final PresentationReconciler reconciler = new PresentationReconciler();
+		DefaultDamagerRepairer dr;
 
 		ColorManager colorManager = new ColorManager();
 		final ITokenScanner scan = new ErlHighlightScanner(colorManager,
 				sourceViewer, false, new RGB(245, 245, 245));
-		if (scan != null) {
-			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
-			reconciler.setDamager(dr, ErlConsoleDocument.INPUT_TYPE);
-			reconciler.setRepairer(dr, ErlConsoleDocument.INPUT_TYPE);
-		}
+		dr = new ErlDamagerRepairer(scan);
+		reconciler.setDamager(dr, IoRequestKind.INPUT.name());
+		reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
 
-		// we might want to highlight the output differently (because it might
-		// not make sense, but how do we detect it?)
 		final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
-		if (scan3 != null) {
-			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan3);
-			reconciler.setDamager(dr, ErlConsoleDocument.OUTPUT_TYPE);
-			reconciler.setRepairer(dr, ErlConsoleDocument.OUTPUT_TYPE);
-		}
+		dr = new ErlDamagerRepairer(scan3);
+		reconciler.setDamager(dr, IoRequestKind.OUTPUT.name());
+		reconciler.setRepairer(dr, IoRequestKind.OUTPUT.name());
+
+		reconciler.setDamager(dr, IoRequestKind.PROMPT.name());
+		reconciler.setRepairer(dr, IoRequestKind.PROMPT.name());
+
+		reconciler.setDamager(dr, IoRequestKind.STDOUT.name());
+		reconciler.setRepairer(dr, IoRequestKind.STDOUT.name());
+
+		reconciler.setDamager(dr, IoRequestKind.STDERR.name());
+		reconciler.setRepairer(dr, IoRequestKind.STDERR.name());
+
+		reconciler.setDamager(dr, IoRequestKind.HEADER.name());
+		reconciler.setRepairer(dr, IoRequestKind.HEADER.name());
 
 		// this is for the input field
 		final ITokenScanner scan2 = new ErlHighlightScanner(colorManager,
 				sourceViewer, false);
-		if (scan2 != null) {
-			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan2);
-			reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-			reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		}
+		dr = new ErlDamagerRepairer(scan2);
+		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
 		return reconciler;
 	}

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.gunit.internal.model.TestCaseElement;
-import org.erlide.gunit.internal.model.TestRoot;
-import org.erlide.gunit.internal.model.TestSuiteElement;
 import org.erlide.gunit.model.ITestElement;
+import org.erlide.gunit.model.TestRoot;
+import org.erlide.gunit.model.TestSuiteElement;
 
 public class TestSessionTableContentProvider implements
 IStructuredContentProvider {

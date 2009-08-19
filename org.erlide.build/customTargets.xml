@@ -130,9 +130,9 @@
 		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
 		<property name="version.full" value="${versions.org.erlide}-${buildType}"/>
 
-       	<antcall target="-generateUpdateSite"/>
+       <antcall target="-generateUpdateSite"/>
 
-		<antcall target="-createNightlyBuildSiteXml"/>
+    	<antcall target="-createNightlyBuildSiteXml"/>
     	<copy todir="${UpdateSiteFinalLocation}">
     		<fileset dir="${UpdateSiteStagingLocation}" includes="**"/>
     	</copy>

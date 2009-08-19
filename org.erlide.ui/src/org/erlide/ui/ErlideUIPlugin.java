@@ -32,9 +32,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
@@ -47,7 +44,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
-import org.erlide.ui.views.console.ErlangConsole;
+import org.erlide.ui.views.console.ErlConsoleManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -86,7 +83,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	private ProblemMarkerManager fProblemMarkerManager = null;
 
-	private ErlangConsole ideConsole;
+	private ErlConsoleManager erlConMan;
 
 	/**
 	 * The constructor.
@@ -131,11 +128,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 		ErlLogger.debug("Started UI");
 
-		ideConsole = new ErlangConsole(ErlangCore.getBackendManager()
-				.getIdeBackend());
-		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = consolePlugin.getConsoleManager();
-		conMan.addConsoles(new IConsole[] { ideConsole });
+		erlConMan = new ErlConsoleManager();
+		erlConMan.runtimeAdded(ErlangCore.getBackendManager().getIdeBackend());
 	}
 
 	/**
@@ -150,9 +144,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	public void stop(final BundleContext context) throws Exception {
 		ErlangCore.getBackendManager().removeBundle(getBundle());
 
-		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = consolePlugin.getConsoleManager();
-		conMan.removeConsoles(new IConsole[] { ideConsole });
+		erlConMan.dispose();
 
 		super.stop(context);
 		plugin = null;

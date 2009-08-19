@@ -19,6 +19,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.erlide.jinterface.backend.console.IoRequest;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.util.IColorManager;
 
@@ -28,6 +29,7 @@ public class ConsoleOutputScanner implements ITokenScanner {
 	private boolean gotten;
 	private String text;
 	private int offset;
+	private int length;
 
 	public ConsoleOutputScanner(ColorManager colorManager) {
 		fColorManager = colorManager;
@@ -57,11 +59,11 @@ public class ConsoleOutputScanner implements ITokenScanner {
 		int style = SWT.NORMAL;
 		Color bg = null;
 		Color fg = null;
-		if (string.startsWith("Eshell V")) {
-			style = SWT.BOLD;
-		} else if (string.matches("^\\([^)]+\\)[0-9]+> $")) {
+		if (IoRequest.RE_HEADER.matcher(string).lookingAt()) {
 			fg = fColorManager.getColor(new RGB(0, 0, 100));
 			bg = fColorManager.getColor(new RGB(255, 255, 230));
+			style = SWT.BOLD;
+		} else if (IoRequest.RE_PROMPT.matcher(string).matches()) {
 			style = SWT.BOLD;
 		}
 		return new TextAttribute(fg, bg, style);
@@ -69,11 +71,18 @@ public class ConsoleOutputScanner implements ITokenScanner {
 
 	public void setRange(IDocument document, int offset, int length) {
 		this.offset = offset;
+		this.length = length;
+		if (document instanceof ErlConsoleDocument) {
+			// ErlConsoleDocument doc = (ErlConsoleDocument) document;
+			// BackendShell shell = doc.getShell();
+			// shell.getRequests(offset, length);
+		}
 		try {
 			text = document.get(offset, length);
 		} catch (BadLocationException e) {
 			text = null;
 		}
+
 		gotten = false;
 	}
 

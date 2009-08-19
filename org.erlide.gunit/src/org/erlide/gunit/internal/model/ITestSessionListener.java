@@ -11,7 +11,8 @@
 
 package org.erlide.gunit.internal.model;
 
-import org.erlide.gunit.internal.model.TestElement.Status;
+import org.erlide.gunit.model.TestElement;
+import org.erlide.gunit.model.TestElement.Status;
 
 /**
  * A listener interface for observing the execution of a test session (initial

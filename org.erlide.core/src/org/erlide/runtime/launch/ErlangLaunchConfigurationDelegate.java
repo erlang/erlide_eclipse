@@ -14,7 +14,6 @@ package org.erlide.runtime.launch;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -46,7 +45,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -73,8 +72,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideDebug;
 
-public class ErlangLaunchConfigurationDelegate extends
-		LaunchConfigurationDelegate {
+public class ErlangLaunchConfigurationDelegate implements
+		ILaunchConfigurationDelegate {
 
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
@@ -82,45 +81,13 @@ public class ErlangLaunchConfigurationDelegate extends
 		doLaunch(config, mode, launch, false);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void doLaunch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final boolean internal) throws CoreException {
-		// try {
-		String prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "")
-				.trim();
-		String[] projectNames = prjs.length() == 0 ? new String[] {} : prjs
-				.split(";");
-		final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
-				"").trim();
-		final String function = config.getAttribute(
-				ErlLaunchAttributes.FUNCTION, "").trim();
-		final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
-				"").trim();
-		String runtime = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-				"").trim();
-		String nodeName = config
-				.getAttribute(ErlLaunchAttributes.NODE_NAME, "").trim();
-		String cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, "")
-				.trim();
-		final boolean longName = config.getAttribute(
-				ErlLaunchAttributes.USE_LONG_NAME, true);
 
-		final boolean startMe = internal
-				|| config.getAttribute(ErlLaunchAttributes.START_ME, true);
-		String workingDir = config.getAttribute(
-				ErlLaunchAttributes.WORKING_DIR,
-				ErlLaunchAttributes.DEFAULT_WORKING_DIR).trim();
-		String xtraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
-				"").trim();
-		final int debugFlags = config.getAttribute(
-				ErlLaunchAttributes.DEBUG_FLAGS,
-				ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-		List<String> interpretedModules = config.getAttribute(
-				ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
-				new ArrayList<String>());
+		final ErlLaunchData data = new ErlLaunchData(config, internal);
 
 		final Set<IProject> projects = new HashSet<IProject>();
-		for (final String s : projectNames) {
+		for (final String s : data.projectNames) {
 			final IProject project = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(s);
 			if (project == null) {
@@ -129,126 +96,140 @@ public class ErlangLaunchConfigurationDelegate extends
 			}
 			projects.add(project);
 		}
-		interpretedModules = addBreakpointProjectsAndModules(projects,
-				interpretedModules);
+		data.interpretedModules = addBreakpointProjectsAndModules(projects,
+				data.interpretedModules);
 
-		final RuntimeInfo rt = RuntimeInfo.copy(ErlangCore
-				.getRuntimeInfoManager().getRuntime(runtime), false);
-		if (rt == null) {
+		// if (true || ErlideUtil.isDeveloper()) {
+		data.debugPrint(mode);
+		// }
+
+		RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
+				data.runtime);
+		if (rt0 == null) {
+			ErlLogger.error("Could not find runtime %s", data.runtime);
 			return;
 		}
-		rt.setNodeName(nodeName);
-		if (internal) {
-			cookie = "erlide";
-		}
-		rt.setCookie(cookie);
-		rt.setStartShell(true);
-		File d = new File(workingDir);
-		if (d.isAbsolute()) {
-			rt.setWorkingDir(workingDir);
-		} else {
-			String wspace = ResourcesPlugin.getWorkspace().getRoot()
-					.getLocation().toPortableString();
-			rt.setWorkingDir(wspace + "/" + workingDir);
-		}
-		rt.setArgs(xtraArgs);
+		final RuntimeInfo rt = buildRuntimeInfo(internal, data, rt0);
 
 		final EnumSet<BackendOptions> options = EnumSet
 				.noneOf(BackendOptions.class);
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			options.add(BackendOptions.DEBUG);
 		}
-		rt.useLongName(longName);
-		if (startMe) {
+		if (data.startMe) {
 			options.add(BackendOptions.AUTOSTART);
 		}
-
-		ErlLogger.info("Debug:: about to start a backend in " + mode
-				+ " mode, with attributes::");
-		ErlLogger.info("  projects: " + Arrays.toString(projectNames));
-		ErlLogger.info("  module: " + module);
-		ErlLogger.info("  function: " + function);
-		ErlLogger.info("  args: " + args);
-
-		ErlLogger.info("  runtime: " + runtime);
-		ErlLogger.info("  node name: " + nodeName);
-		ErlLogger.info("  long name: " + longName);
-		ErlLogger.info("  cookie: " + cookie);
-		ErlLogger.info("  workdir: " + rt.getWorkingDir());
-		ErlLogger.info("  args: " + xtraArgs);
-		ErlLogger.info("  debugFlags: " + debugFlags);
-		ErlLogger.info("  interpretedModules: " + interpretedModules);
-		if (startMe) {
-			ErlLogger.info("  * start it if not running");
+		if (!data.console) {
+			options.add(BackendOptions.NO_CONSOLE);
 		}
-		ErlLogger.info("---------------");
 
+		// important, so that we don't get the "normal" console
+		launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "false");
+
+		if (config.getAttribute(ErlLaunchAttributes.INTERNAL, false)) {
+			ErlLogger.debug("Not creating a backend");
+			return;
+		}
+
+		ErlideBackend backend;
 		try {
-			// TODO set to false when ready!
-			launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "true");
-
-			final ErlideBackend backend = ErlangCore.getBackendManager()
-					.create(rt, options, launch);
+			backend = ErlangCore.getBackendManager().createBackend(rt, options,
+					launch);
 			if (backend == null) {
 				ErlLogger.error("Launch: could not create backend!");
 				final Status s = new Status(IStatus.ERROR,
 						ErlangPlugin.PLUGIN_ID, DebugException.REQUEST_FAILED,
-						"Couldn't find the node " + nodeName, null);
+						"Couldn't find the node " + data.nodeName, null);
 				throw new DebugException(s);
 			}
-			registerProjects(backend, projects);
-			if (!backend.isDistributed()) {
-				return;
-			}
-			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-				// add debug target
-				final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-						backend, projects, debugFlags);
-				// target.getWaiter().doWait();
-				launch.addDebugTarget(target);
-				// interpret everything we can
-				final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-				if (distributed) {
-					distributeDebuggerCode(backend);
-					// add other nodes
-					final OtpErlangList nodes = ErlideDebug.nodes(backend);
-					if (nodes != null) {
-						for (int i = 1, n = nodes.arity(); i < n; ++i) {
-							final OtpErlangAtom o = (OtpErlangAtom) nodes
-									.elementAt(i);
-							final OtpErlangAtom a = o;
-							final ErlangDebugNode edn = new ErlangDebugNode(
-									target, a.atomValue());
-							launch.addDebugTarget(edn);
-						}
-					}
-				}
-				for (final String pm : interpretedModules) {
-					final String[] pms = pm.split(":");
-					interpret(backend, pms[0], pms[1], distributed, true);
-				}
-				// send started to target
-				DebugPlugin.getDefault().addDebugEventListener(
-						new IDebugEventSetListener() {
-
-							public void handleDebugEvents(
-									final DebugEvent[] events) {
-
-								runInitial(module, function, args, backend);
-								DebugPlugin.getDefault()
-										.removeDebugEventListener(this);
-							}
-						});
-				target.sendStarted();
-
-			} else {
-				runInitial(module, function, args, backend);
-			}
-		} catch (final BackendException e) {
+			postLaunch(mode, data, projects, rt, options, backend);
+		} catch (BackendException e) {
 			ErlLogger.error("Launch: backend error!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					DebugException.REQUEST_FAILED, e.getMessage(), null);
 			throw new DebugException(s);
+		}
+	}
+
+	private RuntimeInfo buildRuntimeInfo(final boolean internal,
+			final ErlLaunchData data, RuntimeInfo rt0) {
+		final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
+		rt.setNodeName(data.nodeName);
+		if (internal) {
+			rt.setCookie("erlide");
+		} else {
+			rt.setCookie(data.cookie);
+		}
+
+		rt.setStartShell(true);
+		File d = new File(data.workingDir);
+		if (d.isAbsolute()) {
+			rt.setWorkingDir(data.workingDir);
+		} else {
+			String wspace = ResourcesPlugin.getWorkspace().getRoot()
+					.getLocation().toPortableString();
+			rt.setWorkingDir(wspace + "/" + data.workingDir);
+		}
+		rt.setArgs(data.xtraArgs);
+		rt.useLongName(data.longName);
+		rt.hasConsole(data.console);
+		return rt;
+	}
+
+	protected void postLaunch(final String mode, final ErlLaunchData data,
+			final Set<IProject> projects, final RuntimeInfo rt,
+			final EnumSet<BackendOptions> options, final ErlideBackend backend)
+			throws DebugException {
+
+		registerProjects(backend, projects);
+		if (!backend.isDistributed()) {
+			return;
+		}
+		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+			ILaunch launch = backend.getLaunch();
+			// add debug target
+			final ErlangDebugTarget target = new ErlangDebugTarget(backend,
+					projects, data.debugFlags);
+			// target.getWaiter().doWait();
+			launch.addDebugTarget(target);
+			// interpret everything we can
+			final boolean distributed = (data.debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+			if (distributed) {
+				distributeDebuggerCode(backend);
+				// add other nodes
+				final OtpErlangList nodes = ErlideDebug.nodes(backend);
+				if (nodes != null) {
+					for (int i = 1, n = nodes.arity(); i < n; ++i) {
+						final OtpErlangAtom o = (OtpErlangAtom) nodes
+								.elementAt(i);
+						final OtpErlangAtom a = o;
+						final ErlangDebugNode edn = new ErlangDebugNode(target,
+								a.atomValue());
+						launch.addDebugTarget(edn);
+
+					}
+				}
+			}
+			for (final String pm : data.interpretedModules) {
+				final String[] pms = pm.split(":");
+				interpret(backend, pms[0], pms[1], distributed, true);
+			}
+			// send started to target
+			DebugPlugin.getDefault().addDebugEventListener(
+					new IDebugEventSetListener() {
+
+						public void handleDebugEvents(final DebugEvent[] events) {
+
+							runInitial(data.module, data.function, data.args,
+									backend);
+							DebugPlugin.getDefault().removeDebugEventListener(
+									this);
+						}
+					});
+			target.sendStarted();
+
+		} else {
+			runInitial(data.module, data.function, data.args, backend);
 		}
 	}
 
@@ -412,12 +393,6 @@ public class ErlangLaunchConfigurationDelegate extends
 
 	}
 
-	public void launchInternal(final ILaunchConfiguration configuration,
-			final String mode, final ILaunch launch,
-			final IProgressMonitor monitor) throws CoreException {
-		doLaunch(configuration, mode, launch, true);
-	}
-
 	void runInitial(final String module, final String function,
 			final String args, final Backend backend) {
 		try {
@@ -436,4 +411,12 @@ public class ErlangLaunchConfigurationDelegate extends
 		}
 	}
 
+	/**
+	 * used by selfhost plugin
+	 */
+	public void launchInternal(final ILaunchConfiguration configuration,
+			final String mode, final ILaunch launch,
+			final IProgressMonitor monitor) throws CoreException {
+		doLaunch(configuration, mode, launch, true);
+	}
 }

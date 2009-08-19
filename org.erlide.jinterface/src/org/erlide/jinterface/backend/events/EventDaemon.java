@@ -21,7 +21,7 @@ public class EventDaemon implements BackendListener {
 			.getProperty("erlide.event.daemon"));
 
 	private final class HandlerJob implements Runnable {
-		private Backend backend;
+		private final Backend backend;
 
 		public HandlerJob(Backend backend) {
 			this.backend = backend;

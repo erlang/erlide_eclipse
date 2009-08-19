@@ -43,7 +43,8 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 	// }
 	// }
 
-	public TestMethodSelectionDialog(final Shell shell, final IErlElement element) {
+	public TestMethodSelectionDialog(final Shell shell,
+			final IErlElement element) {
 		super(shell, null);// new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_PARAMETERS
 		// | JavaElementLabelProvider.SHOW_POST_QUALIFIED));
@@ -79,7 +80,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 		} catch (final InvocationTargetException e) {
 			MessageDialog.openError(getParentShell(),
 					GUnitMessages.TestMethodSelectionDialog_error_title, e
-					.getTargetException().getMessage());
+							.getTargetException().getMessage());
 			return CANCEL;
 		}
 
@@ -88,10 +89,10 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 					GUnitMessages.TestMethodSelectionDialog_notfound_message,
 					this.fElement.getName());
 			MessageDialog
-			.openInformation(
-					getParentShell(),
-					GUnitMessages.TestMethodSelectionDialog_no_tests_title,
-					msg);
+					.openInformation(
+							getParentShell(),
+							GUnitMessages.TestMethodSelectionDialog_no_tests_title,
+							msg);
 			return CANCEL;
 		}
 		setElements(elements);
@@ -140,6 +141,7 @@ public class TestMethodSelectionDialog extends ElementListSelectionDialog {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private IErlModule selectTestType(final Set<IErlModule> result) {
 		// ILabelProvider labelProvider = new JavaElementLabelProvider(
 		// JavaElementLabelProvider.SHOW_PARAMETERS

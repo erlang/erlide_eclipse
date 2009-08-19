@@ -89,7 +89,9 @@ public class LayoutUtil {
 	// parent.setLayout(layout);
 	// }
 
-	private static void modifyLabelSpans(final Control[][] controls, final int nCulumns) {
+	@SuppressWarnings("unused")
+	private static void modifyLabelSpans(final Control[][] controls,
+			final int nCulumns) {
 		for (int i = 0; i < controls.length; i++) {
 			setHorizontalSpan(controls[i][0], nCulumns);
 		}
@@ -122,7 +124,8 @@ public class LayoutUtil {
 	/*
 	 * Sets the horizontal indent of a control. Assumes that MGridData is used.
 	 */
-	public static void setHorizontalIndent(final Control control, final int horizontalIndent) {
+	public static void setHorizontalIndent(final Control control,
+			final int horizontalIndent) {
 		final Object ld = control.getLayoutData();
 		if (ld instanceof GridData) {
 			((GridData) ld).horizontalIndent = horizontalIndent;
@@ -135,7 +138,8 @@ public class LayoutUtil {
 	 * 
 	 * @param parent The parent composite
 	 */
-	public static Control createEmptySpace(final Composite parent, final int span) {
+	public static Control createEmptySpace(final Composite parent,
+			final int span) {
 		final Label label = new Label(parent, SWT.LEFT);
 		final GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.BEGINNING;
@@ -159,7 +163,7 @@ public class LayoutUtil {
 		button.setFont(JFaceResources.getDialogFont());
 		final PixelConverter converter = new PixelConverter(button);
 		final int widthHint = converter
-		.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+				.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT,
 				true).x);
 	}

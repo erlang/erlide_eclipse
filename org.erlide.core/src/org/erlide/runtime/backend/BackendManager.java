@@ -36,10 +36,10 @@ public interface BackendManager {
 	};
 
 	public enum BackendOptions {
-		DEBUG, AUTOSTART, TRAP_EXIT
+		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL
 	};
 
-	public ErlideBackend create(final RuntimeInfo info,
+	public ErlideBackend createBackend(final RuntimeInfo info,
 			final Set<BackendOptions> options, final ILaunch launch)
 			throws BackendException;
 
@@ -72,6 +72,6 @@ public interface BackendManager {
 
 	public EpmdWatcher getEpmdWatcher();
 
-	public void dispose(final Backend backend);
+	public void dispose(final ErlideBackend backend);
 
 }

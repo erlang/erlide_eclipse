@@ -15,12 +15,12 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.erlide.gunit.internal.Messages;
 import org.erlide.gunit.internal.model.TestCaseElement;
-import org.erlide.gunit.internal.model.TestSuiteElement;
-import org.erlide.gunit.internal.model.TestElement.Status;
 import org.erlide.gunit.model.ITestCaseElement;
 import org.erlide.gunit.model.ITestElement;
 import org.erlide.gunit.model.ITestRunSession;
 import org.erlide.gunit.model.ITestSuiteElement;
+import org.erlide.gunit.model.TestSuiteElement;
+import org.erlide.gunit.model.TestElement.Status;
 
 public class TestSessionLabelProvider extends LabelProvider {
 

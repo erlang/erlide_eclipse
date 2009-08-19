@@ -14,18 +14,18 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
-import org.erlide.runtime.backend.console.ErlConsoleModel;
-import org.erlide.runtime.backend.console.IoRequest;
+import org.erlide.jinterface.backend.console.IoRequest;
+import org.erlide.runtime.backend.BackendShell;
 
 public class IoRequestScanner implements IPartitionTokenScanner {
 
-	private final ErlConsoleModel model;
+	private final BackendShell model;
 	private int docOffset;
 	private int docLength;
 	private int crtOffset;
 	private int crtLength;
 
-	public IoRequestScanner(ErlConsoleModel model) {
+	public IoRequestScanner(BackendShell model) {
 		Assert.isNotNull(model);
 		this.model = model;
 	}
@@ -88,9 +88,8 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 			if (req == null) {
 				data = null;
 			} else {
-				this.data = req.isOutput() ? "output" : "input";
+				this.data = req.getKind().name();
 			}
-
 		}
 
 		public Object getData() {

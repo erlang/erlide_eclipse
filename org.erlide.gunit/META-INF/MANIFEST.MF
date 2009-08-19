@@ -5,20 +5,20 @@ Bundle-SymbolicName: org.erlide.gunit;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.erlide.gunit.internal.ui.GUnitPlugin
 Bundle-Vendor: erlide.org
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
+ org.eclipse.core.resources;bundle-version="3.4.2",
  org.erlide.jinterface,
  org.erlide.core,
  org.erlide.ui,
- org.eclipse.debug.core,
- org.eclipse.debug.ui,
- org.eclipse.core.variables,
- org.eclipse.jface.text,
- org.eclipse.ui.editors,
- org.eclipse.compare,
- org.eclipse.swt;bundle-version="3.3.2",
- org.eclipse.ui;bundle-version="3.3.1",
- org.eclipse.core.expressions;bundle-version="3.4.1"
+ org.eclipse.core.expressions;bundle-version="3.4.1",
+ org.eclipse.debug.core;bundle-version="3.4.1",
+ org.eclipse.debug.ui;bundle-version="3.4.2",
+ org.eclipse.core.variables;bundle-version="3.2.100",
+ org.eclipse.jface.text;bundle-version="3.4.2",
+ org.eclipse.ui.editors;bundle-version="3.4.0",
+ org.eclipse.compare;bundle-version="3.4.1",
+ org.eclipse.swt;bundle-version="3.4.2",
+ org.eclipse.ui;bundle-version="3.4.2"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.gunit,

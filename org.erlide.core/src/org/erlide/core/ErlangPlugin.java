@@ -174,9 +174,6 @@ public class ErlangPlugin extends Plugin {
 		ErlangCore.initializeRuntimesList();
 		ErlangCore.getBackendManager().addBundle(getBundle());
 
-		// FIXME remove this when console works with many backends
-		ErlangCore.registerOpenProjects();
-
 		ErlLogger.debug("Started CORE");
 	}
 

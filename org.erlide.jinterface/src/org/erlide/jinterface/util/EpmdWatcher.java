@@ -191,4 +191,19 @@ public final class EpmdWatcher {
 			this.monitors.put(node, mons);
 		}
 	}
+
+	public static boolean findRunningNode(final String nodeName) {
+		try {
+			final String[] names = OtpEpmd.lookupNames();
+			final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
+			for (final String name : labels) {
+				if (name.equals(nodeName)) {
+					return true;
+				}
+			}
+		} catch (final IOException e) {
+		}
+		return false;
+	}
+
 }

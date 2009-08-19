@@ -10,20 +10,34 @@
  *******************************************************************************/
 package org.erlide.ui.views.console;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.Action;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.text.IFindReplaceTarget;
+import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -42,31 +56,38 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.actions.TextViewerAction;
+import org.eclipse.ui.internal.console.ConsoleMessages;
+import org.eclipse.ui.internal.console.ConsoleResourceBundleMessages;
+import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.texteditor.FindReplaceAction;
+import org.eclipse.ui.texteditor.IUpdate;
+import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.IShell;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.backend.console.ErlConsoleModel;
-import org.erlide.runtime.backend.console.ErlConsoleModelListener;
-import org.erlide.runtime.backend.console.IoRequest;
-import org.erlide.runtime.backend.console.ErlConsoleModel.ConsoleEventHandler;
+import org.erlide.jinterface.backend.console.IoRequest;
+import org.erlide.runtime.backend.BackendShell;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangConsolePage implements IPageBookViewPage,
-		ErlConsoleModelListener {
+public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
+		IPropertyChangeListener {
 	public static final String ID = "org.erlide.ui.views.console";
 
 	private static final Color[] colors = {
@@ -102,49 +123,51 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	private final ErlConsoleDocument fDoc;
 	final ErlangConsoleHistory history = new ErlangConsoleHistory();
 	StyledText consoleInput;
-	private SourceViewer consoleOutputViewer;
+	SourceViewer consoleOutputViewer;
 	private SourceViewer consoleInputViewer;
-	private final ErlConsoleModel model;
-	private IShell shell;
-	final ErlideBackend backend;
-	private Action action;
+	private BackendShell shell;
+	protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
+	protected ArrayList<String> fSelectionActions = new ArrayList<String>();
+	// protected ClearOutputAction fClearOutputAction;
+	private IPageSite fSite;
+	private final ErlangConsole fConsole;
+	private IConsoleView fConsoleView;
+	private MenuManager fMenuManager;
 
-	public ErlangConsolePage(IConsoleView view) {
-		super();
-		model = new ErlConsoleModel();
-		final ConsoleEventHandler handler = model.getHandler();
-		backend = ErlangCore.getBackendManager().getIdeBackend();
-		try {
-			final Job j = new Job("shell opener") {
-				@Override
-				protected IStatus run(final IProgressMonitor monitor) {
-					if (backend == null) {
-						schedule(400);
-					} else {
-						backend.getEventDaemon().addHandler(handler);
-						shell = backend.getShellManager().openShell("main");
-					}
-					return Status.OK_STATUS;
-				}
-			};
-			j.setSystem(true);
-			j.setPriority(Job.SHORT);
-			j.schedule(400);
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
+	private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
+		public void selectionChanged(SelectionChangedEvent event) {
+			updateSelectionDependentActions();
 		}
-		model.addListener(this);
-		fDoc = new ErlConsoleDocument(model);
+	};
+
+	public ErlangConsolePage(IConsoleView view, ErlangConsole console) {
+		super();
+		fConsole = console;
+		fConsoleView = view;
+		shell = console.getShell();
+		fDoc = new ErlConsoleDocument(shell);
 	}
 
 	public void dispose() {
-		backend.getEventDaemon().removeHandler(model.getHandler());
-		model.dispose();
+		consoleOutputViewer.getSelectionProvider()
+				.removeSelectionChangedListener(selectionChangedListener);
+		if (fMenuManager != null) {
+			fMenuManager.dispose();
+		}
+		// fClearOutputAction = null;
+		fSelectionActions.clear();
+		fGlobalActions.clear();
+
+		shell.dispose();
+		shell = null;
+
+		fConsoleView = null;
+
 		bgColor_Err.dispose();
 		bgColor_Ok.dispose();
 	}
 
-	void createInputField(final KeyEvent first) {
+	void createInputField(final KeyEvent first, boolean isPaste) {
 		if (first.character == SWT.ESC) {
 			return;
 		}
@@ -216,13 +239,15 @@ public class ErlangConsolePage implements IPageBookViewPage,
 						fixPosition(container);
 					} else if (e.keyCode == SWT.ESC) {
 						container.close();
+						consoleInput = null;
 					}
 				}
 			});
 			consoleInput.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(final FocusEvent e) {
-					// container.close();
+					container.close();
+					consoleInput = null;
 				}
 			});
 			consoleInput.addModifyListener(new ModifyListener() {
@@ -239,7 +264,9 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			consoleInput.setBackground(consoleText.getBackground());
 			consoleInput.setWordWrap(true);
 
-			if (first.character != 0) {
+			if (isPaste) {
+				consoleInput.paste();
+			} else if (first.character != 0) {
 				consoleInput.setText("" + first.character);
 			} else {
 				String s = "";
@@ -302,17 +329,6 @@ public class ErlangConsolePage implements IPageBookViewPage,
 		consoleInput.setText("");
 	}
 
-	private void updateConsoleView() {
-		consoleText.setRedraw(false);
-		try {
-			String text = fDoc.get();
-			consoleText.setText(text);
-			consoleText.setSelection(text.length());
-		} finally {
-			consoleText.setRedraw(true);
-		}
-	}
-
 	Color getColor(final OtpErlangPid sender) {
 		int ix = 0;
 		for (final Object element : pids) {
@@ -329,23 +345,9 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	}
 
 	public void input(final String data) {
-		model.input(data);
+		shell.input(data);
 		shell.send(data);
 		this.history.addToHistory(data.trim());
-	}
-
-	void refreshView() {
-		// while (true) {
-		if (consoleText.isDisposed()) {
-			return;
-		}
-		try {
-			updateConsoleView();
-			// break;
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-		// }
 	}
 
 	public void markRequests(final List<IoRequest> reqs) {
@@ -376,31 +378,15 @@ public class ErlangConsolePage implements IPageBookViewPage,
 		consoleInput.setSelection(str.length());
 	}
 
-	public void changed(final ErlConsoleModel erlConsoleModel) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				refreshView();
-			}
-		});
-	}
-
-	public IPageSite getSite() {
-		return null;
-	}
-
-	public void init(IPageSite site) throws PartInitException {
-	}
-
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void createControl(Composite parent) {
 		consoleOutputViewer = new SourceViewer(parent, null, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
-		consoleOutputViewer.setDocument(fDoc);
 		consoleText = (StyledText) consoleOutputViewer.getControl();
 		consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
 				2, 1));
-
-		consoleOutputViewer
-				.configure(new ErlangConsoleSourceViewerConfiguration());
 
 		consoleText.setFont(JFaceResources.getTextFont());
 		consoleText.setEditable(false);
@@ -409,12 +395,52 @@ public class ErlangConsolePage implements IPageBookViewPage,
 			public void keyPressed(final KeyEvent e) {
 				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
 						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
+
 				if ((e.character != (char) 0) || isHistoryCommand) {
-					createInputField(e);
+					createInputField(e, false);
 					e.doit = false;
 				}
 			}
+
 		});
+		consoleOutputViewer.setDocument(fDoc);
+		consoleOutputViewer
+				.configure(new ErlangConsoleSourceViewerConfiguration());
+
+		IDocumentListener documentListener = new IDocumentListener() {
+			public void documentAboutToBeChanged(DocumentEvent event) {
+			}
+
+			public void documentChanged(DocumentEvent event) {
+				int end = consoleOutputViewer.getDocument().getLength();
+				consoleOutputViewer.setSelectedRange(end, end);
+				consoleOutputViewer.revealRange(end, 0);
+			}
+		};
+		fDoc.addDocumentListener(documentListener);
+
+		String id = "#ContextMenu"; //$NON-NLS-1$
+		// if (getConsole().getType() != null) {
+		//			id = getConsole().getType() + "." + id; //$NON-NLS-1$
+		// }
+		fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
+		fMenuManager.setRemoveAllWhenShown(true);
+		fMenuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager m) {
+				contextMenuAboutToShow(m);
+			}
+		});
+		Menu menu = fMenuManager.createContextMenu(getControl());
+		getControl().setMenu(menu);
+
+		createActions();
+		configureToolBar(getSite().getActionBars().getToolBarManager());
+
+		getSite().registerContextMenu(id, fMenuManager, consoleOutputViewer);
+		getSite().setSelectionProvider(consoleOutputViewer);
+		consoleOutputViewer.getSelectionProvider().addSelectionChangedListener(
+				selectionChangedListener);
+
 	}
 
 	public Control getControl() {
@@ -422,26 +448,167 @@ public class ErlangConsolePage implements IPageBookViewPage,
 	}
 
 	public void setActionBars(IActionBars bars) {
-		final IToolBarManager toolBarManager = bars.getToolBarManager();
-		{
-			action = new Action("Backends") {
-				@Override
-				public int getStyle() {
-					return AS_DROP_DOWN_MENU;
-				}
-			};
-			action.setToolTipText("backend list");
-			action.setImageDescriptor(PlatformUI.getWorkbench()
-					.getSharedImages().getImageDescriptor(
-							ISharedImages.IMG_OBJS_INFO_TSK));
-			toolBarManager.add(action);
-		}
+	}
 
-		final IMenuManager menuManager = bars.getMenuManager();
-		menuManager.add(action);
+	public IPageSite getSite() {
+		return fSite;
+	}
+
+	public void init(IPageSite site) throws PartInitException {
+		fSite = site;
 	}
 
 	public void setFocus() {
+		if (consoleInput != null && !consoleInput.isDisposed()) {
+			consoleInput.setFocus();
+		} else if (consoleOutputViewer != null) {
+			consoleOutputViewer.getTextWidget().setFocus();
+		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class required) {
+		if (IFindReplaceTarget.class.equals(required)) {
+			return consoleOutputViewer.getFindReplaceTarget();
+		}
+		if (Widget.class.equals(required)) {
+			return consoleOutputViewer.getTextWidget();
+		}
+		return null;
+	}
+
+	public void propertyChange(PropertyChangeEvent event) {
+		if (consoleOutputViewer != null) {
+			Object source = event.getSource();
+			String property = event.getProperty();
+
+			if (source.equals(fConsole)
+					&& IConsoleConstants.P_FONT.equals(property)) {
+				// consoleOutputViewer.setFont(fConsole.getFont());
+			} else if (IConsoleConstants.P_FONT_STYLE.equals(property)) {
+				consoleOutputViewer.getTextWidget().redraw();
+			} else if (property.equals(IConsoleConstants.P_STREAM_COLOR)) {
+				consoleOutputViewer.getTextWidget().redraw();
+			} else if (source.equals(fConsole)
+					&& property.equals(IConsoleConstants.P_TAB_SIZE)) {
+				// Integer tabSize = (Integer) event.getNewValue();
+				// consoleOutputViewer.setTabWidth(tabSize.intValue());
+			} else if (source.equals(fConsole)
+					&& property.equals(IConsoleConstants.P_CONSOLE_WIDTH)) {
+				// consoleOutputViewer.setConsoleWidth(fConsole.getConsoleWidth());
+			} else if (IConsoleConstants.P_BACKGROUND_COLOR.equals(property)) {
+				consoleOutputViewer.getTextWidget().setBackground(
+						fConsole.getBackground());
+			}
+		}
+	}
+
+	protected void createActions() {
+		IActionBars actionBars = getSite().getActionBars();
+		TextViewerAction action = new TextViewerAction(consoleOutputViewer,
+				ITextOperationTarget.SELECT_ALL);
+		action.configureAction(ConsoleMessages.TextConsolePage_SelectAllText,
+				ConsoleMessages.TextConsolePage_SelectAllDescrip,
+				ConsoleMessages.TextConsolePage_SelectAllDescrip);
+		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.SELECT_ALL);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
+				IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
+		setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
+
+		action = new TextViewerAction(consoleOutputViewer,
+				ITextOperationTarget.CUT);
+		action.configureAction(ConsoleMessages.TextConsolePage_CutText,
+				ConsoleMessages.TextConsolePage_CutDescrip,
+				ConsoleMessages.TextConsolePage_CutDescrip);
+		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.CUT);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
+				IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
+		setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
+
+		action = new TextViewerAction(consoleOutputViewer,
+				ITextOperationTarget.COPY);
+		action.configureAction(ConsoleMessages.TextConsolePage_CopyText,
+				ConsoleMessages.TextConsolePage_CopyDescrip,
+				ConsoleMessages.TextConsolePage_CopyDescrip);
+		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.COPY);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
+				IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
+		setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
+
+		action = new TextViewerAction(consoleOutputViewer,
+				ITextOperationTarget.PASTE);
+		action.configureAction(ConsoleMessages.TextConsolePage_PasteText,
+				ConsoleMessages.TextConsolePage_PasteDescrip,
+				ConsoleMessages.TextConsolePage_PasteDescrip);
+		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
+		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.PASTE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
+				IConsoleHelpContextIds.CONSOLE_PASTE_ACTION);
+		setGlobalAction(actionBars, ActionFactory.PASTE.getId(), action);
+
+		// fClearOutputAction = new ClearOutputAction(fConsole);
+
+		ResourceBundle bundle = ConsoleResourceBundleMessages.getBundle();
+		FindReplaceAction fraction = new FindReplaceAction(bundle,
+				"find_replace_action_", fConsoleView); //$NON-NLS-1$
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(fraction,
+				IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
+		setGlobalAction(actionBars, ActionFactory.FIND.getId(), fraction);
+
+		fSelectionActions.add(ActionFactory.CUT.getId());
+		fSelectionActions.add(ActionFactory.COPY.getId());
+		fSelectionActions.add(ActionFactory.PASTE.getId());
+		fSelectionActions.add(ActionFactory.FIND.getId());
+
+		actionBars.updateActionBars();
+	}
+
+	protected void setGlobalAction(IActionBars actionBars, String actionID,
+			IAction action) {
+		fGlobalActions.put(actionID, action);
+		actionBars.setGlobalActionHandler(actionID, action);
+	}
+
+	protected void contextMenuAboutToShow(IMenuManager menuManager) {
+		IDocument doc = consoleOutputViewer.getDocument();
+		if (doc == null) {
+			return;
+		}
+
+		menuManager.add(fGlobalActions.get(ActionFactory.CUT.getId()));
+		menuManager.add(fGlobalActions.get(ActionFactory.COPY.getId()));
+		menuManager.add(fGlobalActions.get(ActionFactory.PASTE.getId()));
+		menuManager.add(fGlobalActions.get(ActionFactory.SELECT_ALL.getId()));
+
+		menuManager.add(new Separator("FIND")); //$NON-NLS-1$
+		menuManager.add(fGlobalActions.get(ActionFactory.FIND.getId()));
+		// menuManager.add(new FollowHyperlinkAction(consoleOutputViewer));
+		// menuManager.add(fClearOutputAction);
+
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+	}
+
+	protected void configureToolBar(IToolBarManager mgr) {
+		// mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP,
+		// fClearOutputAction);
+	}
+
+	protected void updateSelectionDependentActions() {
+		Iterator<String> iterator = fSelectionActions.iterator();
+		while (iterator.hasNext()) {
+			updateAction(iterator.next());
+		}
+	}
+
+	protected void updateAction(String actionId) {
+		IAction action = fGlobalActions.get(actionId);
+		if (action instanceof IUpdate) {
+			((IUpdate) action).update();
+		}
+	}
 }

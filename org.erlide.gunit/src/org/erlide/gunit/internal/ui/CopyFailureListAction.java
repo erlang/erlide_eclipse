@@ -17,7 +17,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.gunit.internal.model.TestElement;
+import org.erlide.gunit.model.TestElement;
 
 /**
  * Copies the names of the methods that failed and their traces to the

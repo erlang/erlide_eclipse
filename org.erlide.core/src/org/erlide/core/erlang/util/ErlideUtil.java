@@ -59,7 +59,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-@SuppressWarnings("restriction")
 public class ErlideUtil {
 
 	public static boolean isAccessible(final Backend backend,

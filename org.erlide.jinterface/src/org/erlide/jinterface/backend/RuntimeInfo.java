@@ -35,6 +35,8 @@ public class RuntimeInfo {
 	private boolean useLongName = true;
 	private boolean startShell = false;
 
+	private boolean console = true;
+
 	public RuntimeInfo() {
 		super();
 		codePath = new ArrayList<String>();
@@ -313,5 +315,13 @@ public class RuntimeInfo {
 
 	public boolean isStartShell() {
 		return startShell;
+	}
+
+	public void hasConsole(boolean console) {
+		this.console = console;
+	}
+
+	public boolean hasConsole() {
+		return console;
 	}
 }

@@ -52,4 +52,25 @@ public abstract class EventHandler {
 		}
 		return null;
 	}
+
+	public static OtpErlangObject getStandardEvent(final OtpErlangObject msg,
+			final OtpErlangObject id) {
+		try {
+			final OtpErlangTuple t = (OtpErlangTuple) msg;
+			OtpErlangObject el0 = t.elementAt(0);
+			if (el0 instanceof OtpErlangAtom) {
+				if (!((OtpErlangAtom) el0).atomValue().equals("event")) {
+					return null;
+				}
+			}
+			el0 = t.elementAt(1);
+			if (el0 instanceof OtpErlangAtom) {
+				if (id.equals(el0)) {
+					return t.elementAt(2);
+				}
+			}
+		} catch (final Exception e) {
+		}
+		return null;
+	}
 }

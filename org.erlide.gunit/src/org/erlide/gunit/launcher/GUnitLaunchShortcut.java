@@ -64,6 +64,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 * org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.ui.IEditorPart,
 	 * java.lang.String)
 	 */
+	@SuppressWarnings("null")
 	public void launch(final IEditorPart editor, final String mode) {
 		final IErlElement element = null;
 		// FIXME
@@ -213,20 +214,20 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 */
 	private ILaunchConfiguration chooseConfiguration(
 			final List<ILaunchConfiguration> configList, final String mode)
-	throws InterruptedException {
+			throws InterruptedException {
 		final IDebugModelPresentation labelProvider = DebugUITools
-		.newDebugModelPresentation();
+				.newDebugModelPresentation();
 		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
 				getShell(), labelProvider);
 		dialog.setElements(configList.toArray());
 		dialog
-		.setTitle(GUnitMessages.JUnitLaunchShortcut_message_selectConfiguration);
+				.setTitle(GUnitMessages.JUnitLaunchShortcut_message_selectConfiguration);
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			dialog
-			.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectDebugConfiguration);
+					.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectDebugConfiguration);
 		} else {
 			dialog
-			.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectRunConfiguration);
+					.setMessage(GUnitMessages.JUnitLaunchShortcut_message_selectRunConfiguration);
 		}
 		dialog.setMultipleSelection(false);
 		final int result = dialog.open();
@@ -302,7 +303,7 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 		// String testKindId = TestKindRegistry.getContainerTestKindId(element);
 		//
 		final ILaunchConfigurationType configType = getLaunchManager()
-		.getLaunchConfigurationType(getLaunchConfigurationTypeId());
+				.getLaunchConfigurationType(getLaunchConfigurationTypeId());
 		testName = element.getName();
 		final ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
 				getLaunchManager().generateUniqueLaunchConfigurationNameFrom(
@@ -337,15 +338,17 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 	 */
 	protected String[] getAttributeNamesToCompare() {
 		return new String[] {
-				// IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-				// GUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
-				// IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-				// GUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME
+		// IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+		// GUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
+		// IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+		// GUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME
 		};
 	}
 
-	private static boolean hasSameAttributes(final ILaunchConfiguration config1,
-			final ILaunchConfiguration config2, final String[] attributeToCompare) {
+	private static boolean hasSameAttributes(
+			final ILaunchConfiguration config1,
+			final ILaunchConfiguration config2,
+			final String[] attributeToCompare) {
 		try {
 			for (int i = 0; i < attributeToCompare.length; i++) {
 				final String val1 = config1.getAttribute(attributeToCompare[i],
@@ -363,13 +366,14 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	private ILaunchConfiguration findExistingLaunchConfiguration(
 			final ILaunchConfigurationWorkingCopy temporary, final String mode)
-	throws InterruptedException, CoreException {
+			throws InterruptedException, CoreException {
 		final ILaunchConfigurationType configType = temporary.getType();
 
 		final ILaunchConfiguration[] configs = getLaunchManager()
-		.getLaunchConfigurations(configType);
+				.getLaunchConfigurations(configType);
 		final String[] attributeToCompare = getAttributeNamesToCompare();
 
 		final ArrayList<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>(
@@ -399,8 +403,8 @@ public class GUnitLaunchShortcut implements ILaunchShortcut {
 			// cancelled the dialog, in which case this method returns null,
 			// since cancelling the dialog should also cancel launching
 			// anything.
-			final ILaunchConfiguration config = chooseConfiguration(candidateConfigs,
-					mode);
+			final ILaunchConfiguration config = chooseConfiguration(
+					candidateConfigs, mode);
 			if (config != null) {
 				return config;
 			}

@@ -16,24 +16,33 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
-import org.erlide.runtime.backend.console.ErlConsoleModel;
+import org.eclipse.swt.widgets.Display;
+import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
+import org.erlide.runtime.backend.BackendShell;
+import org.erlide.runtime.backend.BackendShellListener;
 
-public class ErlConsoleDocument extends Document {
+public class ErlConsoleDocument extends Document implements
+		BackendShellListener {
 
-	public static final String OUTPUT_TYPE = "output";
-	public static final String INPUT_TYPE = "input";
+	private static String[] LEGAL_CONTENT_TYPES = null;
 
-	private static final String[] LEGAL_CONTENT_TYPES = new String[] {
-			INPUT_TYPE, OUTPUT_TYPE };
+	private final BackendShell shell;
 
-	private final ErlConsoleModel model;
-
-	public ErlConsoleDocument(final ErlConsoleModel model) {
+	public ErlConsoleDocument(final BackendShell shell) {
 		super();
-		Assert.isNotNull(model);
-		this.model = model;
 
-		setTextStore(new IoRequestStore(model));
+		if (LEGAL_CONTENT_TYPES == null) {
+			IoRequestKind[] values = IoRequestKind.values();
+			LEGAL_CONTENT_TYPES = new String[values.length];
+			for (int i = 0; i < LEGAL_CONTENT_TYPES.length; i++) {
+				LEGAL_CONTENT_TYPES[i] = values[i].name();
+			}
+		}
+
+		Assert.isNotNull(shell);
+		this.shell = shell;
+		shell.addListener(this);
+		changed(shell);
 
 		final IDocumentPartitioner partitioner = new FastPartitioner(
 				createScanner(), LEGAL_CONTENT_TYPES);
@@ -42,11 +51,27 @@ public class ErlConsoleDocument extends Document {
 	}
 
 	private IPartitionTokenScanner createScanner() {
-		return new IoRequestScanner(model);
+		return new IoRequestScanner(shell);
 	}
 
-	@Override
-	public void replace(final int pos, final int length, final String text)
-			throws BadLocationException {
+	public void changed(BackendShell aShell) {
+		if (aShell != shell) {
+			return;
+		}
+		final String text = shell.getText();
+		Display.getDefault().asyncExec(new Runnable() {
+
+			public void run() {
+				try {
+					replace(0, getLength(), text);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public BackendShell getShell() {
+		return shell;
 	}
 }

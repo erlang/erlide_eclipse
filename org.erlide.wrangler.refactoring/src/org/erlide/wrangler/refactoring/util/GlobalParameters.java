@@ -19,7 +19,6 @@ import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlModuleSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlTextMemberSelection;
 
-@SuppressWarnings("restriction")
 public class GlobalParameters {
 	// TODO:: handle null exceptions
 	static IEditorPart editor = null;

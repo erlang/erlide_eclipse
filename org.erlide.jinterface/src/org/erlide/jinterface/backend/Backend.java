@@ -58,7 +58,6 @@ public class Backend {
 	private int restarted = 0;
 	private boolean stopped = false;
 	private EventDaemon eventDaemon;
-	private IShellManager shellManager;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -146,7 +145,7 @@ public class Backend {
 		}
 	}
 
-	public void send(final OtpErlangPid pid, final Object msg) {
+	public synchronized void send(final OtpErlangPid pid, final Object msg) {
 		if (!available) {
 			return;
 		}
@@ -158,7 +157,7 @@ public class Backend {
 		}
 	}
 
-	public void send(final String name, final Object msg) {
+	public synchronized void send(final String name, final Object msg) {
 		if (!available) {
 			return;
 		}
@@ -193,9 +192,6 @@ public class Backend {
 	}
 
 	public void dispose() {
-		if (shellManager instanceof IDisposable) {
-			((IDisposable) shellManager).dispose();
-		}
 		dispose(false);
 	}
 
@@ -214,7 +210,7 @@ public class Backend {
 	}
 
 	@SuppressWarnings("boxing")
-	public void doConnect(final String label) {
+	public synchronized void doConnect(final String label) {
 		ErlLogger.debug("connect to:: '" + label + "' "
 				+ Thread.currentThread());
 		// Thread.dumpStack();
@@ -338,7 +334,6 @@ public class Backend {
 
 	public void initializeRuntime() {
 		dispose(true);
-		shellManager = new BackendShellManager(this);
 	}
 
 	public boolean isDebug() {
@@ -418,7 +413,7 @@ public class Backend {
 		initErlang();
 	}
 
-	public void setAvailable(final boolean up) {
+	public synchronized void setAvailable(final boolean up) {
 		available = up;
 	}
 
@@ -496,8 +491,8 @@ public class Backend {
 		return eventDaemon;
 	}
 
-	public IShellManager getShellManager() {
-		return shellManager;
+	public boolean isAvailable() {
+		return available;
 	}
 
 }

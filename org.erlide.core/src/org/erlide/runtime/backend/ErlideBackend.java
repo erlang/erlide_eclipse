@@ -12,6 +12,7 @@ package org.erlide.runtime.backend;
 
 import java.io.IOException;
 
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.IStreamListener;
@@ -33,30 +34,35 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		IStreamListener, ILaunchesListener2 {
 
 	private final CodeManager codeManager;
-	private final IStreamsProxy proxy;
-	private final ILaunch launch;
+	private IStreamsProxy proxy;
+	private IShellManager shellManager;
+
+	private ILaunch launch;
 
 	public ErlideBackend(final RuntimeInfo info) throws BackendException {
-		this(info, null, null);
-	}
-
-	public ErlideBackend(RuntimeInfo info, IStreamsProxy proxy, ILaunch launch)
-			throws BackendException {
 		super(info);
 		codeManager = new CodeManager(this);
-		this.proxy = proxy;
-		this.launch = launch;
-		if (proxy != null) {
-			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
-			errorStreamMonitor.addListener(this);
-			IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
-			outputStreamMonitor.addListener(this);
-		}
 	}
 
 	@Override
 	public void dispose() {
+		try {
+			if (launch != null) {
+				launch.terminate();
+			}
+		} catch (DebugException e) {
+			e.printStackTrace();
+		}
+		if (shellManager instanceof IDisposable) {
+			((IDisposable) shellManager).dispose();
+		}
 		dispose(false);
+	}
+
+	@Override
+	public void initializeRuntime() {
+		super.initializeRuntime();
+		shellManager = new BackendShellManager(this);
 	}
 
 	@Override
@@ -108,6 +114,29 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		}
 	}
 
+	public ILaunch getLaunch() {
+		return launch;
+	}
+
+	public void setLaunch(ILaunch launch2) {
+		this.launch = launch2;
+	}
+
+	public BackendShell getShell(String id) {
+		BackendShell shell = getShellManager().openShell(id);
+		if (proxy != null) {
+			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
+			errorStreamMonitor.addListener(shell.getErrListener());
+			IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
+			outputStreamMonitor.addListener(shell.getStdListener());
+		}
+		return shell;
+	}
+
+	public IShellManager getShellManager() {
+		return shellManager;
+	}
+
 	public boolean isDistributed() {
 		return !getInfo().getNodeName().equals("");
 	}
@@ -133,6 +162,16 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	public void launchesRemoved(ILaunch[] launches) {
+	}
+
+	public void setStreamsProxy(IStreamsProxy streamsProxy) {
+		proxy = streamsProxy;
+		if (proxy != null) {
+			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
+			errorStreamMonitor.addListener(this);
+			IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
+			outputStreamMonitor.addListener(this);
+		}
 	}
 
 }

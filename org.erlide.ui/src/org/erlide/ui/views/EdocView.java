@@ -58,7 +58,6 @@ import org.osgi.framework.Bundle;
  * View which shows Edoc for a given Erlang element.
  * 
  */
-@SuppressWarnings("restriction")
 public class EdocView extends AbstractInfoView {
 
 	public static final String ID = "org.erlide.ui.views.EdocView";

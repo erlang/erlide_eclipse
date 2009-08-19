@@ -8,7 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend.console;
+package org.erlide.jinterface.backend.console;
+
+import java.util.regex.Pattern;
+
+import org.erlide.jinterface.backend.util.Assert;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -17,11 +21,21 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class IoRequest {
+
+	public static final Pattern RE_PROMPT = Pattern
+			.compile("\\([^)]+\\)[0-9]+> |[0-9]+> ");
+	public static final Pattern RE_HEADER = Pattern
+			.compile("Eshell V[0-9]+\\.[0-9]+\\.[0-9]+");
+
+	public enum IoRequestKind {
+		HEADER, PROMPT, INPUT, OUTPUT, STDOUT, STDERR;
+	}
+
 	private OtpErlangPid leader;
 	private OtpErlangPid sender;
 	private String message;
 	private int start;
-	private final boolean output;
+	private final IoRequestKind kind;
 
 	public IoRequest(final OtpErlangTuple obj) {
 		try {
@@ -33,7 +47,7 @@ public class IoRequest {
 				if (l.arity() == 0) {
 					message = "";
 				} else {
-					message = l.toString();
+					message = l.stringValue();
 				}
 			} else {
 				message = o.toString();
@@ -49,25 +63,28 @@ public class IoRequest {
 		} catch (final Exception e) {
 			message = null;
 		}
-		output = true;
+		if (RE_PROMPT.matcher(message).matches()) {
+			kind = IoRequestKind.PROMPT;
+		} else if (RE_HEADER.matcher(message).matches()) {
+			kind = IoRequestKind.HEADER;
+		} else {
+			kind = IoRequestKind.OUTPUT;
+		}
 	}
 
-	// used for input text
-	public IoRequest(final String msg) {
+	public IoRequest(final String msg, IoRequestKind kind) {
+		Assert.isTrue(kind != IoRequestKind.OUTPUT);
+		Assert.isTrue(kind != IoRequestKind.PROMPT);
 		message = msg;
 		leader = new OtpErlangPid("s", 0, 0, 0);
 		sender = new OtpErlangPid("s", 0, 0, 0);
-		output = false;
+		this.kind = kind;
 	}
 
 	@Override
 	public String toString() {
-		if (output) {
-			return "{out:: '" + message + "', " + start + "/"
-					+ message.length() + ", " + leader + ", " + sender + "}";
-		} else {
-			return "{in:: '" + message + "'}";
-		}
+		return "{" + kind.toString() + ":: '" + message + "', " + start + "/"
+				+ message.length() + ", " + leader + ", " + sender + "}";
 	}
 
 	public OtpErlangPid getLeader() {
@@ -90,8 +107,8 @@ public class IoRequest {
 		return message.length();
 	}
 
-	public boolean isOutput() {
-		return output;
+	public IoRequestKind getKind() {
+		return kind;
 	}
 
 	public void setStart(int pos) {

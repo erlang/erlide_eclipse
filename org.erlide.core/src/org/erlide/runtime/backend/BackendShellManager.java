@@ -8,18 +8,20 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.backend;
+package org.erlide.runtime.backend;
 
 import java.util.Collection;
 import java.util.HashMap;
+
+import org.erlide.jinterface.backend.IDisposable;
 
 public class BackendShellManager implements IShellManager, IDisposable {
 
 	private final HashMap<String, BackendShell> fShells;
 
-	private final Backend fBackend;
+	private final ErlideBackend fBackend;
 
-	public BackendShellManager(final Backend backend) {
+	public BackendShellManager(final ErlideBackend backend) {
 		fBackend = backend;
 		fShells = new HashMap<String, BackendShell>();
 	}
@@ -36,7 +38,7 @@ public class BackendShellManager implements IShellManager, IDisposable {
 	 * @see org.erlide.runtime.backend.console.IShellManager#openShell(java.lang.
 	 *      String)
 	 */
-	public BackendShell openShell(final String id) {
+	public synchronized BackendShell openShell(final String id) {
 		BackendShell shell = getShell(id);
 		if (shell == null) {
 			shell = new BackendShell(fBackend, id);
@@ -49,7 +51,7 @@ public class BackendShellManager implements IShellManager, IDisposable {
 	 * @see org.erlide.runtime.backend.console.IShellManager#closeShell(java.lang
 	 *      .String)
 	 */
-	public void closeShell(final String id) {
+	public synchronized void closeShell(final String id) {
 		final BackendShell shell = getShell(id);
 		if (shell != null) {
 			fShells.remove(id);
@@ -62,6 +64,7 @@ public class BackendShellManager implements IShellManager, IDisposable {
 		for (final BackendShell backendShell : c) {
 			backendShell.close();
 		}
+		fShells.clear();
 	}
 
 }

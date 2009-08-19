@@ -24,12 +24,9 @@ import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.jinterface.util.ErlLogger;
 
-/**
- * 
- * 
- * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
- */
 public class ErtsProcess extends RuntimeProcess {
+
+	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
 	@SuppressWarnings( { "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();
@@ -41,8 +38,6 @@ public class ErtsProcess extends RuntimeProcess {
 		super(launch, process, name, attributes);
 		// ErlLogger.debug("# create ErtsNode: " + name + " " + attributes);
 	}
-
-	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
 	/**
 	 * @return Returns the started.
@@ -63,9 +58,9 @@ public class ErtsProcess extends RuntimeProcess {
 		if (!isStarted()) {
 			return;
 		}
-		final IStreamsProxy streamsProxy = getStreamsProxy();
-		if (streamsProxy != null) {
-			streamsProxy.write(value);
+		final IStreamsProxy astreamsProxy = getStreamsProxy();
+		if (astreamsProxy != null) {
+			astreamsProxy.write(value);
 		}
 	}
 

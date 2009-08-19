@@ -34,6 +34,7 @@ public abstract class OpenEditorAction extends Action {
 
 	protected TestRunnerViewPart fTestRunner;
 
+	@SuppressWarnings("unused")
 	private final boolean fActivate;
 
 	protected OpenEditorAction(final TestRunnerViewPart testRunner,
@@ -41,8 +42,8 @@ public abstract class OpenEditorAction extends Action {
 		this(testRunner, testClassName, true);
 	}
 
-	public OpenEditorAction(final TestRunnerViewPart testRunner, final String className,
-			final boolean activate) {
+	public OpenEditorAction(final TestRunnerViewPart testRunner,
+			final String className, final boolean activate) {
 		super(GUnitMessages.OpenEditorAction_action_label);
 		this.fClassName = className;
 		this.fTestRunner = testRunner;
@@ -52,6 +53,7 @@ public abstract class OpenEditorAction extends Action {
 	/*
 	 * @see IAction#run()
 	 */
+	@SuppressWarnings("null")
 	@Override
 	public void run() {
 		final ITextEditor textEditor = null;
@@ -60,10 +62,10 @@ public abstract class OpenEditorAction extends Action {
 					this.fClassName);
 			if (element == null) {
 				MessageDialog
-				.openError(
-						getShell(),
-						GUnitMessages.OpenEditorAction_error_cannotopen_title,
-						GUnitMessages.OpenEditorAction_error_cannotopen_message);
+						.openError(
+								getShell(),
+								GUnitMessages.OpenEditorAction_error_cannotopen_title,
+								GUnitMessages.OpenEditorAction_error_cannotopen_message);
 				return;
 			}
 			// textEditor = (ITextEditor) JavaUI.openInEditor(element,
@@ -73,7 +75,7 @@ public abstract class OpenEditorAction extends Action {
 			ErrorDialog.openError(getShell(),
 					GUnitMessages.OpenEditorAction_error_dialog_title,
 					GUnitMessages.OpenEditorAction_error_dialog_message, e
-					.getStatus());
+							.getStatus());
 			return;
 		}
 		if (textEditor == null) {
@@ -163,9 +165,10 @@ public abstract class OpenEditorAction extends Action {
 		return result[0];
 	}
 
-	private IErlModule internalFindType(final IErlProject project, final String className,
-			final Set<IErlProject> visitedProjects, final IProgressMonitor monitor)
-	throws ErlModelException {
+	@SuppressWarnings( { "null", "unused" })
+	private IErlModule internalFindType(final IErlProject project,
+			final String className, final Set<IErlProject> visitedProjects,
+			final IProgressMonitor monitor) throws ErlModelException {
 		try {
 			if (visitedProjects.contains(project)) {
 				return null;
@@ -181,12 +184,14 @@ public abstract class OpenEditorAction extends Action {
 			// find not exported types
 			visitedProjects.add(project);
 			final IErlModel javaModel = project.getModel();
-			final String[] requiredProjectNames = project.getRequiredProjectNames();
-			final IProgressMonitor reqMonitor = new SubProgressMonitor(monitor, 1);
+			final String[] requiredProjectNames = project
+					.getRequiredProjectNames();
+			final IProgressMonitor reqMonitor = new SubProgressMonitor(monitor,
+					1);
 			reqMonitor.beginTask("", requiredProjectNames.length);
 			for (int i = 0; i < requiredProjectNames.length; i++) {
 				final IErlProject requiredProject = javaModel
-				.getErlangProject(requiredProjectNames[i]);
+						.getErlangProject(requiredProjectNames[i]);
 				if (requiredProject.exists()) {
 					type = internalFindType(requiredProject, className,
 							visitedProjects, new SubProgressMonitor(reqMonitor,

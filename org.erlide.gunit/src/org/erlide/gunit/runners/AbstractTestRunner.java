@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.gunit.internal.model.TestElement;
+import org.erlide.gunit.model.TestElement;
 
 public class AbstractTestRunner {
 

@@ -16,6 +16,8 @@ import java.io.IOException;
 import org.eclipse.core.runtime.Assert;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.gunit.model.ITestElement;
+import org.erlide.gunit.model.TestRoot;
+import org.erlide.gunit.model.TestSuiteElement;
 import org.erlide.gunit.model.ITestElement.FailureTrace;
 import org.erlide.gunit.model.ITestElement.ProgressState;
 import org.erlide.gunit.model.ITestElement.Result;

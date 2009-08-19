@@ -51,7 +51,7 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 			ErrorDialog.openError(getShell(),
 					GUnitMessages.GotoReferencedTestAction_dialog_title,
 					GUnitMessages.GotoReferencedTestAction_dialog_error, e
-					.getStatus());
+							.getStatus());
 		}
 	}
 
@@ -85,7 +85,7 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 	}
 
 	private void run(final IErlElement[] elements) throws PartInitException,
-	ErlModelException {
+			ErlModelException {
 		// IErlElement element = elements[0];
 		//
 		// SelectionStatusDialog dialog = new TestMethodSelectionDialog(
@@ -109,13 +109,15 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		// openElement((IErlElement) result);
 	}
 
-	private void openElement(final IErlElement result) throws ErlModelException,
-	PartInitException {
+	@SuppressWarnings("unused")
+	private void openElement(final IErlElement result)
+			throws ErlModelException, PartInitException {
 		// IEditorPart part = JavaUI.openInEditor(result);
 		// JavaUI.revealInEditor(part, result);
 	}
 
-	private IErlElement[] getSelectedElements(final IStructuredSelection selection) {
+	private IErlElement[] getSelectedElements(
+			final IStructuredSelection selection) {
 		final List<?> elements = selection.toList();
 		final int size = elements.size();
 		if (size == 0) {
@@ -154,7 +156,8 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 		}
 	}
 
-	public void selectionChanged(final IAction action, final ISelection selection) {
+	public void selectionChanged(final IAction action,
+			final ISelection selection) {
 		this.fSelection = selection;
 		action.setEnabled(getActiveEditor() != null);
 	}
@@ -174,7 +177,8 @@ public class GotoReferencedTestAction implements IWorkbenchWindowActionDelegate 
 	}
 
 	private ErlangEditor getActiveEditor() {
-		final IEditorPart editor = this.fWorkbench.getActivePage().getActiveEditor();
+		final IEditorPart editor = this.fWorkbench.getActivePage()
+				.getActiveEditor();
 		if (editor instanceof ErlangEditor) {
 			return (ErlangEditor) editor;
 		}

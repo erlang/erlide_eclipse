@@ -13,7 +13,7 @@ package org.erlide.gunit.internal.ui;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.erlide.gunit.internal.model.TestElement;
+import org.erlide.gunit.model.TestElement;
 
 /**
  * Action to enable/disable stack trace filtering.

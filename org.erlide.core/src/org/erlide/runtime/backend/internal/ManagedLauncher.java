@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -19,10 +19,10 @@ public class ManagedLauncher implements IDisposable {
 
 	Process fRuntime;
 	private final ILaunch launch;
-	private ErtsProcess erts;
 	private IStreamsProxy proxy;
 
 	public ManagedLauncher(ILaunch aLaunch) {
+		Assert.isNotNull(aLaunch);
 		launch = aLaunch;
 		proxy = null;
 	}
@@ -49,13 +49,12 @@ public class ManagedLauncher implements IDisposable {
 		final File workingDirectory = new File(info.getWorkingDir());
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
-			if (launch == null) {
-				proxy = new StreamsProxy(fRuntime, "ISO-8859-1");
-			} else {
-				erts = new ErtsProcess(launch, fRuntime, info.getNodeName(),
-						null);
-				proxy = erts.getPrivateStreamsProxy();
-			}
+
+			ErtsProcess erts = new ErtsProcess(launch, fRuntime, info
+					.getNodeName(), null);
+			launch.addProcess(erts);
+			proxy = erts.getPrivateStreamsProxy();
+
 			ErlLogger.debug(fRuntime.toString());
 			try {
 				ErlLogger.debug("exit code: %d", fRuntime.exitValue());
