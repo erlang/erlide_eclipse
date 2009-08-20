@@ -14,6 +14,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -126,23 +128,15 @@ public class ErlangPlugin extends Plugin {
 	 */
 	@Override
 	public void stop(final BundleContext context) throws Exception {
-		ErlangCore.getBackendManager().removeBundle(getBundle());
 		try {
-			try {
-				// savePluginPreferences();
-				// final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-				// workspace.removeResourceChangeListener(ErlModelManager.
-				// getDefault().deltaState);
-				// workspace.removeSaveParticipant(this);
+			ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
+			ErlangCore.getBackendManager().removeBundle(getBundle());
 
-				ErlangCore.getModelManager().shutdown();
-			} finally {
-				// ensure we call super.stop as the last thing
-				super.stop(context);
-				plugin = null;
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
+			ErlangCore.getModelManager().shutdown();
+		} finally {
+			// ensure we call super.stop as the last thing
+			super.stop(context);
+			plugin = null;
 		}
 	}
 
@@ -173,6 +167,24 @@ public class ErlangPlugin extends Plugin {
 
 		ErlangCore.initializeRuntimesList();
 		ErlangCore.getBackendManager().addBundle(getBundle());
+
+		ResourcesPlugin.getWorkspace().addSaveParticipant(this,
+				new ISaveParticipant() {
+					public void doneSaving(ISaveContext context1) {
+					}
+
+					public void prepareToSave(ISaveContext context1)
+							throws CoreException {
+					}
+
+					public void rollback(ISaveContext context1) {
+					}
+
+					public void saving(ISaveContext context1)
+							throws CoreException {
+						savePluginPreferences();
+					}
+				});
 
 		ErlLogger.debug("Started CORE");
 	}
