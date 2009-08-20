@@ -1,5 +1,8 @@
 package org.erlide.core.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
@@ -33,23 +36,25 @@ public class CompilerPreferences {
 	// private boolean warnUnusedRecord;
 	private String allOptions = "";
 	private final PreferencesHelper helper;
+	private final Map<String, Boolean> booleanOptions = new HashMap<String, Boolean>();
+	private Boolean warnFormat;
 
 	public CompilerPreferences() {
 		helper = new PreferencesHelper(QUALIFIER);
 	}
 
-	public CompilerPreferences(IProject project) {
+	public CompilerPreferences(final IProject project) {
 		helper = new PreferencesHelper(QUALIFIER, project);
 	}
 
 	public void store() throws BackingStoreException {
 		// FIXME
 		helper.putString(CompilerPreferencesConstants.ALL_OPTIONS, allOptions);
-
-		// helper.putBoolean(CompilerPreferencesConstants.DEBUG_INFO,
-		// hasDebugInfo());
-		// helper.putBoolean(CompilerPreferencesConstants.USE_EXPORT_ALL,
-		// useExportAll());
+		for (final Map.Entry<String, Boolean> i : booleanOptions.entrySet()) {
+			helper.putBoolean(i.getKey(), i.getValue());
+		}
+		helper.putBoolean(CompilerPreferencesConstants.WARN_FORMAT_STRINGS,
+				warnFormat);
 		// helper.putBoolean(
 		// CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
 		// doWarnModuleNotOnSourcePath());
@@ -83,10 +88,13 @@ public class CompilerPreferences {
 	public void load() throws BackingStoreException {
 
 		// FIXME
-		String string = helper.getString(
+		final String string = helper.getString(
 				CompilerPreferencesConstants.ALL_OPTIONS, "");
 		setAllOptions(string);
-
+		getBooleanFromHelper(CompilerPreferencesConstants.DEBUG_INFO);
+		getBooleanFromHelper(CompilerPreferencesConstants.EXPORT_ALL);
+		warnFormat = helper.getBoolean(
+				CompilerPreferencesConstants.WARN_FORMAT_STRINGS, true);
 		// setDebugInfo(helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
 		// true));
 		// setUseExportAll(helper.getBoolean(
@@ -119,7 +127,11 @@ public class CompilerPreferences {
 		// CompilerPreferencesConstants.DEBUG_INFO, true);
 	}
 
-	public void setAllOptions(String string) {
+	private void getBooleanFromHelper(final String optionKey) {
+		booleanOptions.put(optionKey, helper.getBoolean(optionKey, false));
+	}
+
+	public void setAllOptions(final String string) {
 		allOptions = string;
 	}
 
@@ -144,26 +156,24 @@ public class CompilerPreferences {
 	// }
 
 	public OtpErlangList export() {
-		// if (debugInfo) {
-		// result.add("debug_info");
-		// }
-		// if (useExportAll) {
-		// result.add("export_all");
-		// }
-
-		OtpErlangObject term = null;
-		Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		if (!allOptions.equals("")) {
-			try {
-				term = ErlBackend.parseTerm(b, allOptions + ".");
-			} catch (BackendException e) {
-				try {
-					term = ErlBackend.parseTerm(b, "[" + allOptions + "].");
-				} catch (BackendException e1) {
-				}
+		final StringBuilder sb = new StringBuilder();
+		for (final Map.Entry<String, Boolean> i : booleanOptions.entrySet()) {
+			if (i.getValue()) {
+				sb.append(i.getKey());
+				sb.append(", ");
 			}
 		}
-
+		sb.append("{warn_format, ").append(warnFormat ? "1" : "0").append("}");
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		if (!allOptions.equals("")) {
+			sb.append("|").append(allOptions);
+		}
+		OtpErlangObject term = null;
+		final String s = sb.toString();
+		try {
+			term = ErlBackend.parseTerm(b, "[" + s + "].");
+		} catch (final BackendException e1) {
+		}
 		OtpErlangList list;
 		if (term instanceof OtpErlangList) {
 			list = (OtpErlangList) term;
@@ -181,6 +191,29 @@ public class CompilerPreferences {
 		return export().toString();
 	}
 
+	public boolean getBooleanOption(final String optionKey) {
+		if (optionKey.equals(CompilerPreferencesConstants.WARN_FORMAT_STRINGS)) {
+			return warnFormat;
+		} else if (optionKey
+				.equals(CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS)) {
+			final Boolean b = booleanOptions.get("nowarn_deprecated_function");
+			return b == null ? true : !b;
+		} else {
+			final Boolean b = booleanOptions.get(optionKey);
+			return b == null ? false : b;
+		}
+	}
+
+	public void setBooleanOption(final String optionKey, final boolean b) {
+		if (optionKey.equals(CompilerPreferencesConstants.WARN_FORMAT_STRINGS)) {
+			warnFormat = b;
+		} else if (optionKey
+				.equals(CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS)) {
+			booleanOptions.put("nowarn_deprecated_function", !b);
+		} else {
+			booleanOptions.put(optionKey, b);
+		}
+	}
 	// public void setWarnModuleNotOnSourcePath(boolean
 	// warnModuleNotOnSourcePath) {
 	// this.warnModuleNotOnSourcePath = warnModuleNotOnSourcePath;

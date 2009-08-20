@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import java.util.HashSet;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,8 +35,10 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerPreferences;
+import org.erlide.core.builder.CompilerPreferencesConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
@@ -42,7 +50,11 @@ public class CompilerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
 	CompilerPreferences prefs;
-	Text text;
+	private Composite curGroup;
+	private IProject fProject;
+	private Button fUseProjectSettings;
+	private Link fChangeWorkspaceSettings;
+	private Text text;
 
 	public CompilerPreferencePage() {
 		super();
@@ -65,11 +77,11 @@ public class CompilerPreferencePage extends PropertyPage implements
 				+ "Enclosing all options in a list is also accepted.\n\n"
 				+ "Note: Some options may not make sense here, for example \n"
 				+ "'outdir' and will be filtered out.\n";
-		Link lblCompilerOptions = new Link(control, SWT.NONE);
+		final Link lblCompilerOptions = new Link(control, SWT.NONE);
 		lblCompilerOptions.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				MessageBox box = new MessageBox(parent.getShell());
+			public void widgetSelected(final SelectionEvent e) {
+				final MessageBox box = new MessageBox(parent.getShell());
 				box.setMessage(message);
 				box.setText("Compiler options format");
 				box.open();
@@ -81,8 +93,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 		text = new Text(control, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String txt = text.getText().trim();
+			public void modifyText(final ModifyEvent e) {
+				final String txt = text.getText().trim();
 				final boolean optionsAreOk = optionsAreOk(txt);
 				setValid(optionsAreOk);
 				prefs.setAllOptions(txt);
@@ -94,112 +106,87 @@ public class CompilerPreferencePage extends PropertyPage implements
 			}
 		});
 		{
-			GridData gridData = new GridData(SWT.LEFT, SWT.FILL, true, true, 1,
-					1);
+			final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, true,
+					true, 1, 1);
 			gridData.widthHint = 386;
 			gridData.heightHint = 80;
 			text.setLayoutData(gridData);
 		}
 		text.setText(prefs.getAllOptions());
 
-		Label label = new Label(control, SWT.SEPARATOR | SWT.HORIZONTAL);
+		final Label label = new Label(control, SWT.SEPARATOR | SWT.HORIZONTAL);
 		{
-			GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
+			final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
 					false, 1, 1);
 			gridData.widthHint = 399;
 			label.setLayoutData(gridData);
 		}
 
-		Group group_1 = new Group(control, SWT.NONE);
+		final Group optionsGroup = new Group(control, SWT.NONE);
 		{
-			GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
+			final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
 					false, 1, 1);
 			gridData.widthHint = 397;
-			group_1.setLayoutData(gridData);
+			optionsGroup.setLayoutData(gridData);
 		}
-		group_1.setLayout(new GridLayout(2, false));
+		optionsGroup.setLayout(new GridLayout(2, false));
+		curGroup = optionsGroup;
+		newCheckButton("Debug info", "Include debug info",
+				CompilerPreferencesConstants.DEBUG_INFO);
+		newCheckButton("Export all", "Export all defined functions",
+				CompilerPreferencesConstants.EXPORT_ALL);
+		newCheckButton("Encrypt debug info",
+				"Encrypt debug info, the key will be read from .erlang.crypt",
+				CompilerPreferencesConstants.ENCRYPT_DEBUG_INFO);
 
-		final Button debugInfoButton = new Button(group_1, SWT.CHECK);
-		debugInfoButton.setEnabled(false);
-		debugInfoButton.setText("Debug info");
-		// debugInfoButton.setSelection(prefs.hasDebugInfo());
-
-		final Button encryptDebugInfoButton = new Button(group_1, SWT.CHECK);
-		encryptDebugInfoButton.setEnabled(false);
-		encryptDebugInfoButton
-				.setToolTipText("the key will be read from an .erlang.crypt file");
-		encryptDebugInfoButton.setText("Encrypt debug info");
-
-		final Button btnAddexportall = new Button(group_1, SWT.CHECK);
-		btnAddexportall.setEnabled(false);
-		btnAddexportall.setText("Use 'export_all'");
-		// btnAddexportall.setSelection(prefs.useExportAll());
-		new Label(group_1, SWT.NONE);
-		btnAddexportall.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// prefs.setUseExportAll(btnAddexportall.getSelection());
-			}
-		});
-		debugInfoButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// prefs.setDebugInfo(debugInfoButton.getSelection());
-			}
-		});
-
-		final Group group = new Group(control, SWT.NONE);
+		final Group warningsGroup = new Group(control, SWT.NONE);
 		{
-			GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false, false,
-					1, 1);
+			final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false,
+					false, 1, 1);
 			gridData.widthHint = 401;
-			group.setLayoutData(gridData);
+			warningsGroup.setLayoutData(gridData);
 		}
-		group.setText("Warnings");
+		warningsGroup.setText("Warnings");
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
-		group.setLayout(gridLayout);
+		warningsGroup.setLayout(gridLayout);
+		curGroup = warningsGroup;
+		newCheckButton(
+				"invalid format strings",
+				"Malformed format strings as arguments to io:format and similar functions",
+				CompilerPreferencesConstants.WARN_FORMAT_STRINGS);
+		newCheckButton("deprecated functions",
+				"Call to a function known by the compiler to be deprecated",
+				CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS);
 
-		final Button formatStringsButton = new Button(group, SWT.CHECK);
-		formatStringsButton.setEnabled(false);
-		formatStringsButton
-				.setToolTipText("Malformed format strings as arguments to io:format and similar functions.");
-		formatStringsButton.setSelection(true);
-		formatStringsButton.setText("invalid 'format' strings ");
-
-		final Button deprecatedFunctionsButton = new Button(group, SWT.CHECK);
-		deprecatedFunctionsButton.setEnabled(false);
-		deprecatedFunctionsButton
-				.setToolTipText("call to a function known by the compiler to be deprecated");
-		deprecatedFunctionsButton.setSelection(true);
-		deprecatedFunctionsButton.setText("deprecated functions");
-
-		final Button nameClashesWithButton = new Button(group, SWT.CHECK);
+		final Button nameClashesWithButton = new Button(warningsGroup,
+				SWT.CHECK);
 		nameClashesWithButton.setEnabled(false);
 		nameClashesWithButton
 				.setToolTipText("an exported function with the same name as an auto-imported BIF (such as size/1)\n AND there is a call to it without a qualifying module name.");
 		nameClashesWithButton.setSelection(true);
 		nameClashesWithButton.setText("name clashes with builtins");
 
-		final Button obsoleteGuatdsButton = new Button(group, SWT.CHECK);
+		final Button obsoleteGuatdsButton = new Button(warningsGroup, SWT.CHECK);
 		obsoleteGuatdsButton.setEnabled(false);
 		obsoleteGuatdsButton
 				.setToolTipText("calls to old type testing BIFs such as pid/1 and list/1");
 		obsoleteGuatdsButton.setSelection(true);
 		obsoleteGuatdsButton.setText("obsolete guards");
 
-		final Button useOfExport_allButton = new Button(group, SWT.CHECK);
+		final Button useOfExport_allButton = new Button(warningsGroup,
+				SWT.CHECK);
 		useOfExport_allButton.setEnabled(false);
 		useOfExport_allButton.setSelection(true);
 		useOfExport_allButton.setText("use of export_all");
 
-		final Button unusedImportsButton = new Button(group, SWT.CHECK);
+		final Button unusedImportsButton = new Button(warningsGroup, SWT.CHECK);
 		unusedImportsButton.setEnabled(false);
 		unusedImportsButton.setToolTipText("unused imported functions");
 		unusedImportsButton.setSelection(true);
 		unusedImportsButton.setText("unused imports");
 
-		final Button variablesExportedOutsideButton = new Button(group,
+		final Button variablesExportedOutsideButton = new Button(warningsGroup,
 				SWT.CHECK);
 		variablesExportedOutsideButton.setEnabled(false);
 		variablesExportedOutsideButton
@@ -207,34 +194,37 @@ public class CompilerPreferencePage extends PropertyPage implements
 		variablesExportedOutsideButton.setSelection(true);
 		variablesExportedOutsideButton.setText("exported implicit variables");
 
-		final Button unusedVariablesButton = new Button(group, SWT.CHECK);
+		final Button unusedVariablesButton = new Button(warningsGroup,
+				SWT.CHECK);
 		unusedVariablesButton.setEnabled(false);
 		unusedVariablesButton
 				.setToolTipText("variables which are not used, with the exception of variables beginning with an underscore");
 		unusedVariablesButton.setSelection(true);
 		unusedVariablesButton.setText("unused variables");
 
-		final Button shadowedVariablesButton = new Button(group, SWT.CHECK);
+		final Button shadowedVariablesButton = new Button(warningsGroup,
+				SWT.CHECK);
 		shadowedVariablesButton.setEnabled(false);
 		shadowedVariablesButton
 				.setToolTipText("\"fresh\" variables in functional objects or list comprehensions with the same name as some already defined variable");
 		shadowedVariablesButton.setSelection(true);
 		shadowedVariablesButton.setText("shadowed variables");
 
-		final Button unusedRecordsButton = new Button(group, SWT.CHECK);
+		final Button unusedRecordsButton = new Button(warningsGroup, SWT.CHECK);
 		unusedRecordsButton.setEnabled(false);
 		unusedRecordsButton
 				.setToolTipText("unused locally defined record types");
 		unusedRecordsButton.setSelection(true);
 		unusedRecordsButton.setText("unused records");
 
-		final Button unusedFunctionsButton = new Button(group, SWT.CHECK);
+		final Button unusedFunctionsButton = new Button(warningsGroup,
+				SWT.CHECK);
 		unusedFunctionsButton.setEnabled(false);
 		unusedFunctionsButton
 				.setToolTipText("local functions that are not called directly or indirectly by an exported function");
 		unusedFunctionsButton.setSelection(true);
 		unusedFunctionsButton.setText("unused functions");
-		new Label(group, SWT.NONE);
+		new Label(warningsGroup, SWT.NONE);
 
 		final Button warnForSourceButton = new Button(control, SWT.CHECK);
 		warnForSourceButton.setEnabled(false);
@@ -245,15 +235,163 @@ public class CompilerPreferencePage extends PropertyPage implements
 		return control;
 	}
 
-	boolean optionsAreOk(String string) {
-		ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+	private boolean isProjectPreferencePage() {
+		return fProject != null;
+	}
+
+	@Override
+	protected Label createDescriptionLabel(final Composite parent) {
+		if (isProjectPreferencePage()) {
+			createProjectSpecificSettingsCheckBoxAndLink(parent);
+		}
+		return super.createDescriptionLabel(parent);
+	}
+
+	private void createProjectSpecificSettingsCheckBoxAndLink(
+			final Composite parent) {
+		if (isProjectPreferencePage()) {
+			final Composite composite = new Composite(parent, SWT.NONE);
+			composite.setFont(parent.getFont());
+			final GridLayout layout = new GridLayout();
+			layout.marginHeight = 0;
+			layout.marginWidth = 0;
+			layout.numColumns = 2;
+			composite.setLayout(layout);
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+					false));
+
+			// final IDialogFieldListener listener = new IDialogFieldListener()
+			// {
+			// public void dialogFieldChanged(final DialogField field) {
+			// final boolean enabled = ((SelectionButtonDialogField) field)
+			// .isSelected();
+			// enableProjectSpecificSettings(enabled);
+			//
+			// if (enabled && getData() != null) {
+			// applyData(getData());
+			// }
+			// }
+			// };
+
+			fUseProjectSettings = new Button(composite, SWT.CHECK);
+			fUseProjectSettings.setText("Enable project specific settings");
+			fUseProjectSettings.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					final boolean sel = fUseProjectSettings.getSelection();
+					fChangeWorkspaceSettings.setEnabled(!sel);
+					super.widgetSelected(e);
+				}
+			});
+			// fUseProjectSettings.setDialogFieldListener(listener);
+			// fUseProjectSettings
+			// .setLabelText(PreferencesMessages.PropertyAndPreferencePage_useprojectsettings_label);
+			// LayoutUtil.setHorizontalGrabbing(fUseProjectSettings
+			// .getSelectionButton(null));
+
+			if (true) { // if (offerLink()) {
+				fChangeWorkspaceSettings = createLink(composite,
+						"Configure Workspace settings...");
+				fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
+						SWT.CENTER, false, false));
+			}
+			// else {
+			// LayoutUtil.setHorizontalSpan(fUseProjectSettings
+			// .getSelectionButton(null), 2);
+			// }
+
+			final Label horizontalLine = new Label(composite, SWT.SEPARATOR
+					| SWT.HORIZONTAL);
+			horizontalLine.setLayoutData(new GridData(GridData.FILL,
+					GridData.FILL, true, false, 2, 1));
+			horizontalLine.setFont(composite.getFont());
+		} else { // if (supportsProjectSpecificOptions() && offerLink()) {
+			fChangeWorkspaceSettings = createLink(parent,
+					"Configure project specific settings..");
+			fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
+					SWT.CENTER, true, false));
+		}
+
+	}
+
+	private Link createLink(final Composite composite, final String text) {
+		final Link link = new Link(composite, SWT.NONE);
+		link.setFont(composite.getFont());
+		link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
+		link.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(final SelectionEvent e) {
+				doLinkActivated((Link) e.widget);
+			}
+
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				doLinkActivated((Link) e.widget);
+			}
+		});
+		return link;
+	}
+
+	private void doLinkActivated(final Link widget) {
+		if (isProjectPreferencePage()) {
+			openWorkspacePreferences(null);
+		} else {
+			final HashSet<IProject> projectsWithSpecifics = new HashSet<IProject>();
+		/*	try {
+				final IProject[] projects = JavaCore.create(
+						ResourcesPlugin.getWorkspace().getRoot())
+						.getJavaProjects();
+				for (int i = 0; i < projects.length; i++) {
+					final IJavaProject curr = projects[i];
+					if (hasProjectSpecificOptions(curr.getProject())) {
+						projectsWithSpecifics.add(curr);
+					}
+				}
+			} catch (final JavaModelException e) {
+				// ignore
+			}
+			final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
+					getShell(), projectsWithSpecifics);
+			if (dialog.open() == Window.OK) {
+				final IJavaProject res = (IJavaProject) dialog.getFirstResult();
+				openProjectProperties(res.getProject(), data);
+			}*/
+		}
+	}
+
+	protected final void openWorkspacePreferences(final Object data) {
+		final String id = getPreferencePageID();
+		PreferencesUtil.createPreferenceDialogOn(getShell(), id,
+				new String[] { id }, data).open();
+	}
+
+	private String getPreferencePageID() {
+		return "org.erlide.ui.preferences.compiler";
+	}
+
+	private void newCheckButton(final String text, final String toolTipText,
+			final String optionKey) {
+		final Button b = new Button(curGroup, SWT.CHECK);
+		b.setText(text);
+		b.setToolTipText(toolTipText);
+		b.setSelection(prefs.getBooleanOption(optionKey));
+		b.setData(optionKey);
+		b.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				final Button b = (Button) e.widget;
+				prefs.setBooleanOption((String) b.getData(), b.getSelection());
+			}
+		});
+	}
+
+	boolean optionsAreOk(final String string) {
+		final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
 		try {
 			ErlBackend.parseTerm(b, string + " .");
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			try {
 				final String string2 = "[" + string + "].";
 				ErlBackend.parseTerm(b, string2);
-			} catch (BackendException e1) {
+			} catch (final BackendException e1) {
 				return false;
 			}
 		}
@@ -264,7 +402,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 	public boolean performOk() {
 		try {
 			prefs.store();
-		} catch (BackingStoreException e) {
+		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
 		}
 		return super.performOk();
@@ -272,7 +410,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	@Override
 	protected void performDefaults() {
-		IAdaptable element = getElement();
+		final IAdaptable element = getElement();
 		final IProject prj = element == null ? null : (IProject) element
 				.getAdapter(IProject.class);
 		if (prj == null) {
@@ -286,6 +424,11 @@ public class CompilerPreferencePage extends PropertyPage implements
 			ErlLogger.warn(e);
 		}
 		super.performDefaults();
+	}
+
+	@Override
+	public void setElement(final IAdaptable element) {
+		fProject = (IProject) element.getAdapter(IResource.class);
 	}
 
 	public void init(final IWorkbench workbench) {
