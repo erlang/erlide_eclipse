@@ -79,6 +79,7 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 
 	public void reconcile(final ErlDirtyRegion r) {
 		if (fModule != null) {
+			ErlLogger.debug("## reconcile " + fModule.getName());
 			fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(),
 					mon);
 		}
