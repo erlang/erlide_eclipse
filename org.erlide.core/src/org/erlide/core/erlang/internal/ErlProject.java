@@ -81,13 +81,10 @@ public class ErlProject extends Openable implements IErlProject {
 	 */
 	private IResource[] nonErlangResources;
 
-	private final OldErlangProjectProperties properties;
-
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
 		fProject = project;
 		nonErlangResources = null;
-		properties = new OldErlangProjectProperties(fProject);
 	}
 
 	/**
@@ -668,6 +665,6 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	public OldErlangProjectProperties getProperties() {
-		return properties;
+		return new OldErlangProjectProperties(fProject);
 	}
 }
