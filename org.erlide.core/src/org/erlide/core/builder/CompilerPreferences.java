@@ -1,6 +1,9 @@
 package org.erlide.core.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -13,7 +16,9 @@ import org.erlide.jinterface.backend.ErlBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class CompilerPreferences {
@@ -40,11 +45,11 @@ public class CompilerPreferences {
 	private Boolean warnFormat;
 
 	public CompilerPreferences() {
-		helper = new PreferencesHelper(QUALIFIER);
+		helper = PreferencesHelper.getHelper(QUALIFIER);
 	}
 
 	public CompilerPreferences(final IProject project) {
-		helper = new PreferencesHelper(QUALIFIER, project);
+		helper = PreferencesHelper.getHelper(QUALIFIER, project);
 	}
 
 	public boolean hasOptionsAtLowestScope() {
@@ -160,33 +165,25 @@ public class CompilerPreferences {
 	// }
 
 	public OtpErlangList export() {
-		final StringBuilder sb = new StringBuilder();
+		final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>();
 		for (final Map.Entry<String, Boolean> i : booleanOptions.entrySet()) {
 			if (i.getValue()) {
-				sb.append(i.getKey());
-				sb.append(", ");
+				result.add(new OtpErlangAtom(i.getKey()));
 			}
 		}
-		sb.append("{warn_format, ").append(warnFormat ? "1" : "0").append("}");
+		result.add(JInterfaceFactory.mkTuple(new OtpErlangAtom("warn_format"),
+				new OtpErlangLong(warnFormat ? 1 : 0)));
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (!allOptions.equals("")) {
-			sb.append("|").append(allOptions);
-		}
-		OtpErlangObject term = null;
-		final String s = sb.toString();
-		try {
-			term = ErlBackend.parseTerm(b, "[" + s + "].");
-		} catch (final BackendException e1) {
-		}
-		OtpErlangList list;
-		if (term instanceof OtpErlangList) {
-			list = (OtpErlangList) term;
-		} else if (term == null) {
-			list = new OtpErlangList();
-		} else {
-			list = JInterfaceFactory.mkList(term);
+			try {
+				OtpErlangList term = (OtpErlangList) ErlBackend.parseTerm(b,
+						"[" + allOptions + "].");
+				result.addAll(Arrays.asList(term.elements()));
+			} catch (final BackendException e1) {
+			}
 		}
 
+		OtpErlangList list = JInterfaceFactory.mkList(result);
 		return list;
 	}
 
@@ -228,7 +225,7 @@ public class CompilerPreferences {
 	// return warnModuleNotOnSourcePath;
 	// }
 
-	public void removeAllAtLowestScope() {
+	public void removeAllProjectSpecificSettings() {
 		helper.removeAllAtLowestScope();
 	}
 }

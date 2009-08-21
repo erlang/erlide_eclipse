@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class PreferencesHelper {
+public final class PreferencesHelper {
 
 	private final IScopeContext[] loadContexts;
 	private final IScopeContext storeContext;
@@ -22,38 +22,28 @@ public class PreferencesHelper {
 	private final String qualifier;
 	private final IScopeContext[] nextContexts;
 
-	public PreferencesHelper(final String qualifier,
+	public static PreferencesHelper getHelper(final String qualifier,
+			final IProject project) {
+		return new PreferencesHelper(qualifier, new IScopeContext[] {
+				new ProjectScope(project), new InstanceScope(),
+				new ConfigurationScope(), new DefaultScope() },
+				new ProjectScope(project));
+	}
+
+	public static PreferencesHelper getHelper(final String qualifier) {
+		InstanceScope instanceScope = new InstanceScope();
+		return new PreferencesHelper(qualifier, new IScopeContext[] {
+				instanceScope, new ConfigurationScope(), new DefaultScope() },
+				instanceScope);
+	}
+
+	private PreferencesHelper(final String qualifier,
 			final IScopeContext[] loadContexts, final IScopeContext storeContext) {
 		this.loadContexts = loadContexts;
 		this.storeContext = storeContext;
 		nextContexts = getNextContexts(loadContexts, storeContext);
 		service = Platform.getPreferencesService();
 		this.qualifier = qualifier;
-	}
-
-	public PreferencesHelper(final String qualifier, final IProject project,
-			final IScopeContext storeContext) {
-		this(qualifier, new IScopeContext[] { new ProjectScope(project),
-				new InstanceScope(), new ConfigurationScope(),
-				new DefaultScope() }, storeContext);
-	}
-
-	public PreferencesHelper(final String qualifier, final IProject project) {
-		this(qualifier, new IScopeContext[] { new ProjectScope(project),
-				new InstanceScope(), new ConfigurationScope(),
-				new DefaultScope() }, new ProjectScope(project));
-	}
-
-	public PreferencesHelper(final String qualifier,
-			final IScopeContext storeContext) {
-		this(qualifier, new IScopeContext[] { new InstanceScope(),
-				new ConfigurationScope(), new DefaultScope() }, storeContext);
-	}
-
-	public PreferencesHelper(final String qualifier) {
-		this(qualifier, new IScopeContext[] { new InstanceScope(),
-				new ConfigurationScope(), new DefaultScope() },
-				new InstanceScope());
 	}
 
 	public boolean getBoolean(final String key, final boolean defaultValue) {
@@ -180,7 +170,7 @@ public class PreferencesHelper {
 	}
 
 	public boolean hasAnyAtLowestScope() {
-		final IScopeContext sc = loadContexts[0];
+		final IScopeContext sc = storeContext;
 		final IEclipsePreferences p = sc.getNode(qualifier);
 		if (p != null) {
 			try {
@@ -193,7 +183,7 @@ public class PreferencesHelper {
 	}
 
 	public void removeAllAtLowestScope() {
-		final IScopeContext sc = loadContexts[0];
+		final IScopeContext sc = storeContext;
 		final IEclipsePreferences p = sc.getNode(qualifier);
 		if (p != null) {
 			try {

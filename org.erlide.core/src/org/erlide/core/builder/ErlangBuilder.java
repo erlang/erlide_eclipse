@@ -171,6 +171,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			OtpErlangList compilerOptions = prefs.export();
 
+			ErlLogger.debug("******** building %s: %s", getProject().getName(),
+					compilerOptions);
+
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
 			if (kind == FULL_BUILD) {
 				resourcesToBuild = fullBuild(args);

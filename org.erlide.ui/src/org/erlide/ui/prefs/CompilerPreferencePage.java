@@ -414,11 +414,13 @@ public class CompilerPreferencePage extends PropertyPage implements
 	@Override
 	public boolean performOk() {
 		try {
-			if (!fUseProjectSettings.getSelection()
+			if (fUseProjectSettings != null
+					&& !fUseProjectSettings.getSelection()
 					&& isProjectPreferencePage()) {
-				prefs.removeAllAtLowestScope();
+				prefs.removeAllProjectSpecificSettings();
+			} else {
+				prefs.store();
 			}
-			prefs.store();
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
 		}
