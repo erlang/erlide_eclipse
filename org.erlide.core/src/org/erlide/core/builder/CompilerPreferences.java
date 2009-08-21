@@ -100,8 +100,18 @@ public class CompilerPreferences {
 		final String string = helper.getString(
 				CompilerPreferencesConstants.ALL_OPTIONS, "");
 		setAllOptions(string);
-		getBooleanFromHelper(CompilerPreferencesConstants.DEBUG_INFO);
-		getBooleanFromHelper(CompilerPreferencesConstants.EXPORT_ALL);
+		final String[] booleanKeys = { CompilerPreferencesConstants.DEBUG_INFO,
+				CompilerPreferencesConstants.EXPORT_ALL,
+				CompilerPreferencesConstants.ENCRYPT_DEBUG_INFO,
+				CompilerPreferencesConstants.WARN_OBSOLETE_GUARD,
+				CompilerPreferencesConstants.NOWARN_DEPRECATED_FUNCTIONS,
+				CompilerPreferencesConstants.WARN_EXPORT_ALL,
+				CompilerPreferencesConstants.WARN_UNUSED_IMPORT,
+				CompilerPreferencesConstants.NOWARN_SHADOW_VARS,
+				CompilerPreferencesConstants.NOWARN_BIF_CLASH };
+		for (final String key : booleanKeys) {
+			getBooleanFromHelper(key);
+		}
 		warnFormat = helper.getBoolean(
 				CompilerPreferencesConstants.WARN_FORMAT_STRINGS, true);
 		// setDebugInfo(helper.getBoolean(CompilerPreferencesConstants.DEBUG_INFO,
@@ -176,15 +186,15 @@ public class CompilerPreferences {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (!allOptions.equals("")) {
 			try {
-				OtpErlangList term = (OtpErlangList) ErlBackend.parseTerm(b,
-						"[" + allOptions + "].");
+				final OtpErlangList term = (OtpErlangList) ErlBackend
+						.parseTerm(b, "[" + allOptions + "].");
 				result.addAll(Arrays.asList(term.elements()));
 			} catch (final BackendException e1) {
 			}
 		}
 
 		result.add(new OtpErlangAtom("debug_info"));
-		OtpErlangList list = JInterfaceFactory.mkList(result);
+		final OtpErlangList list = JInterfaceFactory.mkList(result);
 		return list;
 	}
 
@@ -196,10 +206,6 @@ public class CompilerPreferences {
 	public boolean getBooleanOption(final String optionKey) {
 		if (optionKey.equals(CompilerPreferencesConstants.WARN_FORMAT_STRINGS)) {
 			return warnFormat;
-		} else if (optionKey
-				.equals(CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS)) {
-			final Boolean b = booleanOptions.get("nowarn_deprecated_function");
-			return b == null ? true : !b;
 		} else {
 			final Boolean b = booleanOptions.get(optionKey);
 			return b == null ? false : b;
@@ -209,9 +215,6 @@ public class CompilerPreferences {
 	public void setBooleanOption(final String optionKey, final boolean b) {
 		if (optionKey.equals(CompilerPreferencesConstants.WARN_FORMAT_STRINGS)) {
 			warnFormat = b;
-		} else if (optionKey
-				.equals(CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS)) {
-			booleanOptions.put("nowarn_deprecated_function", !b);
 		} else {
 			booleanOptions.put(optionKey, b);
 		}

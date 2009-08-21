@@ -156,89 +156,73 @@ public class CompilerPreferencePage extends PropertyPage implements
 			warningsGroup.setLayoutData(gridData);
 		}
 		warningsGroup.setText("Warnings");
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		final GridLayout gridLayout = new GridLayout(2, false);
 		warningsGroup.setLayout(gridLayout);
 		curGroup = warningsGroup;
 		newCheckButton(
 				"invalid format strings",
 				"Malformed format strings as arguments to io:format and similar functions",
 				CompilerPreferencesConstants.WARN_FORMAT_STRINGS);
-		newCheckButton("deprecated functions",
+		newCheckButtonInvertedOption("deprecated functions",
 				"Call to a function known by the compiler to be deprecated",
-				CompilerPreferencesConstants.WARN_DEPRECATED_FUNCTIONS);
+				CompilerPreferencesConstants.NOWARN_DEPRECATED_FUNCTIONS);
 
-		final Button nameClashesWithButton = new Button(warningsGroup,
-				SWT.CHECK);
-		nameClashesWithButton.setEnabled(false);
-		nameClashesWithButton
-				.setToolTipText("an exported function with the same name as an auto-imported BIF (such as size/1)\n AND there is a call to it without a qualifying module name.");
-		nameClashesWithButton.setSelection(true);
-		nameClashesWithButton.setText("name clashes with builtins");
+		newCheckButtonInvertedOption(
+				"Name Clashes with Built-in",
+				"an exported function with the same name as an auto-imported BIF (such as size/1)\n AND there is a call to it without a qualifying module name.",
+				CompilerPreferencesConstants.NOWARN_BIF_CLASH);
+		newCheckButton("Obsolete Guards",
+				"Old type testing BIFs such as pid/1 and list/1",
+				CompilerPreferencesConstants.WARN_OBSOLETE_GUARD);
+		newCheckButton("Use of export_all", "The compiler option export_all",
+				CompilerPreferencesConstants.WARN_EXPORT_ALL);
+		newCheckButton("Unused Imports", "Unused imported functions",
+				CompilerPreferencesConstants.WARN_UNUSED_IMPORT);
 
-		final Button obsoleteGuatdsButton = new Button(warningsGroup, SWT.CHECK);
-		obsoleteGuatdsButton.setEnabled(false);
-		obsoleteGuatdsButton
-				.setToolTipText("calls to old type testing BIFs such as pid/1 and list/1");
-		obsoleteGuatdsButton.setSelection(true);
-		obsoleteGuatdsButton.setText("obsolete guards");
-
-		final Button useOfExport_allButton = new Button(warningsGroup,
-				SWT.CHECK);
-		useOfExport_allButton.setEnabled(false);
-		useOfExport_allButton.setSelection(true);
-		useOfExport_allButton.setText("use of export_all");
-
-		final Button unusedImportsButton = new Button(warningsGroup, SWT.CHECK);
-		unusedImportsButton.setEnabled(false);
-		unusedImportsButton.setToolTipText("unused imported functions");
-		unusedImportsButton.setSelection(true);
-		unusedImportsButton.setText("unused imports");
-
-		final Button variablesExportedOutsideButton = new Button(warningsGroup,
-				SWT.CHECK);
-		variablesExportedOutsideButton.setEnabled(false);
-		variablesExportedOutsideButton
-				.setToolTipText("implicitly exported variables referred to after the primitives where they were first defined");
-		variablesExportedOutsideButton.setSelection(true);
-		variablesExportedOutsideButton.setText("exported implicit variables");
-
-		final Button unusedVariablesButton = new Button(warningsGroup,
-				SWT.CHECK);
-		unusedVariablesButton.setEnabled(false);
-		unusedVariablesButton
-				.setToolTipText("variables which are not used, with the exception of variables beginning with an underscore");
-		unusedVariablesButton.setSelection(true);
-		unusedVariablesButton.setText("unused variables");
-
-		final Button shadowedVariablesButton = new Button(warningsGroup,
-				SWT.CHECK);
-		shadowedVariablesButton.setEnabled(false);
-		shadowedVariablesButton
-				.setToolTipText("\"fresh\" variables in functional objects or list comprehensions with the same name as some already defined variable");
-		shadowedVariablesButton.setSelection(true);
-		shadowedVariablesButton.setText("shadowed variables");
-
-		final Button unusedRecordsButton = new Button(warningsGroup, SWT.CHECK);
-		unusedRecordsButton.setEnabled(false);
-		unusedRecordsButton
-				.setToolTipText("unused locally defined record types");
-		unusedRecordsButton.setSelection(true);
-		unusedRecordsButton.setText("unused records");
-
-		final Button unusedFunctionsButton = new Button(warningsGroup,
-				SWT.CHECK);
-		unusedFunctionsButton.setEnabled(false);
-		unusedFunctionsButton
-				.setToolTipText("local functions that are not called directly or indirectly by an exported function");
-		unusedFunctionsButton.setSelection(true);
-		unusedFunctionsButton.setText("unused functions");
-		new Label(warningsGroup, SWT.NONE);
-
-		final Button warnForSourceButton = new Button(prefsComposite, SWT.CHECK);
-		warnForSourceButton.setEnabled(false);
-		warnForSourceButton
-				.setText("Warn for source files not on the project's source path");
+		// final Button variablesExportedOutsideButton = new
+		// Button(warningsGroup,
+		// SWT.CHECK);
+		// variablesExportedOutsideButton.setEnabled(false);
+		// variablesExportedOutsideButton
+		// .setToolTipText("implicitly exported variables referred to after the primitives where they were first defined");
+		// variablesExportedOutsideButton.setSelection(true);
+		// variablesExportedOutsideButton.setText("exported implicit variables");
+		//
+		// final Button unusedVariablesButton = new Button(warningsGroup,
+		// SWT.CHECK);
+		// unusedVariablesButton.setEnabled(false);
+		// unusedVariablesButton
+		// .setToolTipText("variables which are not used, with the exception of variables beginning with an underscore");
+		// unusedVariablesButton.setSelection(true);
+		// unusedVariablesButton.setText("unused variables");
+		//
+		// newCheckButtonInvertedOption(
+		// "Shadows Variables",
+		// "Variable name in fun or list comprehension shadows already defined variable",
+		// CompilerPreferencesConstants.NOWARN_SHADOW_VARS);
+		//
+		// final Button unusedRecordsButton = new Button(warningsGroup,
+		// SWT.CHECK);
+		// unusedRecordsButton.setEnabled(false);
+		// unusedRecordsButton
+		// .setToolTipText("unused locally defined record types");
+		// unusedRecordsButton.setSelection(true);
+		// unusedRecordsButton.setText("unused records");
+		//
+		// final Button unusedFunctionsButton = new Button(warningsGroup,
+		// SWT.CHECK);
+		// unusedFunctionsButton.setEnabled(false);
+		// unusedFunctionsButton
+		// .setToolTipText("local functions that are not called directly or indirectly by an exported function");
+		// unusedFunctionsButton.setSelection(true);
+		// unusedFunctionsButton.setText("unused functions");
+		// new Label(warningsGroup, SWT.NONE);
+		//
+		// final Button warnForSourceButton = new Button(prefsComposite,
+		// SWT.CHECK);
+		// warnForSourceButton.setEnabled(false);
+		// warnForSourceButton
+		// .setText("Warn for source files not on the project's source path");
 		// warnForSourceButton.setSelection(prefs.doWarnModuleNotOnSourcePath());
 
 		if (isProjectPreferencePage()) {
@@ -416,18 +400,30 @@ public class CompilerPreferencePage extends PropertyPage implements
 		return "org.erlide.ui.properties.compilerPreferencePage";
 	}
 
+	private void newCheckButtonInvertedOption(final String text,
+			final String toolTipText, final String optionKey) {
+		newCheckButtonWithInvertOption(text, toolTipText, optionKey, true);
+	}
+
 	private void newCheckButton(final String text, final String toolTipText,
 			final String optionKey) {
+		newCheckButtonWithInvertOption(text, toolTipText, optionKey, false);
+	}
+
+	private void newCheckButtonWithInvertOption(final String text,
+			final String toolTipText, final String optionKey,
+			final boolean inverted) {
 		final Button b = new Button(curGroup, SWT.CHECK);
 		b.setText(text);
 		b.setToolTipText(toolTipText);
-		b.setSelection(prefs.getBooleanOption(optionKey));
+		b.setSelection(prefs.getBooleanOption(optionKey) == !inverted);
 		b.setData(optionKey);
 		b.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final Button b = (Button) e.widget;
-				prefs.setBooleanOption((String) b.getData(), b.getSelection());
+				prefs.setBooleanOption((String) b.getData(),
+						b.getSelection() == !inverted);
 			}
 		});
 	}
