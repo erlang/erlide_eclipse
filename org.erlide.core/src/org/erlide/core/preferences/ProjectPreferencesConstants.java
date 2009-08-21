@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.core.preferences;
 
+
 /**
  * Constants used in project and plugin preferences
  * 
@@ -55,6 +56,10 @@ public final class ProjectPreferencesConstants {
 	public static final String INCLUDES = "includes";
 	public static final String DIRECTORY = "directory";
 	public static final String PROJECT = "project";
+
+	// tracing properties
+	public static final String TRACING = "tracing";
+	public static final String TRACED_MODULES = "modules";
 
 	private ProjectPreferencesConstants() {
 	}

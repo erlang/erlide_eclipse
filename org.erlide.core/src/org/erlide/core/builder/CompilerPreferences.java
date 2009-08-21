@@ -47,14 +47,18 @@ public class CompilerPreferences {
 		helper = new PreferencesHelper(QUALIFIER, project);
 	}
 
+	public boolean hasOptionsAtLowestScope() {
+		return helper.hasAnyAtLowestScope();
+	}
+
 	public void store() throws BackingStoreException {
-		// FIXME
 		helper.putString(CompilerPreferencesConstants.ALL_OPTIONS, allOptions);
 		for (final Map.Entry<String, Boolean> i : booleanOptions.entrySet()) {
 			helper.putBoolean(i.getKey(), i.getValue());
 		}
 		helper.putBoolean(CompilerPreferencesConstants.WARN_FORMAT_STRINGS,
 				warnFormat);
+		// FIXME
 		// helper.putBoolean(
 		// CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
 		// doWarnModuleNotOnSourcePath());
@@ -214,6 +218,7 @@ public class CompilerPreferences {
 			booleanOptions.put(optionKey, b);
 		}
 	}
+
 	// public void setWarnModuleNotOnSourcePath(boolean
 	// warnModuleNotOnSourcePath) {
 	// this.warnModuleNotOnSourcePath = warnModuleNotOnSourcePath;
@@ -223,4 +228,7 @@ public class CompilerPreferences {
 	// return warnModuleNotOnSourcePath;
 	// }
 
+	public void removeAllAtLowestScope() {
+		helper.removeAllAtLowestScope();
+	}
 }

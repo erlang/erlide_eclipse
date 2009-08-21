@@ -14,9 +14,8 @@ import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.window.Window;
+import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -50,11 +49,13 @@ public class CompilerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
 	CompilerPreferences prefs;
+	private Composite prefsComposite;
 	private Composite curGroup;
 	private IProject fProject;
 	private Button fUseProjectSettings;
 	private Link fChangeWorkspaceSettings;
 	private Text text;
+	protected ControlEnableState fBlockEnableState;
 
 	public CompilerPreferencePage() {
 		super();
@@ -67,9 +68,9 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 		performDefaults();
 
-		final Composite control = new Composite(parent, SWT.NONE);
+		prefsComposite = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout_1 = new GridLayout();
-		control.setLayout(gridLayout_1);
+		prefsComposite.setLayout(gridLayout_1);
 
 		final String message = "Until we make available a better user interface, \n"
 				+ "please enter the required options as Erlang terms. \n"
@@ -77,7 +78,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 				+ "Enclosing all options in a list is also accepted.\n\n"
 				+ "Note: Some options may not make sense here, for example \n"
 				+ "'outdir' and will be filtered out.\n";
-		final Link lblCompilerOptions = new Link(control, SWT.NONE);
+		final Link lblCompilerOptions = new Link(prefsComposite, SWT.NONE);
 		lblCompilerOptions.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -91,7 +92,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 				.setText("Compiler options in Erlang format       <a>Important info...</a>");
 		lblCompilerOptions.setToolTipText(message);
 
-		text = new Text(control, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		text = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(final ModifyEvent e) {
 				final String txt = text.getText().trim();
@@ -114,7 +115,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 		}
 		text.setText(prefs.getAllOptions());
 
-		final Label label = new Label(control, SWT.SEPARATOR | SWT.HORIZONTAL);
+		final Label label = new Label(prefsComposite, SWT.SEPARATOR
+				| SWT.HORIZONTAL);
 		{
 			final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
 					false, 1, 1);
@@ -122,7 +124,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 			label.setLayoutData(gridData);
 		}
 
-		final Group optionsGroup = new Group(control, SWT.NONE);
+		final Group optionsGroup = new Group(prefsComposite, SWT.NONE);
 		{
 			final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
 					false, 1, 1);
@@ -139,7 +141,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 				"Encrypt debug info, the key will be read from .erlang.crypt",
 				CompilerPreferencesConstants.ENCRYPT_DEBUG_INFO);
 
-		final Group warningsGroup = new Group(control, SWT.NONE);
+		final Group warningsGroup = new Group(prefsComposite, SWT.NONE);
 		{
 			final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false,
 					false, 1, 1);
@@ -226,13 +228,22 @@ public class CompilerPreferencePage extends PropertyPage implements
 		unusedFunctionsButton.setText("unused functions");
 		new Label(warningsGroup, SWT.NONE);
 
-		final Button warnForSourceButton = new Button(control, SWT.CHECK);
+		final Button warnForSourceButton = new Button(prefsComposite, SWT.CHECK);
 		warnForSourceButton.setEnabled(false);
 		warnForSourceButton
 				.setText("Warn for source files not on the project's source path");
 		// warnForSourceButton.setSelection(prefs.doWarnModuleNotOnSourcePath());
 
-		return control;
+		if (isProjectPreferencePage()) {
+			final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
+			enableProjectSpecificSettings(useProjectSettings);
+		}
+
+		return prefsComposite;
+	}
+
+	private boolean hasProjectSpecificOptions(final IProject project) {
+		return prefs.hasOptionsAtLowestScope();
 	}
 
 	private boolean isProjectPreferencePage() {
@@ -247,15 +258,36 @@ public class CompilerPreferencePage extends PropertyPage implements
 		return super.createDescriptionLabel(parent);
 	}
 
+	protected void enableProjectSpecificSettings(
+			final boolean useProjectSpecificSettings) {
+		fUseProjectSettings.setSelection(useProjectSpecificSettings);
+		enablePreferenceContent(useProjectSpecificSettings);
+		fChangeWorkspaceSettings.setEnabled(!useProjectSpecificSettings);
+		// doStatusChanged();
+	}
+
+	private void enablePreferenceContent(
+			final boolean useProjectSpecificSettings) {
+		if (useProjectSpecificSettings) {
+			if (fBlockEnableState != null) {
+				fBlockEnableState.restore();
+				fBlockEnableState = null;
+			}
+		} else {
+			if (fBlockEnableState == null) {
+				fBlockEnableState = ControlEnableState.disable(prefsComposite);
+			}
+		}
+	}
+
 	private void createProjectSpecificSettingsCheckBoxAndLink(
 			final Composite parent) {
 		if (isProjectPreferencePage()) {
 			final Composite composite = new Composite(parent, SWT.NONE);
 			composite.setFont(parent.getFont());
-			final GridLayout layout = new GridLayout();
+			final GridLayout layout = new GridLayout(2, false);
 			layout.marginHeight = 0;
 			layout.marginWidth = 0;
-			layout.numColumns = 2;
 			composite.setLayout(layout);
 			composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 					false));
@@ -279,7 +311,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 				@Override
 				public void widgetSelected(final SelectionEvent e) {
 					final boolean sel = fUseProjectSettings.getSelection();
-					fChangeWorkspaceSettings.setEnabled(!sel);
+					enableProjectSpecificSettings(sel);
 					super.widgetSelected(e);
 				}
 			});
@@ -334,26 +366,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 		if (isProjectPreferencePage()) {
 			openWorkspacePreferences(null);
 		} else {
-			final HashSet<IProject> projectsWithSpecifics = new HashSet<IProject>();
-		/*	try {
-				final IProject[] projects = JavaCore.create(
-						ResourcesPlugin.getWorkspace().getRoot())
-						.getJavaProjects();
-				for (int i = 0; i < projects.length; i++) {
-					final IJavaProject curr = projects[i];
-					if (hasProjectSpecificOptions(curr.getProject())) {
-						projectsWithSpecifics.add(curr);
-					}
-				}
-			} catch (final JavaModelException e) {
-				// ignore
-			}
-			final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
-					getShell(), projectsWithSpecifics);
-			if (dialog.open() == Window.OK) {
-				final IJavaProject res = (IJavaProject) dialog.getFirstResult();
-				openProjectProperties(res.getProject(), data);
-			}*/
+			new HashSet<IProject>();
 		}
 	}
 
@@ -401,6 +414,10 @@ public class CompilerPreferencePage extends PropertyPage implements
 	@Override
 	public boolean performOk() {
 		try {
+			if (!fUseProjectSettings.getSelection()
+					&& isProjectPreferencePage()) {
+				prefs.removeAllAtLowestScope();
+			}
 			prefs.store();
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
@@ -410,13 +427,10 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	@Override
 	protected void performDefaults() {
-		final IAdaptable element = getElement();
-		final IProject prj = element == null ? null : (IProject) element
-				.getAdapter(IProject.class);
-		if (prj == null) {
+		if (fProject == null) {
 			prefs = new CompilerPreferences();
 		} else {
-			prefs = new CompilerPreferences(prj);
+			prefs = new CompilerPreferences(fProject);
 		}
 		try {
 			prefs.load();

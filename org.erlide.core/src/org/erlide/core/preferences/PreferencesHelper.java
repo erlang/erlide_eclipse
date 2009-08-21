@@ -8,6 +8,7 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -120,7 +121,7 @@ public class PreferencesHelper {
 	public void putDouble(final String key, final double value) {
 		final double def = service.getDouble(qualifier, key, Double.NaN,
 				nextContexts);
-		if (Double.isNaN(def) || (Double.compare(def, value) != 0)) {
+		if (Double.isNaN(def) || Double.compare(def, value) != 0) {
 			storeContext.getNode(qualifier).putDouble(key, value);
 		}
 	}
@@ -136,7 +137,7 @@ public class PreferencesHelper {
 	public void putInt(final String key, final int value) {
 		final int def = service.getInt(qualifier, key, Integer.MIN_VALUE,
 				nextContexts);
-		if (def == Integer.MIN_VALUE || (Double.compare(def, value) != 0)) {
+		if (def == Integer.MIN_VALUE || Double.compare(def, value) != 0) {
 			storeContext.getNode(qualifier).putInt(key, value);
 		}
 	}
@@ -178,4 +179,31 @@ public class PreferencesHelper {
 		storeContext.getNode(qualifier).flush();
 	}
 
+	public boolean hasAnyAtLowestScope() {
+		final IScopeContext sc = loadContexts[0];
+		final IEclipsePreferences p = sc.getNode(qualifier);
+		if (p != null) {
+			try {
+				final String[] keys = p.keys();
+				return keys.length > 0;
+			} catch (final BackingStoreException e) {
+			}
+		}
+		return false;
+	}
+
+	public void removeAllAtLowestScope() {
+		final IScopeContext sc = loadContexts[0];
+		final IEclipsePreferences p = sc.getNode(qualifier);
+		if (p != null) {
+			try {
+				final String[] keys = p.keys();
+				for (final String key : keys) {
+					remove(key, sc);
+				}
+				flush();
+			} catch (final BackingStoreException e) {
+			}
+		}
+	}
 }
