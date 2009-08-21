@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -38,7 +42,10 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.builder.CompilerPreferencesConstants;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -242,8 +249,9 @@ public class CompilerPreferencePage extends PropertyPage implements
 		return prefsComposite;
 	}
 
-	private boolean hasProjectSpecificOptions(final IProject project) {
-		return prefs.hasOptionsAtLowestScope();
+	protected boolean hasProjectSpecificOptions(final IProject project) {
+		final CompilerPreferences p = new CompilerPreferences(project);
+		return p.hasOptionsAtLowestScope();
 	}
 
 	private boolean isProjectPreferencePage() {
@@ -252,9 +260,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 
 	@Override
 	protected Label createDescriptionLabel(final Composite parent) {
-		if (isProjectPreferencePage()) {
-			createProjectSpecificSettingsCheckBoxAndLink(parent);
-		}
+		createProjectSpecificSettingsCheckBoxAndLink(parent);
 		return super.createDescriptionLabel(parent);
 	}
 
@@ -366,7 +372,33 @@ public class CompilerPreferencePage extends PropertyPage implements
 		if (isProjectPreferencePage()) {
 			openWorkspacePreferences(null);
 		} else {
-			new HashSet<IProject>();
+			final List<IProject> erlProjects = new ArrayList<IProject>();
+			final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
+			final IErlModel model = ErlangCore.getModel();
+			try {
+				for (final IErlProject ep : model.getErlangProjects()) {
+					final IProject p = ep.getProject();
+					if (hasProjectSpecificOptions(p)) {
+						projectsWithSpecifics.add(p);
+					}
+					erlProjects.add(p);
+				}
+			} catch (final ErlModelException e) {
+			}
+			final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
+					getShell(), erlProjects, projectsWithSpecifics);
+			if (dialog.open() == Window.OK) {
+				final IProject res = (IProject) dialog.getFirstResult();
+				openProjectProperties(res);
+			}
+		}
+	}
+
+	private void openProjectProperties(final IProject project) {
+		final String id = getPropertyPageID();
+		if (id != null) {
+			PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
+					new String[] { id }, null).open();
 		}
 	}
 
@@ -376,8 +408,12 @@ public class CompilerPreferencePage extends PropertyPage implements
 				new String[] { id }, data).open();
 	}
 
-	private String getPreferencePageID() {
+	protected String getPreferencePageID() {
 		return "org.erlide.ui.preferences.compiler";
+	}
+
+	protected String getPropertyPageID() {
+		return "org.erlide.ui.properties.compilerPreferencePage";
 	}
 
 	private void newCheckButton(final String text, final String toolTipText,
