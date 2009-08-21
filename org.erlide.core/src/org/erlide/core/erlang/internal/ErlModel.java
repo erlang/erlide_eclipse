@@ -108,7 +108,9 @@ public class ErlModel extends Openable implements IErlModel {
 				.getProjects();
 		for (final IProject project : projects) {
 			if (ErlideUtil.hasErlangNature(project)) {
-				addChild(modelManager.create(project, this));
+				if (getErlangProject(project.getName()) == null) {
+					addChild(modelManager.create(project, this));
+				}
 			}
 		}
 
