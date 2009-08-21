@@ -443,6 +443,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 	@Override
 	public void setElement(final IAdaptable element) {
 		fProject = (IProject) element.getAdapter(IResource.class);
+		super.setElement(element);
 	}
 
 	public void init(final IWorkbench workbench) {
