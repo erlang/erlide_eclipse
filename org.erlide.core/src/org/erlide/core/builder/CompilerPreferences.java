@@ -183,6 +183,7 @@ public class CompilerPreferences {
 			}
 		}
 
+		result.add(new OtpErlangAtom("debug_info"));
 		OtpErlangList list = JInterfaceFactory.mkList(result);
 		return list;
 	}

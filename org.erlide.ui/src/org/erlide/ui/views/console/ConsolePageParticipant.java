@@ -297,8 +297,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 */
 	public void debugContextChanged(DebugContextEvent event) {
 		if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
-			if (fView != null
-					&& getProcess().equals(DebugUITools.getCurrentProcess())) {
+			IProcess process = getProcess();
+			if (fView != null && process != null
+					&& process.equals(DebugUITools.getCurrentProcess())) {
 				fView.display(fConsole);
 			}
 		}
