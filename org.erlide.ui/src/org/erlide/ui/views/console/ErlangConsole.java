@@ -56,7 +56,8 @@ public class ErlangConsole extends AbstractConsole {
 
 	@Override
 	public String getName() {
-		return "Erlang: " + shell.toString();
+		return "Erlang: " + shell.getBackend().getInfo().toString() + " "
+				+ shell.hashCode();
 	}
 
 	@Override

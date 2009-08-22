@@ -68,7 +68,7 @@ public class ErlLaunchData {
 	}
 
 	public void debugPrint(String mode) {
-		ErlLogger.info("Debug:: about to start a backend in " + mode
+		ErlLogger.info("About to start a backend in " + mode
 				+ " mode, with attributes::");
 		ErlLogger.info("  projects: " + Arrays.toString(projectNames));
 		if (module.length() > 0) {

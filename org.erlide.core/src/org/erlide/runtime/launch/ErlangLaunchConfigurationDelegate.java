@@ -126,7 +126,10 @@ public class ErlangLaunchConfigurationDelegate implements
 		// important, so that we don't get the "normal" console
 		launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "false");
 
-		if (config.getAttribute(ErlLaunchAttributes.INTERNAL, false)) {
+		if (data.isInternal) {
+			// TODO remove after debugging
+			Thread.dumpStack();
+
 			ErlLogger.debug("Not creating a backend");
 			return;
 		}
