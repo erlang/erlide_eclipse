@@ -20,12 +20,17 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PartInitException;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -36,6 +41,7 @@ import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.IErlangDebugNode;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
+import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
@@ -203,6 +209,23 @@ public class InterpretedModulesView extends AbstractDebugView implements
 		checkboxTreeViewer.setLabelProvider(new DebugTab.TreeLabelProvider());
 		checkboxTreeViewer
 				.setContentProvider(new DebugTab.TreeContentProvider());
+		checkboxTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			public void doubleClick(final DoubleClickEvent event) {
+				final StructuredSelection ss = (StructuredSelection) event
+						.getSelection();
+				final Object o = ss.getFirstElement();
+				if (o instanceof DebugTab.DebugTreeItem) {
+					final DebugTab.DebugTreeItem item = (DebugTab.DebugTreeItem) o;
+					try {
+						EditorUtility.openInEditor(item.getItem());
+					} catch (final PartInitException e) {
+					} catch (final ErlModelException e) {
+					}
+				}
+			}
+
+		});
 		DebugUITools.getDebugContextManager().addDebugContextListener(this);
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		return checkboxTreeViewer;
