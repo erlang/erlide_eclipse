@@ -70,7 +70,9 @@ public class ManagedLauncher implements IDisposable {
 						final String msg = "Backend '%s' terminated with exit code %d.";
 						ErlLogger.error(msg, info.getNodeName(), v);
 
-						if ((v > 1) && ErlideUtil.isEricssonUser()) {
+						// 143=SIGTERM (probably logout, ignore)
+						if ((v > 1) && (v != 143)
+								&& ErlideUtil.isEricssonUser()) {
 							final String plog = ErlideUtil.fetchPlatformLog();
 							final String elog = ErlideUtil.fetchErlideLog();
 							final String delim = "\n==================================\n";
