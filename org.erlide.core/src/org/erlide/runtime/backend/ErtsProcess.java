@@ -27,6 +27,7 @@ import org.erlide.jinterface.util.ErlLogger;
 public class ErtsProcess extends RuntimeProcess {
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
+	public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
 
 	@SuppressWarnings( { "unused", "unchecked" })
 	private final Map fAttributes = new HashMap();

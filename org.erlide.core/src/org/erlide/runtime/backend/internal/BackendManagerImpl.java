@@ -178,8 +178,10 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			info.setCookie("erlide");
 			info.hasConsole(false);
 			// will add workspace unique id
-			b = createBackend(info, EnumSet.of(BackendOptions.AUTOSTART,
-					BackendOptions.NO_CONSOLE, BackendOptions.INTERNAL));
+			final EnumSet<BackendOptions> options = EnumSet.of(
+					BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
+					BackendOptions.INTERNAL);
+			b = createBackend(info, options);
 			buildBackends.put(version, b);
 		}
 		ErlLogger.info("BUILD project %s on %s", project.getName(), info
@@ -191,22 +193,21 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 			Set<BackendOptions> options) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager
-				.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE);
+				.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
 		ILaunchConfigurationWorkingCopy workingCopy;
 		try {
-			workingCopy = type.newInstance(null, "some erlang node");
+			workingCopy = type.newInstance(null, "internal "
+					+ info.getNodeName());
 			workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME, info
 					.getNodeName());
 			workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, info
 					.getName());
 			workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, info
 					.getCookie());
-			if (options.contains(BackendOptions.NO_CONSOLE)) {
-				workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE, false);
-			}
-			if (options.contains(BackendOptions.INTERNAL)) {
-				workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL, true);
-			}
+			workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE, !options
+					.contains(BackendOptions.NO_CONSOLE));
+			workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL, options
+					.contains(BackendOptions.INTERNAL));
 			return workingCopy.doSave();
 		} catch (CoreException e) {
 			e.printStackTrace();
