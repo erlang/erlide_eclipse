@@ -127,9 +127,6 @@ public class ErlangLaunchConfigurationDelegate implements
 		launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "false");
 
 		if (data.isInternal) {
-			// TODO remove after debugging
-			Thread.dumpStack();
-
 			ErlLogger.debug("Not creating a backend");
 			return;
 		}
