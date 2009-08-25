@@ -47,7 +47,7 @@ public class RpcUtil {
 		try {
 			if (mbox != null) {
 				if (CHECK_RPC) {
-					debug("SEND :: " + pid + " " + msg);
+					debug("SEND " + pid + "-> " + msg);
 				}
 				mbox.send(pid, TypeConverter.java2erlang(msg, "x"));
 			}
@@ -71,7 +71,7 @@ public class RpcUtil {
 		try {
 			if (mbox != null) {
 				if (CHECK_RPC) {
-					debug("SEND :: " + name + " " + msg);
+					debug("SEND " + name + "-> " + msg);
 				}
 				mbox.send(name, peer, TypeConverter.java2erlang(msg, "x"));
 			}
@@ -149,7 +149,7 @@ public class RpcUtil {
 		res = RpcUtil.buildRpcCall(mbox.self(), gleader, module, fun, args);
 		mbox.send("rex", peer, res);
 		if (CHECK_RPC) {
-			debug("RPC call:: " + res);
+			debug("RPC " + mbox.hashCode() + "=> " + res);
 		}
 		return new RpcFuture(mbox);
 	}
@@ -187,7 +187,7 @@ public class RpcUtil {
 					res = mbox.receive(timeout);
 				}
 				if (CHECK_RPC) {
-					debug("    <= " + res);
+					debug("RPC " + mbox.hashCode() + "<= " + res);
 				}
 			} finally {
 				mbox.close();
@@ -243,7 +243,7 @@ public class RpcUtil {
 		res = RpcUtil.buildRpcCastMsg(gleader, module, fun, args);
 		RpcUtil.send(node, peer, "rex", res);
 		if (CHECK_RPC) {
-			debug("RPC cast:: " + res);
+			debug("RPC _cast_" + "=> " + res);
 		}
 	}
 
