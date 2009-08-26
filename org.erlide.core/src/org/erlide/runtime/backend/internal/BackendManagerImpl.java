@@ -208,6 +208,12 @@ public final class BackendManagerImpl extends OtpNodeStatus implements
 					.contains(BackendOptions.NO_CONSOLE));
 			workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL, options
 					.contains(BackendOptions.INTERNAL));
+			if (System.getProperty("erlide.internal.shortname", "false")
+					.equals("true")) {
+				workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+						false);
+				info.useLongName(false);
+			}
 			return workingCopy.doSave();
 		} catch (CoreException e) {
 			e.printStackTrace();

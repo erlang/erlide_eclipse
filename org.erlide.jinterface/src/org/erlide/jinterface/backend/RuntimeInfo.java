@@ -147,7 +147,7 @@ public class RuntimeInfo {
 		}
 		cky = cky == null ? "" : " -setcookie " + cky;
 		final boolean globalLongName = System.getProperty("erlide.longname",
-				"none").equals("true");
+				"false").equals("true");
 		final String nameTag = (useLongName || globalLongName) ? " -name "
 				: " -sname ";
 		String nameOption = "";
