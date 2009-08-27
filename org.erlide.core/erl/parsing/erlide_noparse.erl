@@ -25,7 +25,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 16).
+-define(CACHE_VERSION, 18).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -740,10 +740,10 @@ get_function_comment(F, []) ->
     F;
 get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{last_line=LastLine, value=Value} | _])
   when LastLine+1=:=Line; LastLine+2=:=Line->
-    F#function{comment=Value};
+    F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{line=LastLine, last_line=undefined, value=Value} | _])
   when LastLine+1=:=Line; LastLine+2=:=Line->
-    F#function{comment=Value};
+    F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(F, [_ | Rest]) ->
     get_function_comment(F, Rest).
 

@@ -24,9 +24,10 @@
          get_line_offsets/1,
          detab/3, entab/3, start_column/2, initial_whitespace/1,
          left_strip/1, right_strip/1, strip/1,
+	 strip_percents_and_spaces/1,
 	 strip_comments/1, skip_expr/1]).
 
-%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -363,7 +364,7 @@ get_line_offsets([_|Rest], O, Acc) ->
     get_line_offsets(Rest, O+1, Acc).
 
 %% @doc Strip initial tabs and spaces from string
-%% @spec (S::string()) -> T::string
+%% @spec (S::string()) -> T::string()
 
 left_strip(" "++S) ->
     S;
@@ -371,6 +372,21 @@ left_strip("\t"++S) ->
     S;
 left_strip(S) -> 
     S.
+
+%% @doc Strip inital percent signs and initial and trailing spaces from each line string
+%% @spec(S:string()) -> T::string()
+
+strip_percents_and_spaces(S) ->
+    ?D(S),
+    Lines = string:tokens(S, "\n"),
+    StripLines = [strip_p(L) || L <- Lines],
+    ?D(StripLines),
+    string:join(StripLines, "\n").
+
+strip_p([$% | Rest]) ->
+    strip_p(Rest);
+strip_p(S) ->
+    strip(S).
 
 %% @doc Strip ending tabs and spaces from string
 %% @spec (S::string()) -> T::string
