@@ -35,7 +35,7 @@ import org.erlide.ui.util.StatusInfo;
 
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 
-	private final class OurLabelProvider implements ILabelProvider {
+	final class OurLabelProvider implements ILabelProvider {
 		public Image getImage(final Object element) {
 			// TODO Auto-generated method stub
 			return null;
@@ -68,7 +68,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 		}
 	}
 
-	private final class OurContentProvider implements IStructuredContentProvider {
+	final class OurContentProvider implements IStructuredContentProvider {
 		public void dispose() {
 		}
 
@@ -189,7 +189,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 		dialogSettings.put(DIALOG_SETTINGS_SHOW_ALL, !selected);
 	}
 
-	private void doSelectionChanged(final Object[] objects) {
+	void doSelectionChanged(final Object[] objects) {
 		if (objects.length != 1) {
 			updateStatus(new StatusInfo(IStatus.ERROR, "")); //$NON-NLS-1$
 			setSelectionResult(null);

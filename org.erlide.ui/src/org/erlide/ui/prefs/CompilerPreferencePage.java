@@ -352,7 +352,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 		return link;
 	}
 
-	private void doLinkActivated(final Link widget) {
+	void doLinkActivated(final Link widget) {
 		if (isProjectPreferencePage()) {
 			openWorkspacePreferences(null);
 		} else {
