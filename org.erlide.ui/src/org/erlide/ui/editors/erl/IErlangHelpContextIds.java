@@ -42,6 +42,8 @@ public class IErlangHelpContextIds {
 
 	public static final String ERLANG_LINE_BREAKPOINT_PROPERTY_PAGE = "erlangLineBreakpointPropertyPage";
 
+	public static final String ERLANG_TRACING_DIALOG = "erlangTracingDialog";
+
 	public static final String OPEN_MODULE_DIALOG = "openModuleDialog";
 
 	public static final String OPEN_MODULE_ACTION = "openModuleAction";
