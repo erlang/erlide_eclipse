@@ -2,7 +2,6 @@ package org.erlide.runtime.backend.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -49,7 +48,8 @@ public class ManagedLauncher implements IDisposable {
 
 		String cmd = info.getCmdLine();
 		String[] cmds = cmd.split(" ");
-		if (System.getenv("erlide.internal.coredump").equals("true")) {
+		String env = System.getenv("erlide.internal.coredump");
+		if ("true".equals(env)) {
 			cmd = "tcsh -c \"limit coredumpsize unlimited ; exec " + cmd + "\"";
 			cmds = new String[] { "tcsh", "-c",
 					"limit coredumpsize unlimited ; exec " + cmd };
