@@ -333,7 +333,15 @@ public class ErlideUtil {
 		return withoutExtension(p.lastSegment());
 	}
 
-	public static String getLocation() {
+	public static String getReportFile() {
+		String s = getReportLocation();
+		final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		return s + "/" + System.getProperty("user.name") + "_" + tstamp
+				+ ".txt";
+	}
+
+	public static String getReportLocation() {
 		String s;
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
 			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
@@ -344,10 +352,7 @@ public class ErlideUtil {
 		if (!dir.exists()) {
 			s = System.getProperty("user.home");
 		}
-		final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-				.format(new Date());
-		return s + "/" + System.getProperty("user.name") + "_" + tstamp
-				+ ".txt";
+		return s;
 	}
 
 	public static String fetchErlideLog() {

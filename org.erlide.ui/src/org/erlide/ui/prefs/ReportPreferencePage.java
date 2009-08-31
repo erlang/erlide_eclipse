@@ -140,7 +140,7 @@ public class ReportPreferencePage extends PreferencePage implements
 	}
 
 	protected void postReport() {
-		final String location = ErlideUtil.getLocation();
+		final String location = ErlideUtil.getReportFile();
 		final boolean attach = attachTechnicalDataButton.getSelection();
 		final String title = ftitle.getText();
 		final String contact = fcontact.getText();
