@@ -44,15 +44,17 @@ public class ManagedLauncher implements IDisposable {
 		}
 
 		String cmd = info.getCmdLine();
+		String[] cmds = cmd.split(" ");
 		if (System.getProperty("erlide.internal.coredump").equals("true")) {
-			cmd = "tcsh -c \"limit coredumpsize unlimited ; " + cmd + "\"";
+			cmd = "tcsh -c \"limit coredumpsize unlimited ; exec " + cmd + "\"";
+			cmds = new String[]{"tcsh", "-c", "limit coredumpsize unlimited ; exec " + cmd};
 		}
-
+		
 		final File workingDirectory = new File(info.getWorkingDir());
 		ErlLogger.debug("START node :> " + cmd + " *** " + workingDirectory);
 
 		try {
-			fRuntime = Runtime.getRuntime().exec(cmd, null, workingDirectory);
+			fRuntime = Runtime.getRuntime().exec(cmds, null, workingDirectory);
 
 			ErtsProcess erts = new ErtsProcess(launch, fRuntime, info
 					.getNodeName(), null);
