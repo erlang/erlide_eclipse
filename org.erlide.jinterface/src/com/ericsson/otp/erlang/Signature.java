@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Signature {
-	private static final Map<String, Signature[]> cache = new HashMap<String, Signature[]>();
+	private static final Map<String, Signature[]> CACHE = new HashMap<String, Signature[]>();
 	private static boolean useCache = true;
 
 	public char kind = 'x';
@@ -56,7 +56,7 @@ public class Signature {
 		}
 		Signature[] result;
 		if (useCache) {
-			result = cache.get(signature);
+			result = CACHE.get(signature);
 			if (result != null) {
 				return result;
 			}
@@ -70,7 +70,7 @@ public class Signature {
 		}
 		result = type.toArray(new Signature[type.size()]);
 		if (useCache) {
-			cache.put(signature, result);
+			CACHE.put(signature, result);
 		}
 		return result;
 	}

@@ -125,7 +125,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 	}
 
 	public void doAddFunction(final String name, final int arity) {
-		final Object[] data = { name, new Integer(arity) };
+		final Object[] data = { name, Integer.valueOf(arity) };
 		functions.add(data);
 	}
 

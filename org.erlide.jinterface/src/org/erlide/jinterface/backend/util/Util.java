@@ -550,12 +550,13 @@ public final class Util {
 			for (int i = 0; i < length; i++) {
 				final char currentChar = nextChar;
 				nextChar = i < length - 1 ? text[i + 1] : ' ';
-				switch (currentChar) {
-				case '\n':
+				if (currentChar == '\n') {
 					return "\n"; //$NON-NLS-1$
-				case '\r':
+				}
+				if (currentChar == '\r') {
 					return nextChar == '\n' ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
+
 			}
 		}
 		// not found

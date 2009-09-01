@@ -25,7 +25,7 @@ import com.ericsson.otp.erlang.OtpPatternVariable;
 import com.ericsson.otp.erlang.Signature;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class ErlUtils {
+public final class ErlUtils {
 
 	private ErlUtils() {
 	}

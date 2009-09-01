@@ -31,9 +31,7 @@ public abstract class AsyncCaller<T> implements Runnable {
 		this.interval = interval;
 	}
 
-	protected T prepare() {
-		return null;
-	}
+	protected abstract T prepare();
 
 	protected abstract RpcFuture call() throws BackendException;
 

@@ -91,7 +91,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			setRef(ref);
 		}
 
-		public void setRef(final ErlangExternalFunctionCallRef ref) {
+		public final void setRef(final ErlangExternalFunctionCallRef ref) {
 			this.ref = ref;
 		}
 
@@ -737,7 +737,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			final String text, final int data, final boolean isSelected) {
 		final Button button = new Button(parent, style);
 		button.setText(text);
-		button.setData(new Integer(data));
+		button.setData(Integer.valueOf(data));
 		button.setLayoutData(new GridData());
 		button.setSelection(isSelected);
 		return button;

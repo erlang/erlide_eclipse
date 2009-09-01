@@ -42,7 +42,7 @@ public class TermParser {
 	}
 
 	private static OtpErlangObject parse(final List<Token> tokens)
-	throws ParserException {
+			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
@@ -84,7 +84,7 @@ public class TermParser {
 
 	private static OtpErlangObject parseList(final List<Token> tokens,
 			final Stack<OtpErlangObject> stack, OtpErlangObject tail)
-	throws ParserException {
+			throws ParserException {
 		if (tokens.size() == 0) {
 			return null;
 		}
@@ -100,16 +100,17 @@ public class TermParser {
 				return null;
 			}
 		} else {
+			OtpErlangObject atail = tail;
 			if (t.kind == TokenKind.CONS) {
 				tokens.remove(0);
-				tail = parse(tokens);
+				atail = parse(tokens);
 			} else {
 				stack.push(parse(tokens));
 				if (tokens.get(0).kind == TokenKind.COMMA) {
 					tokens.remove(0);
 				}
 			}
-			return parseList(tokens, stack, tail);
+			return parseList(tokens, stack, atail);
 		}
 	}
 
@@ -240,20 +241,20 @@ public class TermParser {
 				result.text = result.text.substring(1);
 			} else if (ch == '"' || ch == '\'') {
 				result.text = result.text
-				.substring(1, result.text.length() - 1);
+						.substring(1, result.text.length() - 1);
 			}
 			return result;
 		}
 	}
 
 	private static List<Token> scan(String s) {
-		s = s + " ";
+		String ss = s + " ";
 		final List<Token> result = new ArrayList<Token>();
-		Token t = Token.nextToken(s);
+		Token t = Token.nextToken(ss);
 		while (t != null) {
 			result.add(t);
-			s = s.substring(t.end);
-			t = Token.nextToken(s);
+			ss = ss.substring(t.end);
+			t = Token.nextToken(ss);
 		}
 		return result;
 	}

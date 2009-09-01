@@ -26,7 +26,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.Signature;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class RpcUtil {
+public final class RpcUtil {
 	public static final int INFINITY = -1;
 
 	// use this for debugging

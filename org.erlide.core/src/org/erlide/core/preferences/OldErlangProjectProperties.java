@@ -27,7 +27,8 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class OldErlangProjectProperties implements IPreferenceChangeListener {
+public final class OldErlangProjectProperties implements
+		IPreferenceChangeListener {
 
 	private IProject project;
 

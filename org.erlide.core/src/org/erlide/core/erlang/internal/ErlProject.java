@@ -425,7 +425,7 @@ public class ErlProject extends Openable implements IErlProject {
 	 * @see IErlProject#getRequiredProjectNames()
 	 */
 	public String[] getRequiredProjectNames() throws ErlModelException {
-		return null;
+		return new String[0];
 
 		// return this.projectPrerequisites(getResolvedClasspath(true, false,
 		// false));

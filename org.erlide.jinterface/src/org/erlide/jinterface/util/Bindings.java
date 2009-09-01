@@ -23,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class Bindings {
+public final class Bindings {
 
 	private final Map<String, OtpErlangObject> bindings;
 

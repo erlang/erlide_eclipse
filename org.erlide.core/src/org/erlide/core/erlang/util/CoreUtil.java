@@ -21,7 +21,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.jinterface.backend.util.CharOperation;
 import org.erlide.jinterface.backend.util.Util;
 
-public class CoreUtil {
+public final class CoreUtil {
 	/**
 	 * Returns the given file's contents as a byte array.
 	 * 

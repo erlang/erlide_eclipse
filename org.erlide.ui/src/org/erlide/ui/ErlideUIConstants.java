@@ -15,7 +15,7 @@ package org.erlide.ui;
  * 
  * @author Vlad Dumitrescu
  */
-public class ErlideUIConstants {
+public final class ErlideUIConstants {
 
 	/**
 	 * The icon path

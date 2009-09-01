@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.osgi.util.NLS;
 
-public class PreferenceMessages {
+public final class PreferenceMessages {
 	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.PreferenceMessages"; //$NON-NLS-1$
 
 	public static String InstalledRuntimesBlock_name;

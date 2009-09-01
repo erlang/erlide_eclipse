@@ -21,7 +21,7 @@ import org.erlide.jinterface.backend.BackendShell;
 import org.erlide.jinterface.backend.BackendShellListener;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 
-public class ErlConsoleDocument extends Document implements
+public final class ErlConsoleDocument extends Document implements
 		BackendShellListener {
 
 	private static String[] LEGAL_CONTENT_TYPES = null;

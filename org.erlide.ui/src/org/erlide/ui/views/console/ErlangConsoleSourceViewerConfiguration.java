@@ -11,7 +11,6 @@
 package org.erlide.ui.views.console;
 
 import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -45,12 +44,6 @@ final class ErlangConsoleSourceViewerConfiguration extends
 
 	private DoubleClickStrategy doubleClickStrategy;
 	private ICharacterPairMatcher fBracketMatcher;
-
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(
-			final ISourceViewer sourceViewer, final String contentType) {
-		return null;
-	}
 
 	@Override
 	public IContentAssistant getContentAssistant(

@@ -24,7 +24,7 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
-public class PropertiesUtils {
+public final class PropertiesUtils {
 	public static ErlangProjectProperties convertOld(
 			final OldErlangProjectProperties old) {
 		ErlangProjectProperties result = new ErlangProjectProperties();

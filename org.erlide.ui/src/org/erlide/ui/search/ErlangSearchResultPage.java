@@ -176,7 +176,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				return text;
 			}
 			final String format = "{0} ({1} matches)";
-			return MessageFormat.format(format, text, new Integer(matchCount));
+			return MessageFormat.format(format, text, Integer
+					.valueOf(matchCount));
 		}
 
 		@Override
@@ -409,7 +410,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		// SearchMessages.FileSearchPage_sort_path_label, this,
 		// FileLabelProvider.SHOW_PATH_LABEL);
 
-		setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
+		setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
 	}
 
 	@Override
@@ -491,8 +492,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			marker = file.createMarker(NewSearchUI.SEARCH_MARKER);
 			final HashMap<String, Integer> attributes = new HashMap<String, Integer>(
 					4);
-			attributes.put(IMarker.CHAR_START, new Integer(offset));
-			attributes.put(IMarker.CHAR_END, new Integer(offset + length));
+			attributes.put(IMarker.CHAR_START, Integer.valueOf(offset));
+			attributes.put(IMarker.CHAR_END, Integer.valueOf(offset + length));
 			marker.setAttributes(attributes);
 			IDE.gotoMarker(editor, marker);
 		} catch (final CoreException e) {
@@ -606,7 +607,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				elementLimit = value.intValue();
 			}
 		}
-		setElementLimit(new Integer(elementLimit));
+		setElementLimit(Integer.valueOf(elementLimit));
 	}
 
 	@Override

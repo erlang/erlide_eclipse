@@ -10,7 +10,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class PathSerializer {
+public final class PathSerializer {
 
 	public static final String SEP = ";";
 

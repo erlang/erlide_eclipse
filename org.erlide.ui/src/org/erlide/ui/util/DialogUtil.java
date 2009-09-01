@@ -14,7 +14,7 @@ import org.eclipse.ui.PartInitException;
  * Note that a copy of this class exists in the org.eclipse.ui.internal package.
  * </p>
  */
-public class DialogUtil {
+public final class DialogUtil {
 
 	/**
 	 * Prevent instantiation.

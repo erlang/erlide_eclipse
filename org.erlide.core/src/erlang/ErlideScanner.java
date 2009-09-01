@@ -63,7 +63,7 @@ public class ErlideScanner {
 			final OtpErlangObject ot = t1.elementAt(1);
 			if (ot instanceof OtpErlangTuple) {
 				final OtpErlangTuple tt = (OtpErlangTuple) ot;
-				return new ErlToken(tt, 0);
+				return new ErlToken(tt);
 			}
 		}
 		return null;
@@ -127,7 +127,7 @@ public class ErlideScanner {
 					toks = new ArrayList<ErlToken>(l.arity() + 1);
 					for (final OtpErlangObject o : l) {
 						final OtpErlangTuple t = (OtpErlangTuple) o;
-						final ErlToken tk = new ErlToken(t, 0);
+						final ErlToken tk = new ErlToken(t);
 						tk.fixOffset(offset);
 						toks.add(tk);
 					}

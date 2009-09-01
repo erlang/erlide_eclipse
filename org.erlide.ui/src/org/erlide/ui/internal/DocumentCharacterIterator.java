@@ -63,13 +63,15 @@ public class DocumentCharacterIterator implements CharacterIterator,
 	public DocumentCharacterIterator(final IDocument document, final int first,
 			final int last) throws IllegalArgumentException {
 		if (document == null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException("document can't be null");
 		}
 		if (first < 0 || first > last) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(
+					"iterating outside document bounds");
 		}
 		if (last > document.getLength()) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(
+					"iterating outside document bounds");
 		}
 		fDocument = document;
 		fFirst = first;

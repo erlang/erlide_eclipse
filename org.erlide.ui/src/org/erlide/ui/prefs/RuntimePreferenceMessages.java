@@ -2,7 +2,7 @@ package org.erlide.ui.prefs;
 
 import org.eclipse.osgi.util.NLS;
 
-public class RuntimePreferenceMessages extends NLS {
+public final class RuntimePreferenceMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.RuntimePreferenceMessages"; //$NON-NLS-1$
 
 	public static String duplicate;

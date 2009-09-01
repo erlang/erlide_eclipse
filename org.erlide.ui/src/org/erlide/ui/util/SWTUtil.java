@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * Utility class to simplify access to some SWT resources.
  */
-public class SWTUtil {
+public final class SWTUtil {
 
 	private SWTUtil() {
 	}

@@ -318,8 +318,7 @@ public final class ErlParser {
 				// r.setParseTree(val);
 				return r;
 			}
-		}
-		if ("import".equals(nameS)) {
+		} else if ("import".equals(nameS)) {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple t = (OtpErlangTuple) val;
 				if (t.elementAt(0) instanceof OtpErlangAtom

@@ -17,7 +17,7 @@ package org.erlide.core.preferences;
  */
 class Base64 {
 
-	private static final byte equalSign = (byte) '=';
+	private static final byte EQUAL_SIGN = (byte) '=';
 
 	private static char[] digits = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 			'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
@@ -40,7 +40,7 @@ class Base64 {
 			return data;
 		}
 		int lastRealDataIndex = data.length - 1;
-		while (data[lastRealDataIndex] == equalSign) {
+		while (data[lastRealDataIndex] == EQUAL_SIGN) {
 			lastRealDataIndex--;
 		}
 		// original data digit is 8 bits long, but base64 digit is 6 bits long
@@ -68,8 +68,7 @@ class Base64 {
 		}
 		// Now we do the extra bytes in case the original (non-encoded) data
 		// was not multiple of 3 bytes
-		switch (padBytes) {
-		case 1:
+		if (padBytes == 1) {
 			// 1 pad byte means 3 (4-1) extra Base64 bytes of input, 18
 			// bits, of which only 16 are meaningful
 			// Or: 2 bytes of result data
@@ -91,8 +90,7 @@ class Base64 {
 				// bits
 				allBits = allBits >>> 8;
 			}
-			break;
-		case 2:
+		} else if (padBytes == 2) {
 			// 2 pad bytes mean 2 (4-2) extra Base64 bytes of input, 12 bits
 			// of data, of which only 8 are meaningful
 			// Or: 1 byte of result data
@@ -113,7 +111,6 @@ class Base64 {
 			result[resultIndex] = (byte) (allBits & 0xff); // Bottom
 			// 8
 			// bits
-			break;
 		}
 		return result;
 	}
@@ -181,8 +178,7 @@ class Base64 {
 		}
 		// Now we do the extra bytes in case the original (non-encoded) data
 		// is not multiple of 4 bytes
-		switch (extraBytes) {
-		case 1:
+		if (extraBytes == 1) {
 			allBits = data[dataIndex++]; // actual byte
 			allBits = allBits << 8; // 8 bits of zeroes
 			allBits = allBits << 8; // 8 bits of zeroes
@@ -196,8 +192,7 @@ class Base64 {
 			// 2 pad tags
 			result[result.length - 1] = (byte) '=';
 			result[result.length - 2] = (byte) '=';
-			break;
-		case 2:
+		} else if (extraBytes == 2) {
 			allBits = data[dataIndex++]; // actual byte
 			allBits = (allBits << 8) | (data[dataIndex++] & 0xff); // actual
 			// byte
@@ -211,7 +206,6 @@ class Base64 {
 			}
 			// 1 pad tag
 			result[result.length - 1] = (byte) '=';
-			break;
 		}
 		return result;
 	}
