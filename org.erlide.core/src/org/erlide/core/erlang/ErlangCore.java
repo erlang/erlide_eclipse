@@ -43,7 +43,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.RuntimeInfoManager;
-import org.erlide.runtime.backend.internal.BackendManagerImpl;
 
 /**
  * <p>
@@ -83,7 +82,7 @@ public final class ErlangCore {
 	}
 
 	public static final BackendManager getBackendManager() {
-		return BackendManagerImpl.getDefault();
+		return BackendManager.getDefault();
 	}
 
 	public static OldErlangProjectProperties getProjectProperties(
