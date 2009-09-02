@@ -82,10 +82,10 @@ Extensions may optionally contribute a preference block which will appear on the
          <attribute name="preferencesClass" type="string">
             <annotation>
                <documentation>
-                  An implementation of org.erlide.ui.editors.folding.IErlangFoldingPreferenceBlock
+                  An implementation of org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.ui.editors.folding.IErlangFoldingPreferenceBlock"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -106,7 +106,7 @@ Extensions may optionally contribute a preference block which will appear on the
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         See &lt;code&gt;org.erlide.ui.editors.folding.DefaultErlangFoldingStructureProvider&lt;/code&gt; for an example.
+         See &lt;code&gt;org.erlide.ui.editors.erl.folding.DefaultErlangFoldingStructureProvider&lt;/code&gt; for an example.
       </documentation>
    </annotation>
 
@@ -124,8 +124,8 @@ Extensions may optionally contribute a preference block which will appear on the
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         &lt;code&gt;org.erlide.ui.editors.folding.DefaultErlangFoldingStructureProvider&lt;/code&gt; provides the default folding structure for the Erlang editor.
-         &lt;code&gt;org.erlide.ui.editors.folding.DefaultErlangFoldingPreferenceBlock&lt;/code&gt; provides the preference block for the default structure provider.
+         &lt;code&gt;org.erlide.ui.editors.erl.folding.DefaultErlangFoldingStructureProvider&lt;/code&gt; provides the default folding structure for the Erlang editor.
+         &lt;code&gt;org.erlide.ui.editors.erl.folding.DefaultErlangFoldingPreferenceBlock&lt;/code&gt; provides the preference block for the default structure provider.
       </documentation>
    </annotation>
 

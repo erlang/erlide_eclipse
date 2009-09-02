@@ -8,8 +8,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -41,7 +42,7 @@ public class GlobalParameters {
 	// TODO:: if the module is selected it is not handled
 	public static void setSelection(ISelection selection) {
 		if (editor == null) {
-			Workbench instance = Workbench.getInstance();
+			IWorkbench instance = PlatformUI.getWorkbench();
 			IWorkbenchWindow activeWorkbenchWindow = instance
 					.getActiveWorkbenchWindow();
 			editor = activeWorkbenchWindow.getActivePage().getActiveEditor();

@@ -38,12 +38,18 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
+import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
+import org.erlide.ui.editors.erl.hover.ErlTextHover;
+import org.erlide.ui.editors.erl.hyperlink.ErlangHyperlinkDetector;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
+import org.erlide.ui.information.ErlInformationPresenter;
+import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.eclipse.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.HTMLTextPresenter;
 
 /**
  * The editor configurator
@@ -246,7 +252,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 				} else {
 					return new DefaultInformationControl(parent, EditorsUI
 							.getTooltipAffordanceString(),
-							new HTMLTextPresenter(true));
+							new ErlInformationPresenter(true));
 				}
 			}
 		};

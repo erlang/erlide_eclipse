@@ -249,6 +249,7 @@ public class DebuggerTraceView extends ViewPart implements
 
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void gotoModuleLine(final String module, final int line) {
 		final IWorkbenchWindow dwindow = ErlideUIPlugin
 				.getActiveWorkbenchWindow();

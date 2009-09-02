@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 public class ErlangFoldingStructureProviderRegistry {

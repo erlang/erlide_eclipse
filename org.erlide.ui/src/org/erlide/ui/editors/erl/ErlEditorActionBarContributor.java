@@ -22,7 +22,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.erlide.ui.actions.GotoAnnotationAction;
+import org.erlide.ui.editors.erl.actions.GotoAnnotationAction;
 
 public class ErlEditorActionBarContributor extends
 		BasicTextEditorActionContributor {

@@ -12,6 +12,7 @@ package org.erlide.core;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
@@ -191,6 +192,25 @@ public class ErlangPlugin extends Plugin {
 
 	public static void log(final IStatus status) {
 		if (plugin != null) {
+			Level lvl;
+			switch (status.getSeverity()) {
+			case Status.ERROR:
+				lvl = Level.SEVERE;
+				break;
+			case Status.WARNING:
+				lvl = Level.WARNING;
+				break;
+			case Status.INFO:
+				lvl = Level.INFO;
+				break;
+			default:
+				lvl = Level.FINEST;
+			}
+			ErlLogger.log(lvl, status.getMessage());
+			Throwable exception = status.getException();
+			if (exception != null) {
+				ErlLogger.log(lvl, exception);
+			}
 			plugin.getLog().log(status);
 		}
 	}

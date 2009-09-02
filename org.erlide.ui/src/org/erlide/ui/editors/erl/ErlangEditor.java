@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,11 +25,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
@@ -69,7 +68,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -97,6 +95,7 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.erlide.core.ExtensionHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlAttribute;
@@ -109,27 +108,30 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.actions.CallHierarchyAction;
-import org.erlide.ui.actions.ClearCacheAction;
-import org.erlide.ui.actions.CompileAction;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
-import org.erlide.ui.actions.IndentAction;
 import org.erlide.ui.actions.OpenAction;
-import org.erlide.ui.actions.ShowOutlineAction;
-import org.erlide.ui.actions.ToggleCommentAction;
+import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
+import org.erlide.ui.editors.erl.actions.ClearCacheAction;
+import org.erlide.ui.editors.erl.actions.CompileAction;
+import org.erlide.ui.editors.erl.actions.IndentAction;
+import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
+import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
+import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
+import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
+import org.erlide.ui.editors.erl.hover.IErlangAnnotation;
+import org.erlide.ui.editors.erl.outline.ErlangContentProvider;
+import org.erlide.ui.editors.erl.outline.ErlangLabelProvider;
+import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
+import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
+import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
+import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
 import org.erlide.ui.editors.erl.test.TestAction;
-import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
-import org.erlide.ui.editors.outline.IOutlineContentCreator;
-import org.erlide.ui.editors.outline.IOutlineSelectionHandler;
 import org.erlide.ui.prefs.PreferenceConstants;
-import org.erlide.ui.prefs.plugin.SmartTypingPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
-import org.erlide.ui.views.outline.ErlangContentProvider;
-import org.erlide.ui.views.outline.ErlangLabelProvider;
-import org.erlide.ui.views.outline.ErlangOutlinePage;
 
 import erlang.ErlideScanner;
 
@@ -172,6 +174,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private ScannerListener scannerListener;
 	private ClearCacheAction clearCacheAction;
 	private CallHierarchyAction callhierarchy;
+	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
+	private final Object lock = new Object();
+	private final boolean initFinished = false;
 
 	/**
 	 * Simple constructor
@@ -180,6 +185,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public ErlangEditor() {
 		super();
 		fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
+		registerListeners();
+	}
+
+	private void registerListeners() {
+		try {
+			// initialize the 'save' listeners of editor
+			if (editListeners == null) {
+				editListeners = ExtensionHelper
+						.getParticipants(ExtensionHelper.EDITOR_LISTENER);
+			}
+		} catch (Throwable e) {
+			ErlideUIPlugin.log(e);
+		}
 	}
 
 	/**
@@ -234,6 +252,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final EditorConfiguration cfg = new EditorConfiguration(
 				getPreferenceStore(), this, colorManager);
 		setSourceViewerConfiguration(cfg);
+
+		// Runnable runnable = new Runnable() {
+		// public void run() {
+		// initFinished = true;
+		// synchronized (getLock()) {
+		// getLock().notifyAll();
+		// }
+		// }
+		// };
+		// Thread thread = new Thread(runnable);
+		// thread.setPriority(Thread.MIN_PRIORITY);
+		// thread.setName("ErlangEditor initializer");
+		// thread.start();
 	}
 
 	public void disposeModule() {
@@ -1115,12 +1146,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
 		node.addPreferenceChangeListener(fPreferenceChangeListener);
 
-		final IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
-			public IInformationControl createInformationControl(
-					final Shell shell) {
-				return new DefaultInformationControl(shell, true);
-			}
-		};
+		final IInformationControlCreator informationControlCreator = getSourceViewerConfiguration()
+				.getInformationControlCreator(getSourceViewer());
+
 		fInformationPresenter = new InformationPresenter(
 				informationControlCreator);
 		// sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
@@ -1753,6 +1781,42 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		} finally {
 			super.handlePreferenceStoreChanged(event);
 		}
+	}
+
+	public void addEditorListener(IErlangEditorListener listener) {
+		synchronized (editListeners) {
+			editListeners.add(listener);
+		}
+	}
+
+	public void removeEditorListener(IErlangEditorListener listener) {
+		synchronized (editListeners) {
+			editListeners.remove(listener);
+		}
+	}
+
+	public List<IErlangEditorListener> getAllEditorListeners() {
+		// while (initFinished == false) {
+		// synchronized (getLock()) {
+		// try {
+		// if (initFinished == false) {
+		// getLock().wait();
+		// }
+		// } catch (Exception e) {
+		// // ignore
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
+		synchronized (editListeners) {
+			listeners.addAll(editListeners);
+		}
+		return listeners;
+	}
+
+	private Object getLock() {
+		return lock;
 	}
 
 }

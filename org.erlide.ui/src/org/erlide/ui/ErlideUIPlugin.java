@@ -39,12 +39,12 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
+import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
-import org.erlide.ui.views.console.ErlConsoleManager;
 import org.osgi.framework.BundleContext;
 
 /**

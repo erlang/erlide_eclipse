@@ -99,7 +99,7 @@
       <page
             name="%editorFoldingPage"
             category="org.erlide.ui.preferences.editor"
-            class="org.erlide.ui.prefs.plugin.FoldingPreferencePage"
+            class="org.erlide.ui.editors.erl.folding.FoldingPreferencePage"
             id="org.erlide.ui.preferences.editor.folding">
       </page>
       <page
@@ -110,7 +110,7 @@
       </page>
       <page
             category="org.erlide.ui.preferences.editor"
-            class="org.erlide.ui.prefs.plugin.SmartTypingPreferencePage"
+            class="org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage"
             id="org.erlide.ui.preferences.smartTyping"
             name="%editorSmartTypingPage">
       </page>
@@ -120,7 +120,7 @@
        <page
             name="Code Templates"
             category="org.erlide.ui.preferences"
-      class="org.erlide.ui.erlangsource.prefs.ErlangSourcePreferencePage"
+      class="org.erlide.ui.wizards.templates.prefs.ErlangSourcePreferencePage"
             id="org.erlide.ui.preferences.codetemplate"/>
        <page
              category="org.erlide.ui.preferences"
@@ -338,7 +338,7 @@
          point="org.eclipse.ui.newWizards">
     <wizard
           category="org.erlide.ui.wizards.newWizards"
-          class="org.erlide.ui.erlangsource.wizards.ErlangFileWizard"
+          class="org.erlide.ui.wizards.ErlangFileWizard"
           icon="icons/full/obj16/erlang_NewModule.png"
           id="org.erlide.ui.wizards.ErlangSourceFile"
           name="Module">
@@ -348,17 +348,17 @@
          point="org.eclipse.ui.editors.templates">
       <contextType
             name="Comments"
-            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeComment"
+            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeComment"
             id="org.erlide.ui.erlangsource.template.context.generate">
       </contextType>
       <contextType
             name="Behaviours"
-            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeBehaviour"
+            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeBehaviour"
             id="org.erlide.ui.erlangsource.template.context.behaviour">
       </contextType>
       <contextType
             name="Layout"
-            class="org.erlide.ui.erlangsource.templates.ErlangSourceContextTypeLayout"
+            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeLayout"
             id="org.erlide.ui.erlangsource.template.context.layout">
       </contextType>
       <resolver
@@ -366,91 +366,91 @@
             type="module"
             description="%variableResolverModule"
             contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            class="org.erlide.ui.erlangsource.templates.ModuleVariableResolver">
+            class="org.erlide.ui.wizards.templates.ModuleVariableResolver">
       </resolver>
       <resolver
             name="Local Functions"
             type="local_functions"
             description="%variableResolverLocalFunctions"
             contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            class="org.erlide.ui.erlangsource.templates.LocalFunctionsVariableResolver">
+            class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver">
       </resolver>
             <resolver
             name="Erlangs Module"
             type="module"
             description="%variableResolverModule"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.ModuleVariableResolver">
+            class="org.erlide.ui.wizards.templates.ModuleVariableResolver">
       </resolver>
       <resolver
             name="Local Functions"
             type="local_functions"
             description="%variableResolverLocalFunctions"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.LocalFunctionsVariableResolver">
+            class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver">
       </resolver>
       <resolver
             name="File Comment"
             type="file_comment"
             description="%variableResolverFileComment"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.FileCommentVariableResolver">
+            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver">
       </resolver>
       <resolver
             name="File Comment"
             type="file_comment"
             description="%variableResolverFileComment"
             contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            class="org.erlide.ui.erlangsource.templates.FileCommentVariableResolver">
+            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver">
       </resolver>
       <resolver
             name="Exported Functions"
             type="exported_functions"
             description="%variableResolverExportedFunctions"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.ExportedFunctionsVariableResolver">
+            class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver">
       </resolver>
       <resolver
             name="Exported Functions"
             type="exported_functions"
             description="%variableResolverExportedFunctions"
             contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            class="org.erlide.ui.erlangsource.templates.ExportedFunctionsVariableResolver">
+            class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver">
       </resolver>
       <resolver
             name="Exports"
             type="exports"
             description="%variableResolverExports"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.ExportsVariableResolver">
+            class="org.erlide.ui.wizards.templates.ExportsVariableResolver">
       </resolver>
       <resolver
             name="Exports"
             type="exports"
             description="%variableResolverExports"
             contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            class="org.erlide.ui.erlangsource.templates.ExportsVariableResolver">
+            class="org.erlide.ui.wizards.templates.ExportsVariableResolver">
       </resolver>
       <resolver
             name="Function Name"
             type="function_name"
             description="%variableResolverFunctionName"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.FunctionNameVariableResolver">
+            class="org.erlide.ui.wizards.templates.FunctionNameVariableResolver">
       </resolver>
       <resolver
             name="Arguments"
             type="arguments"
             description="%variableResolverArguments"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.ArgumentsVariableResolver">
+            class="org.erlide.ui.wizards.templates.ArgumentsVariableResolver">
       </resolver>
       <resolver
             name="Body"
             type="body"
             description="%variableResolverBody"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            class="org.erlide.ui.erlangsource.templates.BodyVariableResolver">
+            class="org.erlide.ui.wizards.templates.BodyVariableResolver">
       </resolver>
       <include
           file="templates/comment-templates.xml"
@@ -900,7 +900,7 @@
             contentProvider="org.erlide.ui.navigator.ErlangFileContentProvider"
             icon="icons/full/obj16/erlang_editor.gif"
             id="org.erlide.ui.navigator.erlangContent"
-            labelProvider="org.erlide.ui.views.outline.ErlangLabelProvider"
+            labelProvider="org.erlide.ui.editors.erl.outline.ErlangLabelProvider"
             name="Erlang File Contents"
             priority="normal">
          <triggerPoints>
@@ -1302,11 +1302,11 @@
    <extension
          point="org.eclipse.ui.console.consolePageParticipants">
       <consolePageParticipant
-            class="org.erlide.ui.views.console.ConsolePageParticipant"
+            class="org.erlide.ui.console.ConsolePageParticipant"
             id="org.erlide.ui.consolePageParticipant1">
          <enablement>
             <instanceof
-                  value="org.erlide.ui.views.console.ErlangConsole">
+                  value="org.erlide.ui.console.ErlangConsole">
             </instanceof></enablement>
       </consolePageParticipant>
    </extension>

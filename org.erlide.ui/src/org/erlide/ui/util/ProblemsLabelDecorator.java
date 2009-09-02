@@ -20,7 +20,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
-import org.erlide.ui.views.outline.ErlangElementImageDescriptor;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageDescriptor;
 
 public class ProblemsLabelDecorator implements ILabelDecorator,
 		ILightweightLabelDecorator {

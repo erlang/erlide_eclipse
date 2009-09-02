@@ -167,23 +167,28 @@ public class ManagedLauncher implements IDisposable {
 
 				private void deleteOldCoreDumps(final File workingDirectory) {
 					File[] fs = getCoreDumpFiles(workingDirectory);
+					if (fs == null) {
+						return;
+					}
 					for (File f : fs) {
 						f.delete();
 					}
 				}
 
+				FilenameFilter filter = new FilenameFilter() {
+					public boolean accept(File dir, String name) {
+						return name.matches("^core.[0-9]+$");
+					}
+				};
+
 				private File[] getCoreDumpFiles(final File workingDirectory) {
-					File[] fs = workingDirectory
-							.listFiles(new FilenameFilter() {
-								public boolean accept(File dir, String name) {
-									return name.matches("^core.[0-9]+$");
-								}
-							});
+					File[] fs = workingDirectory.listFiles(filter);
 					return fs;
 				}
 			};
 			final Thread thread = new Thread(null, watcher, "Backend watcher");
 			thread.setDaemon(false);
+			thread.setPriority(Thread.MIN_PRIORITY);
 			thread.start();
 
 		} catch (final IOException e) {

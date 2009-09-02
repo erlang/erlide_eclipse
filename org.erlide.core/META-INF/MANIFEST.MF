@@ -36,6 +36,7 @@ Export-Package: erlang,
    org.eclipse.core.resources,
    org.eclipse.core.runtime,
    org.eclipse.debug.core",
+ org.erlide.core.util,
  org.erlide.runtime.backend,
  org.erlide.runtime.backend.internal;x-internal:=true,
  org.erlide.runtime.debug;x-friends:="org.erlide.ui";

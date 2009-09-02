@@ -57,7 +57,7 @@ import org.erlide.gunit.internal.ui.GUnitMessages;
 import org.erlide.gunit.internal.ui.GUnitPlugin;
 import org.erlide.gunit.internal.ui.IGUnitHelpContextIds;
 import org.erlide.gunit.internal.util.LayoutUtil;
-import org.erlide.ui.views.outline.ErlangLabelProvider;
+import org.erlide.ui.editors.erl.outline.ErlangLabelProvider;
 
 /**
  * The launch configuration tab for JUnit.

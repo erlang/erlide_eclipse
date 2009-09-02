@@ -6,8 +6,8 @@ package org.erlide.ui.internal.folding;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.erlide.ui.editors.folding.IErlangFoldingPreferenceBlock;
-import org.erlide.ui.editors.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
+import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 
 /**
  * @author jakob

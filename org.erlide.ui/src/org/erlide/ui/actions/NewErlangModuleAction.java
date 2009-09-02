@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
-import org.erlide.ui.erlangsource.wizards.ErlangFileWizard;
+import org.erlide.ui.wizards.ErlangFileWizard;
 
 public class NewErlangModuleAction extends ActionDelegate {
 

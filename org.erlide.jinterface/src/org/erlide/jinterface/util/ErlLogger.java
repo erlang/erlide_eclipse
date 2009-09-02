@@ -45,7 +45,7 @@ public class ErlLogger {
 		return el;
 	}
 
-	private static void log(final Level kind, final String fmt,
+	public static void log(final Level kind, final String fmt,
 			final Object... o) {
 		if (kind.intValue() < minLevel) {
 			return;
@@ -60,7 +60,7 @@ public class ErlLogger {
 						+ str);
 	}
 
-	private static void log(final Level kind, final Throwable exception) {
+	public static void log(final Level kind, final Throwable exception) {
 		if (kind.intValue() < minLevel) {
 			return;
 		}

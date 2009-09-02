@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.views.outline.ErlangElementImageProvider;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 public class ErlangFileLabelProvider extends LabelProvider implements
 		IDescriptionProvider {

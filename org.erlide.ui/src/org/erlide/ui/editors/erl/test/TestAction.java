@@ -13,7 +13,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlideScanner;
 
@@ -43,7 +42,7 @@ public class TestAction extends TextEditorAction {
 			return;
 		}
 		final ITextEditor textEditor = getTextEditor();
-		if (true) {
+		{
 			final IDocument document = textEditor.getDocumentProvider()
 					.getDocument(textEditor.getEditorInput());
 			final String text = document.get();
@@ -51,9 +50,6 @@ public class TestAction extends TextEditorAction {
 					.createScannerModuleName(module), text);
 			ErlLogger.debug("%s", s);
 			// return;
-		} else {
-			final ErlangEditor ee = (ErlangEditor) textEditor;
-			ee.reconcileNow();
 		}
 
 		Set<IErlModule> deps;

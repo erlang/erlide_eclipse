@@ -50,8 +50,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.editors.erl.ErlTextHover;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.osgi.framework.Bundle;
 
 /**
