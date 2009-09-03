@@ -107,7 +107,10 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			try {
 				final OtpErlangTuple data = (OtpErlangTuple) odata;
 
-				final String msg = ErlUtils.asString(data.elementAt(2));
+				String msg = ErlUtils.asString(data.elementAt(2));
+				if (msg.length() > 1000) {
+					msg = msg.substring(0, 1000) + "......";
+				}
 				final String fileName = (String) TypeConverter.erlang2java(data
 						.elementAt(1), String.class);
 				IResource res = resource;
