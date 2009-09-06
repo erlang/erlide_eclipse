@@ -12,10 +12,13 @@ import java.io.PrintWriter;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.ErtsProcess;
 
 public class ManagedLauncher implements IDisposable {
@@ -95,12 +98,13 @@ public class ManagedLauncher implements IDisposable {
 					}
 				}
 
-				private void createReport(final RuntimeInfo info,
-						final File workingDirectory, final int v,
+				private void createReport(final RuntimeInfo ainfo,
+						final File aworkingDirectory, final int v,
 						final String msg) {
 					String createdDump = null;
-					createdDump = createCoreDump(workingDirectory, createdDump);
+					createdDump = createCoreDump(aworkingDirectory, createdDump);
 
+					fetchErlangSystemInfo();
 					final String plog = ErlideUtil.fetchPlatformLog();
 					final String elog = ErlideUtil.fetchErlideLog();
 					final String delim = "\n==================================\n";
@@ -110,8 +114,8 @@ public class ManagedLauncher implements IDisposable {
 						final OutputStream out = new FileOutputStream(report);
 						final PrintWriter pw = new PrintWriter(out);
 						try {
-							pw.println(String
-									.format(msg, info.getNodeName(), v));
+							pw.println(String.format(msg, ainfo.getNodeName(),
+									v));
 							pw.println(System.getProperty("user.name"));
 							if (createdDump != null) {
 								pw.println("Core dump file: " + createdDump);
@@ -127,6 +131,13 @@ public class ManagedLauncher implements IDisposable {
 					} catch (final IOException e) {
 						ErlLogger.warn(e);
 					}
+				}
+
+				void fetchErlangSystemInfo() {
+					final ErlideBackend ideBackend = ErlangCore
+							.getBackendManager().getIdeBackend();
+					String ainfo = ErlBackend.getSystemInfo(ideBackend);
+					ErlLogger.info("\n++++++++++++++++++++++\n" + ainfo);
 				}
 
 				private String createCoreDump(final File workingDirectory,

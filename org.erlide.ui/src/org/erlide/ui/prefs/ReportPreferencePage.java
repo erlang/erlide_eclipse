@@ -34,9 +34,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.progress.UIJob;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.ProblemData;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 
 import com.swtdesigner.SWTResourceManager;
 
@@ -103,8 +107,12 @@ public class ReportPreferencePage extends PreferencePage implements
 		attachTechnicalDataButton
 				.setText("   Attach technical data (eclipse and erlide logs)   ");
 		sendButton = new Button(panel, SWT.NONE);
-		sendButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
-				false, 2, 1));
+		{
+			GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false,
+					false, 2, 1);
+			gridData.widthHint = 243;
+			sendButton.setLayoutData(gridData);
+		}
 		sendButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
@@ -140,7 +148,11 @@ public class ReportPreferencePage extends PreferencePage implements
 	}
 
 	protected void postReport() {
-		final String location = ErlideUtil.getReportFile();
+
+		sendButton.setText("Generating report, please wait...");
+		sendButton.setEnabled(false);
+		sendButton.update();
+
 		final boolean attach = attachTechnicalDataButton.getSelection();
 		final String title = ftitle.getText();
 		final String contact = fcontact.getText();
@@ -148,7 +160,11 @@ public class ReportPreferencePage extends PreferencePage implements
 
 		final Job j = new Job("send error report") {
 			@Override
-			protected IStatus run(final IProgressMonitor monitor) {
+			public IStatus run(IProgressMonitor monitor) {
+				final String location = ErlideUtil.getReportFile();
+
+				fetchErlangSystemInfo();
+
 				String plog = "N/A";
 				String elog = "N/A";
 				if (attach) {
@@ -159,18 +175,34 @@ public class ReportPreferencePage extends PreferencePage implements
 						plog, elog);
 				sendToDisk(location, data);
 				// new AssemblaHandler().send(data);
+
+				Job inner = new UIJob("update report ui") {
+					@Override
+					public IStatus runInUIThread(IProgressMonitor amonitor) {
+						responseLabel.setVisible(true);
+						locationLabel.setText(location);
+						locationLabel.setVisible(true);
+						responseLabel_1.setVisible(true);
+						return Status.OK_STATUS;
+					}
+				};
+				inner.setPriority(Job.INTERACTIVE);
+				inner.setSystem(true);
+				inner.schedule();
+
 				return Status.OK_STATUS;
 			}
 		};
 		j.setPriority(Job.SHORT);
 		j.setSystem(true);
 		j.schedule();
+	}
 
-		responseLabel.setVisible(true);
-		locationLabel.setText(location);
-		locationLabel.setVisible(true);
-		responseLabel_1.setVisible(true);
-		sendButton.setEnabled(false);
+	void fetchErlangSystemInfo() {
+		final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+				.getIdeBackend();
+		String info = ErlBackend.getSystemInfo(ideBackend);
+		ErlLogger.info("\n++++++++++++++++++++++\n" + info);
 	}
 
 	void sendToDisk(final String location, final ProblemData data) {

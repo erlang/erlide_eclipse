@@ -6,6 +6,7 @@ import java.util.List;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -256,6 +257,16 @@ public class ErlBackend {
 			ErlLogger.debug("Start tracer to %s", logname);
 			b.call("erlide_backend", "start_tracer", "s", logname);
 		} catch (final BackendException e) {
+		}
+	}
+
+	public static String getSystemInfo(final Backend b) {
+		try {
+			OtpErlangObject val = b.call("erlide_backend", "get_system_info",
+					"");
+			return ErlUtils.asString(val);
+		} catch (final Exception e) {
+			return "System information could not be retrieved...";
 		}
 	}
 

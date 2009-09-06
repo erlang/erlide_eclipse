@@ -31,6 +31,7 @@
 		 compile_string/1,
 		 start_tracer/1,
 		 
+		 get_system_info/0,
 		 get_module_info/1
 		]).
 
@@ -249,3 +250,9 @@ print_opts({K, V}) ->
 	io_lib:format("    ~p:   ~p~n", [K, V]);
 print_opts(X) ->
 	io_lib:format("    ~p~n", [X]).
+
+get_system_info() ->
+	Procs = erlang:system_info(procs),
+	Alloc = erlang:system_info(allocated_areas),
+	Ets = [ets:info(X) || X<-ets:all()],
+	lists:flatten(io_lib:format("~s~n+++++++~n~p~n++++++++\n~p~n----------\n", [Procs, Alloc, Ets])).
