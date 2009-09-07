@@ -50,6 +50,7 @@ public class ManagedLauncher implements IDisposable {
 		String[] cmds = cmd.split(" ");
 		String env = System.getenv("erlide.internal.coredump");
 		if ("true".equals(env)) {
+			cmd += " +d";
 			cmd = "tcsh -c \"limit coredumpsize unlimited ; exec " + cmd + "\"";
 			cmds = new String[] { "tcsh", "-c",
 					"limit coredumpsize unlimited ; exec " + cmd };
