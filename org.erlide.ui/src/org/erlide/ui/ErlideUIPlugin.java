@@ -16,9 +16,11 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -37,8 +39,10 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
@@ -130,6 +134,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 		erlConMan = new ErlConsoleManager();
 		erlConMan.runtimeAdded(ErlangCore.getBackendManager().getIdeBackend());
+
+		startPeriodicDump();
 	}
 
 	/**
@@ -417,4 +423,29 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		return eclipsePreferences;
 	}
 
+	private void startPeriodicDump() {
+		String env = System.getenv("erlide.internal.coredump");
+		if ("true".equals(env)) {
+			Job job = new Job("Erlang node info dump") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						final ErlideBackend ideBackend = ErlangCore
+								.getBackendManager().getIdeBackend();
+						String info = ErlBackend.getSystemInfo(ideBackend);
+						String sep = "\n++++++++++++++++++++++\n";
+						ErlLogger.debug(sep + info + sep);
+					} finally {
+						schedule(300000);
+					}
+					return Status.OK_STATUS;
+				}
+
+			};
+			job.setPriority(Job.SHORT);
+			job.setSystem(true);
+			job.schedule(300000);
+		}
+	}
 }

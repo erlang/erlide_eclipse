@@ -163,22 +163,15 @@ public class ReportPreferencePage extends PreferencePage implements
 			public IStatus run(IProgressMonitor monitor) {
 				final String location = ErlideUtil.getReportFile();
 
-				fetchErlangSystemInfo();
-
-				String plog = "N/A";
-				String elog = "N/A";
-				if (attach) {
-					plog = ErlideUtil.fetchPlatformLog();
-					elog = ErlideUtil.fetchErlideLog();
-				}
-				final ProblemData data = new ProblemData(title, contact, body,
-						plog, elog);
+				final ProblemData data = gatherProblemData(attach, title,
+						contact, body);
 				sendToDisk(location, data);
 				// new AssemblaHandler().send(data);
 
 				Job inner = new UIJob("update report ui") {
 					@Override
 					public IStatus runInUIThread(IProgressMonitor amonitor) {
+						sendButton.setText("Done!");
 						responseLabel.setVisible(true);
 						locationLabel.setText(location);
 						locationLabel.setVisible(true);
@@ -198,7 +191,7 @@ public class ReportPreferencePage extends PreferencePage implements
 		j.schedule();
 	}
 
-	void fetchErlangSystemInfo() {
+	private static void fetchErlangSystemInfo() {
 		final ErlideBackend ideBackend = ErlangCore.getBackendManager()
 				.getIdeBackend();
 		String info = ErlBackend.getSystemInfo(ideBackend);
@@ -231,4 +224,18 @@ public class ReportPreferencePage extends PreferencePage implements
 	public void init(final IWorkbench workbench) {
 	}
 
+	public static ProblemData gatherProblemData(final boolean attach,
+			final String title, final String contact, final String body) {
+		fetchErlangSystemInfo();
+
+		String plog = "N/A";
+		String elog = "N/A";
+		if (attach) {
+			plog = ErlideUtil.fetchPlatformLog();
+			elog = ErlideUtil.fetchErlideLog();
+		}
+		final ProblemData data = new ProblemData(title, contact, body, plog,
+				elog);
+		return data;
+	}
 }
