@@ -581,6 +581,7 @@ public class ErlideSelection {
 	 * @return the current token and its initial offset for this token
 	 * @throws BadLocationException
 	 */
+	@SuppressWarnings("boxing")
 	public Tuple<String, Integer> getCurrToken() throws BadLocationException {
 		Tuple<String, Integer> tup = extractActivationToken(doc,
 				getAbsoluteCursorOffset(), false);

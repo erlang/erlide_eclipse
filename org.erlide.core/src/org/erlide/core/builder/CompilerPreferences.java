@@ -94,6 +94,7 @@ public class CompilerPreferences {
 		helper.flush();
 	}
 
+	@SuppressWarnings("boxing")
 	public void load() throws BackingStoreException {
 
 		// FIXME
@@ -146,6 +147,7 @@ public class CompilerPreferences {
 		// CompilerPreferencesConstants.DEBUG_INFO, true);
 	}
 
+	@SuppressWarnings("boxing")
 	private void getBooleanFromHelper(final String optionKey) {
 		booleanOptions.put(optionKey, helper.getBoolean(optionKey, false));
 	}

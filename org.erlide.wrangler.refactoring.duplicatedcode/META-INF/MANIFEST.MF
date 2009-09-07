@@ -6,7 +6,8 @@ Bundle-Version: 0.3.0.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.erlide.wrangler.refactoring.duplicatedcode,
+Export-Package: org.erlide.wrangler.refactoring.core.exception,
+ org.erlide.wrangler.refactoring.duplicatedcode,
  org.erlide.wrangler.refactoring.duplicatedcode.core,
  org.erlide.wrangler.refactoring.duplicatedcode.ui,
  org.erlide.wrangler.refactoring.duplicatedcode.ui.elements,

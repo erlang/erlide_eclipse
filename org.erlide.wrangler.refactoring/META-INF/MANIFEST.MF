@@ -17,6 +17,10 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
  org.erlide.core
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",
+ org.erlide.wrangler.refactoring.backend,
+ org.erlide.wrangler.refactoring.backend.internal;x-internal:=true,
+ org.erlide.wrangler.refactoring.core,
+ org.erlide.wrangler.refactoring.core.internal;x-internal:=true,
  org.erlide.wrangler.refactoring.exception;
   uses:="org.eclipse.jface.viewers,
    org.erlide.wrangler.refactoring.core,
@@ -26,6 +30,11 @@ Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi
    org.eclipse.swt.widgets,
    org.eclipse.ui",
  org.erlide.wrangler.refactoring.selection,
+ org.erlide.wrangler.refactoring.selection.internal;x-internal:=true,
+ org.erlide.wrangler.refactoring.ui,
+ org.erlide.wrangler.refactoring.ui.validator,
+ org.erlide.wrangler.refactoring.ui.wizard,
+ org.erlide.wrangler.refactoring.ui.wizardpages,
  org.erlide.wrangler.refactoring.util,
  org.incava.util.diff;x-internal:=true
 Bundle-Localization: plugin

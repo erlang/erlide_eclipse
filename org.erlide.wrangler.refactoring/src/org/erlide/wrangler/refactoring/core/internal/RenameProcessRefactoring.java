@@ -1,7 +1,5 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -39,6 +37,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 		return "Rename process";
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public IRefactoringRpcMessage run(IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
@@ -47,6 +46,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 				GlobalParameters.getTabWidth());
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected ProcessRpcMessage checkUndecidables(IErlMemberSelection sel) {
 		return (ProcessRpcMessage) WranglerBackendManager
