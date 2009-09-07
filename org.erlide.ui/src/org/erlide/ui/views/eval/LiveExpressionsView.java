@@ -63,6 +63,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendEvalResult;
 import org.erlide.jinterface.backend.ErlBackend;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -311,19 +312,10 @@ public class LiveExpressionsView extends ViewPart implements
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).", null);
 						if (r.isOk()) {
-							str = ((OtpErlangString) r.getValue())
-									.stringValue();
+							str =  ErlUtils.asString(r.getValue());
 						} else {
 							str = r.getErrorReason().toString();
 						}
-						// ErlLogger.debug(str);
-						// str = item.getText(1);
-						// }
-						// catch (BackendException e)
-						// {
-						// e.printStackTrace();
-						// str = "???";
-						// }
 
 						info = new SourceViewerInformationControl(t.getShell(),
 								SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI
