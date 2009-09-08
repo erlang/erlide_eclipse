@@ -430,9 +430,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return buffer.toString();
 	}
 
-	/**
-	 * Debugging purposes
-	 */
 	@Override
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder();

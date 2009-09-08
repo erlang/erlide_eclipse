@@ -43,6 +43,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.internal.ErlComment;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -90,7 +91,9 @@ public class DefaultErlangFoldingStructureProvider implements
 		@Override
 		public String toString() {
 			return "ErlangProjectionAnnotation:\n" + //$NON-NLS-1$
-					"\telement: \t" + fErlElement.toString() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
+					"\telement: \t'"
+					+ fErlElement.toString()
+					+ "' " + fErlElement.getKind() + "/" + fErlElement.getParent().toString() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 					"\tcollapsed: \t" + isCollapsed() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 					"\tcomment: \t" + fIsComment + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -650,7 +653,8 @@ public class DefaultErlangFoldingStructureProvider implements
 						element);
 				if (position != null) {
 					map.put(new ErlangProjectionAnnotation(element, collapse
-							&& fFirstTimeInitialCollapse, false), position);
+							&& fFirstTimeInitialCollapse,
+							element instanceof ErlComment), position);
 				}
 			}
 		}

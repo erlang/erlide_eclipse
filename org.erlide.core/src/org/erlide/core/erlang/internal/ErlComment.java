@@ -116,11 +116,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return fLevel;
 	}
 
-	// public ISourceRange getSourceRange() throws ErlModelException
-	// {
-	// return new SourceRange(fSourceRangeStart, fSourceRangeEnd -
-	// fSourceRangeStart + 1);
-	// }
 	@Override
 	public String toString() {
 		String result = "<comment";
@@ -130,7 +125,7 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		if (isHeader()) {
 			result = result + ":header";
 		}
-		return result + ">";
+		return result + ", line=" + (getLineStart() + 1) + ">";
 	}
 
 	public void setNameRangeStartEnd(final int start, final int end) {
