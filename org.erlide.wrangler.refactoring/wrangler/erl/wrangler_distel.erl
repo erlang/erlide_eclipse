@@ -212,7 +212,7 @@ check_wrangler_error_logger() ->
 	     ok;
 	_ ->  ?wrangler_io("\n===============================WARNING===============================\n",[]),
 	      ?wrangler_io("There are errors in the program, and functions/attribute containing errors are not affected by refactoring.\n",[]),
-	      Msg =lists:flatmap(fun({FileName, Errs}) ->
+	      _Msg =lists:flatmap(fun({FileName, Errs}) ->
 				    Str =io_lib:format("File:\n ~p\n", [FileName]),
 				    Str1 = Str ++ io_lib:format("Error(s):\n",[]),
 				    Str1++lists:flatmap(fun(E) ->
@@ -223,7 +223,7 @@ check_wrangler_error_logger() ->
 						  end,
 						  lists:reverse(Errs)) 
 				 end, Errors),
-	      ?wrangler_io(Msg, [])
+	      ?wrangler_io(_Msg, [])
     end.
     
 

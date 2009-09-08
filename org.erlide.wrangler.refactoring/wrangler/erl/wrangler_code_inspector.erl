@@ -156,24 +156,24 @@ get_module_name(FName, Info) ->
     ModName.
   
 	
-format_result(Funs, NestLevel, ExprType) -> 
-    ExprType1 = case ExprType of 
+format_result(Funs, _NestLevel, ExprType) -> 
+    _ExprType1 = case ExprType of 
 		    case_expr -> 'case';
 		    if_expr -> 'if';
 		    receive_expr -> 'receive'
 		end,
     case Funs of 
-	[] -> ?wrangler_io("\nNo function in this module contains ~p expressions nested ~p or more levels.\n", [ExprType1, NestLevel]);
-	_ -> ?wrangler_io("\nThe following function(s) contains ~p expressions nested ~p or more levels:\n ", [ExprType1, NestLevel]),
+	[] -> ?wrangler_io("\nNo function in this module contains ~p expressions nested ~p or more levels.\n", [_ExprType1, _NestLevel]);
+	_ -> ?wrangler_io("\nThe following function(s) contains ~p expressions nested ~p or more levels:\n ", [_ExprType1, _NestLevel]),
 	     format_result_1(Funs)
     end.
 
 format_result_1([]) ->
     ?wrangler_io(".\n",[]);
-format_result_1([{M, F, A}|Fs]) ->
+format_result_1([{_M, _F, _A}|Fs]) ->
     case Fs of 
-	[] -> ?wrangler_io("~p:~p/~p", [M, F, A]);
-	_ -> ?wrangler_io("~p:~p/~p,", [M, F, A])
+	[] -> ?wrangler_io("~p:~p/~p", [_M, _F, _A]);
+	_ -> ?wrangler_io("~p:~p/~p,", [_M, _F, _A])
     end,
     format_result_1(Fs).
 
@@ -236,16 +236,16 @@ display_results(Callers, UnSures) ->
 	  ?wrangler_io("The selected function is not called by any other functions.\n",[]);
       {_, []} ->
 	  ?wrangler_io("The selected function is called by the following function(s):\n",[]),
-	    lists:map(fun({File, F, A}) -> ?wrangler_io("{File:~p, function: ~p/~p }\n", [File, F, A]) end, Callers);
+	    lists:map(fun({_File, _F, _A}) -> ?wrangler_io("{File:~p, function: ~p/~p }\n", [_File, _F, _A]) end, Callers);
       {[], [_H | _]} ->
 	  ?wrangler_io("The selected function is not explicitly called by any other functions, \n"
 		    "but please check the following expressions:\n", []),
-	   lists:map(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures);
+	   lists:map(fun({_File, _Line, _Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [_File, _Line, _Exp]) end, UnSures);
       {[_H1 | _], [_H2 | _]} ->
 	    ?wrangler_io("The selected function is called by the following function(s):\n",[]),
-	    lists:map(fun({File, F, A}) -> ?wrangler_io("{File:~p, function name: ~p/~p }\n", [File, F, A]) end, Callers),
+	    lists:map(fun({_File, _F, _A}) -> ?wrangler_io("{File:~p, function name: ~p/~p }\n", [_File, _F, _A]) end, Callers),
 	    ?wrangler_io("Please also check the following expressions:\n", []),
-	    lists:map(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures)		 
+	    lists:map(fun({_File, _Line, _Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [_File, _Line, _Exp]) end, UnSures)		 
     end.
 
 get_caller_funs_in_client_modules(FileNames, {M, F, A}, SearchPaths, TabWidth) ->
@@ -401,12 +401,12 @@ caller_called_modules(FName, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths, TabWidth),
     AbsFileName = filename:absname(filename:join(filename:split(FName))),
     ClientFiles = wrangler_modulegraph_server:get_client_files(AbsFileName, SearchPaths),
-    ClientMods = lists:map(fun({M, _Dir}) -> list_to_atom(M) end, 
+    _ClientMods = lists:map(fun({M, _Dir}) -> list_to_atom(M) end, 
 			   refac_util:get_modules_by_file(ClientFiles)),
     case ClientFiles of 
 	[] -> ?wrangler_io("\nThis module does not have any caller modules.\n",[]);
 	_ -> ?wrangler_io("\nThis module is called by the following modules:\n",[]),
-	     ?wrangler_io("~p\n", [ClientMods])
+	     ?wrangler_io("~p\n", [_ClientMods])
     end,
     CalledMods = refac_module_graph:collect_called_modules(AnnAST),
     case CalledMods of 
@@ -479,14 +479,14 @@ long_functions_2(FName, Lines, SearchPaths, TabWidth) ->
     LongFuns = lists:usort(refac_syntax_lib:fold(Fun, [], AnnAST)),
     LongFuns.
 
-long_funs_format_results(LongFuns, Lines) ->
+long_funs_format_results(LongFuns, _Lines) ->
     case LongFuns of
 	[] ->
 	    ?wrangler_io("\n No Function in this module has more than ~p lines.\n",
-		      [Lines]);
+		      [_Lines]);
 	_ ->
 	    ?wrangler_io("\n The following function(s) have more than ~p lines of code:\n",
-		      [Lines]),
+		      [_Lines]),
 	    format_result_1(LongFuns)
     end.
     

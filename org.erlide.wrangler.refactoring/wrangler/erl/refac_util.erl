@@ -1100,7 +1100,7 @@ add_range(FName, AST, TabWidth) ->
     Toks = tokenize(FName, true,  TabWidth),    
     full_buTP(fun do_add_range/2, AST, {FName, Toks}).
 
-do_add_range(Node, {FName, Toks}) ->
+do_add_range(Node, {_FName, Toks}) ->
     {L, C} = case refac_syntax:get_pos(Node) of
 		 {Line, Col} -> {Line,Col};
 		 Line ->{Line, 0}
@@ -1505,7 +1505,7 @@ do_add_range(Node, {FName, Toks}) ->
 	  refac_syntax:add_ann({range, {{L,C}, {L,C}}}, Node);
       _ ->
 	  ?wrangler_io("Unhandled syntax category:\n~p\n", [refac_syntax:type(Node)]),
-	  ?wrangler_io("File:\n~p\n", [FName]),
+	  ?wrangler_io("File:\n~p\n", [_FName]),
 	  ?wrangler_io("Node:\n~p\n", [Node]),
 	  Node
     end.

@@ -221,11 +221,11 @@ do_add_tag_to_receive_exprs(Node, Tag) ->
 	_ -> Node
     end.
 
-do_add_tag_to_send_exprs(Node, {ModName, Tag, AffectedInitialFuns}) ->
+do_add_tag_to_send_exprs(Node, {_ModName, Tag, AffectedInitialFuns}) ->
      case refac_syntax:type(Node) of
 	infix_expr ->
 	    case is_send_expr(Node) of 
-		true ->{{Ln, _},_} = refac_util:get_range(Node), 
+		true ->{{_Ln, _},_} = refac_util:get_range(Node), 
 		        Dest = refac_syntax:infix_expr_left(Node),
 			Msg = refac_syntax:infix_expr_right(Node),
 			Ann = refac_syntax:get_ann(Dest),
@@ -241,7 +241,7 @@ do_add_tag_to_send_exprs(Node, {ModName, Tag, AffectedInitialFuns}) ->
 				      end,						   
 			case InitialFuns of 
 			    [] -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
-				  ?wrangler_io("Wrangler could not identify the recipent process of the send expression in module ~p at line ~p\n", [ModName,Ln]),
+				  ?wrangler_io("Wrangler could not identify the recipent process of the send expression in module ~p at line ~p\n", [_ModName,_Ln]),
 				{Node, false};
 			    _ -> case InitialFuns -- AffectedInitialFuns of 
 				     [] ->
@@ -251,11 +251,11 @@ do_add_tag_to_send_exprs(Node, {ModName, Tag, AffectedInitialFuns}) ->
 						    _ -> refac_syntax:tuple([refac_syntax:atom(Tag), Msg])
 						end,
 					 Node1 = refac_syntax:copy_attrs(Node, refac_syntax:infix_expr(Dest, Op, Msg1)), 
-					 {Node1, true};
+					 {Node1, true}; 
 				     InitialFuns -> 
 					 {Node, false};  
 				     _ -> %% ?wrangler_io("\n*************************************Warning****************************************\n"),
-%% 					  ?wrangler_io("The recipent process of the send expression in module ~p at line ~p could refer to multiple processes. \n", [ModName,Ln]),
+%% 					  ?wrangler_io("The recipent process of the send expression in module ~p at line ~p could refer to multiple processes. \n", [_ModName,_Ln]),  
 					  {Node, false}
 				 end
 			end;
@@ -319,7 +319,7 @@ has_receive_expr(Node, []) ->
 
 
 			  
-collect_fun_apps(Expr, {ModName, Ln}) ->
+collect_fun_apps(Expr, {_ModName, _Ln}) ->
     Fun = fun (T, S) ->
 		 case refac_syntax:type(T) of
 		     application ->
@@ -328,7 +328,7 @@ collect_fun_apps(Expr, {ModName, Ln}) ->
 			     {value, {fun_def, {M, F, A, _, _}}}-> 
 				 ordsets:add_element({M,F, A},S);			     
 			     _ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
-				  ?wrangler_io("Wrangler could not handle the spawn expression used in module ~p at line ~p\n", [ModName,Ln])
+				  ?wrangler_io("Wrangler could not handle the spawn expression used in module ~p at line ~p\n", [_ModName,_Ln])
 			 end;
 		     arity_qualifier -> 
 			 {value, {fun_def, {M, F, A, _, _}}} = lists:keysearch(fun_def,1, refac_syntax:get_ann(T)),

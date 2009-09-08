@@ -38,8 +38,8 @@
 %% <p>
 
 -spec(sim_expr_search/5::(filename(), pos(), pos(), [dir()],integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
-sim_expr_search(FName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:sim_expr_search(~p, {~p,~p},{~p,~p},~p, ~p).\n", [?MODULE, FName, Line, Col, Line1, Col1, SearchPaths, TabWidth]),
+sim_expr_search(FName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:sim_expr_search(~p, {~p,~p},{~p,~p},~p, ~p).\n", [?MODULE, FName, _Line, _Col, _Line1, _Col1, SearchPaths, TabWidth]),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, [], TabWidth),
     Exprs= refac_util:pos_to_expr_list(FName, AnnAST, Start, End, TabWidth),
     case Exprs of 
@@ -52,14 +52,14 @@ sim_expr_search(FName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, Ta
     ?wrangler_io("The selected expression after normalisation is:\n\n~s\n\n", [format_exprs(Exprs1)]),
     Res =do_search_similar_expr(AnnAST, RecordInfo, Exprs1),
      Res1 = lists:map(fun({{{S,E},{S1,E1}}, _, _})-> {S, E, S1, E1} end, Res),
-     AntiUnifier = generalise_expr(Exprs1, Res),
+     _AntiUnifier = generalise_expr(Exprs1, Res),
     case length(Res1) of  
 	0 -> ?wrangler_io("No similar expression has been found.\n",[]);
 	1 -> ?wrangler_io("One expression which is similar to the expression selected has been found. \n",[]),
-	     ?wrangler_io("The generalised expression would be:\n\n~s\n\n", [format_exprs(AntiUnifier)]),
+	     ?wrangler_io("The generalised expression would be:\n\n~s\n\n", [format_exprs(_AntiUnifier)]),
 	     {ok, Res1};
-	N -> ?wrangler_io("~p expressions which are similar to the expression selected have been found. \n", [N]),
-	     ?wrangler_io("The generalised expression would be:\n\n~s\n\n", [format_exprs(AntiUnifier)]),
+	_N -> ?wrangler_io("~p expressions which are similar to the expression selected have been found. \n", [_N]),
+	     ?wrangler_io("The generalised expression would be:\n\n~s\n\n", [format_exprs(_AntiUnifier)]),
 	     {ok, Res1}
     end.
 
@@ -318,8 +318,8 @@ get_start_end_loc(Expr) ->
 
 
 -spec(normalise_record_expr/4::(filename(), pos(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
-normalise_record_expr(FName, Pos={Line, Col}, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:normalise_record_expr(~p, {~p,~p},~p, ~p).\n", [?MODULE, FName, Line, Col, SearchPaths,TabWidth]),
+normalise_record_expr(FName, Pos={_Line, _Col}, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:normalise_record_expr(~p, {~p,~p},~p, ~p).\n", [?MODULE, FName, _Line, _Col, SearchPaths,TabWidth]),
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FName,true, [], TabWidth),
     RecordExpr =pos_to_record_expr(AnnAST, Pos),
     {AnnAST1, _Changed} = normalise_record_expr_1(FName, AnnAST,Pos, RecordExpr,  SearchPaths, TabWidth),

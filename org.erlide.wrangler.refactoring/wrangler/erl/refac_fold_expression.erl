@@ -673,12 +673,12 @@ reorder_vars_to_export(LastExp, VarsToExport, Subst) ->
 						       _ -> []
 						   end
 				   end, Subst),
-	    Vars = lists:flatmap(fun(V) -> case lists:keysearch(V, 2, Subst1) of 
+	    _Vars = lists:flatmap(fun(V) -> case lists:keysearch(V, 2, Subst1) of 
 					       false -> [];
 					       {value, {Var, V}} -> [Var]
 					   end
 				 end, UnexportedVars),
-	    ?wrangler_io("Warning: some expressions could have been folded if the function also exported the following variable(s):~p\n", Vars),
+	    ?wrangler_io("Warning: some expressions could have been folded if the function also exported the following variable(s):~p\n", _Vars),
 	    false
     end.
     

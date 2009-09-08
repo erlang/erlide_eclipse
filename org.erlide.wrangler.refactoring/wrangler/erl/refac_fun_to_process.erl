@@ -169,9 +169,9 @@ pre_cond_check(AnnAST, Pos, ModName,FunName,Arity, ProcessName, SearchPaths)->
 				       _ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
 					    ?wrangler_io("The value returned by 'self()', which is used at the location(s) listed below, will be changed "
 						      " by this refactoring, and this could possibly change the behaviour of the program!\n",[]),
-					    lists:foreach(fun({{Mod, Fun, Ari}, SelfExpr, _}) ->
-								  {{Line,_}, _} = refac_util:get_range(SelfExpr),
-								  ?wrangler_io("Location: moldule: ~p, function: ~p/~p, line: ~p\n", [Mod, Fun, Ari, Line])
+					    lists:foreach(fun({{_Mod, _Fun, _Ari}, SelfExpr, _}) ->
+								  {{_Line,_}, _} = refac_util:get_range(SelfExpr),
+								  ?wrangler_io("Location: moldule: ~p, function: ~p/~p, line: ~p\n", [_Mod, _Fun, _Ari, _Line])
 							  end, SelfRes),
 					   undecidables
 				   end;
@@ -179,16 +179,16 @@ pre_cond_check(AnnAST, Pos, ModName,FunName,Arity, ProcessName, SearchPaths)->
 				 ?wrangler_io("Wrangler could not decide whether the process name provided conflicts with the process name(s) "
 					    "used by the following registeration expression(s):\n",[]),
 				  UnKnowns1 = lists:map(fun({_, V}) -> V end, UnKnowns),
-				  lists:foreach(fun({M, F,A, {L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [M, F, A, L])
+				  lists:foreach(fun({_M, _F,_A, {_L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [_M, _F, _A, _L])
 						end, UnKnowns1),
 				  case SelfRes of 
 				      ok -> ok;
 				      _ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
 					   ?wrangler_io("The value returned by 'self()', which is used at the location(s) listed below, will be changed "
 						     " by this refactoring, and this could possibly change the behaviour of the program!\n",[]),
-					   lists:foreach(fun({{Mod, Fun, Ari}, SelfExpr, _}) ->
-								 {{Line,_}, _} = refac_util:get_range(SelfExpr),
-								 ?wrangler_io("Location: moldule: ~p, function: ~p/~p, line: ~p\n", [Mod, Fun, Ari, Line])
+					   lists:foreach(fun({{_Mod, _Fun, _Ari}, SelfExpr, _}) ->
+								 {{_Line,_}, _} = refac_util:get_range(SelfExpr),
+								 ?wrangler_io("Location: moldule: ~p, function: ~p/~p, line: ~p\n", [_Mod, _Fun, _Ari, _Line])
 							 end, SelfRes)
 				  end,
 				  undecidables
@@ -270,9 +270,9 @@ do_fun_to_process(AnnAST, Info,ModName, DefPos, FunName, Arity, ProcessName) ->
     AnnAST2.
 
 fun_call_to_rpc(Node, {ModName, FunName, Arity, ProcessName, RpcFunName}) ->
-    Message = fun (Pos) -> ?wrangler_io("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler " 
+    Message = fun (_Pos) -> ?wrangler_io("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler " 
 				     "could not decide whether this site should be refactored, please check manually!\n",
-				     [Pos])
+				     [_Pos])
 	      end,
     F1 = fun(T, _Others) ->
 		case refac_syntax:type(T) of

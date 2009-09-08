@@ -183,14 +183,14 @@ duplicated_code(DirFileList, MinLength1, MinClones1, TabWidth) ->
     start_suffix_tree_clone_detector(),
     {Cs5, FileNames} = duplicated_code_detection(DirFileList, MinClones, MinLength, TabWidth),
     ?debug("Filtering out sub-clones.\n", []),
-    Cs6 = remove_sub_clones(Cs5),
+    _Cs6 = remove_sub_clones(Cs5),
     ?debug("current time:~p\n", [time()]),
     case length(FileNames) of
-         1 -> ?wrangler_io(display_clones(Cs6),[]);
-         _ -> ?wrangler_io(display_clones1(Cs6),[])
+         1 -> ?wrangler_io(display_clones(_Cs6),[]);
+         _ -> ?wrangler_io(display_clones1(_Cs6),[])
       end,
-    ?debug("No of Clones found:\n~p\n", [length(Cs6)]),
-    ?debug("Clones:\n~p\n", [Cs6]),
+    ?debug("No of Clones found:\n~p\n", [length(_Cs6)]),
+    ?debug("Clones:\n~p\n", [_Cs6]),
     {ok, "Duplicated code detection finished."}.
 
 -spec(duplicated_code_1/4::(dir(), [integer()], [integer()], integer()) ->
@@ -416,7 +416,7 @@ remove_var_literals_1(T) ->
  	{char, L, _}  -> {char, L, 'C'};
  	{atom, L, _} -> {atom, L, 'A'};
  	{A, L} ->{A, L};
- 	Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [Other]))
+ 	_Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [_Other]))
      end.
 
 %% use locations intead of tokens to represent the clones.
@@ -628,73 +628,73 @@ token_len_1(V) when is_float(V) ->
     length(float_to_list(V)); 
 token_len_1(V) when is_binary(V) ->
     length(binary_to_list(V));
-token_len_1(V) -> erlang:error(?wrangler_io("Unhandled data type:\n~p\n", [V])).
+token_len_1(_V) -> erlang:error(?wrangler_io("Unhandled data type:\n~p\n", [_V])).
        
 
 
 
 %% display the found-out clones to the user.
-display_clones1(Cs) ->
-    Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
-    display_clones1_1(Cs, Str).
-display_clones1_1([], Str) -> Str ++ "\n";		      
-
-display_clones1_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
-    NewStr =case F-1 of 
-		1 ->   Str1= Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated once at the following location:\n",
-						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
-		       display_clones1_2(Range, Str1);
-		2 ->   Str1 =Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated twice at the following location(s):\n",
-						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
-		       display_clones1_2(Range, Str1);
-		_ ->   Str1 = Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated ~p times at the following location(s):\n",
-						   [File, StartLine, StartCol-1, EndLine, EndCol-1, F-1]),
-		       display_clones1_2(Range, Str1)
-	    end,
-    display_clones1_1(Cs, NewStr).
-
-display_clones1_2([], Str) -> Str ++ "\n";
-display_clones1_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
-    Str1 =case Rs == [] of 
-	      true ->
-		  Str ++ io_lib:format(" File: ~p,{~p,~p}-{~p,~p}.", [File, StartLine, StartCol-1, EndLine, EndCol-1]);
-	      false ->
-		  Str ++ io_lib:format(" File: ~p, {~p,~p}-{~p,~p},", [File, StartLine, StartCol-1, EndLine, EndCol-1])
-	  end,
-    display_clones1_2(Rs, Str1).
+%% display_clones1(Cs) ->
+%%     Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+%%     display_clones1_1(Cs, Str).
+%% display_clones1_1([], Str) -> Str ++ "\n";		      
+%% 
+%% display_clones1_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
+%%     NewStr =case F-1 of 
+%% 		1 ->   Str1= Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated once at the following location:\n",
+%% 						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+%% 		       display_clones1_2(Range, Str1);
+%% 		2 ->   Str1 =Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated twice at the following location(s):\n",
+%% 						  [File, StartLine, StartCol-1, EndLine, EndCol-1]),
+%% 		       display_clones1_2(Range, Str1);
+%% 		_ ->   Str1 = Str ++ io_lib:format("\nThe code in ~p between lines: {~p,~p}-{~p,~p} has been duplicated ~p times at the following location(s):\n",
+%% 						   [File, StartLine, StartCol-1, EndLine, EndCol-1, F-1]),
+%% 		       display_clones1_2(Range, Str1)
+%% 	    end,
+%%     display_clones1_1(Cs, NewStr).
+%% 
+%% display_clones1_2([], Str) -> Str ++ "\n";
+%% display_clones1_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
+%%     Str1 =case Rs == [] of 
+%% 	      true ->
+%% 		  Str ++ io_lib:format(" File: ~p,{~p,~p}-{~p,~p}.", [File, StartLine, StartCol-1, EndLine, EndCol-1]);
+%% 	      false ->
+%% 		  Str ++ io_lib:format(" File: ~p, {~p,~p}-{~p,~p},", [File, StartLine, StartCol-1, EndLine, EndCol-1])
+%% 	  end,
+%%     display_clones1_2(Rs, Str1).
 
 %% ===========================================================================
 %% display the found-out clones to the user.
-display_clones(Cs) ->
-   Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
-   display_clones_1(Cs, Str).
-display_clones_1([], Str) -> Str ++ "\n";		      
-
-display_clones_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
-    NewStr = case F-1 of 
-		 1 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated once at the following"
-						   " location:",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),		     
-		       display_clones_2(Range, Str1);
-		 2 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated twice at the following"
-						   " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),
-		       
-		       display_clones_2(Range, Str1);
-		 _ ->   Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated ~p times  at the following"
-						    " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}, F-1]),
-	       
-			display_clones_2(Range, Str1)
-    end,	       
-    display_clones_1(Cs, NewStr).
-
-display_clones_2([], Str) -> Str ++ "\n";
-display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
-    Str1 = case Rs == [] of 
-	       true ->
-		   Str ++ io_lib:format("  ~p-~p.", [{StartLine,StartCol-1},{EndLine, EndCol-1}]);
-	       _ ->
-		   Str ++ io_lib:format(" ~p-~p,", [{StartLine, StartCol-1}, {EndLine, EndCol-1}])
-	   end,
-    display_clones_2(Rs, Str1).
+%% display_clones(Cs) ->
+%%    Str = io_lib:format("\nCode detection finished with *** ~p *** clone(s) found.\n", [length(Cs)]),
+%%    display_clones_1(Cs, Str).
+%% display_clones_1([], Str) -> Str ++ "\n";		      
+%% 
+%% display_clones_1([{[{{File, StartLine, StartCol}, {File,EndLine, EndCol}}|Range], _Len, F}|Cs], Str) ->
+%%     NewStr = case F-1 of 
+%% 		 1 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated once at the following"
+%% 						   " location:",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),		     
+%% 		       display_clones_2(Range, Str1);
+%% 		 2 ->  Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated twice at the following"
+%% 						   " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}]),
+%% 		       
+%% 		       display_clones_2(Range, Str1);
+%% 		 _ ->   Str1 = Str ++ io_lib:format("\nThe code between  ~p-~p has been duplicated ~p times  at the following"
+%% 						    " location(s):",[{StartLine, StartCol-1}, {EndLine,EndCol-1}, F-1]),
+%% 	       
+%% 			display_clones_2(Range, Str1)
+%%     end,	       
+%%     display_clones_1(Cs, NewStr).
+%% 
+%% display_clones_2([], Str) -> Str ++ "\n";
+%% display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
+%%     Str1 = case Rs == [] of 
+%% 	       true ->
+%% 		   Str ++ io_lib:format("  ~p-~p.", [{StartLine,StartCol-1},{EndLine, EndCol-1}]);
+%% 	       _ ->
+%% 		   Str ++ io_lib:format(" ~p-~p,", [{StartLine, StartCol-1}, {EndLine, EndCol-1}])
+%% 	   end,
+%%     display_clones_2(Rs, Str1).
 
 
 %% ===========================================================
@@ -720,7 +720,7 @@ rm_loc_in_tok(T) ->
 	{char, _L, V}  -> {char, D, V};
 	{atom, _L, V} -> {atom, D, V};
 	{A, _L} ->{A, D};
-	Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [Other]))
+	_Other  -> erlang:error(?wrangler_io("Unhandled token:\n~p\n", [_Other]))
     end.
 
 %% get the location of a token.

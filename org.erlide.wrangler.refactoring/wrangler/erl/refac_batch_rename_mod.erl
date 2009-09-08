@@ -62,8 +62,8 @@ batch_rename_mod(OldNamePattern, NewNamePattern,SearchPaths) ->
     %% Refactor both .erl and .hrl files, but does not change .hrl file name.
     Results = batch_rename_mod(Files++HeaderFiles, Old_New_Mod_Names),  
     refac_util:write_refactored_files(Results),
-    ChangedFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
-    ?wrangler_io("\n The following files have been changed by this refactoring:\n~p\n", [ChangedFiles]),
+    _ChangedFiles = lists:map(fun({{F, _F}, _AST}) -> F end, Results),
+    ?wrangler_io("\n The following files have been changed by this refactoring:\n~p\n", [_ChangedFiles]),
     {ok, "Refactoring finished."}.
     %%{ok, ChangedFiles}.
 

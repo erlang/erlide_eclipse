@@ -39,8 +39,8 @@
 %% =================================================================================================         
 
 -spec(expr_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
-expr_search(FileName, Start={Line, Col}, End={Line1, Col1}, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:expr_search(~p, {~p,~p},{~p,~p},~p).\n", [?MODULE, FileName, Line, Col, Line1, Col1, TabWidth]),
+expr_search(FileName, Start={_Line, _Col}, End={_Line1, _Col1}, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:expr_search(~p, {~p,~p},{~p,~p},~p).\n", [?MODULE, FileName, _Line, _Col, _Line1, _Col1, TabWidth]),
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, [], TabWidth),
     case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End, TabWidth) of 
 	[E|Es] -> 
@@ -55,8 +55,8 @@ expr_search(FileName, Start={Line, Col}, End={Line1, Col1}, TabWidth) ->
 		     {ok, []};
 		1 -> ?wrangler_io("No identical expression has been found. \n",[]),
 		     {ok, []};
-		N -> ?wrangler_io("~p identical expressions (including the selected expression,and up to variable renaming and literal substitution) "
-				       " have been found. \n", [N]),
+		_N -> ?wrangler_io("~p identical expressions (including the selected expression,and up to variable renaming and literal substitution) "
+				       " have been found. \n", [_N]),
 		     {ok, Res}
 	    end;
 	_   -> {error, "You have not selected an expression!"}

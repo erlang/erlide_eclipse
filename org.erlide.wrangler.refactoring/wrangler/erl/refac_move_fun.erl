@@ -215,8 +215,8 @@ check_macros(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 		{ok, _, {MDefs, _MUses}} -> 
 		    UsedMacroDefs = [{Name, {Args, refac_util:concat_toks(Toks)}} || {{_, Name}, {Args, Toks}} <-MDefs, lists:member(Name, UsedMacros)],
 		    case length(UsedMacros) > length(UsedMacroDefs) of 
-			true ->  UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefs],
-				 ?wrangler_io("\nThe following macros are used by the function to be moved, but not defined:~p\n", [UnDefinedUsedMacros]),
+			true ->  _UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefs],
+				 ?wrangler_io("\nThe following macros are used by the function to be moved, but not defined:~p\n", [_UnDefinedUsedMacros]),
 				 throw({error, "There are undefined macros used by the function to be moved."});
 			_ ->  case refac_epp:parse_file(TargetFileName, NewSearchPaths, [], TabWidth, refac_util:file_format(TargetFileName)) of 
 				  {ok, _, {MDefs1, _MUses1}} ->
@@ -224,9 +224,9 @@ check_macros(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 								   || {{_, Name}, {Args, Toks}} <-MDefs1, lists:member(Name, UsedMacros)],
 				      case  length(UsedMacros) > length(UsedMacroDefsInTargetFile) of 
 					  true ->
-					      UnDefinedUsedMacrosInTargetFile = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefsInTargetFile], 
+					      _UnDefinedUsedMacrosInTargetFile = UsedMacros -- [Name || {Name, _Def} <-UsedMacroDefsInTargetFile], 
 					      ?wrangler_io("\nThe following macros are used by the function to be moved, but not defined in the target module:~p\n", 
-							   [UnDefinedUsedMacrosInTargetFile]),
+							   [_UnDefinedUsedMacrosInTargetFile]),
 					      throw({error, "Some macros used by the function to be moved are not defined in the target module."});
 					  _ ->
 					      case lists:keysort(1,UsedMacroDefs) == lists:keysort(1,UsedMacroDefsInTargetFile) of 
@@ -268,8 +268,8 @@ check_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 				      || {Name, Fields} <-RecordDefs, lists:member(Name, UsedRecords)],
 		    case length(UsedRecords) > length(UsedRecordDefs) of 
 			true ->
-			    UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
-			    ?wrangler_io("\nThe following records are used by the function to be moved, but not defined:~p\n", [UnDefinedUsedRecords]),
+			    _UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
+			    ?wrangler_io("\nThe following records are used by the function to be moved, but not defined:~p\n", [_UnDefinedUsedRecords]),
 			    throw({error, "There are undefined records used by the function to be moved."});
 			_ -> {ok, {_, Info1}} = refac_util:parse_annotate_file(TargetFileName, false, SearchPaths, TabWidth),
 			     case lists:keysearch(records,1, Info1) of 
@@ -718,9 +718,9 @@ is_not_the_fun(Form, {ModName, FunName, Arity}) ->
 
 transform_apply_call(Node, {ModName, FunName, Arity}, TargetModName) ->
     Message = fun
-		(Pos) -> ?wrangler_io("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler "
+		(_Pos) -> ?wrangler_io("WARNING: function ***apply*** is used at location({line, col}):~p, and wrangler "
 				      "could not decide whether this site should be refactored, please check!!!\n",
-				      [Pos])
+				      [_Pos])
 	      end,
     Operator = refac_syntax:application_operator(Node),
     Arguments = refac_syntax:application_arguments(Node),
@@ -808,10 +808,9 @@ transform_apply_call(Node, {ModName, FunName, Arity}, TargetModName) ->
     end.
 
 transform_spawn_call(Node, {ModName, FunName, Arity}, TargetModName) ->
-    Message = fun
-		(Pos) -> ?wrangler_io("WARNING: function ***spawn*** is used at location({line, col}):~p, and wrangler "
+    Message = fun(_Pos) -> ?wrangler_io("WARNING: function ***spawn*** is used at location({line, col}):~p, and wrangler "
 				      "could not decide whether this site should be refactored, please check!!!\n",
-				      [Pos])
+				      [_Pos])
 	      end,
     Operator = refac_syntax:application_operator(Node),
     Arguments = refac_syntax:application_arguments(Node),

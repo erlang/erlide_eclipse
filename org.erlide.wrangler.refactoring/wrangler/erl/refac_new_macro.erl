@@ -44,9 +44,9 @@ new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, eclipse).
 
 
-new_macro(FileName, Start={SLine, SCol}, End={ELine, ECol}, NewMacroName, SearchPaths, TabWidth, Editor) ->
+new_macro(FileName, Start={_SLine, _SCol}, End={_ELine, _ECol}, NewMacroName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:new_macro(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n", 
-				 [refac_new_macro, FileName, SLine, SCol, ELine, ECol, NewMacroName, SearchPaths, TabWidth]),
+				 [refac_new_macro, FileName, _SLine, _SCol, _ELine, _ECol, NewMacroName, SearchPaths, TabWidth]),
      case pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths, TabWidth) of
 		 {ok, AnnAST, Sel} ->
 			 AnnAST1 = do_intro_new_macro(AnnAST, NewMacroName, Sel),

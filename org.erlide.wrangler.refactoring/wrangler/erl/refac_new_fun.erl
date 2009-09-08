@@ -39,8 +39,8 @@ fun_extraction_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
     fun_extraction(FileName, Start, End, NewFunName, TabWidth, eclipse).
 
 
-fun_extraction(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName,TabWidth,Editor) ->
-    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n", [?MODULE,FileName, Line, Col, Line1, Col1, NewFunName, TabWidth]),
+fun_extraction(FileName, Start={_Line, _Col}, End={_Line1, _Col1}, NewFunName,TabWidth,Editor) ->
+    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n", [?MODULE,FileName, _Line, _Col, _Line1, _Col1, NewFunName, TabWidth]),
     case refac_util:is_fun_name(NewFunName) of 
 	true ->
 	    {ok, {AnnAST, Info}}= refac_util:parse_annotate_file(FileName,true, [], TabWidth),
