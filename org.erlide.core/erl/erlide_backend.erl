@@ -255,4 +255,8 @@ get_system_info() ->
 	Procs = erlang:system_info(procs),
 	Alloc = erlang:system_info(allocated_areas),
 	Ets = [ets:info(X) || X<-ets:all()],
-	lists:flatten(io_lib:format("~s~n+++++++~n~p~n++++++++\n~p~n----------\n", [Procs, Alloc, Ets])).
+	lists:flatten(io_lib:format("~s~n+++++++~n"++
+									"~p~n++++++++\n"++
+									"~p~n----------\n", 
+								[Procs, Alloc, Ets])).
+

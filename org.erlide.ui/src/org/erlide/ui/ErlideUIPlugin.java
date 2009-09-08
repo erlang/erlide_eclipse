@@ -423,6 +423,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		return eclipsePreferences;
 	}
 
+	private final int DUMP_INTERVAL = Integer.parseInt(System.getProperty(
+			"erlide.dump.interval", "300000"));
+
 	private void startPeriodicDump() {
 		String env = System.getenv("erlide.internal.coredump");
 		if ("true".equals(env)) {
@@ -437,7 +440,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 						String sep = "\n++++++++++++++++++++++\n";
 						ErlLogger.debug(sep + info + sep);
 					} finally {
-						schedule(300000);
+						schedule(DUMP_INTERVAL);
 					}
 					return Status.OK_STATUS;
 				}
@@ -445,7 +448,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 			};
 			job.setPriority(Job.SHORT);
 			job.setSystem(true);
-			job.schedule(300000);
+			job.schedule(DUMP_INTERVAL);
 		}
 	}
 }
