@@ -39,7 +39,8 @@ init(JRex) ->
 	spawn(fun()->
 				  erlide_jrpc:init(JRex),
 				  watch_eclipse(node(JRex)),
-				  erlide_scanner_listener:start()
+				  erlide_scanner_listener:start(),
+				  erlide_monitor:start()
 		  end),
 	ok.
 
