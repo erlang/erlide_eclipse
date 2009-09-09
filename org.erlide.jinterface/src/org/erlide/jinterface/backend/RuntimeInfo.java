@@ -130,40 +130,54 @@ public class RuntimeInfo {
 				getNodeName(), getOtpHome(), version, getArgs());
 	}
 
-	public String getCmdLine() {
-		final String pathA = cvt(getPathA());
-		final String pathZ = cvt(getPathZ());
-		String msg = "%s %s %s %s";
+	public String[] getCmdLine() {
+		List<String> result = new ArrayList<String>();
+
 		String erl = getOtpHome() + "/bin/erl";
 		if (erl.indexOf(' ') >= 0) {
 			erl = "\"" + erl + "\"";
 		}
-		String pa = ifNotEmpty("-pa ", pathA);
-		String pz = ifNotEmpty("-pz ", pathZ);
-		String cmd = String.format(msg, erl, pa, pz, getArgs());
-		String cky = getCookie();
-		if (!startShell) {
-			cmd += " -noshell";
+		result.add(erl);
+		final String pathA = cvt(getPathA());
+		if (!empty(pathA)) {
+			result.add("-pa");
+			result.add(pathA);
 		}
-		cky = cky == null ? "" : " -setcookie " + cky;
+		final String pathZ = cvt(getPathZ());
+		if (!empty(pathZ)) {
+			result.add("-pz");
+			result.add(pathZ);
+		}
+		result.add(getArgs());
+
+		if (!startShell) {
+			result.add("-noshell");
+		}
+
 		final boolean globalLongName = System.getProperty("erlide.longname",
 				"false").equals("true");
-		final String nameTag = (useLongName || globalLongName) ? " -name "
-				: " -sname ";
+		final String nameTag = (useLongName || globalLongName) ? "-name"
+				: "-sname";
 		String nameOption = "";
 		if (!getNodeName().equals("")) {
-			nameOption = nameTag
-					+ BackendUtil.buildNodeName(getNodeName(), useLongName);
-			cmd += nameOption + cky;
+			nameOption = BackendUtil.buildNodeName(getNodeName(), useLongName);
+			result.add(nameTag);
+			result.add(nameOption);
+			String cky = getCookie();
+			if (cky != null) { 
+				result.add("-setcookie");
+				result.add(cky);
+			}
 		}
-		return cmd;
+
+		return result.toArray(new String[result.size()]);
 	}
 
-	private String ifNotEmpty(final String key, final String str) {
+	private boolean empty(final String str) {
 		if (str == null || str.length() == 0) {
-			return "";
+			return true;
 		}
-		return key + str;
+		return false;
 	}
 
 	public String getOtpHome() {

@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
@@ -46,18 +47,16 @@ public class ManagedLauncher implements IDisposable {
 			return;
 		}
 
-		String cmd = info.getCmdLine();
-		String[] cmds = cmd.split(" ");
+		String[] cmds = info.getCmdLine();
 		String env = System.getenv("erlide.internal.coredump");
-		if ("true".equals(env)) {
-			cmd += " +d";
-			cmd = "tcsh -c \"limit coredumpsize unlimited ; exec " + cmd + "\"";
+		if ("true".equals(env) && ErlideUtil.isEricssonUser()) {
+			final String cmd = StringUtils.join(cmds);
 			cmds = new String[] { "tcsh", "-c",
-					"limit coredumpsize unlimited ; exec " + cmd };
+					"limit coredumpsize unlimited ; exec " + cmd + " +d" };
 		}
 
 		final File workingDirectory = new File(info.getWorkingDir());
-		ErlLogger.debug("START node :> " + cmd + " *** " + workingDirectory);
+		ErlLogger.debug("START node :> " + StringUtils.join(cmds) + " *** " + workingDirectory);
 
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmds, null, workingDirectory);
@@ -74,126 +73,126 @@ public class ManagedLauncher implements IDisposable {
 				ErlLogger.debug("process is running");
 			}
 
-			final Runnable watcher = new Runnable() {
-				@SuppressWarnings("boxing")
-				public void run() {
-					try {
-						deleteOldCoreDumps(workingDirectory);
-
-						final int v = fRuntime.waitFor();
-						final String msg = "Backend '%s' terminated with exit code %d.";
-						ErlLogger.error(msg, info.getNodeName(), v);
-
-						// 143=SIGTERM (probably logout, ignore)
-						if ((v > 1) && (v != 143)
-								&& ErlideUtil.isEricssonUser()) {
-							createReport(info, workingDirectory, v, msg);
-						}
-						// FIXME backend.setExitStatus(v);
-					} catch (final InterruptedException e) {
-						ErlLogger.warn("Backend watcher was interrupted");
-					}
-				}
-
-				private void createReport(final RuntimeInfo ainfo,
-						final File aworkingDirectory, final int v,
-						final String msg) {
-					String createdDump = null;
-					createdDump = createCoreDump(aworkingDirectory, createdDump);
-
-					final String plog = ErlideUtil.fetchPlatformLog();
-					final String elog = ErlideUtil.fetchErlideLog();
-					final String delim = "\n==================================\n";
-					final File report = new File(ErlideUtil.getReportFile());
-					try {
-						report.createNewFile();
-						final OutputStream out = new FileOutputStream(report);
-						final PrintWriter pw = new PrintWriter(out);
-						try {
-							pw.println(String.format(msg, ainfo.getNodeName(),
-									v));
-							pw.println(System.getProperty("user.name"));
-							if (createdDump != null) {
-								pw.println("Core dump file: " + createdDump);
-							}
-							pw.println(delim);
-							pw.println(plog);
-							pw.println(delim);
-							pw.println(elog);
-						} finally {
-							pw.flush();
-							out.close();
-						}
-					} catch (final IOException e) {
-						ErlLogger.warn(e);
-					}
-				}
-
-				private String createCoreDump(final File workingDirectory,
-						String createdDump) {
-					File[] dumps = getCoreDumpFiles(workingDirectory);
-					if (dumps.length != 0) {
-						File dump = dumps[0];
-						final File dest = new File(ErlideUtil
-								.getReportLocation()
-								+ "/" + dump.getName());
-						try {
-							move(dump, dest);
-							createdDump = dest.getPath();
-						} catch (IOException e) {
-							final String errmsg = "Core dump file %s could not be moved to %s";
-							ErlLogger.warn(errmsg, dump.getPath(), dest
-									.getPath());
-						}
-					}
-					return createdDump;
-				}
-
-				private void move(File in, File out) throws IOException {
-					InputStream ins = new FileInputStream(in);
-					OutputStream outs = new FileOutputStream(out);
-					try {
-						byte[] buf = new byte[1024];
-						int len;
-						while ((len = ins.read(buf)) > 0) {
-							outs.write(buf, 0, len);
-						}
-					} finally {
-						ins.close();
-						outs.close();
-						in.delete();
-					}
-				}
-
-				private void deleteOldCoreDumps(final File workingDirectory) {
-					File[] fs = getCoreDumpFiles(workingDirectory);
-					if (fs == null) {
-						return;
-					}
-					for (File f : fs) {
-						f.delete();
-					}
-				}
-
-				FilenameFilter filter = new FilenameFilter() {
-					public boolean accept(File dir, String name) {
-						return name.matches("^core.[0-9]+$");
-					}
-				};
-
-				private File[] getCoreDumpFiles(final File workingDirectory) {
-					File[] fs = workingDirectory.listFiles(filter);
-					return fs;
-				}
-			};
-			final Thread thread = new Thread(null, watcher, "Backend watcher");
-			thread.setDaemon(false);
-			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.start();
+			startWatcher(info, workingDirectory);
 
 		} catch (final IOException e) {
 			ErlLogger.error(e);
 		}
+	}
+
+	private void startWatcher(final RuntimeInfo info,
+			final File workingDirectory) {
+		final Runnable watcher = new Runnable() {
+			@SuppressWarnings("boxing")
+			public void run() {
+				try {
+					deleteOldCoreDumps(workingDirectory);
+
+					final int v = fRuntime.waitFor();
+					final String msg = "Backend '%s' terminated with exit code %d.";
+					ErlLogger.error(msg, info.getNodeName(), v);
+
+					// 143=SIGTERM (probably logout, ignore)
+					if ((v > 1) && (v != 143) && ErlideUtil.isEricssonUser()) {
+						createReport(info, workingDirectory, v, msg);
+					}
+					// FIXME backend.setExitStatus(v);
+				} catch (final InterruptedException e) {
+					ErlLogger.warn("Backend watcher was interrupted");
+				}
+			}
+
+			private void createReport(final RuntimeInfo ainfo,
+					final File aworkingDirectory, final int v, final String msg) {
+				String createdDump = null;
+				createdDump = createCoreDump(aworkingDirectory, createdDump);
+
+				final String plog = ErlideUtil.fetchPlatformLog();
+				final String elog = ErlideUtil.fetchErlideLog();
+				final String delim = "\n==================================\n";
+				final File report = new File(ErlideUtil.getReportFile());
+				try {
+					report.createNewFile();
+					final OutputStream out = new FileOutputStream(report);
+					final PrintWriter pw = new PrintWriter(out);
+					try {
+						pw.println(String.format(msg, ainfo.getNodeName(), v));
+						pw.println(System.getProperty("user.name"));
+						if (createdDump != null) {
+							pw.println("Core dump file: " + createdDump);
+						}
+						pw.println(delim);
+						pw.println(plog);
+						pw.println(delim);
+						pw.println(elog);
+					} finally {
+						pw.flush();
+						out.close();
+					}
+				} catch (final IOException e) {
+					ErlLogger.warn(e);
+				}
+			}
+
+			private String createCoreDump(final File workingDirectory,
+					String createdDump) {
+				File[] dumps = getCoreDumpFiles(workingDirectory);
+				if (dumps.length != 0) {
+					File dump = dumps[0];
+					final File dest = new File(ErlideUtil.getReportLocation()
+							+ "/" + dump.getName());
+					try {
+						move(dump, dest);
+						createdDump = dest.getPath();
+					} catch (IOException e) {
+						final String errmsg = "Core dump file %s could not be moved to %s";
+						ErlLogger.warn(errmsg, dump.getPath(), dest.getPath());
+					}
+				}
+				return createdDump;
+			}
+
+			private void move(File in, File out) throws IOException {
+				InputStream ins = new FileInputStream(in);
+				OutputStream outs = new FileOutputStream(out);
+				try {
+					byte[] buf = new byte[1024];
+					int len;
+					while ((len = ins.read(buf)) > 0) {
+						outs.write(buf, 0, len);
+					}
+				} finally {
+					ins.close();
+					outs.close();
+					in.delete();
+				}
+			}
+
+			private void deleteOldCoreDumps(final File workingDirectory) {
+				File[] fs = getCoreDumpFiles(workingDirectory);
+				if (fs == null) {
+					return;
+				}
+				for (File f : fs) {
+					f.delete();
+				}
+			}
+
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.matches("^core.[0-9]+$");
+				}
+			};
+
+			private File[] getCoreDumpFiles(final File workingDirectory) {
+				File[] fs = workingDirectory.listFiles(filter);
+				return fs;
+			}
+		};
+		final Thread thread = new Thread(null, watcher, "Backend watcher");
+		thread.setDaemon(false);
+		thread.setPriority(Thread.MIN_PRIORITY);
+		thread.start();
 	}
 
 	public IStreamsProxy getStreamsProxy() {
