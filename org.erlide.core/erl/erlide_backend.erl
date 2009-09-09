@@ -37,10 +37,14 @@
 
 init(JRex) ->
 	spawn(fun()->
+				  %% must be first so that only system processes are ignored
+				  erlide_monitor:start(),
+				  Mon = spawn(fun monitor/0),
+				  erlide_monitor:subscribe(Mon),
+				  
 				  erlide_jrpc:init(JRex),
 				  watch_eclipse(node(JRex)),
-				  erlide_scanner_listener:start(),
-				  erlide_monitor:start()
+				  erlide_scanner_listener:start()
 		  end),
 	ok.
 
@@ -261,3 +265,11 @@ get_system_info() ->
 									"~p~n----------\n", 
 								[Procs, Alloc, Ets])).
 
+monitor() ->
+	receive
+		{erlide_monitor, _Node, _Diff}=Msg ->
+			erlide_log:logp(Msg),
+			monitor();
+		_ ->
+			monitor()
+	end.
