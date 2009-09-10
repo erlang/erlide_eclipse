@@ -523,8 +523,11 @@ server_cmd(Command, Args) ->
 spawn_server() ->
     case whereis(?SERVER) of
         undefined ->
-            Pid = spawn(fun() -> loop([]) end),
-            erlang:register(?SERVER, Pid);
+			Pid = spawn(fun() ->
+								?SAVE_CALLS,
+								loop([]) 
+						end),
+			erlang:register(?SERVER, Pid);
         _ ->
             ok
     end.

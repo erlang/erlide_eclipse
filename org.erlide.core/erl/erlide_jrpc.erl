@@ -13,12 +13,17 @@
 		 event/2 
 		]).
 
+-include("erlide.hrl"). 
+
 -define(MANAGER, erlide_rex_manager).
 
 init(JPid) ->
 	case whereis(?MANAGER) of
 		undefined ->
-			Pid = spawn(fun() -> manager([]) end),
+			Pid = spawn(fun() -> 
+								?SAVE_CALLS,
+								manager([]) 
+						end),
 			register(?MANAGER, Pid);
 		_ ->
 			ok

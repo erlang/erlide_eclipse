@@ -10,6 +10,8 @@
 
 -export([shell_init/1]).
 
+-include("erlide.hrl").
+
 %% ----------------------------------------------------------------------
 %% start(Pid) -> {ok, Pid} | {error, Reason}
 
@@ -35,6 +37,7 @@ stop(Server) ->
   
 
 shell_init(Client) ->
+	?SAVE_CALLS, 
     %% Announce ourself as group leader.
     %% This causes all calls to io:format(...) and such alike
     %% to send their output to us.

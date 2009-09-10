@@ -241,7 +241,10 @@ lines_to_text(Lines) ->
 spawn_server() ->
     case whereis(?SERVER) of
         undefined ->
-            Pid = spawn(fun() -> loop([]) end),
+            Pid = spawn(fun() -> 
+								?SAVE_CALLS,
+								loop([]) 
+						end),
             erlang:register(?SERVER, Pid);
         _ ->
             ok

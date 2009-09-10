@@ -12,8 +12,11 @@
 		 module_use/1,
 		 update/0]).
 
+-include("erlide.hrl").
+
 start() ->
 	spawn(fun() ->
+				  ?SAVE_CALLS,
 				  erlang:yield(),
 				  xref:start(erlide), 
 				  xref:set_default(erlide, [{verbose,false},{warnings,false}]),

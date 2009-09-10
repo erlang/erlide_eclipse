@@ -23,6 +23,8 @@
 	 get_process_info/1
 	]).
 
+-include("erlide.hrl").
+
 init(_EventSinkPid) ->
     process_list_init(),
     ok.
@@ -67,7 +69,10 @@ process_list_init() ->
 	    ok;
 	_ ->
 	    put(process_list_init, true),
-	    spawn(fun process_list_updater/0)
+	    spawn(fun() ->
+					  ?SAVE_CALLS,
+					  process_list_updater() 
+			  end)
     end.
 
 process_list_updater() ->
@@ -76,7 +81,7 @@ process_list_updater() ->
 	_ -> process_list_updater()
     after 5000 ->
 	erlide_jrpc:event(processlist, {erlang:now(), self()}),
-        process_list_updater()
+        ?MODULE:process_list_updater()
     end.
 
 

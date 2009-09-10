@@ -14,8 +14,13 @@
 		 start/0
 		]).
 
+-include("erlide.hrl"). 
+
 start() ->
-	Pid = spawn(fun()->loop([]) end),
+	Pid = spawn(fun()->
+						?SAVE_CALLS, 
+						loop([]) 
+				end),
 	erlide_log:logp({scanner_listener, Pid}),
 	register(?MODULE, Pid),
 	erlide_log:logp({scanner_listener, ?MODULE}),
@@ -27,13 +32,13 @@ loop(L) ->
 			ok;
 		{change, _Module, _Offset, _Length, _Text} = Msg ->
 			%%erlide_log:logp({scanner_listener, Msg}),
-			loop(aggregate(Msg, L));
+			?MODULE:loop(aggregate(Msg, L));
 		{new, _Module} = _Msg ->
 			%%erlide_log:logp({scanner_listener, _Msg}),
-			loop(L);
+			?MODULE:loop(L);
 		_Msg ->
 			%%erlide_log:logp({scanner_listener, unknown, _Msg}),
-			loop(L)
+			?MODULE:loop(L)
 	
 		after 600 ->
 			case L of 
@@ -42,7 +47,7 @@ loop(L) ->
 				_ ->
 					[handle(X) || X <- lists:reverse(L)]
 			end,
-			loop([])
+			?MODULE:loop([])
 	end.
 
 aggregate(Msg={change, Module, Offset, 0, Text}, L=[{change, Module, Offset2, 0, Text2}|T]) ->

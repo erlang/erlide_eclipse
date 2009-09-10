@@ -35,14 +35,16 @@
 		 get_module_info/1
 		]).
 
-init(JRex) ->
+init(JRex) ->	
+	application:start(sasl),
 	spawn(fun()->
-				  %% must be first so that only system processes are ignored
-				  erlide_monitor:start(),
-				  Mon = spawn(fun monitor/0),
-				  erlide_monitor:subscribe(Mon),
-				  
 				  erlide_jrpc:init(JRex),
+
+				  %% must be first so that only system processes are ignored
+ 				  Mon = spawn(fun monitor/0),
+ 				  erlide_monitor:start(),
+ 				  erlide_monitor:subscribe(Mon),
+				  
 				  watch_eclipse(node(JRex)),
 				  erlide_scanner_listener:start()
 		  end),
@@ -61,7 +63,7 @@ init1(monitor) ->
 	%watch_eclipse(node(JRex)),
 	ok.	
 
-%% it's uncertain that this is needed anymore, but it doesn't hurt
+%% it's uncertain if this is needed anymore, but it doesn't hurt
 watch_eclipse(JavaNode) ->
 	spawn(fun() ->
 				  monitor_node(JavaNode, true),
@@ -271,5 +273,6 @@ monitor() ->
 			erlide_log:logp(Msg),
 			monitor();
 		_ ->
+			erlide_log:logp("???"),
 			monitor()
 	end.

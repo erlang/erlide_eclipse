@@ -34,14 +34,15 @@
 				ignored_ets=[],
 				old_snapshot,
 				new_snapshot,
-				diff
+				diffs=[]
 			   }).
 
 -record(snapshot, {
 				   time,
 				   processes=[], 
 				   ets=[], 
-				   memory=[]
+				   memory=[],
+				   stats=[]
 				  }).
 
 %% ====================================================================
@@ -85,7 +86,7 @@ get_diff() ->
 %%          {stop, Reason}
 %% --------------------------------------------------------------------
 init([]) ->
-	erlang:send_after(500, ?MODULE, take_snapshot),
+	erlang:send_after(1000, ?MODULE, take_snapshot),
 	{ok, #state{
 				ignored_processes=processes(), 
 				ignored_ets=ets:all()
@@ -104,8 +105,11 @@ init([]) ->
 handle_call(get_status, _From, #state{new_snapshot=Snap}=State) ->
 	Reply = Snap,
 	{reply, Reply, State};
-handle_call(get_diff, _From, #state{diff=Diff}=State) ->
-	Reply = Diff,
+handle_call(get_diff, _From, #state{diffs=Diffs}=State) ->
+	Reply = case Diffs of 
+				[] -> [];
+				[H|_] -> H
+			end,
 	{reply, Reply, State};
 handle_call(Request, From, State) ->
 	erlide_log:logp("monitor:: unrecognized call: ~p from ~p", [Request, From]),	
@@ -146,16 +150,20 @@ handle_cast(Msg, State) ->
 %%          {noreply, State, Timeout} |
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_info(take_snapshot, #state{new_snapshot=Snap}=State) ->
+handle_info(take_snapshot, #state{new_snapshot=Snap, diffs=Diffs}=State) ->
 	NewSnap = take_snapshot(State#state.ignored_processes, State#state.ignored_ets),
 	Diff = diff_snapshot(Snap, NewSnap),
-	
-	lists:foreach(fun(Pid) -> Pid ! {?MODULE, node(), Diff} end, 
-				  State#state.subscribers),
+	case is_empty_diff(Diff) of
+		true ->
+			ok;
+		false ->
+			lists:foreach(fun(Pid) -> Pid ! {?MODULE, node(), Diff} end, 
+						  State#state.subscribers) 
+	end,
 	
 	Time = State#state.poll_interval,
 	erlang:send_after(Time, ?MODULE, take_snapshot),
-	{noreply, State#state{old_snapshot=Snap, new_snapshot=NewSnap, diff=Diff}};
+	{noreply, State#state{old_snapshot=Snap, new_snapshot=NewSnap, diffs=[Diff|Diffs]}};
 handle_info(Info, State) ->
 	erlide_log:logp("monitor:: unrecognized message: ~p", [Info]),	
 	{noreply, State}.
@@ -185,20 +193,31 @@ code_change(_OldVsn, State, _Extra) ->
 take_snapshot(IgnoredProcesses, IgnoredEts) ->
 	Now = calendar:local_time(),
 	%% erlide_log:logp("Taking system snapshot @ ~p", [Now]),
-	Procs = lists:sort([lists:sort([{'Pid', X} | erlang:process_info(X)]) || X<-processes()--IgnoredProcesses]),
-	Ets = lists:sort([lists:sort([{'Id', X} | case ets:info(X) of undefined -> []; Info-> Info end]) || X<-ets:all()--IgnoredEts]),
+	Procs = lists:sort([lists:sort([{'Pid', X} | get_process_info(X)]) || X<-processes()--IgnoredProcesses]),
+	Ets = lists:sort([lists:sort([{'Id', X} | einfo(X)]) || X<-ets:all()--IgnoredEts]),
 	Mem = lists:sort(erlang:system_info(allocated_areas)),
-	#snapshot{time=Now, processes=Procs, ets=Ets, memory=Mem}.
+	Stats = [{X, erlang:statistics(X)} || X<-[context_switches, io, reductions, run_queue, runtime, wall_clock]],
+	#snapshot{time=Now, processes=Procs, ets=Ets, memory=Mem, stats=Stats}.
 
+einfo(X) ->
+	case ets:info(X) of 
+		undefined -> []; 
+		Info-> Info 
+	end.
 
-diff_snapshot(undefined, Snap) ->
-	Snap;
-diff_snapshot(#snapshot{time=T1, processes=P1, ets=E1, memory=M1}, 
-			  #snapshot{time=T2, processes=P2, ets=E2, memory=M2}) ->
+diff_snapshot(undefined, #snapshot{time=T, processes=P, ets=E, memory=M, stats=S}) ->
+	[{time, T}, 
+	 {processes, [{added, P}]}, 
+	 {ets, [{added, E}]}, 
+	 {memory, [{added, M}]},
+	 {stats, [{added, S}]}];
+diff_snapshot(#snapshot{processes=P1, ets=E1, memory=M1, stats=S1}, 
+			  #snapshot{processes=P2, ets=E2, memory=M2, stats=S2, time=T}) ->
 	Pdiff = diff_list_id(P1, P2, 'Pid'),
 	Ediff = diff_list_id(E1, E2, 'Id'),
 	Mdiff = diff_list(M1, M2),
-	[{time, T1, T2}, {processes, Pdiff}, {ets, Ediff}, {memory, Mdiff}].
+	Sdiff = diff_list(S1, S2),
+	[{time, T}, {processes, Pdiff}, {ets, Ediff}, {memory, Mdiff}, {stats, Sdiff}].
 
 diff_list(Old, New) ->
 	diff_list_1(Old, New, []).
@@ -229,7 +248,20 @@ diff_list_id(Old, New, Id) ->
 	Deleted = lists:filter(fun(X) -> lists:member(get_id(X, Id), DeletedIds) end, Old),
 	ModifiedOld = lists:filter(fun(X) -> lists:member(get_id(X, Id), ModifiedIds) end, Old),
 	ModifiedNew = lists:filter(fun(X) -> lists:member(get_id(X, Id), ModifiedIds) end, New),
-	[{added, Added}, {deleted, Deleted}, {modified, trim_same_values(ModifiedOld, ModifiedNew, Id)}].
+	R0=[],
+	R1=case trim_same_values(ModifiedOld, ModifiedNew, Id) of 
+		   [] -> R0;
+		   Modded -> [{modified, Modded} | R0]
+	   end,
+	R2=case Deleted of 
+		   [] -> R1;
+		   _ -> [{deleted, Deleted} | R1]
+	   end,
+	R3=case Added of 
+		   [] -> R2;
+		   _ -> [{added, Added} | R2]
+	   end,
+	R3. 
 
 trim_same_values(Old, New, Id) ->
 	trim_same_values(Old, New, Id, []).
@@ -256,5 +288,25 @@ get_id(Info, Key) ->
 	{value, {Key, Id}} = lists:keysearch(Key, 1, Info),
 	Id.
 
+is_empty_diff([{time, _}, 
+			   {processes, []}, 
+			   {ets, []}, 
+			   {memory, []},
+			   {stats, _}]) ->
+	true;
+is_empty_diff(_) ->
+	false.
 
+get_process_info(Pid) ->
+	R0 = erlang:process_info(Pid),
+	BT = info(Pid, backtrace),
+	LC = info(Pid, last_calls),
+	M = info(Pid, memory),
+	lists:append([R0, BT, LC, M]).
 
+info(Pid, Key) ->
+	try 
+		[erlang:process_info(Pid, Key)] 
+	catch 
+		_:_ -> [] 
+	end.

@@ -2,6 +2,8 @@
 -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
 -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
 
+-define(SAVE_CALLS, erlang:process_flag(save_calls, 50)).
+
 -ifdef(DEBUG).
 -compile(export_all).
 -ifdef(IO_FORMAT_DEBUG).
