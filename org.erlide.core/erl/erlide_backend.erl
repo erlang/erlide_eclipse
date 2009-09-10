@@ -259,13 +259,7 @@ print_opts(X) ->
 	io_lib:format("    ~p~n", [X]).
 
 get_system_info() ->
-	Procs = erlang:system_info(procs),
-	Alloc = erlang:system_info(allocated_areas),
-	Ets = [ets:info(X) || X<-ets:all()],
-	lists:flatten(io_lib:format("~s~n+++++++~n"++
-									"~p~n++++++++\n"++
-									"~p~n----------\n", 
-								[Procs, Alloc, Ets])).
+	lists:flatten(io_lib:format("~p~n", [erlide_monitor:get_status()])).
 
 monitor() ->
 	receive
@@ -273,6 +267,5 @@ monitor() ->
 			erlide_log:logp(Msg),
 			monitor();
 		_ ->
-			erlide_log:logp("???"),
 			monitor()
 	end.

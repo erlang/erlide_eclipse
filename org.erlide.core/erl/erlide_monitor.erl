@@ -28,7 +28,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -record(state, {
-				poll_interval= 30000,
+				poll_interval= 1000,
 				subscribers=[],
 				ignored_processes=[],
 				ignored_ets=[],
@@ -102,8 +102,9 @@ init([]) ->
 %%          {stop, Reason, Reply, State}   | (terminate/2 is called)
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_call(get_status, _From, #state{new_snapshot=Snap}=State) ->
-	Reply = Snap,
+handle_call(get_status, _From, #state{new_snapshot=Snap, diffs=Diffs}=State) ->
+	#snapshot{time=T, processes=P, ets=E, memory=M, stats=S}=Snap,
+	Reply = [{time, T}, {processes, P}, {ets, E}, {memory, M}, {stats, S}, {diffs, Diffs}],
 	{reply, Reply, State};
 handle_call(get_diff, _From, #state{diffs=Diffs}=State) ->
 	Reply = case Diffs of 
@@ -153,17 +154,18 @@ handle_cast(Msg, State) ->
 handle_info(take_snapshot, #state{new_snapshot=Snap, diffs=Diffs}=State) ->
 	NewSnap = take_snapshot(State#state.ignored_processes, State#state.ignored_ets),
 	Diff = diff_snapshot(Snap, NewSnap),
-	case is_empty_diff(Diff) of
-		true ->
-			ok;
-		false ->
-			lists:foreach(fun(Pid) -> Pid ! {?MODULE, node(), Diff} end, 
-						  State#state.subscribers) 
-	end,
+	State1 = case is_empty_diff(Diff) of
+				 true ->
+					 State;
+				 false ->
+					 lists:foreach(fun(Pid) -> Pid ! {?MODULE, node(), Diff} end, 
+								   State#state.subscribers),
+					 State#state{old_snapshot=Snap, new_snapshot=NewSnap, diffs=[Diff|Diffs]}
+			 end,
 	
 	Time = State#state.poll_interval,
 	erlang:send_after(Time, ?MODULE, take_snapshot),
-	{noreply, State#state{old_snapshot=Snap, new_snapshot=NewSnap, diffs=[Diff|Diffs]}};
+	{noreply, State1};
 handle_info(Info, State) ->
 	erlide_log:logp("monitor:: unrecognized message: ~p", [Info]),	
 	{noreply, State}.
@@ -213,8 +215,8 @@ diff_snapshot(undefined, #snapshot{time=T, processes=P, ets=E, memory=M, stats=S
 	 {stats, [{added, S}]}];
 diff_snapshot(#snapshot{processes=P1, ets=E1, memory=M1, stats=S1}, 
 			  #snapshot{processes=P2, ets=E2, memory=M2, stats=S2, time=T}) ->
-	Pdiff = diff_list_id(P1, P2, 'Pid'),
-	Ediff = diff_list_id(E1, E2, 'Id'),
+	Pdiff = diff_list_id(P1, P2, ['Pid', registered_name]),
+	Ediff = diff_list_id(E1, E2, ['Id', name]),
 	Mdiff = diff_list(M1, M2),
 	Sdiff = diff_list(S1, S2),
 	[{time, T}, {processes, Pdiff}, {ets, Ediff}, {memory, Mdiff}, {stats, Sdiff}].
@@ -238,24 +240,27 @@ diff_list_1([{_K1, _V1a, _V1b}|_]=L1, [{K2, V2a, V2b}|T2]=_L2, Result) ->
 	diff_list_1(L1, T2, [{K2, {undefined, V2a}, {undefined, V2b}}|Result]).
 
 
-diff_list_id(Old, New, Id) ->
+diff_list_id(Old, New, Ids) ->
+	Id = hd(Ids),
+	
 	OldIds = [get_id(X, Id) || X<-Old],
 	NewIds = [get_id(X, Id) || X<-New],
 	AddedIds = NewIds -- OldIds,
 	DeletedIds = OldIds -- NewIds,
 	ModifiedIds = ((OldIds ++ NewIds) -- AddedIds) -- DeletedIds,
-	Added = lists:filter(fun(X) -> lists:member(get_id(X, Id), AddedIds) end, New),
-	Deleted = lists:filter(fun(X) -> lists:member(get_id(X, Id), DeletedIds) end, Old),
-	ModifiedOld = lists:filter(fun(X) -> lists:member(get_id(X, Id), ModifiedIds) end, Old),
-	ModifiedNew = lists:filter(fun(X) -> lists:member(get_id(X, Id), ModifiedIds) end, New),
+	
+	Added = filter(Id, AddedIds, New), 
+	ModifiedOld = filter(Id, ModifiedIds, Old),
+	ModifiedNew = filter(Id, ModifiedIds, New),
+	
 	R0=[],
-	R1=case trim_same_values(ModifiedOld, ModifiedNew, Id) of 
+	R1=case trim_same_values(ModifiedOld, ModifiedNew, Ids) of 
 		   [] -> R0;
 		   Modded -> [{modified, Modded} | R0]
 	   end,
-	R2=case Deleted of 
+	R2=case DeletedIds of 
 		   [] -> R1;
-		   _ -> [{deleted, Deleted} | R1]
+		   _ -> [{deleted, [{Id, X} || X<-DeletedIds]} | R1]
 	   end,
 	R3=case Added of 
 		   [] -> R2;
@@ -263,19 +268,34 @@ diff_list_id(Old, New, Id) ->
 	   end,
 	R3. 
 
-trim_same_values(Old, New, Id) ->
-	trim_same_values(Old, New, Id, []).
+filter(Id, L1, L2) ->
+	lists:filter(fun(X) -> lists:member(get_id(X, Id), L1) end, L2).
+
+trim_same_values(Old, New, Ids) ->
+	case {Old, New} of
+		{[], []} -> ok;
+		{A, A} -> ok;
+		_ ->
+			erlide_log:logp("OOOOOOOOO>>>>>> ~p", [Old]),
+			erlide_log:logp("NNNNNNNNN>>>>>> ~p", [New]),
+			erlide_log:logp("############### ")
+	end,
+	trim_same_values(Old, New, Ids, []).
 
 trim_same_values([], [], _, Result) ->
 	lists:reverse(Result);
-trim_same_values([H1|Old], [H2|New], Id, Result) ->
-	Fun = fun({X, _}) when X==Id -> true;
-			 ({registered_name, _})-> true;
-			 ({name, _})-> true;
-			 (X) -> not lists:member(X, H1)
+trim_same_values([H1|Old], [H2|New], Ids, Result) ->
+	
+	%% FIXME there is an error here!
+	
+	Fun = fun({X, _}=Y) ->
+				  case lists:member(X, Ids) of
+					  true -> true;
+					  false -> not lists:member(Y, H1)
+				  end
 		  end,
 	L = lists:filter(Fun, H2),
-	LL = lists:keydelete(name, 1, lists:keydelete('Pid', 1, lists:keydelete(registered_name, 1, L))),
+	LL = lists:foldl(fun(X, Acc) -> lists:keydelete(X, 1, Acc) end, L, Ids),
 	Result1 = case length(LL)>0 of
 				  false ->
 					  Result;
