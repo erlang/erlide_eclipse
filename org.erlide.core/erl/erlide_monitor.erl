@@ -288,9 +288,12 @@ trim_values(H1, H2, Ids, Result) ->
 				  end
 		  end,
 	L = lists:filter(Fun, H2),
+	Id = hd(Ids),
 	Result1 = case length(L) > length(Ids) of
 				  true ->
-					  Fun2 = fun({K, V2}) ->
+					  Fun2 = fun({Id_, _}=T) when Id_==Id ->
+									 T;
+								({K, V2}) ->
 									 {value, {K, V1}} = lists:keysearch(K, 1, H1),
 									 {K, {V1, V2}}
 							 end,
