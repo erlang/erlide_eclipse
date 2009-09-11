@@ -194,8 +194,8 @@ code_change(_OldVsn, State, _Extra) ->
 
 take_snapshot(IgnoredProcesses, IgnoredEts) ->
 	Now = calendar:local_time(),
-	%% erlide_log:logp("Taking system snapshot @ ~p", [Now]),
-	Procs = lists:sort([lists:sort([{'Pid', X} | get_process_info(X)]) || X<-processes()--IgnoredProcesses]),
+	erlide_log:logp("Taking system snapshot @ ~p", [Now]),
+	Procs = lists:sort([lists:sort([{'Pid', X} | pinfo(X)]) || X<-processes()--IgnoredProcesses]),
 	Ets = lists:sort([lists:sort([{'Id', X} | einfo(X)]) || X<-ets:all()--IgnoredEts]),
 	Mem = lists:sort(erlang:system_info(allocated_areas)),
 	Stats = [{X, erlang:statistics(X)} || X<-[context_switches, io, reductions, run_queue, runtime, wall_clock]],
@@ -317,12 +317,16 @@ is_empty_diff([{time, _},
 is_empty_diff(_) ->
 	false.
 
-get_process_info(Pid) ->
+pinfo(Pid) ->
 	R0 = erlang:process_info(Pid),
-	BT = info(Pid, backtrace),
+	[{backtrace, BT}] = info(Pid, backtrace),
+	BT1 = case is_binary(BT) of
+			  true -> string:tokens(binary_to_list(BT), "\n");
+			  false -> BT
+		  end,
 	LC = info(Pid, last_calls),
 	M = info(Pid, memory),
-	lists:append([R0, BT, LC, M]).
+	lists:append([R0, [{backtrace, BT1}], LC, M]).
 
 info(Pid, Key) ->
 	try 
