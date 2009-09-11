@@ -23,8 +23,6 @@
 	 get_process_info/1
 	]).
 
--include("erlide.hrl").
-
 init(_EventSinkPid) ->
     process_list_init(),
     ok.
@@ -70,7 +68,6 @@ process_list_init() ->
 	_ ->
 	    put(process_list_init, true),
 	    spawn(fun() ->
-					  ?SAVE_CALLS,
 					  process_list_updater() 
 			  end)
     end.
