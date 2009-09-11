@@ -28,7 +28,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -record(state, {
-				poll_interval= 1000,
+				poll_interval= 30000,
 				subscribers=[],
 				ignored_processes=[],
 				ignored_ets=[],
@@ -272,22 +272,15 @@ filter(Id, L1, L2) ->
 	lists:filter(fun(X) -> lists:member(get_id(X, Id), L1) end, L2).
 
 trim_same_values(Old, New, Ids) ->
-	case {Old, New} of
-		{[], []} -> ok;
-		{A, A} -> ok;
-		_ ->
-			erlide_log:logp("OOOOOOOOO>>>>>> ~p", [Old]),
-			erlide_log:logp("NNNNNNNNN>>>>>> ~p", [New]),
-			erlide_log:logp("############### ")
-	end,
 	trim_same_values(Old, New, Ids, []).
 
 trim_same_values([], [], _, Result) ->
 	lists:reverse(Result);
 trim_same_values([H1|Old], [H2|New], Ids, Result) ->
-	
-	%% FIXME there is an error here!
-	
+	Result1 = trim_values(H1, H2, Ids, Result),
+	trim_same_values(Old, New, Ids, Result1).
+
+trim_values(H1, H2, Ids, Result) ->
 	Fun = fun({X, _}=Y) ->
 				  case lists:member(X, Ids) of
 					  true -> true;
@@ -295,14 +288,18 @@ trim_same_values([H1|Old], [H2|New], Ids, Result) ->
 				  end
 		  end,
 	L = lists:filter(Fun, H2),
-	LL = lists:foldl(fun(X, Acc) -> lists:keydelete(X, 1, Acc) end, L, Ids),
-	Result1 = case length(LL)>0 of
-				  false ->
-					  Result;
+	Result1 = case length(L) > length(Ids) of
 				  true ->
-					  [L | Result]
+					  Fun2 = fun({K, V2}) ->
+									 {value, {K, V1}} = lists:keysearch(K, 1, H1),
+									 {K, {V1, V2}}
+							 end,
+					  L1 = lists:map(Fun2, L),
+					  [L1 | Result];
+				  false ->
+					  Result
 			  end,
-	trim_same_values(Old, New, Result1).
+	Result1.
 
 get_id(Info, Key) ->
 	{value, {Key, Id}} = lists:keysearch(Key, 1, Info),
