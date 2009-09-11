@@ -20,7 +20,7 @@ public class LogEventHandler extends EventHandler {
 				final Bindings b = ErlUtils.match("{K:a,M}", log);
 				final String kind = ((OtpErlangAtom) b.get("K")).atomValue();
 				final OtpErlangObject amsg = b.get("M");
-				ErlLogger.debug("%s: %s", kind, amsg);
+				ErlLogger.debug("%s: %s", kind, ErlUtils.asString(amsg));
 			} catch (final Exception e) {
 				ErlLogger.error(e);
 			}
