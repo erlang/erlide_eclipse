@@ -105,10 +105,12 @@ public class ErlangElementImageProvider {
 			return getErlImageDescriptor((IErlElement) element, flags);
 		} else if (element instanceof IFile) {
 			final IFile file = (IFile) element;
-			if ("erl".equals(file.getFileExtension())) { //$NON-NLS-1$
-				return getCUResourceImageDescriptor(file, flags); // image for
-				// a CU not
-				// on the build path
+			final IErlModel model = ErlangCore.getModel();
+			final IErlFolder ef = (IErlFolder) model.findElement(file
+					.getParent());
+			if ("erl".equals(file.getFileExtension()) && !ef.isOnSourcePath()) { //$NON-NLS-1$
+				return getErlResourceImageDescriptor(file, flags);
+				// image for a CU not on the build path
 			}
 			return getWorkbenchImageDescriptor(file, flags);
 		} else if (element instanceof IFolder) {
@@ -140,7 +142,7 @@ public class ErlangElementImageProvider {
 	 * Returns an image descriptor for a module not on the class path. The
 	 * descriptor includes overlays, if specified.
 	 */
-	public ImageDescriptor getCUResourceImageDescriptor(final IFile file,
+	public ImageDescriptor getErlResourceImageDescriptor(final IFile file,
 			final int flags) {
 		final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
 		return new ErlangElementImageDescriptor(
