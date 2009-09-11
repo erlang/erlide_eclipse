@@ -4,7 +4,6 @@
 
 -include("erlide.hrl").
 
-
 %% dummy i/o server to capture output from yecc and convert it to warnings/errors
 
 -export([start/0]).
@@ -24,6 +23,7 @@ start() ->
 
 server() ->
     group_leader(self(), self()),
+	?SAVE_CALLS,
     server_loop([]).
 
 server_loop(Msgs) ->

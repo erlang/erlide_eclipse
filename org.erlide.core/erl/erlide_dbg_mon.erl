@@ -15,11 +15,7 @@
 -module(erlide_dbg_mon).
 
 -include_lib("kernel/include/file.hrl").
-
-
--define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
--define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
--define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
+-include("erlide.hrl"). 
 
 %% External exports
 -export([start/2, stop/0, interpret/3, line_breakpoint/3]).
@@ -68,7 +64,10 @@ start(Mode, Flags) ->
     case whereis(?SERVER) of
         undefined ->
             CallingPid = self(),
-            Pid = spawn(fun () -> init(CallingPid, Mode, Flags) end),
+            Pid = spawn(fun () -> 
+								 ?SAVE_CALLS,
+								 init(CallingPid, Mode, Flags) 
+						end),
             receive
                 {initialization_complete, Pid} ->
                     {ok, Pid};

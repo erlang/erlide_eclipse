@@ -36,7 +36,6 @@
 		]).
 
 init(JRex) ->	
-	application:start(sasl),
 	spawn(fun()->
 				  erlide_jrpc:init(JRex),
 
