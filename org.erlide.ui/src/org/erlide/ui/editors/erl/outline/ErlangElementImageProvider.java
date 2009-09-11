@@ -105,10 +105,7 @@ public class ErlangElementImageProvider {
 			return getErlImageDescriptor((IErlElement) element, flags);
 		} else if (element instanceof IFile) {
 			final IFile file = (IFile) element;
-			final IErlModel model = ErlangCore.getModel();
-			final IErlFolder ef = (IErlFolder) model.findElement(file
-					.getParent());
-			if ("erl".equals(file.getFileExtension()) && !ef.isOnSourcePath()) { //$NON-NLS-1$
+			if ("erl".equals(file.getFileExtension())) { //$NON-NLS-1$
 				return getErlResourceImageDescriptor(file, flags);
 				// image for a CU not on the build path
 			}
