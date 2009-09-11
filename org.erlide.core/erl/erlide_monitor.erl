@@ -20,7 +20,9 @@
 		 configure/2,
 		 subscribe/1,
 		 unsubscribe/1,
-		 get_status/0,
+		 get_state/0,
+		 get_previous_state/0,
+		 get_all_diffs/0,
 		 get_diff/0
 		]).
 
@@ -28,7 +30,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -record(state, {
-				poll_interval= 3000,
+				poll_interval= 300000,
 				subscribers=[],
 				ignored_processes=[],
 				ignored_ets=[],
@@ -67,8 +69,14 @@ configure(Options) when is_list(Options) ->
 configure(Key, Val) ->
 	gen_server:cast(?MODULE, {configure, Key, Val}).
 
-get_status() ->
-	gen_server:call(?MODULE, get_status).
+get_state() ->
+	gen_server:call(?MODULE, get_state).
+
+get_previous_state() ->
+	gen_server:call(?MODULE, get_previous_state).
+
+get_all_diffs() ->
+	gen_server:call(?MODULE, get_all_diffs).
 
 get_diff() ->
 	gen_server:call(?MODULE, get_diff).
@@ -102,9 +110,14 @@ init([]) ->
 %%          {stop, Reason, Reply, State}   | (terminate/2 is called)
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_call(get_status, _From, #state{new_snapshot=Snap, diffs=Diffs}=State) ->
-	#snapshot{time=T, processes=P, ets=E, memory=M, stats=S}=Snap,
-	Reply = [{time, T}, {processes, P}, {ets, E}, {memory, M}, {stats, S}, {diffs, Diffs}],
+handle_call(get_state, _From, #state{old_snapshot=Snap}=State) ->
+	Reply = Snap,
+	{reply, Reply, State};
+handle_call(get_previous_state, _From, #state{new_snapshot=Snap}=State) ->
+	Reply = Snap,
+	{reply, Reply, State};
+handle_call(get_all_diffs, _From, #state{diffs=Diffs}=State) ->
+	Reply = Diffs,
 	{reply, Reply, State};
 handle_call(get_diff, _From, #state{diffs=Diffs}=State) ->
 	Reply = case Diffs of 
@@ -228,7 +241,7 @@ diff_list_1([], [], Result) ->
 	lists:reverse(Result);
 diff_list_1([{K, V}|T1], [{K, V}|T2], Result) ->
 	diff_list_1(T1, T2, Result);
-diff_list_1([{K, Va, Vb}|T1], [{K, Va, Vb}|T2], Result) ->
+diff_list_1([{K, V1, V2}|T1], [{K, V1, V2}|T2], Result) ->
 	diff_list_1(T1, T2, Result);
 diff_list_1([{K, _}|T1], [{K, V2}|T2], Result) ->
 	diff_list_1(T1, T2, [{K, V2}|Result]);
