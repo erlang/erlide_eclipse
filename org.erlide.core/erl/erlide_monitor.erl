@@ -28,7 +28,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -record(state, {
-				poll_interval= 300000,
+				poll_interval= 3000,
 				subscribers=[],
 				ignored_processes=[],
 				ignored_ets=[],
@@ -226,18 +226,16 @@ diff_list(Old, New) ->
 
 diff_list_1([], [], Result) ->
 	lists:reverse(Result);
-diff_list_1([{K, V}|T1]=_L1, [{K, V}|T2]=_L2, Result) ->
+diff_list_1([{K, V}|T1], [{K, V}|T2], Result) ->
 	diff_list_1(T1, T2, Result);
-diff_list_1([{K, Va, Vb}|T1]=_L1, [{K, Va, Vb}|T2]=_L2, Result) ->
+diff_list_1([{K, Va, Vb}|T1], [{K, Va, Vb}|T2], Result) ->
 	diff_list_1(T1, T2, Result);
-diff_list_1([{K, V1}|T1]=_L1, [{K, V2}|T2]=_L2, Result) ->
-	diff_list_1(T1, T2, [{K, {V1, V2}}|Result]);
-diff_list_1([{K, V1a, V1b}|T1]=_L1, [{K, V2a, V2b}|T2]=_L2, Result) ->
-	diff_list_1(T1, T2, [{K, {V1a, V2a}, {V1b, V2b}}|Result]);
-diff_list_1([{_K1, _V1}|_]=L1, [{K2, V2}|T2]=_L2, Result) ->
-	diff_list_1(L1, T2, [{K2, {undefined, V2}}|Result]);
-diff_list_1([{_K1, _V1a, _V1b}|_]=L1, [{K2, V2a, V2b}|T2]=_L2, Result) ->
-	diff_list_1(L1, T2, [{K2, {undefined, V2a}, {undefined, V2b}}|Result]).
+diff_list_1([{K, _}|T1], [{K, V2}|T2], Result) ->
+	diff_list_1(T1, T2, [{K, V2}|Result]);
+diff_list_1([{K, _, _}|T1], [{K, V2a, V2b}|T2], Result) ->
+	diff_list_1(T1, T2, [{K, V2a, V2b}|Result]);
+diff_list_1(L1, [H2|T2], Result) ->
+	diff_list_1(L1, T2, [H2|Result]).
 
 
 diff_list_id(Old, New, Ids) ->
@@ -288,17 +286,9 @@ trim_values(H1, H2, Ids, Result) ->
 				  end
 		  end,
 	L = lists:filter(Fun, H2),
-	Id = hd(Ids),
 	Result1 = case length(L) > length(Ids) of
 				  true ->
-					  Fun2 = fun({Id_, _}=T) when Id_==Id ->
-									 T;
-								({K, V2}) ->
-									 {value, {K, V1}} = lists:keysearch(K, 1, H1),
-									 {K, {V1, V2}}
-							 end,
-					  L1 = lists:map(Fun2, L),
-					  [L1 | Result];
+					  [L | Result];
 				  false ->
 					  Result
 			  end,
