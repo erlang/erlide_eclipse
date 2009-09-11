@@ -56,7 +56,8 @@ public class ManagedLauncher implements IDisposable {
 		}
 
 		final File workingDirectory = new File(info.getWorkingDir());
-		ErlLogger.debug("START node :> " + StringUtils.join(cmds) + " *** " + workingDirectory);
+		ErlLogger.debug("START node :> " + StringUtils.join(cmds) + " *** "
+				+ workingDirectory);
 
 		try {
 			fRuntime = Runtime.getRuntime().exec(cmds, null, workingDirectory);
@@ -92,8 +93,10 @@ public class ManagedLauncher implements IDisposable {
 					final String msg = "Backend '%s' terminated with exit code %d.";
 					ErlLogger.error(msg, info.getNodeName(), v);
 
+					// 129=SIGHUP (probably logout, ignore)
 					// 143=SIGTERM (probably logout, ignore)
-					if ((v > 1) && (v != 143) && ErlideUtil.isEricssonUser()) {
+					if ((v > 1) && (v != 143) && (v != 129)
+							&& ErlideUtil.isEricssonUser()) {
 						createReport(info, workingDirectory, v, msg);
 					}
 					// FIXME backend.setExitStatus(v);
