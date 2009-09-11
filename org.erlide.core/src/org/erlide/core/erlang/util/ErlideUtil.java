@@ -232,18 +232,24 @@ public class ErlideUtil {
 		return test != null && "true".equals(test);
 	}
 
-	public static boolean isEricssonUser() {
+	private static final boolean isEricssonUser = is_Ericsson_User();
+
+	private static boolean is_Ericsson_User() {
 		final String dev = System.getProperty("erlide.ericsson.user");
 		if (dev != null && !"true".equals(dev)) {
 			return false;
 		}
 		String s;
-		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+		if (isOnWindows()) {
 			s = "\\\\projhost\\tecsas\\shade\\erlide";
 		} else {
 			s = "/proj/tecsas/SHADE/erlide";
 		}
 		return new File(s).exists();
+	}
+
+	public static boolean isEricssonUser() {
+		return isEricssonUser;
 	}
 
 	public static boolean isModuleExtension(final String ext) {
@@ -343,7 +349,7 @@ public class ErlideUtil {
 
 	public static String getReportLocation() {
 		String s;
-		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+		if (isOnWindows()) {
 			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
 		} else {
 			s = "/proj/tecsas/SHADE/erlide/reports";
@@ -354,6 +360,10 @@ public class ErlideUtil {
 			s = System.getProperty("user.home");
 		}
 		return s;
+	}
+
+	public static boolean isOnWindows() {
+		return System.getProperty("os.name").toLowerCase().contains("windows");
 	}
 
 	public static String fetchErlideLog() {
