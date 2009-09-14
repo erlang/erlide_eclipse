@@ -263,7 +263,7 @@ print_opts(X) ->
 	io_lib:format("    ~p~n", [X]).
 
 get_system_info() ->
-	lists:flatten(io_lib:format("~p~n", [erlide_monitor:get_status()])).
+	lists:flatten(io_lib:format("~p~n", [erlide_monitor:get_state()])).
 
 monitor() ->
 	receive

@@ -212,7 +212,7 @@ take_snapshot(IgnoredProcesses, IgnoredEts) ->
 	Ets = lists:sort([lists:sort([{'Id', X} | einfo(X)]) || X<-ets:all()--IgnoredEts]),
 	Mem = lists:sort(erlang:system_info(allocated_areas)),
 	Stats = [{X, erlang:statistics(X)} || X<-[context_switches, io, reductions, run_queue, runtime, wall_clock]],
-	#snapshot{time=Now, processes=Procs, ets=Ets, memory=Mem, stats=Stats}.
+	#snapshot{time=Now, processes=clean(Procs), ets=clean(Ets), memory=Mem, stats=Stats}.
 
 einfo(X) ->
 	case ets:info(X) of 
@@ -320,7 +320,7 @@ is_empty_diff([{time, _},
 is_empty_diff(_) ->
 	false.
 
-pinfo(Pid) ->
+pinfo(Pid) when is_pid(Pid) ->
 	R0 = erlang:process_info(Pid),
 	[{backtrace, BT}] = info(Pid, backtrace),
 	BT1 = case is_binary(BT) of
@@ -337,3 +337,16 @@ info(Pid, Key) ->
 	catch 
 		_:_ -> [] 
 	end.
+
+clean(Pid) when is_pid(Pid) ->
+	{pid, pid_to_list(Pid)};
+clean(L) when is_list(L) ->
+    [clean(X) || X<-L];
+clean(T) when is_tuple(T) ->
+    list_to_tuple([clean(X) || X<-tuple_to_list(T)]);
+clean(X) ->
+	X.
+
+	
+	
+	

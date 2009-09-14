@@ -222,6 +222,9 @@ public final class ErlUtils {
 	private static Bindings matchTuple(final OtpErlangObject[] patterns,
 			final OtpErlangObject[] terms, final Bindings bindings,
 			final boolean list) {
+		if (patterns.length != terms.length) {
+			return null;
+		}
 		Bindings result = new Bindings(bindings);
 		for (int i = 0; i < patterns.length; i++) {
 			result = match(patterns[i], terms[i], result);

@@ -1,0 +1,239 @@
+package org.erlide.ui.internal;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.ui.internal.MonitorEntry.DeltaMap;
+
+public class MonitorView extends ViewPart {
+	private final List<MonitorEntry> entries;
+	private TreeViewer viewer;
+	private Button button;
+
+	public MonitorView() {
+		entries = new ArrayList<MonitorEntry>();
+	}
+
+	@Override
+	public void createPartControl(Composite parent) {
+		final Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(new GridLayout(2, false));
+		boolean devMode = ErlideUtil.isDeveloper();
+		{
+			button = new Button(composite, SWT.NONE);
+			button.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					FileDialog fd = new FileDialog(composite.getShell(),
+							SWT.OPEN);
+					fd.setText("Open log file");
+					fd.setFilterPath(ErlideUtil.getReportLocation());
+					fd.setFilterExtensions(new String[] { "*.txt" });
+					final String selected = fd.open();
+
+					if (selected != null) {
+						entries.clear();
+						viewer.refresh();
+						button.setEnabled(false);
+						composite.getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								try {
+									String log = readFile(new File(selected));
+									entries.addAll(filterMonitorEntries(log));
+								} catch (IOException e1) {
+								}
+								button.setEnabled(true);
+								viewer.refresh();
+							}
+						});
+					}
+				}
+			});
+			button.setText("Open log file...");
+			button.setEnabled(devMode);
+		}
+		{
+			Label lblThisViewIs = new Label(composite, SWT.NONE);
+			lblThisViewIs.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
+					false, false, 1, 1));
+			lblThisViewIs
+					.setText("This view is for internal erlide debugging only.");
+		}
+		{
+			viewer = new TreeViewer(composite, SWT.BORDER);
+			viewer.setContentProvider(new TreeContentProvider());
+			Tree tree = viewer.getTree();
+			{
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, false,
+						false, 2, 1);
+				gridData.heightHint = 223;
+				tree.setLayoutData(gridData);
+			}
+			viewer.setLabelProvider(new ViewerLabelProvider());
+			Control ctrl = viewer.getControl();
+			{
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
+						true, 2, 1);
+				gridData.widthHint = 583;
+				ctrl.setLayoutData(gridData);
+			}
+			viewer.setInput(entries);
+			viewer.getControl().setEnabled(devMode);
+		}
+	}
+
+	@Override
+	public void setFocus() {
+		viewer.getControl().setFocus();
+	}
+
+	private File getUsersLatestLog() {
+		final String user = System.getProperty("user.name");
+		File dir = new File(ErlideUtil.getReportLocation());
+		File file = null;
+		File[] logs = dir.listFiles(new FilenameFilter() {
+
+			public boolean accept(File dir, String name) {
+				if (name.startsWith(user)) {
+					return true;
+				}
+				return false;
+			}
+		});
+
+		long last = 0;
+		for (File f : logs) {
+			long mod = f.lastModified();
+			if (mod > last) {
+				last = mod;
+				file = f;
+			}
+		}
+		return file;
+	}
+
+	private String readFile(File file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String ls = System.getProperty("line.separator");
+		while ((line = reader.readLine()) != null) {
+			stringBuilder.append(line);
+			stringBuilder.append(ls);
+		}
+		return stringBuilder.toString();
+	}
+
+	private List<MonitorEntry> filterMonitorEntries(String log) {
+		Pattern hdr = Pattern.compile("\\{erlide_monitor,");
+		Pattern tl = Pattern.compile("\\}\\.");
+		List<MonitorEntry> result = new ArrayList<MonitorEntry>();
+		int end = 0;
+		Matcher mh = hdr.matcher(log);
+		Matcher mt = tl.matcher(log);
+		MonitorEntry prev = null;
+		while (true) {
+			if (mh.find(end)) {
+				int start = mh.start();
+				if (mt.find(start)) {
+					end = mt.end();
+					MonitorEntry entry = new MonitorEntry(prev, log.substring(
+							start, end));
+					result.add(entry);
+					prev = entry;
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	private static class TreeContentProvider implements ITreeContentProvider {
+		private final Object[] EMPTY = new Object[0];
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		}
+
+		public void dispose() {
+		}
+
+		public Object[] getElements(Object inputElement) {
+			return getChildren(inputElement);
+		}
+
+		public Object[] getChildren(Object parentElement) {
+			if (parentElement instanceof List) {
+				List<Object> items = (List<Object>) parentElement;
+				return items.toArray(new Object[items.size()]);
+			}
+			if (parentElement instanceof MonitorEntry) {
+				MonitorEntry entry = (MonitorEntry) parentElement;
+				return new Object[] { entry.procs, entry.ets, entry.mem,
+						entry.stats };
+			}
+			if (parentElement instanceof DeltaMap) {
+				DeltaMap map = (DeltaMap) parentElement;
+				return new Object[] { map.added, map.deleted, map.modified };
+			}
+			return EMPTY;
+		}
+
+		public Object getParent(Object element) {
+			return null;
+		}
+
+		public boolean hasChildren(Object element) {
+			return getChildren(element).length > 0;
+		}
+	}
+
+	private static class ViewerLabelProvider extends LabelProvider {
+		@Override
+		public Image getImage(Object element) {
+			return super.getImage(element);
+		}
+
+		@Override
+		public String getText(Object element) {
+			if (element instanceof MonitorEntry) {
+				return new SimpleDateFormat()
+						.format(((MonitorEntry) element).time);
+			}
+			if (element instanceof DeltaMap) {
+				DeltaMap map = (DeltaMap) element;
+				return map.label;
+			}
+			return element.toString();
+		}
+	}
+
+}
