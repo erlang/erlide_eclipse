@@ -66,7 +66,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	};
 
 	public enum BackendOptions {
-		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL
+		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE
 	};
 
 	private volatile ErlideBackend ideBackend;
@@ -144,7 +144,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			for (CodeBundle bb : codeBundles) {
 				b.register(bb.getBundle());
 			}
-			b.initErlang();
+			b.initErlang(options.contains(BackendOptions.IDE));
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
 			b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
@@ -277,7 +277,8 @@ public final class BackendManager extends OtpNodeStatus implements
 			info.hasConsole(false);
 			ErlLogger.debug("creating IDE backend %s", info.getName());
 			EnumSet<BackendOptions> options = EnumSet.of(
-					BackendOptions.AUTOSTART, BackendOptions.INTERNAL);
+					BackendOptions.AUTOSTART, BackendOptions.INTERNAL,
+					BackendOptions.IDE);
 			if (!ErlideUtil.isDeveloper()) {
 				options.add(BackendOptions.NO_CONSOLE);
 			}

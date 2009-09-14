@@ -58,6 +58,7 @@ public class Backend {
 	private int restarted = 0;
 	private boolean stopped = false;
 	private EventDaemon eventDaemon;
+	private boolean monitor = false;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -311,10 +312,10 @@ public class Backend {
 		return "";
 	}
 
-	private boolean init(final OtpErlangPid jRex) {
+	private boolean init(final OtpErlangPid jRex, boolean monitor) {
 		try {
 			// reload(backend);
-			call("erlide_backend", "init", "p", jRex);
+			call("erlide_backend", "init", "po", jRex, monitor);
 			return true;
 		} catch (final Exception e) {
 			ErlLogger.error(e);
@@ -322,11 +323,12 @@ public class Backend {
 		}
 	}
 
-	public void initErlang() {
-		final boolean inited = init(getEventPid());
+	public void initErlang(boolean monitor) {
+		final boolean inited = init(getEventPid(), monitor);
 		if (!inited) {
 			setAvailable(false);
 		}
+		this.monitor = monitor;
 		eventDaemon = new EventDaemon(this);
 		eventDaemon.start();
 		eventDaemon.addHandler(new LogEventHandler());
@@ -410,7 +412,7 @@ public class Backend {
 		}
 		initializeRuntime();
 		connect();
-		initErlang();
+		initErlang(monitor);
 	}
 
 	public synchronized void setAvailable(final boolean up) {

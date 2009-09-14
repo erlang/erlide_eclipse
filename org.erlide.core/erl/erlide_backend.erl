@@ -14,7 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/1,
+-export([init/2,
 		 
 		 parse_term/1,
 		 eval/1,
@@ -35,14 +35,19 @@
 		 get_module_info/1
 		]).
 
-init(JRex) ->	
+init(JRex, Monitor) ->	
 	spawn(fun()->
 				  erlide_jrpc:init(JRex),
-
-				  %% must be first so that only system processes are ignored
- 				  Mon = spawn(fun monitor/0),
- 				  erlide_monitor:start(),
- 				  erlide_monitor:subscribe(Mon),
+				  
+				  case Monitor of
+					  true ->
+						  %% must be first so that only system processes are ignored
+						  Mon = spawn(fun monitor/0),
+						  erlide_monitor:start(),
+						  erlide_monitor:subscribe(Mon);
+					  _ ->
+						  ok
+				  end,
 				  
 				  watch_eclipse(node(JRex)),
 				  erlide_scanner_listener:start()
@@ -263,7 +268,7 @@ get_system_info() ->
 monitor() ->
 	receive
 		{erlide_monitor, _Node, _Diff}=Msg ->
-			erlide_log:logp(Msg),
+			erlide_log:logp("~p.", [Msg]),
 			monitor();
 		_ ->
 			monitor()
