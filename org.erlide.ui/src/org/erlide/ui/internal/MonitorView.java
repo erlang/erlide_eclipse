@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,9 +28,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.ui.internal.MonitorEntry.DeltaMap;
+import org.erlide.core.util.Tuple;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class MonitorView extends ViewPart {
 	private final List<MonitorEntry> entries;
@@ -70,6 +77,7 @@ public class MonitorView extends ViewPart {
 								}
 								button.setEnabled(true);
 								viewer.refresh();
+								viewer.expandAll();
 							}
 						});
 					}
@@ -87,13 +95,30 @@ public class MonitorView extends ViewPart {
 		}
 		{
 			viewer = new TreeViewer(composite, SWT.BORDER);
+			viewer.setColumnProperties(new String[] { "a", "b" });
 			viewer.setContentProvider(new TreeContentProvider());
 			Tree tree = viewer.getTree();
+			tree.setLinesVisible(true);
+			tree.setHeaderVisible(true);
 			{
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, false,
 						false, 2, 1);
 				gridData.heightHint = 223;
 				tree.setLayoutData(gridData);
+			}
+			{
+				TreeViewerColumn treeViewerColumn = new TreeViewerColumn(
+						viewer, SWT.NONE);
+				TreeColumn treeColumn = treeViewerColumn.getColumn();
+				treeColumn.setWidth(200);
+				treeColumn.setText("Key");
+			}
+			{
+				TreeViewerColumn treeViewerColumn = new TreeViewerColumn(
+						viewer, SWT.NONE);
+				TreeColumn treeColumn = treeViewerColumn.getColumn();
+				treeColumn.setWidth(300);
+				treeColumn.setText("Value");
 			}
 			viewer.setLabelProvider(new ViewerLabelProvider());
 			Control ctrl = viewer.getControl();
@@ -196,13 +221,47 @@ public class MonitorView extends ViewPart {
 				return items.toArray(new Object[items.size()]);
 			}
 			if (parentElement instanceof MonitorEntry) {
-				MonitorEntry entry = (MonitorEntry) parentElement;
-				return new Object[] { entry.procs, entry.ets, entry.mem,
-						entry.stats };
+				return new Object[] {
+						new Tuple<String, MonitorEntry>("Processes",
+								(MonitorEntry) parentElement),
+						new Tuple<String, MonitorEntry>("ETS",
+								(MonitorEntry) parentElement),
+						new Tuple<String, MonitorEntry>("Memory",
+								(MonitorEntry) parentElement),
+						new Tuple<String, MonitorEntry>("Statistics",
+								(MonitorEntry) parentElement) };
 			}
-			if (parentElement instanceof DeltaMap) {
-				DeltaMap map = (DeltaMap) parentElement;
-				return new Object[] { map.added, map.deleted, map.modified };
+			if (parentElement instanceof Tuple) {
+				Tuple<String, MonitorEntry> tpl = (Tuple<String, MonitorEntry>) parentElement;
+				if ("Processes".equals(tpl.o1)) {
+					return tpl.o2.procs;
+				}
+				if ("ETS".equals(tpl.o1)) {
+					return tpl.o2.ets;
+				}
+				if ("Memory".equals(tpl.o1)) {
+					return tpl.o2.mem;
+				}
+				if ("Statistics".equals(tpl.o1)) {
+					return tpl.o2.stats;
+				}
+			}
+			if (parentElement instanceof OtpErlangList) {
+				OtpErlangList list = (OtpErlangList) parentElement;
+				return list.elements();
+			}
+			if (parentElement instanceof OtpErlangTuple) {
+				OtpErlangTuple tuple = (OtpErlangTuple) parentElement;
+				OtpErlangObject[] elements = tuple.elements();
+				if (tuple.elementAt(0) instanceof OtpErlangAtom) {
+					Object[] res = new Object[elements.length - 1];
+					System.arraycopy(elements, 1, res, 0, elements.length - 1);
+					return res;
+				}
+				return elements;
+			}
+			if (parentElement instanceof OtpErlangObject) {
+				return EMPTY;
 			}
 			return EMPTY;
 		}
@@ -228,9 +287,17 @@ public class MonitorView extends ViewPart {
 				return new SimpleDateFormat()
 						.format(((MonitorEntry) element).time);
 			}
-			if (element instanceof DeltaMap) {
-				DeltaMap map = (DeltaMap) element;
-				return map.label;
+			if (element instanceof Tuple) {
+				Tuple<String, MonitorEntry> tpl = (Tuple<String, MonitorEntry>) element;
+				return tpl.o1;
+			}
+			if (element instanceof OtpErlangTuple) {
+				OtpErlangTuple tuple = (OtpErlangTuple) element;
+				OtpErlangObject[] elements = tuple.elements();
+				if (tuple.elementAt(0) instanceof OtpErlangAtom) {
+					OtpErlangAtom key = (OtpErlangAtom) tuple.elementAt(0);
+					return key.toString();
+				}
 			}
 			return element.toString();
 		}

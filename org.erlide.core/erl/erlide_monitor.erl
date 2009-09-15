@@ -338,8 +338,8 @@ info(Pid, Key) ->
 		_:_ -> [] 
 	end.
 
-clean(Pid) when is_pid(Pid) ->
-	{pid, pid_to_list(Pid)};
+clean(Pid) when is_pid(Pid) -> 
+	{'$pid', pid_to_list(Pid)};
 clean(L) when is_list(L) ->
     [clean(X) || X<-L];
 clean(T) when is_tuple(T) ->
