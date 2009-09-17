@@ -52,8 +52,12 @@ public class ManagedLauncher implements IDisposable {
 		if ("true".equals(env) && ErlideUtil.isEricssonUser()
 				&& !ErlideUtil.isOnWindows()) {
 			final String cmd = StringUtils.join(cmds);
-			cmds = new String[] { "tcsh", "-c",
-					"limit coredumpsize unlimited ; exec " + cmd + " +d" };
+			cmds = new String[] {
+					"tcsh",
+					"-c",
+					"limit coredumpsize unlimited ;"
+							+ " exec strace -esignal -f -F -tt -i -o '"
+							+ info.getNodeName() + ".strace' " + cmd + " +d" };
 		}
 
 		final File workingDirectory = new File(info.getWorkingDir());
@@ -113,6 +117,9 @@ public class ManagedLauncher implements IDisposable {
 
 				final String plog = ErlideUtil.fetchPlatformLog();
 				final String elog = ErlideUtil.fetchErlideLog();
+				final String slog = ErlideUtil.fetchStraceLog(ainfo
+						.getWorkingDir()
+						+ "/" + ainfo.getNodeName() + ".strace");
 				final String delim = "\n==================================\n";
 				final File report = new File(ErlideUtil.getReportFile());
 				try {
@@ -129,6 +136,10 @@ public class ManagedLauncher implements IDisposable {
 						pw.println(plog);
 						pw.println(delim);
 						pw.println(elog);
+						if (slog.length() > 0) {
+							pw.println(delim);
+							pw.println(elog);
+						}
 					} finally {
 						pw.flush();
 						out.close();

@@ -454,4 +454,28 @@ public class ErlideUtil {
 			b.input(cmd);
 		}
 	}
+
+	public static String fetchStraceLog(String filename) {
+		final StringBuffer result = new StringBuffer();
+		final File log = new File(filename);
+		if (log.exists()) {
+			try {
+				final BufferedReader reader = new BufferedReader(
+						new InputStreamReader(new FileInputStream(log), "UTF-8"));
+				for (;;) {
+					String line = reader.readLine();
+					if (line == null) {
+						break;
+					}
+					line = line.trim();
+					if (line.length() == 0) {
+						continue;
+					}
+					result.append(line).append('\n');
+				}
+			} catch (final Exception e) {
+			}
+		}
+		return result.toString();
+	}
 }
