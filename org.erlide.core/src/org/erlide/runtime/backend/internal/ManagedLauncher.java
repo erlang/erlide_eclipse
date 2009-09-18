@@ -52,12 +52,8 @@ public class ManagedLauncher implements IDisposable {
 		if ("true".equals(env) && ErlideUtil.isEricssonUser()
 				&& !ErlideUtil.isOnWindows()) {
 			final String cmd = StringUtils.join(cmds);
-			cmds = new String[] {
-					"tcsh",
-					"-c",
-					"limit coredumpsize unlimited ;"
-							+ " exec strace -esignal -f -F -tt -i -o '"
-							+ info.getNodeName() + ".strace' " + cmd + " +d" };
+			cmds = new String[] { "tcsh", "-c",
+					"limit coredumpsize unlimited ;" + " exec " + cmd + " +d" };
 		}
 
 		final File workingDirectory = new File(info.getWorkingDir());
