@@ -82,7 +82,7 @@ public final class ErlParser {
 		if (Util.isOk(res)) {
 			Bindings bindings = null;
 			try {
-				bindings = ErlUtils.match("{ok, {_, Forms, Comments}}", res);
+				bindings = ErlUtils.match("{ok, {_, Forms, Comments}, _}", res);
 			} catch (final ParserException e) {
 				e.printStackTrace();
 			}

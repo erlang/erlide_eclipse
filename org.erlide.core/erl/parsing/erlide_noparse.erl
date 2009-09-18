@@ -102,7 +102,7 @@ reparse(ScannerName) ->
     try
         Res = do_parse(ScannerName, "", "", "", "", false),
         update_state(ScannerName, Res),
-        {ok, Res}
+        {ok, Res, unused}
     catch
         error:Reason ->
             {error, Reason}
