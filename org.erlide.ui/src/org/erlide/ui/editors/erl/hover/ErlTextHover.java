@@ -37,6 +37,8 @@ import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlModelException;
@@ -190,20 +192,37 @@ public class ErlTextHover implements ITextHover,
 		@Override
 		protected IInformationControl doCreateInformationControl(
 				final Shell parent) {
+			IInformationControl control;
 			if (BrowserInformationControl.isAvailable(parent)) {
-				return new BrowserInformationControl(parent,
+				control = new BrowserInformationControl(parent,
 						JFaceResources.DIALOG_FONT, EditorsUI
 								.getTooltipAffordanceString()) {
 					@Override
 					public IInformationControlCreator getInformationPresenterControlCreator() {
 						return fInformationPresenterControlCreator;
 					}
+
+					@Override
+					public void setSize(int width, int height) {
+						// TODO default size is too small
+						Point bounds = this.getSizeConstraints();
+						if (bounds != null) {
+							if (bounds.x != SWT.DEFAULT) {
+								width = Math.min(bounds.x, width * 2);
+							}
+							if (bounds.y != SWT.DEFAULT) {
+								height = Math.min(bounds.y, height * 2);
+							}
+						}
+						super.setSize(width, height);
+					}
 				};
 			} else {
-				return new DefaultInformationControl(parent, EditorsUI
+				control = new DefaultInformationControl(parent, EditorsUI
 						.getTooltipAffordanceString(),
 						new ErlInformationPresenter(true));
 			}
+			return control;
 		}
 	}
 
