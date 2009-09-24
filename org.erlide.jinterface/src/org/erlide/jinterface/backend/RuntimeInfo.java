@@ -65,7 +65,7 @@ public class RuntimeInfo {
 	}
 
 	public String getArgs() {
-		return this.args;
+		return args;
 	}
 
 	public void setArgs(final String args) {
@@ -76,7 +76,7 @@ public class RuntimeInfo {
 		if ("".equals(cookie)) {
 			cookie = null;
 		}
-		return this.cookie;
+		return cookie;
 	}
 
 	public void setCookie(final String cookie) {
@@ -84,10 +84,10 @@ public class RuntimeInfo {
 	}
 
 	public String getNodeName() {
-		return this.nodeName + suffix;
+		return nodeName + suffix;
 	}
 
-	public void setNodeNameSuffix(String suffix) {
+	public void setNodeNameSuffix(final String suffix) {
 		this.suffix = suffix;
 	}
 
@@ -100,7 +100,7 @@ public class RuntimeInfo {
 	}
 
 	public boolean isManaged() {
-		return this.managed;
+		return managed;
 	}
 
 	public void setManaged(final boolean managed) {
@@ -116,7 +116,7 @@ public class RuntimeInfo {
 	}
 
 	public String getWorkingDir() {
-		return (workingDir == null || workingDir.length() == 0) ? "."
+		return workingDir == null || workingDir.length() == 0 ? "."
 				: workingDir;
 	}
 
@@ -131,7 +131,7 @@ public class RuntimeInfo {
 	}
 
 	public String[] getCmdLine() {
-		List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
 
 		String erl = getOtpHome() + "/bin/erl";
 		if (erl.indexOf(' ') >= 0) {
@@ -148,7 +148,10 @@ public class RuntimeInfo {
 			result.add("-pz");
 			result.add(pathZ);
 		}
-		result.add(getArgs());
+		final String gotArgs = getArgs();
+		if (!empty(gotArgs)) {
+			result.add(gotArgs);
+		}
 
 		if (!startShell) {
 			result.add("-noshell");
@@ -156,15 +159,15 @@ public class RuntimeInfo {
 
 		final boolean globalLongName = System.getProperty("erlide.longname",
 				"false").equals("true");
-		final String nameTag = (useLongName || globalLongName) ? "-name"
+		final String nameTag = useLongName || globalLongName ? "-name"
 				: "-sname";
 		String nameOption = "";
 		if (!getNodeName().equals("")) {
 			nameOption = BackendUtil.buildNodeName(getNodeName(), useLongName);
 			result.add(nameTag);
 			result.add(nameOption);
-			String cky = getCookie();
-			if (cky != null) { 
+			final String cky = getCookie();
+			if (cky != null) {
 				result.add("-setcookie");
 				result.add(cky);
 			}
@@ -314,7 +317,7 @@ public class RuntimeInfo {
 		return version;
 	}
 
-	public void useLongName(boolean longName) {
+	public void useLongName(final boolean longName) {
 		useLongName = longName;
 	}
 
@@ -323,7 +326,7 @@ public class RuntimeInfo {
 
 	}
 
-	public void setStartShell(boolean startShell) {
+	public void setStartShell(final boolean startShell) {
 		this.startShell = startShell;
 	}
 
@@ -331,7 +334,7 @@ public class RuntimeInfo {
 		return startShell;
 	}
 
-	public void hasConsole(boolean console) {
+	public void hasConsole(final boolean console) {
 		this.console = console;
 	}
 
