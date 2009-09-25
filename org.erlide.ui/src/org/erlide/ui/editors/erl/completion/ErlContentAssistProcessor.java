@@ -123,6 +123,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final int colonPos = before.lastIndexOf(':');
 			final int hashMarkPos = before.lastIndexOf('#');
 			final int dotPos = before.lastIndexOf('.');
+			final int parenPos = before.lastIndexOf('(');
 			final int leftBracketPos = before.lastIndexOf('{');
 			final int interrogationMarkPos = before.lastIndexOf('?');
 			final String prefix = getPrefix(before);
@@ -154,7 +155,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 					pos = hashMarkPos;
 					before = before.substring(hashMarkPos + 1);
 				}
-			} else if (colonPos > commaPos) {
+			} else if (colonPos > commaPos && colonPos > parenPos) {
 				moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
 						0, colonPos)));
 				flags = EXTERNAL_FUNCTIONS;
