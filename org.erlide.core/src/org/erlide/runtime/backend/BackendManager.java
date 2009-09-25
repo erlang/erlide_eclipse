@@ -144,7 +144,8 @@ public final class BackendManager extends OtpNodeStatus implements
 			for (CodeBundle bb : codeBundles) {
 				b.register(bb.getBundle());
 			}
-			b.initErlang(options.contains(BackendOptions.IDE));
+			boolean monitorNode = options.contains(BackendOptions.IDE);
+			b.initErlang(monitorNode);
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
 			b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
