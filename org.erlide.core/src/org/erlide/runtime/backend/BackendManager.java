@@ -275,7 +275,7 @@ public final class BackendManager extends OtpNodeStatus implements
 				info.setNodeName(nodeName);
 			}
 			info.setCookie("erlide");
-			info.hasConsole(false);
+			info.hasConsole(ErlideUtil.isDeveloper());
 			ErlLogger.debug("creating IDE backend %s", info.getName());
 			EnumSet<BackendOptions> options = EnumSet.of(
 					BackendOptions.AUTOSTART, BackendOptions.INTERNAL,
