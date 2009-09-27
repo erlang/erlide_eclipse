@@ -59,7 +59,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideUtil {
+public final class ErlideUtil {
 
 	public static boolean isAccessible(final Backend backend,
 			final String localDir) {
@@ -232,7 +232,8 @@ public class ErlideUtil {
 		return test != null && "true".equals(test);
 	}
 
-	private static final boolean isEricssonUser = is_Ericsson_User();
+	private static boolean isEriUserCached = false;
+	private static boolean isEricssonUser;
 
 	private static boolean is_Ericsson_User() {
 		final String dev = System.getProperty("erlide.ericsson.user");
@@ -249,6 +250,9 @@ public class ErlideUtil {
 	}
 
 	public static boolean isEricssonUser() {
+		if (!isEriUserCached) {
+			isEricssonUser = is_Ericsson_User();
+		}
 		return isEricssonUser;
 	}
 
@@ -477,5 +481,8 @@ public class ErlideUtil {
 			}
 		}
 		return result.toString();
+	}
+
+	private ErlideUtil() {
 	}
 }
