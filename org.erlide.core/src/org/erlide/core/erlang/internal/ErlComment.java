@@ -20,8 +20,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 
 	private final boolean fIsHeader;
 
-	private int fLevel;
-
 	public ErlComment(final IErlElement parent, final String name,
 			final boolean isEdoc, final boolean isHeader) {
 		super(parent, name);
@@ -110,10 +108,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 
 	public boolean isVisibleInOutline() {
 		return false;
-	}
-
-	public int getLevel() {
-		return fLevel;
 	}
 
 	@Override

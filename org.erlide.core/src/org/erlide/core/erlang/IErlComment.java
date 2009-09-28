@@ -20,6 +20,5 @@ public interface IErlComment extends IErlMember {
 	 * 
 	 * @return the number of %s preceding the comment
 	 */
-	int getLevel();
-
+	// int getLevel();
 }
