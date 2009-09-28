@@ -29,9 +29,7 @@ import org.erlide.jinterface.backend.util.Util;
 abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
 	protected int fSourceRangeStart;
-
 	protected int fSourceRangeEnd;
-
 	protected int lineStart, lineEnd;
 
 	protected SourceRefElement(final IErlElement parent, final String name) {
@@ -276,6 +274,13 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		final SourceRefElement r = (SourceRefElement) o;
 		return fSourceRangeStart == r.fSourceRangeStart
 				&& fSourceRangeEnd == r.fSourceRangeEnd;
+	}
+
+	public void setPositions(final SourceRefElement source) {
+		setSourceRangeStart(source.getSourceRangeStart());
+		setSourceRangeEnd(source.getSourceRangeEnd());
+		setLineStart(source.getLineStart());
+		setLineEnd(source.getLineEnd());
 	}
 
 }
