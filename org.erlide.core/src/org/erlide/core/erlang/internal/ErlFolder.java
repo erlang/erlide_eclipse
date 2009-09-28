@@ -109,20 +109,10 @@ public class ErlFolder extends Openable implements IErlFolder {
 	}
 
 	public List<IErlModule> getModules() throws ErlModelException {
-		return getModules(this);
-	}
-
-	public static List<IErlModule> getModules(final IParent parent)
-			throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
-		for (final IErlElement e : parent.getChildren()) {
-			if (e instanceof IErlFolder) {
-				final IErlFolder f = (IErlFolder) e;
-				f.open(null);
-				if (f.isOnSourcePath()) {
-					result.addAll(f.getModules());
-				}
-			} else if (e instanceof IErlModule) {
+
+		for (final IErlElement e : this.getChildren()) {
+			if (e instanceof IErlModule) {
 				result.add((IErlModule) e);
 			}
 		}

@@ -541,8 +541,23 @@ public class ErlProject extends Openable implements IErlProject {
 		fName = project.getName();
 	}
 
+	// FIXME
 	public List<IErlModule> getModules() throws ErlModelException {
-		return ErlFolder.getModules(this);
+		List<IErlModule> result = new ArrayList<IErlModule>();
+		OldErlangProjectProperties props = getProperties();
+		for (String src : props.getSourceDirs()) {
+			IFolder folder = fProject.getFolder(src);
+			IResource[] members;
+			try {
+				members = folder.members();
+				for (IResource res : members) {
+					result.add(getModule(res.getName()));
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 	/**

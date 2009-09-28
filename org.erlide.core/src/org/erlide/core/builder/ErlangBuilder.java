@@ -180,7 +180,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
 				final Path path = new Path(".settings/org.erlide.core.prefs");
-				if (delta.findMember(path) != null) {
+				if (delta != null && delta.findMember(path) != null) {
 					ErlLogger
 							.info("project configuration changed: doing full rebuild");
 					resourcesToBuild = fullBuild(args);
@@ -356,7 +356,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	protected Set<IResource> incrementalBuild(final Map args,
 			final IResourceDelta delta) throws CoreException {
 		final HashSet<IResource> result = new HashSet<IResource>();
-		delta.accept(new ErlangDeltaVisitor(result));
+		if (BuilderUtils.isDebugging()) {
+			System.out.println("delta = " + delta);
+		}
+		if (delta != null) {
+			delta.accept(new ErlangDeltaVisitor(result));
+		}
 		return result;
 	}
 
@@ -373,13 +378,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 
 		deleteMarkers(resource);
-		if (isInExtCodePath(resource, project)
-				&& !isInCodePath(resource, project)) {
-			final String msg = " is not directly on source path (packages are not supported yet)";
-			generator.addMarker(resource, resource, resource.getName() + msg,
-					0, IMarker.SEVERITY_WARNING, "");
-			return;
-		}
 
 		final String outputDir = projectPath.append(prefs.getOutputDir())
 				.toString();
@@ -506,33 +504,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	/**
-	 * @param project
-	 * @param prefs
-	 * @return
-	 */
-	private static List<String> getIncludeDirs(final IProject project,
-			final List<String> includeDirs) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final String[] incs = prefs.getIncludeDirs();
-		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
-		for (int i = 0; i < incs.length; i++) {
-			final IPath inc = pvm.resolvePath(new Path(incs[i]));
-			if (inc.isAbsolute()) {
-				includeDirs.add(inc.toString());
-			} else {
-				final IFolder folder = project.getFolder(incs[i]);
-				if (folder != null) {
-					final IPath location = folder.getLocation();
-					includeDirs.add(location.toString());
-				}
-			}
-		}
-		return includeDirs;
-	}
-
 	private static void createTaskMarkers(final IProject project,
 			final IResource resource) {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
@@ -603,17 +574,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		// IResource.DEPTH_INFINITE);
 		// } catch (final CoreException e1) {
 		// }
-		if (isInExtCodePath(resource, project)
-				&& !isInCodePath(resource, project)) {
-			generator
-					.addMarker(
-							resource,
-							resource,
-							resource.getName()
-									+ " is not directly on source path (packages are not supported yet)",
-							0, IMarker.SEVERITY_WARNING, "");
-			return;
-		}
 
 		IPath erl = resource.getProjectRelativePath().removeFileExtension();
 		erl = erl.addFileExtension("erl").setDevice(null);
@@ -653,67 +613,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static boolean isInCodePath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getFullPath();
-		final String[] srcs = prefs.getSourceDirs();
-		final IPath exceptLastSegment = resource.getFullPath()
-				.removeLastSegments(1);
-		for (final String element : srcs) {
-			final IPath sp = projectPath.append(new Path(element));
-			if (sp.equals(exceptLastSegment)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	static boolean isInExtCodePath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getFullPath();
-		final String[] srcs = prefs.getSourceDirs();
-		final IPath fullPath = resource.getFullPath();
-		for (final String element : srcs) {
-			final IPath sp = projectPath.append(new Path(element));
-			if (sp.isPrefixOf(fullPath)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	static boolean isInIncludedPath(final IResource resource,
-			final IProject my_project) {
-		final List<String> inc = new ArrayList<String>();
-		getIncludeDirs(my_project, inc);
-
-		for (final String s : inc) {
-			final IPath p = new Path(s);
-			final IPath resourcePath = resource.getLocation();
-			if (p.isPrefixOf(resourcePath)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	static boolean isInOutputPath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getLocation();
-
-		final String out = prefs.getOutputDir();
-		return projectPath.append(new Path(out)).isPrefixOf(
-				resource.getLocation());
 	}
 
 	@SuppressWarnings("unused")
@@ -788,7 +687,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					&& isInIncludedPath(resource, my_project)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
-					break;
 				case IResourceDelta.REMOVED:
 				case IResourceDelta.CHANGED:
 					addDependents(resource, my_project, result);
@@ -839,9 +737,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			// return true to continue visiting children.
 			if (resource.getType() == IResource.FOLDER) {
-				return isInCodePath(resource, my_project)
-						|| isInIncludedPath(resource, my_project)
-						|| isInOutputPath(resource, my_project);
+				return isInteresting(resource, my_project);
 			}
 			return true;
 		}
@@ -908,9 +804,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER
-					&& "org".equals(resource.getName())) {
-				return false;
+			if (resource.getType() == IResource.FOLDER) {
+				return isInteresting(resource, my_project);
 			}
 			return true;
 		}
@@ -1061,5 +956,103 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		} catch (final CoreException e) {
 			throw e;
 		}
+	}
+
+	/**
+	 * @param project
+	 * @param prefs
+	 * @return
+	 */
+	public static List<String> getIncludeDirs(final IProject project,
+			final List<String> includeDirs) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final String[] incs = prefs.getIncludeDirs();
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		for (int i = 0; i < incs.length; i++) {
+			final IPath inc = pvm.resolvePath(new Path(incs[i]));
+			if (inc.isAbsolute()) {
+				includeDirs.add(inc.toString());
+			} else {
+				final IFolder folder = project.getFolder(incs[i]);
+				if (folder != null) {
+					final IPath location = folder.getLocation();
+					includeDirs.add(location.toString());
+				}
+			}
+		}
+		return includeDirs;
+	}
+
+	public static boolean isInteresting(final IResource resource,
+			final IProject project) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+
+		List<String> interestingPaths = new ArrayList<String>();
+		final String[] srcs = prefs.getSourceDirs();
+		for (String s : srcs) {
+			interestingPaths.add(s);
+		}
+		String[] incs = prefs.getIncludeDirs();
+		for (String s : incs) {
+			interestingPaths.add(s);
+		}
+		interestingPaths.add(prefs.getOutputDir());
+
+		final IPath projectPath = project.getFullPath();
+		final IPath fullPath = resource.getFullPath();
+		for (final String element : interestingPaths) {
+			final IPath sp = projectPath.append(new Path(element));
+			if (fullPath.isPrefixOf(sp)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isInCodePath(final IResource resource,
+			final IProject project) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final IPath projectPath = project.getFullPath();
+		final String[] srcs = prefs.getSourceDirs();
+		final IPath exceptLastSegment = resource.getFullPath()
+				.removeLastSegments(1);
+		for (final String element : srcs) {
+			final IPath sp = projectPath.append(new Path(element));
+			if (sp.equals(exceptLastSegment)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean isInIncludedPath(final IResource resource,
+			final IProject my_project) {
+		final List<String> inc = new ArrayList<String>();
+		getIncludeDirs(my_project, inc);
+
+		for (final String s : inc) {
+			final IPath p = new Path(s);
+			final IPath resourcePath = resource.getLocation();
+			if (p.isPrefixOf(resourcePath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isInOutputPath(final IResource resource,
+			final IProject project) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final IPath projectPath = project.getLocation();
+
+		final String out = prefs.getOutputDir();
+		return projectPath.append(new Path(out)).isPrefixOf(
+				resource.getLocation());
 	}
 }
