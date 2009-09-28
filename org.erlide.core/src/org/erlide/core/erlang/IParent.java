@@ -30,7 +30,7 @@ public interface IParent {
 	 *                while accessing its corresponding resource
 	 * @return the immediate children of this element
 	 */
-	List<? extends IErlElement> getChildren() throws ErlModelException;
+	List<IErlElement> getChildren() throws ErlModelException;
 
 	/**
 	 * Returns whether this element has one or more immediate children. This is

@@ -47,6 +47,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
@@ -658,15 +659,7 @@ public class ErlModel extends Openable implements IErlModel {
 		final IErlModule m = findModule(r.module);
 		try {
 			m.open(null);
-			for (final IErlElement c : m.getChildren()) {
-				if (c instanceof IErlFunction) {
-					final IErlFunction f = (IErlFunction) c;
-					if (f.getName().equals(r.function)
-							&& f.getArity() == r.arity) {
-						return f;
-					}
-				}
-			}
+			return m.findFunction(new ErlangFunction(r.function, r.arity));
 		} catch (final ErlModelException e) {
 		}
 		return null;

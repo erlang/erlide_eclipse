@@ -120,4 +120,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	void resetAndCacheScannerAndParser(String newText);
 
 	String getModuleName();
+
+	IErlFunction findFunction(ErlangFunction erlangFunction);
 }

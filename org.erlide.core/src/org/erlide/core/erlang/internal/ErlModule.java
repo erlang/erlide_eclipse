@@ -27,6 +27,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModel;
@@ -50,13 +51,13 @@ import erlang.ErlideNoparse;
 
 public class ErlModule extends Openable implements IErlModule {
 
-	private long timestamp;
-	private final List<IErlComment> comments;
+	private long timestamp = IResource.NULL_STAMP;
+	private final List<IErlComment> comments = new ArrayList<IErlComment>(0);
 	private String initialText;
-	private IErlScanner scanner;
+	private IErlScanner scanner = null;
 	private final IFile fFile;
 	private boolean parsed = false;
-	private boolean updateCaches = false;
+	private boolean updateCaches = true;
 
 	// These are needed to ignore the initial INSERT of all text and final
 	// DELETE of all text
@@ -70,8 +71,6 @@ public class ErlModule extends Openable implements IErlModule {
 		super(parent, name);
 		fFile = file;
 		moduleKind = ErlideUtil.nameToModuleKind(name);
-		comments = new ArrayList<IErlComment>(0);
-		scanner = null;
 		this.initialText = initialText;
 		if (ErlModelManager.verbose) {
 			ErlLogger.debug("...creating " + parent.getName() + "/" + getName()
@@ -95,7 +94,7 @@ public class ErlModule extends Openable implements IErlModule {
 		if (model != null) {
 			model.notifyChange(this);
 		}
-
+		getScanner();
 		// update timestamp (might be IResource.NULL_STAMP if original does not
 		// exist)
 		final IResource r = getResource();
@@ -266,6 +265,19 @@ public class ErlModule extends Openable implements IErlModule {
 				final IErlExport ei = (IErlExport) m;
 				if (ei.hasFunction(function)) {
 					return ei;
+				}
+			}
+		}
+		return null;
+	}
+
+	public IErlFunction findFunction(final ErlangFunction function) {
+		for (final IErlElement m : fChildren) {
+			if (m instanceof IErlFunction) {
+				final IErlFunction f = (IErlFunction) m;
+				if (f.getName().equals(function.name)
+						&& f.getArity() == function.arity) {
+					return f;
 				}
 			}
 		}
