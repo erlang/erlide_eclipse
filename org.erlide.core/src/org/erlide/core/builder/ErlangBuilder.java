@@ -226,7 +226,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				} catch (final Exception e) {
 				}
 			}
-			notifier.done();
 
 		} catch (final CoreException e) {
 			ErlLogger.error(e);
@@ -691,7 +690,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return false;
 	}
 
-	boolean isInIncludedPath(final IResource resource, final IProject my_project) {
+	static boolean isInIncludedPath(final IResource resource,
+			final IProject my_project) {
 		final List<String> inc = new ArrayList<String>();
 		getIncludeDirs(my_project, inc);
 
@@ -741,9 +741,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 
 		public boolean visit(final IResourceDelta delta) throws CoreException {
-
-			//TODO should ignore folder if not in source/include/output path 
-			
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
 			final OldErlangProjectProperties prefs = ErlangCore
@@ -841,13 +838,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER
-					&& "org".equals(resource.getName())) {
-				return false;
+			if (resource.getType() == IResource.FOLDER) {
+				return isInCodePath(resource, my_project)
+						|| isInIncludedPath(resource, my_project)
+						|| isInOutputPath(resource, my_project);
 			}
 			return true;
 		}
-
 	}
 
 	void addDependents(final IResource resource, final IProject my_project,
