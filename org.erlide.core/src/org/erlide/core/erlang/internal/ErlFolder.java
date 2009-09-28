@@ -119,12 +119,11 @@ public class ErlFolder extends Openable implements IErlFolder {
 			if (e instanceof IErlFolder) {
 				final IErlFolder f = (IErlFolder) e;
 				f.open(null);
-				result.addAll(f.getModules());
-			} else if (e instanceof IErlModule) {
-				final IErlFolder f = (IErlFolder) parent;
 				if (f.isOnSourcePath()) {
-					result.add((IErlModule) e);
+					result.addAll(f.getModules());
 				}
+			} else if (e instanceof IErlModule) {
+				result.add((IErlModule) e);
 			}
 		}
 		return result;

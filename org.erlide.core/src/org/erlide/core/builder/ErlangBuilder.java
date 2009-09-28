@@ -742,6 +742,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		public boolean visit(final IResourceDelta delta) throws CoreException {
 
+			//TODO should ignore folder if not in source/include/output path 
+			
 			final IResource resource = delta.getResource();
 			final IProject my_project = resource.getProject();
 			final OldErlangProjectProperties prefs = ErlangCore
@@ -750,7 +752,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+					&& isInCodePath(resource, my_project)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
@@ -799,7 +801,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "yrl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+					&& isInCodePath(resource, my_project)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
@@ -882,7 +884,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)
+					&& isInCodePath(resource, my_project)
 					&& !resource.isDerived()) {
 
 				try {
@@ -900,7 +902,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "yrl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, my_project)) {
+					&& isInCodePath(resource, my_project)) {
 
 				try {
 					result.add(resource);
@@ -939,7 +941,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInExtCodePath(resource, resource.getProject())) {
+					&& isInCodePath(resource, resource.getProject())) {
 				final String[] p = resource.getName().split("\\.");
 				if (p[0].equals(fName)) {
 					fResult = resource;
