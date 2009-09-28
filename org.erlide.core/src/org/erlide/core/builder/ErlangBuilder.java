@@ -749,6 +749,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
+				if(m==null)continue;
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (ErlangBuilderMarkerGenerator.comparePath(ifile

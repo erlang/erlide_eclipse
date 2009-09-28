@@ -554,7 +554,7 @@ public class ErlProject extends Openable implements IErlProject {
 					result.add(getModule(res.getName()));
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return result;
