@@ -252,6 +252,7 @@ public final class ErlideUtil {
 	public static boolean isEricssonUser() {
 		if (!isEriUserCached) {
 			isEricssonUser = is_Ericsson_User();
+			isEriUserCached = true;
 		}
 		return isEricssonUser;
 	}
