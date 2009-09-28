@@ -32,13 +32,13 @@ loop(L) ->
 			ok;
 		{change, _Module, _Offset, _Length, _Text} = Msg ->
 			%%erlide_log:logp({scanner_listener, Msg}),
-			?MODULE:loop(aggregate(Msg, L));
+			loop(aggregate(Msg, L));
 		{new, _Module} = _Msg ->
 			%%erlide_log:logp({scanner_listener, _Msg}),
-			?MODULE:loop(L);
+			loop(L);
 		_Msg ->
 			%%erlide_log:logp({scanner_listener, unknown, _Msg}),
-			?MODULE:loop(L)
+			loop(L)
 	
 		after 600 ->
 			case L of 
@@ -47,7 +47,7 @@ loop(L) ->
 				_ ->
 					[handle(X) || X <- lists:reverse(L)]
 			end,
-			?MODULE:loop([])
+			loop([])
 	end.
 
 aggregate(Msg={change, Module, Offset, 0, Text}, L=[{change, Module, Offset2, 0, Text2}|T]) ->
