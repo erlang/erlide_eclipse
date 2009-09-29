@@ -501,6 +501,14 @@ public class OtpEpmd {
 		    if (bytesRead == -1) {
 			break;
 		    }
+		    if (traceLevel >= traceThreshold) {
+			StringBuilder str = new StringBuilder();
+			for (int i = 0; i < bytesRead; i++) {
+			    str.append(Integer.toString(buffer[i]))
+				    .append(", ");
+			}
+			System.out.println("-> read (" + str.toString() + ") ");
+		    }
 		    out.write(buffer, 0, bytesRead);
 		}
 		final byte[] tmpbuf = out.toByteArray();
