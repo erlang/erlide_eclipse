@@ -1,5 +1,7 @@
 package org.erlide.jinterface.rpc;
 
+import org.erlide.jinterface.util.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -31,6 +33,8 @@ public final class EventProcessor {
 			} catch (final OtpErlangExit e) {
 				terminated = true;
 			} catch (final Exception e) {
+				ErlLogger.warn("EventProcessor %s got exception:", mbox.self());
+				ErlLogger.warn(e);
 			}
 
 		}

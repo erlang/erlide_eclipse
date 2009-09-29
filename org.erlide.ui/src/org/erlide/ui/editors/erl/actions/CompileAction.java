@@ -14,8 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.builder.CompilerPreferences;
-import org.erlide.core.builder.ErlangBuilder;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.backend.Backend;
@@ -54,7 +54,7 @@ public class CompileAction extends Action {
 		}
 		OtpErlangList compilerOptions = prefs.export();
 
-		ErlangBuilder.compileFile(project, resource, b, compilerOptions);
+		BuilderUtils.compileFile(project, resource, b, compilerOptions);
 	}
 
 	public IWorkbenchSite getSite() {
