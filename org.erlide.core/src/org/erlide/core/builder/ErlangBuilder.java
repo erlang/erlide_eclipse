@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.ProgressMonitor;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -36,6 +38,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuildNotifier;
@@ -176,14 +179,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
 			if (kind == FULL_BUILD) {
-				resourcesToBuild = fullBuild(args);
+				resourcesToBuild = fullBuild(args, monitor);
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
 				final Path path = new Path(".settings/org.erlide.core.prefs");
 				if (delta != null && delta.findMember(path) != null) {
 					ErlLogger
 							.info("project configuration changed: doing full rebuild");
-					resourcesToBuild = fullBuild(args);
+					resourcesToBuild = fullBuild(args, monitor);
 				} else {
 					resourcesToBuild = incrementalBuild(args, delta);
 				}
@@ -346,9 +349,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Set<IResource> fullBuild(final Map args) throws CoreException {
+	protected Set<IResource> fullBuild(final Map args, IProgressMonitor monitor) throws CoreException {
 		final HashSet<IResource> result = new HashSet<IResource>();
-		getProject().accept(new ErlangResourceVisitor(result));
+		getProject().accept(new ErlangResourceVisitor(result, monitor));
 		return result;
 	}
 
@@ -439,12 +442,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				if (br != null) {
 					br.delete(true, null);
 				}
-
-				createTaskMarkers(project, resource);
-
 				if (BuilderUtils.isDebugging()) {
 					ErlLogger.debug("compiling %s", resource.getName());
 				}
+
+				createTaskMarkers(project, resource);
+
 				OtpErlangObject r;
 				r = compileFile(backend, resource.getLocation().toString(),
 						outputDir, includeDirs, compilerOptions);
@@ -509,6 +512,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
 			try {
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("Creating task markers "
+							+ resource.getName());
+				}
 				final IErlModule m = p.getModule(resource.getName());
 				if (m == null) {
 					return;
@@ -749,7 +756,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
-				if(m==null)continue;
+				if (m == null)
+					continue;
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (ErlangBuilderMarkerGenerator.comparePath(ifile
@@ -768,7 +776,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		private final Set<IResource> result;
 
-		public ErlangResourceVisitor(final Set<IResource> result) {
+		public ErlangResourceVisitor(final Set<IResource> result,
+				IProgressMonitor monitor) {
 			this.result = result;
 		}
 
@@ -815,7 +824,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	static class ErlangFileVisitor implements IResourceVisitor {
 
 		IResource fResult;
-
 		String fName;
 
 		public ErlangFileVisitor(final String name,
