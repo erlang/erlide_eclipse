@@ -90,7 +90,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("\nCleaning " + currentProject.getName() //$NON-NLS-1$
+			ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 		super.clean(monitor);
@@ -659,7 +659,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	class ErlangDeltaVisitor implements IResourceDeltaVisitor {
+	private class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
 		private final Set<IResource> result;
 		private final IProgressMonitor monitor;
@@ -763,8 +763,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					break;
 				case IResourceDelta.REMOVED:
 					final String[] p = resource.getName().split("\\.");
-					final ErlangFileVisitor searcher = new ErlangFileVisitor(
-							p[0], null);
+					final SearchVisitor searcher = new SearchVisitor(p[0], null);
 					my_project.accept(searcher);
 					if (searcher.fResult != null) {
 						result.add(searcher.fResult);
@@ -801,7 +800,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	class ErlangResourceVisitor implements IResourceVisitor {
+	private class ErlangResourceVisitor implements IResourceVisitor {
 
 		private final Set<IResource> result;
 		private final IProgressMonitor monitor;
@@ -828,14 +827,15 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					e.printStackTrace();
 				}
 			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "hrl".equals(resource.getFileExtension())
-					&& isInIncludedPath(resource, my_project)) {
-				int n = result.size();
-				addDependents(resource, my_project, result);
-				monitor.worked(result.size() - n);
-			}
+			// not needed, we are doing a full build anyway!
+			// if (resource.getType() == IResource.FILE
+			// && resource.getFileExtension() != null
+			// && "hrl".equals(resource.getFileExtension())
+			// && isInIncludedPath(resource, my_project)) {
+			// int n = result.size();
+			// addDependents(resource, my_project, result);
+			// monitor.worked(result.size() - n);
+			// }
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "yrl".equals(resource.getFileExtension())
@@ -856,14 +856,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	static class ErlangFileVisitor implements IResourceVisitor {
+	private static class SearchVisitor implements IResourceVisitor {
 
 		IResource fResult;
 		String fName;
 		private final IProgressMonitor monitor;
 
-		public ErlangFileVisitor(final String name,
-				final IProgressMonitor monitor) {
+		public SearchVisitor(final String name, final IProgressMonitor monitor) {
 			fResult = null;
 			fName = name;
 			this.monitor = monitor;

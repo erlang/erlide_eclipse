@@ -67,7 +67,7 @@ public class BuildNotifier {
 				.getParent().getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug(message);
+			ErlLogger.debug(">>" + message);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class BuildNotifier {
 				.getParent().getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug(message);
+			ErlLogger.debug("<<" + message);
 		}
 		updateProgressDelta(progressPerCompilationUnit);
 		checkCancelWithinCompiler();
@@ -210,9 +210,7 @@ public class BuildNotifier {
 
 	/**
 	 * Sets the cancelling flag, which indicates we are in the middle of being
-	 * cancelled. Certain places (those callable indirectly from the compiler)
-	 * should not check cancel again while this is true, to avoid
-	 * OperationCanceledException being thrown at an inopportune time.
+	 * cancelled.
 	 */
 	public void setCancelling(final boolean cancelling) {
 		fCancelling = cancelling;
