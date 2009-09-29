@@ -35,9 +35,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuildNotifier;
@@ -152,8 +152,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 
 		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("Starting build of " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis()));
+			ErlLogger.debug("Starting build " + buildKind(kind) + " of "
+					+ currentProject.getName() + " @ "
+					+ new Date(System.currentTimeMillis()));
 		}
 		BuildNotifier.resetProblemCounters();
 		notifier = new BuildNotifier(monitor, currentProject);
@@ -177,21 +178,21 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					compilerOptions);
 
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
-			SubProgressMonitor submon = new SubProgressMonitor(monitor, 10);
+			IProgressMonitor submon = new NullProgressMonitor();
+			// new SubProgressMonitor(monitor, 10);
 			submon.beginTask("retrieving resources to build",
 					IProgressMonitor.UNKNOWN);
 			if (kind == FULL_BUILD) {
-				resourcesToBuild = getAllErlangResources(args, submon);
+				resourcesToBuild = getAffectedResources(args, submon);
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
 				final Path path = new Path(".settings/org.erlide.core.prefs");
-				if (delta != null && delta.findMember(path) != null) {
+				if (delta.findMember(path) != null) {
 					ErlLogger
 							.info("project configuration changed: doing full rebuild");
-					resourcesToBuild = getAllErlangResources(args, submon);
+					resourcesToBuild = getAffectedResources(args, submon);
 				} else {
-					resourcesToBuild = getDeltaErlangResources(args, delta,
-							submon);
+					resourcesToBuild = getAffectedResources(args, delta, submon);
 				}
 			}
 			submon.done();
@@ -252,6 +253,21 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					+ " @ " + new Date(System.currentTimeMillis()));
 		}
 		return null;
+	}
+
+	private String buildKind(int kind) {
+		switch (kind) {
+		case IncrementalProjectBuilder.AUTO_BUILD:
+			return "auto";
+		case IncrementalProjectBuilder.CLEAN_BUILD:
+			return "clean";
+		case IncrementalProjectBuilder.FULL_BUILD:
+			return "full";
+		case IncrementalProjectBuilder.INCREMENTAL_BUILD:
+			return "incremental";
+		default:
+			return "unknown";
+		}
 	}
 
 	private void checkForClashes(final Backend backend) {
@@ -352,24 +368,23 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Set<IResource> getAllErlangResources(final Map args,
+	protected Set<IResource> getAffectedResources(final Map args,
 			IProgressMonitor monitor) throws CoreException {
-		final HashSet<IResource> result = new HashSet<IResource>();
-		getProject().accept(new ErlangResourceVisitor(result, monitor));
-		return result;
+		return getAffectedResources(args, null, monitor);
 	}
 
+	/**
+	 * If delta==null, return all resources.
+	 */
 	@SuppressWarnings("unchecked")
-	protected Set<IResource> getDeltaErlangResources(final Map args,
+	protected Set<IResource> getAffectedResources(final Map args,
 			final IResourceDelta delta, IProgressMonitor monitor)
 			throws CoreException {
 		final HashSet<IResource> result = new HashSet<IResource>();
-		if (BuilderUtils.isDebugging()) {
-			System.out.println("delta = " + delta);
-		}
 		if (delta != null) {
 			delta.accept(new ErlangDeltaVisitor(result, monitor));
+		} else {
+			getProject().accept(new ErlangResourceVisitor(result, monitor));
 		}
 		return result;
 	}
