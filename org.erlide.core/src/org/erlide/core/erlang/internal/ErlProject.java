@@ -551,10 +551,13 @@ public class ErlProject extends Openable implements IErlProject {
 			try {
 				members = folder.members();
 				for (IResource res : members) {
-					result.add(getModule(res.getName()));
+					final IErlModule module = getModule(res.getName());
+					if (module != null) {
+						result.add(module);
+					}
 				}
 			} catch (CoreException e) {
-				//e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return result;
