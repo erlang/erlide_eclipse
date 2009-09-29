@@ -4,11 +4,15 @@
 package org.erlide.core.builder.internal;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.builder.ErlangBuilder;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.IMarkerGenerator;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
@@ -19,13 +23,19 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
+public class MarkerGenerator implements IMarkerGenerator {
+
+	public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".problemmarker";
+
+	public static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".taskmarker";
 
 	public void addMarker(final IResource file, final IResource compiledFile,
 			final String errorDesc, final int lineNumber, final int severity,
 			final String errorVar) {
-		ErlangBuilderMarkerGenerator.addProblemMarker(file, compiledFile,
-				errorDesc, lineNumber, severity);
+		MarkerGenerator.addProblemMarker(file, compiledFile, errorDesc,
+				lineNumber, severity);
 	}
 
 	public static IResource findResourceByName(final IContainer container,
@@ -82,7 +92,7 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			final IResource compiledFile, final String message, int lineNumber,
 			final int priority) {
 		try {
-			final IMarker marker = file.createMarker(ErlangBuilder.TASK_MARKER);
+			final IMarker marker = file.createMarker(TASK_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.PRIORITY, priority);
 			marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
@@ -168,8 +178,7 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 			final IResource compiledFile, final String message, int lineNumber,
 			final int severity) {
 		try {
-			final IMarker marker = file
-					.createMarker(ErlangBuilder.PROBLEM_MARKER);
+			final IMarker marker = file.createMarker(PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
 			if (compiledFile != null) {
@@ -183,4 +192,124 @@ public class ErlangBuilderMarkerGenerator implements IMarkerGenerator {
 		} catch (final CoreException e) {
 		}
 	}
+
+	public static IMarker[] getProblemsFor(final IResource resource) {
+		return getMarkersFor(resource, PROBLEM_MARKER);
+	}
+
+	public static IMarker[] getTasksFor(final IResource resource) {
+		return getMarkersFor(resource, TASK_MARKER);
+	}
+
+	private static IMarker[] getMarkersFor(final IResource resource, String type) {
+		try {
+			if (resource != null && resource.exists()) {
+				return resource.findMarkers(type, false,
+						IResource.DEPTH_INFINITE);
+			}
+		} catch (final CoreException e) {
+			// assume there are no tasks
+		}
+		return new IMarker[0];
+	}
+
+	public static void removeProblemsFor(final IResource resource) {
+		removeMarkerFor(resource, PROBLEM_MARKER);
+	}
+
+	public static void removeTasksFor(final IResource resource) {
+		removeMarkerFor(resource, TASK_MARKER);
+	}
+
+	private static void removeMarkerFor(final IResource resource, String type) {
+		try {
+			if (resource != null && resource.exists()) {
+				resource.deleteMarkers(type, false, IResource.DEPTH_INFINITE);
+			}
+		} catch (final CoreException e) {
+			// assume there were no problems
+		}
+	}
+
+	public static void removeProblemsAndTasksFor(final IResource resource) {
+		try {
+			if (resource != null && resource.exists()) {
+				resource.deleteMarkers(PROBLEM_MARKER, false,
+						IResource.DEPTH_INFINITE);
+				resource.deleteMarkers(TASK_MARKER, false,
+						IResource.DEPTH_INFINITE);
+			}
+		} catch (final CoreException e) {
+			// assume there were no problems
+		}
+	}
+
+	public static void deleteMarkers(final IResource resource) {
+		try {
+			resource.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+			resource.deleteMarkers(TASK_MARKER, false, IResource.DEPTH_ZERO);
+			if (resource instanceof IFile) {
+				deleteMarkersWithCompiledFile(resource.getProject(),
+						(IFile) resource);
+				// should we delete markers for dependent hrl files?
+			}
+		} catch (final CoreException ce) {
+		}
+	}
+
+	private static void deleteMarkersWithCompiledFile(final IProject project,
+			final IFile file) {
+		if (!project.isAccessible()) {
+			return;
+		}
+		try {
+			for (final IMarker m : project.findMarkers(PROBLEM_MARKER, true,
+					IResource.DEPTH_INFINITE)) {
+				final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
+				if (source_id != null && source_id instanceof String
+						&& source_id.equals(file.getFullPath().toString())) {
+					try {
+						m.delete();
+					} catch (final CoreException e) {
+						// not much to do
+					}
+				}
+			}
+			for (final IMarker m : project.findMarkers(TASK_MARKER, true,
+					IResource.DEPTH_INFINITE)) {
+				final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
+				if (source_id != null && source_id instanceof String
+						&& source_id.equals(file.getFullPath().toString())) {
+					try {
+						m.delete();
+					} catch (final CoreException e) {
+						// not much to do
+					}
+				}
+			}
+		} catch (final CoreException e) {
+			// not much to do
+		}
+	}
+
+	public void createProblemFor(final IResource resource,
+			final IErlFunction erlElement, final String message,
+			final int problemSeverity) throws CoreException {
+		try {
+			final IMarker marker = resource.createMarker(PROBLEM_MARKER);
+			final int severity = problemSeverity;
+
+			final ISourceRange range = erlElement == null ? null : erlElement
+					.getNameRange();
+			final int start = range == null ? 0 : range.getOffset();
+			final int end = range == null ? 1 : start + range.getLength();
+			marker.setAttributes(new String[] { IMarker.MESSAGE,
+					IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
+					new Object[] { message, Integer.valueOf(severity),
+							Integer.valueOf(start), Integer.valueOf(end) });
+		} catch (final CoreException e) {
+			throw e;
+		}
+	}
+
 }
