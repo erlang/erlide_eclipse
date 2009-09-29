@@ -396,7 +396,9 @@ public class Backend {
 	}
 
 	public void registerStatusHandler(OtpNodeStatus handler) {
-		fNode.registerStatusHandler(handler);
+		if (fNode != null) {
+			fNode.registerStatusHandler(handler);
+		}
 	}
 
 	public synchronized void restart() {
