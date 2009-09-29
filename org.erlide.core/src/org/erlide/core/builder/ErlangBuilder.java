@@ -45,7 +45,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -66,7 +65,6 @@ import erlang.ErlideBuilder;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
-	private static IMarkerGenerator generator = new MarkerGenerator();
 	IProject currentProject;
 	IWorkspaceRoot workspaceRoot;
 	BuildNotifier notifier;
@@ -271,7 +269,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				final IResource r2 = currentProject.findMember(f2);
 				// XXX does the above work? or do we need to get the name only?
 				if (r1 != null || r2 != null) {
-					generator.addMarker(currentProject, currentProject,
+					MarkerGenerator.addMarker(currentProject, currentProject,
 							"Code clash between " + f1 + " and " + f2, 0,
 							IMarker.SEVERITY_WARNING, "");
 				}
@@ -296,7 +294,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 						.stringValue();
 				final String f2 = ((OtpErlangString) t.elementAt(1))
 						.stringValue();
-				generator.addMarker(currentProject, currentProject,
+				MarkerGenerator.addMarker(currentProject, currentProject,
 						"Duplicated module name in " + f1 + " and " + f2, 0,
 						IMarker.SEVERITY_ERROR, "");
 			}
@@ -404,7 +402,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					ErlLogger.debug("compiling %s", resource.getName());
 				}
 
-				createTaskMarkers(project, resource);
+				MarkerGenerator.createTaskMarkers(project, resource);
 
 				OtpErlangObject r;
 				r = compileFile(backend, resource.getLocation().toString(),
@@ -446,7 +444,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				// process compilation messages
 				if (t.elementAt(1) instanceof OtpErlangList) {
 					final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-					MarkerGenerator.addErrorMarkers(generator, resource, l);
+					MarkerGenerator.addErrorMarkers(resource, l);
 				} else {
 					ErlLogger.warn("bad result from builder: %s", t);
 				}
@@ -465,61 +463,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private static void createTaskMarkers(final IProject project,
-			final IResource resource) {
-		final IErlProject p = ErlangCore.getModel().findProject(project);
-		if (p != null) {
-			try {
-				if (BuilderUtils.isDebugging()) {
-					ErlLogger.debug("Creating task markers "
-							+ resource.getName());
-				}
-				final IErlModule m = p.getModule(resource.getName());
-				if (m == null) {
-					return;
-				}
-				final IErlScanner s = m.getScanner();
-				if (s == null) {
-					return;
-				}
-				final Collection<IErlComment> cl = s.getComments();
-				for (final IErlComment c : cl) {
-					final String name = c.getName();
-					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
-					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
-					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
-				}
-				// TODO we don't want all of the scanner data to linger around
-				// but disposing might delete a scanner that is used...
-				// TODO we need to reference count on the erlang side!
-				// s.dispose();
-			} catch (final ErlModelException e) {
-			}
-		}
-
-	}
-
 	@SuppressWarnings("unused")
 	private List<IErlComment> getComments(final IResource resource) {
 		final List<IErlComment> result = new ArrayList<IErlComment>();
 		return result;
-	}
-
-	private static void mkMarker(final IResource resource, final IErlComment c,
-			final String name, final String tag, final int prio) {
-		if (name.contains(tag)) {
-			final int ix = name.indexOf(tag);
-			final String msg = name.substring(ix);
-			int dl = 0;
-			for (int i = 0; i < ix; i++) {
-				if (name.charAt(i) == '\n') {
-					dl++;
-				}
-			}
-			MarkerGenerator.addTaskMarker(resource, resource, msg, c
-					.getLineStart()
-					+ 1 + dl, prio);
-		}
 	}
 
 	private static void ensureDirExists(final String outputDir) {
@@ -563,7 +510,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				// process compilation messages
 				final OtpErlangTuple t = (OtpErlangTuple) r;
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-				MarkerGenerator.addErrorMarkers(generator, resource, l);
+				MarkerGenerator.addErrorMarkers(resource, l);
 			}
 
 			resource.getParent().refreshLocal(IResource.DEPTH_ONE, null);

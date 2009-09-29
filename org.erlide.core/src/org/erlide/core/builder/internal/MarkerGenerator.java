@@ -3,6 +3,8 @@
  */
 package org.erlide.core.builder.internal;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -10,8 +12,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.IMarkerGenerator;
+import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -23,7 +31,10 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class MarkerGenerator implements IMarkerGenerator {
+public final class MarkerGenerator {
+
+	private MarkerGenerator() {
+	}
 
 	public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".problemmarker";
@@ -31,9 +42,9 @@ public class MarkerGenerator implements IMarkerGenerator {
 	public static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".taskmarker";
 
-	public void addMarker(final IResource file, final IResource compiledFile,
-			final String errorDesc, final int lineNumber, final int severity,
-			final String errorVar) {
+	public static void addMarker(final IResource file,
+			final IResource compiledFile, final String errorDesc,
+			final int lineNumber, final int severity, final String errorVar) {
 		MarkerGenerator.addProblemMarker(file, compiledFile, errorDesc,
 				lineNumber, severity);
 	}
@@ -111,8 +122,8 @@ public class MarkerGenerator implements IMarkerGenerator {
 	 * @param resource
 	 * @param errorList
 	 */
-	public static void addErrorMarkers(final IMarkerGenerator mg,
-			final IResource resource, final OtpErlangList errorList) {
+	public static void addErrorMarkers(final IResource resource,
+			final OtpErlangList errorList) {
 		for (final OtpErlangObject odata : errorList.elements()) {
 			try {
 				final OtpErlangTuple data = (OtpErlangTuple) odata;
@@ -166,7 +177,7 @@ public class MarkerGenerator implements IMarkerGenerator {
 				} catch (final OtpErlangRangeException e) {
 				}
 
-				mg.addMarker(res, resource, msg, line, sev, "");
+				addMarker(res, resource, msg, line, sev, "");
 			} catch (Exception e) {
 				ErlLogger.warn(e);
 				ErlLogger.warn("got: %s", odata);
@@ -309,6 +320,56 @@ public class MarkerGenerator implements IMarkerGenerator {
 							Integer.valueOf(start), Integer.valueOf(end) });
 		} catch (final CoreException e) {
 			throw e;
+		}
+	}
+
+	public static void createTaskMarkers(final IProject project,
+			final IResource resource) {
+		final IErlProject p = ErlangCore.getModel().findProject(project);
+		if (p != null) {
+			try {
+				if (BuilderUtils.isDebugging()) {
+					ErlLogger.debug("Creating task markers "
+							+ resource.getName());
+				}
+				final IErlModule m = p.getModule(resource.getName());
+				if (m == null) {
+					return;
+				}
+				final IErlScanner s = m.getScanner();
+				if (s == null) {
+					return;
+				}
+				final Collection<IErlComment> cl = s.getComments();
+				for (final IErlComment c : cl) {
+					final String name = c.getName();
+					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
+				}
+				// TODO we don't want all of the scanner data to linger around
+				// but disposing might delete a scanner that is used...
+				// TODO we need to reference count on the erlang side!
+				// s.dispose();
+			} catch (final ErlModelException e) {
+			}
+		}
+
+	}
+
+	private static void mkMarker(final IResource resource, final IErlComment c,
+			final String name, final String tag, final int prio) {
+		if (name.contains(tag)) {
+			final int ix = name.indexOf(tag);
+			final String msg = name.substring(ix);
+			int dl = 0;
+			for (int i = 0; i < ix; i++) {
+				if (name.charAt(i) == '\n') {
+					dl++;
+				}
+			}
+			addTaskMarker(resource, resource, msg, c.getLineStart() + 1 + dl,
+					prio);
 		}
 	}
 
