@@ -2,7 +2,8 @@
  * Copyright (c) 2004 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * which accompanies this distribution, and is available at 
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -17,8 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.ProgressMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -178,26 +177,30 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					compilerOptions);
 
 			Set<IResource> resourcesToBuild = new HashSet<IResource>();
+			SubProgressMonitor submon = new SubProgressMonitor(monitor, 10);
+			submon.beginTask("retrieving resources to build",
+					IProgressMonitor.UNKNOWN);
 			if (kind == FULL_BUILD) {
-				resourcesToBuild = fullBuild(args, monitor);
+				resourcesToBuild = getAllErlangResources(args, submon);
 			} else {
 				final IResourceDelta delta = getDelta(currentProject);
 				final Path path = new Path(".settings/org.erlide.core.prefs");
 				if (delta != null && delta.findMember(path) != null) {
 					ErlLogger
 							.info("project configuration changed: doing full rebuild");
-					resourcesToBuild = fullBuild(args, monitor);
+					resourcesToBuild = getAllErlangResources(args, submon);
 				} else {
-					resourcesToBuild = incrementalBuild(args, delta);
+					resourcesToBuild = getDeltaErlangResources(args, delta,
+							submon);
 				}
 			}
+			submon.done();
 			final int n = resourcesToBuild.size();
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("Will compile %d resource(s): %s", Integer
 						.valueOf(n), resourcesToBuild.toString());
 			}
 			if (n > 0) {
-				notifier.setProgressPerCompilationUnit(1.0f / n);
 				final Backend backend = ErlangCore.getBackendManager()
 						.getBuildBackend(currentProject);
 				if (backend == null) {
@@ -209,6 +212,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					throw new BackendException(message);
 				}
 
+				notifier.setProgressPerCompilationUnit(1.0f / n);
 				for (final IResource resource : resourcesToBuild) {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
@@ -349,21 +353,23 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Set<IResource> fullBuild(final Map args, IProgressMonitor monitor) throws CoreException {
+	protected Set<IResource> getAllErlangResources(final Map args,
+			IProgressMonitor monitor) throws CoreException {
 		final HashSet<IResource> result = new HashSet<IResource>();
 		getProject().accept(new ErlangResourceVisitor(result, monitor));
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Set<IResource> incrementalBuild(final Map args,
-			final IResourceDelta delta) throws CoreException {
+	protected Set<IResource> getDeltaErlangResources(final Map args,
+			final IResourceDelta delta, IProgressMonitor monitor)
+			throws CoreException {
 		final HashSet<IResource> result = new HashSet<IResource>();
 		if (BuilderUtils.isDebugging()) {
 			System.out.println("delta = " + delta);
 		}
 		if (delta != null) {
-			delta.accept(new ErlangDeltaVisitor(result));
+			delta.accept(new ErlangDeltaVisitor(result, monitor));
 		}
 		return result;
 	}
@@ -641,9 +647,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
 		private final Set<IResource> result;
+		private final IProgressMonitor monitor;
 
-		public ErlangDeltaVisitor(final Set<IResource> result) {
+		public ErlangDeltaVisitor(final Set<IResource> result,
+				IProgressMonitor monitor) {
 			this.result = result;
+			this.monitor = monitor;
 		}
 
 		public boolean visit(final IResourceDelta delta) throws CoreException {
@@ -662,6 +671,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// handle changed resource
 					if (!resource.isDerived()) {
 						result.add(resource);
+						monitor.worked(1);
 					}
 					break;
 				case IResourceDelta.REMOVED:
@@ -683,6 +693,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					final IResource yrl = my_project.findMember(yrlp);
 					if (yrl != null) {
 						result.add(yrl);
+						monitor.worked(1);
 					}
 
 					break;
@@ -696,7 +707,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.REMOVED:
 				case IResourceDelta.CHANGED:
+					int n = result.size();
 					addDependents(resource, my_project, result);
+					monitor.worked(result.size() - n);
 					break;
 				}
 			}
@@ -708,6 +721,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
 					result.add(resource);
+					monitor.worked(1);
 					break;
 
 				case IResourceDelta.REMOVED:
@@ -719,6 +733,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					final IResource br = my_project.findMember(erl);
 					if (br != null) {
 						br.delete(true, null);
+						monitor.worked(1);
 					}
 					break;
 				}
@@ -738,6 +753,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					my_project.accept(searcher);
 					if (searcher.fResult != null) {
 						result.add(searcher.fResult);
+						monitor.worked(1);
 					}
 					break;
 				}
@@ -756,8 +772,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
-				if (m == null)
-					continue;
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (ErlangBuilderMarkerGenerator.comparePath(ifile
@@ -775,10 +789,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	class ErlangResourceVisitor implements IResourceVisitor {
 
 		private final Set<IResource> result;
+		private final IProgressMonitor monitor;
 
 		public ErlangResourceVisitor(final Set<IResource> result,
 				IProgressMonitor monitor) {
 			this.result = result;
+			this.monitor = monitor;
 		}
 
 		public boolean visit(final IResource resource) throws CoreException {
@@ -792,6 +808,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 				try {
 					result.add(resource);
+					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -800,7 +817,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					&& resource.getFileExtension() != null
 					&& "hrl".equals(resource.getFileExtension())
 					&& isInIncludedPath(resource, my_project)) {
+				int n = result.size();
 				addDependents(resource, my_project, result);
+				monitor.worked(result.size() - n);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
@@ -809,6 +828,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 				try {
 					result.add(resource);
+					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -825,11 +845,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		IResource fResult;
 		String fName;
+		private final IProgressMonitor monitor;
 
 		public ErlangFileVisitor(final String name,
-				final IProgressMonitor submon) {
+				final IProgressMonitor monitor) {
 			fResult = null;
 			fName = name;
+			this.monitor = monitor;
 		}
 
 		public boolean visit(final IResource resource) throws CoreException {

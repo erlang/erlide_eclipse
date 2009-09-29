@@ -73,7 +73,7 @@ public class BuildNotifier {
 
 	public void begin() {
 		if (fMonitor != null) {
-			fMonitor.beginTask("", fTotalWork); //$NON-NLS-1$
+			fMonitor.beginTask("building", fTotalWork); //$NON-NLS-1$
 		}
 		previousSubtask = null;
 	}
