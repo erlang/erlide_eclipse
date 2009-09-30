@@ -5,7 +5,6 @@ package org.erlide.core.builder.internal;
 
 import java.util.Collection;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -31,9 +30,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public final class MarkerGenerator {
+public final class MarkerHelper {
 
-	private MarkerGenerator() {
+	private MarkerHelper() {
 	}
 
 	public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
@@ -45,58 +44,7 @@ public final class MarkerGenerator {
 	public static void addMarker(final IResource file,
 			final IResource compiledFile, final String errorDesc,
 			final int lineNumber, final int severity, final String errorVar) {
-		MarkerGenerator.addProblemMarker(file, compiledFile, errorDesc,
-				lineNumber, severity);
-	}
-
-	public static IResource findResourceByName(final IContainer container,
-			final String fileName) {
-		try {
-			for (final IResource r : container.members()) {
-				if (comparePath(r.getName(), fileName)) {
-					return r;
-				}
-				if (r instanceof IContainer) {
-					final IResource res = findResourceByName((IContainer) r,
-							fileName);
-					if (res != null) {
-						return res;
-					}
-				}
-			}
-		} catch (final CoreException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static boolean comparePath(final String p1, final String p2) {
-		final boolean WINDOWS = java.io.File.separatorChar == '\\';
-		if (WINDOWS) {
-			return p1.equalsIgnoreCase(p2);
-		} else {
-			return p1.equals(p2);
-		}
-	}
-
-	public static IResource findResource(final IContainer container,
-			final String fileName) {
-		try {
-			for (final IResource r : container.members()) {
-				if (comparePath(r.getName(), fileName)) {
-					return r;
-				}
-				if (r instanceof IContainer) {
-					final IResource res = findResource((IContainer) r, fileName);
-					if (res != null) {
-						return res;
-					}
-				}
-			}
-		} catch (final CoreException e) {
-			e.printStackTrace();
-		}
-		return null;
+		addProblemMarker(file, compiledFile, errorDesc, lineNumber, severity);
 	}
 
 	public static void addTaskMarker(final IResource file,
@@ -135,8 +83,10 @@ public final class MarkerGenerator {
 				final String fileName = (String) TypeConverter.erlang2java(data
 						.elementAt(1), String.class);
 				IResource res = resource;
-				if (!comparePath(resource.getLocation().toString(), fileName)) {
-					res = findResource(resource.getProject(), fileName);
+				if (!BuilderUtils.comparePath(
+						resource.getLocation().toString(), fileName)) {
+					res = BuilderUtils.findResource(resource.getProject(),
+							fileName);
 					if (res == null) {
 						// TODO the error is in a file not in the project
 

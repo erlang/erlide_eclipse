@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
-import org.erlide.core.builder.internal.MarkerGenerator;
+import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -55,7 +55,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		try {
 			initializeBuilder(monitor);
-			MarkerGenerator.removeProblemsAndTasksFor(currentProject);
+			MarkerHelper.removeProblemsAndTasksFor(currentProject);
 
 			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(currentProject);
@@ -78,7 +78,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			ErlLogger.error(e);
 			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
 					.getLocalizedMessage());
-			MarkerGenerator.addProblemMarker(currentProject, null, msg, 0,
+			MarkerHelper.addProblemMarker(currentProject, null, msg, 0,
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
@@ -93,29 +93,28 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(final int kind, final Map args,
 			final IProgressMonitor monitor) throws CoreException {
-		IProject currentProject = getProject();
-		if (currentProject == null || !currentProject.isAccessible()) {
+		IProject project = getProject();
+		if (project == null || !project.isAccessible()) {
 			return new IProject[0];
 		}
 
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
-					+ " of " + currentProject.getName() + " @ "
+					+ " of " + project.getName() + " @ "
 					+ new Date(System.currentTimeMillis()));
 		}
 		BuildNotifier.resetProblemCounters();
 		try {
-			MarkerGenerator.deleteMarkers(currentProject);
+			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
 
-			OtpErlangList compilerOptions = CompilerPreferences
-					.get(currentProject);
+			OtpErlangList compilerOptions = CompilerPreferences.get(project);
 
 			ErlLogger.debug("******** building %s: %s", getProject().getName(),
 					compilerOptions);
 
 			Set<IResource> resourcesToBuild = getResourcesToBuild(kind, args,
-					currentProject);
+					project);
 			final int n = resourcesToBuild.size();
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("Will compile %d resource(s): %s", Integer
@@ -123,12 +122,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			}
 			if (n > 0) {
 				final Backend backend = ErlangCore.getBackendManager()
-						.getBuildBackend(currentProject);
+						.getBuildBackend(project);
 				if (backend == null) {
 					final String message = "No backend with the required "
 							+ "version could be found. Can't build.";
-					MarkerGenerator.addProblemMarker(currentProject, null,
-							message, 0, IMarker.SEVERITY_ERROR);
+					MarkerHelper.addProblemMarker(project, null, message, 0,
+							IMarker.SEVERITY_ERROR);
 					throw new BackendException(message);
 				}
 
@@ -137,19 +136,21 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
-						BuilderUtils.compileFile(currentProject, resource,
-								backend, compilerOptions);
+						BuilderUtils.compileFile(project, resource, backend,
+								compilerOptions);
 					} else if ("yrl".equals(resource.getFileExtension())) {
-						BuilderUtils.compileYrlFile(currentProject, resource,
-								backend, compilerOptions);
+						BuilderUtils.compileYrlFile(project, resource, backend,
+								compilerOptions);
 					} else {
 						ErlLogger.warn("Don't know how to compile: %s",
 								resource.getName());
 					}
 					notifier.compiled(resource);
 				}
+				BuilderUtils.refreshOutputDir(project);
+
 				try {
-					BuilderUtils.checkForClashes(backend, currentProject);
+					BuilderUtils.checkForClashes(backend, project);
 				} catch (final Exception e) {
 				}
 			}
@@ -158,12 +159,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			ErlLogger.error(e);
 			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
 					.getLocalizedMessage());
-			MarkerGenerator.addProblemMarker(currentProject, null, msg, 0,
+			MarkerHelper.addProblemMarker(project, null, msg, 0,
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
 			if (BuilderUtils.isDebugging()) {
-				ErlLogger.debug("Finished build of " + currentProject.getName() //$NON-NLS-1$
+				ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
 						+ " @ " + new Date(System.currentTimeMillis()));
 			}
 		}
@@ -182,6 +183,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		notifier = null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Set<IResource> getResourcesToBuild(int kind, Map args,
 			IProject currentProject) throws CoreException {
 		Set<IResource> resourcesToBuild = new HashSet<IResource>();

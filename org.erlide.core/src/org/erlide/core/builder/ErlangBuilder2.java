@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
-import org.erlide.core.builder.internal.MarkerGenerator;
+import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -42,6 +42,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
@@ -61,7 +62,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
 		try {
 			initializeBuilder(monitor);
-			MarkerGenerator.removeProblemsAndTasksFor(currentProject);
+			MarkerHelper.removeProblemsAndTasksFor(currentProject);
 
 			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(currentProject);
@@ -84,7 +85,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 			ErlLogger.error(e);
 			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
 					.getLocalizedMessage());
-			MarkerGenerator.addProblemMarker(currentProject, null, msg, 0,
+			MarkerHelper.addProblemMarker(currentProject, null, msg, 0,
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
@@ -111,7 +112,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		}
 		BuildNotifier.resetProblemCounters();
 		try {
-			MarkerGenerator.deleteMarkers(project);
+			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
 
 			OtpErlangList compilerOptions = CompilerPreferences.get(project);
@@ -128,7 +129,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 				if (backend == null) {
 					final String message = "No backend with the required "
 							+ "version could be found. Can't build.";
-					MarkerGenerator.addProblemMarker(project, null, message, 0,
+					MarkerHelper.addProblemMarker(project, null, message, 0,
 							IMarker.SEVERITY_ERROR);
 					throw new BackendException(message);
 				}
@@ -160,7 +161,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 			ErlLogger.error(e);
 			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
 					.getLocalizedMessage());
-			MarkerGenerator.addProblemMarker(project, null, msg, 0,
+			MarkerHelper.addProblemMarker(project, null, msg, 0,
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
@@ -224,23 +225,31 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 			notifier.checkCancel();
 
 			ErlLogger.debug(">>> %s", msg);
-			// #1
-			// {compile, File, result()}
-			// result= {ok, Messages, Files} | {error, Messages}
-			// TODO create markers for messages
-			// TODO refresh Files and mark as derived
+			if (msg instanceof OtpErlangTuple) {
+				try {
+					OtpErlangTuple tuple = (OtpErlangTuple) msg;
+					OtpErlangAtom akey = (OtpErlangAtom) tuple.elementAt(0);
+					String key = akey.atomValue();
+					OtpErlangObject value = tuple.elementAt(1);
 
-			// #2
-			// {tasks, Tasks}
-			// TODO create tasks for Tasks
-
-			// #3
-			// {clash, Clashes}
-			// TODO create markers for clashes
-
+					if ("compile".equals(key)) {
+						// value = {ok, Messages, Files} | {error, Messages}
+						// TODO create markers for messages
+						// TODO refresh Files and mark as derived
+					}
+					if ("tasks".equals(key)) {
+						// value = [Task]
+						// TODO create tasks for Tasks
+					}
+					if ("clash".equals(key)) {
+						// value = [Clash]
+						// TODO create markers for clashes
+					}
+				} catch (Exception e) {
+				}
+			}
 			return msg.equals(new OtpErlangAtom("stop"));
 		}
-
 	}
 
 }

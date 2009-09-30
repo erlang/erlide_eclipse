@@ -200,7 +200,7 @@ build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 						  erlide_log:logp("Start building! ~p", [{Files, OutputDir, IncludeDirs, Options, Reporter}]),
 						  do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter),
 						  erlide_log:logp("Done building!")
-					  after 10000 ->
+					  after 1000 ->
 						  erlide_log:logp("builder timeout!")
 				  end
 		  end).
@@ -208,7 +208,7 @@ build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	Fun = fun(F) ->
 				  Res = (catch build_one_file(F, OutputDir, IncludeDirs, Options)),
-				  Reporter ! {compile, F, Res},
+				  Reporter ! {compile, Res},
 				  
 				  %% TODO scan tasks
 				  
