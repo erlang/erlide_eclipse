@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.PreferencesHelper;
@@ -43,6 +46,20 @@ public class CompilerPreferences {
 	private final PreferencesHelper helper;
 	private final Map<String, Boolean> booleanOptions = new HashMap<String, Boolean>();
 	private Boolean warnFormat;
+
+	public static OtpErlangList get(IProject project) throws CoreException {
+		CompilerPreferences prefs = new CompilerPreferences(project);
+		try {
+			prefs.load();
+		} catch (BackingStoreException e1) {
+			e1.printStackTrace();
+			throw new CoreException(new Status(IStatus.ERROR,
+					ErlangPlugin.PLUGIN_ID,
+					"could not retrieve compiler options"));
+		}
+		OtpErlangList compilerOptions = prefs.export();
+		return compilerOptions;
+	}
 
 	public CompilerPreferences() {
 		helper = PreferencesHelper.getHelper(QUALIFIER);

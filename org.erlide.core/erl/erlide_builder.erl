@@ -22,7 +22,9 @@
 		 load/1,
 		 compile_yrl/2,
 		 code_clash/0,
-		 source_clash/1
+		 source_clash/1,
+		 
+		 build_resources/5
 		]).
 
 %%-define(DEBUG, 1).
@@ -52,12 +54,14 @@ compile_options(F, Options, OutputDir) ->
 			{error, lists:sort(format_compile_msg(E, ?ERROR)++ format_compile_msg(W, ?WARNING))};
 		{ok, FN, Bin, W} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
+			erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
-			{ok, lists:sort(format_compile_msg(W, ?WARNING)), Bin};
+			{ok, lists:sort(format_compile_msg(W, ?WARNING)), [F1]};
 		{ok, FN, Bin} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
+			erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
-			{ok, [], Bin};
+			{ok, [], [F1]};
 		{ok, Mod, _Bin, W} ->
 			Msg = {1, F, lists:flatten(io_lib:format("declared module name '~p' doesn't match file name '~p'", [Mod, FN])), ?ERROR},
 			{error, lists:sort([Msg | format_compile_msg(W, ?WARNING)])};    
@@ -86,7 +90,6 @@ compile_yrl(In, Out) ->
 	erlide_yecc_msgs:start(),
 	group_leader(whereis(erlide_yecc_msgs), self()),
 	process_flag(trap_exit, true),
-	io:format(">.."),
 	case compile_yrlR11(In, Out) of
 		notR11 -> compile_yrlR10(In, Out);
 		Result -> Result
@@ -113,7 +116,7 @@ compile_yrlR11(In, Out) ->
 			Wrn = lists:flatmap(
 					fun({_Obj, Warn}) -> [ {Lw,Mdw,stringify(Msw),1} || {Lw,Mdw,Msw} <- Warn] end,
 					Warnings),
-			{ok, Wrn}
+			{ok, Wrn, [Out]}
 	end.
 
 %% Compile Erlang file from R10
@@ -188,3 +191,51 @@ has_ext(Ext, Extlen,File) ->
 source_clash(Dirs) ->
 	Struct = lists:flatten(build(Dirs, "erl")),
 	search(Struct).
+
+build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
+	spawn(fun() ->
+				  receive 
+					  start ->
+						  do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter)
+					  after 30000 ->
+						  erlide_log:logp("builder timeout!")
+				  end
+		  end).
+
+do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
+	Fun = fun(F) ->
+				  build_one_file(F, OutputDir, IncludeDirs, Options, Reporter)
+		  end,
+	lists:foreach(Fun, Files),
+	
+	%% TODO check code clashes
+	
+	Reporter ! stop,
+	ok.
+
+build_one_file(F, OutputDir, IncludeDirs, Options, Reporter) ->
+	Result = case filename:extension(F) of
+				 ".erl" ->
+					 compile(F, OutputDir, IncludeDirs, Options);
+				 ".yrl" ->
+					 ErlF = filename:join(filename:dirname(F), 
+										  filename:basename(F, "yrl")++"erl"),
+					 erlide_log:debug("YRL ->  ~p -> ~p", F, ErlF),
+					 case compile_yrl(F, ErlF) of
+						 {error, Msgs} ->
+							 {error, Msgs};
+						 {ok, Msgs, Out} ->
+							 case compile(ErlF, OutputDir, IncludeDirs, Options) of
+								 {ok, Msgs2, Out2} ->
+									 {ok, Msgs++Msgs2, Out++Out2};
+								 {error, Msgs2} ->
+									 {error, Msgs++Msgs2}
+							 end
+					 end;
+				 _ ->
+					 {error, [{0, F, "Don't know how to compile this file"}]}
+			 end,
+	Reporter ! {compile, F, Result},
+	
+	%% TODO scan tasks
+	ok.

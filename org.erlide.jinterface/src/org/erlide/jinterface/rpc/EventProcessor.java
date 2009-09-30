@@ -1,14 +1,15 @@
 package org.erlide.jinterface.rpc;
 
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.OtpNode;
 
-public final class EventProcessor {
+public final class EventProcessor implements Runnable {
 
 	private static final int TIMEOUT = 10000;
 
@@ -16,13 +17,16 @@ public final class EventProcessor {
 	private final OtpMbox mbox;
 	private volatile boolean terminated = true;
 
-	public EventProcessor(final EventHandler h, final OtpNode node) {
+	private OtpErlangPid starter;
+
+	public EventProcessor(final EventHandler h, final Backend backend) {
 		handler = h;
-		mbox = node.createMbox();
+		mbox = backend.createMbox();
 	}
 
 	public void run() {
 		terminated = false;
+		mbox.send(starter, new OtpErlangAtom("start"));
 		while (!terminated) {
 			OtpErlangObject msg;
 			try {
@@ -44,11 +48,7 @@ public final class EventProcessor {
 		if (!terminated) {
 			return;
 		}
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				EventProcessor.this.run();
-			}
-		});
+		Thread t = new Thread(this);
 		t.setPriority(3); // low
 		t.setDaemon(true);
 		t.start();
@@ -60,6 +60,10 @@ public final class EventProcessor {
 
 	public OtpErlangPid getPid() {
 		return mbox.self();
+	}
+
+	public void setStarter(OtpErlangPid starter) {
+		this.starter = starter;
 	}
 
 }

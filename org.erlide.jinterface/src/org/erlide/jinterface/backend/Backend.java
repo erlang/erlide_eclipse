@@ -508,4 +508,12 @@ public class Backend {
 		System.out.println("INPUT???");
 	}
 
+	public OtpMbox createMbox() {
+		return fNode.createMbox();
+	}
+
+	public OtpMbox createMbox(String name) {
+		return fNode.createMbox(name);
+	}
+
 }

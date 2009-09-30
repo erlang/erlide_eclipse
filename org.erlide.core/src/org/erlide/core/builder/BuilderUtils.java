@@ -277,6 +277,23 @@ public final class BuilderUtils {
 						.equals("true");
 	}
 
+	public static List<String> getAllIncludeDirs(final IProject project) {
+		List<String> includeDirs = getIncludeDirs(project,
+				new ArrayList<String>());
+
+		try {
+			final IProject[] referencedProjects = project
+					.getReferencedProjects();
+			for (final IProject p : referencedProjects) {
+				if (p.isAccessible()) {
+					includeDirs = getIncludeDirs(p, includeDirs);
+				}
+			}
+		} catch (final CoreException e1) {
+		}
+		return includeDirs;
+	}
+
 	/**
 	 * @param project
 	 * @param prefs
@@ -504,19 +521,7 @@ public final class BuilderUtils {
 				.toString();
 		ensureDirExists(outputDir);
 
-		List<String> includeDirs = getIncludeDirs(project,
-				new ArrayList<String>());
-
-		try {
-			final IProject[] referencedProjects = project
-					.getReferencedProjects();
-			for (final IProject p : referencedProjects) {
-				if (p.isAccessible()) {
-					includeDirs = getIncludeDirs(p, includeDirs);
-				}
-			}
-		} catch (final CoreException e1) {
-		}
+		List<String> includeDirs = getAllIncludeDirs(project);
 
 		// delete beam file
 		IPath beam = new Path(prefs.getOutputDir());
@@ -582,15 +587,7 @@ public final class BuilderUtils {
 				if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
 					final String beamf = resource.getFullPath()
 							.removeFileExtension().lastSegment();
-					// final OtpErlangBinary code = (OtpErlangBinary) t
-					// .elementAt(2);
-					// for (Backend b :
-					// BackendManagerImpl.getDefault().getExecution(
-					// project)) {
-					// distributeModule(b, beamf, code);
-					// }
 					ErlideBuilder.loadModule(project, beamf);
-
 				} else {
 					// ErlLogger.debug(">>>> compile error... %s\n   %s",
 					// resource.getName(), t);
@@ -650,6 +647,59 @@ public final class BuilderUtils {
 			ErlLogger.debug("!!! compiling " + fn);
 		}
 		return ErlideBuilder.compileYrl(backend, fn, output);
+	}
+
+	public static void compileYrlFile(final IProject project,
+			final IResource resource, final Backend backend,
+			OtpErlangList compilerOptions) {
+		// final IPath projectPath = project.getLocation();
+		// final OldErlangProjectProperties prefs = new
+		// OldErlangProjectProperties(project);
+
+		MarkerGenerator.deleteMarkers(resource);
+		// try {
+		// resource.deleteMarkers(PROBLEM_MARKER, true,
+		// IResource.DEPTH_INFINITE);
+		// } catch (final CoreException e1) {
+		// }
+
+		IPath erl = resource.getProjectRelativePath().removeFileExtension();
+		erl = erl.addFileExtension("erl").setDevice(null);
+		IResource br = project.findMember(erl);
+
+		// TODO check timestamps!
+
+		try {
+			if (br != null) {
+				br.delete(true, null);
+			}
+
+			OtpErlangObject r;
+
+			final String input = resource.getLocation().toString();
+			final String output = resource.getLocation().removeFileExtension()
+					.toString();
+			r = compileYrlFile(backend, input, output);
+
+			if (r instanceof OtpErlangTuple) {
+				// process compilation messages
+				final OtpErlangTuple t = (OtpErlangTuple) r;
+				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+				MarkerGenerator.addErrorMarkers(resource, l);
+			}
+
+			resource.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+			br = project.findMember(erl);
+			if (br != null) {
+				br.setDerived(true);
+				// br.touch() doesn't work...
+				compileFile(project, br, backend, compilerOptions);
+			}
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
