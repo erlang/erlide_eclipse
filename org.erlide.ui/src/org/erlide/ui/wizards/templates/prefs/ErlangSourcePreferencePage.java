@@ -81,7 +81,7 @@ public class ErlangSourcePreferencePage extends PreferencePage implements
 	private Button remove_button;
 
 	ResourceBundle resourceBundle = ResourceBundle
-			.getBundle("org.erlide.ui.erlangsource.prefs.ErlangSource");
+			.getBundle("org.erlide.ui.wizards.templates.prefs.ErlangSource");
 
 	private SourceViewer preview;
 
