@@ -54,12 +54,12 @@ compile_options(F, Options, OutputDir) ->
 			{error, lists:sort(format_compile_msg(E, ?ERROR)++ format_compile_msg(W, ?WARNING))};
 		{ok, FN, Bin, W} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
-			erlide_log:logp("-- saving to ~p", [F1]),
+			%%erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
 			{ok, lists:sort(format_compile_msg(W, ?WARNING)), [F1]};
 		{ok, FN, Bin} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
-			erlide_log:logp("-- saving to ~p", [F1]),
+			%%erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
 			{ok, [], [F1]};
 		{ok, Mod, _Bin, W} ->
@@ -194,17 +194,25 @@ source_clash(Dirs) ->
 
 build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	spawn(fun() ->
+				  erlang:register(erlide_builder, self()),
 				  receive 
 					  start ->
-						  do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter)
-					  after 30000 ->
+						  erlide_log:logp("Start building! ~p", [{Files, OutputDir, IncludeDirs, Options, Reporter}]),
+						  do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter),
+						  erlide_log:logp("Done building!")
+					  after 10000 ->
 						  erlide_log:logp("builder timeout!")
 				  end
 		  end).
 
 do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	Fun = fun(F) ->
-				  build_one_file(F, OutputDir, IncludeDirs, Options, Reporter)
+				  Res = (catch build_one_file(F, OutputDir, IncludeDirs, Options)),
+				  Reporter ! {compile, F, Res},
+				  
+				  %% TODO scan tasks
+				  
+				  ok
 		  end,
 	lists:foreach(Fun, Files),
 	
@@ -213,29 +221,27 @@ do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	Reporter ! stop,
 	ok.
 
-build_one_file(F, OutputDir, IncludeDirs, Options, Reporter) ->
-	Result = case filename:extension(F) of
-				 ".erl" ->
-					 compile(F, OutputDir, IncludeDirs, Options);
-				 ".yrl" ->
-					 ErlF = filename:join(filename:dirname(F), 
-										  filename:basename(F, "yrl")++"erl"),
-					 erlide_log:debug("YRL ->  ~p -> ~p", F, ErlF),
-					 case compile_yrl(F, ErlF) of
-						 {error, Msgs} ->
-							 {error, Msgs};
-						 {ok, Msgs, Out} ->
-							 case compile(ErlF, OutputDir, IncludeDirs, Options) of
-								 {ok, Msgs2, Out2} ->
-									 {ok, Msgs++Msgs2, Out++Out2};
-								 {error, Msgs2} ->
-									 {error, Msgs++Msgs2}
-							 end
-					 end;
-				 _ ->
-					 {error, [{0, F, "Don't know how to compile this file"}]}
-			 end,
-	Reporter ! {compile, F, Result},
-	
-	%% TODO scan tasks
-	ok.
+build_one_file(F, OutputDir, IncludeDirs, Options) ->
+	erlide_log:logp("COMPILE ->  ~p ", [F]),
+	case filename:extension(F) of
+		".erl" ->
+			compile(F, OutputDir, IncludeDirs, Options);
+		".yrl" ->
+			%% FIXME something is wrong here
+			ErlF = filename:join(filename:dirname(F), 
+								 filename:basename(F, "yrl")++"erl"),
+			erlide_log:logp("YRL ->  ~p ", [{F, ErlF}]),
+			case compile_yrl(F, ErlF) of
+				{error, Msgs} ->
+					{error, Msgs};
+				{ok, Msgs, Out} ->
+					case compile(ErlF, OutputDir, IncludeDirs, Options) of
+						{ok, Msgs2, Out2} ->
+							{ok, Msgs++Msgs2, Out++Out2};
+						{error, Msgs2} ->
+							{error, Msgs++Msgs2}
+					end
+			end;
+		_ ->
+			{error, [{0, F, "Don't know how to compile this file"}]}
+	end.

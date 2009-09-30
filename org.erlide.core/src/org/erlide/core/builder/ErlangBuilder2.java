@@ -45,7 +45,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
-	private BuildNotifier notifier;
+	BuildNotifier notifier;
 
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
@@ -172,6 +172,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Set<String> getResourcesToBuild(int kind, Map args, IProject project)
 			throws CoreException {
 		Set<IResource> result = new HashSet<IResource>();
@@ -217,9 +218,11 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		notifier = null;
 	}
 
-	private class BuildHandler implements EventHandler {
+	class BuildHandler implements EventHandler {
 
 		public boolean handleEvent(OtpErlangObject msg) {
+			notifier.checkCancel();
+
 			ErlLogger.debug(">>> %s", msg);
 			// #1
 			// {compile, File, result()}
