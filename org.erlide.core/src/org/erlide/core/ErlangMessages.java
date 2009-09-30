@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 public class ErlangMessages {
 
-	private static final String RESOURCE_BUNDLE = "org.erlide.launching.ErlangMessages"; //$NON-NLS-1$
+	private static final String RESOURCE_BUNDLE = "org.erlide.core.ErlangMessages"; //$NON-NLS-1$
 
 	private static final ResourceBundle fgResourceBundle = ResourceBundle
 			.getBundle(RESOURCE_BUNDLE);
