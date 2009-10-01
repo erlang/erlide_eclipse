@@ -8,6 +8,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 
@@ -37,6 +38,18 @@ public class ErlideBuilder {
 		try {
 			return backend.call(30000, "erlide_builder", "compile", "sslsx",
 					fn, outputdir, includedirs, compilerOptions);
+		} catch (final Exception e) {
+			ErlLogger.debug(e);
+			return null;
+		}
+	}
+
+	public static RpcFuture async_compileErl(final Backend backend,
+			final String fn, final String outputdir,
+			final List<String> includedirs, OtpErlangList compilerOptions) {
+		try {
+			return backend.async_call("erlide_builder", "compile", "sslsx", fn,
+					outputdir, includedirs, compilerOptions);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;
@@ -75,6 +88,17 @@ public class ErlideBuilder {
 			}
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
+		}
+	}
+
+	public static RpcFuture async_compileYrl(Backend backend, String fn,
+			String output) {
+		try {
+			return backend.async_call("erlide_builder", "compile_yrl", "ss",
+					fn, output);
+		} catch (final Exception e) {
+			ErlLogger.debug(e);
+			return null;
 		}
 	}
 
