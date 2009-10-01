@@ -10,6 +10,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.backend.IDisposable;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 
 public class ErlConsoleManager implements IDisposable, BackendListener {
@@ -30,7 +31,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
 			return;
 		}
 		Object str = b == null ? "null" : b.getInfo();
-		System.out.println("ADDED " + b + " " + str);
+		ErlLogger.debug("console ADDED " + b + " " + str);
 		if (b instanceof ErlideBackend) {
 			ErlangConsole console = new ErlangConsole((ErlideBackend) b);
 			conMan.addConsoles(new IConsole[] { console });
@@ -39,7 +40,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
 	}
 
 	public void runtimeRemoved(Backend b) {
-		System.out.println("REMOVED " + b + " " + b.getInfo());
+		ErlLogger.debug("console REMOVED " + b + " " + b.getInfo());
 		IConsole console = consoles.get(b);
 		if (console == null) {
 			return;

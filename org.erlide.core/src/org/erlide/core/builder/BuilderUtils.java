@@ -44,6 +44,7 @@ import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -494,89 +495,6 @@ public final class BuilderUtils {
 		}
 	}
 
-	public static void compileFile(final IProject project,
-			final IResource source, final Backend backend,
-			OtpErlangList compilerOptions) {
-		final IPath projectPath = project.getLocation();
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-
-		final String s = source.getFileExtension();
-		if (!s.equals("erl")) {
-			ErlLogger.warn("trying to compile " + source.getName() + "?!?!");
-		}
-
-		MarkerHelper.deleteMarkers(source);
-
-		final String outputDir = projectPath.append(prefs.getOutputDir())
-				.toString();
-		ensureDirExists(outputDir);
-
-		List<String> includeDirs = getAllIncludeDirs(project);
-
-		// delete beam file
-		IPath beamPath = new Path(prefs.getOutputDir());
-		IPath module = beamPath.append(source.getName()).removeFileExtension();
-		beamPath = module.addFileExtension("beam").setDevice(null);
-		IResource beam = project.findMember(beamPath);
-
-		try {
-			boolean shouldCompile = shouldCompile(project, source, beam);
-
-			if (shouldCompile) {
-				if (beam != null) {
-					beam.delete(true, null);
-				}
-				if (isDebugging()) {
-					ErlLogger.debug("compiling %s", source.getName());
-				}
-
-				MarkerHelper.createTaskMarkers(project, source);
-
-				OtpErlangObject r;
-				r = compileFile(backend, source.getLocation().toString(),
-						outputDir, includeDirs, compilerOptions);
-				if (r == null) {
-					MarkerHelper
-							.addProblemMarker(source, null,
-									"Could not compile file", 0,
-									IMarker.SEVERITY_ERROR);
-					return;
-				}
-				final OtpErlangTuple t = (OtpErlangTuple) r;
-				// ErlLogger.debug("** " + r);
-
-				if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
-					final String beamf = source.getFullPath()
-							.removeFileExtension().lastSegment();
-					ErlideBuilder.loadModule(project, beamf);
-				} else {
-					// ErlLogger.debug(">>>> compile error... %s\n   %s",
-					// resource.getName(), t);
-				}
-
-				// process compilation messages
-				if (t.elementAt(1) instanceof OtpErlangList) {
-					final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-					MarkerHelper.addErrorMarkers(source, l);
-				} else {
-					ErlLogger.warn("bad result from builder: %s", t);
-				}
-
-			} else {
-				if (isDebugging()) {
-					ErlLogger.debug("skipping %s", source.getName());
-				}
-			}
-			beam = project.findMember(beamPath);
-			if (beam != null) {
-				beam.setDerived(true);
-			}
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
-		}
-	}
-
 	public static boolean shouldCompile(final IProject project,
 			final IResource source, IResource beam) throws ErlModelException {
 		boolean shouldCompile = beam == null;
@@ -608,86 +526,6 @@ public final class BuilderUtils {
 					.getLocalTimeStamp();
 		}
 		return shouldCompile;
-	}
-
-	/**
-	 * Compile Erlang module, given output directory and include directory
-	 * 
-	 * @throws ErlangRpcException
-	 * @param fn
-	 * @param outputdir
-	 * @param includedirs
-	 * @return OtpErlangObject
-	 */
-	public static OtpErlangObject compileFile(final Backend backend,
-			final String fn, final String outputdir,
-			final List<String> includedirs, OtpErlangList compilerOptions) {
-		if (isDebugging()) {
-			ErlLogger.debug("!!! compiling " + fn);
-		}
-		return ErlideBuilder.compileErl(backend, fn, outputdir, includedirs,
-				compilerOptions);
-	}
-
-	public static OtpErlangObject compileYrlFile(final Backend backend,
-			final String fn, final String output) {
-		if (isDebugging()) {
-			ErlLogger.debug("!!! compiling " + fn);
-		}
-		return ErlideBuilder.compileYrl(backend, fn, output);
-	}
-
-	public static void compileYrlFile(final IProject project,
-			final IResource resource, final Backend backend,
-			OtpErlangList compilerOptions) {
-		// final IPath projectPath = project.getLocation();
-		// final OldErlangProjectProperties prefs = new
-		// OldErlangProjectProperties(project);
-
-		MarkerHelper.deleteMarkers(resource);
-		// try {
-		// resource.deleteMarkers(PROBLEM_MARKER, true,
-		// IResource.DEPTH_INFINITE);
-		// } catch (final CoreException e1) {
-		// }
-
-		IPath erl = resource.getProjectRelativePath().removeFileExtension();
-		erl = erl.addFileExtension("erl").setDevice(null);
-		IResource br = project.findMember(erl);
-
-		// TODO check timestamps!
-
-		try {
-			if (br != null) {
-				br.delete(true, null);
-			}
-
-			OtpErlangObject r;
-
-			final String input = resource.getLocation().toString();
-			final String output = resource.getLocation().removeFileExtension()
-					.toString();
-			r = compileYrlFile(backend, input, output);
-
-			if (r instanceof OtpErlangTuple) {
-				// process compilation messages
-				final OtpErlangTuple t = (OtpErlangTuple) r;
-				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-				MarkerHelper.addErrorMarkers(resource, l);
-			}
-
-			resource.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-			br = project.findMember(erl);
-			if (br != null) {
-				br.setDerived(true);
-				// br.touch() doesn't work...
-				compileFile(project, br, backend, compilerOptions);
-			}
-
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	public static IResource findResourceByName(final IContainer container,
@@ -751,8 +589,7 @@ public final class BuilderUtils {
 	}
 
 	public static void completeCompile(IProject project, IResource source,
-			OtpErlangObject r) {
-		System.out.println("FINISH " + source);
+			OtpErlangObject r, Backend backend, OtpErlangList compilerOptions) {
 		if (r == null) {
 			MarkerHelper.addProblemMarker(source, null,
 					"Could not compile file", 0, IMarker.SEVERITY_ERROR);
@@ -778,39 +615,49 @@ public final class BuilderUtils {
 			ErlLogger.warn("bad result from builder: %s", t);
 		}
 
+		// TODO separate
+
 		// ERL
-		// beam = project.findMember(beamPath);
-		// if (beam != null) {
-		// beam.setDerived(true);
-		// }
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		IPath beamPath = getBeamForErl(source, prefs);
+		if (beamPath != null) {
+			IResource beam = project.findMember(beamPath);
+			if (beam != null) {
+				try {
+					beam.setDerived(true);
+				} catch (CoreException e) {
+					ErlLogger.warn(e);
+				}
+			}
+		}
 
 		// YRL
-		// if (r instanceof OtpErlangTuple) {
-		// // process compilation messages
-		// final OtpErlangTuple t = (OtpErlangTuple) r;
-		// final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-		// MarkerHelper.addErrorMarkers(resource, l);
-		// }
-		//
-		// resource.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-		// br = project.findMember(erl);
-		// if (br != null) {
-		// br.setDerived(true);
-		// // br.touch() doesn't work...
-		// compileFile(project, br, backend, compilerOptions);
-		// }
+		IPath erl = getErlForYrl(source);
+		if (erl != null) {
+			try {
+				source.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+				IResource br = project.findMember(erl);
+				if (br != null) {
+					br.setDerived(true);
+					// br.touch() doesn't work...
+					compileErl(project, br, backend, compilerOptions);
+				}
+			} catch (CoreException e) {
+				ErlLogger.warn(e);
+			}
+		}
 
 	}
 
-	public static RpcFuture startCompile(IProject project, IResource source,
-			Backend backend, OtpErlangList compilerOptions) {
-		System.out.println("START " + source);
+	public static RpcFuture startCompileErl(IProject project, IResource source,
+			Backend backend, OtpErlangList compilerOptions, boolean force) {
 		final IPath projectPath = project.getLocation();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 
 		final String s = source.getFileExtension();
-		if (!s.equals("erl")) {
+		if (!"erl".equals(s)) {
 			ErlLogger.warn("trying to compile " + source.getName() + "?!?!");
 		}
 
@@ -823,13 +670,12 @@ public final class BuilderUtils {
 		List<String> includeDirs = getAllIncludeDirs(project);
 
 		// delete beam file
-		IPath beamPath = new Path(prefs.getOutputDir());
-		IPath module = beamPath.append(source.getName()).removeFileExtension();
-		beamPath = module.addFileExtension("beam").setDevice(null);
+		IPath beamPath = getBeamForErl(source, prefs);
 		IResource beam = project.findMember(beamPath);
 
 		try {
-			boolean shouldCompile = shouldCompile(project, source, beam);
+			boolean shouldCompile = force
+					|| shouldCompile(project, source, beam);
 
 			if (shouldCompile) {
 				if (beam != null) {
@@ -853,9 +699,20 @@ public final class BuilderUtils {
 		}
 	}
 
+	private static IPath getBeamForErl(IResource source,
+			final OldErlangProjectProperties prefs) {
+		IPath p = new Path(prefs.getOutputDir());
+		p = p.append(source.getName());
+		if (!"erl".equals(p.getFileExtension())) {
+			return null;
+		}
+		IPath module = p.removeFileExtension();
+		IPath beamPath = module.addFileExtension("beam").setDevice(null);
+		return beamPath;
+	}
+
 	public static RpcFuture startCompileYrl(IProject project,
 			IResource resource, Backend backend, OtpErlangList compilerOptions) {
-		System.out.println("START " + resource);
 		// final IPath projectPath = project.getLocation();
 		// final OldErlangProjectProperties prefs = new
 		// OldErlangProjectProperties(project);
@@ -867,8 +724,7 @@ public final class BuilderUtils {
 		// } catch (final CoreException e1) {
 		// }
 
-		IPath erl = resource.getProjectRelativePath().removeFileExtension();
-		erl = erl.addFileExtension("erl").setDevice(null);
+		IPath erl = getErlForYrl(resource);
 		IResource br = project.findMember(erl);
 
 		// TODO check timestamps!
@@ -877,8 +733,6 @@ public final class BuilderUtils {
 			if (br != null) {
 				br.delete(true, null);
 			}
-
-			OtpErlangObject r;
 
 			final String input = resource.getLocation().toString();
 			final String output = resource.getLocation().removeFileExtension()
@@ -889,6 +743,46 @@ public final class BuilderUtils {
 			return null;
 		}
 
+	}
+
+	private static IPath getErlForYrl(IResource resource) {
+		IPath path = resource.getProjectRelativePath();
+		if (!"yrl".equals(path.getFileExtension())) {
+			return null;
+		}
+		IPath erl = path.removeFileExtension();
+		erl = erl.addFileExtension("erl").setDevice(null);
+		return erl;
+	}
+
+	public static void compileErl(final IProject project,
+			final IResource resource, final Backend b,
+			OtpErlangList compilerOptions) {
+		RpcFuture res = startCompileErl(project, resource, b, compilerOptions,
+				true);
+		if (res == null) {
+			ErlLogger.warn("error compiling erl file: "
+					+ resource.getProjectRelativePath());
+		}
+		try {
+			completeCompile(project, resource, res.get(), b, compilerOptions);
+		} catch (RpcException e) {
+			ErlLogger.warn(e);
+		}
+	}
+
+	public static void compileYrl(IProject project, IResource resource,
+			Backend b, OtpErlangList compilerOptions) {
+		RpcFuture res = startCompileYrl(project, resource, b, compilerOptions);
+		if (res == null) {
+			ErlLogger.warn("error compiling yrl file: "
+					+ resource.getProjectRelativePath());
+		}
+		try {
+			completeCompile(project, resource, res.get(), b, compilerOptions);
+		} catch (RpcException e) {
+			ErlLogger.warn(e);
+		}
 	}
 
 }

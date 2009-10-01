@@ -54,7 +54,12 @@ public class CompileAction extends Action {
 		}
 		OtpErlangList compilerOptions = prefs.export();
 
-		BuilderUtils.compileFile(project, resource, b, compilerOptions);
+		if ("erl".equals(resource.getFileExtension())) {
+			BuilderUtils.compileErl(project, resource, b, compilerOptions);
+		}
+		if ("yrl".equals(resource.getFileExtension())) {
+			BuilderUtils.compileYrl(project, resource, b, compilerOptions);
+		}
 	}
 
 	public IWorkbenchSite getSite() {
