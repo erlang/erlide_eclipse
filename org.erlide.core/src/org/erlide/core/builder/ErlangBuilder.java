@@ -11,9 +11,11 @@
 package org.erlide.core.builder;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -33,9 +35,11 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
@@ -132,19 +136,31 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				}
 
 				notifier.setProgressPerCompilationUnit(1.0f / n);
+				Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
 				for (final IResource resource : resourcesToBuild) {
 					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
-						BuilderUtils.compileFile(project, resource, backend,
-								compilerOptions);
+						RpcFuture f = BuilderUtils.startCompile(project,
+								resource, backend, compilerOptions);
+						if (f != null) {
+							results.put(f, resource);
+						}
 					} else if ("yrl".equals(resource.getFileExtension())) {
-						BuilderUtils.compileYrlFile(project, resource, backend,
-								compilerOptions);
+						RpcFuture f = BuilderUtils.startCompileYrl(project,
+								resource, backend, compilerOptions);
+						if (f != null) {
+							results.put(f, resource);
+						}
 					} else {
 						ErlLogger.warn("Don't know how to compile: %s",
 								resource.getName());
 					}
+				}
+				for (Entry<RpcFuture, IResource> result : results.entrySet()) {
+					OtpErlangObject r = result.getKey().get(30000);
+					IResource resource = result.getValue();
+					BuilderUtils.completeCompile(project, resource, r);
 					notifier.compiled(resource);
 				}
 				BuilderUtils.refreshOutputDir(project);
