@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -156,13 +158,29 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 								resource.getName());
 					}
 				}
-				// TODO order isn't important!
-				for (Entry<RpcFuture, IResource> result : results.entrySet()) {
-					OtpErlangObject r = result.getKey().get(300000);
-					IResource resource = result.getValue();
-					BuilderUtils.completeCompile(project, resource, r, backend,
-							compilerOptions);
-					notifier.compiled(resource);
+				List<Entry<RpcFuture, IResource>> waiting = new ArrayList<Entry<RpcFuture, IResource>>(
+						results.entrySet());
+
+				// TODO should use some kind of notification!
+				while (waiting.size() > 0) {
+					OtpErlangObject r = null;
+					IResource resource = null;
+					for (Entry<RpcFuture, IResource> result : waiting) {
+						try {
+							r = result.getKey().get(50);
+						} catch (Exception e) {
+						}
+						if (r != null) {
+							resource = result.getValue();
+
+							BuilderUtils.completeCompile(project, resource, r,
+									backend, compilerOptions);
+							notifier.compiled(resource);
+
+							waiting.remove(result);
+							break;
+						}
+					}
 				}
 				BuilderUtils.refreshOutputDir(project);
 

@@ -190,7 +190,9 @@ public final class RpcUtil {
 					debug("RPC " + mbox.hashCode() + "<= " + res);
 				}
 			} finally {
-				mbox.close();
+				if (res != null) {
+					mbox.close();
+				}
 			}
 			if (res == null) {
 				throw new RpcTimeoutException();
