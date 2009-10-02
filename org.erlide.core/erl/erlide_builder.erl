@@ -263,7 +263,6 @@ start_server() ->
 						loop(0, queue:new(), Max) 
 				end),
 	register(?MODULE, Pid),
-	erlide_log:logp({?MODULE, Pid}),
 	ok.
 
 loop(N, Queue, MaxSpawn) ->
@@ -292,11 +291,12 @@ loop(N, Queue, MaxSpawn) ->
 spawn_worker(From, Fun, Args) ->
 	Server = self(),
 	spawn(fun() ->
-					   erlide_log:logp("--- %%$$ CALL  ~p", [hd(Args)]),
-					   Result = (catch apply(Fun, Args)),
-					   From ! Result,
-					   Server ! done,
-					   erlide_log:logp("--- %%$$ OK  ~p", [hd(Args)])
-			   end).
+				  %%erlide_log:logp("--- %%$$ CALL  ~p", [hd(Args)]),
+				  Result = (catch apply(Fun, Args)),
+				  From ! Result,
+				  Server ! done,
+				  %%erlide_log:logp("--- %%$$ OK  ~p", [hd(Args)]),
+				  ok
+		  end).
 
 
