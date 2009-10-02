@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
@@ -99,6 +100,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(final int kind, final Map args,
 			final IProgressMonitor monitor) throws CoreException {
+		long time = System.currentTimeMillis();
 		IProject project = getProject();
 		if (project == null || !project.isAccessible()) {
 			return new IProject[0];
@@ -106,8 +108,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
-					+ " of " + project.getName() + " @ "
-					+ new Date(System.currentTimeMillis()));
+					+ " of " + project.getName());
 		}
 		BuildNotifier.resetProblemCounters();
 		try {
@@ -140,7 +141,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				notifier.setProgressPerCompilationUnit(1.0f / n);
 				Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
 				for (final IResource resource : resourcesToBuild) {
-					notifier.aboutToCompile(resource);
+					notifier.checkCancel();
+					// notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
 						RpcFuture f = BuilderUtils.startCompileErl(project,
 								resource, backend, compilerOptions, false);
@@ -158,29 +160,33 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 								resource.getName());
 					}
 				}
+
+				List<Entry<RpcFuture, IResource>> done = new ArrayList<Entry<RpcFuture, IResource>>();
 				List<Entry<RpcFuture, IResource>> waiting = new ArrayList<Entry<RpcFuture, IResource>>(
 						results.entrySet());
 
 				// TODO should use some kind of notification!
 				while (waiting.size() > 0) {
-					OtpErlangObject r = null;
-					IResource resource = null;
 					for (Entry<RpcFuture, IResource> result : waiting) {
+						notifier.checkCancel();
+						OtpErlangObject r;
 						try {
-							r = result.getKey().get(50);
+							r = result.getKey().get(100);
 						} catch (Exception e) {
+							r = null;
 						}
 						if (r != null) {
-							resource = result.getValue();
+							IResource resource = result.getValue();
 
 							BuilderUtils.completeCompile(project, resource, r,
 									backend, compilerOptions);
 							notifier.compiled(resource);
 
-							waiting.remove(result);
-							break;
+							done.add(result);
 						}
 					}
+					waiting.removeAll(done);
+					done.clear();
 				}
 				BuilderUtils.refreshOutputDir(project);
 
@@ -190,6 +196,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				}
 			}
 
+		} catch (final OperationCanceledException e) {
+			if (BuilderUtils.isDebugging()) {
+				ErlLogger.debug("Build of " + project.getName()
+						+ " was canceled.");
+			}
 		} catch (final Exception e) {
 			ErlLogger.error(e);
 			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
@@ -200,7 +211,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			cleanup();
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
-						+ " @ " + new Date(System.currentTimeMillis()));
+						+ " took "
+						+ Long.toString(System.currentTimeMillis() - time));
 			}
 		}
 		return null;
