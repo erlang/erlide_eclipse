@@ -687,7 +687,7 @@ public final class BuilderUtils {
 
 				MarkerHelper.createTaskMarkers(project, source);
 
-				return ErlideBuilder.async_compileErl(backend, source
+				return ErlideBuilder.compileErl(backend, source
 						.getLocation().toString(), outputDir, includeDirs,
 						compilerOptions);
 			} else {
@@ -737,7 +737,7 @@ public final class BuilderUtils {
 			final String input = resource.getLocation().toString();
 			final String output = resource.getLocation().removeFileExtension()
 					.toString();
-			return ErlideBuilder.async_compileYrl(backend, input, output);
+			return ErlideBuilder.compileYrl(backend, input, output);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;

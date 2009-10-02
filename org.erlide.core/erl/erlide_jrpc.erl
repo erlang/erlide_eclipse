@@ -40,7 +40,8 @@ init(JPid) ->
 
 
 event(Id, Msg) ->
-	notify(Id, {event, Id, Msg, self()}).
+	Self = self(),
+	spawn(fun() -> notify(Id, {event, Id, Msg, Self}) end).
 
 manager(State) ->
 	receive

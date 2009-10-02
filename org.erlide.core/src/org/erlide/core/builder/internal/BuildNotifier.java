@@ -64,7 +64,7 @@ public class BuildNotifier {
 	public void aboutToCompile(final IResource unit) {
 		checkCancel();
 		final String message = NLS.bind(BuilderMessages.build_compiling, unit
-				.getParent().getFullPath());
+				.getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug(">>" + message);
@@ -106,7 +106,7 @@ public class BuildNotifier {
 	 */
 	public void compiled(final IResource unit) {
 		final String message = NLS.bind(BuilderMessages.build_compiling, unit
-				.getParent().getFullPath());
+				.getFullPath());
 		subTask(message);
 		if (BuilderUtils.isDebugging()) {
 			ErlLogger.debug("<<" + message);

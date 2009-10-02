@@ -138,7 +138,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 				notifier.setProgressPerCompilationUnit(1.0f / n);
 				Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
 				for (final IResource resource : resourcesToBuild) {
-					// TODO call these in parallel - how to gather markers?
 					notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
 						RpcFuture f = BuilderUtils.startCompileErl(project,
@@ -157,8 +156,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 								resource.getName());
 					}
 				}
+				// TODO order isn't important!
 				for (Entry<RpcFuture, IResource> result : results.entrySet()) {
-					OtpErlangObject r = result.getKey().get(30000);
+					OtpErlangObject r = result.getKey().get(300000);
 					IResource resource = result.getValue();
 					BuilderUtils.completeCompile(project, resource, r, backend,
 							compilerOptions);

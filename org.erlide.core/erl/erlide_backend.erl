@@ -50,7 +50,10 @@ init(JRex, Monitor) ->
 				  end,
 				  
 				  watch_eclipse(node(JRex)),
-				  erlide_scanner_listener:start()
+				  erlide_scanner_listener:start(),
+				  erlide_builder:start_server(),
+				  
+				  ok
 		  end),
 	ok.
 

@@ -3,7 +3,6 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -17,36 +16,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideBuilder {
 
-	public static OtpErlangObject compileYrl(final Backend backend,
-			final String fn, final String output) {
-		try {
-			final OtpErlangObject r = backend.call(30000, "erlide_builder",
-					"compile_yrl", "ss", fn, output);
-			if (BuilderUtils.isDebugging()) {
-				ErlLogger.debug("!!! r== " + r);
-			}
-			return r;
-		} catch (final Exception e) {
-			ErlLogger.debug(e);
-			return null;
-		}
-	}
-
-	public static OtpErlangObject compileErl(final Backend backend,
-			final String fn, final String outputdir,
-			final List<String> includedirs, OtpErlangList compilerOptions) {
-		try {
-			return backend.call(30000, "erlide_builder", "compile", "sslsx",
-					fn, outputdir, includedirs, compilerOptions);
-		} catch (final Exception e) {
-			ErlLogger.debug(e);
-			return null;
-		}
-	}
-
-	public static RpcFuture async_compileErl(final Backend backend,
-			final String fn, final String outputdir,
-			final List<String> includedirs, OtpErlangList compilerOptions) {
+	public static RpcFuture compileErl(final Backend backend, final String fn,
+			final String outputdir, final List<String> includedirs,
+			OtpErlangList compilerOptions) {
 		try {
 			return backend.async_call("erlide_builder", "compile", "sslsx", fn,
 					outputdir, includedirs, compilerOptions);
@@ -91,8 +63,7 @@ public class ErlideBuilder {
 		}
 	}
 
-	public static RpcFuture async_compileYrl(Backend backend, String fn,
-			String output) {
+	public static RpcFuture compileYrl(Backend backend, String fn, String output) {
 		try {
 			return backend.async_call("erlide_builder", "compile_yrl", "ss",
 					fn, output);

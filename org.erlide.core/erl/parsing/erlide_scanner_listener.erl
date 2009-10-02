@@ -21,9 +21,7 @@ start() ->
 						?SAVE_CALLS, 
 						loop([]) 
 				end),
-	erlide_log:logp({scanner_listener, Pid}),
 	register(?MODULE, Pid),
-	erlide_log:logp({scanner_listener, ?MODULE}),
 	ok.
 
 loop(L) ->
