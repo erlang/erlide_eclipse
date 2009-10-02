@@ -258,8 +258,9 @@ queue(F, Args) ->
 	end.
 
 start_server() ->
+	Max = erlang:system_info(schedulers),
 	Pid = spawn(fun() -> 	
-						loop(0, queue:new(), 2) 
+						loop(0, queue:new(), Max) 
 				end),
 	register(?MODULE, Pid),
 	erlide_log:logp({?MODULE, Pid}),
