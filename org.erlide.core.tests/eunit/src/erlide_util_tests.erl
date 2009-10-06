@@ -3,8 +3,9 @@
 -include_lib("eunit/include/eunit.hrl").
 
 
-reverse_nil_test() -> [] = lists:reverse([]).
-reverse_one_test() -> [1] = lists:reverse([1]).
-reverse_two_test() -> [2,1] = lists:reverse([1,2]).
-
-reverse_fail_test() -> [2,1] = lists:reverse([1,2,3]).
+reverse_test_() ->
+	[?_assertEqual([], lists:reverse([])),
+	 ?_assertEqual([1], lists:reverse([1])),
+	 ?_assertEqual([2,1], lists:reverse([1,2])),
+	 ?_assertEqual([3,2,1], lists:reverse([1,2,3]))
+	 ].
