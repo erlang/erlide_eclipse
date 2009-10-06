@@ -127,6 +127,7 @@ public class BackendShell {
 				&& IoRequest.RE_PROMPT.matcher(text).matches()) {
 			return;
 		}
+		System.out.println("console stream:::" + text);
 		final IoRequest req = new IoRequest(text, kind);
 		req.setStart(pos);
 		pos += req.getLength();

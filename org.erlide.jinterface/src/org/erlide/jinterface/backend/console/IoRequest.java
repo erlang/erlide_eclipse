@@ -40,6 +40,8 @@ public class IoRequest {
 	public IoRequest(final OtpErlangTuple obj) {
 		try {
 			final OtpErlangObject o = obj.elementAt(0);
+			System.out.println("console::: " + o.getClass().getName() + ":::"
+					+ o);
 			if (o instanceof OtpErlangString) {
 				message = ((OtpErlangString) o).stringValue();
 			} else if (o instanceof OtpErlangList) {
@@ -47,7 +49,11 @@ public class IoRequest {
 				if (l.arity() == 0) {
 					message = "";
 				} else {
-					message = l.stringValue();
+					try {
+						message = l.stringValue();
+					} catch (Exception e) {
+						message = o.toString();
+					}
 				}
 			} else {
 				message = o.toString();
