@@ -36,7 +36,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, Up
 				    StateDir, ErlidePath, UpdateCaches) 
 		   end,
         CacheFun = fun(D) ->
-			   erlide_scanner:initialScan(ScannerName, ModuleFileName, 
+			   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
 						      InitialText, StateDir, ErlidePath, UpdateCaches), 
 			   D 
 		   end,
@@ -95,8 +95,8 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCa
     Model.
 
 parse_test(ScannerName, File) ->
-    erlide_scanner:scan_uncached(ScannerName, File, ""),
-    Toks = erlide_scanner:getTokens(ScannerName),
+    erlide_scanner_server:scan_uncached(ScannerName, File, ""),
+    Toks = erlide_scanner_server:getTokens(ScannerName),
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
@@ -379,10 +379,14 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             external_refs=ExternalRefs}.
 
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
-    erlide_scanner:getTokens(ScannerName);    
+		erlide_log:logp("111"),
+    erlide_scanner_server:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
-    erlide_scanner:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
-    S = erlide_scanner:getTokens(ScannerName),
+		erlide_log:logp("222"),
+    erlide_scanner_server:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
+		erlide_log:logp("333"),
+    S = erlide_scanner_server:getTokens(ScannerName),
+		erlide_log:logp("444"),
     S.
 
 %% ex(Module) ->

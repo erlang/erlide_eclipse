@@ -60,7 +60,7 @@ aggregate(Msg, L) ->
 
 handle(_X={change, _Module, _Offset, _Length, _Text}) ->
 	%%erlide_log:logp({reconcile, _X}),
-	%%erlide_scanner:replaceText(Module, Offset, Length, Text),
+	%%erlide_scanner_server:replaceText(Module, Offset, Length, Text),
 	ok.
 
 	

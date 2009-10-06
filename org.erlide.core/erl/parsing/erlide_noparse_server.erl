@@ -46,10 +46,8 @@ destroy(Module) when is_atom(Module) ->
 dump_log() ->
     server_cmd(dump_log, []).
 
-logging(on) ->
-    server_cmd(logging, on);
-logging(off) ->
-    server_cmd(logging, off).
+logging(OnOff) ->
+    server_cmd(logging, OnOff).
 
 all() ->
     server_cmd(all, []).

@@ -39,7 +39,7 @@ open(Mod, Offset, ExternalModules, PathVars) ->
     ?D({Mod, Offset, PathVars}),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner:getTokenWindow(Mod, Offset, 5, 100),
+            erlide_scanner_server:getTokenWindow(Mod, Offset, 5, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Mod, Offset, TokensWComments, BeforeReversed,
                  ExternalModules, PathVars),
@@ -174,7 +174,7 @@ find_lib_dir(Dir) ->
 open_info(Mod, Offset, ExternalModules, PathVars) ->
     CW = 5,
     {TokensWComments, BeforeReversed} =
-	erlide_scanner:getTokenWindow(Mod, Offset, CW, 50),
+	erlide_scanner_server:getTokenWindow(Mod, Offset, CW, 50),
     CL = lists:reverse(BeforeReversed, TokensWComments),
     ?D({open_info, CW, CL}),
     case erlide_text:check_variable_macro_or_record(CL, CW) of
