@@ -379,14 +379,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
             external_refs=ExternalRefs}.
 
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
-		erlide_log:logp("111"),
     erlide_scanner_server:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
-		erlide_log:logp("222"),
     erlide_scanner_server:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
-		erlide_log:logp("333"),
     S = erlide_scanner_server:getTokens(ScannerName),
-		erlide_log:logp("444"),
     S.
 
 %% ex(Module) ->

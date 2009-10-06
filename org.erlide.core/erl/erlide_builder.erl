@@ -55,12 +55,10 @@ compile_options(F, Options, OutputDir) ->
 			{error, lists:sort(format_compile_msg(E, ?ERROR)++ format_compile_msg(W, ?WARNING))};
 		{ok, FN, Bin, W} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
-			%%erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
 			{ok, lists:sort(format_compile_msg(W, ?WARNING)), [F1]};
 		{ok, FN, Bin} ->
 			F1 = OutputDir++"/"++atom_to_list(FN)++".beam",
-			%%erlide_log:logp("-- saving to ~p", [F1]),
 			file:write_file(F1, Bin),
 			{ok, [], [F1]};
 		{ok, Mod, _Bin, W} ->
