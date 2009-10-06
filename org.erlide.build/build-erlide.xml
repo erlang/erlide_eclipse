@@ -73,9 +73,13 @@
     			<include name="org.erlide.wrangler.help/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>
     			<include name="org.erlide.wrangler.refactoring.duplicatedcode/**"/>
+
+    			<include name="org.erlide.testing/**"/>
+    			<include name="org.erlide.core.tests/**"/>
+
 				<exclude name="**/*.class"/>
 				<exclude name="**/*.beam"/>
-    		</fileset>
+			</fileset>
     	</copy>
     </target>
 
