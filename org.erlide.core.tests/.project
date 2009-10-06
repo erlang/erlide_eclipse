@@ -3,6 +3,7 @@
 	<name>org.erlide.core.tests</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -20,8 +21,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.erlide.core.erlbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.erlide.core.erlnature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
