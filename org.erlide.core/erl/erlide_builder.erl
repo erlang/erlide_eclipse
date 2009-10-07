@@ -24,7 +24,6 @@
 		 code_clash/0,
 		 source_clash/1,
 		 
-		 start_server/0,
 		 build_resources/5
 		]).
 
@@ -45,7 +44,7 @@ compile(F, OutputDir, IncludeDirs) ->
 	compile(F, OutputDir, IncludeDirs, []).
 
 compile(F, OutputDir, IncludeDirs, Options) ->
-	queue(fun compile_options/3,[F, [return, binary | mk_includes(IncludeDirs)]++Options, OutputDir]).
+	erlide_batch:call(?MODULE, fun compile_options/3,[F, [return, binary | mk_includes(IncludeDirs)]++Options, OutputDir]).
 
 %% Compile Erlang file taking various compile options into account
 compile_options(F, Options, OutputDir) ->
@@ -86,7 +85,7 @@ mk_includes(L) ->
 	[{i, X} || X <- L].
 
 compile_yrl(In, Out) ->
-	queue(fun do_compile_yrl/2, [In, Out]).
+	erlide_batch:call(?MODULE, fun do_compile_yrl/2, [In, Out]).
 
 do_compile_yrl(In, Out) ->
 	erlide_yecc_msgs:start(),
@@ -247,54 +246,4 @@ build_one_file(F, OutputDir, IncludeDirs, Options) ->
 		_ ->
 			{error, [{0, F, "Don't know how to compile this file"}]}
 	end.
-
-queue(F, Args) ->
-	?MODULE ! {call, self(), F, Args},
-	receive 
-		Result ->
-			Result
-	end.
-
-start_server() ->
-	Max = erlang:system_info(schedulers),
-	Pid = spawn(fun() -> 	
-						loop(0, queue:new(), Max) 
-				end),
-	register(?MODULE, Pid),
-	ok.
-
-loop(N, Queue, MaxSpawn) ->
-	receive
-		done ->
-			case queue:out(Queue) of
-				{{value, {call, From, Fun, Args}}, Queue2} ->
-					spawn_worker(From, Fun, Args),
-					loop(N, Queue2, MaxSpawn);
-				_ ->
-					loop(N-1, Queue, MaxSpawn)
-			end;
-		{call, From, Fun, Args} = Msg ->
-			case N < MaxSpawn of
-				true ->
-					spawn_worker(From, Fun, Args),
-					loop(N+1, Queue, MaxSpawn);
-				false ->
-					loop(N, queue:in(Msg, Queue), MaxSpawn)
-			end;
-		_Other ->
-			loop(N, Queue, MaxSpawn)
-	end.
-
-
-spawn_worker(From, Fun, Args) ->
-	Server = self(),
-	spawn(fun() ->
-				  %%erlide_log:logp("--- %%$$ CALL  ~p", [hd(Args)]),
-				  Result = (catch apply(Fun, Args)),
-				  From ! Result,
-				  Server ! done,
-				  %%erlide_log:logp("--- %%$$ OK  ~p", [hd(Args)]),
-				  ok
-		  end).
-
 
