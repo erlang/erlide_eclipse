@@ -2,7 +2,6 @@
 
 -include_lib("eunit/include/eunit.hrl").
 
-
 reverse_test_() ->
 	[?_assertEqual([], lists:reverse([])),
 	 ?_assertEqual([1], lists:reverse([1])),
