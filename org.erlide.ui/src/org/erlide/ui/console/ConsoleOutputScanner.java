@@ -60,10 +60,11 @@ public class ConsoleOutputScanner implements ITokenScanner {
 		Color bg = null;
 		Color fg = null;
 		if (IoRequest.RE_HEADER.matcher(string).lookingAt()) {
-			fg = fColorManager.getColor(new RGB(0, 0, 100));
+			fg = fColorManager.getColor(new RGB(80, 80, 100));
 			bg = fColorManager.getColor(new RGB(255, 255, 230));
 			style = SWT.BOLD;
 		} else if (IoRequest.RE_PROMPT.matcher(string).matches()) {
+			fg = fColorManager.getColor(new RGB(80, 80, 80));
 			style = SWT.BOLD;
 		}
 		return new TextAttribute(fg, bg, style);
