@@ -23,18 +23,15 @@
                     >Creative Commons</link> license. Thanks a lot!</para>
         </legalnotice>
     </info>
-    <section xml:id="working">
-        <title xml:id="working.title">Working with Git</title>
-
-        <note>
+    <annotation>
             <para>We haven't decided yet if we are going to fully migrate to Git, but this
                 information might be useful even so.</para>
-        </note>
-        <note>
             <para>Note also that this repository (vladdu/erlide_test) is <emphasis>NOT</emphasis>
                 the one that will be the reference one!</para>
-
-        </note>
+    </annotation>
+    <section xml:id="working">
+        <title xml:id="working.title">Working with Git</title>
+        
         <para>Welcome to the erlide Git repository. We hope you enjoy your stay. In the bad old
             days, the erlide repository was hosted by <link
                 xlink:href="http://erlide.cvs.sourceforge.net/viewvc/erlide/erlide">SourceForge
@@ -150,8 +147,8 @@
             <title>Where to Go From Here</title>
             <para>I'll be writing some other entries for how to perform some common tasks, such as
                 fixing a bug, adding a feature, working in a maintenance branch, merging between
-                branches, and undertaking a major project—and how to send your contributions
-                upstream. As I write each one, I'll link to it from here.</para>
+                branches, and undertaking a major project - and how to send your contributions
+                upstream.</para>
             <itemizedlist>
                 <listitem>
                     <para>
@@ -190,7 +187,119 @@
 
     <section xml:id="bugfix">
         <title xml:id="bugfix.title">Contributing a Bug Fix</title>
-        <para/>
+        <para>This is a simple exercise for those interested in contributing to erlide. Say that you
+            find a bug in erlide, or decide to fix an existing bug reported in our <link
+                xlink:href="http://erlide.assembla.com/spaces/erlide/tickets">ticket tracker</link>.
+            I&#8217;m assuming that the bug is in the main branch of the project, <link
+                xlink:href="http://github.com/erliders/erlide/tree/master">master</link>. Assuming
+            that you have read <link
+                xlink:href="http://wiki.github.com/vladdu/erlide_test/working-with-git">Working with
+                Git</link> and are ready to start hacking on your forked repository, let&#8217;s
+            get started:</para>
+
+
+
+        <screen>
+                cd erlide
+                git checkout master
+                git pull origin
+                git pull upstream master
+            </screen>
+        <para>What you&#8217;ve done here is to check out the master branch and to make sure
+            that you have all the latest changes from both your forked repository on GitHub and from
+            the erlide project&#8217;s upstream repository. Now you&#8217;re ready to fix
+            the bug. All you have to do is create a new branch and start hacking:</para>
+        <screen>
+                git checkout -b 1449
+            </screen>
+        <para>This command creates a new local branch named “#1449” and checks it out.
+            I&#8217;ve named it as such for the bug number. And I say “local branch” because it
+            only exists in the local repository; think of it as a working branch to be used just for
+            the duration of fixing the bug. So now, go ahead and fix it! As you work, commit early
+            and commit often. You can use <code>git add</code> to add one or more files to commit
+            and then commit them:</para>
+
+        <screen>
+                git add path/to/file.java
+                git commit -m 'Fixed typo in `file.java`.
+            </screen>
+        <para>Or, to commit all your current changes at once, just use <code>git commit
+            -a</code>:</para>
+        <screen>
+                git commit -am 'Removed the `id` field.'
+            </screen>
+        <para>Note that you can use <link
+                xlink:href="http://github.github.com/github-flavored-markdown/">GitHub-Flavored
+                Markdown</link> in your commit messages and they&#8217;ll be nicely formatted on
+            the site. Also, we strongly recommend that you write <link
+                xlink:href="http://www.tpope.net/node/106">Git-preferred commit messages</link>, as
+            they will really help you to review older commits in the future.</para>
+
+        <para>Also, there are <link xlink:href="http://git.or.cz/course/svn.html">some</link>
+            <link xlink:href="http://www-cs-students.stanford.edu/~blynn/gitmagic/index.html"
+                >great</link>
+            <link xlink:href="http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html"
+                >tutorials</link> and <link xlink:href="howtwo">howtows</link>
+            <link xlink:href="http://book.git-scm.com/">out</link>
+            <link xlink:href="http://www.kernel.org/pub/software/scm/git/docs/everyday.html"
+                >there</link>, so check them out for more on day-to-day use of Git. Overall,
+            you&#8217;ll want to commit in lots of small commits rather than one big final
+            commit, so that you can easily go back and change things if you need to.</para>
+
+
+
+
+
+        <para>Oh, and don&#8217;t forget to add a note to <code>CHANGES</code> and commit that,
+            too!</para>
+        <screen>
+                git add CHANGES
+                git commit -m 'Give credit where credit is you.'
+            </screen>
+        <para>When you&#8217;re done, the bug is fixed, and all tests pass, make sure everything
+            is committed and then merge your changes back into master:</para>
+
+        <screen>
+                git checkout master
+                git merge 1449
+                git branch -d 1449
+            </screen>
+        <para>Great! You&#8217;ve merged all the changes from your branch, and dropped the
+            branch since it&#8217;s no longer needed (all of the commits from the branch were
+            played back into master, just as if you&#8217;d committed them there). Sure, for a
+            simple bug fix you probably could have stayed in master. But with Git it&#8217;s
+            just as easy to create a working branch for a single bug and work on it there, and only
+            merge it back into master when you&#8217;re done, so that you keep things well
+            compartmentalized.</para>
+        <para>So far, all of your changes have been made to your local clone of your repository. Now
+            it&#8217;s time to push them upstream to your fork on GitHub. Doing so is
+            easy:</para>
+        <screen>
+                git push origin master
+            </screen>
+        <para>Now your own fork has the changes on GitHub, free to be pulled in by anyone else who
+            has cloned your fork. But your aim, of course, is to get the bug fix into the project
+            repository. Chances are good that a project administrator will see your bug fix merges
+            sooner or later and simply pull them in.</para>
+
+        <para>But if you&#8217;d like to alert them to the fix so that they pull it in sooner
+            rather than later, hit the home page for your fork of the project and click the <inlinemediaobject>
+                <imageobject>
+                    <imagedata
+                        fileref="http://github.com/images/modules/repos/pull_request_button.png"/>
+                </imageobject>
+            </inlinemediaobject> button. This will open up a lightbox window in which you can type
+            up a message to the project administrators, perhaps something like:</para>
+        <blockquote>
+            <para>Fellow Erliders,</para>
+            <para>I&#8217;ve fixed Bug #1449 in my fork. As you know, this is a particularly
+                insidious bug that has effected a lot of our user base. I think it&#8217;d be
+                worthwhile to pull it into the project repository in order to get it into the next
+                release of erlide.</para>
+            <para>Thanks!</para>
+        </blockquote>
+        <para>Be sure that the checkbox next to “erliders” is checked and then hit the “Send Pull
+            Request” button. There, you&#8217;re done.</para>
     </section>
     <section xml:id="branches">
         <title xml:id="branches.title">Working with Branches</title>
@@ -212,5 +321,4 @@
         <title xml:id="hacks.title">Git Hacks</title>
         <para/>
     </section>
-
 </article>
