@@ -735,7 +735,7 @@
                                     <Boolean xml:space="preserve">false</Boolean>
                                 </field>
                                 <field name="outputFile">
-                                    <File xml:space="preserve">${cfd}/x</File>
+                                    <File xml:space="preserve">${cfd}/../tmp</File>
                                 </field>
                                 <field name="openOtherLocationInBrowser">
                                     <Boolean xml:space="preserve">false</Boolean>
@@ -747,7 +747,7 @@
                                     <Boolean xml:space="preserve">false</Boolean>
                                 </field>
                                 <field name="showInHTMLPane">
-                                    <Boolean xml:space="preserve">true</Boolean>
+                                    <Boolean xml:space="preserve">false</Boolean>
                                 </field>
                                 <field name="showInXMLPane">
                                     <Boolean xml:space="preserve">false</Boolean>
@@ -973,10 +973,13 @@
         </options>
     </meta>
     <projectTree name="erlide.xpr">
+        <file name="developer_reference.xml"/>
         <file name="erlide.xml"/>
+        <file name="getting_started.xml"/>
         <file name="git.xml"/>
         <file name="../../org.erlide.docs/site/index_1.html"/>
         <file name="../../org.erlide.docs/site/index.html"/>
+        <file name="reference.xml"/>
         <file name="../../org.erlide.docs/site/template.html"/>
     </projectTree>
 </project>

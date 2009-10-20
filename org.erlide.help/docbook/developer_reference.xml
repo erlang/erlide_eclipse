@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rng" type="xml"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="5.0" xml:id="developer_reference">
+    <info>
+        <title>Developer reference</title>
+    </info>
+    <sect1 xml:id="install_dev">
+        <info>
+            <title>Installation</title>
+        </info>
+        <para>Install Eclipse SDK, Erlang R11 and Erlide as usual.</para>
+        <important>
+            <para>For developing Erlide, you can only use R11 for the IDE runtime. This is because
+                we need have to support R11 at the user's site.</para>
+        </important>
+    </sect1>
+    <sect1 xml:id="repository_dev">
+        <info>
+            <title>Retrieve the code from repository</title>
+        </info>
+        <para>The repository is Subversion based. I recommend using the Subclipse plugin from
+            http://subclipse.tigris.org.</para>
+        <para>The subversion repository has to be configured in the SVN Repository Browsing
+            perspective. The URL for the repository is <link
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="https://erlide.svn.sourceforge.net/svnroot/erlide"
+                >https://erlide.svn.sourceforge.net/svnroot/erlide</link>. </para>
+        <para>I recommend to check out and commit the code by following the procedure below, not by
+            checking out from within
+            Eclipse.<screen language="bash"><prompt>$</prompt> <command>cd erlide.workspace</command>  # use your workspace's folder
+                    <prompt>$</prompt> <command>svn co https://erlide.svn.sourceforge.net/svnroot/erlide/trunk .</command></screen>
+            On Windows, you can use TortoiseSVN to achieve the same effect.</para>
+        <para>This is because from within Eclipse we can get atomic commits only per each project.
+            In order to get those across all projects, the operations need to be done at the
+            workspace level and thus the workspace needs to be a versioned directory. This is
+            important when branching and tagging.</para>
+        <para>Then go back to Eclipse and shut down the automatic builder (<menuchoice>
+                <guimenu>Project</guimenu>
+                <guimenuitem>Build Automatically</guimenuitem>
+            </menuchoice>) then choose <menuchoice>
+                <guimenu>File</guimenu>
+                <guisubmenu>Import...</guisubmenu>
+                <guimenuitem>Existing projects into workspace</guimenuitem>
+            </menuchoice>. Import all projects and turn automatic build back on.</para>
+    </sect1>
+    <sect1 xml:id="build_dev">
+        <info>
+            <title>Build</title>
+        </info>
+        <sect2>
+            <info>
+                <title>Manual build</title>
+            </info>
+            <para>Go to the org.erlide.update project and create an entry for the current version,
+                then press <guibutton>Build</guibutton>.</para>
+        </sect2>
+        <sect2>
+            <info>
+                <title>Automated build</title>
+            </info>
+            <para><emphasis>Currently doesn't work.</emphasis> This is implemented in the
+                org.erlide.build project. Description of the procedure will be added later.
+                TBD.</para>
+        </sect2>
+        <sect2>
+            <info>
+                <title>Building the documentation</title>
+            </info>
+            <para>The source of the documentation is the <filename>erlide.xml</filename> file, in
+                Docbook 5 format. It is used to generate Eclipse infocenter help, HTML pages to be
+                put online and a printable PDF book.</para>
+        </sect2>
+        <sect2>
+            <info>
+                <title>Starting the newly built Erlide</title>
+            </info>
+            <para>
+                <itemizedlist>
+                    <listitem>
+                        <para>After compiling the plugins, you can try starting the newly build
+                            Erlide. For this you have to create a run configuration. Choose <menuchoice>
+                                <guimenu>Run</guimenu>
+                                <guisubmenu>Run...</guisubmenu>
+                                <guisubmenu>Eclipse Application</guisubmenu>
+                                <guimenuitem>New...</guimenuitem>
+                            </menuchoice>. Use a nice, friendly name like
+                                <userinput>Erlide</userinput> and in the plug-ins tab select
+                                <guimenuitem>Choose from list</guimenuitem>.</para>
+                    </listitem>
+                    <listitem>
+                        <para>In the main tab, select the "Program to run" to be "Run an
+                            application". The default value (org.eclipse.ui.ide.workbench) is
+                            fine.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Check all the Erlide plugins under "workspace plugins" and then "Add
+                            required plugins" for a minimal setting. Press validate and add any
+                            other plugins that may be needed.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Go to the <guimenu>Common</guimenu> tab and check the
+                                <guimenuitem>Show in favorites</guimenuitem> for both run and
+                            debug.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+        </sect2>
+    </sect1>
+    <sect1 xml:id="plugins_dev">
+        <info>
+            <title>Plugin description</title>
+        </info>
+        <para>
+            <variablelist>
+                <varlistentry>
+                    <term>com.ericsson.jinterface</term>
+                    <listitem>
+                        <para>This is a wrapper around the jinterface library from OTP. </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide</term>
+                    <listitem>
+                        <para>The feature that groups together all the deliverable plugins. </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.core</term>
+                    <listitem>
+                        <para>Here we find the classes that model the Erlang code and that </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.jinterface</term>
+                    <listitem>
+                        <para>This contains our extensions to jinterface. It is
+                            Eclipse-independent.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.ui</term>
+                    <listitem>
+                        <para>Here we find all UI related functionality.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.update</term>
+                    <listitem>
+                        <para>An update site is needed to distribute Erlide.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.help </term>
+                    <listitem>
+                        <para>The help files reside here. The documentation is written in Docbook 5
+                            format and from it we generate Eclipse help, online HTML documentation,
+                            printable PDF.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>org.erlide.docs</term>
+                    <listitem>
+                        <para>Here we have no code, but administration-related files. Most notable
+                            is the source to the home page of the project in the
+                                <filename>site</filename> directory.</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </para>
+    </sect1>
+    <sect1 xml:id="process_dev">
+        <info>
+            <title>Development process</title>
+        </info>
+        <sect2>
+            <info>
+                <title>Source code management</title>
+            </info>
+            <sect3>
+                <info>
+                    <title>Repository structure </title>
+                </info>
+                <para>The source code is stored in a Subversion repository. We use a standard
+                    structure, where the Eclipse project directories lie directly under the trunk:
+                    <screen>/
+                            branches/
+                            RB_x/
+                            org.erlide.*
+                            tags/
+                            REL_y/
+                            org.erlide.*
+                            trunk/
+                            org.erlide.*</screen>
+                    This way, we can do a checkout on the whole trunk directly in a workspace
+                    directory. This will allow to do atomic commits across all projects by using an
+                    external <command>svn</command> client, because from within Eclipse the
+                    atomicity is per project (a limitation of the Eclipse plugins).</para>
+            </sect3>
+            <sect3>
+                <info>
+                    <title>Branches</title>
+                </info>
+                <para>
+                    <itemizedlist spacing="compact">
+                        <listitem>
+                            <para>The trunk will contain the bleeding edge of development, but it
+                                should be buildable at any time.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Release branches will be named RB-x.x </para>
+                        </listitem>
+                        <listitem>
+                            <para>Larger features should be implemented in separate branches.</para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </sect3>
+        </sect2>
+        <sect2>
+            <info>
+                <title>Commit policies</title>
+            </info>
+            <para>To be specified.</para>
+        </sect2>
+        <sect2>
+            <info>
+                <title>Testing</title>
+            </info>
+            <para>We strive to add both unit tests and "sanity" tests (the latter ones should check
+                that a build is somewhat sane and didn't mess up anything basic). </para>
+        </sect2>
+    </sect1>
+</article>

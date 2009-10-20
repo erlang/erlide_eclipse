@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="5.0" xml:id="reference">
+    <info>
+        <title>Reference</title>
+    </info>
+    <sect1 xml:id="create_project">
+        <info>
+            <title>Creating a project</title>
+        </info>
+        <para>To create a project:</para>
+        <orderedlist inheritnum="ignore" continuation="restarts">
+            <listitem>
+                <para> Click <menuchoice>
+                        <guimenu>File</guimenu>
+                        <guisubmenu>New</guisubmenu>
+                        <guisubmenu>Other...</guisubmenu>
+                        <guimenuitem>Erlang Project</guimenuitem>
+                    </menuchoice> or use the context menu in the navigator, right-clicking and
+                    choosing <menuchoice role="bold">
+                        <guimenu>New</guimenu>
+                        <guimenuitem>Erlang Project</guimenuitem>
+                    </menuchoice></para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/file_menu.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </listitem>
+            <listitem>
+                <para> In the <guimenu>New Erlang Project</guimenu> wizard, enter the project name
+                    and if needed choose the project's location</para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/new_project_wizard.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </listitem>
+            <listitem>
+                <para> Click <guibutton>Next</guibutton>.</para>
+            </listitem>
+            <listitem>
+                <para> In the <emphasis role="bold">Project Build Preferences</emphasis> boxes, type
+                    Output, Source and Include folders or use the default values.</para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/new_proj_build_properties.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </listitem>
+            <listitem>
+                <para> To create your project, click <guibutton>Finish</guibutton>.</para>
+            </listitem>
+        </orderedlist>
+    </sect1>
+    <sect1 xml:id="import_project">
+        <info>
+            <title>Importing an Erlang Project</title>
+        </info>
+        <para>Import a project:</para>
+        <orderedlist inheritnum="ignore" continuation="restarts">
+            <listitem>
+                <para> Click <menuchoice>
+                        <guimenu>File</guimenu>
+                        <guisubmenu>Import</guisubmenu>
+                        <guisubmenu>Erlang</guisubmenu>
+                        <guimenuitem>Import erlang project into workspace</guimenuitem>
+                    </menuchoice> or right click in <menuchoice>
+                        <guimenu>Erlang Navigator</guimenu>
+                        <guimenuitem>Import...</guimenuitem>
+                    </menuchoice></para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/import_wizard01.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </listitem>
+            <listitem>
+                <para> In the Erlang Project Import Wizard, <guibutton>Browse...</guibutton> for
+                        <emphasis role="bold">Erlang project</emphasis></para>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/import_wizard02.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject>
+            </listitem>
+            <listitem>
+                <para> In the source field select project.</para>
+            </listitem>
+            <listitem>
+                <para> In Options you can choose to link to all folders and all files or to Copy
+                    selected files and selected folders to workspace.</para>
+            </listitem>
+            <listitem>
+                <para> To import your project, click <guibutton>Finish</guibutton>.</para>
+            </listitem>
+        </orderedlist>
+    </sect1>
+    <sect1 xml:id="configure_project">
+        <info>
+            <title>Configuring a project</title>
+        </info>
+        <para>In the Navigator pane, right-click on the project and choose <menuchoice>
+                <guimenu>Properties</guimenu>
+                <guimenuitem>Erlang</guimenuitem>
+            </menuchoice>. The dialog allows you to specify the project's settings.</para>
+        <para>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/projectproperties.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+        </para>
+        <para>The build backend specifies the Erlang node on which the compilation will be done. By
+            default, we use the same backend as the one the IDE is using and in most cases this is
+            sufficient. See the <link linkend="backends">Backends</link> section for more details. </para>
+        <para>The "make unique" box lets you decide if the specified name will get a unique suffix
+            in order to ensure that there will be no conflict with other running nodes (the use case
+            is when there are several users running Erlide on the same machine, it's difficult to
+            ensure that they won't use the same name for nodes). The suffix is derived from the
+            workspace path, so it is deterministic. </para>
+        <para>An empty cookie field means thet the user's default cookie will be used.</para>
+    </sect1>
+    <sect1 xml:id="editor_view">
+        <info>
+            <title>Editor view</title>
+        </info>
+        <para>The Erlang editor provides specialized features for editing Erlang related
+            files.</para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="../images/view_editor.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+        <para>Associated with the editor is an Erlang-specific <link
+                xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="erlide_outline_view.html"
+                >outline view</link>, which shows the structure of the active
+                <filename>.erl</filename> or <filename>.hrl</filename> file. It is updated as you
+            edit these files.</para>
+        <para>The editor includes the following features:</para>
+        <itemizedlist>
+            <listitem>
+                <para> Syntax highlighting</para>
+            </listitem>
+            <listitem>
+                <para> Content/code assist; auto completion of function calls, display of function
+                    documentation)</para>
+            </listitem>
+        </itemizedlist>
+        <para>The most common way to invoke the Erlang editor is to open a file from the Erlang
+            Navigator. If you want to open an Erlang file by name, the keyboard shortcut is <keycombo>
+                <keycap function="control">Ctrl</keycap>
+                <keycap function="shift">Shift</keycap>
+                <keycap>R</keycap>
+            </keycombo>.</para>
+    </sect1>
+    <sect1 xml:id="running_project">
+        <info>
+            <title>Running and debugging Erlang code</title>
+        </info>
+        <para>The Eclipse way to specify how to run the code that is being developed is called
+                <emphasis>launch configurations</emphasis>. Erlide provides support for creating and
+            executing Erlang-specific launch configurations. These configurations can be created and
+            edited by opening the <menuchoice>
+                <guimenu>Run</guimenu>
+                <guimenuitem>Run configurations...</guimenuitem>
+            </menuchoice> dialog (or the <menuchoice>
+                <guimenu>Debug</guimenu>
+                <guimenuitem>Debug configurations...</guimenuitem>
+            </menuchoice> one, which offers some additional debug-specific options). </para>
+        <para>The main tab lets you select the projects whose code will be loaded and executed.
+            There is also provision for defining one's own initialization by providing a function
+            and arguments to be called. <mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/debug_main.png" format="PNG"/>
+                </imageobject>
+            </mediaobject></para>
+        <para>The runtimes tab lets you define the runtime that will be used and the node's name and
+            cookie. The cookie is optional, defaulting to the user's default cookie. <mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/debug_runtimes.png" format="PNG"/>
+                </imageobject>
+            </mediaobject></para>
+        <para> For a debug launch config, the debug tab contains the related options. The one that
+            is erlide specific is the list of interpreted modules. The selected modules will be
+            interpreted alongside with any module (from the referenced projects) that contains an
+            enabled breakpoint. A similar list is available in the <guilabel>Interpreted
+                modules</guilabel> view, allowing to change the status of the modules while debugging.<mediaobject>
+                <imageobject>
+                    <imagedata fileref="../images/debug_debug.png" format="PNG"/>
+                </imageobject>
+            </mediaobject></para>
+        <sect2>
+            <info>
+                <title>Debugging</title>
+            </info>
+            <para>While in the debugger, you can do most of the things that are expected while
+                debugging: set breakpoints, execute code one line at the time, viewing local
+                variables and even modifying them. Until a more detailed documentation of the
+                debugger will be written, here come a couple of pictures showing a line of code
+                executed with a changed variable. Before: <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/dbg1.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject> ... and after: <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="../images/dbg2.png" format="PNG"/>
+                    </imageobject>
+                </mediaobject></para>
+        </sect2>
+    </sect1>
+    <sect1 xml:id="navigator">
+        <info>
+            <title>Erlang navigator view</title>
+        </info>
+        <para>The Erlang naviagor view displays, in a tree structure, only elements relevant to
+            Erlang project files. In this view you can do the following:</para>
+        <itemizedlist>
+            <listitem>
+                <para> Browse the elements of <filename>*.erl</filename> source files</para>
+            </listitem>
+            <listitem>
+                <para> Open files in the editor view</para>
+            </listitem>
+            <listitem>
+                <para> Open projects in a new window</para>
+            </listitem>
+            <listitem>
+                <para> Create new projects, modules, files, or folders</para>
+            </listitem>
+            <listitem>
+                <para> Manage existing files (cut, paste, delete, move or rename)</para>
+            </listitem>
+            <listitem>
+                <para> Restore deleted files from local history</para>
+            </listitem>
+            <listitem>
+                <para> Import or Export files and projects</para>
+            </listitem>
+        </itemizedlist>
+        <para> Files that you select in the Navigator view affect the information that is displayed
+            in other views. </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="../images/erlangNavigatorView.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </sect1>
+</article>
