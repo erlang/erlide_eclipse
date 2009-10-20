@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
-<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
     version="5.0" xml:id="gettingStarted">
     <info>
         <title>Getting started</title>
@@ -349,8 +349,10 @@
                     <itemizedlist>
                         <listitem>
                             <para><emphasis>Ubuntu Linux</emphasis>: run the following in Terminal:
-                                <screen><command>sudo apt-get update</command>
-<command>sudo apt-get install erlang</command></screen></para>
+                                <screen>
+                    <command>sudo apt-get update</command>
+                    <command>sudo apt-get install erlang</command>
+                                </screen></para>
                         </listitem>
                         <listitem>
                             <para><emphasis>Windows</emphasis>: run the Windows Installer for Erlang
@@ -359,8 +361,10 @@
                         <listitem>
                             <para><emphasis>Mac OS X</emphasis>: install MacPorts and then run the
                                 following in Terminal:
-                                <screen><command>sudo port selfupdate</command>
-<command>sudo port install erlang</command></screen></para>
+                                <screen>
+                    <command>sudo port selfupdate</command>
+                    <command>sudo port install erlang</command>
+                                </screen></para>
                         </listitem>
                     </itemizedlist>
                 </para>
@@ -894,4 +898,4 @@
             </note>
         </sect2>
     </sect1>
-</article>
+</chapter>

@@ -16,7 +16,8 @@
             <holder>Vlad Dumitrescu</holder>
         </copyright>
         <legalnotice>
-            <para> This documentation is adapted from the pages written by <link
+            <title>Terms and conditions regarding the use of this guide</title>
+            <para> This documentation is adapted from the pages originally written by <link
                     xlink:href="http://github.com/theory/">David E. Wheeler</link> for <link
                     xlink:href="http://wiki.github.com/bricoleurs/bricolage">bricolage</link> and is
                 covered by a <link xlink:href="http://creativecommons.org/licenses/by-nc/3.0/"
