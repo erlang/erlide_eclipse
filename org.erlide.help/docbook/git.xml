@@ -47,10 +47,9 @@
                 >GitHub model</link> for contributions: <link
                 xlink:href="http://github.com/vladdu/erlide/">fork</link> a project, clone it to
             your local computer, hack on it there, push your finished changes to your forked
-            repository, and send a "Pull Request" back upstream to the project.
-            If you're already familiar with this process, then <emphasis>congratulations</emphasis>!
-            You're done here, <link xlink:href="http://github.com/vladdu/erlide/">get
-            hacking</link>!</para>
+            repository, and send a "Pull Request" back upstream to the project. If you're already
+            familiar with this process, then <emphasis>congratulations</emphasis>! You're done here,
+                <link xlink:href="http://github.com/vladdu/erlide/">get hacking</link>!</para>
 
         <section>
             <title>Contributing to erlide</title>
@@ -125,8 +124,8 @@
                 remote copy of the repository, you <emphasis>push</emphasis> it there.</para>
             <para>Okay, lecture over, let's clone your fork of erlide. I'm assuming, of course, that
                 you have <link xlink:href="http://git-scm.org/">Git</link> installed. Just switch to
-                a directory where you want to keep your repository and do this, replacing
-                "username" with your actual GitHub username:</para>
+                a directory where you want to keep your repository and do this, replacing "username"
+                with your actual GitHub username:</para>
 
 
             <screen>
@@ -194,8 +193,8 @@
                 xlink:href="http://github.com/erliders/erlide/tree/master">master</link>. Assuming
             that you have read <link
                 xlink:href="http://wiki.github.com/vladdu/erlide_test/working-with-git">Working with
-                Git</link> and are ready to start hacking on your forked repository, let's
-            get started:</para>
+                Git</link> and are ready to start hacking on your forked repository, let's get
+            started:</para>
 
 
 
@@ -205,19 +204,19 @@
                 git pull origin
                 git pull upstream master
             </screen>
-        <para>What you've done here is to check out the master branch and to make sure
-            that you have all the latest changes from both your forked repository on GitHub and from
-            the erlide project's upstream repository. Now you're ready to fix
-            the bug. All you have to do is create a new branch and start hacking:</para>
+        <para>What you've done here is to check out the master branch and to make sure that you have
+            all the latest changes from both your forked repository on GitHub and from the erlide
+            project's upstream repository. Now you're ready to fix the bug. All you have to do is
+            create a new branch and start hacking:</para>
         <screen>
                 git checkout -b 1449
             </screen>
-        <para>This command creates a new local branch named “#1449” and checks it out.
-            I've named it as such for the bug number. And I say “local branch” because it
-            only exists in the local repository; think of it as a working branch to be used just for
-            the duration of fixing the bug. So now, go ahead and fix it! As you work, commit early
-            and commit often. You can use <code>git add</code> to add one or more files to commit
-            and then commit them:</para>
+        <para>This command creates a new local branch named “#1449” and checks it out. I've named it
+            as such for the bug number. And I say “local branch” because it only exists in the local
+            repository; think of it as a working branch to be used just for the duration of fixing
+            the bug. So now, go ahead and fix it! As you work, commit early and commit often. You
+            can use <code>git add</code> to add one or more files to commit and then commit
+            them:</para>
 
         <screen>
                 git add path/to/file.java
@@ -230,8 +229,8 @@
             </screen>
         <para>Note that you can use <link
                 xlink:href="http://github.github.com/github-flavored-markdown/">GitHub-Flavored
-                Markdown</link> in your commit messages and they'll be nicely formatted on
-            the site. Also, we strongly recommend that you write <link
+                Markdown</link> in your commit messages and they'll be nicely formatted on the site.
+            Also, we strongly recommend that you write <link
                 xlink:href="http://www.tpope.net/node/106">Git-preferred commit messages</link>, as
             they will really help you to review older commits in the future.</para>
 
@@ -242,9 +241,9 @@
                 >tutorials</link> and <link xlink:href="howtwo">howtows</link>
             <link xlink:href="http://book.git-scm.com/">out</link>
             <link xlink:href="http://www.kernel.org/pub/software/scm/git/docs/everyday.html"
-                >there</link>, so check them out for more on day-to-day use of Git. Overall,
-            you'll want to commit in lots of small commits rather than one big final
-            commit, so that you can easily go back and change things if you need to.</para>
+                >there</link>, so check them out for more on day-to-day use of Git. Overall, you'll
+            want to commit in lots of small commits rather than one big final commit, so that you
+            can easily go back and change things if you need to.</para>
 
 
 
@@ -256,24 +255,22 @@
                 git add CHANGES
                 git commit -m 'Give credit where credit is you.'
             </screen>
-        <para>When you're done, the bug is fixed, and all tests pass, make sure everything
-            is committed and then merge your changes back into master:</para>
+        <para>When you're done, the bug is fixed, and all tests pass, make sure everything is
+            committed and then merge your changes back into master:</para>
 
         <screen>
                 git checkout master
                 git merge 1449
                 git branch -d 1449
             </screen>
-        <para>Great! You've merged all the changes from your branch, and dropped the
-            branch since it's no longer needed (all of the commits from the branch were
-            played back into master, just as if you'd committed them there). Sure, for a
-            simple bug fix you probably could have stayed in master. But with Git it's
-            just as easy to create a working branch for a single bug and work on it there, and only
-            merge it back into master when you're done, so that you keep things well
-            compartmentalized.</para>
+        <para>Great! You've merged all the changes from your branch, and dropped the branch since
+            it's no longer needed (all of the commits from the branch were played back into master,
+            just as if you'd committed them there). Sure, for a simple bug fix you probably could
+            have stayed in master. But with Git it's just as easy to create a working branch for a
+            single bug and work on it there, and only merge it back into master when you're done, so
+            that you keep things well compartmentalized.</para>
         <para>So far, all of your changes have been made to your local clone of your repository. Now
-            it's time to push them upstream to your fork on GitHub. Doing so is
-            easy:</para>
+            it's time to push them upstream to your fork on GitHub. Doing so is easy:</para>
         <screen>
                 git push origin master
             </screen>
@@ -282,8 +279,8 @@
             repository. Chances are good that a project administrator will see your bug fix merges
             sooner or later and simply pull them in.</para>
 
-        <para>But if you'd like to alert them to the fix so that they pull it in sooner
-            rather than later, hit the home page for your fork of the project and click the <inlinemediaobject>
+        <para>But if you'd like to alert them to the fix so that they pull it in sooner rather than
+            later, hit the home page for your fork of the project and click the <inlinemediaobject>
                 <imageobject>
                     <imagedata
                         fileref="http://github.com/images/modules/repos/pull_request_button.png"/>
@@ -292,10 +289,9 @@
             up a message to the project administrators, perhaps something like:</para>
         <blockquote>
             <para>Fellow Erliders,</para>
-            <para>I've fixed Bug #1449 in my fork. As you know, this is a particularly
-                insidious bug that has effected a lot of our user base. I think it'd be
-                worthwhile to pull it into the project repository in order to get it into the next
-                release of erlide.</para>
+            <para>I've fixed Bug #1449 in my fork. As you know, this is a particularly insidious bug
+                that has effected a lot of our user base. I think it'd be worthwhile to pull it into
+                the project repository in order to get it into the next release of erlide.</para>
             <para>Thanks!</para>
         </blockquote>
         <para>Be sure that the checkbox next to “erliders” is checked and then hit the “Send Pull
@@ -303,22 +299,21 @@
     </section>
     <section xml:id="branches">
         <title xml:id="branches.title">Working with Branches</title>
-        <para>So you've read "<link linkend="working" endterm="working.title"
-            />" and have your fork of the erlide repository. You're way ahead of
-            things because you've also read <link linkend="bugfix" endterm="bugfix.title"
-            /> and perhaps contributed a bug fix or two. Well, now you've reached the
-            point where you need to fix a bug in a maintenance branch. This document is for
-            you.</para>
+        <para>So you've read "<link linkend="working" endterm="working.title"/>" and have your fork
+            of the erlide repository. You're way ahead of things because you've also read <link
+                linkend="bugfix" endterm="bugfix.title"/> and perhaps contributed a bug fix or two.
+            Well, now you've reached the point where you need to fix a bug in a maintenance branch.
+            This document is for you.</para>
 
         <para>In erlide, a "maintenance branch" is a Git branch that is used to maintain a major
             release of erlide, as well as older releases. As of this writing, the maintenance branch
             is <link xlink:href="http://github.com/erliders/erlide/tree/rev_0_6">rev_0_6</link>,
             where we maintain the code for erlide 0.6.x. There are also branches for older
             unmaintained branches. You may ignore those.</para>
-        <para>It's important to fix bugs in the current maintenance branch because a lot
-            of people are using it, and we routinely issue maintenance releases. So let's
-            say that you decide that you'd like to fix some bugs in the rev_0_6 branch.
-            Here's how you do that with Git.</para>
+        <para>It's important to fix bugs in the current maintenance branch because a lot of people
+            are using it, and we routinely issue maintenance releases. So let's say that you decide
+            that you'd like to fix some bugs in the rev_0_6 branch. Here's how you do that with
+            Git.</para>
         <para>First, change directories into your checkout of your fork of the erlide repository,
             and create a local branch to track the branch maintained upstream:</para>
         <screen>
@@ -334,54 +329,50 @@
 
         <para>You only need to create the local tracking branch once in your local repository. Once
             that's done, you can always switch to it in the future using <code>git
-                checkout</code>:</para>
+            checkout</code>:</para>
         <screen>
                 git checkout rev_0_6
                 git pull origin
             </screen>
-        <para>Now you're ready to go ahead and fix the bugs, push them to your fork
-                (<code>git push</code> will push to the tracked fork), send pull requests, and all
-            the rest, as described in <link linkend="bugfix" endterm="bugfix.title"/>. When
-            you're done, you can always switch back to the master branch simply by
-            checking it out:</para>
+        <para>Now you're ready to go ahead and fix the bugs, push them to your fork (<code>git
+                push</code> will push to the tracked fork), send pull requests, and all the rest, as
+            described in <link linkend="bugfix" endterm="bugfix.title"/>. When you're done, you can
+            always switch back to the master branch simply by checking it out:</para>
 
         <screen>
                 git checkout master
             </screen>
-        <para>Yep, that's really all there is to working with existing branches. Have
-            fun!</para>
+        <para>Yep, that's really all there is to working with existing branches. Have fun!</para>
     </section>
     <section xml:id="projectbranch">
         <title xml:id="projectbranch.title">Starting a Project Branch</title>
-        <para>So you've been <link linkend="working">hacking on erlide</link> for a while,
-                <link linkend="bugfix">fixed a few bugs</link> in the master branch
+        <para>So you've been <link linkend="working">hacking on erlide</link> for a while, <link
+                linkend="bugfix">fixed a few bugs</link> in the master branch
                 <emphasis>and</emphasis>
-            <link linkend="branches">in a maintenance branch</link>, and now you're ready
-            to take on a big project. Perhaps you've been accepted in the <link
+            <link linkend="branches">in a maintenance branch</link>, and now you're ready to take on
+            a big project. Perhaps you've been accepted in the <link
                 xlink:href="http://code.google.com/soc/">Google Summer of Code</link>, or have a
-            dire need to add support for a new fancy feature. Yep, you're ready for a
-            major erlide undertaking, and therefore your own branch.</para>
+            dire need to add support for a new fancy feature. Yep, you're ready for a major erlide
+            undertaking, and therefore your own branch.</para>
 
-        <para>Erlide development branches always start with the string "dev_".
-            So if you were going to implement <link xlink:href="http://github.com/klacke/yaws/"
-                >yaws</link> support, you might want to create a branch called
-            "dev_yaws", like so:</para>
+        <para>Erlide development branches always start with the string "dev_". So if you were going
+            to implement <link xlink:href="http://github.com/klacke/yaws/">yaws</link> support, you
+            might want to create a branch called "dev_yaws", like so:</para>
 
         <screen>
             git checkout -b dev_yaws master
             git push origin dev_yaws
         </screen>
 
-        <para>The call to `git checkout -b` creates the new branch from the
-            "master" branch. The call to `git push`, meanwhile, pushes the new
-            branch to your forked copy of the erlide repository on GitHub. Now you're set
-            to work on your new branch like you would any other branch. You can do whatever you like
-            in this branch, though we do recommend that you commit early and often and use the <link
-                xlink:href="message">Git-standard message format</link>. Push to your fork
-            regularly, too.</para>
-        <para>Periodically, you'll want to pull changes down from the project repository
-            upstream and merge them into your branch. Doing so is a cinch with Git. First, make sure
-            that your "master" branch is up-to-date:</para>
+        <para>The call to `git checkout -b` creates the new branch from the "master" branch. The
+            call to `git push`, meanwhile, pushes the new branch to your forked copy of the erlide
+            repository on GitHub. Now you're set to work on your new branch like you would any other
+            branch. You can do whatever you like in this branch, though we do recommend that you
+            commit early and often and use the <link xlink:href="message">Git-standard message
+                format</link>. Push to your fork regularly, too.</para>
+        <para>Periodically, you'll want to pull changes down from the project repository upstream
+            and merge them into your branch. Doing so is a cinch with Git. First, make sure that
+            your "master" branch is up-to-date:</para>
         <screen>
             git checkout master
             git pull
@@ -394,13 +385,12 @@
             git checkout dev_yaws
             git pull master
         </screen>
-        <para>The beautiful thing about Git merges is that they are self-tracking, so you
-            don't have to remember where you left off the last time you merged, as you
-            would with CVS or Subversion. Furthermore, if there are no conflicts, Git will simply
-            replay all of the merges into your branch. This means that you get the complete commit
-            record from master. If there are conflicts, Git will let you know. Just go and resolve
-            them by modifying the files containing the conflicts and then <code>git commit</code>
-            when you're done.</para>
+        <para>The beautiful thing about Git merges is that they are self-tracking, so you don't have
+            to remember where you left off the last time you merged, as you would with CVS or
+            Subversion. Furthermore, if there are no conflicts, Git will simply replay all of the
+            merges into your branch. This means that you get the complete commit record from master.
+            If there are conflicts, Git will let you know. Just go and resolve them by modifying the
+            files containing the conflicts and then <code>git commit</code> when you're done.</para>
         <para>Once you have finished developing your new feature (including tests, right?), make
             sure that you get it all committed and up-to-date, and then merge your changes into the
             master branch:</para>
@@ -414,8 +404,8 @@
         </screen>
         <para>This time, <code>git pull</code> will play back all of your commits in the dev_yaws
             branch as if you had written them directly into master in the first place (this is known
-            as a "Fast-Forward" merge). This gives you the luxury to drop the
-            dev_yaws branch, as it's now redundant:</para>
+            as a "Fast-Forward" merge). This gives you the luxury to drop the dev_yaws branch, as
+            it's now redundant:</para>
         <screen>
             git branch -d dev_yaws
             git branch -rd dev_yaws
@@ -425,8 +415,7 @@
             branch; the second call deletes the remote branch on GitHub. The call to <code>git
                 push</code> makes it so.</para>
 
-        <para>And now you're ready to hit the home page for your fork of the project and
-            click the <inlinemediaobject>
+        <para>And now you're ready to hit the home page for your fork of the project and click the <inlinemediaobject>
                 <imageobject>
                     <imagedata
                         fileref="http://github.com/images/modules/repos/pull_request_button.png"/>
@@ -450,11 +439,11 @@
                 >git-merge</link> for details). If there are no conflicts, the merge is
             automatically committed with a useful log message. If there <emphasis>are</emphasis>
             conflicts, well you simply resolve them and then commit the merge. Either way, you never
-            have to remember when you last merged, because Git remembers for you. You
-            don't even have to tag a merge anymore.</para>
-        <para>That's not to say that merges will always be simple or easy. It's
-            worthwhile to <link xlink:href="http://lwn.net/Articles/210045/">familiarize
-                yourself</link> with the Git way of branching and merging.</para>
+            have to remember when you last merged, because Git remembers for you. You don't even
+            have to tag a merge anymore.</para>
+        <para>That's not to say that merges will always be simple or easy. It's worthwhile to <link
+                xlink:href="http://lwn.net/Articles/210045/">familiarize yourself</link> with the
+            Git way of branching and merging.</para>
 
         <section>
             <title>Example Merge</title>
@@ -469,22 +458,23 @@
                     repository</link>.) Here's what you do:</para>
 
             <para>First, make sure that both branches are up-to-date:</para>
-            <screen>            cd erlide
+            <screen>
+            cd erlide
             git checkout rev_0_6
             git pull origin rev_0_6
             git pull upstream rev_0_6
             git push origin rev_0_6
             git checkout master
             git pull origin master
-            git pull upstream master            </screen>
+            git pull upstream master            
+            </screen>
 
             <para>We issue to calls to <code>git pull</code> for each branch in order to ensure that
-                we have all of the latest commits both from our "origin"
-                repository on GitHub, as well as the erlide project's canonical repository
-                up-stream (see "<link linkend="working" endterm="working.title"
-                />" for how to set up the upstream link). We also issue a <code>git
-                    push</code> to make sure that all of our local changes have been pushed back up
-                to GitHub. Now we're ready to merge!</para>
+                we have all of the latest commits both from our "origin" repository on GitHub, as
+                well as the erlide project's canonical repository up-stream (see "<link
+                    linkend="working" endterm="working.title"/>" for how to set up the upstream
+                link). We also issue a <code>git push</code> to make sure that all of our local
+                changes have been pushed back up to GitHub. Now we're ready to merge!</para>
 
             <screen>
             git merge rev_0_6
@@ -496,9 +486,9 @@
             Auto-merging path/to/a/file.java
             Auto-merging some/erlang.erl
         </screen>
-            <para>Once it's done, the merge will be committed. <emphasis>Boom!</emphasis>
-                You're done. Nothing to do but push the merge up to your fork on GitHub.
-                But if there were conflicts, it might look more like this:</para>
+            <para>Once it's done, the merge will be committed. <emphasis>Boom!</emphasis> You're
+                done. Nothing to do but push the merge up to your fork on GitHub. But if there were
+                conflicts, it might look more like this:</para>
             <screen>
             Auto-merging README
             CONFLICT (content): Merge conflict in README
@@ -506,17 +496,17 @@
             Auto-merging some/erlang.erl
             Automatic merge failed; fix conflicts and then commit the result.
         </screen>
-            <para>So you'll have to resolve the conflicts. This basically means that you
-                edit the files with conflicts to resolve them, then use <code>git add</code> to
-                stage them to be committed. Once you're done, then you commit the merge
-                with <code>git commit</code>. Git will know that it's a merge and generate
-                the appropriate commit message.</para>
-            <para>That's not to say that merging is always straight-forward. Here are some
-                tips to help work through the conflicts:</para>
+            <para>So you'll have to resolve the conflicts. This basically means that you edit the
+                files with conflicts to resolve them, then use <code>git add</code> to stage them to
+                be committed. Once you're done, then you commit the merge with <code>git
+                    commit</code>. Git will know that it's a merge and generate the appropriate
+                commit message.</para>
+            <para>That's not to say that merging is always straight-forward. Here are some tips to
+                help work through the conflicts:</para>
             <itemizedlist>
                 <listitem>
-                    <para>If you're familiar with graphical resolution tools, use
-                            <code>git mergetool</code> to launch one.</para>
+                    <para>If you're familiar with graphical resolution tools, use <code>git
+                            mergetool</code> to launch one.</para>
                 </listitem>
 
                 <listitem>
@@ -559,12 +549,12 @@
             #
             #	unmerged:   README
         </screen>
-            <para>Once the "Changed but not updated" section is empty,
-                you're ready to commit the merge! Run <code>git commit</code>, accept the
-                default commit message, and you're done.</para>
+            <para>Once the "Changed but not updated" section is empty, you're ready to commit the
+                merge! Run <code>git commit</code>, accept the default commit message, and you're
+                done.</para>
 
-            <para>Well, almost. Whether or not you had commits, you'll want to push the
-                merge up to GitHub:</para>
+            <para>Well, almost. Whether or not you had commits, you'll want to push the merge up to
+                GitHub:</para>
             <screen>
             git push origin master
         </screen>
@@ -587,8 +577,8 @@
                 <listitem>
                     <para>If you don't have commit access to the <link
                             xlink:href="http://github.com/erliders/erlide/tree/master">canonical
-                            repository</link>, you'll need to do the merge in a fork, push
-                        it up to GitHub, and then submit a <link
+                            repository</link>, you'll need to do the merge in a fork, push it up to
+                        GitHub, and then submit a <link
                             xlink:href="http://github.com/guides/pull-requests">pull request</link>,
                         as usual. It will then be up to a core developer to pull in the merge from
                         your fork.</para>
@@ -611,8 +601,7 @@
 
             <para>This allows you to pull in all changes from the forked repository, including the
                 merge. If that is the only difference between the fork and the canonical repository,
-                this will work well. If it's not the only difference, you might have to
-                    <link
+                this will work well. If it's not the only difference, you might have to <link
                     xlink:href="http://www.kernel.org/pub/software/scm/git/docs/git-cherry-pick.html"
                     >cherry-pick</link> commits to pull in. YMMV.</para>
         </section>
@@ -620,10 +609,10 @@
     </section>
     <section xml:id="email">
         <title xml:id="email.title">Contributing via Email</title>
-        <para>If for some reason you're not keen on <link
-                xlink:href="https://github.com/signup/">getting a GitHub account</link> and <link
-                linkend="bugfix">forking Bricolage</link> in order to contribute, you can still
-            contribute to erlide the old-fashioned way. Here's what to do:</para>
+        <para>If for some reason you're not keen on <link xlink:href="https://github.com/signup/"
+                >getting a GitHub account</link> and <link linkend="bugfix">forking Bricolage</link>
+            in order to contribute, you can still contribute to erlide the old-fashioned way. Here's
+            what to do:</para>
 
         <para>First, clone the public copy of the <link
                 xlink:href="http://github.com/erliders/erlide/tree/master">core repository</link>
@@ -633,8 +622,8 @@
             git clone git://github.com/erliders/erlide.git
         </screen>
         <para>Now go ahead and make your changes as described in <link linkend="bugfix"
-                endterm="bugfix.title"/>. Once you've got things where you want them,
-            you'll need to generate a patch to send to the <link
+                endterm="bugfix.title"/>. Once you've got things where you want them, you'll need to
+            generate a patch to send to the <link
                 xlink:href="https://sourceforge.net/mailarchive/forum.php?forum_name=erlide-devel"
                 >developers mail list</link> (subscribe <link
                 xlink:href="erlide-devel@lists.sourceforge.net">here</link>). Git conveniently
@@ -669,10 +658,10 @@
             <para>I borrowed this code from the <link xlink:href="http://github.com/bkerley/zshkit/"
                     >zshkit project</link>. Just drop it into your <code>~/.zshrc</code> file. It
                 adds the current branch name to the <code>zsh</code> prompt, so that I know at a
-                glance what branch I'm on when I'm in a directory with a branch.
-                It also changes the color of the branch name from cyan to magenta depending on
-                whether or not there are any local changes. Very handy if you're used to
-                working in a directory named for a Subversion branch. Check it out <link
+                glance what branch I'm on when I'm in a directory with a branch. It also changes the
+                color of the branch name from cyan to magenta depending on whether or not there are
+                any local changes. Very handy if you're used to working in a directory named for a
+                Subversion branch. Check it out <link
                     xlink:href="http://gist.github.com/raw/102291/c929c76e187884b5e075f6184182877170799581/gistfile1.sh"
                     >here.</link></para>
 
