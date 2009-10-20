@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="5.0">
+    <info>
+        <title>Hacking erlide with Git</title>
+        <author>
+            <personname>
+                <firstname>Vlad</firstname>
+                <surname>Dumitrescu</surname>
+            </personname>
+            <email>vladdu55@gmail.com</email>
+        </author>
+        <copyright>
+            <year>2009</year>
+            <holder>Vlad Dumitrescu</holder>
+        </copyright>
+        <legalnotice>
+            <para> This documentation is adapted from the pages written by <link
+                    xlink:href="http://github.com/theory/">David E. Wheeler</link> for <link
+                    xlink:href="http://wiki.github.com/bricoleurs/bricolage">bricolage</link> and is
+                covered by a <link xlink:href="http://creativecommons.org/licenses/by-nc/3.0/"
+                    >Creative Commons</link> license. Thanks a lot!</para>
+        </legalnotice>
+    </info>
+    <section xml:id="working">
+        <title xml:id="working.title">Working with Git</title>
+
+        <note>
+            <para>We haven't decided yet if we are going to fully migrate to Git, but this
+                information might be useful even so.</para>
+        </note>
+        <note>
+            <para>Note also that this repository (vladdu/erlide_test) is <emphasis>NOT</emphasis>
+                the one that will be the reference one!</para>
+
+        </note>
+        <para>Welcome to the erlide Git repository. We hope you enjoy your stay. In the bad old
+            days, the erlide repository was hosted by <link
+                xlink:href="http://erlide.cvs.sourceforge.net/viewvc/erlide/erlide">SourceForge
+                CVS</link>. Later we migrated to <link
+                xlink:href="http://erlide.svn.sourceforge.net/svnroot/erlide">Subversion</link>.
+            Today, we're on GitHub, with all of the history from the SVN repository intact and ready
+            for you to get hacking. So what are you waiting for? <link
+                xlink:href="http://github.com/vladdu/erlide/">Fork</link> and push!</para>
+
+
+        <para>The erlide project follows the standard <link
+                xlink:href="http://github.com/guides/fork-a-project-and-submit-your-modifications"
+                >GitHub model</link> for contributions: <link
+                xlink:href="http://github.com/vladdu/erlide/">fork</link> a project, clone it to
+            your local computer, hack on it there, push your finished changes to your forked
+            repository, and send a &#8220;Pull Request&#8221; back upstream to the project.
+            If you're already familiar with this process, then <emphasis>congratulations</emphasis>!
+            You're done here, <link xlink:href="http://github.com/vladdu/erlide/">get
+            hacking</link>!</para>
+
+        <section>
+            <title>Contributing to erlide</title>
+            <para>Still with me? Okay then, let's get you started hacking on erlide. The <link
+                    xlink:href="http://github.com/guides/fork-a-project-and-submit-your-modifications"
+                    >GitHub guide</link> for the standard fork/clone/push/pull request model of
+                contributing is a great place to start, but we'll cover all the basics here, too, as
+                well as various contribution scenarios (fixing bugs, adding features, updating
+                documentation, etc.).</para>
+        </section>
+        <section>
+            <title>Getting Started</title>
+            <para>First, you'll need a GitHub account. If you don't have one, go and <link
+                    xlink:href="https://github.com/signup/">sign up now</link>. I'll wait here while
+                you do that...</para>
+
+            <para>Okay, done? Great, now you need to <link
+                    xlink:href="http://github.com/guides/providing-your-ssh-key">provide your SSH
+                    key</link>. Go on, I'll wait again, no big deal...</para>
+            <para>Back? Excellent! One more thing to do: you need to <link
+                    xlink:href="http://git-scm.com/download">download and install</link> Git and
+                then configure it. At a minimum, you'll want to set up your name and email address.
+                Git doesn't rely on usernames like Subversion or CVS; you have to give it the whole
+                cigar. Here's how:</para>
+
+
+            <screen>
+                git config --global user.name "Your Name Comes Here"
+                git config --global user.email you@yourdomain.example.com
+            </screen>
+            <para>Just for the hell of it, you might want to turn on pretty colors, too, so that
+                diffs, statuses, and branches are colored in your terminal:</para>
+            <screen>
+                git config --global color.diff auto
+                git config --global color.status auto
+                git config --global color.branch auto
+            </screen>
+            <para>I recommend to set the handling of line endings, because some of us are working on
+                Windows and mixing line endings will create a mess:</para>
+            <screen>
+                git config --global core.autocrlf input
+            </screen>
+            <para>If you're familiar with Subversion, I highly recommend that you check out the
+                    <link xlink:href="http://git.or.cz/course/svn.html">Git-SVN Crash Course</link>
+                for more details like this.</para>
+
+            <para>Okay, now you're ready to grab the erlide repository. Hit the <link
+                    xlink:href="http://github.com/erliders/erlide/tree">erlide repository</link>
+                page and click the <inlinemediaobject>
+                    <imageobject>
+                        <imagedata fileref="http://github.com/images/modules/repos/fork_button.png"
+                        />
+                    </imageobject>
+                </inlinemediaobject> button. This will create a complete copy of the erlide
+                repository within your GitHub account. Yeah, it's kind of like the old <link
+                    xlink:href="http://en.wikipedia.org/wiki/Fork_(software_development)">scary
+                    idea</link> of forking, but GitHub has made it an okay thing.
+                    <emphasis>Really!</emphasis> Just trust me, okay? Okay, great.</para>
+
+            <para>Now you've got your own fork. This is your own personal copy of the erlide source
+                tree, and you can do anything you want with it. Sure, you could run with it in an
+                entirely different direction, but the community would frown on that and baby kittens
+                would cry. You're much more likely to fix bugs, add features, and maintain hacks
+                that only your personal installation requires. It's all good.</para>
+
+            <para>So let's get started. Git is a distributed version control system. Whereas in
+                Subversion there was a Canonical repository living on a server somewhere, and you
+                sent all your commits there, with Git, you <emphasis>clone</emphasis> a remote
+                repository to your local computer, and work exclusively with your cloned copy. When
+                you commit, you commit right on your hard disk (this is great for working on
+                flights, BTW). When you've reached a spot where you're ready to send it to your
+                remote copy of the repository, you <emphasis>push</emphasis> it there.</para>
+            <para>Okay, lecture over, let's clone your fork of erlide. I'm assuming, of course, that
+                you have <link xlink:href="http://git-scm.org/">Git</link> installed. Just switch to
+                a directory where you want to keep your repository and do this, replacing
+                &#8220;username&#8221; with your actual GitHub username:</para>
+
+
+            <screen>
+                git clone git@github.com:username/erlide.git
+            </screen>
+            <para>Congratulations! You now have your very own erlide repository. Now you'll want to
+                make sure that you can always pull down changes from the upstream canonical
+                repository. To do so, do this:</para>
+            <screen>
+                cd erlide
+                git remote add upstream git://github.com/erliders/erlide.git 
+                git fetch upstream
+            </screen>
+            <para>Anytime you want to merge in the latest changes from the upstream repository, just
+                issue that <code>git fetch upstream</code> command and you'll be good to go.</para>
+        </section>
+        <section>
+            <title>Where to Go From Here</title>
+            <para>I'll be writing some other entries for how to perform some common tasks, such as
+                fixing a bug, adding a feature, working in a maintenance branch, merging between
+                branches, and undertaking a major project—and how to send your contributions
+                upstream. As I write each one, I'll link to it from here.</para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        <link linkend="bugfix" endterm="bugfix.title"/>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="branches" endterm="branches.title"/>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="projectbranch" endterm="projectbranch.title"/>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="merging" endterm="merging.title"/>
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>
+                        <link linkend="email" endterm="email.title"/>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="hacks" endterm="hacks.title"/>
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </section>
+    </section>
+
+    <section xml:id="bugfix">
+        <title xml:id="bugfix.title">Contributing a Bug Fix</title>
+        <para/>
+    </section>
+    <section xml:id="branches">
+        <title xml:id="branches.title">Working with Branches</title>
+        <para/>
+    </section>
+    <section xml:id="projectbranch">
+        <title xml:id="projectbranch.title">Starting a Project Branch</title>
+        <para/>
+    </section>
+    <section xml:id="merging">
+        <title xml:id="merging.title">Merging with Git</title>
+        <para/>
+    </section>
+    <section xml:id="email">
+        <title xml:id="email.title">Contributing via Email</title>
+        <para/>
+    </section>
+    <section xml:id="hacks">
+        <title xml:id="hacks.title">Git Hacks</title>
+        <para/>
+    </section>
+
+</article>
