@@ -3,7 +3,13 @@
  */
 package org.erlide.core.builder.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -20,6 +26,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
@@ -284,49 +291,100 @@ public final class MarkerHelper {
 					ErlLogger.debug("Creating task markers "
 							+ resource.getName());
 				}
-				final IErlModule m = p.getModule(resource.getName());
-				if (m == null) {
-					return;
-				}
-				final boolean hasScanner = m.hasScanner();
-				final IErlScanner s = m.getScanner();
-				if (s == null) {
-					return;
-				}
-				final Collection<IErlComment> cl = s.getComments();
-				for (final IErlComment c : cl) {
-					final String name = c.getName();
-					mkMarker(resource, c, name, "TODO", IMarker.PRIORITY_NORMAL);
-					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
-					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
-				}
-				if (!hasScanner) {
-					s.dispose(); // TODO JC this is just a kludge!
-				}
+				long startTime;
+				long endTime;
+				long time;
 
-				// TODO we don't want all of the scanner data to linger around
-				// but disposing might delete a scanner that is used...
-				// TODO we need to reference count on the erlang side!
-				// s.dispose();
+				startTime = System.currentTimeMillis();
+				getMarkersFor(resource, p);
+				endTime = System.currentTimeMillis();
+				time = (endTime - startTime);
+				System.out.println("MARKER SCAN time = " + time);
+
+				startTime = System.currentTimeMillis();
+				getNoScanMarkersFor(resource, p);
+				endTime = System.currentTimeMillis();
+				time = (endTime - startTime);
+				System.out.println("MARKER NOSCAN time = " + time);
+
 			} catch (final ErlModelException e) {
 			}
 		}
 
 	}
 
-	private static void mkMarker(final IResource resource, final IErlComment c,
-			final String name, final String tag, final int prio) {
-		if (name.contains(tag)) {
-			final int ix = name.indexOf(tag);
-			final String msg = name.substring(ix);
+	private static void getMarkersFor(final IResource resource,
+			final IErlProject p) throws ErlModelException {
+		final IErlModule m = p.getModule(resource.getName());
+		if (m == null) {
+			return;
+		}
+		boolean hadScanner = m.hasScanner();
+		final IErlScanner s = m.getScanner();
+		if (s == null) {
+			return;
+		}
+		final Collection<IErlComment> cl = s.getComments();
+		for (final IErlComment c : cl) {
+			final String text = c.getName();
+			int line = c.getLineStart();
+			mkMarker(resource, line, text, "TODO", IMarker.PRIORITY_NORMAL);
+			mkMarker(resource, line, text, "XXX", IMarker.PRIORITY_NORMAL);
+			mkMarker(resource, line, text, "FIXME", IMarker.PRIORITY_HIGH);
+		}
+		if (!hadScanner) {
+			m.disposeScanner(); // TODO JC this is a hack
+		}
+	}
+
+	private static void getNoScanMarkersFor(final IResource resource,
+			final IErlProject p) throws ErlModelException {
+		if (!(resource instanceof IFile)) {
+			return;
+		}
+		IFile file = (IFile) resource;
+		InputStream input;
+		try {
+			input = file.getContents();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					input));
+			String line = reader.readLine();
+			final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
+			int numline = 0;
+			while (line != null) {
+				numline++;
+				if (line.matches("^[^%]*%+[ \t]*(TODO|XXX|FIXME).*")) {
+					cl.add(new Tuple<String, Integer>(line, numline));
+				}
+				line = reader.readLine();
+			}
+
+			for (final Tuple<String, Integer> c : cl) {
+				mkMarker(resource, c.o2, c.o1, "TODO", IMarker.PRIORITY_NORMAL);
+				mkMarker(resource, c.o2, c.o1, "XXX", IMarker.PRIORITY_NORMAL);
+				mkMarker(resource, c.o2, c.o1, "FIXME", IMarker.PRIORITY_HIGH);
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static void mkMarker(final IResource resource, final int line,
+			final String text, final String tag, final int prio) {
+		if (text.contains(tag)) {
+			final int ix = text.indexOf(tag);
+			final String msg = text.substring(ix);
 			int dl = 0;
 			for (int i = 0; i < ix; i++) {
-				if (name.charAt(i) == '\n') {
+				if (text.charAt(i) == '\n') {
 					dl++;
 				}
 			}
-			addTaskMarker(resource, resource, msg, c.getLineStart() + 1 + dl,
-					prio);
+			addTaskMarker(resource, resource, msg, line + 1 + dl, prio);
 		}
 	}
 
