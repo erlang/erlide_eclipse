@@ -351,6 +351,10 @@ public class ErlModule extends Openable implements IErlModule {
 		return scanner;
 	}
 
+	public boolean hasScanner() {
+		return scanner != null;
+	}
+
 	private IErlScanner getNewScanner() {
 		final String path = getFilePath();
 		final String erlidePath = getErlidePath();

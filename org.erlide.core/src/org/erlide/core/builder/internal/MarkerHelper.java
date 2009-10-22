@@ -128,7 +128,7 @@ public final class MarkerHelper {
 				}
 
 				addMarker(res, resource, msg, line, sev, "");
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				ErlLogger.warn(e);
 				ErlLogger.warn("got: %s", odata);
 			}
@@ -162,7 +162,8 @@ public final class MarkerHelper {
 		return getMarkersFor(resource, TASK_MARKER);
 	}
 
-	private static IMarker[] getMarkersFor(final IResource resource, String type) {
+	private static IMarker[] getMarkersFor(final IResource resource,
+			final String type) {
 		try {
 			if (resource != null && resource.exists()) {
 				return resource.findMarkers(type, false,
@@ -182,7 +183,8 @@ public final class MarkerHelper {
 		removeMarkerFor(resource, TASK_MARKER);
 	}
 
-	private static void removeMarkerFor(final IResource resource, String type) {
+	private static void removeMarkerFor(final IResource resource,
+			final String type) {
 		try {
 			if (resource != null && resource.exists()) {
 				resource.deleteMarkers(type, false, IResource.DEPTH_INFINITE);
@@ -286,6 +288,7 @@ public final class MarkerHelper {
 				if (m == null) {
 					return;
 				}
+				final boolean hasScanner = m.hasScanner();
 				final IErlScanner s = m.getScanner();
 				if (s == null) {
 					return;
@@ -297,6 +300,10 @@ public final class MarkerHelper {
 					mkMarker(resource, c, name, "XXX", IMarker.PRIORITY_NORMAL);
 					mkMarker(resource, c, name, "FIXME", IMarker.PRIORITY_HIGH);
 				}
+				if (!hasScanner) {
+					s.dispose(); // TODO JC this is just a kludge!
+				}
+
 				// TODO we don't want all of the scanner data to linger around
 				// but disposing might delete a scanner that is used...
 				// TODO we need to reference count on the erlang side!
