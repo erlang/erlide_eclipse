@@ -291,28 +291,15 @@ public final class MarkerHelper {
 					ErlLogger.debug("Creating task markers "
 							+ resource.getName());
 				}
-				long startTime;
-				long endTime;
-				long time;
-
-				startTime = System.currentTimeMillis();
-				getMarkersFor(resource, p);
-				endTime = System.currentTimeMillis();
-				time = (endTime - startTime);
-				System.out.println("MARKER SCAN time = " + time);
-
-				startTime = System.currentTimeMillis();
+				//getMarkersFor(resource, p);
 				getNoScanMarkersFor(resource, p);
-				endTime = System.currentTimeMillis();
-				time = (endTime - startTime);
-				System.out.println("MARKER NOSCAN time = " + time);
-
 			} catch (final ErlModelException e) {
 			}
 		}
 
 	}
 
+	@SuppressWarnings("unused")
 	private static void getMarkersFor(final IResource resource,
 			final IErlProject p) throws ErlModelException {
 		final IErlModule m = p.getModule(resource.getName());
@@ -352,10 +339,10 @@ public final class MarkerHelper {
 			final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
 			int numline = 0;
 			while (line != null) {
-				numline++;
 				if (line.matches("^[^%]*%+[ \t]*(TODO|XXX|FIXME).*")) {
 					cl.add(new Tuple<String, Integer>(line, numline));
 				}
+				numline++;
 				line = reader.readLine();
 			}
 
