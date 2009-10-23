@@ -69,9 +69,11 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		if (token == null) {
 			return null;
 		}
-		final String tokenKind = token.getKind();
-		if (!tokenKind.equals("atom") && !tokenKind.equals("string")
-				&& !tokenKind.equals("macro") && !tokenKind.equals("var")) {
+		final int tokenKind = token.getKind();
+		if (tokenKind != ErlToken.KIND_ATOM
+				&& tokenKind != ErlToken.KIND_STRING
+				&& tokenKind != ErlToken.KIND_MACRO
+				&& tokenKind != ErlToken.KIND_VAR) {
 			return null;
 		}
 		try {

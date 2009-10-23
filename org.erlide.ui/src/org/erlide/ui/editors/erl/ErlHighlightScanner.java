@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -75,18 +74,19 @@ public class ErlHighlightScanner implements ITokenScanner,
 	 * @param fScanner
 	 */
 	public ErlHighlightScanner(final IColorManager colorManager,
-			final ISourceViewer sourceViewer, boolean wholeLines) {
+			final ISourceViewer sourceViewer, final boolean wholeLines) {
 		this(colorManager, sourceViewer, 0, wholeLines, null);
 	}
 
 	public ErlHighlightScanner(final IColorManager colorManager,
-			final ISourceViewer sourceViewer, boolean wholeLines, RGB back) {
+			final ISourceViewer sourceViewer, final boolean wholeLines,
+			final RGB back) {
 		this(colorManager, sourceViewer, 0, wholeLines, back);
 	}
 
 	protected ErlHighlightScanner(final IColorManager colorManager,
-			final ISourceViewer sourceViewer, final int x, boolean wholeLines,
-			RGB back) {
+			final ISourceViewer sourceViewer, final int x,
+			final boolean wholeLines, final RGB back) {
 		fColorManager = colorManager;
 		fSourceViewer = sourceViewer;
 		this.wholeLines = wholeLines;
@@ -119,40 +119,40 @@ public class ErlHighlightScanner implements ITokenScanner,
 				data.getStyle());
 	}
 
-	private static final List<String> RESERVED = Arrays.asList(new String[] {
-			"after", "begin", "case", "try", "cond", "catch", "andalso",
-			"orelse", "end", "fun", "if", "let", "of", "query", "receive",
-			"when", "bnot", "not", "div", "rem", "band", "and", "bor", "bxor",
-			"bsl", "bsr", "or", "xor", "spec", });
+	// private static final List<String> RESERVED = Arrays.asList(new String[] {
+	// "after", "begin", "case", "try", "cond", "catch", "andalso",
+	// "orelse", "end", "fun", "if", "let", "of", "query", "receive",
+	// "when", "bnot", "not", "div", "rem", "band", "and", "bor", "bxor",
+	// "bsl", "bsr", "or", "xor", "spec", });
 
 	public IToken convert(final ErlToken tk) {
 		if (tk == ErlToken.EOF) {
 			return Token.EOF;
 		}
 
-		final String kind = tk.getKind();
-		if (kind.equals("string")) {
+		switch (tk.getKind()) {
+		case ErlToken.KIND_STRING:
 			return t_string;
-		} else if (kind.equals("atom")) {
+		case ErlToken.KIND_ATOM:
 			return t_atom;
-		} else if (kind.equals("var")) {
+		case ErlToken.KIND_VAR:
 			return t_var;
-		} else if (kind.equals("char")) {
+		case ErlToken.KIND_CHAR:
 			return t_char;
-		} else if (kind.equals("macro")) {
+		case ErlToken.KIND_MACRO:
 			return t_macro;
-		} else if (kind.equals("->")) {
+		case ErlToken.KIND_ARROW:
 			return t_arrow;
-		} else if (kind.equals("integer")) {
+		case ErlToken.KIND_INTEGER:
 			return t_integer;
-		} else if (kind.equals("float")) {
+		case ErlToken.KIND_FLOAT:
 			return t_float;
-		} else if (kind.equals("comment")) {
+		case ErlToken.KIND_COMMENT:
 			return t_comment;
-		} else if (RESERVED.contains(kind)) {
+		case ErlToken.KIND_KEYWORD:
 			return t_keyword;
-		} else {
-			return t_default; // Token.UNDEFINED;
+		default:
+			return t_default;
 		}
 	}
 
@@ -249,7 +249,7 @@ public class ErlHighlightScanner implements ITokenScanner,
 	}
 
 	public IToken nextToken() {
-		ErlToken nextErlToken = nextErlToken();
+		final ErlToken nextErlToken = nextErlToken();
 		return convert(nextErlToken);
 	}
 
@@ -290,9 +290,6 @@ public class ErlHighlightScanner implements ITokenScanner,
 		}
 
 		final ErlToken tk = fTokens.get(fCrtToken);
-		if (tk.getKind() == null) {
-			return ErlToken.EOF;
-		}
 		if (tk.getOffset() >= rangeOffset + rangeLength) {
 			return ErlToken.EOF;
 		}

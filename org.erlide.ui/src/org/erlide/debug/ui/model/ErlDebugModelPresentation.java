@@ -19,6 +19,8 @@ import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.runtime.debug.ErlangStackFrame;
+import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
+import org.erlide.ui.ErlideUIDebugImages;
 
 /**
  * @author jakob
@@ -34,7 +36,10 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	 */
 	@Override
 	public Image getImage(final Object element) {
-		// TODO Auto-generated method stub
+		if (element instanceof ErlangUninterpretedStackFrame) {
+			return ErlideUIDebugImages
+					.get(ErlideUIDebugImages.IMG_OBJ_UNINTERPRETED_STACK_FRAME);
+		}
 		return super.getImage(element);
 	}
 
@@ -118,8 +123,11 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 			final int lineNumber, final String clauseHead)
 			throws DebugException {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(module).append(":");
-		sb.append(lineNumber);
+		sb.append(module);
+		if (lineNumber != -1) {
+			sb.append(":");
+			sb.append(lineNumber);
+		}
 		if (clauseHead != null && clauseHead.length() > 0) {
 			sb.append(" - ").append(clauseHead);
 		}
