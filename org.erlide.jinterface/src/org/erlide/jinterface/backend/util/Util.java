@@ -700,7 +700,7 @@ public final class Util {
 		if (!name.endsWith(".erl")) {
 			return false;
 		}
-		int pos = name.lastIndexOf('.');
+		final int pos = name.lastIndexOf('.');
 		return isValidModuleName(name.substring(0, pos));
 	}
 
@@ -1685,9 +1685,20 @@ public final class Util {
 			}
 			try {
 				return l.stringValue();
-			} catch (OtpErlangException e) {
+			} catch (final OtpErlangException e) {
 				ErlLogger.error(e);
 				return null;
+			}
+		} else if (o instanceof OtpErlangBinary) {
+			final OtpErlangBinary b = (OtpErlangBinary) o;
+			try {
+				return new String(b.binaryValue(), "ISO-8859-1");
+			} catch (final UnsupportedEncodingException e) {
+				try {
+					return new String(b.binaryValue(), "UTF8");
+				} catch (final UnsupportedEncodingException e1) {
+					return "";
+				}
 			}
 		}
 		return null;
