@@ -23,7 +23,7 @@
 	</target>
 
 	<target name="post.erlide-core.jar">
-		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R12}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="erl"/>
 			<fileset dir="erl">
@@ -31,7 +31,7 @@
 			</fileset>
 		</apply>
 		<mkdir dir="ebin"/>
-		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R12}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>

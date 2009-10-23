@@ -1,3 +1,3 @@
--record(token, {kind, line, offset, length, value, text, last_line}).
+-record(token, {kind=u, line=u, offset=u, length=u, value=u, text=u, last_line=u}).
 
 

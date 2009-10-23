@@ -103,7 +103,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		data.debugPrint(mode);
 		// }
 
-		RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
+		final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
 				data.runtime);
 		if (rt0 == null) {
 			ErlLogger.error("Could not find runtime %s", data.runtime);
@@ -143,7 +143,7 @@ public class ErlangLaunchConfigurationDelegate implements
 				throw new DebugException(s);
 			}
 			postLaunch(mode, data, projects, rt, options, backend);
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.error("Launch: backend error!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					DebugException.REQUEST_FAILED, e.getMessage(), null);
@@ -152,7 +152,7 @@ public class ErlangLaunchConfigurationDelegate implements
 	}
 
 	private RuntimeInfo buildRuntimeInfo(final boolean internal,
-			final ErlLaunchData data, RuntimeInfo rt0) {
+			final ErlLaunchData data, final RuntimeInfo rt0) {
 		final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
 		rt.setNodeName(data.nodeName);
 		if (internal) {
@@ -162,11 +162,11 @@ public class ErlangLaunchConfigurationDelegate implements
 		}
 
 		rt.setStartShell(true);
-		File d = new File(data.workingDir);
+		final File d = new File(data.workingDir);
 		if (d.isAbsolute()) {
 			rt.setWorkingDir(data.workingDir);
 		} else {
-			String wspace = ResourcesPlugin.getWorkspace().getRoot()
+			final String wspace = ResourcesPlugin.getWorkspace().getRoot()
 					.getLocation().toPortableString();
 			rt.setWorkingDir(wspace + "/" + data.workingDir);
 		}
@@ -186,10 +186,10 @@ public class ErlangLaunchConfigurationDelegate implements
 			return;
 		}
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			ILaunch launch = backend.getLaunch();
+			final ILaunch launch = backend.getLaunch();
 			// add debug target
-			final ErlangDebugTarget target = new ErlangDebugTarget(backend,
-					projects, data.debugFlags);
+			final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+					backend, projects, data.debugFlags);
 			// target.getWaiter().doWait();
 			launch.addDebugTarget(target);
 			// interpret everything we can
@@ -259,9 +259,9 @@ public class ErlangLaunchConfigurationDelegate implements
 						try {
 							ErlideUtil.loadModuleViaInput(project, name,
 									backend);
-						} catch (ErlModelException e) {
+						} catch (final ErlModelException e) {
 							e.printStackTrace();
-						} catch (IOException e) {
+						} catch (final IOException e) {
 							e.printStackTrace();
 						}
 					}

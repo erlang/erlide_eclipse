@@ -79,7 +79,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	private final List<ErlangProcess> fAllProcesses;
 	private final List<ErlangProcess> fLocalProcesses;
-	final ErlideBackend fBackend;
+	final Backend fBackend;
+	private final ILaunch fLaunch;
 	private boolean fDisconnected = false;
 	// private final DebuggerListener fDbgListener;
 	// private final DebuggerEventListener fDebuggerEventListener;
@@ -98,12 +99,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	// private final WaitingForDebuggerListener waiter;
 
-	public ErlangDebugTarget(final ErlideBackend b,
+	public ErlangDebugTarget(final ILaunch launch, final ErlideBackend b,
 			final Collection<IProject> projects, final int debugFlags)
 			throws DebugException {
 		super(null);
 		fBackend = b;
 		fNodeName = b.getPeer();
+		fLaunch = launch;
 		fTerminated = false;
 		this.projects = projects;
 		fAllProcesses = new ArrayList<ErlangProcess>();
@@ -123,7 +125,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	@Override
 	public ILaunch getLaunch() {
-		return fBackend.getLaunch();
+		return fLaunch;
 	}
 
 	@Override
@@ -470,6 +472,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					erlangProcess.fireResumeEvent(DebugEvent.RESUME);
 				}
 			} else {
+				if (status.equals("idle")) {
+					erlangProcess.removeStackFrames();
+				}
 				erlangProcess.setStatus(status);
 				erlangProcess.fireChangeEvent(DebugEvent.STATE
 						| DebugEvent.CHANGE);

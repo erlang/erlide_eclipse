@@ -38,7 +38,7 @@ public class ErlideNoparse {
 			final String erlidePath, final boolean updateCaches) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE,
+			res = (OtpErlangTuple) b.call(2000000, ERLIDE_NOPARSE,
 					"initial_parse", "asssso", scannerModuleName,
 					moduleFileName, initialText, stateDir, erlidePath,
 					updateCaches);

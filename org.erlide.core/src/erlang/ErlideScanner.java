@@ -12,6 +12,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -133,6 +134,16 @@ public class ErlideScanner {
 					}
 					return toks;
 				}
+			} else if (t1.elementAt(1) instanceof OtpErlangBinary) {
+				final OtpErlangBinary b = (OtpErlangBinary) t1.elementAt(1);
+				final byte[] bytes = b.binaryValue();
+				toks = new ArrayList<ErlToken>(bytes.length / 10);
+				for (int i = 0; i < bytes.length; i += 10) {
+					final ErlToken tk = new ErlToken(bytes, i);
+					tk.fixOffset(offset);
+					toks.add(tk);
+				}
+				return toks;
 			}
 		}
 		throw new BackendException("Could not parse string \"" + string

@@ -15,16 +15,19 @@ import java.util.List;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IDropToFrame;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.internal.ErlModelManager;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -32,7 +35,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame {
+public class ErlangStackFrame extends ErlangDebugElement implements
+		IStackFrame, IDropToFrame {
 
 	private final String fModule;
 	private final ErlangProcess fParent;
@@ -42,12 +46,12 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 	private String clauseHead;
 
 	public ErlangStackFrame(final String module, final ErlangProcess parent,
-			final IDebugTarget target, final int lineNumber,
-			final OtpErlangList bindings, final int stackFrameNo) {
+			final IDebugTarget target, int lineNumber,
+			final ErlangFunction function, final OtpErlangList bindings,
+			final int stackFrameNo) {
 		super(target);
 		fParent = parent;
 		fModule = module;
-		fLineNumber = lineNumber;
 		this.stackFrameNo = stackFrameNo;
 		final List<ErlangVariable> framesReversed = new ArrayList<ErlangVariable>(
 				bindings.arity());
@@ -73,15 +77,25 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 		if (m != null) {
 			try {
 				m.open(null);
-				final IErlElement e = m.getElementAtLine(lineNumber - 1);
-				if (e instanceof IErlFunctionClause) {
-					final IErlFunctionClause clause = (IErlFunctionClause) e;
-					clauseHead = clause.getFunctionName() + clause.getHead();
+				if (lineNumber != -1) {
+					final IErlElement e = m.getElementAtLine(lineNumber - 1);
+					if (e instanceof IErlFunctionClause) {
+						final IErlFunctionClause clause = (IErlFunctionClause) e;
+						clauseHead = clause.getFunctionName()
+								+ clause.getHead();
+					}
+				} else if (function != null) {
+					final IErlFunction f = m.findFunction(function);
+					if (f != null) {
+						lineNumber = f.getLineStart() + 1;
+						clauseHead = f.getFunctionName() + f.getHead();
+					}
 				}
 			} catch (final ErlModelException e1) {
 				ErlLogger.warn(e1);
 			}
 		}
+		fLineNumber = lineNumber;
 	}
 
 	public String getModule() {
@@ -186,6 +200,14 @@ public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame 
 
 	public String getClauseHead() {
 		return clauseHead;
+	}
+
+	public boolean canDropToFrame() {
+		return true;
+	}
+
+	public void dropToFrame() throws DebugException {
+		fParent.dropToFrame(stackFrameNo);
 	}
 
 }

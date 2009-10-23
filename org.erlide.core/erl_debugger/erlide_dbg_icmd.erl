@@ -22,11 +22,12 @@
 
 %% User control of process execution and settings
 -export([step/1, next/1, continue/1, finish/1, skip/1, timeout/1,
-	 stop/1]).
+	 stop/1, drop_to_frame/2]).
 -export([eval/2]).
 -export([set_variable_value/4]).
 -export([set/3, get/3]).
 -export([handle_msg/4]).
+
 
 %% Library functions for attached process handling
 -export([tell_attached/1]).
@@ -149,7 +150,8 @@ handle_cmd(Bs, break, #ieval{level=Le}=Ieval) ->
 		next -> log({break, ?LINE}), put_next_break(Le), Bs;
 		continue -> log({break, ?LINE}), put_next_break(running), Bs;
 		finish -> log({break, ?LINE}), put_next_break(Le-1), Bs;
-		skip -> {skip, Bs}
+		skip -> {skip, Bs};
+		{drop_down, Level} -> {drop_down, Level}
 	    end;
 	{user, {eval, Cmd}} ->
 	    Bs1 = eval_nonrestricted(Cmd, Bs, Ieval),
@@ -178,10 +180,12 @@ next(Meta) ->     Meta ! {user, {cmd, next}}.
 continue(Meta) -> Meta ! {user, {cmd, continue}}.
 finish(Meta) ->   Meta ! {user, {cmd, finish}}.
 skip(Meta) ->     Meta ! {user, {cmd, skip}}.
-
 timeout(Meta) ->  Meta ! {user, timeout}.
 
 stop(Meta) ->     Meta ! {user, {cmd, stop}}.
+
+drop_to_frame(Meta, StackFrameNum) -> 
+    Meta ! {user, {cmd, drop_to_frame, StackFrameNum}}.
 
 set_variable_value(Meta, Variable, Value, SP) ->
     eval(Meta, {no_module, Variable++"="++Value, SP}),
