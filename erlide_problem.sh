@@ -2,7 +2,7 @@
 
 # run this script to gather the logs from an erlide session
 
-# erlide_problem [-o <output_dir>] [<workspace_dir>]
+# erlide_problem [-o <output_dir>] [-w <workspace_dir>] comment
 # default output_dir is current dir
 # default workspace_dir is current dir
 
