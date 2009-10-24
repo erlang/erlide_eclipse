@@ -32,8 +32,8 @@
 %% Internal exports
 -export([send_attached_to_java/2]).
 
-%% FIXME vi behöver inget state! detta är mest till för otp-debuggern,
-%% så den sparar sig mellan varven...
+%% FIXME vi behver inget state! detta r mest till fr otp-debuggern,
+%% s den sparar sig mellan varven...
 
 -record(state, {parent, %pid() remote
                 mode,      % local | global
