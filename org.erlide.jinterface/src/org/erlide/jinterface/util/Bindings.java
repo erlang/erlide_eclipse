@@ -16,6 +16,7 @@ import java.util.Map;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -42,6 +43,14 @@ public final class Bindings {
 
 	public OtpErlangObject get(final String name) {
 		return this.bindings.get(name);
+	}
+
+	public int getInt(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangLong) {
+			return ((OtpErlangLong) r).intValue();
+		}
+		throw new OtpErlangException("value is not an integer");
 	}
 
 	public long getLong(final String name) throws OtpErlangException {
