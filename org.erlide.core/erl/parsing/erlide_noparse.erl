@@ -30,34 +30,34 @@
 %%
 
 initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
-	try
-		?D({StateDir, ModuleFileName, ErlidePath}),
-		RenewFun = fun(_F) ->
-						   do_parse(ScannerName, ModuleFileName, InitialText,
-									StateDir, ErlidePath, UpdateCaches) 
-				   end,
-		CacheFun = fun(D) ->
-%% 						   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
-%% 															 InitialText, StateDir, ErlidePath, UpdateCaches), 
-						   D 
-				   end,
-		CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
-		?D(CacheFileName),
-		{Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
-														   ?CACHE_VERSION, RenewFun, CacheFun,
-														   UpdateCaches),
-		erlide_noparse_server:update_state(ScannerName, Res),
-		?D({updated, Cached}),
-		{ok, Res, Cached}
-	catch
-		error:Reason ->
-			{error, Reason}
-	end.
+    try
+	?D({StateDir, ModuleFileName, ErlidePath}),
+        RenewFun = fun(_F) ->
+			   do_parse(ScannerName, ModuleFileName, InitialText,
+				    StateDir, ErlidePath, UpdateCaches) 
+		   end,
+        CacheFun = fun(D) ->
+			   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
+						      InitialText, StateDir, ErlidePath, UpdateCaches),
+			   D 
+		   end,
+    	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
+        ?D(CacheFileName),
+        {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
+							   ?CACHE_VERSION, RenewFun, CacheFun,
+							   UpdateCaches),
+        %%erlide_noparse_server:update_state(ScannerName, Res),
+	?D(updated),
+        {ok, Res, Cached}
+    catch
+        error:Reason ->
+            {error, Reason}
+    end.
 
 reparse(ScannerName) ->
     try
         Res = do_parse(ScannerName, "", "", "", "", false),
-        erlide_noparse_server:update_state(ScannerName, Res),
+        %%erlide_noparse_server:update_state(ScannerName, Res),
         {ok, Res, unused}
     catch
         error:Reason ->
@@ -70,8 +70,8 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, code_dont_use, external_refs, comment}).
--record(clause, {pos, name, args, head, code_dont_use, name_pos, external_refs}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, code_dont_use, external_refs_dont_use, comment}).
+-record(clause, {pos, name, args, head, code_dont_use, name_pos, external_refs_dont_use}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 -record(module, {name, erlide_path, model}).
@@ -142,7 +142,7 @@ parse_test(ScannerName, File) ->
     Functions = split_after_dots(UncommentToks, [], []),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
     Model = #model{forms=Collected, comments=Comments},
-    erlide_noparse_server:create(ScannerName, Model, ""),
+    %%erlide_noparse_server:create(ScannerName, Model, ""),
     ok.
 
 classify_and_collect(C) ->
@@ -156,13 +156,11 @@ cac(function, Tokens) ->
     %?D(ClauseList),
     Clauses = [fix_clause(C) || C <- ClauseList],
     %?D(length(Clauses)),
-%%     [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, code=Co, external_refs=X} | _] = Clauses,
-    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP, external_refs=X} | _] = Clauses,
+    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP} | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
     case Clauses of					% only show subclauses when more than one
         [_] ->
-%%             #function{pos=P, name=N, arity=Arity, args=A, head=H, code=Co, external_refs=X, clauses=[], name_pos=NP};
-            #function{pos=P, name=N, arity=Arity, args=A, head=H, external_refs=X, clauses=[], name_pos=NP};
+            #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
         _ ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
@@ -416,8 +414,8 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
     %?D([Rest, ExternalRefs]),
     #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
 %%             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
-            name=Name, args=get_between_pars(Rest), head=get_head(Rest), 
-            external_refs=ExternalRefs}.
+            name=Name, args=get_between_pars(Rest), head=get_head(Rest) 
+            }.
 
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
@@ -503,84 +501,6 @@ extract_comments([T | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, -1, [T | TAcc], CAcc).
 
 
-%% find all external calls in the modules known
-find_external_call(MFA, Modules) ->
-    D = find_external_call(Modules, MFA, []),
-    %?D(D),
-    D.
-
-find_external_call([], _, Acc) ->
-    Acc;
-find_external_call([#module{model=Model, erlide_path=Path} | Rest], MFA, Acc) ->
-    Forms = Model#model.forms,
-    case find_call_f(Forms, MFA, []) of
-        [] ->
-            find_external_call(Rest, MFA, Acc);
-        L ->
-            find_external_call(Rest, MFA, [{Path, L} | Acc])
-    end.
-
-find_call_f([], _, Acc) ->
-    Acc;
-find_call_f([#function{external_refs=X, clauses=C, name=F, arity=A} | Rest], MFA, Acc0) ->
-    Acc1 = case find_call_x(X, MFA, []) of
-               [] -> Acc0;
-               L -> [{{F, A}, L} | Acc0]
-             end,
-    Acc = case find_call_c(C, MFA, []) of
-              [] -> Acc1;
-              L1 -> [{{F, A}, L1} | Acc1]
-          end,
-    find_call_f(Rest, MFA, Acc);
-find_call_f([_ | Rest], MFA, Acc) ->
-    find_call_f(Rest, MFA, Acc).
-    
-    
-find_call_c([], _, Acc) ->
-    Acc;
-find_call_c([#clause{external_refs=X, head=H} | Rest], MFA, Acc0) ->
-    Acc = case find_call_x(X, MFA, []) of
-              [] -> Acc0;
-              L -> [{H, L} | Acc0]
-          end,
-    find_call_c(Rest, MFA, Acc);
-find_call_c([_ | Rest], MFA, Acc) ->
-    find_call_c(Rest, MFA, Acc).
-
-find_call_x([], _, Acc) ->
-    Acc;
-find_call_x(undefined, _, Acc) ->
-    Acc;
-find_call_x([#external_call{module=M, function=F, arity=XA} = X | Rest],
-            {M, F, A} = MFA, Acc0) ->
-    Acc = case A of
-              XA -> [X | Acc0];
-              -1 -> [X | Acc0];
-              _ -> Acc0
-          end,
-    find_call_x(Rest, MFA, Acc);
-find_call_x([_ | Rest], MFA, Acc) ->
-    find_call_x(Rest, MFA, Acc).
-
-do_xdump(Modules) ->
-    [{Module#module.name, Module#module.erlide_path, do_xdump1(Module)} || Module <- Modules].
-
-do_xdump1(#module{model=M}) ->
-    Forms = M#model.forms,
-    [[F#function.external_refs | [C#clause.external_refs || C <- F#function.clauses]]
-    || F <- Forms, is_record(F, function)].
-
-%% do_cdump(Modules) ->
-%%     [{M#module.name, M#module.erlide_path, do_cdump1(M)} || M <- Modules].
-%% 
-%% do_cdump1(#module{model=M}) ->
-%%     Forms = M#model.forms,
-%%     [[{F#function.name, F#function.code, [{C#clause.args, C#clause.code} || C <- F#function.clauses]}]
-%%      || F <- Forms, is_record(F, function)].
-
-%% do_vdump(Modules) ->
-%%     [{M#module.name, M#module.erlide_path, do_vdump1(M)} || M <- Modules].
-
 is_var(#token{kind=var}) -> true;
 is_var(_) -> false.
 
@@ -649,17 +569,5 @@ get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{line=LastLine
     F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(F, [_ | Rest]) ->
     get_function_comment(F, Rest).
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -163,13 +163,13 @@ spawn_server(ScannerName) ->
 	end.
 
 loop(Module) ->
-	receive
-		{stop, From, []} ->
-			reply(stop, From, stopped);
-		{Cmd, From, Args} ->
-			NewModule = cmd(Cmd, From, Args, Module),
-			?MODULE:loop(NewModule)
-	end.
+    receive
+	{stop, From, []} ->
+	    reply(stop, From, stopped);
+	{Cmd, From, Args} ->
+	    NewModule = cmd(Cmd, From, Args, Module),
+	    ?MODULE:loop(NewModule)
+    end.
 
 cmd(Cmd, From, Args, Module) ->
     try

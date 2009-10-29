@@ -391,6 +391,7 @@ public final class BuilderUtils {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
+				boolean wasKnown = m.isStructureKnown();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (BuilderUtils.comparePath(ifile.getFilename(), resource
@@ -400,6 +401,10 @@ public final class BuilderUtils {
 						}
 						break;
 					}
+				}
+				if (!wasKnown) {
+					m.disposeScanner();
+					m.disposeParser();
 				}
 			}
 		}
@@ -504,6 +509,7 @@ public final class BuilderUtils {
 			if (eprj != null) {
 				final IErlModule m = eprj.getModule(source.getName());
 				if (m != null) {
+					boolean wasKnown = m.isStructureKnown();
 					final Collection<ErlangIncludeFile> incs = m
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
@@ -516,6 +522,10 @@ public final class BuilderUtils {
 							shouldCompile = true;
 							break;
 						}
+					}
+					if (!wasKnown) {
+						m.disposeScanner();
+						m.disposeParser();
 					}
 				}
 			}
@@ -687,9 +697,8 @@ public final class BuilderUtils {
 
 				MarkerHelper.createTaskMarkers(project, source);
 
-				return ErlideBuilder.compileErl(backend, source
-						.getLocation().toString(), outputDir, includeDirs,
-						compilerOptions);
+				return ErlideBuilder.compileErl(backend, source.getLocation()
+						.toString(), outputDir, includeDirs, compilerOptions);
 			} else {
 				return null;
 			}

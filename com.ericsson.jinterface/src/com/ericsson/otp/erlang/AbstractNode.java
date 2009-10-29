@@ -125,7 +125,7 @@ public class AbstractNode {
 
 	    br = new BufferedReader(new FileReader(dotCookieFile));
 	    defaultCookie = br.readLine().trim();
-	} catch (final IOException e) {
+	} catch (final Exception e) {
 	    defaultCookie = "";
 	} finally {
 	    try {
