@@ -95,7 +95,7 @@ do_parse2(ScannerName, Toks, ErlidePath) ->
     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
-    erlide_noparse_server:create(ScannerName, Model, ErlidePath),
+    %%erlide_noparse_server:create(ScannerName, Model, ErlidePath),
 	?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
 	?D(erts_debug:flat_size(FixedModel)),
