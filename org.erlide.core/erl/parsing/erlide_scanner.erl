@@ -27,7 +27,7 @@
 -define(CACHE_VERSION, 18).
 
 light_scan_string(S) ->
-	case erlide_scan_new:string(S, {0, 0}) of
+	case erlide_scan:string(S, {0, 0}) of
 		{ok, T, _} ->
 			?D(T),
 			{ok, fixup_tokens(T, [])};

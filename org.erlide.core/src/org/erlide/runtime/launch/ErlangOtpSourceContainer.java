@@ -1,0 +1,133 @@
+package org.erlide.runtime.launch;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.sourcelookup.ISourceContainer;
+import org.eclipse.debug.core.sourcelookup.ISourceContainerType;
+import org.eclipse.debug.core.sourcelookup.containers.CompositeSourceContainer;
+import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
+import org.erlide.jinterface.backend.RuntimeInfo;
+
+public class ErlangOtpSourceContainer extends CompositeSourceContainer
+		implements ISourceContainer {
+
+	private final String otpHome;
+
+	public ErlangOtpSourceContainer(final RuntimeInfo info) {
+		otpHome = info.getOtpHome();
+	}
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private int versionFromName(final String name) {
+		final String[] parts = name.split("-");
+		if (parts.length < 2) {
+			return 0;
+		}
+		final String[] digits = parts[parts.length - 1].split("\\.");
+		int r = 0, f = 100000000;
+		for (final String d : digits) {
+			r += new Integer(d).intValue() * f;
+			f /= 100;
+		}
+		return r;
+	}
+
+	private String highestVersion(final File directory, final String prefix) {
+		final String candidates[] = directory.list(new FilenameFilter() {
+			public boolean accept(final File dir, final String name) {
+				return name.startsWith(prefix);
+			}
+		});
+		if (candidates.length == 0) {
+			return null;
+		}
+		String r = candidates[0];
+		int v = 0;
+		for (final String candidate : candidates) {
+			final int version = versionFromName(candidate);
+			if (version > v) {
+				v = version;
+				r = candidate;
+			}
+		}
+		return r;
+	}
+
+	private Set<String> modules(final File directory) {
+		final Set<String> r = new TreeSet<String>();
+		final String n[] = directory.list();
+		for (final String f : n) {
+			final String[] parts = f.split("-");
+			if (parts.length > 1) {
+				r.add(parts[0]);
+			}
+		}
+		return r;
+	}
+
+	public ISourceContainerType getType() {
+		return new ISourceContainerType() {
+
+			public String getMemento(final ISourceContainer container)
+					throws CoreException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public ISourceContainer createSourceContainer(final String memento)
+					throws CoreException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String getName() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String getId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String getDescription() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+	}
+
+	@Override
+	protected ISourceContainer[] createSourceContainers() throws CoreException {
+		final IPath p = new Path(otpHome);
+		final IPath lib = p.addTrailingSeparator().append("lib")
+				.addTrailingSeparator();
+		final Set<String> moduleNames = modules(lib.toFile());
+		final List<IPath> moduleDirs = new ArrayList<IPath>();
+		for (final String moduleName : moduleNames) {
+			final String h = highestVersion(lib.toFile(), moduleName);
+			if (h != null) {
+				moduleDirs.add(lib.addTrailingSeparator().append(h));
+			}
+		}
+		final List<ISourceContainer> r = new ArrayList<ISourceContainer>();
+		for (final IPath dir : moduleDirs) {
+			r.add(new DirectorySourceContainer(dir.addTrailingSeparator()
+					.append("src"), false));
+		}
+		return r.toArray(new ISourceContainer[r.size()]);
+	}
+
+}

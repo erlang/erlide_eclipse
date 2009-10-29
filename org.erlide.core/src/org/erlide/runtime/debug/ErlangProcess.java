@@ -24,6 +24,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -228,7 +229,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 			final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
 			try {
 				stackFrames.add(new ErlangUninterpretedStackFrame(
-						m.atomValue(), f.atomValue(), a.intValue(), this,
+						m.atomValue(), new ErlangFunction( f.atomValue(), a.intValue()), this,
 						getDebugTarget()));
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
