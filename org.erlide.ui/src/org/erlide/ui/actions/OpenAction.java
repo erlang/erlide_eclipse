@@ -13,6 +13,7 @@ package org.erlide.ui.actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -22,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.OpenStrategy;
@@ -329,10 +331,12 @@ public class OpenAction extends SelectionDispatchAction {
 						project);
 			}
 		} else if (res.isInclude()) {
+			IContainer parent = module == null ? null : module.getResource()
+					.getParent();
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res
 							.getName(), org.erlide.core.erlang.util.PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, parent));
 			if (r == null) {
 				try {
 					final String includeFile = ErlModelUtils.findIncludeFile(
