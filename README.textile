@@ -1,0 +1,7 @@
+erlIDE is an Erlang IDE based on Eclipse.
+
+h2. Installation
+
+More documentation will be added soon.
+
+

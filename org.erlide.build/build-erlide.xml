@@ -69,6 +69,7 @@
     			<include name="org.erlide.core/**"/>
     			<include name="org.erlide.help/**"/>
     			<include name="org.erlide.jinterface/**"/>
+    			<include name="org.erlide.libs/**"/>
     			<include name="org.erlide.ui/**"/>
     			<include name="org.erlide.wrangler.help/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>

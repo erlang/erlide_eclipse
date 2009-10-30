@@ -3,24 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
 Bundle-Version: 0.6.6.qualifier
-Bundle-ClassPath: erlide-core.jar,
- commons-net-1.4.1.jar
+Bundle-ClassPath: erlide-core.jar
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: erlang,
- org.apache.commons.net;x-internal:=true,
- org.apache.commons.net.bsd;x-internal:=true,
- org.apache.commons.net.ftp;x-internal:=true,
- org.apache.commons.net.ftp.parser;x-internal:=true,
- org.apache.commons.net.io;x-internal:=true,
- org.apache.commons.net.nntp;x-internal:=true,
- org.apache.commons.net.ntp;x-internal:=true,
- org.apache.commons.net.pop3;x-internal:=true,
- org.apache.commons.net.smtp;x-internal:=true,
- org.apache.commons.net.telnet;x-internal:=true,
- org.apache.commons.net.tftp;x-internal:=true,
- org.apache.commons.net.util;x-internal:=true,
  org.erlide.core,
  org.erlide.core.builder;x-friends:="org.erlide.ui",
  org.erlide.core.builder.internal;x-internal:=true,
@@ -49,6 +36,7 @@ Export-Package: erlang,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.jinterface,
- org.eclipse.debug.core
+ org.eclipse.debug.core,
+ org.erlide.libs;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

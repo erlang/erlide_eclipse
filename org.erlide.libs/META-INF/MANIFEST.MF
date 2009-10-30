@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlide Common Libraries
+Bundle-SymbolicName: org.erlide.libs
+Bundle-Version: 1.0.0
+Bundle-Vendor: Erlide.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: commons-net-1.4.1.jar,
+ google-collect-1.0-rc3.jar
+Export-Package: com.google.common.annotations,
+ com.google.common.base,
+ com.google.common.base.internal,
+ com.google.common.collect,
+ org.apache.commons.net,
+ org.apache.commons.net.bsd,
+ org.apache.commons.net.ftp,
+ org.apache.commons.net.ftp.parser,
+ org.apache.commons.net.io,
+ org.apache.commons.net.nntp,
+ org.apache.commons.net.ntp,
+ org.apache.commons.net.pop3,
+ org.apache.commons.net.smtp,
+ org.apache.commons.net.telnet,
+ org.apache.commons.net.tftp,
+ org.apache.commons.net.util
