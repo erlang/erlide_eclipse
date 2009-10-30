@@ -89,8 +89,6 @@ check_record_tokens([#token{kind=eof} | _], A) ->
     A;
 check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
     check_record_tokens(Rest, true);
-check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
-    check_record_tokens(Rest, true);
 check_record_tokens([#token{kind='#'}], _) ->
     true;
 check_record_tokens([#token{kind='{'} | Rest], _) ->
