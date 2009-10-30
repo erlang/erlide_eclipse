@@ -21,7 +21,7 @@
 -export([start/2, stop/0, interpret/3, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
--export([tracing/2]).
+-export([tracing/2, drop_to_frame/2]).
 
 -define(BACKTRACE, all).
 
@@ -32,8 +32,8 @@
 %% Internal exports
 -export([send_attached_to_java/2]).
 
-%% FIXME vi behöver inget state! detta är mest till för otp-debuggern,
-%% så den sparar sig mellan varven...
+%% FIXME vi behver inget state! detta r mest till fr otp-debuggern,
+%% s den sparar sig mellan varven...
 
 -record(state, {parent, %pid() remote
                 mode,      % local | global
@@ -62,20 +62,20 @@
 %%--------------------------------------------------------------------
 start(Mode, Flags) ->
     case whereis(?SERVER) of
-        undefined ->
-            CallingPid = self(),
-            Pid = spawn(fun () -> 
-								 ?SAVE_CALLS,
-								 init(CallingPid, Mode, Flags) 
-						end),
-            receive
-                {initialization_complete, Pid} ->
-                    {ok, Pid};
-                Error ->
-                    Error
-            end;
-        Pid ->
-            {error, {already_started,Pid}}
+	undefined ->
+	    CallingPid = self(),
+	    Pid = spawn(fun () -> 
+				 ?SAVE_CALLS,
+				 init(CallingPid, Mode, Flags) 
+			end),
+	    receive
+		{initialization_complete, Pid} ->
+		    {ok, Pid};
+		Error ->
+		    Error
+	    end;
+	Pid ->
+	    {error, {already_started,Pid}}
     end.
 
 %%--------------------------------------------------------------------
@@ -289,6 +289,9 @@ gui_cmd({set_variable_value, {Variable, Value, SP, MetaPid}}, State) ->
 gui_cmd({eval, {Expr, MetaPid}}, State) ->
     Res = erlide_dbg_icmd:eval(MetaPid, {dummy_mod, Expr}),
     {Res, State};
+gui_cmd({drop_to_frame, {MetaPid, StackFrameNum}}, State) ->
+    Res = erlide_dbg_icmd:drop_to_frame(MetaPid, StackFrameNum),
+    {Res, State};
 
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
@@ -391,6 +394,9 @@ resume(MetaPid) ->
 
 step_over(MetaPid) ->
     cmd(step_over, MetaPid).
+
+drop_to_frame(MetaPid, StackFrameNum) ->
+    cmd(drop_to_frame, {MetaPid, StackFrameNum}).
 
 step_into(MetaPid) ->
     cmd(step_into, MetaPid).

@@ -40,7 +40,8 @@
          distribute_debugger_code/1,
 	 nodes/0,
 	 process_info/2,
-         processes/2]).
+         processes/2,
+	 drop_to_frame/2]).
 
 -export([log/1]).
 
@@ -145,6 +146,9 @@ step_into(MetaPid) ->
 
 step_return(MetaPid) ->
     erlide_dbg_mon:step_return(MetaPid).
+
+drop_to_frame(MetaPid, FrameNum) ->
+    erlide_dbg_mon:drop_to_frame(MetaPid, FrameNum).
 
 set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).

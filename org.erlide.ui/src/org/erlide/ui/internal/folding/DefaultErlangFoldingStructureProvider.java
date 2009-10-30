@@ -769,6 +769,9 @@ public class DefaultErlangFoldingStructureProvider implements
 			computeAdditions(fModule, updated);
 			final Map<Object, List<Tuple>> previous = createAnnotationMap(model);
 
+			final Collection<List<Tuple>> pv = previous.values();
+			final Set<Object> ks = previous.keySet();
+
 			for (final Entry<ErlangProjectionAnnotation, Position> entry : updated
 					.entrySet()) {
 				final ErlangProjectionAnnotation newAnnotation = entry.getKey();

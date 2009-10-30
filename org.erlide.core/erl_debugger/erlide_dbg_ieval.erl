@@ -434,10 +434,20 @@ args2arity([]) ->
     [].
 
 all_frames() ->
-    all_frames(get(stack)).
+    {all_frames(get(stack)), saved_frames()}.
 
 all_frames(Stack) ->
     [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs), X} || {X, {{M, F, As}, Wh, Bs}} <- Stack].
+
+saved_frames() ->
+%%     erlang:display(hej),
+    Debugged = get(self),
+%%     erlang:display(Debugged),
+    Debugged ! {sys, self(), get_saved_stacktrace},
+    receive
+	{sys, Debugged, M} ->
+	    M
+    end.
 
 %% bindings(SP) -> Bs
 %%   SP = Le  % stack pointer
@@ -786,6 +796,8 @@ seq([E], Bs0, Ieval) ->
     case erlide_dbg_icmd:cmd(E, Bs0, Ieval) of
 	{skip,Bs} ->
 	    {value,skipped,Bs};
+	{drop_to_frame, Le} ->
+	    {dropped, Le, Bs0};
 	Bs ->
 	    expr(E, Bs, Ieval)
     end;
@@ -793,6 +805,8 @@ seq([E|Es], Bs0, Ieval) ->
     case erlide_dbg_icmd:cmd(E, Bs0, Ieval) of
 	{skip,Bs} ->
 	    seq(Es, Bs, Ieval);
+	{drop_to_frame, Le} ->
+	    {dropped, Le, Bs0};
 	Bs1 ->
 	    {value,_,Bs} = expr(E, Bs1, Ieval#ieval{last_call=false}),
 	    seq(Es, Bs, Ieval)

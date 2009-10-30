@@ -18,20 +18,23 @@
 
 -compile(export_all).
 
+-export([light_scan_string/1]).
+
 %%
 %% API Functions
 %%
 
--define(CACHE_VERSION, 16).
+-define(CACHE_VERSION, 18).
 
 light_scan_string(S) ->
-    case erlide_scan:string(S, {0, 0}) of
-	{ok, T, _} ->
-	    {ok, convert_tokens(T)};	    
-	{error, _, _} ->
-	    error
-    end.
- 
+	case erlide_scan:string(S, {0, 0}) of
+		{ok, T, _} ->
+			?D(T),
+			{ok, fixup_tokens(T, [])};
+		{error, _, _} ->
+			error
+	end.
+
 %%
 %% Local Functions
 %%
@@ -278,7 +281,7 @@ get_token_window(Module, Offset, Before, After) ->
     ?D(B),
     {A, B}.
 
-fix_token(T = #token{offset=O, line=L, last_line=undefined}, Offset, Line) ->
+fix_token(T = #token{offset=O, line=L, last_line=u}, Offset, Line) ->
     T#token{offset=Offset+O, line=Line+L};
 fix_token(T = #token{offset=O, line=L, last_line=LL}, Offset, Line) ->
     T#token{offset=Offset+O, line=Line+L, last_line=Line+LL}.
@@ -350,7 +353,7 @@ token_to_string(#token{value=Value}) when is_list(Value) ->
 	Value;
 token_to_string(#token{kind=atom, value=Value}) ->
     atom_to_list(Value);
-token_to_string(#token{value=Value}) when Value =/= undefined ->
+token_to_string(#token{value=Value}) when Value =/= u ->
     atom_to_list(Value);
 token_to_string(#token{kind=Kind}) ->
     atom_to_list(Kind).
@@ -368,4 +371,55 @@ tokens_to_string([T1 | [T2 | _] = Rest], Acc) ->
 space_between(#token{offset=O1, length=Len1}, #token{offset=O2}) ->
     lists:duplicate(O2-O1-Len1, $ ).
 
+-define(TOK_OTHER, 0).
+-define(TOK_WS, 1).
+-define(TOK_STR, 2).
+-define(TOK_ATOM, 3).
+-define(TOK_VAR, 4).
+-define(TOK_CHAR, 5).
+-define(TOK_MACRO, 6).
+-define(TOK_DOT, 7).
+-define(TOK_INTEGER,8).
+-define(TOK_FLOAT, 9).
+-define(TOK_COMMENT, 10).
+-define(TOK_KEYWORD, 11).
+
+kind_small(ws) -> ?TOK_WS;
+kind_small(string) -> ?TOK_STR;
+kind_small(atom) -> ?TOK_ATOM;
+kind_small(var) -> ?TOK_VAR;
+kind_small(macro) -> ?TOK_MACRO;
+kind_small(dot) -> ?TOK_DOT;
+kind_small(float) -> ?TOK_FLOAT;
+kind_small(integer) -> ?TOK_INTEGER;
+kind_small(comment) -> ?TOK_COMMENT;
+kind_small(Kind) when is_atom(Kind) ->
+	case erlide_scan:reserved_word(Kind) of
+		true ->
+			?TOK_KEYWORD;
+		false ->
+			case atom_to_list(Kind) of
+				[I] when I > ?TOK_KEYWORD -> I;
+				_ -> ?TOK_OTHER
+			end
+	end.
+
+fixup_macro(L, O, G) ->
+	%%     V = [$? | atom_to_list(V0)],
+	<<?TOK_MACRO, L:24, O:24, (G+1):24>>.
+
+fixup_tokens([], Acc) ->
+	erlang:iolist_to_binary(Acc);
+fixup_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
+    T = fixup_macro(L, O, G),
+    fixup_tokens(Rest, [Acc | T]);
+fixup_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
+    T = fixup_macro(L, O, G),
+    fixup_tokens(Rest, [Acc | T]);
+fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->
+	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
+fixup_tokens([{Kind, {{L, O}, G}, _A} | Rest], Acc) ->
+	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
+fixup_tokens([{Kind, {{L, O}, G}, _A, _B} | Rest], Acc) ->
+	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
 

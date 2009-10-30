@@ -31,6 +31,8 @@
 %%--------------------------------------------------------------------
 eval(Mod, Func, Args) ->
     SaveStacktrace = erlang:get_stacktrace(),
+    SS2 = get_ss2(),
+    put(ss2, SS2),
     Meta = erlide_dbg_ieval:eval(Mod, Func, Args),
     Mref = erlang:monitor(process, Meta),
     msg_loop(Meta, Mref, SaveStacktrace).
@@ -78,6 +80,11 @@ msg_loop(Meta, Mref, SaveStacktrace) ->
 	    Meta ! {sys, self(), Reply},
 	    msg_loop(Meta, Mref, SaveStacktrace);
 
+	%% Fetch saved stack trace
+	{sys, Meta, get_saved_stacktrace} ->
+	    Meta ! {sys, self(), {saved_stacktrace, SaveStacktrace, get(ss2)}},
+	    msg_loop(Meta, Mref, SaveStacktrace);
+	
 	%% Meta has terminated
 	%% Must be due to erlide_int:stop() (or -heaven forbid- a debugger bug)
 	{'DOWN', Mref, _, _, Reason} ->
@@ -101,6 +108,10 @@ reply({apply,M,F,As}) ->
     {value, erlang:apply(M,F,As)};
 reply({eval,Expr,Bs}) ->
     erl_eval:expr(Expr, Bs). % {value, Value, Bs2}
+
+%% Get stacktrace, should work in several layers, but doesn't yet...
+get_ss2() ->
+    SS = (catch 1 / 0).
 
 %% Demonitor and delete message from inbox
 %%

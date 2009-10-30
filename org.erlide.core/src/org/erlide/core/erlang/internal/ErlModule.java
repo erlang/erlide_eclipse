@@ -94,7 +94,7 @@ public class ErlModule extends Openable implements IErlModule {
 		if (model != null) {
 			model.notifyChange(this);
 		}
-		getScanner();
+		// getScanner();
 		// update timestamp (might be IResource.NULL_STAMP if original does not
 		// exist)
 		final IResource r = getResource();

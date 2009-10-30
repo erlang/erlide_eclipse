@@ -17,8 +17,9 @@
 %%
 
 %% -define(DEBUG, 1).
+%% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 18).
+-define(CACHE_VERSION, 19).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -81,6 +82,9 @@ reparse(ScannerName) ->
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches) ->
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches),
+	do_parse2(ScannerName, Toks, ErlidePath).
+
+do_parse2(ScannerName, Toks, ErlidePath) ->
     ?D({do_parse, ErlidePath, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
@@ -91,8 +95,45 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCa
     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
-    %%erlide_noparse_server:create(ScannerName, Model, ErlidePath),
-    Model.
+    erlide_noparse_server:create(ScannerName, Model, ErlidePath),
+	?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
+    FixedModel = fixup_model(Model),
+	?D(erts_debug:flat_size(FixedModel)),
+%% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
+	FixedModel.
+
+fixup_model(#model{forms=Forms, comments=Comments}) ->
+    ?D(a),
+    FixedComments = fixup_tokens(Comments),
+    ?D(a),
+    FixedForms = fixup_forms(Forms),
+    ?D(a),
+	#model{forms=FixedForms, comments=FixedComments}.
+
+fixup_forms(Forms) ->
+	[fixup_form(Form) || Form <- Forms].
+
+fixup_tokens(Tokens) ->
+    [fixup_token(Token) || Token <- Tokens].
+
+fixup_token(#token{value=Value} = Token) when is_list(Value) ->
+	Token#token{value=to_binary(Value)};
+fixup_token(#token{text=Text} = Token) when is_list(Text) ->
+	Token#token{value=to_binary(Text)};
+fixup_token(Token) ->
+	Token.
+
+fixup_form(#function{comment=Comment, clauses=Clauses} = Function) ->
+	Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
+fixup_form(#clause{head=Head} = Clause) ->
+	Clause#clause{head=to_binary(Head), args=[]};
+fixup_form(Other) ->
+	Other.
+
+to_binary(Comment) when is_list(Comment) ->
+	iolist_to_binary(Comment);
+to_binary(Other) ->
+	Other.
 
 parse_test(ScannerName, File) ->
     erlide_scanner_server:scan_uncached(ScannerName, File, ""),
@@ -218,7 +259,7 @@ to_string(Tokens) ->
 unspacify(S) ->
     unspacify(S, false, "").
 
-is_space($ ) -> true;
+is_space($\s) -> true;
 is_space($\t) -> true;
 is_space(_) -> false.
 
@@ -226,13 +267,13 @@ unspacify([], _PrevSpace, Acc) ->
     lists:reverse(Acc);
 unspacify([C | Rest], true, Acc) ->
     case is_space(C) of
-        true -> unspacify(Rest, true, Acc);
-        false -> unspacify(Rest, false, [C | [$  | Acc]])
+       true -> unspacify(Rest, true, Acc);
+       false -> unspacify(Rest, false, [C | Acc])
     end;
 unspacify([C | Rest], false, Acc) ->
     case is_space(C) of
-        true -> unspacify(Rest, true, Acc);
-        false -> unspacify(Rest, is_space(C), [C | Acc])
+       true -> unspacify(Rest, true, Acc);
+       false -> unspacify(Rest, is_space(C), [C | Acc])
     end.
 
 get_head(T) ->
@@ -379,7 +420,8 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
-    erlide_scanner_server:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
+    _D = erlide_scanner_server:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
+	?D(_D),
     S = erlide_scanner_server:getTokens(ScannerName),
     S.
 

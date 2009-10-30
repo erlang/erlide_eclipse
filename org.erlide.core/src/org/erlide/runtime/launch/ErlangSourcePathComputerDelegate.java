@@ -11,7 +11,9 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.jinterface.backend.RuntimeInfo;
 
 public class ErlangSourcePathComputerDelegate implements
 		ISourcePathComputerDelegate {
@@ -29,6 +31,10 @@ public class ErlangSourcePathComputerDelegate implements
 		if (containers.isEmpty()) {
 			containers.add(new WorkspaceSourceContainer());
 		}
+		String runtimeName= configuration.getAttribute(ErlLaunchAttributes.RUNTIME_NAME, "").trim();
+		final RuntimeInfo info = ErlangCore.getRuntimeInfoManager().getRuntime(
+				runtimeName);
+		containers.add(new ErlangOtpSourceContainer(info));
 		return containers.toArray(new ISourceContainer[containers.size()]);
 	}
 

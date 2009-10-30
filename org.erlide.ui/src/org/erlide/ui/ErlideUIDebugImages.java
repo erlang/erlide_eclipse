@@ -124,6 +124,8 @@ public class ErlideUIDebugImages {
 
 	public static final String IMG_OBJ_JAVA_INSPECT_EXPRESSION = "IMG_OBJ_JAVA_INSPECT_EXPRESSION"; //$NON-NLS-1$
 
+	public static final String IMG_OBJ_UNINTERPRETED_STACK_FRAME = "IMG_OBJ_UNINTERPRETED_STACK_FRAME"; //$NON-NLS-1$
+
 	/*
 	 * Set of predefined Image Descriptors.
 	 */
@@ -266,6 +268,9 @@ public class ErlideUIDebugImages {
 		declareRegistryImage(IMG_OBJS_JSP_BRKPT_TYPE, T_OBJ
 				+ "jspbrkpt_obj.gif"); //$NON-NLS-1$
 		declareRegistryImage(IMG_OBJS_WATCHPOINT_TYPE, T_OBJ + "jwatch_obj.gif"); //$NON-NLS-1$
+
+		declareRegistryImage(IMG_OBJ_UNINTERPRETED_STACK_FRAME, T_OBJ
+				+ "uninterpreted_stckframe_obj.gif"); //$NON-NLS-1$
 
 	}
 
