@@ -1,4 +1,4 @@
-package org.erlide.debug.ui.views;
+package org.erlide.debug.ui.utils;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -12,10 +12,10 @@ public class ActionMessages {
 	private ActionMessages() {
 	}
 
-	public static String getString(String key) {
+	public static String getString(final String key) {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
+		} catch (final MissingResourceException e) {
 			return '!' + key + '!';
 		}
 	}

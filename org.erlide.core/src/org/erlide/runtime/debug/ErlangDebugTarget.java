@@ -54,20 +54,40 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	public static class TraceChangedEventData {
 		public static final int ADDED = 1;
 		private final int what;
-		private final OtpErlangObject[] objects;
+		private final ILaunch launch;
+		private final IDebugTarget node;
+		private final OtpErlangPid pid;
+		private final OtpErlangTuple[] events;
 
-		public TraceChangedEventData(final int what,
-				final OtpErlangObject[] objects) {
+		public ILaunch getLaunch() {
+			return launch;
+		}
+
+		public IDebugTarget getNode() {
+			return node;
+		}
+
+		public TraceChangedEventData(final int what, final ILaunch launch,
+				final IDebugTarget node, final OtpErlangPid pid,
+				final OtpErlangTuple[] events) {
+			super();
 			this.what = what;
-			this.objects = objects;
+			this.launch = launch;
+			this.node = node;
+			this.pid = pid;
+			this.events = events;
 		}
 
 		public int getWhat() {
 			return what;
 		}
 
-		public OtpErlangObject[] getObjects() {
-			return objects;
+		public OtpErlangTuple[] getEvents() {
+			return events;
+		}
+
+		public OtpErlangPid getPid() {
+			return pid;
 		}
 
 	}
@@ -336,8 +356,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			addToTraceList((OtpErlangTuple) o);
 			final DebugEvent traceChangedEvent = new DebugEvent(this,
 					DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
+			final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
+					metaEvent, what);
 			final TraceChangedEventData data = new TraceChangedEventData(
-					TraceChangedEventData.ADDED, new OtpErlangObject[] { o });
+					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(), p
+							.getPid(),
+					new OtpErlangTuple[] { (OtpErlangTuple) o });
 			traceChangedEvent.setData(data);
 			fireEvent(traceChangedEvent);
 			// ErlLogger.info("Trace: " + s);
@@ -374,7 +398,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				pid = getPidFromMeta(metaPid);
 			}
 			// ErlLogger.debug("  pid " + pid);
-			ErlangProcess erlangProcess = getErlangProcess(pid);
+			ErlangProcess erlangProcess = getOrCreateErlangProcessFromMeta(
+					metaPid, metaEvent, what);
 			if (erlangProcess == null) {
 				erlangProcess = createErlangProcess(pid);
 			}
@@ -438,6 +463,23 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		} else {
 			return META_UNKNOWN;
 		}
+	}
+
+	private ErlangProcess getOrCreateErlangProcessFromMeta(
+			final OtpErlangPid metaPid, final OtpErlangTuple metaEvent,
+			final int what) {
+		final OtpErlangPid pid;
+		if (what == META_EXIT_AT) {
+			pid = (OtpErlangPid) metaEvent.elementAt(4);
+		} else {
+			pid = getPidFromMeta(metaPid);
+		}
+		// ErlLogger.debug("  pid " + pid);
+		ErlangProcess erlangProcess = getErlangProcess(pid);
+		if (erlangProcess == null) {
+			erlangProcess = createErlangProcess(pid);
+		}
+		return erlangProcess;
 	}
 
 	void handleIntEvent(final OtpErlangTuple intEvent) {

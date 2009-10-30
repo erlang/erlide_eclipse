@@ -97,12 +97,12 @@ public class DebugTraceTarget extends DebugTraceElement implements IDebugTarget 
 		return launch;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getAdapter(final Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public Object getAdapter(final Class adapter) {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
 
 	public boolean canTerminate() {
 		return true;
