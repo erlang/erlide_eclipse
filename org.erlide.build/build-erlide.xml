@@ -65,7 +65,6 @@
     	<mkdir dir="${buildDirectory}/plugins"/>
     	<copy todir="${buildDirectory}/plugins">
     		<fileset dir="..">
-    			<include name="com.ericsson.jinterface/**"/>
     			<include name="org.erlide.core/**"/>
     			<include name="org.erlide.help/**"/>
     			<include name="org.erlide.jinterface/**"/>

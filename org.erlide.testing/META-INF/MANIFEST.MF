@@ -6,7 +6,9 @@ Bundle-Version: 0.5.1.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit4,
- org.erlide.jinterface;bundle-version="0.5.2",
+ org.erlide.libs;bundle-version="1.0.0",
+ org.erlide.core;bundle-version="0.6.6",
+ org.erlide.jinterface;bundle-version="0.6.6",
  org.erlide.ui;bundle-version="0.6.0"
 Bundle-ClassPath: erlide-testing.jar,
  lib/hamcrest-all-1.1.jar,
