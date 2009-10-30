@@ -128,10 +128,10 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static ContainerFilter getIncludePathFilter(final IProject project) {
+	public static ContainerFilter getIncludePathFilter(final IProject project, final IContainer current) {
 		return new ContainerFilter() {
 			public boolean accept(final IContainer container) {
-				return isOnIncludePath(container);
+				return container.equals(current) || isOnIncludePath(container);
 			}
 		};
 	}

@@ -201,7 +201,7 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, m.getResource().getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -252,7 +252,7 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, m.getResource().getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -305,7 +305,7 @@ public class ErlModelUtils {
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
 								element.getFilenameLastPart(), PluginUtils
-										.getIncludePathFilter(project));
+										.getIncludePathFilter(project, m.getResource().getParent()));
 				if (re == null) {
 					try {
 						String s = element.getFilename();
