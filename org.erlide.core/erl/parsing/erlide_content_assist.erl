@@ -10,7 +10,11 @@
 %% Include files
 %%
 
+-define(DEBUG, 1).
+
+-include("erlide.hrl").
 -include("erlide_scanner.hrl").
+
 
 %%
 %% Exported Functions
@@ -24,9 +28,11 @@
 
 %% check if the text is where to enter record field
 check_record(S) ->
-    case erlide_scan:string(S) of
+    case catch erlide_scan:string(S) of
 	{ok, Tokens, _Pos} ->
 	    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
+	{_, _} ->
+	    {ok, true};
 	_ ->
 	    none
     end.
@@ -36,6 +42,7 @@ check_record(S) ->
 get_variables(Src, Prefix) ->
     case erlide_scan:string(Src) of
 	{ok, Tokens, _Pos} ->
+	    ?D({ok, Tokens, _Pos}),
 	    {ok, get_var_tokens(Tokens, Prefix)};
 	_ ->
 	    none
@@ -80,6 +87,8 @@ check_record_tokens([eof | _], A) ->
     A;
 check_record_tokens([#token{kind=eof} | _], A) ->
     A;
+check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
+    check_record_tokens(Rest, true);
 check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
     check_record_tokens(Rest, true);
 check_record_tokens([#token{kind='#'}], _) ->
