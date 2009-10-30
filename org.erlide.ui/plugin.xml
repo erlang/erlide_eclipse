@@ -522,12 +522,12 @@
             id="org.erlide.ui.actions.test"
             name="Test">
       </command>
-      <command
+      <!-- <command
             name="Toggle debug tracing"
             description="Toggle debug tracing"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.erlide.debug.ui.commands.ToggleDebugTracing">
-      </command>
+      </command> -->
       <command
             categoryId="org.erlide.ui.erlideCategory"
             description="Clear Cache"
@@ -735,7 +735,7 @@
                 name="erlideGroup">
           </separator>
        </menu>
-       <action
+<!--       <action
              class="org.erlide.debug.ui.actions.ToggleDebugTracingAction"
              definitionId="org.erlide.debug.ui.commands.ToggleDebugTracing"
              helpContextId="toggle_debug_tracing_action_context"
@@ -753,6 +753,7 @@
              label="%erlangTracing.label"
              menubarPath="org.eclipse.ui.run/erlideGroup">
        </action>
+-->
     </actionSet>
 <!--
     <actionSet
