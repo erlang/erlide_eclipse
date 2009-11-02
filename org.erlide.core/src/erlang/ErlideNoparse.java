@@ -65,7 +65,7 @@ public class ErlideNoparse {
 
 	public static void destroy(final Backend b, final String module) {
 		try {
-			b.call(ERLIDE_NOPARSE, "destroy", "a", module);
+			b.call("erlide_noparse_server", "destroy", "a", module);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
