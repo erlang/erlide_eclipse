@@ -474,7 +474,10 @@ public class Backend {
 			int i = 10;
 			do {
 				r = call("erlang", "whereis", "a", "code_server");
-				Thread.sleep(200);
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+				}
 				i--;
 			} while (!(r instanceof OtpErlangPid) && i > 0);
 			if (!(r instanceof OtpErlangPid)) {
