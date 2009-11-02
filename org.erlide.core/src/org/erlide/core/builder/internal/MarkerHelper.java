@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
@@ -307,7 +307,7 @@ public final class MarkerHelper {
 			return;
 		}
 		boolean hadScanner = m.hasScanner();
-		final IErlScanner s = m.getScanner();
+		final ErlScanner s = m.getScanner();
 		if (s == null) {
 			return;
 		}

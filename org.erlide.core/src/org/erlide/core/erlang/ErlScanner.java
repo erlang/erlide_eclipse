@@ -13,13 +13,14 @@ package org.erlide.core.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.jinterface.backend.IDisposable;
 
 import erlang.ErlideScanner;
 
 /**
  * Erlang syntax scanner
  */
-public class ErlScanner implements IErlScanner {
+public class ErlScanner implements IDisposable {
 
 	private final IErlModule module;
 

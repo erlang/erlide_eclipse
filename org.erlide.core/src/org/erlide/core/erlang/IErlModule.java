@@ -84,7 +84,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	boolean hasScanner();
 
-	IErlScanner getScanner();
+	ErlScanner getScanner();
 
 	void initialReconcile();
 
