@@ -28,8 +28,6 @@ public class ErlScanner implements IDisposable {
 			final String moduleFileName, final String erlidePath) {
 		this.module = module;
 		moduleName = ErlangToolkit.createScannerModuleName(module);
-		// this.moduleFileName = moduleFileName;
-		// this.erlidePath = erlidePath;
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
 				erlidePath, false);
 	}

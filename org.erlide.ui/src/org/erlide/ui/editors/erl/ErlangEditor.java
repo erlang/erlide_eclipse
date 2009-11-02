@@ -287,28 +287,32 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private final class ScannerListener implements IDocumentListener {
+		private final IErlModule module;
+		private final String scannerName;
+
 		public ScannerListener() {
+			module = getModule();
+			scannerName = ErlangToolkit.createScannerModuleName(module);
 		}
 
 		public void documentAboutToBeChanged(final DocumentEvent event) {
 		}
 
 		public void documentChanged(final DocumentEvent event) {
-			ErlideScanner.notifyChange(getScannerModuleName(), event
-					.getOffset(), event.getLength(), event.getText());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyChange(scannerName, event.getOffset(), event
+					.getLength(), event.getText());
 		}
 
 		public void documentOpened() {
-			ErlideScanner.notifyNew(getScannerModuleName());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyNew(scannerName);
 		}
 
-		private String getScannerModuleName() {
-			final IErlModule module = getModule();
-			if (module == null) {
-				return null;
-			}
-			return ErlangToolkit.createScannerModuleName(module);
-		}
 	}
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {

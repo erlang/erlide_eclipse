@@ -2,10 +2,12 @@ package org.erlide.core.text;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.jinterface.backend.util.Assert;
 
 public class ErlangToolkit {
 
 	public static String createScannerModuleName(final IErlModule module) {
+		Assert.isNotNull(module);
 		final IResource res = module.getResource();
 		String resName;
 		if (res != null) {

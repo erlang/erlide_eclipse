@@ -7,6 +7,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Assert;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -166,14 +167,12 @@ public class ErlideScanner {
 	}
 
 	@SuppressWarnings("boxing")
-	public static void notifyChange(final String module, final int offset,
+	public static void notifyChange(final String scannerName, final int offset,
 			final int length, final String text) {
-		if (module == null) {
-			return;
-		}
+		Assert.isNotNull(scannerName);
 		try {
 			final OtpErlangObject msg = ErlUtils.format(
-					"{change, ~a, ~i,  ~i, ~s}", module, offset, length, text);
+					"{change, ~a, ~i,  ~i, ~s}", scannerName, offset, length, text);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
@@ -181,12 +180,10 @@ public class ErlideScanner {
 		}
 	}
 
-	public static void notifyNew(final String module) {
-		if (module == null) {
-			return;
-		}
+	public static void notifyNew(final String scannerName) {
+		Assert.isNotNull(scannerName);
 		try {
-			final OtpErlangObject msg = ErlUtils.format("{new, ~a}", module);
+			final OtpErlangObject msg = ErlUtils.format("{new, ~a}", scannerName);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
