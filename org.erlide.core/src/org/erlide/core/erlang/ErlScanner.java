@@ -12,7 +12,7 @@ package org.erlide.core.erlang;
 
 import java.util.Collection;
 
-import org.eclipse.core.resources.IResource;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.IDisposable;
 
 import erlang.ErlideScanner;
@@ -21,36 +21,17 @@ import erlang.ErlideScanner;
  * Erlang syntax scanner
  */
 public class ErlScanner implements IDisposable {
-
 	private final IErlModule module;
-
 	private final String moduleName;
-
-	// private final String moduleFileName;
-	// private final String erlidePath;
 
 	public ErlScanner(final IErlModule module, final String initialText,
 			final String moduleFileName, final String erlidePath) {
 		this.module = module;
-		moduleName = createScannerModuleName(module);
+		moduleName = ErlangToolkit.createScannerModuleName(module);
 		// this.moduleFileName = moduleFileName;
 		// this.erlidePath = erlidePath;
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
 				erlidePath, false);
-	}
-
-	public static String createScannerModuleName(final IErlModule module) {
-		final IResource res = module.getResource();
-		String resName;
-		if (res != null) {
-			resName = "mod" + res.getFullPath().toPortableString().hashCode()
-					+ "_" + res.getName();
-		} else {
-			// This is not used more than temporarily, so it's OK to have
-			// a name that's temporary, as long as it's unique
-			resName = "mod" + module.hashCode() + "_";
-		}
-		return resName;
 	}
 
 	public void dispose() {

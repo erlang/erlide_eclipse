@@ -43,7 +43,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.internal.ErlComment;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -654,7 +653,7 @@ public class DefaultErlangFoldingStructureProvider implements
 				if (position != null) {
 					map.put(new ErlangProjectionAnnotation(element, collapse
 							&& fFirstTimeInitialCollapse,
-							element instanceof ErlComment), position);
+							element instanceof IErlComment), position);
 				}
 			}
 		}
@@ -768,9 +767,6 @@ public class DefaultErlangFoldingStructureProvider implements
 
 			computeAdditions(fModule, updated);
 			final Map<Object, List<Tuple>> previous = createAnnotationMap(model);
-
-			final Collection<List<Tuple>> pv = previous.values();
-			final Set<Object> ks = previous.keySet();
 
 			for (final Entry<ErlangProjectionAnnotation, Position> entry : updated
 					.entrySet()) {
