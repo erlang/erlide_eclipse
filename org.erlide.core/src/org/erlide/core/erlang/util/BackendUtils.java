@@ -37,13 +37,14 @@ public class BackendUtils {
 		return projects.toArray(new IProject[projects.size()]);
 	}
 
-	public static String getErlideNameSuffix() {
+	public static String getErlideNameTag() {
 		String fUniqueId;
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final String location = root.getLocation().toPortableString();
 		String user = System.getProperty("user.name");
-		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFFFF) + "_"
-				+ user;
+		String timestamp = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
+		fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFF) + "_"
+				+ user + "_" + timestamp;
 		return fUniqueId.replaceAll("[^a-zA-Z0-9_-]", "");
 	}
 
