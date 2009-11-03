@@ -1,4 +1,46 @@
-x
+List of user visible changes between 0.6.5 and 0.7.0 (20091103)
+
+	http://www.assembla.com/spaces/erlide/tickets/362-random-erlang-crashes-on-Linux-with-exit-code-134
+
+	delayed startup of backend until really needed
+
+	http://www.assembla.com/spaces/erlide/tickets/461-autocompletion-for-macros-records-with-quotes-doesn-t-work
+
+	fix NPE if .erlang.cookie is empty
+
+	builder: now twice as fast (parallel) and interruptible
+
+	a NPE did hide connection problems
+
+	added "report problems" on help menu
+
+	documentation hover was too small at times
+
+	http://www.assembla.com/spaces/erlide/tickets/306-hover-documentation-with-non-edoc-comments-is-ugly
+
+	added option to start internal backends with short name
+
+	some console improvements (more to follow, it's not perfect yet!)
+		- no more ide console, use run/debug to start   
+		- stdout is captured (#221)
+
+	147   	Debugger - interpret and un-interpret modules   	 
+	
+	243 	debugger: show the current stack even outside interpreted code 	
+
+	355 	debugger - terminated processes with stack look like they're running 	
+
+	390 	scanner and parser - should only update caches on save etc 	
+
+	402 	overriden 'int' module lacks functionality of the original one 	
+
+	426 	start backend on a standalone node.  Only start+console+codeloading are supported
+
+	441 	add "system info" functionality 	
+
+	451 	ErlFolder.getModules(IParent) is very slow 	
+
+	457 	builder: scan for TODO without a full scan 	
 
 List of user visible changes between 0.6.2 and 0.6.5 (r2877)
 
