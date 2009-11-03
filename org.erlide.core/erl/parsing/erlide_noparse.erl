@@ -39,7 +39,6 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, Up
         CacheFun = fun(D) ->
 			   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
 						      InitialText, StateDir, ErlidePath, UpdateCaches),
-			   erlide_scanner_server:destroy(ScannerName),
 			   D 
 		   end,
     	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
