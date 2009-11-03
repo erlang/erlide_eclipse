@@ -187,7 +187,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		ErlideBackend b = buildBackends.get(version);
 		if (b == null) {
 			info.setNodeName(version);
-			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameSuffix());
+			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameTag());
 			info.setCookie("erlide");
 			info.hasConsole(false);
 			// will add workspace unique id
@@ -270,7 +270,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (defLabel != null) {
 				info.setNodeName(defLabel);
 			} else {
-				String nodeName = BackendUtils.getErlideNameSuffix()
+				String nodeName = BackendUtils.getErlideNameTag()
 						+ "_erlide";
 				info.setNodeName(nodeName);
 			}
