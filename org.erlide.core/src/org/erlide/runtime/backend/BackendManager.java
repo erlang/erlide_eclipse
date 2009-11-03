@@ -300,9 +300,10 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public Collection<ErlideBackend> getAllBackends() {
 		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
-		ErlideBackend ide = getIdeBackend();
-		if (ide != null) {
-			ebs.add(ide);
+		if (ideBackend != null) {
+			// we don't want to activate backend if it didn't exist, so don't
+			// use getIdeBackend()
+			ebs.add(ideBackend);
 		}
 		for (final Set<ErlideBackend> b : executionBackends.values()) {
 			ebs.addAll(b);
