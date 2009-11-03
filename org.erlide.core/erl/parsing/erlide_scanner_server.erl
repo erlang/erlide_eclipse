@@ -125,11 +125,15 @@ server_cmd(ScannerName, Command) ->
 	server_cmd(ScannerName, Command, []).
 
 server_cmd(ScannerName, Command, Args) ->
-    ScannerName ! {Command, self(), Args},
-    receive
-        {Command, _Pid, Result} ->
-            Result
-    end.
+	try
+		ScannerName ! {Command, self(), Args},
+		receive
+			{Command, _Pid, Result} ->
+				Result
+		end
+	catch _:Exception ->
+			  {error, Exception}
+	end.
 
 %% spawn_server() ->
 %% 	case whereis(?SERVER) of
