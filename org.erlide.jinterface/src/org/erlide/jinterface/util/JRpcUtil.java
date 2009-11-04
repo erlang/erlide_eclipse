@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -66,7 +66,7 @@ public class JRpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (final Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return JInterfaceFactory.mkTuple(
+					return OtpErlang.mkTuple(
 							new OtpErlangAtom("error"), new OtpErlangString(
 									String
 											.format("Bad RPC: %s", e
@@ -75,7 +75,7 @@ public class JRpcUtil {
 
 			}
 			log("RPC: unknown receiver: " + target);
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown object ref %s%n", target)));
 
@@ -90,13 +90,13 @@ public class JRpcUtil {
 			} catch (final Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
-				return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+				return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 						new OtpErlangString(String.format("Bad RPC: %s", e
 								.getMessage())));
 			}
 		} else {
 			log("unknown receiver: " + target);
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown receiver %s", target)));
 		}
@@ -105,7 +105,7 @@ public class JRpcUtil {
 	@SuppressWarnings("unchecked")
 	private static MethodDescription getDescription(OtpErlangObject target) {
 		if (!(target instanceof OtpErlangTuple)) {
-			target = JInterfaceFactory.mkTuple(target, new OtpErlangList());
+			target = OtpErlang.mkTuple(target, new OtpErlangList());
 		}
 		final OtpErlangTuple t = (OtpErlangTuple) target;
 		final String name = ErlUtils.asString(t.elementAt(0));
@@ -173,7 +173,7 @@ public class JRpcUtil {
 			for (final Class<?> param : params) {
 				paramstr.append(param.getName()).append(",");
 			}
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"can't find method %s of %s(%s)", method.name, cls
 									.getName(), paramstr)));
@@ -181,7 +181,7 @@ public class JRpcUtil {
 			final Throwable cause = x.getCause();
 			log(String.format("invocation of %s failed: %s", method.name, cause
 					.getMessage()));
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, cause
 									.getMessage())));
@@ -192,7 +192,7 @@ public class JRpcUtil {
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
 					x.getMessage(), paramstr));
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", method.name, x
 									.getMessage())));
@@ -203,7 +203,7 @@ public class JRpcUtil {
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
 					.getName(), e.getMessage(), paramstr));
-			return JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
 							"invocation of %s failed: %s", cls.getName(), e
 									.getMessage())));

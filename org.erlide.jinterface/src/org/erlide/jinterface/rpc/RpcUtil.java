@@ -13,7 +13,7 @@ package org.erlide.jinterface.rpc;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -234,7 +234,7 @@ public final class RpcUtil {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
-		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
+		return OtpErlang.mkTuple(pid, OtpErlang.mkTuple(
 				new OtpErlangAtom("call"), m, f, a, gleader));
 	}
 
@@ -296,7 +296,7 @@ public final class RpcUtil {
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
 		final OtpErlangAtom castTag = new OtpErlangAtom("$gen_cast");
-		return JInterfaceFactory.mkTuple(castTag, JInterfaceFactory.mkTuple(
+		return OtpErlang.mkTuple(castTag, OtpErlang.mkTuple(
 				new OtpErlangAtom("cast"), m, f, a, gleader));
 	}
 

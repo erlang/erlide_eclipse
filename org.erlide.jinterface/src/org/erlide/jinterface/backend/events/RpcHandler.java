@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.JRpcUtil;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -89,7 +89,7 @@ public final class RpcHandler extends EventHandler {
 	}
 
 	public void rpcReply(final OtpErlangPid from, final OtpErlangObject result) {
-		fRuntime.send(from, JInterfaceFactory.mkTuple(
+		fRuntime.send(from, OtpErlang.mkTuple(
 				new OtpErlangAtom("reply"), result));
 	}
 

@@ -19,7 +19,7 @@ import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -58,7 +58,7 @@ public class BackendShell {
 
 	public void send(final String string) {
 		if (server != null) {
-			fBackend.send(server, JInterfaceFactory.mkTuple(new OtpErlangAtom(
+			fBackend.send(server, OtpErlang.mkTuple(new OtpErlangAtom(
 					"input"), new OtpErlangString(string)));
 		}
 		if (!fBackend.isDistributed()) {
