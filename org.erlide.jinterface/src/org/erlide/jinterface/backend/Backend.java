@@ -109,6 +109,18 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
+	public void async_call_cb(final RpcCallback cb, final String m,
+			final String f, final String signature, final Object... args)
+			throws BackendException {
+		try {
+			makeAsyncCbCall(cb, m, f, signature, args);
+		} catch (final RpcException e) {
+			throw new BackendException(e);
+		} catch (SignatureException e) {
+			throw new BackendException(e);
+		}
+	}
+
 	public void cast(final String m, final String f, final String signature,
 			final Object... args) throws BackendException {
 		try {
@@ -365,6 +377,25 @@ public class Backend extends OtpNodeStatus {
 			SignatureException {
 		return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
 				args0);
+	}
+
+	protected void makeAsyncCbCall(final RpcCallback cb, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, new OtpErlangAtom("user"), module, fun, signature,
+				args);
+	}
+
+	private void makeAsyncCbCall(final RpcCallback cb,
+			final OtpErlangObject gleader, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		checkAvailability();
+		
+		WHAT TO DO HERE???
+		
+		RpcUtil.sendRpcCall(fNode, fPeer, gleader, module, fun, signature,
+				args);
 	}
 
 	protected OtpErlangObject makeCall(final int timeout,
