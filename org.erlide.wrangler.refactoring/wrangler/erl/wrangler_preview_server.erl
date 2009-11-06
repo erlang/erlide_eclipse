@@ -1,23 +1,28 @@
-%%%-------------------------------------------------------------------
-%%% File    : wrangler_undo_server.erl
-%%% Author  :  <Huiqing>
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
 %%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
-
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
-%% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
-%%%-------------------------------------------------------------------
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -module(wrangler_preview_server).
 
 -behaviour(gen_server).
@@ -31,7 +36,26 @@
 
 -include("../include/wrangler.hrl").
 
--record(state, {files=[]}).
+-record(state, {files=[], logmsg=""}).
+
+-ifdef(MONITOR).
+-define(update_monitor_code(Files), 
+	lists:foreach(fun(F) ->
+			      DirName = filename:dirname(F),
+			      BaseName = filename:basename(F, ".erl"),
+			      NewDirName= DirName++"_wrangler",
+			      case filelib:is_dir(NewDirName) of 
+				  true ->
+				      NewFileName=filename:join([NewDirName, BaseName++".erl"]),
+				      file:copy(F, NewFileName);
+				  _ ->
+				      ok
+			      end
+		      end, Files)). 		      
+-else.
+-define(update_monitor_code(_Files), ok).
+-endif.
+
 
 %%====================================================================
 %% API
@@ -42,20 +66,20 @@ start_preview_server() ->
     process_flag(trap_exit, true),
     gen_server:start_link({local, wrangler_preview_server}, ?MODULE, [], []).
 
--spec(commit/0::() ->
-	     {ok, [filename()]}).
+%%-spec(commit/0::() ->
+%%	     {ok, [filename()]}).
 commit() ->
     gen_server:call(wrangler_preview_server, commit).
 
--spec(abort/0::() ->{ok, [filename()]}).
+%%-spec(abort/0::() ->{ok, [filename()]}).
 
 abort() ->
     gen_server:call(wrangler_preview_server, abort).
    
--spec(add_files/1::([filename()]) -> ok).
+%%-spec(add_files/1::([filename()]) -> ok).
 	     
-add_files(Files)->
-    gen_server:cast(wrangler_preview_server, {add, Files}).
+add_files({Files,LogMsg})->
+    gen_server:cast(wrangler_preview_server, {add, {Files, LogMsg}}).
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -81,26 +105,27 @@ init([]) ->
 %%--------------------------------------------------------------------
 
 handle_call(abort, _From, #state{files=Files}) ->
-    SwpFiles = lists:flatmap(fun({{F1, F2, IsNew},Swp}) -> 
-				 case IsNew of 
-				     false -> [Swp];
-				     _ -> case F1==F2 of 
-					      true ->[F1, Swp];
+    SwpFiles = lists:flatmap(fun ({{F1, F2, IsNew}, Swp}) ->
+				     case IsNew of
+				       false -> [Swp];
+				       _ -> case F1 == F2 of
+					      true -> [F1, Swp];
 					      _ -> [F1, F2, Swp]
-					  end
-				 end
-			 end, Files),
-    {reply, {ok, SwpFiles}, #state{files=[]}};
+					    end
+				     end
+			     end, Files),
+    {reply, {ok, SwpFiles}, #state{files=[], logmsg=""}};
 
-handle_call(commit, _From, #state{files=Files}) ->
-    OldFiles = lists:map(fun({{F1,F2,IsNew}, _Swp}) -> {F1,F2,IsNew} end, Files),
-    FilesToBackup = lists:map(fun({F1, F2, IsNew}) ->
+handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
+    OldFiles = lists:map(fun ({{F1, F2, IsNew}, _Swp}) -> {F1, F2, IsNew} end, Files),
+    FilesToBackup = lists:map(fun ({F1, F2, IsNew}) ->
 				      {ok, Bin} = file:read_file(F1), {{F1, F2, IsNew}, Bin}
 			      end, OldFiles),
-    wrangler_undo_server:add_to_history(FilesToBackup),
-    lists:foreach(fun({{_F1,F2, _IsNew},Swp}) -> file:copy(Swp, F2) end, Files),
-    Files1 = lists:map(fun({{F1,F2, IsNew}, Swp}) -> [F1, F2, Swp, IsNew] end, Files),
-    {reply, {ok, Files1}, #state{files=[]}}.
+    wrangler_undo_server:add_to_history({FilesToBackup, LogMsg, element(1, hd(OldFiles))}),
+    ?update_monitor_code([F1 || {F1, _F2, _} <- OldFiles]),
+    lists:foreach(fun ({{_F1, F2, _IsNew}, Swp}) -> file:copy(Swp, F2) end, Files),
+    Files1 = lists:map(fun ({{F1, F2, IsNew}, Swp}) -> [F1, F2, Swp, IsNew] end, Files),
+    {reply, {ok, Files1, LogMsg}, #state{files=[], logmsg=""}}.
     
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
@@ -108,8 +133,8 @@ handle_call(commit, _From, #state{files=Files}) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast({add, Files},_State=#state{files=_Files}) ->
-    {noreply, #state{files=Files}}.
+handle_cast({add, {Files, LogMsg}},_State=#state{files=_Files, logmsg=_LogMsg}) ->
+    {noreply, #state{files=Files, logmsg=LogMsg}}.
 	
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |

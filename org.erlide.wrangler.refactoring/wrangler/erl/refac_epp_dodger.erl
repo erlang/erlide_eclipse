@@ -112,7 +112,6 @@
 %% </dl>
 %%
 %% @see parse/2
-%% @see quick_parse_file/1
 %% @see refac_syntax:is_form/1
 
 parse_file(File, Options) ->
@@ -213,6 +212,8 @@ parse_form(Dev, L0, Parser, Options) ->
 		     L1};
                 {parse_error, IoErr} ->
 		    {error, IoErr, L1};
+		{parse_error, IoErr, Range} ->
+		    {error, {IoErr, Range}, L1};
                 {ok, F} ->
 		    {ok, F, L1}
             end;
@@ -234,9 +235,10 @@ start_pos([], L) ->
 
 parse_tokens(Ts) ->
     parse_tokens(Ts, fun fix_form/1).
+    
 
 parse_tokens(Ts, Fix) ->
-    case refac_parse:parse_form(Ts) of
+      case refac_parse:parse_form(Ts) of
         {ok, Form} ->
 	    Form;
         {error, IoErr} ->
@@ -246,7 +248,9 @@ parse_tokens(Ts, Fix) ->
 		{retry, Ts1, Fix1} ->
 		    parse_tokens(Ts1, Fix1);
 		error ->
-		    throw({parse_error, IoErr})
+		    H = hd(Ts),
+		    L = lists:last(Ts),
+		    throw({parse_error, IoErr, {token_loc(H), token_loc(L)}})
 	    end
     end.
 %% Skipping to the end of a macro call, tracking open/close constructs.
@@ -377,13 +381,13 @@ macro(L, {Type, LA, A}, Rest, As, Opt) ->
     scan_macros_1([], Rest, [{atom,L,macro_atom(Type,LA,A)} | As], Opt).
 
 macro_call([{'(',_}, {')',_}], L, {_, Ln, _}=N, Rest, As, Opt) ->
-    {Open, Close} = parentheses(As),
+    {Open, Close} = parentheses(As, L),
     scan_macros_1([], Rest,
 		  lists:reverse(Open ++ [{atom,L,?macro_call},
 					 {'(',L}, N, {')',Ln}] ++ Close,
 				As), Opt);
 macro_call([{'(',_} | Args], L, {_, Ln, _}=N, Rest, As, Opt) ->
-    {Open, Close} = parentheses(As),
+    {Open, Close} = parentheses(As, L),
     %% note that we must scan the argument list; it may not be skipped
     scan_macros_1(Args ++ Close,
 		  Rest,
@@ -399,10 +403,10 @@ macro_atom(var, {Ln, Col}, A) ->
 %% don't insert parentheses after a string token, to avoid turning
 %% `"string" ?macro' into a "function application" `"string"(...)'
 %% (see note at top of file)
-parentheses([{string, _, _} | _]) ->
+parentheses([{string, _, _} | _], _) ->
     {[], []};
-parentheses(_) ->
-    {[{'(',0}], [{')',0}]}.
+parentheses(_, L) ->
+    {[{'(',L}], [{')',L}]}.
 
 %% (after a macro has been found and the arglist skipped, if any)
 scan_macros_1(Args, [{string, L, _} | _]=Rest, As,
@@ -534,4 +538,9 @@ tokens_to_string([{A,_} | Ts]) ->
 tokens_to_string([]) ->
     "".
 
+token_loc(T) ->
+    case T of
+      {_, L, _V} -> L;
+      {_, L1} -> L1
+    end.
 %% =====================================================================

@@ -1,20 +1,31 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% =====================================================================
 %% Refactoring: Register a process.
 %%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
-%%
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-%%
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %%
 %% =====================================================================
@@ -43,7 +54,7 @@
 
 -module(refac_register_pid).
 
--export([register_pid/6, register_pid_eclipse/6, register_pid_1/9, register_pid_2/8]).
+-export([register_pid/6, register_pid_eclipse/6, register_pid_1/10, register_pid_2/9]).
 
 -include("../include/wrangler.hrl").
 
@@ -52,19 +63,24 @@
 %% @doc This function associates a name, which must be an atom, with a pid, and replaces the uses of this pid in 
 %% send expressions with the name.
 
--spec(register_pid(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())-> 
-	     {error, string()} |{ok, [filename()]}).
+%%-spec(register_pid(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())-> 
+%%	     {error, string()} |{ok, [filename()]}).
 register_pid(FName, Start, End, RegName,  SearchPaths, TabWidth) ->
     register_pid(FName, Start, End, RegName, SearchPaths, TabWidth, emacs).
 
 
--spec(register_pid_eclipse(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())
-      -> {error, string()} |{ok, [{filename(), filename(), string()}]}).
+%%-spec(register_pid_eclipse(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())
+%%      -> {error, string()} |{ok, [{filename(), filename(), string()}]}).
 register_pid_eclipse(FName, Start, End, RegName, SearchPaths, TabWidth) ->
     register_pid(FName, Start, End, RegName, SearchPaths, TabWidth, eclipse).
 
-register_pid(FName, Start={_Line1, _Col1}, End={_Line2, _Col2}, RegName, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:register_pid(~p, {~p,~p}, {~p,~p}, ~p,~p, ~p)\n",  [?MODULE, FName, _Line1, _Col1, _Line2, _Col2, RegName, SearchPaths, TabWidth]),
+register_pid(FName, Start={Line1, Col1}, End={Line2, Col2}, RegName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:register_pid(~p, {~p,~p}, {~p,~p}, ~p,~p, ~p)\n",  
+		 [?MODULE, FName, Line1, Col1, Line2, Col2, RegName, SearchPaths, TabWidth]),
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":register_pid(" ++ "\"" ++
+	FName ++ "\", {" ++ integer_to_list(Line1) ++	", " ++ integer_to_list(Col1) ++ "},"++
+	"{" ++ integer_to_list(Line2) ++ ", " ++ integer_to_list(Col2) ++ "},"  ++ "\"" ++ RegName ++ "\","
+        ++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",    
     case is_process_name(RegName) of
 		true ->	{ok, {AnnAST,Info}}= refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth), 
 				case pos_to_spawn_match_expr(AnnAST, Start, End) of
@@ -83,7 +99,7 @@ register_pid(FName, Start={_Line1, _Col1}, End={_Line2, _Col2}, RegName, SearchP
 							    {ok, Results} ->
 								case Editor of 
 								    emacs ->
-									refac_util:write_refactored_files_for_preview(Results),
+									refac_util:write_refactored_files_for_preview(Results, Cmd),
 									ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 									?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 										     [ChangedFiles]),
@@ -96,8 +112,10 @@ register_pid(FName, Start={_Line1, _Col1}, End={_Line2, _Col2}, RegName, SearchP
 								end;
 							    {error, Reason} -> {error, Reason}
 							end;	
-						    {unknown_pnames, _UnKnownPNames, RegPids} -> {unknown_pnames, RegPids};
-						    {unknown_pids, UnKnownPids} ->{unknown_pids, UnKnownPids};
+						    {unknown_pnames, _UnKnownPNames, RegPids} -> 
+							{unknown_pnames, RegPids, Cmd};
+						    {unknown_pids, UnKnownPids} ->
+							{unknown_pids, UnKnownPids, Cmd};
 						    {error, Reason} -> {error, Reason}
 						end;
 					    {error, Reason} -> {error, Reason}
@@ -110,8 +128,9 @@ register_pid(FName, Start={_Line1, _Col1}, End={_Line2, _Col2}, RegName, SearchP
 
 -spec(register_pid_1(FName::filename(), StartLine::integer(), StartCol::integer(),EndLine::integer(), EndCol::integer(), 
 		     RegName::string(), RegPids::[{{atom(), atom(), integer()}, syntaxTree()}],
-		     SearchPaths::[dir()], TabWidth::integer())-> {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}]}).
-register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, SearchPaths, TabWidth) ->
+		     SearchPaths::[dir()], TabWidth::integer(), LogMsg::string())->
+	     {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}]}).
+register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     {ok, MatchExpr} = pos_to_spawn_match_expr(AnnAST, Start, End),
@@ -122,6 +141,7 @@ register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, Se
  	 ok ->  case do_register(FName, AnnAST, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of 
 		    {ok, Results} ->
 			ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
+			refac_util:write_refactored_files_for_preview(Results, LogMsg),
 			?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
 				  [ChangedFiles]),
 			{ok, ChangedFiles};
@@ -131,16 +151,16 @@ register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, Se
  				 {error, "The selected process is already registered at line "++ integer_to_list(Line)};
  	{unknown_pids, RegExprs} ->
  	    ?wrangler_io("\nWrangler could not decide the process(s) registered by the following expression(s), please check!\n",[]),
-	    lists:foreach(fun({{_M, _F, _A},PidExpr}) -> {{_Ln,_},_} = refac_util:get_range(PidExpr),
- 				  ?wrangler_io("Location: module:~p, function: ~p/~p, line: ~p\n ", [_M, _F, _A, _Ln]),
+	    lists:foreach(fun({{M, F, A},PidExpr}) -> {{Ln,_},_} = refac_util:get_range(PidExpr),
+ 				  ?wrangler_io("Location: module:~p, function: ~p/~p, line: ~p\n ", [M, F, A, Ln]),
  				  ?wrangler_io(refac_prettypr:format(PidExpr)++"\n",[]) 
 		      end, RegExprs),
- 	    {unknown_pids, RegExprs}
+ 	    {unknown_pids, RegExprs, LogMsg}
     end.
 
 -spec(register_pid_2(FName::filename(), StartLine::integer(), StartCol::integer(), EndLine::integer(),EndCol::integer(), RegName::string(),
-		     SearchPaths::[dir()],TabWidth::integer())-> {error, string()} |{ok, [filename()]}).    
-register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths, TabWidth) ->
+		     SearchPaths::[dir()],TabWidth::integer(), LogMsg::string())-> {error, string()} |{ok, [filename()]}).    
+register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     {ok, MatchExpr} = pos_to_spawn_match_expr(AnnAST, Start, End),
@@ -148,7 +168,7 @@ register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths
     RegName1 = list_to_atom(RegName),
     case do_register(FName,AnnAST, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of 
 	{ok, Results} ->
-	    refac_util:write_refactored_files_for_preview(Results),
+	    refac_util:write_refactored_files_for_preview(Results, LogMsg),
 	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 		      [ChangedFiles]),
@@ -194,16 +214,16 @@ pre_cond_check(ModName, AnnAST, Start, MatchExpr, RegName, _Info, SearchPaths, T
 							{error, "The process is already registered in function "++ atom_to_list(F)++"/"++integer_to_list(A)++"\n"};
 						    {unknown_pids, RegExprs} -> 
 							?wrangler_io("Wrangler could not decide the processe(s) registered by the followling expression(s):\n",[]),
-							 lists:foreach(fun({{_M, _F, _A},PidExpr}) -> 
-									   {{_Ln,_},_} = refac_util:get_range(PidExpr),
-									   ?wrangler_io("Location: module:~p, function: ~p/~p, line: ~p\n ", [_M, _F, _A, _Ln])
+							 lists:foreach(fun({{M, F, A},PidExpr}) -> 
+									   {{Ln,_},_} = refac_util:get_range(PidExpr),
+									   ?wrangler_io("Location: module:~p, function: ~p/~p, line: ~p\n ", [M, F, A, Ln])
 									  %% ?wrangler_io(refac_prettypr:format(PidExpr)++"\n") 
 								   end, RegExprs),
 							{unknown_pids, RegExprs}
 						end;
 					    _ -> ?wrangler_io("Wrangler could not decide the process name(s) used by the following register expression(s):\n",[]),
 						 UnKnowns1 = lists:map(fun({_, V}) -> V end, UnKnowns),
-						 lists:foreach(fun({_M, _F,_A, {_L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [_M, _F, _A, _L])
+						 lists:foreach(fun({M, F,A, {L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [M, F, A, L])
 							  end, UnKnowns1),
 						 {unknown_pnames, UnKnowns, RegPids}
 				       end
@@ -274,7 +294,7 @@ reached_funs_1(CallerCallee, Acc) ->
      case lists:usort(Res++Acc) == Acc of 
 	true -> Res;
 	_ -> reached_funs_1(CallerCallee, lists:usort(Res++Acc)) 
-    end.	      
+    end.       
 		
     
 is_direct_recursive_fun(ModName, FunName, Arity, FunDef) ->
@@ -312,7 +332,7 @@ is_recursive_fun(Files, {ModName, FunName, Arity, FunDef}) ->
 %% The only way to register a process is to use register/2.
 %% This function checks all the applications of 'register/2'.
 %% -spec(collect_registered_names_and_pids/1::([dir()])->
-%%               {[{{modulename(), functionname(), arity()},syntaxTree()}], [atom()], [{unknown, {modulename(), functionname(), arity(), pos()}}]}).
+%%               {[{{modulename(), functionname(), functionarity()},syntaxTree()}], [atom()], [{unknown, {modulename(), functionname(), functionarity(), pos()}}]}).
  
 collect_registered_names_and_pids(DirList, TabWidth) ->
     Files = refac_util:expand_files(DirList, ".erl"),
@@ -459,7 +479,7 @@ do_add_register_expr(Node, {MatchExpr, RegExpr}) ->
 		     {Node1, true}
 	    end;
 	_  -> {Node, false}
-    end.	  
+    end.   
 	    
     
 is_spawn_app(Tree) ->

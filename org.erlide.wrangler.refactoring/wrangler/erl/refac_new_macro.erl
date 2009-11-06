@@ -1,19 +1,32 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %% ============================================================================================
 %% Refactoring: Introduce a  macro to a selected expression.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
 %% =============================================================================================
@@ -33,26 +46,30 @@
 
 %% =============================================================================================
 
--spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-	      {error, string()} | {ok, string()}).
+%%-spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%	      {error, string()} | {ok, string()}).
 new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, emacs).
 
--spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+%%-spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, eclipse).
 
 
-new_macro(FileName, Start={_SLine, _SCol}, End={_ELine, _ECol}, NewMacroName, SearchPaths, TabWidth, Editor) ->
+new_macro(FileName, Start={SLine, SCol}, End={ELine, ECol}, NewMacroName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:new_macro(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n", 
-				 [refac_new_macro, FileName, _SLine, _SCol, _ELine, _ECol, NewMacroName, SearchPaths, TabWidth]),
+				 [?MODULE, FileName, SLine, SCol, ELine, ECol, NewMacroName, SearchPaths, TabWidth]),
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":new_macro(" ++ "\"" ++
+	FileName ++ "\", {" ++ integer_to_list(SLine) ++", " ++ integer_to_list(SCol) ++ "},"++
+	"{" ++ integer_to_list(ELine) ++ ", " ++ integer_to_list(ECol) ++ "},"  ++ "\"" ++ NewMacroName ++ "\","
+	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
      case pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths, TabWidth) of
 		 {ok, AnnAST, Sel} ->
 			 AnnAST1 = do_intro_new_macro(AnnAST, NewMacroName, Sel),
 			 case Editor of
 				 emacs ->
-					 refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}]),
+					 refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], Cmd),
 					 {ok, [FileName]};
 				 eclipse -> Res = [{FileName, FileName, refac_prettypr:print_ast(refac_util:file_format(FileName),AnnAST1)}], {ok, Res}
 			 end;
@@ -69,16 +86,15 @@ pre_cond_check(FileName, NewMacroName, Start, End, SearchPaths, TabWidth) ->
 		     {error, "Macro name provided is already in use!"};
 		_ ->
 		    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-		    Sel = refac_util:pos_to_syntax_units(FileName, AnnAST, Start, End, fun is_expr_or_pat/1, TabWidth),
+		    Sel = refac_util:pos_to_expr_or_pat_list(AnnAST, Start, End),
 		    case Sel of
 			 [] -> {error, "You have not selected a sequence of expressions/patterns!"};
 			 _ ->
-			      {ok, AnnAST, hd(Sel)}
+			      {ok, AnnAST, [hd(Sel)]}
 		     end
 	    end;
 	_ -> {error, "Invalid macro name!"}
     end.
-
 
 do_intro_new_macro(AnnAST, MacroName, SelExpList) ->
     Vars = lists:usort(lists:append(lists:map(fun(E)-> vars(E) end, SelExpList))),
@@ -118,8 +134,8 @@ do_intro_new_macro(AnnAST, MacroName, SelExpList) ->
 
 
 
--spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
-	     syntaxTree()).
+%%-spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
+%%	     syntaxTree()).
 replace_expr_with_macro(Form, {ExpList, SLoc, ELoc},  MApp) ->
     case (length(ExpList)==1) of 
 	true ->
@@ -198,10 +214,6 @@ process_exprs(Exprs, {MApp, SLoc, ELoc}) ->
 	     end
     end.
     
- 
-is_expr_or_pat(Node) ->
-    refac_util:is_expr(Node) orelse refac_util:is_pattern(Node).
-
 
 existing_macros(FileName, SearchPaths, TabWidth) -> 
     Dir = filename:dirname(FileName),

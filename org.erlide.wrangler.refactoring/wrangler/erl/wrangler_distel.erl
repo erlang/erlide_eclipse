@@ -1,19 +1,30 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% =====================================================================
 %% Some Interface Functions to Emacs
-%%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
 %% =====================================================================
@@ -78,12 +89,12 @@ duplicated_code_in_dirs(SearchPaths, MinLines, MinClones, TabWidth) ->
   
 -spec(expression_search/6::(filename(), integer(), integer(), integer(), integer(),integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
 expression_search(FName, StartLine, StartCol, EndLine, EndCol, TabWidth) ->
-    wrangler:expression_search(FName, {StartLine, StartCol}, {EndLine, EndCol}, TabWidth).
+    apply_refactoring(wrangler,identical_expression_search, [FName, {StartLine, StartCol}, {EndLine, EndCol}, TabWidth],[]).
 
--spec(similar_expression_search/7::(filename(), integer(), integer(), integer(), integer(),[dir()], integer()) ->
+-spec(similar_expression_search/8::(filename(), integer(), integer(), integer(), integer(),string(),[dir()], integer()) ->
 	     {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
-similar_expression_search(FName, StartLine, StartCol, EndLine, EndCol, SearchPaths, TabWidth) ->
-    wrangler:similar_expression_search(FName, {StartLine, StartCol}, {EndLine, EndCol}, SearchPaths, TabWidth).
+similar_expression_search(FName, StartLine, StartCol, EndLine, EndCol, SimiScore, SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler,similar_expression_search, [FName, {StartLine, StartCol}, {EndLine, EndCol}, SimiScore, SearchPaths, TabWidth], []).
 
 
 -spec(fun_extraction/7::(filename(), integer(), integer(), integer(), integer(), string(), integer()) ->
@@ -93,6 +104,11 @@ fun_extraction(FName, StartLine, StartCol, EndLine, EndCol, FunName, TabWidth) -
     apply_refactoring(wrangler, fun_extraction, [FName, {StartLine, StartCol}, {EndLine, EndCol}, FunName, TabWidth], []).
 	 
 
+-spec(unfold_fun_app/5::(FileName::filename(), StartLine::integer(), StartCol::integer(), SearchPaths::[dir()], TabWidth::integer)
+      ->{error, string()} | {'ok', [string()]}).
+unfold_fun_app(FileName, StartLine, StartCol, SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler, unfold_fun_app, [FileName, {StartLine, StartCol}, SearchPaths, TabWidth], SearchPaths).
+   
 -spec(new_macro/8::(filename(), integer(), integer(), integer(), integer(), string(), [dir()], integer()) ->
 	      {error, string()} | {ok, string()}).
 
@@ -109,7 +125,6 @@ fold_against_macro(FileName, Line, Col,  SearchPaths, TabWidth) ->
 -spec(fold_expr_by_loc/5::
       (filename(), integer(), integer(), [dir()], integer()) -> {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
 							 | {error, string()}).
-
 fold_expr_by_loc(FName, Line, Col, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, fold_expr_by_loc, [FName, Line, Col, SearchPaths, TabWidth], SearchPaths).
 
@@ -129,46 +144,39 @@ instrument_prog(FName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, instrument_prog, [FName, SearchPaths, TabWidth], SearchPaths).
 
 
--spec(tuple_funpar/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+-spec(tuple_funpar/7::(filename(), integer(), integer(), integer(), integer(), [dir()], integer()) ->
 	     {error, string()} | {ok, [filename()]}).
-
-tuple_funpar(Fname, Line, Col, Number, SearchPaths, TabWidth) ->
-    apply_refactoring(wrangler, tuple_funpar, [Fname, Line, Col, Number, SearchPaths, TabWidth], SearchPaths).
-
+tuple_funpar(Fname, StartLine, StartCol, EndLine, EndCol, SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler, tuple_funpar, [Fname, {StartLine, StartCol}, {EndLine, EndCol},SearchPaths, TabWidth], SearchPaths).
 
 -spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
 	     {error, string()} | {ok, [filename()]}).
-
 tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, tuple_to_record, [File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth], SearchPaths).
 
     
 -spec(uninstrument_prog/3::(filename(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).
-
 uninstrument_prog(FName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, uninstrument_prog, [FName, SearchPaths, TabWidth], SearchPaths).
 
 
 -spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], filename()) ->
 	     {error, string()} | {ok, [filename()]}).
-
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, add_a_tag, [FileName, Line, Col, Tag, SearchPaths, TabWidth], SearchPaths).
 
--spec(normalise_record_expr/5::(filename(), integer(), integer(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
-normalise_record_expr(FileName, Line, Col, SearchPaths, TabWidth) ->
-    apply_refactoring(wrangler, normalise_record_expr, [FileName, Line, Col, SearchPaths, TabWidth], SearchPaths).
+-spec(normalise_record_expr/6::(filename(), integer(), integer(), bool(),[dir()], integer()) -> {error, string()} | {ok, [filename()]}).
+normalise_record_expr(FileName, Line, Col, ShowDefault, SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler, normalise_record_expr, [FileName, Line, Col, ShowDefault, SearchPaths, TabWidth], SearchPaths).
 
 -spec(register_pid/8::(filename(), integer(), integer(), integer(),integer(), string(), [dir()], integer()) ->
     {error, string()}|{ok, [filename()]}).
-
 register_pid(FileName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, register_pid, [FileName, {StartLine, StartCol}, {EndLine, EndCol}, RegName, SearchPaths, TabWidth], SearchPaths).
 
 
 -spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer())->
 	     {error, string()} | {undecidables, string()} | {ok, [filename()]}).
-
 fun_to_process(Fname, Line, Col, ProcessName, SearchPaths, TabWidth ) ->
     apply_refactoring(wrangler, fun_to_process, [Fname, Line, Col, ProcessName, SearchPaths, TabWidth], SearchPaths).
 
@@ -211,19 +219,20 @@ check_wrangler_error_logger() ->
 	[] ->
 	     ok;
 	_ ->  ?wrangler_io("\n===============================WARNING===============================\n",[]),
-	      ?wrangler_io("There are errors in the program, and functions/attribute containing errors are not affected by refactoring.\n",[]),
-	      _Msg =lists:flatmap(fun({FileName, Errs}) ->
+	      ?wrangler_io("There are syntax errors, or syntaxes not supported by Wrangler;"
+			   " functions/attribute containing these syntaxes are not affected by the refactoring.\n",[]),
+	      Msg =lists:flatmap(fun({FileName, Errs}) ->
 				    Str =io_lib:format("File:\n ~p\n", [FileName]),
 				    Str1 = Str ++ io_lib:format("Error(s):\n",[]),
 				    Str1++lists:flatmap(fun(E) ->
 							  case E of 
 							      {Pos, _Mod, Msg} ->io_lib:format(" ** ~p:~p **\n", [Pos, Msg]);
-							      M -> io_lib:format("**~s**\n", [M])
+							      M -> io_lib:format("**~p**\n", [M])
 							  end
 						  end,
 						  lists:reverse(Errs)) 
 				 end, Errors),
-	      ?wrangler_io(_Msg, [])
+	      ?wrangler_io(Msg, [])
     end.
     
 

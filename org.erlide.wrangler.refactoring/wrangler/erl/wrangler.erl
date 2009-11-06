@@ -1,19 +1,31 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% =====================================================================
 %% Refactoring Interface Functions.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: H.Li@kent.ac.uk, Simon.J.Thompson@kent.ac.uk
 %%
 %% =====================================================================
@@ -21,9 +33,9 @@
 %% @copyright 2006-2009 Huiqing Li, Simon Thompson
 %%
 %% @author Huiqing Li, Simon Thompson
-%%   [http://www.cs.kent.ac.uk/projects/forse]
+%%   [http://www.cs.kent.ac.uk/projects/wrangler]
 
-%% @version 0.6.2
+%% @version 0.8.2
 %% @end
 %%
 %% @doc This module describes the refactorings that are currently supported by Wrangler.
@@ -32,45 +44,50 @@
 -export([rename_var/6, rename_fun/6, rename_mod/4,
 	 rename_process/6, rename_mod_batch/4, generalise/6,
 	 move_fun/7, duplicated_code_in_buffer/4,
-	 duplicated_code_in_dirs/4, expression_search/4, similar_expression_search/5,
-	 fun_extraction/5, fold_expr/1,  fold_expr_by_loc/5, fold_expr_by_name/7, 
-	 instrument_prog/3,
-	 uninstrument_prog/3, add_a_tag/6, tuple_funpar/6,
-	 tuple_to_record/9, register_pid/6, fun_to_process/6,new_macro/6,
-	fold_against_macro/5, normalise_record_expr/5]).
+	 duplicated_code_in_dirs/4,
+	 identical_expression_search/4,
+	 similar_expression_search/6, fun_extraction/5,
+	 fold_expr/1, fold_expr_by_loc/5, fold_expr_by_name/7,
+	 instrument_prog/3, similar_code_detection_in_buffer/6,
+	 similar_code_detection/6, uninstrument_prog/3,
+	 add_a_tag/6, tuple_funpar/5, tuple_funpar_1/5,
+	 tuple_to_record/9, register_pid/6, fun_to_process/6,
+	 new_macro/6, fold_against_macro/5,
+	 normalise_record_expr/6, unfold_fun_app/4]).
 
--export([rename_var_eclipse/6, rename_fun_eclipse/6,
-	 rename_mod_eclipse/4, generalise_eclipse/6,
+-export([rename_var_eclipse/6, rename_fun_eclipse/6, rename_fun_1_eclipse/6,
+	 rename_mod_eclipse/4, rename_mod_1_eclipse/5,
+	 generalise_eclipse/6,
 	 move_fun_eclipse/7, fun_extraction_eclipse/5,
 	 gen_fun_1_eclipse/8, gen_fun_2_eclipse/8,
-	 expression_search_eclipse/4,
-	 duplicated_code_in_buffer_eclipse/5, duplicated_code_in_dirs_eclipse/5,
-	 tuple_funpar_eclipse/6, tuple_to_record_eclipse/9,
+	 tuple_funpar_eclipse/5, tuple_funpar_eclipse_1/5,tuple_to_record_eclipse/9,
 	 fold_expr_by_loc_eclipse/5, fold_expr_by_name_eclipse/7,
 	 fold_expression_1_eclipse/5,fold_expression_2_eclipse/7,
 	 new_macro_eclipse/6, rename_process_eclipse/6, rename_process_1_eclipse/5, 
-	 fun_to_process_eclipse/6, fun_to_process_1_eclipse/6]).
+	 fun_to_process_eclipse/6, fun_to_process_1_eclipse/6,
+	 unfold_fun_app_eclipse/4]).
 
+-export([try_refactoring/3, try_inspector/3]).
 -include("../include/wrangler.hrl").
 
 %% ====================================================================================================
-%% @doc Rename a variable with a new name supplied by the user.
-%% <p> This refactoring has a local effect, i.e., it only affects the function clause in which the refactoring is initialised. 
+%% @doc Rename a variable.
+%% <p> This refactoring has a local effect, i.e., it only affects the function clause in which the refactoring is initialized. 
 %% </p>
 %% <p> The following <em> side-conditions </em> (or <em>pre-conditions</em>) apply to this refactoring: 
 %% <li> The new variable name should not conflict with any of the declared variable names in the same scope;</li>
-%% <li> The new variable name should not shadow any of the existing variables in the outer scopes, or be shadowed by any of 
+%% <li> The new variable name should not shadow any of the existing variables in the outer scopes, or be shadowed by any 
 %% of existing variables in the inner scopes, i.e., renaming to the new name should not change the semantics of the 
 %% program.</li>
 %% </p>
 %% <p> Usage: to apply this refactoring, point the cursor to any occurrence of this variable, then select
-%% <em> Rename Variable Name </em> from the <em> Refactor </em> sub-menu, after that, Wrangler will prompt
+%% <em> Rename Variable Name </em> from <em> Refactor </em>, after that, Wrangler will prompt
 %% to enter the new variable name in the mini-buffer. 
 %% </p>
-%% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(), SearchPaths::[dir()], TabWidth:: integer()) ->{error, string()} | {ok, string()}
-
+%% @spec rename_var(FileName::filename(), Line::integer(), Col::integer(), NewName::string(), SearchPaths::[dir()], TabWidth:: integer())
+%%  ->{error, string()} | {ok, string()}
 -spec(rename_var/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, string()}).
+	     {error, string()} | {ok, filename()}).
 rename_var(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_var, rename_var, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
    
@@ -82,12 +99,12 @@ rename_var_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_var, rename_var_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
 
 %%=========================================================================================
-%% @doc Rename a function with a new name supplied by the user.
+%% @doc Rename a function.
 %% <p>
 %% When renaming an exported function, this refactoring has a global effect, that is, 
 %% it affects all those modules in which this function is imported/used.
 %% </p>
-%% <p> The following <em> side-conditions </em> (or <em>pre-conditions </em>}  apply to this refactoring:
+%% <p> The following <em> side-conditions </em> (or <em>pre-conditions</em>}  apply to this refactoring:
 %% <li> The new function name should not cause confliction with any of the functions which are in scope in the 
 %% current module;</li>
 %% <li> In the case that the function to be renamed is imported by another module, the new function name (with the same 
@@ -99,20 +116,26 @@ rename_var_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
 %% </p>
 %% @spec rename_fun(FileName::filename(), Line::integer(), Col::integer(), NewName::string(), SearchPaths::[dir()], TabWidth:: integer())
 %% -> {error, string()} | {ok, [filename()]}
-
 -spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+	     {error, string()} |{warning, string()}| {ok, [filename()]}).
 rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_fun, rename_fun, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
 
 %%@private
 -spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_fun, rename_fun_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
 
+%%@private
+-spec(rename_fun_1_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+	     {error, string()} | {ok, [filename()]}).
+rename_fun_1_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
+    try_refactoring(refac_rename_fun, rename_fun_1_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
+    
+
 %%======================================================================================
-%% @doc Rename a module with a new name supplied by the user.
+%% @doc Rename a module.
 %% <p> This refactoring affects all those modules in which the module name is used.
 %% </p>
 %% <p>
@@ -125,19 +148,28 @@ rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
 %% <em> Rename Module Name </em> from the <em> Refactor </em> menu, after that, the refactorer will prompt to enter 
 %% the new module name in the mini-buffer.
 %% </p>
-%% @spec rename_mod(FileName::filename(), NewName::string(), SearchPaths::[dir()], TabWidth:: integer())-> {error, string()} | {ok, [filename()]} 
-%%   
--spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
+%%@spec rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+%%	     {error, string()} | {question, string()} | {warning, string()} |{ok, [filename()]}
+-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+	     {error, string()} | {question, string()} | {warning, string()} |{ok, [filename()]}).
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_mod, rename_mod,  [FileName, NewName, SearchPaths, TabWidth]).
 
 %%@private
--spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_eclipse/4::(FileName::filename(), NewName::string(), SearchPaths::[dir()], TabWidth::integer()) ->
+	     {error, string()} | {question, string()} | {warning, string()} |
+		 {ok, [{filename(), filename(), string()}]}).
 rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_mod, rename_mod_eclipse, [FileName, NewName, SearchPaths, TabWidth]).
 
+%%@private
+-spec(rename_mod_1_eclipse/5::(FileName::filename(), NewName::string(), SearchPaths::[dir()], TabWith::integer(), RenameTestMod::bool())
+      ->{ok, [{filename(), filename(), string()}]}).
+rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
+    try_refactoring(refac_rename_mod, rename_mod_1_eclipse, [FileName, NewName, SearchPaths, TabWidth, RenameTestMod]).
+
 %% =====================================================================
+%%@private
 %% @doc Rename a collection of modules in batch mode. 
 %% <p> This refactoring has a global effect. </p>
 %% <p> The following <em> side-conditions </em> apply to this refactoring:
@@ -153,7 +185,7 @@ rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
 %% </p>
 % @spec rename_mod_batch(OldNamePattern::string(), NewNamePattern::string(), 
 %%                        SearchPaths::[dir()], TabWidth:: integer())-> {ok, string()}| {error, string()}
-%%   
+   
 -spec(rename_mod_batch/4::(string(), string(), [dir()], integer())->
 	     {ok, string()} | {error, string()}).
 rename_mod_batch(OldNamePattern, NewNamePattern, SearchPaths, TabWidth) ->
@@ -167,7 +199,7 @@ rename_mod_batch(OldNamePattern, NewNamePattern, SearchPaths, TabWidth) ->
 %% The sub-expression becomes the actual parameter at the call sites. </p>
 %%
 %% <p> Here is an example of generalisation, in which the function <code> add_one </code> defined 
-%% on the left-hand side is generalised on the expression <code> 1 </code>, and the result is 
+%% on the left-hand side is generalised on the expression <code>1 </code>, and the result is 
 %% shown on the right-hand side. 
 %%
 %%        ```    -module (test).                          -module (test). 
@@ -213,7 +245,7 @@ rename_mod_batch(OldNamePattern, NewNamePattern, SearchPaths, TabWidth) ->
 %% <em> Generalise Function Definition </em> from the <em>Refactor</em> menu, after 
 %% that the refactorer will prompt to enter the parameter name in the mini-buffer. </p>
 %% 
-%% @spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[dir()], TabWidth:: integer())-> {ok, string()} | {error, string()}
+%%@spec generalise(FileName::filename(), Start::Pos, End::Pos, ParName::string(), SearchPaths::[dir()], TabWidth:: integer())-> {ok, string()} | {error, string()}
 %%         Pos = {integer(), integer()}
 -spec(generalise/6::(filename(),pos(), pos(),string(), [dir()], integer()) -> {ok, string()} | {error, string()}).
 generalise(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
@@ -225,7 +257,7 @@ generalise_eclipse(FileName, Start, End, ParName, SearchPaths, TabWidth) ->
     try_refactoring(refac_gen, generalise_eclipse, [FileName, Start, End, ParName,  SearchPaths, TabWidth]).
 
 %%@private
--spec(gen_fun_1_eclipse/8::(boolean(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) -> {ok, [{filename(), filename(),string()}]}).
+-spec(gen_fun_1_eclipse/8::(bool(), filename(),atom(), atom(), integer(), pos(), syntaxTree(), integer()) -> {ok, [{filename(), filename(),string()}]}).
 gen_fun_1_eclipse(SideEffect, FileName, ParName, FunName, Arity, DefPos, Expr, TabWidth) ->
     try_refactoring(refac_gen, gen_fun_1_eclipse, [SideEffect, FileName, ParName, FunName, Arity, DefPos, Expr, TabWidth]).
 
@@ -256,7 +288,7 @@ gen_fun_2_eclipse(FileName, ParName, FunName, Arity, DefPos, Expr, SearchPaths, 
 %% Wrangler will then  prompt to enter the target module name in the mini-buffer. 
 %% </p>
 %% @spec move_fun(FileName::filename(),Line::integer(),Col::integer(),TargetModName::string(), 
-%%                CreateNewFile::boolean(),SearchPaths::[dir()], TabWidth:: integer())-> {ok, [filename()]} | {error, string()}
+%%                CreateNewFile::bool(),SearchPaths::[dir()], TabWidth:: integer())-> {ok, [filename()]} | {error, string()}
 
 -spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
         -> {ok, [filename()]} | {error, string()}).
@@ -273,16 +305,16 @@ move_fun_eclipse(FileName, Line, Col, TargetModName, CreateNewFile, SearchPaths,
 
 
 %% ==================================================================================
-%% @doc A duplicated code detector that only works with the current Erlang buffer.
+%% @doc An identical code detector that searches for identical code within the current Erlang buffer.
 %% <p> This function reports duplicated code fragments found in the current Erlang buffer, it does 
 %% not remove those code clones though. The user will be prompted for two parameters: the minimum number of 
 %% tokens a cloned code fragment should have, and the minimum number of times a code fragment appears in the program.
 %% </p>
-%% <p> The current version of the duplicated code detector reports clones that are syntactically 
+%% <p> The current version of the identical code detector reports clones that are syntactically 
 %% identical after consistent renaming of variables, except for variations in literals, layout and comments.
 %% </p>
 %% <p>
-%% Usage: simply select the  <em> Detect Duplicated Code in Current Buffer </em> from the <em> Refactor </em> sub-menu, 
+%% Usage: simply select <em> Detect Identical Code in Current Buffer </em> from <em> Refactor</em>, 
 %% Wrangler will prompt to input the parameters.
 %% </p>
 %% @spec duplicated_code_in_buffer(FileName::filename(),MinToks::integer(),MinClones::integer(), TabWidth::integer()) -> {ok, string()}
@@ -291,12 +323,9 @@ move_fun_eclipse(FileName, Line, Col, TargetModName, CreateNewFile, SearchPaths,
 duplicated_code_in_buffer(FileName, MinToks, MinClones, TabWidth) -> 
     try_refactoring(refac_duplicated_code, duplicated_code, [[FileName], MinToks, MinClones, TabWidth]).
 
-%%-spec(duplicated_code_in_buffer_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
-%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
-duplicated_code_in_buffer_eclipse(FileName, MinToks, MinClones, TabWidth, SuffixTreeExec) -> 
-    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [[FileName], MinToks, MinClones, TabWidth, SuffixTreeExec]).
+
 %% =====================================================================================
-%% @doc A duplicated code detector that works with multiple Erlang modules.
+%% @doc An identical code detector that searches for identical code across multiple Erlang modules.
 %% <p> This function reports duplicated code fragments found in the directories specified by SearchPaths, it does
 %% not remove those code clones though.
 %% The user will be prompted for two parameters: the minimum number of 
@@ -306,9 +335,9 @@ duplicated_code_in_buffer_eclipse(FileName, MinToks, MinClones, TabWidth, Suffix
 %% identical after consistent renaming of variables, except for variations in literals, layout and comments.
 %% </p>
 %% <p>
-%% Usage: first check the SearchPaths specificed in the customisation page to make sure that the directory (or directories) specified is 
-%% the place where you want to search for duplicated code, then select <em> Detect Duplicated Code in Dirs </em> from the 
-%% <em> Refactor </em> sub-menu, Wrangler will then prompt to input the parameters.
+%% Usage: first check the SearchPaths specified in the customisation page to make sure that the directory (or directories) specified is 
+%% the place where you want to search for duplicated code, then select <em> Detect Identical Code in Dirs </em> from 
+%% <em> Refactor</em>, Wrangler will then prompt to input the parameters.
 %% </p>
 %% @spec duplicated_code_in_dirs(FileNameList::[filename()|dir()], MinToks::string(), MinClones::string(),TabWidth:: integer()) -> {ok, string()}
 -spec(duplicated_code_in_dirs/4::([dir()], string(), string(), integer()) ->{ok, string()}).
@@ -316,12 +345,49 @@ duplicated_code_in_dirs(FileDirList, MinToks, MinClones, TabWidth) ->
     try_refactoring(refac_duplicated_code, duplicated_code, [FileDirList, MinToks, MinClones, TabWidth]).
     
 
-%%-spec(duplicated_code_in_dirs_eclipse/4::(dir(), integer(), integer(), integer(), string()) ->
-%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
-duplicated_code_in_dirs_eclipse(FileDirList, MinToks, MinClones, TabWidth, SuffixTreeExec) ->
-    try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [FileDirList, MinToks, MinClones, TabWidth, SuffixTreeExec]).
+
 %% ==================================================================================================
-%% @doc Search for clones of an expression/expression sequence selected in the current file.
+%% @doc A similar code detector that searches for similar code in the current Erlang buffer.
+%% <p> This function reports similar expression sequences found in the current Erlang buffer, but does not 
+%% remove those clones though. The user needs to provide three parameters to be used by the clone detector, and 
+%% they are: the minimum length of an expression sequence, the minimum number of duplication times, and 
+%% a similarity score which should be between 0.1 and 1.0.
+%% </p>
+%% <p> 
+%% Usage: select <em> Detect Similar Code in Buffer </em> from <em> Refactor</em>, Wrangler will then prompt to 
+%% input the parameters needed.
+%% </p>
+%% @spec similar_code_detection_in_buffer(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%					   SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}
+-spec(similar_code_detection_in_buffer/6::(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
+					   SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}).
+similar_code_detection_in_buffer(FileName, MinLen, MinFreq, SimiScore, SearchPaths, TabWidth) ->
+    try_refactoring(refac_sim_code, sim_code_detection, [[FileName],MinLen, MinFreq, SimiScore, SearchPaths, TabWidth]).
+
+ 
+%% ==================================================================================================
+%%@doc A similar code detector that searches for similar code across multiple Erlang modules.
+%% <p> This function reports similar expression sequences found in the directories specified, but does not 
+%% remove those clones though. The algorithm is based on the notion of anti-unification, or the least common generalisation.
+%% The user needs to provide three parameters to be used by the clone detector, and 
+%% they are: the minimum length of an expression sequence, the minimum number of duplication times, and 
+%% a similarity score which should be between 0.1 and 1.0.
+%% </p>
+%% <p> 
+%% Usage: select <em> Detect Similar Code in Dirs </em> from <em> Refactor</em>, Wrangler will then prompt to 
+%% input the parameters needed.
+%% </p>
+%%@spec similar_code_detection(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}
+-spec(similar_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
+				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
+similar_code_detection(DirFileList, MinLen, MinFreq, SimiScore1, SearchPaths, TabWidth) ->
+    refac_sim_code:sim_code_detection(DirFileList, MinLen, MinFreq, SimiScore1, SearchPaths, TabWidth) .
+  
+
+%% ==================================================================================================
+%% @doc Search for expressions/expression sequences that are identical to the expression/expression 
+%% sequence selected after consistent renaming of variables and literal substitution.
 %% 
 %% <p> This functionality allows searching for clones of a selected expression or expression 
 %% sequence.  The found clones are syntactically identical to the code fragment selected  after consistent renaming of variables, 
@@ -330,25 +396,27 @@ duplicated_code_in_dirs_eclipse(FileDirList, MinToks, MinClones, TabWidth, Suffi
 %% <p> When the selected code contains multiple, but non-continuous sequence of, expressions, the first
 %% continuous sequence of expressions is taken as the user-selected expression. A continuous sequence of
 %% expressions is a sequence of expressions separated by ','. </p>
-%% Usage: highlight the expression/expression sequence of interest, then selected  <em> Expression Search </em> from 
-%% the <em> Refactor </em> sub-menu.
-%% @spec expression_search(FileName::filename(),Start::Pos, End::Pos, TabWidth:: integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}
+%% Usage: highlight the expression/expression sequence of interest, then selected  <em> Indentical Expression Search </em> from 
+%% <em> Refactor</em>.
+%% @spec identical_expression_search(FileName::filename(),Start::Pos, End::Pos, TabWidth:: integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}
+-spec(identical_expression_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
+identical_expression_search(FileName, Start, End, TabWidth) ->
+    try_refactoring(refac_expr_search, expr_search, [FileName, Start, End, TabWidth]).
 
--spec(expression_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
-expression_search(FileName, Start, End, TabWidth) ->
-    refac_expr_search:expr_search(FileName, Start, End, TabWidth).
 
-
--spec(expression_search_eclipse/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
-expression_search_eclipse(FileName, Start, End, TabWidth) ->
-    refac_expr_search:expr_search_eclipse(FileName, Start, End, TabWidth).
 
 %% ==================================================================================================
 %% @doc Search for expression/expression sequences in the current buffer that are similar to the expression/expression sequence selected by the user.
-%% 
--spec(similar_expression_search/5::(filename(), pos(), pos(), [dir()], integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
-similar_expression_search(FileName, Start, End, SearchPaths, TabWidth) ->
-    refac_sim_expr_search:sim_expr_search(FileName, Start, End, SearchPaths, TabWidth).
+%% <p> This functionality allows searching for expression sequence that are <em>similar</em> to the expression sequence selected.  In this context, 
+%% two expressions, A and B say, are similar if there exists an anti-unifier, say C,  of A and B, and C satisfies the similarity score specified
+%% by the user (the calculation calculated of similarity score is going to be further explored).
+%% </p>
+%% Usage: highlight the expression sequence of interest, then selected  <em> Similar Expression Search </em> from  Refactor.
+%% @spec similar_expression_search(FileName::filename(), Start::pos(), End::pos(), SimiScore::string(), SearchPaths::[dir()], TabWidth::integer())
+%%    -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}
+-spec(similar_expression_search/6::(filename(), pos(), pos(), string(), [dir()], integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
+similar_expression_search(FileName, Start, End, SimiScore, SearchPaths, TabWidth) ->
+    try_refactoring(refac_sim_expr_search, sim_expr_search, [FileName, Start, End, SimiScore, SearchPaths, TabWidth]).
 
 %% =====================================================================================================
 %%@doc Introduce a new function to represent an expression or expression sequence.
@@ -358,7 +426,7 @@ similar_expression_search(FileName, Start, End, SearchPaths, TabWidth) ->
 %% </p>
 %% <p>
 %% Usage: highlight the expression/expression sequence of interest, then selected the <em>Function Extraction</em> 
-%% from the <em>Refactor</em> sub-menu, Wrangler will then prompt for the new function name.
+%% from  <em>Refactor</em>, Wrangler will then prompt for the new function name.
 %% </p>
 %% @spec fun_extraction(FileName::filename(), Start::Pos, End::Pos, FunName::string(), TabWidth:: integer()) ->{error, string()} | {ok, string()}
 -spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
@@ -371,6 +439,29 @@ fun_extraction(FileName, Start, End, FunName, TabWidth) ->
 	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
 fun_extraction_eclipse(FileName, Start, End, FunName, TabWidth) -> 
     try_refactoring(refac_new_fun, fun_extraction_eclipse, [FileName, Start, End, FunName, TabWidth]).
+
+%% =====================================================================================================
+%%@doc Unfold a function application to an instance of the function's body.
+%% <p> This refactoring replaces a function application with an instance of the function body.
+%% With the current implementation, Wrangler unfolds a function application only if the function 
+%% is defined in the same module, and Wrangler could work out which function clause to use (in case 
+%% the function definition contains multiple function clauses).
+%% </p>
+%% <p>
+%% Usage: Point the cursor to the function name in the function application to unfold, then 
+%% select <em>Unfold Function Application</em> from <em>Refactor</em>.
+%% </p>
+%%-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
+%%      ->{error, string()} |{'ok', [string()]}).
+unfold_fun_app(FileName, Pos, SearchPaths, TabWidth) ->
+    try_refactoring(refac_unfold_fun_app, unfold_fun_app, [FileName, Pos, SearchPaths, TabWidth]).
+
+
+%%@private
+-spec(unfold_fun_app_eclipse/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
+      ->{error, string()} | {ok, [{filename(), filename(), string()}]}).
+unfold_fun_app_eclipse(FileName, Pos, SearchPaths, TabWidth) ->
+    try_refactoring(refac_unfold_fun_app, unfold_fun_app_eclipse, [FileName, Pos, SearchPaths, TabWidth]).
 
 %% =============================================================================================
 %% @doc Fold expressions against a function definition.
@@ -392,7 +483,7 @@ fun_extraction_eclipse(FileName, Start, End, FunName, TabWidth) ->
 %% fold against a function clause defined in another module; then select <em> Fold Expression Against Function </em> 
 %% from the <em> Refactor </em> menu; after that, Wrangler then asks to confirm that you want to fold against 
 %% the function clause pointed to by the cursor, if you answer 'no', Wrangler will prompt to provide the 
-%% module name, function name ,arity of the function and the index of the function clause (starting from 1). After all these initial interaction, 
+%% module name, function name, arity of the function and the index of the function clause (starting from 1). After all these initial interaction, 
 %% Wrangler will search 
 %% the current module for expressions which are instances of the right-hand side of the selected function clause.
 %% </p>
@@ -429,7 +520,6 @@ fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
 -spec(fold_expr_by_name/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
 	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), {syntaxTree(), integer()}}]}
 		 | {error, string()}).
-
 fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
     try_refactoring(refac_fold_expression, fold_expr_by_name, [FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth]).
 
@@ -437,7 +527,6 @@ fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, T
 -spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), string(), string(), [dir()], integer()) ->
 	     {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]} 
 		 | {error, string()}).
-
 fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
     try_refactoring(refac_fold_expression, fold_expr_by_name_eclipse, [FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth]).
 
@@ -470,7 +559,7 @@ uninstrument_prog(FileName, SearchPaths, TabWidth) ->
 
 
 %%=========================================================================================
-%% @doc Add a tag to all the messages received by a server process.
+%% @doc Add a tag to all the messages received by a server process (Beta).
 %% <p> This refactoring should be initiated from the main receive function of a server process.
 %% The current implementation is still in an experimental stage, and has a number of limitations:
 %% <li> The current implementation assumes that the process does not send enquiries, 
@@ -495,7 +584,7 @@ add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
 
 
 %%=========================================================================================
-%% @doc Register a process.
+%% @doc Register a process (Beta).
 %% <p>This refactoring registers a process id, <code>Pid</code> say, with a name, regname say, and replaces
 %% the uses of <code>Pid ! Msg </code> with  <code>regname ! Msg</code> whenever it is possible. 
 %% </p>
@@ -519,7 +608,7 @@ register_pid(FileName, Start, End, RegName, SearchPaths, TabWidth) ->
     try_refactoring(refac_register_pid, register_pid, [FileName, Start, End, RegName, SearchPaths, TabWidth]).
     
 %%=========================================================================================
-%% @doc Turn some consecutive parameters of a function into a tuple parameter.
+%% @doc Group a consecutive sequence of parameters of a function into a tuple.
 %% <p>
 %% When the function under consideration is exported by the module where it is defined, this refactoring has a global effect. 
 %% </p>
@@ -529,29 +618,36 @@ register_pid(FileName, Start, End, RegName, SearchPaths, TabWidth) ->
 %% <li> In the case that the function is imported by another module, then <code>f/n</code> 
 %% should not be already in scope (either defined or imported) in that module. </li>
 %% </p>
-%% <p> Usage: to apply this refactoring, point the cursor to the parameter which is going to be the first 
-%% element of the tuple, then select <em> Tuple Function Arguments </em> from the <em> Refactor </em> sub-menu, 
-%% after that, Wrangler will prompt to enter the number of parameters to include into the tuple in the minibuffer.
+%% <p> Usage: to apply this refactoring, highlight the arguments to be grouped into a tuple from 
+%% the function definition, then select <em> Tuple Function Arguments </em> from <em> Refactor</em>.
 %% </p>
-%% @spec tuple_funpar(FileName::filename(), Line::integer(), Col::integer(), Number::string(), SearchPaths::[dir()], TabWidth:: integer())
+%% @spec tuple_funpar(FileName::filename(), StartLoc::pos(), EndLoc::pos(), SearchPaths::[dir()], TabWidth:: integer())
 %% -> {error, string()} | {ok, [filename()]}
--spec(tuple_funpar/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+-spec(tuple_funpar/5::(filename(), pos(), pos, [dir()], integer()) ->
 	     {error, string()} | {ok, [filename()]}).
+tuple_funpar(FileName, StartLoc, EndLoc,SearchPaths, TabWidth) ->
+    try_refactoring(refac_tuple, tuple_funpar, [FileName, StartLoc, EndLoc, SearchPaths, TabWidth]).
 
-tuple_funpar(FileName, Line, Col, Number, SearchPaths, TabWidth) ->
-    try_refactoring(refac_tuple, tuple_funpar, [FileName, Line, Col, list_to_integer(Number), SearchPaths, TabWidth]).
 
 %%@private
-%% @spec tuple_funpar_eclipse(FileName::filename(), Line::integer(), Col::integer(), Number::string(), SearchPaths::[dir()], TabWidth:: integer()) -> term()
+tuple_funpar_1(FileName, StartLoc, EndLoc,SearchPaths, TabWidth) ->
+    try_refactoring(refac_tuple, tuple_funpar_1, [FileName, StartLoc, EndLoc, SearchPaths, TabWidth]).
 
--spec(tuple_funpar_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 
-tuple_funpar_eclipse(FileName, Line, Col, Number, SearchPaths, TabWidth) ->
-    try_refactoring(refac_tuple, tuple_funpar_eclipse, [FileName, Line, Col, list_to_integer(Number), SearchPaths, TabWidth]).
+%%@private
+-spec(tuple_funpar_eclipse/5::(filename(), pos(), pos, [dir()], integer()) ->
+     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+tuple_funpar_eclipse(FileName, StartLoc, EndLoc, SearchPaths, TabWidth) ->
+    try_refactoring(refac_tuple, tuple_funpar_eclipse, [FileName, StartLoc, EndLoc, SearchPaths, TabWidth]).
+
+%%@private
+tuple_funpar_eclipse_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth) ->
+    try_refactoring(refac_tuple, tuple_funpar_eclipse_1, [FileName, StartLoc, EndLoc, SearchPaths, TabWidth]).
+
 
 
 %%=========================================================================================
+%%@private
 %% @doc From tuple to record representation.
 %%  NOTE: this refactoring is still in an experimental stage.
 %% <p>
@@ -565,7 +661,7 @@ tuple_funpar_eclipse(FileName, Line, Col, Number, SearchPaths, TabWidth) ->
 %% <li> The selected part must be a tuple.  </li>
 %% </p>
 %% <p> To apply this refactoring, highlight the tuple, which should be a function parameter,  
-%% then select <em> From Tuple To Record </em> from the <em> Refactor </em>  sub-menu, 
+%% then select <em> From Tuple To Record </em> from <em> Refactor</em>, 
 %% Wrangler will then prompt to enter the record name and  the record field names.
 %% </p>
 %% @spec tuple_to_record(File::filename(),FLine::integer(),FCol::integer(),
@@ -574,7 +670,6 @@ tuple_funpar_eclipse(FileName, Line, Col, Number, SearchPaths, TabWidth) ->
 %% @end
 -spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
 	     {error, string()} | {ok, [filename()]}).
-
 tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth) ->
     try_refactoring(refac_tuple_to_record, tuple_to_record, [File, FLine, FCol, LLine, LCol, RecName,
 					  FieldString, SearchPaths, TabWidth]).
@@ -585,7 +680,6 @@ tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPath
 %%           FieldString::[string()], SearchPaths::[dir()], TabWidth:: integer()) -> term()
 -spec(tuple_to_record_eclipse/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
 	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
-
 tuple_to_record_eclipse(File, FLine, FCol, LLine, LCol, RecName, FieldString,SearchPaths, TabWidth) ->
     try_refactoring(refac_tuple_to_record,tuple_to_record_eclipse, [File, FLine, FCol, LLine, LCol,
 								    RecName, FieldString, SearchPaths, TabWidth]).
@@ -594,34 +688,40 @@ tuple_to_record_eclipse(File, FLine, FCol, LLine, LCol, RecName, FieldString,Sea
 %%=========================================================================================
 %% @doc Turn a function into a server process.
 %%<p>
-%% This refactoring turns a function into a server process, and all the function calls to this function into process communication.
+%% This refactoring turns a function into a server process. 
 %% Turning a function into a server process provides potential for memorisation of calculated values, adding states to the process, etc.
 %% </p>
 %% <p> The following example shows the application of this refactoring to the function <code>f/2</code> on the 
 %% left-hand side, and the result is shown on the right-hand side. 
+%%    ``` f(add, X, Y) ->  X + Y;                     f(add, X, Y) -> f_rpc(f, {add, X, Y});
+%%        f(sub, X, Y) ->  X - Y.                     f(sub, X, Y) -> f_rpc(f, {sub, X, Y}).
 %%
-%%    ``` f(add,X,Y) -> X +Y;                        f_rpc(RegName, Request) ->                  
-%%        f(sub,X,Y) -> X - Y.                            Fun = fun() ->
-%%                                                                    try  
-%%        g(X, Y) ->                                                     register(RegName, self())
-%%            f(add, X,Y)*f(sub, X, Y).                               catch 
-%%                                                                       true -> f();
-%%                                                                       error:_ -> already_running
-%%                                                                    end
-%%                                                              end,
-%%                                                        Spawn(Fun),
-%%                                                        RegName ! {self(), Request},
-%%                                                        receive {RegName, Response} -> Response end.
+%%        g(X, Y) ->                                  f() ->
+%%             f(add, X, Y)*f(sub, X, Y).		   receive
+%%                                                          {From, {add, X, Y}} -> From ! {f, X + Y}, f();
+%%                                                          {From, {sub, X, Y}} -> From ! {f, X - Y}, f()
+%%                                                         end.
 %%
-%%                                                   f() ->
-%%                                                      receive
-%%                                                         {From, {add, X, Y}} -> From ! {f, X + Y}, f();
-%%                                                         {From, {sub, X, Y}} -> From ! {f, X - Y}, f()
-%%                                                      end.
+%%                                                    f_rpc(RegName, Request) ->
+%%                                                         Sender = self(),
+%%                                                         Fun = fun () ->
+%% 		                                                    try
+%% 		                                                       register(RegName, self())
+%% 		                                                    of
+%% 		                                                      true -> Sender ! {started, self()}, f()
+%% 		                                                    catch
+%% 		                                                      error:_ ->
+%% 			                                                   Sender ! {already_running, self()}, 
+%%                                                                         already_running
+%% 		                                                    end
+%% 	                                                         end,
+%%                                                         Pid = spawn(Fun),
+%%                                                         receive {_, Pid} -> ok end,
+%%                                                         RegName ! {self(), Request},
+%%                                                         receive {RegName, Response} -> Response end.
 %%
-%%                                                   g(X, Y) ->
-%%                                                      f_rpc(f, {add, X, Y}) * f_rpc(f, {sub, X, Y}).
-%%
+%%                                                    g(X, Y) ->
+%%                                                         f(add, X, Y) *f(sub, X, Y).
 %%    '''
 %% </p>
 %% The following side-conditions apply to this refactoring:
@@ -636,8 +736,8 @@ tuple_to_record_eclipse(File, FLine, FCol, LLine, LCol, RecName, FieldString,Sea
 %% function name would be <code>f_rpc/2</code>; if any conflicts occur, <code>'_i'</code> will be attached to the end of the function
 %% name where <code>i</code> is a smallest number that makes the name fresh.
 %% </p>
-%% <p> To apply this refactoring, point the cursor to the function of interest, then select 
-%% <em> From Function to Process </em> from the <em> Refactor </em> sub-menu, after that, Wrangler will prompt 
+%% <p> Usage: To apply this refactoring, point the cursor to the function of interest, then select 
+%% <em> From Function to Process </em> from <em> Refactor</em>, after that Wrangler will prompt 
 %%  to enter the process registration name  in the mini-buffer.
 %% </p>
 %% @spec fun_to_process(FileName::filename(), Line::integer(), Col::integer(), ProcessName::string(), SearchPaths::[dir()], TabWidth:: integer()) ->
@@ -646,21 +746,20 @@ tuple_to_record_eclipse(File, FLine, FCol, LLine, LCol, RecName, FieldString,Sea
 fun_to_process(FileName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     try_refactoring(refac_fun_to_process, fun_to_process, [FileName, Line, Col, ProcessName, SearchPaths, TabWidth]).
 
--spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]} | 
-													{undecidables, string()} | {error, string()}).
+%%@private
+-spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> 
+	     {ok, [{filename(), filename(), string()}]} | 
+		 {undecidables, string()} | {error, string()}).
 fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     try_refactoring(refac_fun_to_process, fun_to_process_eclipse, [FName, Line, Col, ProcessName, SearchPaths, TabWidth]).
     
+%%@private
 -spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     try_refactoring(refac_fun_to_process, fun_to_process_1_eclipse, [FName, Line, Col, ProcessName, SearchPaths, TabWidth]).
     
 %%=========================================================================================
-%% @doc Rename a registered process with a new name supplied by the user.
-%% <p> To apply this refactoring, point the cursor to the process name, then select
-%% <em> Rename a Process </em> from the  <em> Refactor </em> menu, after that, Wrangler will prompt
-%% to enter the new process name in the mini-buffer. 
-%% </p>
+%% @doc Rename a registered process (Beta).
 %% <p> This refactoring has a global effect, i.e. it needs to check the whole program for places where the 
 %% original process name is used.
 %% </p>
@@ -671,6 +770,10 @@ fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) -
 %% a process name in a message, it would be help the refactoring process to select the process name from expressions, such as 
 %% registration expressions, where it is easier for Wrangler to infer that the atom is a process name.</li>
 %% </p>
+%% <p> Usage: To apply this refactoring, point the cursor to the process name, then select
+%% <em> Rename a Process </em> from the  <em> Refactor </em> menu, after that, Wrangler will prompt
+%% to enter the new process name in the mini-buffer. 
+%% </p>
 %% @spec rename_process(FileName::filename(), Line::integer(), Col::integer(),NewName::string(), SearchPaths::[dir()], TabWidth:: integer()) ->
 %%     {error, string()} | {undecidables, string()}| {ok, [filename()]}
 -spec(rename_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
@@ -679,21 +782,27 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_process, rename_process, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
 
 
+%%@private
 -spec(rename_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
 	       {error, string()} | {undecidables, string()} |  {ok, [{filename(), filename(), string()}]}).
 rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_process, rename_process_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
 
+%%@private
 -spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     try_refactoring(refac_rename_process, rename_process_1_eclipse, [FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth]).
 
 %% =====================================================================================================
 %% @doc Introduce a macro to represent a syntactically well-formed expression/pattern or a sequence of expressions/patterns.
-%% <p> This refactoring allows the user to define a new macro to represent a expression/pattern or sequence of 
+%% <p> This refactoring allows the user to define a new macro to represent a expression/pattern or sequence 
 %% of expressions/patterns selected by the user, and replace the selected code with an application of the macro.
 %% Free variables within the selected code become the formal parameters of the macro definition.
 %% </p>
+%% <p>
+%% Usage: Highlight the expression of interest, then selected the <em>Introduce a Macro</em> 
+%% from <em>Refactor</em>, Wrangler will then prompt for the new macro name.
+%% </p> 
 %% @spec new_macro(FileName::filename(),Start::pos(), End::pos(), NewMacroName::string(),SearchPaths::[dir()], TabWidth:: integer()) ->{error, string()} | {ok, string()}
 -spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
 	      {error, string()} | {ok, string()}).
@@ -713,29 +822,51 @@ new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
 %% This refactoring replaces instances of the right-hand side of a macro definition by the corresponding
 %% left-hand side with necessary parameter substitutions. 
 %% </p>
-%% <p> To apply this refactoring, first point the cursor to the macro definition against which candidate 
+%% <p> Usage: to apply this refactoring, first point the cursor to the macro definition against which candidate 
 %%  expressions/candidates will be folded; then select <em> Fold Against Macro Definition </em> from the 
 %% <em> Refactor </em> menu; after that, Wrangler will search the current module for expressions/patterns
 %% which are instances of the right-hand side of the selected macro definition; and direct you through the 
 %% refactoring process.
 %% </p>
+%%@spec fold_against_macro(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	      {error, string()} | {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}
 -spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
 	      {error, string()} | {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}).
 fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth) ->
     try_refactoring(refac_fold_against_macro, fold_against_macro, [FileName, Line, Col, SearchPaths, TabWidth]).
 
 
--spec(normalise_record_expr/5::(filename(), integer(), integer(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
-normalise_record_expr(FileName, Line, Col, SearchPaths, TabWidth) ->
-    try_refactoring(refac_sim_expr_search, normalise_record_expr, [FileName, {Line, Col}, SearchPaths, TabWidth]).
+%% =============================================================================================
+%% @doc Reorder the record fields in a record expression to be consistent with the record definition.
+%%<p>
+%% Usage: point cursor to the record expression interested, then select <em>Normalise Record Expression</em> from <em>Refactor</em>.
+%%</p>
+%% @spec normalise_record_expr(FileName::filename(), Line::integer(), Col::integer(), ShowDefault::bool(), SearchPaths::[dir()], TabWidth::integer())
+%%         -> {error, string()} | {ok, [filename()]}
+-spec(normalise_record_expr/6::(filename(), integer(), integer(), bool(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
+normalise_record_expr(FileName, Line, Col, ShowDefault, SearchPaths, TabWidth) ->
+    try_refactoring(refac_sim_expr_search, normalise_record_expr, [FileName, {Line, Col}, ShowDefault,SearchPaths, TabWidth]).
 
 
-try_refactoring(Mod, Fun, Args) -> 
-    try 
-		 apply(Mod, Fun, Args)
+%%@private
+try_to_apply(Mod, Fun, Args, Msg) -> 
+    try apply(Mod, Fun, Args)
     catch
  	throw:Error -> 
   	    Error;
- 	_E1:_E2->
-	     {error, "Wrangler failed to perform this refactoring, please report error to erlang-refactor@kent.ac.uk."}
+	  _E1:_E2->
+	    {error, Msg}
     end.
+
+%%@private
+try_refactoring(Mod, Fun, Args) ->
+    Msg = "Wrangler failed to perform this refactoring, "
+	"please report error to erlang-refactor@kent.ac.uk.",
+    try_to_apply(Mod, Fun, Args, Msg).
+
+%%@private
+try_inspector(Mod, Fun, Args) -> 
+    Msg ="Wrangler failed to perform this functionality, "
+	"please report error to erlang-refactor@kent.ac.uk.",
+    try_to_apply(Mod, Fun, Args, Msg).
+

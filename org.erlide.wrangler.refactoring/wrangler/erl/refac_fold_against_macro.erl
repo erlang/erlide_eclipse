@@ -1,27 +1,39 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% ============================================================================================
 %% Refactoring: Fold expressions/patterns again a macro definition.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 
 -module(refac_fold_against_macro).
 
--export([fold_against_macro/5, fold_against_macro_1/4, fold_against_macro_eclipse/5]).
+-export([fold_against_macro/5, fold_against_macro_1/5, fold_against_macro_eclipse/5]).
 
 
--export([fold_against_macro/6]).
+-export([fold_against_macro/7]).
 
 -include("../include/wrangler.hrl").
 
@@ -45,17 +57,22 @@
 
 %%=============================================================================================
 
--spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
-	      {error, string()} | {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
+%%-spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
+%%	      {error, string()} | {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}]}).
 
 fold_against_macro(FileName, Line, Col,  SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:fold_aginst_macro(~p, ~p,~p, ~p,~p).\n", [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
-    fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, emacs).
+    ?wrangler_io("\nCMD: ~p:fold_against_macro(~p, ~p,~p, ~p,~p).\n", 
+		 [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fold_against_macro(" ++ "\"" ++
+	FileName ++ "\", " ++ integer_to_list(Line) ++
+	", " ++ integer_to_list(Col) ++ ", " 
+	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, emacs, Cmd).
 
 fold_against_macro_eclipse(FileName, Line, Col,  SearchPaths, TabWidth) ->
-    fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
+    fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, eclipse, "").
 
-fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
+fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor, Cmd) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case pos_to_macro_define(AnnAST, {Line, Col}) of 
 	{ok, MacroDef} ->
@@ -69,7 +86,7 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 							   MacroApp1 = binary_to_list(term_to_binary(MacroApp)),
 							   {StartLine, StartCol, EndLine, EndCol, MacroApp1, MacroDef1} end,
 						   Candidates),
-			      {ok, Regions};
+			      {ok, Regions, Cmd};
 			  eclipse ->
 			      {ok, Candidates}
 		      end
@@ -78,12 +95,13 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 	    {error, "You have not selected a macro definition, or the selected macro definition does not have a syntactially well-formed body!"}
     end.
 
--spec(fold_against_macro_1/4::(filename(), [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}], [dir()], integer()) ->
+-spec(fold_against_macro_1/5::(filename(), [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}],
+			       [dir()], integer(), string()) ->
 	     {ok, [filename()]}).
-fold_against_macro_1(FileName, CandidatesToFold, SearchPaths, TabWidth) ->
+fold_against_macro_1(FileName, CandidatesToFold, SearchPaths, TabWidth, Cmd) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     AnnAST1 = fold_against_macro_1_1(AnnAST, CandidatesToFold),
-    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}]),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], Cmd),
     {ok, [FileName]}.
    
 fold_against_macro_1_1(AnnAST, []) ->
@@ -197,7 +215,8 @@ make_macro_app(MacroHead,Subst) ->
 	    Args1 = refac_syntax:application_arguments(MacroHead),
 	    Args= lists:map(fun(A) -> refac_syntax:variable_name(A) end, Args1),
 	    Pars = lists:map(fun(P) -> case lists:keysearch(P, 1, Subst) of 
-					   {value, {P, Par}} -> Par;
+					   {value, {P, Par}} -> 
+					       refac_util:reset_attrs(Par);
 					   _ -> refac_syntax:atom(undefined)
 				       end
 			     end, Args),

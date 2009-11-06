@@ -1,19 +1,32 @@
 
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %% ============================================================================================
 %% Refactoring: Add a tag to all the messages received by a process.
-%%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
 
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
@@ -33,9 +46,13 @@
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
--spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).	     
+%%-spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).      
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:add_a_tag(~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, Tag, SearchPaths, TabWidth]),
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":add_a_tag(" ++ "\"" ++
+	FileName ++ "\", " ++ integer_to_list(Line) ++
+	", " ++ integer_to_list(Col) ++ ", " ++ "\"" ++ Tag ++ "\","
+	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST1, _Info1}}=refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case pos_to_receive_fun(AnnAST1, {Line, Col}) of 
 	{ok, _FunDef} ->
@@ -46,7 +63,7 @@ add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
 	    case pre_cond_check(AnnAST,  ModName, FunDef, SearchPaths, TabWidth) of 
 		{ok, AffectedInitialFuns} ->
 		    Results = do_add_a_tag(FileName, {AnnAST, Info}, list_to_atom(Tag), AffectedInitialFuns, SearchPaths, TabWidth),
-		    refac_util:write_refactored_files_for_preview(Results),
+		    refac_util:write_refactored_files_for_preview(Results, Cmd),
 		    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 		    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 				 [ChangedFiles]),
@@ -221,11 +238,11 @@ do_add_tag_to_receive_exprs(Node, Tag) ->
 	_ -> Node
     end.
 
-do_add_tag_to_send_exprs(Node, {_ModName, Tag, AffectedInitialFuns}) ->
+do_add_tag_to_send_exprs(Node, {ModName, Tag, AffectedInitialFuns}) ->
      case refac_syntax:type(Node) of
 	infix_expr ->
 	    case is_send_expr(Node) of 
-		true ->{{_Ln, _},_} = refac_util:get_range(Node), 
+		true ->{{Ln, _},_} = refac_util:get_range(Node), 
 		        Dest = refac_syntax:infix_expr_left(Node),
 			Msg = refac_syntax:infix_expr_right(Node),
 			Ann = refac_syntax:get_ann(Dest),
@@ -241,7 +258,7 @@ do_add_tag_to_send_exprs(Node, {_ModName, Tag, AffectedInitialFuns}) ->
 				      end,						   
 			case InitialFuns of 
 			    [] -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
-				  ?wrangler_io("Wrangler could not identify the recipent process of the send expression in module ~p at line ~p\n", [_ModName,_Ln]),
+				  ?wrangler_io("Wrangler could not identify the recipent process of the send expression in module ~p at line ~p\n", [ModName,Ln]),
 				{Node, false};
 			    _ -> case InitialFuns -- AffectedInitialFuns of 
 				     [] ->
@@ -251,11 +268,11 @@ do_add_tag_to_send_exprs(Node, {_ModName, Tag, AffectedInitialFuns}) ->
 						    _ -> refac_syntax:tuple([refac_syntax:atom(Tag), Msg])
 						end,
 					 Node1 = refac_syntax:copy_attrs(Node, refac_syntax:infix_expr(Dest, Op, Msg1)), 
-					 {Node1, true}; 
+					 {Node1, true};
 				     InitialFuns -> 
 					 {Node, false};  
 				     _ -> %% ?wrangler_io("\n*************************************Warning****************************************\n"),
-%% 					  ?wrangler_io("The recipent process of the send expression in module ~p at line ~p could refer to multiple processes. \n", [_ModName,_Ln]),  
+%% 					  ?wrangler_io("The recipent process of the send expression in module ~p at line ~p could refer to multiple processes. \n", [ModName,Ln]),
 					  {Node, false}
 				 end
 			end;
@@ -319,7 +336,7 @@ has_receive_expr(Node, []) ->
 
 
 			  
-collect_fun_apps(Expr, {_ModName, _Ln}) ->
+collect_fun_apps(Expr, {ModName, Ln}) ->
     Fun = fun (T, S) ->
 		 case refac_syntax:type(T) of
 		     application ->
@@ -328,7 +345,7 @@ collect_fun_apps(Expr, {_ModName, _Ln}) ->
 			     {value, {fun_def, {M, F, A, _, _}}}-> 
 				 ordsets:add_element({M,F, A},S);			     
 			     _ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
-				  ?wrangler_io("Wrangler could not handle the spawn expression used in module ~p at line ~p\n", [_ModName,_Ln])
+				  ?wrangler_io("Wrangler could not handle the spawn expression used in module ~p at line ~p\n", [ModName,Ln])
 			 end;
 		     arity_qualifier -> 
 			 {value, {fun_def, {M, F, A, _, _}}} = lists:keysearch(fun_def,1, refac_syntax:get_ann(T)),

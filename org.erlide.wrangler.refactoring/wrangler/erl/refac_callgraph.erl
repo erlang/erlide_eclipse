@@ -14,7 +14,7 @@
 -include("../include/wrangler.hrl").
 
 
--spec(construct/1::(dir())-> {scc_order(),external_calls()}).
+%%-spec(construct/1::(dir())-> {scc_order(),external_calls()}).
 construct(List) ->
   {Calls, FunDefMap, ExternalCalls} = preprocess(List),
   Edges = get_edges(Calls),  

@@ -97,7 +97,7 @@ public class GeneraliseFunctionRefactoring extends SimpleWranglerRefactoring {
 			return true;
 		} else {
 			this.status = RefactoringStatus.createFatalErrorStatus(msg
-					.getMessage());
+					.getMessageString());
 			return false;
 		}
 

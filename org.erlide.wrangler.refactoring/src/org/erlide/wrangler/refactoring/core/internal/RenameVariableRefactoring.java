@@ -1,7 +1,5 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -43,4 +41,5 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 				sel.getSelectionRange().getStartCol(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
+
 }

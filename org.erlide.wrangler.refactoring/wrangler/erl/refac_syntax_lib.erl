@@ -45,14 +45,15 @@
 	 analyze_record_attribute/1, analyze_record_expr/1,
 	 analyze_record_field/1, analyze_rule/1,
 	 analyze_wild_attribute/1, annotate_bindings/1,
-	 annotate_bindings/2, fold/3, fold_subtrees/3,
+	 annotate_bindings/2, annotate_bindings/3,
+	 fold/3, fold_subtrees/3,
 	 foldl_listlist/3, function_name_expansions/1,
 	 is_fail_expr/1, limit/2, limit/3, map/2, map_subtrees/2,
 	 mapfold/3, mapfold_subtrees/3, mapfoldl_listlist/3,
 	 new_variable_name/1, new_variable_name/2,
 	 new_variable_names/2, new_variable_names/3,
 	 strip_comments/1, to_comment/1, to_comment/2,
-	 to_comment/3, variables/1, vann_clauses/2, vann_case_expr/2, vann_block_expr/2]).
+	 to_comment/3, variables/1, vann_clause/4]).
 
 %% =====================================================================
 %% @spec map(Function, Tree::syntaxTree()) -> syntaxTree()
@@ -412,7 +413,13 @@ new_variable_names(0, Names, _, _, _) -> Names.
 %% @see ordsets
 
 annotate_bindings(Tree, Env) ->
-    {Tree1, _, _} = vann(Tree, Env), Tree1.
+    {Tree1, _, _} = vann(Tree, Env, [],[]), 
+    Tree1.
+
+annotate_bindings(Tree, Env, MDefs) ->
+    {Tree1, _, _} = vann(Tree, Env, MDefs,[]),
+    Tree1.
+    
 
 %% =====================================================================
 %% @spec annotate_bindings(Tree::syntaxTree()) -> syntaxTree()
@@ -429,177 +436,205 @@ annotate_bindings(Tree, Env) ->
 annotate_bindings(Tree) ->
     As = refac_syntax:get_ann(Tree),
     case lists:keysearch(env, 1, As) of
-      {value, {env, InVars}} ->
-	  annotate_bindings(Tree, InVars);
-      _ -> erlang:error(badarg)
+	{value, {env, InVars}} ->
+	    annotate_bindings(Tree, InVars);
+	_ -> erlang:error(badarg)
     end.
 
-vann(Tree, Env) ->
+
+%% =====================================================================
+vann(Tree, Env, Ms, VI) ->
     case refac_syntax:type(Tree) of
       variable ->
-	  V = refac_syntax:variable_name(Tree),
-	  P = refac_syntax:get_pos(Tree),
-	  case [V2 || V2 <- Env, vann_1(V2, V)] of
-	   [] ->
-		Bound = [],
-		Free = [{V, P}], %% ?DEFAULT_LOC}],
-		Def = [?DEFAULT_LOC];
-	    L ->
-		Bound = [],
-		Free = L,
-		Def = [vann_1(V3) || V3 <- L]
-	  end,
-	  %%?wrangler_io("Tree, Env, Bound, Free, Def:\n~p\n", [{Tree, Env, Bound, Free, Def}]),
-          %%?wrangler_io("R:\n~p\n", [ann_bindings(Tree, Env, Bound, Free, Def)]),
-	  {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
-      match_expr -> vann_match_expr(Tree, Env);
-      case_expr -> vann_case_expr(Tree, Env);
-      if_expr -> vann_if_expr(Tree, Env);
-      cond_expr -> vann_cond_expr(Tree, Env);
-      receive_expr -> vann_receive_expr(Tree, Env);
-      try_expr -> vann_try_expr(Tree, Env);
-      function -> vann_function(Tree, Env);
-      rule -> vann_rule(Tree, Env);
-      fun_expr -> vann_fun_expr(Tree, Env);
-      list_comp -> vann_list_comp(Tree, Env);
-      generator -> vann_generator(Tree, Env);
-      block_expr -> vann_block_expr(Tree, Env);
-      macro -> vann_macro(Tree, Env);
-      %% Added by HL, begin.
-      attribute -> case  refac_syntax:atom_value(refac_syntax:attribute_name(Tree)) of 
-		       define -> vann_define(Tree,Env);
-		       ifdef -> {Tree, [], []};  
-		       inndef ->{Tree, [], []};
-		       undef -> {Tree, [], []};
-		       _ -> F = vann_list_join(Env),
-			    {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[],[]}, Tree),
-			    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
-    		   end;
-      %% Added by HL, end.
-      _Type ->
-	  F = vann_list_join(Env),
-	  {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},
-						    Tree),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
+	    V = refac_syntax:variable_name(Tree),
+	    P = refac_syntax:get_pos(Tree),
+	    case  lists:keysearch({V, P}, 1, VI) of
+		{value, {{V, P}, As}} ->
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1,As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1,As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1,As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1,As),
+		    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1};
+		_ ->
+		    case [V2 || V2 <- Env, vann_1(V2, V)] of
+			[] ->
+			    Bound = [],
+			    Free = [{V, ?DEFAULT_LOC}], 
+			    Def = [?DEFAULT_LOC];
+			L ->
+			    Bound = [],
+			    Free = L,
+			    Def = [vann_1(V3) || V3 <- L]
+		    end, 
+		    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
+		end;		
+	match_expr -> vann_match_expr(Tree, Env, Ms, VI);
+	case_expr -> vann_case_expr(Tree, Env, Ms, VI);
+	if_expr -> vann_if_expr(Tree, Env, Ms, VI);
+	cond_expr -> vann_cond_expr(Tree, Env, Ms, VI);
+	receive_expr -> vann_receive_expr(Tree, Env, Ms,VI);
+	try_expr -> vann_try_expr(Tree, Env, Ms, VI);
+	function -> vann_function(Tree, Env, Ms, VI);
+	rule -> vann_rule(Tree, Env, Ms, VI);
+	fun_expr -> vann_fun_expr(Tree, Env, Ms, VI);
+	list_comp -> vann_list_comp(Tree, Env, Ms, VI);
+	generator -> vann_generator(Tree, Env, Ms, VI);
+	block_expr -> vann_block_expr(Tree, Env, Ms, VI);
+	macro -> vann_macro(Tree, Env, Ms, VI);
+	%% Added by HL, begin.
+	attribute -> 
+	    Toks0 = refac_util:get_toks(Tree),
+	    Tree1 = adjust_locations(Tree, Toks0),
+	    case  refac_syntax:atom_value(refac_syntax:attribute_name(Tree1)) of 
+		define -> vann_define(Tree1,Env, Ms, VI);
+		ifdef -> {Tree1, [], []};  
+		inndef ->{Tree1, [], []};
+		undef -> {Tree1, [], []};
+		_ -> F = vann_list_join(Env, Ms, VI),
+		     {Tree2, {Bound, Free}} = mapfold_subtrees(F, {[],[]}, Tree1),
+		     {ann_bindings(Tree2, Env, Bound, Free), Bound, Free}
+	    end;
+	%% Added by HL, end.
+	_Type ->
+	    F = vann_list_join(Env, Ms, VI),
+	    {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},Tree),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
 vann_1({V1, _L}, V) -> V == V1.
 
 vann_1({_V, P}) -> P.
 
-vann_list_join(Env) ->
+vann_list_join(Env, Ms, VI) ->
     fun (T, {Bound, Free}) ->
-	    {T1, Bound1, Free1} = vann(T, Env),
+	    {T1, Bound1, Free1} = vann(T, Env, Ms, VI),
 	    {T1,
 	     {ordsets:union(Bound, Bound1),
 	      ordsets:union(Free, Free1)}}
     end.
 
-vann_list(Ts, Env) ->
-    lists:mapfoldl(vann_list_join(Env), {[], []}, Ts).
+vann_list(Ts, Env, Ms, VI) ->
+    lists:mapfoldl(vann_list_join(Env, Ms, VI), {[], []}, Ts).
 
-vann_function(Tree, Env) ->
+vann_function(Tree, Env, Ms, _VI) ->
+    Toks0 = refac_util:get_toks(Tree),
+    Tree1 = adjust_locations(Tree, Toks0),
+    F = fun() ->
+		Toks1 = remove_whites(Toks0),
+		Toks2 = refac_epp:expand_macros(Toks1, Ms),
+		{ok, Form} = refac_parse:parse_form(Toks2),
+		[Form1] = refac_syntax:form_list_elements(refac_recomment:recomment_forms([Form], [])),
+		{Form2, _, _} = vann_function_1(Form1, Env, Ms, []),
+		get_var_info(Form2)
+	end,
+    {Tree2,Bound, Free} =try F() of
+			     VI -> vann_function_1(Tree1, Env, Ms, VI)
+			 catch
+			     _E1:_E2_ -> vann_function_1(Tree1, Env, Ms, [])
+			 end,
+    {update_var_define_locations(Tree2), Bound, Free}.
+    
+
+vann_function_1(Tree, Env, Ms, VI) ->
     Cs = refac_syntax:function_clauses(Tree),
-    {Cs1, {_, Free}} = vann_clauses(Cs, Env),
+    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI),
     N = refac_syntax:function_name(Tree),
-    {N1, _, _} = vann(N, Env),
+    {N1, _, _} = vann(N, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:function(N1, Cs1)),
     Bound = [],
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_rule(Tree, Env) ->
+vann_rule(Tree, Env, Ms, VI) ->
     Cs = refac_syntax:rule_clauses(Tree),
-    {Cs1, {_, Free}} = vann_clauses(Cs, Env),
+    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI),
     N = refac_syntax:rule_name(Tree),
-    {N1, _, _} = vann(N, Env),
+    {N1, _, _} = vann(N, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:rule(N1, Cs1)),
     Bound = [],
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_fun_expr(Tree, Env) ->
+vann_fun_expr(Tree, Env, Ms, VI) ->
     Cs = refac_syntax:fun_expr_clauses(Tree),
-    {Cs1, {_, Free}} = vann_fun_expr_clauses(Cs, Env),
+    {Cs1, {_, Free}} = vann_fun_expr_clauses(Cs, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:fun_expr(Cs1)),
     Bound = [],
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_match_expr(Tree, Env) ->
+vann_match_expr(Tree, Env, Ms, VI) ->
     E = refac_syntax:match_expr_body(Tree),
-    {E1, Bound1, Free1} = vann(E, Env),
+    {E1, Bound1, Free1} = vann(E, Env, Ms, VI),
     Env1 = ordsets:union(Env, Bound1),
     P = refac_syntax:match_expr_pattern(Tree),
-    {P1, Bound2, Free2} = vann_pattern(P, Env1),
+    {P1, Bound2, Free2} = vann_pattern(P, Env1, Ms, VI),
     Bound = ordsets:union(Bound1, Bound2),
     Free = ordsets:union(Free1, Free2),
     Tree1 = rewrite(Tree, refac_syntax:match_expr(P1, E1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_case_expr(Tree, Env) ->
+vann_case_expr(Tree, Env, Ms, VI) ->
     E = refac_syntax:case_expr_argument(Tree),
-    {E1, Bound1, Free1} = vann(E, Env),
+    {E1, Bound1, Free1} = vann(E, Env, Ms, VI),
     Env1 = ordsets:union(Env, Bound1),
     Cs = refac_syntax:case_expr_clauses(Tree),
-    {Cs1, {Bound2, Free2}} = vann_clauses(Cs, Env1),
+    {Cs1, {Bound2, Free2}} = vann_clauses(Cs, Env1, Ms, VI),
     Bound = ordsets:union(Bound1, Bound2),
     Free = ordsets:union(Free1, Free2),
     Tree1 = rewrite(Tree, refac_syntax:case_expr(E1, Cs1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_if_expr(Tree, Env) ->
+vann_if_expr(Tree, Env, Ms, VI) ->
     Cs = refac_syntax:if_expr_clauses(Tree),
-    {Cs1, {Bound, Free}} = vann_clauses(Cs, Env),
+    {Cs1, {Bound, Free}} = vann_clauses(Cs, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:if_expr(Cs1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_cond_expr(Tree, Env) ->
+vann_cond_expr(Tree, Env, _Ms, _VI) ->
     {ann_bindings(Tree, Env, [], []), [],[]}.   %% TODO: NEED TO CHANGE THIS BACK.
     %% erlang:error({not_implemented, cond_expr}).
 
-%% TODO: NEED TO CHECK THE SEMANTICS OF try-expression!!!.
-vann_try_expr(Tree, Env) ->  
+vann_try_expr(Tree, Env, Ms, VI) ->  
     Body = refac_syntax:try_expr_body(Tree),
-    {Body1, {Bound1, Free1}} = vann_body(Body, Env),
+    {Body1, {Bound1, Free1}} = vann_body(Body, Env, Ms, VI),
     Cs = refac_syntax:try_expr_clauses(Tree),
     {Cs1, {Bound2, Free2}} = case Cs of 
 				 [] -> {Cs, {[], []}};
-				 _ -> vann_clauses(Cs, Env)
+				 _ -> vann_clauses(Cs, Env, Ms, VI)
 			     end,
     Handlers = refac_syntax:try_expr_handlers(Tree),
     {Handlers1, {Bound3, Free3}} = case Handlers of 
 				       [] -> {Handlers, {[],[]}};
-				       _  ->vann_clauses(Handlers,Env)
+				       _  ->vann_clauses(Handlers,Env, Ms, VI)
 				   end,
     After = refac_syntax:try_expr_after(Tree),
     {After1, {Bound4, Free4}} = case After of 
 				    [] -> {After, {[],[]}};
-				    _  -> vann_body(After, Env)
+				    _  -> vann_body(After, Env, Ms, VI)
 				end,
     Tree1 = rewrite(Tree, refac_syntax:try_expr(Body1, Cs1, Handlers1, After1)),
     Bound = ordsets:union(ordsets:union(ordsets:union(Bound1, Bound2), Bound3),Bound4),
     Free  = ordsets:union(ordsets:union(ordsets:union(Free1, Free2), Free3),Free4),
-    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.    %% TODO: NEED TO CHANGE THIS BACK.
-    %% erlang:error({not_implemented, try_expr}).
+    {ann_bindings(Tree1, Env, Bound, Free), Bound,Free}.    
 
-vann_receive_expr(Tree, Env) ->
+vann_receive_expr(Tree, Env, Ms, VI) ->
     %% The timeout action is treated as an extra clause.
     %% Bindings in the expiry expression are local only.
     Cs = refac_syntax:receive_expr_clauses(Tree),
     Es = refac_syntax:receive_expr_action(Tree),
     case Es of 
 	[] ->
-	    {Cs1,{Bound, Free}} = vann_clauses(Cs, Env),
+	    {Cs1,{Bound, Free}} = vann_clauses(Cs, Env, Ms, VI),
 	    Tree1 = rewrite(Tree, refac_syntax:receive_expr(Cs1, none, [])),
 	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
 	_ ->
 	    C = refac_syntax:clause([], Es),
 	    {[C1 | Cs1], {Bound, Free1}} = vann_clauses([C | Cs],
-							Env),
+							Env, Ms, VI),
 	    Es1 = refac_syntax:clause_body(C1),
 	    {T1, _, Free2} = case
 		       refac_syntax:receive_expr_timeout(Tree)
 			 of
 		       none -> {none, [], []};
-		       T -> vann(T, Env)
+		       T -> vann(T, Env, Ms, VI)
 		     end,
 	    Free = ordsets:union(Free1, Free2),
 	    Tree1 = rewrite(Tree,
@@ -607,79 +642,38 @@ vann_receive_expr(Tree, Env) ->
 	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
-vann_list_comp(Tree, Env) ->
+vann_list_comp(Tree, Env, Ms, VI) ->
     Es = refac_syntax:list_comp_body(Tree),
-    {Es1, {Bound1, Free1}} = vann_list_comp_body(Es, Env),
-    % begin of modification by Huiqing Li
-    Env0 = ordsets:filter(fun ({V, _}) ->
-				  case lists:keysearch(V, 1,
-						       ordsets:to_list(Bound1))
-				      of
-				    {value, _} -> false;
-				    false -> true
-				  end
-			  end,
-			  Env),
+    {Es1, {Bound1, Free1}} = vann_list_comp_body(Es, Env, Ms, VI),
+    F=fun(V, Bs) -> lists:keysearch(V, 1,  Bs)==false end,
+    Env0 = [{V, P}||{V,P}<-Env, F(V, Bound1)],
     Env1 = ordsets:union(Env0, Bound1),
-    % Original code:
-    % Env1 = ordsets:union(Env, Bound1),
-    % end of modification by Huiqing Li
     T = refac_syntax:list_comp_template(Tree),
-    {T1, _, Free2} = vann(T, Env1),
-    Free = ordsets:union(Free1,
-			 ordsets:subtract(Free2, Bound1)),
+    {T1, _, Free2} = vann(T, Env1, Ms, VI),
+    Free = ordsets:union(Free1,ordsets:subtract(Free2, Bound1)),
     Bound = [],
     Tree1 = rewrite(Tree, refac_syntax:list_comp(T1, Es1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_list_comp_body_join() ->
+vann_list_comp_body_join(Ms, VI) ->
     fun (T, {Env, Bound, Free}) ->
 	    {T1, Bound1, Free1} = case refac_syntax:type(T) of
-				    generator -> vann_generator(T, Env);
+				      generator -> vann_generator(T, Env, Ms, VI);
 				    _ ->
-					%% Bindings in filters are not
-					%% exported to the rest of the
-					%% body.
-					{T2, _, Free2} = vann(T, Env),
-					{T2, [], Free2}
+					  {T2, _, Free2} = vann(T, Env, Ms, VI),
+					  {T2, [], Free2}
 				  end,
-	    % Begin of modification by Huiqing
-	    Env0 = ordsets:filter(fun ({V, _}) ->
-					  case lists:keysearch(V, 1,
-							       ordsets:to_list(Bound1))
-					      of
-					    {value, _} -> false;
-					    false -> true
-					  end
-				  end,
-				  Env),
+	    F=fun(V, Bs) -> lists:keysearch(V, 1,  Bs)==false end,
+	    Env0 = ([{V, P}||{V,P}<-Env, F(V, Bound1)]),
 	    Env1 = ordsets:union(Env0, Bound1),
-	    % Original code.
-	    %Env1 = ordsets:union(Env, Bound1),
-	    % End of modificaiton by Huiqing Li
-	    % Begin of modification by Huiqing
-	    Bound2 = ordsets:filter(fun ({V, _}) ->
-					    case lists:keysearch(V, 1,
-								 ordsets:to_list(Bound1))
-						of
-					      {value, _} -> false;
-					      false -> true
-					    end
-				    end,
-				    Bound),
-	    {T1,
-	     {Env1, ordsets:union(Bound2, Bound1),
-	      ordsets:union(Free, ordsets:subtract(Free1, Bound))}}
+	    Bound2 = ordsets:from_list([{V, P}|| {V,P} <- Bound, F(V, ordsets:to_list(Bound1))]),
+	    {T1, {Env1, ordsets:union(Bound2, Bound1),
+		  ordsets:union(Free, ordsets:subtract(Free1, Bound))}}
     end.
 
-            %End of modificaiton by Huiqing Li
-	    % original code.
-	    %%  {T1, {Env1, ordsets:union(Bound, Bound1),
-	    %         ordsets:union(Free,
-	    %                     ordsets:subtract(Free1, Bound))}}
-
-vann_list_comp_body(Ts, Env) ->
-    F = vann_list_comp_body_join(),
+  
+vann_list_comp_body(Ts, Env, Ms, VI) ->
+    F = vann_list_comp_body_join(Ms, VI),
     {Ts1, {_, Bound, Free}} = lists:mapfoldl(F,
 					     {Env, [], []}, Ts),
     {Ts1, {Bound, Free}}.
@@ -689,74 +683,78 @@ vann_list_comp_body(Ts, Env) ->
 %% environment (thus, the pattern contains no variable uses, only
 %% bindings). Bindings in the generator body are not exported.
 
-vann_generator(Tree, Env) ->
+vann_generator(Tree, Env, Ms, VI) ->
     P = refac_syntax:generator_pattern(Tree),
-    {P1, Bound, _} = vann_pattern(P, []),
+    {P1, Bound, _} = vann_pattern(P, [], Ms, VI),
     E = refac_syntax:generator_body(Tree),
-    {E1, _, Free} = vann(E, Env),
+    {E1, _, Free} = vann(E, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:generator(P1, E1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_block_expr(Tree, Env) ->
+vann_block_expr(Tree, Env, Ms, VI) ->
     Es = refac_syntax:block_expr_body(Tree),
-    {Es1, {Bound, Free}} = vann_body(Es, Env),
+    {Es1, {Bound, Free}} = vann_body(Es, Env, Ms, VI),
     Tree1 = rewrite(Tree, refac_syntax:block_expr(Es1)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_body_join() ->
+vann_body_join(Ms, VI) ->
     fun (T, {Env, Bound, Free}) ->
-	    {T1, Bound1, Free1} = vann(T, Env),
+	    {T1, Bound1, Free1} = vann(T, Env, Ms, VI),
 	    Env1 = ordsets:union(Env, Bound1),
 	    {T1,
 	     {Env1, ordsets:union(Bound, Bound1),
 	      ordsets:union(Free, ordsets:subtract(Free1, Bound))}}
     end.
 
-vann_body(Ts, Env) ->
+vann_body(Ts, Env, Ms, VI) ->
     {Ts1, {_, Bound, Free}} =
-	lists:mapfoldl(vann_body_join(), {Env, [], []}, Ts),
+	lists:mapfoldl(vann_body_join(Ms, VI), {Env, [], []}, Ts),
     {Ts1, {Bound, Free}}.
 
 %% Macro names must be ignored even if they happen to be variables,
 %% lexically speaking.
 
-vann_macro(Tree, Env) ->
-    {As, {Bound, Free}} = case
-			    refac_syntax:macro_arguments(Tree)
-			      of
-			    none -> {none, {[], []}};
-			    As1 -> vann_list(As1, Env)
+vann_macro(Tree, Env, Ms, VI) ->
+    {As, {Bound, Free}} = case refac_syntax:macro_arguments(Tree)  of
+			      none -> {none, {[], []}};
+			      As1 -> vann_list(As1, Env, Ms, VI)
 			  end,
     N = refac_syntax:macro_name(Tree),
-    N1 = ann_bindings(N, Env, [],[]),   %% TODO: CHECK THIS. How TO refer to the define locations of the macro?
+    N1 = ann_bindings(N, Env, [],[]),  
     Tree1 = rewrite(Tree, refac_syntax:macro(N1, As)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_pattern(Tree, Env) ->
+vann_pattern(Tree, Env, Ms, VI) ->
     case refac_syntax:type(Tree) of
-      variable ->
-	  V = refac_syntax:variable_name(Tree),
-	  Pos = refac_syntax:get_pos(Tree),
-	  case lists:keysearch(V, 1, Env) of
-	    {value, {V, L}} ->
-		%% apply occurrence
-		Bound = [],
-		Free = [{V, L}],
-		Def =[L],
-		{ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
-	    false ->
-		%% binding occurrence
-		Bound = [{V, Pos}],
-		Free = [],
-		Def = [Pos],
-		{ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
-	  end;
+	variable ->
+	    V = refac_syntax:variable_name(Tree),
+	    P = refac_syntax:get_pos(Tree),
+	    case lists:keysearch({V, P}, 1, VI) of
+		{value, {{V, P}, As}} ->
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1,As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1,As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1,As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1,As),
+		    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1};
+		_ ->
+		    case lists:keysearch(V, 1, Env) of
+			{value, {V, L}} ->
+			    Bound = [],
+			    Free = [{V, L}],
+			    Def =[L];
+			false ->
+			    Bound = [{V, P}],
+			    Free = [],
+			    Def = [P]
+		    end,
+		    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
+		end;
       match_expr ->
 	  %% Alias pattern
 	  P = refac_syntax:match_expr_pattern(Tree),
-	  {P1, Bound1, Free1} = vann_pattern(P, Env),
+	  {P1, Bound1, Free1} = vann_pattern(P, Env, Ms, VI),
 	  E = refac_syntax:match_expr_body(Tree),
-	  {E1, Bound2, Free2} = vann_pattern(E, Env),
+	  {E1, Bound2, Free2} = vann_pattern(E, Env, Ms, VI),
 	  Bound = ordsets:union(Bound1, Bound2),
 	  Free = ordsets:union(Free1, Free2),
 	  Tree1 = rewrite(Tree, refac_syntax:match_expr(P1, E1)),
@@ -768,43 +766,42 @@ vann_pattern(Tree, Env) ->
 				  refac_syntax:macro_arguments(Tree)
 				    of
 				  none -> {none, {[], []}};
-				  As1 -> vann_patterns(As1, Env)
+				  As1 -> vann_patterns(As1, Env, Ms, VI)
 				end,
 	  N = refac_syntax:macro_name(Tree),
 	  Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
 	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
       _Type ->
-	  F = vann_patterns_join(Env),
+	  F = vann_patterns_join(Env, Ms, VI),
 	  {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},
 						    Tree),
 	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
-vann_fun_expr_pattern(Tree, Env) ->
+vann_fun_expr_pattern(Tree, Env,Ms, VI) ->
     case refac_syntax:type(Tree) of
       variable ->
-	  V = refac_syntax:variable_name(Tree),
-	  Pos = refac_syntax:get_pos(Tree),
-	  case lists:keysearch(V, 1, Env) of
-	    {value, {V, _}} ->
-		%% shandowing
-		Bound = [{V, Pos}],
-		Free = [],
-		Def = [Pos],
-		{ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
-	    false ->
-		%% binding occurrence
-		Bound = [{V, Pos}],
-		Free = [],
-		Def = [Pos],
-		{ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
-	  end;
-      match_expr ->
+	    V = refac_syntax:variable_name(Tree),
+	    P = refac_syntax:get_pos(Tree),
+	    case lists:keysearch({V, P}, 1, VI) of
+		{value, {{V, P}, As}} ->
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1,As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1,As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1,As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1,As),
+		    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1};
+		_ -> 
+		    Bound = [{V, P}],
+		    Free = [],
+		    Def = [P],
+		    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
+	    end;
+	match_expr ->
 	  %% Alias pattern
 	  P = refac_syntax:match_expr_pattern(Tree),
-	  {P1, Bound1, Free1} = vann_pattern(P, Env),
+	  {P1, Bound1, Free1} = vann_pattern(P, Env, Ms, VI),
 	  E = refac_syntax:match_expr_body(Tree),
-	  {E1, Bound2, Free2} = vann_pattern(E, Env),
+	  {E1, Bound2, Free2} = vann_pattern(E, Env, Ms, VI),
 	  Bound = ordsets:union(Bound1, Bound2),
 	  Free = ordsets:union(Free1, Free2),
 	  Tree1 = rewrite(Tree, refac_syntax:match_expr(P1, E1)),
@@ -816,42 +813,41 @@ vann_fun_expr_pattern(Tree, Env) ->
 				  refac_syntax:macro_arguments(Tree)
 				    of
 				  none -> {none, {[], []}};
-				  As1 -> vann_patterns(As1, Env)
+				  As1 -> vann_patterns(As1, Env, Ms, VI)
 				end,
 	  N = refac_syntax:macro_name(Tree),
 	  Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
 	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
       _Type ->
-	  F = vann_patterns_join(Env),
-	  {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},
-						    Tree),
+	  F = vann_patterns_join(Env, Ms, VI),
+	    {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},Tree),
 	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
-vann_patterns_join(Env) ->
+vann_patterns_join(Env, Ms, VI) ->
     fun (T, {Bound, Free}) ->
-	    {T1, Bound1, Free1} = vann_pattern(T, Env),
+	    Env1 =ordsets:union(Env, Bound),
+	    {T1, Bound1, Free1} = vann_pattern(T, Env1, Ms, VI),
+	    {T1,
+	     {ordsets:union(Bound, Bound1),
+	      ordsets:union(Free, Free1)}}
+    end.
+vann_fun_expr_patterns_join(Env, Ms, VI) ->
+    fun (T, {Bound, Free}) ->
+	    {T1, Bound1, Free1} = vann_fun_expr_pattern(T, Env, Ms, VI),
 	    {T1,
 	     {ordsets:union(Bound, Bound1),
 	      ordsets:union(Free, Free1)}}
     end.
 
-vann_fun_expr_patterns_join(Env) ->
-    fun (T, {Bound, Free}) ->
-	    {T1, Bound1, Free1} = vann_fun_expr_pattern(T, Env),
-	    {T1,
-	     {ordsets:union(Bound, Bound1),
-	      ordsets:union(Free, Free1)}}
-    end.
+vann_patterns(Ps, Env, Ms, VI) ->
+    lists:mapfoldl(vann_patterns_join(Env, Ms, VI), {[], []}, Ps).
 
-vann_patterns(Ps, Env) ->
-    lists:mapfoldl(vann_patterns_join(Env), {[], []}, Ps).
-
-vann_fun_expr_patterns(Ps, Env) ->
-    lists:mapfoldl(vann_fun_expr_patterns_join(Env),
+vann_fun_expr_patterns(Ps, Env, Ms, VI) ->
+    lists:mapfoldl(vann_fun_expr_patterns_join(Env, Ms, VI),
 		   {[], []}, Ps).
 
-vann_define(D, Env) -> 
+vann_define(D, Env, Ms, VI) -> 
     Name = refac_syntax:attribute_name(D),
     Args = refac_syntax:attribute_arguments(D),    
     MacroHead = hd(Args),
@@ -860,16 +856,16 @@ vann_define(D, Env) ->
 	case refac_syntax:type(MacroHead) of 
 	    application -> Operator = refac_syntax:application_operator(MacroHead),
 			   Arguments = refac_syntax:application_arguments(MacroHead),
-			   {Operator1, Bs1, _Fs1} = vann_pattern(Operator, Env),
-			   {Arguments1, {Bs2, _Fs2}} = vann_patterns(Arguments, Env), 
+			   {Operator1, Bs1, _Fs1} = vann_pattern(Operator, Env, Ms, VI),
+			   {Arguments1, {Bs2, _Fs2}} = vann_patterns(Arguments, Env, Ms, VI), 
 	                   %%Bs3= ordsets:union(Bs1, Bs2),
 			   H = rewrite(MacroHead, refac_syntax:application(Operator1, Arguments1)),
 			   %%{{ann_bindings(H, Env, Bs3, []), Bs3, []}, Bs1};
 			   {{ann_bindings(H, Env, Bs2, []), Bs2, []}, Bs1};
-	    _  -> {vann_pattern(MacroHead, Env),[]}
+	    _  -> {vann_pattern(MacroHead, Env, Ms, VI),[]}
 	end,
     Env1 = ordsets:union(Env, Bound),
-    {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1),
+    {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1, Ms, VI),
     MacroBody2 = adjust_define_body(MacroBody1, Env1),
     D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1| MacroBody2])),
     {ann_bindings(D1, Env, [], []), [], []}.   
@@ -898,94 +894,67 @@ adjust_define_body(Body, Env) ->
 	end,
    lists:map(fun(T) ->map(F, T) end, Body).
 	    
-vann_clause(C, Env) ->
+vann_clause(C, Env, Ms, VI) ->
     {Ps, {Bound1, Free1}} =
-	vann_patterns(refac_syntax:clause_patterns(C), Env),
+	vann_patterns(refac_syntax:clause_patterns(C), Env, Ms, VI),
     Env1 = ordsets:union(Env, Bound1),
     %% Guards cannot add bindings
     {G1, _, Free2} = case refac_syntax:clause_guard(C) of
 		       none -> {none, [], []};
-		       G -> vann(G, Env1)
+		       G -> vann(G, Env1, Ms, VI)
 		     end,
     {Es, {Bound2, Free3}} =
-	vann_body(refac_syntax:clause_body(C), Env1),
+	vann_body(refac_syntax:clause_body(C), Env1, Ms, VI),
     Bound = ordsets:union(Bound1, Bound2),
     Free = ordsets:union(Free1,
 			 ordsets:subtract(ordsets:union(Free2, Free3), Bound1)),
     Tree1 = rewrite(C, refac_syntax:clause(Ps, G1, Es)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_fun_expr_clause(C, Env) ->
+vann_fun_expr_clause(C, Env, Ms, VI) ->
     {Ps, {Bound1, Free1}} =
 	vann_fun_expr_patterns(refac_syntax:clause_patterns(C),
-			       Env),
-    Env0 = ordsets:filter(fun ({V, _}) ->
-				  case lists:keysearch(V, 1,
-						       ordsets:to_list(Bound1))
-				      of
-				    {value, _} -> false;
-				    false -> true
-				  end
-			  end,
-			  Env),
+			       Env, Ms, VI),
+    Env0 =([{V, P} ||{V, P} <-Env, lists:keysearch(V, 1, Bound1)==false]),
     Env1 = ordsets:union(Env0, Bound1),
     %% Guards cannot add bindings
     {G1, _, Free2} = case refac_syntax:clause_guard(C) of
 		       none -> {none, [], []};
-		       G -> vann(G, Env1)
+		       G -> vann(G, Env1, Ms, VI)
 		     end,
     {Es, {Bound2, Free3}} =
-	vann_body(refac_syntax:clause_body(C), Env1),
+	vann_body(refac_syntax:clause_body(C), Env1, Ms, VI),
     Bound = ordsets:union(Bound1, Bound2),
     Free = ordsets:union(Free1,
 			 ordsets:subtract(ordsets:union(Free2, Free3), Bound1)),
     Tree1 = rewrite(C, refac_syntax:clause(Ps, G1, Es)),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
-vann_clauses_join(Env) ->
+vann_clauses_join(Env, Ms, VI) ->
     fun (C, {Bound, Free}) ->
-	    {C1, Bound1, Free1} = vann_clause(C, Env),
- %% 	    Bd1 = ordsets:filter(fun ({V, _}) ->
-%%  					 case lists:keysearch(V, 1,
-%%  							      ordsets:to_list(Bound1))
-%%  					     of
-%%  					   {value, _} -> true;
-%%  					   false -> false
-%%  					 end
-%%  				 end,
-%%  				 Bound),
-%%  	    Bd2 = ordsets:filter(fun ({V, _}) ->
-%%  					 case lists:keysearch(V, 1,
-%%  							      ordsets:to_list(Bound))
-%%  					     of
-%%  					   {value, _} -> true;
-%%  					   false -> false
-%%  					 end
-%%  				 end,
-%%  				 Bound1),
-	    
-	    {C1,{ordsets:union(Bound, Bound1), ordsets:union(Free, Free1)}};
+	    {C1, Bound1, Free1} = vann_clause(C, Env, Ms, VI),
+ 	    {C1,{ordsets:union(Bound, Bound1), ordsets:union(Free, Free1)}};
 	(C, false) ->
-	    {C1, Bound, Free} = vann_clause(C, Env),
+	    {C1, Bound, Free} = vann_clause(C, Env,Ms, VI),
 	    {C1, {Bound, Free}}
     end.
 
-vann_fun_expr_clauses_join(Env) ->
+vann_fun_expr_clauses_join(Env, Ms, VI) ->
     fun (C, {Bound, Free}) ->
-	    {C1, Bound1, Free1} = vann_fun_expr_clause(C, Env),
+	    {C1, Bound1, Free1} = vann_fun_expr_clause(C, Env, Ms, VI),
 	    {C1,
 	     {ordsets:intersection(Bound, Bound1),
 	      ordsets:union(Free, Free1)}};
 	(C, false) ->
-	    {C1, Bound, Free} = vann_fun_expr_clause(C, Env),
+	    {C1, Bound, Free} = vann_fun_expr_clause(C, Env, Ms, VI),
 	    {C1, {Bound, Free}}
     end.
 
-vann_clauses(Cs, Env) ->
-    lists:mapfoldl(vann_clauses_join(Env), false, Cs).
+vann_clauses(Cs, Env, Ms, VI) ->
+    lists:mapfoldl(vann_clauses_join(Env, Ms, VI), false, Cs).
 
-vann_fun_expr_clauses(Cs, Env) ->
-    lists:mapfoldl(vann_fun_expr_clauses_join(Env), false,
+vann_fun_expr_clauses(Cs, Env, Ms, VI) ->
+    lists:mapfoldl(vann_fun_expr_clauses_join(Env, Ms, VI), false,
 		   Cs).
 
 ann_bindings(Tree, Env, Bound, Free) ->
@@ -2134,7 +2103,7 @@ limit_1(Tree, Depth, Node) ->
 		   false -> Node
 		 end
 	  end;
-      Gs ->
+      Gs -> 
 	  if Depth > 1 ->
 		 Gs1 = [[limit_1(T, Depth - 1, Node)
 			 || T <- limit_list(G, Depth, Node)]
@@ -2238,3 +2207,146 @@ split_lines_1(Cs, Cs1, Ls, Prefix) ->
 
 push(N, C, Cs) when N > 0 -> push(N - 1, C, [C | Cs]);
 push(0, _, Cs) -> Cs.
+
+
+remove_whites(Toks) ->
+    F = fun(T) ->
+		case T of
+		    {whitespace, _, _} -> [];
+		    {comment, _, _} -> [];
+		    {qatom, L, V} ->[{atom, L, V}];
+		    _ -> [T]
+		end
+	end,
+    lists:flatmap(F, Toks).
+
+get_var_info(Tree) ->
+    F = fun(T, S) ->
+		case refac_syntax:type(T) of
+		    variable ->
+			V = refac_syntax:variable_name(T),
+			P = refac_syntax:get_pos(T),
+			As = refac_syntax:get_ann(T),
+			ordsets:add_element({{V, P}, As}, S);		    
+		    _ -> S
+		end
+	end,
+    fold(F, [], Tree).
+	   
+
+
+%% Adjust the locations of F and A in an implicit function application (fun F/A)
+%% to their actual occurrence locations. Originally, both of their locations refer
+%% to that of the keyword 'fun'.
+%% Qn: Any other cases in need of location adjustment?
+adjust_locations(Form, []) -> Form;
+adjust_locations(Form, Toks) ->
+    F = fun (T) ->
+		case refac_syntax:type(T) of
+		    attribute ->
+			Name = refac_syntax:attribute_name(T),
+			case (refac_syntax:type(Name)==atom) andalso
+			    (refac_syntax:atom_value(Name)==file) of 
+			    true -> 
+				[File, Data] = refac_syntax:attribute_arguments(T),
+				Pos = refac_syntax:get_pos(File),
+				Toks1 = lists:dropwhile(fun(B) -> element(2, B)=<Pos orelse
+								      element(1, B) =/= string end, Toks),
+				StrTok = hd(Toks1),
+				StrPos = element(2, StrTok),
+				{_, EndPos} = refac_util:get_range(File),
+				File1 = refac_syntax:add_ann({toks, [StrTok]},
+							     refac_util:update_ann(refac_syntax:set_pos(File, StrPos),
+										  {range, {StrPos, EndPos}})),
+				Toks2 = lists:dropwhile(fun(B) -> element(1, B) =/= integer end, Toks1),
+				Data1 = refac_syntax:set_pos(Data, element(2, hd(Toks2))),
+				refac_util:rewrite(T, refac_syntax:attribute(Name, [File1, Data1]));			    
+			    _ -> T
+			end;
+		    implicit_fun ->
+			Pos = refac_syntax:get_pos(T),
+			Name = refac_syntax:implicit_fun_name(T),
+			case refac_syntax:type(Name) of
+			    arity_qualifier ->
+				Fun = refac_syntax:arity_qualifier_body(Name),
+				A = refac_syntax:arity_qualifier_argument(Name),
+				case {refac_syntax:type(Fun), refac_syntax:type(A)} of
+				    {atom, integer} ->
+					Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= Pos end, Toks),
+					Fun1 = refac_syntax:atom_value(Fun),
+					Toks2 = lists:dropwhile(fun (B) ->
+									case B of
+									    {atom, _, Fun1} -> false;
+									    _ -> true
+									end
+								end,
+								Toks1),
+					P = element(2, refac_util:ghead("refac_util: adjust_locations,P", Toks2)),
+					Fun2 = refac_syntax:set_pos(Fun, P),
+					Toks3 = lists:dropwhile(fun (B) ->
+									case B of
+									    {integer, _, _} -> false;
+									    _ -> true
+									end
+								end,
+								Toks2),
+					A2 = refac_syntax:set_pos(A,
+								  element(2, refac_util:ghead("refac_util:adjust_locations:A2", Toks3))),
+					rewrite(T, refac_syntax:implicit_fun(refac_syntax:set_pos(rewrite(Name,
+									  refac_syntax:arity_qualifier(Fun2, A2)), P)));
+				    _ -> T
+				end;
+			    _ -> T
+			end;
+		    macro -> {L, C} = refac_syntax:get_pos(T),
+			     Toks1 = lists:reverse(lists:takewhile(fun(B) -> element(2, B)=/={L, C} end, Toks)),
+			     Toks2 = lists:dropwhile(fun(B) -> case B of 
+								   {whitespace, _, _} -> true;
+								   _ -> false
+							       end
+						     end, Toks1),
+			     case Toks2 of
+				 [] -> refac_syntax:add_ann({with_bracket, false}, T);
+				 [H|_] -> case H of 
+					      {'(', _} -> refac_syntax:add_ann({with_bracket, true}, T);
+					      _ -> refac_syntax:add_ann({with_bracket, false}, T)
+					  end
+			     end;
+		    _ -> T
+		end
+	end,
+    refac_syntax_lib:map(F, Form).
+
+%% =====================================================================
+%% @spec update_var_define_locations(Node::syntaxTree()) -> syntaxTree()
+%% @doc  Update the defining locations of those binding occurrences which are
+%% associated with more than one binding occurrence.
+
+update_var_define_locations(Node) ->
+    F1 = fun (T, S) ->
+		 case refac_syntax:type(T) of
+		   variable ->
+		       R = lists:keysearch(def, 1, refac_syntax:get_ann(T)),
+		       case R of
+			 {value, {def, P}} -> S ++ [P];
+			 _ -> S
+		       end;
+		   _ -> S
+		 end
+	 end,
+    DefineLocs = lists:usort(refac_syntax_lib:fold(F1, [], Node)),
+    F = fun (T) ->
+		case refac_syntax:type(T) of
+		  variable ->
+		      case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of
+			{value, {def, Define}} ->
+			    Defs = lists:merge([V1
+						|| V1 <- DefineLocs,
+						   ordsets:intersection(ordsets:from_list(V1), ordsets:from_list(Define)) /= []]),
+			    refac_util:update_ann(T, {def, lists:usort(Defs)});
+			_ -> T
+		      end;
+		  _ -> T
+		end
+	end,
+    refac_syntax_lib:map(F, Node).

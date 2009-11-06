@@ -570,6 +570,7 @@ is_form(Node) ->
 get_pos(#tree{attr = Attr}) -> Attr#attr.pos;
 get_pos(#wrapper{attr = Attr}) -> Attr#attr.pos;
 get_pos({error, {Pos, _, _}}) -> Pos;
+get_pos({error, {{Pos, _, _}, _}}) -> Pos;
 get_pos({warning, {Pos, _, _}}) -> Pos;
 get_pos(Node) ->
     %% Here, we assume that we have an `erl_parse' node with position
@@ -1363,7 +1364,7 @@ integer_literal(Node) ->
 	end,
     case is_list(V) of 
 	true -> V;
-	_ -> integer_to_list(V)
+	_ ->integer_to_list(V)
     end.
 
 %% =====================================================================
@@ -1422,7 +1423,7 @@ float_value(Node) ->
 %%
 %% @see float/1
 
-float_literal(Node) -> float_to_list(float_value(Node)).
+float_literal(Node) -> io_lib:write(float_value(Node)).
 
 %% =====================================================================
 %% @spec char(Value::char()) -> syntaxTree()
@@ -2033,7 +2034,8 @@ list_length(Node, A) ->
 	    none -> A1;
 	    Tail -> list_length(Tail, A1)
 	  end;
-      nil -> A
+      nil -> A;
+      _ -> A +1    
     end.
 
 %% =====================================================================
@@ -2094,15 +2096,31 @@ compact_list(Node) ->
 	    none -> Node;
 	    Tail ->
 		case type(Tail) of
-		  list ->
-		      Tail1 = compact_list(Tail),
-		      Node1 = list(list_prefix(Node) ++ list_prefix(Tail1),
-				   list_suffix(Tail1)),
-		      join_comments(Tail1, copy_attrs(Node, Node1));
-		  nil ->
-		      Node1 = list(list_prefix(Node)),
-		      join_comments(Tail, copy_attrs(Node, Node1));
-		  _ -> Node
+		  list ->  %% Modified by HL;
+			Tail1 = compact_list(Tail),
+			Prefix = case list_prefix(Tail1) of
+				      [H] ->
+					 [join_comments(Tail1, H)];
+				     [H|T] ->
+					 Prefix1 =[add_precomments(get_precomments(Tail1), H)|T],
+					 case list_suffix(Tail1) of
+					     none ->
+						 [H1|T1] = lists:reverse(Prefix1),
+						 lists:reverse([add_postcomments(get_postcomments(Tail1), H1)|T1]);					          
+					     _ -> Prefix1
+					 end						  
+				 end,
+			Suffix = case list_suffix(Tail1) of
+				     none -> none;
+				     S -> add_postcomments(get_postcomments(Tail1), S)
+				 end,					      
+			Node1 = list(list_prefix(Node) ++Prefix,
+				    Suffix),
+			copy_attrs(Node, Node1);
+		    nil ->
+			Node1 = list(list_prefix(Node)),
+			join_comments(Tail, copy_attrs(Node, Node1));
+		    _ -> Node
 		end
 	  end;
       _ -> Node
@@ -2730,10 +2748,12 @@ attribute_arguments(Node) ->
 		{Type, Entries} = Data,
 		[set_pos(atom(Type), Pos),
 		 set_pos(tuple(unfold_record_fields(Entries)), Pos)];
-	       spec ->
+	     spec ->
   		  {FunSpec, TypeSpec} = Data,
   		  case FunSpec of 
-  		      {Fun, Arity} -> [set_pos(tuple([set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)]
+  		      {Fun, Arity} -> [set_pos(tuple([set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)];
+		      {Mod, Fun,Arity} ->
+			  [set_pos(tuple([set_pos(atom(Mod), Pos), set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)]
   		  end;	
 	      type ->
 		  {TypeName, TypeSpec1, TypeSpec2} = Data,
@@ -3140,16 +3160,20 @@ fold_try_clause({clause, Pos, [P], Guard, Body}) ->
 		[class_qualifier_argument(P), class_qualifier_body(P),
 		 {var, Pos, '_'}]};
 	   _ ->
-	       {tuple, Pos, [{atom, Pos, throw}, P, {var, Pos, '_'}]}
+	       {tuple, Pos, [P, {var, Pos, '_'}]}
 	 end,
     {clause, Pos, [P1], Guard, Body}.
 
 unfold_try_clauses(Cs) ->
     [unfold_try_clause(C) || C <- Cs].
 
-unfold_try_clause({clause, Pos,
-		   [{tuple, _, [{atom, _, throw}, V, _]}], Guard, Body}) ->
-    {clause, Pos, [V], Guard, Body};
+unfold_try_clause({clause, Pos,  
+ 		   [{tuple, _, [{atom, Pos1, throw}, V, _]}], Guard, Body}) ->
+    case Pos1 == get_pos(V) of 
+	true ->  {clause, Pos, [V], Guard, Body}; 
+	false -> {clause, Pos, [class_qualifier({atom, Pos1, throw}, V)], Guard, Body}
+    end;
+	
 unfold_try_clause({clause, Pos, [{tuple, _, [C, V, _]}],
 		   Guard, Body}) ->
     {clause, Pos, [class_qualifier(C, V)], Guard, Body}.
@@ -5275,8 +5299,8 @@ revert(Node) ->
 		Gs = [[revert(X) || X <- L] || L <- subtrees(Node)],
 		%% Then reconstruct the node from the reverted
 		%% parts, and revert the node itself.
-		Node1 = update_tree(Node, Gs),
-		revert_root(Node1)
+		  Node1 = update_tree(Node, Gs),
+		  revert_root(Node1)
 	  end
     end.
 

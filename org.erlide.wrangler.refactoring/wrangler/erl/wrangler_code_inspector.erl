@@ -1,19 +1,31 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% =====================================================================
 %% A module for detecting bad coding smells.
 %%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
 %% =====================================================================
@@ -34,8 +46,8 @@
 
 -define (not_sure_atom,'*wrangler-not-able-to-decide*').
 %%==========================================================================================
--spec(find_var_instances(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth:: integer()) ->
-	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
+%%-spec(find_var_instances(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth:: integer()) ->
+%%	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
 find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case refac_util:pos_to_var_name(AnnAST, {Line, Col}) of
@@ -62,43 +74,43 @@ find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     end.
 
 %%==========================================================================================
--spec(nested_if_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_if_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 	     
 nested_if_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'if' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel,if_expr, SearchPaths, TabWidth).
 
 
--spec(nested_if_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_if_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_if_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'if' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, if_expr, SearchPaths, TabWidth).
     
 %%==========================================================================================
--spec(nested_case_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_case_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_case_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) -> 
     ?wrangler_io("\nCheck nested 'case' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel, case_expr, SearchPaths, TabWidth).
 
 
--spec(nested_case_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_case_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_case_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'case' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, case_expr, SearchPaths, TabWidth).
 
 %%==========================================================================================
--spec(nested_receive_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TadWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_receive_exprs_in_file(FName::filename(), NestLevel::[integer()], SearchPaths::[dir()], TadWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_receive_exprs_in_file(FName, NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'receive' expressions in  current buffer ...\n",[]),
     nested_exprs([FName], NestLevel, receive_expr, SearchPaths, TabWidth).
 
--spec(nested_receive_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} |ok).
+%%-spec(nested_receive_exprs_in_dirs(NestLevel::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} |ok).
 nested_receive_exprs_in_dirs(NestLevel, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCheck nested 'receive' expressions in directories: \n~p\n", [SearchPaths]),
     nested_exprs(SearchPaths, NestLevel, case_expr, SearchPaths, TabWidth).
@@ -156,24 +168,24 @@ get_module_name(FName, Info) ->
     ModName.
   
 	
-format_result(Funs, _NestLevel, ExprType) -> 
-    _ExprType1 = case ExprType of 
+format_result(Funs, NestLevel, ExprType) -> 
+    ExprType1 = case ExprType of 
 		    case_expr -> 'case';
 		    if_expr -> 'if';
 		    receive_expr -> 'receive'
 		end,
     case Funs of 
-	[] -> ?wrangler_io("\nNo function in this module contains ~p expressions nested ~p or more levels.\n", [_ExprType1, _NestLevel]);
-	_ -> ?wrangler_io("\nThe following function(s) contains ~p expressions nested ~p or more levels:\n ", [_ExprType1, _NestLevel]),
+	[] -> ?wrangler_io("\nNo function in this module contains ~p expressions nested ~p or more levels.\n", [ExprType1, NestLevel]);
+	_ -> ?wrangler_io("\nThe following function(s) contains ~p expressions nested ~p or more levels:\n ", [ExprType1, NestLevel]),
 	     format_result_1(Funs)
     end.
 
 format_result_1([]) ->
     ?wrangler_io(".\n",[]);
-format_result_1([{_M, _F, _A}|Fs]) ->
+format_result_1([{M, F, A}|Fs]) ->
     case Fs of 
-	[] -> ?wrangler_io("~p:~p/~p", [_M, _F, _A]);
-	_ -> ?wrangler_io("~p:~p/~p,", [_M, _F, _A])
+	[] -> ?wrangler_io("~p:~p/~p", [M, F, A]);
+	_ -> ?wrangler_io("~p:~p/~p,", [M, F, A])
     end,
     format_result_1(Fs).
 
@@ -201,9 +213,9 @@ get_enclosed(Cur, Rs) ->
     end.
 
 %%=========================================================================================
--spec(caller_funs(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | {ok, {[{modulename(), functionname(), arity()}],
-				       [{modulename(), functionname(), arity()}]}}).
+%%-spec(caller_funs(FName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | {ok, {[{modulename(), functionname(), functionarity()}],
+%%				       [{modulename(), functionname(), functionarity()}]}}).
 caller_funs(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case refac_util:pos_to_fun_def(AnnAST, {Line, Col}) of
@@ -236,16 +248,16 @@ display_results(Callers, UnSures) ->
 	  ?wrangler_io("The selected function is not called by any other functions.\n",[]);
       {_, []} ->
 	  ?wrangler_io("The selected function is called by the following function(s):\n",[]),
-	    lists:map(fun({_File, _F, _A}) -> ?wrangler_io("{File:~p, function: ~p/~p }\n", [_File, _F, _A]) end, Callers);
+	    lists:foreach(fun({File, F, A}) -> ?wrangler_io("{File:~p, function: ~p/~p }\n", [File, F, A]) end, Callers);
       {[], [_H | _]} ->
 	  ?wrangler_io("The selected function is not explicitly called by any other functions, \n"
 		    "but please check the following expressions:\n", []),
-	   lists:map(fun({_File, _Line, _Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [_File, _Line, _Exp]) end, UnSures);
+	   lists:foreach(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures);
       {[_H1 | _], [_H2 | _]} ->
 	    ?wrangler_io("The selected function is called by the following function(s):\n",[]),
-	    lists:map(fun({_File, _F, _A}) -> ?wrangler_io("{File:~p, function name: ~p/~p }\n", [_File, _F, _A]) end, Callers),
+	    lists:foreach(fun({File, F, A}) -> ?wrangler_io("{File:~p, function name: ~p/~p }\n", [File, F, A]) end, Callers),
 	    ?wrangler_io("Please also check the following expressions:\n", []),
-	    lists:map(fun({_File, _Line, _Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [_File, _Line, _Exp]) end, UnSures)		 
+	    lists:foreach(fun({File, Line, Exp}) -> ?wrangler_io("{File:~p, line: ~p, expression:~p}\n", [File, Line, Exp]) end, UnSures)		 
     end.
 
 get_caller_funs_in_client_modules(FileNames, {M, F, A}, SearchPaths, TabWidth) ->
@@ -395,18 +407,17 @@ handle_special_funs(FileName, T, {ModName, FunName, Args}, {M, F, A}, S1, S2) ->
 
 	    			       
 %%==========================================================================================
--spec(caller_called_modules(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(caller_called_modules(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
 caller_called_modules(FName, SearchPaths, TabWidth) ->
     %% I use 'false' in the following function call, so that macro can get expanded;
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, false, SearchPaths, TabWidth),
     AbsFileName = filename:absname(filename:join(filename:split(FName))),
     ClientFiles = wrangler_modulegraph_server:get_client_files(AbsFileName, SearchPaths),
-    _ClientMods = lists:map(fun({M, _Dir}) -> list_to_atom(M) end, 
-			   refac_util:get_modules_by_file(ClientFiles)),
+    ClientMods = [list_to_atom(M) || {M, _Dir} <-refac_util:get_modules_by_file(ClientFiles)],
     case ClientFiles of 
 	[] -> ?wrangler_io("\nThis module does not have any caller modules.\n",[]);
 	_ -> ?wrangler_io("\nThis module is called by the following modules:\n",[]),
-	     ?wrangler_io("~p\n", [_ClientMods])
+	     ?wrangler_io("~p\n", [ClientMods])
     end,
     CalledMods = refac_module_graph:collect_called_modules(AnnAST),
     case CalledMods of 
@@ -417,15 +428,15 @@ caller_called_modules(FName, SearchPaths, TabWidth) ->
 
 
 %%==========================================================================================
--spec(long_functions_in_file(FName::filename(), Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(long_functions_in_file(FName::filename(), Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 long_functions_in_file(FName, Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\n Search for long functions in the current buffer... \n",[]),
     long_functions_1([FName], Lines, SearchPaths, TabWidth).
 
 %%==========================================================================================
--spec(long_functions_in_dirs(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(long_functions_in_dirs(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 long_functions_in_dirs(Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\n Search for long functions in the following directories:\n~p\n", [SearchPaths]),
     long_functions_1(SearchPaths, Lines, SearchPaths, TabWidth).
@@ -479,14 +490,14 @@ long_functions_2(FName, Lines, SearchPaths, TabWidth) ->
     LongFuns = lists:usort(refac_syntax_lib:fold(Fun, [], AnnAST)),
     LongFuns.
 
-long_funs_format_results(LongFuns, _Lines) ->
+long_funs_format_results(LongFuns, Lines) ->
     case LongFuns of
 	[] ->
 	    ?wrangler_io("\n No Function in this module has more than ~p lines.\n",
-		      [_Lines]);
+		      [Lines]);
 	_ ->
 	    ?wrangler_io("\n The following function(s) have more than ~p lines of code:\n",
-		      [_Lines]),
+		      [Lines]),
 	    format_result_1(LongFuns)
     end.
     
@@ -503,8 +514,8 @@ group_by_1(TupleList=[E|_Es]) ->
 
 
 %%==========================================================================================
--spec(large_modules(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->				  
-	     {error, string()} | ok).
+%%-spec(large_modules(Lines::[integer()], SearchPaths::[dir()], TabWidth::integer()) ->				  
+%%	     {error, string()} | ok).
 large_modules(Lines, SearchPaths, TabWidth) ->
     try list_to_integer(Lines) of 
 	Val -> 
@@ -573,12 +584,12 @@ is_large_module(FName, Lines, TabWidth) ->
 %% Non tail-recursive servers or non tail-recursive functions? It is certainly easier to 
 %% detect non tail-recursive function;  how do you decide whether a function functions as 
 %% a server or not?
--spec(non_tail_recursive_servers_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(non_tail_recursive_servers_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_file(FName, SearchPaths, TabWidth) ->
     Funs = non_tail_recursive_servers(FName, SearchPaths, TabWidth),
     non_tail_format_results(Funs).
  
--spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_dirs(SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     Funs = lists:flatmap(fun(F) ->
@@ -654,8 +665,8 @@ is_non_tail_recursive_server(FileName, Info, FunDef, {ModName, FunName, Arity}, 
 
 check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
     ModName = get_module_name(FileName, Info),
-    InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
-    MFAs = lists:map(fun({MFA, _}) -> MFA end, Scc),
+    %%InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
+    MFAs = [MFA||{MFA, _}<-Scc],
     DummyExp = refac_syntax:atom(undefined),
     F = fun(T, Acc) ->
 		case refac_syntax:type(T) of      %% To think: any other cases here?
@@ -684,7 +695,7 @@ check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
 			       {_, {EndLine, _}} = refac_util:get_range(E),
 			       case EndLine >= Line  of 
 				   true -> 
-				       CalledFuns = refac_util:called_funs(ModName, InscopeFuns, E),
+				       CalledFuns = refac_util:called_funs(ModName, E),
 				       case lists:subtract(CalledFuns, MFAs) of 
 					   CalledFuns -> false;
 					   _ -> true
@@ -692,7 +703,7 @@ check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
 				   _ -> false
 			       end
 		       end,
-		 R = lists:map(fun(E) -> F11(E) end, Es),
+		 R = [F11(E)||E<-Es],
 		 lists:any(fun(E) -> E==true end, tl(lists:reverse(R)))
 	 end,
     ListOfExpLists = refac_syntax_lib:fold(F, [], FunDef),
@@ -702,12 +713,12 @@ check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
 
 
 %%==========================================================================================
--spec(not_flush_unknown_messages_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).    
+%%-spec(not_flush_unknown_messages_in_file(FName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).    
 not_flush_unknown_messages_in_file(FName, SearchPaths, TabWidth) ->
     Funs = not_flush_unknown_messages(FName, SearchPaths, TabWidth),
     non_flush_format_result(lists:usort(Funs)).
     
--spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 not_flush_unknown_messages_in_dirs(SearchPaths, TabWidth) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     Funs = lists:flatmap(fun(F) ->
@@ -764,8 +775,8 @@ not_has_flush_scc(FileName, Info, FunDef, Scc, Line) ->
 
 is_server(FileName, Info, FunDef, Scc, Line) ->
     ModName = get_module_name(FileName, Info),
-    InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
-    MFAs = lists:map(fun({MFA, _}) -> MFA end, Scc),
+    %%InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
+    MFAs = [MFA|| {MFA, _}<-Scc],
     F = fun(T, Acc) ->
 		case refac_syntax:type(T) of      %% To think: any other cases here?
 		    application -> Acc++[T];
@@ -776,7 +787,7 @@ is_server(FileName, Info, FunDef, Scc, Line) ->
 		 {_, {EndLine, _}} = refac_util:get_range(E),
 		 case EndLine >= Line  of 
 		     true -> 
-			 CalledFuns = refac_util:called_funs(ModName, InscopeFuns, E),
+			 CalledFuns = refac_util:called_funs(ModName, E),
 			 case lists:subtract(CalledFuns, MFAs) of 
 			     CalledFuns -> false;
 			     _ -> true

@@ -28,14 +28,14 @@ public abstract class ProcessRelatedRefactoring extends
 			changedFiles = msg.getRefactoringChangeset();
 			return new RefactoringStatus();
 		} else if (msg.hasUndecidables()) {
-			undecidables = msg.getMessage();
+			undecidables = msg.getMessageString();
 			IRefactoringRpcMessage message = run(sel);
 			changedFiles = message.getRefactoringChangeset();
 
 			return RefactoringStatus
 					.createWarningStatus(getUndecidableWarningMessage());
 		} else {
-			return RefactoringStatus.createFatalErrorStatus(msg.getMessage());
+			return RefactoringStatus.createFatalErrorStatus(msg.getMessageString());
 
 		}
 	}

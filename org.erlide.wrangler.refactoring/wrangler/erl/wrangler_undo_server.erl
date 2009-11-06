@@ -1,21 +1,31 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
 %%% File    : wrangler_undo_server.erl
 %%% Author  :  <Huiqing>
-%%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
-
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %%%-------------------------------------------------------------------
 -module(wrangler_undo_server).
@@ -42,15 +52,15 @@ start_undo_server() ->
     process_flag(trap_exit, true),
     gen_server:start_link({local, refactor_undo}, ?MODULE, [], []).
 
--spec(undo/0::() ->
-	     {ok, [filename()]}).
+%%-spec(undo/0::() ->
+%%	     {ok, [filename()]}).
 undo() ->
     gen_server:call(refactor_undo, undo).
    
--spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
+%%-spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
 	     
-add_to_history(Files)->
-    gen_server:cast(refactor_undo, {add, Files}).
+add_to_history({Files, LogMsg, CurFile})->
+    gen_server:cast(refactor_undo, {add, {Files, LogMsg, CurFile}}).
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -78,11 +88,11 @@ handle_call(undo, _From, State=#state{history=History}) ->
     case History of 
 	[] ->
 	    {reply, {error, "No more history to undo!"}, State};
-	[H|T] -> 
-	    ok = undo_files(H),
+	[{Files, LogMsg, CurFile}|T] -> 
+	    ok = undo_files(Files),
 	    Modified = lists:map(fun({{OldFileName, NewFileName,_}, _Con})->
-					 [OldFileName, NewFileName] end,H),
-	    {reply,{ok, Modified}, #state{history=T}}
+					 [OldFileName, NewFileName] end,Files),
+	    {reply,{ok, Modified, LogMsg, CurFile}, #state{history=T}}
     end.
 
 %%--------------------------------------------------------------------
@@ -91,8 +101,8 @@ handle_call(undo, _From, State=#state{history=History}) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast({add, Files},_State=#state{history=History}) ->
-    History1=lists:sublist([Files|History],20),
+handle_cast({add, {Files, LogMsg, CurFile}},_State=#state{history=History}) ->
+    History1=lists:sublist([{Files, LogMsg, CurFile}|History],20),
     {noreply, #state{history=History1}}.
 	
 %%--------------------------------------------------------------------

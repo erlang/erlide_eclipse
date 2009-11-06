@@ -1,24 +1,38 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% ===========================================================================================
 %% Refactoring: Search an user-selected expression/expression sequence from the current buffer.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
 -module(refac_expr_search).
 
--export([expr_search/4, expr_search_eclipse/4, var_binding_structure/1]).
+-export([expr_search/4, expr_search_eclipse/4]).
+
+-export([contained_exprs/2, var_binding_structure/1, compose_search_result_info/2]).
 
 -include("../include/wrangler.hrl").
 %% ================================================================================================
@@ -38,34 +52,38 @@
 %% @spec expr_search(FileName::filename(), Start::Pos, End::Pos)-> term().
 %% =================================================================================================         
 
--spec(expr_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
-expr_search(FileName, Start={_Line, _Col}, End={_Line1, _Col1}, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:expr_search(~p, {~p,~p},{~p,~p},~p).\n", [?MODULE, FileName, _Line, _Col, _Line1, _Col1, TabWidth]),
+%%-spec(expr_search/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).    
+expr_search(FileName, Start={Line, Col}, End={Line1, Col1}, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:expr_search(~p, {~p,~p},{~p,~p},~p).\n", [?MODULE, FileName, Line, Col, Line1, Col1, TabWidth]),
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, [], TabWidth),
-    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End, TabWidth) of 
+    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
 	[E|Es] -> 
 	    Res = case Es == [] of 
 		      true ->
-			  search_one_expr(AnnAST, E);
+			  SE = refac_sim_expr_search:get_start_end_loc(E),
+			  SearchRes = search_one_expr(AnnAST, E),
+			  [SE|(SearchRes--[SE])];
 		      _ -> 
-			  search_expr_seq(AnnAST, [E|Es])
+			  SE =refac_sim_expr_search:get_start_end_loc([E|Es]),
+			  SearchRes = search_expr_seq(AnnAST, [E|Es]),
+			  [SE|(SearchRes--[SE])]
 		  end,
-	    case length(Res) of  
-		0 -> ?wrangler_io("No identical expression has been found.\n",[]), %% This shouldn't happen.
+	    Num = length(Res),
+	    case Num=<1 of  
+		true -> ?wrangler_io("No identical expression has been found. \n",[]),
 		     {ok, []};
-		1 -> ?wrangler_io("No identical expression has been found. \n",[]),
-		     {ok, []};
-		_N -> ?wrangler_io("~p identical expressions (including the selected expression,and up to variable renaming and literal substitution) "
-				       " have been found. \n", [_N]),
+		false-> ?wrangler_io("\n~p identical expressions(including the expression selected) have been found.\n", [Num]),
+		     ?wrangler_io(compose_search_result_info(FileName, Res),[]),
+		     ?wrangler_io("\nUse 'C-c C-e' to remove highlights!\n",[]),
 		     {ok, Res}
 	    end;
-	_   -> {error, "You have not selected an expression!"}
+	    _   -> {error, "You have not selected an expression!"}
     end.     
 	  
--spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
+%%-spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) -> {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
 expr_search_eclipse(FileName, Start, End, TabWidth) ->
     {ok, {AnnAST, _Info}} =refac_util:parse_annotate_file(FileName,true, [], TabWidth),
-    case refac_util:pos_to_expr_list(FileName, AnnAST, Start, End, TabWidth) of 
+    case refac_util:pos_to_expr_list(AnnAST, Start, End) of 
 	[E|Es] -> 
 	    Res = case Es == [] of 
 		      true ->
@@ -85,13 +103,14 @@ search_one_expr(Tree, Exp) ->
 		case refac_util:is_expr(T) of 
 		    true -> T1 = simplify_expr(T),
 			    case Exp1 == T1 of 
-				true -> BdStructT = var_binding_structure([T]),
-					case BdStructExp == BdStructT of 
-					    true ->
-						{{StartLn, StartCol}, {EndLn, EndCol}}= refac_util:get_range(T),
-						Acc ++ [{StartLn, StartCol, EndLn, EndCol+1}];
+				true -> 
+				    BdStructT = var_binding_structure([T]),
+				    case BdStructExp == BdStructT of 
+					true ->
+					    {{StartLn, StartCol}, {EndLn, EndCol}}= refac_util:get_range(T),
+					    Acc ++ [{{StartLn, StartCol}, {EndLn, EndCol}}];
 					    _  -> Acc
-					end;
+				    end;
 				_ -> Acc
 			    end;
 		    _ -> Acc
@@ -103,10 +122,8 @@ search_one_expr(Tree, Exp) ->
 %% search the clones of an expresion sequence from Tree.			
 search_expr_seq(Tree, ExpList) ->
     AllExpList = contained_exprs(Tree, length(ExpList)),
-   %% ExpList1 = lists:map(fun(T) ->simplify_expr(T) end, ExpList),
-    Res =lists:flatmap(fun(EL) ->
-			       get_clone(ExpList, EL) end, AllExpList),
-    Res.
+   lists:flatmap(fun(EL) ->get_clone(ExpList, EL) end, AllExpList).
+   
     
     
 get_clone(List1, List2) ->    
@@ -122,11 +139,12 @@ get_clone(List1, List2) ->
 		    BdList1 = var_binding_structure(List1),
 		    BdList2 = var_binding_structure(List22),
 		    case BdList1 == BdList2 of 
-			true -> E1 = hd(List22),
-				En = lists:last(List22),
-			        {{StartLn, StartCol}, _EndLoc} = refac_util:get_range(E1),
-				{_StartLoc1, {EndLn, EndCol}} = refac_util:get_range(En),
-				[{StartLn, StartCol, EndLn, EndCol+1}] ++ get_clone(List1, tl(List2));
+			true ->
+			    E1 = hd(List22),
+			    En = lists:last(List22),
+			    {{StartLn, StartCol}, _EndLoc} = refac_util:get_range(E1),
+			    {_StartLoc1, {EndLn, EndCol}} = refac_util:get_range(En),
+			    [{{StartLn, StartCol}, {EndLn, EndCol}}] ++ get_clone(List1, tl(List2));
 			_ -> get_clone(List1, tl(List2))
 		    end;				       
 		    _ -> get_clone(List1, tl(List2))
@@ -142,8 +160,12 @@ simplify_expr(Exp) ->
 
 do_simplify_expr(Node) ->
     Node1 = case refac_syntax:type(Node) of 
-		macro -> 
-		    refac_syntax:default_literals_vars(Node, '*');
+		macro ->
+		    case refac_syntax:macro_arguments(Node) of 
+			none -> 
+			    refac_syntax:default_literals_vars(Node, '*');
+			_ -> Node
+		    end;
 		variable ->
 		    refac_syntax:default_literals_vars(Node, '&');
 		integer ->
@@ -173,16 +195,24 @@ set_default_ann(Node) ->
 contained_exprs(Tree, MinLen) ->
     F = fun(T, Acc) ->
 		case refac_syntax:type(T) of
-		    clause -> Exprs = refac_syntax:clause_body(T),  %% HOW ABOUT CLAUSE_GUARD?
-			     Acc ++ [Exprs];
-		    application -> Exprs = refac_syntax:application_arguments(T),
-			     Acc++ [Exprs];
-		    tuple -> Exprs = refac_syntax:tuple_elements(T),
-			     Acc++ [Exprs];
-		    lists -> Exprs = refac_syntax:list_prefix(T),
-			     Acc++ [Exprs];
-		    block_expr -> Exprs = refac_syntax:block_expr_body(T),
-			      Acc++ [Exprs];    
+		    clause ->
+			Exprs = refac_syntax:clause_body(T),  %% HOW ABOUT CLAUSE_GUARD?
+			Acc ++ [Exprs];
+		    application -> 
+			Exprs = refac_syntax:application_arguments(T),
+			Acc++ [Exprs];
+		    tuple -> 
+			Exprs = refac_syntax:tuple_elements(T),
+			Acc++ [Exprs];
+		    lists -> 
+			Exprs = refac_syntax:list_prefix(T),
+			Acc++ [Exprs];
+		    block_expr ->
+			Exprs = refac_syntax:block_expr_body(T),
+			Acc++ [Exprs];    
+		    try_expr ->
+			Exprs = refac_syntax:try_expr_body(T),
+			Acc ++ [Exprs];
 		    _  -> Acc
 		end
 	end,
@@ -204,18 +234,15 @@ var_binding_structure(ASTList) ->
 			 As = refac_syntax:get_ann(T),
 			 case lists:keysearch(def, 1, As) of
 			   {value, {def, DefLoc}} ->
-			       ordsets:add_element({atom_to_list(Name), SrcLoc,
-						    DefLoc},
-						   S);
+			        [{atom_to_list(Name), SrcLoc,
+						    DefLoc}|S];
 			   _ -> S
 			 end;
 		     _ -> S
 		   end
 	   end,
     %% collect all variables including their defining and occuring locations. 
-    B = lists:flatmap(fun(T) -> refac_syntax_lib:fold(Fun1, ordsets:new(), T) end, ASTList),
-    %% collect defining locations.
-  %%  DefLocs = lists:usort(lists:flatten(lists:map(fun ({_Name, _SrcLoc, DefLoc}) ->  DefLoc end, B))),
+    B = lists:keysort(2, lists:flatmap(fun(T) -> refac_syntax_lib:fold(Fun1, [], T) end, ASTList)),
     %% collect occuring locations.
     SrcLocs = lists:map(fun ({_Name, SrcLoc, _DefLoc}) -> SrcLoc end, B),
     Res = case SrcLocs of 
@@ -236,3 +263,14 @@ var_binding_structure(ASTList) ->
 	  end,
     Res.
 
+compose_search_result_info(FileName, Ranges) ->
+    compose_search_result_info(FileName, Ranges, "").
+compose_search_result_info(_FileName, [], Str) ->
+    Str;
+compose_search_result_info(FileName, [{{StartLine, StartCol}, {EndLine, EndCol}}|Ranges], Str) ->
+    Str1 =Str ++ "\n"++FileName++io_lib:format(":~p.~p-~p.~p: \n", [StartLine, StartCol, EndLine, EndCol]),
+    compose_search_result_info(FileName, Ranges, Str1).
+					       
+    
+    
+    

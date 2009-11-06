@@ -20,7 +20,7 @@
 %% An Erlang code preprocessor.
 
 -export([parse_file/3, parse_file/5]).
--export([interpret_file_attribute/1]).
+-export([interpret_file_attribute/1, expand_macros/2]).
 -define(DEFAULT_TABWIDTH, 8).
 -define(DEFAULT_FILEFORMAT, unix).
 

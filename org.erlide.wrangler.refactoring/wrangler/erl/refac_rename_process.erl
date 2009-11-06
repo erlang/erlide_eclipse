@@ -1,20 +1,31 @@
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %% =====================================================================
 %% Refactoring: Rename a process name.
 %%
-%% Copyright (C) 2006-2008  Huiqing Li, Simon Thompson
-%% The contents of this file are subject to the Erlang Public License,
-%% Version 1.1, (the "License"); you may not use this file except in
-%% compliance with the License. You should have received a copy of the
-%% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-
-
-%% Software distributed under the License is distributed on an "AS IS"
-%% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
-%% the License for the specific language governing rights and limitations
-%% under the License.
-
-
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %%
 %% =====================================================================
@@ -22,12 +33,12 @@
 %% TOADD: functionalities to check OTP behaviours.
 -module(refac_rename_process).
 
--export([rename_process/6, rename_process_eclipse/6, rename_process_1/5, rename_process_1_eclipse/5]).
+-export([rename_process/6, rename_process_eclipse/6, rename_process_1/6, rename_process_1_eclipse/5]).
 
 -include("../include/wrangler.hrl").
 
 -spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {undecidables, string()}| {ok, [filename()]}).
+	     {error, string()} | {undecidables, string(), string()}| {ok, [filename()]}).
 rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
@@ -39,6 +50,10 @@ rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
 
 rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_process( ~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, NewName, SearchPaths, TabWidth]),
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_process(" ++ "\"" ++
+	FileName ++ "\", " ++ integer_to_list(Line) ++
+	", " ++ integer_to_list(Col) ++ ", " ++ "\"" ++ NewName ++ "\","
+	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     case is_process_name(NewName) of
       true ->
 	    _Res = refac_annotate_pid:ann_pid_info(SearchPaths, TabWidth),  %%TODO: check whether asts are already annotated.
@@ -54,17 +69,22 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 					  check_atoms(FileName, ProcessName, SearchPaths, TabWidth),
 					  case Editor of 
 					      emacs ->
-						  refac_util:write_refactored_files_for_preview(Results),
+						  refac_util:write_refactored_files_for_preview(Results, Cmd),
 						  ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 						  ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 							       [ChangedFiles]),
 						  {ok, ChangedFiles};
 					      eclipse ->
-						  Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName,
-												    refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results),
+						  Res = lists:map(fun({{FName, NewFName}, AST}) ->
+									  {FName, NewFName,
+									   refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results),
 						  {ok, Res}
 					  end;
-				      undecidables -> {undecidables, atom_to_list(ProcessName)};
+				      undecidables -> 
+					  case Editor of 
+					      emacs -> {undecidables, atom_to_list(ProcessName), Cmd};
+					      eclipse ->{undecidables, atom_to_list(ProcessName)}
+					  end;
 				      {error, Reason} ->
 					  {error, Reason}
 				  end;
@@ -75,16 +95,16 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 	false -> {error, "Invalid new process name."}
     end.
 
--spec(rename_process_1/5::(string(), string(), string(), [dir()], integer()) -> {ok, [filename()]}).
-rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
-    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, emacs).
+-spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), string()) -> {ok, [filename()]}).
+rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, Cmd) ->
+    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, emacs, Cmd).
 
 -spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
-    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, eclipse).
+    rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, eclipse, "").
 
--spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), editor()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
-rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWidth, Editor) ->
+-spec(rename_process_1/7::(string(), string(), string(), [dir()], integer(), editor(), string()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
+rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWidth, Editor, Cmd) ->
     OldProcessName = list_to_atom(OldProcessName1),
     NewProcessName = list_to_atom(NewProcessName1),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
@@ -92,7 +112,7 @@ rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWid
     check_atoms(FileName, OldProcessName, SearchPaths, TabWidth),
     case Editor of 
 	emacs ->
-	    refac_util:write_refactored_files_for_preview(Results),
+	    refac_util:write_refactored_files_for_preview(Results, Cmd),
 	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 			 [ChangedFiles]),
@@ -137,7 +157,7 @@ pre_cond_check(NewProcessName, SearchPaths) ->
 			  ?wrangler_io("Wrangler could not decide whether the new process name provided conflicts with the process name(s) "
 				    "used by the following registeration expression(s):\n",[]),
 			  UnDecidables1 = lists:map(fun({_, V}) -> V end, UnDecidables),
-			  lists:foreach(fun({_M, _F,_A, {_L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [_M, _F, _A, _L])
+			  lists:foreach(fun({M, F,A, {L,_}}) -> ?wrangler_io("Location: module: ~p, function:~p/~p, line:~p\n", [M, F, A, L])
 					end, UnDecidables1),
 			  undecidables
 		 end
@@ -277,8 +297,8 @@ check_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
 	    ok;
 	_ -> ?wrangler_io("\n*************************************Warning****************************************\n",[]),
 	     ?wrangler_io("Wrangler could not decide whether to rename atom(s) occuring at the followng location(s):\n",[]),
-	     lists:foreach(fun({_M, _Pos,_}) ->
-				      ?wrangler_io("Location: module:~p, {line,col}:~p\n", [_M,_Pos]) end, Atoms)
+	     lists:foreach(fun({M, Pos,_}) ->
+				      ?wrangler_io("Location: module:~p, {line,col}:~p\n", [M,Pos]) end, Atoms)
     end.
     
 collect_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->

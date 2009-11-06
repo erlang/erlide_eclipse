@@ -119,7 +119,7 @@ string(Text) ->
 scan_lines(Text) ->
     scan_lines(Text, 1, 0, 0, []).
 
-scan_lines([$\040 | Cs], L, Col, M, Ack) ->
+scan_lines([$\s | Cs], L, Col, M, Ack) ->
     scan_lines(Cs, L, Col + 1, M, Ack);
 scan_lines([$\t | Cs], L, Col, M, Ack) ->
     scan_lines(Cs, L, tab(Col), M, Ack);

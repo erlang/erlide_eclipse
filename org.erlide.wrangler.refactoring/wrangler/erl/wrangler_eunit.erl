@@ -1,24 +1,34 @@
-%% This library is free software; you can redistribute it and/or modify
-%% it under the terms of the GNU Lesser General Public License as
-%% published by the Free Software Foundation; either version 2 of the
-%% License, or (at your option) any later version.
+%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% All rights reserved.
 %%
-%% This library is distributed in the hope that it will be useful, but
-%% WITHOUT ANY WARRANTY; without even the implied warranty of
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-%% Lesser General Public License for more details.
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
 %%
-%% You should have received a copy of the GNU Lesser General Public
-%% License along with this library; if not, write to the Free Software
-%% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-%% USA
-%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %% @doc Wrangler's interpretation of EUnit symbolic test representation
 
 -module(wrangler_eunit).
 
--export([test_iterator/1]).
+-export([test_iterator/1, test_iterator_renamer/3]).
 
 -define(DEFAULT_SETUP_PROCESS, spawn).
 
@@ -84,7 +94,7 @@
 %%
 %% @type moduleName() = atom()
 %% @type functionName() = atom()
-%% @type arity() = integer()
+%% @type functionarity() = integer()
 %% @type appName() = atom()
 %% @type fileName() = string()
 
@@ -220,5 +230,144 @@ is_string([]) ->
     true;
 is_string(_) ->
     false.
+
+
+test_iterator_renamer(Tests, OldName, NewName) ->
+    case eunit_lib:dlist_next(Tests) of 
+	[T |Ts] ->
+	    T1 = wrangler_parse_rename(T, OldName, NewName),
+	    {T1, test_iterator_renamer(Ts, OldName, NewName)};
+	[] ->
+	    none
+    end.
+
+wrangler_parse_rename({foreach,_S, Fs}, OldName, NewName) ->
+    {foreach, setup_fun,wrangler_parse_rename_1(Fs, OldName, NewName)};
+wrangler_parse_rename({foreach, _S, _C, Fs}, OldName, NewName) ->
+    {foreach, setup_fun, clean_fun, wrangler_parse_rename_1(Fs, OldName, NewName)};
+wrangler_parse_rename({foreach, P, _S, _C, Fs}, OldName, NewName) ->
+    {foreach,P, setup_fun, clean_fun, wrangler_parse_rename_1(Fs, OldName, NewName)};
+wrangler_parse_rename({foreachx, _S, P}, OldName, NewName) ->
+    {foreachx, setup_fun, wrangler_parse_rename_2(P, OldName, NewName)};
+wrangler_parse_rename({foreachx, _S, _C, P}, OldName, NewName) ->
+    {foreachx, setup_fun, clean_fun, wrangler_parse_rename_2(P, OldName, NewName)};
+wrangler_parse_rename({foreachx, P, S1, C1, Ps}, OldName, NewName) ->
+    {foreachx, P, S1, C1, wrangler_parse_rename_2(Ps, OldName, NewName)};
+wrangler_parse_rename({generator, F},_OldName, _NewName) -> {generator, F};
+wrangler_parse_rename({generator,F, M}, OldName, NewName) when is_atom(M), is_atom(F) ->
+    case M == OldName of
+	true ->{generator, NewName, F};
+	_ -> {generator, M, F}
+    end;
+wrangler_parse_rename({inorder, T}, OldName, NewName) ->
+    {inorder, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({inparallel, T}, OldName, NewName) ->
+    {inparallel, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({inparallel, N, T}, OldName, NewName) ->
+    {inparallel, N, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({timeout, N, T}, OldName, NewName) ->
+    {timeout, N, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({spawn, T}, OldName, NewName) ->
+    {spawn, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({spawn, N, T}, OldName, NewName) ->
+    {spawn, N, test_iterator_renamer(T, OldName, NewName)};
+wrangler_parse_rename({setup, S, T}, OldName, NewName) ->
+    {setup, S, wrangler_parse_rename_1(T, OldName, NewName)};
+wrangler_parse_rename({setup, _S, _C, T}, OldName, NewName) ->
+    {setup, setup_fun, clean_fun, wrangler_parse_rename_1(T, OldName, NewName)};
+wrangler_parse_rename({setup, _P, _S, _C, T}, OldName, NewName) ->
+    {setup, setup_place, setup_fun, clean_fun, wrangler_parse_rename_1(T, OldName, NewName)};
+wrangler_parse_rename({node, N, T}, OldName, NewName) ->
+    {node, N, wrangler_parse_rename_1(T, OldName, NewName)};
+wrangler_parse_rename({node, N, A, T}, OldName, NewName) ->
+    {node, N, A, wrangler_parse_rename_1(T, OldName, NewName)};
+wrangler_parse_rename({module, M}, OldName, NewName)  when is_atom(M) ->
+    case M==OldName of 
+	true ->{"module '" ++ atom_to_list(NewName) ++ "'"};
+	_ -> {"module '" ++ atom_to_list(M) ++ "'"}
+    end;	
+wrangler_parse_rename({application, A}, _OldName, _NewName) ->
+    {application, A};
+wrangler_parse_rename({application, A, Info}, _OldName, _NewName) ->
+	     {application, A, Info};
+wrangler_parse_rename({file, F}, _OldName, _NewName) ->
+    {file, F};
+wrangler_parse_rename({dir, D}, _OldName, _NewName) ->
+    {dir, D};
+wrangler_parse_rename({with, _X, _As}, _OldName, _NewName) -> 
+    simple_test_function;
+
+wrangler_parse_rename({S, T}, OldName, NewName) when is_list(S) ->
+    case is_string(S) of
+	true -> 
+	    {S, test_iterator_renamer(T, OldName, NewName)};
+	_ ->
+	    {S, T}
+    end;
+wrangler_parse_rename(T, OldName, NewName) when is_tuple(T), size(T)>2, is_list(element(1, T)) ->
+    [S|Es] = tuple_to_list(T),
+    wrangler_parse_rename({S, list_to_tuple(Es)}, OldName, NewName);
+wrangler_parse_rename(M, OldName, NewName)  when is_atom(M) ->
+    case M of
+	OldName -> {module, NewName};
+	_ -> {module,M}
+    end;
+wrangler_parse_rename(T, _OldName, _NewName) when is_list(T) ->
+    case is_string(T) of 
+	true ->
+	    T;
+	_ -> T
+    end;
+wrangler_parse_rename(T, OldName, NewName) ->
+    wrangler_parse_rename_simple(T, OldName, NewName).
+
+
+wrangler_parse_rename_1({with, _As}, _OldName, _NewName) ->					
+    simple_test_function;
+wrangler_parse_rename_1(T, _OldName, _NewName) when is_function(T)->
+    case erlang:fun_info(T, arity) of
+	{arity, 1} ->
+	    try T(undefined) of 
+		Val -> test_iterator_renamer(Val, _OldName, _NewName)
+	    catch		
+		_:_ -> bad_test
+	    end;
+	_ -> bad_test
+    end;
+wrangler_parse_rename_1(T, OldName, NewName) ->
+    test_iterator_renamer(T, OldName, NewName).
+
+wrangler_parse_rename_2([{_X,F1}|Ps], OldName, NewName) ->
+    case erlang:fun_info(F1, arity) of 
+	{arity, 2} ->
+	    try F1(undefined, undefined) of 
+		Val -> [test_iterator_renamer(Val, OldName, NewName) | wrangler_parse_rename_2(Ps, OldName, NewName)]
+	    catch
+		_:_ -> [bad_test|wrangler_parse_rename_2(Ps, OldName, NewName)]
+	    end;
+	_ -> [bad_test|wrangler_parse_rename_2(Ps, OldName, NewName)]
+    end;
+wrangler_parse_rename_2([], _OldName, _NewName) ->
+    [].
+	    
+
+wrangler_parse_rename_simple({L, F}, _OldName, _NewName) when is_integer(L), L>=0, is_function(F)->
+    {0, simple_test_function};
+wrangler_parse_rename_simple({{M, N, A}, F}, OldName, NewName) when  is_atom(M), is_atom(N), is_integer(A) ->
+    case M of 
+	OldName -> {{NewName, N,A},F};
+	_ ->  {{M, N,A},F}
+    end;	
+wrangler_parse_rename_simple(F, OldName, NewName) -> wrangler_parse_rename_function(F, OldName, NewName).
+
+wrangler_parse_rename_function(F, _OldName, _NewName) when is_function(F) ->
+    simple_test_function;
+wrangler_parse_rename_function({M, F}, OldName, NewName) when is_atom(M), is_atom(F) ->
+    case M of
+	OldName -> {NewName, F};
+	_ -> {M, F}
+    end;	
+wrangler_parse_rename_function(_F, _OldName, _NewName) -> bad_test.
+    
 
 

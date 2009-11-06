@@ -32,7 +32,7 @@
 
 -module(refac_recomment).
 
--export([recomment_forms/2, quick_recomment_forms/2, recomment_tree/2]).
+-export([recomment_forms/2, quick_recomment_forms/2, recomment_tree/2, build_tree/1]).
 
 
 %% =====================================================================
@@ -120,13 +120,17 @@ recomment_forms(Tree, Cs, Insert) when is_list(Tree) ->
 recomment_forms(Tree, Cs, Insert) ->
     case refac_syntax:type(Tree) of
 	form_list ->
+	    BadFormLocs = lists:flatten([lists:seq(L1,L2) ||{error, {_ErrInfo, {{L1,_},{L2,_}}}} 
+								<-refac_syntax:form_list_elements(Tree)]),
+	    Cs1 = [ {L, Col, Ind, Text} ||{L,Col, Ind, Text} <-Cs, not(lists:member(L, BadFormLocs))],
 	    Tree1 = refac_syntax:flatten_form_list(Tree),
 	    Node = build_tree(Tree1),
 	    %% Here we make a small assumption about the substructure of
 	    %% a `form_list' tree: it has exactly one group of subtrees.
 	    [Node1] = node_subtrees(Node),
-	    List = filter_forms(node_subtrees(Node1)),
-	    List1 = recomment_forms_1(Cs, List, Insert),
+	  %%  List = filter_forms(node_subtrees(Node1)),  %% don't understand whey filter_forms is needed; HL
+	    List =node_subtrees(Node1),    %% 
+       	    List1 = recomment_forms_1(Cs1, List, Insert),
 	    revert_tree(set_node_subtrees(Node,
 					  [set_node_subtrees(Node1,
 							     List1)]));
@@ -206,90 +210,90 @@ comment_delta(Text) ->
 %% the source file itself, but have been included by preprocessing. This
 %% way, comments will not be inserted into such parts by mistake.
 
--record(filter, {file = undefined, line = 0}).
+%% -record(filter, {file = undefined, line = 0}).
 
-filter_forms(Fs) ->
-    filter_forms(Fs, false, #filter{}).
+%% filter_forms(Fs) ->
+%%     filter_forms(Fs, false, #filter{}).
 
-filter_forms([F | Fs], Kill, S) ->
-    case check_file_attr(F) of
-	{true, A1, A2} ->
-	    S1 = case S#filter.file of
-		     undefined ->
-			 S#filter{file = A1, line = A2};
-		     _ ->
-			 S
-		 end,
-	    if S1#filter.file == A1,
-	       S1#filter.line =< A2 ->
-		    [F | filter_forms(Fs, false,
-				      S1#filter{line = A2})];
-	       Kill == true ->
-		    [node_kill_range(F)
-		     | filter_forms(Fs, true, S1)];
-	       true ->
-		    [F | filter_forms(Fs, true, S1)]
-	    end;
-	false ->
-	    case Kill of
-		true ->
-		    [node_kill_range(F)
-		     | filter_forms(Fs, Kill, S)];
-		false ->
-		    [F | filter_forms(Fs, Kill, S)]
-	    end
-    end;
-filter_forms([], _, _) ->
-    [].
+%% filter_forms([F | Fs], Kill, S) ->
+%%     case check_file_attr(F) of
+%% 	{true, A1, A2} ->
+%% 	    S1 = case S#filter.file of
+%% 		     undefined ->
+%% 			 S#filter{file = A1, line = A2};
+%% 		     _ ->
+%% 			 S
+%% 		 end,
+%% 	    if S1#filter.file == A1,
+%% 	       S1#filter.line =< A2 ->
+%% 		    [F | filter_forms(Fs, false,
+%% 				      S1#filter{line = A2})];
+%% 	       Kill == true ->
+%% 		    [node_kill_range(F)
+%% 		     | filter_forms(Fs, true, S1)];
+%% 	       true ->
+%% 		    [F | filter_forms(Fs, true, S1)]
+%% 	    end;
+%% 	false ->
+%% 	    case Kill of
+%% 		true ->
+%% 		    [node_kill_range(F)
+%% 		     | filter_forms(Fs, Kill, S)];
+%% 		false ->
+%% 		    [F | filter_forms(Fs, Kill, S)]
+%% 	    end
+%%     end;
+%% filter_forms([], _, _) ->
+%%     [].
 
-%% This structure matching gets a bit painful...
+%% %% This structure matching gets a bit painful...
 
-check_file_attr(F) ->
-    case node_type(F) of
-	tree_node ->
-	    case tree_node_type(F) of
-		attribute ->
-		    case node_subtrees(F) of
-			[L1, L2 | _] ->
-			    check_file_attr_1(L1, L2);
-			_ ->
-			    false
-		    end;
-		_ ->
-		    false
-	    end;
-	_ ->
-	    false
-    end.
+%% check_file_attr(F) ->
+%%     case node_type(F) of
+%% 	tree_node ->
+%% 	    case tree_node_type(F) of
+%% 		attribute ->
+%% 		    case node_subtrees(F) of
+%% 			[L1, L2 | _] ->
+%% 			    check_file_attr_1(L1, L2);
+%% 			_ ->
+%% 			    false
+%% 		    end;
+%% 		_ ->
+%% 		    false
+%% 	    end;
+%% 	_ ->
+%% 	    false
+%%     end.
 
-check_file_attr_1(L1, L2) ->
-    case node_subtrees(L1) of
-	[N1 | _] ->
-	    N2 = leaf_node_value(N1),
-	    case refac_syntax:type(N2) of
-		atom ->
-		    case refac_syntax:atom_value(N2) of
-			file ->
-			    check_file_attr_2(L2);
-			_ ->
-			    false
-		    end;
-		_ ->
-		    false
-	    end;
-	_ ->
-	    false
-    end.
+%% check_file_attr_1(L1, L2) ->
+%%     case node_subtrees(L1) of
+%% 	[N1 | _] ->
+%% 	    N2 = leaf_node_value(N1),
+%% 	    case refac_syntax:type(N2) of
+%% 		atom ->
+%% 		    case refac_syntax:atom_value(N2) of
+%% 			file ->
+%% 			    check_file_attr_2(L2);
+%% 			_ ->
+%% 			    false
+%% 		    end;
+%% 		_ ->
+%% 		    false
+%% 	    end;
+%% 	_ ->
+%% 	    false
+%%     end.
 
-check_file_attr_2(L) ->
-    case node_subtrees(L) of
-	[N1, N2 | _] ->
-	    T1 = refac_syntax:concrete(revert_tree(N1)),
-	    T2 = refac_syntax:concrete(revert_tree(N2)),
-	    {true, T1, T2};
-	_ ->
-	    false
-    end.
+%% check_file_attr_2(L) ->
+%%     case node_subtrees(L) of
+%% 	[N1, N2 | _] ->
+%% 	    T1 = refac_syntax:concrete(revert_tree(N1)),
+%% 	    T2 = refac_syntax:concrete(revert_tree(N2)),
+%% 	    {true, T1, T2};
+%% 	_ ->
+%% 	    false
+%%     end.
 
 
 %% =====================================================================
@@ -645,15 +649,15 @@ node_max(#tree{max = Max}) ->
 node_max(#list{max = Max}) ->
     Max.
 
-node_kill_range(Node) ->
-    case Node of
-	#leaf{} ->
-	    Node#leaf{min = -1, max = -1};
-	#tree{} ->
-	    Node#tree{min = -1, max = -1};
-	#list{} ->
-	    Node#list{min = -1, max = -1}
-    end.
+%% node_kill_range(Node) ->
+%%     case Node of
+%% 	#leaf{} ->
+%% 	    Node#leaf{min = -1, max = -1};
+%% 	#tree{} ->
+%% 	    Node#tree{min = -1, max = -1};
+%% 	#list{} ->
+%% 	    Node#list{min = -1, max = -1}
+%%     end.
 
 node_precomments(#leaf{precomments = Cs}) ->
     Cs;

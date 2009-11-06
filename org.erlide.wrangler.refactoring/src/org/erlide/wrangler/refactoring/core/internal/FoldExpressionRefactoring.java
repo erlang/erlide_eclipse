@@ -53,7 +53,8 @@ public class FoldExpressionRefactoring extends SimpleOneStepWranglerRefactoring 
 			selectedPositions = new ArrayList<IErlRange>();
 			return new RefactoringStatus();
 		} else
-			return RefactoringStatus.createFatalErrorStatus(m.getMessage());
+			return RefactoringStatus.createFatalErrorStatus(m
+					.getMessageString());
 
 	}
 

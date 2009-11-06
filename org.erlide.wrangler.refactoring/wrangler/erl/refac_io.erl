@@ -19,21 +19,23 @@
 
 -export([scan_erl_form/5]).
 
-scan_erl_form(Io, Prompt, Pos0, TabWidth, FileFormat) ->
-    request(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0, TabWidth, FileFormat}]}).
+-export([format/1,format/2,format/3]).
 
-request(standard_io, Request) ->
-    request(group_leader(), Request);
-request(Pid, Request) when is_pid(Pid) ->
+scan_erl_form(Io, Prompt, Pos0, TabWidth, FileFormat) ->
+    request_1(Io, {get_until,Prompt,refac_scan,tokens,[{Pos0, TabWidth, FileFormat}]}).
+
+request_1(standard_io, Request) ->
+    request_1(group_leader(), Request);
+request_1(Pid, Request) when is_pid(Pid) ->
     Mref = erlang:monitor(process,Pid),
-    Pid ! {io_request,self(),Pid,io_request(Pid, Request)},
+    Pid ! {io_request,self(),Pid,Request},
     wait_io_mon_reply(Pid,Mref);
-request(Name, Request) when is_atom(Name) ->
+request_1(Name, Request) when is_atom(Name) ->
     case whereis(Name) of
 	undefined ->
 	    {error, arguments};
 	Pid ->
-	    request(Pid, Request)
+	    request_1(Pid, Request)
     end.
 
 wait_io_mon_reply(From, Mref) ->
@@ -60,34 +62,89 @@ wait_io_mon_reply(From, Mref) ->
     end.
 
 
-    
-%% io_request(_Pid, {write,Term}) ->
-%%     {put_chars,io_lib,write,[Term]};
-%% io_request(_Pid, {format,Format,Args}) ->
-%%     {put_chars,io_lib,format,[Format,Args]};
-%% io_request(_Pid, {fwrite,Format,Args}) ->
-%%     {put_chars,io_lib,fwrite,[Format,Args]};
-%% io_request(_Pid, nl) ->
-%%     {put_chars,io_lib:nl()};
-%% io_request(Pid, {put_chars,Chars}=Request0) 
-%%   when is_list(Chars), node(Pid) =:= node() ->
-%%     %% Convert to binary data if the I/O server is guaranteed to be new
-%%     Request =
-%% 	case catch list_to_binary(Chars) of
-%% 	    Binary when is_binary(Binary) ->
-%% 		{put_chars,Binary};
-%% 	    _ ->
-%% 		Request0
-%% 	end,
-%%     Request;
-%% io_request(Pid, {get_chars,Prompt,N}) when node(Pid) =/= node() ->
-%%     %% Do not send new I/O request to possibly old I/O server
-%%     {get_until,Prompt,io_lib,collect_chars,[N]};
-%% io_request(Pid, {get_line,Prompt}) when node(Pid) =/= node() ->
-%%     %% Do not send new I/O request to possibly old I/O server
-%%     {get_until,Prompt,io_lib,collect_line,[]};
-%% io_request(_Pid, {fread,Prompt,Format}) ->
-%%     {get_until,Prompt,io_lib,fread,[Format]};
+to_tuple(T) when is_tuple(T) -> T;
+to_tuple(T) -> {T}.
+
+%% Problem: the variables Other, Name and Args may collide with surrounding
+%% ones.
+%% Give extra args to macro, being the variables to use.
+-define(O_REQUEST(Io, Request),
+    case request(Io, Request) of
+	{error, Reason} ->
+	    [Name | Args] = tuple_to_list(to_tuple(Request)),
+	    erlang:error(conv_reason(Name, Reason), [Name, Io | Args]);
+	Other ->
+	    Other
+    end).
+
+o_request(Io, Request) ->
+    case request(Io, Request) of
+	{error, Reason} ->
+	    [Name | Args] = tuple_to_list(to_tuple(Request)),
+	    {'EXIT',{undef,[_Current|Mfas]}} = (catch erlang:error(undef)),
+	    MFA = {io, Name, [Io | Args]},
+	    exit({conv_reason(Name, Reason),[MFA|Mfas]});
+%	    erlang:error(conv_reason(Name, Reason), [Name, Io | Args]);
+	Other ->
+	    Other
+    end.
+
+
+conv_reason(_, arguments) -> badarg;
+conv_reason(_, terminated) -> ebadf;
+conv_reason(_, _Reason) -> badarg.
+
+format(Format) ->
+    format(Format, []).
+
+format(Format, Args) ->
+    format(default_output(), Format, Args).
+
+format(Io, Format, Args) ->
+    o_request(Io, {format,Format,Args}).
+
+
+
+request(standard_io, Request) ->
+    request(group_leader(), Request);
+request(Pid, Request) when is_pid(Pid) ->
+    Mref = erlang:monitor(process,Pid),
+    Pid ! {io_request,self(),Pid,io_request(Pid, Request)},
+    wait_io_mon_reply(Pid,Mref);
+request(Name, Request) when is_atom(Name) ->
+    case whereis(Name) of
+	undefined ->
+	    {error, arguments};
+	Pid ->
+	    request(Pid, Request)
+    end.
+
+default_output() ->
+    group_leader().
+
+
+io_request(_Pid, {write,Term}) ->
+    {put_chars,io_lib,write,[Term]};
+io_request(_Pid, {format,Format,Args}) ->
+    {put_chars,io_lib,format,[Format,Args]};
+io_request(_Pid, {fwrite,Format,Args}) ->
+    {put_chars,io_lib,fwrite,[Format,Args]};
+io_request(_Pid, nl) ->
+    {put_chars,io_lib:nl()};
+io_request(Pid, {put_chars,Chars}=Request0) 
+  when is_list(Chars), node(Pid) =:= node() ->
+    %% Convert to binary data if the I/O server is guaranteed to be new
+    Request =
+	case catch list_to_binary(Chars) of
+	    Binary when is_binary(Binary) ->
+		{put_chars,Binary};
+	    _ ->
+		Request0
+	end,
+    Request;
+io_request(_Pid, {fread,Prompt,Format}) ->
+    {get_until,Prompt,io_lib,fread,[Format]};
 io_request(_Pid, R) ->				%Pass this straight through
     R.
+
 
