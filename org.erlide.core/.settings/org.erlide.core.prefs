@@ -1,4 +1,4 @@
-#Mon Nov 02 14:29:33 CET 2009
+#Sun Nov 08 21:53:46 CET 2009
 backend_name=
 backend_version=R11B
 eclipse.preferences.version=1
@@ -7,6 +7,6 @@ external_modules=
 include_dirs=include
 make_unique=true
 output_dir=ebin
-source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing;erl_debugger;erl/util
+source_dirs=erl;erl/doc_ref;erl/pprint;erl/syntax;erl/parsing;erl/tracing;erl_debugger;erl_util;erl_builder
 type=NORMAL
 use_pathz=true
