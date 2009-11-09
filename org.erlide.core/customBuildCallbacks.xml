@@ -43,6 +43,12 @@
 			<fileset dir="erl_debugger">
 				<include name="**/*.erl"/>
 			</fileset>
+			<fileset dir="erl_util">
+				<include name="**/*.erl"/>
+			</fileset>
+				<fileset dir="erl_builder">
+					<include name="**/*.erl"/>
+				</fileset>
 		</apply>
 	</target>
 
