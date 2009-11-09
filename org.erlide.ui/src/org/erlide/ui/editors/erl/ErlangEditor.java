@@ -292,6 +292,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		public ScannerListener() {
 			module = getModule();
+			if (module == null) {
+				scannerName = null;
+				return;
+			}
 			scannerName = ErlangToolkit.createScannerModuleName(module);
 		}
 
