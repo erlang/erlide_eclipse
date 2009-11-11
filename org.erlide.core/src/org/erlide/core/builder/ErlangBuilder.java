@@ -115,6 +115,19 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
 
+			final OldErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(project);
+			String out = prefs.getOutputDir();
+			IResource outr = project.findMember(new Path(out));
+			if (outr != null) {
+				try {
+					outr.setDerived(true);
+					outr.refreshLocal(IProject.DEPTH_ZERO, null);
+				} catch (CoreException e) {
+					// ignore it
+				}
+			}
+
 			OtpErlangList compilerOptions = CompilerPreferences.get(project);
 
 			ErlLogger.debug("******** building %s: %s", getProject().getName(),

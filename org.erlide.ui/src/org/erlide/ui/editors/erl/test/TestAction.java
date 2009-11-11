@@ -10,8 +10,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideScanner;
@@ -46,7 +46,7 @@ public class TestAction extends TextEditorAction {
 			final IDocument document = textEditor.getDocumentProvider()
 					.getDocument(textEditor.getEditorInput());
 			final String text = document.get();
-			final String s = ErlideScanner.checkAll(ErlScanner
+			final String s = ErlideScanner.checkAll(ErlangToolkit
 					.createScannerModuleName(module), text);
 			ErlLogger.debug("%s", s);
 			// return;

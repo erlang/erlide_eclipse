@@ -36,7 +36,6 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
@@ -48,6 +47,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
@@ -303,7 +303,7 @@ public class OpenAction extends SelectionDispatchAction {
 		try {
 			final IErlProject erlProject = module.getErlProject();
 			final IErlModel model = ErlangCore.getModel();
-			final OpenResult res = ErlideOpen.open(b, ErlScanner
+			final OpenResult res = ErlideOpen.open(b, ErlangToolkit
 					.createScannerModuleName(editor.getModule()), offset, model
 					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
 					model.getPathVars());

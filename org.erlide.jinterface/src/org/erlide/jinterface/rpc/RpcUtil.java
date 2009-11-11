@@ -105,7 +105,21 @@ public final class RpcUtil {
 		if (CHECK_RPC) {
 			debug("RPC result:: " + result);
 		}
+		if (isBadRpc(result)) {
+			throw new RpcException(result.toString());
+		}
 		return result;
+	}
+
+	public static boolean isBadRpc(final OtpErlangObject result) {
+		if (result instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) result;
+			if (t.elementAt(0) instanceof OtpErlangAtom) {
+				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
+				return "badrpc".equals(a.atomValue());
+			}
+		}
+		return false;
 	}
 
 	/**

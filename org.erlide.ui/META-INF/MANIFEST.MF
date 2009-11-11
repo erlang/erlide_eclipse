@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.6.6.qualifier
+Bundle-Version: 0.7.0.qualifier
 Bundle-ClassPath: erlide-ui.jar
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -19,6 +19,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.core.resources,
    org.eclipse.debug.core",
  org.erlide.debug.ui.properties;x-internal:=true,
+ org.erlide.debug.ui.tracing;x-internal:=true,
  org.erlide.debug.ui.utils;x-internal:=true,
  org.erlide.debug.ui.views;x-internal:=true,
  org.erlide.ui;x-friends:="org.erlide.gunit";

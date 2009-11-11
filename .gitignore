@@ -1,6 +1,6 @@
-.escabaseline
-.svn
 *.beam
 *.class
 workspaces
+bin
+*.orig
 

@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs
-Bundle-Version: 1.0.0
+Bundle-Version: 1.1.0
 Bundle-Vendor: Erlide.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: commons-net-1.4.1.jar,
- google-collect-1.0-rc3.jar
-Export-Package: com.google.common.annotations,
+ google-collect-1.0-rc3.jar,
+ jinterface.jar
+Export-Package: com.ericsson.otp.erlang,
+ com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
  com.google.common.collect,

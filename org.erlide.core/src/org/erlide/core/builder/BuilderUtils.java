@@ -627,21 +627,6 @@ public final class BuilderUtils {
 
 		// TODO separate
 
-		// ERL
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		IPath beamPath = getBeamForErl(source, prefs);
-		if (beamPath != null) {
-			IResource beam = project.findMember(beamPath);
-			if (beam != null) {
-				try {
-					beam.setDerived(true);
-				} catch (CoreException e) {
-					ErlLogger.warn(e);
-				}
-			}
-		}
-
 		// YRL
 		IPath erl = getErlForYrl(source);
 		if (erl != null) {
@@ -680,7 +665,7 @@ public final class BuilderUtils {
 		List<String> includeDirs = getAllIncludeDirs(project);
 
 		// delete beam file
-		IPath beamPath = getBeamForErl(source, prefs);
+		IPath beamPath = getBeamForErl(source);
 		IResource beam = project.findMember(beamPath);
 
 		try {
@@ -708,8 +693,9 @@ public final class BuilderUtils {
 		}
 	}
 
-	private static IPath getBeamForErl(IResource source,
-			final OldErlangProjectProperties prefs) {
+	private static IPath getBeamForErl(IResource source) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(source.getProject());
 		IPath p = new Path(prefs.getOutputDir());
 		p = p.append(source.getName());
 		if (!"erl".equals(p.getFileExtension())) {

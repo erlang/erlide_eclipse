@@ -97,7 +97,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -106,6 +105,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -287,28 +287,36 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private final class ScannerListener implements IDocumentListener {
+		private final IErlModule module;
+		private final String scannerName;
+
 		public ScannerListener() {
+			module = getModule();
+			if (module == null) {
+				scannerName = null;
+				return;
+			}
+			scannerName = ErlangToolkit.createScannerModuleName(module);
 		}
 
 		public void documentAboutToBeChanged(final DocumentEvent event) {
 		}
 
 		public void documentChanged(final DocumentEvent event) {
-			ErlideScanner.notifyChange(getScannerModuleName(), event
-					.getOffset(), event.getLength(), event.getText());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyChange(scannerName, event.getOffset(), event
+					.getLength(), event.getText());
 		}
 
 		public void documentOpened() {
-			ErlideScanner.notifyNew(getScannerModuleName());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyNew(scannerName);
 		}
 
-		private String getScannerModuleName() {
-			final IErlModule module = getModule();
-			if (module == null) {
-				return null;
-			}
-			return ErlScanner.createScannerModuleName(module);
-		}
 	}
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {

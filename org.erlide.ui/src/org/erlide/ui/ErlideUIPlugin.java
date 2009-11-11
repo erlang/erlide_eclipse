@@ -133,7 +133,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		ErlLogger.debug("Started UI");
 
 		erlConMan = new ErlConsoleManager();
-		erlConMan.runtimeAdded(ErlangCore.getBackendManager().getIdeBackend());
+		if (ErlideUtil.isDeveloper()) {
+			erlConMan.runtimeAdded(ErlangCore.getBackendManager()
+					.getIdeBackend());
+		}
 
 		startPeriodicDump();
 	}
