@@ -437,8 +437,8 @@ public final class ErlideUtil {
 		}
 	}
 
-	public static void loadModuleViaInput(final IProject project,
-			final String module, final ErlideBackend b)
+	public static void loadModuleViaInput(final ErlideBackend b,
+			final IProject project, final String module)
 			throws ErlModelException, IOException {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		final IPath outputLocation = project.getFolder(p.getOutputLocation())

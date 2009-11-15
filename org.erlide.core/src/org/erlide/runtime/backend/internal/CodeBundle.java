@@ -12,23 +12,31 @@ package org.erlide.runtime.backend.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.util.Tuple;
 import org.osgi.framework.Bundle;
+
+import com.google.common.collect.Lists;
 
 public class CodeBundle {
 
-	private final Bundle bundle;
+	public static enum CodeContext {
+		ANY, COMMON, BUILDER, IDE, DEBUGGER
+	}
 
-	public CodeBundle(Bundle b) {
+	private final Bundle bundle;
+	private final Collection<Tuple<String, CodeContext>> paths;
+	private final Tuple<String, String> init;
+
+	public CodeBundle(Bundle b, Collection<Tuple<String, CodeContext>> paths,
+			Tuple<String, String> init) {
 		this.bundle = b;
+		this.paths = Lists.newArrayList(paths);
+		this.init = init;
 	}
 
 	public Bundle getBundle() {
@@ -36,43 +44,17 @@ public class CodeBundle {
 	}
 
 	public Collection<String> getEbinDirs() {
-		List<String> result = new ArrayList<String>();
-		for (String path : getCodePathExtensions()) {
-			result.add(ErlideUtil.getPath(path, bundle));
-		}
-		return result;
-	}
-
-	private Collection<String> getCodePathExtensions() {
-		List<String> result = new ArrayList<String>();
-
-		// TODO Do we have to also check any fragments?
-		// see FindSupport.findInFragments
-
-		final IExtensionRegistry reg = RegistryFactory.getRegistry();
-		// reg.addRegistryChangeListener(this);
-		final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-				ErlangPlugin.PLUGIN_ID, "codepath");
-		for (final IConfigurationElement el : els) {
-			final IContributor c = el.getContributor();
-			if ("beam_dir".equals(el.getName())
-					&& c.getName().equals(bundle.getSymbolicName())) {
-				final String path = el.getAttribute("path");
-				final String context = el.getAttribute("context");
-				// TODO handle context!
-				if (!result.contains(path)) {
-					result.add(path);
-				}
-			}
+		List<String> result = Lists.newArrayList();
+		for (Tuple<String, CodeContext> path : paths) {
+			result.add(ErlideUtil.getPath(path.o1, bundle));
 		}
 		return result;
 	}
 
 	public Collection<String> getPluginCode() {
 		List<String> result = new ArrayList<String>();
-		Collection<String> dirs = getCodePathExtensions();
-		for (String dir : dirs) {
-			final Path path = new Path(dir);
+		for (Tuple<String, CodeContext> dir : paths) {
+			final Path path = new Path(dir.o1);
 			if (path.getFileExtension() != null
 					&& "beam".compareTo(path.getFileExtension()) == 0) {
 				final String m = path.removeFileExtension().lastSegment();
@@ -80,6 +62,17 @@ public class CodeBundle {
 			}
 		}
 		return result;
+	}
+
+	public Collection<Tuple<String, CodeContext>> getPaths() {
+		return Collections.unmodifiableCollection(paths);
+	}
+
+	public Tuple<String, String> getInit() {
+		if (init == null) {
+			return null;
+		}
+		return new Tuple<String, String>(init);
 	}
 
 }

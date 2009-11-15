@@ -55,7 +55,7 @@ public class ErlideBuilder {
 				if (b.isDistributed()) {
 					b.call("erlide_builder", "load", "a", module);
 				} else {
-					ErlideUtil.loadModuleViaInput(project, module, b);
+					ErlideUtil.loadModuleViaInput(b, project, module);
 				}
 			}
 		} catch (final Exception e) {

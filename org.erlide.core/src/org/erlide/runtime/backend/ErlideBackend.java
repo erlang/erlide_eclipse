@@ -10,17 +10,22 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendShell;
@@ -28,6 +33,7 @@ import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.internal.CodeBundle;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.osgi.framework.Bundle;
 
@@ -95,7 +101,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
 	}
 
-	public void register(Bundle bundle) {
+	public void register(CodeBundle bundle) {
 		codeManager.register(bundle);
 	}
 
@@ -218,6 +224,32 @@ public final class ErlideBackend extends Backend implements IDisposable,
 				backendShell.close();
 			}
 			fShells.clear();
+		}
+	}
+
+	public void addProjectPath(IProject project) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final String outDir = project.getLocation()
+				.append(prefs.getOutputDir()).toOSString();
+		if (outDir.length() > 0) {
+			ErlLogger.debug("backend %s: add path %s", getName(), outDir);
+			if (isDistributed()) {
+				addPath(false/* prefs.getUsePathZ() */, outDir);
+			} else {
+				final File f = new File(outDir);
+				for (final File file : f.listFiles()) {
+					String name = file.getName();
+					name = name.substring(0, name.length() - 5);
+					try {
+						ErlideUtil.loadModuleViaInput(this, project, name);
+					} catch (final ErlModelException e) {
+						e.printStackTrace();
+					} catch (final IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 }

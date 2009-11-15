@@ -41,6 +41,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
@@ -52,10 +53,13 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
 import org.erlide.runtime.backend.internal.CodeBundle;
 import org.erlide.runtime.backend.internal.ManagedLauncher;
+import org.erlide.runtime.backend.internal.CodeBundle.CodeContext;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public final class BackendManager extends OtpNodeStatus implements
 		IEpmdListener {
@@ -80,7 +84,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	private final Map<IProject, Set<ErlideBackend>> executionBackends;
 	private final Map<String, ErlideBackend> buildBackends;
 	final List<BackendListener> listeners;
-	private final List<CodeBundle> codeBundles;
+	private final Map<Bundle, CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
 
@@ -98,7 +102,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
 		buildBackends = new HashMap<String, ErlideBackend>();
 		listeners = new ArrayList<BackendListener>();
-		codeBundles = new ArrayList<CodeBundle>();
+		codeBundles = Maps.newHashMap();
 
 		epmdWatcher = new EpmdWatcher();
 		epmdWatcher.addEpmdListener(this);
@@ -147,8 +151,8 @@ public final class BackendManager extends OtpNodeStatus implements
 		b.initializeRuntime();
 		if (b.isDistributed()) {
 			b.connect();
-			for (CodeBundle bb : codeBundles) {
-				b.register(bb.getBundle());
+			for (CodeBundle bb : codeBundles.values()) {
+				b.register(bb);
 			}
 			boolean monitorNode = options.contains(BackendOptions.IDE);
 			b.initErlang(monitorNode);
@@ -323,59 +327,44 @@ public final class BackendManager extends OtpNodeStatus implements
 		String pluginId = extension.getContributor().getName();
 		Bundle plugin = Platform.getBundle(pluginId);
 
-		System.out.println("EL:: " + pluginId);
+		List<Tuple<String, CodeContext>> paths = Lists.newArrayList();
+		Tuple<String, String> init = null;
 		for (IConfigurationElement el : extension.getConfigurationElements()) {
 			if ("beam_dir".equals(el.getName())) {
 				String dir = el.getAttribute("path");
-				String type = el.getAttribute("context");
-				System.out.println("  BU::" + dir + " - " + type);
+				String t = el.getAttribute("context").toUpperCase();
+				CodeContext type = CodeContext.valueOf(CodeContext.class, t);
+				paths.add(new Tuple<String, CodeContext>(dir, type));
 			} else if ("init".equals(el.getName())) {
 				String module = el.getAttribute("module");
 				String function = el.getAttribute("function");
-				System.out.println("  IN:: " + module + ":" + function);
+				init = new Tuple<String, String>(module, function);
 			} else {
 				ErlLogger
 						.error("Unknown code bundle element: %s", el.getName());
 			}
 		}
-
-		addBundle(plugin);
+		addBundle(plugin, paths, init);
 	}
 
-	public void addBundle(final Bundle b) {
+	public void addBundle(final Bundle b,
+			Collection<Tuple<String, CodeContext>> paths,
+			Tuple<String, String> init) {
 		CodeBundle p = findBundle(b);
 		if (p != null) {
 			return;
 		}
-		p = new CodeBundle(b);
-		codeBundles.add(p);
+		final CodeBundle pp = new CodeBundle(b, paths, init);
+		codeBundles.put(b, pp);
 		forEachBackend(new ErlideBackendVisitor() {
 			public void visit(final ErlideBackend bb) {
-				bb.register(b);
-			}
-		});
-	}
-
-	public void removeBundle(final Bundle b) {
-		final CodeBundle p = findBundle(b);
-		if (p == null) {
-			return;
-		}
-		codeBundles.remove(p);
-		forEachBackend(new ErlideBackendVisitor() {
-			public void visit(final ErlideBackend bb) {
-				bb.unregister(b);
+				bb.register(pp);
 			}
 		});
 	}
 
 	private CodeBundle findBundle(Bundle b) {
-		for (CodeBundle p : codeBundles) {
-			if (p.getBundle() == b) {
-				return p;
-			}
-		}
-		return null;
+		return codeBundles.get(b);
 	}
 
 	public void forEachBackend(final ErlideBackendVisitor visitor) {
@@ -414,6 +403,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			executionBackends.put(project, list);
 		}
 		list.add(b);
+		b.addProjectPath(project);
 	}
 
 	public synchronized void removeExecutionBackend(final IProject project,
@@ -504,8 +494,9 @@ public final class BackendManager extends OtpNodeStatus implements
 		IExtension[] extensions = exPnt.getExtensions();
 		for (int e = 0; e < extensions.length; e++) {
 			IExtension extension = extensions[e];
-			if (!extension.isValid())
+			if (!extension.isValid()) {
 				continue;
+			}
 			ErlangCore.getBackendManager().addCodeBundle(extension);
 		}
 	}
