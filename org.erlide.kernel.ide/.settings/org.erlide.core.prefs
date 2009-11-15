@@ -1,0 +1,9 @@
+#Fri Nov 13 22:30:25 CET 2009
+backend_version=R12B
+eclipse.preferences.version=1
+external_includes=
+external_modules=
+include_dirs=include
+output_dir=ebin
+source_dirs=src;src/doc_ref;src/erl_debugger;src/parsing;src/pprint;src/syntax
+use_pathz=false

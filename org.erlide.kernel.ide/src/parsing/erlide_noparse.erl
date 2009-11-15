@@ -84,7 +84,7 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCa
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches),
 	do_parse2(ScannerName, Toks, ErlidePath).
 
-do_parse2(ScannerName, Toks, ErlidePath) ->
+do_parse2(_ScannerName, Toks, _ErlidePath) ->
     ?D({do_parse, ErlidePath, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
@@ -141,7 +141,7 @@ parse_test(ScannerName, File) ->
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
-    Model = #model{forms=Collected, comments=Comments},
+    _Model = #model{forms=Collected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model, ""),
     ok.
 
@@ -410,7 +410,7 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
-    ExternalRefs = get_refs(Rest),
+    _ExternalRefs = get_refs(Rest),
     %?D([Rest, ExternalRefs]),
     #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
 %%             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,

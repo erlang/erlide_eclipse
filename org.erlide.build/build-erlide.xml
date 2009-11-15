@@ -68,6 +68,10 @@
     			<include name="org.erlide.core/**"/>
     			<include name="org.erlide.help/**"/>
     			<include name="org.erlide.jinterface/**"/>
+    			<include name="org.erlide.kernel.common/**"/>
+    			<include name="org.erlide.kernel.builder/**"/>
+    			<include name="org.erlide.kernel.ide/**"/>
+    			<include name="org.erlide.kernel.debugger/**"/>
     			<include name="org.erlide.libs/**"/>
     			<include name="org.erlide.ui/**"/>
     			<include name="org.erlide.wrangler.help/**"/>

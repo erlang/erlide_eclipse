@@ -315,7 +315,9 @@ public class Backend {
 	private boolean init(final OtpErlangPid jRex, boolean monitor) {
 		try {
 			// reload(backend);
-			call("erlide_backend", "init", "po", jRex, monitor);
+			call("erlide_kernel_common", "init", "po", jRex, monitor);
+			// TODO should use extension point!
+			call("erlide_kernel_ide", "init", "");
 			return true;
 		} catch (final Exception e) {
 			ErlLogger.error(e);

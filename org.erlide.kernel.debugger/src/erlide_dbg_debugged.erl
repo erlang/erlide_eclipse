@@ -111,7 +111,7 @@ reply({eval,Expr,Bs}) ->
 
 %% Get stacktrace, should work in several layers, but doesn't yet...
 get_ss2() ->
-    SS = (catch 1 / 0).
+    _SS = (catch 1 / 0).
 
 %% Demonitor and delete message from inbox
 %%

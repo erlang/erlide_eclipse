@@ -30,6 +30,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -163,11 +165,18 @@ public class ErlangPlugin extends Plugin {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
-		final Object version = getBundle().getHeaders().get("Bundle-Version");
+		Bundle feature = Platform.getBundle("org.erlide");
+		if (feature == null) {
+			// when running launched from eclipse (testing), features aren't
+			// available
+			feature = getBundle();
+		}
+		final Object version = feature.getHeaders().get("Bundle-Version");
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();
-		ErlangCore.getBackendManager().addBundle(getBundle());
+
+		BackendManager.getDefault().loadCodepathExtensions();
 
 		ResourcesPlugin.getWorkspace().addSaveParticipant(this,
 				new ISaveParticipant() {

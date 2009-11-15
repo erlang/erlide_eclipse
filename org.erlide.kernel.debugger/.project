@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.erlide.ui</name>
+	<name>org.erlide.kernel.debugger</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.kernel.common</project>
 	</projects>
 	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.pde.ManifestBuilder</name>
 			<arguments>
@@ -21,16 +17,14 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.pde.api.tools.apiAnalysisBuilder</name>
+			<name>org.erlide.core.erlbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.eclipse.jem.beaninfo.BeanInfoNature</nature>
-		<nature>org.eclipse.pde.api.tools.apiAnalysisNature</nature>
+		<nature>org.erlide.core.erlnature</nature>
 	</natures>
+
 </projectDescription>

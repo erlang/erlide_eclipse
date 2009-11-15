@@ -19,23 +19,24 @@
 	<target name="pre.build.jars">
 	</target>
 
-	<target name="pre.erlide-ui.jar">
+	<target name="pre.erlide-core.jar">
 	</target>
-	
-	<target name="post.erlide-ui.jar">
+
+	<target name="post.erlide-core.jar">
 		<mkdir dir="ebin"/>
-		<apply executable="${erlang_R12}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>
 			<arg value="include"/>
-			<fileset dir="erl">
+			<arg value="+debug_info"/>
+			<fileset dir="src">
 				<include name="**/*.erl"/>
 			</fileset>
 		</apply>
 	</target>
-	
-	<target name="post.compile.erlide-ui.jar">
+
+	<target name="post.compile.erlide-core.jar">
 	</target>
 
 	<!-- ===================================================================== -->

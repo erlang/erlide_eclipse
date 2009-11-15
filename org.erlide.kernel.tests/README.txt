@@ -1,3 +1,5 @@
+This project must be built with R13, so that eunit is available!
+
 In order to run these tests manually, do this:
 
 * create an Erlang launch config, choose at least 

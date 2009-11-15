@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
-Bundle-SymbolicName: org.erlide.ui.tests
+Bundle-SymbolicName: org.erlide.ui.tests;singleton:=true
 Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: Erilde.org project
 Fragment-Host: org.erlide.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5 
 Require-Bundle: org.junit4
+Export-Package: org.erlide.ui

@@ -23,7 +23,12 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -31,6 +36,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -270,8 +276,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (defLabel != null) {
 				info.setNodeName(defLabel);
 			} else {
-				String nodeName = BackendUtils.getErlideNameTag()
-						+ "_erlide";
+				String nodeName = BackendUtils.getErlideNameTag() + "_erlide";
 				info.setNodeName(nodeName);
 			}
 			info.setCookie("erlide");
@@ -312,6 +317,29 @@ public final class BackendManager extends OtpNodeStatus implements
 			ebs.add(b);
 		}
 		return ebs;
+	}
+
+	private void addCodeBundle(IExtension extension) {
+		String pluginId = extension.getContributor().getName();
+		Bundle plugin = Platform.getBundle(pluginId);
+
+		System.out.println("EL:: " + pluginId);
+		for (IConfigurationElement el : extension.getConfigurationElements()) {
+			if ("beam_dir".equals(el.getName())) {
+				String dir = el.getAttribute("path");
+				String type = el.getAttribute("context");
+				System.out.println("  BU::" + dir + " - " + type);
+			} else if ("init".equals(el.getName())) {
+				String module = el.getAttribute("module");
+				String function = el.getAttribute("function");
+				System.out.println("  IN:: " + module + ":" + function);
+			} else {
+				ErlLogger
+						.error("Unknown code bundle element: %s", el.getName());
+			}
+		}
+
+		addBundle(plugin);
 	}
 
 	public void addBundle(final Bundle b) {
@@ -464,6 +492,21 @@ public final class BackendManager extends OtpNodeStatus implements
 				listener.runtimeRemoved(b);
 				break;
 			}
+		}
+	}
+
+	public void loadCodepathExtensions() {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		IExtensionPoint exPnt = reg.getExtensionPoint(ErlangPlugin.PLUGIN_ID,
+				"codepath");
+		// TODO listen to changes to the registry!
+
+		IExtension[] extensions = exPnt.getExtensions();
+		for (int e = 0; e < extensions.length; e++) {
+			IExtension extension = extensions[e];
+			if (!extension.isValid())
+				continue;
+			ErlangCore.getBackendManager().addCodeBundle(extension);
 		}
 	}
 

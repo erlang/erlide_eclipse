@@ -50,12 +50,6 @@
       <persistent value="true"/>
    </extension>
    <extension
-         point="org.erlide.core.codepath">
-      <bundle_dir
-            path="/ebin">
-      </bundle_dir>
-   </extension>
-   <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
             class="org.erlide.runtime.launch.ErlangSourcePathComputerDelegate"

@@ -1317,12 +1317,6 @@
       </viewPage>
    </extension-->
    <extension
-         point="org.erlide.core.codepath">
-      <bundle_dir
-            path="/ebin">
-      </bundle_dir>
-   </extension>
-   <extension
          point="org.eclipse.ui.console.consolePageParticipants">
       <consolePageParticipant
             class="org.erlide.ui.console.ConsolePageParticipant"

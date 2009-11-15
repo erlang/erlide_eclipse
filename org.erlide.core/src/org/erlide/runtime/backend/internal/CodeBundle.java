@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
 
 public class CodeBundle {
 
-	private Bundle bundle;
+	private final Bundle bundle;
 
 	public CodeBundle(Bundle b) {
 		this.bundle = b;
@@ -55,10 +55,13 @@ public class CodeBundle {
 				ErlangPlugin.PLUGIN_ID, "codepath");
 		for (final IConfigurationElement el : els) {
 			final IContributor c = el.getContributor();
-			if (c.getName().equals(bundle.getSymbolicName())) {
-				final String dir_path = el.getAttribute("path");
-				if (!result.contains(dir_path)) {
-					result.add(dir_path);
+			if ("beam_dir".equals(el.getName())
+					&& c.getName().equals(bundle.getSymbolicName())) {
+				final String path = el.getAttribute("path");
+				final String context = el.getAttribute("context");
+				// TODO handle context!
+				if (!result.contains(path)) {
+					result.add(path);
 				}
 			}
 		}

@@ -14,8 +14,7 @@
 
 -module(erlide_backend).
 
--export([init/2,
-		 
+-export([
 		 parse_term/1,
 		 eval/1,
 		 eval/2,
@@ -34,61 +33,6 @@
 		 get_system_info/0,
 		 get_module_info/1
 		]).
-
-init(JRex, Monitor) ->	
-	spawn(fun()->
-				  erlide_jrpc:init(JRex),
-				  
-				  case Monitor of
-					  true ->
-						  %% must be first so that only system processes are ignored
-						  Mon = spawn(fun monitor/0),
-						  erlide_monitor:start(),
-						  erlide_monitor:subscribe(Mon);
-					  _ ->
-						  ok
-				  end,
-				  
-				  watch_eclipse(node(JRex)),
-				  erlide_scanner_listener:start(),
-				  erlide_batch:start(erlide_builder),
-				  
-				  ok
-		  end),
-	ok.
-
-init1(L) when is_list(L) ->
-	[init1(X) || X<-L];
-init1(execute) ->
-	ok;
-init1(ide) ->
-	ok;
-init1(build) ->
-	erlide_xref:start(),
-	ok;
-init1(monitor) ->
-	%watch_eclipse(node(JRex)),
-	ok.	
-
-%% it's uncertain if this is needed anymore, but it doesn't hurt
-watch_eclipse(JavaNode) ->
-	spawn(fun() ->
-				  monitor_node(JavaNode, true),
-				  File = "safe_erlide.log",
-				  file:delete(File),
-				  receive
-					  {nodedown, _JavaNode} ->
-						  Fmt = "This file can safely be removed! ~n~n"
-									++ "~p: eclipse node ~p went down  /~p~n",
-						  Msg = io_lib:format(Fmt,
-											  [calendar:local_time(),
-											   JavaNode, _JavaNode]),
-						  file:write_file(File,	Msg),
-						  init:stop(),
-						  ok
-				  end
-		  end).
-
 
 parse_term(Str) ->
 	case catch parse_term_raw(Str) of
@@ -268,11 +212,3 @@ print_opts(X) ->
 get_system_info() ->
 	lists:flatten(io_lib:format("~p~n", [erlide_monitor:get_state()])).
 
-monitor() ->
-	receive
-		{erlide_monitor, _Node, _Diff}=Msg ->
-			erlide_log:logp("~p.", [Msg]),
-			monitor();
-		_ ->
-			monitor()
-	end.

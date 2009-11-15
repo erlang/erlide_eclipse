@@ -7,7 +7,6 @@
       </appinfo>
       <documentation>
          A plugin can contribute Erlang code by specifying here the directories where the beam files are to be found. The paths are relative to the plugin root and erlIDE can load beam code even from inside jar archives.
-
       </documentation>
    </annotation>
 
@@ -18,8 +17,9 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="bundle_dir"/>
+         <sequence>
+            <element ref="beam_dir" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="init" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -48,12 +48,61 @@
       </complexType>
    </element>
 
-   <element name="bundle_dir">
+   <element name="beam_dir">
       <complexType>
          <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  specify the relative path inside the plugin&apos;s bundle of the directory containing .beam files
+                  Specifies the relative path inside the plugin&apos;s bundle of the directory containing .beam files
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="context" use="required">
+            <annotation>
+               <documentation>
+                  Specifies in which context the code is to be loaded. 
+&lt;ul&gt;
+&lt;li&gt; &quot;ide&quot; means it is for general ide use. &lt;/li&gt;
+&lt;li&gt; &quot;builder&quot; means that the code will be loaded on build backends. &lt;/li&gt;
+&lt;li&gt;&quot;any&quot; means all contexts, generic utilities. &lt;/li&gt;
+&lt;li&gt;&quot;debugger&quot; means in execution backends (including debugger)&lt;/li&gt;
+&lt;/ul&gt;
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="ide">
+                  </enumeration>
+                  <enumeration value="builder">
+                  </enumeration>
+                  <enumeration value="any">
+                  </enumeration>
+                  <enumeration value="debugger">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="init">
+      <annotation>
+         <documentation>
+            Describes the calll to be made to initialize this plugin. The attributes specify a function that takes no arguments.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="module" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the module
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="function" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the function
                </documentation>
             </annotation>
          </attribute>

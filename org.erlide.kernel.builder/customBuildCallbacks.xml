@@ -23,13 +23,6 @@
 	</target>
 
 	<target name="post.erlide-core.jar">
-		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
-			<arg value="-o"/>
-			<arg value="erl"/>
-			<fileset dir="erl">
-				<include name="**/*.yrl"/>
-			</fileset>
-		</apply>
 		<mkdir dir="ebin"/>
 		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
@@ -37,16 +30,7 @@
 			<arg value="-I"/>
 			<arg value="include"/>
 			<arg value="+debug_info"/>
-			<fileset dir="erl">
-				<include name="**/*.erl"/>
-			</fileset>
-			<fileset dir="erl_debugger">
-				<include name="**/*.erl"/>
-			</fileset>
-			<fileset dir="erl_util">
-				<include name="**/*.erl"/>
-			</fileset>
-			<fileset dir="erl_builder">
+			<fileset dir="src">
 				<include name="**/*.erl"/>
 			</fileset>
 		</apply>

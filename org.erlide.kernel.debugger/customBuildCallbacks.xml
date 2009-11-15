@@ -23,14 +23,14 @@
 	</target>
 
 	<target name="post.erlide-core.jar">
-		<mkdir dir="eunit/ebin"/>
-		<apply executable="${erlang_R13}/bin/erlc" failonerror="true" parallel="true">
+		<mkdir dir="ebin"/>
+		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
-			<arg value="eunit/ebin"/>
+			<arg value="ebin"/>
 			<arg value="-I"/>
-			<arg value="eunit/include"/>
+			<arg value="include"/>
 			<arg value="+debug_info"/>
-			<fileset dir="eunit/src">
+			<fileset dir="src">
 				<include name="**/*.erl"/>
 			</fileset>
 		</apply>
@@ -164,8 +164,8 @@
 	<!--   destination.temp.folder - destination folder                        -->
 	<!-- ===================================================================== -->
 	<target name="pre.clean">
-		<delete dir="eunit/ebin"/>
-		<mkdir dir="eunit/ebin"/>
+		<delete dir="ebin"/>
+		<mkdir dir="ebin"/>
 	</target>
 
 	<!-- ===================================================================== -->

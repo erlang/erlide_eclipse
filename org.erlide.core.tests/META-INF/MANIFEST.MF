@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide core Tests Fragment
-Bundle-SymbolicName: org.erlide.core.tests
+Bundle-SymbolicName: org.erlide.core.tests;singleton:=true
 Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.core;bundle-version="0.6.0"
