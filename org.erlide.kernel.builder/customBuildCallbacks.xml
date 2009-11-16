@@ -19,32 +19,23 @@
 	<target name="pre.build.jars">
 	</target>
 
-	<target name="pre.erlide-core.jar">
-	</target>
-
-	<target name="post.erlide-core.jar">
-		<mkdir dir="ebin"/>
-		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
-			<arg value="-o"/>
-			<arg value="ebin"/>
-			<arg value="-I"/>
-			<arg value="include"/>
-			<arg value="+debug_info"/>
-			<fileset dir="src">
-				<include name="**/*.erl"/>
-			</fileset>
-		</apply>
-	</target>
-
-	<target name="post.compile.erlide-core.jar">
-	</target>
-
 	<!-- ===================================================================== -->
 	<!-- Steps to do after the target build.jars                               -->
 	<!-- Available parameters :                                                -->
 	<!--   build.result.folder - folder to contain the build results           -->
 	<!-- ===================================================================== -->
 	<target name="post.build.jars">
+		<mkdir dir="ebin"/>
+		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
+			<arg value="-o"/>
+			<arg value="ebin"/>
+			<arg value="-I"/>
+			<arg value="../org.erlide.kernel.common/include"/>
+			<arg value="+debug_info"/>
+			<fileset dir="src">
+				<include name="**/*.erl"/>
+			</fileset>
+		</apply>
 	</target>
 
 	<!-- ===================================================================== -->
