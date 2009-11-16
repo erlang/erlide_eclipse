@@ -74,14 +74,9 @@ public class CodeManager {
 		}
 	}
 
-	public void register(final Bundle b) {
-		CodeBundle p = findBundle(b);
-		if (p != null) {
-			return;
-		}
-		p = new CodeBundle(b);
-		registeredBundles.add(p);
-		registerBundle(p);
+	public void register(final CodeBundle b) {
+		registeredBundles.add(b);
+		registerBundle(b);
 	}
 
 	public void unregister(final Bundle b) {

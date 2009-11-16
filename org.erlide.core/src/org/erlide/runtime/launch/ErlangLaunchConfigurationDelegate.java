@@ -12,7 +12,6 @@
 package org.erlide.runtime.launch;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -51,7 +50,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -238,37 +236,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager()
 					.addExecutionBackend(project, backend);
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-			final String outDir = project.getLocation().append(
-					prefs.getOutputDir()).toOSString();
-			if (outDir.length() > 0) {
-				ErlLogger.debug("backend %s: add path %s", backend.getName(),
-						outDir);
-				if (backend.isDistributed()) {
-					backend.addPath(false/* prefs.getUsePathZ() */, outDir);
-				}
-				final File f = new File(outDir);
-				for (final File file : f.listFiles()) {
-					if (backend.isDistributed()) {
-						// is this needed?
-						// ErlangCode.load(backend, file.getName());
-					} else {
-						String name = file.getName();
-						name = name.substring(0, name.length() - 5);
-						try {
-							ErlideUtil.loadModuleViaInput(project, name,
-									backend);
-						} catch (final ErlModelException e) {
-							e.printStackTrace();
-						} catch (final IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
 		}
-
 	}
 
 	public static List<String> addBreakpointProjectsAndModules(

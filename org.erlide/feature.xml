@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.7.0.qualifier"
+      version="0.7.1.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core"
       image="erlang120.gif">
@@ -253,13 +253,15 @@ litigation.
          id="org.erlide.core"
          download-size="666"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.erlide.ui"
          download-size="1064"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.erlide.help"
@@ -271,7 +273,8 @@ litigation.
          id="org.erlide.jinterface"
          download-size="48"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.erlide.wrangler.help"

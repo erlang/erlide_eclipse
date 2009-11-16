@@ -133,7 +133,6 @@ public class ErlangPlugin extends Plugin {
 	public void stop(final BundleContext context) throws Exception {
 		try {
 			ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
-			ErlangCore.getBackendManager().removeBundle(getBundle());
 
 			ErlangCore.getModelManager().shutdown();
 		} finally {

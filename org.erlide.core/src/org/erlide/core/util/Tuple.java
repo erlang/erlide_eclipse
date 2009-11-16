@@ -21,6 +21,11 @@ public class Tuple<X, Y> implements Serializable {
 		this.o2 = o2;
 	}
 
+	public Tuple(Tuple<X, Y> other) {
+		this.o1 = other.o1;
+		this.o2 = other.o2;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
