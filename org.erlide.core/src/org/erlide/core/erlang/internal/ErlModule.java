@@ -526,7 +526,8 @@ public class ErlModule extends Openable implements IErlModule {
 		updateCaches = true;
 		setStructureKnown(false);
 		try {
-			buildStructure(null);
+			final boolean built = buildStructure(null);
+			setStructureKnown(built);
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
