@@ -13,5 +13,5 @@ buildDirRoot=/tmp
 
 # this is for 3.4
 eclipseLauncher=${ECLIPSE_HOME}/plugins/org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar
-${JAVA_HOME}/bin/java -Xms256m -Xmx512m -jar ${eclipseLauncher} -application org.eclipse.ant.core.antRunner -buildfile build-erlide.xml -logger org.apache.tools.ant.NoBannerLogger -DbuildDirRoot=${buildDirRoot} -Derlang_R11=${erlang_R11} -Derlang_R12=${erlang_R12} 2>&1 1>build.log
+${JAVA_HOME}/bin/java -Xms256m -Xmx512m -jar ${eclipseLauncher} -application org.eclipse.ant.core.antRunner -buildfile build-erlide.xml -logger org.apache.tools.ant.NoBannerLogger -DbuildDirRoot=${buildDirRoot} -Derlang_R11=${erlang_R11} -Derlang_R12=${erlang_R12} -Derlang_R13=${erlang_R13} 2>&1 1>build.log
 
