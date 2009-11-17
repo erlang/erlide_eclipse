@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
-Bundle-SymbolicName: org.erlide.libs
+Bundle-SymbolicName: org.erlide.libs;singleton:=true
 Bundle-Version: 1.1.0
 Bundle-Vendor: Erlide.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
