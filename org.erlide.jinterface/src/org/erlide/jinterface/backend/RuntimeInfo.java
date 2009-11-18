@@ -138,15 +138,17 @@ public class RuntimeInfo {
 			erl = "\"" + erl + "\"";
 		}
 		result.add(erl);
-		final String pathA = cvt(getPathA());
-		if (!empty(pathA)) {
-			result.add("-pa");
-			result.add(pathA);
+		for (final String pathA : getPathA()) {
+			if (!empty(pathA)) {
+				result.add("-pa");
+				result.add(pathA);
+			}
 		}
-		final String pathZ = cvt(getPathZ());
-		if (!empty(pathZ)) {
-			result.add("-pz");
-			result.add(pathZ);
+		for (final String pathZ : getPathZ()) {
+			if (!empty(pathZ)) {
+				result.add("-pz");
+				result.add(pathZ);
+			}
 		}
 		final String gotArgs = getArgs();
 		if (!empty(gotArgs)) {
