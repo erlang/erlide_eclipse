@@ -17,6 +17,9 @@ init(JRex, Monitor) ->
 				  end,
 				  erlide_jrpc:init(JRex),
 				  watch_eclipse(node(JRex)),
+				  
+				  				  erlide_batch:start(erlide_builder),
+
 				  ok
 		  end),
 	ok.

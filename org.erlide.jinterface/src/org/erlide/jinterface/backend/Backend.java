@@ -317,6 +317,7 @@ public class Backend {
 			// reload(backend);
 			call("erlide_kernel_common", "init", "po", jRex, monitor);
 			// TODO should use extension point!
+			call("erlide_kernel_builder", "init", "");
 			call("erlide_kernel_ide", "init", "");
 			return true;
 		} catch (final Exception e) {
