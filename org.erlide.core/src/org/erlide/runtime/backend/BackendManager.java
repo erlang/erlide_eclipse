@@ -51,9 +51,8 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.util.EpmdWatcher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
-import org.erlide.runtime.backend.internal.CodeBundle;
+import org.erlide.runtime.backend.CodeBundle.CodeContext;
 import org.erlide.runtime.backend.internal.ManagedLauncher;
-import org.erlide.runtime.backend.internal.CodeBundle.CodeContext;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 

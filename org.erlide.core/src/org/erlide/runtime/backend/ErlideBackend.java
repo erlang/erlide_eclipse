@@ -33,7 +33,6 @@ import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.internal.CodeBundle;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.osgi.framework.Bundle;
 

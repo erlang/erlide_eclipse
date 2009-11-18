@@ -3,7 +3,6 @@
  */
 package org.erlide.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+
+import com.google.common.collect.Lists;
 
 public class ExtensionHelper {
 
@@ -112,7 +113,7 @@ public class ExtensionHelper {
 			return testingParticipants.get(type);
 		}
 
-		ArrayList list = new ArrayList();
+		List list = Lists.newArrayList();
 		IExtension[] extensions = getExtensions(type);
 		// For each extension ...
 		for (int i = 0; i < extensions.length; i++) {
