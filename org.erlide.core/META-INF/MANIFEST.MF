@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
 Bundle-Version: 0.7.1.qualifier
-Bundle-ClassPath: erlide-core.jar
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -41,3 +40,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .

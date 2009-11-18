@@ -251,27 +251,27 @@ litigation.
 
    <plugin
          id="org.erlide.core"
-         download-size="666"
+         download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.ui"
-         download-size="1064"
+         download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.help"
-         download-size="455"
+         download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.jinterface"
-         download-size="48"
+         download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
