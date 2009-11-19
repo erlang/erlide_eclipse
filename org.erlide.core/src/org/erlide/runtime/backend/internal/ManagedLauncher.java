@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
@@ -48,8 +50,8 @@ public class ManagedLauncher implements IDisposable {
 		}
 
 		String[] cmds = info.getCmdLine();
-		String env = System.getenv("erlide.internal.coredump");
-		if ("true".equals(env) && ErlideUtil.isEricssonUser()
+		String dump = System.getenv("erlide.internal.coredump");
+		if ("true".equals(dump) && ErlideUtil.isEricssonUser()
 				&& !ErlideUtil.isOnWindows()) {
 			final String cmd = StringUtils.join(cmds);
 			cmds = new String[] { "tcsh", "-c",
@@ -57,29 +59,35 @@ public class ManagedLauncher implements IDisposable {
 		}
 
 		final File workingDirectory = new File(info.getWorkingDir());
-		ErlLogger.debug("START node :> " + StringUtils.join(cmds) + " *** "
+		ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
 				+ workingDirectory);
 
-		try {
-			fRuntime = Runtime.getRuntime().exec(cmds, null, workingDirectory);
-
-			ErtsProcess erts = new ErtsProcess(launch, fRuntime, info
-					.getNodeName(), null);
-			launch.addProcess(erts);
-			proxy = erts.getPrivateStreamsProxy();
-
-			ErlLogger.debug(fRuntime.toString());
-			try {
-				ErlLogger.debug("exit code: %d", fRuntime.exitValue());
-			} catch (IllegalThreadStateException e) {
-				ErlLogger.debug("process is running");
-			}
-
-			startWatcher(info, workingDirectory);
-
-		} catch (final IOException e) {
-			ErlLogger.error(e);
+		ProcessBuilder builder = new ProcessBuilder(cmds);
+		builder.directory(workingDirectory);
+		if (ErlideUtil.isEricssonUser() && !ErlideUtil.isOnWindows()) {
+			Map<String, String> env = builder.environment();
+			env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
 		}
+		try {
+			fRuntime = builder.start();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return;
+		}
+
+		ErtsProcess erts = new ErtsProcess(launch, fRuntime,
+				info.getNodeName(), null);
+		launch.addProcess(erts);
+		proxy = erts.getPrivateStreamsProxy();
+
+		ErlLogger.debug(fRuntime.toString());
+		try {
+			ErlLogger.debug("exit code: %d", fRuntime.exitValue());
+		} catch (IllegalThreadStateException e) {
+			ErlLogger.debug("process is running");
+		}
+
+		startWatcher(info, workingDirectory);
 	}
 
 	private void startWatcher(final RuntimeInfo info,
