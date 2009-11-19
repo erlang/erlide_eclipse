@@ -19,7 +19,6 @@
 %%-define(DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
 
 -define(CACHE_VERSION, 2).
 
@@ -555,9 +554,8 @@ extract_pars(FunctionName, Arity, Offset, Doc) ->
 try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
 try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
-    case erlide_scan:string_ws(Sub) of
-	{ok, TokensWs, _} ->
-	    Tokens = erlide_scan:filter_ws(TokensWs),
+    case erl_scan:string(Sub) of
+	{ok, Tokens, _} ->
 	    ?D(Tokens),
 	    case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
 		bad_tokens ->
