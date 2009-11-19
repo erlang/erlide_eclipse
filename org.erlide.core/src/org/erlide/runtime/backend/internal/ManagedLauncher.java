@@ -51,8 +51,8 @@ public class ManagedLauncher implements IDisposable {
 
 		String[] cmds = info.getCmdLine();
 		String dump = System.getenv("erlide.internal.coredump");
-		if ("true".equals(dump) && ErlideUtil.isEricssonUser()
-				&& !ErlideUtil.isOnWindows()) {
+		if ("true".equals(dump) && !ErlideUtil.isOnWindows()
+				&& ErlideUtil.isEricssonUser()) {
 			final String cmd = StringUtils.join(cmds);
 			cmds = new String[] { "tcsh", "-c",
 					"limit coredumpsize unlimited ;" + " exec " + cmd + " +d" };
@@ -64,7 +64,7 @@ public class ManagedLauncher implements IDisposable {
 
 		ProcessBuilder builder = new ProcessBuilder(cmds);
 		builder.directory(workingDirectory);
-		if (ErlideUtil.isEricssonUser() && !ErlideUtil.isOnWindows()) {
+		if (!ErlideUtil.isOnWindows() && ErlideUtil.isEricssonUser()) {
 			Map<String, String> env = builder.environment();
 			env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
 		}
