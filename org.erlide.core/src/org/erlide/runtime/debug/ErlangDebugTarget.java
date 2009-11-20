@@ -37,7 +37,7 @@ import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -136,7 +136,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, JInterfaceFactory.mkTuple(
+		fBackend.send(pid, OtpErlang.mkTuple(
 				new OtpErlangAtom("parent"), b.getEventPid()));
 
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(

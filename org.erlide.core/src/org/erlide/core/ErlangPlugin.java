@@ -164,13 +164,19 @@ public class ErlangPlugin extends Plugin {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
+		String version;
 		Bundle feature = Platform.getBundle("org.erlide");
+		// TODO this is null, why?
 		if (feature == null) {
 			// when running launched from eclipse (testing), features aren't
 			// available
 			feature = getBundle();
+			version = "(" + (String) feature.getHeaders().get("Bundle-Version")
+					+ ")";
+		} else {
+			// TODO read from feature.xml
+			version = (String) feature.getHeaders().get("Bundle-Version");
 		}
-		final Object version = feature.getHeaders().get("Bundle-Version");
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();

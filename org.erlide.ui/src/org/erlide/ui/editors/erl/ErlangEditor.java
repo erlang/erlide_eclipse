@@ -187,6 +187,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		registerListeners();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void registerListeners() {
 		try {
 			// initialize the 'save' listeners of editor

@@ -61,7 +61,7 @@ import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -274,7 +274,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			if (b != null) {
 				final OtpErlangString filename = new OtpErlangString(module
 						+ ".erl");
-				final OtpErlangTuple t = JInterfaceFactory.mkTuple(
+				final OtpErlangTuple t = OtpErlang.mkTuple(
 						new OtpErlangAtom(module), filename, b);
 				modules.add(t);
 			}

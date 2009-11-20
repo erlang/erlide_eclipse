@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -57,7 +57,7 @@ public class RpcResult {
 
 	public static RpcResult error(final String msg) {
 		final RpcResult r = new RpcResult(false);
-		r.fValue = JInterfaceFactory.mkTuple(new OtpErlangAtom("error"),
+		r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
 				new OtpErlangAtom(msg));
 		return r;
 	}

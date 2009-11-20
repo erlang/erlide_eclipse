@@ -306,15 +306,15 @@ convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
 convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
     T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
+convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
 	   Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
+convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
 	   Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V, _Txt} | Rest],
+convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V, _Txt} | Rest],
 	   Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
@@ -369,7 +369,7 @@ tokens_to_string([T1 | [T2 | _] = Rest], Acc) ->
     tokens_to_string(Rest, [Acc, S, Sb]).
 
 space_between(#token{offset=O1, length=Len1}, #token{offset=O2}) ->
-    lists:duplicate(O2-O1-Len1, $ ).
+    lists:duplicate(O2-O1-Len1, 32).
 
 -define(TOK_OTHER, 0).
 -define(TOK_WS, 1).
@@ -410,10 +410,10 @@ fixup_macro(L, O, G) ->
 
 fixup_tokens([], Acc) ->
 	erlang:iolist_to_binary(Acc);
-fixup_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
+fixup_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
+fixup_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
 fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->

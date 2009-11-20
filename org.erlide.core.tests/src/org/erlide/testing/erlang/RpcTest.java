@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -28,9 +28,9 @@ public class RpcTest extends AbstractErlangTest {
 		final OtpErlangAtom a = new OtpErlangAtom("1");
 		final OtpErlangLong b = new OtpErlangLong(2);
 		final OtpErlangLong c = new OtpErlangLong(3);
-		final OtpErlangList l1 = JInterfaceFactory.mkList(a, b, c);
+		final OtpErlangList l1 = OtpErlang.mkList(a, b, c);
 
-		final OtpErlangList l2 = JInterfaceFactory.mkList(c, b, a);
+		final OtpErlangList l2 = OtpErlang.mkList(c, b, a);
 		final OtpErlangObject rr = runErlangTest("lists", "reverse", l1);
 		assertTrue(rr.equals(l2));
 	}

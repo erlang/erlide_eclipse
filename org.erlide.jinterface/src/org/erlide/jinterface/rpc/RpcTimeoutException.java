@@ -21,4 +21,8 @@ public class RpcTimeoutException extends RpcException {
 		super("timeout");
 	}
 
+	public RpcTimeoutException(String msg) {
+		super("timeout in " + msg);
+	}
+
 }

@@ -5,7 +5,7 @@ import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlangFunction;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -47,7 +47,7 @@ public class ErlImport extends ErlImportExport implements IErlImport {
 	@Override
 	public OtpErlangObject toErlangObject() {
 		final OtpErlangObject funcs = super.toErlangObject();
-		return JInterfaceFactory.mkTuple(new OtpErlangAtom(getImportModule()),
+		return OtpErlang.mkTuple(new OtpErlangAtom(getImportModule()),
 				funcs);
 	}
 }

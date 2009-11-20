@@ -18,7 +18,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -200,7 +200,7 @@ public class CompilerPreferences {
 				result.add(new OtpErlangAtom(i.getKey()));
 			}
 		}
-		result.add(JInterfaceFactory.mkTuple(new OtpErlangAtom("warn_format"),
+		result.add(OtpErlang.mkTuple(new OtpErlangAtom("warn_format"),
 				new OtpErlangLong(warnFormat ? 1 : 0)));
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (!allOptions.equals("")) {
@@ -213,7 +213,7 @@ public class CompilerPreferences {
 		}
 
 		result.add(new OtpErlangAtom("debug_info"));
-		final OtpErlangList list = JInterfaceFactory.mkList(result);
+		final OtpErlangList list = OtpErlang.mkList(result);
 		return list;
 	}
 

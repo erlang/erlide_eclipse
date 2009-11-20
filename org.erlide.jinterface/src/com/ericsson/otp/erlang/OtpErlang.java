@@ -2,7 +2,7 @@ package com.ericsson.otp.erlang;
 
 import java.util.Collection;
 
-public class JInterfaceFactory {
+public class OtpErlang {
 
 	public static OtpErlangList mkList(final OtpErlangObject... args) {
 		return new OtpErlangList(args);

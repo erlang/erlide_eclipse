@@ -21,7 +21,7 @@ import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlideEdoc {
+public class ErlideEdocExport {
 
 	public static void files(final Collection<String> files,
 			final Map<String, OtpErlangObject> options) throws RpcException,

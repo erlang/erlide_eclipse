@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
@@ -46,6 +47,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.PluginUtils;
@@ -302,10 +304,14 @@ public class ErlModelUtils {
 		if (pd == null) {
 			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
+				String filenameLastPart = element.getFilenameLastPart();
+				IResource resource = m.getResource();
+				IContainer parent = resource.getParent();
+				ContainerFilter includePathFilter = PluginUtils
+						.getIncludePathFilter(project, parent);
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart(), PluginUtils
-										.getIncludePathFilter(project, m.getResource().getParent()));
+								filenameLastPart, includePathFilter);
 				if (re == null) {
 					try {
 						String s = element.getFilename();

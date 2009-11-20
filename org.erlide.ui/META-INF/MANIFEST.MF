@@ -3,14 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
 Bundle-Version: 0.7.1.qualifier
-Bundle-ClassPath: erlide-ui.jar
+Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.bdaum.overlayPages;x-internal:=true,
  com.novocode.naf.swt.custom;x-internal:=true,
  com.swtdesigner;x-internal:=true,
- erlang;x-internal:=true,
  org.erlide.debug.ui.actions;x-internal:=true,
  org.erlide.debug.ui.model;x-internal:=true;
   uses:="com.ericsson.otp.erlang,

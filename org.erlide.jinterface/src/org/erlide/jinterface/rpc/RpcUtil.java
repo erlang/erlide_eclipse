@@ -13,7 +13,7 @@ package org.erlide.jinterface.rpc;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -165,7 +165,7 @@ public final class RpcUtil {
 		if (CHECK_RPC) {
 			debug("RPC " + mbox.hashCode() + "=> " + res);
 		}
-		return new RpcFuture(mbox);
+		return new RpcFuture(mbox, module + ":" + fun + "/" + args0.length);
 	}
 
 	/**
@@ -175,9 +175,9 @@ public final class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static OtpErlangObject getRpcResult(final OtpMbox mbox)
+	public static OtpErlangObject getRpcResult(final OtpMbox mbox, String env)
 			throws RpcException {
-		return getRpcResult(mbox, INFINITY);
+		return getRpcResult(mbox, INFINITY, env);
 	}
 
 	/**
@@ -185,11 +185,12 @@ public final class RpcUtil {
 	 * 
 	 * @param mbox
 	 * @param timeout
+	 * @param env
 	 * @return
 	 * @throws RpcException
 	 */
 	public static OtpErlangObject getRpcResult(final OtpMbox mbox,
-			final long timeout) throws RpcException {
+			final long timeout, String env) throws RpcException {
 		assert mbox != null;
 
 		OtpErlangObject res = null;
@@ -209,7 +210,8 @@ public final class RpcUtil {
 				}
 			}
 			if (res == null) {
-				throw new RpcTimeoutException();
+				String msg = env != null ? env : "??";
+				throw new RpcTimeoutException(msg);
 			}
 			if (!(res instanceof OtpErlangTuple)) {
 				throw new RpcException(res.toString());
@@ -234,8 +236,8 @@ public final class RpcUtil {
 		final OtpErlangObject m = new OtpErlangAtom(module);
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
-		return JInterfaceFactory.mkTuple(pid, JInterfaceFactory.mkTuple(
-				new OtpErlangAtom("call"), m, f, a, gleader));
+		return OtpErlang.mkTuple(pid, OtpErlang.mkTuple(new OtpErlangAtom(
+				"call"), m, f, a, gleader));
 	}
 
 	/**
@@ -296,8 +298,8 @@ public final class RpcUtil {
 		final OtpErlangObject f = new OtpErlangAtom(fun);
 		final OtpErlangObject a = new OtpErlangList(args);
 		final OtpErlangAtom castTag = new OtpErlangAtom("$gen_cast");
-		return JInterfaceFactory.mkTuple(castTag, JInterfaceFactory.mkTuple(
-				new OtpErlangAtom("cast"), m, f, a, gleader));
+		return OtpErlang.mkTuple(castTag, OtpErlang.mkTuple(new OtpErlangAtom(
+				"cast"), m, f, a, gleader));
 	}
 
 	private static void debug(final String s) {

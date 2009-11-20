@@ -28,6 +28,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.CodeBundle;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 

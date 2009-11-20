@@ -7,7 +7,6 @@
 init() ->	
 	spawn(fun()->
 				  erlide_scanner_listener:start(),
-				  erlide_batch:start(erlide_builder),
 				  ok
 		  end),
 	ok.

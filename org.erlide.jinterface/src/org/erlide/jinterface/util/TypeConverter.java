@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangByte;
@@ -630,7 +630,7 @@ public final class TypeConverter {
 		for (final Entry<String, OtpErlangObject> entry : v) {
 			final OtpErlangAtom key = new OtpErlangAtom(entry.getKey());
 			final OtpErlangObject value = entry.getValue();
-			vv[i] = JInterfaceFactory.mkTuple(key, value);
+			vv[i] = OtpErlang.mkTuple(key, value);
 			i++;
 		}
 		return new OtpErlangList(vv);

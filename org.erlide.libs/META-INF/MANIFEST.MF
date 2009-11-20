@@ -1,27 +1,27 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
-Bundle-SymbolicName: org.erlide.libs
-Bundle-Version: 1.1.0
+Bundle-SymbolicName: org.erlide.libs;singleton:=true
+Bundle-Version: 1.1.1
 Bundle-Vendor: Erlide.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: commons-net-1.4.1.jar,
- google-collect-1.0-rc3.jar,
- jinterface.jar
+Bundle-ClassPath: jinterface.jar,
+ commons-net-1.4.1.jar,
+ google-collect-1.0-rc3.jar
 Export-Package: com.ericsson.otp.erlang,
  com.google.common.annotations,
- com.google.common.base,
+ com.google.common.base;uses:="new com.google.common.base",
  com.google.common.base.internal,
- com.google.common.collect,
+ com.google.common.collect;uses:="com.google.common.base,new new com.google.common.collect,new com.google.common.collect",
  org.apache.commons.net,
- org.apache.commons.net.bsd,
- org.apache.commons.net.ftp,
- org.apache.commons.net.ftp.parser,
+ org.apache.commons.net.bsd;uses:="org.apache.commons.net",
+ org.apache.commons.net.ftp;uses:="org.apache.commons.net.telnet,org.apache.commons.net.ftp.parser,org.apache.commons.net",
+ org.apache.commons.net.ftp.parser;uses:="org.apache.commons.net.ftp,org.apache.oro.text.regex",
  org.apache.commons.net.io,
- org.apache.commons.net.nntp,
- org.apache.commons.net.ntp,
- org.apache.commons.net.pop3,
- org.apache.commons.net.smtp,
- org.apache.commons.net.telnet,
- org.apache.commons.net.tftp,
+ org.apache.commons.net.nntp;uses:="org.apache.commons.net",
+ org.apache.commons.net.ntp;uses:="org.apache.commons.net",
+ org.apache.commons.net.pop3;uses:="org.apache.commons.net",
+ org.apache.commons.net.smtp;uses:="org.apache.commons.net",
+ org.apache.commons.net.telnet;uses:="org.apache.commons.net",
+ org.apache.commons.net.tftp;uses:="org.apache.commons.net",
  org.apache.commons.net.util
