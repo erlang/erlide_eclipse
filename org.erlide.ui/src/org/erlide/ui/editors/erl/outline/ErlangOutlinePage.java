@@ -14,10 +14,13 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -32,8 +35,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchCommandConstants;
+import org.eclipse.ui.OpenAndLinkWithEditorHelper;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
@@ -49,11 +56,15 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.navigator.ErlElementSorter;
+import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
@@ -183,6 +194,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 	private SortAction fSortAction;
 
+	private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
+
+	private org.erlide.ui.editors.erl.outline.ErlangOutlinePage.ToggleLinkingAction fToggleLinkingAction;
+
 	/**
 	 * 
 	 * @param documentProvider
@@ -246,6 +261,31 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		fOutlineViewer.addPostSelectionChangedListener(this);
 		fOutlineViewer.setInput(fModule);
 
+		fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(
+				fOutlineViewer) {
+
+			@Override
+			protected void activate(final ISelection selection) {
+				fEditor.doSelectionChanged(selection);
+				getSite().getPage().activate(fEditor);
+			}
+
+			@Override
+			protected void linkToEditor(final ISelection selection) {
+				fEditor.doSelectionChanged(selection);
+			}
+
+			@Override
+			protected void open(final ISelection selection,
+					final boolean activate) {
+				fEditor.doSelectionChanged(selection);
+				if (activate) {
+					getSite().getPage().activate(fEditor);
+				}
+			}
+
+		};
+
 		final MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
@@ -271,6 +311,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 				fEditor.getAction(ITextEditorActionConstants.REDO));
 		fActionGroups.fillActionBars(actionBars);
 		registerToolbarActions(actionBars);
+		final IHandlerService handlerService = (IHandlerService) site
+				.getService(IHandlerService.class);
+		handlerService.activateHandler(
+				IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
+				new ActionHandler(fToggleLinkingAction));
 	}
 
 	protected void contextMenuAboutToShow(final IMenuManager menu) {
@@ -354,9 +399,61 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		fMemberFilterActionGroup = new MemberFilterActionGroup(fOutlineViewer,
 				"org.eclipse.jdt.ui.JavaOutlinePage"); //$NON-NLS-1$
 		fMemberFilterActionGroup.contributeToToolBar(toolBarManager);
+
+		final IMenuManager viewMenuManager = actionBars.getMenuManager();
+		fToggleLinkingAction = new ToggleLinkingAction();
+		fToggleLinkingAction
+				.setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
+		viewMenuManager.add(fToggleLinkingAction);
 	}
 
 	public void sort(final boolean sorting) {
 		ErlLogger.debug("sorting " + sorting);
 	}
+
+	/**
+	 * This action toggles whether this Java Outline page links its selection to
+	 * the active editor.
+	 * 
+	 * @since 3.0
+	 */
+	public class ToggleLinkingAction extends Action {
+
+		/**
+		 * Constructs a new action.
+		 */
+		public ToggleLinkingAction() {
+			super(ActionMessages.ToggleLinkingAction_label);
+			setDescription(ActionMessages.ToggleLinkingAction_description);
+			setToolTipText(ActionMessages.ToggleLinkingAction_tooltip);
+			ErlideUIPluginImages.setLocalImageDescriptors(this, "synced.gif");
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+					IErlangHelpContextIds.LINK_EDITOR_ACTION);
+			final IEclipsePreferences prefsNode = MemberFilterActionGroup
+					.getPrefsNode();
+			final boolean isLinkingEnabled = prefsNode.getBoolean(
+					PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
+			setChecked(isLinkingEnabled);
+			fOpenAndLinkWithEditorHelper.setLinkWithEditor(isLinkingEnabled);
+		}
+
+		/**
+		 * Runs the action.
+		 */
+		@Override
+		public void run() {
+			final IEclipsePreferences prefsNode = MemberFilterActionGroup
+					.getPrefsNode();
+			final boolean isChecked = isChecked();
+			prefsNode.putBoolean(
+					PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR,
+					isChecked);
+			if (isChecked && fEditor != null) {
+				getTreeViewer().refresh();
+			}
+			fOpenAndLinkWithEditorHelper.setLinkWithEditor(isChecked);
+		}
+
+	}
+
 }

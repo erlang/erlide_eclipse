@@ -132,6 +132,8 @@ public class PreferenceConstants {
 
 	public static final String EDITOR_SHOW_SEGMENTS = "showSegments"; //$NON-NLS-1$
 
+	public static final String ERLANG_OUTLINE_LINK_WITH_EDITOR = "erlangOutlineLinkWithEditor"; //$NON-NLS-1$
+
 	public static enum Color {
 		ALICEBLUE(240, 248, 255),
 

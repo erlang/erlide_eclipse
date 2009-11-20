@@ -155,7 +155,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private TestAction testAction;
 	/** The selection changed listeners */
 	private EditorSelectionChangedListener fEditorSelectionChangedListener;
-	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 	private InformationPresenter fInformationPresenter;
 	private ShowOutlineAction fShowOutline;
 	private Object fSelection;
@@ -195,7 +194,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				editListeners = ExtensionHelper
 						.getParticipants(ExtensionHelper.EDITOR_LISTENER);
 			}
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			ErlideUIPlugin.log(e);
 		}
 	}
@@ -880,33 +879,26 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	/**
-	 * Updates the selection in the editor's widget with the selection of the
-	 * outline page.
+	 * Called from
+	 * org.erlide.ui.editors.erl.outline.ErlangOutlinePage.createControl
+	 * (...).new OpenAndLinkWithEditorHelper() {...}.linkToEditor(ISelection)
+	 * 
+	 * @param selection
 	 */
-	class OutlineSelectionChangedListener extends
-			AbstractSelectionChangedListener {
-
-		public void selectionChanged(final SelectionChangedEvent event) {
-			doSelectionChanged(event);
-		}
-	}
-
-	protected void doSelectionChanged(final SelectionChangedEvent event) {
+	public void doSelectionChanged(final ISelection selection) {
 		ISourceReference reference = null;
-
-		final ISelection selection = event.getSelection();
-		final Iterator<?> iter = ((IStructuredSelection) selection).iterator();
-		while (iter.hasNext()) {
-			final Object o = iter.next();
-			if (o instanceof ISourceReference) {
-				reference = (ISourceReference) o;
-				break;
+		if (selection instanceof IStructuredSelection) {
+			final IStructuredSelection ss = (IStructuredSelection) selection;
+			for (final Object o : ss.toArray()) {
+				if (o instanceof ISourceReference) {
+					reference = (ISourceReference) o;
+					break;
+				}
 			}
 		}
 		if (!isActivePart() && ErlideUIPlugin.getActivePage() != null) {
 			ErlideUIPlugin.getActivePage().bringToTop(this);
 		}
-
 		setSelection(reference, true);
 	}
 
@@ -928,7 +920,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected ErlangOutlinePage createOutlinePage() {
 		final ErlangOutlinePage page = new ErlangOutlinePage(
 				getDocumentProvider(), this);
-		fOutlineSelectionChangedListener.install(page);
 		page.setInput(getEditorInput());
 		return page;
 	}
@@ -938,7 +929,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 */
 	public void outlinePageClosed() {
 		if (myOutlinePage != null) {
-			fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 			myOutlinePage = null;
 			resetHighlightRange();
 		}
@@ -978,9 +968,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (myOutlinePage != null // && element != null
 		// && !(checkIfOutlinePageActive && isErlangOutlinePageActive())
 		) {
-			fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 			myOutlinePage.select(element);
-			fOutlineSelectionChangedListener.install(myOutlinePage);
 		}
 	}
 
@@ -1112,9 +1100,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// ErlLogger.warn(e);
 			// }
 			if (myOutlinePage != null) {
-				fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 				myOutlinePage.select(reference);
-				fOutlineSelectionChangedListener.install(myOutlinePage);
 			}
 		}
 	}
@@ -1791,13 +1777,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	public void addEditorListener(IErlangEditorListener listener) {
+	public void addEditorListener(final IErlangEditorListener listener) {
 		synchronized (editListeners) {
 			editListeners.add(listener);
 		}
 	}
 
-	public void removeEditorListener(IErlangEditorListener listener) {
+	public void removeEditorListener(final IErlangEditorListener listener) {
 		synchronized (editListeners) {
 			editListeners.remove(listener);
 		}
@@ -1816,7 +1802,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// }
 		// }
 		// }
-		List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
+		final List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
 		synchronized (editListeners) {
 			listeners.addAll(editListeners);
 		}

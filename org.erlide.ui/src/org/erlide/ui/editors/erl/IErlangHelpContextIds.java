@@ -48,4 +48,6 @@ public class IErlangHelpContextIds {
 
 	public static final String OPEN_MODULE_ACTION = "openModuleAction";
 
+	public static final String LINK_EDITOR_ACTION = "linkEditorAction";
+
 }
