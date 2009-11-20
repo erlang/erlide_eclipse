@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RuntimeInfo {
 	public static final String DEFAULT_MARKER = "*DEFAULT*";
@@ -152,7 +154,10 @@ public class RuntimeInfo {
 		}
 		final String gotArgs = getArgs();
 		if (!empty(gotArgs)) {
-			result.add(gotArgs);
+			String[] xargs = split(gotArgs);
+			for (String a : xargs) {
+				result.add(a);
+			}
 		}
 
 		if (!startShell) {
@@ -176,6 +181,22 @@ public class RuntimeInfo {
 		}
 
 		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * split on spaces but respect quotes
+	 * 
+	 * @param args
+	 * @return
+	 */
+	private String[] split(String args) {
+		Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
+		Matcher m = p.matcher(args);
+		List<String> tokens = new ArrayList<String>();
+		while (m.find()) {
+			tokens.add(m.group(1));
+		}
+		return tokens.toArray(new String[tokens.size()]);
 	}
 
 	private boolean empty(final String str) {
