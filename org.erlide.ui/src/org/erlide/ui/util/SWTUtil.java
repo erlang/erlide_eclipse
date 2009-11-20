@@ -189,7 +189,7 @@ public final class SWTUtil {
 	 * @param parent
 	 *            parent control
 	 * @param title
-	 *            title for group or <code>null</code>
+	 *            title for group or <code>null</code>
 	 * @param numColumns
 	 *            number of columns in group layout
 	 * @param fill
