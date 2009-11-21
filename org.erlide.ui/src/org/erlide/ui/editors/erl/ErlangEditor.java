@@ -127,6 +127,7 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
+import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
@@ -734,12 +735,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
-	@Override
-	protected void doSetSelection(final ISelection selection) {
-		super.doSetSelection(selection);
-		synchronizeOutline();
-	}
-
 	private void synchronizeOutline() {
 		synchronizeOutlinePage(computeHighlightRangeSourceReference());
 	}
@@ -907,9 +902,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			return;
 		}
 		final ISourceReference element = computeHighlightRangeSourceReference();
-		synchronizeOutlinePage(element);
+		if (isLinkedToOutlinePage()) {
+			synchronizeOutlinePage(element);
+		}
 		setSelection(element, false);
 		// updateStatusLine();
+	}
+
+	private boolean isLinkedToOutlinePage() {
+		final IEclipsePreferences prefsNode = MemberFilterActionGroup
+				.getPrefsNode();
+		final boolean isLinkingEnabled = prefsNode.getBoolean(
+				PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
+		return isLinkingEnabled;
 	}
 
 	/**

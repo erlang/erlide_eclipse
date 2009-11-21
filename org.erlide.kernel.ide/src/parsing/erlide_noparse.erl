@@ -254,7 +254,8 @@ field_list_from_tokens(_) ->
 
 to_string(Tokens) ->
     S = erlide_scanner:tokens_to_string(Tokens),
-    unspacify(S).
+    erlide_text:strip(S).
+%%     unspacify(S).
 
 unspacify(S) ->
     unspacify(S, false, "").
