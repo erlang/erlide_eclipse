@@ -109,7 +109,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options, final ILaunch launch)
+			final Set<BackendOptions> options, final ILaunch launch, Map<String, String> env)
 			throws BackendException {
 		final String nodeName = info.getNodeName();
 		final boolean exists = EpmdWatcher.findRunningNode(nodeName);
@@ -127,7 +127,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			b = new ErlideBackend(info);
 
 			ManagedLauncher launcher = new ManagedLauncher(launch);
-			launcher.startRuntime(info);
+			launcher.startRuntime(info, env);
 			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
 			b.setStreamsProxy(streamsProxy);
 		}
@@ -163,7 +163,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	private ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options) throws BackendException {
+			final Set<BackendOptions> options, Map<String, String> env) throws BackendException {
 		ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
 				options);
 		ILaunch launch;
@@ -174,7 +174,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			e.printStackTrace();
 			return null;
 		}
-		ErlideBackend b = createBackend(info, options, launch);
+		ErlideBackend b = createBackend(info, options, launch, env);
 		return b;
 	}
 
@@ -203,7 +203,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			final EnumSet<BackendOptions> options = EnumSet.of(
 					BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
 					BackendOptions.INTERNAL);
-			b = createBackend(info, options);
+			b = createBackend(info, options, null);
 			buildBackends.put(version, b);
 		}
 		ErlLogger.info("BUILD project %s on %s", project.getName(), info
@@ -291,7 +291,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (!ErlideUtil.isDeveloper()) {
 				options.add(BackendOptions.NO_CONSOLE);
 			}
-			ideBackend = createBackend(info, options);
+			ideBackend = createBackend(info, options, null);
 		} else {
 			ErlLogger.error("There is no erlideRuntime defined! "
 					+ "Could not start IDE backend.");
@@ -446,23 +446,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			final Object info) {
 		// final String dir = up ? "up" : "down";
 		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
-
-		for (final Backend bb : getAllBackends()) {
-			if (bb != null) {
-				if (node.equals(bb.getPeer())) {
-					bb.setAvailable(up);
-				}
-			}
-		}
 		remoteNodeStatus(node, up, info);
-	}
-
-	@Override
-	public void connAttempt(final String node, final boolean incoming,
-			final Object info) {
-		final String direction = incoming ? "in" : "out";
-		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
-				direction, info));
 	}
 
 	void notifyBackendChange(final Backend b, final BackendEvent type) {

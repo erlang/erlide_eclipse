@@ -132,7 +132,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		ErlideBackend backend;
 		try {
 			backend = ErlangCore.getBackendManager().createBackend(rt, options,
-					launch);
+					launch, null);
 			if (backend == null) {
 				ErlLogger.error("Launch: could not create backend!");
 				final Status s = new Status(IStatus.ERROR,

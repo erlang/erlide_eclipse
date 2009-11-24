@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
@@ -43,7 +44,7 @@ public class ManagedLauncher implements IDisposable {
 		stop();
 	}
 
-	public void startRuntime(final RuntimeInfo info) {
+	public void startRuntime(final RuntimeInfo info, Map<String, String> my_env) {
 		if (info == null) {
 			ErlLogger.error("Trying to start backend with null info");
 			return;
@@ -64,9 +65,12 @@ public class ManagedLauncher implements IDisposable {
 
 		ProcessBuilder builder = new ProcessBuilder(cmds);
 		builder.directory(workingDirectory);
+		Map<String, String> env = builder.environment();
 		if (!ErlideUtil.isOnWindows() && ErlideUtil.isEricssonUser()) {
-			Map<String, String> env = builder.environment();
 			env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
+		}
+		if (my_env != null) {
+			env.putAll(my_env);
 		}
 		try {
 			fRuntime = builder.start();

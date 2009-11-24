@@ -215,6 +215,7 @@ public class MonitorView extends ViewPart {
 			return getChildren(inputElement);
 		}
 
+		@SuppressWarnings("unchecked")
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof List<?>) {
 				List<Object> items = (List<Object>) parentElement;
@@ -281,6 +282,7 @@ public class MonitorView extends ViewPart {
 			return super.getImage(element);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public String getText(Object element) {
 			if (element instanceof MonitorEntry) {
