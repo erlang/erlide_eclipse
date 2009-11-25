@@ -66,7 +66,8 @@ fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1},
     case refac_util:pos_to_expr_list(AnnAST, Start, End) of
       [] -> ExpList = [],
 	    throw({error, "You have not selected an expression "
-			  "or a sequence of expressions!"});
+			  "or a sequence of expressions, "
+		   "or the function containing the expression(s) selected is malformed."});
       ExpList -> ExpList
     end,
     {ok, Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
@@ -109,17 +110,39 @@ side_cond_analysis(FileName, Info, Fun, ExpList, NewFunName) ->
 	     erl_internal:bif(erlang, NewFunName, length(FrVars))
 	of
       true ->
-	  throw({error, "The given function name has been used "
-			"by this module, please choose another name!"});
+	  throw({error, "The given function name has been used by this module, "
+			"or is used as an Erlang builtin function name, please choose another name!"});
       _ -> ok
     end,
+    check_unsafe_vars(ExpList),
     funcall_replaceable(Fun, ExpList),
     TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-    catch test_framework_aware_name_checking(TestFrameWorkUsed,
-					     NewFunName,
-					     length(FrVars)).
+    catch test_framework_aware_name_checking(TestFrameWorkUsed, NewFunName, length(FrVars)).
 
 
+check_unsafe_vars(ExpList) ->
+    BoundVars = refac_util:get_bound_vars(ExpList),   
+    BoundLocs = [Loc||{_, Loc} <- BoundVars],
+    Fun = fun(Node, S) ->
+		  case refac_syntax:type(Node) of 
+		      variable ->
+			  As = refac_syntax:get_ann(Node),
+			  {value, {def, DefinePos}} = lists:keysearch(def, 1, As),
+			  case length(DefinePos)>1 of 
+			      true-> case DefinePos -- BoundLocs of 
+					 [] -> S;
+					 _ -> 
+					     Name = refac_syntax:variable_name(Node),
+					     throw({error, "Extracting the expression(s) selected into a new function would "
+						    "make variable '" ++ atom_to_list(Name) ++"' unsafe."})
+				     end;
+			      _ -> S
+			  end;
+		      _ -> S
+		  end
+	  end,
+    refac_syntax_lib:fold(Fun,[], refac_syntax:block_expr(ExpList)).
+    
 funcall_replaceable(Fun, ExpList) ->
     case ExpList of
       [Exp]->
@@ -145,7 +168,7 @@ funcall_replaceable(Fun, ExpList) ->
 	    case ExpList1 of
 		[] -> ok;
 		_ -> throw({error, "The selected expression sequence "
-		      "cannot be replaced by  a function call!"})
+		      "cannot be replaced by a function call!"})
 	    end
     end.
 
@@ -328,7 +351,7 @@ do_fun_extraction(AnnAST, ExpList, NewFunName, ParNames,
 
 
 replace_expr_with_fun_call(Form, ExpList, NewFunName, ParNames, VarsToExport) ->
-    Op = refac_syntax:operator(NewFunName),
+    Op = refac_syntax:atom(NewFunName),
     Pars = [refac_syntax:variable(P)|| P <-ParNames],
     FunCall= refac_syntax:application(Op, Pars),
     NewExpr = case length(VarsToExport) of 

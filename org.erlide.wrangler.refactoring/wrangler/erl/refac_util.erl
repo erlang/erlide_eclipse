@@ -179,7 +179,7 @@ until(F, [H | T], Others) ->
 %% 'Function' must have a arity of two, with the first being the AST node, and 
 %% the second being a tuple containing all the other needed info; 'Function' 
 %% should returns a tuple containing the possibly modified node and a bool value, 
-%% with the boolean value indicating whether the node has been modified.
+%% with the bool value indicating whether the node has been modified.
 %%
 %% @see full_buTP/2
 %% @see once_tdTU/3
@@ -541,10 +541,12 @@ expr_to_fun_1(Tree, Exp) ->
 %% @doc Return true if a string is lexically a  variable name.
 
 -spec(is_var_name(Name:: string())-> bool()).
+
 is_var_name(Name) ->
     case Name of
-      [H | T] -> (is_upper(H) or (H == 95)) and is_var_name_tail(T);
-      [] -> false
+	[] -> false;
+	[H] -> is_upper(H) and (H=/=95);
+	[H | T] -> (is_upper(H) or (H == 95)) and is_var_name_tail(T)
     end.
 
 is_var_name_tail(Name) ->
@@ -664,11 +666,11 @@ get_free_vars_1([]) -> [].
 
 -spec(get_bound_vars(Node::[syntaxTree()]|syntaxTree())-> [{atom(),pos()}]).
 get_bound_vars(Nodes) when is_list(Nodes)->
-    lists:flatmap(fun(Node) ->get_bound_vars(Node) end, Nodes);			   
+    lists:usort(lists:flatmap(fun(Node) ->get_bound_vars(Node) end, Nodes));			   
 get_bound_vars(Node) ->
-    refac_syntax_lib:fold(fun(N, Acc) ->
+    lists:usort(refac_syntax_lib:fold(fun(N, Acc) ->
 			      get_bound_vars_1(refac_syntax:get_ann(N))++Acc
-		      end, [], Node).
+		      end, [], Node)).
 					       
 get_bound_vars_1([{bound, B} | _Bs]) -> B;
 get_bound_vars_1([_ | Bs]) -> get_bound_vars_1(Bs);
@@ -947,7 +949,7 @@ concat_toks([T|Ts], Acc) ->
 %%
 %% @doc Parse an Erlang file, and annotate the abstract syntax tree with static semantic 
 %% information. As to the parameters, FName is the name of the file to parse;  ByPassPreP 
-%% is a boolean value, and 'true' means to use the parse defined in refac_epp_dodger 
+%% is a bool value, and 'true' means to use the parse defined in refac_epp_dodger 
 %% (which does not expand macros), 'false' means to use the parse defined in refac_epp
 %% (which expands macros); SeachPaths is the list of directories to search for related 
 %% Erlang files. 
@@ -1824,7 +1826,7 @@ add_fun_define_locations(Node, Info) ->
 				 Fun1 = update_ann(Fun, {fun_def, {DefMod, FunName, Arity, refac_syntax:get_pos(Fun), DefLoc}}),
 				 update_ann(rewrite(T, refac_syntax:arity_qualifier(Fun1, A)),
 					    {fun_def, {DefMod, FunName, Arity, refac_syntax:get_pos(Fun), DefLoc}});
-			     true ->
+			     _ ->
 				 T
 			 end;
 		   _ -> T
@@ -1959,10 +1961,10 @@ from_dets(Name, Dets) when is_atom(Name) ->
 to_dets(Plt, Dets) ->
     file:delete(Dets),
     MinSize = ets:info(Plt, size),
-	{ok, Dets} = dets:open_file(Dets, [{min_no_slots, MinSize}]),
-	ok = dets:from_ets(Dets, Plt),
-    ok = dets:sync(Dets),
-    ok = dets:close(Dets).
+	{ok, DetsRef} = dets:open_file(Dets, [{min_no_slots, MinSize}]),
+	ok = dets:from_ets(DetsRef, Plt),
+    ok = dets:sync(DetsRef),
+    ok = dets:close(DetsRef).
 
 build_side_effect_tab([Scc | Left], Side_Effect_Tab, OtherTab) ->
     R = side_effect_scc(Scc, Side_Effect_Tab, OtherTab),

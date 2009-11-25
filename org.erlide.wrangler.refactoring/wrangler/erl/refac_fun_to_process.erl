@@ -39,7 +39,7 @@
 
 
 -spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) 
-      -> {ok, [filename()]} |{undecidables, string(), string()}| {error, string()}).      
+      -> {ok, [filename()]}).      
 fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
@@ -50,8 +50,7 @@ fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, LogMsg) -
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs, LogMsg).
 
 -spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> 
-	     {ok, [{filename(), filename(), string()}]} 
-		 | {undecidables, string(), string()} | {error, string()}).
+	     {ok, [{filename(), filename(), string()}]}).
 fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 

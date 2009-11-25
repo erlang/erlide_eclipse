@@ -55,12 +55,12 @@
 -include("../include/wrangler.hrl").
 
 -spec(tuple_to_record/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+	     {ok, [filename()]}).
 tuple_to_record(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth )->
   tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth,  emacs).
 
 -spec(tuple_to_record_eclipse/9::(filename(), integer(), integer(), integer(), integer(), string(), [string()], [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+	     {ok, [{filename(), filename(), string()}]}).
 tuple_to_record_eclipse(File,FLine,FCol,LLine,LCol,RecName,FieldString,SearchPaths, TabWidth)->
   tuple_to_record(File, FLine, FCol, LLine, LCol, RecName, FieldString, SearchPaths, TabWidth, eclipse).
 

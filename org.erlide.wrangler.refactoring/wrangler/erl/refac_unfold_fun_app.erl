@@ -55,14 +55,14 @@
 %% select <em>Unfold Function Application</em> from <em>Refactor</em>.
 %% </p>
 %%-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
-%%      ->{error, string()} |{'ok', [string()]}).
--spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
-      ->{'ok', [string()]} | {error, string()}).
+%%      ->{'ok', [string()]}).
+-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
+      ->{'ok', [filename()]}).
 unfold_fun_app(FileName, Pos, SearchPaths, TabWidth) ->
     unfold_fun_app(FileName, Pos, SearchPaths, TabWidth, emacs).
 
--spec(unfold_fun_app_eclipse/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
-      ->{ok, [{filename(), filename(), string()}]} | {error, string()}).
+-spec(unfold_fun_app_eclipse/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
+      ->{ok, [{filename(), filename(), string()}]}).
 unfold_fun_app_eclipse(FileName,Pos,SearchPaths, TabWidth) ->
     unfold_fun_app(FileName, Pos, SearchPaths, TabWidth, eclipse).
 
@@ -548,11 +548,12 @@ make_new_name(VarName, UsedVarNames) ->
     end.
     
     
-%%-spec(get_bound_vars(Node::[syntaxTree()]|syntaxTree())-> [{atom(),pos()}]).
-get_bound_vars(Nodes) when is_list(Nodes)->
-    lists:flatmap(fun(Node) ->get_bound_vars(Node) end, Nodes);			   
+%% %%-spec(get_bound_vars(Node::[syntaxTree()]|syntaxTree())-> [{atom(),pos()}]).
+%% get_bound_vars(Nodes) when is_list(Nodes)->
+%%     lists:flatmap(fun(Node) ->get_bound_vars(Node) end, Nodes);	
 get_bound_vars(Node) ->
     get_bound_vars_1(refac_syntax:get_ann(Node)).
+		   
 					       
 get_bound_vars_1([{bound, B} | _Bs]) -> B;
 get_bound_vars_1([_ | Bs]) -> get_bound_vars_1(Bs);

@@ -59,7 +59,7 @@
 
 -module(refac_move_fun).
 
--export([move_fun/7, move_fun_eclipse/7]).
+-export([move_fun/6, move_fun_1/6, move_fun_eclipse/6, move_fun_1_eclipse/6]).
 
 -import(refac_rename_fun, [check_atoms/4, start_atom_process/0,output_atom_warning_msg/3, stop_atom_process/1]).
 
@@ -68,47 +68,62 @@
 -include("../include/wrangler.hrl").
 
 %==========================================================================================
--spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())->
-         {ok, [filename()]} | {error, string()}).
+-spec(move_fun/6::(filename(),integer(),integer(), string(), [dir()], integer())->
+	     {ok, [filename()]} | {question, string()}| {error, string()}).
 %%==========================================================================================
-move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
-    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, emacs).
+move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
+    move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, emacs).
 
--spec(move_fun_eclipse/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
+-spec(move_fun_1/6::(filename(),integer(),integer(), string(), [dir()], integer())->
+	     {ok, [filename()]} | {error, string()}).
+move_fun_1(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
+    move_fun_1(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, emacs).
+
+
+-spec(move_fun_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
+        ->  {ok, [{filename(), filename(), string()}]} | {question, string()} |{error, string()}).
+
+move_fun_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
+    move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, eclipse).
+
+
+-spec(move_fun_1_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
         ->  {ok, [{filename(), filename(), string()}]} | {error, string()}).
 
-move_fun_eclipse(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth) ->
-    move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, eclipse).
+move_fun_1_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
+    move_fun_1(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, eclipse).
 
-move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p, ~p).",
-		 [?MODULE, FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabWidth]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":move_fun(" ++ "\"" ++
-	FName ++ "\", " ++ integer_to_list(Line) ++
-	", " ++ integer_to_list(Col) ++ ", " ++ "\"" ++ TargetModorFileName ++ "\","
-        ++ ", "++atom_to_list(CreateNewFile) ++ ", "
-	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
-    {TargetFName, TargetModName} = get_target_file_mod_name(FName, TargetModorFileName),
+
+move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, Editor) ->
+    ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p).",
+		 [?MODULE, FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth]),
+    TargetFName = get_target_file_name(FName, TargetModorFileName),
     case TargetFName of
 	FName -> throw({error, "The target module is the same as the current module."});
 	_ -> ok
     end,
-    case filelib:is_file(TargetFName) orelse CreateNewFile == t orelse CreateNewFile == true of
-	true -> ok;
-	false -> throw({error, " Target module/file does not exist."})
-    end,
+    case filelib:is_file(TargetFName) of
+	true -> move_fun_1(FName, Line, Col, TargetFName,SearchPaths, TabWidth, Editor);
+	false -> {question, "Target file "++ TargetFName ++ " does not exist, create it?"}
+    end.
+  
+move_fun_1(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, Editor) ->
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":move_fun_1(" ++ "\"" ++
+	    FName ++ "\", " ++ integer_to_list(Line) ++
+	      ", " ++ integer_to_list(Col) ++ ", " ++ "\"" ++ TargetModorFileName ++ "\","
+		++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case refac_util:pos_to_fun_def(AnnAST, {Line, Col}) of
-	{ok, Def} ->
-	    {value, {fun_def, {ModName, FunName, Arity, _Pos1, _Pos2}}} =
-		lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)),
-	    NewTargetFile = case not filelib:is_file(TargetFName) andalso
-				(CreateNewFile == t orelse CreateNewFile == true)
-				of
+      {ok, Def} ->
+	  {value, {fun_def, {ModName, FunName, Arity, _Pos1, _Pos2}}} =
+	      lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)),
+	    TargetFName = get_target_file_name(FName, TargetModorFileName),
+	    TargetModName = list_to_atom(filename:basename(TargetFName, ".erl")),
+	    NewTargetFile = case not filelib:is_file(TargetFName) of
 				true -> create_new_file(TargetFName, TargetModName),
 					true;
 				_ -> false
-			    end,
+			  end,
 	    case side_cond_check({FName, ModName, FunName, Arity}, TargetFName,
 				 TargetModName, Def, SearchPaths, TabWidth)
 		of
@@ -137,34 +152,41 @@ move_fun(FName, Line, Col, TargetModorFileName, CreateNewFile, SearchPaths, TabW
 		      end,
 	    output_atom_warning_msg(Pid, not_renamed_warn_msg(FunName), renamed_warn_msg(ModName)),
 	    stop_atom_process(Pid),
-	    case Editor of
-		emacs ->
-		    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST1},
-								   {{TargetFName, TargetFName, NewTargetFile}, TargetAnnAST1}| Results], Cmd),
-		    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-		    ChangedFiles = [FName, TargetFName| ChangedClientFiles],
-		    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
-		    {ok, ChangedFiles};
-		eclipse ->
-		    Results1 = [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}| Results],
-		    Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
-					    {FName1, NewFName1, refac_prettypr:print_ast(refac_util:file_format(FName1), AST)}
-				    end,
-				    Results1),
-		    {ok, Res}
-	    end;
+	    output_refactor_results(FName, TargetFName, Editor, Cmd, NewTargetFile, AnnAST1, TargetAnnAST1, Results);
 	{error, Reason} -> {error, Reason}
     end.
 
-get_target_file_mod_name(CurrentFName, TargetModorFileName) ->
+output_refactor_results(FName, TargetFName, Editor, Cmd, NewTargetFile, AnnAST1, TargetAnnAST1, Results) ->
+    case Editor of
+	emacs ->
+	    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST1},
+							   {{TargetFName, TargetFName, NewTargetFile}, TargetAnnAST1}| Results], Cmd),
+	    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F
+					   end, Results),
+	    ChangedFiles = [FName, TargetFName| ChangedClientFiles],
+	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
+	    {ok, ChangedFiles};
+      eclipse ->
+	    Results1 = [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}| Results],
+	    Res = lists:map(fun ({{FName1, NewFName1}, AST}) ->
+				    {FName1, NewFName1, refac_prettypr:print_ast(refac_util:file_format(FName1), AST)}
+			    end,
+			    Results1),
+	    {ok, Res}
+    end.
+
+get_target_file_name(CurrentFName, TargetModorFileName) ->
     ErrMsg = {error, "Illegal target module/file name."},
     TargetModName = case filename:extension(TargetModorFileName) of 
 			".erl" -> filename:basename(TargetModorFileName, ".erl");
-			[] -> TargetModorFileName;
+			[] -> filename:basename(TargetModorFileName, ".erl");
 			_ -> throw(ErrMsg)			
 		    end,
+    TargetFileName = filename:join([filename:dirname(CurrentFName), filename:dirname(TargetModorFileName),
+				    TargetModName++".erl"]),
     case refac_util:is_fun_name(TargetModName) of 
-	true -> {filename:join([filename:dirname(CurrentFName), TargetModName++".erl"]), list_to_atom(TargetModName)};
+	true -> 
+	    TargetFileName;			  
 	_  -> throw(ErrMsg)
     end.
 
@@ -190,7 +212,8 @@ side_cond_check({FileName, ModName, FunName, Arity}, TargetFileName, TargetModNa
 		[F] -> case is_the_same_fun(FunDef, F) of
 			   true -> true;
 			   _ -> {error, "The same function name, with a possibly different definition, is already defined in the target module."}
-		       end
+		       end;
+		_ -> {error, "The same function name/arity has been defined more than once in the target module."}	    
 	    end;
 	false -> true
     end.
@@ -224,9 +247,8 @@ check_macros_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
       true -> true;
       _ ->
 	  Dir = filename:dirname(FileName),
-	  DefaultIncl1 = [".", "..", "../hrl", "../incl", "../inc", "../include"],
-	  DefaultIncl2 = [filename:join(Dir, X) || X <- DefaultIncl1],
-	  NewSearchPaths = SearchPaths ++ DefaultIncl2,
+	  DefaultIncls = [filename:join(Dir, X) || X <- refac_util:default_incls()],
+	  NewSearchPaths = SearchPaths ++ DefaultIncls,
 	  case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth, refac_util:file_format(FileName)) of
 	    {ok, AST, {MDefs, _MUses}} ->
 		  UsedMacroDefs = [{Name, {Args, refac_util:concat_toks(Toks)}}
@@ -236,7 +258,7 @@ check_macros_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 				   [] -> [];
 				   _ ->
 				       Info = get_mod_info_from_parse_tree(AST),
-				       case lists:keysearch(records, 1, Info) of
+					   case lists:keysearch(records, 1, Info) of
 					 {value, {records, RecordDefs}} ->
 					     [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
 					      || {Name, Fields} <- RecordDefs, lists:member(Name, UsedRecords)];
@@ -249,7 +271,7 @@ check_macros_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 			  throw({error, "Some macros used by the function selected are not defined."});
 		   false -> ok
 		end,
-		case length(UsedRecords) > length(UsedRecordDefs) of
+		  case length(UsedRecords) > length(UsedRecordDefs) of
 		  true ->
 		      UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
 		      ?wrangler_io("\nThe following records are used by the function selected, but not defined.\n~p\n", [UnDefinedUsedRecords]),
@@ -431,6 +453,8 @@ do_transform_fun(Node, {FileName,{ModName, FunName, Arity},TargetModName, InScop
 		    case refac_syntax:type(Op) of 
 			atom ->
 			    case lists:member({M, F, A}, InScopeFunsInTargetMod) orelse 
+				erlang:is_builtin(M, F, A) orelse
+				erl_internal:bif(M, F, A) orelse
 				{M, F, A} == {ModName, FunName, Arity} of
 				true ->
 				    {Node, false};
@@ -858,7 +882,7 @@ process_in_client_module(FileName, Form, {ModName, FunName, Arity}, TargetModNam
 									    NewImport],true}
 								  end
 							 end;
-						     _ -> [{Form, false}]
+						     _ -> {[Form], false}
 						 end;
 					     _ -> {[Form], false}
 					 end;

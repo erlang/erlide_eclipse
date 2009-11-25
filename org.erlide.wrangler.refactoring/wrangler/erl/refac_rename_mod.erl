@@ -59,7 +59,7 @@
 %%   
 
 -spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
-	     {error, string()} | {question, string()} | {warning, string()} |{ok, [filename()]}).
+	     {error, string()} | {question, string()} |{ok, [filename()]}).
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
@@ -70,11 +70,11 @@ rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
 
--spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),bool()) ->{ok, [filename()]}).
+-spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [filename()]}).
 rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, emacs).
 
--spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),bool()) ->{ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [{filename(), filename(), string()}]}).
 rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, eclipse).
 
@@ -180,9 +180,13 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths,Editor, TabWidth, Cm
 		      true ->  refac_util:get_client_files(TestFileName, SearchPaths);
 		      _ -> []
 		  end,
-    ClientFiles = ClientFiles1++ClientFiles2 -- [FileName, TestFileName],
+    ClientFiles = case length(OldNewModPairs) of
+		      2 -> lists:usort(ClientFiles1++ClientFiles2)
+			       -- [FileName, TestFileName];
+		      _ -> ClientFiles1
+		  end,
     Results = rename_mod_in_client_modules(ClientFiles, OldNewModPairs,SearchPaths, TabWidth, Pid),
-    case Editor of 
+    case Editor of  
 	emacs ->
 	    output_atom_warning_msg(Pid, not_renamed_warn_msg(OldModNames), renamed_warn_msg(OldModNames)),
 	    stop_atom_process(Pid),
@@ -197,7 +201,7 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths,Editor, TabWidth, Cm
 	eclipse ->
 	    Results1 =[{{FileName, NewFileName}, AnnAST1}|(TestModRes++Results)],
 	    Res = lists:map(fun({{FName, NewFName}, AST}) -> {FName, NewFName, 
-			      refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results1),
+			     refac_prettypr:print_ast(refac_util:file_format(FName),AST)} end, Results1),
 	    {ok, Res}
     end.
   

@@ -461,7 +461,7 @@ check_atoms(FileName, Tree, AtomNames, Pid) ->
 		end
 	end,
     R = lists:usort(lists:flatten(lists:map(F, refac_syntax:form_list_elements(Tree)))),
-    R1 = [X ||{atom, X, _} <- R],
+    R1 = [X ||{atom, X, _} <- R, X =/={0,0}],  %% X=/={0,0} only a temporay fix; should check where {0,0} is introduced.
     R2 = [X ||{_, X, _} <- lists:filter(fun (X) ->
 					     case X of
 						 {atom, _X, _} -> false;

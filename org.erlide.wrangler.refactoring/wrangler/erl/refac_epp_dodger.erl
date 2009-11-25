@@ -426,7 +426,7 @@ rewrite_form(T={attribute, _, spec, _}) -> T;
 rewrite_form(T={attribute, _, type, _}) -> 
      T;
 rewrite_form(T) ->
-      rewrite(T).
+    rewrite(T).
 
 rewrite_list([T | Ts]) ->
     [rewrite(T) | rewrite_list(Ts)];
@@ -447,15 +447,17 @@ rewrite(Node) ->
 		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
 		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
 		    A = list_to_atom(tl(A2)),	
-		    N = refac_syntax:set_pos(refac_syntax:atom(A),{L,list_to_integer(Col)}),
-		    refac_syntax:copy_pos(Node, refac_syntax:macro(N));
+		    N = refac_syntax:set_pos(refac_syntax:atom(A),{L,list_to_integer(Col)-1}),
+		    refac_syntax:set_pos(refac_syntax:macro(N),{L, list_to_integer(Col)-1});
+		   %% refac_syntax:copy_pos(Node, refac_syntax:macro(N));
 		?var_prefix ++As ->
 		    {L,_} = refac_syntax:get_pos(Node),
 		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
 		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
 		    A = list_to_atom(tl(A2)),		    
-		    N = refac_syntax:set_pos(refac_syntax:variable(A), {L,list_to_integer(Col)}),
-		    refac_syntax:copy_pos(Node, refac_syntax:macro(N));
+		    N = refac_syntax:set_pos(refac_syntax:variable(A), {L,list_to_integer(Col)-1}),
+		    refac_syntax:set_pos(refac_syntax:macro(N),{L, list_to_integer(Col)-1});
+		   %%  refac_syntax:copy_pos(Node, refac_syntax:macro(N));
 		_ ->
 		    Node
 	    end;

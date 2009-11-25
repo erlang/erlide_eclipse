@@ -86,9 +86,8 @@ analyze_all_files([{Mod, Dir}|Left], SearchPaths) ->
 		  
 
 analyze_mod({Mod, Dir}, SearchPaths) ->
-    DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
-    DefaultIncl2 = [filename:join(Dir, X) || X <- DefaultIncl1],
-    Includes = SearchPaths ++ DefaultIncl2, 
+    DefaultIncl = [filename:join(Dir, X) || X <- refac_util:default_incls()],
+    Includes = SearchPaths ++ DefaultIncl, 
     File = filename:join(Dir, Mod++".erl"),
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     ModNames = [list_to_atom(M) || {M, _} <- refac_util:get_modules_by_file(Files)],

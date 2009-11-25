@@ -55,13 +55,13 @@
 
 -include("../include/wrangler.hrl").
 
--spec(rename_var/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, string()}).
+-spec rename_var(filename(), integer(), integer(), string(), [dir()], integer()) ->
+	     {ok, string()}.
 rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+	     {ok, [{filename(), filename(), string()}]}.
 rename_var_eclipse(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -140,7 +140,6 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 cond_check(Form, Pos, _VarName,  NewName) ->
     Env_Bd_Fr_Vars = envs_bounds_frees(Form),
     BdVars = [B || {_, B, _}<-Env_Bd_Fr_Vars],
-    refac_io:format("Envs_dd:\n~p\n", [Env_Bd_Fr_Vars]),
     %% The new name clashes with existing bound variables.
     F = fun({bound, Bds}) ->
 		{Names, Poss} = lists:unzip(Bds),
@@ -195,29 +194,29 @@ cond_check(Form, Pos, _VarName,  NewName) ->
     {Clash, Shadow1 or Shadow2, BindingChange1 or BindingChange2}.
 
 
-defpos_to_var_env(Node, DefPos) ->
-    case refac_util:once_tdTU(fun defpos_to_var/2, Node, DefPos) of
-	{_, false} ->
-	    throw({error, "Refactoring failed because of a Wrangerl error."});
-	{R, true} -> 
-	    As = refac_syntax:get_ann(R),
-	    case lists:keysearch(env, 1, As) of
-		{value, {env, Env}} ->
-		    Env;
-		_ -> []
-	    end
-    end.
-defpos_to_var(Node, DefPos) ->
-    case refac_syntax:type(Node) of
-	variable ->
-	    Pos = refac_syntax:get_pos(Node),
-	    case lists:member(Pos, DefPos) of
-		true ->
-		    {Node, true};
-		_ -> {[],false}
-	    end;
-	_ -> {[], false}
-    end.
+%% defpos_to_var_env(Node, DefPos) ->
+%%     case refac_util:once_tdTU(fun defpos_to_var/2, Node, DefPos) of
+%% 	{_, false} ->
+%% 	    throw({error, "Refactoring failed because of a Wrangerl error."});
+%% 	{R, true} -> 
+%% 	    As = refac_syntax:get_ann(R),
+%% 	    case lists:keysearch(env, 1, As) of
+%% 		{value, {env, Env}} ->
+%% 		    Env;
+%% 		_ -> []
+%% 	    end
+%%     end.
+%% defpos_to_var(Node, DefPos) ->
+%%     case refac_syntax:type(Node) of
+%% 	variable ->
+%% 	    Pos = refac_syntax:get_pos(Node),
+%% 	    case lists:member(Pos, DefPos) of
+%% 		true ->
+%% 		    {Node, true};
+%% 		_ -> {[],false}
+%% 	    end;
+%% 	_ -> {[], false}
+%%     end.
     
     
 pos_to_form(Node, Pos) ->
@@ -244,8 +243,8 @@ pos_to_form_1(Node, Pos) ->
 %% @spec rename(Tree::syntaxTree(), DefinePos::{integer(),integer()}, NewName::string())-> term()
 %%
 
-%%-spec(rename/3::(syntaxTree(), [{integer(), integer()}], atom()) ->
-%%	     {syntaxTree(), bool()}).
+%%-spec rename(syntaxTree(), [{integer(), integer()}], atom()) ->
+%%	     {syntaxTree(), boolean()}.
 rename(Tree, DefinePos, NewName) ->
     refac_util:stop_tdTP(fun do_rename/2, Tree, {DefinePos, NewName}).
 

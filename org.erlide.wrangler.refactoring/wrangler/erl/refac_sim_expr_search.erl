@@ -663,9 +663,8 @@ pos_to_record_expr_1(Node, Pos) ->
 
 get_module_record_info(FName, SearchPaths, TabWidth) ->
     Dir = filename:dirname(FName),
-    DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
-    DefaultIncl2 = [filename:join(Dir, X) || X <-DefaultIncl1],
-    Includes = SearchPaths++DefaultIncl2,
+    DefaultIncl = [filename:join(Dir, X) || X <-refac_util:default_incls()],
+    Includes = SearchPaths++DefaultIncl,
     case refac_epp:parse_file(FName, Includes,[], TabWidth, refac_util:file_format(FName)) of 
 	{ok, Forms, _} -> Forms1 =[F || F <-Forms, case F of 
 						       {attribute, _, file, _} -> false;

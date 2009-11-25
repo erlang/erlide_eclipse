@@ -129,8 +129,8 @@ vertical_concat([{E,Form}| T], FileFormat, Acc) ->
     F = refac_util:concat_toks(refac_util:get_toks(Form)),
     {ok,EToks,_} = refac_scan:string(E),
     {ok,FToks,_} = refac_scan:string(F),
-    EStr = [S||S<-refac_util:concat_toks(EToks),S=/=$(, S=/=$), S=/=$\s, S=/=$'],
-    FStr = [S||S<-refac_util:concat_toks(FToks),S=/=$(, S=/=$), S=/=$\s, S=/=$'],
+    EStr = [S||S<-refac_util:concat_toks(EToks), S=/=$\s, S=/=$'],
+    FStr = [S||S<-refac_util:concat_toks(FToks), S=/=$\s, S=/=$'],
     Acc1 = case Acc of
 	     "" -> Acc;
 	     _ ->
@@ -700,8 +700,8 @@ lay_2(Node,Ctxt) ->
 	    Op = refac_syntax:application_operator(Node),
 	    Args = refac_syntax:application_arguments(Node),
 	    D1 =case Args of 
-		    [] -> beside(D, beside(text("("),beside(lay_elems(fun refac_prettypr_0:par/1, 
-			     As,refac_syntax:application_arguments(Node)),floating(text(")")))));
+		    [] -> 
+			beside(D, beside(text("("), text(")")));
 		    [H|_] ->
 			EndLn = get_end_line(Op),
 			StartLn = get_start_line(H),
@@ -837,12 +837,24 @@ lay_2(Node,Ctxt) ->
 	    D = lay(refac_syntax:binary_field_body(Node),Ctxt1),
 	    %% Begin of modification of HL
 	    Body = refac_syntax:binary_field_body(Node),
-	    D1 = case refac_syntax:type(Body)==variable orelse 
-		   refac_syntax:is_literal(Body)== true of
-		   true -> D;
-		   false ->
-		       beside(floating(text("(")),beside(D,floating(text(")"))))
-	       end,
+	    D1 = case refac_syntax:type(Body) of 
+		     size_qualifier -> D;
+		     _ ->	 
+			 case refac_syntax:type(Body)==variable orelse 
+			     refac_syntax:type(Body) == underscore orelse
+			     refac_syntax:is_literal(Body)== true of
+			     true -> D;
+			     false ->
+				 case refac_syntax:type(Body) of 
+				     macro ->case lists:keysearch(with_bracket,1, refac_syntax:get_ann(Body)) of
+						 {value, {with_bracket, true}} ->
+						     beside(floating(text("(")),beside(D,floating(text(")"))));
+						 _ -> D
+					     end;
+			     _ -> beside(floating(text("(")),beside(D,floating(text(")"))))
+				 end
+			 end
+		 end,
 	    %% End of modification by HL
 	    D2 = case refac_syntax:binary_field_types(Node) of
 		     [] -> empty();
@@ -1020,10 +1032,24 @@ lay_2(Node,Ctxt) ->
 	  D2 = lay_clauses(refac_syntax:rule_clauses(Node),{rule,D1},Ctxt1),
 	  beside(D2,floating(text(".")));
       size_qualifier -> %%done;
-	  Ctxt1 = set_prec(Ctxt,max_prec()),
-	  D1 = lay(refac_syntax:size_qualifier_body(Node),Ctxt1),
-	  D2 = lay(refac_syntax:size_qualifier_argument(Node),Ctxt1),
-	  beside(D1,beside(text(":"),D2));
+	    Ctxt1 = set_prec(Ctxt,max_prec()),
+	    Body = refac_syntax:size_qualifier_body(Node), 
+	    D1 =case refac_syntax:type(Body)==variable orelse 
+		    refac_syntax:type(Body) == underscore orelse
+		    refac_syntax:is_literal(Body)== true of
+		    true -> lay(Body,Ctxt1);
+		    false ->
+			case refac_syntax:type(Body) of 
+			    macro ->case lists:keysearch(with_bracket,1, refac_syntax:get_ann(Body)) of
+					{value, {with_bracket, true}} ->
+					    beside(floating(text("(")),beside(lay(Body,Ctxt1),floating(text(")"))));
+					_ ->lay(Body,Ctxt1) 
+				    end;
+			    _ -> beside(floating(text("(")),beside(lay(Body,Ctxt1),floating(text(")"))))
+			end
+		end,
+	    D2 = lay(refac_syntax:size_qualifier_argument(Node),Ctxt1),
+	    beside(D1,beside(text(":"),D2));
       text -> text(refac_syntax:text_string(Node));
       try_expr ->
 	  Ctxt1 = reset_prec(Ctxt),

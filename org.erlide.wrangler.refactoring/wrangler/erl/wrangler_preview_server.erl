@@ -116,6 +116,9 @@ handle_call(abort, _From, #state{files=Files}) ->
 			     end, Files),
     {reply, {ok, SwpFiles}, #state{files=[], logmsg=""}};
 
+handle_call(commit, _From, #state{files=[], logmsg=_LogMsg}) ->
+    {reply, {ok, [], ""}, #state{files=[], logmsg=""}};
+    
 handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
     OldFiles = lists:map(fun ({{F1, F2, IsNew}, _Swp}) -> {F1, F2, IsNew} end, Files),
     FilesToBackup = lists:map(fun ({F1, F2, IsNew}) ->

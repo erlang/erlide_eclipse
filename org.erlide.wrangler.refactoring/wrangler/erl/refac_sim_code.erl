@@ -662,8 +662,7 @@ parse_annotate_file(FName, SearchPaths, TabWidth) ->
     case refac_epp_dodger:parse_file(FName, [{tab, TabWidth}, {format, FileFormat}]) of
 	{ok, Forms} -> 
 	    Dir = filename:dirname(FName),
-	    DefaultIncl1 = [".","..", "../hrl", "../incl", "../inc", "../include"],
-	    DefaultIncl2 = [filename:join(Dir, X) || X <-DefaultIncl1],
+	    DefaultIncl2 = [filename:join(Dir, X) || X <-refac_util:default_incls()],
 	    Includes = SearchPaths++DefaultIncl2,
 	    Ms =case refac_epp:parse_file(FName, Includes, [], TabWidth, FileFormat) of
 		    {ok, _, {MDefs, MUses}}  -> 

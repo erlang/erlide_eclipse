@@ -42,14 +42,13 @@ rename_var(Fname, Line, Col, NewName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, rename_var, [Fname, Line, Col, NewName, SearchPaths, TabWidth], SearchPaths).
  
 -spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+	     {error, string()} |{warning, string()}| {ok, [filename()]}).
 
 rename_fun(Fname, Line, Col, NewName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, rename_fun, [Fname, Line, Col, NewName, SearchPaths, TabWidth], SearchPaths).
 
-
--spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> {error, string()} | {ok, [filename()]}).
-
+-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+	     {error, string()} | {question, string()} | {warning, string()} |{ok, [filename()]}).
 rename_mod(Fname, NewName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, rename_mod, [Fname, NewName, SearchPaths, TabWidth], SearchPaths).
 
@@ -61,18 +60,23 @@ rename_process(Fname, Line, Col, NewName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, rename_process, [Fname, Line, Col, NewName, SearchPaths, TabWidth], SearchPaths).
 
 
--spec(generalise/8::(filename(),integer(), integer(),integer(), integer(),string(), dir(), integer()) -> {ok, string()} | {error, string()}).
-
+-spec(generalise/8::(filename(),integer(), integer(),integer(), integer(),string(), dir(), integer()) ->
+	     {ok, [filename()]}
+		 |{error, string()}
+                 |{multiple_instances, {atom(), atom(), integer(), pos(), syntaxTree(), boolean(),[{pos(), pos()}], string()}}
+		 |{unknown_side_effect, {atom(), atom(),integer(), pos(), syntaxTree(), integer(),
+					 [{pos(), pos()}], [{pos(),pos()}], string()}}
+		 |{more_than_one_clause, {atom(), atom(), integer(), pos(), syntaxTree(), boolean(),
+					  [{pos(), pos()}], [{pos(),pos()}], string()}}). 
 generalise(Fname, StartLine, StartCol, EndLine, EndCol, ParName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, generalise, [Fname, {StartLine, StartCol}, {EndLine, EndCol}, ParName, SearchPaths, TabWidth], SearchPaths).
 	
 
--spec(move_fun/7::(filename(),integer(),integer(), string(), atom(),[dir()], integer())
-        -> {ok, [{filename(), filename()}]}
-           | {error, string()}).
+-spec(move_fun/6::(filename(),integer(),integer(), string(),[dir()], integer())
+        -> {ok, [{filename(), filename()}]} | {question, string()} | {error, string()}).
 
-move_fun(FName, Line, Col, ModName, CreateNewFile, SearchPaths, TabWidth) ->
-    apply_refactoring(wrangler, move_fun, [FName, Line, Col, ModName, CreateNewFile, SearchPaths, TabWidth], SearchPaths).
+move_fun(FName, Line, Col, ModName,SearchPaths, TabWidth) ->
+    apply_refactoring(wrangler, move_fun, [FName, Line, Col, ModName, SearchPaths, TabWidth], SearchPaths).
 
 
 -spec(duplicated_code_in_buffer/4::(filename(), string(), string(), integer()) ->{ok, string()}).      
@@ -165,7 +169,7 @@ uninstrument_prog(FName, SearchPaths, TabWidth) ->
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, add_a_tag, [FileName, Line, Col, Tag, SearchPaths, TabWidth], SearchPaths).
 
--spec(normalise_record_expr/6::(filename(), integer(), integer(), bool(),[dir()], integer()) -> {error, string()} | {ok, [filename()]}).
+-spec(normalise_record_expr/6::(filename(), integer(), integer(), boolean(),[dir()], integer()) -> {error, string()} | {ok, [filename()]}).
 normalise_record_expr(FileName, Line, Col, ShowDefault, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, normalise_record_expr, [FileName, Line, Col, ShowDefault, SearchPaths, TabWidth], SearchPaths).
 
