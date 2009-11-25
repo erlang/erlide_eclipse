@@ -24,7 +24,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 18).
+-define(CACHE_VERSION, 20).
 
 light_scan_string(S) ->
 	case erlide_scan:string(S, {0, 0}) of
