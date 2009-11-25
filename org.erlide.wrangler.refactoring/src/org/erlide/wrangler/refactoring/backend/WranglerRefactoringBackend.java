@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.backend;
 
-
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.AbstractRefactoringRpcMessage;
