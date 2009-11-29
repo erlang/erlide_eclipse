@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.util.Tuple;
+import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
@@ -46,7 +47,13 @@ public class CodeBundle {
 	public Collection<String> getEbinDirs() {
 		List<String> result = Lists.newArrayList();
 		for (Tuple<String, CodeContext> path : paths) {
-			result.add(ErlideUtil.getPath(path.o1, bundle));
+			String myPath = ErlideUtil.getPath(path.o1, bundle);
+			if (myPath != null) {
+				result.add(myPath);
+			} else {
+				ErlLogger.warn("Can't access path %s, "
+						+ "erlide plugins may be incorrectly built", path.o1);
+			}
 		}
 		return result;
 	}
