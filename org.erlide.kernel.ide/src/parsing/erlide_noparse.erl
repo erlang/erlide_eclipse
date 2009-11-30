@@ -85,7 +85,7 @@ do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCa
 	do_parse2(ScannerName, Toks, ErlidePath).
 
 do_parse2(_ScannerName, Toks, _ErlidePath) ->
-    ?D({do_parse, ErlidePath, length(Toks)}),
+    ?D({do_parse, _ScannerName, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
     %?D({UncommentToks}),
@@ -96,11 +96,11 @@ do_parse2(_ScannerName, Toks, _ErlidePath) ->
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model, ErlidePath),
-	?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
+    ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
-	?D(erts_debug:flat_size(FixedModel)),
-%% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
-	FixedModel.
+    ?D(erts_debug:flat_size(FixedModel)),
+    %% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
+    FixedModel.
 
 fixup_model(#model{forms=Forms, comments=Comments}) ->
     ?D(a),
@@ -165,41 +165,45 @@ cac(function, Tokens) ->
             #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
     end;
 cac(attribute, Attribute) ->
-	%?D(Attribute),
-	case Attribute of
-		[#token{kind='-', offset=Offset, line=Line},
-		 #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
-		  when (Kind=:='spec') or ((Kind=:=atom) and (Value=:='type')) ->
-			Name = case Kind of 'spec' -> Kind; _ -> Value end,
-			#token{line=LastLine, offset=LastOffset, 
-				   length=LastLength} = last_not_eof(Attribute),
-			PosLength = LastOffset - Offset + LastLength,
-			Extra = to_string(Args),
-			#attribute{pos={{Line, LastLine, Offset}, PosLength},
-					   name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra};
-		[#token{kind='-', offset=Offset, line=Line},
-		 #token{kind=atom, value=Name, line=_Line, offset=_Offset},
-		 _, #token{value=Args} | _] = Attribute ->
-			#token{line=LastLine, offset=LastOffset, 
-				   length=LastLength} = last_not_eof(Attribute),
-			PosLength = LastOffset - Offset + LastLength,
-			Between = get_between_outer_pars(Attribute),
-			Extra = to_string(Between),
-			#attribute{pos={{Line, LastLine, Offset}, PosLength},
-					   name=Name, args=get_attribute_args(Name, Between, Args), extra=Extra};
-		[_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
-			#token{line=LastLine, offset=LastOffset, 
-				   length=LastLength} = last_not_eof(Attribute),
-			PosLength = LastOffset - Offset + LastLength,
-			#attribute{pos={{Line, LastLine, Offset}, PosLength},
-					   name=Name, args=[]}
-	end;
+    ?D(Attribute),
+    case Attribute of
+        [#token{kind='-', offset=Offset, line=Line},
+         #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
+          when (Kind=:='spec') or ((Kind=:=atom) and (Value=:='type'))
+                   or ((Kind=:=atom) and (Value=:='opaque'))->
+            ?D(Value),
+            Name = case Kind of 'spec' -> Kind; _ -> Value end,
+            #token{line=LastLine, offset=LastOffset,
+                   length=LastLength} = last_not_eof(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            ?D(Args),
+            Extra = to_string(Args),
+            ?D(Extra),
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
+                       name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra};
+        [#token{kind='-', offset=Offset, line=Line},
+         #token{kind=atom, value=Name, line=_Line, offset=_Offset},
+         _, #token{value=Args} | _] = Attribute ->
+            #token{line=LastLine, offset=LastOffset, 
+                   length=LastLength} = last_not_eof(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            Between = get_between_outer_pars(Attribute),
+            Extra = to_string(Between),
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
+                       name=Name, args=get_attribute_args(Name, Between, Args), extra=Extra};
+        [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
+            #token{line=LastLine, offset=LastOffset, 
+                   length=LastLength} = last_not_eof(Attribute),
+            PosLength = LastOffset - Offset + LastLength,
+            #attribute{pos={{Line, LastLine, Offset}, PosLength},
+                       name=Name, args=[]}
+    end;
 cac(other, [#token{value=Name, line=Line,
                    offset=Offset, length=Length} | _]) ->
     #other{pos={{Line, Line, Offset}, Length}, name=Name};
 cac(_, _D) ->
-	%?D(_D),
-	eof.
+    %?D(_D),
+    eof.
 
 get_attribute_args(import, Between, _Args) ->
     From = get_first_of_kind(atom, Between),
