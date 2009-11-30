@@ -415,6 +415,24 @@ public class ErlModelUtils {
 		return false;
 	}
 
+	public static boolean openExternalType(final String mod,
+			final String type, final String path,
+			final IProject project) throws CoreException {
+		final IResource r = openExternalModule(mod, path, project);
+		if (r != null && r instanceof IFile) {
+			final IFile f = (IFile) r;
+			try {
+				final IEditorPart editor = EditorUtility.openInEditor(f);
+				return openTypeInEditor(type, editor);
+			} catch (final PartInitException e) {
+				ErlLogger.warn(e);
+			} catch (final ErlModelException e) {
+				ErlLogger.warn(e);
+			}
+		}
+		return false;
+	}
+
 	public static IResource openExternalModule(final String mod,
 			final String path, final IProject project) throws CoreException {
 		final String modFileName = mod + ".erl";

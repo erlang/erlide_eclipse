@@ -322,6 +322,15 @@ public class OpenAction extends SelectionDispatchAction {
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();
 		if (res.isExternalCall()) {
+			if (editor != null) {
+				final IErlElement e = editor.getElementAt(offset, true);
+				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+					if (ErlModelUtils.openExternalType(res.getName(), res
+							.getFun(), res.getPath(), project)) {
+						return;
+					}
+				}
+			}
 			if (!ErlModelUtils.openExternalFunction(res.getName(), res
 					.getFunction(), res.getPath(), project)) {
 				ErlModelUtils.openExternalFunction(res.getName(),
