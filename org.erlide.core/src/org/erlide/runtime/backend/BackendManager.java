@@ -109,8 +109,8 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options, final ILaunch launch, Map<String, String> env)
-			throws BackendException {
+			final Set<BackendOptions> options, final ILaunch launch,
+			Map<String, String> env) throws BackendException {
 		final String nodeName = info.getNodeName();
 		final boolean exists = EpmdWatcher.findRunningNode(nodeName);
 		ErlideBackend b = null;
@@ -153,7 +153,8 @@ public final class BackendManager extends OtpNodeStatus implements
 			for (CodeBundle bb : codeBundles.values()) {
 				b.register(bb);
 			}
-			boolean monitorNode = options.contains(BackendOptions.IDE);
+			boolean monitorNode = options.contains(BackendOptions.IDE)
+					&& "true".equals(System.getProperty("erlide.monitor.ide"));
 			b.initErlang(monitorNode);
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
@@ -163,7 +164,8 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	private ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options, Map<String, String> env) throws BackendException {
+			final Set<BackendOptions> options, Map<String, String> env)
+			throws BackendException {
 		ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
 				options);
 		ILaunch launch;
