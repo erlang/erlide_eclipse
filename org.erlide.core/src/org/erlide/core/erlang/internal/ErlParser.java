@@ -369,7 +369,8 @@ public final class ErlParser {
 				// r.setParseTree(val);
 				return r;
 			}
-		} else if ("type".equals(nameS) || "spec".equals(nameS)) {
+		} else if ("type".equals(nameS) || "spec".equals(nameS)
+				|| "opaque".equals(nameS)) {
 			final String s = Util.stringValue(extra);
 			final int p = s.indexOf('(');
 			final String typeName = p < 0 ? s : s.substring(0, p);

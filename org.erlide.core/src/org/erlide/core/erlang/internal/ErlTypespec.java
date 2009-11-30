@@ -53,14 +53,11 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
 
 	@Override
 	public String toString() {
-		String sval;
 		if (fValue != null) {
-			sval = ": " + fValue.toString(); // pp(fValue);
+			return getName() + ": " + fValue.toString(); // pp(fValue);
 		} else if (fExtra != null) {
-			sval = ": " + fExtra;
-		} else {
-			sval = "";
+			return fExtra;
 		}
-		return getName() + sval;
+		return "";
 	}
 }
