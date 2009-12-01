@@ -115,6 +115,7 @@ import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
 import org.erlide.ui.editors.erl.actions.IndentAction;
+import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
@@ -177,6 +178,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
 	private final Object lock = new Object();
 	private final boolean initFinished = false;
+	private SendToConsoleAction sendToConsole;
 
 	/**
 	 * Simple constructor
@@ -364,6 +366,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
 
+		sendToConsole = new SendToConsoleAction(getSite(), ErlangEditorMessages
+				.getBundleForConstructedKeys(), "SendToConsole.");
+		sendToConsole
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
+		setAction("SendToConsole", sendToConsole);
+		markAsStateDependentAction("sendToConsole", true);
+		markAsSelectionDependentAction("sendToConsole", true);
+
 		final Action act = new ContentAssistAction(ErlangEditorMessages
 				.getBundleForConstructedKeys(), "ContentAssistProposal.", this);
 		act
@@ -473,6 +483,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				toggleCommentAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
 		final ActionContext context = new ActionContext(getSelectionProvider()
 				.getSelection());
 		fContextMenuGroup.setContext(context);

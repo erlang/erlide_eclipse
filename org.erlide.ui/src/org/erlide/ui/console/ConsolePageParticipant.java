@@ -46,6 +46,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.part.ShowInContext;
+import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.console.actions.ConsoleRemoveAllTerminatedAction;
 import org.erlide.ui.console.actions.ConsoleRemoveLaunchAction;
 import org.erlide.ui.console.actions.ConsoleTerminateAction;
@@ -82,7 +83,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * Handler to send EOF
 	 */
 	private class EOFHandler extends AbstractHandler {
-		public Object execute(ExecutionEvent event)
+		public Object execute(final ExecutionEvent event)
 				throws org.eclipse.core.commands.ExecutionException {
 			IStreamsProxy proxy = getProcess().getStreamsProxy();
 			if (proxy instanceof IStreamsProxy2) {
@@ -104,7 +105,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * org.eclipse.ui.console.IConsolePageParticipant#init(IPageBookViewPage,
 	 * IConsole)
 	 */
-	public void init(IPageBookViewPage page, IConsole console) {
+	public void init(final IPageBookViewPage page, final IConsole console) {
 		fPage = page;
 		fConsole = (ErlangConsole) console;
 
@@ -127,6 +128,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 		// create handler and submissions for EOF
 		fEOFHandler = new EOFHandler();
+
+		// set global ref, used by the SendToConsole action
+		ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
 	}
 
 	/*
@@ -156,12 +160,15 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 			fStdOut = null;
 		}
 		fConsole = null;
+		if (ErlideUIPlugin.getDefault().getConsolePage() == fPage) {
+			ErlideUIPlugin.getDefault().setConsolePage(null);
+		}
 	}
 
 	/**
 	 * Contribute actions to the toolbar
 	 */
-	protected void configureToolBar(IToolBarManager mgr) {
+	protected void configureToolBar(final IToolBarManager mgr) {
 		mgr.appendToGroup(IConsoleConstants.LAUNCH_GROUP, fTerminate);
 		mgr.appendToGroup(IConsoleConstants.LAUNCH_GROUP, fRemoveTerminated);
 		mgr.appendToGroup(IConsoleConstants.LAUNCH_GROUP, fRemoveAllTerminated);
@@ -174,7 +181,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class required) {
+	public Object getAdapter(final Class required) {
 		if (IShowInSource.class.equals(required)) {
 			return this;
 		}
@@ -233,7 +240,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * org.eclipse.debug.core.IDebugEventSetListener#handleDebugEvents(org.eclipse
 	 * .debug.core.DebugEvent[])
 	 */
-	public void handleDebugEvents(DebugEvent[] events) {
+	public void handleDebugEvents(final DebugEvent[] events) {
 		for (int i = 0; i < events.length; i++) {
 			DebugEvent event = events[i];
 			if (event.getSource().equals(getProcess())) {
@@ -269,6 +276,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 		fActivatedContext = contextService.activateContext(fContextId);
 		fActivatedHandler = handlerService.activateHandler(
 				"org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
+		ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
 	}
 
 	/*
@@ -295,7 +303,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * #contextEvent
 	 * (org.eclipse.debug.internal.ui.contexts.provisional.DebugContextEvent)
 	 */
-	public void debugContextChanged(DebugContextEvent event) {
+	public void debugContextChanged(final DebugContextEvent event) {
 		if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
 			IProcess process = getProcess();
 			if (fView != null && process != null
