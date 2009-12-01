@@ -8,14 +8,22 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.console.ErlangConsolePage;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class SendToConsoleAction extends SelectionDispatchAction {
 
+	private final ErlangEditor fEditor;
+
 	@Override
-	public void run(final ITextSelection selection) {
+	public void run(ITextSelection selection) {
 		ErlangConsolePage p = ErlideUIPlugin.getDefault().getConsolePage();
 		// make sure we have a console page to send it to
 		if (p != null) {
+			// if selection is empty, grab the whole line
+			if (selection.getLength() == 0) { // don't use isEmpty()!
+				selection = ErlangTextEditorAction.extendSelectionToWholeLines(
+						fEditor.getDocument(), selection);
+			}
 			// try to make the text a full erlang expression, ending with dot
 			String text = selection.getText().trim();
 			if (text.endsWith(",") || text.endsWith(";")) {
@@ -32,11 +40,13 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 	}
 
 	public SendToConsoleAction(final IWorkbenchSite site,
-			final ResourceBundle bundle, final String prefix) {
+			final ResourceBundle bundle, final String prefix,
+			final ErlangEditor editor) {
 		super(site);
 		setText(getString(bundle, prefix + "label"));
 		setToolTipText(getString(bundle, prefix + "tooltip"));
 		setDescription(getString(bundle, prefix + "description"));
+		fEditor = editor;
 	}
 
 	protected static String getString(final ResourceBundle bundle,

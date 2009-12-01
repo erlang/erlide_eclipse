@@ -367,7 +367,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
 
 		sendToConsole = new SendToConsoleAction(getSite(), ErlangEditorMessages
-				.getBundleForConstructedKeys(), "SendToConsole.");
+				.getBundleForConstructedKeys(), "SendToConsole.", this);
 		sendToConsole
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
 		setAction("SendToConsole", sendToConsole);
