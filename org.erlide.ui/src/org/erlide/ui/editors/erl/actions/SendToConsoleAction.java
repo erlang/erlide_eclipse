@@ -26,13 +26,13 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 			}
 			// try to make the text a full erlang expression, ending with dot
 			String text = selection.getText().trim();
-			if (text.endsWith(",") || text.endsWith(";")) {
+			if (text.endsWith(",") || text.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
 				text = text.substring(0, text.length() - 1);
 			}
-			if (!text.endsWith(".")) {
-				text += ".";
+			if (!text.endsWith(".")) { //$NON-NLS-1$
+				text += "."; //$NON-NLS-1$
 			}
-			text += "\n";
+			text += "\n"; //$NON-NLS-1$
 			// send it off to the console
 			p.input(text);
 		}
@@ -43,9 +43,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 			final ResourceBundle bundle, final String prefix,
 			final ErlangEditor editor) {
 		super(site);
-		setText(getString(bundle, prefix + "label"));
-		setToolTipText(getString(bundle, prefix + "tooltip"));
-		setDescription(getString(bundle, prefix + "description"));
+		setText(getString(bundle, prefix + "label")); //$NON-NLS-1$
+		setToolTipText(getString(bundle, prefix + "tooltip")); //$NON-NLS-1$
+		setDescription(getString(bundle, prefix + "description")); //$NON-NLS-1$
 		fEditor = editor;
 	}
 
