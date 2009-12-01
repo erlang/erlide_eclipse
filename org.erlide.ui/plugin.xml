@@ -560,6 +560,11 @@
             id="org.erlide.ui.command.reportProblem"
             name="Report problems">
       </command>
+      <command
+            description="Send to console"
+            id="org.erlide.ui.actions.sendToConsole"
+            name="Send to console">
+      </command>
 
  </extension>
  <extension
@@ -587,6 +592,11 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+I"/>
+      <key
+            commandId="org.erlide.ui.actions.sendToConsole"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+Enter"/>
       <key
             commandId="org.erlide.ui.actions.show.outline"
             contextId="org.erlide.ui.erlangEditorScope"

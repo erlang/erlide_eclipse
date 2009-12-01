@@ -44,6 +44,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlConsoleManager;
+import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
@@ -425,13 +426,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	private final int DUMP_INTERVAL = Integer.parseInt(System.getProperty(
 			"erlide.dump.interval", "300000"));
 
+	private ErlangConsolePage fErlangConsolePage;
+
 	private void startPeriodicDump() {
 		String env = System.getenv("erlide.internal.coredump");
 		if ("true".equals(env)) {
 			Job job = new Job("Erlang node info dump") {
 
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
+				protected IStatus run(final IProgressMonitor monitor) {
 					try {
 						final ErlideBackend ideBackend = ErlangCore
 								.getBackendManager().getIdeBackend();
@@ -449,5 +452,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 			job.setSystem(true);
 			job.schedule(DUMP_INTERVAL);
 		}
+	}
+
+	public ErlangConsolePage getConsolePage() {
+		return fErlangConsolePage;
+	}
+
+	public void setConsolePage(final ErlangConsolePage erlangConsolePage) {
+		fErlangConsolePage = erlangConsolePage;
 	}
 }
