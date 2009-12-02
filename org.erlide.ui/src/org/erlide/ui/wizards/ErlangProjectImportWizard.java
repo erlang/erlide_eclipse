@@ -95,9 +95,10 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			final String s = provider.getFullPath(fso);
 			filesAndDirs.add(s);
 		}
-		final String prefix = mainPage.getProjectPath().toString();
-		final ErlProjectImport epi = ErlideImport.importProject(ErlangCore
-				.getBackendManager().getIdeBackend(), prefix, filesAndDirs);
+		final String projectPath = mainPage.getProjectPath().toString();
+		final ErlProjectImport epi = ErlideImport
+				.importProject(ErlangCore.getBackendManager().getIdeBackend(),
+						projectPath, filesAndDirs);
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		for (final Object o : selectedResources) {
 			final FileSystemElement fse = (FileSystemElement) o;
@@ -141,11 +142,38 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 				return false;
 			}
 		} else {
-			// mainPage.createLinkedProject();
+			try {
+				getContainer().run(false, true, new WorkspaceModifyOperation() {
 
+					@Override
+					protected void execute(IProgressMonitor monitor) {
+						if (monitor == null) {
+							monitor = new NullProgressMonitor();
+						}
+						createProject(monitor, epi.getIncludeDirs(), epi
+								.getSourceDirs());
+
+						try {
+							final IWorkbench wbench = ErlideUIPlugin
+									.getDefault().getWorkbench();
+							wbench.showPerspective(ErlangPerspective.ID, wbench
+									.getActiveWorkbenchWindow());
+						} catch (final WorkbenchException we) {
+							// ignore
+						}
+					}
+				});
+
+			} catch (final InvocationTargetException x) {
+				reportError(x);
+				return false;
+			} catch (final InterruptedException x) {
+				reportError(x);
+				return false;
+			}
 		}
 
-		return mainPage.finish(fileSystemObjects);
+		return mainPage.finish(projectPath, fileSystemObjects);
 	}
 
 	/**
