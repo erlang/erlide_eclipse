@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -565,7 +567,8 @@ public class ErlangProjectImportWizardPage extends
 	 * 
 	 * @return boolean
 	 */
-	public boolean finish(final List<Object> fileSystemObjects) {
+	public boolean finish(final String projectPath,
+			final List<Object> fileSystemObjects) {
 		if (!ensureSourceIsValid()) {
 			return false;
 		}
@@ -582,7 +585,7 @@ public class ErlangProjectImportWizardPage extends
 					@Override
 					protected void execute(final IProgressMonitor monitor)
 							throws InvocationTargetException, CoreException {
-						linkToResources(fileSystemObjects,
+						linkToResources(projectPath, fileSystemObjects,
 								new SubProgressMonitor(monitor, 1));
 
 						try {
@@ -637,9 +640,9 @@ public class ErlangProjectImportWizardPage extends
 								.getResourceString("wizards.errors.projectfileerrordesc"));
 	}
 
-	boolean linkToResources(final List<Object> fileSystemObjects,
-			final IProgressMonitor monitor) throws InvocationTargetException,
-			CoreException {
+	boolean linkToResources(final String projectPath,
+			final List<Object> fileSystemObjects, final IProgressMonitor monitor)
+			throws InvocationTargetException, CoreException {
 		final String prjName = getProjectName();
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project = workspace.getRoot().getProject(prjName);
@@ -661,10 +664,54 @@ public class ErlangProjectImportWizardPage extends
 			monitor
 					.beginTask(
 							ErlangDataTransferMessages.WizardProjectsImportPage_CreateProjectsTask,
-							100);
-			project.create(description, new SubProgressMonitor(monitor, 30));
+							1000);
+			project.setDescription(description, new SubProgressMonitor(monitor,
+					300));
+			int subTicks = 600 / fileSystemObjects.size();
+			for (Object fso : fileSystemObjects) {
+				if (fso instanceof File) {
+					File f = (File) fso;
+					for (;;) {
+						String path = f.getPath();
+						if (path.equals(projectPath)) {
+							break;
+						}
+						path = f.getParent();
+						if (path.equals(projectPath)) {
+							String name = f.getName();
+							IPath location = new Path(f.getAbsolutePath());
+							IFile file = null;
+							IFolder folder = null;
+							IResource resource;
+							boolean directory = f.isDirectory();
+							if (directory) {
+								resource = folder = project.getFolder(name);
+							} else {
+								resource = file = project.getFile(name);
+							}
+							SubProgressMonitor subMonitor = new SubProgressMonitor(
+									monitor, subTicks);
+							if (!resource.isLinked()) {
+								if (directory) {
+									folder.createLink(location, IResource.NONE,
+											subMonitor);
+								} else {
+									file.createLink(location, IResource.NONE,
+											subMonitor);
+								}
+							} else {
+								subMonitor.done();
+							}
+							break;
+						}
+						f = f.getParentFile();
+					}
+				}
+			}
+			// project.create(description, IResource.REPLACE,
+			// new SubProgressMonitor(monitor, 30));
 			project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
-					monitor, 70));
+					monitor, 300));
 		} catch (final CoreException e) {
 			throw new InvocationTargetException(e);
 		} finally {
