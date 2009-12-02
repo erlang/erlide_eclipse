@@ -15,8 +15,8 @@
 %%
 
 simple_function_test_() ->
-    S = "a() ->\n    b.\n",
-    SIndent = "a() ->\nb.\n",
+    S = "a() ->\nb.\n",
+    SIndent = "a() ->\n    b.\n",
     test_indent(SIndent, S).
 
 expressions_test_() ->

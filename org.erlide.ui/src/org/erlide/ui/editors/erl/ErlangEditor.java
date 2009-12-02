@@ -177,7 +177,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private CallHierarchyAction callhierarchy;
 	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
 	private final Object lock = new Object();
-	private final boolean initFinished = false;
+	// private final boolean initFinished = false;
 	private SendToConsoleAction sendToConsole;
 
 	/**

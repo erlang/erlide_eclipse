@@ -12,6 +12,7 @@ package org.erlide.runtime.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -312,6 +313,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 				result.add(info);
 			}
 		}
+		Collections.reverse(result);
 		// add even newer versions, but at the end
 		for (final RuntimeInfo info : getRuntimes()) {
 			final RuntimeVersion v = info.getVersion();

@@ -9,16 +9,18 @@ init(JRex, Monitor) ->
 				  case Monitor of
 					  true ->
 						  %% must be first so that only system processes are ignored
+						  
 						  Mon = spawn(fun monitor/0),
 						  erlide_monitor:start(),
-						  erlide_monitor:subscribe(Mon);
+						  erlide_monitor:subscribe(Mon),
+						  ok;
 					  _ ->
 						  ok
 				  end,
 				  erlide_jrpc:init(JRex),
 				  watch_eclipse(node(JRex)),
 				  
-				  				  erlide_batch:start(erlide_builder),
+  				  erlide_batch:start(erlide_builder),
 
 				  ok
 		  end),
