@@ -235,25 +235,10 @@ public final class ErlideUtil {
 	private static boolean isEriUserCached = false;
 	private static boolean isEricssonUser;
 
-	private static boolean is_Ericsson_User() {
-		final String dev = System.getProperty("erlide.ericsson.user");
-		if (dev != null && !"true".equals(dev)) {
-			return false;
-		}
-		String s = System.getProperty("erlide.projectDirectory");
-		if (s == null) {
-			if (isOnWindows()) {
-				s = "\\\\projhost\\tecsas\\shade\\erlide";
-			} else {
-				s = "/proj/tecsas/SHADE/erlide";
-			}
-		}
-		return new File(s).exists();
-	}
-
 	public static boolean isEricssonUser() {
 		if (!isEriUserCached) {
-			isEricssonUser = is_Ericsson_User();
+			final String dev = System.getProperty("erlide.ericsson.user");
+			isEricssonUser = "true".equals(dev);
 			isEriUserCached = true;
 		}
 		return isEricssonUser;
