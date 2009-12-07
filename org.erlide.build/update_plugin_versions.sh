@@ -45,7 +45,7 @@ function inc_version {
   else
 	NEW="$MAJ2.$MIN2.$MICRO2.$QUAL"
   fi
-  echo "$PRJ: $VER -> $NEW" >&2 
+  echo "      : $VER -> $NEW" >&2 
   echo "$NEW"
 }
 
@@ -106,6 +106,7 @@ do
 	  if [ $OLD = $NEW ]
 	  then
 		  CH="micro"
+                  echo "$PRJ::"
 		  NEW=$(inc_version $NEW $CH)
 		  
 		  if [ "$COMMIT" != "dry" ]
@@ -122,7 +123,7 @@ do
   fi
 done
 
-echo "final changed: $CHANGED"
+echo "final changed: $CHANGED..."
 if [ "$CHANGED" != "none" ]
 then
   OLD=$(git show $BASE:org.erlide/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
