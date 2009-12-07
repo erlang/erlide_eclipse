@@ -91,7 +91,7 @@ public final class ErlideUtil {
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
-	public static void unpackBeamFiles(final Bundle b, String location) {
+	public static void unpackBeamFiles(final Bundle b, final String location) {
 		if (location == null) {
 			ErlLogger.warn("Could not find 'ebin' in bundle %s.", b
 					.getSymbolicName());
@@ -240,11 +240,13 @@ public final class ErlideUtil {
 		if (dev != null && !"true".equals(dev)) {
 			return false;
 		}
-		String s;
-		if (isOnWindows()) {
-			s = "\\\\projhost\\tecsas\\shade\\erlide";
-		} else {
-			s = "/proj/tecsas/SHADE/erlide";
+		String s = System.getProperty("erlide.projectDirectory");
+		if (s == null) {
+			if (isOnWindows()) {
+				s = "\\\\projhost\\tecsas\\shade\\erlide";
+			} else {
+				s = "/proj/tecsas/SHADE/erlide";
+			}
 		}
 		return new File(s).exists();
 	}
@@ -353,11 +355,13 @@ public final class ErlideUtil {
 	}
 
 	public static String getReportLocation() {
-		String s;
-		if (isOnWindows()) {
-			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
-		} else {
-			s = "/proj/tecsas/SHADE/erlide/reports";
+		String s = System.getProperty("erlide.projectDirectory");
+		if (s == null) {
+			if (isOnWindows()) {
+				s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+			} else {
+				s = "/proj/tecsas/SHADE/erlide/reports";
+			}
 		}
 		final File dir = new File(s);
 		// TODO this takes a few seconds if windows share doesn't exist - fix!
@@ -460,7 +464,7 @@ public final class ErlideUtil {
 		}
 	}
 
-	public static String fetchStraceLog(String filename) {
+	public static String fetchStraceLog(final String filename) {
 		final StringBuffer result = new StringBuffer();
 		final File log = new File(filename);
 		if (log.exists()) {
