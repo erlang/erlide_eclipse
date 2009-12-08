@@ -26,14 +26,15 @@
 
 -define(CACHE_VERSION, 20).
 
-light_scan_string(S) ->
-	case erlide_scan:string(S, {0, 0}) of
-		{ok, T, _} ->
-			?D(T),
-			{ok, fixup_tokens(T, [])};
-		{error, _, _} ->
-			error
-	end.
+light_scan_string(B) ->
+    S = binary_to_list(B),
+    case erlide_scan:string(S, {0, 0}) of
+        {ok, T, _} ->
+            ?D(T),
+            {ok, fixup_tokens(T, [])};
+        {error, _, _} ->
+            error
+    end.
 
 %%
 %% Local Functions

@@ -102,7 +102,7 @@ public class ErlideScanner {
 		OtpErlangObject r1 = null;
 		try {
 			r1 = ErlangCore.getBackendManager().getIdeBackend().call(
-					"erlide_scanner", "light_scan_string", "s", string);
+					"erlide_scanner", "light_scan_string", "b", string);
 		} catch (final Exception e) {
 			throw new BackendException("Could not parse string \"" + string
 					+ "\": " + e.getMessage());
@@ -172,7 +172,8 @@ public class ErlideScanner {
 		Assert.isNotNull(scannerName);
 		try {
 			final OtpErlangObject msg = ErlUtils.format(
-					"{change, ~a, ~i,  ~i, ~s}", scannerName, offset, length, text);
+					"{change, ~a, ~i,  ~i, ~s}", scannerName, offset, length,
+					text);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
@@ -183,7 +184,8 @@ public class ErlideScanner {
 	public static void notifyNew(final String scannerName) {
 		Assert.isNotNull(scannerName);
 		try {
-			final OtpErlangObject msg = ErlUtils.format("{new, ~a}", scannerName);
+			final OtpErlangObject msg = ErlUtils.format("{new, ~a}",
+					scannerName);
 			ErlangCore.getBackendManager().getIdeBackend().send(
 					"erlide_scanner_listener", msg);
 		} catch (final Exception e) {
