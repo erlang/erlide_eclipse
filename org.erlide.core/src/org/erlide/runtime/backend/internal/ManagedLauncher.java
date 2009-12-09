@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
