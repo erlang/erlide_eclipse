@@ -39,7 +39,7 @@ public class ErlideNoparse {
 		OtpErlangTuple res = null;
 		try {
 			res = (OtpErlangTuple) b.call(2000000, ERLIDE_NOPARSE,
-					"initial_parse", "asssso", scannerModuleName,
+					"initial_parse", "asbsso", scannerModuleName,
 					moduleFileName, initialText, stateDir, erlidePath,
 					updateCaches);
 			if (res.arity() > 2) {

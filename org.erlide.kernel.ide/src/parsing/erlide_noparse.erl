@@ -29,7 +29,8 @@
 %% API Functions
 %%
 
-initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
+initial_parse(ScannerName, ModuleFileName, InitialTextBin, StateDir, ErlidePath, UpdateCaches) ->
+	InitialText = binary_to_list(InitialTextBin),
     try
 	?D({StateDir, ModuleFileName, ErlidePath}),
         RenewFun = fun(_F) ->
