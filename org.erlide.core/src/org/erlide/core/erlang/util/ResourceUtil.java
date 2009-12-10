@@ -155,7 +155,7 @@ public class ResourceUtil {
 
 	public static IResource recursiveFindNamedResource(
 			final IContainer container, final String name,
-			ContainerFilter filter) throws CoreException {
+			final ContainerFilter filter) throws CoreException {
 		if (!container.isAccessible()) {
 			return null;
 		}
@@ -179,7 +179,7 @@ public class ResourceUtil {
 	// FIXME can't we use erlang model instead?
 	public static IResource recursiveFindNamedResourceWithReferences(
 			final IContainer container, final String name,
-			ContainerFilter filter) throws CoreException {
+			final ContainerFilter filter) throws CoreException {
 		final IResource r = recursiveFindNamedResource(container, name, filter);
 		if (r != null) {
 			return r;
@@ -216,9 +216,13 @@ public class ResourceUtil {
 				description
 						.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
 				project.setDescription(description, null);
-				if (!project.isOpen()) {
-					project.open(null);
-				}
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		if (!project.isOpen()) {
+			try {
+				project.open(null);
 			} catch (final CoreException e) {
 				e.printStackTrace();
 			}
