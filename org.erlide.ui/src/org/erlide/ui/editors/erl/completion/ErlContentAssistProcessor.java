@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.completion;
 
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +32,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -192,6 +195,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			}
 			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
 					project, b);
+			ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor();
+			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer, offset))); // TODO bara testar
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);

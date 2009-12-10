@@ -114,6 +114,12 @@
             id="org.erlide.ui.preferences.smartTyping"
             name="%editorSmartTypingPage">
       </page>
+      <page
+            category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.editors.erl.completion.ErlTemplatePreferencePage"
+            id="org.erlide.ui.preferences.templates"
+            name="Erlang Templates">
+      </page>
    </extension>
      <extension
          point="org.eclipse.ui.preferencePages">
@@ -1336,6 +1342,18 @@
                   value="org.erlide.ui.console.ErlangConsole">
             </instanceof></enablement>
       </consolePageParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <include
+            file="erlang_templates/ant.xml"
+            translations="$nl$/erlang_templates/ant.properties">
+      </include>
+      <contextType
+            class="org.erlide.ui.editors.erl.completion.ErlangContextType"
+            id="org.erlide.ui.editor.erlang"
+            name="Erlang Code">
+      </contextType>
    </extension>
 
 </plugin>
