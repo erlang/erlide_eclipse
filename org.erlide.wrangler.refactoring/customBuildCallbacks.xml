@@ -29,6 +29,7 @@
 			<arg value="wrangler/ebin"/>
 			<arg value="-I"/>
 			<arg value="wrangler/include"/>
+			<arg value="+debug_info"/>
 			<fileset dir="wrangler/erl">
 				<include name="**/*.erl"/>
 			</fileset>
