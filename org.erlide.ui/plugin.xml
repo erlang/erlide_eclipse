@@ -496,6 +496,12 @@
             id="org.erlide.ui.actions.sendToConsole"
             name="Send to console">
       </command>
+      <command
+            categoryId="org.erlide.ui.erlideCategory"
+            description="Clean Up..."
+            id="org.erlide.ui.actions.cleanUp"
+            name="Clean Up...">
+      </command>
 
  </extension>
  <extension
