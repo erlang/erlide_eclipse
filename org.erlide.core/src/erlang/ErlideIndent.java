@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Util;
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -73,6 +75,30 @@ public class ErlideIndent {
 			return r1;
 		} catch (final BackendException e) {
 			return new OtpErlangString("");
+		}
+	}
+
+	public static String quoteTemplateVariables(final Backend backend,
+			final String pattern) {
+		try {
+			final OtpErlangObject r = backend.call("erlide_indent",
+					"quote_template_variables", "s", pattern);
+			return Util.stringValue(r);
+		} catch (final BackendException e) {
+			ErlLogger.error(e);
+			return pattern;
+		}
+	}
+
+	public static String unquoteTemplateVariables(final Backend backend,
+			final String pattern) {
+		try {
+			final OtpErlangObject r = backend.call("erlide_indent",
+					"unquote_template_variables", "s", pattern);
+			return Util.stringValue(r);
+		} catch (final BackendException e) {
+			ErlLogger.error(e);
+			return pattern;
 		}
 	}
 }

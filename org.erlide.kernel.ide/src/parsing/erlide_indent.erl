@@ -11,7 +11,7 @@
 %% Exported Functions
 %%
 
--export([indent_line/6, indent_lines/6]).
+-export([indent_line/6, indent_lines/6, quote_template_variables/1, unquote_template_variables/1]).
 
 %-define(IO_FORMAT_DEBUG, 1).
 %-define(DEBUG, 1).
@@ -854,5 +854,28 @@ scan(S) ->
 	    Error
     end.
 
+quote_template_variables(S) ->
+	quote_template_variables(S, false, []).
 
+quote_template_variables([], true, Acc) ->
+	lists:reverse(Acc, "'");
+quote_template_variables([], false, Acc) ->
+	lists:reverse(Acc);
+quote_template_variables("${" ++ Rest, _, Acc) ->
+	quote_template_variables(Rest, true, "{$'"++Acc);
+quote_template_variables("}"++Rest, true, Acc) ->
+	quote_template_variables(Rest, false, "'}"++Acc);
+quote_template_variables([C | Rest], V, Acc) ->
+	quote_template_variables(Rest, V, [C | Acc]).
 
+unquote_template_variables(S) ->
+	unquote_template_variables(S, []).
+
+unquote_template_variables([], Acc) ->
+	lists:reverse(Acc);
+unquote_template_variables("'${"++Rest, Acc) ->
+	unquote_template_variables(Rest, "{$"++Acc);
+unquote_template_variables("}'"++Rest, Acc) ->
+	unquote_template_variables(Rest, "}"++Acc);
+unquote_template_variables([C | Rest], Acc) ->
+	unquote_template_variables(Rest, [C | Acc]).
