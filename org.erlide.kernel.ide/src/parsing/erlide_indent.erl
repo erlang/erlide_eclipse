@@ -11,7 +11,7 @@
 %% Exported Functions
 %%
 
--export([indent_line/6, indent_lines/6, quote_template_variables/1, unquote_template_variables/1]).
+-export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
 %-define(DEBUG, 1).
@@ -154,6 +154,16 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
 indent_lines(S, From, Length, Tablength, UseTabs, Prefs) ->
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From, Length),
     do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, "").
+
+template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
+	S0 = Prefix++S,
+	S1 = quote_template_variables(S0),
+	From = length(Prefix),
+	Length = length(S1) - From,
+    {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S1, From, Length),
+    S2 = do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, ""),
+	S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
+	unquote_template_variables(S3).
 
 %%
 %% Local Functions

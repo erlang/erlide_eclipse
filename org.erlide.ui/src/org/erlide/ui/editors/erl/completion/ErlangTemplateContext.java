@@ -8,12 +8,9 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.actions.IndentAction;
-
-import erlang.ErlideIndent;
 
 public class ErlangTemplateContext extends DocumentTemplateContext {
 
@@ -44,17 +41,12 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
 	private Template indentTemplatePattern(final Template template) {
 		String pattern = template.getPattern();
 		final String whiteSpacePrefix = getWhiteSpacePrefix();
-		pattern = whiteSpacePrefix
-				+ ErlideIndent.quoteTemplateVariables(ErlangCore
-						.getBackendManager().getIdeBackend(), pattern);
 		try {
-			pattern = IndentAction.indentLines(0, pattern.length(), pattern);
+			pattern = IndentAction.indentLines(0, 0, pattern, true,
+					whiteSpacePrefix);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
 		}
-		pattern = ErlideIndent.unquoteTemplateVariables(ErlangCore
-				.getBackendManager().getIdeBackend(), pattern);
-		pattern = pattern.substring(whiteSpacePrefix.length());
 		return new Template(template.getName(), template.getDescription(),
 				template.getContextTypeId(), pattern, template
 						.isAutoInsertable());

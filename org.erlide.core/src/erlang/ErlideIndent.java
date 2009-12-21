@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.util.Util;
-import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -56,11 +54,22 @@ public class ErlideIndent {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject indentLines(final Backend b,
-			final int offset, final int length, final String text,
-			final int tabw, final boolean useTabs,
-			final Map<String, String> prefs) throws BackendException {
+			final boolean template, final int offset, final int length,
+			final String text, final int tabw, final boolean useTabs,
+			final Map<String, String> prefs, final String prefix)
+			throws BackendException {
 		final OtpErlangObject o = b.call(20000, "erlide_indent",
 				"indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
+				fixIndentPrefs(prefs));
+		return o;
+	}
+
+	public static OtpErlangObject templateIndentLines(final Backend b,
+			final String prefix, final String text, final int tabw,
+			final boolean useTabs, final Map<String, String> prefs)
+			throws BackendException {
+		final OtpErlangObject o = b.call(20000, "erlide_indent",
+				"template_indent_lines", "ssiolx", prefix, text, tabw, useTabs,
 				fixIndentPrefs(prefs));
 		return o;
 	}
@@ -78,27 +87,4 @@ public class ErlideIndent {
 		}
 	}
 
-	public static String quoteTemplateVariables(final Backend backend,
-			final String pattern) {
-		try {
-			final OtpErlangObject r = backend.call("erlide_indent",
-					"quote_template_variables", "s", pattern);
-			return Util.stringValue(r);
-		} catch (final BackendException e) {
-			ErlLogger.error(e);
-			return pattern;
-		}
-	}
-
-	public static String unquoteTemplateVariables(final Backend backend,
-			final String pattern) {
-		try {
-			final OtpErlangObject r = backend.call("erlide_indent",
-					"unquote_template_variables", "s", pattern);
-			return Util.stringValue(r);
-		} catch (final BackendException e) {
-			ErlLogger.error(e);
-			return pattern;
-		}
-	}
 }

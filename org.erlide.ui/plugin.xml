@@ -118,7 +118,7 @@
             category="org.erlide.ui.preferences.editor"
             class="org.erlide.ui.editors.erl.completion.ErlTemplatePreferencePage"
             id="org.erlide.ui.preferences.templates"
-            name="Erlang Templates">
+            name="%editorTemplatePage">
       </page>
    </extension>
      <extension
