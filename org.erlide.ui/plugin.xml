@@ -1346,8 +1346,7 @@
    <extension
          point="org.eclipse.ui.editors.templates">
       <include
-            file="erlang_templates/ant.xml"
-            translations="$nl$/erlang_templates/ant.properties">
+            file="erlang_templates/erlang_templates.xml">
       </include>
       <contextType
             class="org.erlide.ui.editors.erl.completion.ErlangContextType"
