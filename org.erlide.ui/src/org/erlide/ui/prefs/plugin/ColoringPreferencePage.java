@@ -399,7 +399,11 @@ public class ColoringPreferencePage extends PreferencePage implements
 		final GridData gd_label = new GridData(SWT.FILL, SWT.FILL, true, false);
 		label.setLayoutData(gd_label);
 
-		final Control previewer = createPreviewer(colorComposite);
+		final String content = loadPreviewContentFromFile(getClass(),
+				"ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+		fPreviewViewer = createErlangPreviewer(parent, fColorManager, fColors,
+				content);
+		final Control previewer = fPreviewViewer.getControl();
 		gd = new GridData(GridData.FILL_BOTH);
 		gd.widthHint = convertWidthInCharsToPixels(20);
 		gd.heightHint = convertHeightInCharsToPixels(5);
@@ -518,7 +522,20 @@ public class ColoringPreferencePage extends PreferencePage implements
 		filler.setLayoutData(gd);
 	}
 
-	private Control createPreviewer(final Composite parent) {
+	public static SourceViewer createErlangPreviewer(final Composite parent,
+			IColorManager colorManager,
+			Map<TokenHighlight, HighlightStyle> colors, final String content) {
+		// TODO we should move this method, to a utility class (or maybe create
+		// an ErlangPreviewSourceViewer class)
+		if (colorManager == null) {
+			colorManager = new ColorManager();
+		}
+		if (colors == null) {
+			colors = new HashMap<TokenHighlight, HighlightStyle>();
+			for (final TokenHighlight th : TokenHighlight.values()) {
+				colors.put(th, th.getDefaultData());
+			}
+		}
 
 		final IPreferenceStore generalTextStore = EditorsUI
 				.getPreferenceStore();
@@ -527,38 +544,38 @@ public class ColoringPreferencePage extends PreferencePage implements
 						new PreferencesAdapter(
 								createTemporaryCorePreferenceStore()),
 						generalTextStore });
-		fPreviewViewer = new ProjectionViewer(parent, null, null, false,
+		final SourceViewer v = new ProjectionViewer(parent, null, null, false,
 				SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		final SyntaxColorPreviewEditorConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
-				store, fColorManager, fColors);
-		fPreviewViewer.configure(configuration);
+				store, colorManager, colors);
+		v.configure(configuration);
 
 		final Font font = JFaceResources
 				.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
-		fPreviewViewer.getTextWidget().setFont(font);
-		new ErlangSourceViewerUpdater(fPreviewViewer, configuration, store);
-		fPreviewViewer.setEditable(false);
+		v.getTextWidget().setFont(font);
+		new ErlangSourceViewerUpdater(v, configuration, store);
+		v.setEditable(false);
 
-		final String content = loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
 		final IDocument document = new Document(content);
-		fPreviewViewer.setDocument(document);
+		v.setDocument(document);
 
-		return fPreviewViewer.getControl();
+		return v;
 	}
 
-	private Preferences createTemporaryCorePreferenceStore() {
+	private static Preferences createTemporaryCorePreferenceStore() {
 		final Preferences result = new Preferences();
 		result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
 		return result;
 	}
 
-	private String loadPreviewContentFromFile(final String filename) {
+	public static String loadPreviewContentFromFile(final Class<?> clazz,
+			final String filename) {
 		String line;
 		final String separator = System.getProperty("line.separator"); //$NON-NLS-1$
 		final StringBuilder buffer = new StringBuilder(512);
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(getClass()
+			reader = new BufferedReader(new InputStreamReader(clazz
 					.getResourceAsStream(filename)));
 			while ((line = reader.readLine()) != null) {
 				buffer.append(line);

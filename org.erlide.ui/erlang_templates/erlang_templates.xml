@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<template
+	context="org.erlide.ui.editor.erlang"
+	description="Erlang case block"
+	id="org.erlide.ui.editor.case"
+	autoinsert="true"
+	name="case">case ${expr} of
+    ${value} -&gt; ${clause};
+    _ -&gt; ${default}
+end,
+</template>
+<template
+	context="org.erlide.ui.editor.erlang"
+	description="Erlang try/catch block"
+	id="org.erlide.ui.editor.try_catch"
+	autoinsert="true"
+	name="try">try
+    ${expr}
+catch
+     throw:${term} -&gt;
+         ${clause}
+end,
+</template>
+</templates>

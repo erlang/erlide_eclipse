@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.ui;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
@@ -29,11 +30,15 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.text.templates.ContextTypeRegistry;
+import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
+import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
@@ -45,6 +50,7 @@ import org.erlide.jinterface.util.JRpcUtil;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
+import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
@@ -90,6 +96,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	private ErlConsoleManager erlConMan;
 
+	/** Key to store custom templates. */
+	private static final String CUSTOM_TEMPLATES_KEY= "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
+
+	
 	/**
 	 * The constructor.
 	 */
@@ -428,6 +438,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	private ErlangConsolePage fErlangConsolePage;
 
+	private ContributionContextTypeRegistry fContextTypeRegistry;
+	private ContributionTemplateStore fStore;
+
 	private void startPeriodicDump() {
 		String env = System.getenv("erlide.internal.coredump");
 		if ("true".equals(env)) {
@@ -460,5 +473,26 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
 	public void setConsolePage(final ErlangConsolePage erlangConsolePage) {
 		fErlangConsolePage = erlangConsolePage;
+	}
+
+	public TemplateStore getTemplateStore() {
+		if (fStore == null) {
+			fStore= new ContributionTemplateStore(getContextTypeRegistry(), getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
+			try {
+				fStore.load();
+			} catch (IOException e) {
+				getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
+		return fStore;
+	}
+
+	public ContextTypeRegistry getContextTypeRegistry() {
+		if (fContextTypeRegistry == null) {
+			// create an configure the contexts available in the template editor
+			fContextTypeRegistry= new ContributionContextTypeRegistry();
+			fContextTypeRegistry.addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE);
+		}
+		return fContextTypeRegistry;
 	}
 }
