@@ -7,7 +7,7 @@ Bundle-Vendor: Erlide.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  commons-net-1.4.1.jar,
- google-collect-1.0-rc3.jar
+ google-collect-1.0.jar
 Export-Package: com.ericsson.otp.erlang,
  com.google.common.annotations,
  com.google.common.base;uses:="new com.google.common.base",
