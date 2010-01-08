@@ -54,11 +54,22 @@ public class ErlideIndent {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject indentLines(final Backend b,
-			final int offset, final int length, final String text,
-			final int tabw, final boolean useTabs,
-			final Map<String, String> prefs) throws BackendException {
+			final boolean template, final int offset, final int length,
+			final String text, final int tabw, final boolean useTabs,
+			final Map<String, String> prefs, final String prefix)
+			throws BackendException {
 		final OtpErlangObject o = b.call(20000, "erlide_indent",
 				"indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
+				fixIndentPrefs(prefs));
+		return o;
+	}
+
+	public static OtpErlangObject templateIndentLines(final Backend b,
+			final String prefix, final String text, final int tabw,
+			final boolean useTabs, final Map<String, String> prefs)
+			throws BackendException {
+		final OtpErlangObject o = b.call(20000, "erlide_indent",
+				"template_indent_lines", "ssiolx", prefix, text, tabw, useTabs,
 				fixIndentPrefs(prefs));
 		return o;
 	}
@@ -75,4 +86,5 @@ public class ErlideIndent {
 			return new OtpErlangString("");
 		}
 	}
+
 }

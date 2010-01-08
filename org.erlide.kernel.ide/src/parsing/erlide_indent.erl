@@ -11,7 +11,7 @@
 %% Exported Functions
 %%
 
--export([indent_line/6, indent_lines/6]).
+-export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
 %-define(DEBUG, 1).
@@ -154,6 +154,16 @@ get_indent_of(_A = #token{line=N, offset=O}, C, LineOffsets) ->
 indent_lines(S, From, Length, Tablength, UseTabs, Prefs) ->
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S, From, Length),
     do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, "").
+
+template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
+	S0 = Prefix++S,
+	S1 = quote_template_variables(S0),
+	From = length(Prefix),
+	Length = length(S1) - From,
+    {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S1, From, Length),
+    S2 = do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, ""),
+	S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
+	unquote_template_variables(S3).
 
 %%
 %% Local Functions
@@ -854,5 +864,28 @@ scan(S) ->
 	    Error
     end.
 
+quote_template_variables(S) ->
+	quote_template_variables(S, false, []).
 
+quote_template_variables([], true, Acc) ->
+	lists:reverse(Acc, "'");
+quote_template_variables([], false, Acc) ->
+	lists:reverse(Acc);
+quote_template_variables("${" ++ Rest, _, Acc) ->
+	quote_template_variables(Rest, true, "{$'"++Acc);
+quote_template_variables("}"++Rest, true, Acc) ->
+	quote_template_variables(Rest, false, "'}"++Acc);
+quote_template_variables([C | Rest], V, Acc) ->
+	quote_template_variables(Rest, V, [C | Acc]).
 
+unquote_template_variables(S) ->
+	unquote_template_variables(S, []).
+
+unquote_template_variables([], Acc) ->
+	lists:reverse(Acc);
+unquote_template_variables("'${"++Rest, Acc) ->
+	unquote_template_variables(Rest, "{$"++Acc);
+unquote_template_variables("}'"++Rest, Acc) ->
+	unquote_template_variables(Rest, "}"++Acc);
+unquote_template_variables([C | Rest], Acc) ->
+	unquote_template_variables(Rest, [C | Acc]).

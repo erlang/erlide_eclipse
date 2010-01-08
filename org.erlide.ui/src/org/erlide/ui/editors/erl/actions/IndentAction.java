@@ -9,6 +9,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Util;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -43,14 +44,35 @@ public class IndentAction extends ErlangTextEditorAction {
 	@Override
 	protected OtpErlangObject callErlang(final int offset, final int length,
 			final String text) throws BackendException {
+		final OtpErlangObject r1 = doIndentLines(offset, length, text, false,
+				"");
+		return r1;
+	}
+
+	private static OtpErlangObject doIndentLines(final int offset,
+			final int length, final String text, final boolean template,
+			final String prefix) throws BackendException {
 		final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
 		final Map<String, String> prefs = new TreeMap<String, String>();
 		IndentationPreferencePage.addKeysAndPrefs(prefs);
 		SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
-		final OtpErlangObject r1 = ErlideIndent.indentLines(b, offset, length,
-				text, tabw, useTabs, prefs);
-		return r1;
+		if (template) {
+			final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,
+					prefix, text, tabw, useTabs, prefs);
+			return r1;
+		} else {
+			final OtpErlangObject r1 = ErlideIndent.indentLines(b, template,
+					offset, length, text, tabw, useTabs, prefs, prefix);
+			return r1;
+		}
+	}
+
+	public static String indentLines(final int offset, final int length,
+			final String text, final boolean template, final String prefix)
+			throws BackendException {
+		return Util.stringValue(doIndentLines(offset, length, text, template,
+				prefix));
 	}
 }
