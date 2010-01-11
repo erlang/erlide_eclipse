@@ -157,8 +157,6 @@ public class ErlTracingPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected void performDefaults() {
-		;
-		;
 		super.performDefaults();
 	}
 
@@ -167,8 +165,6 @@ public class ErlTracingPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	public boolean performOk() {
-		;
-		;
 		return true;
 	}
 

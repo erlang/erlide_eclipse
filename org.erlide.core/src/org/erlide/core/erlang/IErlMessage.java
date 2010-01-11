@@ -18,7 +18,7 @@ public interface IErlMessage extends IErlMember {
 
 	enum MessageKind {
 		INFO, WARNING, ERROR
-	};
+	}
 
 	MessageKind getMessageKind();
 

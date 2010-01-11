@@ -229,4 +229,4 @@ class MessageDialogPage extends DialogPage {
 		fMessageRegion.updateText(newMessage, IMessageProvider.ERROR);
 	}
 
-};
+}

@@ -519,7 +519,7 @@ public class LiveExpressionsView extends ViewPart implements
 				}
 			}
 		});
-	};
+	}
 
 	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),

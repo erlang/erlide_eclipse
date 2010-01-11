@@ -152,7 +152,7 @@ public final class ErlangCore {
 			return result;
 		}
 		final File folder = new File(loc);
-		if (folder == null || !folder.exists()) {
+		if (!folder.exists()) {
 			return result;
 		}
 		final File[] candidates = folder.listFiles(new FileFilter() {

@@ -378,7 +378,6 @@ extends StatusDialog implements IListAdapter<String> {
 			moveDown(field);
 			break;
 		default:
-			;
 		}
 	}
 

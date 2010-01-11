@@ -122,7 +122,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (outr != null) {
 				try {
 					outr.setDerived(true);
-					outr.refreshLocal(IProject.DEPTH_ZERO, null);
+					outr.refreshLocal(IResource.DEPTH_ZERO, null);
 				} catch (CoreException e) {
 					// ignore it
 				}

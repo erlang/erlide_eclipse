@@ -597,7 +597,6 @@ public class ErlModelUtils {
 	}
 
 	public static void openElementInEditor(final IErlElement element) {
-		;
 	}
 
 }

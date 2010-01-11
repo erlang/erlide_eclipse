@@ -213,7 +213,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
 		 */
 		public void inputChanged(final Viewer viewer, final Object oldInput,
 				final Object newInput) {
-			;
 		}
 	}
 

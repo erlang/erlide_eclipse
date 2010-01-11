@@ -208,13 +208,13 @@ public class ErlangPlugin extends Plugin {
 		if (plugin != null) {
 			Level lvl;
 			switch (status.getSeverity()) {
-			case Status.ERROR:
+			case IStatus.ERROR:
 				lvl = Level.SEVERE;
 				break;
-			case Status.WARNING:
+			case IStatus.WARNING:
 				lvl = Level.WARNING;
 				break;
-			case Status.INFO:
+			case IStatus.INFO:
 				lvl = Level.INFO;
 				break;
 			default:

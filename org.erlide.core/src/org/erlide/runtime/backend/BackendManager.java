@@ -72,11 +72,11 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public enum BackendEvent {
 		ADDED, REMOVED
-	};
+	}
 
 	public enum BackendOptions {
 		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE
-	};
+	}
 
 	private volatile ErlideBackend ideBackend;
 	private final Object ideBackendLock = new Object();
@@ -334,7 +334,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if ("beam_dir".equals(el.getName())) {
 				String dir = el.getAttribute("path");
 				String t = el.getAttribute("context").toUpperCase();
-				CodeContext type = CodeContext.valueOf(CodeContext.class, t);
+				CodeContext type = Enum.valueOf(CodeContext.class, t);
 				paths.add(new Tuple<String, CodeContext>(dir, type));
 			} else if ("init".equals(el.getName())) {
 				String module = el.getAttribute("module");

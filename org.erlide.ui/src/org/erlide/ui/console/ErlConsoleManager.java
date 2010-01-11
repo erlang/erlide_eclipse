@@ -30,7 +30,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
 		if (b == null || !b.getInfo().hasConsole()) {
 			return;
 		}
-		Object str = b == null ? "null" : b.getInfo();
+		Object str = b.getInfo();
 		ErlLogger.debug("console ADDED " + b + " " + str);
 		if (b instanceof ErlideBackend) {
 			ErlangConsole console = new ErlangConsole((ErlideBackend) b);
