@@ -97,7 +97,11 @@ public final class BuilderUtils {
 					beam = module.addFileExtension("beam").setDevice(null);
 					final IResource br = my_project.findMember(beam);
 					if (br != null) {
-						br.delete(true, null);
+						try {
+							br.delete(true, null);
+						} catch (Exception e) {
+							ErlLogger.warn(e);
+						}
 					}
 
 					// was it derived from a yrl?
@@ -145,7 +149,11 @@ public final class BuilderUtils {
 					erl = erl.addFileExtension("erl").setDevice(null);
 					final IResource br = my_project.findMember(erl);
 					if (br != null) {
-						br.delete(true, null);
+						try {
+							br.delete(true, null);
+						} catch (Exception e) {
+							ErlLogger.warn(e);
+						}
 						monitor.worked(1);
 					}
 					break;
@@ -674,7 +682,11 @@ public final class BuilderUtils {
 
 			if (shouldCompile) {
 				if (beam != null) {
-					beam.delete(true, null);
+					try {
+						beam.delete(true, null);
+					} catch (Exception e) {
+						ErlLogger.warn(e);
+					}
 				}
 				if (isDebugging()) {
 					ErlLogger.debug("compiling %s", source.getName());
@@ -726,7 +738,11 @@ public final class BuilderUtils {
 
 		try {
 			if (br != null) {
-				br.delete(true, null);
+				try {
+					br.delete(true, null);
+				} catch (Exception e) {
+					ErlLogger.warn(e);
+				}
 			}
 
 			final String input = resource.getLocation().toString();
