@@ -1,6 +1,7 @@
 package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 
 public class DirectoryTreeGroup extends Composite {
 
@@ -42,30 +43,25 @@ public class DirectoryTreeGroup extends Composite {
 
 	}
 
-	public DirectoryTreeGroup(final String title, final Composite parent) {
+	public DirectoryTreeGroup(final Composite parent, final String title) {
 		super(parent, SWT.NONE);
 		setLayout(new GridLayout());
-		GridData layoutData = new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL);
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
 		setLayoutData(layoutData);
 
-		// this.title = new Label(this, SWT.NONE);
-		// this.title.setText(title);
-		final Group group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout());
-		layoutData = new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL);
-		group.setLayoutData(layoutData);
-		group.setText(title);
-
-		checkboxTableViewer = CheckboxTableViewer.newCheckList(group, SWT.NONE);
-		layoutData = new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL);
-		layoutData = new GridData(GridData.VERTICAL_ALIGN_FILL
-				| GridData.HORIZONTAL_ALIGN_FILL);
+		// final Group group = new Group(parent, SWT.NONE);
+		// group.setLayout(new GridLayout());
+		// layoutData = new GridData(GridData.FILL_BOTH);
+		// group.setLayoutData(layoutData);
+		// group.setText(title);
+		final Label label = new Label(parent, SWT.NONE);
+		label.setText(title);
+		checkboxTableViewer = CheckboxTableViewer.newCheckList(parent,
+				SWT.BORDER);
+		layoutData = new GridData(GridData.FILL_BOTH);
 		layoutData.heightHint = 90;
 		layoutData.widthHint = 180;
-		checkboxTableViewer.getControl().setLayoutData(layoutData);
+		checkboxTableViewer.getTable().setLayoutData(layoutData);
 		checkboxTableViewer.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -123,5 +119,9 @@ public class DirectoryTreeGroup extends Composite {
 			this.checkedDirs.add(i);
 		}
 		checkboxTableViewer.refresh();
+	}
+
+	public Collection<String> getChecked() {
+		return checkedDirs;
 	}
 }

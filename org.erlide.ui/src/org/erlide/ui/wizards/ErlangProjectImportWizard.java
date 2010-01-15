@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +27,12 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IPageChangeProvider;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -53,10 +56,11 @@ import erlang.ErlideImport;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
 	// {
-	private IWorkbench workbench;
 	private IStructuredSelection selection;
 
-	ErlangProjectImportWizardPage mainPage;
+	private ErlangProjectImportWizardPage mainPage;
+	private ErlangProjectImportIncludeAndSourceDirsWizardPage importIncludeAndSourceDirsPage;
+	private Collection<String> resources;
 
 	// WizardFileSystemResourceImportPage1 mainPage;
 
@@ -72,19 +76,10 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		}
 		setDialogSettings(section);
 		// super();
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
-	 */
-	@Override
-	public boolean performFinish() {
-		if (!validateFinish()) {
-			return false;
-		}
-
+	public void setupIncludeAndSourceDirsPage() {
 		final List<?> selectedResources = mainPage.getSelectedResources();
 		final List<String> filesAndDirs = new ArrayList<String>(
 				selectedResources.size());
@@ -99,6 +94,9 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		final ErlProjectImport epi = ErlideImport
 				.importProject(ErlangCore.getBackendManager().getIdeBackend(),
 						projectPath, filesAndDirs);
+		importIncludeAndSourceDirsPage.setup(projectPath, epi.getDirectories(),
+				epi.getIncludeDirs(), epi.getSourceDirs());
+		resources = epi.getResources();
 		final List<Object> fileSystemObjects = new ArrayList<Object>();
 		for (final Object o : selectedResources) {
 			final FileSystemElement fse = (FileSystemElement) o;
@@ -109,70 +107,69 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 						.getFileSystemObject());
 			}
 		}
+	}
 
-		if (mainPage.isCopyFiles()) {
-
-			try {
-				getContainer().run(false, true, new WorkspaceModifyOperation() {
-
-					@Override
-					protected void execute(IProgressMonitor monitor) {
-						if (monitor == null) {
-							monitor = new NullProgressMonitor();
-						}
-						createProject(monitor, epi.getIncludeDirs(), epi
-								.getSourceDirs());
-
-						try {
-							final IWorkbench wbench = ErlideUIPlugin
-									.getDefault().getWorkbench();
-							wbench.showPerspective(ErlangPerspective.ID, wbench
-									.getActiveWorkbenchWindow());
-						} catch (final WorkbenchException we) {
-							// ignore
-						}
-					}
-				});
-
-			} catch (final InvocationTargetException x) {
-				reportError(x);
-				return false;
-			} catch (final InterruptedException x) {
-				reportError(x);
-				return false;
-			}
-		} else {
-			try {
-				getContainer().run(false, true, new WorkspaceModifyOperation() {
-
-					@Override
-					protected void execute(IProgressMonitor monitor) {
-						if (monitor == null) {
-							monitor = new NullProgressMonitor();
-						}
-						createProject(monitor, epi.getIncludeDirs(), epi
-								.getSourceDirs());
-
-						try {
-							final IWorkbench wbench = ErlideUIPlugin
-									.getDefault().getWorkbench();
-							wbench.showPerspective(ErlangPerspective.ID, wbench
-									.getActiveWorkbenchWindow());
-						} catch (final WorkbenchException we) {
-							// ignore
-						}
-					}
-				});
-
-			} catch (final InvocationTargetException x) {
-				reportError(x);
-				return false;
-			} catch (final InterruptedException x) {
-				reportError(x);
-				return false;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		if (!validateFinish()) {
+			return false;
+		}
+		if (resources == null) {
+			setupIncludeAndSourceDirsPage();
+		}
+		final List<?> selectedResources = mainPage.getSelectedResources();
+		final List<String> filesAndDirs = new ArrayList<String>(
+				selectedResources.size());
+		final FileSystemStructureProvider provider = FileSystemStructureProvider.INSTANCE;
+		for (final Object o : selectedResources) {
+			final FileSystemElement fse = (FileSystemElement) o;
+			final Object fso = fse.getFileSystemObject();
+			final String s = provider.getFullPath(fso);
+			filesAndDirs.add(s);
+		}
+		final String projectPath = mainPage.getProjectPath().toString();
+		final List<Object> fileSystemObjects = new ArrayList<Object>();
+		for (final Object o : selectedResources) {
+			final FileSystemElement fse = (FileSystemElement) o;
+			final Object fso = fse.getFileSystemObject();
+			final String s = provider.getFullPath(fso);
+			if (resources.contains(s)) {
+				fileSystemObjects.add(((FileSystemElement) o)
+						.getFileSystemObject());
 			}
 		}
+		try {
+			getContainer().run(false, true, new WorkspaceModifyOperation() {
 
+				@Override
+				protected void execute(IProgressMonitor monitor) {
+					if (monitor == null) {
+						monitor = new NullProgressMonitor();
+					}
+					createProject(monitor, importIncludeAndSourceDirsPage
+							.getIncludeDirs(), importIncludeAndSourceDirsPage
+							.getSourceDirs());
+
+					try {
+						final IWorkbench wbench = ErlideUIPlugin.getDefault()
+								.getWorkbench();
+						wbench.showPerspective(ErlangPerspective.ID, wbench
+								.getActiveWorkbenchWindow());
+					} catch (final WorkbenchException we) {
+						// ignore
+					}
+				}
+			});
+
+		} catch (final Exception x) {
+			reportError(x);
+			return false;
+		}
 		return mainPage.finish(projectPath, fileSystemObjects);
 	}
 
@@ -194,7 +191,6 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 */
 	public void init(final IWorkbench aWorkbench,
 			final IStructuredSelection aSelection) {
-		workbench = aWorkbench;
 		selection = aSelection;
 
 		final List<?> selectedResources = IDE
@@ -216,45 +212,27 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	@Override
 	public void addPages() {
 		super.addPages();
-		mainPage = new ErlangProjectImportWizardPage(workbench, selection);
+		mainPage = new ErlangProjectImportWizardPage(selection);
 		addPage(mainPage);
-
+		importIncludeAndSourceDirsPage = new ErlangProjectImportIncludeAndSourceDirsWizardPage();
+		addPage(importIncludeAndSourceDirsPage);
 	}
 
-	// /**
-	// * Builds the path from the specified path list.
-	// *
-	// * @param monitor
-	// * The progress monitor to use
-	// * @param root
-	// * the root worksapce
-	// * @param project
-	// * the project
-	// * @param pathList
-	// * the paths to create
-	// * @throws CoreException
-	// * if a problem occures
-	// */
-	// private void buildPaths(IProgressMonitor monitor, IWorkspaceRoot root,
-	// IProject project) throws CoreException {
-	// // Some paths are optionals (include): If we do not specify it, we get a
-	// // null string and we do not need to create the directory
-	// // if (null != pathList) {
-	// final IPath projectPath = project.getFullPath();
-	//
-	// // String pathElement;
-	// // for (String element : pathList) {
-	// // pathElement = element;
-	// // final IPath pp = new Path(pathElement);
-	// // // only create in-project paths
-	// // if (!pp.isAbsolute() && !".".equals(pathElement)) {
-	// // final IPath path = projectPath.append(pathElement);
-	// // final IFolder folder = root.getFolder(path);
-	// // createFolderHelper(folder, monitor);
-	// // }
-	// // }
-	// // }
-	// }
+	@Override
+	public void setContainer(final IWizardContainer wizardContainer) {
+		if (wizardContainer instanceof IPageChangeProvider) {
+			final IPageChangeProvider pcp = (IPageChangeProvider) wizardContainer;
+			pcp.addPageChangedListener(new IPageChangedListener() {
+
+				public void pageChanged(final PageChangedEvent event) {
+					if (event.getSelectedPage() == importIncludeAndSourceDirsPage) {
+						setupIncludeAndSourceDirsPage();
+					}
+				}
+			});
+		}
+		super.setContainer(wizardContainer);
+	}
 
 	/**
 	 * Displays an error that occured during the project creation. *
@@ -270,20 +248,6 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 						.getResourceString("wizards.errors.projecterrortitle"),
 				PluginUtils.makeStatus(x));
 	}
-
-	// /**
-	// * Displays an error that occured during the project creation. *
-	// *
-	// * @param x
-	// * details on the error
-	// */
-	// private void reportError(String x) {
-	// final Status status = new Status(IStatus.ERROR,
-	// ErlideUIPlugin.PLUGIN_ID, 0, x, null);
-	//
-	// ErrorDialog.openError(getShell(), x, ErlideUIPlugin
-	// .getResourceString("wizards.errors.projecterrortitle"), status);
-	// }
 
 	/**
 	 * This is the actual implementation for project creation.
@@ -355,39 +319,4 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 		}
 	}
 
-	// private String[] findErlDirectories() {
-	// List<String> result = new ArrayList<String>();
-	// for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-	// ;
-	// }
-	// return result.toArray(new String[result.size()]);
-	// }
-	//
-	// private String[] findHrlDirectories() {
-	// List<String> result = new ArrayList<String>();
-	// for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-	// ;
-	// }
-	// return result.toArray(new String[result.size()]);
-	// }
-
-	/**
-	 * Helper method: it recursively creates a folder path.
-	 * 
-	 * @param folder
-	 * @param monitor
-	 * @throws CoreException
-	 * @see java.io.File#mkdirs()
-	 */
-	// private void createFolderHelper(IFolder folder, IProgressMonitor monitor)
-	// throws CoreException {
-	// if (!folder.exists()) {
-	// final IContainer parent = folder.getParent();
-	// if (parent instanceof IFolder && (!((IFolder) parent).exists())) {
-	// createFolderHelper((IFolder) parent, monitor);
-	// }
-	//
-	// folder.create(false, true, monitor);
-	// }
-	// }
 }
