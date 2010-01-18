@@ -1314,7 +1314,6 @@ public class ErlangProjectImportWizardPage extends
 	// // WizardResourceImportPage
 	// return false;
 	// }
-
 	/**
 	 * Display an error dialog with the specified message.
 	 * 
@@ -1322,8 +1321,8 @@ public class ErlangProjectImportWizardPage extends
 	 *            the error message
 	 */
 	protected void displayErrorDialog(final String message) {
-		MessageDialog.open(MessageDialog.ERROR, getContainer().getShell(),
-				getErrorDialogTitle(), message, SWT.SHEET);
+		MessageDialog.openError(getContainer().getShell(),
+				getErrorDialogTitle(), message);
 	}
 
 	/**
@@ -1387,10 +1386,6 @@ public class ErlangProjectImportWizardPage extends
 						IDialogConstants.NO_LABEL,
 						IDialogConstants.NO_TO_ALL_LABEL,
 						IDialogConstants.CANCEL_LABEL }, 0) {
-			@Override
-			protected int getShellStyle() {
-				return super.getShellStyle() | SWT.SHEET;
-			}
 		};
 		final String[] response = new String[] { YES, ALL, NO, NO_ALL, CANCEL };
 		// run in syncExec because callback is from an operation,
@@ -1417,10 +1412,6 @@ public class ErlangProjectImportWizardPage extends
 				.getShell(), IDEWorkbenchMessages.Question, null, message,
 				MessageDialog.NONE, new String[] { IDialogConstants.YES_LABEL,
 						IDialogConstants.NO_LABEL }, 0) {
-			@Override
-			protected int getShellStyle() {
-				return super.getShellStyle() | SWT.SHEET;
-			}
 		};
 		// ensure yes is the default
 

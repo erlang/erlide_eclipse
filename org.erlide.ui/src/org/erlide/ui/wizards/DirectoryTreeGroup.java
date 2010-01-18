@@ -9,7 +9,6 @@ import java.util.Set;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -74,16 +73,6 @@ public class DirectoryTreeGroup extends Composite {
 
 		});
 		checkboxTableViewer.setContentProvider(new ContentProvider());
-		checkboxTableViewer.setCheckStateProvider(new ICheckStateProvider() {
-
-			public boolean isGrayed(final Object element) {
-				return false;
-			}
-
-			public boolean isChecked(final Object element) {
-				return checkedDirs.contains(element);
-			}
-		});
 		checkboxTableViewer.addCheckStateListener(new ICheckStateListener() {
 
 			public void checkStateChanged(final CheckStateChangedEvent event) {
@@ -110,6 +99,7 @@ public class DirectoryTreeGroup extends Composite {
 	public void setAllDirs(final List<String> allDirs) {
 		this.allDirs = allDirs;
 		checkboxTableViewer.setInput(allDirs);
+		setChecked();
 		checkboxTableViewer.refresh();
 	}
 
@@ -118,7 +108,14 @@ public class DirectoryTreeGroup extends Composite {
 		for (final String i : checkedDirs) {
 			this.checkedDirs.add(i);
 		}
+		setChecked();
 		checkboxTableViewer.refresh();
+	}
+
+	private void setChecked() {
+		for (final String i : allDirs) {
+			checkboxTableViewer.setChecked(i, checkedDirs.contains(i));
+		}
 	}
 
 	public Collection<String> getChecked() {
