@@ -8,7 +8,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 		WizardPage {
@@ -36,8 +35,6 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 		layout.marginWidth = 0;
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		new Label(composite, SWT.NONE).setText("Ett test");
-		new Label(composite, SWT.NONE).setText("€nnu ett");
 		sourceDirTreeGroup = new DirectoryTreeGroup(composite,
 				"Source directories");
 		includeDirTreeGroup = new DirectoryTreeGroup(composite,
