@@ -1,3 +1,28 @@
+List of user visible changes between 0.7.0 and 0.7.3 (20100118)
+
+37441dd ignore errors when deleting beam files
+7790cfd erlang templates, with syntax highlighted preview, indentation
+8d8c3c1 Merge remote branch 'jakob/490-External-Files-project-closed' into next
+dd794f9 use binary for noparse:initial_text parameter
+483c23a Fix timeout in light_scan_string, send bin instead of string
+4f39704 Merge remote branch 'origin/487-configure-report-directory'
+273a828 Merge remote branch 'upstream/master'
+208f82b fix #480: import wizard doesn't descend in subdirectories
+f875182 send to console action, useful when debugging and testing
+dd206d2 Merge branch '257--type---navigate-from-spec-to-declared-type'
+ebf7b8e fixed -opaque and external type refs
+c6a16e5 add option to monitor ide backend
+19ba4a0 improve backend launching: send environment; make node status local
+207c512 Merge branch '476-open-module-dialog--allow-inexact-matches'
+c7a8ca0 Merge branch '444-text-selected-randomly-in-editor'
+a424ef4 444 - text selected randomly in editor
+51668ce 472-launch--extra-arguments-to-runtime-don-t-get-used
+647c7a9 Added OpenAndLinkWithEditorHelper.java for 3.4 compliance
+7e6d06a Merge branch '469-editor---erlang-reconciler-still-broken'
+5e81bfc set structure to true in reset (avoids erroneously reparse in compiler)
+0d261e2 CodeBundle now mirrors 'codepath' extensions moved project registration to Backend
+bf9ab9e 468-split-erlang-code-so-that-compiler-backend-can-use-R11
+
 List of user visible changes between 0.6.5 and 0.7.0 (20091103)
 
 	http://www.assembla.com/spaces/erlide/tickets/362-random-erlang-crashes-on-Linux-with-exit-code-134
