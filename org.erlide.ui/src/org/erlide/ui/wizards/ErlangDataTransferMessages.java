@@ -133,6 +133,8 @@ public class ErlangDataTransferMessages extends NLS {
 
 	public static String TarImport_invalid_tar_format;
 
+	public static String ErlangProjectImport_selectSourceAndIncludeDirectories;
+
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, ErlangDataTransferMessages.class);

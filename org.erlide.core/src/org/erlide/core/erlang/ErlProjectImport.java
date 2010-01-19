@@ -2,9 +2,9 @@ package org.erlide.core.erlang;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.erlide.jinterface.backend.util.Util;
 
@@ -13,21 +13,26 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlProjectImport {
-	private final Set<String> resources;
+	private final SortedSet<String> resources;
 	private final List<String> sourceDirs;
 	private final List<String> includeDirs;
+	private final List<String> directories;
 
 	public ErlProjectImport(final OtpErlangObject o) {
 		final OtpErlangTuple t = (OtpErlangTuple) o;
 		OtpErlangList l = (OtpErlangList) t.elementAt(0);
-		resources = (Set<String>) erlangStringList2Collection(l,
-				new HashSet<String>());
+		resources = (SortedSet<String>) erlangStringList2Collection(l,
+				new TreeSet<String>());
 		l = (OtpErlangList) t.elementAt(1);
 		sourceDirs = (List<String>) erlangStringList2Collection(l,
 				new ArrayList<String>());
 		l = (OtpErlangList) t.elementAt(2);
 		includeDirs = (List<String>) erlangStringList2Collection(l,
 				new ArrayList<String>());
+		l = (OtpErlangList) t.elementAt(3);
+		directories = (List<String>) erlangStringList2Collection(l,
+				new ArrayList<String>());
+		directories.set(0, ".");
 	}
 
 	private static Collection<String> erlangStringList2Collection(
@@ -42,11 +47,15 @@ public class ErlProjectImport {
 		return resources;
 	}
 
-	public Collection<String> getSourceDirs() {
+	public List<String> getDirectories() {
+		return directories;
+	}
+
+	public List<String> getSourceDirs() {
 		return sourceDirs;
 	}
 
-	public Collection<String> getIncludeDirs() {
+	public List<String> getIncludeDirs() {
 		return includeDirs;
 	}
 }

@@ -1,6 +1,7 @@
 package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,22 +17,29 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
-import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.erlide.ui.util.DialogUtil;
 import org.erlide.ui.util.IElementFilter;
 import org.erlide.ui.util.ResourceTreeAndListGroup;
 
-public abstract class ErlangWizardResourceImportPage extends
-		WizardDataTransferPage {
+public abstract class ErlangWizardResourceImportPage extends WizardPage {
+
+	protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
+
+	protected static final int COMBO_HISTORY_LENGTH = 5;
+
 	private IResource currentResourceSelection;
 
 	// initial value stores
@@ -105,7 +113,6 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * <code>WizardDataTransferPage</code> method returns <code>true</code>.
 	 * Subclasses may override this method.
 	 */
-	@Override
 	protected boolean allowNewContainerName() {
 		return true;
 	}
@@ -183,6 +190,30 @@ public abstract class ErlangWizardResourceImportPage extends
 	// initialPopulateContainerField();
 	// }
 
+	abstract protected void restoreWidgetValues();
+
+	/**
+	 * Create the options specification widgets.
+	 * 
+	 * @param parent
+	 *            org.eclipse.swt.widgets.Composite
+	 */
+	protected void createOptionsGroup(final Composite parent) {
+		// options group
+		final Group optionsGroup = new Group(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout();
+		optionsGroup.setLayout(layout);
+		optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.GRAB_HORIZONTAL));
+		optionsGroup.setText(IDEWorkbenchMessages.WizardExportPage_options);
+		optionsGroup.setFont(parent.getFont());
+
+		createOptionsGroupButtons(optionsGroup);
+
+	}
+
+	abstract protected void createOptionsGroupButtons(final Group optionsGroup);
+
 	/**
 	 * Create the import source selection widget
 	 */
@@ -223,7 +254,6 @@ public abstract class ErlangWizardResourceImportPage extends
 	/*
 	 * @see WizardDataTransferPage.getErrorDialogTitle()
 	 */
-	@Override
 	protected String getErrorDialogTitle() {
 		return ErlangDataTransferMessages.WizardImportPage_errorDialogTitle;
 	}
@@ -268,7 +298,7 @@ public abstract class ErlangWizardResourceImportPage extends
 	 */
 	private IPath getResourcePath() {
 		// return getPathFromText(containerNameField);
-		return (new Path(containerNameField)).makeAbsolute();
+		return new Path(containerNameField).makeAbsolute();
 	}
 
 	/**
@@ -278,9 +308,12 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @return a list of resources currently selected for export (element type:
 	 *         <code>IResource</code>)
 	 */
-	@SuppressWarnings("unchecked")
-	protected java.util.List getSelectedResources() {
+	protected List<?> getSelectedResources() {
 		return selectionGroup.getAllCheckedListItems();
+	}
+
+	public List<?> getSelectedDirectoriesAndResources() {
+		return selectionGroup.getAllWhiteCheckedItems();
 	}
 
 	/**
@@ -324,23 +357,6 @@ public abstract class ErlangWizardResourceImportPage extends
 	}
 
 	/**
-	 * Opens a container selection dialog and displays the user's subsequent
-	 * container resource selection in this page's container name field.
-	 */
-	// protected void handleContainerBrowseButtonPressed() {
-	// // see if the user wishes to modify this container selection
-	// IPath containerPath = queryForContainer(getSpecifiedContainer(),
-	// IDEWorkbenchMessages.WizardImportPage_selectFolderLabel,
-	// IDEWorkbenchMessages.WizardImportPage_selectFolderTitle);
-	//
-	// // if a container was selected then put its name in the container name
-	// // field
-	// // if (containerPath != null) { // null means user cancelled
-	// // setErrorMessage(null);
-	// // containerNameField.setText(containerPath.makeRelative().toString());
-	// // }
-	// }
-	/**
 	 * The <code>WizardResourceImportPage</code> implementation of this
 	 * <code>Listener</code> method handles all events and enablements for
 	 * controls on this page. Subclasses may extend.
@@ -348,15 +364,10 @@ public abstract class ErlangWizardResourceImportPage extends
 	 * @param event
 	 *            Event
 	 */
-	// public void handleEvent(Event event) {
-	// Widget source = event.widget;
-	//
-	// if (source == containerBrowseButton) {
-	// handleContainerBrowseButtonPressed();
-	// }
-	//
-	// updateWidgetEnablements();
-	// }
+	public void handleEvent(final Event event) {
+		updateWidgetEnablements();
+	}
+
 	/**
 	 * Open a registered type selection dialog and note the selections in the
 	 * receivers types-to-export field
@@ -437,7 +448,6 @@ public abstract class ErlangWizardResourceImportPage extends
 	/**
 	 * Check if widgets are enabled or disabled by a change in the dialog.
 	 */
-	@Override
 	protected void updateWidgetEnablements() {
 
 		final boolean pageComplete = determinePageCompletion();
@@ -445,7 +455,6 @@ public abstract class ErlangWizardResourceImportPage extends
 		if (pageComplete) {
 			setMessage(null);
 		}
-		super.updateWidgetEnablements();
 	}
 
 	/*
@@ -530,15 +539,79 @@ public abstract class ErlangWizardResourceImportPage extends
 	/*
 	 * @see WizardDataTransferPage.determinePageCompletion.
 	 */
-	@Override
 	protected boolean determinePageCompletion() {
+		final boolean complete = validateSourceGroup()
+				&& validateDestinationGroup() && validateOptionsGroup();
+
 		// Check for valid projects before making the user do anything
 		// if (noOpenProjects()) {
 		// setErrorMessage(IDEWorkbenchMessages.WizardImportPage_noOpenProjects)
 		// ;
 		// return false;
 		// }
-		return super.determinePageCompletion();
+		// Avoid draw flicker by not clearing the error
+		// message unless all is valid.
+		if (complete) {
+			setErrorMessage(null);
+		}
+
+		return complete;
+	}
+
+	protected boolean validateOptionsGroup() {
+		return true;
+	}
+
+	protected boolean validateDestinationGroup() {
+		return true;
+	}
+
+	protected boolean validateSourceGroup() {
+		return true;
+	}
+
+	/**
+	 * Adds an entry to a history, while taking care of duplicate history items
+	 * and excessively long histories. The assumption is made that all histories
+	 * should be of length
+	 * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
+	 * 
+	 * @param history
+	 *            the current history
+	 * @param newEntry
+	 *            the entry to add to the history
+	 */
+	protected String[] addToHistory(final String[] history,
+			final String newEntry) {
+		final java.util.ArrayList<String> l = new java.util.ArrayList<String>(
+				Arrays.asList(history));
+		addToHistory(l, newEntry);
+		final String[] r = new String[l.size()];
+		l.toArray(r);
+		return r;
+	}
+
+	/**
+	 * Adds an entry to a history, while taking care of duplicate history items
+	 * and excessively long histories. The assumption is made that all histories
+	 * should be of length
+	 * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
+	 * 
+	 * @param history
+	 *            the current history
+	 * @param newEntry
+	 *            the entry to add to the history
+	 */
+	protected void addToHistory(final List<String> history,
+			final String newEntry) {
+		history.remove(newEntry);
+		history.add(0, newEntry);
+
+		// since only one new item was added, we can be over the limit
+		// by at most one item
+		if (history.size() > COMBO_HISTORY_LENGTH) {
+			history.remove(COMBO_HISTORY_LENGTH);
+		}
 	}
 
 	// /**
