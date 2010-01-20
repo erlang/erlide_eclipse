@@ -8,7 +8,7 @@ COMMIT=$2
 #                = modify plugin/feature versions
 
 CRT=$(git branch | grep '*' | cut -d ' ' -f 2)
-PROJECTS=$(git log --name-only $1..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
+PROJECTS=$(git log --name-only $BASE..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
 
 function inc_version {
   local VER=$1
@@ -144,13 +144,15 @@ then
 		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < org.erlide/feature.xml > org.erlide/feature.xml1
 		mv org.erlide/feature.xml1 org.erlide/feature.xml
 
-mv CHANGES CHANGES.old
-echo "List of user visible changes between $NEW and $VER ($(date))" > CHANGES
-echo "" >> CHANGES
-git log $NEW..$VER --oneline >> CHANGES
-echo "" >> CHANGES
-cat CHANGES.old >> CHANGES
-rm CHANGES.old
+		NEW_=$(echo $NEW | sed 's/.qualifier//')
+		VER_=$(echo $VER | sed 's/.qualifier//')
+		mv CHANGES CHANGES.old		
+		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
+		echo "" >> CHANGES
+		git log v$NEW_..$CRT --oneline >> CHANGES
+		echo "" >> CHANGES
+		cat CHANGES.old >> CHANGES
+		rm CHANGES.old
 
 	fi
   fi
