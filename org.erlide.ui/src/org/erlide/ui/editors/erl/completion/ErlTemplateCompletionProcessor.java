@@ -1,5 +1,8 @@
 package org.erlide.ui.editors.erl.completion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -11,6 +14,18 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor {
+
+	private final IDocument fDocument;
+	private final int offset;
+	private final int length;
+
+	public ErlTemplateCompletionProcessor(final IDocument doc,
+			final int offset, final int length) {
+		super();
+		fDocument = doc;
+		this.offset = offset;
+		this.length = length;
+	}
 
 	@Override
 	protected TemplateContextType getContextType(final ITextViewer viewer,
@@ -27,7 +42,23 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 
 	@Override
 	protected Template[] getTemplates(final String contextTypeId) {
-		return ErlideUIPlugin.getDefault().getTemplateStore().getTemplates();
+		final Template[] templates = ErlideUIPlugin.getDefault()
+				.getTemplateStore().getTemplates();
+		final TemplateContextType type = ErlideUIPlugin.getDefault()
+				.getContextTypeRegistry().getContextType(contextTypeId);
+		if (type instanceof ErlangContextType) {
+			final List<Template> result = new ArrayList<Template>(
+					templates.length);
+			final ErlangTemplateContext etc = new ErlangTemplateContext(type,
+					fDocument, offset, length);
+			for (final Template template : templates) {
+				if (etc.canEvaluate(template)) {
+					result.add(template);
+				}
+			}
+			return result.toArray(new Template[result.size()]);
+		}
+		return templates;
 	}
 
 	// @Override

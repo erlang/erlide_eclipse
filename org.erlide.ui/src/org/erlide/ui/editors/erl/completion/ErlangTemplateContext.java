@@ -38,6 +38,14 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
 		return buffer;
 	}
 
+	@Override
+	public boolean canEvaluate(final Template template) {
+		final String key = getKey();
+		return key.length() != 0
+				&& template.getName().toLowerCase().startsWith(
+						key.toLowerCase());
+	}
+
 	private Template indentTemplatePattern(final Template template) {
 		String pattern = template.getPattern();
 		final String whiteSpacePrefix = getWhiteSpacePrefix();
