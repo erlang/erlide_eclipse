@@ -49,6 +49,7 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
@@ -193,8 +194,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			}
 			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
 					project, b);
-			ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor();
-			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer, offset))); // TODO bara testar
+			final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
+					doc, offset - before.length(), before.length());
+			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
+					offset)));
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
@@ -481,17 +484,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				String funWithParameters = arityOnly ? funWithArity
 						: ((OtpErlangString) f.elementAt(1)).stringValue();
 				final OtpErlangList parOffsets = (OtpErlangList) f.elementAt(2);
-				StringBuffer docStr = null;
+				String docStr = null;
 				if (f.arity() > 3) {
 					final OtpErlangObject elt = f.elementAt(3);
 					if (elt instanceof OtpErlangString) {
-						docStr = new StringBuffer(((OtpErlangString) elt)
-								.stringValue());
-						if (docStr.length() > 0) {
-							HTMLPrinter.insertPageProlog(docStr, 0,
-									fgStyleSheet);
-							HTMLPrinter.addPageEpilog(docStr);
+						final StringBuffer sb = new StringBuffer(Util
+								.stringValue(elt));
+						if (sb.length() > 0) {
+							HTMLPrinter.insertPageProlog(sb, 0, fgStyleSheet);
+							HTMLPrinter.addPageEpilog(sb);
 						}
+						docStr = sb.toString();
 					}
 				}
 
@@ -501,8 +504,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				if (!arityOnly) {
 					addOffsetsAndLengths(parOffsets, offset, offsetsAndLengths);
 				}
-				addFunctionCompletion(offset, result, funWithArity,
-						docStr == null ? null : docStr.toString(),
+				addFunctionCompletion(offset, result, funWithArity, docStr,
 						funWithParameters, offsetsAndLengths);
 			}
 		}

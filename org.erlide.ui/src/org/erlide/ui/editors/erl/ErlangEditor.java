@@ -244,15 +244,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// Platform.getAdapterManager().registerAdapters(adapterFactory,
 		// IResource.class);
 
-		final IPreferenceStore generalTextStore = EditorsUI
-				.getPreferenceStore();
-		final IPreferenceStore store = new ChainedPreferenceStore(
-				new IPreferenceStore[] {
-						ErlideUIPlugin.getDefault().getPreferenceStore(),
-						generalTextStore });
+		final IPreferenceStore store = getErlangEditorPreferenceStore();
 		setPreferenceStore(store);
 
-		final EditorConfiguration cfg = new EditorConfiguration(
+		final ErlangSourceViewerConfiguration cfg = new EditorConfiguration(
 				getPreferenceStore(), this, colorManager);
 		setSourceViewerConfiguration(cfg);
 
@@ -268,6 +263,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// thread.setPriority(Thread.MIN_PRIORITY);
 		// thread.setName("ErlangEditor initializer");
 		// thread.start();
+	}
+
+	public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
+		final IPreferenceStore generalTextStore = EditorsUI
+				.getPreferenceStore();
+		return new ChainedPreferenceStore(new IPreferenceStore[] {
+				ErlideUIPlugin.getDefault().getPreferenceStore(),
+				generalTextStore });
 	}
 
 	public void disposeModule() {

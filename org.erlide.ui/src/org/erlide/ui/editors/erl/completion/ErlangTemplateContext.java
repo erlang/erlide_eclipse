@@ -20,14 +20,19 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
 	}
 
 	@Override
-	public TemplateBuffer evaluate(Template template)
+	public TemplateBuffer evaluate(final Template template)
+			throws BadLocationException, TemplateException {
+		return evaluate(template, false);
+	}
+
+	public TemplateBuffer evaluate(Template template, final boolean indentFrom0)
 			throws BadLocationException, TemplateException {
 		if (!canEvaluate(template)) {
 			return null;
 		}
 
 		if (ErlTemplateCompletionPreferences.getIndentCode()) {
-			template = indentTemplatePattern(template);
+			template = indentTemplatePattern(template, indentFrom0);
 		}
 
 		final TemplateTranslator translator = new TemplateTranslator();
@@ -38,9 +43,19 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
 		return buffer;
 	}
 
-	private Template indentTemplatePattern(final Template template) {
+	@Override
+	public boolean canEvaluate(final Template template) {
+		final String key = getKey();
+		return key.length() != 0
+				&& template.getName().toLowerCase().startsWith(
+						key.toLowerCase());
+	}
+
+	private Template indentTemplatePattern(final Template template,
+			final boolean indentFrom0) {
 		String pattern = template.getPattern();
-		final String whiteSpacePrefix = getWhiteSpacePrefix();
+		final String whiteSpacePrefix = indentFrom0 ? ""
+				: getWhiteSpacePrefix();
 		try {
 			pattern = IndentAction.indentLines(0, 0, pattern, true,
 					whiteSpacePrefix);

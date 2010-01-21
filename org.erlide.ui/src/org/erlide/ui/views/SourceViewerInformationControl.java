@@ -16,7 +16,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
@@ -35,6 +34,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.ui.editors.erl.ColorManager;
+import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 
 /**
  * Source viewer based implementation of
@@ -118,7 +120,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 
 		Composite composite = fShell;
 		layout = new GridLayout(1, false);
-		final int border = ((shellStyle & SWT.NO_TRIM) == 0) ? 0 : BORDER;
+		final int border = (shellStyle & SWT.NO_TRIM) == 0 ? 0 : BORDER;
 		layout.marginHeight = border;
 		layout.marginWidth = border;
 		composite.setLayout(layout);
@@ -141,7 +143,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 
 		// Source viewer
 		fViewer = new SourceViewer(composite, null, style);
-		fViewer.configure(new SourceViewerConfiguration());
+		fViewer.configure(new ErlangSourceViewerConfiguration(ErlangEditor
+				.getErlangEditorPreferenceStore(), new ColorManager()));
 		fViewer.setEditable(false);
 
 		fText = fViewer.getTextWidget();

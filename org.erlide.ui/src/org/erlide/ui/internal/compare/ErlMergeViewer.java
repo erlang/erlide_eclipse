@@ -28,6 +28,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.EditorConfiguration;
+import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 
 public class ErlMergeViewer extends TextMergeViewer {
 
@@ -39,7 +40,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 
 	private boolean fUseSystemColors;
 
-	private EditorConfiguration fSourceViewerConfiguration;
+	private ErlangSourceViewerConfiguration fSourceViewerConfiguration;
 
 	public ErlMergeViewer(final Composite parent, final int styles,
 			final CompareConfiguration mp) {
@@ -137,7 +138,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 		return PreferenceConverter.getColor(store, key);
 	}
 
-	private EditorConfiguration getSourceViewerConfiguration() {
+	private ErlangSourceViewerConfiguration getSourceViewerConfiguration() {
 		if (fSourceViewerConfiguration == null) {
 			fSourceViewerConfiguration = new EditorConfiguration(
 					fPreferenceStore, null, new ColorManager()) {
