@@ -20,7 +20,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
-import org.erlide.ui.editors.erl.EditorConfiguration;
+import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 /**
@@ -41,7 +41,7 @@ public class ErlangSourceViewerUpdater {
 	 *            the preference store
 	 */
 	public ErlangSourceViewerUpdater(final ISourceViewer viewer,
-			final EditorConfiguration configuration,
+			final ErlangSourceViewerConfiguration configuration,
 			final IPreferenceStore preferenceStore) {
 		Assert.isNotNull(viewer);
 		Assert.isNotNull(configuration);

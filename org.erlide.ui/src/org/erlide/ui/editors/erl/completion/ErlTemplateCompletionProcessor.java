@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.ui.views.SourceViewerInformationControl;
 
 public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor {
 
@@ -61,16 +67,22 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 		return templates;
 	}
 
-	// @Override
-	// protected ICompletionProposal createProposal(final Template template,
-	// final TemplateContext context, final IRegion region,
-	// final int relevance) {
-	// if (ErlTemplateCompletionPreferences.getIndentCode() || false) {
-	// return new ErlIndentingTemplateProsoal(template, context, region,
-	// getImage(template), relevance);
-	// }
-	// return super.createProposal(template, context, region, relevance);
-	// }
+	@Override
+	protected ICompletionProposal createProposal(final Template template,
+			final TemplateContext context, final IRegion region,
+			final int relevance) {
+		final ErlTemplateProposal p = new ErlTemplateProposal(template,
+				context, region, getImage(template), relevance);
+		p.setInformationControlCreator(new IInformationControlCreator() {
+
+			public IInformationControl createInformationControl(
+					final Shell parent) {
+				return new SourceViewerInformationControl(parent,
+						PreferenceConstants.EDITOR_TEXT_FONT);
+			}
+		});
+		return p;
+	}
 
 	@Override
 	protected TemplateContext createContext(final ITextViewer viewer,
