@@ -163,7 +163,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			return false;
 		}
 
-		if (prefs.getSourceDirsString().trim().length() == 0) {
+		if (prefs.getSourceDirs().size() == 0) {
 			reportError(ErlideUIPlugin
 					.getResourceString("wizards.errors.sourcepath"));
 			return false;

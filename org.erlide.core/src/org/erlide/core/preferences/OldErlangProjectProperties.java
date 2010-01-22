@@ -180,14 +180,6 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public String getIncludeDirsString() {
-		return PreferencesUtils.packList(includeDirs);
-	}
-
-	public void setIncludeDirsString(final String dirs) {
-		includeDirs = PreferencesUtils.unpackList(dirs);
-	}
-
 	public List<String> getIncludeDirs() {
 		return Collections.unmodifiableList(includeDirs);
 	}
@@ -217,14 +209,6 @@ public final class OldErlangProjectProperties implements
 			// ErlLogger.warn(e);
 			// }
 		}
-	}
-
-	public String getSourceDirsString() {
-		return PreferencesUtils.packList(sourceDirs);
-	}
-
-	public void setSourceDirsString(final String dirs) {
-		sourceDirs = PreferencesUtils.unpackList(dirs);
 	}
 
 	public List<String> getSourceDirs() {

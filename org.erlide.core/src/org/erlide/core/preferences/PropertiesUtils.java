@@ -37,8 +37,8 @@ public final class PropertiesUtils {
 		}
 
 		result.addSources(mkSources(old.getSourceDirs()));
-		result.addIncludes(PreferencesUtils.unpackList(old
-				.getIncludeDirsString()));
+		result.addIncludes(PreferencesUtils.unpackList(PreferencesUtils
+				.packList(old.getIncludeDirs())));
 		result.setOutput(new Path(old.getOutputDir()));
 
 		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()

@@ -49,6 +49,7 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeInfoListener;
 import org.erlide.jinterface.backend.RuntimeVersion;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
@@ -266,8 +267,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 
-		source.setText(prefs.getSourceDirsString());
-		include.setText(prefs.getIncludeDirsString());
+		source.setText(PreferencesUtils.packList(prefs.getSourceDirs()));
+		include.setText(PreferencesUtils.packList(prefs.getIncludeDirs()));
 		output.setText(prefs.getOutputDir());
 		RuntimeVersion rv = prefs.getRuntimeVersion();
 		if (!rv.isDefined()) {
@@ -297,8 +298,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getProjectProperties(project);
 
 		prefs.setOutputDir(output.getText());
-		prefs.setSourceDirsString(source.getText());
-		prefs.setIncludeDirsString(include.getText());
+		prefs.setSourceDirs(PreferencesUtils.unpackList(source.getText()));
+		prefs.setIncludeDirs(PreferencesUtils.unpackList(include.getText()));
 		prefs.setRuntimeVersion(new RuntimeVersion(runtimeVersion.getText()));
 
 		if (ErlideUtil.isTest()) {

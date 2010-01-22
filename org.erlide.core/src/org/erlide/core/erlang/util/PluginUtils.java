@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -58,8 +57,7 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = prefs.getSourceDirs();
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (i.equals(".")) {
@@ -101,8 +99,7 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = prefs.getSourceDirs();
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
