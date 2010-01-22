@@ -36,7 +36,8 @@ public final class OldErlangProjectProperties implements
 
 	private List<String> sourceDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-	private final String testDirs = ProjectPreferencesConstants.DEFAULT_TEST_DIRS;
+	private final List<String> testDirs = PreferencesUtils
+			.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
 	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
@@ -224,7 +225,7 @@ public final class OldErlangProjectProperties implements
 	}
 
 	public String[] getTestDirs() {
-		return PreferencesUtils.unpackArray(testDirs);
+		return testDirs.toArray(new String[] {});
 	}
 
 	public void setSourceDirs(final String[] dirs) {
