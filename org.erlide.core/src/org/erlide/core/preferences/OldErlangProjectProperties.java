@@ -39,7 +39,8 @@ public final class OldErlangProjectProperties implements
 	private final List<String> testDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
-	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
+	private List<String> includeDirs = PreferencesUtils
+			.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 	private RuntimeVersion runtimeVersion = new RuntimeVersion(
@@ -91,8 +92,10 @@ public final class OldErlangProjectProperties implements
 				ProjectPreferencesConstants.SOURCE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
 		sourceDirs = PreferencesUtils.unpackList(sourceDirsStr);
-		includeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
+		String includeDirsStr = node.get(
+				ProjectPreferencesConstants.INCLUDE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+		includeDirs = PreferencesUtils.unpackList(includeDirsStr);
 		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
 				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
 		runtimeVersion = new RuntimeVersion(node.get(
@@ -142,7 +145,8 @@ public final class OldErlangProjectProperties implements
 		try {
 			node.put(ProjectPreferencesConstants.SOURCE_DIRS, PreferencesUtils
 					.packList(sourceDirs));
-			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
+			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, PreferencesUtils
+					.packList(includeDirs));
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
@@ -174,19 +178,19 @@ public final class OldErlangProjectProperties implements
 	}
 
 	public String getIncludeDirsString() {
-		return includeDirs;
+		return PreferencesUtils.packList(includeDirs);
 	}
 
 	public void setIncludeDirsString(final String dirs) {
-		includeDirs = dirs;
+		includeDirs = PreferencesUtils.unpackList(dirs);
 	}
 
 	public String[] getIncludeDirs() {
-		return PreferencesUtils.unpackArray(includeDirs);
+		return includeDirs.toArray(new String[] {});
 	}
 
 	public void setIncludeDirs(final String[] dirs) {
-		includeDirs = PreferencesUtils.packArray(dirs);
+		includeDirs = Arrays.asList(dirs);
 	}
 
 	public String getOutputDir() {
