@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.core.preferences;
 
+
 /**
  * Constants used in project and plugin preferences
  * 

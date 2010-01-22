@@ -10,6 +10,9 @@
 
 package org.erlide.core.preferences;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -31,7 +34,8 @@ public final class OldErlangProjectProperties implements
 
 	private IProject project;
 
-	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
+	private List<String> sourceDirs = PreferencesUtils
+			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
 	private final String testDirs = ProjectPreferencesConstants.DEFAULT_TEST_DIRS;
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
 	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
@@ -82,8 +86,10 @@ public final class OldErlangProjectProperties implements
 			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
 
-		sourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
+		String sourceDirsStr = node.get(
+				ProjectPreferencesConstants.SOURCE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+		sourceDirs = PreferencesUtils.unpackList(sourceDirsStr);
 		includeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
@@ -133,7 +139,8 @@ public final class OldErlangProjectProperties implements
 		node.removePreferenceChangeListener(this);
 
 		try {
-			node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
+			node.put(ProjectPreferencesConstants.SOURCE_DIRS, PreferencesUtils
+					.packList(sourceDirs));
 			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
@@ -205,15 +212,15 @@ public final class OldErlangProjectProperties implements
 	}
 
 	public String getSourceDirsString() {
-		return sourceDirs;
+		return PreferencesUtils.packList(sourceDirs);
 	}
 
 	public void setSourceDirsString(final String dirs) {
-		sourceDirs = dirs;
+		sourceDirs = PreferencesUtils.unpackList(dirs);
 	}
 
 	public String[] getSourceDirs() {
-		return PreferencesUtils.unpackArray(sourceDirs);
+		return sourceDirs.toArray(new String[] {});
 	}
 
 	public String[] getTestDirs() {
@@ -221,7 +228,7 @@ public final class OldErlangProjectProperties implements
 	}
 
 	public void setSourceDirs(final String[] dirs) {
-		sourceDirs = PreferencesUtils.packArray(dirs);
+		sourceDirs = Arrays.asList(dirs);
 	}
 
 	public String buildCommandLine() {
