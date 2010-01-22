@@ -10,7 +10,8 @@
 
 package org.erlide.core.preferences;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -28,6 +29,8 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements
 		IPreferenceChangeListener {
@@ -185,12 +188,12 @@ public final class OldErlangProjectProperties implements
 		includeDirs = PreferencesUtils.unpackList(dirs);
 	}
 
-	public String[] getIncludeDirs() {
-		return includeDirs.toArray(new String[] {});
+	public List<String> getIncludeDirs() {
+		return Collections.unmodifiableList(includeDirs);
 	}
 
-	public void setIncludeDirs(final String[] dirs) {
-		includeDirs = Arrays.asList(dirs);
+	public void setIncludeDirs(final Collection<String> includeDirs2) {
+		includeDirs = Lists.newArrayList(includeDirs2);
 	}
 
 	public String getOutputDir() {
@@ -224,16 +227,16 @@ public final class OldErlangProjectProperties implements
 		sourceDirs = PreferencesUtils.unpackList(dirs);
 	}
 
-	public String[] getSourceDirs() {
-		return sourceDirs.toArray(new String[] {});
+	public List<String> getSourceDirs() {
+		return Collections.unmodifiableList(sourceDirs);
 	}
 
-	public String[] getTestDirs() {
-		return testDirs.toArray(new String[] {});
+	public List<String> getTestDirs() {
+		return Collections.unmodifiableList(testDirs);
 	}
 
-	public void setSourceDirs(final String[] dirs) {
-		sourceDirs = Arrays.asList(dirs);
+	public void setSourceDirs(final Collection<String> sourceDirs2) {
+		sourceDirs = Lists.newArrayList(sourceDirs2);
 	}
 
 	public String buildCommandLine() {
@@ -244,9 +247,9 @@ public final class OldErlangProjectProperties implements
 		return "";
 	}
 
-	public String buildIncludeDirs(final String[] dirs) {
+	public String buildIncludeDirs(final List<String> list) {
 		final StringBuilder incs = new StringBuilder();
-		for (final String element : dirs) {
+		for (final String element : list) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
 			ErlLogger.debug("* " + inc);

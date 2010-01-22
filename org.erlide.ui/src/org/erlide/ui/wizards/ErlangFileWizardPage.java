@@ -194,9 +194,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 				String txt;
 				if (pp.hasSourceDir(container.getFullPath())) {
 					txt = container.getFullPath().toString();
-				} else if (pp.getSourceDirs().length > 0) {
+				} else if (pp.getSourceDirs().size() > 0) {
 					txt = container.getFolder(
-							new Path(pp.getSourceDirs()[0].toString()))
+							new Path(pp.getSourceDirs().get(0).toString()))
 							.getFullPath().toString();
 				} else {
 					txt = container.getFullPath().toString();

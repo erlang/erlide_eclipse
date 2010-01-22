@@ -336,10 +336,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// directories = findHrlDirectories();
 			// prefs.setIncludeDirs(directories);
 			// prefs.copyFrom(bprefs);
-			prefs.setIncludeDirs(includeDirs.toArray(new String[includeDirs
-					.size()]));
-			prefs.setSourceDirs(sourceDirs
-					.toArray(new String[sourceDirs.size()]));
+			prefs.setIncludeDirs(includeDirs);
+			prefs.setSourceDirs(sourceDirs);
 			final IEclipsePreferences node = new ProjectScope(project)
 					.getNode(ErlangPlugin.PLUGIN_ID);
 			prefs.store(node);
@@ -354,7 +352,6 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			monitor.done();
 		}
 	}
-
 	// private String[] findErlDirectories() {
 	// List<String> result = new ArrayList<String>();
 	// for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {

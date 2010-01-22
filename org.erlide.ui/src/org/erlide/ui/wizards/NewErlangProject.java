@@ -10,6 +10,8 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -205,8 +207,11 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
 			final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
-			buildPaths(monitor, root, project, new String[] { bprefs
-					.getOutputDir() });
+			buildPaths(monitor, root, project, new ArrayList<String>() {
+				{
+					add(bprefs.getOutputDir());
+				}
+			});
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
 			buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
@@ -236,21 +241,21 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 *            the root worksapce
 	 * @param project
 	 *            the project
-	 * @param pathList
+	 * @param list
 	 *            the paths to create
 	 * @throws CoreException
 	 *             if a problem occures
 	 */
 	private void buildPaths(final IProgressMonitor monitor,
 			final IWorkspaceRoot root, final IProject project,
-			final String[] pathList) throws CoreException {
+			final List<String> list) throws CoreException {
 		// Some paths are optionals (include): If we do not specify it, we get a
 		// null string and we do not need to create the directory
-		if (pathList != null) {
+		if (list != null) {
 			final IPath projectPath = project.getFullPath();
 
 			String pathElement;
-			for (final String element : pathList) {
+			for (final String element : list) {
 				pathElement = element;
 				final IPath pp = new Path(pathElement);
 				// only create in-project paths

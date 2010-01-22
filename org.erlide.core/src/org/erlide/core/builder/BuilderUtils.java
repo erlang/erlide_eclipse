@@ -303,15 +303,15 @@ public final class BuilderUtils {
 			final List<String> includeDirs) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final String[] incs = prefs.getIncludeDirs();
+		final List<String> incs = prefs.getIncludeDirs();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
-		for (int i = 0; i < incs.length; i++) {
-			final IPath inc = pvm.resolvePath(new Path(incs[i]));
+		for (String s : incs) {
+			final IPath inc = pvm.resolvePath(new Path(s));
 			if (inc.isAbsolute()) {
 				includeDirs.add(inc.toString());
 			} else {
-				final IFolder folder = project.getFolder(incs[i]);
+				final IFolder folder = project.getFolder(s);
 				if (folder != null) {
 					final IPath location = folder.getLocation();
 					includeDirs.add(location.toString());
@@ -327,11 +327,11 @@ public final class BuilderUtils {
 				.getProjectProperties(project);
 
 		List<String> interestingPaths = new ArrayList<String>();
-		final String[] srcs = prefs.getSourceDirs();
+		final List<String> srcs = prefs.getSourceDirs();
 		for (String s : srcs) {
 			interestingPaths.add(s);
 		}
-		String[] incs = prefs.getIncludeDirs();
+		List<String> incs = prefs.getIncludeDirs();
 		for (String s : incs) {
 			interestingPaths.add(s);
 		}
@@ -353,7 +353,7 @@ public final class BuilderUtils {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
-		final String[] srcs = prefs.getSourceDirs();
+		final List<String> srcs = prefs.getSourceDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
 				.removeLastSegments(1);
 		for (final String element : srcs) {
@@ -465,11 +465,11 @@ public final class BuilderUtils {
 		try {
 			final OldErlangProjectProperties pp = ErlangCore
 					.getProjectProperties(project);
-			final String[] sd = pp.getSourceDirs();
-			final String[] dirList = new String[sd.length];
-			for (int i = 0; i < sd.length; i++) {
+			final List<String> sd = pp.getSourceDirs();
+			final String[] dirList = new String[sd.size()];
+			for (int i = 0; i < sd.size(); i++) {
 				dirList[i] = project.getLocation().toPortableString() + "/"
-						+ sd[i];
+						+ sd.get(i);
 			}
 			final OtpErlangList res = ErlideBuilder.getSourceClashes(backend,
 					dirList);

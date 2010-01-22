@@ -523,9 +523,9 @@ public class ErlModel extends Openable implements IErlModel {
 
 		List<String> dirs;
 		dirs = findOtpSourceDirs(new File(location.toString()));
-		props.setSourceDirs(dirs.toArray(new String[0]));
+		props.setSourceDirs(dirs);
 		dirs = findOtpIncludeDirs(new File(location.toString()));
-		props.setIncludeDirs(dirs.toArray(new String[0]));
+		props.setIncludeDirs(dirs);
 
 		final IEclipsePreferences root = new ProjectScope(project)
 				.getNode(ErlangPlugin.PLUGIN_ID);
