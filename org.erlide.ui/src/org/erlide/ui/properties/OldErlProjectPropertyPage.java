@@ -63,7 +63,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 	private Text source;
 	private Text include;
 	private MockupPreferenceStore mockPrefs;
-	private Button uz;
 	Text externalIncludes;
 	private Button externalIncludesBrowse;
 	Text externalModules;
@@ -94,7 +93,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 		// create the desired layout for this wizard page
 		final GridLayout gl = new GridLayout();
-		gl.numColumns = 3;
+		gl.numColumns = 4;
 		composite.setLayout(gl);
 
 		final String resourceString = ErlideUIPlugin
@@ -112,12 +111,8 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		gd.widthHint = 256;
 		output.setLayoutData(gd);
 		output.addListener(SWT.Modify, modifyListener);
-		// TODO use resource!
-		uz = new Button(composite, SWT.CHECK);
-		uz.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		uz.setToolTipText(Messages.OldErlProjectPropertyPage_uz_toolTipText);
-		uz.setText(Messages.OldErlProjectPropertyPage_uz_text);
-		uz.addListener(SWT.Modify, modifyListener);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
 
 		final Label l1 = new Label(composite, SWT.NONE);
 		l1.setText(Messages.OldErlProjectPropertyPage_l1_text);
@@ -125,36 +120,52 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
 		source = new Text(composite, SWT.BORDER);
-		source.setToolTipText(Messages.OldErlProjectPropertyPage_source_toolTipText);
+		source
+				.setToolTipText(Messages.OldErlProjectPropertyPage_source_toolTipText);
 		gd = new GridData(SWT.FILL, SWT.TOP, false, false);
 		gd.widthHint = 325;
 		source.setLayoutData(gd);
 		source.addListener(SWT.Modify, modifyListener);
-
-		final String resourceString3 = ErlideUIPlugin
-				.getResourceString("wizards.labels.include");
+		new Label(composite, SWT.NONE);
 
 		final Label label = new Label(composite, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setText(Messages.OldErlProjectPropertyPage_includesLabel_text);
-		includesLabel.setText(resourceString3 + ":");
+		includesLabel
+				.setText(Messages.OldErlProjectPropertyPage_includesLabel_text);
 		include = new Text(composite, SWT.BORDER);
-		include.setToolTipText(Messages.OldErlProjectPropertyPage_include_toolTipText);
+		include
+				.setToolTipText(Messages.OldErlProjectPropertyPage_include_toolTipText);
 		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gd.widthHint = 313;
 		include.setLayoutData(gd);
 		include.addListener(SWT.Modify, modifyListener);
+		new Label(composite, SWT.NONE);
 
 		new Label(composite, SWT.NONE);
 
+		final String resourceString4 = ErlideUIPlugin
+				.getResourceString("wizards.labels.testsources");
+		Label label_1 = new Label(composite, SWT.NONE);
+		label_1.setText(resourceString4 + ":");
+
+		text_1 = new Text(composite, SWT.BORDER);
+		text_1.setEditable(false);
+		text_1.setToolTipText("enter a list of folders");
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+				1));
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
-		nodeNameLabel_1.setText(Messages.OldErlProjectPropertyPage_nodeNameLabel_1_text);
+		nodeNameLabel_1
+				.setText(Messages.OldErlProjectPropertyPage_nodeNameLabel_1_text);
 
 		final Composite composite_1 = new Composite(composite, SWT.NONE);
 		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-				false));
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
+		gridData.widthHint = 338;
+		composite_1.setLayoutData(gridData);
 
 		runtimeVersion = new Combo(composite_1, SWT.READ_ONLY);
 		runtimeVersion
@@ -166,12 +177,12 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		runtimeVersion.setItems(versions);
 		runtimeVersion.select(Arrays.binarySearch(versions,
 				BackendManager.DEFAULT_VERSION));
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		Label l = new Label(composite, SWT.NONE);
+		l.setText("External modules:");
 
 		if (ErlideUtil.isTest()) {
-			new Label(composite, SWT.NONE);
-			Label l = new Label(composite, SWT.NONE);
-			l.setText("External modules:");
-
 			externalModules = new Text(composite, SWT.BORDER);
 			final GridData gd1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
 			gd1.minimumWidth = 50;
@@ -193,6 +204,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				}
 
 			});
+			new Label(composite, SWT.NONE);
 			l = new Label(composite, SWT.NONE);
 			l.setText("External includes:");
 
@@ -206,6 +218,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 			externalIncludesBrowse = new Button(composite, SWT.PUSH);
 			externalIncludesBrowse.setText("Browse...");
+			new Label(composite, SWT.NONE);
 			externalIncludesBrowse
 					.addSelectionListener(new SelectionListener() {
 
@@ -253,7 +266,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 
-		uz.setSelection(prefs.getUsePathZ());
 		source.setText(prefs.getSourceDirsString());
 		include.setText(prefs.getIncludeDirsString());
 		output.setText(prefs.getOutputDir());
@@ -285,7 +297,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getProjectProperties(project);
 
 		prefs.setOutputDir(output.getText());
-		prefs.setUsePathZ(uz.getSelection());
 		prefs.setSourceDirsString(source.getText());
 		prefs.setIncludeDirsString(include.getText());
 		prefs.setRuntimeVersion(new RuntimeVersion(runtimeVersion.getText()));
@@ -306,6 +317,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 			setValid(testPageComplete());
 		}
 	};
+	private Text text_1;
 
 	protected boolean testPageComplete() {
 		if (output.getText() == null || output.getText().trim().length() == 0) {

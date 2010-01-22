@@ -24,7 +24,6 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class OldErlangProjectProperties implements
@@ -33,7 +32,7 @@ public final class OldErlangProjectProperties implements
 	private IProject project;
 
 	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
-	private String usePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
+	private final String testDirs = ProjectPreferencesConstants.DEFAULT_TEST_DIRS;
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
 	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
@@ -89,8 +88,6 @@ public final class OldErlangProjectProperties implements
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
 				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-		usePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
-				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
 		runtimeVersion = new RuntimeVersion(node.get(
 				ProjectPreferencesConstants.RUNTIME_VERSION, null));
 		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
@@ -139,7 +136,6 @@ public final class OldErlangProjectProperties implements
 			node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
 			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
-			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
 			if (runtimeVersion.isDefined()) {
@@ -208,25 +204,6 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public boolean getUsePathZ() {
-		return Boolean.parseBoolean(usePathZ);
-	}
-
-	public void setUsePathZ(final boolean pz) {
-		final boolean z = Boolean.parseBoolean(usePathZ);
-		if (z != pz) {
-			for (final ErlideBackend b : ErlangCore.getBackendManager()
-					.getExecutionBackends(project)) {
-
-				final String p = project.getLocation().append(outputDir)
-						.toString();
-				b.removePath(p);
-				b.addPath(pz, p);
-			}
-		}
-		usePathZ = Boolean.toString(pz);
-	}
-
 	public String getSourceDirsString() {
 		return sourceDirs;
 	}
@@ -237,6 +214,10 @@ public final class OldErlangProjectProperties implements
 
 	public String[] getSourceDirs() {
 		return PreferencesUtils.unpackArray(sourceDirs);
+	}
+
+	public String[] getTestDirs() {
+		return PreferencesUtils.unpackArray(testDirs);
 	}
 
 	public void setSourceDirs(final String[] dirs) {
