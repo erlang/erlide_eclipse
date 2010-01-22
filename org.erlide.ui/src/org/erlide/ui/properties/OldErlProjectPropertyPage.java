@@ -28,8 +28,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -38,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -61,7 +60,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 	private Combo runtimeVersion;
 	private Text output;
-	private Text source;
+	private List source;
 	private Text include;
 	private MockupPreferenceStore mockPrefs;
 	Text externalIncludes;
@@ -94,7 +93,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 		// create the desired layout for this wizard page
 		final GridLayout gl = new GridLayout();
-		gl.numColumns = 4;
+		gl.numColumns = 3;
 		composite.setLayout(gl);
 
 		final String resourceString = ErlideUIPlugin
@@ -107,12 +106,11 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		outLabel.setLayoutData(gd_Label);
 		outLabel.setText(resourceString + ":");
 		output = new Text(composite, SWT.BORDER);
-		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.minimumWidth = 50;
-		gd.widthHint = 256;
+		gd.widthHint = 275;
 		output.setLayoutData(gd);
 		output.addListener(SWT.Modify, modifyListener);
-		new Label(composite, SWT.NONE);
 		new Label(composite, SWT.NONE);
 
 		final Label l1 = new Label(composite, SWT.NONE);
@@ -120,29 +118,34 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
 		l1.setText(resourceString2 + ":");
-		source = new Text(composite, SWT.BORDER);
+		source = new List(composite, SWT.BORDER);
 		source
 				.setToolTipText(Messages.OldErlProjectPropertyPage_source_toolTipText);
-		gd = new GridData(SWT.FILL, SWT.TOP, false, false);
-		gd.widthHint = 325;
+		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gd.heightHint = 102;
+		gd.widthHint = 280;
 		source.setLayoutData(gd);
-		source.addListener(SWT.Modify, modifyListener);
-		new Label(composite, SWT.NONE);
 
-		final Label label = new Label(composite, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		Composite composite_2 = new Composite(composite, SWT.NONE);
+		composite_2.setLayout(new GridLayout(1, false));
+		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+				false, 1, 1));
+
+		Button btnAddPath = new Button(composite_2, SWT.NONE);
+		btnAddPath.setText(Messages.OldErlProjectPropertyPage_btnAddPath_text);
+
+		Button btnRemove = new Button(composite_2, SWT.NONE);
+		btnRemove.setText(Messages.OldErlProjectPropertyPage_btnRemove_text);
 		final Label includesLabel = new Label(composite, SWT.NONE);
 		includesLabel
 				.setText(Messages.OldErlProjectPropertyPage_includesLabel_text);
 		include = new Text(composite, SWT.BORDER);
 		include
 				.setToolTipText(Messages.OldErlProjectPropertyPage_include_toolTipText);
-		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.widthHint = 313;
 		include.setLayoutData(gd);
 		include.addListener(SWT.Modify, modifyListener);
-		new Label(composite, SWT.NONE);
-
 		new Label(composite, SWT.NONE);
 
 		final String resourceString4 = ErlideUIPlugin
@@ -153,37 +156,37 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		text_1 = new Text(composite, SWT.BORDER);
 		text_1.setEditable(false);
 		text_1.setToolTipText("enter a list of folders");
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
-		new Label(composite, SWT.NONE);
+		GridData gridData_1 = new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+				1);
+		gridData_1.widthHint = 228;
+		text_1.setLayoutData(gridData_1);
 		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
+		GridData gridData_2 = new GridData(SWT.LEFT, SWT.CENTER, false, false,
+				1, 1);
+		gridData_2.widthHint = 124;
+		nodeNameLabel_1.setLayoutData(gridData_2);
 		nodeNameLabel_1
 				.setText(Messages.OldErlProjectPropertyPage_nodeNameLabel_1_text);
+		final String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
 
-		final Composite composite_1 = new Composite(composite, SWT.NONE);
-		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
-		gridData.widthHint = 338;
-		composite_1.setLayoutData(gridData);
-
-		runtimeVersion = new Combo(composite_1, SWT.READ_ONLY);
+		runtimeVersion = new Combo(composite, SWT.READ_ONLY);
+		GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
+				1);
+		gridData.widthHint = 99;
+		runtimeVersion.setLayoutData(gridData);
 		runtimeVersion
 				.setToolTipText(Messages.OldErlProjectPropertyPage_runtimeVersion_toolTipText);
-		final RowData rd_runtimeVersion = new RowData();
-		rd_runtimeVersion.width = 64;
-		runtimeVersion.setLayoutData(rd_runtimeVersion);
-		final String[] versions = BackendManager.SUPPORTED_MAIN_VERSIONS;
 		runtimeVersion.setItems(versions);
 		runtimeVersion.select(Arrays.binarySearch(versions,
 				BackendManager.DEFAULT_VERSION));
 		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		Label l = new Label(composite, SWT.NONE);
-		l.setText("External modules:");
 
 		if (ErlideUtil.isTest()) {
+			Label l = new Label(composite, SWT.NONE);
+			l.setText("External modules:");
+
 			externalModules = new Text(composite, SWT.BORDER);
 			final GridData gd1 = new GridData(SWT.FILL, SWT.CENTER, true, false);
 			gd1.minimumWidth = 50;
@@ -205,7 +208,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				}
 
 			});
-			new Label(composite, SWT.NONE);
 			l = new Label(composite, SWT.NONE);
 			l.setText("External includes:");
 
@@ -219,7 +221,6 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 
 			externalIncludesBrowse = new Button(composite, SWT.PUSH);
 			externalIncludesBrowse.setText("Browse...");
-			new Label(composite, SWT.NONE);
 			externalIncludesBrowse
 					.addSelectionListener(new SelectionListener() {
 
@@ -266,8 +267,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		final IAdaptable prj = getElement();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
-
-		source.setText(PreferencesUtils.packList(prefs.getSourceDirs()));
+		source.setItems(prefs.getSourceDirs().toArray(new String[0]));
 		include.setText(PreferencesUtils.packList(prefs.getIncludeDirs()));
 		output.setText(prefs.getOutputDir());
 		RuntimeVersion rv = prefs.getRuntimeVersion();
@@ -298,7 +298,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getProjectProperties(project);
 
 		prefs.setOutputDir(output.getText());
-		prefs.setSourceDirs(PreferencesUtils.unpackList(source.getText()));
+		prefs.setSourceDirs(Arrays.asList(source.getItems()));
 		prefs.setIncludeDirs(PreferencesUtils.unpackList(include.getText()));
 		prefs.setRuntimeVersion(new RuntimeVersion(runtimeVersion.getText()));
 
@@ -327,7 +327,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 			return false;
 		}
 
-		if (source.getText() == null || source.getText().trim().length() == 0) {
+		if (source.getItems().length == 0) {
 			setErrorMessage(ErlideUIPlugin
 					.getResourceString("wizards.errors.sourcerequired"));
 			return false;

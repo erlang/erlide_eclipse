@@ -13,6 +13,8 @@ public class Messages extends NLS {
 	public static String OldErlProjectPropertyPage_include_toolTipText;
 	public static String OldErlProjectPropertyPage_nodeNameLabel_1_text;
 	public static String OldErlProjectPropertyPage_runtimeVersion_toolTipText;
+	public static String OldErlProjectPropertyPage_btnAddPath_text;
+	public static String OldErlProjectPropertyPage_btnRemove_text;
 
 	// //////////////////////////////////////////////////////////////////////////
 	//
