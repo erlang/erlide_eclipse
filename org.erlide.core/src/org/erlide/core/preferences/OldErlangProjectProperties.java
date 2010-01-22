@@ -336,4 +336,5 @@ public final class OldErlangProjectProperties implements
 	public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
 		this.runtimeVersion = runtimeVersion;
 	}
+
 }

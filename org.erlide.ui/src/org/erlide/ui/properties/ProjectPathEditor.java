@@ -6,12 +6,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 
 public class ProjectPathEditor extends PathEditor {
-	private final IProject project;
+	private IProject project;
 
 	public ProjectPathEditor(final String name, final String labelText,
-			final String dirChooserLabelText, final IProject project,
-			final Composite parent) {
+			final String dirChooserLabelText, final Composite parent) {
 		super(name, labelText, dirChooserLabelText, parent);
+	}
+
+	public void setProject(IProject project) {
 		this.project = project;
 	}
 
@@ -22,7 +24,8 @@ public class ProjectPathEditor extends PathEditor {
 		if (getLabelText() != null) {
 			dialog.setMessage(getLabelText());
 		}
-		dialog.setFilterPath(project.getLocation().toString());
+		dialog.setFilterPath(project == null ? "/" : project.getLocation()
+				.toString());
 
 		String dir = dialog.open();
 		if (dir != null) {
