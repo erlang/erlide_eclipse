@@ -10,11 +10,8 @@
 package org.erlide.ui.properties;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -29,7 +26,6 @@ import org.erlide.jinterface.backend.RuntimeInfoListener;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
-import com.bdaum.overlayPages.PropertyStore;
 
 public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 		IWorkbenchPropertyPage, IPropertyChangeListener, RuntimeInfoListener {
@@ -38,7 +34,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 	 * Constructor for ErlProjectPropertyPage.
 	 */
 	public OldErlProjectPropertyPage() {
-		super("Projet props", SWT.NONE);
+		super("Project props", GRID);
 		ErlangCore.getRuntimeInfoManager().addListener(this);
 	}
 
@@ -66,60 +62,40 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 		ErlLogger.debug("*+> " + event);
 	}
 
-	/**
-	 * The element.
-	 */
-	private IAdaptable element;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchPropertyPage#getElement()
-	 */
-	@Override
-	public IAdaptable getElement() {
-		return element;
-	}
-
-	/**
-	 * Sets the element that owns properties shown on this page.
-	 * 
-	 * @param element
-	 *            the element
-	 */
-	@Override
-	public void setElement(IAdaptable element) {
-		this.element = element;
-		IProject prj = (IProject) element.getAdapter(IProject.class);
-		setPreferenceStore(new PropertyStore(prj, super.getPreferenceStore(),
-				"id"));
-	}
-
 	@Override
 	protected void createFieldEditors() {
-
-		IPreferenceStore x = getPreferenceStore();
-
-		IProject prj = (IProject) element.getAdapter(IProject.class);
+		IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
 		addField(new DirectoryFieldEditor(ErlangPlugin.PLUGIN_ID + "/"
-				+ ProjectPreferencesConstants.SOURCE_DIRS, "Output directory:",
+				+ ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
 				getFieldEditorParent()));
-		PathEditor src = new ProjectPathEditor("id", "Source directories",
-				"Select directory:", getFieldEditorParent());
-		((ProjectPathEditor) src).setProject(prj);
+
+		ProjectPathEditor src = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
+				+ "/" + ProjectPreferencesConstants.SOURCE_DIRS,
+				"Source directories", "Select directory:",
+				getFieldEditorParent());
+		src.setProject(prj);
 		addField(src);
-		PathEditor inc = new ProjectPathEditor("id", "Include directories",
-				"Select directory:", getFieldEditorParent());
-		((ProjectPathEditor) inc).setProject(prj);
+
+		ProjectPathEditor inc = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
+				+ "/" + ProjectPreferencesConstants.INCLUDE_DIRS,
+				"Include directories", "Select directory:",
+				getFieldEditorParent());
+		inc.setProject(prj);
 		addField(inc);
-		PathEditor tst = new ProjectPathEditor("id", "Test source directories",
-				"Select directory:", getFieldEditorParent());
-		((ProjectPathEditor) tst).setProject(prj);
+
+		ProjectPathEditor tst = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
+				+ "/" + ProjectPreferencesConstants.TEST_DIRS,
+				"Test source directories", "Select directory:",
+				getFieldEditorParent());
+		tst.setProject(prj);
 		addField(tst);
-		addField(new ComboFieldEditor("id", "Runtime version", new String[][] {
-				{ "name_1", "value_1" }, { "name_2", "value_2" } },
-				getFieldEditorParent()));
+
+		String[][] runtimes = new String[][] { { "name_1", "value_1" },
+				{ "name_2", "value_2" } };
+		addField(new ComboFieldEditor(ErlangPlugin.PLUGIN_ID + "/"
+				+ ProjectPreferencesConstants.RUNTIME_VERSION,
+				"Runtime version", runtimes, getFieldEditorParent()));
 	}
 
 	public void infoChanged() {
@@ -127,7 +103,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 
 	@Override
 	protected String getPageId() {
-		return null;
+		return "org.erlide.ui.properties.erlangProjectPropertyPage";
 	}
 
 	public void init(IWorkbench workbench) {
