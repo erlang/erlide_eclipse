@@ -200,6 +200,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	protected Control createContents(final Composite parent) {
 		if (isPropertyPage()) {
 			createSelectionGroup(parent);
+			useProjectSettingsButton.getParent().getParent().setVisible(false);
+			useProjectSettingsButton.setSelection(true);
 		}
 		return super.createContents(parent);
 	}

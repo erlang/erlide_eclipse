@@ -1,23 +1,36 @@
 package org.erlide.ui.properties;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 
-public class ProjectPathEditor extends PathEditor {
+public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
 	private final IProject project;
 
-	public ProjectPathEditor(final String name, final String labelText,
-			final String dirChooserLabelText, final Composite parent,
-			IProject project) {
-		super(name, labelText, dirChooserLabelText, parent);
-
+	public ProjectDirectoryFieldEditor(String name, String labelText,
+			Composite parent, IProject project) {
+		super(name, labelText, parent);
 		this.project = project;
 	}
 
 	@Override
-	protected String getNewInputObject() {
+	protected String changePressed() {
+		String f = getTextControl().getText();
+		if (!new File(f).exists()) {
+			f = null;
+		}
+		String d = getDirectory(f);
+		if (d == null) {
+			return null;
+		}
+
+		return d;
+	}
+
+	private String getDirectory(String f) {
 
 		final DirectoryDialog dialog = new DirectoryDialog(getShell());
 		if (getLabelText() != null) {

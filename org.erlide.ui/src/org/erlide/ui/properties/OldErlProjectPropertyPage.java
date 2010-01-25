@@ -9,9 +9,11 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.ComboFieldEditor;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -19,11 +21,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPropertyPage;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.ProjectPreferencesConstants;
+import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeInfoListener;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.RuntimeInfoManager;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
@@ -66,36 +69,40 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 	protected void createFieldEditors() {
 		IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
-		addField(new DirectoryFieldEditor(ErlangPlugin.PLUGIN_ID + "/"
-				+ ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-				getFieldEditorParent()));
+		ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
+				ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
+				getFieldEditorParent(), prj);
+		addField(out);
 
-		ProjectPathEditor src = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
-				+ "/" + ProjectPreferencesConstants.SOURCE_DIRS,
-				"Source directories", "Select directory:",
-				getFieldEditorParent());
-		src.setProject(prj);
+		ProjectPathEditor src = new ProjectPathEditor(
+				ProjectPreferencesConstants.SOURCE_DIRS, "Source directories",
+				"Select directory:", getFieldEditorParent(), prj);
 		addField(src);
 
-		ProjectPathEditor inc = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
-				+ "/" + ProjectPreferencesConstants.INCLUDE_DIRS,
+		ProjectPathEditor inc = new ProjectPathEditor(
+				ProjectPreferencesConstants.INCLUDE_DIRS,
 				"Include directories", "Select directory:",
-				getFieldEditorParent());
-		inc.setProject(prj);
+				getFieldEditorParent(), prj);
 		addField(inc);
 
-		ProjectPathEditor tst = new ProjectPathEditor(ErlangPlugin.PLUGIN_ID
-				+ "/" + ProjectPreferencesConstants.TEST_DIRS,
+		ProjectPathEditor tst = new ProjectPathEditor(
+				ProjectPreferencesConstants.TEST_DIRS,
 				"Test source directories", "Select directory:",
-				getFieldEditorParent());
-		tst.setProject(prj);
+				getFieldEditorParent(), prj);
 		addField(tst);
 
-		String[][] runtimes = new String[][] { { "name_1", "value_1" },
-				{ "name_2", "value_2" } };
-		addField(new ComboFieldEditor(ErlangPlugin.PLUGIN_ID + "/"
-				+ ProjectPreferencesConstants.RUNTIME_VERSION,
-				"Runtime version", runtimes, getFieldEditorParent()));
+		Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
+				.getRuntimes();
+		String[][] runtimes = new String[rs.size()][2];
+		Iterator<RuntimeInfo> it = rs.iterator();
+		for (int i = 0; i < rs.size(); i++) {
+			runtimes[i][0] = it.next().getVersion().asMajor().toString();
+			runtimes[i][1] = runtimes[i][0];
+
+		}
+		addField(new ComboFieldEditor(
+				ProjectPreferencesConstants.RUNTIME_VERSION, "Runtime version",
+				runtimes, getFieldEditorParent()));
 	}
 
 	public void infoChanged() {
@@ -103,7 +110,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 
 	@Override
 	protected String getPageId() {
-		return "org.erlide.ui.properties.erlangProjectPropertyPage";
+		return "org.erlide.core";
 	}
 
 	public void init(IWorkbench workbench) {
