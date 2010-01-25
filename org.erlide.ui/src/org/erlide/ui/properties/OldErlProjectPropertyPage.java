@@ -153,13 +153,14 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 		Label label_1 = new Label(composite, SWT.NONE);
 		label_1.setText(resourceString4 + ":");
 
-		text_1 = new Text(composite, SWT.BORDER);
-		text_1.setEditable(false);
-		text_1.setToolTipText("enter a list of folders");
+		testSources = new Text(composite, SWT.BORDER);
+		testSources.setEditable(false);
+		testSources
+				.setToolTipText(Messages.OldErlProjectPropertyPage_testSources_toolTipText);
 		GridData gridData_1 = new GridData(SWT.FILL, SWT.FILL, true, false, 1,
 				1);
 		gridData_1.widthHint = 228;
-		text_1.setLayoutData(gridData_1);
+		testSources.setLayoutData(gridData_1);
 		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel_1 = new Label(composite, SWT.NONE);
@@ -269,6 +270,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 				.getProjectProperties((IProject) prj.getAdapter(IProject.class));
 		source.setItems(prefs.getSourceDirs().toArray(new String[0]));
 		include.setText(PreferencesUtils.packList(prefs.getIncludeDirs()));
+		testSources.setText(PreferencesUtils.packList(prefs.getTestDirs()));
 		output.setText(prefs.getOutputDir());
 		RuntimeVersion rv = prefs.getRuntimeVersion();
 		if (!rv.isDefined()) {
@@ -318,7 +320,7 @@ public class OldErlProjectPropertyPage extends PropertyPage implements
 			setValid(testPageComplete());
 		}
 	};
-	private Text text_1;
+	private Text testSources;
 
 	protected boolean testPageComplete() {
 		if (output.getText() == null || output.getText().trim().length() == 0) {
