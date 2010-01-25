@@ -2,7 +2,7 @@
  * Copyright (c) 2004 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -13,7 +13,6 @@ package org.erlide.core.builder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +42,7 @@ import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Sets;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
@@ -133,8 +133,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			ErlLogger.debug("******** building %s: %s", getProject().getName(),
 					compilerOptions);
 
-			Set<IResource> resourcesToBuild = getResourcesToBuild(kind, args,
-					project);
+			Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
+					args, project);
 			final int n = resourcesToBuild.size();
 			if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("Will compile %d resource(s): %s", Integer
@@ -153,8 +153,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 				notifier.setProgressPerCompilationUnit(1.0f / n);
 				Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
-				for (final IResource resource : resourcesToBuild) {
+				for (final BuildResource bres : resourcesToBuild) {
 					notifier.checkCancel();
+					IResource resource = bres.getResource();
 					// notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
 						RpcFuture f = BuilderUtils.startCompileErl(project,
@@ -243,9 +244,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<IResource> getResourcesToBuild(int kind, Map args,
+	private Set<BuildResource> getResourcesToBuild(int kind, Map args,
 			IProject currentProject) throws CoreException {
-		Set<IResource> resourcesToBuild = new HashSet<IResource>();
+		Set<BuildResource> resourcesToBuild = Sets.newHashSet();
 		IProgressMonitor submon = new NullProgressMonitor();
 		// new SubProgressMonitor(monitor, 10);
 		submon.beginTask("retrieving resources to build",

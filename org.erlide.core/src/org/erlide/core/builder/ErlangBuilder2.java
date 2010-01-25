@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -43,6 +43,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Sets;
 
 public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
@@ -176,7 +177,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 	@SuppressWarnings("unchecked")
 	private Set<String> getResourcesToBuild(int kind, Map args, IProject project)
 			throws CoreException {
-		Set<IResource> result = new HashSet<IResource>();
+		Set<BuildResource> result = Sets.newHashSet();
 		IProgressMonitor submon = new NullProgressMonitor();
 		// new SubProgressMonitor(monitor, 10);
 		submon.beginTask("retrieving resources to build",
@@ -201,8 +202,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		}
 		submon.done();
 		Set<String> paths = new HashSet<String>();
-		for (IResource res : result) {
-			paths.add(res.getLocation().toPortableString());
+		for (BuildResource res : result) {
+			paths.add(res.getResource().getLocation().toPortableString());
 		}
 		return paths;
 	}

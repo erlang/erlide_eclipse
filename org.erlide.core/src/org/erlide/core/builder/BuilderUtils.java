@@ -13,7 +13,6 @@ package org.erlide.core.builder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,16 +52,17 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Sets;
 
 import erlang.ErlideBuilder;
 
 public final class BuilderUtils {
 	private static class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
-		private final Set<IResource> result;
+		private final Set<BuildResource> result;
 		private final IProgressMonitor monitor;
 
-		public ErlangDeltaVisitor(final Set<IResource> result,
+		public ErlangDeltaVisitor(final Set<BuildResource> result,
 				IProgressMonitor monitor) {
 			this.result = result;
 			this.monitor = monitor;
@@ -83,7 +83,10 @@ public final class BuilderUtils {
 				case IResourceDelta.CHANGED:
 					// handle changed resource
 					if (!resource.isDerived()) {
-						result.add(resource);
+						// FIXME BuildResource
+						BuildResource bres = new BuildResource(resource, null,
+								null);
+						result.add(bres);
 						monitor.worked(1);
 					}
 					break;
@@ -109,7 +112,10 @@ public final class BuilderUtils {
 							.removeFileExtension().addFileExtension("yrl");
 					final IResource yrl = my_project.findMember(yrlp);
 					if (yrl != null) {
-						result.add(yrl);
+						// FIXME BuildResource
+						BuildResource bres = new BuildResource(resource, null,
+								null);
+						result.add(bres);
 						monitor.worked(1);
 					}
 
@@ -137,7 +143,9 @@ public final class BuilderUtils {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
-					result.add(resource);
+					// FIXME BuildResource
+					BuildResource bres = new BuildResource(resource, null, null);
+					result.add(bres);
 					monitor.worked(1);
 					break;
 
@@ -172,7 +180,10 @@ public final class BuilderUtils {
 					final SearchVisitor searcher = new SearchVisitor(p[0], null);
 					my_project.accept(searcher);
 					if (searcher.fResult != null) {
-						result.add(searcher.fResult);
+						// FIXME BuildResource
+						BuildResource bres = new BuildResource(
+								searcher.fResult, null, null);
+						result.add(bres);
 						monitor.worked(1);
 					}
 					break;
@@ -188,10 +199,10 @@ public final class BuilderUtils {
 
 	private static class ErlangResourceVisitor implements IResourceVisitor {
 
-		private final Set<IResource> result;
+		private final Set<BuildResource> result;
 		private final IProgressMonitor monitor;
 
-		public ErlangResourceVisitor(final Set<IResource> result,
+		public ErlangResourceVisitor(final Set<BuildResource> result,
 				IProgressMonitor monitor) {
 			this.result = result;
 			this.monitor = monitor;
@@ -207,8 +218,9 @@ public final class BuilderUtils {
 					&& "erl".equals(resource.getFileExtension())
 					&& isInCodePath(resource, my_project)) {
 				try {
-
-					result.add(resource);
+					// FIXME BuildResource
+					BuildResource bres = new BuildResource(resource, null, null);
+					result.add(bres);
 					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
@@ -220,7 +232,9 @@ public final class BuilderUtils {
 					&& isInCodePath(resource, my_project)) {
 
 				try {
-					result.add(resource);
+					// FIXME BuildResource
+					BuildResource bres = new BuildResource(resource, null, null);
+					result.add(bres);
 					monitor.worked(1);
 				} catch (final Exception e) {
 					e.printStackTrace();
@@ -393,7 +407,7 @@ public final class BuilderUtils {
 	}
 
 	static void addDependents(final IResource resource,
-			final IProject my_project, final Set<IResource> result)
+			final IProject my_project, final Set<BuildResource> result)
 			throws ErlModelException {
 		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
 		if (eprj != null) {
@@ -405,7 +419,10 @@ public final class BuilderUtils {
 					if (BuilderUtils.comparePath(ifile.getFilename(), resource
 							.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
-							result.add(m.getResource());
+							// FIXME BuildResource
+							BuildResource bres = new BuildResource(m
+									.getResource(), null, null);
+							result.add(bres);
 						}
 						break;
 					}
@@ -419,19 +436,19 @@ public final class BuilderUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Set<IResource> getAffectedResources(final Map args,
+	public static Set<BuildResource> getAffectedResources(final Map args,
 			final IProject project, IProgressMonitor monitor)
 			throws CoreException {
-		final HashSet<IResource> result = new HashSet<IResource>();
+		final Set<BuildResource> result = Sets.newHashSet();
 		project.accept(new ErlangResourceVisitor(result, monitor));
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Set<IResource> getAffectedResources(final Map args,
+	public static Set<BuildResource> getAffectedResources(final Map args,
 			final IResourceDelta delta, IProgressMonitor monitor)
 			throws CoreException {
-		final HashSet<IResource> result = new HashSet<IResource>();
+		final Set<BuildResource> result = Sets.newHashSet();
 		if (delta != null) {
 			delta.accept(new ErlangDeltaVisitor(result, monitor));
 		}
