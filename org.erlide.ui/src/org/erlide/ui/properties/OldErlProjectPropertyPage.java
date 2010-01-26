@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -50,6 +53,12 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 	protected void createFieldEditors() {
 		IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
+		try {
+			prj.getFolder(new Path(".settings")).refreshLocal(
+					IResource.DEPTH_ONE, null);
+		} catch (CoreException e) {
+		}
+
 		Composite fieldEditorParent = getFieldEditorParent();
 		ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
 				ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
@@ -85,7 +94,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 		String[][] runtimes = new String[rs.size()][2];
 		Iterator<RuntimeInfo> it = rs.iterator();
 		for (int i = 0; i < rs.size(); i++) {
-			runtimes[i][0] = it.next().getVersion().asMajor().toString();
+			runtimes[i][0] = it.next().getVersion().asMinor().toString();
 			runtimes[i][1] = runtimes[i][0];
 		}
 		addField(new ComboFieldEditor(
