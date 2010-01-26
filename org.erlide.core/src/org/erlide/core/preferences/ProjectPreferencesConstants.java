@@ -22,6 +22,9 @@ public final class ProjectPreferencesConstants {
 	public static final String SOURCE_DIRS = "source_dirs";
 	public static final String DEFAULT_SOURCE_DIRS = "src";
 
+	public static final String TEST_DIRS = "test_dirs";
+	public static final String DEFAULT_TEST_DIRS = "";
+
 	public static final String INCLUDE_DIRS = "include_dirs";
 	public static final String DEFAULT_INCLUDE_DIRS = "include";
 
@@ -36,9 +39,6 @@ public final class ProjectPreferencesConstants {
 
 	public static final String RUNTIME_NAME = "backend_name";
 	public static final String DEFAULT_RUNTIME_NAME = "R12B";
-
-	public static final String USE_PATHZ = "use_pathz";
-	public static final String DEFAULT_USE_PATHZ = "false";
 
 	public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
 	public static final String DEFAULT_EXTERNAL_MODULES = "";

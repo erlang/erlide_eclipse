@@ -52,7 +52,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	Text include;
 	Text backendCookie;
 	Combo runtimeVersion;
-	private Button uz;
 	Text externalModules;
 	Text externalIncludes;
 	private Button externalModulesBrowse;
@@ -64,6 +63,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 	 * Constructor inherited from parent
 	 * 
 	 * @param pageName
+	 * @wbp.parser.constructor
 	 */
 	public ProjectPreferencesWizardPage(final String pageName) {
 		super(pageName);
@@ -107,41 +107,75 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		output = new Text(composite, SWT.BORDER);
 		GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		gd.minimumWidth = 50;
-		gd.widthHint = 384;
+		gd.widthHint = 467;
 		output.setLayoutData(gd);
 		output.setText(prefs.getOutputDir());
 		output.addListener(SWT.Modify, nameModifyListener);
-		// TODO use resource!
-		uz = new Button(composite, SWT.CHECK);
-		this.uz.setToolTipText("place at end of code:path");
-		this.uz.setText("place last in path");
-		this.uz.setLayoutData(new GridData());
-		uz.setSelection(prefs.getUsePathZ());
-		uz.addListener(SWT.Modify, nameModifyListener);
-
-		final Label l1 = new Label(composite, SWT.NONE);
-		l1.setText("sources");
 		final String resourceString2 = ErlideUIPlugin
 				.getResourceString("wizards.labels.source");
-		l1.setText(resourceString2 + ":");
-		source = new Text(composite, SWT.BORDER);
-		this.source.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		source.setLayoutData(gd);
-		source.setText(prefs.getSourceDirsString());
-		source.addListener(SWT.Modify, nameModifyListener);
-
 		final String resourceString3 = ErlideUIPlugin
 				.getResourceString("wizards.labels.include");
+		final String resourceString4 = ErlideUIPlugin
+				.getResourceString("wizards.labels.testsources");
+
+		// set the composite as the control for this page
+		setControl(composite);
+
+		Label label = new Label(composite, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
+				1, 1));
+
+		final Label l1 = new Label(composite, SWT.NONE);
+		l1.setText(resourceString2 + ":");
+		source = new Text(composite, SWT.BORDER);
+		this.source
+				.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd.widthHint = 371;
+		source.setLayoutData(gd);
+		source.setText(PreferencesUtils.packList(prefs.getSourceDirs()));
+		source.addListener(SWT.Modify, nameModifyListener);
+		new Label(composite, SWT.NONE);
+
 		final Label includesLabel = new Label(composite, SWT.NONE);
-		includesLabel.setText("includes");
 		includesLabel.setText(resourceString3 + ":");
 		include = new Text(composite, SWT.BORDER);
-		this.include.setToolTipText("enter a list of folders");
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		this.include
+				.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		include.setLayoutData(gd);
-		include.setText(prefs.getIncludeDirsString());
+		include.setText(PreferencesUtils.packList(prefs.getIncludeDirs()));
 		include.addListener(SWT.Modify, nameModifyListener);
+		new Label(composite, SWT.NONE);
+
+		Label lblTestSources = new Label(composite, SWT.NONE);
+		lblTestSources.setText(resourceString4 + ":");
+
+		text = new Text(composite, SWT.BORDER);
+		text.setEditable(false);
+		text
+				.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+		text
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+						1, 1));
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		final Button discoverBtn = new Button(composite, SWT.PUSH);
+		discoverBtn
+				.setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
+		final GridData gd_discoverBtn = new GridData(SWT.RIGHT, SWT.FILL,
+				false, false);
+		gd_discoverBtn.heightHint = 26;
+		discoverBtn.setLayoutData(gd_discoverBtn);
+		discoverBtn.setText("Discover paths...");
+		discoverBtn.addListener(SWT.Selection, new Listener() {
+
+			public void handleEvent(final Event event) {
+				discoverPaths();
+			}
+		});
+		new Label(composite, SWT.NONE);
 
 		final Label nodeNameLabel = new Label(composite, SWT.NONE);
 		nodeNameLabel.setText("Backend version");
@@ -153,27 +187,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		runtimeVersion.setLayoutData(gd_backendName);
 		runtimeVersion.setText(prefs.getRuntimeVersion().toString());
 		new Label(composite, SWT.NONE);
-
-		// set the composite as the control for this page
-		setControl(composite);
-
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-
-		final Button discoverBtn = new Button(composite, SWT.PUSH);
-		discoverBtn
-				.setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
-		final GridData gd_discoverBtn = new GridData(SWT.LEFT, SWT.FILL, false,
-				false);
-		gd_discoverBtn.heightHint = 26;
-		discoverBtn.setLayoutData(gd_discoverBtn);
-		discoverBtn.setText("Discover paths...");
-		discoverBtn.addListener(SWT.Selection, new Listener() {
-
-			public void handleEvent(final Event event) {
-				discoverPaths();
-			}
-		});
 		if (ErlideUtil.isTest()) {
 			createExternalModuleEditor(composite);
 			createExternalIncludeEditor(composite);
@@ -263,8 +276,10 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		public void handleEvent(final Event e) {
 			prefs.setOutputDir(output.getText());
-			prefs.setSourceDirsString(source.getText());
-			prefs.setIncludeDirsString(include.getText());
+			prefs.setSourceDirs(PreferencesUtils.unpackList(source.getText()));
+			prefs
+					.setIncludeDirs(PreferencesUtils.unpackList(include
+							.getText()));
 			final RuntimeVersion rv = new RuntimeVersion(runtimeVersion
 					.getText());
 			prefs.setRuntimeVersion(rv);
@@ -274,6 +289,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 			setPageComplete(testPageComplete());
 		}
 	};
+	private Text text;
 
 	public OldErlangProjectProperties getPrefs() {
 		return prefs;

@@ -47,7 +47,6 @@ import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
@@ -315,8 +314,7 @@ public final class ErlideUtil {
 		final IPath folderPath = folder.getFullPath();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = prefs.getSourceDirs();
 		for (final String p : sourcePaths) {
 			final IPath path = project.getFolder(p).getFullPath();
 			if (folderPath.isPrefixOf(path)) {

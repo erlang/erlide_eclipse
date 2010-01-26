@@ -1,5 +1,6 @@
 package org.erlide.ui.properties;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.preference.PathEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -24,26 +25,38 @@ import org.erlide.ui.util.StatusInfo;
 import org.erlide.ui.util.TypedElementSelectionValidator;
 import org.erlide.ui.util.TypedViewerFilter;
 
-public class ProjectPathEditor extends PathEditor {
+public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
 	private final IProject project;
 	private String fOutputLocation;
-	private final String dirChooserLabelText;
 
-	public ProjectPathEditor(final String name, final String labelText,
-			final String dirChooserLabelText, final Composite parent,
-			IProject project) {
-		super(name, labelText, dirChooserLabelText, parent);
-		this.dirChooserLabelText = dirChooserLabelText;
+	public ProjectDirectoryFieldEditor(String name, String labelText,
+			Composite parent, IProject project) {
+		super(name, labelText, parent);
 		this.project = project;
 	}
 
 	@Override
-	protected String getNewInputObject() {
+	protected String changePressed() {
 		IContainer container = chooseLocation();
 		if (container != null) {
 			return container.getProjectRelativePath().toString();
 		}
 		return null;
+	}
+
+	@Override
+	protected boolean doCheckState() {
+		String fileName = getTextControl().getText();
+		fileName = fileName.trim();
+		if (fileName.length() == 0 && isEmptyStringAllowed()) {
+			return true;
+		}
+		if (project != null) {
+			String prjLoc = project.getLocation().toString();
+			fileName = prjLoc + "/" + fileName;
+		}
+		File file = new File(fileName);
+		return file.isDirectory();
 	}
 
 	private IContainer chooseLocation() {
@@ -71,7 +84,7 @@ public class ProjectPathEditor extends PathEditor {
 
 		FolderSelectionDialog dialog = new FolderSelectionDialog(getShell(),
 				lp, cp);
-		dialog.setTitle(dirChooserLabelText);
+		dialog.setTitle("Choose folder");
 
 		ISelectionStatusValidator validator = new ISelectionStatusValidator() {
 			ISelectionStatusValidator validator = new TypedElementSelectionValidator(

@@ -37,8 +37,8 @@ public final class PropertiesUtils {
 		}
 
 		result.addSources(mkSources(old.getSourceDirs()));
-		result.addIncludes(PreferencesUtils.unpackList(old
-				.getIncludeDirsString()));
+		result.addIncludes(PreferencesUtils.unpackList(PreferencesUtils
+				.packList(old.getIncludeDirs())));
 		result.setOutput(new Path(old.getOutputDir()));
 
 		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
@@ -102,9 +102,9 @@ public final class PropertiesUtils {
 		return result;
 	}
 
-	private static List<SourceLocation> mkSources(final String[] sourceDirs) {
+	private static List<SourceLocation> mkSources(final List<String> list) {
 		final List<SourceLocation> result = new ArrayList<SourceLocation>();
-		for (final String src : sourceDirs) {
+		for (final String src : list) {
 			result.add(new SourceLocation(src, null, null, null, null, null));
 		}
 		return result;

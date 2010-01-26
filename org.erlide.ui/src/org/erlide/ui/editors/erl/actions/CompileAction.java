@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
@@ -45,7 +46,7 @@ public class CompileAction extends Action {
 
 		final IResource resource = module.getResource();
 		final IProject project = resource.getProject();
-
+		BuildResource bres = new BuildResource(resource);
 		CompilerPreferences prefs = new CompilerPreferences(project);
 		try {
 			prefs.load();
@@ -55,10 +56,10 @@ public class CompileAction extends Action {
 		OtpErlangList compilerOptions = prefs.export();
 
 		if ("erl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileErl(project, resource, b, compilerOptions);
+			BuilderUtils.compileErl(project, bres, b, compilerOptions);
 		}
 		if ("yrl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileYrl(project, resource, b, compilerOptions);
+			BuilderUtils.compileYrl(project, bres, b, compilerOptions);
 		}
 	}
 
