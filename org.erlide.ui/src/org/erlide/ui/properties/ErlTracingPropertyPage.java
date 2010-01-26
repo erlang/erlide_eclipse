@@ -43,6 +43,8 @@ import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
 
 /**
+ * TODO review this, it looks weird and unused...
+ * 
  * Property page used to set the project's edoc location
  */
 public class ErlTracingPropertyPage extends PropertyPage implements
