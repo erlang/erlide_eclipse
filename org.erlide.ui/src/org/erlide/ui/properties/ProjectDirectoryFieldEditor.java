@@ -84,7 +84,7 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
 
 		FolderSelectionDialog dialog = new FolderSelectionDialog(getShell(),
 				lp, cp);
-		dialog.setTitle("choose output folder");
+		dialog.setTitle("Choose folder");
 
 		ISelectionStatusValidator validator = new ISelectionStatusValidator() {
 			ISelectionStatusValidator validator = new TypedElementSelectionValidator(
@@ -95,27 +95,27 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
 				if (!typedStatus.isOK()) {
 					return typedStatus;
 				}
-				// if (selection[0] instanceof IFolder) {
-				// IFolder folder = (IFolder) selection[0];
-				// try {
-				// IStatus result = ClasspathModifier
-				// .checkSetOutputLocationPrecondition(
-				// fEntryToEdit, folder.getFullPath(),
-				// fAllowInvalidClasspath, fCPJavaProject);
-				// if (result.getSeverity() == IStatus.ERROR) {
-				// return result;
-				// }
-				// } catch (CoreException e) {
-				// JavaPlugin.log(e);
-				// }
-				return new StatusInfo();
-				// } else {
-				// return new StatusInfo(IStatus.ERROR, "");
-				// }
+				if (selection[0] instanceof IFolder) {
+					IFolder folder = (IFolder) selection[0];
+					// try {
+					// IStatus result = ClasspathModifier
+					// .checkSetOutputLocationPrecondition(
+					// fEntryToEdit, folder.getFullPath(),
+					// fAllowInvalidClasspath, fCPJavaProject);
+					// if (result.getSeverity() == IStatus.ERROR) {
+					// return result;
+					// }
+					// } catch (CoreException e) {
+					// JavaPlugin.log(e);
+					// }
+					return new StatusInfo();
+				} else {
+					return new StatusInfo(IStatus.ERROR, "");
+				}
 			}
 		};
 		dialog.setValidator(validator);
-		dialog.setMessage("choose output folder");
+		dialog.setMessage(getLabelText());
 		dialog.addFilter(filter);
 		dialog.setInput(root);
 		dialog.setInitialSelection(initSelection);

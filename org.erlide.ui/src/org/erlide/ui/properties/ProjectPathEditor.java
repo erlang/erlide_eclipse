@@ -27,12 +27,13 @@ import org.erlide.ui.util.TypedViewerFilter;
 public class ProjectPathEditor extends PathEditor {
 	private final IProject project;
 	private String fOutputLocation;
+	private final String dirChooserLabelText;
 
 	public ProjectPathEditor(final String name, final String labelText,
 			final String dirChooserLabelText, final Composite parent,
 			IProject project) {
 		super(name, labelText, dirChooserLabelText, parent);
-
+		this.dirChooserLabelText = dirChooserLabelText;
 		this.project = project;
 	}
 
@@ -70,7 +71,7 @@ public class ProjectPathEditor extends PathEditor {
 
 		FolderSelectionDialog dialog = new FolderSelectionDialog(getShell(),
 				lp, cp);
-		dialog.setTitle("choose output folder");
+		dialog.setTitle(dirChooserLabelText);
 
 		ISelectionStatusValidator validator = new ISelectionStatusValidator() {
 			ISelectionStatusValidator validator = new TypedElementSelectionValidator(
@@ -81,27 +82,27 @@ public class ProjectPathEditor extends PathEditor {
 				if (!typedStatus.isOK()) {
 					return typedStatus;
 				}
-				// if (selection[0] instanceof IFolder) {
-				// IFolder folder = (IFolder) selection[0];
-				// try {
-				// IStatus result = ClasspathModifier
-				// .checkSetOutputLocationPrecondition(
-				// fEntryToEdit, folder.getFullPath(),
-				// fAllowInvalidClasspath, fCPJavaProject);
-				// if (result.getSeverity() == IStatus.ERROR) {
-				// return result;
-				// }
-				// } catch (CoreException e) {
-				// JavaPlugin.log(e);
-				// }
-				return new StatusInfo();
-				// } else {
-				// return new StatusInfo(IStatus.ERROR, "");
-				// }
+				if (selection[0] instanceof IFolder) {
+					IFolder folder = (IFolder) selection[0];
+					// try {
+					// IStatus result = ClasspathModifier
+					// .checkSetOutputLocationPrecondition(
+					// fEntryToEdit, folder.getFullPath(),
+					// fAllowInvalidClasspath, fCPJavaProject);
+					// if (result.getSeverity() == IStatus.ERROR) {
+					// return result;
+					// }
+					// } catch (CoreException e) {
+					// JavaPlugin.log(e);
+					// }
+					return new StatusInfo();
+				} else {
+					return new StatusInfo(IStatus.ERROR, "");
+				}
 			}
 		};
 		dialog.setValidator(validator);
-		dialog.setMessage("choose output folder");
+		dialog.setMessage(getLabelText());
 		dialog.addFilter(filter);
 		dialog.setInput(root);
 		dialog.setInitialSelection(initSelection);

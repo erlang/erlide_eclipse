@@ -11,53 +11,33 @@ package org.erlide.ui.properties;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.ComboFieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPropertyPage;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.preferences.ProjectPreferencesConstants;
 import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeInfoListener;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
 public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
-		IWorkbenchPropertyPage, IPropertyChangeListener, RuntimeInfoListener {
+		IWorkbenchPropertyPage, IPropertyChangeListener {
 
 	/**
 	 * Constructor for ErlProjectPropertyPage.
 	 */
 	public OldErlProjectPropertyPage() {
-		super("Project props", GRID);
-		ErlangCore.getRuntimeInfoManager().addListener(this);
-	}
-
-	protected void handleBrowseSelected(final Text text,
-			final String selectTipString, final String extension) {
-		String last = text.getText();
-		if (last == null) {
-			last = ""; //$NON-NLS-1$
-		} else {
-			last = last.trim();
-		}
-		final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
-		dialog.setText(selectTipString);
-		dialog.setFileName(last);
-		dialog.setFilterExtensions(new String[] { extension });
-		final String result = dialog.open();
-		if (result == null) {
-			return;
-		}
-		text.setText(result);
+		super("Erlang project properties", GRID);
 	}
 
 	@Override
@@ -69,26 +49,34 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 	protected void createFieldEditors() {
 		IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
+		Composite fieldEditorParent = getFieldEditorParent();
 		ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
 				ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-				getFieldEditorParent(), prj);
+				fieldEditorParent, prj);
 		addField(out);
 
 		ProjectPathEditor src = new ProjectPathEditor(
-				ProjectPreferencesConstants.SOURCE_DIRS, "Source directories",
-				"Select directory:", getFieldEditorParent(), prj);
+				ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
+				"Select directory:", fieldEditorParent, prj);
 		addField(src);
 
 		ProjectPathEditor inc = new ProjectPathEditor(
 				ProjectPreferencesConstants.INCLUDE_DIRS,
-				"Include directories", "Select directory:",
-				getFieldEditorParent(), prj);
+				"Include directories:", "Select directory:", fieldEditorParent,
+				prj);
 		addField(inc);
+
+		IPreferenceStore ps = getPreferenceStore();
+		OldErlangProjectProperties props = new OldErlangProjectProperties(prj);
+		List<String> tstDirs = props.getTestDirs();
+		String tstStr = PreferencesUtils.packList(tstDirs);
+		ps.setValue(ProjectPreferencesConstants.TEST_DIRS, tstStr);
 
 		ProjectPathEditor tst = new ProjectPathEditor(
 				ProjectPreferencesConstants.TEST_DIRS,
-				"Test source directories", "Select directory:",
-				getFieldEditorParent(), prj);
+				"Test source directories:", "Select directory:",
+				fieldEditorParent, prj);
+		tst.setEnabled(false, fieldEditorParent);
 		addField(tst);
 
 		Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
@@ -98,14 +86,10 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 		for (int i = 0; i < rs.size(); i++) {
 			runtimes[i][0] = it.next().getVersion().asMajor().toString();
 			runtimes[i][1] = runtimes[i][0];
-
 		}
 		addField(new ComboFieldEditor(
-				ProjectPreferencesConstants.RUNTIME_VERSION, "Runtime version",
-				runtimes, getFieldEditorParent()));
-	}
-
-	public void infoChanged() {
+				ProjectPreferencesConstants.RUNTIME_VERSION,
+				"Runtime version:", runtimes, fieldEditorParent));
 	}
 
 	@Override
