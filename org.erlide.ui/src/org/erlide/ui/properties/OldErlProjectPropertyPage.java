@@ -38,6 +38,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
 	 */
 	public OldErlProjectPropertyPage() {
 		super("Erlang project properties", GRID);
+		setPropertiesOnly();
 	}
 
 	@Override

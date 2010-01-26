@@ -65,8 +65,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	private IAdaptable element;
 
 	// Additional buttons for property pages
-	Button useWorkspaceSettingsButton;
-
+	private Button useWorkspaceSettingsButton;
 	private Button useProjectSettingsButton;
 
 	Button configureButton;
@@ -79,6 +78,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 
 	// Cache for page id
 	private String pageId;
+
+	private boolean propertiesOnly = false;
 
 	/**
 	 * Constructor
@@ -185,7 +186,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 		}
 		super.createControl(parent);
 		// Update state of all subclass controls
-		if (isPropertyPage()) {
+		if (isPropertyPage() && !propertiesOnly) {
 			updateFieldEditors();
 		}
 	}
@@ -198,10 +199,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected Control createContents(final Composite parent) {
-		if (isPropertyPage()) {
+		if (isPropertyPage() && !propertiesOnly) {
 			createSelectionGroup(parent);
-			useProjectSettingsButton.getParent().getParent().setVisible(false);
-			useProjectSettingsButton.setSelection(true);
 		}
 		return super.createContents(parent);
 	}
@@ -324,7 +323,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	@Override
 	public boolean performOk() {
 		final boolean result = super.performOk();
-		if (result && isPropertyPage()) {
+		if (result && isPropertyPage() && !propertiesOnly) {
 			// Save state of radiobuttons in project properties
 			final IResource resource = (IResource) getElement();
 			try {
@@ -346,7 +345,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected void performDefaults() {
-		if (isPropertyPage()) {
+		if (isPropertyPage() && !propertiesOnly) {
 			useWorkspaceSettingsButton.setSelection(true);
 			useProjectSettingsButton.setSelection(false);
 			configureButton.setEnabled(true);
@@ -397,6 +396,13 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
 				dialog.open();
 			}
 		});
+	}
+
+	/**
+	 * If called, the page will not display "workspace/project" settings choice
+	 */
+	protected void setPropertiesOnly() {
+		propertiesOnly = true;
 	}
 
 }
