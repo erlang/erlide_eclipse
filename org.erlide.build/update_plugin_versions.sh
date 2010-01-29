@@ -160,5 +160,5 @@ fi
 
 if [ "$COMMIT" = "co" ] 
 then
-  git commit -a -m "prepared $VER"
+  git commit -a -m "prepared $VER_"
 fi
