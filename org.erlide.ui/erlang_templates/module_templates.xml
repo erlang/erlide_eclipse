@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<template
+	name="module"
+	description="Erlang Module With Comments"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	id="org.erlide.ui.erlangsource.modulelayout">${file_comment}
+-module(${module}).
+
+%%
+%% Include files
+%%
+
+%%
+%% Exported Functions
+%%
+-export([${exports}]).
+
+%%
+%% API Functions
+%%
+
+${exported_functions}
+
+%%
+%% Local Functions
+%%
+
+${local_functions}</template>
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The Application behaviour"
+	enabled="true"
+	id="org.erlide.ui.erlangsource.application"
+	name="application">${file_comment}
+-module(${module}).
+
+-behaviour(application).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% Behavioural exports
+%% --------------------------------------------------------------------
+-export([
+	 start/2,
+	 stop/1
+        ]).
+
+%% --------------------------------------------------------------------
+%% Internal exports
+%% --------------------------------------------------------------------
+-export([${exports}]).
+
+%% --------------------------------------------------------------------
+%% Macros
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% Records
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% API Functions
+%% --------------------------------------------------------------------
+${exported_functions}
+
+%% ====================================================================!
+%% External functions
+%% ====================================================================!
+%% --------------------------------------------------------------------
+%% Func: start/2
+%% Returns: {ok, Pid}        |
+%%          {ok, Pid, State} |
+%%          {error, Reason}
+%% --------------------------------------------------------------------
+start(Type, StartArgs) -&gt;
+    case 'TopSupervisor':start_link(StartArgs) of
+	{ok, Pid} -&gt;
+	    {ok, Pid};
+	Error -&gt;
+	    Error
+    end.
+
+%% --------------------------------------------------------------------
+%% Func: stop/1
+%% Returns: any
+%% --------------------------------------------------------------------
+stop(State) -&gt;
+    ok.
+
+%% ====================================================================
+%% Internal functions
+%% ====================================================================
+
+${local_functions}</template>
+
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The GenEvent behaviour"
+	enabled="true"
+	id="org.erlide.ui.erlangsource.gen_event"
+	name="gen_event">%%% -------------------------------------------------------------------
+%%% Author  : ${user}
+%%% Description :
+%%%
+%%% Created : ${date}
+%%% -------------------------------------------------------------------
+-module(${module}).
+
+-behaviour(gen_event).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% External exports
+-export([${exports}]).
+
+%% gen_event callbacks
+-export([init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3]).
+
+-record(state, {}).
+
+%% ====================================================================
+%% External functions
+%% ====================================================================
+${exported_functions}
+
+%% ====================================================================
+%% Server functions
+%% ====================================================================
+%% --------------------------------------------------------------------
+%% Func: init/1
+%% Returns: {ok, State}          |
+%%          Other
+%% --------------------------------------------------------------------
+init([]) -&gt;
+    {ok, #state{}}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_event/2
+%% Returns: {ok, State}                                |
+%%          {swap_handler, Args1, State1, Mod2, Args2} |
+%%          remove_handler
+%% --------------------------------------------------------------------
+handle_event(Event, State) -&gt;
+    {ok, State}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_call/2
+%% Returns: {ok, Reply, State}                                |
+%%          {swap_handler, Reply, Args1, State1, Mod2, Args2} |
+%%          {remove_handler, Reply}
+%% --------------------------------------------------------------------
+handle_call(Request, State) -&gt;
+    Reply = ok,
+    {ok, Reply, State}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_info/2
+%% Returns: {ok, State}                                |
+%%          {swap_handler, Args1, State1, Mod2, Args2} |
+%%          remove_handler
+%% --------------------------------------------------------------------
+handle_info(Info, State) -&gt;
+    {ok, State}.
+
+%% --------------------------------------------------------------------
+%% Func: terminate/2
+%% Purpose: Shutdown the server
+%% Returns: any
+%% --------------------------------------------------------------------
+terminate(Reason, State) -&gt;
+    ok.
+
+%% --------------------------------------------------------------------
+%% Func: code_change/3
+%% Purpose: Convert process state when code is changed
+%% Returns: {ok, NewState}
+%% --------------------------------------------------------------------
+code_change(OldVsn, State, Extra) -&gt;
+    {ok, State}.
+
+%% --------------------------------------------------------------------
+%%% Internal functions
+%% --------------------------------------------------------------------
+
+${local_functions}</template>
+
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The FSM behaviour"
+	enabled="true"
+	id="org.erlide.ui.erlangsource.gen_fsm"
+	name="gen_fsm">%%% -------------------------------------------------------------------
+%%% Author  : ${user}
+%%% Description :
+%%%
+%%% Created : ${date}
+%%% -------------------------------------------------------------------
+-module(${module}).
+
+-behaviour(gen_fsm).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% External exports
+-export([${exports}]).
+
+%% gen_fsm callbacks
+-export([init/1, state_name/2, state_name/3, handle_event/3,
+	 handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
+
+-record(state, {}).
+
+%% ====================================================================
+%% External functions
+%% ====================================================================
+${exported_functions}
+
+%% ====================================================================
+%% Server functions
+%% ====================================================================
+%% --------------------------------------------------------------------
+%% Func: init/1
+%% Returns: {ok, StateName, StateData}          |
+%%          {ok, StateName, StateData, Timeout} |
+%%          ignore                              |
+%%          {stop, StopReason}
+%% --------------------------------------------------------------------
+init([]) -&gt;
+    {ok, state_name, #state{}}.
+
+%% --------------------------------------------------------------------
+%% Func: StateName/2
+%% Returns: {next_state, NextStateName, NextStateData}          |
+%%          {next_state, NextStateName, NextStateData, Timeout} |
+%%          {stop, Reason, NewStateData}
+%% --------------------------------------------------------------------
+state_name(Event, StateData) -&gt;
+    {next_state, state_name, StateData}.
+
+%% --------------------------------------------------------------------
+%% Func: StateName/3
+%% Returns: {next_state, NextStateName, NextStateData}            |
+%%          {next_state, NextStateName, NextStateData, Timeout}   |
+%%          {reply, Reply, NextStateName, NextStateData}          |
+%%          {reply, Reply, NextStateName, NextStateData, Timeout} |
+%%          {stop, Reason, NewStateData}                          |
+%%          {stop, Reason, Reply, NewStateData}
+%% --------------------------------------------------------------------
+state_name(Event, From, StateData) -&gt;
+    Reply = ok,
+    {reply, Reply, state_name, StateData}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_event/3
+%% Returns: {next_state, NextStateName, NextStateData}          |
+%%          {next_state, NextStateName, NextStateData, Timeout} |
+%%          {stop, Reason, NewStateData}
+%% --------------------------------------------------------------------
+handle_event(Event, StateName, StateData) -&gt;
+    {next_state, StateName, StateData}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_sync_event/4
+%% Returns: {next_state, NextStateName, NextStateData}            |
+%%          {next_state, NextStateName, NextStateData, Timeout}   |
+%%          {reply, Reply, NextStateName, NextStateData}          |
+%%          {reply, Reply, NextStateName, NextStateData, Timeout} |
+%%          {stop, Reason, NewStateData}                          |
+%%          {stop, Reason, Reply, NewStateData}
+%% --------------------------------------------------------------------
+handle_sync_event(Event, From, StateName, StateData) -&gt;
+    Reply = ok,
+    {reply, Reply, StateName, StateData}.
+
+%% --------------------------------------------------------------------
+%% Func: handle_info/3
+%% Returns: {next_state, NextStateName, NextStateData}          |
+%%          {next_state, NextStateName, NextStateData, Timeout} |
+%%          {stop, Reason, NewStateData}
+%% --------------------------------------------------------------------
+handle_info(Info, StateName, StateData) -&gt;
+    {next_state, StateName, StateData}.
+
+%% --------------------------------------------------------------------
+%% Func: terminate/3
+%% Purpose: Shutdown the fsm
+%% Returns: any
+%% --------------------------------------------------------------------
+terminate(Reason, StateName, StatData) -&gt;
+    ok.
+
+%% --------------------------------------------------------------------
+%% Func: code_change/4
+%% Purpose: Convert process state when code is changed
+%% Returns: {ok, NewState, NewStateData}
+%% --------------------------------------------------------------------
+code_change(OldVsn, StateName, StateData, Extra) -&gt;
+    {ok, StateName, StateData}.
+
+%% --------------------------------------------------------------------
+%%% Internal functions
+%% --------------------------------------------------------------------
+
+${local_functions}</template>
+
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The GenServer behaviour"
+	enabled="true" id="org.erlide.ui.erlangsource.gen_server"
+	name="gen_server">%%% -------------------------------------------------------------------
+%%% Author  : ${user}
+%%% Description :
+%%%
+%%% Created : ${date}
+%%% -------------------------------------------------------------------
+-module(${module}).
+
+-behaviour(gen_server).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% External exports
+-export([${exports}]).
+
+%% gen_server callbacks
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+
+-record(state, {}).
+
+%% ====================================================================
+%% External functions
+%% ====================================================================
+${exported_functions}
+
+%% ====================================================================
+%% Server functions
+%% ====================================================================
+
+%% --------------------------------------------------------------------
+%% Function: init/1
+%% Description: Initiates the server
+%% Returns: {ok, State}          |
+%%          {ok, State, Timeout} |
+%%          ignore               |
+%%          {stop, Reason}
+%% --------------------------------------------------------------------
+init([]) -&gt;
+    {ok, #state{}}.
+
+%% --------------------------------------------------------------------
+%% Function: handle_call/3
+%% Description: Handling call messages
+%% Returns: {reply, Reply, State}          |
+%%          {reply, Reply, State, Timeout} |
+%%          {noreply, State}               |
+%%          {noreply, State, Timeout}      |
+%%          {stop, Reason, Reply, State}   | (terminate/2 is called)
+%%          {stop, Reason, State}            (terminate/2 is called)
+%% --------------------------------------------------------------------
+handle_call(Request, From, State) -&gt;
+    Reply = ok,
+    {reply, Reply, State}.
+
+%% --------------------------------------------------------------------
+%% Function: handle_cast/2
+%% Description: Handling cast messages
+%% Returns: {noreply, State}          |
+%%          {noreply, State, Timeout} |
+%%          {stop, Reason, State}            (terminate/2 is called)
+%% --------------------------------------------------------------------
+handle_cast(Msg, State) -&gt;
+    {noreply, State}.
+
+%% --------------------------------------------------------------------
+%% Function: handle_info/2
+%% Description: Handling all non call/cast messages
+%% Returns: {noreply, State}          |
+%%          {noreply, State, Timeout} |
+%%          {stop, Reason, State}            (terminate/2 is called)
+%% --------------------------------------------------------------------
+handle_info(Info, State) -&gt;
+    {noreply, State}.
+
+%% --------------------------------------------------------------------
+%% Function: terminate/2
+%% Description: Shutdown the server
+%% Returns: any (ignored by gen_server)
+%% --------------------------------------------------------------------
+terminate(Reason, State) -&gt;
+    ok.
+
+%% --------------------------------------------------------------------
+%% Func: code_change/3
+%% Purpose: Convert process state when code is changed
+%% Returns: {ok, NewState}
+%% --------------------------------------------------------------------
+code_change(OldVsn, State, Extra) -&gt;
+    {ok, State}.
+
+%% --------------------------------------------------------------------
+%%% Internal functions
+%% --------------------------------------------------------------------
+
+${local_functions}</template>
+
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The Supervisor behaviour"
+	enabled="true"
+	id="org.erlide.ui.erlangsource.supervisor"
+	name="supervisor">%%% -------------------------------------------------------------------
+%%% Author  : ${user}
+%%% Description :
+%%%
+%%% Created : ${date}
+%%% -------------------------------------------------------------------
+-module(${module}).
+
+-behaviour(supervisor).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% External exports
+%% --------------------------------------------------------------------
+-export([${exports}]).
+
+%% --------------------------------------------------------------------
+%% Internal exports
+%% --------------------------------------------------------------------
+-export([
+	 init/1
+        ]).
+
+%% --------------------------------------------------------------------
+%% Macros
+%% --------------------------------------------------------------------
+-define(SERVER, ?MODULE).
+
+%% --------------------------------------------------------------------
+%% Records
+%% --------------------------------------------------------------------
+
+%% ====================================================================
+%% External functions
+%% ====================================================================
+
+${exported_functions}
+
+%% ====================================================================
+%% Server functions
+%% ====================================================================
+%% --------------------------------------------------------------------
+%% Func: init/1
+%% Returns: {ok,  {SupFlags,  [ChildSpec]}} |
+%%          ignore                          |
+%%          {error, Reason}
+%% --------------------------------------------------------------------
+init([]) -&gt;
+    AChild = {'AName',{'AModule',start_link,[]},
+	      permanent,2000,worker,['AModule']},
+    {ok,{{one_for_all,0,1}, [AChild]}}.
+
+%% ====================================================================
+%% Internal functions
+%% ====================================================================
+
+${local_functions}</template>
+
+<template
+	autoinsert="true"
+	context="org.erlide.ui.erlangsource.template.context.module"
+	deleted="false"
+	description="The SupervisorBridge behaviour"
+	enabled="true"
+	id="org.erlide.ui.erlangsource.supervisor_bridge"
+	name="supervisor_bridge">%%% -------------------------------------------------------------------
+%%% Author  : ${user}
+%%% Description :
+%%%
+%%% Created : ${date}
+%%% -------------------------------------------------------------------
+-module(${module}).
+
+-behaviour(supervisor_bridge).
+%% --------------------------------------------------------------------
+%% Include files
+%% --------------------------------------------------------------------
+
+%% --------------------------------------------------------------------
+%% External exports
+%% --------------------------------------------------------------------
+-export([
+	 ${exports}
+        ]).
+
+%% --------------------------------------------------------------------
+%% Internal exports
+%% --------------------------------------------------------------------
+-export([
+	 init/1,
+	 terminate/2
+        ]).
+
+%% --------------------------------------------------------------------
+%% Macros
+%% --------------------------------------------------------------------
+-define(SERVER, ?MODULE).
+
+%% --------------------------------------------------------------------
+%% Records
+%% --------------------------------------------------------------------
+-record(state, {}).
+
+%% ====================================================================
+%% External functions
+%% ====================================================================
+${exported_functions}
+
+%% ====================================================================
+%% Server functions
+%% ====================================================================
+%% --------------------------------------------------------------------
+%% Func: init/1
+%% Returns: {ok,  Pid, State} |
+%%          ignore            |
+%%          {error, Reason}
+%% --------------------------------------------------------------------
+init([]) -&gt;
+    case 'AModule':start_link() of
+	{ok, Pid} -&gt;
+	    {ok, Pid, #state{}};
+	Error -&gt;
+	    Error
+    end.
+
+%% --------------------------------------------------------------------
+%% Func: terminate/2
+%% Purpose: Synchronized shutdown of the underlying sub system.
+%% Returns: any
+%% --------------------------------------------------------------------
+terminate(Reason, State) -&gt;
+    'AModule':stop(),
+    ok.
+
+%% ====================================================================
+%% Internal functions
+%% ====================================================================
+
+${local_functions}</template>
+</templates>

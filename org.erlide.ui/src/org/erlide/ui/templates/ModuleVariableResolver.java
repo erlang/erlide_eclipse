@@ -8,7 +8,7 @@
  *     Lukas Larsson
  *******************************************************************************/
 
-package org.erlide.ui.wizards.templates;
+package org.erlide.ui.templates;
 
 import java.util.ArrayList;
 
@@ -63,10 +63,10 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
 			final ModuleVariableResolver element = (ModuleVariableResolver) element0;
 			element.doSetModule(module);
 		}
-		fModule = module;
+		doSetModule(module);
 	}
 
-	void doSetModule(final String module) {
+	private void doSetModule(final String module) {
 		fModule = module;
 	}
 

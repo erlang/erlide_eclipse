@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.completion;
+package org.erlide.ui.templates;
 
 import org.erlide.ui.ErlideUIPlugin;
 

@@ -8,21 +8,31 @@
  *     Lukas Larsson
  *******************************************************************************/
 
-package org.erlide.ui.wizards.templates;
+package org.erlide.ui.templates;
 
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
+import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContextType;
+import org.erlide.ui.ErlideUIPlugin;
 
-public class ErlangSourceContextTypeBehaviour extends TemplateContextType {
+public class ErlangSourceContextTypeModule extends TemplateContextType {
 
-	private static ErlangSourceContextTypeBehaviour fInstance;
+	private static ErlangSourceContextTypeModule fInstance;
+
+	/** This context's id */
+	public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
 
 	/**
 	 * Creates a new XML context type.
 	 */
-	public ErlangSourceContextTypeBehaviour() {
+	public ErlangSourceContextTypeModule() {
 		addGlobalResolvers();
+		addModuleResolver();
 		fInstance = this;
+	}
+
+	private void addModuleResolver() {
+		addResolver(ModuleVariableResolver.getDefault());
 	}
 
 	private void addGlobalResolvers() {
@@ -34,9 +44,21 @@ public class ErlangSourceContextTypeBehaviour extends TemplateContextType {
 		addResolver(new GlobalTemplateVariables.User());
 	}
 
-	public static ErlangSourceContextTypeBehaviour getDefault() {
+	public void addElementResolvers() {
+		final Template[] templates = ErlideUIPlugin
+				.getDefault()
+				.getTemplateStore()
+				.getTemplates(
+						ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+		for (final Template template : templates) {
+			addResolver(new ModuleElementVariableResolver(template.getName(),
+					template));
+		}
+	}
+
+	public static ErlangSourceContextTypeModule getDefault() {
 		if (fInstance == null) {
-			fInstance = new ErlangSourceContextTypeBehaviour();
+			new ErlangSourceContextTypeModule();
 		}
 		return fInstance;
 	}
