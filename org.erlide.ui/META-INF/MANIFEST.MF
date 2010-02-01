@@ -287,8 +287,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.dialogs,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.wizards.templates;x-internal:=true;uses:="org.eclipse.jface.text.templates.persistence,org.eclipse.jface.text.templates",
- org.erlide.ui.wizards.templates.prefs;x-internal:=true;
+ org.erlide.ui.wizards.templates;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.swt.events,
    org.eclipse.ui,

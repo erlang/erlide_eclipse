@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.completion;
+package org.erlide.ui.templates;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
@@ -15,12 +15,6 @@ public class ErlTemplateProposal extends TemplateProposal {
 			final TemplateContext context, final IRegion region,
 			final Image image, final int relevance) {
 		super(template, context, region, image, relevance);
-	}
-
-	public ErlTemplateProposal(final Template template,
-			final TemplateContext context, final IRegion region,
-			final Image image) {
-		this(template, context, region, image, 0);
 	}
 
 	@Override

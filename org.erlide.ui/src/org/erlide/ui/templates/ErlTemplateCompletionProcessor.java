@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.completion;
+package org.erlide.ui.templates;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
@@ -37,7 +38,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 	protected TemplateContextType getContextType(final ITextViewer viewer,
 			final IRegion region) {
 		return ErlideUIPlugin.getDefault().getContextTypeRegistry()
-				.getContextType(ErlangContextType.ERLANG_CONTEXT_TYPE);
+				.getContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.completion;
+package org.erlide.ui.templates;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
