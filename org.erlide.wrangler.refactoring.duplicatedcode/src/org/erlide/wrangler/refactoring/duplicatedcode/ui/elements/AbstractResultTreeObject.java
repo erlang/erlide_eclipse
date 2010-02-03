@@ -35,4 +35,14 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 		return null;
 	}
 
+	String suggestedCode = "";
+
+	public String getSuggestedCode() {
+		return suggestedCode;
+	}
+
+	public void setSuggestedCode(String str) {
+		this.suggestedCode = str;
+	}
+
 }

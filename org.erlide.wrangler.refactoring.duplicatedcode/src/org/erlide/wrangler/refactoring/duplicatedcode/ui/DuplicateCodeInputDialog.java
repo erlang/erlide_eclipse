@@ -1,8 +1,6 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,17 +14,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class DuplicateCodeInputDialog extends Dialog {
-
-	private final String title;
+public class DuplicateCodeInputDialog extends AbstractInputDialog {
 
 	private int minToks;
 
 	private int minClones;
 
 	private boolean workOnlyInCurrentFile;
-
-	boolean isFinished = false;
 
 	private Button okButton;
 
@@ -36,11 +30,8 @@ public class DuplicateCodeInputDialog extends Dialog {
 
 	private Button onlyInFileCheckBoxButton;
 
-	private Text errorMessageText;
-
 	public DuplicateCodeInputDialog(Shell parentShell, String dialogTitle) {
-		super(parentShell);
-		this.title = dialogTitle;
+		super(parentShell, dialogTitle);
 	}
 
 	public int getMinToks() {
@@ -55,22 +46,10 @@ public class DuplicateCodeInputDialog extends Dialog {
 		return workOnlyInCurrentFile;
 	}
 
-	public boolean isFinished() {
-		return isFinished;
-	}
-
-	@Override
-	protected void buttonPressed(int buttonId) {
-		super.buttonPressed(buttonId);
-	}
-
-	@Override
-	protected void configureShell(Shell shell) {
-		super.configureShell(shell);
-		if (title != null) {
-			shell.setText(title);
-		}
-	}
+	/*
+	 * @Override protected void buttonPressed(int buttonId) {
+	 * super.buttonPressed(buttonId); }
+	 */
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
@@ -166,6 +145,7 @@ public class DuplicateCodeInputDialog extends Dialog {
 		return composite;
 	}
 
+	@Override
 	protected void validateInput() {
 		String errorMsg = null;
 		try {
@@ -178,28 +158,5 @@ public class DuplicateCodeInputDialog extends Dialog {
 			setErrorMessage(errorMsg);
 		}
 
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		if (errorMessageText != null && !errorMessageText.isDisposed()) {
-			errorMessageText.setText(errorMessage == null ? " \n "
-					: errorMessage);
-
-			boolean hasError = errorMessage != null
-					&& (StringConverter.removeWhiteSpaces(errorMessage))
-							.length() > 0;
-			errorMessageText.setEnabled(hasError);
-			errorMessageText.setVisible(hasError);
-			errorMessageText.getParent().update();
-
-			Control button = getButton(IDialogConstants.OK_ID);
-			if (button != null) {
-				button.setEnabled(errorMessage == null);
-			}
-		}
-	}
-
-	protected int getInputTextStyle() {
-		return SWT.SINGLE | SWT.BORDER;
 	}
 }
