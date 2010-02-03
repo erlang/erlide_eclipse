@@ -74,7 +74,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
 		Label minTokslabel = new Label(composite, SWT.WRAP);
-		minTokslabel.setText("Minimum number of tokens:");
+		minTokslabel.setText("Minimum lenght of an expression sequence:");
 		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);
@@ -85,6 +85,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		minToksText = new Text(composite, getInputTextStyle());
 		minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		minToksText.setText("5");
 		minToksText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();
@@ -92,7 +93,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		});
 
 		Label minFreqLabel = new Label(composite, SWT.WRAP);
-		minFreqLabel.setText("Minimum number of frequency:");
+		minFreqLabel.setText("Minimum number appearance times:");
 		GridData minFreqData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);
@@ -103,6 +104,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		minFreqText = new Text(composite, getInputTextStyle());
 		minFreqText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		minFreqText.setText("2");
 		minFreqText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();
@@ -110,7 +112,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		});
 
 		Label simScoreLabel = new Label(composite, SWT.WRAP);
-		simScoreLabel.setText("Similarity score:");
+		simScoreLabel.setText("Similarity score (between 0.1 and 1.0):");
 		GridData simScoreData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);

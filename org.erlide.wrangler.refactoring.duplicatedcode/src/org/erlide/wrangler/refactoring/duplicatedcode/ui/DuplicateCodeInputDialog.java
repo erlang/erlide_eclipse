@@ -83,7 +83,8 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 		// create message
 
 		Label minTokslabel = new Label(composite, SWT.WRAP);
-		minTokslabel.setText("Minimum number of tokens:");
+		minTokslabel
+				.setText("Minimal numbers of tokens a code clone should have:");
 		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);
@@ -94,6 +95,7 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 		minToksText = new Text(composite, getInputTextStyle());
 		minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		minToksText.setText("20");
 		minToksText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();
@@ -101,17 +103,17 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 		});
 
 		Label minClonesLabel = new Label(composite, SWT.WRAP);
-		minClonesLabel.setText("Minimum number of clones:");
+		minClonesLabel.setText("Minimum number of appearance times:");
 		GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL |
 				GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
 						| GridData.VERTICAL_ALIGN_CENTER);
 		minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		minClonesLabel.setLayoutData(minClonesData);
 		minClonesLabel.setFont(parent.getFont());
-
 		minClonesText = new Text(composite, getInputTextStyle());
 		minClonesText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		minClonesText.setText("2");
 		minClonesText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();

@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
 
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -20,6 +19,9 @@ import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.osgi.framework.Bundle;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
@@ -45,12 +47,17 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 				.getWranglerSelection();
 
 		if (onlyInfile) {
-			functionName = "duplicated_code_in_buffer_eclipse";
-			result = backend.callWithoutParser(functionName, "siiis", sel
-					.getFilePath(), minToks, minClones, GlobalParameters
-					.getTabWidth(), suffixPath);
+			functionName = "duplicated_code_eclipse";
+			OtpErlangString fp = new OtpErlangString(sel.getFilePath());
+			OtpErlangString[] fpa = new OtpErlangString[1];
+			fpa[0] = fp;
+			OtpErlangList fpl = new OtpErlangList(fpa);
+
+			result = backend.callWithoutParser(functionName, "xiiis", fpl,
+					minToks, minClones, GlobalParameters.getTabWidth(),
+					suffixPath);
 		} else {
-			functionName = "duplicated_code_in_dirs_eclipse";
+			functionName = "duplicated_code_eclipse";
 			result = backend.callWithoutParser(functionName, "xiiis", sel
 					.getSearchPath(), minToks, minClones, GlobalParameters
 					.getTabWidth(), suffixPath);
@@ -99,7 +106,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
 		DuplicateCodeInputDialog inputd = new DuplicateCodeInputDialog(shell,
-				"Duplicate code detection...");
+				"Identical code detection...");
 		inputd.open();
 
 		onlyInfile = inputd.onlyInFile();

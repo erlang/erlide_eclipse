@@ -34,6 +34,13 @@
                label="Detect duplicated &amp;code..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
+         <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarDetectionAction"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.similarcodedetection"
+               label="Detect &amp;similar code..."
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
+               style="push">
+         </action>
       </editorContribution>
    </extension>
 

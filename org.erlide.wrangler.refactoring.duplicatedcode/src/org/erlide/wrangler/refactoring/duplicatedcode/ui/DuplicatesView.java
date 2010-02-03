@@ -1,10 +1,19 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.wrangler.refactoring.duplicatedcode.actions.ClipboardAction;
+import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.AbstractResultTreeObject;
 
 public class DuplicatesView extends ViewPart {
 	// private final class HighlightAction extends Action {
@@ -18,9 +27,9 @@ public class DuplicatesView extends ViewPart {
 
 	private TreeViewer viewer;
 	// private DrillDownAdapter drillDownAdapter;
-	// private Action action1;
-	// private Action action2;
-	Action doubleClickAction;
+	private Action action1, action2;
+	private Action copyToClipboard;
+	private Action doubleClickAction;
 
 	/*
 	 * The content provider class is responsible for providing objects to the
@@ -53,8 +62,8 @@ public class DuplicatesView extends ViewPart {
 		viewer.setLabelProvider(new DuplicatesViewLabelProvider());
 		// viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		// makeActions();
-		// hookContextMenu();
+		makeActions();
+		createToolbar();
 		hookDoubleClickAction();
 		// contributeToActionBars();
 
@@ -101,37 +110,41 @@ public class DuplicatesView extends ViewPart {
 	// drillDownAdapter.addNavigationActions(manager);
 	// }
 
-	// private void makeActions() {
-	// action1 = new Action() {
-	// public void run() {
-	// showMessage("Sample refactoring executed");
-	// }
-	// };
-	// action1.setText("sample refactoring");
-	// action1.setToolTipText("sample refactoring");
-	// action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-	// .getImageDescriptor(ISharedImages.IMG_OBJS_WARN_TSK));
-	//
-	// action2 = new Action() {
-	// public void run() {
-	// showMessage("Action 2 executed");
-	// }
-	// };
-	// action2.setText("Action 2");
-	// action2.setToolTipText("Action 2 tooltip");
-	// action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-	// .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-	// doubleClickAction = new HighlightAction();
-	// }
+	private void createToolbar() {
+		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(copyToClipboard);
+
+	}
+
+	private void makeActions() {
+
+		copyToClipboard = new ClipboardAction(PlatformUI.getWorkbench()
+				.getDisplay());
+		copyToClipboard.setText("Copy generalised function to clipboard");
+		copyToClipboard
+				.setToolTipText("Copy generalised function to clipboard");
+		copyToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
+				.getSharedImages().getImageDescriptor(
+						ISharedImages.IMG_TOOL_COPY));
+
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				ISelection sel = event.getSelection();
+				if (sel == null || sel.isEmpty())
+					return;
+				TreeSelection tsel = (TreeSelection) sel;
+				AbstractResultTreeObject selection = (AbstractResultTreeObject) tsel
+						.getFirstElement();
+				copyToClipboard.setText(selection.getSuggestedCode());
+
+			}
+		});
+
+	}
 
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new DoubleClickListener());
 	}
-
-	// private void showMessage(String message) {
-	// MessageDialog.openInformation(viewer.getControl().getShell(),
-	// "Duplicated codes", message);
-	// }
 
 	/**
 	 * Passing the focus request to the viewer's control.
