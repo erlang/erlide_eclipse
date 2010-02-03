@@ -72,7 +72,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 					status = new RefactoringStatus();
 				} else if (message.getRefactoringState() == RefactoringState.QUESTION) {
 					renameTestMod = ask("Question", message.getMessageString());
-					message = runAfterWarning(sel);
+					message = runAlternative(sel);
 					if (message.getRefactoringState() == RefactoringState.OK) {
 						status = new RefactoringStatus();
 					} else
@@ -80,9 +80,10 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 								.createFatalErrorStatus(message
 										.getMessageString());
 				} else if (message.getRefactoringState() == RefactoringState.WARNING) {
+					// FIXME: ???
 					renameTestMod = !ask("Warning", message.getMessageString());
 					if (!renameTestMod) {
-						message = runAfterWarning(sel);
+						message = runAlternative(sel);
 						if (message.getRefactoringState() == RefactoringState.OK) {
 							status = new RefactoringStatus();
 						} else
@@ -101,7 +102,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAfterWarning(IErlSelection sel) {
+	public IRefactoringRpcMessage runAlternative(IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_mod_1_eclipse", "ssxib", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth(),

@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,8 @@
 -include("../include/wrangler.hrl").
 
 %% API
--export([start_callgraph_server/0, get_callgraph/1, get_sccs_including_fun/2]).
+-export([start_callgraph_server/0, get_callgraph/1, get_sccs_including_fun/2,
+	build_scc_callgraph/1,build_callercallee_callgraph/1, called_funs/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -142,25 +143,76 @@ get_sccs_including_fun({M, F, A}, SearchPaths) ->
 %% Currently the State is not used because  it takes too much space;
 %% Todo: find out a way to improve this.
 get_callgraph(SearchPaths, State) ->
-    CallGraph = refac_util:build_scc_callgraph(SearchPaths),
+    CallGraph = build_scc_callgraph(SearchPaths),
     {CallGraph, State}.
 
 
-%% return the sccs of which {M, F, A} is a member.
+%% return the sccs, of which {M, F, A} is a member.
 get_sccs_including_fun({M, F, A}, SearchPaths, State) ->
     {#callgraph{scc_order = Sccs}, State1} = get_callgraph(SearchPaths, State),
-    ResSccs = lists:filter(fun (Sc) ->
-				 lists:any(fun (Elem) ->
-						   case Elem of
-						       {{M, F, A}, _} -> true;
-						       _ -> false
-						   end
-					   end,
-					   Sc)
-			 end, Sccs),
+    ResSccs = [Sc||Sc<-Sccs, lists:keymember({M, F, A}, 1, Sc)],
     {ResSccs, State1}.
    
 
     
-
+%%-spec(build_scc_callgraph(DirList::[dir()]) -> #callgraph{}).
+build_scc_callgraph(DirList) ->
+    CallerCalleesWithDef = build_callercallee_callgraph(DirList),
+    CallerCallees = lists:map(fun ({{Caller, _CallerDef}, Callee}) ->
+				      {Caller, Callee} 
+			      end, CallerCalleesWithDef),
+    {Sccs, E} = refac_callgraph:construct(CallerCalleesWithDef),
+    #callgraph{callercallee = CallerCallees, scc_order = Sccs, external_calls = E}.
+    
    
+
+%%-spec(build_callercallee_callgraph/1::([dir()]) -> 
+%%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
+build_callercallee_callgraph(DirList) ->
+    Files = refac_util:expand_files(DirList, ".erl"),
+    lists:flatmap(fun(FName) ->do_build_callgraph(FName, DirList)
+		  end, Files).
+    
+   
+%%-spec(do_build_callgraph/2::(filename(), [dir()]) -> 
+%%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
+do_build_callgraph(FName, DirList) ->
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, DirList),
+    {value, {module, ModName}} = lists:keysearch(module, 1, Info),
+    F1 = fun (T, S) ->
+		 case refac_syntax:type(T) of
+		     function ->
+			 FunName = refac_syntax:data(refac_syntax:function_name(T)),
+			 Arity = refac_syntax:function_arity(T),
+			 Caller ={{ModName, FunName, Arity}, T},   %% should remove the actual function AST.!!!
+			 CalledFuns = called_funs(T),
+			 ordsets:add_element({Caller, CalledFuns}, S);
+		     _ -> S
+		 end
+	 end,
+    lists:usort(refac_syntax_lib:fold(F1, ordsets:new(), AnnAST)).
+
+%%-spec(called_funs/1::(syntaxTree()) ->
+%%	     [{modulename(), functionname(), functionarity()}]).
+called_funs(Tree) ->
+    Fun = fun (T, S) ->
+		case refac_syntax:type(T) of
+		  application ->
+			Op = refac_syntax:application_operator(T),
+			case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
+			    {value, {fun_def, {M, F, A, _, _}}} 
+			    when M =/= '_' andalso F =/= '_' ->
+				ordsets:add_element({M, F, A}, S);
+			    _ -> S
+			end;
+		    implicit_fun ->
+			case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
+			    {value, {fun_def, {M, F, A, _, _}}} 
+			    when M =/= '_' andalso F =/= '_' ->
+				ordsets:add_element({M, F, A}, S);
+			    _ -> S
+			end;
+		    _ -> S
+		end
+	end,
+    refac_syntax_lib:fold(Fun, ordsets:new(), Tree).

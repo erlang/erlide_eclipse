@@ -123,27 +123,27 @@ default_output() ->
     group_leader().
 
 
-io_request(_Pid, {write,Term}) ->
-    {put_chars,io_lib,write,[Term]};
+%% io_request(_Pid, {write,Term}) ->
+%%     {put_chars,io_lib,write,[Term]};
 io_request(_Pid, {format,Format,Args}) ->
     {put_chars,io_lib,format,[Format,Args]};
-io_request(_Pid, {fwrite,Format,Args}) ->
-    {put_chars,io_lib,fwrite,[Format,Args]};
-io_request(_Pid, nl) ->
-    {put_chars,io_lib:nl()};
-io_request(Pid, {put_chars,Chars}=Request0) 
-  when is_list(Chars), node(Pid) =:= node() ->
-    %% Convert to binary data if the I/O server is guaranteed to be new
-    Request =
-	case catch list_to_binary(Chars) of
-	    Binary when is_binary(Binary) ->
-		{put_chars,Binary};
-	    _ ->
-		Request0
-	end,
-    Request;
-io_request(_Pid, {fread,Prompt,Format}) ->
-    {get_until,Prompt,io_lib,fread,[Format]};
+%% io_request(_Pid, {fwrite,Format,Args}) ->
+%%     {put_chars,io_lib,fwrite,[Format,Args]};
+%% io_request(_Pid, nl) ->
+%%     {put_chars,io_lib:nl()};
+%% io_request(Pid, {put_chars,Chars}=Request0) 
+%%   when is_list(Chars), node(Pid) =:= node() ->
+%%     %% Convert to binary data if the I/O server is guaranteed to be new
+%%     Request =
+%% 	case catch list_to_binary(Chars) of
+%% 	    Binary when is_binary(Binary) ->
+%% 		{put_chars,Binary};
+%% 	    _ ->
+%% 		Request0
+%% 	end,
+%%     Request;
+%% io_request(_Pid, {fread,Prompt,Format}) ->
+%%     {get_until,Prompt,io_lib,fread,[Format]};
 io_request(_Pid, R) ->				%Pass this straight through
     R.
 

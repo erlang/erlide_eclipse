@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -68,14 +68,14 @@ tuple_funpar_eclipse(FileName, StartLoc, EndLoc,  SearchPaths, TabWidth)->
     tuple_funpar(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, eclipse).
 
 
--spec(tuple_funpar_1/5::(filename(), pos(), pos(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(tuple_funpar_1/5::(filename(), pos(), pos(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth)->
     tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, emacs).
 
 
--spec(tuple_funpar_1_eclipse/5::(filename(), pos(), pos(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(tuple_funpar_1_eclipse/5::(filename(), pos(), pos(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 tuple_funpar_1_eclipse(FileName, StartLoc, EndLoc, SearchPaths, TabWidth)->
     tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, emacs).
 

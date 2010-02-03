@@ -1,7 +1,7 @@
 %% =====================================================================
 %% Duplicated Code Detection.
 %%
-%% Copyright (C) 2006-2009  Huiqing Li, Simon Thompson
+%% Copyright (C) 2010  Huiqing Li, Simon Thompson
 
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -157,8 +157,9 @@ loop(Port) ->
 %% </p>
 %% ====================================================================================
 
-%%-spec(duplicated_code_eclipse/5::(dir(), integer(), integer(), integer(),  dir()) ->
-%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer()}]).
+%%-spec(duplicated_code_eclipse/5::(DirFileList::dir(), MinLength::integer(), MinClones::integer(), 
+%%				  TabWidth::integer(),  SuffxiTreeExec::dir()) ->
+%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
 
 duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTreeExec) ->
      MinLength = case MinLength1 =< 1 of

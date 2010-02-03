@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -55,13 +55,13 @@
 
 -include("../include/wrangler.hrl").
 
--spec rename_var(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {ok, string()}.
+%%-spec rename_var(filename(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {ok, string()}.
 rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {ok, [{filename(), filename(), string()}]}.
+%%-spec rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {ok, [{filename(), filename(), string()}]}.
 rename_var_eclipse(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 

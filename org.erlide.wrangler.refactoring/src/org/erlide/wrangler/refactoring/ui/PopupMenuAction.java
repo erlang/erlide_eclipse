@@ -12,14 +12,16 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.FoldExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
+import org.erlide.wrangler.refactoring.tmp.CostumWorkflowRefactoringWithPositionsSelection;
+import org.erlide.wrangler.refactoring.tmp.FoldExpressionRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
@@ -42,14 +44,14 @@ public class PopupMenuAction implements IObjectActionDelegate {
 		ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
 		if (actionId
 				.equals("org.erlide.wrangler.refactoring.popupmenu.renamefunction")) {
-			pages.add(new SimpleInputPage("Rename function",
+			pages.add(new CostumworkFlowInputPage("Rename function",
 					"Please type the new function name!", "New function name:",
 					"New name must be a valid Erlang atom!",
 					new AtomValidator()));
 			refactoring = new RenameFunctionRefactoring();
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.popupmenu.renamemodule")) {
-			pages.add(new SimpleInputPage("Rename module",
+			pages.add(new CostumworkFlowInputPage("Rename module",
 					"Please type the new module name!", "New module name:",
 					"New module name must be a valid Erlang atom!",
 					new AtomValidator()));
@@ -75,7 +77,7 @@ public class PopupMenuAction implements IObjectActionDelegate {
 			pages.add(new SelectionInputPage("Fold expression",
 					"Please select expression which should be fold!",
 					"Select expressions which should be folded!",
-					(FoldExpressionRefactoring) refactoring));
+					(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.popupmenu.functiontoprocess")) {

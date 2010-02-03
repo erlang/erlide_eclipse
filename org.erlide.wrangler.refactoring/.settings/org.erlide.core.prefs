@@ -1,11 +1,11 @@
-#Thu Oct 29 10:24:44 CET 2009
+#Wed Jan 13 16:34:42 CET 2010
 backend_version=R12B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
 include_dirs=wrangler/include
 make_unique=true
-output_dir=wrangler/bin
+output_dir=wrangler/ebin
 runtimes=r12-5
 source_dirs=wrangler/erl
 type=NORMAL

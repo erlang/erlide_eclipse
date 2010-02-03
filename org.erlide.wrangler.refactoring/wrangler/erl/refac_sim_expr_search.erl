@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -234,13 +234,15 @@ subst_check(Expr1, SubSt)->
 		 case refac_syntax:type(E1) of
 		     variable -> 
 			 case is_macro_name(E1) of
-			     true -> false;
+			     true -> 
+				 false;
 			     _ ->{value, {def, DefPos}} = lists:keysearch(def,1, refac_syntax:get_ann(E1)),
 				 %% local vars should have the same substitute.
 				 not(lists:any(fun({E11, E21}) ->
 					       (refac_syntax:type(E11) == variable) andalso
 					   ({value, {def, DefPos}} == lists:keysearch(def,1, refac_syntax:get_ann(E11))) andalso
-					   (refac_prettypr:format(E2) =/= refac_prettypr:format(E21))
+					   (refac_prettypr:format(reset_attrs(E2)) 
+					    =/= refac_prettypr:format(reset_attrs(E21)))
 					       end, SubSt))
 			 end;
 		     _ ->
@@ -250,8 +252,12 @@ subst_check(Expr1, SubSt)->
 	 end,  SubSt)
        end.
     
+reset_attrs(Node) ->
+    refac_util:full_buTP(fun (T, _Others) -> 
+				 refac_syntax:remove_comments(refac_syntax:set_ann(T, [])) end, 
+			 Node, {}).
 
-     
+   
 do_find_anti_unifier(Exprs1, Exprs2) when is_list(Exprs1) andalso is_list(Exprs2)->
     case length(Exprs1) == length(Exprs2) of
 	true ->
@@ -266,10 +272,10 @@ do_find_anti_unifier(Exprs1, Exprs2) when is_list(Exprs1) andalso is_list(Exprs2
 	    throw(non_unifiable)
     end;
 do_find_anti_unifier(Expr1, _Expr2) when is_list(Expr1) ->
-    ?debug("Does not unify 2:n~p\n", [{Expr1,Expr2}]), 
+    ?debug("Does not unify 2:n~p\n", [{Expr1,_Expr2}]), 
     throw(non_unifiable);
 do_find_anti_unifier(_Expr1, Expr2) when is_list(Expr2) ->
-    ?debug("Does not unify 3:\n~p\n", [{Expr1,Expr2}]), 
+    ?debug("Does not unify 3:\n~p\n", [{_Expr1,Expr2}]), 
     throw(non_unifiable);
 do_find_anti_unifier(Expr1, Expr2) ->
     F =fun(E1, E2) ->
@@ -373,11 +379,6 @@ generalise_expr(Exprs, SearchRes, ExportVars) ->
     BVs = refac_util:get_bound_vars(Exprs),
     FVs = lists:ukeysort(2, refac_util:get_free_vars(Exprs)),
     {NewExprs, NewExportVars} = generalise_expr_1(Exprs, SearchRes, ExportVars),
-    %% refac_io:format("ExportVars:\n~p\n", [ExportVars]),
-    %% refac_io:format("BVs:\n~p\n", [BVs]),
-    %% refac_io:format("FVs:\n~p\n", [FVs]),
-    %% refac_io:format("ExportVars:\n~p\n", [NewExportVars]),
-    
     NewExprs1 = case NewExportVars of
 		    [] -> NewExprs;
 		    [V] -> NewExprs++[refac_syntax:variable(V)];

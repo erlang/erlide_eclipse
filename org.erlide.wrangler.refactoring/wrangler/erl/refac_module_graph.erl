@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@
 
 -include("../include/wrangler.hrl").
 
--spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
+%%-spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
 module_graph(SearchPaths) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     ?debug("Files:\n~p\n", [Files]),
@@ -92,19 +92,24 @@ analyze_mod({Mod, Dir}, SearchPaths) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     ModNames = [list_to_atom(M) || {M, _} <- refac_util:get_modules_by_file(Files)],
     {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(File, true, Includes),
+    ?debug("Info:\n~p\n", [Info]),
     ImportedMods = case lists:keysearch(imports,1, Info) of 
 		       {value, {imports, Imps}} -> lists:map(fun({M, _Funs}) -> M end, Imps);
 		       false  -> []
 		   end,
+    ImportedMods1 = case lists:keysearch(module_imports, 1, Info) of
+			{value, {module_imports, Mods}} -> Mods;
+			_ -> []
+		    end,
     {CalledMods, PossibleCalledMods} = collect_called_modules(AnnAST, ModNames),
     ?debug("Called modules:\n~p\n", [CalledMods]), 
-    {called_modules, lists:usort(ImportedMods++CalledMods++PossibleCalledMods)}.
+    {called_modules, lists:usort(ImportedMods++ImportedMods1++CalledMods++PossibleCalledMods)}.
 
 
 collect_called_modules(AnnAST) ->
     element(1, collect_called_modules(AnnAST, [])).
 
--spec(collect_called_modules(AnnAST::syntaxTree(), ModNames::[atom()]) ->{[modulename()], [modulename()]}).
+%%-spec(collect_called_modules(AnnAST::syntaxTree(), ModNames::[atom()]) ->{[modulename()], [modulename()]}).
 collect_called_modules(AnnAST, ModNames) ->
     ?debug("ModNames:\n~p\n", [ModNames]),
     Fun = fun(T, {S1, S2}) ->

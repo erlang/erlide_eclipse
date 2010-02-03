@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
@@ -83,9 +82,10 @@ public class Activator extends AbstractUIPlugin {
 			ErlLogger.debug("Wrangler's path is added to Erlang with result:"
 					+ res.isOk() + "\t raw:" + res);
 
-			mb.call("application", "load", "a", "wrangler_app");
+			mb.call_noexception("application", "load", "a", "wrangler_app");
 			// application:start(wrangler_app)
-			mb.call("application", "start", "a", "wrangler_app");
+			res = mb.call_noexception("application", "start", "a",
+					"wrangler_app");
 
 			ErlLogger.debug("Wrangler app started:\n" + res);
 
@@ -93,10 +93,6 @@ public class Activator extends AbstractUIPlugin {
 			ioe.printStackTrace();
 			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID,
 					"Could not load the ebin files!"));
-		} catch (BackendException e) {
-			e.printStackTrace();
-			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID,
-					"Could not reach the erlang node!"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

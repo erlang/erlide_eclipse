@@ -10,5 +10,5 @@ package org.erlide.wrangler.refactoring.backend;
  * @version %I%, %G%
  */
 public enum RefactoringState {
-	OK, ERROR, WARNING, QUESTION;
+	OK, ERROR, WARNING, QUESTION, MULTI_INSTANCES, UNKNOWN_SIDE_EFFECT, MORE_THAN_ONE_CLAUSE;
 }

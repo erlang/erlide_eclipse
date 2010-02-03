@@ -12,15 +12,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.erlide.wrangler.refactoring.core.internal.FoldExpressionRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
+import org.erlide.wrangler.refactoring.tmp.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.ui.ExpressionCheckButtonListener;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class SelectionInputPage extends InputPage {
-	FoldExpressionRefactoring foldrefactoring;
+	CostumWorkflowRefactoringWithPositionsSelection refactoring;
 
 	String labelText, description;
 
@@ -31,11 +31,11 @@ public class SelectionInputPage extends InputPage {
 	Label inputLabel;
 
 	public SelectionInputPage(String name, String description,
-			String labelText, FoldExpressionRefactoring refac) {
+			String labelText, CostumWorkflowRefactoringWithPositionsSelection refac) {
 		super(name);
 		setDescription(description);
 		this.labelText = labelText;
-		foldrefactoring = refac;
+		refactoring = refac;
 	}
 
 	public void createControl(Composite parent) {
@@ -53,7 +53,7 @@ public class SelectionInputPage extends InputPage {
 		GridData gd;
 		IDocument doc = ((IErlMemberSelection) GlobalParameters
 				.getWranglerSelection()).getDocument();
-		for (IErlRange r : foldrefactoring.getPositions()) {
+		for (IErlRange r : refactoring.getPositions()) {
 			b = new Button(composite, SWT.CHECK);
 			b.setText(WranglerUtils.getTextFromEditor(r, doc) + " at "
 					+ r.toString());
@@ -83,7 +83,7 @@ public class SelectionInputPage extends InputPage {
 			if (e.getKey().getSelection())
 				rl.add(e.getValue());
 		}
-		foldrefactoring.setSelectedPos(rl);
+		refactoring.setSelectedPos(rl);
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public abstract class CostumWorkflowRefactoring extends
 
 	public RefactoringStatus status;
 
-	public abstract IRefactoringRpcMessage runAfterWarning(
+	public abstract IRefactoringRpcMessage runAlternative(
 			IErlSelection selection);
 
 	@Override

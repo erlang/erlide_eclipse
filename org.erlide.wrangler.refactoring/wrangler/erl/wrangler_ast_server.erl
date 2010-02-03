@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -152,7 +152,13 @@ handle_info(_Info, State) ->
 %%-spec(terminate/2::(any(), #state{}) -> ok).
 terminate(_Reason, _State=#state{dets_tab=TabFile}) ->
     dets:close(TabFile),
-    file:delete(TabFile).
+    file:delete(TabFile),
+    TempDir = filename:dirname(TabFile),
+    case file:list_dir(TempDir) of 
+	{ok, []} ->
+	    file:del_dir(TempDir);
+	_ -> ok
+    end.
 
 %%--------------------------------------------------------------------
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
@@ -169,6 +175,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%-spec(get_ast/2::({filename(),bool(), [dir()], integer(), atom()}, #state{}) -> {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).      
 
 get_ast({FileName, false, SearchPaths, TabWidth, FileFormat}, State) -> %% always re-parse; otherwise need to check the change time of .hrl files.
+    wrangler_error_logger:remove_error_from_logger(FileName),
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, false, SearchPaths, TabWidth, FileFormat),
     log_errors(FileName, Info),
     {{ok, {AnnAST, Info}}, State};	
@@ -183,12 +190,13 @@ get_ast(Key={FileName,ByPassPreP, SearchPaths, TabWidth, FileFormat}, State=#sta
 			    log_errors(FileName, Info),
                             {{ok, {AnnAST, Info}}, State};
 			false ->
+			    wrangler_error_logger:remove_error_from_logger(FileName),
 			    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 			    log_errors(FileName, Info1),
 			    {{ok, {AnnAST1, Info1}}, #state{asts=lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST1, Info1, NewChecksum}})}}
 		    end;
 		false ->
-
+		    wrangler_error_logger:remove_error_from_logger(FileName),
 		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 		    log_errors(FileName, Info),
 		    {{ok, {AnnAST, Info}}, #state{asts=[{Key, {AnnAST, Info, filehash(FileName)}} | ASTs]}}
@@ -199,6 +207,7 @@ get_ast(Key={FileName,ByPassPreP, SearchPaths, TabWidth, FileFormat}, State=#sta
 		[{Key, {AnnAST, Info, Checksum}}] when Checksum =:= NewChecksum->
 		    {{ok, {AnnAST, Info}}, State};
 		_ ->
+		    wrangler_error_logger:remove_error_from_logger(FileName),
 		    {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file_1(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 		    dets:insert(TabFile, {Key, {AnnAST1, Info1, NewChecksum}}),
 		    log_errors(FileName, Info1),

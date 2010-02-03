@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
 -module(refac_sim_code).
 
 -export([sim_code_detection/6, sim_code_detection_in_buffer/6]).
+-export([sim_code_detection_eclipse/6]).
 
 -include("../include/wrangler.hrl").
 
@@ -53,14 +54,14 @@
 -define(DEFAULT_SIMI_SCORE, 0.8).
 
 
--spec(sim_code_detection_in_buffer/6::(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
-				       SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}).
+%%-spec(sim_code_detection_in_buffer/6::(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%				       SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}).
 sim_code_detection_in_buffer(FileName, MinLen, MinFreq, SimiScore, SearchPaths, TabWidth) ->
     sim_code_detection([FileName],MinLen, MinFreq, SimiScore, SearchPaths, TabWidth).
 
     
--spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
-			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}). 			     
+%%-spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}). 			     
 sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_code_detection(~p,~p,~p,~p,~p,~p).\n", 
 		 [?MODULE, DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth]),
@@ -128,6 +129,45 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
     {ok, "Similar code detection finished."}.
     
 
+%%-spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(), 
+%%				  SimScore::float(),  SearchPaths::[dir()], TabWidth::integer()) ->
+%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
+sim_code_detection_eclipse(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
+    MinLen = case MinLen1 =<1 of 
+		 true ->
+		     ?DEFAULT_LEN;
+		 _ -> MinLen1
+	     end,
+    MinFreq = case MinFreq1 =<1 of 
+		  true ->
+		      ?DEFAULT_FREQ;
+		  _ -> MinFreq1
+	      end,
+    SimiScore = case (SimiScore1==0.1) andalso (SimiScore1 =<1.0) of 
+		    true ->SimiScore1;
+		    _ -> ?DefaultSimiScore
+		end,
+    Pid = start_hash_process(),
+    ASTTab = ets:new(ast_tab, [set, public]),
+    VarTab = ets:new(var_tab, [set, public]),
+    RangeTab= ets:new(range_tab, [set, public]),
+    Files = refac_util:expand_files(DirFileList, ".erl"),
+    case Files of
+	[] -> [];
+	_ ->
+	    generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
+	    Dir = filename:dirname(hd(Files)),
+	    Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
+	    stop_hash_process(Pid),
+	    CloneCheckPid = start_clone_check_process(),		   
+ 	    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab,CloneCheckPid, 1),
+	    stop_clone_check_process(CloneCheckPid),
+	    ets:delete(ASTTab),
+	    ets:delete(VarTab),
+	    ets:delete(RangeTab),
+	    remove_fun_info(Cs2)
+    end.
+   
 generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
     lists:foreach(fun(F) ->
 			  generalise_and_hash_ast_1(F, Pid, SearchPaths, TabWidth, ASTTab, VarTab)
@@ -678,7 +718,7 @@ parse_annotate_file(FName, SearchPaths, TabWidth) ->
 annotate_bindings(FName, AST, Info, Ms, TabWidth) ->
     Toks = refac_util:tokenize(FName, true, TabWidth),
     AnnAST0 = refac_syntax_lib:annotate_bindings(refac_util:add_range(AST, Toks), ordsets:new(), Ms),
-    refac_util:add_category(refac_util:add_fun_define_locations(AnnAST0, Info)).
+    refac_util:add_category(refac_annotate_ast:add_fun_define_locations(AnnAST0, Info)).
  
 
 

@@ -2757,9 +2757,14 @@ attribute_arguments(Node) ->
   		  end;	
 	      type ->
 		  {TypeName, TypeSpec1, TypeSpec2} = Data,
-		  [set_pos(atom(TypeName), Pos), TypeSpec1, list(TypeSpec2)];
-	      
-	    _ ->
+		  case TypeName of 
+		      {_TypeName1, _TypeName2} ->
+			  [];  %% FIX THIS (TYPED RECORD).
+		      %% set_pos(atom(TypeName2), Pos),set_pos(list(TypeSpec1),Pos), list(TypeSpec2)];
+		       _ ->
+			  [set_pos(atom(TypeName), Pos), TypeSpec1, list(TypeSpec2)]			     
+		  end;
+	      _ ->
 	       [set_pos(abstract(Data), Pos)]
 	  end;
       Node1 -> (data(Node1))#attribute.args

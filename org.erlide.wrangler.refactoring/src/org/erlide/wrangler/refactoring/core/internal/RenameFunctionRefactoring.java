@@ -48,7 +48,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
-	public IRefactoringRpcMessage runAfterWarning(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getMemberRange();
 
@@ -70,7 +70,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 					status = new RefactoringStatus();
 				} else if (message.getRefactoringState() == RefactoringState.WARNING) {
 					if (ask("Warning", message.getMessageString())) {
-						message = runAfterWarning(sel);
+						message = runAlternative(sel);
 						if (message.getRefactoringState() == RefactoringState.OK)
 							status = new RefactoringStatus();
 						else

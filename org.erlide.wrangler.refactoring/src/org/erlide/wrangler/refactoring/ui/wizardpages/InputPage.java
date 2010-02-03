@@ -1,8 +1,7 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
+import org.eclipse.swt.widgets.Shell;
 
 public abstract class InputPage extends WranglerPage {
 
@@ -12,21 +11,18 @@ public abstract class InputPage extends WranglerPage {
 
 	@Override
 	public IWizardPage getNextPage() {
-		controlWorkflow();
+		controlWorkflow(this.getShell());
+		// from UserInPutPageWizard class
 		return super.getNextPage();
 	}
 
 	@Override
 	protected boolean performFinish() {
-		controlWorkflow();
+		controlWorkflow(this.getShell());
 		return super.performFinish();
 	}
 
-	protected void controlWorkflow() {
-		Refactoring ref = getRefactoring();
-		if (ref instanceof CostumWorkflowRefactoring) {
-			CostumWorkflowRefactoring cref = (CostumWorkflowRefactoring) ref;
-			cref.getWorkflowController(this.getShell()).doRefactoring();
-		}
+	protected void controlWorkflow(Shell s) {
 	}
+
 }

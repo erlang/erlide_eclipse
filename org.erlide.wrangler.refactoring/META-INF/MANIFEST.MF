@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
  org.erlide.jinterface,
  org.erlide.core
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",
+Export-Package: 
+ org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",
  org.erlide.wrangler.refactoring.backend,
  org.erlide.wrangler.refactoring.backend.internal;x-internal:=true,
  org.erlide.wrangler.refactoring.core,

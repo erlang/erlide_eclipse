@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -58,23 +58,23 @@
 %% @spec rename_mod(FileName::filename(), NewName::string(), SearchPaths::[string()])-> term()
 %%   
 
--spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
-	     {error, string()} | {question, string()} |{ok, [filename()]}).
+%%-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+%%	     {error, string()} | {question, string()} |{ok, [filename()]}).
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
-	     {error, string()} | {question, string()} | {warning, string()} |
-		 {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {question, string()} | {warning, string()} |
+%%		 {ok, [{filename(), filename(), string()}]}).
 rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
 
--spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [filename()]}).
+%%-spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [filename()]}).
 rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, emacs).
 
--spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->{ok, [{filename(), filename(), string()}]}).
 rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, eclipse).
 
@@ -232,13 +232,31 @@ do_rename_mod_2(Tree, {FileName,OldNewModPairs, Pid}) ->
 			 {Tree1, Tree=/=Tree1};
 		import -> Args = refac_syntax:attribute_arguments(Tree),
 			  case Args of 
-			      [H|T] -> case lists:keysearch(refac_syntax:atom_value(H),1, OldNewModPairs) of 
-					   {value, {_OldModName, NewModName}} ->
-					       H1 = copy_pos_attrs(H, refac_syntax:atom(NewModName)),
-					       Tree1 = copy_pos_attrs(Tree,refac_syntax:attribute(AttrName, [H1|T])),
-					       {Tree1, true};
-					   _ -> {Tree, false}
-				       end;
+			      [H|T] ->
+				  case refac_syntax:type(H) of 
+				      atom ->
+					  M =refac_syntax:atom_value(H),
+					  case lists:keysearch(M,1, OldNewModPairs) of 
+					      {value, {_OldModName, NewModName}} ->
+						  H1 = copy_pos_attrs(H, refac_syntax:atom(NewModName)),
+						  Tree1 = copy_pos_attrs(Tree,refac_syntax:attribute(AttrName, [H1|T])),
+						  {Tree1, true};
+					      _ -> {Tree, false}
+					  end;
+				      qualified_name ->
+					  M=list_to_atom((packages:concat(
+							     [refac_syntax:atom_value(A)
+							      || A <- refac_syntax:qualified_name_segments(H)]))),
+					  case lists:keysearch(M,1, OldNewModPairs) of 
+					      {value, {_OldModName, NewModName}} ->
+						  H1 = copy_pos_attrs(H, refac_syntax:qualified_name(
+									   [refac_syntax:atom(NewModName)])),
+						  Tree1 = copy_pos_attrs(Tree,refac_syntax:attribute(AttrName, [H1|T])),
+						  {Tree1, true};
+					      _ -> {Tree, false}
+					  end;
+				      _ -> {Tree, false}
+				  end;
 			      _ -> {Tree, false}
 			  end;
 		_ -> {Tree, false}

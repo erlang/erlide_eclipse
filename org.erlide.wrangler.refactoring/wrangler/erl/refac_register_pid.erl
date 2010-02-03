@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -63,12 +63,13 @@
 %% @doc This function associates a name, which must be an atom, with a pid, and replaces the uses of this pid in 
 %% send expressions with the name.
 
+%% TODO: correct the spec.
 %%-spec(register_pid(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())-> 
 %%	     {error, string()} |{ok, [filename()]}).
 register_pid(FName, Start, End, RegName,  SearchPaths, TabWidth) ->
     register_pid(FName, Start, End, RegName, SearchPaths, TabWidth, emacs).
 
-
+%% TODO: correct the spec.
 %%-spec(register_pid_eclipse(FileName::filename(), Start::pos(), End::pos(), RegName::string(),SearchPaths::[dir()], TabWidth::integer())
 %%      -> {error, string()} |{ok, [{filename(), filename(), string()}]}).
 register_pid_eclipse(FName, Start, End, RegName, SearchPaths, TabWidth) ->
@@ -126,10 +127,10 @@ register_pid(FName, Start={Line1, Col1}, End={Line2, Col2}, RegName, SearchPaths
     end.
 
 
--spec register_pid_1(FName::filename(), StartLine::integer(), StartCol::integer(),EndLine::integer(), EndCol::integer(), 
-		     RegName::string(), RegPids::[{{atom(), atom(), integer()}, syntaxTree()}],
-		     SearchPaths::[dir()], TabWidth::integer(), LogMsg::string())->
-	     {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}], string()}.
+%%-spec (register_pid_1(FName::filename(), StartLine::integer(), StartCol::integer(),EndLine::integer(), EndCol::integer(), 
+%%		     RegName::string(), RegPids::[{{atom(), atom(), integer()}, syntaxTree()}],
+%%		     SearchPaths::[dir()], TabWidth::integer(), LogMsg::string())->
+%%    {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}], string()}).
 register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
@@ -158,8 +159,8 @@ register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, Se
  	    {unknown_pids, RegExprs, LogMsg}
     end.
 
--spec(register_pid_2(FName::filename(), StartLine::integer(), StartCol::integer(), EndLine::integer(),EndCol::integer(), RegName::string(),
-		     SearchPaths::[dir()],TabWidth::integer(), LogMsg::string())-> {error, string()} |{ok, [filename()]}).    
+%%-spec(register_pid_2(FName::filename(), StartLine::integer(), StartCol::integer(), EndLine::integer(),EndCol::integer(), RegName::string(),
+%%		     SearchPaths::[dir()],TabWidth::integer(), LogMsg::string())-> {error, string()} |{ok, [filename()]}).    
 register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),

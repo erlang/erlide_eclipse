@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -609,7 +609,7 @@ non_tail_recursive_servers(FName, SearchPaths, TabWidth) ->
 			Arity = refac_syntax:function_arity(T),
 			case has_receive_expr(T) of
 			  {true, Line} ->
-			      case is_non_tail_recursive_server(FName, Info, T, {ModName, FunName, Arity}, Line, SearchPaths) of
+			      case is_non_tail_recursive_server(T, {ModName, FunName, Arity}, Line, SearchPaths) of
 				true -> [{ModName, FunName, Arity} | S];
 				_ -> S
 			      end;
@@ -646,7 +646,7 @@ has_receive_expr(FunDef) ->
 	_ -> {true, lists:min(LineNums)}
     end.
 
-is_non_tail_recursive_server(FileName, Info, FunDef, {ModName, FunName, Arity}, Line, SearchPaths) ->
+is_non_tail_recursive_server(FunDef, {ModName, FunName, Arity}, Line, SearchPaths) ->
     Fun = fun (T, S) ->
 		  case refac_syntax:type(T) of
 		    receive_expr ->
@@ -658,57 +658,57 @@ is_non_tail_recursive_server(FileName, Info, FunDef, {ModName, FunName, Arity}, 
     CandidateSccs = refac_syntax_lib:fold(Fun, [], FunDef),
     case CandidateSccs of
       [] -> false;
-      _ -> lists:any(fun (Scc) -> check_candidate_scc(FileName, Info, FunDef, Scc, Line) end, CandidateSccs)
+      _ -> lists:any(fun (Scc) -> check_candidate_scc(FunDef, Scc, Line) end, CandidateSccs)
     end.
 
 
 
-check_candidate_scc(FileName, Info, FunDef, Scc, Line) ->
-    ModName = get_module_name(FileName, Info),
+check_candidate_scc(FunDef, Scc, Line) ->
     %%InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
-    MFAs = [MFA||{MFA, _}<-Scc],
+    MFAs = [MFA || {MFA, _} <- Scc],
     DummyExp = refac_syntax:atom(undefined),
-    F = fun(T, Acc) ->
-		case refac_syntax:type(T) of      %% To think: any other cases here?
-		    clause -> Exprs = refac_syntax:clause_body(T),			      
-			      Acc ++ [Exprs];
-		    application -> Exprs = refac_syntax:application_arguments(T),
-				   Acc++ [Exprs++[DummyExp]];
-		    tuple -> Exprs = refac_syntax:tuple_elements(T),
-			     Acc++ [Exprs++[DummyExp]];
-		    list -> Exprs = refac_syntax:list_prefix(T),
-			     Acc++ [Exprs++[DummyExp]];
-		    list_comp-> 
-			Acc++[[T, DummyExp]];			
-		    block_expr -> 
-			Exprs = refac_syntax:block_expr_body(T),
-			Acc++ [Exprs];    
-		    infix_expr ->
-			Acc++[[T, DummyExp]];
-		    prefix_expr ->
-			Acc++[[T,DummyExp]];
-		    _  -> Acc
+    F = fun (T, Acc) ->
+		case refac_syntax:type(T)      %% To think: any other cases here?
+		    of
+		  clause -> Exprs = refac_syntax:clause_body(T),
+			    Acc ++ [Exprs];
+		  application -> Exprs = refac_syntax:application_arguments(T),
+				 Acc ++ [Exprs ++ [DummyExp]];
+		  tuple -> Exprs = refac_syntax:tuple_elements(T),
+			   Acc ++ [Exprs ++ [DummyExp]];
+		  list -> Exprs = refac_syntax:list_prefix(T),
+			  Acc ++ [Exprs ++ [DummyExp]];
+		  list_comp ->
+		      Acc ++ [[T, DummyExp]];
+		  block_expr ->
+		      Exprs = refac_syntax:block_expr_body(T),
+		      Acc ++ [Exprs];
+		  infix_expr ->
+		      Acc ++ [[T, DummyExp]];
+		  prefix_expr ->
+		      Acc ++ [[T, DummyExp]];
+		  _ -> Acc
 		end
 	end,
-    F1 = fun(Es) ->
-		 F11 = fun(E) ->
+    F1 = fun (Es) ->
+		 F11 = fun (E) ->
 			       {_, {EndLine, _}} = refac_util:get_range(E),
-			       case EndLine >= Line  of 
-				   true -> 
-				       CalledFuns = refac_util:called_funs(ModName, E),
-				       case lists:subtract(CalledFuns, MFAs) of 
-					   CalledFuns -> false;
-					   _ -> true
-				       end;
-				   _ -> false
+			       case EndLine >= Line of
+				 true ->
+				     CalledFuns = wrangler_callgraph_server:called_funs(E),
+				     case lists:subtract(CalledFuns, MFAs) of
+				       CalledFuns -> false;
+				       _ -> true
+				     end;
+				 _ -> false
 			       end
 		       end,
-		 R = [F11(E)||E<-Es],
-		 lists:any(fun(E) -> E==true end, tl(lists:reverse(R)))
+		 R = [F11(E) || E <- Es],
+		 lists:any(fun (E) -> E == true end, tl(lists:reverse(R)))
 	 end,
     ListOfExpLists = refac_syntax_lib:fold(F, [], FunDef),
     ExpLists1 = lists:map(F1, ListOfExpLists),
-    lists:any(fun(E) -> E==true end, ExpLists1).
+    lists:any(fun (E) -> E == true end, ExpLists1).
        
 
 
@@ -773,29 +773,31 @@ not_has_flush_scc(FileName, Info, FunDef, Scc, Line) ->
 	_ -> false
     end.
 
-is_server(FileName, Info, FunDef, Scc, Line) ->
-    ModName = get_module_name(FileName, Info),
+is_server(_FileName, _Info, FunDef, Scc, Line) ->
+    %% ModName = get_module_name(FileName, Info),
     %%InscopeFuns = refac_util:auto_imported_bifs() ++ refac_util:inscope_funs(Info), 
-    MFAs = [MFA|| {MFA, _}<-Scc],
-    F = fun(T, Acc) ->
-		case refac_syntax:type(T) of      %% To think: any other cases here?
-		    application -> Acc++[T];
-		    _ -> Acc		
+    MFAs = [MFA || {MFA, _} <- Scc],
+    F = fun (T, Acc) ->
+		case
+		  refac_syntax:type(T)      %% To think: any other cases here?
+		    of
+		  application -> Acc ++ [T];
+		  _ -> Acc
 		end
 	end,
-    F1 = fun(E) ->
+    F1 = fun (E) ->
 		 {_, {EndLine, _}} = refac_util:get_range(E),
-		 case EndLine >= Line  of 
-		     true -> 
-			 CalledFuns = refac_util:called_funs(ModName, E),
-			 case lists:subtract(CalledFuns, MFAs) of 
-			     CalledFuns -> false;
-			     _ -> true
-			 end;
-		     _ -> false
+		 case EndLine >= Line of
+		   true ->
+		       CalledFuns = wrangler_callgraph_server:called_funs(E),
+		       case lists:subtract(CalledFuns, MFAs) of
+			 CalledFuns -> false;
+			 _ -> true
+		       end;
+		   _ -> false
 		 end
 	 end,
-    ListOfApps = refac_syntax_lib:fold(F, [], FunDef),    
+    ListOfApps = refac_syntax_lib:fold(F, [], FunDef),
     lists:member(true, lists:map(F1, ListOfApps)).
   
 

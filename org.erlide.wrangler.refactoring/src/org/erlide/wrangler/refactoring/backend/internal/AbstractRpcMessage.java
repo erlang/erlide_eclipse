@@ -69,4 +69,9 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 		this.messageString = "";
 		this.refactoringState = RefactoringState.OK;
 	}
+
+	protected void setState(String message, RefactoringState state) {
+		this.messageString = message;
+		this.refactoringState = state;
+	}
 }

@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -69,13 +69,13 @@
 -define(debug(__String, __Args), ok).
 -endif.
 
--spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {warning, string()} |{ok, [filename()]}).
+%%-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {warning, string()} |{ok, [filename()]}).
 rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -148,13 +148,13 @@ rename_fun_0(FileName, NewName, SearchPaths, TabWidth, Editor,
 	    write_files(Editor, [{{FileName, FileName}, AnnAST1}], Cmd)
     end.
 
--spec(rename_fun_1/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(rename_fun_1/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
     
--spec(rename_fun_1_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(rename_fun_1_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 
 rename_fun_1_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
@@ -191,8 +191,8 @@ rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 	    write_files(emacs, [{{FileName, FileName}, AnnAST1}], Cmd)
     end.
 
--spec(write_files/3::(Editor::atom(), Results::[{{filename(), filename()}, syntaxTree()}], string()) ->
-	     {ok, [filename()]} | {ok, [{filename(), filename(), string()}]}).
+%%-spec(write_files/3::(Editor::atom(), Results::[{{filename(), filename()}, syntaxTree()}], string()) ->
+%%	     {ok, [filename()]} | {ok, [{filename(), filename(), string()}]}).
 write_files(Editor, Results, Cmd) ->    
     case Editor of 
 	emacs ->

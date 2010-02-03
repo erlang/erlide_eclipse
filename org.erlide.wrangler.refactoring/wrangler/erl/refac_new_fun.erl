@@ -1,4 +1,4 @@
-%% Copyright (c) 2009, Huiqing Li, Simon Thompson
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -33,62 +33,77 @@
 %% =============================================================================================
 -module(refac_new_fun).
 
--export([fun_extraction/5, fun_extraction_eclipse/5]).
+-export([fun_extraction/5, fun_extraction_1/5, fun_extraction_eclipse/5, fun_extraction_1_eclipse/5]).
+
 
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
-%%-spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
-%%	     {'ok', [string()]}).
+%% -spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
+%% 	     {'ok', [filename()]}).
 fun_extraction(FileName, Start, End, NewFunName, TabWidth) ->
     fun_extraction(FileName, Start, End, NewFunName, TabWidth, emacs).
 
-%%-spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(),integer()) ->
-%%	      {ok, [{filename(), filename(), string()}]}).
+fun_extraction_1(FileName, Start, End, NewFunName, TabWidth) ->
+    fun_extraction_1(FileName, Start, End, NewFunName, TabWidth, emacs).
+
+%% -spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(),integer()) ->
+%% 	      {ok, [{filename(), filename(), string()}]}).
 fun_extraction_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
     fun_extraction(FileName, Start, End, NewFunName, TabWidth, eclipse).
 
+fun_extraction_1_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
+    fun_extraction_1(FileName, Start, End, NewFunName, TabWidth, eclipse).
 
-fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1},
-	       NewFunName, TabWidth, Editor) ->
+
+fun_extraction_1(FileName, Start={Line, Col}, End={Line1, Col1}, NewFunName, TabWidth, Editor) ->
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++
+	FileName ++ "\", {" ++ integer_to_list(Line) ++	", " ++ integer_to_list(Col) ++ "},"++
+	"{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "},"  ++ "\"" ++ NewFunName ++ "\","
+	++ integer_to_list(TabWidth) ++ ").",
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, [], TabWidth),
+    ExpList = refac_util:pos_to_expr_list(AnnAST, Start, End),
+    {ok, Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
+    fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, Cmd).
+
+
+fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1},NewFunName, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Line1, Col1, NewFunName, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++
 	FileName ++ "\", {" ++ integer_to_list(Line) ++	", " ++ integer_to_list(Col) ++ "},"++
 	"{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "},"  ++ "\"" ++ NewFunName ++ "\","
-	++ integer_to_list(TabWidth) ++ ").",
-    
+	++ integer_to_list(TabWidth) ++ ").",    
     case refac_util:is_fun_name(NewFunName) of
       true -> ok;
       false -> throw({error, "Invalid function name!"})
     end,
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, [], TabWidth),
     case refac_util:pos_to_expr_list(AnnAST, Start, End) of
-      [] -> ExpList = [],
-	    throw({error, "You have not selected an expression "
-			  "or a sequence of expressions, "
-		   "or the function containing the expression(s) selected is malformed."});
-      ExpList -> ExpList
+	[] -> ExpList = [],
+	      throw({error, "You have not selected an expression or a sequence of expressions, "
+		     "or the function containing the expression(s) selected is malformed."});
+	ExpList -> ExpList
     end,
     {ok, Fun} = refac_util:expr_to_fun(AnnAST, hd(ExpList)),
     ok=side_cond_analysis(FileName, Info, Fun, ExpList, list_to_atom(NewFunName)),
     fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, Cmd).
+
+
 
 fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor,Cmd) ->
     FunName = refac_syntax:atom_value(refac_syntax:function_name(Fun)),
     FunArity = refac_syntax:function_arity(Fun),
     {FrVars, BdVars} = get_free_bd_vars(ExpList),
     VarsToExport = vars_to_export(Fun, End, BdVars),
-    AnnAST1 = do_fun_extraction(AnnAST, ExpList, NewFunName,
-				FrVars, VarsToExport, FunName, FunArity),
+    AnnAST1 = do_fun_extraction(AnnAST, ExpList, NewFunName,FrVars, VarsToExport, FunName, FunArity),
     case Editor of
       emacs ->
 	  Res = [{{FileName, FileName}, AnnAST1}],
 	  refac_util:write_refactored_files_for_preview(Res, Cmd),
 	  {ok, [FileName]};
       eclipse ->
-	  FileContent = refac_prettypr:print_ast(
-			  refac_util:file_format(FileName), AnnAST1),
+	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
 	  {ok, [{FileName, FileName, FileContent}]}
     end.
 
@@ -117,7 +132,7 @@ side_cond_analysis(FileName, Info, Fun, ExpList, NewFunName) ->
     check_unsafe_vars(ExpList),
     funcall_replaceable(Fun, ExpList),
     TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-    catch test_framework_aware_name_checking(TestFrameWorkUsed, NewFunName, length(FrVars)).
+    test_framework_aware_name_checking(TestFrameWorkUsed, NewFunName, length(FrVars)).
 
 
 check_unsafe_vars(ExpList) ->
@@ -127,16 +142,20 @@ check_unsafe_vars(ExpList) ->
 		  case refac_syntax:type(Node) of 
 		      variable ->
 			  As = refac_syntax:get_ann(Node),
-			  {value, {def, DefinePos}} = lists:keysearch(def, 1, As),
-			  case length(DefinePos)>1 of 
-			      true-> case DefinePos -- BoundLocs of 
-					 [] -> S;
-					 _ -> 
-					     Name = refac_syntax:variable_name(Node),
-					     throw({error, "Extracting the expression(s) selected into a new function would "
-						    "make variable '" ++ atom_to_list(Name) ++"' unsafe."})
-				     end;
-			      _ -> S
+			  case lists:keysearch(def,1,As) of
+			      {value, {def, DefinePos}} ->
+				  case length(DefinePos)>1 of 
+				      true-> case DefinePos -- BoundLocs of 
+						 [] -> S;
+						 _ -> 
+						     Name = refac_syntax:variable_name(Node),
+						     throw({error, "Extracting the expression(s) selected into a new function would "
+							    "make variable '" ++ atom_to_list(Name) ++"' unsafe."})
+						 end;
+					  _ -> S
+				      end;
+			      _ -> 
+				  S
 			  end;
 		      _ -> S
 		  end
@@ -285,7 +304,7 @@ testserver_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 	true ->
 	    case lists:member({NewFunName, Arity}, refac_rename_fun:testserver_callback_funs()) of 
 		true ->
-		    throw({warning, "The new function name means that"
+		    throw({warning, "The new function name means that "
 			   "the new function is a Test Server callback function, continue?"});
 		false -> ok
 	    end;
@@ -307,8 +326,7 @@ commontest_name_checking(UsedFrameWorks, NewFunName, Arity)->
 
 
 
-do_fun_extraction(AnnAST, ExpList, NewFunName, ParNames, 
-		  VarsToExport, EnclosingFunName, EnclosingFunArity) ->
+do_fun_extraction(AnnAST, ExpList, NewFunName, ParNames, VarsToExport, EnclosingFunName, EnclosingFunArity) ->
     NewFunName1 = refac_syntax:atom(NewFunName),
     Pars = [refac_syntax:variable(P)||P<-ParNames],
     LastExprExportVars =[V|| {V, _Pos} <-refac_util:get_var_exports(lists:last(ExpList))],
@@ -353,7 +371,7 @@ do_fun_extraction(AnnAST, ExpList, NewFunName, ParNames,
 replace_expr_with_fun_call(Form, ExpList, NewFunName, ParNames, VarsToExport) ->
     Op = refac_syntax:atom(NewFunName),
     Pars = [refac_syntax:variable(P)|| P <-ParNames],
-    FunCall= refac_syntax:application(Op, Pars),
+    FunCall= refac_syntax:copy_pos(hd(ExpList), refac_syntax:application(Op, Pars)),
     NewExpr = case length(VarsToExport) of 
 		  0  ->  
 		      FunCall;
