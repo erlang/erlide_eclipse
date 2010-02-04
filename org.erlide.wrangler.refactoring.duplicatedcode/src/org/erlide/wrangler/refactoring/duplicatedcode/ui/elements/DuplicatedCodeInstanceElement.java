@@ -51,11 +51,16 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 	}
 
 	public String getCodePartString() {
-		return codePartString;
+		return simplifyCodePartString(codePartString);
 	}
 
 	@Override
 	public String getName() {
 		return startLine + ": \"" + getCodePartString() + "\"";
+	}
+
+	protected String simplifyCodePartString(String input) {
+		return input.replace("\n", " ").replace("\t", "").replace("\r", "");
+
 	}
 }
