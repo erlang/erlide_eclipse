@@ -551,7 +551,6 @@
                id="org.erlide.action.openModule"
                definitionId="org.erlide.ui.open.module">
          </action>
-             
     </actionSet>
     <actionSet
           description="description"
@@ -1333,5 +1332,11 @@
             type="body">
       </resolver>
    </extension>
-
+	<extension
+       point="org.eclipse.ui.contexts">
+    	<context
+          id="org.erlide.ui.erlangEditorScope"
+          name="Erlang Editor"
+          parentId="org.eclipse.ui.textEditorScope"/>
+ 	</extension>
 </plugin>
