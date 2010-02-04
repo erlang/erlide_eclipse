@@ -330,4 +330,15 @@ public class ErlideDebug {
 		}
 		return null;
 	}
+
+	public static boolean dropToFrame(final Backend backend,
+			final OtpErlangPid metaPid, final int stackFrameNo) {
+		try {
+			final OtpErlangObject o = backend.call("erlide_debug",
+					"drop_to_frame", "xi", metaPid, stackFrameNo);
+			return Util.isOk(o);
+		} catch (final BackendException e) {
+		}
+		return false;
+	}
 }

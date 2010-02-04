@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Kernel Erlang functionality
+Bundle-SymbolicName: org.erlide.kernel.common;singleton:=true
+Bundle-Version: 0.7.2.qualifier
+Bundle-Vendor: erlide.org
+Require-Bundle: org.erlide.core;bundle-version="0.7.0"

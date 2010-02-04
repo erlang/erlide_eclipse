@@ -91,7 +91,7 @@ public final class ErlideUtil {
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
-	public static void unpackBeamFiles(final Bundle b, String location) {
+	public static void unpackBeamFiles(final Bundle b, final String location) {
 		if (location == null) {
 			ErlLogger.warn("Could not find 'ebin' in bundle %s.", b
 					.getSymbolicName());
@@ -235,23 +235,10 @@ public final class ErlideUtil {
 	private static boolean isEriUserCached = false;
 	private static boolean isEricssonUser;
 
-	private static boolean is_Ericsson_User() {
-		final String dev = System.getProperty("erlide.ericsson.user");
-		if (dev != null && !"true".equals(dev)) {
-			return false;
-		}
-		String s;
-		if (isOnWindows()) {
-			s = "\\\\projhost\\tecsas\\shade\\erlide";
-		} else {
-			s = "/proj/tecsas/SHADE/erlide";
-		}
-		return new File(s).exists();
-	}
-
 	public static boolean isEricssonUser() {
 		if (!isEriUserCached) {
-			isEricssonUser = is_Ericsson_User();
+			final String dev = System.getProperty("erlide.ericsson.user");
+			isEricssonUser = "true".equals(dev);
 			isEriUserCached = true;
 		}
 		return isEricssonUser;
@@ -353,11 +340,13 @@ public final class ErlideUtil {
 	}
 
 	public static String getReportLocation() {
-		String s;
-		if (isOnWindows()) {
-			s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
-		} else {
-			s = "/proj/tecsas/SHADE/erlide/reports";
+		String s = System.getProperty("erlide.projectDirectory");
+		if (s == null) {
+			if (isOnWindows()) {
+				s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+			} else {
+				s = "/proj/tecsas/SHADE/erlide/reports";
+			}
 		}
 		final File dir = new File(s);
 		// TODO this takes a few seconds if windows share doesn't exist - fix!
@@ -437,8 +426,8 @@ public final class ErlideUtil {
 		}
 	}
 
-	public static void loadModuleViaInput(final IProject project,
-			final String module, final ErlideBackend b)
+	public static void loadModuleViaInput(final ErlideBackend b,
+			final IProject project, final String module)
 			throws ErlModelException, IOException {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		final IPath outputLocation = project.getFolder(p.getOutputLocation())
@@ -460,7 +449,7 @@ public final class ErlideUtil {
 		}
 	}
 
-	public static String fetchStraceLog(String filename) {
+	public static String fetchStraceLog(final String filename) {
 		final StringBuffer result = new StringBuffer();
 		final File log = new File(filename);
 		if (log.exists()) {

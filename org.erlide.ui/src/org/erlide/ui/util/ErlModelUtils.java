@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
@@ -46,6 +47,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.PluginUtils;
@@ -201,7 +203,7 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, m.getResource().getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -252,7 +254,7 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, m.getResource().getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
@@ -302,10 +304,14 @@ public class ErlModelUtils {
 		if (pd == null) {
 			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
+				String filenameLastPart = element.getFilenameLastPart();
+				IResource resource = m.getResource();
+				IContainer parent = resource.getParent();
+				ContainerFilter includePathFilter = PluginUtils
+						.getIncludePathFilter(project, parent);
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart(), PluginUtils
-										.getIncludePathFilter(project));
+								filenameLastPart, includePathFilter);
 				if (re == null) {
 					try {
 						String s = element.getFilename();
@@ -400,6 +406,24 @@ public class ErlModelUtils {
 			try {
 				final IEditorPart editor = EditorUtility.openInEditor(f);
 				return openFunctionInEditor(function, editor);
+			} catch (final PartInitException e) {
+				ErlLogger.warn(e);
+			} catch (final ErlModelException e) {
+				ErlLogger.warn(e);
+			}
+		}
+		return false;
+	}
+
+	public static boolean openExternalType(final String mod,
+			final String type, final String path,
+			final IProject project) throws CoreException {
+		final IResource r = openExternalModule(mod, path, project);
+		if (r != null && r instanceof IFile) {
+			final IFile f = (IFile) r;
+			try {
+				final IEditorPart editor = EditorUtility.openInEditor(f);
+				return openTypeInEditor(type, editor);
 			} catch (final PartInitException e) {
 				ErlLogger.warn(e);
 			} catch (final ErlModelException e) {
@@ -573,7 +597,6 @@ public class ErlModelUtils {
 	}
 
 	public static void openElementInEditor(final IErlElement element) {
-		;
 	}
 
 }

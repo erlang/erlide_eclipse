@@ -33,7 +33,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class Backend {
+public class Backend extends OtpNodeStatus {
 
 	private static final int EPMD_PORT = 4369;
 	private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
@@ -315,7 +315,10 @@ public class Backend {
 	private boolean init(final OtpErlangPid jRex, boolean monitor) {
 		try {
 			// reload(backend);
-			call("erlide_backend", "init", "po", jRex, monitor);
+			call("erlide_kernel_common", "init", "po", jRex, monitor);
+			// TODO should use extension point!
+			call("erlide_kernel_builder", "init", "");
+			call("erlide_kernel_ide", "init", "");
 			return true;
 		} catch (final Exception e) {
 			ErlLogger.error(e);
@@ -398,6 +401,7 @@ public class Backend {
 	public void registerStatusHandler(OtpNodeStatus handler) {
 		if (fNode != null) {
 			fNode.registerStatusHandler(handler);
+			fNode.registerStatusHandler(this);
 		}
 	}
 
@@ -474,7 +478,10 @@ public class Backend {
 			int i = 10;
 			do {
 				r = call("erlang", "whereis", "a", "code_server");
-				Thread.sleep(200);
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+				}
 				i--;
 			} while (!(r instanceof OtpErlangPid) && i > 0);
 			if (!(r instanceof OtpErlangPid)) {
@@ -516,4 +523,21 @@ public class Backend {
 		return fNode.createMbox(name);
 	}
 
+	@Override
+	public void remoteStatus(final String node, final boolean up,
+			final Object info) {
+		if (node.equals(getPeer())) {
+			// final String dir = up ? "up" : "down";
+			// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
+			setAvailable(up);
+		}
+	}
+
+	@Override
+	public void connAttempt(final String node, final boolean incoming,
+			final Object info) {
+		final String direction = incoming ? "in" : "out";
+		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
+				direction, info));
+	}
 }

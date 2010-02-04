@@ -12,6 +12,7 @@ package org.erlide.ui.editors.erl.completion;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -192,6 +193,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			}
 			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
 					project, b);
+			ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor();
+			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer, offset))); // TODO bara testar
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);

@@ -76,7 +76,9 @@ public class ErlReconciler implements IReconciler {
 		 * @since 3.0
 		 */
 		public boolean isDirty() {
-			return fIsDirty;
+			synchronized (fDirtyRegionQueue) {
+				return fIsDirty || !fDirtyRegionQueue.isEmpty();
+			}
 		}
 
 		/**

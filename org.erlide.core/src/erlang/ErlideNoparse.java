@@ -38,8 +38,8 @@ public class ErlideNoparse {
 			final String erlidePath, final boolean updateCaches) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE,
-					"initial_parse", "asssso", scannerModuleName,
+			res = (OtpErlangTuple) b.call(2000000, ERLIDE_NOPARSE,
+					"initial_parse", "asbsso", scannerModuleName,
 					moduleFileName, initialText, stateDir, erlidePath,
 					updateCaches);
 			if (res.arity() > 2) {
@@ -65,7 +65,7 @@ public class ErlideNoparse {
 
 	public static void destroy(final Backend b, final String module) {
 		try {
-			b.call(ERLIDE_NOPARSE, "destroy", "a", module);
+			b.call("erlide_noparse_server", "destroy", "a", module);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}

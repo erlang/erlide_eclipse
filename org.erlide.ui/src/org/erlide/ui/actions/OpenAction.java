@@ -13,6 +13,7 @@ package org.erlide.ui.actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -34,7 +35,6 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
@@ -46,6 +46,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
@@ -301,7 +302,7 @@ public class OpenAction extends SelectionDispatchAction {
 		try {
 			final IErlProject erlProject = module.getErlProject();
 			final IErlModel model = ErlangCore.getModel();
-			final OpenResult res = ErlideOpen.open(b, ErlScanner
+			final OpenResult res = ErlideOpen.open(b, ErlangToolkit
 					.createScannerModuleName(editor.getModule()), offset, model
 					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
 					model.getPathVars());
@@ -321,6 +322,15 @@ public class OpenAction extends SelectionDispatchAction {
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();
 		if (res.isExternalCall()) {
+			if (editor != null) {
+				final IErlElement e = editor.getElementAt(offset, true);
+				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+					if (ErlModelUtils.openExternalType(res.getName(), res
+							.getFun(), res.getPath(), project)) {
+						return;
+					}
+				}
+			}
 			if (!ErlModelUtils.openExternalFunction(res.getName(), res
 					.getFunction(), res.getPath(), project)) {
 				ErlModelUtils.openExternalFunction(res.getName(),
@@ -329,10 +339,12 @@ public class OpenAction extends SelectionDispatchAction {
 						project);
 			}
 		} else if (res.isInclude()) {
+			IContainer parent = module == null ? null : module.getResource()
+					.getParent();
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res
 							.getName(), org.erlide.core.erlang.util.PluginUtils
-							.getIncludePathFilter(project));
+							.getIncludePathFilter(project, parent));
 			if (r == null) {
 				try {
 					final String includeFile = ErlModelUtils.findIncludeFile(

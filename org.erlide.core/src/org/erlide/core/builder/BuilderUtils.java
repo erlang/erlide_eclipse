@@ -97,7 +97,11 @@ public final class BuilderUtils {
 					beam = module.addFileExtension("beam").setDevice(null);
 					final IResource br = my_project.findMember(beam);
 					if (br != null) {
-						br.delete(true, null);
+						try {
+							br.delete(true, null);
+						} catch (Exception e) {
+							ErlLogger.warn(e);
+						}
 					}
 
 					// was it derived from a yrl?
@@ -145,7 +149,11 @@ public final class BuilderUtils {
 					erl = erl.addFileExtension("erl").setDevice(null);
 					final IResource br = my_project.findMember(erl);
 					if (br != null) {
-						br.delete(true, null);
+						try {
+							br.delete(true, null);
+						} catch (Exception e) {
+							ErlLogger.warn(e);
+						}
 						monitor.worked(1);
 					}
 					break;
@@ -391,6 +399,7 @@ public final class BuilderUtils {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
+				boolean wasKnown = m.isStructureKnown();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (BuilderUtils.comparePath(ifile.getFilename(), resource
@@ -400,6 +409,10 @@ public final class BuilderUtils {
 						}
 						break;
 					}
+				}
+				if (!wasKnown) {
+					m.disposeScanner();
+					m.disposeParser();
 				}
 			}
 		}
@@ -504,6 +517,7 @@ public final class BuilderUtils {
 			if (eprj != null) {
 				final IErlModule m = eprj.getModule(source.getName());
 				if (m != null) {
+					boolean wasKnown = m.isStructureKnown();
 					final Collection<ErlangIncludeFile> incs = m
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
@@ -516,6 +530,10 @@ public final class BuilderUtils {
 							shouldCompile = true;
 							break;
 						}
+					}
+					if (!wasKnown) {
+						m.disposeScanner();
+						m.disposeParser();
 					}
 				}
 			}
@@ -617,21 +635,6 @@ public final class BuilderUtils {
 
 		// TODO separate
 
-		// ERL
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		IPath beamPath = getBeamForErl(source, prefs);
-		if (beamPath != null) {
-			IResource beam = project.findMember(beamPath);
-			if (beam != null) {
-				try {
-					beam.setDerived(true);
-				} catch (CoreException e) {
-					ErlLogger.warn(e);
-				}
-			}
-		}
-
 		// YRL
 		IPath erl = getErlForYrl(source);
 		if (erl != null) {
@@ -670,7 +673,7 @@ public final class BuilderUtils {
 		List<String> includeDirs = getAllIncludeDirs(project);
 
 		// delete beam file
-		IPath beamPath = getBeamForErl(source, prefs);
+		IPath beamPath = getBeamForErl(source);
 		IResource beam = project.findMember(beamPath);
 
 		try {
@@ -679,7 +682,11 @@ public final class BuilderUtils {
 
 			if (shouldCompile) {
 				if (beam != null) {
-					beam.delete(true, null);
+					try {
+						beam.delete(true, null);
+					} catch (Exception e) {
+						ErlLogger.warn(e);
+					}
 				}
 				if (isDebugging()) {
 					ErlLogger.debug("compiling %s", source.getName());
@@ -687,9 +694,8 @@ public final class BuilderUtils {
 
 				MarkerHelper.createTaskMarkers(project, source);
 
-				return ErlideBuilder.compileErl(backend, source
-						.getLocation().toString(), outputDir, includeDirs,
-						compilerOptions);
+				return ErlideBuilder.compileErl(backend, source.getLocation()
+						.toString(), outputDir, includeDirs, compilerOptions);
 			} else {
 				return null;
 			}
@@ -699,8 +705,9 @@ public final class BuilderUtils {
 		}
 	}
 
-	private static IPath getBeamForErl(IResource source,
-			final OldErlangProjectProperties prefs) {
+	private static IPath getBeamForErl(IResource source) {
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(source.getProject());
 		IPath p = new Path(prefs.getOutputDir());
 		p = p.append(source.getName());
 		if (!"erl".equals(p.getFileExtension())) {
@@ -731,7 +738,11 @@ public final class BuilderUtils {
 
 		try {
 			if (br != null) {
-				br.delete(true, null);
+				try {
+					br.delete(true, null);
+				} catch (Exception e) {
+					ErlLogger.warn(e);
+				}
 			}
 
 			final String input = resource.getLocation().toString();

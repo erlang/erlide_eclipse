@@ -65,21 +65,28 @@
     	<mkdir dir="${buildDirectory}/plugins"/>
     	<copy todir="${buildDirectory}/plugins">
     		<fileset dir="..">
-    			<include name="com.ericsson.jinterface/**"/>
-    			<include name="org.erlide.core/**"/>
-    			<include name="org.erlide.help/**"/>
+    			<include name="org.erlide.kernel.common/**"/>
+    			<include name="org.erlide.kernel.builder/**"/>
+    			<include name="org.erlide.kernel.ide/**"/>
+    			<include name="org.erlide.kernel.debugger/**"/>
+    			
+    			<include name="org.erlide.libs/**"/>
     			<include name="org.erlide.jinterface/**"/>
+
+    			<include name="org.erlide.core/**"/>
     			<include name="org.erlide.ui/**"/>
+    			<include name="org.erlide.help/**"/>
+
     			<include name="org.erlide.wrangler.help/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>
     			<include name="org.erlide.wrangler.refactoring.duplicatedcode/**"/>
 
     			<include name="org.erlide.testing/**"/>
     			<include name="org.erlide.core.tests/**"/>
-
-				<exclude name="**/*.class"/>
-				<exclude name="**/*.beam"/>
-			</fileset>
+	
+    			<exclude name="**/*.class"/>
+			<exclude name="**/*.beam"/>
+		</fileset>
     	</copy>
     </target>
 

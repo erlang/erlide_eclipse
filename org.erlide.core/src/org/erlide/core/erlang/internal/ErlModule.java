@@ -34,7 +34,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlScanner;
 import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
@@ -54,7 +53,7 @@ public class ErlModule extends Openable implements IErlModule {
 	private long timestamp = IResource.NULL_STAMP;
 	private final List<IErlComment> comments = new ArrayList<IErlComment>(0);
 	private String initialText;
-	private IErlScanner scanner = null;
+	private ErlScanner scanner = null;
 	private final IFile fFile;
 	private boolean parsed = false;
 	private boolean updateCaches = true;
@@ -344,7 +343,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public IErlScanner getScanner() {
+	public ErlScanner getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
 		}
@@ -355,7 +354,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return scanner != null;
 	}
 
-	private IErlScanner getNewScanner() {
+	private ErlScanner getNewScanner() {
 		final String path = getFilePath();
 		final String erlidePath = getErlidePath();
 		if (path == null || erlidePath == null) {
@@ -379,6 +378,7 @@ public class ErlModule extends Openable implements IErlModule {
 	public void reconcileText(final int offset, final int removeLength,
 			final String newText, final IProgressMonitor mon) {
 		if (scannerDisposed) {
+			ErlLogger.debug("reconcileText scannerDisposed!");
 			return;
 		}
 		if (!fIgnoreNextReconcile) {
@@ -450,6 +450,7 @@ public class ErlModule extends Openable implements IErlModule {
 	public void disposeParser() {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
+		disposeScanner();
 		setStructureKnown(false);
 		parsed = false;
 	}
@@ -526,7 +527,8 @@ public class ErlModule extends Openable implements IErlModule {
 		updateCaches = true;
 		setStructureKnown(false);
 		try {
-			buildStructure(null);
+			final boolean built = buildStructure(null);
+			setStructureKnown(built);
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}

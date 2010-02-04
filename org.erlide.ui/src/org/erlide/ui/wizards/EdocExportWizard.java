@@ -32,7 +32,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-import erlang.ErlideEdoc;
+import erlang.ErlideEdocExport;
 
 public class EdocExportWizard extends Wizard implements IExportWizard {
 
@@ -82,7 +82,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 					}
 				}
 				try {
-					ErlideEdoc.files(files, options);
+					ErlideEdocExport.files(files, options);
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}

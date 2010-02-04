@@ -44,6 +44,14 @@ public final class Bindings {
 		return this.bindings.get(name);
 	}
 
+	public int getInt(final String name) throws OtpErlangException {
+		final OtpErlangObject r = get(name);
+		if (r instanceof OtpErlangLong) {
+			return ((OtpErlangLong) r).intValue();
+		}
+		throw new OtpErlangException("value is not an integer");
+	}
+
 	public long getLong(final String name) throws OtpErlangException {
 		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangLong) {

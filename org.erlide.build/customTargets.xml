@@ -72,7 +72,7 @@
 		<property file="${buildDirectory}/finalFeaturesVersions.properties" prefix="versions"/>
 		<propertycopy name="realFeatureVersion" from="versions.org.erlide"/>
 
-		<property name="p2.root.name" value="erlIDE"/>
+		<property name="p2.root.name" value="erlide"/>
 		<property name="p2.root.version" value="${realFeatureVersion}"/>
 	</target>
 	<!-- ===================================================================== -->

@@ -210,43 +210,43 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 				} catch (final BackendException e) {
 				}
 
-				String kind = "";
+				int kind = ErlToken.KIND_OTHER;
 				if (tokens != null && tokens.size() > 0) {
 					kind = tokens.get(0).getKind();
 				} else if (str.length() > 0) {
-					kind = str.substring(0, 1);
+					kind = str.charAt(0);
 				}
 				// if (isStopper(kind)) {
 				// return;
 				// }
-				if (kind.equals("(") || kind.equals("{") || kind.equals("[")) {
+				if (kind == '(' || kind == '{' || kind == '[') {
 					return;
 				}
 
 				switch (event.character) {
 				case '(':
-					if (!fCloseParens || kind.equals(")")) {
+					if (!fCloseParens || kind == ')') {
 						return;
 					}
 					break;
 
 				case '[':
-					if (!fCloseBrackets || kind.equals("]")) {
+					if (!fCloseBrackets || kind == ']') {
 						return;
 					}
 					break;
 				case '{':
-					if (!fCloseBraces || kind.equals("}")) {
+					if (!fCloseBraces || kind == '}') {
 						return;
 					}
 					break;
 				case '\'':
-					if (!fCloseAtoms || kind.equals("'")) {
+					if (!fCloseAtoms || kind == '\'') {
 						return;
 					}
 					break;
 				case '"':
-					if (!fCloseStrings || kind.equals("\"")) {
+					if (!fCloseStrings || kind == '"') {
 						return;
 					}
 					break;

@@ -30,6 +30,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -131,7 +133,6 @@ public class ErlangPlugin extends Plugin {
 	public void stop(final BundleContext context) throws Exception {
 		try {
 			ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
-			ErlangCore.getBackendManager().removeBundle(getBundle());
 
 			ErlangCore.getModelManager().shutdown();
 		} finally {
@@ -163,11 +164,24 @@ public class ErlangPlugin extends Plugin {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
-		final Object version = getBundle().getHeaders().get("Bundle-Version");
+		String version;
+		Bundle feature = Platform.getBundle("org.erlide");
+		// TODO this is null, why?
+		if (feature == null) {
+			// when running launched from eclipse (testing), features aren't
+			// available
+			feature = getBundle();
+			version = "(" + (String) feature.getHeaders().get("Bundle-Version")
+					+ ")";
+		} else {
+			// TODO read from feature.xml
+			version = (String) feature.getHeaders().get("Bundle-Version");
+		}
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();
-		ErlangCore.getBackendManager().addBundle(getBundle());
+
+		BackendManager.getDefault().loadCodepathExtensions();
 
 		ResourcesPlugin.getWorkspace().addSaveParticipant(this,
 				new ISaveParticipant() {
@@ -194,13 +208,13 @@ public class ErlangPlugin extends Plugin {
 		if (plugin != null) {
 			Level lvl;
 			switch (status.getSeverity()) {
-			case Status.ERROR:
+			case IStatus.ERROR:
 				lvl = Level.SEVERE;
 				break;
-			case Status.WARNING:
+			case IStatus.WARNING:
 				lvl = Level.WARNING;
 				break;
-			case Status.INFO:
+			case IStatus.INFO:
 				lvl = Level.INFO;
 				break;
 			default:

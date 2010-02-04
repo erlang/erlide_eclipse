@@ -63,8 +63,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
 	 * @return new {@link ITextSelection} extended to the whole lines
 	 *         intersected by selection
 	 */
-	protected ITextSelection extendSelection(final IDocument document,
-			final ITextSelection selection) {
+	public static ITextSelection extendSelectionToWholeLines(
+			final IDocument document, final ITextSelection selection) {
 		final int startLine = selection.getStartLine();
 		final int endLine = selection.getEndLine();
 		int startLineOffset;
@@ -103,25 +103,28 @@ public class ErlangTextEditorAction extends TextEditorAction {
 					final ISourceReference ref1 = (ISourceReference) e1;
 					final ISourceRange r1 = ref1.getSourceRange();
 					if (e1 == e2) {
-						return extendSelection(document, new TextSelection(
-								document, r1.getOffset(), r1.getLength()));
+						return extendSelectionToWholeLines(document,
+								new TextSelection(document, r1.getOffset(), r1
+										.getLength()));
 					} else if (e2 == null) {
-						return extendSelection(document, new TextSelection(
-								document, r1.getOffset(), selection.getLength()
-										+ selection.getOffset()
-										- r1.getOffset()));
+						return extendSelectionToWholeLines(document,
+								new TextSelection(document, r1.getOffset(),
+										selection.getLength()
+												+ selection.getOffset()
+												- r1.getOffset()));
 					} else if (e2 instanceof ISourceReference) {
 						final ISourceReference ref2 = (ISourceReference) e2;
 						final ISourceRange r2 = ref2.getSourceRange();
-						return extendSelection(document, new TextSelection(
-								document, r1.getOffset(), r2.getOffset()
+						return extendSelectionToWholeLines(document,
+								new TextSelection(document, r1.getOffset(), r2
+										.getOffset()
 										- r1.getOffset() + r2.getLength()));
 					}
 				}
 			} catch (final ErlModelException e) {
 			}
 		}
-		return extendSelection(document, selection);
+		return extendSelectionToWholeLines(document, selection);
 	}
 
 	@Override
@@ -134,7 +137,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		final ITextEditor textEditor = getTextEditor();
 		final IDocument document = textEditor.getDocumentProvider()
 				.getDocument(textEditor.getEditorInput());
-		final ITextSelection selection = extendSelection(document,
+		final ITextSelection selection = extendSelectionToWholeLines(document,
 				(ITextSelection) sel);
 		final ITextSelection getSelection = getTextSelection(document,
 				selection);

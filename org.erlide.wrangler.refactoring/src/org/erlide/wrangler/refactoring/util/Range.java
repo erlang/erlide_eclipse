@@ -1,6 +1,6 @@
 package org.erlide.wrangler.refactoring.util;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -46,12 +46,12 @@ public class Range implements IRange {
 	}
 
 	public OtpErlangTuple getStartPos() {
-		return JInterfaceFactory.mkTuple(new OtpErlangInt(startLine),
+		return OtpErlang.mkTuple(new OtpErlangInt(startLine),
 				new OtpErlangInt(startCol));
 	}
 
 	public OtpErlangTuple getEndPos() {
-		return JInterfaceFactory.mkTuple(new OtpErlangInt(endLine),
+		return OtpErlang.mkTuple(new OtpErlangInt(endLine),
 				new OtpErlangInt(endCol));
 	}
 
@@ -62,6 +62,6 @@ public class Range implements IRange {
 	}
 
 	public OtpErlangTuple getPos() {
-		return JInterfaceFactory.mkTuple(getStartPos(), getEndPos());
+		return OtpErlang.mkTuple(getStartPos(), getEndPos());
 	}
 }

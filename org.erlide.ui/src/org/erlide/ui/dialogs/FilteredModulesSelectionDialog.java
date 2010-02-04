@@ -62,6 +62,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
+import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
@@ -103,8 +104,8 @@ public class FilteredModulesSelectionDialog extends
 	 * @param typesMask
 	 *            the types mask
 	 */
-	public FilteredModulesSelectionDialog(Shell shell, boolean multi,
-			IContainer container, int typesMask) {
+	public FilteredModulesSelectionDialog(final Shell shell,
+			final boolean multi, final IContainer container, final int typesMask) {
 		super(shell, multi);
 
 		setSelectionHistory(new ModuleSelectionHistory());
@@ -114,7 +115,7 @@ public class FilteredModulesSelectionDialog extends
 				IErlangHelpContextIds.OPEN_MODULE_DIALOG);
 
 		this.container = container;
-		this.typeMask = typesMask;
+		typeMask = typesMask;
 
 		moduleItemLabelProvider = new ModuleItemLabelProvider();
 		moduleItemDetailsLabelProvider = new ModuleItemDetailsLabelProvider();
@@ -123,7 +124,7 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		super.setTitle(title);
 		this.title = title;
 	}
@@ -134,7 +135,7 @@ public class FilteredModulesSelectionDialog extends
 	 * @param text
 	 *            the new subtitle
 	 */
-	void setSubtitle(String text) {
+	void setSubtitle(final String text) {
 		if (text == null || text.length() == 0) {
 			getShell().setText(title);
 		} else {
@@ -156,17 +157,17 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	protected void storeDialog(IDialogSettings settings) {
+	protected void storeDialog(final IDialogSettings settings) {
 		super.storeDialog(settings);
 
-		XMLMemento memento = XMLMemento.createWriteRoot("workingSet"); //$NON-NLS-1$
+		final XMLMemento memento = XMLMemento.createWriteRoot("workingSet"); //$NON-NLS-1$
 		workingSetFilterActionGroup.saveState(memento);
 		workingSetFilterActionGroup.dispose();
-		StringWriter writer = new StringWriter();
+		final StringWriter writer = new StringWriter();
 		try {
 			memento.save(writer);
 			settings.put(WORKINGS_SET_SETTINGS, writer.getBuffer().toString());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			StatusManager.getManager().handle(
 					new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
 							IStatus.ERROR, "", e)); //$NON-NLS-1$
@@ -175,16 +176,16 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	protected void restoreDialog(IDialogSettings settings) {
+	protected void restoreDialog(final IDialogSettings settings) {
 		super.restoreDialog(settings);
 
-		String setting = settings.get(WORKINGS_SET_SETTINGS);
+		final String setting = settings.get(WORKINGS_SET_SETTINGS);
 		if (setting != null) {
 			try {
-				IMemento memento = XMLMemento.createReadRoot(new StringReader(
-						setting));
+				final IMemento memento = XMLMemento
+						.createReadRoot(new StringReader(setting));
 				workingSetFilterActionGroup.restoreState(memento);
-			} catch (WorkbenchException e) {
+			} catch (final WorkbenchException e) {
 				StatusManager.getManager().handle(
 						new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
 								IStatus.ERROR, "", e)); //$NON-NLS-1$
@@ -198,13 +199,13 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	protected void fillViewMenu(IMenuManager menuManager) {
+	protected void fillViewMenu(final IMenuManager menuManager) {
 		super.fillViewMenu(menuManager);
 
 		workingSetFilterActionGroup = new WorkingSetFilterActionGroup(
 				getShell(), new IPropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent event) {
-						String property = event.getProperty();
+					public void propertyChange(final PropertyChangeEvent event) {
+						final String property = event.getProperty();
 
 						if (WorkingSetFilterActionGroup.CHANGE_WORKING_SET
 								.equals(property)) {
@@ -218,12 +219,12 @@ public class FilteredModulesSelectionDialog extends
 								workingSetFilter.setWorkingSet(workingSet);
 								setSubtitle(workingSet.getLabel());
 							} else {
-								IWorkbenchWindow window = PlatformUI
+								final IWorkbenchWindow window = PlatformUI
 										.getWorkbench()
 										.getActiveWorkbenchWindow();
 
 								if (window != null) {
-									IWorkbenchPage page = window
+									final IWorkbenchPage page = window
 											.getActivePage();
 									workingSet = page.getAggregateWorkingSet();
 
@@ -247,19 +248,19 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	protected Control createExtendedContentArea(Composite parent) {
+	protected Control createExtendedContentArea(final Composite parent) {
 		return null;
 	}
 
 	@Override
 	public Object[] getResult() {
-		Object[] result = super.getResult();
+		final Object[] result = super.getResult();
 
 		if (result == null) {
 			return null;
 		}
 
-		List<Object> resultToReturn = new ArrayList<Object>();
+		final List<Object> resultToReturn = new ArrayList<Object>();
 
 		for (int i = 0; i < result.length; i++) {
 			// if (result[i] instanceof IResource) {
@@ -273,19 +274,19 @@ public class FilteredModulesSelectionDialog extends
 	@Override
 	public int open() {
 		if (getInitialPattern() == null) {
-			IWorkbenchWindow window = PlatformUI.getWorkbench()
+			final IWorkbenchWindow window = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow();
 			if (window != null) {
-				ISelection selection = window.getSelectionService()
+				final ISelection selection = window.getSelectionService()
 						.getSelection();
 				if (selection instanceof ITextSelection) {
 					String text = ((ITextSelection) selection).getText();
 					if (text != null) {
 						text = text.trim();
 						if (text.length() > 0) {
-							IWorkspace workspace = ResourcesPlugin
+							final IWorkspace workspace = ResourcesPlugin
 									.getWorkspace();
-							IStatus result = workspace.validateName(text,
+							final IStatus result = workspace.validateName(text,
 									IResource.FILE);
 							if (result.isOK()) {
 								setInitialPattern(text);
@@ -299,16 +300,16 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	public String getElementName(Object item) {
+	public String getElementName(final Object item) {
 		if (item instanceof String) {
 			return (String) item;
 		}
-		IResource resource = (IResource) item;
+		final IResource resource = (IResource) item;
 		return resource.getName();
 	}
 
 	@Override
-	protected IStatus validateItem(Object item) {
+	protected IStatus validateItem(final Object item) {
 		return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
 	}
 
@@ -326,13 +327,13 @@ public class FilteredModulesSelectionDialog extends
 	protected Comparator<Object> getItemsComparator() {
 		return new Comparator<Object>() {
 
-			public int compare(Object o1, Object o2) {
-				Collator collator = Collator.getInstance();
-				String s1 = (o1 instanceof IResource) ? ((IResource) o1)
+			public int compare(final Object o1, final Object o2) {
+				final Collator collator = Collator.getInstance();
+				final String s1 = o1 instanceof IResource ? ((IResource) o1)
 						.getName() : (String) o1;
-				String s2 = (o2 instanceof IResource) ? ((IResource) o2)
+				final String s2 = o2 instanceof IResource ? ((IResource) o2)
 						.getName() : (String) o2;
-				int comparability = collator.compare(s1, s2);
+				final int comparability = collator.compare(s1, s2);
 				if (comparability == 0) {
 					// IPath p1 = resource1.getFullPath();
 					// IPath p2 = resource2.getFullPath();
@@ -354,9 +355,10 @@ public class FilteredModulesSelectionDialog extends
 	}
 
 	@Override
-	protected void fillContentProvider(AbstractContentProvider contentProvider,
-			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
-			throws CoreException {
+	protected void fillContentProvider(
+			final AbstractContentProvider contentProvider,
+			final ItemsFilter itemsFilter,
+			final IProgressMonitor progressMonitor) throws CoreException {
 		if (itemsFilter instanceof ModuleFilter) {
 
 			container.accept(new ModuleProxyVisitor(contentProvider,
@@ -388,23 +390,23 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			if (!(element instanceof IResource)) {
 				return super.getImage(element);
 			}
 
-			IResource res = (IResource) element;
+			final IResource res = (IResource) element;
 
 			return provider.getImage(res);
 		}
 
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			if (!(element instanceof IResource)) {
 				return super.getText(element);
 			}
 
-			IResource res = (IResource) element;
+			final IResource res = (IResource) element;
 			String str = res.getName();
 
 			// extra info for duplicates
@@ -416,15 +418,15 @@ public class FilteredModulesSelectionDialog extends
 			return str;
 		}
 
-		public StyledString getStyledText(Object element) {
+		public StyledString getStyledText(final Object element) {
 			if (!(element instanceof IResource)) {
 				return new StyledString(super.getText(element));
 			}
 
-			String text = getText(element);
-			StyledString str = new StyledString(text);
+			final String text = getText(element);
+			final StyledString str = new StyledString(text);
 
-			int index = text.indexOf(" - ");
+			final int index = text.indexOf(" - ");
 			if (index != -1) {
 				str.setStyle(index, text.length() - index,
 						StyledString.QUALIFIER_STYLER);
@@ -441,17 +443,17 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public void addListener(ILabelProviderListener listener) {
+		public void addListener(final ILabelProviderListener listener) {
 			listeners.add(listener);
 		}
 
 		@Override
-		public void removeListener(ILabelProviderListener listener) {
+		public void removeListener(final ILabelProviderListener listener) {
 			listeners.remove(listener);
 		}
 
-		public void labelProviderChanged(LabelProviderChangedEvent event) {
-			Object[] l = listeners.getListeners();
+		public void labelProviderChanged(final LabelProviderChangedEvent event) {
+			final Object[] l = listeners.getListeners();
 			for (int i = 0; i < listeners.size(); i++) {
 				((ILabelProviderListener) l[i]).labelProviderChanged(event);
 			}
@@ -465,22 +467,22 @@ public class FilteredModulesSelectionDialog extends
 	class ModuleItemDetailsLabelProvider extends ModuleItemLabelProvider {
 
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			if (!(element instanceof IResource)) {
 				return super.getImage(element);
 			}
 
-			IResource parent = ((IResource) element).getParent();
+			final IResource parent = ((IResource) element).getParent();
 			return provider.getImage(parent);
 		}
 
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			if (!(element instanceof IResource)) {
 				return super.getText(element);
 			}
 
-			IResource parent = ((IResource) element).getParent();
+			final IResource parent = ((IResource) element).getParent();
 
 			if (parent.getType() == IResource.ROOT) {
 				// Get readable name for workspace root ("Workspace"), without
@@ -493,8 +495,8 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public void labelProviderChanged(LabelProviderChangedEvent event) {
-			Object[] l = super.listeners.getListeners();
+		public void labelProviderChanged(final LabelProviderChangedEvent event) {
+			final Object[] l = super.listeners.getListeners();
 			for (int i = 0; i < super.listeners.size(); i++) {
 				((ILabelProviderListener) l[i]).labelProviderChanged(event);
 			}
@@ -522,13 +524,13 @@ public class FilteredModulesSelectionDialog extends
 		 * @param workingSet
 		 *            the working set the filter should work with
 		 */
-		public void setWorkingSet(IWorkingSet workingSet) {
+		public void setWorkingSet(final IWorkingSet workingSet) {
 			resourceWorkingSetFilter.setWorkingSet(workingSet);
 		}
 
 		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
+		public boolean select(final Viewer viewer, final Object parentElement,
+				final Object element) {
 			return resourceWorkingSetFilter.select(viewer, parentElement,
 					element);
 		}
@@ -554,65 +556,66 @@ public class FilteredModulesSelectionDialog extends
 		 * @param progressMonitor
 		 * @throws CoreException
 		 */
-		public ModuleProxyVisitor(AbstractContentProvider contentProvider,
-				ModuleFilter resourceFilter, IProgressMonitor progressMonitor)
-				throws CoreException {
+		public ModuleProxyVisitor(
+				final AbstractContentProvider contentProvider,
+				final ModuleFilter resourceFilter,
+				final IProgressMonitor progressMonitor) throws CoreException {
 			super();
-			this.proxyContentProvider = contentProvider;
+			proxyContentProvider = contentProvider;
 			this.resourceFilter = resourceFilter;
 			this.progressMonitor = progressMonitor;
-			IResource[] resources = container.members();
-			this.projects = new ArrayList<IResource>(Arrays.asList(resources));
+			final IResource[] resources = container.members();
+			projects = new ArrayList<IResource>(Arrays.asList(resources));
 
 			if (progressMonitor != null) {
 				progressMonitor.beginTask("Searching", projects.size());
 			}
 		}
 
-		public boolean visit(IResourceProxy proxy) {
+		public boolean visit(final IResourceProxy proxy) {
 
 			if (progressMonitor.isCanceled()) {
 				return false;
 			}
 
-			IResource resource = proxy.requestResource();
+			final IResource resource = proxy.requestResource();
 
-			if (this.projects.remove((resource.getProject()))
-					|| this.projects.remove((resource))) {
+			if (projects.remove(resource.getProject())
+					|| projects.remove(resource)) {
 				progressMonitor.worked(1);
 			}
 
 			if (resource.getProject() == resource) {
 				// navigate even "external" lists
-				IErlModel model = ErlangCore.getModel();
-				IProject prj = resource.getProject();
+				final IErlModel model = ErlangCore.getModel();
+				final IProject prj = resource.getProject();
 				if (prj != null) {
-					String extMods = model.getExternal(model.findProject(prj),
-							ErlangCore.EXTERNAL_MODULES);
-					List<String> files = new ArrayList<String>();
+					final String extMods = model.getExternal(model
+							.findProject(prj), ErlangCore.EXTERNAL_MODULES);
+					final List<String> files = new ArrayList<String>();
 					files.addAll(PreferencesUtils.unpackList(extMods));
-					String extIncs = model.getExternal(model.findProject(prj),
-							ErlangCore.EXTERNAL_INCLUDES);
+					final String extIncs = model.getExternal(model
+							.findProject(prj), ErlangCore.EXTERNAL_INCLUDES);
 					files.addAll(PreferencesUtils.unpackList(extIncs));
 
 					final IPathVariableManager pvm = ResourcesPlugin
 							.getWorkspace().getPathVariableManager();
-					for (String str : files) {
+					for (final String str : files) {
 						IResource fres;
 						try {
 							fres = ResourceUtil.recursiveFindNamedResource(prj,
 									str, null);
-						} catch (CoreException e) {
+						} catch (final CoreException e) {
 							fres = null;
 						}
 						if (fres != null) {
-							List<String> lines = PreferencesUtils.readFile(fres
-									.getLocation().toString());
-							for (String pref : lines) {
+							final List<String> lines = PreferencesUtils
+									.readFile(fres.getLocation().toString());
+							for (final String pref : lines) {
 
 								String path;
-								IPath p = new Path(pref);
-								IPath v = pvm.resolvePath(p);
+								final IPath p = new Path(pref);
+								final IPath v = pvm.resolvePath(p);
 								if (v.isAbsolute()) {
 									path = v.toString();
 								} else {
@@ -631,7 +634,7 @@ public class FilteredModulesSelectionDialog extends
 			}
 
 			if (ResourceUtil.hasErlangExtension(resource)) {
-				IContainer container = resource.getParent();
+				final IContainer container = resource.getParent();
 				if (PluginUtils.isOnSourcePath(container)
 						|| PluginUtils.isOnIncludePath(container)) {
 					proxyContentProvider.add(resource, resourceFilter);
@@ -644,6 +647,23 @@ public class FilteredModulesSelectionDialog extends
 
 			return true;
 		}
+	}
+
+	protected class MatchAnySearchPattern extends SearchPattern {
+
+		public MatchAnySearchPattern() {
+			super(SearchPattern.RULE_PATTERN_MATCH);
+		}
+
+		@Override
+		public void setPattern(final String stringPattern) {
+			if ("".equals(stringPattern)) {
+				super.setPattern(stringPattern);
+			} else {
+				super.setPattern("*" + stringPattern + "*");
+			}
+		}
+
 	}
 
 	/**
@@ -663,10 +683,10 @@ public class FilteredModulesSelectionDialog extends
 		 *            flag which determine showing derived elements
 		 * @param typeMask
 		 */
-		public ModuleFilter(IContainer container, int typeMask) {
-			super();
-			this.filterContainer = container;
-			this.filterTypeMask = typeMask;
+		public ModuleFilter(final IContainer container, final int typeMask) {
+			super(new MatchAnySearchPattern());
+			filterContainer = container;
+			filterTypeMask = typeMask;
 		}
 
 		/**
@@ -674,8 +694,8 @@ public class FilteredModulesSelectionDialog extends
 		 */
 		public ModuleFilter() {
 			super();
-			this.filterContainer = container;
-			this.filterTypeMask = typeMask;
+			filterContainer = container;
+			filterTypeMask = typeMask;
 		}
 
 		/**
@@ -685,15 +705,15 @@ public class FilteredModulesSelectionDialog extends
 		 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#isConsistentItem(java.lang.Object)
 		 */
 		@Override
-		public boolean isConsistentItem(Object item) {
+		public boolean isConsistentItem(final Object item) {
 			if (item instanceof String) {
 				return true;
 			}
 			if (!(item instanceof IResource)) {
 				return false;
 			}
-			IResource resource = (IResource) item;
-			if (this.filterContainer.findMember(resource.getFullPath()) != null) {
+			final IResource resource = (IResource) item;
+			if (filterContainer.findMember(resource.getFullPath()) != null) {
 				return true;
 			}
 			return false;
@@ -706,23 +726,23 @@ public class FilteredModulesSelectionDialog extends
 		 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter#matchItem(java.lang.Object)
 		 */
 		@Override
-		public boolean matchItem(Object item) {
+		public boolean matchItem(final Object item) {
 			if (item instanceof String) {
-				Path path = new Path((String) item);
+				final Path path = new Path((String) item);
 				return matches(path.lastSegment().toString());
 			}
 			if (!(item instanceof IResource)) {
 				return false;
 			}
-			IResource resource = (IResource) item;
-			if ((this.filterTypeMask & resource.getType()) == 0) {
+			final IResource resource = (IResource) item;
+			if ((filterTypeMask & resource.getType()) == 0) {
 				return false;
 			}
 			return matches(resource.getName());
 		}
 
 		@Override
-		public boolean isSubFilter(ItemsFilter filter) {
+		public boolean isSubFilter(final ItemsFilter filter) {
 			if (!super.isSubFilter(filter)) {
 				return false;
 			}
@@ -733,7 +753,7 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public boolean equalsFilter(ItemsFilter iFilter) {
+		public boolean equalsFilter(final ItemsFilter iFilter) {
 			if (!super.equalsFilter(iFilter)) {
 				return false;
 			}
@@ -759,18 +779,18 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public synchronized void accessed(Object object) {
+		public synchronized void accessed(final Object object) {
 			super.accessed(object);
 		}
 
 		@Override
-		public synchronized boolean remove(Object element) {
+		public synchronized boolean remove(final Object element) {
 			// OpenModuleHistory.getInstance().remove((TypeNameMatch) element);
 			return super.remove(element);
 		}
 
 		@Override
-		public void load(IMemento memento) {
+		public void load(final IMemento memento) {
 			// TypeNameMatch[] types = OpenTypeHistory.getInstance()
 			// .getTypeInfos();
 			//
@@ -782,7 +802,7 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		public void save(IMemento memento) {
+		public void save(final IMemento memento) {
 			persistHistory();
 		}
 
@@ -801,12 +821,13 @@ public class FilteredModulesSelectionDialog extends
 		}
 
 		@Override
-		protected Object restoreItemFromMemento(IMemento element) {
+		protected Object restoreItemFromMemento(final IMemento element) {
 			return null;
 		}
 
 		@Override
-		protected void storeItemToMemento(Object item, IMemento element) {
+		protected void storeItemToMemento(final Object item,
+				final IMemento element) {
 
 		}
 

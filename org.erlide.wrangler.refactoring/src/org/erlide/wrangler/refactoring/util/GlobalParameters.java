@@ -24,7 +24,7 @@ public class GlobalParameters {
 	// TODO:: handle null exceptions
 	static IEditorPart editor = null;
 
-	static IErlSelection wranglerSelection = null;;
+	static IErlSelection wranglerSelection = null;
 
 	public static int getTabWidth() {
 		return 1;

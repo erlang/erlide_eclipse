@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
@@ -21,6 +23,8 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -56,7 +60,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	private String fExitStatus;
 
-	private List<ErlangStackFrame> stackFrames;
+	private List<IStackFrame> stackFrames;
 
 	private boolean stepping;
 	private ErlangFunctionCall fInitialCall;
@@ -69,7 +73,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		fBackend = backend;
 		fStatus = STATUS_UNKNOWN;
 		fExitStatus = null;
-		stackFrames = new ArrayList<ErlangStackFrame>();
+		stackFrames = new ArrayList<IStackFrame>();
 		stepping = false;
 		fTracing = false;
 	}
@@ -198,19 +202,48 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 					+ "- are there more than one debug sessions started?");
 			return;
 		}
-		final OtpErlangList erlStackFrames = (OtpErlangList) stackAndBindings
-				.elementAt(0);
+		OtpErlangObject savedStackTrace = null;
+		OtpErlangObject el0 = stackAndBindings.elementAt(0);
+		if (el0 instanceof OtpErlangTuple) {
+			final OtpErlangTuple t = (OtpErlangTuple) el0;
+			savedStackTrace = t.elementAt(1);
+			el0 = t.elementAt(0);
+		}
+		final OtpErlangList erlStackFrames = (OtpErlangList) el0;
 		final OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);
 		setStackFrames(module, line, erlStackFrames, bs);
+		if (savedStackTrace instanceof OtpErlangTuple) {
+			addStackTrace((OtpErlangTuple) savedStackTrace);
+		}
+	}
+
+	private void addStackTrace(final OtpErlangTuple savedStackTrace) {
+		final OtpErlangTuple t = (OtpErlangTuple) savedStackTrace.elementAt(2);
+		final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(1);
+		final OtpErlangList stackTrace = (OtpErlangList) t2.elementAt(1);
+		for (int i = 1, n = stackTrace.arity(); i < n; ++i) {
+			final OtpErlangTuple frame = (OtpErlangTuple) stackTrace
+					.elementAt(i);
+			final OtpErlangAtom m = (OtpErlangAtom) frame.elementAt(0);
+			final OtpErlangAtom f = (OtpErlangAtom) frame.elementAt(1);
+			final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
+			try {
+				stackFrames.add(new ErlangUninterpretedStackFrame(
+						m.atomValue(), new ErlangFunction( f.atomValue(), a.intValue()), this,
+						getDebugTarget()));
+			} catch (final OtpErlangRangeException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void removeStackFrames() {
-		stackFrames = new ArrayList<ErlangStackFrame>();
+		stackFrames = new ArrayList<IStackFrame>();
 	}
 
 	public void setStackFrames(String module, int line,
 			final OtpErlangList erlStackFrames, OtpErlangList bs) {
-		stackFrames = new ArrayList<ErlangStackFrame>();
+		stackFrames = new ArrayList<IStackFrame>();
 		final IDebugTarget target = getDebugTarget();
 		for (final OtpErlangObject o : erlStackFrames) {
 			final OtpErlangTuple t = (OtpErlangTuple) o;
@@ -226,7 +259,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 				stackFrameNo = -1;
 			}
 			stackFrames.add(new ErlangStackFrame(module, this, target, line,
-					bs, stackFrameNo));
+					null, bs, stackFrameNo));
 			bs = (OtpErlangList) t.elementAt(2);
 			module = m.atomValue();
 			try {
@@ -296,30 +329,30 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public IBreakpoint[] getBreakpoints() {
-		if (stackFrames.isEmpty()) {
-			return null;
-		}
-		final ErlangStackFrame topFrame = stackFrames.get(0);
-		if (topFrame != null) {
-			final IBreakpointManager breakpointManager = DebugPlugin
-					.getDefault().getBreakpointManager();
-			final IBreakpoint[] breakpoints = breakpointManager
-					.getBreakpoints();
+		if (!stackFrames.isEmpty()) {
+			final IStackFrame f = stackFrames.get(0);
+			if (f instanceof ErlangStackFrame) {
+				final ErlangStackFrame topFrame = (ErlangStackFrame) f;
+				final IBreakpointManager breakpointManager = DebugPlugin
+						.getDefault().getBreakpointManager();
+				final IBreakpoint[] breakpoints = breakpointManager
+						.getBreakpoints();
 
-			for (final IBreakpoint breakpoint : breakpoints) {
-				if (breakpoint instanceof ErlangLineBreakpoint) {
-					final ErlangLineBreakpoint lineBreakpoint = (ErlangLineBreakpoint) breakpoint;
-					try {
-						if (lineBreakpoint.getModule().equals(
-								topFrame.getModule())
-								&& lineBreakpoint.getLineNumber() == topFrame
-										.getLineNumber()) {
-							return new IBreakpoint[] { lineBreakpoint };
+				for (final IBreakpoint breakpoint : breakpoints) {
+					if (breakpoint instanceof ErlangLineBreakpoint) {
+						final ErlangLineBreakpoint lineBreakpoint = (ErlangLineBreakpoint) breakpoint;
+						try {
+							if (lineBreakpoint.getModule().equals(
+									topFrame.getModule())
+									&& lineBreakpoint.getLineNumber() == topFrame
+											.getLineNumber()) {
+								return new IBreakpoint[] { lineBreakpoint };
+							}
+						} catch (final DebugException e) {
+							ErlLogger.warn(e);
+						} catch (final CoreException e) {
+							ErlLogger.warn(e);
 						}
-					} catch (final DebugException e) {
-						ErlLogger.warn(e);
-					} catch (final CoreException e) {
-						ErlLogger.warn(e);
 					}
 				}
 			}
@@ -432,6 +465,14 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
 	public boolean getTracing() {
 		return fTracing;
+	}
+
+	public void dropToFrame(final int stackFrameNo) throws DebugException {
+		if (!ErlideDebug.dropToFrame(fBackend, getMeta(), stackFrameNo)) {
+			final IStatus s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+					DebugException.REQUEST_FAILED, "frame not found", null);
+			throw new DebugException(s);
+		}
 	}
 
 }

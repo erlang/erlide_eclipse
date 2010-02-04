@@ -11,11 +11,11 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.Util;
@@ -63,7 +63,7 @@ public final class ErlParser {
 		}
 		OtpErlangList forms = null;
 		OtpErlangList comments = null;
-		final String scannerModuleName = ErlScanner
+		final String scannerModuleName = ErlangToolkit
 				.createScannerModuleName(module);
 		OtpErlangTuple res = null;
 		ErlLogger.debug("parse="
@@ -369,7 +369,8 @@ public final class ErlParser {
 				// r.setParseTree(val);
 				return r;
 			}
-		} else if ("type".equals(nameS) || "spec".equals(nameS)) {
+		} else if ("type".equals(nameS) || "spec".equals(nameS)
+				|| "opaque".equals(nameS)) {
 			final String s = Util.stringValue(extra);
 			final int p = s.indexOf('(');
 			final String typeName = p < 0 ? s : s.substring(0, p);

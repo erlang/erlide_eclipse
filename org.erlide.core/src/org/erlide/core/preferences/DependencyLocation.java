@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 public abstract class DependencyLocation extends CodePathLocation {
 	public enum Kind {
 		COMPILE_TIME, RUN_TIME
-	};
+	}
 
 	private final EnumSet<Kind> kind;
 

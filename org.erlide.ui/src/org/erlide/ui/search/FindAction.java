@@ -21,11 +21,11 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -220,7 +220,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
 		try {
-			String scannerModuleName = ErlScanner
+			String scannerModuleName = ErlangToolkit
 					.createScannerModuleName(module);
 			final OpenResult res = ErlideOpen.open(b, scannerModuleName,
 					offset, "", ErlangCore.getModel().getPathVars());

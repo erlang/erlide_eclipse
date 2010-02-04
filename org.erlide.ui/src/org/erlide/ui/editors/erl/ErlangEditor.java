@@ -97,7 +97,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -106,6 +105,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -115,6 +115,7 @@ import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
 import org.erlide.ui.editors.erl.actions.IndentAction;
+import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
@@ -127,6 +128,7 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
+import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
@@ -155,7 +157,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private TestAction testAction;
 	/** The selection changed listeners */
 	private EditorSelectionChangedListener fEditorSelectionChangedListener;
-	protected AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 	private InformationPresenter fInformationPresenter;
 	private ShowOutlineAction fShowOutline;
 	private Object fSelection;
@@ -176,7 +177,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private CallHierarchyAction callhierarchy;
 	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
 	private final Object lock = new Object();
-	private final boolean initFinished = false;
+	// private final boolean initFinished = false;
+	private SendToConsoleAction sendToConsole;
 
 	/**
 	 * Simple constructor
@@ -188,6 +190,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		registerListeners();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void registerListeners() {
 		try {
 			// initialize the 'save' listeners of editor
@@ -195,7 +198,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				editListeners = ExtensionHelper
 						.getParticipants(ExtensionHelper.EDITOR_LISTENER);
 			}
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			ErlideUIPlugin.log(e);
 		}
 	}
@@ -287,28 +290,36 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private final class ScannerListener implements IDocumentListener {
+		private final IErlModule module;
+		private final String scannerName;
+
 		public ScannerListener() {
+			module = getModule();
+			if (module == null) {
+				scannerName = null;
+				return;
+			}
+			scannerName = ErlangToolkit.createScannerModuleName(module);
 		}
 
 		public void documentAboutToBeChanged(final DocumentEvent event) {
 		}
 
 		public void documentChanged(final DocumentEvent event) {
-			ErlideScanner.notifyChange(getScannerModuleName(), event
-					.getOffset(), event.getLength(), event.getText());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyChange(scannerName, event.getOffset(), event
+					.getLength(), event.getText());
 		}
 
 		public void documentOpened() {
-			ErlideScanner.notifyNew(getScannerModuleName());
+			if (module == null) {
+				return;
+			}
+			ErlideScanner.notifyNew(scannerName);
 		}
 
-		private String getScannerModuleName() {
-			final IErlModule module = getModule();
-			if (module == null) {
-				return null;
-			}
-			return ErlScanner.createScannerModuleName(module);
-		}
 	}
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {
@@ -354,6 +365,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
+
+		sendToConsole = new SendToConsoleAction(getSite(), ErlangEditorMessages
+				.getBundleForConstructedKeys(), "SendToConsole.", this);
+		sendToConsole
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
+		setAction("SendToConsole", sendToConsole);
+		markAsStateDependentAction("sendToConsole", true);
+		markAsSelectionDependentAction("sendToConsole", true);
 
 		final Action act = new ContentAssistAction(ErlangEditorMessages
 				.getBundleForConstructedKeys(), "ContentAssistProposal.", this);
@@ -464,6 +483,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				toggleCommentAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
 		final ActionContext context = new ActionContext(getSelectionProvider()
 				.getSelection());
 		fContextMenuGroup.setContext(context);
@@ -727,12 +747,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
-	@Override
-	protected void doSetSelection(final ISelection selection) {
-		super.doSetSelection(selection);
-		synchronizeOutline();
-	}
-
 	private void synchronizeOutline() {
 		synchronizeOutlinePage(computeHighlightRangeSourceReference());
 	}
@@ -872,33 +886,26 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	/**
-	 * Updates the selection in the editor's widget with the selection of the
-	 * outline page.
+	 * Called from
+	 * org.erlide.ui.editors.erl.outline.ErlangOutlinePage.createControl
+	 * (...).new OpenAndLinkWithEditorHelper() {...}.linkToEditor(ISelection)
+	 * 
+	 * @param selection
 	 */
-	class OutlineSelectionChangedListener extends
-			AbstractSelectionChangedListener {
-
-		public void selectionChanged(final SelectionChangedEvent event) {
-			doSelectionChanged(event);
-		}
-	}
-
-	protected void doSelectionChanged(final SelectionChangedEvent event) {
+	public void doSelectionChanged(final ISelection selection) {
 		ISourceReference reference = null;
-
-		final ISelection selection = event.getSelection();
-		final Iterator<?> iter = ((IStructuredSelection) selection).iterator();
-		while (iter.hasNext()) {
-			final Object o = iter.next();
-			if (o instanceof ISourceReference) {
-				reference = (ISourceReference) o;
-				break;
+		if (selection instanceof IStructuredSelection) {
+			final IStructuredSelection ss = (IStructuredSelection) selection;
+			for (final Object o : ss.toArray()) {
+				if (o instanceof ISourceReference) {
+					reference = (ISourceReference) o;
+					break;
+				}
 			}
 		}
 		if (!isActivePart() && ErlideUIPlugin.getActivePage() != null) {
 			ErlideUIPlugin.getActivePage().bringToTop(this);
 		}
-
 		setSelection(reference, true);
 	}
 
@@ -907,9 +914,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			return;
 		}
 		final ISourceReference element = computeHighlightRangeSourceReference();
-		synchronizeOutlinePage(element);
+		if (isLinkedToOutlinePage()) {
+			synchronizeOutlinePage(element);
+		}
 		setSelection(element, false);
 		// updateStatusLine();
+	}
+
+	private boolean isLinkedToOutlinePage() {
+		final IEclipsePreferences prefsNode = MemberFilterActionGroup
+				.getPrefsNode();
+		final boolean isLinkingEnabled = prefsNode.getBoolean(
+				PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
+		return isLinkingEnabled;
 	}
 
 	/**
@@ -920,7 +937,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	protected ErlangOutlinePage createOutlinePage() {
 		final ErlangOutlinePage page = new ErlangOutlinePage(
 				getDocumentProvider(), this);
-		fOutlineSelectionChangedListener.install(page);
 		page.setInput(getEditorInput());
 		return page;
 	}
@@ -930,7 +946,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 */
 	public void outlinePageClosed() {
 		if (myOutlinePage != null) {
-			fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 			myOutlinePage = null;
 			resetHighlightRange();
 		}
@@ -970,9 +985,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (myOutlinePage != null // && element != null
 		// && !(checkIfOutlinePageActive && isErlangOutlinePageActive())
 		) {
-			fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 			myOutlinePage.select(element);
-			fOutlineSelectionChangedListener.install(myOutlinePage);
 		}
 	}
 
@@ -1104,9 +1117,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// ErlLogger.warn(e);
 			// }
 			if (myOutlinePage != null) {
-				fOutlineSelectionChangedListener.uninstall(myOutlinePage);
 				myOutlinePage.select(reference);
-				fOutlineSelectionChangedListener.install(myOutlinePage);
 			}
 		}
 	}
@@ -1783,13 +1794,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 	}
 
-	public void addEditorListener(IErlangEditorListener listener) {
+	public void addEditorListener(final IErlangEditorListener listener) {
 		synchronized (editListeners) {
 			editListeners.add(listener);
 		}
 	}
 
-	public void removeEditorListener(IErlangEditorListener listener) {
+	public void removeEditorListener(final IErlangEditorListener listener) {
 		synchronized (editListeners) {
 			editListeners.remove(listener);
 		}
@@ -1808,7 +1819,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// }
 		// }
 		// }
-		List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
+		final List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
 		synchronized (editListeners) {
 			listeners.addAll(editListeners);
 		}

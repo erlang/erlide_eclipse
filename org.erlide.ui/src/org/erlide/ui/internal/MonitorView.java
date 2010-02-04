@@ -215,8 +215,9 @@ public class MonitorView extends ViewPart {
 			return getChildren(inputElement);
 		}
 
+		@SuppressWarnings("unchecked")
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof List) {
+			if (parentElement instanceof List<?>) {
 				List<Object> items = (List<Object>) parentElement;
 				return items.toArray(new Object[items.size()]);
 			}
@@ -231,7 +232,7 @@ public class MonitorView extends ViewPart {
 						new Tuple<String, MonitorEntry>("Statistics",
 								(MonitorEntry) parentElement) };
 			}
-			if (parentElement instanceof Tuple) {
+			if (parentElement instanceof Tuple<?, ?>) {
 				Tuple<String, MonitorEntry> tpl = (Tuple<String, MonitorEntry>) parentElement;
 				if ("Processes".equals(tpl.o1)) {
 					return tpl.o2.procs;
@@ -281,13 +282,14 @@ public class MonitorView extends ViewPart {
 			return super.getImage(element);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public String getText(Object element) {
 			if (element instanceof MonitorEntry) {
 				return new SimpleDateFormat()
 						.format(((MonitorEntry) element).time);
 			}
-			if (element instanceof Tuple) {
+			if (element instanceof Tuple<?, ?>) {
 				Tuple<String, MonitorEntry> tpl = (Tuple<String, MonitorEntry>) element;
 				return tpl.o1;
 			}

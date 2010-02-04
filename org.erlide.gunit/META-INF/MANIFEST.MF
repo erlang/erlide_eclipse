@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GUnit: Generic test viewer
 Bundle-SymbolicName: org.erlide.gunit;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-Activator: org.erlide.gunit.internal.ui.GUnitPlugin
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",

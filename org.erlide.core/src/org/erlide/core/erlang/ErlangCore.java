@@ -39,9 +39,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
@@ -154,7 +152,7 @@ public final class ErlangCore {
 			return result;
 		}
 		final File folder = new File(loc);
-		if (folder == null || !folder.exists()) {
+		if (!folder.exists()) {
 			return result;
 		}
 		final File[] candidates = folder.listFiles(new FileFilter() {
@@ -469,34 +467,6 @@ public final class ErlangCore {
 			options.put(ErlangCoreOptions.CORE_ENCODING, getEncoding());
 		}
 		return options;
-	}
-
-	public static void registerOpenProjects() {
-		final IWorkspace root = ResourcesPlugin.getWorkspace();
-		final IProject[] projects = root.getRoot().getProjects();
-
-		// String[] nameOfProjects = new String[projects.length];
-
-		for (final IProject project : projects) {
-			try {
-				if (project.isOpen()
-						&& project.hasNature(ErlangPlugin.NATURE_ID)) {
-					final OldErlangProjectProperties prefs = ErlangCore
-							.getProjectProperties(project);
-					final String path = project.getLocation().append(
-							prefs.getOutputDir()).toString();
-
-					// TODO not the IDE backend!!!
-					final ErlideBackend b = ErlangCore.getBackendManager()
-							.getIdeBackend();
-					if (b != null) {
-						b.addPath(prefs.getUsePathZ(), path);
-					}
-				}
-			} catch (final CoreException e) {
-				ErlLogger.warn(e);
-			}
-		}
 	}
 
 	/**

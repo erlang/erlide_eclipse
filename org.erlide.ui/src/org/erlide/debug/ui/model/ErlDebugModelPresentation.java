@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -19,6 +20,9 @@ import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
 import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.runtime.debug.ErlangStackFrame;
+import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
+import org.erlide.ui.ErlideUIDebugImages;
+import org.erlide.ui.editors.util.EditorUtility;
 
 /**
  * @author jakob
@@ -34,7 +38,10 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	 */
 	@Override
 	public Image getImage(final Object element) {
-		// TODO Auto-generated method stub
+		if (element instanceof ErlangUninterpretedStackFrame) {
+			return ErlideUIDebugImages
+					.get(ErlideUIDebugImages.IMG_OBJ_UNINTERPRETED_STACK_FRAME);
+		}
 		return super.getImage(element);
 	}
 
@@ -83,6 +90,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 				return getTargetText((ErlangDebugTarget) element);
 			} else if (element instanceof ErlangProcess) {
 				return getErlangProcessText((ErlangProcess) element);
+			} else if (element instanceof ErlangUninterpretedStackFrame) {
+				return getErlangUninterpretedStackFrameText((ErlangUninterpretedStackFrame) element);
 			} else if (element instanceof ErlangStackFrame) {
 				return getErlangStackFrameText((ErlangStackFrame) element);
 			} else if (element instanceof ErlangLineBreakpoint) {
@@ -92,6 +101,12 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 		} catch (final DebugException e) {
 			return "?";
 		}
+	}
+
+	private String getErlangUninterpretedStackFrameText(
+			final ErlangUninterpretedStackFrame stackFrame) {
+		return stackFrame.getModule() + ":"
+				+ stackFrame.getFunction().getNameWithArity();
 	}
 
 	private String getErlangLineBreakpointText(
@@ -118,8 +133,11 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 			final int lineNumber, final String clauseHead)
 			throws DebugException {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(module).append(":");
-		sb.append(lineNumber);
+		sb.append(module);
+		if (lineNumber != -1) {
+			sb.append(":");
+			sb.append(lineNumber);
+		}
 		if (clauseHead != null && clauseHead.length() > 0) {
 			sb.append(" - ").append(clauseHead);
 		}
@@ -243,6 +261,16 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 			return new FileEditorInput((IFile) ((ILineBreakpoint) element)
 					.getMarker().getResource());
 		}
+		if (element instanceof LocalFileStorage) {
+			final LocalFileStorage lfs = (LocalFileStorage) element;
+			try {
+				final IFile file = EditorUtility.openExternal(lfs.getFullPath()
+						.toString());
+				return new FileEditorInput(file);
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
@@ -253,7 +281,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 	 * IEditorInput, java.lang.Object)
 	 */
 	public String getEditorId(final IEditorInput input, final Object element) {
-		if (element instanceof IFile || element instanceof ILineBreakpoint) {
+		if (element instanceof IFile || element instanceof ILineBreakpoint
+				|| element instanceof LocalFileStorage) {
 			return "org.erlide.ui.editors.erl.ErlangEditor";
 		}
 		return null;

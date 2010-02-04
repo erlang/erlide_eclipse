@@ -40,11 +40,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
@@ -765,7 +765,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				final int offset = textSel.getOffset();
 				OpenResult res;
 				try {
-					String scannerModuleName = ErlScanner
+					String scannerModuleName = ErlangToolkit
 							.createScannerModuleName(module);
 					res = ErlideOpen.open(b, scannerModuleName, offset, "",
 							ErlangCore.getModel().getPathVars());

@@ -23,7 +23,12 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -31,10 +36,12 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendListener;
@@ -44,12 +51,14 @@ import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.util.EpmdWatcher;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.IEpmdListener;
-import org.erlide.runtime.backend.internal.CodeBundle;
+import org.erlide.runtime.backend.CodeBundle.CodeContext;
 import org.erlide.runtime.backend.internal.ManagedLauncher;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public final class BackendManager extends OtpNodeStatus implements
 		IEpmdListener {
@@ -63,18 +72,18 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public enum BackendEvent {
 		ADDED, REMOVED
-	};
+	}
 
 	public enum BackendOptions {
 		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE
-	};
+	}
 
 	private volatile ErlideBackend ideBackend;
 	private final Object ideBackendLock = new Object();
 	private final Map<IProject, Set<ErlideBackend>> executionBackends;
 	private final Map<String, ErlideBackend> buildBackends;
 	final List<BackendListener> listeners;
-	private final List<CodeBundle> codeBundles;
+	private final Map<Bundle, CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
 
@@ -92,7 +101,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
 		buildBackends = new HashMap<String, ErlideBackend>();
 		listeners = new ArrayList<BackendListener>();
-		codeBundles = new ArrayList<CodeBundle>();
+		codeBundles = Maps.newHashMap();
 
 		epmdWatcher = new EpmdWatcher();
 		epmdWatcher.addEpmdListener(this);
@@ -100,8 +109,8 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options, final ILaunch launch)
-			throws BackendException {
+			final Set<BackendOptions> options, final ILaunch launch,
+			Map<String, String> env) throws BackendException {
 		final String nodeName = info.getNodeName();
 		final boolean exists = EpmdWatcher.findRunningNode(nodeName);
 		ErlideBackend b = null;
@@ -118,7 +127,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			b = new ErlideBackend(info);
 
 			ManagedLauncher launcher = new ManagedLauncher(launch);
-			launcher.startRuntime(info);
+			launcher.startRuntime(info, env);
 			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
 			b.setStreamsProxy(streamsProxy);
 		}
@@ -141,10 +150,11 @@ public final class BackendManager extends OtpNodeStatus implements
 		b.initializeRuntime();
 		if (b.isDistributed()) {
 			b.connect();
-			for (CodeBundle bb : codeBundles) {
-				b.register(bb.getBundle());
+			for (CodeBundle bb : codeBundles.values()) {
+				b.register(bb);
 			}
-			boolean monitorNode = options.contains(BackendOptions.IDE);
+			boolean monitorNode = options.contains(BackendOptions.IDE)
+					&& "true".equals(System.getProperty("erlide.monitor.ide"));
 			b.initErlang(monitorNode);
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
@@ -154,7 +164,8 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	private ErlideBackend createBackend(final RuntimeInfo info,
-			final Set<BackendOptions> options) throws BackendException {
+			final Set<BackendOptions> options, Map<String, String> env)
+			throws BackendException {
 		ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
 				options);
 		ILaunch launch;
@@ -165,7 +176,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			e.printStackTrace();
 			return null;
 		}
-		ErlideBackend b = createBackend(info, options, launch);
+		ErlideBackend b = createBackend(info, options, launch, env);
 		return b;
 	}
 
@@ -187,14 +198,14 @@ public final class BackendManager extends OtpNodeStatus implements
 		ErlideBackend b = buildBackends.get(version);
 		if (b == null) {
 			info.setNodeName(version);
-			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameSuffix());
+			info.setNodeNameSuffix("_" + BackendUtils.getErlideNameTag());
 			info.setCookie("erlide");
 			info.hasConsole(false);
 			// will add workspace unique id
 			final EnumSet<BackendOptions> options = EnumSet.of(
 					BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
 					BackendOptions.INTERNAL);
-			b = createBackend(info, options);
+			b = createBackend(info, options, null);
 			buildBackends.put(version, b);
 		}
 		ErlLogger.info("BUILD project %s on %s", project.getName(), info
@@ -270,8 +281,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (defLabel != null) {
 				info.setNodeName(defLabel);
 			} else {
-				String nodeName = BackendUtils.getErlideNameSuffix()
-						+ "_erlide";
+				String nodeName = BackendUtils.getErlideNameTag() + "_erlide";
 				info.setNodeName(nodeName);
 			}
 			info.setCookie("erlide");
@@ -283,7 +293,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (!ErlideUtil.isDeveloper()) {
 				options.add(BackendOptions.NO_CONSOLE);
 			}
-			ideBackend = createBackend(info, options);
+			ideBackend = createBackend(info, options, null);
 		} else {
 			ErlLogger.error("There is no erlideRuntime defined! "
 					+ "Could not start IDE backend.");
@@ -300,9 +310,10 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public Collection<ErlideBackend> getAllBackends() {
 		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
-		ErlideBackend ide = getIdeBackend();
-		if (ide != null) {
-			ebs.add(ide);
+		if (ideBackend != null) {
+			// we don't want to activate backend if it didn't exist, so don't
+			// use getIdeBackend()
+			ebs.add(ideBackend);
 		}
 		for (final Set<ErlideBackend> b : executionBackends.values()) {
 			ebs.addAll(b);
@@ -313,40 +324,48 @@ public final class BackendManager extends OtpNodeStatus implements
 		return ebs;
 	}
 
-	public void addBundle(final Bundle b) {
+	private void addCodeBundle(IExtension extension) {
+		String pluginId = extension.getContributor().getName();
+		Bundle plugin = Platform.getBundle(pluginId);
+
+		List<Tuple<String, CodeContext>> paths = Lists.newArrayList();
+		Tuple<String, String> init = null;
+		for (IConfigurationElement el : extension.getConfigurationElements()) {
+			if ("beam_dir".equals(el.getName())) {
+				String dir = el.getAttribute("path");
+				String t = el.getAttribute("context").toUpperCase();
+				CodeContext type = Enum.valueOf(CodeContext.class, t);
+				paths.add(new Tuple<String, CodeContext>(dir, type));
+			} else if ("init".equals(el.getName())) {
+				String module = el.getAttribute("module");
+				String function = el.getAttribute("function");
+				init = new Tuple<String, String>(module, function);
+			} else {
+				ErlLogger
+						.error("Unknown code bundle element: %s", el.getName());
+			}
+		}
+		addBundle(plugin, paths, init);
+	}
+
+	public void addBundle(final Bundle b,
+			Collection<Tuple<String, CodeContext>> paths,
+			Tuple<String, String> init) {
 		CodeBundle p = findBundle(b);
 		if (p != null) {
 			return;
 		}
-		p = new CodeBundle(b);
-		codeBundles.add(p);
+		final CodeBundle pp = new CodeBundle(b, paths, init);
+		codeBundles.put(b, pp);
 		forEachBackend(new ErlideBackendVisitor() {
 			public void visit(final ErlideBackend bb) {
-				bb.register(b);
-			}
-		});
-	}
-
-	public void removeBundle(final Bundle b) {
-		final CodeBundle p = findBundle(b);
-		if (p == null) {
-			return;
-		}
-		codeBundles.remove(p);
-		forEachBackend(new ErlideBackendVisitor() {
-			public void visit(final ErlideBackend bb) {
-				bb.unregister(b);
+				bb.register(pp);
 			}
 		});
 	}
 
 	private CodeBundle findBundle(Bundle b) {
-		for (CodeBundle p : codeBundles) {
-			if (p.getBundle() == b) {
-				return p;
-			}
-		}
-		return null;
+		return codeBundles.get(b);
 	}
 
 	public void forEachBackend(final ErlideBackendVisitor visitor) {
@@ -385,6 +404,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			executionBackends.put(project, list);
 		}
 		list.add(b);
+		b.addProjectPath(project);
 	}
 
 	public synchronized void removeExecutionBackend(final IProject project,
@@ -428,23 +448,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			final Object info) {
 		// final String dir = up ? "up" : "down";
 		// ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
-
-		for (final Backend bb : getAllBackends()) {
-			if (bb != null) {
-				if (node.equals(bb.getPeer())) {
-					bb.setAvailable(up);
-				}
-			}
-		}
 		remoteNodeStatus(node, up, info);
-	}
-
-	@Override
-	public void connAttempt(final String node, final boolean incoming,
-			final Object info) {
-		final String direction = incoming ? "in" : "out";
-		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
-				direction, info));
 	}
 
 	void notifyBackendChange(final Backend b, final BackendEvent type) {
@@ -463,6 +467,22 @@ public final class BackendManager extends OtpNodeStatus implements
 				listener.runtimeRemoved(b);
 				break;
 			}
+		}
+	}
+
+	public void loadCodepathExtensions() {
+		IExtensionRegistry reg = Platform.getExtensionRegistry();
+		IExtensionPoint exPnt = reg.getExtensionPoint(ErlangPlugin.PLUGIN_ID,
+				"codepath");
+		// TODO listen to changes to the registry!
+
+		IExtension[] extensions = exPnt.getExtensions();
+		for (int e = 0; e < extensions.length; e++) {
+			IExtension extension = extensions[e];
+			if (!extension.isValid()) {
+				continue;
+			}
+			ErlangCore.getBackendManager().addCodeBundle(extension);
 		}
 	}
 

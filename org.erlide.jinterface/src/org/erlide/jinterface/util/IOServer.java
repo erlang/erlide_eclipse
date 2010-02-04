@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -59,7 +59,7 @@ public class IOServer implements Runnable {
 									.elementAt(3);
 							final OtpErlangObject reply = processRequest(from,
 									request);
-							final OtpErlangTuple replyMsg = JInterfaceFactory
+							final OtpErlangTuple replyMsg = OtpErlang
 									.mkTuple(new OtpErlangAtom("io_reply"),
 											replyAs, reply);
 							mbox.send(from, replyMsg);
@@ -76,7 +76,7 @@ public class IOServer implements Runnable {
 		} while (!done || !Thread.interrupted());
 	}
 
-	private final OtpErlangObject error = JInterfaceFactory.mkTuple(
+	private final OtpErlangObject error = OtpErlang.mkTuple(
 			new OtpErlangAtom("error"), new OtpErlangAtom("request"));
 
 	private OtpErlangObject processRequest(final OtpErlangPid from,
@@ -190,7 +190,7 @@ public class IOServer implements Runnable {
 						return callback.setOpts(opts);
 					}
 				} else if ("get_geometry".equals(tag)) {
-					return JInterfaceFactory.mkTuple(
+					return OtpErlang.mkTuple(
 							new OtpErlangAtom("error"), new OtpErlangAtom(
 									"enotsup"));
 				} else {

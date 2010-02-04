@@ -18,9 +18,11 @@ public class RpcFuture {
 
 	private final OtpMbox mbox;
 	private OtpErlangObject result = null;
+	private String env;
 
-	public RpcFuture(final OtpMbox mbox) {
+	public RpcFuture(final OtpMbox mbox, String env) {
 		this.mbox = mbox;
+		this.env = env;
 	}
 
 	public OtpErlangObject get() throws RpcException {
@@ -34,7 +36,7 @@ public class RpcFuture {
 		if (isDone()) {
 			return result;
 		}
-		result = RpcUtil.getRpcResult(mbox, timeout);
+		result = RpcUtil.getRpcResult(mbox, timeout, env);
 		return result;
 	}
 

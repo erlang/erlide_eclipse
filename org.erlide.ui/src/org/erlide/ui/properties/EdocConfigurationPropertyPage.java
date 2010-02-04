@@ -94,8 +94,6 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	protected void performDefaults() {
-		;
-		;
 		super.performDefaults();
 	}
 
@@ -104,8 +102,6 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 	 */
 	@Override
 	public boolean performOk() {
-		;
-		;
 		return true;
 	}
 

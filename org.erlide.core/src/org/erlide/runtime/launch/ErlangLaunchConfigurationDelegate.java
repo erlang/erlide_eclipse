@@ -12,7 +12,6 @@
 package org.erlide.runtime.launch;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -51,7 +50,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -63,7 +61,7 @@ import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.JInterfaceFactory;
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -103,7 +101,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		data.debugPrint(mode);
 		// }
 
-		RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
+		final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
 				data.runtime);
 		if (rt0 == null) {
 			ErlLogger.error("Could not find runtime %s", data.runtime);
@@ -134,7 +132,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		ErlideBackend backend;
 		try {
 			backend = ErlangCore.getBackendManager().createBackend(rt, options,
-					launch);
+					launch, null);
 			if (backend == null) {
 				ErlLogger.error("Launch: could not create backend!");
 				final Status s = new Status(IStatus.ERROR,
@@ -143,7 +141,7 @@ public class ErlangLaunchConfigurationDelegate implements
 				throw new DebugException(s);
 			}
 			postLaunch(mode, data, projects, rt, options, backend);
-		} catch (BackendException e) {
+		} catch (final BackendException e) {
 			ErlLogger.error("Launch: backend error!");
 			final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
 					DebugException.REQUEST_FAILED, e.getMessage(), null);
@@ -152,7 +150,7 @@ public class ErlangLaunchConfigurationDelegate implements
 	}
 
 	private RuntimeInfo buildRuntimeInfo(final boolean internal,
-			final ErlLaunchData data, RuntimeInfo rt0) {
+			final ErlLaunchData data, final RuntimeInfo rt0) {
 		final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
 		rt.setNodeName(data.nodeName);
 		if (internal) {
@@ -162,11 +160,11 @@ public class ErlangLaunchConfigurationDelegate implements
 		}
 
 		rt.setStartShell(true);
-		File d = new File(data.workingDir);
+		final File d = new File(data.workingDir);
 		if (d.isAbsolute()) {
 			rt.setWorkingDir(data.workingDir);
 		} else {
-			String wspace = ResourcesPlugin.getWorkspace().getRoot()
+			final String wspace = ResourcesPlugin.getWorkspace().getRoot()
 					.getLocation().toPortableString();
 			rt.setWorkingDir(wspace + "/" + data.workingDir);
 		}
@@ -186,10 +184,10 @@ public class ErlangLaunchConfigurationDelegate implements
 			return;
 		}
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			ILaunch launch = backend.getLaunch();
+			final ILaunch launch = backend.getLaunch();
 			// add debug target
-			final ErlangDebugTarget target = new ErlangDebugTarget(backend,
-					projects, data.debugFlags);
+			final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+					backend, projects, data.debugFlags);
 			// target.getWaiter().doWait();
 			launch.addDebugTarget(target);
 			// interpret everything we can
@@ -238,37 +236,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager()
 					.addExecutionBackend(project, backend);
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-			final String outDir = project.getLocation().append(
-					prefs.getOutputDir()).toOSString();
-			if (outDir.length() > 0) {
-				ErlLogger.debug("backend %s: add path %s", backend.getName(),
-						outDir);
-				if (backend.isDistributed()) {
-					backend.addPath(false/* prefs.getUsePathZ() */, outDir);
-				}
-				final File f = new File(outDir);
-				for (final File file : f.listFiles()) {
-					if (backend.isDistributed()) {
-						// is this needed?
-						// ErlangCode.load(backend, file.getName());
-					} else {
-						String name = file.getName();
-						name = name.substring(0, name.length() - 5);
-						try {
-							ErlideUtil.loadModuleViaInput(project, name,
-									backend);
-						} catch (ErlModelException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
 		}
-
 	}
 
 	public static List<String> addBreakpointProjectsAndModules(
@@ -306,7 +274,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			if (b != null) {
 				final OtpErlangString filename = new OtpErlangString(module
 						+ ".erl");
-				final OtpErlangTuple t = JInterfaceFactory.mkTuple(
+				final OtpErlangTuple t = OtpErlang.mkTuple(
 						new OtpErlangAtom(module), filename, b);
 				modules.add(t);
 			}

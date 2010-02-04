@@ -69,8 +69,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
-import com.ericsson.otp.erlang.OtpErlangString;
-
 /**
  * @author Vlad Dumitrescu
  */
@@ -140,8 +138,7 @@ public class LiveExpressionsView extends ViewPart implements
 				return e.fExpr;
 			}
 			Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			final BackendEvalResult r = ErlBackend.eval(b, e.fExpr + ".",
-					null);
+			final BackendEvalResult r = ErlBackend.eval(b, e.fExpr + ".", null);
 			if (r.isOk()) {
 				return r.getValue().toString();
 			}
@@ -307,12 +304,12 @@ public class LiveExpressionsView extends ViewPart implements
 						// str = BackendUtil.prettyPrint(bk,
 						// item.getText(1));
 						// ErlLogger.debug(str);
-						final BackendEvalResult r = ErlBackend.eval(
-								ErlangCore.getBackendManager().getIdeBackend(),
+						final BackendEvalResult r = ErlBackend.eval(ErlangCore
+								.getBackendManager().getIdeBackend(),
 								"lists:flatten(io_lib:format(\"~p\", ["
 										+ item.getText(0) + "])).", null);
 						if (r.isOk()) {
-							str =  ErlUtils.asString(r.getValue());
+							str = ErlUtils.asString(r.getValue());
 						} else {
 							str = r.getErrorReason().toString();
 						}
@@ -522,7 +519,7 @@ public class LiveExpressionsView extends ViewPart implements
 				}
 			}
 		});
-	};
+	}
 
 	void showMessage(final String message) {
 		MessageDialog.openInformation(viewer.getControl().getShell(),

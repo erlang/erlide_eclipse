@@ -8,8 +8,8 @@ import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -45,7 +45,7 @@ public class ClearCacheAction extends TextEditorAction {
 			final String cacheFileOSPath = ErlangPlugin
 					.getDefault()
 					.getStateLocation()
-					.append(ErlScanner.createScannerModuleName(module) + suffix)
+					.append(ErlangToolkit.createScannerModuleName(module) + suffix)
 					.toOSString();
 			final File cacheFile = new File(cacheFileOSPath);
 			cacheFile.delete();
