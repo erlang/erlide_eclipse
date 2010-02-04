@@ -56,6 +56,7 @@ import org.erlide.runtime.backend.internal.ManagedLauncher;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -192,6 +193,7 @@ public final class BackendManager extends OtpNodeStatus implements
 				throw new BackendException(
 						"IDE backend is not created - check configuration!");
 			}
+			ideBackend.addProjectPath(project);
 			return ideBackend;
 		}
 		final String version = info.getVersion().asMajor().toString();
@@ -208,8 +210,13 @@ public final class BackendManager extends OtpNodeStatus implements
 			b = createBackend(info, options, null);
 			buildBackends.put(version, b);
 		}
-		ErlLogger.info("BUILD project %s on %s", project.getName(), info
-				.getVersion());
+		b.addProjectPath(project);
+		// FIXME
+		ideBackend.addProjectPath(project);
+		OtpErlangObject cp = b.call("code", "get_path", "");
+		ErlLogger.info("CP = %s", cp);
+
+		ErlLogger.info("BUILD project %s on %s", project.getName(), info);
 		return b;
 	}
 
