@@ -497,11 +497,6 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="ESC M1+C"/>
       <key
-            commandId="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F3">
-      </key>
-      <key
             commandId="org.erlide.ui.search.references.in.workspace"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -1269,20 +1264,6 @@
             type="local_functions">
       </resolver>
       <resolver
-            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            description="%variableResolverFileComment"
-            name="File Comment"
-            type="file_comment">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
-            description="%variableResolverFileComment"
-            name="File Comment"
-            type="file_comment">
-      </resolver>
-      <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
             description="%variableResolverExportedFunctions"
@@ -1332,7 +1313,7 @@
             type="body">
       </resolver>
    </extension>
-	<extension
+   <extension
        point="org.eclipse.ui.contexts">
     	<context
           id="org.erlide.ui.erlangEditorScope"
