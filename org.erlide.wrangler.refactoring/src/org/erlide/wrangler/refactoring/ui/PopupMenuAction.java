@@ -12,16 +12,16 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.CostumWorkflowRefactoringWithPositionsSelection;
+import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
-import org.erlide.wrangler.refactoring.tmp.CostumWorkflowRefactoringWithPositionsSelection;
-import org.erlide.wrangler.refactoring.tmp.FoldExpressionRefactoring;
+import org.erlide.wrangler.refactoring.tmp.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
-import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
@@ -73,7 +73,7 @@ public class PopupMenuAction implements IObjectActionDelegate {
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.popupmenu.foldexpression")) {
 
-			refactoring = new FoldExpressionRefactoring();
+			refactoring = new FoldLocalExpressionRefactoring();
 			pages.add(new SelectionInputPage("Fold expression",
 					"Please select expression which should be fold!",
 					"Select expressions which should be folded!",

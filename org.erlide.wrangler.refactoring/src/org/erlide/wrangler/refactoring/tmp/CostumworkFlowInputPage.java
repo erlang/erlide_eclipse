@@ -1,9 +1,10 @@
-package org.erlide.wrangler.refactoring.ui.wizardpages;
+package org.erlide.wrangler.refactoring.tmp;
 
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
+import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 
 public class CostumworkFlowInputPage extends SimpleInputPage {
 
@@ -21,14 +22,12 @@ public class CostumworkFlowInputPage extends SimpleInputPage {
 		workflowController.doRefactoring();
 	}
 
-	@Override
-	public boolean isLastUserInputPage() {
-		setCostumRefactoring();
-		if (workflowController.controlInputPagesOrder())
-			return workflowController.isLastPage();
-		else
-			return super.isLastUserInputPage();
-	}
+	/*
+	 * @Override public boolean isLastUserInputPage() { setCostumRefactoring();
+	 * if (workflowController.controlInputPagesOrder()) return
+	 * workflowController.isLastPage(); else return super.isLastUserInputPage();
+	 * }
+	 */
 
 	protected void setCostumRefactoring() {
 		if (costumWrokflowRefactoring == null)

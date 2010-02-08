@@ -8,6 +8,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 
+/**
+ * Abstract class for simple Wrangler refactorings, which needs to communicate
+ * with the user over the refactoring time.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class CostumWorkflowRefactoring extends
 		SimpleWranglerRefactoring {
 

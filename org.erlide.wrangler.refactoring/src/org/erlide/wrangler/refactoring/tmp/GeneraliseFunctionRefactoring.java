@@ -14,6 +14,7 @@ import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
+import org.erlide.wrangler.refactoring.core.internal.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
@@ -158,11 +159,6 @@ public class GeneraliseFunctionRefactoring extends
 	public RefactoringWorkflowController getWorkflowController(Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 			boolean controlPageOrder = false;
-
-			@Override
-			public boolean controlInputPagesOrder() {
-				return controlPageOrder;
-			}
 
 			@Override
 			public void doRefactoring() {

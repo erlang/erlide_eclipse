@@ -23,6 +23,7 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 			if (kind == SelectionKind.VARIABLE)
 				return new RefactoringStatus();
 		}
+
 		return RefactoringStatus
 				.createFatalErrorStatus("Please select a variable!");
 	}

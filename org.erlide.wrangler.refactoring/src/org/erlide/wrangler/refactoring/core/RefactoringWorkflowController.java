@@ -20,11 +20,4 @@ public abstract class RefactoringWorkflowController {
 		return MessageDialog.openQuestion(shell, title, message);
 	}
 
-	public boolean controlInputPagesOrder() {
-		return false;
-	}
-
-	public boolean isLastPage() {
-		return true;
-	}
 }
