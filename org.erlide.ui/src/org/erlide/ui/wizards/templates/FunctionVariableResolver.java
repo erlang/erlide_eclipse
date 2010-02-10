@@ -60,7 +60,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 		if (arg_var == null || name_var == null
 		// || body_var == null
 		) {
-			// TODO throw exception?
+			variable.setValue("");
 			return;
 		}
 
