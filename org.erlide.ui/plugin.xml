@@ -1230,11 +1230,13 @@
             id="org.erlide.ui.erlangsource.template.context.module"
             name="Module Templates">
       </contextType>
-      <contextType
-            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeLayout"
-            id="org.erlide.ui.erlangsource.template.context.layout"
-            name="Layout">
-      </contextType>
+      <resolver
+            class="org.erlide.ui.templates.ModuleVariableResolver"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
+            description="%variableResolverModule"
+            name="Erlang Module"
+            type="module">
+      </resolver>
       <resolver
             class="org.erlide.ui.templates.ModuleVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.module"
@@ -1244,49 +1246,42 @@
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
             description="%variableResolverLocalFunctions"
             name="Local Functions"
             type="local_functions">
       </resolver>
       <resolver
-            class="org.erlide.ui.templates.ModuleVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
-            description="%variableResolverModule"
-            name="Erlangs Module"
-            type="module">
-      </resolver>
-      <resolver
             class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverLocalFunctions"
             name="Local Functions"
             type="local_functions">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
             description="%variableResolverExportedFunctions"
             name="Exported Functions"
             type="exported_functions">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverExportedFunctions"
             name="Exported Functions"
             type="exported_functions">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.layout"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
             description="%variableResolverExports"
             name="Exports"
             type="exports">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.behaviour"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverExports"
             name="Exports"
             type="exports">

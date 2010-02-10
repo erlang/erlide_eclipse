@@ -54,6 +54,7 @@ import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
+import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -481,8 +482,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		// this is to avoid recursive call when fContextTypeRegistry is null
 		getContextTypeRegistry();
 		if (fStore == null) {
-			fStore = new ContributionTemplateStore(getContextTypeRegistry(),
-					getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
+			fStore = new ErlideContributionTemplateStore(
+					getContextTypeRegistry(), getPreferenceStore(),
+					CUSTOM_TEMPLATES_KEY);
 			try {
 				fStore.load();
 			} catch (final IOException e) {
