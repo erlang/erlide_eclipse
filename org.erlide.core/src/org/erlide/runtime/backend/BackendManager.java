@@ -59,6 +59,7 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public final class BackendManager extends OtpNodeStatus implements
 		IEpmdListener {
@@ -86,6 +87,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	private final Map<Bundle, CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
+	private Set<ErlideBackend> allBackends;
 
 	@SuppressWarnings("synthetic-access")
 	private static final class LazyBackendManagerHolder {
@@ -100,6 +102,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		ideBackend = null;
 		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
 		buildBackends = new HashMap<String, ErlideBackend>();
+		allBackends = Sets.newHashSet();
 		listeners = new ArrayList<BackendListener>();
 		codeBundles = Maps.newHashMap();
 
@@ -135,14 +138,17 @@ public final class BackendManager extends OtpNodeStatus implements
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
 			return null;
 		}
-
+		addBackend(b);
 		b.setLaunch(launch);
 		if (launch != null) {
 			DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
 		}
 		initializeBackend(options, b);
-
 		return b;
+	}
+
+	private synchronized void addBackend(ErlideBackend b) {
+		allBackends .add(b);
 	}
 
 	private void initializeBackend(final Set<BackendOptions> options,
@@ -311,19 +317,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public Collection<ErlideBackend> getAllBackends() {
-		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
-		if (ideBackend != null) {
-			// we don't want to activate backend if it didn't exist, so don't
-			// use getIdeBackend()
-			ebs.add(ideBackend);
-		}
-		for (final Set<ErlideBackend> b : executionBackends.values()) {
-			ebs.addAll(b);
-		}
-		for (final ErlideBackend b : buildBackends.values()) {
-			ebs.add(b);
-		}
-		return ebs;
+		return Collections.unmodifiableCollection(allBackends);
 	}
 
 	private void addCodeBundle(IExtension extension) {
@@ -486,6 +480,16 @@ public final class BackendManager extends OtpNodeStatus implements
 			}
 			ErlangCore.getBackendManager().addCodeBundle(extension);
 		}
+	}
+
+	public Backend getByName(String nodeName) {
+		Collection<ErlideBackend> list = getAllBackends();
+		for (Backend b : list) {
+			if (b.getName().equals(nodeName)) {
+				return b;
+			}
+		}
+		return null;
 	}
 
 }
