@@ -334,6 +334,27 @@
                menubarPath="debug">
          </action>
       </viewerContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.erlide.ui.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze2"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <action
+               class="org.erlide.ui.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
    </extension>
   <extension
          point="org.eclipse.ui.newWizards">

@@ -298,6 +298,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	 */
 	IErlElement findElement(IResource resource);
 
+	IErlElement findElement(IResource resource, boolean openElements);
+
 	IErlProject findProject(IProject p);
 
 	IErlModule findModule(IFile file);
