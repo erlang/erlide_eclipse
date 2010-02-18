@@ -91,7 +91,10 @@ public final class BuilderUtils {
 									resource.getParent()
 											.getProjectRelativePath()
 											.toString());
-							result.add(bres);
+							// FIXME don't build until we solve the issue with
+							// included files that aren't in the project (like
+							// bt.erl)
+							// result.add(bres);
 							monitor.worked(1);
 						}
 					}
@@ -232,7 +235,10 @@ public final class BuilderUtils {
 						BuildResource bres = new BuildResource(resource,
 								resource.getParent().getProjectRelativePath()
 										.toString());
-						result.add(bres);
+						// FIXME don't build until we solve the issue with
+						// included files that aren't in the project (like
+						// bt.erl)
+						// result.add(bres);
 						monitor.worked(1);
 					}
 
