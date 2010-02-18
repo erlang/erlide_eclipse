@@ -119,4 +119,9 @@ public class ProjectPathEditor extends PathEditor {
 	protected String createList(String[] items) {
 		return PreferencesUtils.packArray(items);
 	}
+
+	@Override
+	protected String[] parseString(String stringList) {
+		return PreferencesUtils.unpackArray(stringList);
+	}
 }
