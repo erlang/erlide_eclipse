@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -23,6 +25,7 @@ import org.erlide.core.erlang.ErlModelStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -376,5 +379,16 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		// makeConsistent(pm); // update the element info of this
 		// // element
 		// }
+	}
+
+	protected void addModules(final List<IErlModule> modules) {
+		for (final IErlElement e : getChildren()) {
+			if (e instanceof IErlModule) {
+				modules.add((IErlModule) e);
+			} else if (e instanceof ErlFolder) {
+				final ErlFolder f = (ErlFolder) e;
+				f.addModules(modules);
+			}
+		}
 	}
 }

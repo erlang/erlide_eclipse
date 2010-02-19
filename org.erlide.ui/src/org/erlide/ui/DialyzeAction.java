@@ -1,28 +1,44 @@
 package org.erlide.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.util.ErlLogger;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+import erlang.ErlideDialyze;
 
 public class DialyzeAction implements IObjectActionDelegate {
 
-	private final List<IErlModule> modules;
+	private final Map<IErlProject, Set<IErlModule>> modules;
 
 	public DialyzeAction() {
-		modules = new ArrayList<IErlModule>();
+		modules = new HashMap<IErlProject, Set<IErlModule>>();
 	}
 
 	public void setActivePart(final IAction action,
@@ -31,12 +47,39 @@ public class DialyzeAction implements IObjectActionDelegate {
 
 	}
 
+	public static final String DIALYZE_WARNING_MARKER = ErlangPlugin.PLUGIN_ID
+			+ ".dialyzewarningmarker";
+
 	public void run(final IAction action) {
-		final StringBuilder b = new StringBuilder();
-		for (final IErlModule i : modules) {
-			b.append(i.getName()).append("  ");
-		}
-		MessageDialog.openConfirm(null, "Modules", b.toString());
+		final String plt = System.getProperty("erlide.plt");
+		new IRunnableWithProgress() {
+
+			public void run(final IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
+				for (final IErlProject p : modules.keySet()) {
+					final IProject project = p.getProject();
+					Backend backend;
+					try {
+						backend = ErlangCore.getBackendManager()
+								.getBuildBackend(project);
+						final List<String> files = new ArrayList<String>();
+						for (final IErlModule m : modules.get(p)) {
+							files.add(m.getResource().getFullPath()
+									.toPortableString());
+						}
+						final OtpErlangObject result = ErlideDialyze.dialyze(
+								backend, files, plt);
+						addDialyzeWarningMarkersFromResult(result);
+					} catch (final BackendException e) {
+						ErlLogger.error(e);
+					}
+				}
+			}
+		};
+	}
+
+	private void addDialyzeWarningMarkersFromResult(final OtpErlangObject result) {
+		;
 	}
 
 	public void selectionChanged(final IAction action,
@@ -53,10 +96,22 @@ public class DialyzeAction implements IObjectActionDelegate {
 						final IErlElement e = model.findElement(r, true);
 						if (e instanceof IErlFolder) {
 							final IErlFolder f = (IErlFolder) e;
-							modules.addAll(f.getModules());
+							final IErlProject p = f.getErlProject();
+							Set<IErlModule> ms = modules.get(p);
+							if (ms == null) {
+								ms = new HashSet<IErlModule>();
+							}
+							ms.addAll(f.getModules());
+							modules.put(p, ms);
 						} else if (e instanceof IErlModule) {
 							final IErlModule m = (IErlModule) e;
-							modules.add(m);
+							final IErlProject p = m.getErlProject();
+							Set<IErlModule> ms = modules.get(p);
+							if (ms == null) {
+								ms = new HashSet<IErlModule>();
+							}
+							ms.add(m);
+							modules.put(p, ms);
 						}
 					}
 				} catch (final ErlModelException e) {
@@ -66,5 +121,4 @@ public class DialyzeAction implements IObjectActionDelegate {
 		}
 		action.setEnabled(!modules.isEmpty());
 	}
-
 }
