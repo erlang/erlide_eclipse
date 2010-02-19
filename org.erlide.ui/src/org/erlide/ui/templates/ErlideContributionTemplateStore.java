@@ -104,11 +104,6 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 					final TemplatePersistenceData[] datas = reader.read(stream,
 							null);
 					for (final TemplatePersistenceData data : datas) {
-						if (data.getId() == null) {
-							ErlideUIPlugin
-									.logErrorMessage("no id for template: "
-											+ data.getTemplate().getName());
-						}
 						if (validateTemplate(data.getTemplate())) {
 							templates.add(data);
 						}
