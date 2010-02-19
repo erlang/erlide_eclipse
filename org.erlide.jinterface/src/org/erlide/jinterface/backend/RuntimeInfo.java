@@ -97,6 +97,7 @@ public class RuntimeInfo {
 		if (validateNodeName(nodeName)) {
 			this.nodeName = nodeName;
 		} else {
+			// TODO this still can create a name that isn't valid
 			this.nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
 		}
 	}
