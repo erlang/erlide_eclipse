@@ -85,7 +85,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 			final Collection<TemplatePersistenceData> templates = new ArrayList<TemplatePersistenceData>();
 			readIncludedTemplates(templates, l);
 			for (final TemplatePersistenceData data : templates) {
-				internalAdd(data);
+				add(data);
 			}
 		}
 	}
