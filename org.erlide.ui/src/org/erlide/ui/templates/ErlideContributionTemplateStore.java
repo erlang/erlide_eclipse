@@ -85,7 +85,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 			final Collection<TemplatePersistenceData> templates = new ArrayList<TemplatePersistenceData>();
 			readIncludedTemplates(templates, l);
 			for (final TemplatePersistenceData data : templates) {
-				internalAdd(data);
+				add(data);
 			}
 		}
 	}
@@ -104,11 +104,6 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 					final TemplatePersistenceData[] datas = reader.read(stream,
 							null);
 					for (final TemplatePersistenceData data : datas) {
-						if (data.getId() == null) {
-							ErlideUIPlugin
-									.logErrorMessage("no id for template: "
-											+ data.getTemplate().getName());
-						}
 						if (validateTemplate(data.getTemplate())) {
 							templates.add(data);
 						}
