@@ -346,6 +346,13 @@
       </wizard>
      </extension>
  <extension
+       point="org.eclipse.ui.contexts">
+    <context
+          id="org.erlide.ui.erlangEditorScope"
+          name="Erlang Editor"
+          parentId="org.eclipse.ui.textEditorScope"/>
+ </extension>    
+ <extension
        point="org.erlide.ui.foldingStructureProviders">
     <provider
           class="org.erlide.ui.internal.folding.DefaultErlangFoldingStructureProvider"
@@ -1263,20 +1270,6 @@
             description="%variableResolverLocalFunctions"
             name="Local Functions"
             type="local_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverFileComment"
-            name="File Comment"
-            type="file_comment">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.FileCommentVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
-            description="%variableResolverFileComment"
-            name="File Comment"
-            type="file_comment">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"

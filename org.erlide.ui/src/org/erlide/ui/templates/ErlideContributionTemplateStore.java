@@ -18,22 +18,6 @@ import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlideContributionTemplateStore extends ContributionTemplateStore {
-	/* extension point string literals */
-	private static final String TEMPLATES_EXTENSION_POINT = "org.eclipse.ui.editors.templates"; //$NON-NLS-1$
-
-	private static final String ID = "id"; //$NON-NLS-1$
-	private static final String NAME = "name"; //$NON-NLS-1$
-
-	private static final String CONTEXT_TYPE_ID = "contextTypeId"; //$NON-NLS-1$
-	private static final String DESCRIPTION = "description"; //$NON-NLS-1$
-	private static final String AUTO_INSERT = "autoinsert"; //$NON-NLS-1$
-
-	private static final String TEMPLATE = "template"; //$NON-NLS-1$
-	private static final String PATTERN = "pattern"; //$NON-NLS-1$
-
-	private static final String INCLUDE = "include"; //$NON-NLS-1$
-	private static final String FILE = "file"; //$NON-NLS-1$
-	private static final String TRANSLATIONS = "translations"; //$NON-NLS-1$
 
 	/**
 	 * Creates a new template store.
