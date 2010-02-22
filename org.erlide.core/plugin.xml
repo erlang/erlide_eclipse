@@ -50,6 +50,17 @@
       <persistent value="true"/>
    </extension>
    <extension
+         id="dialyzewarningmarker"
+         name="Dialyze Warning"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
             class="org.erlide.runtime.launch.ErlangSourcePathComputerDelegate"

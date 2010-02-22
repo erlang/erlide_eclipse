@@ -340,7 +340,7 @@
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IProject">
          <action
-               class="org.erlide.ui.DialyzeAction"
+               class="org.erlide.ui.actions.DialyzeAction"
                id="org.erlide.ui.actions.dialyze"
                label="Dialyze">
          </action>
@@ -350,7 +350,7 @@
             id="org.erlide.ui.actions.dialyze2"
             objectClass="org.eclipse.core.resources.IFolder">
          <action
-               class="org.erlide.ui.DialyzeAction"
+               class="org.erlide.ui.actions.DialyzeAction"
                id="org.erlide.ui.actions.dialyze"
                label="Dialyze">
          </action>
@@ -1343,4 +1343,31 @@
           name="Erlang Editor"
           parentId="org.eclipse.ui.textEditorScope"/>
  	</extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="org.erlide.core.dialyzewarningmarker"
+            name="org.erlide.ui.dialyzewarningmarkertype">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.ui.dialyzewarningmarkertype"
+            colorPreferenceKey="dialyzewarningmarkerColor"
+            colorPreferenceValue="255,255,255"
+            highlightPreferenceKey="dialyzewarningmarkerHighlighting"
+            highlightPreferenceValue="false"
+            icon="icons/erl/erlang-notext016.gif"
+            includeOnPreferencePage="true"
+            label="Dialyzer warning"
+            overviewRulerPreferenceKey="dialyzewarningmarkerInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="3"
+            textPreferenceKey="dialyzewarningmarker"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
+            verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
 </plugin>
