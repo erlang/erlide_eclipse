@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
@@ -123,5 +124,13 @@ public class ProjectPathEditor extends PathEditor {
 	@Override
 	protected String[] parseString(String stringList) {
 		return PreferencesUtils.unpackArray(stringList);
+	}
+
+	@Override
+	protected void doFillIntoGrid(Composite parent, int numColumns) {
+		super.doFillIntoGrid(parent, numColumns);
+		org.eclipse.swt.widgets.List list = getListControl(parent);
+		GridData gd = (GridData) list.getLayoutData();
+		gd.heightHint = 100;
 	}
 }
