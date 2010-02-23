@@ -43,8 +43,6 @@ public final class OldErlangProjectProperties implements
 
 	private List<String> sourceDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-	private final List<String> testDirs = PreferencesUtils
-			.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
 	private List<String> includeDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
@@ -217,33 +215,6 @@ public final class OldErlangProjectProperties implements
 
 	public List<String> getSourceDirs() {
 		return Collections.unmodifiableList(sourceDirs);
-	}
-
-	public List<String> getTestDirs() {
-		// return Collections.unmodifiableList(testDirs);
-		return findTestDirs(project);
-	}
-
-	private List<String> findTestDirs(IProject prj) {
-		final List<String> result = Lists.newArrayList();
-		try {
-			prj.accept(new IResourceVisitor() {
-				public boolean visit(IResource resource) throws CoreException {
-					if (resource.getName().matches(".*_SUITE.erl")) {
-						IContainer dir = resource.getParent();
-						IPath pdir = dir.getProjectRelativePath();
-						String sdir = pdir.toString();
-						if (!result.contains(sdir)) {
-							result.add(sdir);
-						}
-					}
-					return true;
-				}
-			});
-		} catch (CoreException e) {
-			ErlLogger.debug(e);
-		}
-		return result;
 	}
 
 	public void setSourceDirs(final Collection<String> sourceDirs2) {

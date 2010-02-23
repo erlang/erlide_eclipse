@@ -86,16 +86,6 @@ public final class BuilderUtils {
 							BuildResource bres = new BuildResource(resource);
 							result.add(bres);
 							monitor.worked(1);
-						} else if (isInTestPath(resource, my_project)) {
-							BuildResource bres = new BuildResource(resource,
-									resource.getParent()
-											.getProjectRelativePath()
-											.toString());
-							// FIXME don't build until we solve the issue with
-							// included files that aren't in the project (like
-							// bt.erl)
-							// result.add(bres);
-							monitor.worked(1);
 						}
 					}
 					break;
@@ -231,15 +221,6 @@ public final class BuilderUtils {
 						BuildResource bres = new BuildResource(resource);
 						result.add(bres);
 						monitor.worked(1);
-					} else if (isInTestPath(resource, my_project)) {
-						BuildResource bres = new BuildResource(resource,
-								resource.getParent().getProjectRelativePath()
-										.toString());
-						// FIXME don't build until we solve the issue with
-						// included files that aren't in the project (like
-						// bt.erl)
-						// result.add(bres);
-						monitor.worked(1);
 					}
 
 				} catch (final Exception e) {
@@ -362,9 +343,6 @@ public final class BuilderUtils {
 		for (String s : prefs.getSourceDirs()) {
 			interestingPaths.add(s);
 		}
-		for (String s : prefs.getTestDirs()) {
-			interestingPaths.add(s);
-		}
 		for (String s : prefs.getIncludeDirs()) {
 			interestingPaths.add(s);
 		}
@@ -387,24 +365,6 @@ public final class BuilderUtils {
 				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
 		final List<String> srcs = prefs.getSourceDirs();
-		final IPath exceptLastSegment = resource.getFullPath()
-				.removeLastSegments(1);
-		for (final String element : srcs) {
-			final IPath sp = projectPath.append(new Path(element));
-			if (sp.equals(exceptLastSegment)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public static boolean isInTestPath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getFullPath();
-		final List<String> srcs = prefs.getTestDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
 				.removeLastSegments(1);
 		for (final String element : srcs) {
