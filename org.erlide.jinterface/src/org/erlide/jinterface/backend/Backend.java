@@ -47,7 +47,7 @@ public class Backend extends OtpNodeStatus {
 			DEFAULT_TIMEOUT = Integer.parseInt(t);
 		}
 	}
-	
+
 	private boolean available = false;
 	private String currentVersion;
 	private OtpMbox eventBox;

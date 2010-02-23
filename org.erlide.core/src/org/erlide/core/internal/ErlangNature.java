@@ -16,7 +16,6 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -76,13 +75,6 @@ public class ErlangNature implements IProjectNature {
 			}
 		}
 		return natures;
-	}
-
-	public static ErlangNature getPythonNature(IResource resource) {
-		if (resource == null) {
-			return null;
-		}
-		return getPythonNature(resource.getProject());
 	}
 
 	/**
