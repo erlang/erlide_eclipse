@@ -37,7 +37,6 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -142,7 +141,7 @@ public class DialyzeAction implements IObjectActionDelegate {
 	protected boolean dialyzeError(final OtpErlangObject result) {
 		if (result instanceof OtpErlangTuple) {
 			OtpErlangTuple t = (OtpErlangTuple) result;
-			if (t.elementAt(0) instanceof OtpErlangAtom) {
+			if (t.elementAt(1) instanceof OtpErlangTuple) {
 				t = (OtpErlangTuple) t.elementAt(1);
 			}
 			final String s = Util.stringValue(t.elementAt(1));
