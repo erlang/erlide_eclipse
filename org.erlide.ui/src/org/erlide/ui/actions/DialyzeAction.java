@@ -10,7 +10,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -35,6 +37,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -62,7 +65,10 @@ public class DialyzeAction implements IObjectActionDelegate {
 
 			public void run(final IProgressMonitor monitor)
 					throws InvocationTargetException, InterruptedException {
-				for (final IErlProject p : modules.keySet()) {
+				final Set<IErlProject> keySet = modules.keySet();
+				monitor.beginTask("Dialyzing", keySet.size());
+				for (final IErlProject p : keySet) {
+					monitor.subTask("Dialyzing " + p.getName());
 					final IProject project = p.getProject();
 					DialyzerUtils.removeDialyzerWarningMarkers(p);
 					try {
@@ -76,6 +82,8 @@ public class DialyzeAction implements IObjectActionDelegate {
 						final List<String> includeDirs = new ArrayList<String>();
 						for (final String i : p.getProperties()
 								.getIncludeDirs()) {
+							final IPath path = new Path(i);
+							project.getFile(path);
 							final String s = project.getLocation().append(i)
 									.toPortableString();
 							includeDirs.add(s);
@@ -90,6 +98,7 @@ public class DialyzeAction implements IObjectActionDelegate {
 					} catch (final BackendException e) {
 						ErlLogger.error(e);
 					}
+					monitor.worked(1);
 				}
 			}
 		};
@@ -132,7 +141,10 @@ public class DialyzeAction implements IObjectActionDelegate {
 
 	protected boolean dialyzeError(final OtpErlangObject result) {
 		if (result instanceof OtpErlangTuple) {
-			final OtpErlangTuple t = (OtpErlangTuple) result;
+			OtpErlangTuple t = (OtpErlangTuple) result;
+			if (t.elementAt(0) instanceof OtpErlangAtom) {
+				t = (OtpErlangTuple) t.elementAt(1);
+			}
 			final String s = Util.stringValue(t.elementAt(1));
 			Display.getDefault().asyncExec(new Runnable() {
 
@@ -141,14 +153,6 @@ public class DialyzeAction implements IObjectActionDelegate {
 				}
 			});
 			return true;
-			// new UIJob("") {
-			//
-			// @Override
-			// public IStatus runInUIThread(final IProgressMonitor monitor) {
-			// MessageDialog.openError(getShell(), "Dialyzer error", s);
-			// return Status.OK_STATUS;
-			// }
-			// }.schedule();
 		}
 		return false;
 	}

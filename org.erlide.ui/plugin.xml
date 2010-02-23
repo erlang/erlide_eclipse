@@ -135,6 +135,12 @@
              id="org.erlide.ui.preferences.compiler"
              name="Compiler">
        </page>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.DialyzerPreferencePage"
+             id="org.erlide.ui.preferences.dialyzer"
+             name="Dialyzer">
+       </page>
   </extension>
    <extension
          point="org.eclipse.ui.views">

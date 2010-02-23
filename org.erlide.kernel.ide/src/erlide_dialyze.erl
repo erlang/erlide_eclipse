@@ -22,11 +22,11 @@
 
 dialyze(Files, Plt, Includes) ->
     ?D([Files, Plt, Includes]),
-    dialyzer:run([{files_rec, Files}, 
-		  {init_plt, Plt}, 
-		  {check_plt, false},
-		  {from, src_code},
-		  {include_dirs, Includes}]).
+    catch dialyzer:run([{files_rec, Files}, 
+			{init_plt, Plt}, 
+			{check_plt, false},
+			{from, src_code},
+			{include_dirs, Includes}]).
 
 format_warning(Msg) ->
     dialyzer:format_warning(Msg).
