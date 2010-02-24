@@ -62,9 +62,13 @@ public final class ErlideUtil {
 
 	public static boolean isAccessible(final Backend backend,
 			final String localDir) {
+		File f = null;
 		try {
+			String markName = localDir + "/erlide_dummy_file_can_be_deleted";
+			f = new File(markName);
+			f.createNewFile();
 			final OtpErlangObject r = backend.call("file", "read_file_info",
-					"s", localDir);
+					"s", markName);
 			final OtpErlangTuple result = (OtpErlangTuple) r;
 			final String tag = ((OtpErlangAtom) result.elementAt(0))
 					.atomValue();
@@ -83,6 +87,12 @@ public final class ErlideUtil {
 			ErlLogger.error(e);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (f != null) {
+				f.delete();
+			}
 		}
 		return false;
 	}
