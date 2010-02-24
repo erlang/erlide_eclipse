@@ -119,12 +119,16 @@ public class CodeManager {
 				ErlangPlugin.PLUGIN_ID, "codepath");
 		for (final IConfigurationElement el : els) {
 			final IContributor c = el.getContributor();
-			if (c.getName().equals(b.getSymbolicName())) {
+			if ("beam_dir".equals(el.getName())
+					&& c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
 				final String ver = backend.getCurrentVersion();
-				Enumeration e = b.getEntryPaths(dir_path + "/" + ver);
-				if (e == null || !e.hasMoreElements()) {
-					e = b.getEntryPaths(dir_path);
+				Enumeration e = null;
+				if (dir_path != null) {
+					e = b.getEntryPaths(dir_path + "/" + ver);
+					if (e == null || !e.hasMoreElements()) {
+						e = b.getEntryPaths(dir_path);
+					}
 				}
 				if (e == null) {
 					ErlLogger.debug("* !!! error loading plugin "
