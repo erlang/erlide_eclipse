@@ -87,7 +87,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	private final Map<Bundle, CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
-	private Set<ErlideBackend> allBackends;
+	private final Set<ErlideBackend> allBackends;
 
 	@SuppressWarnings("synthetic-access")
 	private static final class LazyBackendManagerHolder {
@@ -119,11 +119,12 @@ public final class BackendManager extends OtpNodeStatus implements
 		ErlideBackend b = null;
 
 		final boolean isRemoteNode = nodeName.contains("@");
+		boolean watch = true;
 		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
 			b = new ErlideBackend(info);
-
+			watch = false;
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
@@ -143,16 +144,16 @@ public final class BackendManager extends OtpNodeStatus implements
 		if (launch != null) {
 			DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
 		}
-		initializeBackend(options, b);
+		initializeBackend(options, b, watch);
 		return b;
 	}
 
 	private synchronized void addBackend(ErlideBackend b) {
-		allBackends .add(b);
+		allBackends.add(b);
 	}
 
 	private void initializeBackend(final Set<BackendOptions> options,
-			ErlideBackend b) {
+			ErlideBackend b, boolean watchNode) {
 		b.initializeRuntime();
 		if (b.isDistributed()) {
 			b.connect();
@@ -161,7 +162,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			}
 			boolean monitorNode = options.contains(BackendOptions.IDE)
 					&& "true".equals(System.getProperty("erlide.monitor.ide"));
-			b.initErlang(monitorNode);
+			b.initErlang(monitorNode, watchNode);
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
 			b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));

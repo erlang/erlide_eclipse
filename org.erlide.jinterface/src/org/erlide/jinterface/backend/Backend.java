@@ -60,6 +60,7 @@ public class Backend extends OtpNodeStatus {
 	private boolean stopped = false;
 	private EventDaemon eventDaemon;
 	private boolean monitor = false;
+	private boolean watch = true;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -313,10 +314,10 @@ public class Backend extends OtpNodeStatus {
 		return "";
 	}
 
-	private boolean init(final OtpErlangPid jRex, boolean monitor) {
+	private boolean init(final OtpErlangPid jRex, boolean monitor, boolean watch) {
 		try {
 			// reload(backend);
-			call("erlide_kernel_common", "init", "po", jRex, monitor);
+			call("erlide_kernel_common", "init", "poo", jRex, monitor, watch);
 			// TODO should use extension point!
 			call("erlide_kernel_builder", "init", "");
 			call("erlide_kernel_ide", "init", "");
@@ -327,12 +328,13 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
-	public void initErlang(boolean monitor) {
-		final boolean inited = init(getEventPid(), monitor);
+	public void initErlang(boolean monitor, boolean watch) {
+		final boolean inited = init(getEventPid(), monitor, watch);
 		if (!inited) {
 			setAvailable(false);
 		}
 		this.monitor = monitor;
+		this.watch = watch;
 		eventDaemon = new EventDaemon(this);
 		eventDaemon.start();
 		eventDaemon.addHandler(new LogEventHandler());
@@ -419,7 +421,7 @@ public class Backend extends OtpNodeStatus {
 		}
 		initializeRuntime();
 		connect();
-		initErlang(monitor);
+		initErlang(monitor, watch);
 	}
 
 	public synchronized void setAvailable(final boolean up) {

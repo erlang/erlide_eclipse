@@ -95,8 +95,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	@Override
-	public void initErlang(boolean monitor) {
-		super.initErlang(monitor);
+	public void initErlang(boolean monitor, boolean watch) {
+		super.initErlang(monitor, watch);
 		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
 	}
 
