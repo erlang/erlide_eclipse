@@ -16,6 +16,7 @@ public class DialyzerPreferences {
 	private final PreferencesHelper helper;
 
 	private String pltPath;
+	private boolean fromSource;
 
 	public static DialyzerPreferences get(final IProject project)
 			throws CoreException {
@@ -44,29 +45,41 @@ public class DialyzerPreferences {
 	}
 
 	public void store() throws BackingStoreException {
-		helper.putString(DialyzerPreferencesConstants.PLT_PATH, pltPath);
+		helper.putString(DialyzerPreferencesConstants.PLT_PATH, getPltPath());
+		helper.putBoolean(DialyzerPreferencesConstants.FROM_SOURCE,
+				getFromSource());
 		helper.flush();
 	}
 
 	@SuppressWarnings("boxing")
 	public void load() throws BackingStoreException {
-		pltPath = helper.getString(DialyzerPreferencesConstants.PLT_PATH, "");
+		setPltPath(helper.getString(DialyzerPreferencesConstants.PLT_PATH, ""));
+		setFromSource(helper.getBoolean(
+				DialyzerPreferencesConstants.FROM_SOURCE, true));
 	}
 
 	@Override
 	public String toString() {
-		return getPltPath().toString();
-	}
-
-	public String getPltPath() {
-		return pltPath;
+		return getPltPath().toString() + ", " + getFromSource();
 	}
 
 	public void removeAllProjectSpecificSettings() {
 		helper.removeAllAtLowestScope();
 	}
 
-	public void setPltPath(final String text) {
-		pltPath = text;
+	public void setFromSource(final boolean useSource) {
+		this.fromSource = useSource;
+	}
+
+	public boolean getFromSource() {
+		return fromSource;
+	}
+
+	public void setPltPath(final String pltPath) {
+		this.pltPath = pltPath;
+	}
+
+	public String getPltPath() {
+		return pltPath;
 	}
 }

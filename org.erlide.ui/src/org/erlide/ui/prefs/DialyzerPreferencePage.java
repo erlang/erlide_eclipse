@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
@@ -57,7 +58,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 	private Link fChangeWorkspaceSettings;
 	protected ControlEnableState fBlockEnableState;
 	private Text pltEdit = null;
-	private String pltPath;
+	private Combo fromCombo;
 
 	public DialyzerPreferencePage() {
 		super();
@@ -94,17 +95,16 @@ public class DialyzerPreferencePage extends PropertyPage implements
 	}
 
 	private void createPltSelectionGroup(final Composite parent) {
-		final Composite group = new Group(parent, SWT.NONE);
+		Composite group = new Group(parent, SWT.NONE);
 		group.setLayout(new GridLayout(3, false));
-		final GridData gd1 = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-		group.setLayoutData(gd1);
-		final Label l = new Label(group, SWT.NONE);
+		GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		group.setLayoutData(gd);
+		Label l = new Label(group, SWT.NONE);
 		l.setText("Select PLT");
 		pltEdit = new Text(group, SWT.BORDER);
-		final GridData gd2 = new GridData(SWT.FILL, GridData.CENTER, true,
-				false);
-		pltEdit.setLayoutData(gd2);
-		pltEdit.setText(pltPath);
+		gd = new GridData(SWT.FILL, GridData.CENTER, true, false);
+		pltEdit.setLayoutData(gd);
+		pltEdit.setText(prefs.getPltPath());
 		final Button b = new Button(group, SWT.PUSH);
 		b.setText("Browse...");
 		b.addSelectionListener(new SelectionAdapter() {
@@ -122,6 +122,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
 				pltEdit.setText(result);
 			}
 		});
+		group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout(2, false));
+		l = new Label(group, SWT.NONE);
+		l.setText("Analyze from ");
+		fromCombo = new Combo(group, SWT.READ_ONLY);
+		fromCombo.setItems(new String[] { "Source", "Binaries" });
+		fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
 	}
 
 	protected boolean hasProjectSpecificOptions(final IProject project) {
@@ -299,8 +306,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 	@Override
 	public boolean performOk() {
 		try {
-			pltPath = pltEdit.getText();
-			prefs.setPltPath(pltPath);
+			prefs.setPltPath(pltEdit.getText());
+			prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
 			if (fUseProjectSettings != null
 					&& !fUseProjectSettings.getSelection()
 					&& isProjectPreferencePage()) {
@@ -323,9 +330,12 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		}
 		try {
 			prefs.load();
-			pltPath = prefs.getPltPath();
 			if (pltEdit != null) {
-				pltEdit.setText(pltPath);
+				pltEdit.setText(prefs.getPltPath());
+			}
+			if (fromCombo != null) {
+				fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0
+						: 1));
 			}
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
