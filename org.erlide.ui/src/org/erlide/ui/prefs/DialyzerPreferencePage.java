@@ -101,6 +101,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		group.setLayout(new GridLayout(1, false));
 		dialyzeCheckbox = new Button(group, SWT.CHECK);
 		dialyzeCheckbox.setText("Run dialyzer when compiling");
+		dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
 	}
 
 	private void createFromSelectionGroup(final Composite parent) {
@@ -123,7 +124,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		pltEdit = new Text(group, SWT.BORDER);
 		gd = new GridData(SWT.FILL, GridData.CENTER, true, false);
 		pltEdit.setLayoutData(gd);
-		pltEdit.setText(prefs.getPltPath());
 		final Button b = new Button(group, SWT.PUSH);
 		b.setText("Browse...");
 		b.addSelectionListener(new SelectionAdapter() {
@@ -141,6 +141,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 				pltEdit.setText(result);
 			}
 		});
+		pltEdit.setText(prefs.getPltPath());
 	}
 
 	protected boolean hasProjectSpecificOptions(final IProject project) {
