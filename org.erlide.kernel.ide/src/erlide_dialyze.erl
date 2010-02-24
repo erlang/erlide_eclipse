@@ -14,19 +14,30 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/3, format_warning/1]).
+-export([dialyze/4, format_warning/1]).
 
 %%
 %% API Functions
 %%
 
-dialyze(Files, Plt, Includes) ->
+dialyze(Files, Plt, Includes, FromSource) ->
     ?D([Files, Plt, Includes]),
-    catch dialyzer:run([{files_rec, Files}, 
-			{init_plt, Plt}, 
-			{check_plt, false},
-			{from, src_code},
-			{include_dirs, Includes}]).
+    From = case FromSource of
+	       true -> src_code;
+	       false -> byte_code
+	   end,
+    case catch dialyzer:run([{files_rec, Files}, 
+			     {init_plt, Plt}, 
+			     {check_plt, false},
+			     {from, From},
+			     {include_dirs, Includes}]) of
+	{'EXIT', {dialyzer_error, E}} ->
+	    {error, lists:flatten(E)};
+	{_Error, E} ->
+	    {error, lists:flatten(E)};
+	Result ->
+	    Result
+    end.
 
 format_warning(Msg) ->
     dialyzer:format_warning(Msg).

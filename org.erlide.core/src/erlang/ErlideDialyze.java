@@ -13,10 +13,10 @@ public class ErlideDialyze {
 
 	public static OtpErlangObject dialyze(final Backend backend,
 			final Collection<String> files, final String plt,
-			final Collection<String> includeDirs) {
+			final Collection<String> includeDirs, final boolean fromSource) {
 		try {
 			final OtpErlangObject result = backend.call("erlide_dialyze",
-					"dialyze", "lssls", files, plt, includeDirs);
+					"dialyze", "lsslso", files, plt, includeDirs, fromSource);
 			return result;
 		} catch (final Exception e) {
 			ErlLogger.debug(e);

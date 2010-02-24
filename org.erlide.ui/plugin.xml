@@ -229,6 +229,20 @@
         </enabledWhen>
       </page>
       <page
+            class="org.erlide.ui.prefs.DialyzerPreferencePage"
+            id="org.erlide.ui.properties.dialyzerPreferencePage"
+            name="Erlang dialyzer">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.erlide.core.erlnature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
+      <page
             class="org.erlide.ui.properties.EdocConfigurationPropertyPage"
             id="org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"
             name="Edoc">
@@ -1371,7 +1385,7 @@
       <specification
             annotationType="org.erlide.ui.dialyzewarningmarkertype"
             colorPreferenceKey="dialyzewarningmarkerColor"
-            colorPreferenceValue="255,0,0"
+            colorPreferenceValue="255,150,150"
             highlightPreferenceKey="dialyzewarningmarkerHighlighting"
             highlightPreferenceValue="false"
             icon="icons/full/obj16/dialyzer_warning.gif"

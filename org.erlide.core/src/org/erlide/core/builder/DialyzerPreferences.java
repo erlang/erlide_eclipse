@@ -1,4 +1,4 @@
-package org.erlide.ui.prefs;
+package org.erlide.core.builder;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +17,7 @@ public class DialyzerPreferences {
 
 	private String pltPath;
 	private boolean fromSource;
+	private boolean dialyzeOnCompile;
 
 	public static DialyzerPreferences get(final IProject project)
 			throws CoreException {
@@ -48,6 +49,8 @@ public class DialyzerPreferences {
 		helper.putString(DialyzerPreferencesConstants.PLT_PATH, getPltPath());
 		helper.putBoolean(DialyzerPreferencesConstants.FROM_SOURCE,
 				getFromSource());
+		helper.putBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE,
+				getDialyzeOnCompile());
 		helper.flush();
 	}
 
@@ -56,19 +59,22 @@ public class DialyzerPreferences {
 		setPltPath(helper.getString(DialyzerPreferencesConstants.PLT_PATH, ""));
 		setFromSource(helper.getBoolean(
 				DialyzerPreferencesConstants.FROM_SOURCE, true));
+		setDialyzeOnCompile(helper.getBoolean(
+				DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
 	}
 
 	@Override
 	public String toString() {
-		return getPltPath().toString() + ", " + getFromSource();
+		return getPltPath().toString() + ", " + getFromSource() + ", "
+				+ getDialyzeOnCompile();
 	}
 
 	public void removeAllProjectSpecificSettings() {
 		helper.removeAllAtLowestScope();
 	}
 
-	public void setFromSource(final boolean useSource) {
-		this.fromSource = useSource;
+	public void setFromSource(final boolean fromSource) {
+		this.fromSource = fromSource;
 	}
 
 	public boolean getFromSource() {
@@ -81,5 +87,13 @@ public class DialyzerPreferences {
 
 	public String getPltPath() {
 		return pltPath;
+	}
+
+	public void setDialyzeOnCompile(final boolean dialyzeOnCompile) {
+		this.dialyzeOnCompile = dialyzeOnCompile;
+	}
+
+	public boolean getDialyzeOnCompile() {
+		return dialyzeOnCompile;
 	}
 }

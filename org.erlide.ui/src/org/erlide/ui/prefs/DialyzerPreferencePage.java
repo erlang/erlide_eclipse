@@ -40,7 +40,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.builder.CompilerPreferences;
+import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
@@ -52,13 +52,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		IWorkbenchPreferencePage {
 
 	DialyzerPreferences prefs;
-	private Composite prefsComposite;
 	private IProject fProject;
 	private Button fUseProjectSettings;
 	private Link fChangeWorkspaceSettings;
 	protected ControlEnableState fBlockEnableState;
 	private Text pltEdit = null;
 	private Combo fromCombo;
+	private Button dialyzeCheckbox;
+	private Composite prefsComposite;
 
 	public DialyzerPreferencePage() {
 		super();
@@ -72,10 +73,11 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		performDefaults();
 
 		prefsComposite = new Composite(parent, SWT.NONE);
-		final GridLayout gridLayout_1 = new GridLayout();
-		prefsComposite.setLayout(gridLayout_1);
+		prefsComposite.setLayout(new GridLayout());
 
+		createDialyzeCheckboxGroup(prefsComposite);
 		createPltSelectionGroup(prefsComposite);
+		createFromSelectionGroup(prefsComposite);
 
 		final Label label = new Label(prefsComposite, SWT.SEPARATOR
 				| SWT.HORIZONTAL);
@@ -94,12 +96,29 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		return prefsComposite;
 	}
 
+	private void createDialyzeCheckboxGroup(final Composite parent) {
+		final Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout(1, false));
+		dialyzeCheckbox = new Button(group, SWT.CHECK);
+		dialyzeCheckbox.setText("Run dialyzer when compiling");
+	}
+
+	private void createFromSelectionGroup(final Composite parent) {
+		final Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout(2, false));
+		final Label l = new Label(group, SWT.NONE);
+		l.setText("Analyze from ");
+		fromCombo = new Combo(group, SWT.READ_ONLY);
+		fromCombo.setItems(new String[] { "Source", "Binaries" });
+		fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
+	}
+
 	private void createPltSelectionGroup(final Composite parent) {
-		Composite group = new Group(parent, SWT.NONE);
+		final Composite group = new Group(parent, SWT.NONE);
 		group.setLayout(new GridLayout(3, false));
 		GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		group.setLayoutData(gd);
-		Label l = new Label(group, SWT.NONE);
+		final Label l = new Label(group, SWT.NONE);
 		l.setText("Select PLT");
 		pltEdit = new Text(group, SWT.BORDER);
 		gd = new GridData(SWT.FILL, GridData.CENTER, true, false);
@@ -122,17 +141,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
 				pltEdit.setText(result);
 			}
 		});
-		group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(2, false));
-		l = new Label(group, SWT.NONE);
-		l.setText("Analyze from ");
-		fromCombo = new Combo(group, SWT.READ_ONLY);
-		fromCombo.setItems(new String[] { "Source", "Binaries" });
-		fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
 	}
 
 	protected boolean hasProjectSpecificOptions(final IProject project) {
-		final CompilerPreferences p = new CompilerPreferences(project);
+		final DialyzerPreferences p = new DialyzerPreferences(project);
 		return p.hasOptionsAtLowestScope();
 	}
 
@@ -308,6 +320,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		try {
 			prefs.setPltPath(pltEdit.getText());
 			prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
+			prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
 			if (fUseProjectSettings != null
 					&& !fUseProjectSettings.getSelection()
 					&& isProjectPreferencePage()) {
@@ -336,6 +349,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
 			if (fromCombo != null) {
 				fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0
 						: 1));
+			}
+			if (dialyzeCheckbox != null) {
+				dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
 			}
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
