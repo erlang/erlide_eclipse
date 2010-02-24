@@ -56,7 +56,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 	private Button fUseProjectSettings;
 	private Link fChangeWorkspaceSettings;
 	protected ControlEnableState fBlockEnableState;
-	private Text pltEdit;
+	private Text pltEdit = null;
+	private String pltPath;
 
 	public DialyzerPreferencePage() {
 		super();
@@ -103,6 +104,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		final GridData gd2 = new GridData(SWT.FILL, GridData.CENTER, true,
 				false);
 		pltEdit.setLayoutData(gd2);
+		pltEdit.setText(pltPath);
 		final Button b = new Button(group, SWT.PUSH);
 		b.setText("Browse...");
 		b.addSelectionListener(new SelectionAdapter() {
@@ -297,7 +299,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 	@Override
 	public boolean performOk() {
 		try {
-			prefs.setPltPath(pltEdit.getText());
+			pltPath = pltEdit.getText();
+			prefs.setPltPath(pltPath);
 			if (fUseProjectSettings != null
 					&& !fUseProjectSettings.getSelection()
 					&& isProjectPreferencePage()) {
@@ -320,7 +323,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		}
 		try {
 			prefs.load();
-			pltEdit.setText(prefs.getPltPath());
+			pltPath = prefs.getPltPath();
+			if (pltEdit != null) {
+				pltEdit.setText(pltPath);
+			}
 		} catch (final BackingStoreException e) {
 			ErlLogger.warn(e);
 		}

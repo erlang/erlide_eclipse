@@ -361,6 +361,16 @@
                label="Dialyze">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze3"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="org.erlide.ui.actions.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
    </extension>
   <extension
          point="org.eclipse.ui.newWizards">
