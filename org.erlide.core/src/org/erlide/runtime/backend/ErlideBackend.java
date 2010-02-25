@@ -242,30 +242,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 				if (accessible) {
 					addPath(false/* prefs.getUsePathZ() */, outDir);
 				} else {
-					File dir = new File(outDir);
-					for (File f : dir.listFiles()) {
-						final Path path = new Path(f.getPath());
-						if (path.getFileExtension() != null
-								&& "beam".compareTo(path.getFileExtension()) == 0) {
-							final String m = path.removeFileExtension()
-									.lastSegment();
-							// ErlLogger.debug(" " + m);
-							try {
-								boolean ok = false;
-								final OtpErlangBinary bin = ErlideUtil
-										.getBeamBinary(m, path);
-								if (bin != null) {
-									ok = ErlBackend.loadBeam(this, m, bin);
-								}
-								if (!ok) {
-									ErlLogger.error("Could not load %s", m);
-								}
-							} catch (final Exception ex) {
-								ErlLogger.warn(ex);
-							}
-						}
-					}
-
+					loadBeamsFromDir(outDir);
 				}
 			} else {
 				final File f = new File(outDir);
@@ -279,6 +256,30 @@ public final class ErlideBackend extends Backend implements IDisposable,
 					} catch (final IOException e) {
 						e.printStackTrace();
 					}
+				}
+			}
+		}
+	}
+
+	private void loadBeamsFromDir(final String outDir) {
+		File dir = new File(outDir);
+		for (File f : dir.listFiles()) {
+			final Path path = new Path(f.getPath());
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
+				final String m = path.removeFileExtension().lastSegment();
+				try {
+					boolean ok = false;
+					final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
+							path);
+					if (bin != null) {
+						ok = ErlBackend.loadBeam(this, m, bin);
+					}
+					if (!ok) {
+						ErlLogger.error("Could not load %s", m);
+					}
+				} catch (final Exception ex) {
+					ErlLogger.warn(ex);
 				}
 			}
 		}
