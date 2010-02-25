@@ -10,20 +10,16 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -50,9 +46,9 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -70,26 +66,6 @@ public class ErlModelUtils {
 		return getModule(editor.getEditorInput(), adte.getDocumentProvider());
 	}
 
-	public static IErlModule getModule(final IFile file) {
-		final IErlModel model = ErlangCore.getModel();
-		try {
-			model.open(null);
-			return model.findModule(file);
-		} catch (final ErlModelException e) {
-		}
-		return null;
-	}
-
-	public static IErlModule getModule(final String moduleName) {
-		final IErlModel model = ErlangCore.getModel();
-		try {
-			model.open(null);
-			return model.findModule(moduleName);
-		} catch (final ErlModelException e) {
-		}
-		return null;
-	}
-
 	public static IErlProject getErlProject(final ITextEditor editor) {
 		return getErlProject(editor.getEditorInput());
 	}
@@ -104,34 +80,6 @@ public class ErlModelUtils {
 				return model.getErlangProject(prj);
 			} catch (final ErlModelException e) {
 				return null;
-			}
-		}
-		return null;
-	}
-
-	public static IErlFunction findFunction(final IErlModule module,
-			final ErlangFunction erlangFunction) throws ErlModelException {
-		final List<? extends IErlElement> children = module.getChildren();
-		for (final IErlElement element : children) {
-			if (element instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) element;
-				if (f.getFunction().equals(erlangFunction)) {
-					return f;
-				}
-			}
-		}
-		return null;
-	}
-
-	public static IErlTypespec findTypespec(final IErlModule module,
-			final String name) throws ErlModelException {
-		final List<? extends IErlElement> children = module.getChildren();
-		for (final IErlElement element : children) {
-			if (element instanceof IErlTypespec) {
-				final IErlTypespec t = (IErlTypespec) element;
-				if (t.getName().equals(name)) {
-					return t;
-				}
 			}
 		}
 		return null;
@@ -203,22 +151,24 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project, m.getResource().getParent()));
+							.getIncludePathFilter(project, m.getResource()
+									.getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s, externalIncludes);
+						s = ModelUtils.findIncludeFile(project, s,
+								externalIncludes);
 					}
-					re = EditorUtility.openExternal(s);
+					re = ResourceUtil.openExternal(s);
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
 			}
 			if (re != null && re instanceof IFile) {
-				m = getModule((IFile) re);
+				m = ModelUtils.getModule((IFile) re);
 				if (m != null && !modulesDone.contains(m)) {
 					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
 							project, m, definedName, type, externalIncludes,
@@ -254,22 +204,24 @@ public class ErlModelUtils {
 			IResource re = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, element
 							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project, m.getResource().getParent()));
+							.getIncludePathFilter(project, m.getResource()
+									.getParent()));
 			if (re == null) {
 				try {
 					String s = element.getFilename();
 					if (element.isSystemInclude()) {
 						s = ErlideOpen.getIncludeLib(b, s);
 					} else {
-						s = findIncludeFile(project, s, externalIncludes);
+						s = ModelUtils.findIncludeFile(project, s,
+								externalIncludes);
 					}
-					re = EditorUtility.openExternal(s);
+					re = ResourceUtil.openExternal(s);
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
 			}
 			if (re != null && re instanceof IFile) {
-				final IErlModule included = getModule((IFile) re);
+				final IErlModule included = ModelUtils.getModule((IFile) re);
 				if (included != null && !modulesFound.contains(included)) {
 					getModulesWithIncludes(b, project, included,
 							externalIncludes, modulesFound);
@@ -304,10 +256,10 @@ public class ErlModelUtils {
 		if (pd == null) {
 			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
-				String filenameLastPart = element.getFilenameLastPart();
-				IResource resource = m.getResource();
-				IContainer parent = resource.getParent();
-				ContainerFilter includePathFilter = PluginUtils
+				final String filenameLastPart = element.getFilenameLastPart();
+				final IResource resource = m.getResource();
+				final IContainer parent = resource.getParent();
+				final ContainerFilter includePathFilter = PluginUtils
 						.getIncludePathFilter(project, parent);
 				IResource re = ResourceUtil
 						.recursiveFindNamedResourceWithReferences(project,
@@ -318,15 +270,16 @@ public class ErlModelUtils {
 						if (element.isSystemInclude()) {
 							s = ErlideOpen.getIncludeLib(b, s);
 						} else {
-							s = findIncludeFile(project, s, externalIncludes);
+							s = ModelUtils.findIncludeFile(project, s,
+									externalIncludes);
 						}
-						re = EditorUtility.openExternal(s);
+						re = ResourceUtil.openExternal(s);
 					} catch (final Exception e) {
 						ErlLogger.warn(e);
 					}
 				}
 				if (re != null && re instanceof IFile) {
-					m = getModule((IFile) re);
+					m = ModelUtils.getModule((IFile) re);
 					if (m != null && !modulesDone.contains(m)) {
 						if (openPreprocessorDef(b, project, page, m,
 								definedName, type, externalIncludes,
@@ -343,45 +296,6 @@ public class ErlModelUtils {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Try to find include file, by searching include paths in the project
-	 * (replacing with path variables if needed). If the file is not in the
-	 * include paths, the original path is returned
-	 * 
-	 * @param project
-	 *            the project with include dirs
-	 * @param filePath
-	 *            the path to the include file
-	 * @param externalIncludes
-	 *            TODO
-	 * @return the path to the include file
-	 */
-	public static String findIncludeFile(final IProject project,
-			final String filePath, final String externalIncludes) {
-		if (project == null) {
-			return filePath;
-		}
-		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-				.getPathVariableManager();
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		for (final String includeDir : prefs.getIncludeDirs()) {
-			IPath p = new Path(includeDir).append(filePath);
-			p = pvm.resolvePath(p);
-			final File f = new File(p.toOSString());
-			if (f.exists()) {
-				return p.toString();
-			}
-		}
-		final String s = ErlideOpen.getExternalInclude(ErlangCore
-				.getBackendManager().getIdeBackend(), filePath,
-				externalIncludes, ErlangCore.getModel().getPathVars());
-		if (s != null) {
-			return s;
-		}
-		return filePath;
 	}
 
 	/**
@@ -415,9 +329,8 @@ public class ErlModelUtils {
 		return false;
 	}
 
-	public static boolean openExternalType(final String mod,
-			final String type, final String path,
-			final IProject project) throws CoreException {
+	public static boolean openExternalType(final String mod, final String type,
+			final String path, final IProject project) throws CoreException {
 		final IResource r = openExternalModule(mod, path, project);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
@@ -446,7 +359,7 @@ public class ErlModelUtils {
 		}
 		if (r == null) {
 			try {
-				r = EditorUtility.openExternal(path);
+				r = ResourceUtil.openExternal(path);
 			} catch (final Exception e) {
 				ErlLogger.warn(e);
 			}
@@ -462,8 +375,8 @@ public class ErlModelUtils {
 		if (path != null) {
 			final IProject p = ResourceUtil.getExternalFilesProject();
 			if (p != null) {
-				final IFile f = EditorUtility.openExternal(path);
-				return getModule(f);
+				final IFile f = ResourceUtil.openExternal(path);
+				return ModelUtils.getModule(f);
 			}
 		}
 		return null;
@@ -485,7 +398,7 @@ public class ErlModelUtils {
 			return false;
 		}
 		module.open(null);
-		final IErlFunction function = findFunction(module, erlangFunction);
+		final IErlFunction function = ModelUtils.findFunction(module, erlangFunction);
 		if (function == null) {
 			return false;
 		}
@@ -500,7 +413,7 @@ public class ErlModelUtils {
 			return false;
 		}
 		module.open(null);
-		final IErlTypespec typespec = findTypespec(module, typeName);
+		final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
 		if (typespec == null) {
 			return false;
 		}
@@ -550,7 +463,7 @@ public class ErlModelUtils {
 		}
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;
-			return getModule(input.getFile());
+			return ModelUtils.getModule(input.getFile());
 		}
 		if (editorInput instanceof IStorageEditorInput) {
 			final IStorageEditorInput sei = (IStorageEditorInput) editorInput;

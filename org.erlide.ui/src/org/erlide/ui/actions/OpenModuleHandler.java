@@ -28,7 +28,6 @@ import org.eclipse.ui.ide.IDE;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.ui.editors.util.EditorUtility;
 
 public final class OpenModuleHandler extends Action implements IHandler,
 		IWorkbenchWindowActionDelegate {
@@ -91,7 +90,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 								}
 							}
 							if (files.size() == 0) {
-								IFile file = EditorUtility.openExternal(path);
+								IFile file = ResourceUtil.openExternal(path);
 								files.add(file);
 							}
 						} catch (CoreException e) {
