@@ -62,7 +62,6 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -71,8 +70,7 @@ import org.eclipse.ui.console.actions.TextViewerAction;
 import org.eclipse.ui.internal.console.ConsoleMessages;
 import org.eclipse.ui.internal.console.ConsoleResourceBundleMessages;
 import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
-import org.eclipse.ui.part.IPageBookViewPage;
-import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
@@ -86,7 +84,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
+public class ErlangConsolePage extends Page implements IAdaptable,
 		IPropertyChangeListener {
 	public static final String ID = "org.erlide.ui.views.console";
 
@@ -129,7 +127,6 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 	protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
 	protected ArrayList<String> fSelectionActions = new ArrayList<String>();
 	// protected ClearOutputAction fClearOutputAction;
-	private IPageSite fSite;
 	private final ErlangConsole fConsole;
 	private IConsoleView fConsoleView;
 	private MenuManager fMenuManager;
@@ -148,6 +145,7 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 		fDoc = new ErlConsoleDocument(shell);
 	}
 
+	@Override
 	public void dispose() {
 		consoleOutputViewer.getSelectionProvider()
 				.removeSelectionChangedListener(selectionChangedListener);
@@ -165,6 +163,7 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 
 		bgColor_Err.dispose();
 		bgColor_Ok.dispose();
+		super.dispose();
 	}
 
 	void createInputField(final KeyEvent first, boolean isPaste) {
@@ -381,6 +380,7 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 	/**
 	 * @wbp.parser.entryPoint
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		consoleOutputViewer = new SourceViewer(parent, null, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
@@ -395,7 +395,6 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 			public void keyPressed(final KeyEvent e) {
 				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
 						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
-
 				if ((e.character != (char) 0) || isHistoryCommand) {
 					createInputField(e, false);
 					e.doit = false;
@@ -443,21 +442,16 @@ public class ErlangConsolePage implements IPageBookViewPage, IAdaptable,
 
 	}
 
+	@Override
 	public Control getControl() {
 		return consoleOutputViewer.getControl();
 	}
 
+	@Override
 	public void setActionBars(IActionBars bars) {
 	}
 
-	public IPageSite getSite() {
-		return fSite;
-	}
-
-	public void init(IPageSite site) throws PartInitException {
-		fSite = site;
-	}
-
+	@Override
 	public void setFocus() {
 		if (consoleInput != null && !consoleInput.isDisposed()) {
 			consoleInput.setFocus();
