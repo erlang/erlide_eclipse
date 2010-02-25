@@ -134,6 +134,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
 		if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
 			return;
 		}
+		if (!validateEditorInputState()) {
+			return;
+		}
 		final ITextEditor textEditor = getTextEditor();
 		final IDocument document = textEditor.getDocumentProvider()
 				.getDocument(textEditor.getEditorInput());
