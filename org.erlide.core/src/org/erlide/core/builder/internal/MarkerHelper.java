@@ -23,10 +23,12 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -78,7 +80,7 @@ public final class MarkerHelper {
 	 * @param resource
 	 * @param errorList
 	 */
-	public static void addErrorMarkers(final IResource resource,
+	public static void addErrorMarkers(IResource resource,
 			final OtpErlangList errorList) {
 		for (final OtpErlangObject odata : errorList.elements()) {
 			try {
@@ -93,21 +95,25 @@ public final class MarkerHelper {
 				IResource res = resource;
 				if (!BuilderUtils.samePath(resource.getLocation().toString(),
 						fileName)) {
-					res = BuilderUtils.findResourceByLocation(resource
-							.getProject(), fileName);
+					final IProject project = resource.getProject();
+					res = BuilderUtils
+							.findResourceByLocation(project, fileName);
 					if (res == null) {
 						try {
+							final IErlModel model = ErlangCore.getModel();
 							final String includeFile = ModelUtils
-									.findIncludeFile(project, res.getName(),
-											fExternalIncludes, pathVars);
+									.findIncludeFile(project, resource
+											.getName(), model.getExternal(model
+											.findProject(project),
+											ErlangCore.EXTERNAL_INCLUDES));
 							if (includeFile != null) {
-								r = EditorUtility.openExternal(includeFile);
+								resource = ResourceUtil
+										.openExternal(includeFile);
 							}
 						} catch (final Exception e) {
 							ErlLogger.warn(e);
 						}
 
-						res = resource;
 					}
 				}
 				int line = 0;
