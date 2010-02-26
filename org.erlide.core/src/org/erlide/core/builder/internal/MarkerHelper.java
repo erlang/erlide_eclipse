@@ -23,9 +23,12 @@ import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -77,7 +80,7 @@ public final class MarkerHelper {
 	 * @param resource
 	 * @param errorList
 	 */
-	public static void addErrorMarkers(final IResource resource,
+	public static void addErrorMarkers(IResource resource,
 			final OtpErlangList errorList) {
 		for (final OtpErlangObject odata : errorList.elements()) {
 			try {
@@ -90,25 +93,27 @@ public final class MarkerHelper {
 				final String fileName = (String) TypeConverter.erlang2java(data
 						.elementAt(1), String.class);
 				IResource res = resource;
-				if (!BuilderUtils.comparePath(
-						resource.getLocation().toString(), fileName)) {
-					res = BuilderUtils.findResource(resource.getProject(),
-							fileName);
+				if (!BuilderUtils.samePath(resource.getLocation().toString(),
+						fileName)) {
+					final IProject project = resource.getProject();
+					res = BuilderUtils
+							.findResourceByLocation(project, fileName);
 					if (res == null) {
-						// TODO the error is in a file not in the project
+						try {
+							final IErlModel model = ErlangCore.getModel();
+							final String includeFile = ModelUtils
+									.findIncludeFile(project, resource
+											.getName(), model.getExternal(model
+											.findProject(project),
+											ErlangCore.EXTERNAL_INCLUDES));
+							if (includeFile != null) {
+								resource = ResourceUtil
+										.openExternal(includeFile);
+							}
+						} catch (final Exception e) {
+							ErlLogger.warn(e);
+						}
 
-						// try {
-						// final String includeFile = ErlModelUtils
-						// .findIncludeFile(project, res.getName(),
-						// fExternalIncludes, pathVars);
-						// if (includeFile != null) {
-						// r = EditorUtility.openExternal(includeFile);
-						// }
-						// } catch (final Exception e) {
-						// ErlLogger.warn(e);
-						// }
-
-						res = resource;
 					}
 				}
 				int line = 0;
@@ -291,7 +296,7 @@ public final class MarkerHelper {
 					ErlLogger.debug("Creating task markers "
 							+ resource.getName());
 				}
-				//getMarkersFor(resource, p);
+				// getMarkersFor(resource, p);
 				getNoScanMarkersFor(resource, p);
 			} catch (final ErlModelException e) {
 			}
@@ -306,7 +311,7 @@ public final class MarkerHelper {
 		if (m == null) {
 			return;
 		}
-		boolean hadScanner = m.hasScanner();
+		final boolean hadScanner = m.hasScanner();
 		final ErlScanner s = m.getScanner();
 		if (s == null) {
 			return;
@@ -314,7 +319,7 @@ public final class MarkerHelper {
 		final Collection<IErlComment> cl = s.getComments();
 		for (final IErlComment c : cl) {
 			final String text = c.getName();
-			int line = c.getLineStart();
+			final int line = c.getLineStart();
 			mkMarker(resource, line, text, "TODO", IMarker.PRIORITY_NORMAL);
 			mkMarker(resource, line, text, "XXX", IMarker.PRIORITY_NORMAL);
 			mkMarker(resource, line, text, "FIXME", IMarker.PRIORITY_HIGH);
@@ -329,12 +334,12 @@ public final class MarkerHelper {
 		if (!(resource instanceof IFile)) {
 			return;
 		}
-		IFile file = (IFile) resource;
+		final IFile file = (IFile) resource;
 		InputStream input;
 		try {
 			input = file.getContents();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					input));
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(input));
 			String line = reader.readLine();
 			final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
 			int numline = 0;
@@ -351,10 +356,10 @@ public final class MarkerHelper {
 				mkMarker(resource, c.o2, c.o1, "XXX", IMarker.PRIORITY_NORMAL);
 				mkMarker(resource, c.o2, c.o1, "FIXME", IMarker.PRIORITY_HIGH);
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.ErlangLineBreakpoint;
@@ -22,7 +23,6 @@ import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.runtime.debug.ErlangStackFrame;
 import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
 import org.erlide.ui.ErlideUIDebugImages;
-import org.erlide.ui.editors.util.EditorUtility;
 
 /**
  * @author jakob
@@ -264,7 +264,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 		if (element instanceof LocalFileStorage) {
 			final LocalFileStorage lfs = (LocalFileStorage) element;
 			try {
-				final IFile file = EditorUtility.openExternal(lfs.getFullPath()
+				final IFile file = ResourceUtil.openExternal(lfs.getFullPath()
 						.toString());
 				return new FileEditorInput(file);
 			} catch (final CoreException e) {

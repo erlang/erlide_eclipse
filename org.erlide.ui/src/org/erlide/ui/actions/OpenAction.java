@@ -45,6 +45,7 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -339,19 +340,19 @@ public class OpenAction extends SelectionDispatchAction {
 						project);
 			}
 		} else if (res.isInclude()) {
-			IContainer parent = module == null ? null : module.getResource()
-					.getParent();
+			final IContainer parent = module == null ? null : module
+					.getResource().getParent();
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res
 							.getName(), org.erlide.core.erlang.util.PluginUtils
 							.getIncludePathFilter(project, parent));
 			if (r == null) {
 				try {
-					final String includeFile = ErlModelUtils.findIncludeFile(
+					final String includeFile = ModelUtils.findIncludeFile(
 							project, res.getName(), model.getExternal(
 									erlProject, ErlangCore.EXTERNAL_INCLUDES));
 					if (includeFile != null) {
-						r = EditorUtility.openExternal(includeFile);
+						r = ResourceUtil.openExternal(includeFile);
 					}
 				} catch (final Exception e) {
 					ErlLogger.warn(e);

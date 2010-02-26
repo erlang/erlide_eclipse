@@ -15,16 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
@@ -43,11 +37,8 @@ import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -371,32 +362,6 @@ public class EditorUtility {
 		}
 
 		return 0;
-	}
-
-	static public IFile openExternal(final String path) throws CoreException {
-		final IProject project = ResourceUtil.getExternalFilesProject();
-		if (path == null) {
-			return null;
-		}
-		final IPath location = new Path(path);
-		final IFile file = project.getFile(location.lastSegment());
-		final IStatus status = ResourcesPlugin.getWorkspace()
-				.validateLinkLocation(file, location);
-		if (status.getSeverity() != IStatus.OK
-				&& status.getSeverity() != IStatus.INFO) {
-			if (status.getSeverity() != IStatus.WARNING
-					|| status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
-				ErlLogger.warn("Can't open %s:: %s", path, status.toString());
-				return null;
-			}
-		}
-		if (!file.isLinked()) {
-			file.createLink(location, IResource.NONE, null);
-		}
-		final IErlProject p = ErlangCore.getModel().getErlangProject(
-				project.getName());
-		p.open(null);
-		return file;
 	}
 
 }

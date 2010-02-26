@@ -12,18 +12,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.util.Assert;
+import org.erlide.jinterface.util.ErlLogger;
 
 /**
  * <p>
@@ -228,5 +233,31 @@ public class ResourceUtil {
 			}
 		}
 		return project;
+	}
+
+	static public IFile openExternal(final String path) throws CoreException {
+		final IProject project = getExternalFilesProject();
+		if (path == null) {
+			return null;
+		}
+		final IPath location = new Path(path);
+		final IFile file = project.getFile(location.lastSegment());
+		final IStatus status = ResourcesPlugin.getWorkspace()
+				.validateLinkLocation(file, location);
+		if (status.getSeverity() != IStatus.OK
+				&& status.getSeverity() != IStatus.INFO) {
+			if (status.getSeverity() != IStatus.WARNING
+					|| status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
+				ErlLogger.warn("Can't open %s:: %s", path, status.toString());
+				return null;
+			}
+		}
+		if (!file.isLinked()) {
+			file.createLink(location, IResource.NONE, null);
+		}
+		final IErlProject p = ErlangCore.getModel().getErlangProject(
+				project.getName());
+		p.open(null);
+		return file;
 	}
 }
