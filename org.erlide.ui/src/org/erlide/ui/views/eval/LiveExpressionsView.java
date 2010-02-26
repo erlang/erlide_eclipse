@@ -24,12 +24,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -79,16 +79,38 @@ public class LiveExpressionsView extends ViewPart implements
 
 	private Label label;
 	private List<LiveExpr> exprs;
-	TableViewer viewer;
+	CheckboxTableViewer viewer;
 	private Action refreshAction;
 	private Action fAddAction;
 	Action fRemoveAction;
 
 	private static class LiveExpr {
 		String fExpr;
+		private String cachedValue;
+		boolean doEval = true;
 
 		public LiveExpr(final String s) {
 			fExpr = s;
+		}
+
+		public void setDoEval(boolean eval) {
+			doEval = eval;
+		}
+
+		public String getValue() {
+			if (doEval) {
+				cachedValue = evaluate();
+			}
+			return cachedValue;
+		}
+
+		private String evaluate() {
+			Backend b = ErlangCore.getBackendManager().getIdeBackend();
+			final BackendEvalResult r = ErlBackend.eval(b, fExpr + ".", null);
+			if (r.isOk()) {
+				return r.getValue().toString();
+			}
+			return "ERR: " + r.getErrorReason().toString();
 		}
 
 		@Override
@@ -106,7 +128,7 @@ public class LiveExpressionsView extends ViewPart implements
 	 */
 	static class ViewContentProvider implements IStructuredContentProvider {
 
-		private List<?> exprlist;
+		private List<LiveExpr> exprlist;
 
 		public ViewContentProvider() {
 			super();
@@ -115,7 +137,7 @@ public class LiveExpressionsView extends ViewPart implements
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
 			if (newInput instanceof List<?>) {
-				exprlist = (List<?>) newInput;
+				exprlist = (List<LiveExpr>) newInput;
 			}
 		}
 
@@ -137,12 +159,11 @@ public class LiveExpressionsView extends ViewPart implements
 			if (index == 0) {
 				return e.fExpr;
 			}
-			Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			final BackendEvalResult r = ErlBackend.eval(b, e.fExpr + ".", null);
-			if (r.isOk()) {
-				return r.getValue().toString();
+			if (index == 1) {
+				e.setDoEval(viewer.getChecked(e));
+				return e.getValue();
 			}
-			return "ERR: " + r.getErrorReason().toString();
+			return null;
 		}
 
 		public Image getColumnImage(final Object obj, final int index) {
@@ -179,7 +200,7 @@ public class LiveExpressionsView extends ViewPart implements
 	@Override
 	public void createPartControl(final Composite parent) {
 		label = new Label(parent, SWT.NULL);
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
+		viewer = new CheckboxTableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
 				| SWT.FULL_SELECTION);
 		final Table t = (Table) viewer.getControl();
 
