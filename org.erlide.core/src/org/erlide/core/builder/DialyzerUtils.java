@@ -69,6 +69,9 @@ public class DialyzerUtils {
 	public static void addDialyzeWarningMarkersFromResultList(
 			final IErlProject project, final Backend backend,
 			final OtpErlangList result) {
+		if (result == null) {
+			return;
+		}
 		final IProject p = project.getProject();
 		final IPath projectPath = p.getLocation();
 		final int projectPathLength = projectPath.toPortableString().length();
@@ -166,6 +169,10 @@ public class DialyzerUtils {
 
 	public static void checkDialyzeError(final OtpErlangObject result)
 			throws DialyzerErrorException {
+		if (result == null) {
+			throw new DialyzerErrorException(
+					"Could not execute dialyzer, please check settings.");
+		}
 		if (result instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) result;
 			final String s = Util.stringValue(t.elementAt(1));

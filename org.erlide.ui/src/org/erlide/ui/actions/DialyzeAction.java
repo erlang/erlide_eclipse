@@ -67,13 +67,11 @@ public class DialyzeAction implements IObjectActionDelegate {
 		} catch (final InvocationTargetException e) {
 			final Throwable t = e.getCause();
 			Display.getDefault().asyncExec(new Runnable() {
-
 				public void run() {
 					MessageDialog.openError(getShell(), "Dialyzer error", t
 							.getMessage());
 				}
 			});
-
 		} catch (final InterruptedException e) {
 			ErlLogger.error(e);
 		}
