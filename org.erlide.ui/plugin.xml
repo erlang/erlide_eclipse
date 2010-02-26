@@ -135,6 +135,12 @@
              id="org.erlide.ui.preferences.compiler"
              name="Compiler">
        </page>
+       <page
+             category="org.erlide.ui.preferences"
+             class="org.erlide.ui.prefs.DialyzerPreferencePage"
+             id="org.erlide.ui.preferences.dialyzer"
+             name="Dialyzer">
+       </page>
   </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -221,6 +227,20 @@
 		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
 		     </adapt>
         </enabledWhen>
+      </page>
+      <page
+            class="org.erlide.ui.prefs.DialyzerPreferencePage"
+            id="org.erlide.ui.properties.dialyzerPreferencePage"
+            name="Erlang dialyzer">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.erlide.core.erlnature">
+               </test>
+            </adapt>
+         </enabledWhen>
       </page>
       <page
             class="org.erlide.ui.properties.EdocConfigurationPropertyPage"
@@ -334,6 +354,37 @@
                menubarPath="debug">
          </action>
       </viewerContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.erlide.ui.actions.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze2"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <action
+               class="org.erlide.ui.actions.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.ui.actions.dialyze3"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="org.erlide.ui.actions.DialyzeAction"
+               id="org.erlide.ui.actions.dialyze"
+               label="Dialyze">
+         </action>
+      </objectContribution>
    </extension>
   <extension
          point="org.eclipse.ui.newWizards">
@@ -1322,4 +1373,31 @@
           name="Erlang Editor"
           parentId="org.eclipse.ui.textEditorScope"/>
  	</extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="org.erlide.core.dialyzewarningmarker"
+            name="org.erlide.ui.dialyzewarningmarkertype">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.ui.dialyzewarningmarkertype"
+            colorPreferenceKey="dialyzewarningmarkerColor"
+            colorPreferenceValue="255,150,150"
+            highlightPreferenceKey="dialyzewarningmarkerHighlighting"
+            highlightPreferenceValue="false"
+            icon="icons/full/obj16/dialyzer_warning.gif"
+            includeOnPreferencePage="true"
+            label="Dialyzer Warning"
+            overviewRulerPreferenceKey="dialyzewarningmarkerInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="3"
+            textPreferenceKey="dialyzewarningmarker"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
+            verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
 </plugin>

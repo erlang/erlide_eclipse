@@ -31,6 +31,7 @@ public final class BuilderMessages extends NLS {
 	public static String build_missingSourceFile;
 	public static String build_preparingBuild;
 	public static String build_readingDelta;
+	public static String build_dialyzerProblem;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, BuilderMessages.class);

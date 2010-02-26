@@ -31,7 +31,7 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 	 * Non-Erlang resources includes other files and folders located in the
 	 * project not accounted for by any of it source or binary package fragment
 	 * roots. If the project is a source folder itself, resources excluded from
-	 * the corresponding source classpath entry by one or more exclusion
+	 * the corresponding source class-path entry by one or more exclusion
 	 * patterns are considered non-Erlang resources and will appear in the
 	 * result (possibly in a folder)
 	 * </p>
@@ -44,6 +44,10 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 	 */
 	IResource[] getNonErlangResources() throws ErlModelException;
 
+	/**
+	 * @return all modules in this folder and its sub-folders
+	 * @throws ErlModelException
+	 */
 	List<IErlModule> getModules() throws ErlModelException;
 
 	IErlModule getModule(String name) throws ErlModelException;
