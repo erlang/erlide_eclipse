@@ -75,18 +75,12 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		prefsComposite = new Composite(parent, SWT.NONE);
 		prefsComposite.setLayout(new GridLayout());
 
-		createDialyzeCheckboxGroup(prefsComposite);
-		createPltSelectionGroup(prefsComposite);
-		createFromSelectionGroup(prefsComposite);
-
-		final Label label = new Label(prefsComposite, SWT.SEPARATOR
-				| SWT.HORIZONTAL);
-		{
-			final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
-					false, 1, 1);
-			gridData.widthHint = 399;
-			label.setLayoutData(gridData);
-		}
+		final Group group = new Group(prefsComposite, SWT.NONE);
+		group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		group.setLayout(new GridLayout(1, false));
+		createDialyzeCheckbox(group);
+		createPltSelection(group);
+		createFromSelection(group);
 
 		if (isProjectPreferencePage()) {
 			final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
@@ -96,35 +90,41 @@ public class DialyzerPreferencePage extends PropertyPage implements
 		return prefsComposite;
 	}
 
-	private void createDialyzeCheckboxGroup(final Composite parent) {
-		final Group group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(1, false));
-		dialyzeCheckbox = new Button(group, SWT.CHECK);
+	private void createDialyzeCheckbox(final Composite group) {
+		final Composite comp = new Composite(group, SWT.NONE);
+		// comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
+		// false));
+		comp.setLayout(new GridLayout(1, false));
+		dialyzeCheckbox = new Button(comp, SWT.CHECK);
 		dialyzeCheckbox.setText("Run dialyzer when compiling");
 		dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
 	}
 
-	private void createFromSelectionGroup(final Composite parent) {
-		final Group group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(2, false));
-		final Label l = new Label(group, SWT.NONE);
+	private void createFromSelection(final Composite group) {
+		final Composite comp = new Composite(group, SWT.NONE);
+		// comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
+		// false));
+		comp.setLayout(new GridLayout(2, false));
+		final Label l = new Label(comp, SWT.NONE);
 		l.setText("Analyze from ");
-		fromCombo = new Combo(group, SWT.READ_ONLY);
+		fromCombo = new Combo(comp, SWT.READ_ONLY);
 		fromCombo.setItems(new String[] { "Source", "Binaries" });
 		fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
 	}
 
-	private void createPltSelectionGroup(final Composite parent) {
-		final Composite group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(3, false));
+	private void createPltSelection(final Composite group) {
+		final Composite comp = new Composite(group, SWT.NONE);
+		// comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
+		// false));
+		comp.setLayout(new GridLayout(3, false));
 		GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-		group.setLayoutData(gd);
-		final Label l = new Label(group, SWT.NONE);
+		comp.setLayoutData(gd);
+		final Label l = new Label(comp, SWT.NONE);
 		l.setText("Select PLT");
-		pltEdit = new Text(group, SWT.BORDER);
+		pltEdit = new Text(comp, SWT.BORDER);
 		gd = new GridData(SWT.FILL, GridData.CENTER, true, false);
 		pltEdit.setLayoutData(gd);
-		final Button b = new Button(group, SWT.PUSH);
+		final Button b = new Button(comp, SWT.PUSH);
 		b.setText("Browse...");
 		b.addSelectionListener(new SelectionAdapter() {
 			@Override
