@@ -175,7 +175,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	private void doRefresh(final IFile file) {
-		new UIJob("Update Erlang Model in CommonViewer") {
+		new UIJob("Update Erlang Model in CommonViewer: " + file.getName()) {
 			@Override
 			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (viewer != null && !viewer.getControl().isDisposed()) {
