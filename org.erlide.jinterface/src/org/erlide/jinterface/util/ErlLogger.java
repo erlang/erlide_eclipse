@@ -52,10 +52,9 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = o.length == 0 ? fmt : String.format(fmt, o);
-		Logger.getLogger("org.erlide").log(
-				kind,
-				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str);
+		String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+				+ str;
+		Logger.getLogger("org.erlide").log(kind, msg);
 	}
 
 	public static void log(final Level kind, final Throwable exception) {
@@ -64,11 +63,9 @@ public class ErlLogger {
 		}
 		final StackTraceElement el = getCaller();
 		final String str = exception.getMessage();
-
-		Logger.getLogger("org.erlide").log(
-				kind,
-				"(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
-						+ str, exception);
+		String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+				+ str;
+		Logger.getLogger("org.erlide").log(kind, msg, exception);
 	}
 
 	public static void erlangLog(final String module, final int line,
@@ -78,8 +75,8 @@ public class ErlLogger {
 			return;
 		}
 		final String str = o.length == 0 ? fmt : String.format(fmt, o);
-		Logger.getLogger("org.erlide").log(kind,
-				"(" + module + ":" + line + ") : " + str);
+		String msg = "(" + module + ":" + line + ") : " + str;
+		Logger.getLogger("org.erlide").log(kind, msg);
 	}
 
 	public static void debug(final String fmt, final Object... o) {
@@ -157,32 +154,34 @@ public class ErlLogger {
 		}
 	}
 
-	public static void init(final String dir, final boolean debug) {
-		Handler fh;
+	public static Logger init(final String dir, final boolean debug) {
 		try {
 			final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
-			final Logger logger = Logger.getLogger("org.erlide");
+			Logger logger = Logger.getLogger("org.erlide");
 
 			String aDir = (dir == null) ? "./" : dir;
-			fh = new FileHandler(aDir + "_erlide.log");
+			Handler fh = new FileHandler(aDir + "_erlide.log");
 			fh.setFormatter(erlSimpleFormatter);
 			fh.setLevel(java.util.logging.Level.FINEST);
 			logger.addHandler(fh);
 
 			final ConsoleHandler consoleHandler = new ConsoleHandler();
 			consoleHandler.setFormatter(erlSimpleFormatter);
-			final Level lvl = debug ? java.util.logging.Level.FINEST
+			Level lvl = debug ? java.util.logging.Level.FINEST
 					: java.util.logging.Level.SEVERE;
 			consoleHandler.setLevel(lvl);
 			logger.addHandler(consoleHandler);
 
 			logger.setUseParentHandlers(false);
 			logger.setLevel(java.util.logging.Level.FINEST);
+
+			return logger;
 		} catch (final SecurityException e) {
 			e.printStackTrace();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 }
