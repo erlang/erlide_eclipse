@@ -395,11 +395,22 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	public void notifyChange(final IErlElement element) {
-		// ErlLogger.debug("^> notifying change of " +
-		// element.getElementName());
+		ErlLogger.debug("^> notifying change of " + element.getName());
+		if (System.getProperty("erlide.model.notify") != null) {
+			ErlLogger.debug("   caller = " + getStack());
+		}
 		for (int i = 0; i < fListeners.size(); i++) {
 			fListeners.get(i).elementChanged(element);
 		}
+	}
+
+	private static synchronized String getStack() {
+		StringBuilder result = new StringBuilder();
+		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
+		for (StackTraceElement el : st) {
+			result.append("      ").append(el.toString()).append("\n");
+		}
+		return result.toString();
 	}
 
 	public void addModelChangeListener(final IErlModelChangeListener listener) {
