@@ -107,8 +107,7 @@ public final class MarkerHelper {
 											.findProject(project),
 											ErlangCore.EXTERNAL_INCLUDES));
 							if (includeFile != null) {
-								resource = ResourceUtil
-										.openExternal(includeFile);
+								res = ResourceUtil.openExternal(includeFile);
 							}
 						} catch (final Exception e) {
 							ErlLogger.warn(e);
@@ -139,7 +138,12 @@ public final class MarkerHelper {
 				} catch (final OtpErlangRangeException e) {
 				}
 
-				addMarker(res, resource, msg, line, sev, "");
+				if (res != null) {
+					addMarker(res, resource, msg, line, sev, "");
+				} else {
+					addMarker(resource.getProject(), null, "can't find "
+							+ fileName, 0, IMarker.SEVERITY_ERROR, "");
+				}
 			} catch (final Exception e) {
 				ErlLogger.warn(e);
 				ErlLogger.warn("got: %s", odata);
