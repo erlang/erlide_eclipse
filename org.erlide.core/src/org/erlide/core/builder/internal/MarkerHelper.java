@@ -143,6 +143,7 @@ public final class MarkerHelper {
 				} else {
 					addMarker(resource.getProject(), null, "can't find "
 							+ fileName, 0, IMarker.SEVERITY_ERROR, "");
+					addMarker(resource, null, "?? " + msg, line, sev, "");
 				}
 			} catch (final Exception e) {
 				ErlLogger.warn(e);
