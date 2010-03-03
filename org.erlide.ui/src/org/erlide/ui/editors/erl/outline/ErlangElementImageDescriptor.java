@@ -19,7 +19,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 
 /**
- * A JavaImageDescriptor consists of a base image and several adornments. The
+ * An ErlangImageDescriptor consists of a base image and several adornments. The
  * adornments are computed according to the flags either passed during creation
  * or set via the method <code>setAdornments</code>.
  * 
@@ -45,7 +45,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 	private Point fSize;
 
 	/**
-	 * Creates a new JavaElementImageDescriptor.
+	 * Creates a new ErlangElementImageDescriptor.
 	 * 
 	 * @param baseImage
 	 *            an image descriptor used as the base image
@@ -131,8 +131,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 		}
 
 		final ErlangElementImageDescriptor other = (ErlangElementImageDescriptor) object;
-		return (fBaseImage.equals(other.fBaseImage) && fFlags == other.fFlags && fSize
-				.equals(other.fSize));
+		return fBaseImage.equals(other.fBaseImage) && fFlags == other.fFlags
+				&& fSize.equals(other.fSize);
 	}
 
 	/*

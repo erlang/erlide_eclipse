@@ -32,8 +32,6 @@ import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 
 public class ErlMergeViewer extends TextMergeViewer {
 
-	private static final String TITLE = "ErlMergeViewer.title"; //$NON-NLS-1$
-
 	private IPropertyChangeListener fPreferenceChangeListener;
 
 	private final IPreferenceStore fPreferenceStore;
@@ -156,7 +154,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 
 	@Override
 	public String getTitle() {
-		return ErlideUIPlugin.getResourceString(TITLE);
+		return ErlideUIPlugin.getResourceString("Erlang Source Compare");
 	}
 
 	@Override
