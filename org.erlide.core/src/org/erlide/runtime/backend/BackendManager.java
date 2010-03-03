@@ -269,7 +269,6 @@ public final class BackendManager extends OtpNodeStatus implements
 			synchronized (ideBackendLock) {
 				if (ideBackend == null) {
 					try {
-						System.out.println("CREATE ide");
 						createIdeBackend();
 					} catch (BackendException e) {
 						ErlLogger.error("Could not start IDE backend: "
