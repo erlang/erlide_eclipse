@@ -47,11 +47,11 @@ import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -64,30 +64,27 @@ public final class ErlideUtil {
 			final String localDir) {
 		File f = null;
 		try {
-			String markName = localDir + "/erlide_dummy_file_can_be_deleted";
+			final String markName = localDir
+					+ "/erlide_dummy_file_can_be_deleted";
 			f = new File(markName);
 			f.createNewFile();
 			final OtpErlangObject r = backend.call("file", "read_file_info",
-					"s", markName);
-			final OtpErlangTuple result = (OtpErlangTuple) r;
-			final String tag = ((OtpErlangAtom) result.elementAt(0))
-					.atomValue();
-			if ("ok".equals(tag)) {
+					"s", localDir);
+			if (Util.isOk(r)) {
+				final OtpErlangTuple result = (OtpErlangTuple) r;
 				final OtpErlangTuple info = (OtpErlangTuple) result
 						.elementAt(1);
 				final String access = info.elementAt(3).toString();
 				final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
 				return (access.equals("read") || access.equals("read_write"))
 						&& (mode & 4) == 4;
-			} else {
-				return false;
 			}
 
 		} catch (final OtpErlangRangeException e) {
 			ErlLogger.error(e);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		} finally {
 			if (f != null) {
@@ -340,7 +337,7 @@ public final class ErlideUtil {
 	}
 
 	public static String getReportFile() {
-		String s = getReportLocation();
+		final String s = getReportLocation();
 		final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
 		return s + "/" + System.getProperty("user.name") + "_" + tstamp
@@ -443,16 +440,16 @@ public final class ErlideUtil {
 		final OtpErlangBinary bin = ErlideUtil.getBeamBinary(module,
 				outputLocation);
 		if (bin != null) {
-			String fmt = "code:load_binary(%s, %s, %s).\n";
-			StringBuffer strBin = new StringBuffer();
+			final String fmt = "code:load_binary(%s, %s, %s).\n";
+			final StringBuffer strBin = new StringBuffer();
 			strBin.append("<<");
-			for (byte c : bin.binaryValue()) {
+			for (final byte c : bin.binaryValue()) {
 				strBin.append(c).append(',');
 			}
 			strBin.deleteCharAt(strBin.length() - 1);
 			strBin.append(">>");
-			String cmd = String.format(fmt, module, module, strBin.toString(),
-					module);
+			final String cmd = String.format(fmt, module, module, strBin
+					.toString(), module);
 			b.input(cmd);
 		}
 	}

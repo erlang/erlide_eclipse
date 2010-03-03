@@ -25,6 +25,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -147,8 +148,8 @@ public class ErlangElementImageProvider {
 	}
 
 	/**
-	 * Returns an image descriptor for a java element. The descriptor includes
-	 * overlays, if specified.
+	 * Returns an image descriptor for an erlang element. The descriptor
+	 * includes overlays, if specified.
 	 */
 	static public ImageDescriptor getErlImageDescriptor(
 			final IErlElement element, final int flags) {
@@ -190,47 +191,40 @@ public class ErlangElementImageProvider {
 	 */
 	static public ImageDescriptor getBaseImageDescriptor(
 			final IErlElement element, final int renderFlags) {
-
-		// try {
-		if (element.getKind() == IErlElement.Kind.FUNCTION) {
+		if (element instanceof IErlFunction) {
 			final IErlFunction fun = (IErlFunction) element;
-			// int flags= method.getFlags();
 			if (fun.isExported()) {
 				return ErlideUIPluginImages.DESC_FUNCTION_EXPORTED;
 			}
+		}
+		return getImageDescriptionFromKind(element.getKind());
+	}
+
+	public static ImageDescriptor getImageDescriptionFromKind(final Kind kind) {
+		if (kind == IErlElement.Kind.FUNCTION) {
 			return ErlideUIPluginImages.DESC_FUNCTION_DEFAULT;
-		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
+		} else if (kind == IErlElement.Kind.ATTRIBUTE) {
 			return ErlideUIPluginImages.DESC_ATTRIBUTE;
-		} else if (element.getKind() == IErlElement.Kind.CLAUSE) {
+		} else if (kind == IErlElement.Kind.CLAUSE) {
 			return ErlideUIPluginImages.DESC_FUNCTION_CLAUSE;
-		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
+		} else if (kind == IErlElement.Kind.EXPORT) {
 			return ErlideUIPluginImages.DESC_EXPORT;
-		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+		} else if (kind == IErlElement.Kind.RECORD_DEF) {
 			return ErlideUIPluginImages.DESC_RECORD_DEF;
-		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
+		} else if (kind == IErlElement.Kind.MACRO_DEF) {
 			return ErlideUIPluginImages.DESC_MACRO_DEF;
-		} else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+		} else if (kind == IErlElement.Kind.TYPESPEC) {
 			return ErlideUIPluginImages.DESC_TYPESPEC_DEF;
-		} else if (element.getKind() == IErlElement.Kind.IMPORT) {
+		} else if (kind == IErlElement.Kind.IMPORT) {
 			return ErlideUIPluginImages.DESC_IMPORT;
-		} else if (element.getKind() == IErlElement.Kind.ERROR) {
+		} else if (kind == IErlElement.Kind.ERROR) {
 			return ErlideUIPluginImages.DESC_UNKNOWN;
-		} else if (element.getKind() == IErlElement.Kind.MODULE) {
+		} else if (kind == IErlElement.Kind.MODULE) {
 			return ErlideUIPluginImages.DESC_MODULE;
-		} else if (element.getKind() == IErlElement.Kind.FOLDER) {
+		} else if (kind == IErlElement.Kind.FOLDER) {
 			return ErlideUIPluginImages.DESC_SRC_FOLDER;
 		}
-
-		// Assert.isTrue(false, "ErlangElementImageProvider: wrong image");
-		// return ErlideUIPluginImages.DESC_GHOST;
 		return ErlideUIPluginImages.DESC_UNKNOWN;
-
-		// } catch (ErlModelException e) {
-		// if (e.isDoesNotExist())
-		// return ErlideUIPluginImages.DESC_OBJS_UNKNOWN;
-		// ErlideUIPlugin.log(e);
-		// return ErlideUIPluginImages.DESC_OBJS_GHOST;
-		// }
 	}
 
 	public void dispose() {
