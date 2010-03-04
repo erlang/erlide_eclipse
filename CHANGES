@@ -1,3 +1,16 @@
+List of user visible changes between 0.7.3 and 0.7.4 (20100304)
+
+a58f276 added dialyzer support
+413dc96 222-errors-in-hrl-files
+5a719c0 466 highlighting-of-macros-not-working
+8f1d68a 509-using-shortcut-to-toggle-comment-does-not-trigger-clearcase-checkout-dialog
+ba9535d 526 run-debug-on-remote-node-doesn-t-work
+83e4e7d 518-templates---add-project-templates-from-external-xml-file
+27e19b9 507-templates--unify-completion-templates-with--code-templates-
+0931bcd 500-templates--popup-help-isn-t-formatted
+e58cf38 504-templates--should-be-filtered-by-user-input
+cc58378 482-add-tab-for-src-and-include-dirs
+
 List of user visible changes between 0.7.0 and 0.7.3 (20100118)
 
 37441dd ignore errors when deleting beam files
