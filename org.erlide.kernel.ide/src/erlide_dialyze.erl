@@ -14,7 +14,7 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/4, format_warning/1]).
+-export([dialyze/4, format_warning/1, check_plt/1]).
 
 %%
 %% API Functions
@@ -41,6 +41,10 @@ dialyze(Files, Plt, Includes, FromSource) ->
 
 format_warning(Msg) ->
     dialyzer:format_warning(Msg).
+
+check_plt(Plt) ->
+    dialyzer:run([{analysis_type, plt_check},
+		  {init_plt, Plt}]).
 
 %%
 %% Local Functions
