@@ -1289,20 +1289,6 @@
             name="Module Templates">
       </contextType>
       <resolver
-            class="org.erlide.ui.templates.ModuleVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverModule"
-            name="Erlang Module"
-            type="module">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.templates.ModuleVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
-            description="%variableResolverModule"
-            name="Erlang Module"
-            type="module">
-      </resolver>
-      <resolver
             class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
             description="%variableResolverLocalFunctions"

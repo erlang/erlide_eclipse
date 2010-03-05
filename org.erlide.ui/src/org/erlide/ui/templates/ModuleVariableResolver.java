@@ -18,19 +18,20 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ModuleVariableResolver extends TemplateVariableResolver {
 
-	private static final ArrayList<TemplateVariableResolver> fInstances = new ArrayList<TemplateVariableResolver>();
+	private static final ArrayList<ModuleVariableResolver> fInstances = new ArrayList<ModuleVariableResolver>();
 
 	private String fModule = "<module_name>";
 
 	public ModuleVariableResolver() {
+		super("module", "The current erlang module");
 		fInstances.add(this);
 	}
 
 	public static ModuleVariableResolver getDefault() {
-		if (fInstances.size() == 0) {
-			fInstances.add(new ModuleVariableResolver());
+		if (fInstances.isEmpty()) {
+			new ModuleVariableResolver();
 		}
-		return (ModuleVariableResolver) fInstances.get(0);
+		return fInstances.get(0);
 	}
 
 	/*
