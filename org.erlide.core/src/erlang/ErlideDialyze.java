@@ -36,4 +36,14 @@ public class ErlideDialyze {
 		return warning.toString();
 	}
 
+	public static OtpErlangObject checkPlt(final Backend backend,
+			final String plt) {
+		try {
+			return backend.call("erlide_dialyze", "check_plt", "s", plt);
+		} catch (final BackendException e) {
+			ErlLogger.debug(e);
+		}
+		return null;
+	}
+
 }
