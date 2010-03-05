@@ -28,11 +28,11 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 	public ErlangSourceContextTypeModule() {
 		addGlobalResolvers();
 		addModuleResolver();
-		fInstance = this;
+		fInstance = this; 
 	}
 
 	private void addModuleResolver() {
-		addResolver(ModuleVariableResolver.getDefault());
+		addResolver(new ModuleVariableResolver()); // .getDefault());
 	}
 
 	private void addGlobalResolvers() {
