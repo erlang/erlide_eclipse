@@ -14,7 +14,7 @@
 -export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
-%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -156,14 +156,14 @@ indent_lines(S, From, Length, Tablength, UseTabs, Prefs) ->
     do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, "").
 
 template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
-	S0 = Prefix++S,
-	S1 = quote_template_variables(S0),
-	From = length(Prefix),
-	Length = length(S1) - From,
+    S0 = Prefix++S,
+    S1 = quote_template_variables(S0),
+    From = length(Prefix),
+    Length = length(S1) - From,
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S1, From, Length),
     S2 = do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, ""),
-	S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
-	unquote_template_variables(S3).
+    S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
+    unquote_template_variables(S3).
 
 %%
 %% Local Functions
@@ -417,7 +417,7 @@ i_end_paren_or_expr_list(R, I0) ->
     end.
 
 i_end_or_expr_list(R, I0) ->
-	i_check(R, I0),
+    i_check(R, I0),
     case i_sniff(R) of
         'end' ->
             R;
@@ -451,8 +451,8 @@ i_1_expr([#token{kind=Kind} | _] = R0, I0) when Kind=='{'; Kind=='['; Kind=='(' 
 i_1_expr([#token{kind='<<'} | _] = R0, I0) ->
     R1 = i_kind('<<', R0, I0),
     I1 = i_with('<<', R0, I0),
-    I2 = i_with(end_paren, R0, I0),
     R2 = i_binary_expr_list(R1, I1#i{in_block=false}),
+    I2 = i_with(end_paren, R0, I0),
     i_kind('>>', R2, I2);
 i_1_expr([#token{kind='#'} | _] = L, I) ->
     ?D('#'),
@@ -462,11 +462,15 @@ i_1_expr([#token{kind='case'} | _] = R, I) ->
     i_case(R, I);
 i_1_expr([#token{kind='if'} | _] = R, I) ->
     i_if(R, I);
-i_1_expr([#token{kind='begin'}=T | _] = R0, I0) ->
+i_1_expr([#token{kind='begin'} | _] = R0, I0) ->
     R1 = i_kind('begin', R0, I0),
     I1 = i_with('case', R0, I0),
     R2 = i_end_or_expr_list(R1, I1#i{in_block=false}),
-    i_block_end(T#token.kind, R2, I0);
+    i_block_end('begin', R0, R2, I0);
+%%     R1 = i_kind('begin', R0, I0),
+%%     I1 = i_with('case', R0, I0),
+%%     R2 = i_end_or_expr_list(R1, I1#i{in_block=false}),
+%%     i_block_end(T#token.kind, R2, I0);
 i_1_expr([#token{kind='receive'} | _] = R, I) ->
     i_receive(R, I);
 i_1_expr([#token{kind='fun'}=T | R0], I) ->
@@ -521,7 +525,7 @@ i_if(R0, I0) ->
     R1 = i_kind('if', R0, I1),
     I2 = i_with('case', R0, I1),
     R2 = i_if_clause_list(R1, I2, none),
-    i_block_end('if', R2, I1).
+    i_block_end('if', R0, R2, I1).
 
 i_case(R0, I0) ->
     I1 = I0#i{in_block=true},
@@ -530,7 +534,7 @@ i_case(R0, I0) ->
     {R2, _A} = i_expr(R1, I2#i{in_block=false}, none),
     R3 = i_kind('of', R2, I2),
     R4 = i_clause_list(R3, I2),
-    i_block_end('case', R4, I1).
+    i_block_end('case', R0, R4, I1).
 
 i_receive(R0, I0) ->
     I1 = I0#i{in_block=true},
@@ -551,7 +555,7 @@ i_receive(R0, I0) ->
 	     _ ->
 		 R2
 	 end,
-    i_block_end('receive', R4, I1).
+    i_block_end('receive', R0, R4, I1).
 
 
 
@@ -584,7 +588,7 @@ i_try(R0, I0) ->
 	     _ ->
 		 R4
 	 end,
-   i_block_end('try', R5, I0).
+   i_block_end('try', R0, R5, I0).
 
 is_binary_op([T | _]) ->
     is_binary_op(T);
@@ -598,8 +602,9 @@ is_unary_op([T | _]) ->
 is_unary_op(#token{kind=Kind}) ->
     erlide_text:is_op1(Kind).
 
-i_block_end(_Begin, R, I) ->
-    i_one(R, I).
+i_block_end(_Begin, R0, R1, I0) ->
+    I1 = i_with(end_paren, R0, I0),
+    i_kind('end', R1, I1).
 
 i_one(R0, I) ->
     [_ | R] = i_comments(R0, I),
