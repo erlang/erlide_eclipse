@@ -128,7 +128,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 	 * @see ITypedInput#getType
 	 */
 	public String getType() {
-		return "erl";
+		return "erl2";
 	}
 
 	/**
