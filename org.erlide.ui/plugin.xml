@@ -736,7 +736,7 @@
        point="org.eclipse.compare.contentViewers">
     <viewer
           class="org.erlide.ui.internal.compare.ErlContentViewerCreator"
-          extensions="erl,hrl"
+          extensions="erl,hrl,erl2"
           id="org.erlide.ui.compare.ErlContentViewerCreator">
     </viewer>
     <contentTypeBinding
@@ -748,7 +748,7 @@
        point="org.eclipse.compare.contentMergeViewers">
     <viewer
           class="org.erlide.ui.internal.compare.ErlMergeViewerCreator"
-          extensions="erl,hrl"
+          extensions="erl,hrl,erl2"
           id="org.erlide.ui.compare.ErlContentMergeViewerCreator"
           label="Erlang Source Compare"/>
     <contentTypeBinding
@@ -758,7 +758,7 @@
  <extension
        point="org.eclipse.compare.structureMergeViewers">
     <viewer
-          class="org.erlide.ui.internal.compare.ErlStructureMergeViewerCreator"
+          class="org.erlide.ui.internal.compare.ErlStructureDiffViewerCreator"
           extensions="erl,hrl"
           id="org.erlide.ui.compare.ErlStructureMergeViewerCreator"
           label="Erlang Structure Compare">
