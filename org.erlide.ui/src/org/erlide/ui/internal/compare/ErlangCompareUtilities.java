@@ -24,7 +24,12 @@ import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlElement.Kind;
 
 class ErlangCompareUtilities {
 
@@ -124,50 +129,28 @@ class ErlangCompareUtilities {
 	 * Returns a name for the given Java element that uses the same conventions
 	 * as the JavaNode name of a corresponding element.
 	 */
-	static String getJavaElementID(final IErlElement e) {
+	static String getErlElementID(final IErlElement e) {
 		final StringBuilder sb = new StringBuilder();
 		final IErlElement.Kind kind = e.getKind();
 		sb.append(kind);
-		sb.append(e.toString());
-		//
-		//
-		// switch (kind) {
-		// case MODULE:
-		// sb.append(e.getName());
-		// break;
-		// case IErlElement.TYPE:
-		// sb.append(TYPE);
-		// sb.append(e.getElementName());
-		// break;
-		// case IErlElement.FIELD:
-		// sb.append(FIELD);
-		// sb.append(e.getElementName());
-		// break;
-		// case IErlElement.METHOD:
-		// sb.append(METHOD);
-		// sb.append(JavaElementLabels.getElementLabel(e,
-		// JavaElementLabels.M_PARAMETER_TYPES));
-		// break;
-		// case IErlElement.INITIALIZER:
-		// final String id = e.getHandleIdentifier();
-		// final int pos = id.lastIndexOf(INITIALIZER);
-		// if (pos >= 0) {
-		// sb.append(id.substring(pos));
-		// }
-		// break;
-		// case IErlElement.PACKAGE_DECLARATION:
-		// sb.append(PACKAGEDECLARATION);
-		// break;
-		// case IErlElement.IMPORT_CONTAINER:
-		// sb.append(IMPORT_CONTAINER);
-		// break;
-		// case IErlElement.IMPORT_DECLARATION:
-		// sb.append(IMPORTDECLARATION);
-		// sb.append(e.getElementName());
-		// break;
-		// default:
-		// return null;
-		// }
+		if (kind == Kind.FUNCTION) {
+			final IErlFunction f = (IErlFunction) e;
+			sb.append(f.getNameWithArity());
+		} else if (kind == Kind.CLAUSE) {
+			final IErlFunctionClause fc = (IErlFunctionClause) e;
+			sb.append(fc.getHead());
+		} else if (kind == Kind.ATTRIBUTE) {
+			final IErlAttribute a = (IErlAttribute) e;
+			sb.append(a.getValue().toString());
+		} else if (kind == Kind.RECORD_DEF || kind == Kind.MACRO_DEF) {
+			final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
+			sb.append(pd.getDefinedName());
+		}
+
+		// xMODULE, xATTRIBUTE, xFUNCTION, xCLAUSE, EXPORT, IMPORT,
+		// EXPORTFUNCTION, HEADERCOMMENT, COMMENT, xRECORD_DEF, xMACRO_DEF,
+		// FOLDER, TYPESPEC
+
 		return sb.toString();
 	}
 
