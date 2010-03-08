@@ -53,8 +53,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 		int start = 0, length = 0;
 		String name = element.toString();
 		if (element instanceof IErlModule) {
+			final IErlModule m = (IErlModule) element;
 			length = doc.getLength();
-			name = element.getName();
+			name = m.getModuleName();
 		} else if (element instanceof ISourceReference) {
 			final ISourceReference sourceReference = (ISourceReference) element;
 			ISourceRange sr;
