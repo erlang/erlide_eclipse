@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.search;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -211,7 +213,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		// if (!ActionUtil.isProcessable(fEditor)) {
 		// return;
 		// }
-		IErlModule module = fEditor.getModule();
+		final IErlModule module = fEditor.getModule();
 		if (module == null) {
 			return;
 		}
@@ -220,7 +222,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
 		try {
-			String scannerModuleName = ErlangToolkit
+			final String scannerModuleName = ErlangToolkit
 					.createScannerModuleName(module);
 			final OpenResult res = ErlideOpen.open(b, scannerModuleName,
 					offset, "", ErlangCore.getModel().getPathVars());
@@ -242,7 +244,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	abstract protected String[] getScope();
+	abstract protected List<String> getScope();
 
 	private void performNewSearch(final ErlangExternalFunctionCallRef ref) {
 

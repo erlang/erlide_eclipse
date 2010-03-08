@@ -13,8 +13,9 @@ import org.eclipse.search.ui.text.Match;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.runtime.backend.ErlideBackend;
 
-import erlang.ErlideNoparse;
+import erlang.ErlideXref;
 
 public class ErlSearchQuery implements ISearchQuery {
 	private final ErlangExternalFunctionCallRef searchRef;
@@ -23,7 +24,7 @@ public class ErlSearchQuery implements ISearchQuery {
 	// int arity;
 	// IErlElement element;
 	@SuppressWarnings("unused")
-	private final String[] scope;
+	private final List<String> scope;
 	@SuppressWarnings("unused")
 	private final int searchFor; // REFERENCES, DECLARATIONS or
 	// ALL_OCCURRENCES
@@ -46,7 +47,7 @@ public class ErlSearchQuery implements ISearchQuery {
 	// }
 
 	public ErlSearchQuery(final ErlangExternalFunctionCallRef ref,
-			final int searchFor, final int limitTo, final String[] scope) {
+			final int searchFor, final int limitTo, final List<String> scope) {
 		searchRef = ref;
 		this.searchFor = searchFor;
 		this.limitTo = limitTo;
@@ -77,8 +78,11 @@ public class ErlSearchQuery implements ISearchQuery {
 			throws OperationCanceledException {
 		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
 		// in... ev portionera ut lite
-		fResult = ErlideNoparse.find(ErlangCore.getBackendManager()
-				.getIdeBackend(), searchRef);
+		final ErlideBackend backend = ErlangCore.getBackendManager()
+				.getIdeBackend();
+		ErlideXref.addDirs(backend, scope);
+		fResult = ErlideXref.funtionUse(backend, searchRef);
+		// fResult = ErlideNoparse.find(backend, searchRef);
 		fSearchResult.setResult(fResult);
 		final List<Match> l = new ArrayList<Match>();
 		for (final ErlangExternalFunctionCallRef ref : fResult) {

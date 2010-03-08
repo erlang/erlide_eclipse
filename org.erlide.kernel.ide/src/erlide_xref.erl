@@ -3,6 +3,7 @@
 -export([start/0, 
 		 stop/0,
 		 add_project/1,
+		 add_dirs/1,
 		 analyze/1, 
 		 function_call/1, 
 		 function_use/1,
@@ -12,53 +13,85 @@
 		 module_use/1,
 		 update/0]).
 
+-define(DEBUG, 1).
+
+-define(XREF, erlide_xref).
+
 -include("erlide.hrl").
 
 start() ->
-	spawn(fun() ->
-				  ?SAVE_CALLS,
-				  erlang:yield(),
-				  xref:start(erlide), 
-				  xref:set_default(erlide, [{verbose,false},{warnings,false}]),
-				  %% 				  X= xref:add_release(erlide, code:lib_dir(),
-				  %% 									  [{name, otp}]),
-				  ok
-		  end),
-	ok.
+    start(whereis(?XREF)).
+
+start(undefined) ->
+%%     spawn(fun() ->
+		  ?SAVE_CALLS,
+		  erlang:yield(),
+		  xref:start(?XREF), 
+		  xref:set_default(?XREF, [{verbose,false},{warnings,false}]),
+		  %% 				  X= xref:add_release(erlide, code:lib_dir(),
+		  %% 									  [{name, otp}]),
+%% 		  ok
+%% 	  end),
+    ok;
+start(_) ->
+    ok.
 
 stop() ->
-	xref:stop(erlide).
+    xref:stop(?XREF).
 
 add_project(ProjectDir) ->
-	R=xref:add_application(erlide, ProjectDir),
-	R.
+    R=xref:add_application(?XREF, ProjectDir),
+    R.
 
+add_dirs([]) ->
+	ok;
+add_dirs([BeamDir | Rest]) ->
+	start(),
+	?D(BeamDir),
+	case xref:add_directory(?XREF, BeamDir, [{recurse, false}]) of
+		{ok, _} = _R ->
+			?D(_R),
+			add_dirs(Rest);
+		Error ->
+			Error
+	end.
+
+add_dir(BeamDir) ->
+	start(),
+    R = xref:add_directory(?XREF, BeamDir),
+    ?D(R),
+    R.
 
 update() ->
-	xref:update(erlide).
+	start(),
+    xref:update(?XREF, []).
 
 analyze(Module) when is_atom(Module) ->
-	xref:m(Module);
+	start(),
+    xref:m(Module);
 analyze(Dir) when is_list(Dir) ->
-	xref:d(Dir).
+	start(),
+    xref:d(Dir).
 
 module_use(Module) when is_atom(Module) ->
-	xref:analyze(erlide, {module_use, Module}).
+	start(),
+    xref:analyze(?XREF, {module_use, Module}).
 
 module_call(Module) when is_atom(Module) ->
-	xref:analyze(erlide, {module_call, Module}).
+	start(),
+    xref:analyze(?XREF, {module_call, Module}).
 
 function_use({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
-	xref:analyze(erlide, {use, {M, F, A}}).
+	start(),
+    xref:analyze(?XREF, {use, [{M, F, A}]}, []).
 
-function_use(M, F, A) when is_atom(M), is_atom(F), is_integer(A) ->
-	R=xref:analyze(erlide, {use, {M, F, A}}),
-	R.
+function_use(M, F, A) ->
+	function_use({M, F, A}).
 
 function_call({M, F, A}) when is_atom(M), is_atom(F), is_integer(A) ->
-	xref:analyze(erlide, {call, {M, F, A}}).
+    xref:analyze(?XREF, {call, {M, F, A}}).
 
 function_call(M, F, A) when is_atom(M), is_atom(F), is_integer(A) ->
-	xref:analyze(erlide, {call, {M, F, A}}).
+    xref:analyze(?XREF, {call, {M, F, A}}).
 
 

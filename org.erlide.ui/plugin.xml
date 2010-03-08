@@ -1246,7 +1246,7 @@
             name="eDoc">
       </wizard>
    </extension>
-   <!--extension
+   <extension
          point="org.eclipse.ui.commands">
       <command
             categoryId="org.erlide.ui.search.category.search"
@@ -1279,7 +1279,7 @@
             id="org.erlide.ui.ErlangSearchResultPage"
             searchResultClass="org.erlide.ui.search.ErlangSearchResult">
       </viewPage>
-   </extension-->
+   </extension>
    <extension
          point="org.eclipse.ui.console.consolePageParticipants">
       <consolePageParticipant

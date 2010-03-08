@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.search;
 
+import java.util.List;
+
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -94,7 +96,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 	}
 
 	@Override
-	protected String[] getScope() {
+	protected List<String> getScope() {
 		// return SearchUtil.getWorkingSetsScope(fWorkingSets);
 		return null;
 	}

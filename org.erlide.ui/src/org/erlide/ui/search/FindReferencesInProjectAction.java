@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.search;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IEditorInput;
@@ -69,7 +71,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	}
 
 	@Override
-	protected String[] getScope() {
+	protected List<String> getScope() {
 		final IEditorInput editorInput = getEditor().getEditorInput();
 		if (editorInput instanceof IFileEditorInput) {
 			final IFileEditorInput input = (IFileEditorInput) editorInput;

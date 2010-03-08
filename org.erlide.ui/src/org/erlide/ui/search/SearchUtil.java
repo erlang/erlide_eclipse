@@ -1,17 +1,27 @@
 package org.erlide.ui.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.OpenResult;
 
@@ -22,20 +32,61 @@ public class SearchUtil {
 	// return null;
 	// }
 
-	static public String[] getProjectScope(final IProject project) {
+	static public List<String> getProjectScope(final IProject project) {
+		final IErlProject p = ErlangCore.getModel().findProject(project);
+		if (p != null) {
+			try {
+				final IPath outputLocation = p.getProject().getFolder(
+						p.getOutputLocation()).getLocation();
+				final String loc = outputLocation.toString();
+				final List<String> result = new ArrayList<String>(1);
+				result.add(loc);
+				return result;
+			} catch (final ErlModelException e) {
+				ErlLogger.error(e); // TODO report this
+			}
+		}
 		return null;
 	}
 
-	static public String[] getWorkspaceScope() {
+	static public List<String> getWorkspaceScope() {
+		try {
+			final Collection<IErlProject> erlangProjects = ErlangCore
+					.getModel().getErlangProjects();
+			final List<String> result = new ArrayList<String>(erlangProjects
+					.size());
+			for (final IErlProject i : erlangProjects) {
+				final IPath outputLocation = i.getProject().getFolder(
+						i.getOutputLocation()).getLocation();
+				final String loc = outputLocation.toString();
+				result.add(loc);
+			}
+			return result;
+		} catch (final ErlModelException e) {
+			ErlLogger.error(e); // TODO report this
+		}
 		return null;
 	}
 
-	public static String[] getProjectsScope(final String[] projectNames) {
-		// TODO Auto-generated method stub
-		return null;
+	public static List<String> getProjectsScope(final String[] projectNames) {
+		final IErlModel model = ErlangCore.getModel();
+		final List<String> result = new ArrayList<String>(projectNames.length);
+		for (final String i : projectNames) {
+			final IErlProject p = model.getErlangProject(i);
+			try {
+				final IPath outputLocation = p.getProject().getFolder(
+						p.getOutputLocation()).getLocation();
+				final String loc = outputLocation.toString();
+				result.add(loc);
+			} catch (final ErlModelException e) {
+				ErlLogger.error(e); // TODO report this
+			}
+		}
+		return result;
 	}
 
-	public static String[] getSelectionScope(final ISelection selection) {
+	public static List<String> getSelectionScope(final ISelection selection) {
+		assert false;
 		// TODO Auto-generated method stub
 		return null;
 	}

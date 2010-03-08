@@ -13,7 +13,7 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 	private final String module;
 	private final String function;
 	private final int arity;
-	private SourceRange pos;
+	private ISourceRange pos;
 	private IErlElement parent;
 
 	public ErlangExternalFunctionCallRef(final String module,
@@ -81,6 +81,10 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 			s += " in " + parent.toString();
 		}
 		return getModule() + ":" + getFunction() + "/" + getArity() + s;
+	}
+
+	public void setPos(final ISourceRange pos) {
+		this.pos = pos;
 	}
 
 	public void setPos(final int start, final int len) {

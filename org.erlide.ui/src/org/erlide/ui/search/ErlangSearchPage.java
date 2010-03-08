@@ -262,7 +262,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		final SearchPatternData data = getPatternData();
 
 		// Setup search scope
-		String[] scope = null;
+		List<String> scope = null;
 		switch (getContainer().getSelectedScope()) {
 		case ISearchPageContainer.WORKSPACE_SCOPE:
 			scope = SearchUtil.getWorkspaceScope();
@@ -752,7 +752,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			final IEditorPart activePart = getActiveEditor();
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
-				IErlModule module = erlangEditor.getModule();
+				final IErlModule module = erlangEditor.getModule();
 				if (module == null) {
 					return;
 				}
@@ -765,7 +765,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				final int offset = textSel.getOffset();
 				OpenResult res;
 				try {
-					String scannerModuleName = ErlangToolkit
+					final String scannerModuleName = ErlangToolkit
 							.createScannerModuleName(module);
 					res = ErlideOpen.open(b, scannerModuleName, offset, "",
 							ErlangCore.getModel().getPathVars());
