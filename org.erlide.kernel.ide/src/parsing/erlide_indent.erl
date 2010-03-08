@@ -14,7 +14,7 @@
 -export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
