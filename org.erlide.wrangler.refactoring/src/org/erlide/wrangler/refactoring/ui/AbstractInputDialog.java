@@ -1,19 +1,29 @@
-package org.erlide.wrangler.refactoring.duplicatedcode.ui;
+package org.erlide.wrangler.refactoring.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * Abstract class for creating input dialogs outside from a Wizard.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractInputDialog extends Dialog {
 
 	protected Text errorMessageText;
 	protected final String title;
-	boolean isFinished = false;
+	protected boolean isFinished = false;
+	protected Button okButton;
 
 	public AbstractInputDialog(Shell parentShell, String title) {
 		super(parentShell);
@@ -21,15 +31,6 @@ public abstract class AbstractInputDialog extends Dialog {
 	}
 
 	abstract protected void validateInput();
-
-	@Override
-	abstract protected void createButtonsForButtonBar(Composite parent);
-
-	/*
-	 * Should be implemented as well.
-	 * 
-	 * protected Control createDialogArea(Composite parent);
-	 */
 
 	public boolean isFinished() {
 		return isFinished;
@@ -64,6 +65,25 @@ public abstract class AbstractInputDialog extends Dialog {
 
 	protected int getInputTextStyle() {
 		return SWT.SINGLE | SWT.BORDER;
+	}
+
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		okButton = createButton(parent, IDialogConstants.OK_ID,
+				IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+
+		okButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				isFinished = true;
+			}
+
+		});
 	}
 
 }
