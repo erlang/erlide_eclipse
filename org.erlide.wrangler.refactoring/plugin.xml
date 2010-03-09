@@ -77,9 +77,16 @@
          </action>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
-               id="org.erlide.wrangler.refactoring.foldexpression"
+               id="org.erlide.wrangler.refactoring.foldlocalexpression"
                label="%foldExpressionName"
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.foldremoteexpression"
+               label="%foldRemoteExpressionName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.reorganizeFunctionGroup"
+               style="push">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"

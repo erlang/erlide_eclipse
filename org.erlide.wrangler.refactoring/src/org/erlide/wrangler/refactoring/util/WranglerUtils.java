@@ -25,6 +25,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
@@ -70,15 +72,14 @@ public class WranglerUtils {
 
 	}
 
-	static public ArrayList<String> getModules(IProject project) {
-		ArrayList<IFile> erlangFiles = new ArrayList<IFile>();
-		try {
-			findModulesRecursively(project, erlangFiles);
-		} catch (CoreException e) {
-			e.printStackTrace();
-			return new ArrayList<String>();
-
-		}
+	/**
+	 * Returns a list of the given project Erlang files.
+	 * 
+	 * @param project
+	 * @return
+	 */
+	static public ArrayList<String> getModuleNames(IProject project) {
+		ArrayList<IFile> erlangFiles = getModules(project);
 
 		ArrayList<String> moduleNames = new ArrayList<String>();
 		for (IFile f : erlangFiles) {
@@ -86,6 +87,17 @@ public class WranglerUtils {
 		}
 		Collections.sort(moduleNames);
 		return moduleNames;
+	}
+
+	static public ArrayList<IFile> getModules(IProject project) {
+		ArrayList<IFile> erlangFiles = new ArrayList<IFile>();
+		try {
+			findModulesRecursively(project, erlangFiles);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			return new ArrayList<IFile>();
+		}
+		return erlangFiles;
 	}
 
 	static private void findModulesRecursively(IResource res,
@@ -166,6 +178,16 @@ public class WranglerUtils {
 			IErlMemberSelection selection) {
 		ITextEditor editor = (ITextEditor) openFile(selection.getFile());
 		highlightSelection(offset, length, editor);
+	}
+
+	public static void highlightSelection(IErlFunctionClause clause) {
+		int offset, length;
+		offset = clause.getNameRange().getOffset();
+		length = clause.getNameRange().getLength();
+		IErlModule module = clause.getModule();
+		IEditorPart editor = openFile((IFile) module.getResource());
+		highlightSelection(offset, length, (ITextEditor) editor);
+
 	}
 
 	static public IEditorPart openFile(IFile file) {

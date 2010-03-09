@@ -61,7 +61,7 @@ public class PopupMenuAction implements IObjectActionDelegate {
 
 			IProject project = GlobalParameters.getWranglerSelection()
 					.getErlElement().getErlProject().getProject();
-			ArrayList<String> moduleList = WranglerUtils.getModules(project);
+			ArrayList<String> moduleList = WranglerUtils.getModuleNames(project);
 			String moduleName = GlobalParameters.getWranglerSelection()
 					.getErlElement().getResource().getName();
 			moduleList.remove(WranglerUtils.removeExtension(moduleName));

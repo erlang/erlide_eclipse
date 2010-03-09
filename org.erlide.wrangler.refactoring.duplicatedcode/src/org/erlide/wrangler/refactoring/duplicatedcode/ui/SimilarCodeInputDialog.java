@@ -4,8 +4,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -14,10 +12,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
 public class SimilarCodeInputDialog extends AbstractInputDialog {
-
-	private Button okButton;
 
 	private Button onlyInFileCheckBoxButton;
 	private Text minToksText;
@@ -32,25 +29,6 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 
 	public SimilarCodeInputDialog(Shell parentShell, String title) {
 		super(parentShell, title);
-	}
-
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		okButton = createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-
-		okButton.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				isFinished = true;
-			}
-
-		});
 	}
 
 	@Override

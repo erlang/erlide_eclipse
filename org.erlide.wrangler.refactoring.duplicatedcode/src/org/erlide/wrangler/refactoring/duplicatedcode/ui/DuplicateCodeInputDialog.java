@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
 public class DuplicateCodeInputDialog extends AbstractInputDialog {
 
@@ -21,8 +22,6 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 	private int minClones;
 
 	private boolean workOnlyInCurrentFile;
-
-	private Button okButton;
 
 	private Text minToksText;
 
@@ -53,22 +52,7 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		// create OK and Cancel buttons by default
-		okButton = createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-
-		okButton.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				isFinished = true;
-			}
-
-		});
+		super.createButtonsForButtonBar(parent);
 
 		minToksText.setFocus();
 		minToksText.setText("");
