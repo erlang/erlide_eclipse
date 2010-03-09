@@ -26,13 +26,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -51,7 +48,6 @@ import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import erlang.ErlideOpen;
@@ -66,24 +62,24 @@ public class ErlModelUtils {
 		return getModule(editor.getEditorInput(), adte.getDocumentProvider());
 	}
 
-	public static IErlProject getErlProject(final ITextEditor editor) {
-		return getErlProject(editor.getEditorInput());
-	}
+	// public static IErlProject getErlProject(final ITextEditor editor) {
+	// return getErlProject(editor.getEditorInput());
+	// }
 
-	public static IErlProject getErlProject(final IEditorInput editorInput) {
-		if (editorInput instanceof IFileEditorInput) {
-			final IFileEditorInput input = (IFileEditorInput) editorInput;
-			final IErlModel model = ErlangCore.getModel();
-			final String prj = input.getFile().getProject().getName();
-			try {
-				model.open(null);
-				return model.getErlangProject(prj);
-			} catch (final ErlModelException e) {
-				return null;
-			}
-		}
-		return null;
-	}
+	// public static IErlProject getErlProject(final IEditorInput editorInput) {
+	// if (editorInput instanceof IFileEditorInput) {
+	// final IFileEditorInput input = (IFileEditorInput) editorInput;
+	// final IErlModel model = ErlangCore.getModel();
+	// final String prj = input.getFile().getProject().getName();
+	// try {
+	// model.open(null);
+	// return model.getErlangProject(prj);
+	// } catch (final ErlModelException e) {
+	// return null;
+	// }
+	// }
+	// return null;
+	// }
 
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
 			final Backend b, final IProject project, final IErlModule module,
@@ -329,6 +325,12 @@ public class ErlModelUtils {
 		return false;
 	}
 
+	public static boolean openElement(final IErlElement element)
+			throws CoreException {
+		final IEditorPart editor = EditorUtility.openInEditor(element);
+		return EditorUtility.revealInEditor(editor, element);
+	}
+
 	public static boolean openExternalType(final String mod, final String type,
 			final String path, final IProject project) throws CoreException {
 		final IResource r = openExternalModule(mod, path, project);
@@ -398,7 +400,8 @@ public class ErlModelUtils {
 			return false;
 		}
 		module.open(null);
-		final IErlFunction function = ModelUtils.findFunction(module, erlangFunction);
+		final IErlFunction function = ModelUtils.findFunction(module,
+				erlangFunction);
 		if (function == null) {
 			return false;
 		}
@@ -487,29 +490,28 @@ public class ErlModelUtils {
 		return null;
 	}
 
-	public static IErlElement getEditorInputErlElement(final IEditorInput input) {
-		final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
-		for (final IWorkbenchWindow workbenchWindow : workbench
-				.getWorkbenchWindows()) {
-			final IWorkbenchPage page = workbenchWindow.getActivePage();
-			if (page != null) {
-				final IEditorPart part = page.getActiveEditor();
-				if (part != null) {
-					if (part instanceof AbstractDecoratedTextEditor) {
-						final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor) part;
-						final IErlModule module = getModule(input, adte
-								.getDocumentProvider());
-						if (module != null) {
-							return module;
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	public static void openElementInEditor(final IErlElement element) {
-	}
+	// public static IErlElement getEditorInputErlElement(final IEditorInput
+	// input) {
+	// final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
+	// for (final IWorkbenchWindow workbenchWindow : workbench
+	// .getWorkbenchWindows()) {
+	// final IWorkbenchPage page = workbenchWindow.getActivePage();
+	// if (page != null) {
+	// final IEditorPart part = page.getActiveEditor();
+	// if (part != null) {
+	// if (part instanceof AbstractDecoratedTextEditor) {
+	// final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor)
+	// part;
+	// final IErlModule module = getModule(input, adte
+	// .getDocumentProvider());
+	// if (module != null) {
+	// return module;
+	// }
+	// }
+	// }
+	// }
+	// }
+	// return null;
+	// }
 
 }

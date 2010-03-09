@@ -38,7 +38,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -90,7 +89,7 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Opens a Java editor for an element such as <code>IErlElement</code>,
+	 * Opens an Erlang editor for an element such as <code>IErlElement</code>,
 	 * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
 	 * default.
 	 * 
@@ -102,7 +101,7 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Opens a Java editor for an element (IErlElement, IFile, IStorage...)
+	 * Opens an Erlang editor for an element (IErlElement, IFile, IStorage...)
 	 * 
 	 * @return the IEditorPart or null if wrong element type or opening failed
 	 */
@@ -123,18 +122,15 @@ public class EditorUtility {
 	}
 
 	/**
-	 * Selects a Java Element in an editor
+	 * Selects a Erlang Element in an editor
 	 */
-	public static void revealInEditor(final IEditorPart part,
+	public static boolean revealInEditor(final IEditorPart part,
 			final IErlElement element) {
-		if (element == null) {
-			return;
-		}
-
-		if (part instanceof ErlangEditor) {
+		if (element != null && part instanceof ErlangEditor) {
 			((ErlangEditor) part).setSelection(element);
-			return;
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -244,10 +240,6 @@ public class EditorUtility {
 		return null;
 	}
 
-	/**
-	 * @deprecated Made it public again for java debugger UI.
-	 */
-	@Deprecated
 	public static String getEditorID(final IEditorInput input,
 			final Object inputObject) {
 		IEditorDescriptor editorDescriptor;
@@ -270,19 +262,12 @@ public class EditorUtility {
 		return null;
 	}
 
-	private static IEditorInput getEditorInput(IErlElement element)
+	private static IEditorInput getEditorInput(final IErlElement element)
 			throws ErlModelException {
-		while (element != null) {
-			if (element instanceof IErlModule) {
-				final IErlModule module = (IErlModule) element;
-				final IResource resource = module.getResource();
-				if (resource instanceof IFile) {
-					return new FileEditorInput((IFile) resource);
-				}
-			}
-			element = element.getParent();
+		final IResource resource = element.getResource();
+		if (resource instanceof IFile) {
+			return new FileEditorInput((IFile) resource);
 		}
-
 		return null;
 	}
 
