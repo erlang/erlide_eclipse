@@ -55,8 +55,7 @@ public class ErlSearchQuery implements ISearchQuery {
 	}
 
 	public boolean canRerun() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean canRunInBackground() {

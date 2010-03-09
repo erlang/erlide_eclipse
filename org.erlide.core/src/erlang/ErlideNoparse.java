@@ -169,7 +169,7 @@ public class ErlideNoparse {
 		for (final OtpErlangObject o : l.elements()) {
 			final ErlangExternalFunctionCallRef ref = new ErlangExternalFunctionCallRef(
 					(OtpErlangTuple) o);
-			ref.setParent(c);
+			ref.setElement(c);
 			result.add(ref);
 		}
 	}

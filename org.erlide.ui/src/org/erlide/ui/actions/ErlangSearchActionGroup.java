@@ -22,8 +22,8 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.search.ReferencesSearchGroup;
 
 /**
- * Action group that adds the Java search actions to a context menu and the
- * global menu bar.
+ * Action group that adds erlang search actions to a context menu and the global
+ * menu bar.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -86,7 +86,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		// fOccurrencesGroup = new OccurrencesSearchGroup(fEditor);
 	}
 
-	private ErlangSearchActionGroup(final IWorkbenchSite site) {
+	public ErlangSearchActionGroup(final IWorkbenchSite site) {
 		fReferencesGroup = new ReferencesSearchGroup(site);
 		// fReadAccessGroup = new ReadReferencesSearchGroup(site);
 		// fWriteAccessGroup = new WriteReferencesSearchGroup(site);

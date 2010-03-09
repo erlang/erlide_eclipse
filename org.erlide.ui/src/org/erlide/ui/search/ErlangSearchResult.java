@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
@@ -25,6 +26,26 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
 	private List<ErlangExternalFunctionCallRef> result;
 	private final ErlSearchQuery query;
+
+	@Override
+	public void removeAll() {
+		result = new ArrayList<ErlangExternalFunctionCallRef>();
+		super.removeAll();
+	}
+
+	@Override
+	public void removeMatch(final Match match) {
+		result.remove(match.getElement());
+		super.removeMatch(match);
+	}
+
+	@Override
+	public void removeMatches(final Match[] matches) {
+		for (final Match match : matches) {
+			result.remove(match.getElement());
+		}
+		super.removeMatches(matches);
+	}
 
 	public ErlangSearchResult(final ErlSearchQuery query,
 			final List<ErlangExternalFunctionCallRef> result) {
@@ -85,7 +106,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	public boolean isShownInEditor(final Match match, final IEditorPart editor) {
 		final ErlangExternalFunctionCallRef ref = (ErlangExternalFunctionCallRef) match
 				.getElement();
-		final IErlElement e = ref.getParent();
+		final IErlElement e = ref.getElement();
 		if (editor instanceof ITextEditor) {
 			final ITextEditor textEditor = (ITextEditor) editor;
 			final IErlModule mod = SearchUtil.getModule(e);
@@ -103,7 +124,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 			return NO_MATCHES;
 		}
 		for (final ErlangExternalFunctionCallRef ref : refs) {
-			final IErlElement e = ref.getParent();
+			final IErlElement e = ref.getElement();
 			final IErlModule mod = SearchUtil.getModule(e);
 			if (mod.getResource() == file) {
 				final ISourceRange pos = ref.getPos();
@@ -117,13 +138,13 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	public IFile getFile(final Object element) {
 		if (element instanceof IErlElement) {
 			final IErlElement e = (IErlElement) element;
-			final IErlModule mod = SearchUtil.getModule(e);
-			if (mod != null) {
-				return (IFile) mod.getResource();
+			final IResource r = e.getResource();
+			if (r instanceof IFile) {
+				return (IFile) r;
 			}
 		} else if (element instanceof ErlangExternalFunctionCallRef) {
 			final ErlangExternalFunctionCallRef ref = (ErlangExternalFunctionCallRef) element;
-			return getFile(ref.getParent());
+			return getFile(ref.getElement());
 		}
 		return null;
 	}

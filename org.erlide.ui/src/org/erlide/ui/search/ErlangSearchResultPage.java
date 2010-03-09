@@ -3,15 +3,12 @@ package org.erlide.ui.search;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -19,8 +16,10 @@ import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -40,7 +39,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -51,9 +49,35 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.editors.util.EditorUtility;
+import org.erlide.ui.internal.ExceptionHandler;
+import org.erlide.ui.internal.search.NewErlSearchActionGroup;
+import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
+
+	@Override
+	protected void handleOpen(final OpenEvent event) {
+		Object element = ((IStructuredSelection) event.getSelection())
+				.getFirstElement();
+		if (element instanceof ErlangExternalFunctionCallRef) {
+			final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
+			element = fcr.getElement();
+		}
+		if (element instanceof IErlElement) {
+			if (getDisplayedMatchCount(element) == 0) {
+				try {
+					ErlModelUtils.openElement((IErlElement) element);
+				} catch (final CoreException e) {
+					ExceptionHandler.handle(e, getSite().getShell(),
+							"Open Error", "Couldn't open in editor");
+				}
+				return;
+			}
+		}
+		super.handleOpen(event);
+	}
 
 	public class TableContentProvider implements IStructuredContentProvider,
 			IErlSearchContentProvider {
@@ -127,23 +151,23 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 	}
 
-	public class ErlangLabelProvider extends LabelProvider {
+	public class SearchResultLabelProvider extends LabelProvider {
 
 		public static final int SHOW_LABEL = 1;
 		public static final int SHOW_LABEL_PATH = 2;
 		public static final int SHOW_PATH_LABEL = 3;
 		public static final int SHOW_PATH = 4;
 
-		private final WorkbenchLabelProvider fLabelProvider;
+		private final ErlangElementImageProvider fImageProvider;
 		private final AbstractTextSearchViewPage fPage;
 
 		private int fOrder;
 
 		// private final String[] fArgs = new String[2];
 
-		public ErlangLabelProvider(final AbstractTextSearchViewPage page,
+		public SearchResultLabelProvider(final AbstractTextSearchViewPage page,
 				final int orderFlag) {
-			fLabelProvider = new WorkbenchLabelProvider();
+			fImageProvider = new ErlangElementImageProvider();
 			fOrder = orderFlag;
 			fPage = page;
 		}
@@ -159,6 +183,10 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		@Override
 		public String getText(final Object element) {
 			String text = null;
+			if (element instanceof ErlangExternalFunctionCallRef) {
+				final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
+				return getText(fcr.getElement());
+			}
 			if (element instanceof IErlModule) {
 				final IErlModule mod = (IErlModule) element;
 				text = mod.getName();
@@ -182,37 +210,47 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
 		@Override
 		public Image getImage(final Object element) {
-			if (!(element instanceof IResource)) {
-				return null;
+			Object e;
+			if (element instanceof ErlangExternalFunctionCallRef) {
+				final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
+				e = fcr.getElement();
+			} else {
+				e = element;
 			}
+			return fImageProvider.getImageLabel(e,
+					ErlangElementImageProvider.SMALL_ICONS);
 
-			final IResource resource = (IResource) element;
-			final Image image = fLabelProvider.getImage(resource);
-			return image;
+			// if (!(element instanceof IResource)) {
+			// return null;
+			// }
+			//
+			// final IResource resource = (IResource) element;
+			// final Image image = fLabelProvider.getImage(resource);
+			// return image;
 		}
 
 		@Override
 		public void dispose() {
 			super.dispose();
-			fLabelProvider.dispose();
 		}
 
 		@Override
 		public boolean isLabelProperty(final Object element,
 				final String property) {
-			return fLabelProvider.isLabelProperty(element, property);
+			return super.isLabelProperty(element, property);
+			// return fLabelProvider.isLabelProperty(element, property);
 		}
 
 		@Override
 		public void removeListener(final ILabelProviderListener listener) {
 			super.removeListener(listener);
-			fLabelProvider.removeListener(listener);
+			// fLabelProvider.removeListener(listener);
 		}
 
 		@Override
 		public void addListener(final ILabelProviderListener listener) {
 			super.addListener(listener);
-			fLabelProvider.addListener(listener);
+			// fLabelProvider.addListener(listener);
 		}
 	}
 
@@ -225,14 +263,14 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		private final AbstractTreeViewer fTreeViewer;
 		private final Map<Object, List<Object>> childMap;
 		private final Map<Object, Object> parentMap;
-		private final Set<IErlModule> modules;
+		private final List<IErlModule> modules;
 		private ErlangSearchResult fResult;
 
 		TreeContentProvider(final AbstractTreeViewer viewer) {
 			fTreeViewer = viewer;
 			childMap = new HashMap<Object, List<Object>>();
 			parentMap = new HashMap<Object, Object>();
-			modules = new HashSet<IErlModule>();
+			modules = new ArrayList<IErlModule>();
 		}
 
 		public Object[] getElements(final Object inputElement) {
@@ -272,22 +310,26 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			if (refs == null) {
 				return;
 			}
+			modules.clear();
+			parentMap.clear();
+			childMap.clear();
 			for (final ErlangExternalFunctionCallRef ref : refs) {
-				final IErlElement element = ref.getParent();
+				final IErlElement element = ref.getElement();
 				final IErlProject prj = element.getErlProject();
 				final IErlModule mod = SearchUtil.getModule(element);
-				modules.add(mod);
+				if (!modules.contains(mod)) {
+					modules.add(mod);
+				}
 				addChild(prj, mod);
 				if (element instanceof IErlFunction) {
-					addChild(mod, element);
+					addChild(mod, ref);
 				} else if (element instanceof IErlFunctionClause) {
 					final IErlElement func = element.getParent();
 					addChild(mod, func);
-					addChild(func, element);
+					addChild(func, ref);
 				} else {
 					continue;
 				}
-				// addChild(element, ref);
 			}
 
 		}
@@ -437,7 +479,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void configureTableViewer(final TableViewer viewer) {
 		viewer.setUseHashlookup(true);
-		final ErlangLabelProvider innerLabelProvider = new ErlangLabelProvider(
+		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
 				this, fCurrentSortOrder);
 		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
 				PlatformUI.getWorkbench().getDecoratorManager()
@@ -453,8 +495,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void configureTreeViewer(final TreeViewer viewer) {
 		viewer.setUseHashlookup(true);
-		final ErlangLabelProvider innerLabelProvider = new ErlangLabelProvider(
-				this, ErlangLabelProvider.SHOW_LABEL);
+		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
+				this, SearchResultLabelProvider.SHOW_LABEL);
 		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
 				PlatformUI.getWorkbench().getDecoratorManager()
 						.getLabelDecorator()));
@@ -540,7 +582,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	public void setViewPart(final ISearchResultViewPart part) {
 		super.setViewPart(part);
-		// fActionGroup = new NewTextSearchActionGroup(part);
+		fActionGroup = new NewErlSearchActionGroup(part);
 	}
 
 	@Override

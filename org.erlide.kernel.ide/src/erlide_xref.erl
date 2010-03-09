@@ -47,12 +47,16 @@ add_dirs([]) ->
 	ok;
 add_dirs([BeamDir | Rest]) ->
 	start(),
+	update(),
 	?D(BeamDir),
 	case xref:add_directory(?XREF, BeamDir, [{recurse, false}]) of
 		{ok, _} = _R ->
 			?D(_R),
 			add_dirs(Rest);
+		{error, xref_base, {module_clash, _}} ->
+			add_dirs(Rest);
 		Error ->
+			?D(Error),
 			Error
 	end.
 

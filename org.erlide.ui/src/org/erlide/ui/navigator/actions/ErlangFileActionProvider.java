@@ -8,16 +8,17 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.erlide.ui.actions.ErlangSearchActionGroup;
 
 public class ErlangFileActionProvider extends CommonActionProvider {
 
 	private OpenErlangAction openAction;
+	private ErlangSearchActionGroup searchActionGroup;
 
 	/**
 	 * Construct Erlang File Action provider.
 	 */
 	public ErlangFileActionProvider() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -35,6 +36,8 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 			final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
 			openAction = new OpenErlangAction(workbenchSite.getPage(),
 					workbenchSite.getSelectionProvider());
+			searchActionGroup = new ErlangSearchActionGroup(workbenchSite
+					.getPart().getSite());
 		}
 	}
 
@@ -66,6 +69,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 		if (openAction.isEnabled()) {
 			menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, openAction);
 		}
+		searchActionGroup.fillContextMenu(menu);
 	}
 
 }

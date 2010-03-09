@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
@@ -72,12 +74,28 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 
 	@Override
 	protected List<String> getScope() {
-		final IEditorInput editorInput = getEditor().getEditorInput();
-		if (editorInput instanceof IFileEditorInput) {
-			final IFileEditorInput input = (IFileEditorInput) editorInput;
-			final IFile file = input.getFile();
-			final IProject project = file.getProject();
-			return SearchUtil.getProjectScope(project);
+		final ErlangEditor editor = getEditor();
+		if (editor != null) {
+			final IEditorInput editorInput = editor.getEditorInput();
+			if (editorInput instanceof IFileEditorInput) {
+				final IFileEditorInput input = (IFileEditorInput) editorInput;
+				final IFile file = input.getFile();
+				final IProject project = file.getProject();
+				return SearchUtil.getProjectScope(project);
+			}
+		} else {
+			final IWorkbenchSite site = getSite();
+			final ISelection selection = site.getSelectionProvider()
+					.getSelection();
+			if (selection instanceof IStructuredSelection) {
+				final IStructuredSelection ss = (IStructuredSelection) selection;
+				final Object element = ss.getFirstElement();
+				if (element instanceof IErlElement) {
+					final IErlElement e = (IErlElement) element;
+					return SearchUtil.getProjectScope(e.getResource()
+							.getProject());
+				}
+			}
 		}
 		return null;
 	}

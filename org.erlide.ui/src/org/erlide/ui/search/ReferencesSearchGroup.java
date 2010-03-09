@@ -194,7 +194,7 @@ public class ReferencesSearchGroup extends ActionGroup {
 		// addAction(fFindReferencesInWorkingSetAction, erlangSearchMM);
 		//
 		if (!erlangSearchMM.isEmpty()) {
-			// manager.appendToGroup(fGroupId, erlangSearchMM);
+			manager.appendToGroup(fGroupId, erlangSearchMM);
 		}
 	}
 

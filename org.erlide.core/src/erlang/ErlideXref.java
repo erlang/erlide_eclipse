@@ -64,16 +64,21 @@ public class ErlideXref {
 					final OtpErlangLong arL = (OtpErlangLong) mfa.elementAt(2);
 					final IErlModule module = ErlangCore.getModel().findModule(
 							modA.atomValue());
-					final int ar = arL.intValue();
-					final String fun = funA.atomValue();
-					final IErlFunction f = module
-							.findFunction(new ErlangFunction(fun, ar));
-					final ErlangExternalFunctionCallRef d = new ErlangExternalFunctionCallRef(
-							module.getName(), fun, ar);
-					ref.setParent(module);
-					final ISourceRange r = f.getSourceRange();
-					ref.setPos(r);
-					result.add(d);
+					if (module != null) {
+						final int ar = arL.intValue();
+						final String fun = funA.atomValue();
+						module.open(null);
+						final IErlFunction f = module
+								.findFunction(new ErlangFunction(fun, ar));
+						if (f != null) {
+							final ErlangExternalFunctionCallRef d = new ErlangExternalFunctionCallRef(
+									module.getName(), fun, ar);
+							d.setElement(f);
+							final ISourceRange r = f.getSourceRange();
+							d.setPos(r);
+							result.add(d);
+						}
+					}
 				}
 				return result;
 			}

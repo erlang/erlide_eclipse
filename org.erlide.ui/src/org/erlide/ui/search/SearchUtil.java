@@ -1,11 +1,11 @@
 package org.erlide.ui.search;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
@@ -36,11 +36,8 @@ public class SearchUtil {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
 			try {
-				final IPath outputLocation = p.getProject().getFolder(
-						p.getOutputLocation()).getLocation();
-				final String loc = outputLocation.toString();
 				final List<String> result = new ArrayList<String>(1);
-				result.add(loc);
+				addProjectEbin(p, result);
 				return result;
 			} catch (final ErlModelException e) {
 				ErlLogger.error(e); // TODO report this
@@ -56,10 +53,7 @@ public class SearchUtil {
 			final List<String> result = new ArrayList<String>(erlangProjects
 					.size());
 			for (final IErlProject i : erlangProjects) {
-				final IPath outputLocation = i.getProject().getFolder(
-						i.getOutputLocation()).getLocation();
-				final String loc = outputLocation.toString();
-				result.add(loc);
+				addProjectEbin(i, result);
 			}
 			return result;
 		} catch (final ErlModelException e) {
@@ -74,10 +68,7 @@ public class SearchUtil {
 		for (final String i : projectNames) {
 			final IErlProject p = model.getErlangProject(i);
 			try {
-				final IPath outputLocation = p.getProject().getFolder(
-						p.getOutputLocation()).getLocation();
-				final String loc = outputLocation.toString();
-				result.add(loc);
+				addProjectEbin(p, result);
 			} catch (final ErlModelException e) {
 				ErlLogger.error(e); // TODO report this
 			}
@@ -89,6 +80,19 @@ public class SearchUtil {
 		assert false;
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private static void addProjectEbin(final IErlProject i,
+			final List<String> result) throws ErlModelException {
+		final IProject project = i.getProject();
+		if (project.exists()) {
+			final String loc = project.getFolder(i.getOutputLocation())
+					.getLocation().toString();
+			final File f = new File(loc);
+			if (f.isDirectory()) {
+				result.add(loc);
+			}
+		}
 	}
 
 	public static void runQueryInBackground(final Object query) {

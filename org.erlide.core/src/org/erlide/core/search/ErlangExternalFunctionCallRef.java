@@ -14,7 +14,7 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 	private final String function;
 	private final int arity;
 	private ISourceRange pos;
-	private IErlElement parent;
+	private IErlElement element;
 
 	public ErlangExternalFunctionCallRef(final String module,
 			final String function, final int arity) {
@@ -23,7 +23,7 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 		this.function = function;
 		this.arity = arity;
 		pos = null;
-		parent = null;
+		element = null;
 	}
 
 	public ErlangExternalFunctionCallRef(final OtpErlangTuple t) {
@@ -77,8 +77,8 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 		if (pos != null) {
 			s = " (" + pos.getOffset() + " . " + pos.getLength() + ")";
 		}
-		if (parent != null) {
-			s += " in " + parent.toString();
+		if (element != null) {
+			s += " in " + element.toString();
 		}
 		return getModule() + ":" + getFunction() + "/" + getArity() + s;
 	}
@@ -98,16 +98,16 @@ public class ErlangExternalFunctionCallRef extends ErlangElementRef {
 	/**
 	 * @return the parent
 	 */
-	public IErlElement getParent() {
-		return parent;
+	public IErlElement getElement() {
+		return element;
 	}
 
 	/**
 	 * @param parent
 	 *            the parent to set
 	 */
-	public void setParent(final IErlElement parent) {
-		this.parent = parent;
+	public void setElement(final IErlElement element) {
+		this.element = element;
 	}
 
 }

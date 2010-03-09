@@ -235,6 +235,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 			if (res.isExternalCall()) {
 				performNewSearch(SearchUtil.getRefFromOpenRes(res));
+			} else if (res.isLocalCall()) {
+				performNewSearch(new ErlangExternalFunctionCallRef(module
+						.getModuleName(), res.getFun(), res.getArity()));
 			}
 		} catch (final Exception e) {
 			// final String title = "SearchMessages.Search_Error_search_title";
