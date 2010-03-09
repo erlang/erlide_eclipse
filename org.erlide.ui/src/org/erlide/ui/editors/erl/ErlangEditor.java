@@ -367,7 +367,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		// openAction = new OpenAction(getSite(), getExternalModules(),
 		// getExternalIncludes());
-		openAction = new OpenAction(getSite());
+		openAction = new OpenAction(this);
 		openAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -1121,25 +1121,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			final ISourceReference reference = (ISourceReference) element;
 			// set highlight range
 			setSelection(reference, true);
-			// set outliner selection
-			// try {
-			// ErlLogger.debug(".. sel" + reference.getSource()
-			// + myOutlinePage);
-			// } catch (final ErlModelException e) {
-			// ErlLogger.warn(e);
-			// }
 			if (myOutlinePage != null) {
+				// FIXME is this needed or is it handled otherwise?
+				// (SelectionListener-something...)
 				myOutlinePage.select(reference);
 			}
 		}
 	}
-
-	/* NOT USED */
-	/*
-	 * private boolean isErlangOutlinePageActive() { final IWorkbenchPart part =
-	 * getActivePart(); return part instanceof ContentOutline &&
-	 * ((ContentOutline) part).getCurrentPage() == myOutlinePage; }
-	 */
 
 	private IWorkbenchPart getActivePart() {
 		final IWorkbenchWindow window = getSite().getWorkbenchWindow();

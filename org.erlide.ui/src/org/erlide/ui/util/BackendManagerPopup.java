@@ -14,8 +14,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class BackendManagerPopup implements BackendListener {
@@ -38,8 +38,8 @@ public class BackendManagerPopup implements BackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				PopupDialog.showBalloon("Backend notification", "Added "
-						+ b.getInfo().getName(), DELAY);
+				// PopupDialog.showBalloon("Backend notification", "Added "
+				// + b.getInfo().getName(), DELAY);
 			}
 		});
 	}
@@ -51,8 +51,8 @@ public class BackendManagerPopup implements BackendListener {
 		display.asyncExec(new Runnable() {
 
 			public void run() {
-				PopupDialog.showBalloon("Backend notification", "Removed "
-						+ b.getInfo().getName(), DELAY);
+				// PopupDialog.showBalloon("Backend notification", "Removed "
+				// + b.getInfo().getName(), DELAY);
 			}
 		});
 	}

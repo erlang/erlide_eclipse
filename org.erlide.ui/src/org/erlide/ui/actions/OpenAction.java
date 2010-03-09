@@ -11,7 +11,6 @@
 package org.erlide.ui.actions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -19,21 +18,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.util.OpenStrategy;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -79,11 +70,6 @@ import erlang.OpenResult;
  */
 public class OpenAction extends SelectionDispatchAction {
 
-	// private ErlangEditor fEditor;
-	// private final String fExternalModules;
-	// private final String fExternalIncludes;
-	// private final List<Tuple> pathVars;
-
 	/**
 	 * Creates a new <code>OpenAction</code>. The action requires that the
 	 * selection provided by the site's selection provider is of type <code>
@@ -98,36 +84,20 @@ public class OpenAction extends SelectionDispatchAction {
 	 */
 	public OpenAction(final IWorkbenchSite site) {
 		super(site);
-		// fExternalModules = externalModules;
-		// fExternalIncludes = externalIncludes;
 		setText(ActionMessages.OpenAction_label);
 		setToolTipText(ActionMessages.OpenAction_tooltip);
 		setDescription(ActionMessages.OpenAction_description);
-		// initPathVars();
-		// pathVars = getPathVars();
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
 
 	}
 
-	// public static List<Tuple> getPathVars() {
-	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-	// .getPathVariableManager();
-	// final String[] names = pvm.getPathVariableNames();
-	// final ArrayList<Tuple> result = new ArrayList<Tuple>(names.length);
-	// for (final String name : names) {
-	// result.add(new Tuple().add(name).add(
-	// pvm.getValue(name).toOSString()));
-	// }
-	// return result;
-	// }
-	//
-	// public OpenAction(final ErlangEditor editor, final String
-	// externalModules,
-	// final String externalIncludes) {
-	// this(editor.getEditorSite(), externalModules, externalIncludes);
-	// fEditor = editor;
-	// setText(ActionMessages.OpenAction_declaration_label);
-	// }
+	public OpenAction(final ErlangEditor erlangEditor) {
+		super(erlangEditor.getSite());
+		setText(ActionMessages.OpenAction_open_declaration_label);
+		setToolTipText(ActionMessages.OpenAction_tooltip);
+		setDescription(ActionMessages.OpenAction_description);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
+	}
 
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
@@ -148,8 +118,7 @@ public class OpenAction extends SelectionDispatchAction {
 		if (selection.isEmpty()) {
 			return false;
 		}
-		for (final Iterator<?> iter = selection.iterator(); iter.hasNext();) {
-			final Object element = iter.next();
+		for (final Object element : selection.toArray()) {
 			if (element instanceof ISourceReference) {
 				continue;
 			}
@@ -157,6 +126,9 @@ public class OpenAction extends SelectionDispatchAction {
 				continue;
 			}
 			if (element instanceof IStorage) {
+				continue;// FIXME We don't handle IStorage, do we?
+			}
+			if (element instanceof IErlModule) {
 				continue;
 			}
 			return false;
@@ -169,126 +141,6 @@ public class OpenAction extends SelectionDispatchAction {
 	 */
 	@Override
 	public void run(final ITextSelection selection) {
-		ErlLogger.debug("*> goto " + selection);
-
-		// if (!ActionUtil.isProcessable(getShell(), fEditor))
-		// return;
-		// try {
-		// IErlElement element= SelectionConverter.codeResolve(fEditor,
-		// getShell(),
-		// getDialogTitle(),
-		// ActionMessages.OpenAction_select_element);
-		// if (element == null) {
-		// IEditorStatusLine statusLine= (IEditorStatusLine)
-		// fEditor.getAdapter(IEditorStatusLine.class);
-		// if (statusLine != null)
-		// statusLine.setMessage(true,
-		// ActionMessages.OpenAction_error_messageBadSelection, null);
-		// getShell().getDisplay().beep();
-		// return;
-		// }
-		// IErlangElement input= SelectionConverter.getInput(fEditor);
-		// int type= element.getElementType();
-		// if (type == IErlangElement.Erlang_PROJECT || type ==
-		// IErlangElement.PACKAGE_FRAGMENT_ROOT || type ==
-		// IErlangElement.PACKAGE_FRAGMENT)
-		// element= input;
-		// run(new Object[] {element} );
-		// } catch (ErlangModelException e) {
-		// showError(e);
-		// }
-	}
-
-	/*
-	 * (non-Javadoc) Method declared on SelectionDispatchAction.
-	 */
-	@Override
-	public void run(final IStructuredSelection selection) {
-		if (!checkEnabled(selection)) {
-			return;
-		}
-		run(selection.toArray());
-	}
-
-	/**
-	 * Note: this method is for internal use only. Clients should not call this
-	 * method.
-	 * 
-	 * @param elements
-	 *            the elements to process
-	 */
-	public void run(final Object[] elements) {
-		if (elements == null) {
-			return;
-		}
-		for (Object element : elements) {
-			try {
-				element = getElementToOpen(element);
-				final boolean activateOnOpen = getSite() != null ? true
-						: OpenStrategy.activateOnOpen();
-				EditorUtility.openElementInEditor(element, activateOnOpen);
-			} catch (final ErlModelException e) {
-				ErlangPlugin.log(new Status(IStatus.ERROR,
-						ErlangPlugin.PLUGIN_ID,
-						ErlangStatusConstants.INTERNAL_ERROR,
-						"OpenAction_error_message", e));
-
-				ErrorDialog.openError(getShell(), getDialogTitle(),
-						ActionMessages.OpenAction_error_messageProblems, e
-								.getStatus());
-
-			} catch (final PartInitException x) {
-
-				String name = null;
-
-				if (element instanceof IErlElement) {
-					name = ((IErlElement) element).getName();
-				} else if (element instanceof IStorage) {
-					name = ((IStorage) element).getName();
-				} else if (element instanceof IResource) {
-					name = ((IResource) element).getName();
-				}
-
-				if (name != null) {
-					MessageDialog.openError(getShell(),
-							ActionMessages.OpenAction_error_messageProblems, x
-									.getMessage());
-				}
-			}
-		}
-	}
-
-	//
-	// /**
-	// * Opens the editor on the given element and subsequently selects it.
-	// */
-	// private static void open(Object element) throws ErlModelException,
-	// PartInitException
-	// {
-	// open(element, true);
-	// }
-
-	/**
-	 * Note: this method is for internal use only. Clients should not call this
-	 * method.
-	 * 
-	 * @param object
-	 *            the element to open
-	 * @return the real element to open
-	 * @throws ErlangModelException
-	 *             if an error occurs while accessing the Erlang model
-	 */
-	public Object getElementToOpen(final Object object)
-			throws ErlModelException {
-		return object;
-	}
-
-	private String getDialogTitle() {
-		return ActionMessages.OpenAction_error_title;
-	}
-
-	@Override
-	public void run() {
 		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
 				.getActiveEditor();
 		editor.reconcileNow();
@@ -297,9 +149,7 @@ public class OpenAction extends SelectionDispatchAction {
 			return;
 		}
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		final ISelection sel = getSelection();
-		final ITextSelection textSel = (ITextSelection) sel;
-		final int offset = textSel.getOffset();
+		final int offset = selection.getOffset();
 		try {
 			final IErlProject erlProject = module.getErlProject();
 			final IErlModel model = ErlangCore.getModel();
@@ -313,6 +163,45 @@ public class OpenAction extends SelectionDispatchAction {
 			ErlLogger.warn(e);
 		}
 	}
+
+	/*
+	 * (non-Javadoc) Method declared on SelectionDispatchAction.
+	 */
+	@Override
+	public void run(final IStructuredSelection selection) {
+		if (!checkEnabled(selection)) {
+			return;
+		}
+		for (final Object i : selection.toArray()) {
+			if (i instanceof IErlElement) {
+				try {
+					ErlModelUtils.openElement((IErlElement) i);
+				} catch (final CoreException e) {
+					ErlLogger.error(e); // TODO report error
+				}
+			}
+		}
+	}
+
+	// /**
+	// * Note: this method is for internal use only. Clients should not call
+	// this
+	// * method.
+	// *
+	// * @param object
+	// * the element to open
+	// * @return the real element to open
+	// * @throws ErlangModelException
+	// * if an error occurs while accessing the Erlang model
+	// */
+	// public Object getElementToOpen(final Object object)
+	// throws ErlModelException {
+	// return object;
+	// }
+	//
+	// private String getDialogTitle() {
+	// return ActionMessages.OpenAction_error_title;
+	// }
 
 	public static void openOpenResult(final ErlangEditor editor,
 			final IErlModule module, final Backend b, final int offset,
@@ -415,8 +304,7 @@ public class OpenAction extends SelectionDispatchAction {
 			final int pos = ((OtpErlangLong) res2.elementAt(0)).intValue() - 1;
 			final int len = ((OtpErlangLong) res2.elementAt(1)).intValue();
 			final int start = pos + sref.getSourceRange().getOffset();
-			editor.selectAndReveal(start, len);
-			// editor.setHighlightRange(start, len, true);
+			EditorUtility.revealInEditor(editor, start, len);
 		} else if (res.isRecord() || res.isMacro()) {
 			final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
 			if (page == null) {

@@ -16,7 +16,7 @@ public class ActionMessages extends NLS {
 
 	public static final String OpenWithMenu_label = "Open menu action";
 
-	public static final String OpenAction_label = "Open Declaration";
+	public static final String OpenAction_open_declaration_label = "Open Declaration";
 
 	public static final String OpenAction_tooltip = "open action";
 
@@ -77,4 +77,6 @@ public class ActionMessages extends NLS {
 	public static final String ToggleLinkingAction_description = "Toggle linking";
 
 	public static final String ToggleLinkingAction_tooltip = "Toggle linking";
+
+	public static final String OpenAction_label = "Open";
 }
