@@ -1,4 +1,4 @@
--module(erlide_xref).
+-module(erlide_search).
 
 -export([start/0, 
 	 stop/0,

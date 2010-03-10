@@ -79,7 +79,7 @@ public class ErlSearchQuery implements ISearchQuery {
 		// in... ev portionera ut lite
 		final ErlideBackend backend = ErlangCore.getBackendManager()
 				.getIdeBackend();
-		ErlideXref.addDirs(backend, scope);
+		ErlideXref.setScope(backend, scope);
 		fResult = ErlideXref.funtionUse(backend, searchRef);
 		// fResult = ErlideNoparse.find(backend, searchRef);
 		fSearchResult.setResult(fResult);

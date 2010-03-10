@@ -25,6 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideXref {
+	private static final String ERLIDE_XREF = "erlide_xref";
+
 	public static OtpErlangObject getProposalsWithDoc(final Backend b,
 			final String mod, final String prefix, final String stateDir) {
 		OtpErlangObject res = null;
@@ -40,16 +42,37 @@ public class ErlideXref {
 	public static void addDirs(final Backend backend,
 			final Collection<String> dirs) {
 		try {
-			backend.call("erlide_xref", "add_dirs", "ls", dirs);
+			backend.call(ERLIDE_XREF, "add_dirs", "ls", dirs);
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}
 	}
 
+	public static List<String> modules(final ErlideBackend backend) {
+		final ArrayList<String> result = new ArrayList<String>();
+		try {
+			final OtpErlangObject res = backend.call(ERLIDE_XREF, "modules",
+					"");
+			if (Util.isOk(res)) {
+				final OtpErlangTuple t = (OtpErlangTuple) res;
+				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+				for (final OtpErlangObject i : l) {
+					if (i instanceof OtpErlangAtom) {
+						final OtpErlangAtom m = (OtpErlangAtom) i;
+						result.add(m.atomValue());
+					}
+				}
+			}
+		} catch (final BackendException e) {
+			ErlLogger.error(e); // TODO report error
+		}
+		return result;
+	}
+
 	public static List<ErlangExternalFunctionCallRef> funtionUse(
 			final ErlideBackend backend, final ErlangExternalFunctionCallRef ref) {
 		try {
-			final OtpErlangObject res = backend.call("erlide_xref",
+			final OtpErlangObject res = backend.call(ERLIDE_XREF,
 					"function_use", "aai", ref.getModule(), ref.getFunction(),
 					ref.getArity());
 			if (Util.isOk(res)) {
@@ -90,6 +113,22 @@ public class ErlideXref {
 			ErlLogger.warn(e);
 		}
 		return null;
+	}
+
+	public static void setScope(final ErlideBackend backend,
+			final List<String> scope) {
+		final List<String> mods = modules(backend);
+		removeModules(backend, mods);
+		addDirs(backend, scope);
+	}
+
+	private static void removeModules(final ErlideBackend backend,
+			final List<String> mods) {
+		try {
+			backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);
+		} catch (final BackendException e) {
+			ErlLogger.error(e); // TODO report error
+		}
 	}
 
 }

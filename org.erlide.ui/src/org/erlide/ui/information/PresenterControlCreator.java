@@ -33,7 +33,6 @@ import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.BrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.BrowserInput;
@@ -148,7 +147,7 @@ public final class PresenterControlCreator extends
 		 */
 		@Override
 		public void run() {
-			final ErlBrowserInformationControlInput infoInput = (ErlBrowserInformationControlInput) fInfoControl
+			final BrowserInformationControlInput input = fInfoControl
 					.getInput();
 			fInfoControl.notifyDelayedInputChange(null);
 			fInfoControl.dispose();
@@ -156,7 +155,7 @@ public final class PresenterControlCreator extends
 				final EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
 						.showView(EdocView.ID);
 				// TODO view.setInput(infoInput);
-				view.setText(infoInput.getHtml());
+				view.setText(input.getHtml());
 			} catch (final PartInitException e) {
 				ErlLogger.error(e);
 			}
