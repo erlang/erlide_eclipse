@@ -63,7 +63,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 			if (launch != null) {
 				launch.terminate();
 			}
-		} catch (DebugException e) {
+		} catch (final DebugException e) {
 			e.printStackTrace();
 		}
 		shellManager.dispose();
@@ -99,23 +99,23 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	@Override
-	public void initErlang(boolean monitor, boolean watch) {
+	public void initErlang(final boolean monitor, final boolean watch) {
 		super.initErlang(monitor, watch);
 		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
 	}
 
-	public void register(CodeBundle bundle) {
+	public void register(final CodeBundle bundle) {
 		codeManager.register(bundle);
 	}
 
-	public void unregister(Bundle b) {
+	public void unregister(final Bundle b) {
 		codeManager.unregister(b);
 	}
 
-	public void setTrapExit(boolean contains) {
+	public void setTrapExit(final boolean contains) {
 	}
 
-	public void streamAppended(String text, IStreamMonitor monitor) {
+	public void streamAppended(final String text, final IStreamMonitor monitor) {
 		if (monitor == proxy.getOutputStreamMonitor()) {
 			// System.out.println(getName() + " OUT " + text);
 		} else if (monitor == proxy.getErrorStreamMonitor()) {
@@ -129,22 +129,26 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		return launch;
 	}
 
-	public void setLaunch(ILaunch launch2) {
-		this.launch = launch2;
+	public void setLaunch(final ILaunch launch2) {
+		launch = launch2;
 	}
 
-	public BackendShell getShell(String id) {
+	public BackendShell getShell(final String id) {
 		final BackendShell shell = shellManager.openShell(id);
 		if (proxy != null) {
-			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
+			final IStreamMonitor errorStreamMonitor = proxy
+					.getErrorStreamMonitor();
 			errorStreamMonitor.addListener(new IStreamListener() {
-				public void streamAppended(String text, IStreamMonitor monitor) {
+				public void streamAppended(final String text,
+						final IStreamMonitor monitor) {
 					shell.add(text, IoRequestKind.STDERR);
 				}
 			});
-			IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
+			final IStreamMonitor outputStreamMonitor = proxy
+					.getOutputStreamMonitor();
 			outputStreamMonitor.addListener(new IStreamListener() {
-				public void streamAppended(String text, IStreamMonitor monitor) {
+				public void streamAppended(final String text,
+						final IStreamMonitor monitor) {
 					shell.add(text, IoRequestKind.STDOUT);
 				}
 			});
@@ -158,35 +162,37 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	@Override
-	public void input(String s) throws IOException {
+	public void input(final String s) throws IOException {
 		if (!isStopped()) {
 			proxy.write(s);
 		}
 	}
 
-	public void launchesTerminated(ILaunch[] launches) {
-		for (ILaunch aLaunch : launches) {
+	public void launchesTerminated(final ILaunch[] launches) {
+		for (final ILaunch aLaunch : launches) {
 			if (aLaunch == launch) {
 				stop();
 			}
 		}
 	}
 
-	public void launchesAdded(ILaunch[] launches) {
+	public void launchesAdded(final ILaunch[] launches) {
 	}
 
-	public void launchesChanged(ILaunch[] launches) {
+	public void launchesChanged(final ILaunch[] launches) {
 	}
 
-	public void launchesRemoved(ILaunch[] launches) {
+	public void launchesRemoved(final ILaunch[] launches) {
 	}
 
-	public void setStreamsProxy(IStreamsProxy streamsProxy) {
+	public void setStreamsProxy(final IStreamsProxy streamsProxy) {
 		proxy = streamsProxy;
 		if (proxy != null) {
-			IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
+			final IStreamMonitor errorStreamMonitor = proxy
+					.getErrorStreamMonitor();
 			errorStreamMonitor.addListener(this);
-			IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
+			final IStreamMonitor outputStreamMonitor = proxy
+					.getOutputStreamMonitor();
 			outputStreamMonitor.addListener(this);
 		}
 	}
@@ -230,7 +236,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		}
 	}
 
-	public void addProjectPath(IProject project) {
+	public void addProjectPath(final IProject project) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final String outDir = project.getLocation()
@@ -238,7 +244,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		if (outDir.length() > 0) {
 			ErlLogger.debug("backend %s: add path %s", getName(), outDir);
 			if (isDistributed()) {
-				boolean accessible = ErlideUtil.isAccessible(this, outDir);
+				final boolean accessible = ErlideUtil
+						.isAccessible(this, outDir);
 				if (accessible) {
 					addPath(false/* prefs.getUsePathZ() */, outDir);
 				} else {
@@ -262,24 +269,26 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	private void loadBeamsFromDir(final String outDir) {
-		File dir = new File(outDir);
-		for (File f : dir.listFiles()) {
-			final Path path = new Path(f.getPath());
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
-				final String m = path.removeFileExtension().lastSegment();
-				try {
-					boolean ok = false;
-					final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
-							path);
-					if (bin != null) {
-						ok = ErlBackend.loadBeam(this, m, bin);
+		final File dir = new File(outDir);
+		if (dir.isDirectory()) {
+			for (final File f : dir.listFiles()) {
+				final Path path = new Path(f.getPath());
+				if (path.getFileExtension() != null
+						&& "beam".compareTo(path.getFileExtension()) == 0) {
+					final String m = path.removeFileExtension().lastSegment();
+					try {
+						boolean ok = false;
+						final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
+								path);
+						if (bin != null) {
+							ok = ErlBackend.loadBeam(this, m, bin);
+						}
+						if (!ok) {
+							ErlLogger.error("Could not load %s", m);
+						}
+					} catch (final Exception ex) {
+						ErlLogger.warn(ex);
 					}
-					if (!ok) {
-						ErlLogger.error("Could not load %s", m);
-					}
-				} catch (final Exception ex) {
-					ErlLogger.warn(ex);
 				}
 			}
 		}
