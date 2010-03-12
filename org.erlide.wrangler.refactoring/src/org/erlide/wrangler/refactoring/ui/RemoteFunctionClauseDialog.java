@@ -74,7 +74,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 					.getErlElement().getErlProject().getModules();
 
 			for (IErlModule m : erlmodules) {
-				if (!m.isStructureKnown()) {
+				// must refresh the scanner!
+				if (/* !m.isStructureKnown() */true) {
 					// FIXME: not permitted operation
 					m.open(null);
 				}
