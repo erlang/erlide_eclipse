@@ -369,7 +369,8 @@ scan_extends(_Ts, _As, Ms) -> Ms.
 
 %% scan_define(Tokens, DefineLine, From, EppState)
 
-scan_define([{'(',_Lp},{atom,Lm,M},{',',_Lc}|Toks], _Ld, From, St) ->
+scan_define([{'(',_Lp},{Key,Lm,M},{',',_Lc}|Toks], _Ld, From, St) when
+      Key == atom orelse Key== var ->    
     case dict:find({atom,M}, St#epp.macs) of
 	{ok,_Def} ->
 	    epp_reply(From, {error,{Lm,epp,{redefine,M}}}),
@@ -379,33 +380,8 @@ scan_define([{'(',_Lp},{atom,Lm,M},{',',_Lc}|Toks], _Ld, From, St) ->
 			     {atom, M},
 			     {none,macro_expansion(Toks)})
     end;
-scan_define([{'(',_Lp},{atom,Lm,M},{'(',_Lc}|Toks], Ld, From, St) ->
-    case dict:find({atom,M}, St#epp.macs) of
-	{ok,_Def} ->
-	    epp_reply(From, {error,{Lm,epp,{redefine,M}}}),
-	    wait_req_scan(St);
-	error ->
-	    case catch macro_pars(Toks, []) of
-		{ok, {As, Me}} ->
-		    scan_define_cont(From, St,
-				    {atom, M},
-				    {As, Me});
-		_ ->
-		    epp_reply(From, {error,{Ld,epp,{bad,define}}}),
-		    wait_req_scan(St)
-	    end
-    end;
-scan_define([{'(',_Lp},{var,Lm,M},{',',_Lc}|Toks], _Ld, From, St) ->
-    case dict:find({atom,M}, St#epp.macs) of
-	{ok,_Def} ->
-	    epp_reply(From, {error,{Lm,epp,{redefine,M}}}),
-	    wait_req_scan(St);
-	error ->
-	    scan_define_cont(From, St,
-			     {atom, M},
-			     {none,macro_expansion(Toks)})
-    end;
-scan_define([{'(',_Lp},{var,Lm,M},{'(',_Lc}|Toks], Ld, From, St) ->
+scan_define([{'(',_Lp},{Key,Lm,M},{'(',_Lc}|Toks], Ld, From, St) when 
+      Key == atom orelse Key==var ->
     case dict:find({atom,M}, St#epp.macs) of
 	{ok,_Def} ->
 	    epp_reply(From, {error,{Lm,epp,{redefine,M}}}),
@@ -424,6 +400,8 @@ scan_define([{'(',_Lp},{var,Lm,M},{'(',_Lc}|Toks], Ld, From, St) ->
 scan_define(_Toks, Ld, From, St) ->
     epp_reply(From, {error,{Ld,epp,{bad,define}}}),
     wait_req_scan(St).
+
+
 
 %%% Detection of circular macro expansions (which would either keep
 %%% the compiler looping forever, or run out of memory):
@@ -536,32 +514,21 @@ scan_include_lib(_Toks, Li, From, St) ->
 %%  Handle the conditional parsing of a file.
 %%  Report a badly formed if[n]def test and then treat as undefined macro.
 
-scan_ifdef([{'(',_Llp},{atom,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St) ->
+scan_ifdef([{'(',_Llp},{Key,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St)
+    when Key == atom orelse Key==var ->
     case dict:find({atom,M}, St#epp.macs) of
 	{ok,_Def} ->
 	    scan_toks(From, St#epp{istk=[ifdef|St#epp.istk]});
 	error ->
 	    skip_toks(From, St, [ifdef])
     end;
-scan_ifdef([{'(',_Llp},{var,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St) ->
-    case dict:find({atom,M}, St#epp.macs) of
-	{ok,_Def} ->
-	    scan_toks(From, St#epp{istk=[ifdef|St#epp.istk]});
-	error ->
-	    skip_toks(From, St, [ifdef])
-    end;
+
 scan_ifdef(_Toks, Li, From, St) ->
     epp_reply(From, {error,{Li,epp,{bad,ifdef}}}),
     wait_req_skip(St, [ifdef]).
 
-scan_ifndef([{'(',_Llp},{atom,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St) ->
-    case dict:find({atom,M}, St#epp.macs) of
-	{ok,_Def} ->
-	    skip_toks(From, St, [ifndef]);
-	error ->
-	    scan_toks(From, St#epp{istk=[ifndef|St#epp.istk]})
-    end;
-scan_ifndef([{'(',_Llp},{var,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St) ->
+scan_ifndef([{'(',_Llp},{Key,_Lm,M},{')',_Lrp},{dot,_Ld}], _Li, From, St) when
+      Key == atom orelse Key == var ->
     case dict:find({atom,M}, St#epp.macs) of
 	{ok,_Def} ->
 	    skip_toks(From, St, [ifndef]);

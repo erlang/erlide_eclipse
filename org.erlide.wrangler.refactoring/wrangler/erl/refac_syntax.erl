@@ -2281,9 +2281,18 @@ binary_field_body(Node) ->
 
 binary_field_types(Node) ->
     case unwrap(Node) of
-      {bin_element, Pos, _, _, Types} ->
+      {bin_element, Pos, _, Size, Types} ->
 	  if Types == default -> [];
-	     true -> unfold_binary_field_types(Types, Pos)
+	     true -> 
+		  {L, C} = case Size==default of 
+			       true->
+				   Pos;
+			       _ -> get_pos(Size)
+			   end,
+		  %% TODO: the type info is not accurate here;
+                  %% should change the parse to return tokens of type
+		  %% instead of kust values.
+		  unfold_binary_field_types(Types, {L, C+10}) 
 	  end;
       Node1 -> (data(Node1))#binary_field.types
     end.

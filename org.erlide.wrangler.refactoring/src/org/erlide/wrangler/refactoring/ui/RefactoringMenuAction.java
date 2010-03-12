@@ -137,6 +137,9 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 								"Please select expression which should be fold!",
 								"Select expressions which should be folded!",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.introducemacro")) {
+				// TODO: start introduce macro refactoring
 			} else
 				return;
 

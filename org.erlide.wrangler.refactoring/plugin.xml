@@ -31,6 +31,12 @@
             <groupMarker
                   name="org.erlide.wrangler.refactoring.tupleGroup">
             </groupMarker>
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.macroGroup">
+            </groupMarker>
+            <separator
+                  name="org.erlide.wrangler.refactoring.separator4">
+            </separator>
          </menu>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
@@ -109,6 +115,13 @@
                id="org.erlide.wrangler.refactoring.tuplefunctonparameters"
                label="%tupleFunParamsName"
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.tupleGroup">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.introducemacro"
+               label="%introduceMacroName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.macroGroup"
+               style="push">
          </action>
          <!-- Experimental
          <action

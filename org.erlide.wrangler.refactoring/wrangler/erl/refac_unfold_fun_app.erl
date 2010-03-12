@@ -47,6 +47,9 @@
 
 -export([unfold_fun_app/4, unfold_fun_app_eclipse/4]).
 
+
+-import(refac_code_search_utils, [identifier_name/1]).
+
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
@@ -54,15 +57,14 @@
 %% Usage: Point the cursor to the function name in the function application to unfold, then 
 %% select <em>Unfold Function Application</em> from <em>Refactor</em>.
 %% </p>
-%%-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer)
-%%      ->{'ok', [string()]}).
-%%-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
-%%      ->{'ok', [filename()]}).
+
+-spec(unfold_fun_app/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
+      ->{'ok', [filename()]}).
 unfold_fun_app(FileName, Pos, SearchPaths, TabWidth) ->
     unfold_fun_app(FileName, Pos, SearchPaths, TabWidth, emacs).
 
-%%-spec(unfold_fun_app_eclipse/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
-%%      ->{ok, [{filename(), filename(), string()}]}).
+-spec(unfold_fun_app_eclipse/4::(FileName::filename(), Pos::pos(), SearchPaths::[dir()], TabWidth::integer())
+      ->{ok, [{filename(), filename(), string()}]}).
 unfold_fun_app_eclipse(FileName,Pos,SearchPaths, TabWidth) ->
     unfold_fun_app(FileName, Pos, SearchPaths, TabWidth, eclipse).
 
@@ -71,21 +73,21 @@ unfold_fun_app(FName, Pos = {Line, Col}, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:unfold_fun_app(~p, {~p,~p}, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":unfold_fun_app(" ++ "\"" ++
-	FName ++ "\", {" ++ integer_to_list(Line) ++	", " ++ integer_to_list(Col) ++ "},"++
-	"[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+	    FName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++
+	      "[" ++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
     case pos_to_fun_clause_app(AnnAST, Pos) of
-	{ok, {Clause, App}} -> 
-	    {ok, {FunClause, {Subst, MatchExprs}}} = side_cond_analysis(ModName, AnnAST, App),
-	    SubstLocs = [Loc||{_,Loc, _} <- Subst],
-	    Subst1 =[{Loc, P2} ||{_P1, Loc, P2}<-Subst],
-	    {FunClause1, MatchExprs1} = auto_rename_vars({FunClause, MatchExprs}, {Clause, App}, SubstLocs),
-	    UsedRecords = collect_used_records(FunClause),
-	    fun_inline_1(FName, AnnAST, Pos, {FunClause1, Subst1, MatchExprs1}, 
-			 {Clause, App}, UsedRecords, Editor, Cmd);
-	{error, _} -> throw({error, "You have not selected a function application, "
-			     "or the function containing the function application selected does not parse."})
+      {ok, {Clause, App}} ->
+	  {ok, {FunClause, {Subst, MatchExprs}}} = side_cond_analysis(ModName, AnnAST, App),
+	  SubstLocs = [Loc || {_, Loc, _} <- Subst],
+	  Subst1 = [{Loc, P2} || {_P1, Loc, P2} <- Subst],
+	  {FunClause1, MatchExprs1} = auto_rename_vars({FunClause, MatchExprs}, {Clause, App}, SubstLocs),
+	  UsedRecords = refac_misc:collect_used_records(FunClause),
+	  fun_inline_1(FName, AnnAST, Pos, {FunClause1, Subst1, MatchExprs1},
+		       {Clause, App}, UsedRecords, Editor, Cmd);
+      {error, _} -> throw({error, "You have not selected a function application, "
+				  "or the function containing the function application selected does not parse."})
     end.
 
 
@@ -94,56 +96,64 @@ side_cond_analysis(ModName, AnnAST, App) ->
     Args = refac_syntax:application_arguments(App),
     Arity = length(Args),
     case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
-	{value, {fun_def, {ModName, FunName, Arity, _, _}}} ->
-	    Fs = refac_syntax:form_list_elements(AnnAST),
-	    Res = [F || F <- Fs, refac_syntax:type(F) == function,
-			case lists:keysearch(fun_def, 1, refac_syntax:get_ann(F)) of
-			    {value, {fun_def, {ModName, FunName, Arity, _, _}}} -> true;
-			    _ -> false
-			end],
+      {value, {fun_def, {ModName, FunName, Arity, _, _}}} ->
+	  Fs = refac_syntax:form_list_elements(AnnAST),
+	  Res = [F || F <- Fs, refac_syntax:type(F) == function,
+		      case lists:keysearch(fun_def, 1, refac_syntax:get_ann(F)) of
+			{value, {fun_def, {ModName, FunName, Arity, _, _}}} -> true;
+			_ -> false
+		      end],
 	    case Res of
-		[FunDef] ->
-		    Cs = refac_syntax:function_clauses(FunDef),
-		    try find_matching_clause(Cs, Args) of
-			none -> throw({error, "The function to be inlined has multiple clauses, "
-				       "and Wrangler could not figure out which function clause to inline."});
-			{C, {Subst, MatchExprs}} ->
-			    UsedMacros = collect_used_macros(C),
-			    CPos = refac_syntax:get_pos(C),
-			    AppPos = refac_syntax:get_pos(App),
-			    case check_macro_defs(Fs, UsedMacros,erlang:min(CPos, AppPos), erlang:max(CPos, AppPos)) of
-				[] ->
-				    {ok, {C,{Subst, MatchExprs}}};
-				Ms ->
-				    MsStr = format(Ms),
-				    case length(Ms) of 
-					1 ->
-					    Str = "Macro "++ MsStr ++" used by the function clause to be inlined is defined/undefined "
-						"between the function application to be unfolded and the function clause.",
-					    throw({error, Str});
-					_ ->
-					    Str = "Macros: "++ MsStr ++", used by the function clause to be inlined is defined/undefined "
-						"between the function application to be unfolded and the function clause.",
-					    throw({error, Str})
-				    end
-			    end
-		    catch 
- 			throw:E2 -> 
-			    throw(E2)
- 		    end;
-		[] ->
-		    throw({error, "The function to be inlined is not defined."});
-		[_| _] ->
-		    throw({error, "The function to be inlined has been defined more than once."})
-	    end;
-	{value, {fun_def, {'_', _,_, _, _}}} ->
+	      [FunDef] -> side_cond_analysis_1(FunDef, App, AnnAST);
+	      [] ->
+		  throw({error, "The function to be inlined is not defined."});
+	      [_| _] ->
+		  throw({error, "The function to be inlined has been defined more than once."})
+	  end;
+	{value, {fun_def, {'_', _, _, _, _}}} ->
 	    throw({error, "The function to be inlined is not defined."});
 	{value, {fun_def, {_M, _F, _A, _, _}}} ->
 	    throw({error, "Inlining a function defined in another module is not supported yet."});
-	_ -> throw({error, "Sorry, Wrangler could not figure out where the function to be inlined is defined."})
+      _ -> throw({error, "Sorry, Wrangler could not figure out where the function to be inlined is defined."})
     end.
 
+side_cond_analysis_1(FunDef, App, AnnAST) ->
+    Fs = refac_syntax:form_list_elements(AnnAST),
+    Args = refac_syntax:application_arguments(App),
+    Cs = refac_syntax:function_clauses(FunDef),
+    try
+      find_matching_clause(Cs, Args)
+    of
+      none -> throw({error, "The function to be inlined has multiple clauses, "
+			    "and Wrangler could not figure out which function clause to inline."});
+      {C, {Subst, MatchExprs}} ->
+	  UsedMacros = refac_misc:collect_used_macros(C),
+	  CPos = refac_syntax:get_pos(C),
+	  AppPos = refac_syntax:get_pos(App),
+	  case check_macro_defs(Fs, UsedMacros, erlang:min(CPos, AppPos), erlang:max(CPos, AppPos)) of
+	    [] ->
+		{ok, {C, {Subst, MatchExprs}}};
+	    Ms -> return_error_msg(Ms)
+	  end
+    catch
+      throw:E2 ->
+	  throw(E2)
+    end.
 
+return_error_msg(Ms) ->
+    MsStr = format(Ms),
+    case length(Ms) of
+	1 ->
+	    Str = "Macro " ++ MsStr ++ " used by the function clause to be inlined is defined/undefined "
+		"between the function application to be unfolded and the function clause.",
+	    throw({error, Str});
+      _ ->
+	    Str = "Macros: " ++ MsStr ++ ", used by the function clause to be inlined is defined/undefined "
+				       "between the function application to be unfolded and the function clause.",
+	    throw({error, Str})
+    end.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Find the function clause to be inlined by matching actual and formal parameters.
 find_matching_clause([], _Ps) -> none;
 find_matching_clause([C], Ps) ->
@@ -177,183 +187,180 @@ find_matching_clause([C|Cs], Ps) ->
 %% to handle the case when the same pattern occurs more than once in the format parameters;
 %% in this case, Wrangler needs to make sure all the occurrences are bound to the same thing.
 scrutinse_subst(Res) ->
-    SubSt = [{P1,P2} || {P1, _Loc, P2} <-Res],
-    SubSt1 = [{P1,Loc, P2} || {P1, Loc, P2} <-Res],
+    SubSt = [{P1, P2} || {P1, _Loc, P2} <- Res],
+    SubSt1 = [{P1, Loc, P2} || {P1, Loc, P2} <- Res],
     MatchExprs = Res -- SubSt1,
-    MatchExprs1 =[{refac_syntax:match_expr_pattern(M),
-		   refac_syntax:match_expr_body(M)}
-		  ||M<-MatchExprs],
+    MatchExprs1 = [{refac_syntax:match_expr_pattern(M),
+		    refac_syntax:match_expr_body(M)}
+		   || M <- MatchExprs],
     StrRep = lists:usort([{refac_prettypr:format(E1), refac_prettypr:format(E2)}
-			  ||{E1, E2} <-(SubSt ++ MatchExprs1)]),
+			  || {E1, E2} <- SubSt ++ MatchExprs1]),
     Fst = lists:usort(element(1, lists:unzip(StrRep))),
-    case length(Fst)<length(StrRep) of 
-	true ->
-	    none;
-	_ ->   
-	    {SubSt1, MatchExprs}
+    case length(Fst) < length(StrRep) of
+      true ->
+	  none;
+      _ ->
+	  {SubSt1, MatchExprs}
     end.
 
-find_matching_clause_1(C, AppPs, LastClause) ->
+
+
+find_matching_clause_1(C, AppPs, IsLastClause) ->
     DefPs = refac_syntax:clause_patterns(C),
     G = refac_syntax:clause_guard(C),
     case G of
-	none -> match_patterns(DefPs, AppPs, LastClause);
-	_ when LastClause ->
-	    throw({error, "Inlining of a function clause with guard expression(s) is not supported yet."});
-	_ -> no_more_match
+      none -> match_patterns(DefPs, AppPs, IsLastClause);
+      _ when IsLastClause ->
+	  throw({error, "Inlining of a function clause with guard expression(s) is not supported yet."});
+      _ -> no_more_match
     end.
 
-match_patterns(DefPs, AppPs, LastClause) ->
-    try do_match_patterns(DefPs, AppPs, LastClause) of 
-	Subst -> Subst
-    catch 
-	throw:E2 -> E2
-    end.  
+match_patterns(DefPs, AppPs, IsLastClause) ->
+    try
+      do_match_patterns(DefPs, AppPs, IsLastClause)
+    of
+      Subst -> Subst
+    catch
+      throw:E2 -> E2
+    end.
 
-do_match_patterns(DefP, AppP, LastClause) when is_list(DefP) andalso is_list(AppP) ->
-    case length(DefP)== length(AppP) of 
-	false ->
-	    throw(no_match);
-	true-> case DefP of 
-		   [] ->
-		       [];
-		   _ ->
-		       lists:append([do_match_patterns(P1, P2, LastClause) || 
-					{P1, P2} <-lists:zip(DefP, AppP)])
-	       end
+do_match_patterns(DefP, AppP, IsLastClause)
+    when is_list(DefP) andalso is_list(AppP) ->
+    case length(DefP) == length(AppP) of
+      false ->
+	  throw(no_match);
+      true ->
+	  case DefP of
+	    [] ->
+		[];
+	    _ ->
+		lists:append([do_match_patterns(P1, P2, IsLastClause)
+			      || {P1, P2} <- lists:zip(DefP, AppP)])
+	  end
     end;
 
 do_match_patterns(DefP, _AppP, _) when is_list(DefP) ->
     throw(no_more_match);
 do_match_patterns(_DefP, AppP, _) when is_list(AppP) ->
     throw(no_more_match);
-do_match_patterns(DefP, AppP, LastClause) ->
-    F = fun(P1, P2) ->
-		SubPats1 = refac_syntax:subtrees(P1),
-		SubPats2 = refac_syntax:subtrees(P2),
-		try do_match_patterns(SubPats1, SubPats2, LastClause) of
-		    Subst -> Subst
-		catch
-		   throw:E -> 
-			throw(E)
-		end
-	end,
+do_match_patterns(DefP, AppP, IsLastClause) ->
     T1 = refac_syntax:type(DefP),
     T2 = refac_syntax:type(AppP),
-    case T1==T2 of 
+    case T1 == T2 of
+	false -> match_pattern_of_same_type(DefP, AppP, IsLastClause);
+	true -> match_pattern_of_different_type(DefP, AppP,IsLastClause)
+    end.
+
+match_pattern_of_same_type(DefP, AppP, IsLastClause) ->
+    case refac_syntax:type(DefP) of
+	variable ->
+	    case is_non_reducible_term(AppP) of
+		true ->
+		    Ann = refac_syntax:get_ann(DefP),
+		    case lists:keysearch(def, 1, Ann) of
+			{value, {def, DefinePos}} ->
+			    [{DefP, DefinePos, AppP}];
+			_ -> [refac_syntax:match_expr(DefP, AppP)]
+		    end;
+		false ->
+		    [refac_syntax:match_expr(DefP, AppP)]
+	  end;
+	underscore ->
+	    [];
+	_
+	  when
+	      IsLastClause ->   %% The last function clause; do an enforced match;
+	    [refac_syntax:match_expr(DefP, AppP)];
+	_ -> case refac_syntax:is_literal(AppP) of
+		 true -> throw(no_match);
+		 _ -> throw(no_more_match) %% stop here; no more further match needed.
+	     end
+    end.
+
+match_pattern_of_different_type(DefP, AppP, IsLastClause) ->
+    T1 = refac_syntax:type(DefP),
+    case refac_syntax:is_literal(DefP) andalso refac_syntax:is_literal(AppP) of
+	true ->
+	    case
+		refac_syntax:concrete(DefP) == refac_syntax:concrete(AppP)
+	    of
+		true ->
+		    [];
+		_ -> throw(no_match)   %% should continue matching the next clause;
+	    end;
 	false ->
-	    case T1 of 
+	    case T1 of
 		variable ->
-		    case is_non_reducible_term(AppP) of 
-			true ->
+		    case {is_macro_name(DefP), is_macro_name(AppP)} of
+			{true, true} ->
+			    case identifier_name(DefP) == identifier_name(AppP) of
+				true ->
+				    [];
+				false -> throw(no_match)  %% should continue matching the next clause;
+			    end;
+			{false, false} ->  %% both are variables;
 			    Ann = refac_syntax:get_ann(DefP),
-			    case lists:keysearch(def,1,Ann) of 
+			    case lists:keysearch(def, 1, Ann) of
 				{value, {def, DefinePos}} ->
 				    [{DefP, DefinePos, AppP}];
+				%% this should not happen;
 				_ -> [refac_syntax:match_expr(DefP, AppP)]
-			    end;
-			false ->
-			    [refac_syntax:match_expr(DefP, AppP)]
+			    end
 		    end;
-		underscore ->
-		    [];
-		_ when LastClause ->   %% The last function clause; do an enforced match;
-		    [refac_syntax:match_expr(DefP, AppP)];
-		_ ->case refac_syntax:is_literal(AppP) of 
-			true -> throw(no_match);  
-			_ -> throw(no_more_match) %% stop here; no more further match needed.
-		    end
-	    end;
-	true -> case refac_syntax:is_literal(DefP) andalso refac_syntax:is_literal(AppP) of
-		    true ->
-			case refac_syntax:concrete(DefP)==refac_syntax:concrete(AppP) of 
-			    true ->
-				[];
-			    _ -> throw(no_match)   %% should continue matching the next clause;
-			end;
-		    false ->
-			case T1 of 
-			    variable ->
-				case {is_macro_name(DefP), is_macro_name(AppP)} of 
-				    {true, true} ->
-					case macro_name_value(DefP) ==
-					    macro_name_value(AppP) of 
-					    true ->
-						[];
-					    false -> throw(no_match)  %% should continure matching the next clause;
-					end;
-				    {false, false} ->  %% both are variables;
-					Ann = refac_syntax:get_ann(DefP),
-					case lists:keysearch(def,1,Ann) of 
-					    {value, {def, DefinePos}} ->
-						[{DefP, DefinePos, AppP}];
-					         %% this should not happen;
-					    _ -> [refac_syntax:match_expr(DefP, AppP)]
-					end
-				end;
-			    underscore -> [];
-			    _ -> case refac_syntax:is_leaf(DefP) of
-				     true ->
-					 throw(no_match);  %% should continue matching the next clause;
-				     _ -> F(DefP, AppP)
-				 end
-			end
-		end
+		underscore -> [];
+		_ -> case refac_syntax:is_leaf(DefP) of
+			 true ->
+			     throw(no_match);  %% should continue matching the next clause;
+			 _ -> do_match_a_pattern(DefP, AppP, IsLastClause)
+		     end
+	    end
+    end.
+
+do_match_a_pattern(P1, P2, IsLastClause) ->
+    SubPats1 = refac_syntax:subtrees(P1),
+    SubPats2 = refac_syntax:subtrees(P2),
+    try
+	do_match_patterns(SubPats1, SubPats2, IsLastClause)
+    of
+	Subst -> Subst
+    catch
+	throw:E ->
+	    throw(E)
     end.
 
 
 is_non_reducible_term(T) ->
-      case refac_syntax:type(T) of
-	  variable -> true;
-	  atom -> true;
-	  integer -> true;
-	  float -> true;
-	  char -> true;
-	  string -> true;
-	  nil -> true;
-	  fun_expr -> true;
-	  list ->
-	      case is_non_reducible_term(refac_syntax:list_head(T)) of
-		  true -> is_non_reducible_term(refac_syntax:list_tail(T));
-		  false -> false
-	      end;
-	  tuple -> lists:all(fun is_non_reducible_term/1, refac_syntax:tuple_elements(T));
-	  _ -> false
-      end.
+    lists:member(refac_syntax:type(T), [variable, fun_expr])
+	orelse refac_syntax:is_literal(T).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fun_inline_1(FName, AnnAST, Pos, {FunClauseToInline, Subst, MatchExprsToAdd}, {Clause, App},
-	     UsedRecords,Editor, Cmd) ->
+	     UsedRecords, Editor, Cmd) ->
     B = refac_syntax:clause_body(FunClauseToInline),
-    {SubstedBody1, _} = lists:unzip([refac_util:stop_tdTP(fun do_subst/2, E, Subst) || E <- B]),
+    {SubstedBody1, _} = lists:unzip([ast_traverse_api:stop_tdTP(fun do_subst/2, E, Subst) || E <- B]),
     SubstedBody = MatchExprsToAdd ++ SubstedBody1,
     Fs = refac_syntax:form_list_elements(AnnAST),
     RecordDefs = collect_record_defs(Fs, UsedRecords, Pos),
     Fs0 = Fs -- RecordDefs,
     Fs1 = lists:append([do_inline(F, Pos, Clause, App, SubstedBody, RecordDefs) || F <- Fs0]),
-    AnnAST1 = refac_util:rewrite(AnnAST, refac_syntax:form_list(Fs1)),
-    case Editor of
-      emacs ->
-	    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST1}], Cmd),
-	    {ok, [FName]};
-	eclipse ->
-	    Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST1),
-	    {ok, [{FName, FName, Content}]}
-    end.
+    AnnAST1 = refac_misc:rewrite(AnnAST, refac_syntax:form_list(Fs1)),
+    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd).
+  
 
 
 do_inline(Form, Pos, _Clause, App, SubstedBody, RecordDefs) ->
-    {S, E} = refac_util:get_range(Form),
+    {S, E} = refac_misc:get_start_end_loc(Form),
     if (S =< Pos) and (Pos =< E) ->
-	   {NewForm, _} = refac_util:stop_tdTP(fun do_inline_1/2, Form, {App, SubstedBody}),
-	    case length(SubstedBody) > 1 of
-		true ->
-		    {NewForm1, _} = refac_util:stop_tdTP(fun remove_begin_end/2, NewForm, SubstedBody),
-		    RecordDefs++[NewForm1];
-		_ -> RecordDefs++[NewForm]
-	    end;
+	   {NewForm, _} = ast_traverse_api:stop_tdTP(fun do_inline_1/2, Form, {App, SubstedBody}),
+	   case length(SubstedBody) > 1 of
+	     true ->
+		 {NewForm1, _} = ast_traverse_api:stop_tdTP(fun remove_begin_end/2, NewForm, SubstedBody),
+		 RecordDefs ++ [NewForm1];
+	     _ -> RecordDefs ++ [NewForm]
+	   end;
        true ->
-	    [Form]
+	   [Form]
     end.
 
 do_inline_1(Node, {App, SubstedBody}) ->
@@ -368,161 +375,168 @@ do_inline_1(Node, {App, SubstedBody}) ->
 	_ -> {Node, false}
     end.
     
+
+
 remove_begin_end(Node, BlockBody) ->
-    Fun = fun(E) ->
+    Fun = fun (E) ->
 		  case refac_syntax:type(E) of
-		      block_expr ->
-			  case refac_syntax:block_expr_body(E) of
-			      BlockBody ->
-				  BlockBody;
-			      _ -> [E]
-			  end;
-		      match_expr ->
-			  Ps = match_expr_patterns(E),
-			  B =  match_expr_body(E),
-			  case refac_syntax:type(B) of 
-			      block_expr ->
-				  case refac_syntax:block_expr_body(B) of 
-				      BlockBody ->
-					  Last = lists:last(BlockBody),
-					  NewLast = make_match_expr([refac_util:reset_attrs(P)||P<-Ps], Last),
-					  lists:sublist(BlockBody, length(BlockBody)-1)++[NewLast];
-				      _ -> [E]
-				  end;
-			      _ -> [E]
-			  end;
-		      _ -> [E]
+		    block_expr ->
+			case refac_syntax:block_expr_body(E) of
+			  BlockBody ->
+			      BlockBody;
+			  _ -> [E]
+			end;
+		    match_expr ->
+			Ps = match_expr_patterns(E),
+			B = match_expr_body(E),
+			case refac_syntax:type(B) of
+			  block_expr ->
+			      case refac_syntax:block_expr_body(B) of
+				BlockBody ->
+				    Last = lists:last(BlockBody),
+				    NewLast = make_match_expr([refac_misc:reset_attrs(P) || P <- Ps], Last),
+				    lists:sublist(BlockBody, length(BlockBody) - 1) ++ [NewLast];
+				_ -> [E]
+			      end;
+			  _ -> [E]
+			end;
+		    _ -> [E]
 		  end
 	  end,
     case refac_syntax:type(Node) of
-	clause ->
-	    P = refac_syntax:clause_patterns(Node),
-	    G = refac_syntax:clause_guard(Node),
-	    B= refac_syntax:clause_body(Node),
-	    B1=lists:append([Fun(E)||E <-B]),
-	    {refac_util:rewrite(Node, refac_syntax:clause(P, G, B1)), 
-	     length(B) =/= length(B1)};
-	block_expr ->
-	    Es = refac_syntax:block_expr_body(Node),
-	    case Es of 
-		BlockBody ->
-		    {Node, false};
-		_ ->
-		    Es1 = lists:append([Fun(E)||E <-Es]),
-		    {refac_util:rewrite(Node, refac_syntax:block_expr(Es1)), 
-		     length(Es)=/=length(Es1)}
-	    end;
-	try_expr->
-	    B = refac_syntax:try_expr_body(Node),
-	    B1 = lists:append([Fun(E)||E <-B]),
-	    Cs = refac_syntax:try_expr_clauses(Node),
-	    Handlers = refac_syntax:try_expr_handlers(Node),
-	    After = refac_syntax:try_expr_after(Node),
-	    {refac_util:rewrite(Node, refac_syntax:try_expr(B, Cs, Handlers, After)),
-	     length(B)=/=length(B1)};
-	_ ->
-	    {Node, false}
+      clause ->
+	  P = refac_syntax:clause_patterns(Node),
+	  G = refac_syntax:clause_guard(Node),
+	  B = refac_syntax:clause_body(Node),
+	  B1 = lists:append([Fun(E) || E <- B]),
+	  {refac_misc:rewrite(Node, refac_syntax:clause(P, G, B1)),
+	   length(B) =/= length(B1)};
+      block_expr ->
+	  Es = refac_syntax:block_expr_body(Node),
+	  case Es of
+	    BlockBody ->
+		{Node, false};
+	    _ ->
+		Es1 = lists:append([Fun(E) || E <- Es]),
+		{refac_misc:rewrite(Node, refac_syntax:block_expr(Es1)),
+		 length(Es) =/= length(Es1)}
+	  end;
+      try_expr ->
+	  B = refac_syntax:try_expr_body(Node),
+	  B1 = lists:append([Fun(E) || E <- B]),
+	  Cs = refac_syntax:try_expr_clauses(Node),
+	  Handlers = refac_syntax:try_expr_handlers(Node),
+	  After = refac_syntax:try_expr_after(Node),
+	  {refac_misc:rewrite(Node, refac_syntax:try_expr(B, Cs, Handlers, After)),
+	   length(B) =/= length(B1)};
+      _ ->
+	  {Node, false}
     end.
     
    
 do_subst(Node, Subst) ->
     case refac_syntax:type(Node) of
-	variable ->
-	    As = refac_syntax:get_ann(Node),
-	    case lists:keysearch(def,1, As) of 
-		{value, {def, DefinePos}} ->
-		    case lists:keysearch(DefinePos,1, Subst) of
-			{value, {DefinePos, Expr}} ->
-			    {refac_util:rewrite(Node,Expr), true};
-			_ ->{Node, false}
-		    end;
-		_ -> {Node, false}
-	    end;
-	_ ->{Node,false}
+      variable ->
+	  As = refac_syntax:get_ann(Node),
+	  case lists:keysearch(def, 1, As) of
+	    {value, {def, DefinePos}} ->
+		case lists:keysearch(DefinePos, 1, Subst) of
+		  {value, {DefinePos, Expr}} ->
+		      {refac_misc:rewrite(Node, Expr), true};
+		  _ -> {Node, false}
+		end;
+	    _ -> {Node, false}
+	  end;
+      _ -> {Node, false}
     end.
-	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 %% From source postion to the function name part in a function application.
 pos_to_fun_clause_app(Node, Pos) ->
-    case refac_util:once_tdTU(fun pos_to_fun_clause_app_1/2, Node, Pos) of
-	{_, false} -> {error, none};
-	{{C, App}, true} -> {ok, {C, App}}
+    case
+      ast_traverse_api:once_tdTU(fun pos_to_fun_clause_app_1/2, Node, Pos)
+	of
+      {_, false} -> {error, none};
+      {{C, App}, true} -> {ok, {C, App}}
     end.
 
 pos_to_fun_clause_app_1(Node, Pos) ->
-    case refac_syntax:type(Node) of 
-	function ->
-	    {S, E} = refac_util:get_range(Node),
-	    if (S=<Pos) and (Pos =< E) ->
-		    Cs  = refac_syntax:function_clauses(Node),
-		    [C] = [C1|| C1 <- Cs,  
-				{S1, E1} <- [refac_util:get_range(C1)],
-				S1=<Pos,Pos=<E1],
-		    case pos_to_fun_app(C, Pos) of
-			{_, false} ->throw({error, "You have not selected a function application, "
-				      "or the function containing the function application selected does not parse."});
-			{App, true} ->
-			    {{C, App}, true}
-		    end;
-	       true -> {[], false}
-	    end;
-	_ ->
-	    {[], false}
-    end. 
+    case refac_syntax:type(Node) of
+      function ->
+	  {S, E} = refac_misc:get_start_end_loc(Node),
+	  if (S =< Pos) and (Pos =< E) ->
+		 Cs = refac_syntax:function_clauses(Node),
+		 [C] = [C1 || C1 <- Cs,
+			      {S1, E1} <- [refac_misc:get_start_end_loc(C1)],
+			      S1 =< Pos, Pos =< E1],
+		 case pos_to_fun_app(C, Pos) of
+		   {_, false} -> throw({error, "You have not selected a function application, "
+					       "or the function containing the function application selected does not parse."});
+		   {App, true} ->
+		       {{C, App}, true}
+		 end;
+	     true -> {[], false}
+	  end;
+      _ ->
+	  {[], false}
+    end.
     
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pos_to_fun_app(Node, Pos) ->
-    refac_util:once_tdTU(fun pos_to_fun_app_1/2, Node, Pos).
+    ast_traverse_api:once_tdTU(fun pos_to_fun_app_1/2, Node, Pos).
 
 pos_to_fun_app_1(Node, Pos) ->
     case refac_syntax:type(Node) of
-	application ->
-	    Op = refac_syntax:application_operator(Node),
-	    {S, E} = refac_util:get_range(Op),
-	    if (S =< Pos) and (Pos =< E) ->
-		    {Node, true};
-	       true -> {[], false}
-	    end;
-	_ -> {[], false} 
+      application ->
+	  Op = refac_syntax:application_operator(Node),
+	  {S, E} = refac_misc:get_start_end_loc(Op),
+	  if (S =< Pos) and (Pos =< E) ->
+		 {Node, true};
+	     true -> {[], false}
+	  end;
+      _ -> {[], false}
     end.
 
 
-
-auto_rename_vars({ClauseToInline, MatchExprs},{Clause, App}, SubStLocs) ->
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+auto_rename_vars({ClauseToInline, MatchExprs}, {Clause, App}, SubStLocs) ->
     VarName = 'WRANGLER_TEMP_VAR',
-    NewVarPat =refac_syntax:copy_pos(App, refac_syntax:copy_pos(App, refac_syntax:variable(VarName))),
+    NewVarPat = refac_syntax:copy_pos(App, refac_syntax:copy_pos(App, refac_syntax:variable(VarName))),
     MatchExpr = refac_syntax:copy_pos(App, refac_syntax:match_expr(NewVarPat, refac_syntax:atom(ok))),
-    {Clause1, _} = refac_util:stop_tdTP(fun do_replace_app_with_match/2, Clause, {App, MatchExpr}),
-    {Clause2,_,_} = refac_syntax_lib:vann_clause(refac_util:reset_attrs(Clause1),[],[],[]),
+    {Clause1, _} = ast_traverse_api:stop_tdTP(fun do_replace_app_with_match/2, Clause, {App, MatchExpr}),
+    Clause2 = refac_syntax_lib:var_annotate_clause(refac_misc:reset_attrs(Clause1), [], [], []),
     BdsInFunToInline = get_bound_vars(ClauseToInline),
-    NewNames = [{Name, DefinePos} || {Name, DefinePos} <- BdsInFunToInline, 
-				     not (lists:member(DefinePos, SubStLocs))],
+    NewNames = [{Name, DefinePos} || {Name, DefinePos} <- BdsInFunToInline,
+				     not lists:member(DefinePos, SubStLocs)],
     Pos = refac_syntax:get_pos(App),
     VarsToRename = get_vars_to_rename(Clause2, [Pos], VarName, NewNames, ClauseToInline),
-    do_rename_var({ClauseToInline, MatchExprs}, lists:usort(VarsToRename), collect_vars(Clause)).
+    UsedVarNames = ordsets:from_list(refac_misc:collect_var_names(Clause)),
+    do_rename_var({ClauseToInline, MatchExprs}, lists:usort(VarsToRename), UsedVarNames).
 
 
 do_replace_app_with_match(Node, {App, MatchExpr}) ->
     case Node of
-	App ->
-	    {refac_util:rewrite(App, MatchExpr), true};
-	_-> {Node, false}
+      App ->
+	  {refac_misc:rewrite(App, MatchExpr), true};
+      _ -> {Node, false}
     end.
 
 get_vars_to_rename(Clause, Pos, VarName, NewNames, ClauseToInline) ->
-    [{Name, DefinePos}||{Name, P}<-NewNames, 
-			refac_rename_var:cond_check(Clause, Pos, VarName, Name)=/={false, false, false},
-			{ok, {_,DefinePos, _}} <-[refac_util:pos_to_var_name(ClauseToInline, P)]].
+    [{Name, DefinePos} || {Name, P} <- NewNames,
+			  refac_rename_var:cond_check(Clause, Pos, VarName, Name) =/= {false, false, false},
+			  {ok, {_, DefinePos, _}} <- [interface_api:pos_to_var_name(ClauseToInline, P)]].
+
   
-  
-do_rename_var({Node, MatchExprs}, [], _UsedVarNames) ->  
-    {Node, [refac_util:reset_attrs(M)||M<-MatchExprs]};
-do_rename_var({Node, MatchExprs}, [V|Vs], UsedVarNames) ->
-    {Node1, MatchExprs1} =do_rename_var_1({Node, MatchExprs}, V, UsedVarNames),
+do_rename_var({Node, MatchExprs}, [], _UsedVarNames) ->
+    {Node, [refac_misc:reset_attrs(M) || M <- MatchExprs]};
+do_rename_var({Node, MatchExprs}, [V| Vs], UsedVarNames) ->
+    {Node1, MatchExprs1} = do_rename_var_1({Node, MatchExprs}, V, UsedVarNames),
     do_rename_var({Node1, MatchExprs1}, Vs, UsedVarNames).
 
 do_rename_var_1({Node, MatchExprs}, {VarName, DefLoc}, UsedVarNames) ->
-    NewVarName =make_new_name(VarName, ordsets:union(collect_vars(Node), UsedVarNames)),
-    {Node1, _}=refac_rename_var:rename(Node, DefLoc, NewVarName),
+    UsedVarNames1 =ordsets:union(ordsets:from_list(refac_misc:collect_var_names(Node)), UsedVarNames),
+    NewVarName = refac_misc:make_new_name(VarName, UsedVarNames1),
+    {Node1, _} = refac_rename_var:rename(Node, DefLoc, NewVarName),
     MatchExprs1 = do_rename_in_match_exprs(MatchExprs, DefLoc, NewVarName),
     {Node1, MatchExprs1}.
 
@@ -535,44 +549,8 @@ do_rename_in_match_expr_1(MatchExpr, DefLoc, NewVarName) ->
     {P1, _} = refac_rename_var:rename(P, DefLoc, NewVarName),
     refac_syntax:match_expr(P1, B).
     
-
-
-
-make_new_name(VarName, UsedVarNames) ->
-    NewVarName = list_to_atom(atom_to_list(VarName)++"_1"),
-    case ordsets:is_element(NewVarName, UsedVarNames) of
-	true ->
-	    make_new_name(NewVarName, UsedVarNames);
-	_ -> 
-	    NewVarName
-    end.
     
-    
-%% %%-spec(get_bound_vars(Node::[syntaxTree()]|syntaxTree())-> [{atom(),pos()}]).
-%% get_bound_vars(Nodes) when is_list(Nodes)->
-%%     lists:flatmap(fun(Node) ->get_bound_vars(Node) end, Nodes);	
-get_bound_vars(Node) ->
-    get_bound_vars_1(refac_syntax:get_ann(Node)).
-		   
-					       
-get_bound_vars_1([{bound, B} | _Bs]) -> B;
-get_bound_vars_1([_ | Bs]) -> get_bound_vars_1(Bs);
-get_bound_vars_1([]) -> [].
-
-
-is_macro_name(Exp1) ->
-    {value, {category, macro_name}} ==
-      lists:keysearch(category, 1, refac_syntax:get_ann(Exp1)).
-
-macro_name_value(Exp) ->
-    case refac_syntax:type(Exp) of 
-	    atom ->
-		refac_syntax:atom_value(Exp);
-	    variable ->
-		refac_syntax:variable_name(Exp)
-    end.
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Note that In Erlang a match expression in the form of  'P1 = P2 ... = Pn = E' is allowed.
 match_expr_patterns(E) ->
     case refac_syntax:type(E) of 
@@ -598,46 +576,10 @@ make_match_expr_1([P], Body) ->
     refac_syntax:match_expr(P, Body);
 make_match_expr_1([P|Ps], Body) ->
     make_match_expr_1(Ps, refac_syntax:match_expr(P, Body)).
-
-
-
-collect_vars(Node) ->
-    Fun= fun(T, S) ->
-		 case refac_syntax:type(T) of 
-		     variable ->
-			 VarName = refac_syntax:variable_name(T),
-			 ordsets:add_element(VarName, S);
-		     _ -> S
-		 end
-	 end,
-    refac_syntax_lib:fold(Fun, ordsets:new(), Node).
-
-collect_used_records(Node) ->
-    Fun = fun(T, S) ->
-		  case refac_syntax:type(T) of
-		      record_access ->
-			  Type = refac_syntax:record_access_type(T),
-			  case refac_syntax:type(Type) of
-			      atom -> [refac_syntax:atom_value(Type)|S];
-			      _ -> S
-			  end;
-		      record_expr ->
-			  Type = refac_syntax:record_expr_type(T),
-			  case refac_syntax:type(Type) of
-			      atom -> [refac_syntax:atom_value(Type) |S];
-			      _ -> S
-			  end;
-		       record_index_expr->
-			  Type = refac_syntax:record_index_expr_type(T),
-			  case refac_syntax:type(Type) of
-			      atom -> [refac_syntax:atom_value(Type) |S];
-			      _ -> S
-			  end;
-		      _ -> S		  
-		  end
-	  end,
-    refac_syntax_lib:fold(Fun, ordsets:new(), Node).
 			  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 collect_record_defs(Fs, RecordTypes, Loc) ->
     [F || F<-Fs, collect_record_defs_1(F, RecordTypes, Loc)].
 
@@ -650,15 +592,13 @@ collect_record_defs_1(F, RecordTypes, Loc) ->
 	    case refac_syntax:type(F) of 
 		attribute ->
 		    Name = refac_syntax:attribute_name(F),
-		    case refac_syntax:type(Name) of
-			atom ->
-			    case refac_syntax:atom_value(Name) of 
-				record -> Type = hd(refac_syntax:attribute_arguments(F)),
-					  case refac_syntax:type(Type) of
-					      atom -> 
-						  lists:member(refac_syntax:atom_value(Type), RecordTypes);
-					      _ -> false
-					  end;
+		    case refac_syntax:type(Name)==atom andalso 
+			refac_syntax:atom_value(Name)==record of
+			true -> 
+			    Type = hd(refac_syntax:attribute_arguments(F)),
+			    case refac_syntax:type(Type) of
+				atom -> 
+				    lists:member(refac_syntax:atom_value(Type), RecordTypes);
 				_ -> false
 			    end;
 			_ -> false
@@ -667,6 +607,9 @@ collect_record_defs_1(F, RecordTypes, Loc) ->
 	    end
     end.
   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 check_macro_defs(_Fs, [], _StartLoc, _EndLoc) -> 
     [];
 check_macro_defs(Fs, UsedMacros, StartLoc, EndLoc) ->
@@ -675,54 +618,41 @@ check_macro_defs(Fs, UsedMacros, StartLoc, EndLoc) ->
 
 check_macro_defs_1(F, UsedMacros, StartLoc, EndLoc) ->
     Pos = refac_syntax:get_pos(F),
-    case (Pos =<StartLoc) orelse (Pos>= EndLoc) of 
-	true ->
-	     false;
-	false ->
-	    case is_attribute(F, define) orelse is_attribute(F, undef) of
-		true ->
-		    Args = refac_syntax:attribute_arguments(F),
-		    MacroHead = refac_util:ghead("refac_unfold_fun_app:check_macro_defs_1", Args),
-		    MacroHead1 = case refac_syntax:type(MacroHead) of
-				     application ->
-					 refac_syntax:application_operator(MacroHead);
-				     _ ->
-					 MacroHead
-				 end,
-		    Name = case refac_syntax:type(MacroHead1) of 
-			       atom -> refac_syntax:atom_value(MacroHead1);
-			       variable ->refac_syntax:variable_name(MacroHead1);
-			       _ -> '_'
-			   end,
-		    case lists:member(Name, UsedMacros) of 
-			true ->
-			    {true, [Name]};
-			false -> false
-		    end;
-		_ -> false
-	    end
+    case Pos =< StartLoc orelse Pos >= EndLoc of
+      true ->
+	  false;
+      false ->
+	  case is_attribute(F, define) orelse is_attribute(F, undef) of
+	    true ->
+		Args = refac_syntax:attribute_arguments(F),
+		MacroHead = refac_misc:ghead("refac_unfold_fun_app:check_macro_defs_1", Args),
+		MacroHead1 = case refac_syntax:type(MacroHead) of
+			       application ->
+				   refac_syntax:application_operator(MacroHead);
+			       _ ->
+				   MacroHead
+			     end,
+		Name = case refac_syntax:type(MacroHead1) of
+			 atom -> refac_syntax:atom_value(MacroHead1);
+			 variable -> refac_syntax:variable_name(MacroHead1);
+			 _ -> '_'
+		       end,
+		case lists:member(Name, UsedMacros) of
+		  true ->
+		      {true, [Name]};
+		  false -> false
+		end;
+	    _ -> false
+	  end
     end.
-				
-	
-is_attribute(F, Name) ->
-    (refac_syntax:type(F)==attribute) andalso
-    (refac_syntax:type(refac_syntax:attribute_name(F))==atom)  andalso 
-    (refac_syntax:atom_value(refac_syntax:attribute_name(F)) == Name).
 
-collect_used_macros(Node) ->
-    F = fun(T, S) ->
-		case refac_syntax:type(T) of
-		    macro ->
-			Name = refac_syntax:macro_name(T),
-			case refac_syntax:type(Name) of 
-			    variable -> [refac_syntax:variable_name(Name)|S];
-			    atom -> [refac_syntax:atom_value(Name) |S]
-			end;
-		    _  -> S
-		end
-	end,
-    lists:usort(refac_syntax_lib:fold(F, [], Node)).
+is_attribute(F, Name) ->
+    refac_syntax:type(F) == attribute andalso
+      refac_syntax:type(refac_syntax:attribute_name(F)) == atom andalso
+	refac_syntax:atom_value(refac_syntax:attribute_name(F)) == Name.
 	    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 format([]) ->	   
      "";
@@ -732,3 +662,14 @@ format([M|Ms]) ->
     atom_to_list(M) ++ ","++ format(Ms).
 	
 	    
+get_bound_vars(Node) ->
+    get_bound_vars_1(refac_syntax:get_ann(Node)).
+
+get_bound_vars_1([{bound, B} | _Bs]) -> B;
+get_bound_vars_1([_ | Bs]) -> get_bound_vars_1(Bs);
+get_bound_vars_1([]) -> [].
+
+
+is_macro_name(Exp1) ->
+    {value, {category, macro_name}} ==
+      lists:keysearch(category, 1, refac_syntax:get_ann(Exp1)).

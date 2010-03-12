@@ -34,32 +34,21 @@
 -module(refac_new_let).
 
 -export([new_let/6,  new_let_1/7, new_let_eclipse/6, new_let_1_eclipse/6,
-	 new_forall/6,new_forall_eclipse/6,
 	 merge_let/3, merge_let_1/5, 
 	 merge_forall/3, merge_forall_1/5,
-	merge_forall_eclipse/3]).
-
+	 merge_forall_eclipse/3]).
 
 -include("../include/wrangler.hrl").
 
-%% -define(DEBUG, true).
-
--ifdef(DEBUG).
--define(debug(__String, __Args), ?wrangler_io(__String, __Args)).
--else.
--define(debug(__String, __Args), ok).
--endif.
-
 
 %% =============================================================================================
-%%-spec(new_let/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-%%	     {'ok', [filename()]} | {question, string(), {list(), list()}}).
+-spec(new_let/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+	     {'ok', [filename()]} | {question, string(), {list(), list()}}).
 new_let(FileName, Start, End, NewPatName, SearchPaths, TabWidth) ->
     new_let(FileName, Start, End, NewPatName, SearchPaths, TabWidth, emacs).
 
 new_let_eclipse(FileName, Start, End, NewPatName, SearchPaths, TabWidth) ->
     new_let(FileName, Start, End, NewPatName, SearchPaths, TabWidth, eclipse).
-
 
 new_let(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:new_let(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n",
@@ -73,9 +62,9 @@ new_let(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPa
       true -> ok;
       false -> throw({error, "QuickCheck is not used by this module."})
     end,
-    case refac_util:pos_to_fun_def(AnnAST, Start) of
+    case interface_api:pos_to_fun_def(AnnAST, Start) of
       {ok, FunDef} ->
-	  case refac_util:pos_to_expr(FunDef, Start, End) of
+	  case interface_api:pos_to_expr(FunDef, Start, End) of
 	    {ok, Expr} ->
 		?debug("Expr:\n~p\n", [Expr]),
 		case side_cond_analysis(FunDef, Expr, NewPatName) of
@@ -95,8 +84,6 @@ new_let(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPa
     end.
 
 new_let_1(FileName, NewPatName, Expr, ParentExpr, SearchPaths, TabWidth, Cmd) ->
-    %% ?wrangler_io("\nCMD: ~p:new_let_1(~p, ~p, ~p,~p, ~p, ~p).\n",
-    %% 		 [?MODULE, FileName, NewPatName, Expr, ParentExpr, SearchPaths, TabWidth]),
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Expr1 = list_to_term(Expr),
     ParentExpr1 = list_to_term(ParentExpr),
@@ -122,22 +109,22 @@ new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd)
 
 
 side_cond_analysis(FunDef, Expr, NewPatName) ->
-    case refac_util:is_var_name(NewPatName) of
+    case refac_misc:is_var_name(NewPatName) of
       true -> ok;
       _ -> throw({error, "Invalid pattern variable name."})
     end,
     case get_parent_expr(FunDef, Expr) of
-	{ok, ParentExpr} ->
-	    FrVars = refac_util:get_free_vars(ParentExpr),
-	    BdVars = refac_util:get_bound_vars(ParentExpr),
-	    EnvVars = refac_util:get_env_vars(ParentExpr),
-	    Vars = element(1, lists:unzip(FrVars ++ BdVars ++ EnvVars)),
-	    case lists:member(list_to_atom(NewPatName), Vars) of
-		true ->
-		    throw({error, "The new pattern variable chould cause name shadow or semantics change."});
-		false ->
-		    ok
-	    end,
+      {ok, ParentExpr} ->
+	  FrVars = refac_misc:get_free_vars(ParentExpr),
+	  BdVars = refac_misc:get_bound_vars(ParentExpr),
+	  EnvVars = refac_misc:get_env_vars(ParentExpr),
+	  Vars = element(1, lists:unzip(FrVars ++ BdVars ++ EnvVars)),
+	  case lists:member(list_to_atom(NewPatName), Vars) of
+	    true ->
+		throw({error, "The new pattern variable chould cause name shadow or semantics change."});
+	    false ->
+		ok
+	  end,
 	  ?debug("Parent Expr:\n~p\n", [ParentExpr]),
 	  case enclosing_macro(FunDef, ParentExpr, 'LET', 3) of
 	    none ->
@@ -154,18 +141,19 @@ side_cond_analysis(FunDef, Expr, NewPatName) ->
       {error, _} ->
 	  case is_generator(Expr) of
 	    false -> throw({error, "The expression selected is not a QuickCheck generator."});
-	    _ -> throw({error, "Wrangler can only create a ?LET binding for a generator which "
-			       "is an element of a tuple/list or a field value of a record expression."})
+	    _ -> {ok, {Expr, none}}
 	  end
     end.
-   
+
     
 get_parent_expr(Node, Exp) ->
-    case refac_util:once_tdTU(fun get_parent_expr_1/2, Node, Exp) of 
-	{_, false} ->
-	    {error, none};
-	{R, true} -> 
-	    {ok, R}
+    case
+      ast_traverse_api:once_tdTU(fun get_parent_expr_1/2, Node, Exp)
+	of
+      {_, false} ->
+	  {error, none};
+      {R, true} ->
+	  {ok, R}
     end.
 
 get_parent_expr_1(Node, Exp) ->
@@ -200,7 +188,9 @@ get_parent_expr_1(Node, Exp) ->
 
 
 enclosing_macro(Node, Expr, MacroName, Nth) ->
-    case refac_util:once_tdTU(fun get_enclosing_macro/2, Node, {Expr, MacroName, Nth}) of
+    case
+      ast_traverse_api:once_tdTU(fun get_enclosing_macro/2, Node, {Expr, MacroName, Nth})
+	of
       {_, false} ->
 	  none;
       {R, true} ->
@@ -234,53 +224,52 @@ get_enclosing_macro(Node, {Expr, Macro, Nth}) ->
 	    {[], false}
     end.
 
-do_intro_new_let(Node, Exp, NewPatName, ParentExpr, LetMacro)->
-    {Node1, _} = refac_util:stop_tdTP(fun do_intro_new_let/2, Node, {Exp, NewPatName, ParentExpr, LetMacro}),
-    Node1.
+do_intro_new_let(Node, Exp, NewPatName, ParentExpr, LetMacro) ->
+    element(1, ast_traverse_api:stop_tdTP(fun do_intro_new_let/2, Node, {Exp, NewPatName, ParentExpr, LetMacro})).
 
 do_intro_new_let(Node, {Expr, NewPatName, ParentExpr, LetMacro}) ->
-    case Node of 
-	LetMacro when LetMacro=/=none ->
-	    Args = list_to_tuple(refac_syntax:macro_arguments(LetMacro)),
-	    Pats = element(1, Args),
-	    G1 = element(2, Args),
-	    BdVars = refac_util:get_bound_vars(Pats),
-	    FrVars = refac_util:get_free_vars(Expr),
-	    case FrVars -- BdVars of 
-		FrVars -> 
-		    ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
-		    NewPat =refac_syntax:variable(NewPatName),
-		    {NewPats, NewG1} = 
-			case {refac_syntax:type(Pats), refac_syntax:type(G1)} of 
-			    {tuple, tuple} -> 
-				Ps = refac_syntax:tuple_elements(Pats),
-				Gs = refac_syntax:tuple_elements(G1),
-				{refac_util:rewrite(Pats, refac_syntax:tuple(Ps++[NewPat])),
-				 refac_util:rewrite(G1, refac_syntax:tuple(Gs++[Expr]))};
-			    _ -> 
-				{refac_syntax:tuple([Pats, NewPat]),
-				 refac_syntax:tuple([G1, Expr])}
-			end,
-		    NewArgs = [NewPats, NewG1, ParentExpr1],
-		    {refac_syntax:macro(refac_syntax:variable('LET'), NewArgs), true};
-		_ -> {Node, false}
-	    end;
-	ParentExpr ->
-	    ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
-	    Args = [refac_syntax:variable(NewPatName),
-		    Expr, ParentExpr1],
-	    {refac_syntax:macro(refac_syntax:variable('LET'), Args), true};	    
-	_ -> {Node, false}
+    case Node of
+      LetMacro when LetMacro =/= none ->
+	  Args = list_to_tuple(refac_syntax:macro_arguments(LetMacro)),
+	  Pats = element(1, Args),
+	  G1 = element(2, Args),
+	  BdVars = refac_misc:get_bound_vars(Pats),
+	  FrVars = refac_misc:get_free_vars(Expr),
+	  case FrVars -- BdVars of
+	    FrVars ->
+		ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
+		NewPat = refac_syntax:variable(NewPatName),
+		{NewPats, NewG1} =
+		    case {refac_syntax:type(Pats), refac_syntax:type(G1)} of
+		      {tuple, tuple} ->
+			  Ps = refac_syntax:tuple_elements(Pats),
+			  Gs = refac_syntax:tuple_elements(G1),
+			  {refac_misc:rewrite(Pats, refac_syntax:tuple(Ps ++ [NewPat])),
+			   refac_misc:rewrite(G1, refac_syntax:tuple(Gs ++ [Expr]))};
+		      _ ->
+			  {refac_syntax:tuple([Pats, NewPat]),
+			   refac_syntax:tuple([G1, Expr])}
+		    end,
+		NewArgs = [NewPats, NewG1, ParentExpr1],
+		{refac_syntax:macro(refac_syntax:variable('LET'), NewArgs), true};
+	    _ -> {Node, false}
+	  end;
+      ParentExpr ->
+	  ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
+	  Args = [refac_syntax:variable(NewPatName),
+		  Expr, ParentExpr1],
+	  {refac_syntax:macro(refac_syntax:variable('LET'), Args), true};
+      _ -> {Node, false}
     end.
 
 replace_expr_with_var(Node, {Expr, Var}) ->
-    element(1, refac_util:stop_tdTP(fun do_replace_expr_with_var/2, Node, {Expr, Var})).
+    element(1, ast_traverse_api:stop_tdTP(fun do_replace_expr_with_var/2, Node, {Expr, Var})).
 
 do_replace_expr_with_var(Node, {Expr, Var}) ->
-    case Node of 
-	Expr ->
-	    {refac_util:rewrite(Expr, refac_syntax:variable(Var)), true};
-	_ ->{Node, false}
+    case Node of
+      Expr ->
+	  {refac_misc:rewrite(Expr, refac_syntax:variable(Var)), true};
+      _ -> {Node, false}
     end.
 
 is_generator(Expr) ->
@@ -389,7 +378,7 @@ returns_gen({eqc_gen, shrink_int, 3}) ->
     true;
 returns_gen({eqc_gen, shrink_list, 1}) ->
     true;
-returns_gen({eqc_gen, shrin_without_duplicates, 1}) ->
+returns_gen({eqc_gen, shrink_without_duplicates, 1}) ->
     true;
 returns_gen({eqc_gen, timeout, 2}) ->
     true;
@@ -409,16 +398,20 @@ returns_gen(_) ->
 %%
 %% Merge LET expressions. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%-spec(merge_let/3::(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {not_found, string()} |{ok, [{{integer(), integer(), integer(), integer()}, string()}], string()}).
+-spec(merge_let/3::(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) ->
+	     {not_found, string()} |{ok, [{{integer(), integer(), integer(), integer()}, string()}], string()}).
 merge_let(FileName, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:merge_let(~p,~p,~p).\n",
+		 [?MODULE, FileName, SearchPaths, TabWidth]),
     merge(FileName, 'LET', SearchPaths, TabWidth, emacs).
 
 
 
-%%-spec(merge_forall/3::(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) ->
-%%	     {not_found, string()} |{ok, [{{integer(), integer(), integer(), integer()}, string()}], string()}).
+-spec(merge_forall/3::(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) ->
+	     {not_found, string()} |{ok, [{{integer(), integer(), integer(), integer()}, string()}], string()}).
 merge_forall(FileName, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:merge_forall(~p,~p,~p).\n",
+		 [?MODULE, FileName, SearchPaths, TabWidth]),
     merge(FileName, 'FORALL', SearchPaths, TabWidth, emacs).
 
 
@@ -426,11 +419,9 @@ merge_forall_eclipse(FileName, SearchPaths, TabWidth) ->
     merge(FileName, 'FORALL', SearchPaths, TabWidth, eclipse).
 
 merge(FileName, MacroName, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:merge_let(~p,~p, ~p,~p).\n",
-		 [?MODULE, FileName, MacroName, SearchPaths, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":merge_let(" ++ "\"" ++
 	    FileName ++ "\"," ++ atom_to_list(MacroName) ++ ", " ++ "["
-								      ++ refac_util:format_search_paths(SearchPaths) ++ "],"
+								      ++ refac_misc:format_search_paths(SearchPaths) ++ "],"
 	      ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case is_quickcheck_used(Info) of
@@ -449,21 +440,20 @@ merge(FileName, MacroName, SearchPaths, TabWidth, Editor) ->
 							     {{StartLine, StartCol, EndLine, EndCol}, NewLetApp1}
 						     end,
 						     Candidates)),
-		%% merge_let_1(FileName, Regions, SearchPaths, TabWidth, Cmd),
 		{ok, Regions, Cmd};
 	    eclipse ->
 		{ok, Candidates}
 	  end
     end.
 
-%%-spec(merge_let_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
-%%		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
+-spec(merge_let_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
+		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
 merge_let_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
     merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd).
 
 
-%%-spec(merge_forall_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
-%%		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
+-spec(merge_forall_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
+		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
 merge_forall_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
     merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd).
 
@@ -478,14 +468,14 @@ merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
 do_merge(AnnAST, []) ->
     AnnAST;
 do_merge(AnnAST, Candidates) ->
-    element(1, refac_util:stop_tdTP(fun do_merge_1/2, AnnAST, Candidates)).
+    element(1, ast_traverse_api:stop_tdTP(fun do_merge_1/2, AnnAST, Candidates)).
 
 do_merge_1(Tree, Candidates) ->
-    {{StartLine, StartCol}, {EndLine, EndCol}} = refac_util:get_range(Tree),
+    {{StartLine, StartCol}, {EndLine, EndCol}} = refac_misc:get_start_end_loc(Tree),
     case lists:keysearch({StartLine, StartCol, EndLine, EndCol}, 1, Candidates) of
-	{value, {_, NewLetApp}} ->
-	    {list_to_term(NewLetApp), true};
-	_ -> {Tree, false}
+      {value, {_, NewLetApp}} ->
+	  {list_to_term(NewLetApp), true};
+      _ -> {Tree, false}
     end.
 
 search_merge_candiates(AnnAST, MacroName) ->
@@ -506,11 +496,16 @@ is_macro_app(Node, MacroName) ->
 	    variable ->
 		M = refac_syntax:variable_name(Name),
 		Args = refac_syntax:macro_arguments(Node),
-		Arity = length(Args),
-		case {M, Arity} of
-		  {MacroName, 3} ->
-		      true;
-		  _ -> false
+		case is_list(Args) of 
+		    true ->
+			Arity = length(Args),
+			case {M, Arity} of
+			    {MacroName, 3} ->
+				true;
+			    _ -> false
+			end;
+		    false ->
+			false
 		end;
 	    _ -> false
 	  end;
@@ -524,8 +519,8 @@ collect_mergeable_lets_or_foralls(Node, MacroName) ->
     case Res == [P, G1, G2] of
       true ->
 	  [];
-      _ -> [{refac_util:get_range(Node),
-	     refac_util:reset_attrs(refac_syntax:macro(refac_syntax:variable(MacroName), Res))}]
+      _ -> [{refac_misc:get_start_end_loc(Node),
+	     refac_misc:reset_attrs(refac_syntax:macro(refac_syntax:variable(MacroName), Res))}]
     end.
 
 collect_mergeable_lets_or_foralls_1(Res = [P, G1, G2], MacroName) ->
@@ -533,22 +528,12 @@ collect_mergeable_lets_or_foralls_1(Res = [P, G1, G2], MacroName) ->
       true ->
 	  Args1 = refac_syntax:macro_arguments(G2),
 	  [P1, G11, G12] = Args1,
-	  BdVars = refac_util:get_bound_vars(P),
-	  FrVars = refac_util:get_free_vars(G11),
+	  BdVars = refac_misc:get_bound_vars(P),
+	  FrVars = refac_misc:get_free_vars(G11),
 	  case FrVars -- BdVars of
 	    FrVars ->
-		{Ps, Gs} = case {refac_syntax:type(P), refac_syntax:type(G1)} of
-			     {tuple, tuple} ->
-				 {refac_syntax:tuple_elements(P),
-				  refac_syntax:tuple_elements(G1)};
-			     _ -> {[P], [G1]}
-			   end,
-		{Ps1, Gs1} = case {refac_syntax:type(P1), refac_syntax:type(G11)} of
-			       {tuple, tuple} ->
-				   {refac_syntax:tuple_elements(P1),
-				    refac_syntax:tuple_elements(G11)};
-			       _ -> {[P1], [G11]}
-			     end,
+		{Ps, Gs} = get_pats_gens(P, G1),
+		{Ps1, Gs1} = get_pats_gens(P1, G11),
 		NewP = refac_syntax:tuple(Ps ++ Ps1),
 		NewG1 = refac_syntax:tuple(Gs ++ Gs1),
 		collect_mergeable_lets_or_foralls_1([NewP, NewG1, G12], MacroName);
@@ -557,6 +542,15 @@ collect_mergeable_lets_or_foralls_1(Res = [P, G1, G2], MacroName) ->
       false ->
 	  Res
     end.
+
+get_pats_gens(Pat, Gen) ->
+     case {refac_syntax:type(Pat), refac_syntax:type(Gen)} of
+	 {tuple, tuple} ->
+	     {refac_syntax:tuple_elements(Pat),
+	      refac_syntax:tuple_elements(Gen)};
+	 _ -> {[Pat], [Gen]}
+     end.
+    
 
 is_quickcheck_used(ModuleInfo) ->
     case lists:keysearch(imports, 1, ModuleInfo) of 
@@ -571,127 +565,3 @@ term_to_list(T) -> binary_to_list(term_to_binary(T)).
 
 list_to_term(T) -> binary_to_term(list_to_binary(T)).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%                                                                                        %%
-%% Introduce ?FORALL                                                                      %%
-%%                                                                                        %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%-spec(new_forall/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-%%	     {'ok', [filename()]}).
-new_forall(FileName, Start, End, NewPatName, SearchPaths, TabWidth) ->
-    new_forall(FileName, Start, End, NewPatName, SearchPaths, TabWidth, emacs).
-
-new_forall_eclipse(FileName, Start, End, NewPatName, SearchPaths, TabWidth) ->
-    new_forall(FileName, Start, End, NewPatName, SearchPaths, TabWidth, eclipse).
-
-
-new_forall(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:new_forall(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n",
-		 [?MODULE, FileName, Line, Col, Line1, Col1, NewPatName, SearchPaths, TabWidth]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":new_forall(" ++ "\"" ++
-	FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++
-	"{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewPatName ++ "\","
-	++ integer_to_list(TabWidth) ++ ").",
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    case is_quickcheck_used(Info) of
-	true -> ok;
-	false -> throw({error, "QuickCheck is not used by this module."})
-    end,
-    case refac_util:pos_to_fun_def(AnnAST, Start) of
-	{ok, FunDef} ->
-	    case refac_util:pos_to_expr(FunDef, Start, End) of
-		{ok, Expr} ->
-		    ?debug("Expr:\n~p\n", [Expr]),
-		    {ok, {ParentExpr, LetMacro}}= new_forall_side_cond_analysis(FunDef, Expr, NewPatName),
-		    new_forall_1(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd);
-		{error, Reason} -> throw({error, Reason})
-	    end;
-	{error, _Reason} -> throw({error, "You have not selected an expresison."})
-    end.
-
-new_forall_1(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd) ->
-    AnnAST1 = do_intro_new_forall(AnnAST, Expr, list_to_atom(NewPatName), ParentExpr, LetMacro),
-    case Editor of
-      emacs ->
-	  Res = [{{FileName, FileName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, Cmd),
-	  {ok, [FileName]};
-      eclipse ->
-	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
-	  {ok, [{FileName, FileName, FileContent}]}
-    end.
-
-
-new_forall_side_cond_analysis(FunDef, Expr, NewPatName) ->
-    case refac_util:is_var_name(NewPatName) of
-      true -> ok;
-      _ -> throw({error, "Invalid pattern variable name."})
-    end,
-    case get_parent_expr(FunDef, Expr) of
-      {ok, ParentExpr} ->
-	  ?debug("Parent Expr:\n~p\n", [ParentExpr]),
-	  case enclosing_macro(FunDef, ParentExpr, 'FORALL', 2) of
-	      none ->
-		  throw({error, "The generator selected has to be part of the generator in a ?FORALL application."});
-	      {ok, ForallMacro} ->
-		  ?debug("Enclosing FORALL Macro:~p\n", [ForallMacro]),
-		  {ok, {ParentExpr, ForallMacro}}
-	  end;
-	{error, _} ->
-	    case is_generator(Expr) of
-		false -> throw({error, "The expression selected is not a QuickCheck generator."});
-		_ -> throw({error, "Wrangler can only create a new ?FORALL binding for a generator which "
-			    "is an element of a tuple/list or a field value of a record expression."})
-	    end
-    end.
-   
-%% name_checking(NewPatName, ForallMacro, Expr) ->
-%%     FrVars = refac_util:get_free_vars(Expr),
-%%     BdVars = refac_util:get_bound_vars(Expr),
-%%     EnvVars = refac_util:get_env_vars(Expr),
-%%     Vars = element(1, lists:unzip(FrVars ++ BdVars ++ EnvVars)),
-%%     case lists:member(list_to_atom(NewPatName), Vars) of
-%%       true ->
-%% 	  throw({error, "The new pattern variable chould cause name shadow or semantics change."});
-%%       false ->
-%% 	  ok
-%%     end,
- 
-do_intro_new_forall(Node, Exp, NewPatName, ParentExpr, LetMacro)->
-    {Node1, _} = refac_util:stop_tdTP(fun do_intro_new_forall/2, Node, {Exp, NewPatName, ParentExpr, LetMacro}),
-    Node1.
-
-do_intro_new_forall(Node, {Expr, NewPatName, ParentExpr, ForallMacro}) ->
-    case Node of
-	ForallMacro ->
-	Args = list_to_tuple(refac_syntax:macro_arguments(ForallMacro)),
-	Pats = element(1, Args),
-	G1 = element(2, Args),
-	  BdVars = refac_util:get_bound_vars(Pats),
-	  FrVars = refac_util:get_free_vars(Expr),
-	  case FrVars -- BdVars of
-	    FrVars ->
-		ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
-		NewPat = refac_syntax:variable(NewPatName),
-		{NewPats, NewG1} =
-		    case {refac_syntax:type(Pats), refac_syntax:type(G1)} of
-		      {tuple, tuple} ->
-			  Ps = refac_syntax:tuple_elements(Pats),
-			  Gs = refac_syntax:tuple_elements(G1),
-			  {refac_util:rewrite(Pats, refac_syntax:tuple(Ps ++ [NewPat])),
-			   refac_util:rewrite(G1, refac_syntax:tuple(Gs ++ [Expr]))};
-		      _ ->
-			  {refac_syntax:tuple([Pats, NewPat]),
-			   refac_syntax:tuple([G1, Expr])}
-		    end,
-		NewArgs = [NewPats, NewG1, ParentExpr1],
-		{refac_syntax:macro(refac_syntax:variable('LET'), NewArgs), true};
-	    _ -> {Node, false}
-	  end;
-	ParentExpr ->
-	    ParentExpr1 = replace_expr_with_var(ParentExpr, {Expr, NewPatName}),
-	    Args = [refac_syntax:variable(NewPatName), Expr, ParentExpr1],
-	    {refac_syntax:macro(refac_syntax:variable('FORALL'), Args), true};
-      _ -> {Node, false}
-    end.

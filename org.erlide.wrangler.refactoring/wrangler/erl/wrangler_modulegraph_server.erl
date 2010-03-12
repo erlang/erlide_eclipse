@@ -36,11 +36,13 @@
 -behaviour(gen_server).
 
 %% API
--export([start_modulegraph_server/0, get_client_files/2]).
+-export([start_modulegraph_server/0, get_client_files/2, get_called_modules/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
+
+-include("../include/wrangler.hrl").
 
 -record(state, {}).
 
@@ -55,8 +57,14 @@ start_modulegraph_server() ->
     gen_server:start_link({local, wrangler_modulegraph_server}, ?MODULE, [], []).
 
 
+-spec get_client_files/2::(filename(), [dir()]) -> [filename()].			       
 get_client_files(File, SearchPaths) ->
-    gen_server:call(wrangler_modulegraph_server, {get, File, SearchPaths}, 5000000).
+    gen_server:call(wrangler_modulegraph_server, {get_client_files, File, SearchPaths}, 5000000).
+
+
+-spec get_called_modules/2::(filename(), [dir()]) ->[atom()].				  
+get_called_modules(File, SearchPahts) ->
+    gen_server:call(wrangler_modulegraph_server, {get_called_modules, File, SearchPahts}, 5000000).
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -82,15 +90,18 @@ init([]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
-handle_call({get, File, SearchPaths}, _From, State) ->
+handle_call({get_client_files, File, SearchPaths}, _From, State) ->
     ModuleGraph = refac_module_graph:module_graph(SearchPaths),
     ClientFiles = case lists:keysearch(File, 1, ModuleGraph) of
 		      {value, {_, Clients}} -> 
 			  lists:delete(File, Clients);
 		      false -> []
 		  end,
-    {reply, ClientFiles, State}.
+    {reply, ClientFiles, State};
 
+handle_call({get_called_modules, File, SearchPaths}, _From, State) ->
+    CalledMods = refac_module_graph:get_called_mods(File, SearchPaths),
+    {reply, CalledMods, State}.
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
 %%                                      {noreply, State, Timeout} |

@@ -38,25 +38,6 @@
 
 -record(state, {files=[], logmsg=""}).
 
--ifdef(MONITOR).
--define(update_monitor_code(Files), 
-	lists:foreach(fun(F) ->
-			      DirName = filename:dirname(F),
-			      BaseName = filename:basename(F, ".erl"),
-			      NewDirName= DirName++"_wrangler",
-			      case filelib:is_dir(NewDirName) of 
-				  true ->
-				      NewFileName=filename:join([NewDirName, BaseName++".erl"]),
-				      file:copy(F, NewFileName);
-				  _ ->
-				      ok
-			      end
-		      end, Files)). 		      
--else.
--define(update_monitor_code(_Files), ok).
--endif.
-
-
 %%====================================================================
 %% API
 %%====================================================================
@@ -65,19 +46,16 @@
 start_preview_server() ->
     process_flag(trap_exit, true),
     gen_server:start_link({local, wrangler_preview_server}, ?MODULE, [], []).
-
-%%-spec(commit/0::() ->
-%%	     {ok, [filename()]}).
+ 
+-spec(commit/0::() -> {ok, [filename()]}).
 commit() ->
     gen_server:call(wrangler_preview_server, commit).
 
-%%-spec(abort/0::() ->{ok, [filename()]}).
-
+-spec(abort/0::() ->{ok, [filename()]}).
 abort() ->
     gen_server:call(wrangler_preview_server, abort).
    
-%%-spec(add_files/1::([filename()]) -> ok).
-	     
+-spec(add_files/1::({[filename()], string()}) -> ok).
 add_files({Files,LogMsg})->
     gen_server:cast(wrangler_preview_server, {add, {Files, LogMsg}}).
 %%====================================================================
@@ -125,7 +103,6 @@ handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
 				      {ok, Bin} = file:read_file(F1), {{F1, F2, IsNew}, Bin}
 			      end, OldFiles),
     wrangler_undo_server:add_to_history({FilesToBackup, LogMsg, element(1, hd(OldFiles))}),
-    ?update_monitor_code([F1 || {F1, _F2, _} <- OldFiles]),
     lists:foreach(fun ({{_F1, F2, _IsNew}, Swp}) -> file:copy(Swp, F2) end, Files),
     Files1 = lists:map(fun ({{F1, F2, IsNew}, Swp}) -> [F1, F2, Swp, IsNew] end, Files),
     {reply, {ok, Files1, LogMsg}, #state{files=[], logmsg=""}}.
@@ -154,7 +131,7 @@ handle_info(_Info, State) ->
 %% terminate. It should be the opposite of Module:init/1 and do any necessary
 %% cleaning up. When it returns, the gen_server terminates with Reason.
 %% The return value is ignored.
-%%--------------------------------------------------------------------
+%%-----------------------------------------------------------------
 terminate(_Reason, _State) ->
     ok.
 
@@ -165,3 +142,5 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+  
+ 

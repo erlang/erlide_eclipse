@@ -53,151 +53,116 @@
 %% =============================================================================================
 -module(refac_fold_expression).
 
--export([fold_expr_by_loc/5, do_fold_expression/5,
-	 fold_expr_by_loc_eclipse/5, fold_expr_1_eclipse/5,
-	 fold_expression_1/5,
+-export([fold_expr_by_loc/5, fold_expr_by_loc_eclipse/5, 
+	 fold_expr_1_eclipse/5,
+	 do_fold_expression/5,
 	 fold_expr_by_name/7, fold_expr_by_name_eclipse/7]).
-	
--export([expr_unification/2, fold_expression/6]).
+
+-export([fold_expression_1/5]).  %% used by tests.
 
 -include("../include/wrangler.hrl").
-%% =============================================================================================
-%% @spec fold_expression(FileName::filename(), Line::integer(), Col::integer())-> term()
-%% =============================================================================================        
 
-%%-spec(fold_expr_by_loc/5::(filename(), integer(), integer(), [dir()], integer())->
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), 
-%%		    {filename(), atom(), syntaxTree(), integer()}}], string()}).
-	
+-spec(fold_expr_by_loc/5::(filename(), integer(), integer(), [dir()], integer())->
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), 
+		    {filename(), atom(), syntaxTree(), integer()}}], string()}).
 fold_expr_by_loc(FileName, Line, Col, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:fold_expr_by_loc(~p, ~p,~p,~p, ~p).\n", 
 		 [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
     fold_expression(FileName, Line, Col, SearchPaths, TabWidth, emacs).
 
-%%-spec(fold_expr_by_loc_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) ->
-%%	     {ok,  {syntaxTree(),[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}).
+-spec(fold_expr_by_loc_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) ->
+	     {ok,  {syntaxTree(),[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}).
 fold_expr_by_loc_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
     fold_expression(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 
 fold_expression(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fold_expression(" ++ "\"" ++
-	FileName ++ "\", " ++ integer_to_list(Line) ++
-	", " ++ integer_to_list(Col) ++ ", " 
-	++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(
-			      FileName, true, SearchPaths, TabWidth),
+	    FileName ++ "\", " ++ integer_to_list(Line) ++
+	      ", " ++ integer_to_list(Col) ++ ", "
+		++ "[" ++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case pos_to_fun_clause(AnnAST, {Line, Col}) of
       {ok, {Mod, FunName, _Arity, FunClauseDef, _ClauseIndex}} ->
 	  side_condition_analysis(FunClauseDef),
 	  Candidates = search_candidate_exprs(AnnAST, {Mod, Mod}, FunName, FunClauseDef),
-	    case Candidates of
-		[] ->
-		    throw({error, "No expressions that are suitable for folding "
-			   "against the selected function have been found!"});
-		_ -> ok
-	    end,
-	  case Editor of
-	      emacs ->
-		  FunClauseDef1 = term_to_list(FunClauseDef),
-		  {ok, [{SLine, SCol, ELine, ECol, term_to_list(NewExp), FunClauseDef1}
-			|| {{{SLine, SCol}, {ELine, ECol}}, NewExp} <- Candidates], Cmd};
-	      eclipse -> {ok, {FunClauseDef, Candidates}}
-	  end;
-	{error, _Reason} -> throw({error, "No function clause has been selected!"})
+	  fold_expression_0(Candidates, FunClauseDef, Cmd, Editor);
+      {error, _Reason} -> throw({error, "No function clause has been selected!"})
     end.
 
+fold_expression_0(Candidates, FunClauseDef, Cmd, Editor) ->
+    case Candidates of
+	[] ->
+	    throw({error, "No expressions that are suitable for folding "
+		   "against the selected function have been found!"});
+	_ -> ok
+    end,
+    case Editor of
+	emacs ->
+	    FunClauseDef1 = term_to_list(FunClauseDef),
+	    Regions = [{SLine, SCol, ELine, ECol, term_to_list(NewExp), FunClauseDef1}
+		       || {{{SLine, SCol}, {ELine, ECol}}, NewExp} <- Candidates],
+	    {ok, Regions, Cmd};
+	eclipse -> {ok, {FunClauseDef, Candidates}}
+    end.
 
-%%-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), 
-%%			    string(), [dir()], integer()) ->
-%%	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), 
-%%		    {filename(), atom(), syntaxTree(), integer()}}], string()}).
-
+-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), 
+			    string(), [dir()], integer()) ->
+	     {ok, [{integer(), integer(), integer(), integer(), syntaxTree(), 
+		    {filename(), atom(), syntaxTree(), integer()}}], string()}).
 fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex,
 		  SearchPaths, TabWidth) ->
-    fold_by_name_pre_cond_check(ModName, FunName, Arity, ClauseIndex),
+    fold_by_name_par_checking(ModName, FunName, Arity, ClauseIndex),
     fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName),
 		      list_to_integer(Arity), list_to_integer(ClauseIndex),
 		      SearchPaths, TabWidth, emacs).
 
-%%-spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), integer(), integer(), [dir()], integer()) ->
-%%	     {ok, {syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}).
+-spec(fold_expr_by_name_eclipse/7::(filename(), string(), string(), integer(), integer(), [dir()], integer()) ->
+					 {ok, {syntaxTree(), [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}}).
 fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth) ->
     fold_expr_by_name(FileName, list_to_atom(ModName), list_to_atom(FunName), Arity, 
 		      ClauseIndex, SearchPaths, TabWidth, eclipse).
 
 
-fold_by_name_pre_cond_check(ModName, FunName, Arity, ClauseIndex) ->
-    case ModName of
-      [] -> throw({error, "Invalid module name!"});
-      _ -> ok
-    end,
-    case FunName of
-      [] -> throw({error, "Invalid function name!"});
-      _ -> ok
-    end,
-    try list_to_integer(Arity) of
-	_ -> ok
-    catch 
-	_:_ -> throw({error, "Invalid arity!"})
-    end,
-    try list_to_integer(ClauseIndex) of
-	_ ->
-	    ok
-    catch
-	_:_ -> throw({error, "Invalid function clause index!"})
-    end.
-	     
-  
+
 fold_expr_by_name(FileName, ModName, FunName, Arity, ClauseIndex, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:fold_expression(~p,~p,~p,~p,~p,~p).\n",
 		 [?MODULE, FileName, ModName, FunName, Arity, ClauseIndex, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fold_expression(" ++ "\"" ++
-	FileName ++ "\", " ++ atom_to_list(ModName) ++ ", " ++ atom_to_list(FunName)++
-	", " ++ integer_to_list(Arity) ++ ", " ++ integer_to_list(ClauseIndex) ++ ", [" 
-	++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+	    FileName ++ "\", " ++ atom_to_list(ModName) ++ ", " ++ atom_to_list(FunName) ++
+	      ", " ++ integer_to_list(Arity) ++ ", " ++ integer_to_list(ClauseIndex) ++ ", ["
+		++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {value, {module, CurrentModName}} = lists:keysearch(module, 1, Info),
-    Files = refac_util:expand_files(SearchPaths, ".erl"),
-    FileNames = lists:filter(fun (F) -> 
-				     list_to_atom(filename:basename(F, ".erl")) == ModName 
-			     end, Files),
-    case FileNames of
-      [] ->
-	  throw({error, "Wrangler could not find the file "
-			  ++ atom_to_list(ModName) ++ ".erl" ++
-							" following Wrangler's SearchPaths!"});
-      _ -> ok
-    end,
-    FileName1 = hd(FileNames),
+    FileName1 = get_file_name(ModName, SearchPaths),
     {ok, {AnnAST1, _Info1}} = refac_util:parse_annotate_file(FileName1, true, SearchPaths, TabWidth),
     case get_fun_clause_def(AnnAST1, FunName, Arity, ClauseIndex) of
       {ok, {Mod, _FunName, _Arity, FunClauseDef}} ->
 	  side_condition_analysis(FunClauseDef),
 	  Candidates = search_candidate_exprs(AnnAST, {Mod, CurrentModName}, FunName, FunClauseDef),
-	  case Candidates of
-	    [] ->
-		throw({error,
-		       "No expressions that are suitable for folding "
-		       "against the selected function have been found!"});
-	    _ -> ok
-	  end,
-	    case Editor of
-		emacs ->
-		    FunClauseDef1 = term_to_list(FunClauseDef),
-		    Regions =[{SLine, SCol, ELine, ECol, term_to_list(NewExp), FunClauseDef1}
-			      || {{{SLine, SCol}, {ELine, ECol}}, NewExp} <- Candidates],
-		    {ok, Regions, Cmd};
-		eclipse -> {ok, {FunClauseDef, Candidates}}
-	    end;
-	{error, _Reason} ->
+	  fold_expression_0(Candidates, FunClauseDef, Cmd, Editor);
+      {error, _Reason} ->
 	  throw({error, "The specified funcion clause does not exist!"})
     end.
 
-%%-spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
-%%			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
-%%			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+get_file_name(ModName, SearchPaths) ->
+    Files = refac_util:expand_files(SearchPaths, ".erl"),
+    FileNames = lists:filter(fun (F) ->
+				     list_to_atom(filename:basename(F, ".erl")) == ModName
+			     end, Files),
+    case FileNames of
+	[] ->
+	    throw({error, "Wrangler could not find the file " ++ atom_to_list(ModName) ++ ".erl" ++
+		 " following Wrangler's SearchPaths!"});
+      [FileName] -> FileName;
+	_ ->  throw({error, "Wrangler found more than one file defining the module, " ++ atom_to_list(ModName)
+		     ++ ", folloing the SearchPaths  specified!"})
+		  
+    end.
+
+-spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
+			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
+			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWidth) ->
-    %% RangeNewExpList [{{{StartLine, EndCol}, {EndLine, EndCol}}, NewExp}]
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
     AnnAST1 = fold_expression_1_eclipse_1(AnnAST, Body, RangeNewExpList),
@@ -205,11 +170,11 @@ fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWid
     {ok, [{FileName, FileName, FileContent}]}.
 
 
-fold_expression_1_eclipse_1(AnnAST, _Body,  []) -> 
+fold_expression_1_eclipse_1(AnnAST, _Body, []) ->
     AnnAST;
-fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}|Tail]) ->
-    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, 
-				       AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
+fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}| Tail]) ->
+    {AnnAST1, _} = ast_traverse_api:stop_tdTP(fun do_replace_expr_with_fun_call/2,
+					      AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
     fold_expression_1_eclipse_1(AnnAST1, Body, Tail).
 
 
@@ -220,15 +185,15 @@ do_fold_expression(FileName, CandidatesToFold, SearchPaths, TabWidth, LogMsg) ->
     refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], LogMsg),
     {ok, [FileName]}.
 
-fold_expression_1_1(AnnAST, []) -> 
+fold_expression_1_1(AnnAST, []) ->
     AnnAST;
-fold_expression_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol, Exp0, FunClauseDef0}|Tail]) ->
+fold_expression_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol, Exp0, FunClauseDef0}| Tail]) ->
     FunClauseDef = binary_to_term(list_to_binary(FunClauseDef0)),
     Exp = binary_to_term(list_to_binary(Exp0)),
     Body = refac_syntax:clause_body(FunClauseDef),
-    {AnnAST1,_} = refac_util:stop_tdTP(fun do_replace_expr_with_fun_call/2, 
-				       AnnAST, {Body, {{{StartLine, StartCol}, {EndLine, EndCol}}, Exp}}),
-    fold_expression_1_1(AnnAST1,Tail).
+    {AnnAST1, _} = ast_traverse_api:stop_tdTP(fun do_replace_expr_with_fun_call/2,
+					      AnnAST, {Body, {{{StartLine, StartCol}, {EndLine, EndCol}}, Exp}}),
+    fold_expression_1_1(AnnAST1, Tail).
 
 %% =============================================================================================
 %% Side condition analysis.
@@ -269,53 +234,54 @@ do_replace_expr_with_fun_call(Tree, {Expr, {Range, NewExp}})->
 
 
 do_replace_expr_with_fun_call_1(Tree, {Range, NewExp}) ->
-    case refac_util:get_range(Tree) of 
- 	Range -> 
-	    {refac_util:update_ann(NewExp, {range, Range}),true};
- 	_  -> {Tree, false}
+    case refac_misc:get_start_end_loc(Tree) of
+      Range ->
+	  {refac_misc:update_ann(NewExp, {range, Range}), true};
+      _ -> {Tree, false}
     end.
 
 do_replace_expr_with_fun_call_2(Tree, {{StartLoc, EndLoc}, NewExp}) ->
-    Fun=fun(Exprs) ->
-		{Exprs1, Exprs2} = lists:splitwith(
-				     fun(E) -> 
-					     element(1, refac_util:get_range(E)) =/= StartLoc
-				     end, Exprs),
-		case Exprs2 of
+    Fun = fun (Exprs) ->
+		  {Exprs1, Exprs2} = lists:splitwith(
+				       fun (E) ->
+					       element(1, refac_misc:get_start_end_loc(E)) =/= StartLoc
+				       end, Exprs),
+		  case Exprs2 of
 		    [] -> {Exprs, false};
-		    _ -> {_Exprs21, Exprs22} = 
-			     lists:splitwith(
-			       fun(E) -> 
-				       element(2, refac_util:get_range(E)) =/= EndLoc
-			       end, Exprs),
-			 case Exprs22 of
-			     [] -> {Exprs, false};  %% THIS SHOULD NOT HAPPEN.
-			     _ ->
-				 NewExp1 = refac_util:update_ann(NewExp, {range, refac_util:get_range(hd(Exprs22))}),
-				 {Exprs1 ++ [NewExp1| tl(Exprs22)], true}
-			 end
-		end
-	end,
+		    _ ->
+			{_Exprs21, Exprs22} =
+			    lists:splitwith(
+			      fun (E) ->
+				      element(2, refac_misc:get_start_end_loc(E)) =/= EndLoc
+			      end, Exprs),
+			case Exprs22 of
+			  [] -> {Exprs, false};  %% THIS SHOULD NOT HAPPEN.
+			  _ ->
+			      NewExp1 = refac_misc:update_ann(NewExp, {range, refac_misc:get_start_end_loc(hd(Exprs22))}),
+			      {Exprs1 ++ [NewExp1| tl(Exprs22)], true}
+			end
+		  end
+	  end,
     case refac_syntax:type(Tree) of
-	clause ->
-	    Exprs = refac_syntax:clause_body(Tree),
-	    {NewBody, Modified} = Fun(Exprs),
-	    Pats = refac_syntax:clause_patterns(Tree),
-	    G = refac_syntax:clause_guard(Tree),
-	    {refac_util:rewrite(Tree, refac_syntax:clause(Pats, G, NewBody)), Modified};
-	block_expr ->
-	    Exprs = refac_syntax:block_expr_body(Tree),
-	    {NewBody, Modified} = Fun(Exprs),
-	    {refac_util:rewrite(Tree,refac_syntax:block_expr(NewBody)), Modified};
-	try_expr ->
-	    Exprs = refac_syntax:try_expr_body(Tree),
-	    {NewBody, Modified} = Fun(Exprs),
-	    Cs = refac_syntax:try_expr_clauses(Tree),
-	    Handlers = refac_syntax:try_expr_handlers(Tree),
-	    After = refac_syntax:try_expr_after(Tree),
-	    Tree1 = refac_util:rewrite(Tree, refac_syntax:try_expr(NewBody, Cs, Handlers, After)),
-	    {Tree1, Modified};
-	_ -> {Tree, false}
+      clause ->
+	  Exprs = refac_syntax:clause_body(Tree),
+	  {NewBody, Modified} = Fun(Exprs),
+	  Pats = refac_syntax:clause_patterns(Tree),
+	  G = refac_syntax:clause_guard(Tree),
+	  {refac_misc:rewrite(Tree, refac_syntax:clause(Pats, G, NewBody)), Modified};
+      block_expr ->
+	  Exprs = refac_syntax:block_expr_body(Tree),
+	  {NewBody, Modified} = Fun(Exprs),
+	  {refac_misc:rewrite(Tree, refac_syntax:block_expr(NewBody)), Modified};
+      try_expr ->
+	  Exprs = refac_syntax:try_expr_body(Tree),
+	  {NewBody, Modified} = Fun(Exprs),
+	  Cs = refac_syntax:try_expr_clauses(Tree),
+	  Handlers = refac_syntax:try_expr_handlers(Tree),
+	  After = refac_syntax:try_expr_after(Tree),
+	  Tree1 = refac_misc:rewrite(Tree, refac_syntax:try_expr(NewBody, Cs, Handlers, After)),
+	  {Tree1, Modified};
+      _ -> {Tree, false}
     end.
 
 %% =============================================================================================
@@ -341,28 +307,27 @@ do_search_candidate_exprs(AnnAST, ExpList) ->
 
 
 do_search_candidate_exprs_1(AnnAST, Exp) ->
-    PrimExprRanges=collect_prime_expr_ranges(AnnAST),
-    Fun = fun(T,S) ->
+    PrimExprRanges = collect_prime_expr_ranges(AnnAST),
+    Fun = fun (T, S) ->
 		  As = refac_syntax:get_ann(T),
-		  case lists:keysearch(category, 1, As) of 
-		      {value, {category, C}}
-		      when C==expression->
-			  case T=/=Exp of 
-			      true -> 
-				  R = refac_util:get_range(T),
-				  case lists:member(R, PrimExprRanges) of
-				      false ->  case expr_unification(Exp, T) of 
-						    {true, Subst} -> 
-							S++[{refac_util:get_range(T), Subst}];
-						   _ -> S
-						end;
-				      _ -> S
-				  end;
-			      _ -> S
-			  end;
-		      _  -> S
-		  end		     
-	 end,
+		  case lists:keysearch(category, 1, As) of
+		    {value, {category, C}} when C == expression ->
+			case T =/= Exp of
+			  true ->
+			      R = refac_misc:get_start_end_loc(T),
+			      case lists:member(R, PrimExprRanges) of
+				false -> case unification:expr_unification(Exp, T) of
+					   {true, Subst} ->
+					       S ++ [{refac_misc:get_start_end_loc(T), Subst}];
+					   _ -> S
+					 end;
+				_ -> S
+			      end;
+			  _ -> S
+			end;
+		    _ -> S
+		  end
+	  end,
     refac_syntax_lib:fold(Fun, [], AnnAST).
  
 
@@ -399,215 +364,98 @@ get_candidate_exprs(ExpList, Len, LastExp, HasExportExp, Exprs) ->
     SubExprs = sublists(Exprs, Len),
     Fun0 = fun (E) ->
 		   case ExpList =/= E of
-		       true ->
-			   case expr_unification(ExpList, E) of
-			       {true, Subst} ->
-				   {SLoc1, _ELoc1} = refac_util:get_range(hd(E)),
-				   {_SLoc2, ELoc2} = refac_util:get_range(lists:last(E)),
-				   {{SLoc1, ELoc2}, Subst};
-			       _ ->
-				   false
-			   end;
-		       _ -> false
+		     true ->
+			 case unification:expr_unification(ExpList, E) of
+			   {true, Subst} ->
+			       {SLoc1, _ELoc1} = refac_misc:get_start_end_loc(hd(E)),
+			       {_SLoc2, ELoc2} = refac_misc:get_start_end_loc(lists:last(E)),
+			       {{SLoc1, ELoc2}, Subst};
+			   _ ->
+			       false
+			 end;
+		     _ -> false
 		   end
 	   end,
     CandidateExprs1 = lists:map(Fun0, SubExprs),
     CandidateExprs2 =
 	case HasExportExp of
-	    true ->
-		SubExprs1 = sublists(Exprs, Len - 1),
-		Fun = fun (E) ->
-			      case hd(ExpList) =/= hd(E) of
-				  true ->
-				      VarsToExport = vars_to_export_1(Exprs, E),
-				      Res = expr_unification(lists:sublist(ExpList, Len - 1), E),
-				      case Res of
-					  {true, Subst} ->
-					      case reorder_vars_to_export(LastExp, VarsToExport, Subst) of
-						  {true, VarsToExport1} ->
-						      {StartLoc1, _EndLoc1} = refac_util:get_range(hd(E)),
-						      {_StartLoc2, EndLoc2} = refac_util:get_range(lists:last(E)),
-						      {{StartLoc1, EndLoc2}, Subst, VarsToExport1};
-						  _ -> false
-					      end;
+	  true ->
+	      SubExprs1 = sublists(Exprs, Len - 1),
+	      Fun = fun (E) ->
+			    case hd(ExpList) =/= hd(E) of
+			      true ->
+				  VarsToExport = vars_to_export(Exprs, E),
+				  Res = unification:expr_unification(lists:sublist(ExpList, Len - 1), E),
+				  case Res of
+				    {true, Subst} ->
+					case reorder_vars_to_export(LastExp, VarsToExport, Subst) of
+					  {true, VarsToExport1} ->
+					      {StartLoc1, _EndLoc1} = refac_misc:get_start_end_loc(hd(E)),
+					      {_StartLoc2, EndLoc2} = refac_misc:get_start_end_loc(lists:last(E)),
+					      {{StartLoc1, EndLoc2}, Subst, VarsToExport1};
 					  _ -> false
-				      end;
-				  _ -> false
-			      end
-		      end,
-		lists:map(Fun, SubExprs1);
+					end;
+				    _ -> false
+				  end;
+			      _ -> false
+			    end
+		    end,
+	      lists:map(Fun, SubExprs1);
 	  _ -> []
 	end,
     lists:filter(fun (C) -> C =/= false end, CandidateExprs1 ++ CandidateExprs2).
 
-
-%%-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
-%%	     {true, [{atom(), syntaxTree()}]} | false).
-expr_unification(Exp1, Exp2) ->
-    case expr_unification_1(Exp1, Exp2) of
-	{true, Subst} ->
-	    Subst1 = lists:usort([{E1, refac_prettypr:format(E2)} || {E1, E2} <- Subst]),
-	    Subst2 = lists:usort([E1 || {E1, _E2} <- Subst1]),
-	    case length(Subst2) == length(Subst1) of
-		true -> {true, Subst};
-		_ -> false
-	    end;
-	_ -> false
+fold_by_name_par_checking(ModName, FunName, Arity, ClauseIndex) ->
+    case ModName of
+      [] -> throw({error, "Invalid module name!"});
+      _ -> ok
+    end,
+    case FunName of
+      [] -> throw({error, "Invalid function name!"});
+      _ -> ok
+    end,
+    try
+      list_to_integer(Arity)
+    of
+      _ -> ok
+    catch
+      _:_ -> throw({error, "Invalid arity!"})
+    end,
+    try
+      list_to_integer(ClauseIndex)
+    of
+      _ ->
+	  ok
+    catch
+      _:_ -> throw({error, "Invalid function clause index!"})
     end.
-
-expr_unification_1(Exp1, Exp2) ->
-    case {is_list(Exp1), is_list(Exp2)} of
-	{true, true} ->   %% both are list of expressions
-	    case length(Exp1) == length(Exp2) of
-		true ->
-		    Res = [expr_unification(E1, E2) || {E1, E2} <- lists:zip(Exp1, Exp2)],
-		    Unifiable = not lists:member(false, [false || false <- Res]),
-		    case Unifiable of
-			true ->
-			    {true, lists:usort(lists:append([S || {true, S} <- Res]))};
-			_ -> false
-		    end;
-		_ -> false
-	    end;
-      {false, false} ->  %% both are single expressions.
-	    T1 = refac_syntax:type(Exp1),
-	    T2 = refac_syntax:type(Exp2),
-	    case T1 == T2 of
-		true -> erpr_unification_2(Exp1, Exp2, T1);
-		_ -> expr_unification_3(Exp1, Exp2, T1)
-	  end;
-	{true, false} -> %% Exp1 is a list, but Exp2 is not.
-	    false;
-	{false, true} ->  %% Exp1 is a single expression, but Exp2 is not.
-	    false      %% an actual parameter cannot be a list of expressions.
-    end.
-
-erpr_unification_2(Exp1, Exp2, Type) ->
-    case Type of
-	variable ->
-	    Exp1Ann = refac_syntax:get_ann(Exp1),
-	    Exp2Ann = refac_syntax:get_ann(Exp2),
-	    Exp1Name = refac_syntax:variable_name(Exp1),
-	    Exp2Name = refac_syntax:variable_name(Exp2),
-	    case lists:keysearch(category, 1, Exp1Ann) of
-		{value, {category, macro_name}} ->
-		    case lists:keysearch(category, 1, Exp2Ann) of
-			{value, {category, macro_name}} ->
-			    case Exp1Name of 
-				Exp2Name ->{true, []};
-				_ -> false
-			    end;
-			_ -> false
-		    end;
-		_ -> {true, [{Exp1Name, set_default_ann(Exp2)}]}
-	    end;
-	atom -> 
-	    case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
-	    	true -> {true, []};
-		_ -> false
-	    end;
-	operator -> 
-	    case refac_syntax:operator_name(Exp1) == refac_syntax:operator_name(Exp2) of
-		true -> {true, []};
-		_ -> false
-	    end;
-	char -> 
-	    case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of
-		true -> {true, []};
-		_ -> false
-	    end;
-	integer -> 
-	    case refac_syntax:integer_value(Exp1) == refac_syntax:integer_value(Exp2) of
-		true -> {true, []};
-		_ -> false
-	    end;
-	string -> 
-	    case refac_syntax:string_value(Exp1) == refac_syntax:string_value(Exp2) of
-		true -> {true, []};
-		_ -> false
-	    end;
-	float -> 
-	    case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of
-		true -> {true, []}
-	    end;
-	underscore -> {true, []};
-	nil -> {true, []};
-	_ ->
-	    SubTrees1 = erl_syntax:subtrees(Exp1),
-	    SubTrees2 = erl_syntax:subtrees(Exp2),
-	    case length(SubTrees1) == length(SubTrees2) of
-		true ->
-		    expr_unification(SubTrees1, SubTrees2);
-		_ -> false
-	    end
-    end.
-
-
-expr_unification_3(Exp1, Exp2, variable) ->
-    case variable_replaceable(Exp2) of
-	false -> 
-	    false;
-	true ->
-	    Exp2Ann = refac_syntax:get_ann(Exp2),
-	    Exp1Name = refac_syntax:variable_name(Exp1),
-	    case lists:keysearch(category, 1, Exp2Ann) of
-		{value, {category, application_op}} ->
-		    case lists:keysearch(fun_def, 1,Exp2Ann) of
-			{value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
-			    {true, [{Exp1Name, set_default_ann(
-						 refac_syntax:implicit_fun(
-						   Exp2, refac_syntax:integer(A)))}]};
-			_ -> %% this is the function name part of a M:F. 
-			    {true, [{Exp1Name, set_default_ann(Exp2)}]}
-		    end;
-		_ -> 
-		    {true, [{Exp1Name, set_default_ann(Exp2)}]}
-	    end
-    end;
-expr_unification_3(_Exp1, _Exp2, _Type) -> false.
-
-
-variable_replaceable(Exp) ->
-    case refac_syntax:is_literal(Exp) of
-	true -> true;
-	_ ->case lists:keysearch(category,1, refac_syntax:get_ann(Exp)) of 
-		{value, {category, record_field}} -> false;
-		{value, {category, record_type}} -> false;	 
-		{value, {category, guard_expression}} -> false;
-		{value, {category, pattern}} -> false;
-		{value, {category, macro_name}} ->false;
-		_ -> T = refac_syntax:type(Exp),
-		     (not (lists:member(T, [match_expr, operator]))) andalso
-				(refac_util:get_var_exports(Exp)==[])
-	    end
-    end.
-	
+	     	
 
 %% =============================================================================================
 %% Some Utility Functions.
 %% =============================================================================================   
 
-make_fun_call({FunDefMod, CurrentMod}, FunName, Pats, Subst) -> 
-    Fun = fun(P) -> 
-		  case refac_syntax:type(P) of 
-		      variable -> 
-			  PName = refac_syntax:variable_name(P), 
-			  case lists:keysearch(PName, 1, Subst) of 
-			      {value, {PName, Par}} -> Par;
-			      _ -> refac_syntax:atom(undefined)
-			  end;
-		      underscore -> 
-			  refac_syntax:atom(undefined);
-		      _  -> P
+make_fun_call({FunDefMod, CurrentMod}, FunName, Pats, Subst) ->
+    Fun = fun (P) ->
+		  case refac_syntax:type(P) of
+		    variable ->
+			PName = refac_syntax:variable_name(P),
+			case lists:keysearch(PName, 1, Subst) of
+			  {value, {PName, Par}} -> Par;
+			  _ -> refac_syntax:atom(undefined)
+			end;
+		    underscore ->
+			refac_syntax:atom(undefined);
+		    _ -> P
 		  end
 	  end,
     Pars = lists:map(Fun, Pats),
-    Op = case FunDefMod == CurrentMod of 
-	     true -> refac_syntax:atom(FunName);
-	     _ -> refac_syntax:module_qualifier(
-		    refac_syntax:atom(FunDefMod), refac_syntax:atom(FunName))
+    Op = case FunDefMod == CurrentMod of
+	   true -> refac_syntax:atom(FunName);
+	   _ -> refac_syntax:module_qualifier(
+		  refac_syntax:atom(FunDefMod), refac_syntax:atom(FunName))
 	 end,
-    refac_syntax:application(Op, [refac_util:reset_attrs(P)||P<-Pars]).
+    refac_syntax:application(Op, [refac_misc:reset_attrs(P) || P <- Pars]).
   
 
 make_match_expr({FunDefMod, CurrentMod}, FunName, Pats, Subst, VarsToExport) ->
@@ -634,57 +482,33 @@ sublists(List, Len) ->
 
 
 collect_prime_expr_ranges(Tree) ->
-     F= fun(T, S) ->
-		case refac_syntax:type(T) of 
-		    application ->
-			Operator = refac_syntax:application_operator(T),
-			Range = refac_util:get_range(Operator),
-			S++[Range];
-		    _ -> S
+    F = fun (T, S) ->
+		case refac_syntax:type(T) of
+		  application ->
+		      Operator = refac_syntax:application_operator(T),
+		      Range = refac_misc:get_start_end_loc(Operator),
+		      S ++ [Range];
+		  _ -> S
 		end
 	end,
     refac_syntax_lib:fold(F, [], Tree).
 
 
-%%set_default_ann(Node) ->
-%%    refac_syntax:set_pos(
-%%      refac_syntax:remove_comments(
-%%	refac_syntax:set_ann(Node, [])), {0,0}).
-
-
-set_default_ann(Node) ->
-       refac_syntax:remove_comments(Node).
-
-
-vars_to_export_1(WholeExpList, SubExpList) ->
-    F1= fun(T, S) ->
-		case refac_syntax:type(T) of 
-		    variable ->
-			SourcePos = refac_syntax:get_pos(T),
-			case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of 
-			    {value, {def, DefinePos}} ->
-				VarName = refac_syntax:variable_name(T),
-				S ++ [{VarName, SourcePos, DefinePos}];
-			    _ ->
-				S
-			end;
-		    _  -> S
-		end
-	end,
+vars_to_export(WholeExpList, SubExpList) ->
     AllVars = lists:usort(
-		lists:flatmap(fun(E)->
-				      refac_syntax_lib:fold(F1, [], E)
-			      end,  WholeExpList)),
+		lists:flatmap(
+		  fun (E) -> refac_misc:collect_var_source_def_pos_info(E) end,
+		  WholeExpList)),
     SubExpListBdVars = lists:flatmap(
-			 fun(E) -> 
+			 fun (E) ->
 				 As = refac_syntax:get_ann(E),
-				 case lists:keysearch(bound,1, As) of
-				     {value, {bound, BdVars1}} -> BdVars1;
-				     _ -> []
+				 case lists:keysearch(bound, 1, As) of
+				   {value, {bound, BdVars1}} -> BdVars1;
+				   _ -> []
 				 end
 			 end, SubExpList),
-    SubExpListBdVarPoses = [Pos ||{_Var, Pos}<-SubExpListBdVars],
-    SubExpListEndPos = element(2, refac_util:get_range(lists:last(SubExpList))),
+    SubExpListBdVarPoses = [Pos || {_Var, Pos} <- SubExpListBdVars],
+    SubExpListEndPos = element(2, refac_misc:get_start_end_loc(lists:last(SubExpList))),
     lists:usort([V || {V, SourcePos, DefPos} <- AllVars,
 		      SourcePos > SubExpListEndPos,
 		      lists:subtract(DefPos, SubExpListBdVarPoses) == []]).
@@ -737,11 +561,14 @@ reorder_vars_to_export(LastExp, VarsToExport, Subst) ->
 			 "also exports the following variable(s):~p\n", Vars),
 	    false
     end.
+    
 
 get_fun_clause_def(Node, FunName, Arity, ClauseIndex) ->
-    case refac_util:once_tdTU(fun get_fun_def_1/2, Node, {FunName, Arity, ClauseIndex}) of
-	{_, false} -> {error, none};
-	{R, true} -> {ok, R}
+    case
+      ast_traverse_api:once_tdTU(fun get_fun_def_1/2, Node, {FunName, Arity, ClauseIndex})
+	of
+      {_, false} -> {error, none};
+      {R, true} -> {ok, R}
     end.
 
 get_fun_def_1(Node, {FunName, Arity, ClauseIndex}) ->
@@ -760,37 +587,47 @@ get_fun_def_1(Node, {FunName, Arity, ClauseIndex}) ->
 
 
 pos_to_fun_clause(Node, Pos) ->
-    case refac_util:once_tdTU(fun pos_to_fun_clause_1/2, Node, Pos) of
-	{_, false} -> {error, none};
-	{R, true} -> {ok, R}
+    case
+      ast_traverse_api:once_tdTU(fun pos_to_fun_clause_1/2, Node, Pos)
+	of
+      {_, false} -> {error, none};
+      {R, true} -> {ok, R}
     end.
 
 pos_to_fun_clause_1(Node, Pos) ->
-    case refac_syntax:type(Node) of 
-	function ->
-	    {S, E} = refac_util:get_range(Node),
-	    if (S=<Pos) and (Pos =< E) ->
-		    Cs  = refac_syntax:function_clauses(Node),
-		    NoOfCs = length(Cs),
-		    [{Index, C}] = [{I1,C1} || 
-				       {I1, C1} <- lists:zip(lists:seq(1,NoOfCs), Cs), 
-				       {S1, E1} <- [refac_util:get_range(C1)],S1=<Pos,
-				       Pos=<E1],
-		    As = refac_syntax:get_ann(Node),
-		    case lists:keysearch(fun_def, 1, As) of 
-			{value, {fun_def, {Mod, FunName, Arity, _P1, _P2}}} ->
-			    {{Mod,FunName, Arity, C, Index}, true};
-			_ -> {[], false}
-		    end;
-	       true -> {[], false}
-	    end;
-	_ ->
-	    {[], false}
+    case refac_syntax:type(Node) of
+      function ->
+	  {S, E} = refac_misc:get_start_end_loc(Node),
+	  if (S =< Pos) and (Pos =< E) ->
+		 Cs = refac_syntax:function_clauses(Node),
+		 NoOfCs = length(Cs),
+		 [{Index, C}] = [{I1, C1}
+				 || {I1, C1} <- lists:zip(lists:seq(1, NoOfCs), Cs),
+				    {S1, E1} <- [refac_misc:get_start_end_loc(C1)], S1 =< Pos,
+				    Pos =< E1],
+		 As = refac_syntax:get_ann(Node),
+		 case lists:keysearch(fun_def, 1, As) of
+		   {value, {fun_def, {Mod, FunName, Arity, _P1, _P2}}} ->
+		       {{Mod, FunName, Arity, C, Index}, true};
+		   _ -> {[], false}
+		 end;
+	     true -> {[], false}
+	  end;
+      _ ->
+	  {[], false}
     end.
 
 
-%%-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> 
-%%	     {syntaxTree(), moduleInfo()} | {error, string()}).
+term_to_list(Node) ->
+    binary_to_list(term_to_binary(Node)).
+
+
+
+
+%%The following is only used by tests.
+
+-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> 
+	     {syntaxTree(), moduleInfo()} | {error, string()}).
 fold_expression_1(FileName, FunName, Arity, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} =refac_util:parse_annotate_file(FileName,true, SearchPaths, TabWidth),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
@@ -815,5 +652,5 @@ name_to_fun_clause(AnnAST, FunName, Arity) ->
     hd(refac_syntax:function_clauses(Fun)).
 
 
-term_to_list(Node) ->
-    binary_to_list(term_to_binary(Node)).
+
+

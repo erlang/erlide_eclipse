@@ -140,19 +140,25 @@ undo_files(Files) ->
 	    ok;
 	[{{OldFileName,NewFileName, IsNew}, Content}|T] -> 
 	    case OldFileName == NewFileName of
-		true -> case IsNew  of 
-			    true -> file:delete(NewFileName),
-				    undo_files(T);
-			    _ ->  file:write_file(OldFileName, Content),
-				  undo_files(T)
-			end;
-		false -> case IsNew of 
-			     true -> file:delete(OldFileName),
-				     file:delete(NewFileName),
-				     undo_files(T);
-			     _ ->  file:write_file(OldFileName, Content),
-				   file:delete(NewFileName),
-				   undo_files(T)
-			 end
-	        end
+		true ->
+		    case IsNew  of 
+			true ->
+			    file:delete(NewFileName),
+			    undo_files(T);
+			_ -> 
+			    file:write_file(OldFileName, Content),
+			    undo_files(T)
+		    end;
+		false ->
+		    case IsNew of 
+			true -> 
+			    file:delete(OldFileName),
+			    file:delete(NewFileName),
+			    undo_files(T);
+			_ ->  
+			    file:write_file(OldFileName, Content),
+			    file:delete(NewFileName),
+			    undo_files(T)
+		    end
+	    end
     end.

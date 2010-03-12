@@ -67,16 +67,15 @@ init(_Args) ->
     CallGraphServer={wrangler_callgraph_server, {wrangler_callgraph_server, start_callgraph_server, []},
 		     permanent, 10000, worker, [wrangler_callgraph_server]},
     ModuleGraphServer={wrangler_modulegraph_server, {wrangler_modulegraph_server, start_modulegraph_server, []},
-		      permanent, 10000, worker, [wrangler_modulegraph_server]},
+		       permanent, 10000, worker, [wrangler_modulegraph_server]},
     ErrorLogger={wrangler_error_logger, {wrangler_error_logger, start_wrangler_error_logger, []},
-		  permanent, 10000, worker, [wrangler_error_logger]},
+		 permanent, 10000, worker, [wrangler_error_logger]},
     UndoServer={wrangler_undo_server, {wrangler_undo_server, start_undo_server, []}, 
-	       permanent, 10000, worker, [wrangler_undo_server]},
-         
+		permanent, 10000, worker, [wrangler_undo_server]},
     PreviewServer={wrangler_preview_server, {wrangler_preview_server, start_preview_server, []}, 
- 	       permanent, 10000, worker, [wrangler_preview_server]},
+		   permanent, 10000, worker, [wrangler_preview_server]},
     PreviewServer={wrangler_preview_server, {wrangler_preview_server, start_preview_server, []}, 
-	       permanent, 10000, worker, [wrangler_preview_server]},
+		   permanent, 10000, worker, [wrangler_preview_server]},
     {ok,{{one_for_one,3,60}, [ASTServer, CallGraphServer, ModuleGraphServer, ErrorLogger, UndoServer, PreviewServer]}}.
 
 %%====================================================================

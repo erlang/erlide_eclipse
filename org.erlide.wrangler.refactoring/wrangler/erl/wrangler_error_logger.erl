@@ -35,7 +35,8 @@
 -behaviour(gen_server).
 
 %% API
--export([start_wrangler_error_logger/0, get_logged_errors/0, add_error_to_logger/1, remove_error_from_logger/1]).
+-export([start_wrangler_error_logger/0, get_logged_errors/0, 
+	 add_error_to_logger/1, remove_error_from_logger/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -55,7 +56,6 @@ start_wrangler_error_logger() ->
 
 get_logged_errors() ->
     gen_server:call(wrangler_error_logger, get_errors).
-    
 
 add_error_to_logger(Error) ->
     gen_server:cast(wrangler_error_logger, {add, Error}).

@@ -36,6 +36,11 @@
 
 -export([comment_out/1]).
 
+
+-include("../include/wrangler.hrl").
+
+
+-spec comment_out/1::([filename()|dir()]) ->ok.
 comment_out(Dirs) ->
     FileNames = refac_util:expand_files(Dirs, ".erl"),
     HeaderFiles = refac_util:expand_files(Dirs, ".hrl"),
@@ -52,22 +57,22 @@ comment_out_spec_type_1(FileName, SearchPaths) ->
 
 
 vertical_concat([], Acc) -> Acc;
-vertical_concat([F|T],Acc) ->
-    Toks = case refac_syntax:type(F) of 
-	       attribute ->
-		   case refac_syntax:atom_value(refac_syntax:attribute_name(F)) of 
-		       type ->
-			   Toks1 = refac_util:get_toks(F),
-			   turn_to_comments(Toks1);		       
- 		       spec ->
-			   Toks1 = refac_util:get_toks(F),
-			   turn_to_comments(Toks1);
-		       _-> refac_util:get_toks(F)
-		   end;	    
-	       _ ->
-		   refac_util:get_toks(F)
+vertical_concat([F| T], Acc) ->
+    Toks = case refac_syntax:type(F) of
+	     attribute ->
+		 case refac_syntax:atom_value(refac_syntax:attribute_name(F)) of
+		   type ->
+		       Toks1 = refac_misc:get_toks(F),
+		       turn_to_comments(Toks1);
+		   'spec' ->
+		       Toks1 = refac_misc:get_toks(F),
+		       turn_to_comments(Toks1);
+		   _ -> refac_misc:get_toks(F)
+		 end;
+	     _ ->
+		 refac_misc:get_toks(F)
 	   end,
-    vertical_concat(T, Acc ++refac_util:concat_toks(Toks)).
+    vertical_concat(T, Acc ++ refac_util:concat_toks(Toks)).
 
 turn_to_comments(Toks) ->
     {Toks1, Toks2} = lists:splitwith(fun(T) ->
