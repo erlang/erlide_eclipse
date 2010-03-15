@@ -11,11 +11,11 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
-import erlang.ErlideXref;
+import erlang.ErlideSearchServer;
 
 public class ErlSearchQuery implements ISearchQuery {
 	private final ErlangExternalFunctionCallRef searchRef;
@@ -23,15 +23,12 @@ public class ErlSearchQuery implements ISearchQuery {
 	// String fun;
 	// int arity;
 	// IErlElement element;
-	@SuppressWarnings("unused")
 	private final List<String> scope;
-	@SuppressWarnings("unused")
 	private final int searchFor; // REFERENCES, DECLARATIONS or
 	// ALL_OCCURRENCES
-	@SuppressWarnings("unused")
 	private final int limitTo;
 	private ErlangSearchResult fSearchResult;
-	private List<ErlangExternalFunctionCallRef> fResult;
+	private List<ModuleLineFunctionArityRef> fResult;
 
 	// public ErlSearchQuery(final String module, final String fun,
 	// final int arity, final String[] scope) {
@@ -68,27 +65,31 @@ public class ErlSearchQuery implements ISearchQuery {
 
 	public ISearchResult getSearchResult() {
 		if (fSearchResult == null) {
-			fSearchResult = new ErlangSearchResult(this, fResult);
+			fSearchResult = new ErlangSearchResult(this);
 		}
 		return fSearchResult;
 	}
 
 	public IStatus run(final IProgressMonitor monitor)
 			throws OperationCanceledException {
-		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
-		// in... ev portionera ut lite
 		final ErlideBackend backend = ErlangCore.getBackendManager()
 				.getIdeBackend();
-		ErlideXref.setScope(backend, scope);
-		fResult = ErlideXref.funtionUse(backend, searchRef);
-		// fResult = ErlideNoparse.find(backend, searchRef);
-		fSearchResult.setResult(fResult);
-		final List<Match> l = new ArrayList<Match>();
-		for (final ErlangExternalFunctionCallRef ref : fResult) {
-			final ISourceRange pos = ref.getPos();
-			final Match m = new Match(ref, pos.getOffset(), pos.getLength());
+		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
+		// in... ev portionera ut lite
+		// TODO should be setScope
+		ErlideSearchServer.addModules(backend, scope);
+		fResult = ErlideSearchServer.functionUse(backend,
+				searchRef.getModule(), searchRef.getFunction(), searchRef
+						.getArity());
+		final List<Match> l = new ArrayList<Match>(fResult.size());
+		final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
+				fResult.size());
+		for (final ModuleLineFunctionArityRef ref : fResult) {
+			final Match m = SearchUtil.createMatch(ref);
 			l.add(m);
+			result.add((ErlangSearchElement) m.getElement());
 		}
+		fSearchResult.setResult(result);
 		fSearchResult.addMatches(l.toArray(new Match[l.size()]));
 		return Status.OK_STATUS;
 	}

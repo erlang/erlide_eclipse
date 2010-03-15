@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
@@ -15,21 +14,19 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangSearchResult extends AbstractTextSearchResult implements
 		IEditorMatchAdapter, IFileMatchAdapter {
 
-	private List<ErlangExternalFunctionCallRef> result;
+	private List<ErlangSearchElement> result;
 	private final ErlSearchQuery query;
 
 	@Override
 	public void removeAll() {
-		result = new ArrayList<ErlangExternalFunctionCallRef>();
+		result = new ArrayList<ErlangSearchElement>();
 		super.removeAll();
 	}
 
@@ -47,10 +44,9 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 		super.removeMatches(matches);
 	}
 
-	public ErlangSearchResult(final ErlSearchQuery query,
-			final List<ErlangExternalFunctionCallRef> result) {
+	public ErlangSearchResult(final ErlSearchQuery query) {
 		this.query = query;
-		this.result = result;
+		result = new ArrayList<ErlangSearchElement>();
 	}
 
 	@Override
@@ -69,7 +65,10 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	}
 
 	public String getLabel() {
-		return query.getLabel() + " - " + getMatchCount() + " occurences.";
+		final int matchCount = getMatchCount();
+		final String occurences = matchCount == 1 ? "occurence."
+				: "occurences.";
+		return query.getLabel() + " - " + matchCount + " " + occurences;
 	}
 
 	public ISearchQuery getQuery() {
@@ -81,12 +80,11 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 		return null;
 	}
 
-	public List<ErlangExternalFunctionCallRef> getResult() {
+	public List<ErlangSearchElement> getResult() {
 		return result;
 	}
 
-	public synchronized void setResult(
-			final List<ErlangExternalFunctionCallRef> result) {
+	public synchronized void setResult(final List<ErlangSearchElement> result) {
 		this.result = result;
 	}
 
@@ -104,13 +102,14 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	}
 
 	public boolean isShownInEditor(final Match match, final IEditorPart editor) {
-		final ErlangExternalFunctionCallRef ref = (ErlangExternalFunctionCallRef) match
+		final ErlangSearchElement ese = (ErlangSearchElement) match
 				.getElement();
-		final IErlElement e = ref.getElement();
+		final IFile file = ResourceUtil
+				.getFileFromLocation(ese.getModuleName());
 		if (editor instanceof ITextEditor) {
 			final ITextEditor textEditor = (ITextEditor) editor;
-			final IErlModule mod = SearchUtil.getModule(e);
-			return mod == ErlModelUtils.getModule(textEditor);
+			return ErlModelUtils.getModule(textEditor).getResource().equals(
+					file);
 		}
 		return false;
 	}
@@ -119,32 +118,27 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 			final AbstractTextSearchResult aResult, final IFile file) {
 		final ErlangSearchResult esr = (ErlangSearchResult) aResult;
 		final List<Match> l = new ArrayList<Match>();
-		final List<ErlangExternalFunctionCallRef> refs = esr.getResult();
-		if (refs == null) {
+		final List<ErlangSearchElement> eses = esr.getResult();
+		String name = file.getName();
+		if (eses == null || !ErlideUtil.hasModuleExtension(name)) {
 			return NO_MATCHES;
 		}
-		for (final ErlangExternalFunctionCallRef ref : refs) {
-			final IErlElement e = ref.getElement();
-			final IErlModule mod = SearchUtil.getModule(e);
-			if (mod.getResource() == file) {
-				final ISourceRange pos = ref.getPos();
-				final Match m = new Match(ref, pos.getOffset(), pos.getLength());
-				l.add(m);
+		name = ErlideUtil.withoutExtension(name);
+		for (final ErlangSearchElement ese : eses) {
+			if (ese.getModuleName().equals(name)) {
+				final Match[] matches = getMatches(ese);
+				for (final Match match : matches) {
+					l.add(match);
+				}
 			}
 		}
 		return l.toArray(new Match[l.size()]);
 	}
 
 	public IFile getFile(final Object element) {
-		if (element instanceof IErlElement) {
-			final IErlElement e = (IErlElement) element;
-			final IResource r = e.getResource();
-			if (r instanceof IFile) {
-				return (IFile) r;
-			}
-		} else if (element instanceof ErlangExternalFunctionCallRef) {
-			final ErlangExternalFunctionCallRef ref = (ErlangExternalFunctionCallRef) element;
-			return getFile(ref.getElement());
+		if (element instanceof ErlangSearchElement) {
+			final ErlangSearchElement ese = (ErlangSearchElement) element;
+			return ResourceUtil.getFileFromLocation(ese.getModuleName());
 		}
 		return null;
 	}

@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -19,8 +20,10 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.OpenResult;
@@ -53,7 +56,13 @@ public class SearchUtil {
 			final List<String> result = new ArrayList<String>(erlangProjects
 					.size());
 			for (final IErlProject i : erlangProjects) {
-				addProjectEbin(i, result);
+				final List<IErlModule> modules = i.getModules();
+				for (final IErlModule j : modules) {
+					result
+							.add(j.getResource().getLocation()
+									.toPortableString());
+				}
+				// addProjectEbin(i, result);
 			}
 			return result;
 		} catch (final ErlModelException e) {
@@ -139,6 +148,14 @@ public class SearchUtil {
 			return (IErlModule) key.getParent().getParent();
 		}
 		return null;
+	}
+
+	public static Match createMatch(final ModuleLineFunctionArityRef ref) {
+		final ErlangFunction function = ref.getFunction();
+		final String clauseHead = ref.getClauseHead();
+		final ErlangSearchElement ese = new ErlangSearchElement(ref
+				.getModuleName(), function, clauseHead);
+		return new Match(ese, Match.UNIT_LINE, ref.getLine(), 0);
 	}
 
 	// public static String toString(final IWorkingSet[] workingSets) {

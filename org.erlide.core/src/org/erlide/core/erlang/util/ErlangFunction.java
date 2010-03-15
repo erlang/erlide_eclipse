@@ -14,7 +14,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangFunction {
 
 	public String name;
-
 	public int arity;
 
 	/**

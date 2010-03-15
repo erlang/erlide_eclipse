@@ -10,13 +10,15 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.OpenEvent;
@@ -41,41 +43,19 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.ui.internal.ExceptionHandler;
 import org.erlide.ui.internal.search.NewErlSearchActionGroup;
-import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
 	@Override
 	protected void handleOpen(final OpenEvent event) {
-		Object element = ((IStructuredSelection) event.getSelection())
-				.getFirstElement();
-		if (element instanceof ErlangExternalFunctionCallRef) {
-			final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
-			element = fcr.getElement();
-		}
-		if (element instanceof IErlElement) {
-			if (getDisplayedMatchCount(element) == 0) {
-				try {
-					ErlModelUtils.openElement((IErlElement) element);
-				} catch (final CoreException e) {
-					ExceptionHandler.handle(e, getSite().getShell(),
-							"Open Error", "Couldn't open in editor");
-				}
-				return;
-			}
-		}
 		super.handleOpen(event);
 	}
 
@@ -180,28 +160,50 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			return fOrder;
 		}
 
+		// protected final String getLabelWithCounts(final Object element,
+		// final String elementName) {
+		// final int matchCount = fPage.getDisplayedMatchCount(element);
+		// if (matchCount < 2) {
+		// if (matchCount == 1) {
+		// return MessageFormat.format("{0} (1 match)", elementName);
+		// } else {
+		// return elementName;
+		// }
+		// } else {
+		// return MessageFormat.format("{0} ({1} matches)", elementName,
+		// String.valueOf(matchCount));
+		// }
+		// }
+
 		@Override
 		public String getText(final Object element) {
-			String text = null;
-			if (element instanceof ErlangExternalFunctionCallRef) {
-				final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
-				return getText(fcr.getElement());
+			final String text;
+			if (element instanceof String) { // Module
+				final String s = (String) element;
+				text = new Path(s).lastSegment();
+			} else if (element instanceof ErlangSearchElement) {
+				final ErlangSearchElement ese = (ErlangSearchElement) element;
+				final String clauseHead = ese.getClauseHead();
+				if (clauseHead != null) {
+					text = ese.getFunction().name + clauseHead;
+				} else {
+					text = ese.getFunction().getNameWithArity();
+				}
+			} else if (element instanceof ErlangFunction) {
+				final ErlangFunction f = (ErlangFunction) element;
+				text = f.getNameWithArity();
+			} else {
+				text = null;
 			}
-			if (element instanceof IErlModule) {
-				final IErlModule mod = (IErlModule) element;
-				text = mod.getName();
-			} else if (element instanceof IErlElement) {
-				final IErlElement ee = (IErlElement) element;
-				text = ee.toString();
-			}
-
 			int matchCount = 0;
 			final AbstractTextSearchResult result = fPage.getInput();
 			if (result != null) {
-				matchCount = result.getMatchCount(element);
+				matchCount = fPage.getDisplayedMatchCount(element);
 			}
-			if (matchCount <= 1) {
+			if (matchCount == 0) {
 				return text;
+			} else if (matchCount == 1) {
+				return MessageFormat.format("{0} 1 match", text);
 			}
 			final String format = "{0} ({1} matches)";
 			return MessageFormat.format(format, text, Integer
@@ -210,23 +212,33 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
 		@Override
 		public Image getImage(final Object element) {
-			Object e;
-			if (element instanceof ErlangExternalFunctionCallRef) {
-				final ErlangExternalFunctionCallRef fcr = (ErlangExternalFunctionCallRef) element;
-				e = fcr.getElement();
-			} else {
-				e = element;
+			// module - String
+			// function - ErlangFunction
+			// clause - ClauseHead
+			// occurence - ModuleLineFunctionArityRef
+			Kind kind = Kind.ERROR;
+			if (element instanceof String) {
+				kind = Kind.MODULE;
+			} else if (element instanceof ErlangSearchElement) {
+				final ErlangSearchElement ese = (ErlangSearchElement) element;
+				if (ese.getClauseHead() == null) {
+					kind = Kind.FUNCTION;
+				} else {
+					kind = Kind.CLAUSE;
+				}
+			} else if (element instanceof ErlangFunction) {
+				kind = Kind.FUNCTION;
 			}
-			return fImageProvider.getImageLabel(e,
-					ErlangElementImageProvider.SMALL_ICONS);
-
-			// if (!(element instanceof IResource)) {
-			// return null;
+			// if (element instanceof ModuleLineFunctionArityRef) {
+			// final ModuleLineFunctionArityRef mlfar =
+			// (ModuleLineFunctionArityRef) element;
+			// ErlLogger.debug("fixa");// TODO fixa
+			// e = null;
+			// } else {
+			// e = element;
 			// }
-			//
-			// final IResource resource = (IResource) element;
-			// final Image image = fLabelProvider.getImage(resource);
-			// return image;
+			return fImageProvider.getImageLabel(ErlangElementImageProvider
+					.getImageDescriptionFromKind(kind));
 		}
 
 		@Override
@@ -263,18 +275,19 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		private final AbstractTreeViewer fTreeViewer;
 		private final Map<Object, List<Object>> childMap;
 		private final Map<Object, Object> parentMap;
-		private final List<IErlModule> modules;
+		private final List<String> moduleNames;
 		private ErlangSearchResult fResult;
 
-		TreeContentProvider(final AbstractTreeViewer viewer) {
+		private TreeContentProvider(final AbstractTreeViewer viewer) {
 			fTreeViewer = viewer;
 			childMap = new HashMap<Object, List<Object>>();
 			parentMap = new HashMap<Object, Object>();
-			modules = new ArrayList<IErlModule>();
+			moduleNames = new ArrayList<String>();
+			// modules = new ArrayList<IErlModule>();
 		}
 
 		public Object[] getElements(final Object inputElement) {
-			return modules.toArray();
+			return moduleNames.toArray();
 		}
 
 		public void dispose() {
@@ -306,29 +319,28 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 
 		protected synchronized void initialize(
-				final List<ErlangExternalFunctionCallRef> refs) {
-			if (refs == null) {
+				final List<ErlangSearchElement> eses) {
+			if (eses == null) {
 				return;
 			}
-			modules.clear();
+			moduleNames.clear();
 			parentMap.clear();
 			childMap.clear();
-			for (final ErlangExternalFunctionCallRef ref : refs) {
-				final IErlElement element = ref.getElement();
-				final IErlProject prj = element.getErlProject();
-				final IErlModule mod = SearchUtil.getModule(element);
-				if (!modules.contains(mod)) {
-					modules.add(mod);
+			for (final ErlangSearchElement ese : eses) {
+				final String moduleName = ese.getModuleName();
+				if (!moduleNames.contains(moduleName)) {
+					moduleNames.add(moduleName);
 				}
-				addChild(prj, mod);
-				if (element instanceof IErlFunction) {
-					addChild(mod, ref);
-				} else if (element instanceof IErlFunctionClause) {
-					final IErlElement func = element.getParent();
-					addChild(mod, func);
-					addChild(func, ref);
+				final ErlangFunction function = ese.getFunction();
+				final String clauseHead = ese.getClauseHead();
+				if (clauseHead != null) {
+					addChild(moduleName, function);
+					addChild(function, ese);
+					// addChild(function, clauseHead);
+					// addChild(clauseHead, ese);
 				} else {
-					continue;
+					addChild(moduleName, ese);
+					// addChild(function, ese);
 				}
 			}
 
@@ -374,9 +386,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 
 		public void elementsChanged(final Object[] updatedElements) {
-			// ;
-			clear();// FIXME ska det vara sÂ h‰r? eller ska vi kolla med
-			// updatedElements
+			// FIXME ska det vara så här? eller ska vi kolla med updatedElements
+			clear();
 		}
 	}
 
@@ -511,19 +522,31 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void showMatch(final Match match, final int offset,
 			final int length, final boolean activate) throws PartInitException {
-		final IFile file = (IFile) match.getElement();
-		try {
-			final IEditorPart editor = EditorUtility.openInEditor(file,
-					activate);
-			if (offset != 0 && length != 0) {
-				if (editor instanceof ITextEditor) {
-					final ITextEditor textEditor = (ITextEditor) editor;
-					textEditor.selectAndReveal(offset, length);
-				} else if (editor != null) {
-					showWithMarker(editor, file, offset, length);
+		final Object element = match.getElement();
+		if (element instanceof ErlangSearchElement) {
+			final ErlangSearchElement ese = (ErlangSearchElement) element;
+			final IFile file = ResourceUtil.getFileFromLocation(ese
+					.getModuleName());
+			try {
+				final IEditorPart editor = EditorUtility.openInEditor(file,
+						activate);
+				if (offset != 0) {
+					if (editor instanceof ErlangEditor) {
+						final ErlangEditor ee = (ErlangEditor) editor;
+						final IDocument doc = ee.getDocument();
+						int lineOffset;
+						try {
+							lineOffset = doc.getLineOffset(offset);
+							ee.selectAndReveal(lineOffset, length);
+						} catch (final BadLocationException e) {
+							e.printStackTrace();
+						}
+					} else if (editor != null) {
+						showWithMarker(editor, file, offset, length);
+					}
 				}
+			} catch (final ErlModelException e) {
 			}
-		} catch (final ErlModelException e) {
 		}
 	}
 
@@ -550,6 +573,12 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				}
 			}
 		}
+	}
+
+	protected boolean hasChildren(final Object element) {
+		final ITreeContentProvider contentProvider = (ITreeContentProvider) getViewer()
+				.getContentProvider();
+		return contentProvider.hasChildren(element);
 	}
 
 	@Override
