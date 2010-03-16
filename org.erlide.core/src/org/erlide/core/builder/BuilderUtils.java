@@ -201,7 +201,6 @@ public final class BuilderUtils {
 
 		private final Set<BuildResource> result;
 		private final IProgressMonitor monitor;
-		private final boolean isOnTestPath = false;
 
 		public ErlangResourceVisitor(final Set<BuildResource> result,
 				final IProgressMonitor monitor) {
