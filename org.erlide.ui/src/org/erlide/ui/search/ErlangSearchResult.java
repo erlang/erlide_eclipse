@@ -25,6 +25,11 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	private List<ErlangSearchElement> result;
 	private final ErlSearchQuery query;
 
+	public ErlangSearchResult(final ErlSearchQuery query) {
+		this.query = query;
+		result = new ArrayList<ErlangSearchElement>();
+	}
+
 	@Override
 	public void removeAll() {
 		result = new ArrayList<ErlangSearchElement>();
@@ -33,21 +38,22 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
 	@Override
 	public void removeMatch(final Match match) {
-		result.remove(match.getElement());
 		super.removeMatch(match);
+		final Object element = match.getElement();
+		if (getMatchCount(element) == 0) {
+			result.remove(element);
+		}
 	}
 
 	@Override
 	public void removeMatches(final Match[] matches) {
-		for (final Match match : matches) {
-			result.remove(match.getElement());
-		}
 		super.removeMatches(matches);
-	}
-
-	public ErlangSearchResult(final ErlSearchQuery query) {
-		this.query = query;
-		result = new ArrayList<ErlangSearchElement>();
+		for (final Match match : matches) {
+			final Object element = match.getElement();
+			if (getMatchCount(element) == 0) {
+				result.remove(element);
+			}
+		}
 	}
 
 	@Override

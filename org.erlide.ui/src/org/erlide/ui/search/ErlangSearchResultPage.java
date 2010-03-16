@@ -1,26 +1,19 @@
 package org.erlide.ui.search;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
@@ -32,7 +25,6 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPageLayout;
@@ -44,11 +36,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.search.NewErlSearchActionGroup;
 
@@ -57,322 +46,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void handleOpen(final OpenEvent event) {
 		super.handleOpen(event);
-	}
-
-	public class TableContentProvider implements IStructuredContentProvider,
-			IErlSearchContentProvider {
-
-		private final Object[] EMPTY_ARR = new Object[0];
-
-		private final ErlangSearchResultPage fPage;
-		private ErlangSearchResult fResult;
-
-		TableContentProvider(final ErlangSearchResultPage page) {
-			fPage = page;
-		}
-
-		public void dispose() {
-			// nothing to do
-		}
-
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-			if (newInput instanceof ErlangSearchResult) {
-				fResult = (ErlangSearchResult) newInput;
-			}
-		}
-
-		public void elementsChanged(final Object[] updatedElements) {
-			final TableViewer viewer = getViewer();
-			final int elementLimit = getElementLimit();
-			final boolean tableLimited = elementLimit != -1;
-			for (int i = 0; i < updatedElements.length; i++) {
-				if (fResult.getMatchCount(updatedElements[i]) > 0) {
-					if (viewer.testFindItem(updatedElements[i]) != null) {
-						viewer.update(updatedElements[i], null);
-					} else {
-						if (!tableLimited
-								|| viewer.getTable().getItemCount() < elementLimit) {
-							viewer.add(updatedElements[i]);
-						}
-					}
-				} else {
-					viewer.remove(updatedElements[i]);
-				}
-			}
-		}
-
-		public Object[] getElements(final Object inputElement) {
-			if (inputElement instanceof ErlangSearchResult) {
-				final ErlangSearchResult esr = (ErlangSearchResult) inputElement;
-				final int elementLimit = getElementLimit();
-				final Object[] elements = esr.getElements();
-				if (elementLimit != -1 && elements.length > elementLimit) {
-					final Object[] shownElements = new Object[elementLimit];
-					System.arraycopy(elements, 0, shownElements, 0,
-							elementLimit);
-					return shownElements;
-				}
-				return elements;
-			}
-			return EMPTY_ARR;
-		}
-
-		public void clear() {
-			getViewer().refresh();
-		}
-
-		private int getElementLimit() {
-			return fPage.getElementLimit().intValue();
-		}
-
-		private TableViewer getViewer() {
-			return (TableViewer) fPage.getViewer();
-		}
-	}
-
-	public class SearchResultLabelProvider extends LabelProvider {
-
-		public static final int SHOW_LABEL = 1;
-		public static final int SHOW_LABEL_PATH = 2;
-		public static final int SHOW_PATH_LABEL = 3;
-		public static final int SHOW_PATH = 4;
-
-		private final ErlangElementImageProvider fImageProvider;
-		private final AbstractTextSearchViewPage fPage;
-
-		private int fOrder;
-
-		// private final String[] fArgs = new String[2];
-
-		public SearchResultLabelProvider(final AbstractTextSearchViewPage page,
-				final int orderFlag) {
-			fImageProvider = new ErlangElementImageProvider();
-			fOrder = orderFlag;
-			fPage = page;
-		}
-
-		public void setOrder(final int orderFlag) {
-			fOrder = orderFlag;
-		}
-
-		public int getOrder() {
-			return fOrder;
-		}
-
-		@Override
-		public String getText(final Object element) {
-			final String text;
-			if (element instanceof String) { // Module
-				final String s = (String) element;
-				text = new Path(s).lastSegment();
-			} else if (element instanceof ErlangSearchElement) {
-				final ErlangSearchElement ese = (ErlangSearchElement) element;
-				final String arguments = ese.getArguments();
-				final ErlangFunction function = ese.getFunction();
-				if (ese.isSubClause()) {
-					text = function.name + arguments;
-				} else {
-					final String nameWithArity = function.getNameWithArity();
-					if (arguments != null) {
-						text = nameWithArity + "  " + arguments;
-					} else {
-						text = nameWithArity;
-					}
-				}
-			} else if (element instanceof ErlangFunction) {
-				final ErlangFunction f = (ErlangFunction) element;
-				text = f.getNameWithArity();
-			} else {
-				text = null;
-			}
-			int matchCount = 0;
-			final AbstractTextSearchResult result = fPage.getInput();
-			if (result != null) {
-				matchCount = fPage.getDisplayedMatchCount(element);
-			}
-			if (matchCount == 0) {
-				return text;
-			} else if (matchCount == 1) {
-				return MessageFormat.format("{0} 1 match", text);
-			}
-			final String format = "{0} ({1} matches)";
-			return MessageFormat.format(format, text, Integer
-					.valueOf(matchCount));
-		}
-
-		@Override
-		public Image getImage(final Object element) {
-			// module - String
-			// function - ErlangFunction
-			// clause - ClauseHead
-			// occurence - ModuleLineFunctionArityRef
-			Kind kind = Kind.ERROR;
-			if (element instanceof String) {
-				kind = Kind.MODULE;
-			} else if (element instanceof ErlangSearchElement) {
-				final ErlangSearchElement ese = (ErlangSearchElement) element;
-				if (ese.isSubClause()) {
-					kind = Kind.FUNCTION;
-				} else {
-					kind = Kind.CLAUSE;
-				}
-			} else if (element instanceof ErlangFunction) {
-				kind = Kind.FUNCTION;
-			}
-			// if (element instanceof ModuleLineFunctionArityRef) {
-			// final ModuleLineFunctionArityRef mlfar =
-			// (ModuleLineFunctionArityRef) element;
-			// ErlLogger.debug("fixa");// TODO fixa
-			// e = null;
-			// } else {
-			// e = element;
-			// }
-			return fImageProvider.getImageLabel(ErlangElementImageProvider
-					.getImageDescriptionFromKind(kind));
-		}
-
-		@Override
-		public void dispose() {
-			super.dispose();
-		}
-
-		@Override
-		public boolean isLabelProperty(final Object element,
-				final String property) {
-			return super.isLabelProperty(element, property);
-			// return fLabelProvider.isLabelProperty(element, property);
-		}
-
-		@Override
-		public void removeListener(final ILabelProviderListener listener) {
-			super.removeListener(listener);
-			// fLabelProvider.removeListener(listener);
-		}
-
-		@Override
-		public void addListener(final ILabelProviderListener listener) {
-			super.addListener(listener);
-			// fLabelProvider.addListener(listener);
-		}
-	}
-
-	public class TreeContentProvider implements ITreeContentProvider,
-			IErlSearchContentProvider {
-
-		private final Object[] EMPTY_ARR = new Object[0];
-
-		// private AbstractTextSearchResult fResult;
-		private final AbstractTreeViewer fTreeViewer;
-		private final Map<Object, List<Object>> childMap;
-		private final Map<Object, Object> parentMap;
-		private final List<String> moduleNames;
-		private ErlangSearchResult fResult;
-
-		private TreeContentProvider(final AbstractTreeViewer viewer) {
-			fTreeViewer = viewer;
-			childMap = new HashMap<Object, List<Object>>();
-			parentMap = new HashMap<Object, Object>();
-			moduleNames = new ArrayList<String>();
-			// modules = new ArrayList<IErlModule>();
-		}
-
-		public Object[] getElements(final Object inputElement) {
-			return moduleNames.toArray();
-		}
-
-		public void dispose() {
-			// nothing to do
-		}
-
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-			if (newInput instanceof ErlangSearchResult) {
-				fResult = (ErlangSearchResult) newInput;
-				initialize(fResult.getResult());
-			}
-		}
-
-		private void addChild(final Object parent, final Object child) {
-			if (!parentMap.containsKey(child)) {
-				parentMap.put(child, parent);
-			}
-			if (childMap.containsKey(parent)) {
-				final List<Object> children = childMap.get(parent);
-				if (!children.contains(child)) {
-					children.add(child);
-				}
-			} else {
-				final List<Object> children = new ArrayList<Object>(1);
-				children.add(child);
-				childMap.put(parent, children);
-			}
-		}
-
-		protected synchronized void initialize(
-				final List<ErlangSearchElement> eses) {
-			if (eses == null) {
-				return;
-			}
-			moduleNames.clear();
-			parentMap.clear();
-			childMap.clear();
-			for (final ErlangSearchElement ese : eses) {
-				final String moduleName = ese.getModuleName();
-				if (!moduleNames.contains(moduleName)) {
-					moduleNames.add(moduleName);
-				}
-				final ErlangFunction function = ese.getFunction();
-				if (ese.isSubClause()) {
-					addChild(moduleName, function);
-					addChild(function, ese);
-				} else {
-					addChild(moduleName, ese);
-				}
-			}
-
-		}
-
-		public Object[] getChildren(final Object parentElement) {
-			final List<Object> l = childMap.get(parentElement);
-			if (l == null) {
-				return EMPTY_ARR;
-			}
-			return l.toArray();
-		}
-
-		public boolean hasChildren(final Object element) {
-			return childMap.containsKey(element);
-		}
-
-		// @Override
-		// public synchronized void elementsChanged(final Object[]
-		// updatedElements) {
-		// for (int i = 0; i < updatedElements.length; i++) {
-		// if (fResult.getMatchCount(updatedElements[i]) > 0) {
-		// insert(updatedElements[i], true);
-		// } else {
-		// remove(updatedElements[i], true);
-		// }
-		// }
-		// }
-
-		public Object getParent(final Object element) {
-			return parentMap.get(element);
-		}
-
-		public void clear() {
-			initialize(fResult.getResult());
-			fTreeViewer.refresh();
-		}
-
-		public void elementsChanged(final Object[] updatedElements) {
-			// FIXME ska det vara så här? eller ska vi kolla med
-			// updatedElements?
-			// vi måste nog kolla med updatedElements för att remove ska
-			// funka...
-			clear();
-		}
 	}
 
 	public static class DecoratorIgnoringViewerSorter extends ViewerComparator {
@@ -479,7 +152,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
 				PlatformUI.getWorkbench().getDecoratorManager()
 						.getLabelDecorator()));
-		viewer.setContentProvider(new TableContentProvider(this));
+		viewer.setContentProvider(new ErlangSearchTableContentProvider(this));
 		viewer.setComparator(new DecoratorIgnoringViewerSorter(
 				innerLabelProvider));
 		fContentProvider = (IErlSearchContentProvider) viewer
@@ -495,7 +168,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
 				PlatformUI.getWorkbench().getDecoratorManager()
 						.getLabelDecorator()));
-		viewer.setContentProvider(new TreeContentProvider(viewer));
+		viewer.setContentProvider(new ErlangSearchTreeContentProvider(viewer,
+				this));
 		viewer.setComparator(new DecoratorIgnoringViewerSorter(
 				innerLabelProvider));
 		fContentProvider = (IErlSearchContentProvider) viewer
