@@ -6,13 +6,15 @@ public class ErlangSearchElement {
 
 	private final String moduleName;
 	private final ErlangFunction function;
-	private final String clauseHead;
+	private final String arguments;
+	private final boolean subClause;
 
 	ErlangSearchElement(final String moduleName, final ErlangFunction function,
-			final String clauseHead) {
+			final String arguments, final boolean subClause) {
 		this.moduleName = moduleName;
 		this.function = function;
-		this.clauseHead = clauseHead;
+		this.arguments = arguments;
+		this.subClause = subClause;
 	}
 
 	public String getModuleName() {
@@ -23,19 +25,16 @@ public class ErlangSearchElement {
 		return function;
 	}
 
-	public String getClauseHead() {
-		return clauseHead;
-	}
-
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ErlangSearchElement) {
 			final ErlangSearchElement e = (ErlangSearchElement) o;
-			if (e.moduleName.equals(moduleName) && e.function.equals(function)) {
-				if (e.clauseHead == null) {
-					return clauseHead == null;
+			if (e.moduleName.equals(moduleName) && e.function.equals(function)
+					&& e.subClause == subClause) {
+				if (e.arguments == null) {
+					return arguments == null;
 				}
-				return e.clauseHead.equals(clauseHead);
+				return e.arguments.equals(arguments);
 			}
 		}
 		return false;
@@ -45,12 +44,23 @@ public class ErlangSearchElement {
 	public int hashCode() {
 		final int multiplier = 37; // some prime
 		int hashCode = 13; // some random value
+		if (subClause) {
+			hashCode++;
+		}
 		hashCode = hashCode * multiplier + moduleName.hashCode();
 		hashCode = hashCode * multiplier + function.hashCode();
-		if (clauseHead != null) {
-			hashCode = hashCode * multiplier + clauseHead.hashCode();
+		if (arguments != null) {
+			hashCode = hashCode * multiplier + arguments.hashCode();
 		}
 		return hashCode;
+	}
+
+	public String getArguments() {
+		return arguments;
+	}
+
+	public boolean isSubClause() {
+		return subClause;
 	}
 
 }

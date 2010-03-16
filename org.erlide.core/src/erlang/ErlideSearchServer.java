@@ -56,9 +56,12 @@ public class ErlideSearchServer {
 							.elementAt(0);
 					final OtpErlangLong arL = (OtpErlangLong) funT.elementAt(1);
 					final OtpErlangObject arg = modLineT.elementAt(3);
+					final OtpErlangAtom subClause = (OtpErlangAtom) modLineT
+							.elementAt(4);
 					result.add(new ModuleLineFunctionArityRef(modName, lineL
 							.intValue(), funA.atomValue(), arL.intValue(), Util
-							.stringValue(arg)));
+							.stringValue(arg), subClause.atomValue().equals(
+							"true")));
 				}
 			}
 		} catch (final Exception e) {

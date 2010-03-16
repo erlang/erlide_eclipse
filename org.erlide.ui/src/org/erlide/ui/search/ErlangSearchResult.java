@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
@@ -119,13 +120,14 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 		final ErlangSearchResult esr = (ErlangSearchResult) aResult;
 		final List<Match> l = new ArrayList<Match>();
 		final List<ErlangSearchElement> eses = esr.getResult();
-		String name = file.getName();
+		final String name = file.getName();
 		if (eses == null || !ErlideUtil.hasModuleExtension(name)) {
 			return NO_MATCHES;
 		}
-		name = ErlideUtil.withoutExtension(name);
 		for (final ErlangSearchElement ese : eses) {
-			if (ese.getModuleName().equals(name)) {
+			final String moduleName = new Path(ese.getModuleName())
+					.lastSegment();
+			if (moduleName.equals(name)) {
 				final Match[] matches = getMatches(ese);
 				for (final Match match : matches) {
 					l.add(match);

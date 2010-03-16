@@ -20,7 +20,6 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
@@ -141,20 +140,10 @@ public class SearchUtil {
 		return ch == '\n' || ch == '\r';
 	}
 
-	public static IErlModule getModule(final IErlElement key) {
-		if (key instanceof IErlFunction) {
-			return (IErlModule) key.getParent();
-		} else if (key instanceof IErlFunctionClause) {
-			return (IErlModule) key.getParent().getParent();
-		}
-		return null;
-	}
-
 	public static Match createMatch(final ModuleLineFunctionArityRef ref) {
-		final ErlangFunction function = ref.getFunction();
-		final String clauseHead = ref.getClauseHead();
 		final ErlangSearchElement ese = new ErlangSearchElement(ref
-				.getModuleName(), function, clauseHead);
+				.getModuleName(), ref.getFunction(), ref.getClauseHead(), ref
+				.isSubClause());
 		return new Match(ese, Match.UNIT_LINE, ref.getLine(), 0);
 	}
 

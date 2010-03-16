@@ -819,6 +819,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 		final Object o = selection.getFirstElement();
 		SearchPatternData res = null;
+		// TODO kan inte vara IErlElement ju
 		if (o instanceof IErlElement) {
 			res = determineInitValuesFrom((IErlElement) o);
 		}
@@ -846,9 +847,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		return res;
 	}
 
-	private SearchPatternData determineInitValuesFrom(final IErlElement o) {
+	private SearchPatternData determineInitValuesFrom(final IErlElement e) {
 		final ErlangExternalFunctionCallRef ref = SearchUtil
-				.getRefFromErlElement(o);
+				.getRefFromErlElement(e);
 		if (ref == null) {
 			return null;
 		}

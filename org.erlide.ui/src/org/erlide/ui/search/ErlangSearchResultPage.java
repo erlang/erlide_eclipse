@@ -160,21 +160,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			return fOrder;
 		}
 
-		// protected final String getLabelWithCounts(final Object element,
-		// final String elementName) {
-		// final int matchCount = fPage.getDisplayedMatchCount(element);
-		// if (matchCount < 2) {
-		// if (matchCount == 1) {
-		// return MessageFormat.format("{0} (1 match)", elementName);
-		// } else {
-		// return elementName;
-		// }
-		// } else {
-		// return MessageFormat.format("{0} ({1} matches)", elementName,
-		// String.valueOf(matchCount));
-		// }
-		// }
-
 		@Override
 		public String getText(final Object element) {
 			final String text;
@@ -183,11 +168,17 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				text = new Path(s).lastSegment();
 			} else if (element instanceof ErlangSearchElement) {
 				final ErlangSearchElement ese = (ErlangSearchElement) element;
-				final String clauseHead = ese.getClauseHead();
-				if (clauseHead != null) {
-					text = ese.getFunction().name + clauseHead;
+				final String arguments = ese.getArguments();
+				final ErlangFunction function = ese.getFunction();
+				if (ese.isSubClause()) {
+					text = function.name + arguments;
 				} else {
-					text = ese.getFunction().getNameWithArity();
+					final String nameWithArity = function.getNameWithArity();
+					if (arguments != null) {
+						text = nameWithArity + "  " + arguments;
+					} else {
+						text = nameWithArity;
+					}
 				}
 			} else if (element instanceof ErlangFunction) {
 				final ErlangFunction f = (ErlangFunction) element;
@@ -221,7 +212,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				kind = Kind.MODULE;
 			} else if (element instanceof ErlangSearchElement) {
 				final ErlangSearchElement ese = (ErlangSearchElement) element;
-				if (ese.getClauseHead() == null) {
+				if (ese.isSubClause()) {
 					kind = Kind.FUNCTION;
 				} else {
 					kind = Kind.CLAUSE;
@@ -332,15 +323,11 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 					moduleNames.add(moduleName);
 				}
 				final ErlangFunction function = ese.getFunction();
-				final String clauseHead = ese.getClauseHead();
-				if (clauseHead != null) {
+				if (ese.isSubClause()) {
 					addChild(moduleName, function);
 					addChild(function, ese);
-					// addChild(function, clauseHead);
-					// addChild(clauseHead, ese);
 				} else {
 					addChild(moduleName, ese);
-					// addChild(function, ese);
 				}
 			}
 
@@ -370,12 +357,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		// }
 		// }
 
-		// @Override
-		// public void clear() {
-		// initialize(fResult);
-		// fTreeViewer.refresh();
-		// }
-
 		public Object getParent(final Object element) {
 			return parentMap.get(element);
 		}
@@ -386,7 +367,10 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 
 		public void elementsChanged(final Object[] updatedElements) {
-			// FIXME ska det vara sŒ hŠr? eller ska vi kolla med updatedElements
+			// FIXME ska det vara sŒ hŠr? eller ska vi kolla med
+			// updatedElements?
+			// vi mŒste nog kolla med updatedElements fšr att remove ska
+			// funka...
 			clear();
 		}
 	}

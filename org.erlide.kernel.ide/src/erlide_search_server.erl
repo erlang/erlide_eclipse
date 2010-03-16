@@ -37,7 +37,7 @@
 
 -define(SERVER, erlide_search_server).
 -record(state, {modules=[], refs=[]}). %% FIXME overly simple data model
--record(ref, {module, line, kind, data, function, clause}).
+-record(ref, {module, line, kind, data, function, clause, has_clauses}).
 -record(module, {path, mtime}).
 
 %%
@@ -160,10 +160,11 @@ do_find_refs(Data, State) ->
 
 find_data([], _, Acc) ->
     Acc;
-find_data([#ref{module=M, line=L, function=F, clause=C, data=D} | Rest], Data, Acc) ->
+find_data([#ref{module=M, line=L, function=F, clause=C, data=D, has_clauses=H} | Rest], 
+          Data, Acc) ->
     case D of
         Data ->
-            find_data(Rest, Data, [{M, L-1, F, format_clause(C)} | Acc]);
+            find_data(Rest, Data, [{M, L-1, F, format_clause(C), H} | Acc]);
         _ ->
             find_data(Rest, Data, Acc)
     end.
@@ -213,27 +214,25 @@ node_to_data(_) ->
     false.
 
 %node_to_ref(Module, {_, Kind, _, _} = Node, {CurFunc, Refs} = Acc) ->
-node_to_ref(Module, Node, {CurFunc, CurClause, Refs} = Acc) ->
+node_to_ref(Module, Node, {CurFunc, CurClause, HasClauses, Refs} = Acc) ->
     case node_to_data(Node) of
         false ->
             Acc;
         {function, F} ->
             {_, _, _, Func} = Node,
             {_, _, Clauses} = Func,
-            C = case length(Clauses) of
-                    N when N > 1 -> clauses;
-                    _ -> none
-                end,
-            {F, C, Refs};
-        {clause, C} when CurClause =:= clauses -> %% this isn't really koscher, is it?
-            {CurFunc, C, Refs};
-        {clause, _C} ->
-            {CurFunc, CurClause, Refs};
+            ?D(Clauses),
+            {F, CurClause, length(Clauses) > 1, Refs};
+        {clause, C} ->
+            ?D(C),
+            {CurFunc, C, HasClauses, Refs};
         Data ->
+            ?D(Data),
             {Kind, Line} = get_node_kind_and_line_no(Node),
             Ref = #ref{module=Module, line=Line, kind=Kind, 
-                       data=Data, function=CurFunc, clause=CurClause},
-            {CurFunc, CurClause, [Ref | Refs]}
+                       data=Data, function=CurFunc, clause=CurClause,
+                       has_clauses=HasClauses},
+            {CurFunc, CurClause, HasClauses, [Ref | Refs]}
     end.
 
 fold_nodes(F, Acc0, Nodes) when is_list(Nodes) ->
@@ -253,9 +252,9 @@ module_refs(Filename) when is_list(Filename) ->
     {ok, FileInfo} = file:read_file_info(Filename),
     {ok, Forms} = epp_dodger:parse_file(Filename),
     Module = #module{path=Filename, mtime=FileInfo#file_info.mtime},
-    {_, _, MoreRefs} = fold_nodes(fun(Node, Acc) ->
+    {_, _, _, MoreRefs} = fold_nodes(fun(Node, Acc) ->
                                           node_to_ref(Module, Node, Acc) 
-                                  end, {none, none, []}, Forms),
+                                  end, {none, none, false, []}, Forms),
     {Module, MoreRefs}.
 
 
