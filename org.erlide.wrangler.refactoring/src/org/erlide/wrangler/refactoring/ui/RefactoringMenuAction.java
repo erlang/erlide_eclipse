@@ -15,6 +15,7 @@ import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldRemoteExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
@@ -25,6 +26,7 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.tmp.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.tmp.GeneraliseFunctionRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
+import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
@@ -137,12 +139,18 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 								"Please select expression which should be fold!",
 								"Select expressions which should be folded!",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
-			} else if (actionId
-					.equals("org.erlide.wrangler.refactoring.introducemacro")) {
-				// TODO: start introduce macro refactoring
+
 			} else
 				return;
 
+			// run introduce macro refactoring
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.introducemacro")) {
+			refactoring = new IntroduceMacroRefactoring();
+			pages.add(new SimpleInputPage("Introduce macro definition",
+					"Please type the new macro name!", "New macro name:",
+					"Macro name cannot be empty!",
+					new NonEmptyStringValidator()));
 			// run rename process refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renameprocess")) {
