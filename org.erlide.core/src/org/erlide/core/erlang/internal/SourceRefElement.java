@@ -114,6 +114,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * 
 	 * @see IErlElement
 	 */
+	@Override
 	public IResource getCorrespondingResource() throws ErlModelException {
 		if (!exists()) {
 			throw newNotPresentException();
@@ -135,13 +136,6 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 			current = current.getParent();
 		}
 		return null;
-	}
-
-	/*
-	 * @see IErlElement
-	 */
-	public IResource getResource() {
-		return getParent().getResource();
 	}
 
 	/**
@@ -174,15 +168,15 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 				- fSourceRangeStart + 1);
 	}
 
-	/**
-	 * @see IErlElement
-	 */
-	public IResource getUnderlyingResource() throws ErlModelException {
-		if (!exists()) {
-			throw newNotPresentException();
-		}
-		return getParent().getUnderlyingResource();
-	}
+	// /**
+	// * @see IErlElement
+	// */
+	// public IResource getUnderlyingResource() throws ErlModelException {
+	// if (!exists()) {
+	// throw newNotPresentException();
+	// }
+	// return getParent().getUnderlyingResource();
+	// }
 
 	/**
 	 * @see IParent

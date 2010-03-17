@@ -81,6 +81,8 @@ public interface IErlElement extends IAdaptable {
 	 * its underlying <code>IFile</code>. There are no corresponding resources
 	 * for <code>IAttributes</code>,<code>IFunctions</code>, etc.
 	 * <p>
+	 * This differs from getResource, which returns the parents resource, if the
+	 * element doesn't correspond directly to a resource.
 	 * 
 	 * @return the corresponding resource, or <code>null</code> if none
 	 * @throws ErlModelException
@@ -142,16 +144,16 @@ public interface IErlElement extends IAdaptable {
 	 */
 	ISchedulingRule getSchedulingRule();
 
-	/**
-	 * Returns the smallest underlying resource that contains this element, or
-	 * <code>null</code> if this element is not contained in a resource.
-	 * 
-	 * @return the underlying resource, or <code>null</code> if none
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its underlying resource
-	 */
-	IResource getUnderlyingResource() throws ErlModelException;
+	// /**
+	// * Returns the smallest underlying resource that contains this element, or
+	// * <code>null</code> if this element is not contained in a resource.
+	// *
+	// * @return the underlying resource, or <code>null</code> if none
+	// * @throws ErlModelException
+	// * if this element does not exist or if an exception occurs
+	// * while accessing its underlying resource
+	// */
+	// IResource getUnderlyingResource() throws ErlModelException;
 
 	/**
 	 * Returns whether this Erlang element is read-only. An element is read-only

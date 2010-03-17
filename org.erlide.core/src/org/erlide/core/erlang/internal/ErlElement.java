@@ -695,4 +695,19 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		getModel().accept(this, visitor, flags, leafKind);
 	}
 
+	/**
+	 * Return my corresponding resource. Overridden in IErlModule, IErlFolder
+	 * and IErlProject
+	 */
+	public IResource getCorrespondingResource() throws ErlModelException {
+		return null;
+	}
+
+	public IResource getResource() {
+		if (fParent != null) {
+			return fParent.getResource();
+		}
+		return null;
+	}
+
 }

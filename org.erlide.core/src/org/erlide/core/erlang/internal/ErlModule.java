@@ -186,7 +186,13 @@ public class ErlModule extends Openable implements IErlModule {
 		return moduleKind;
 	}
 
+	@Override
 	public IResource getResource() {
+		return getCorrespondingResource();
+	}
+
+	@Override
+	public IResource getCorrespondingResource() {
 		return fFile;
 	}
 

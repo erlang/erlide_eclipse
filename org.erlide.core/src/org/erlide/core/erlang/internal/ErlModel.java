@@ -222,13 +222,13 @@ public class ErlModel extends Openable implements IErlModel {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 
-	/**
-	 * @see IOpenable
-	 */
-	@Override
-	public IResource getUnderlyingResource() {
-		return null;
-	}
+	// /**
+	// * @see IOpenable
+	// */
+	// @Override
+	// public IResource getUnderlyingResource() {
+	// return null;
+	// }
 
 	/**
 	 * Returns the workbench associated with this object.
@@ -405,9 +405,9 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	private static synchronized String getStack() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
-		for (StackTraceElement el : st) {
+		for (final StackTraceElement el : st) {
 			result.append("      ").append(el.toString()).append("\n");
 		}
 		return result.toString();
