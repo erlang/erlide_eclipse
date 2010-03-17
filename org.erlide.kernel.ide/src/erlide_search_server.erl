@@ -176,7 +176,7 @@ format_clause([Arg], Acc) ->
 format_clause([Arg | Rest], Acc) ->
     format_clause(Rest, [Acc, Arg, ", "]).
 
-format_clause(Args) when is_list(Args) ->
+format_clause([_|_] = Args) ->
     format_clause(Args, "(");
 format_clause(Else) ->
     Else.
@@ -213,7 +213,6 @@ node_to_data({tree, clause, _, {clause, Args, _, _Body}}) ->
 node_to_data(_) ->
     false.
 
-%node_to_ref(Module, {_, Kind, _, _} = Node, {CurFunc, Refs} = Acc) ->
 node_to_ref(Module, Node, {CurFunc, CurClause, HasClauses, Refs} = Acc) ->
     case node_to_data(Node) of
         false ->

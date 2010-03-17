@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -148,10 +148,10 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	protected void configureTableViewer(final TableViewer viewer) {
 		viewer.setUseHashlookup(true);
 		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
-				this, fCurrentSortOrder);
-		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
-				PlatformUI.getWorkbench().getDecoratorManager()
-						.getLabelDecorator()));
+				this, fCurrentSortOrder, false);
+		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(
+				innerLabelProvider, PlatformUI.getWorkbench()
+						.getDecoratorManager().getLabelDecorator(), null));
 		viewer.setContentProvider(new ErlangSearchTableContentProvider(this));
 		viewer.setComparator(new DecoratorIgnoringViewerSorter(
 				innerLabelProvider));
@@ -164,10 +164,10 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	protected void configureTreeViewer(final TreeViewer viewer) {
 		viewer.setUseHashlookup(true);
 		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
-				this, SearchResultLabelProvider.SHOW_LABEL);
-		viewer.setLabelProvider(new DecoratingLabelProvider(innerLabelProvider,
-				PlatformUI.getWorkbench().getDecoratorManager()
-						.getLabelDecorator()));
+				this, SearchResultLabelProvider.SHOW_LABEL, true);
+		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(
+				innerLabelProvider, PlatformUI.getWorkbench()
+						.getDecoratorManager().getLabelDecorator(), null));
 		viewer.setContentProvider(new ErlangSearchTreeContentProvider(viewer,
 				this));
 		viewer.setComparator(new DecoratorIgnoringViewerSorter(
@@ -318,7 +318,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		try {
 			fCurrentSortOrder = getSettings().getInt(KEY_SORTING);
 		} catch (final NumberFormatException e) {
-			// FIXME fCurrentSortOrder = fSortByNameAction.getSortOrder();
+			fCurrentSortOrder = SearchResultLabelProvider.SHOW_LABEL_PATH;
 		}
 		int elementLimit = DEFAULT_ELEMENT_LIMIT;
 		try {
