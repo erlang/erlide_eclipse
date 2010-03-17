@@ -102,8 +102,7 @@ public final class MarkerHelper {
 						try {
 							final IErlModel model = ErlangCore.getModel();
 							final String includeFile = ModelUtils
-									.findIncludeFile(project, resource
-											.getName(), model.getExternal(model
+									.findIncludeFile(project, fileName, model.getExternal(model
 											.findProject(project),
 											ErlangCore.EXTERNAL_INCLUDES));
 							if (includeFile != null) {
