@@ -3,8 +3,6 @@
  */
 package org.erlide.core.erlang.internal;
 
-import org.eclipse.core.resources.IResource;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.ISourceRange;
@@ -40,17 +38,11 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return Kind.COMMENT;
 	}
 
-	@Override
-	public IResource getResource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IResource getUnderlyingResource() throws ErlModelException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// @Override
+	// public IResource getUnderlyingResource() throws ErlModelException {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
 
 	public boolean isVisibleInOutline() {
 		return false;

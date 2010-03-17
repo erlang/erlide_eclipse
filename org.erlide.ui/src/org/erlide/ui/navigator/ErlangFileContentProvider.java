@@ -1,5 +1,7 @@
 package org.erlide.ui.navigator;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -24,7 +26,9 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -33,8 +37,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		IErlModelChangeListener, IAdaptable {
 
 	private static final Object[] NO_CHILDREN = new Object[0];
-
-	private static final String ERLANGFILE_EXT = "erl"; //$NON-NLS-1$
 
 	StructuredViewer viewer;
 
@@ -55,25 +57,24 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	/**
 	 * Return the model elements for a *.erl IFile or NO_CHILDREN for otherwise.
 	 */
-	public Object[] getChildren(final Object parentElement) {
-		Object[] result = NO_CHILDREN;
+	public Object[] getChildren(Object parentElement) {
 		try {
 			if (parentElement instanceof IFile) {
-				final IErlModule mod = ModelUtils
-						.getModule((IFile) parentElement);
-				if (mod != null) {
-					mod.open(null);
-					result = mod.getChildren().toArray(new IErlElement[0]);
-				}
-			} else if (parentElement instanceof IParent) {
+				parentElement = ModelUtils.getModule((IFile) parentElement);
+			}
+			if (parentElement instanceof IOpenable) {
+				final IOpenable openable = (IOpenable) parentElement;
+				openable.open(null);
+			}
+			if (parentElement instanceof IParent) {
 				final IParent parent = (IParent) parentElement;
-				result = parent.getChildren().toArray(new IErlElement[0]);
+				final List<IErlElement> children = parent.getChildren();
+				return children.toArray(new IErlElement[children.size()]);
 			}
 		} catch (final ErlModelException e) {
 			ErlLogger.warn(e);
 		}
-		// ErlLogger.debug("// " + result.length + " children");
-		return result;
+		return NO_CHILDREN;
 	}
 
 	/**
@@ -164,9 +165,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			return true;
 		case IResource.FILE:
 			final IFile file = (IFile) source;
-			// FIXME add other erlang extensions too
-			if (ERLANGFILE_EXT.equals(file.getFileExtension())) {
-				// updateModel(file);
+			if (ErlideUtil.hasModuleExtension(file.getName())) {
 				doRefresh(file);
 			}
 			return false;

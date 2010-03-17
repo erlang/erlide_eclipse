@@ -165,16 +165,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		}
 	}
 
-	/**
-	 * Return my underlying resource. Elements that may not have a corresponding
-	 * resource must override this method.
-	 * 
-	 * @see IErlElement
-	 */
-	public IResource getCorrespondingResource() throws ErlModelException {
-		return getUnderlyingResource();
-	}
-
 	/*
 	 * @see IErlElement
 	 */
@@ -182,28 +172,28 @@ public abstract class Openable extends ErlElement implements IOpenable {
 		return this;
 	}
 
-	/**
-	 * @see IErlElement
-	 */
-	public IResource getUnderlyingResource() throws ErlModelException {
-		final IResource parentResource = fParent.getUnderlyingResource();
-		if (parentResource == null) {
-			return null;
-		}
-		final int type = parentResource.getType();
-		if (type == IResource.FOLDER || type == IResource.PROJECT) {
-			final IContainer topfolder = (IContainer) parentResource;
-
-			// TODO use project properties
-			final IResource resource = findFile(topfolder, fName);
-
-			if (resource == null) {
-				throw newNotPresentException();
-			}
-			return resource;
-		}
-		return parentResource;
-	}
+	// /**
+	// * @see IErlElement
+	// */
+	// public IResource getUnderlyingResource() throws ErlModelException {
+	// final IResource parentResource = fParent.getUnderlyingResource();
+	// if (parentResource == null) {
+	// return null;
+	// }
+	// final int type = parentResource.getType();
+	// if (type == IResource.FOLDER || type == IResource.PROJECT) {
+	// final IContainer topfolder = (IContainer) parentResource;
+	//
+	// // TODO use project properties
+	// final IResource resource = findFile(topfolder, fName);
+	//
+	// if (resource == null) {
+	// throw newNotPresentException();
+	// }
+	// return resource;
+	// }
+	// return parentResource;
+	// }
 
 	class ErlangResourceVisitor implements IResourceVisitor {
 
