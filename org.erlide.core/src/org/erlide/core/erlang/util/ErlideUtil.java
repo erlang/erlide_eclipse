@@ -64,10 +64,7 @@ public final class ErlideUtil {
 			final String localDir) {
 		File f = null;
 		try {
-			final String markName = localDir
-					+ "/erlide_dummy_file_can_be_deleted";
-			f = new File(markName);
-			f.createNewFile();
+			f = new File(localDir);
 			final OtpErlangObject r = backend.call("file", "read_file_info",
 					"s", localDir);
 			if (Util.isOk(r)) {
@@ -76,7 +73,7 @@ public final class ErlideUtil {
 						.elementAt(1);
 				final String access = info.elementAt(3).toString();
 				final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
-				return (access.equals("read") || access.equals("read_write"))
+				return ("read".equals(access) || "read_write".equals(access))
 						&& (mode & 4) == 4;
 			}
 
@@ -84,8 +81,6 @@ public final class ErlideUtil {
 			ErlLogger.error(e);
 		} catch (final BackendException e) {
 			ErlLogger.error(e);
-		} catch (final IOException e) {
-			e.printStackTrace();
 		} finally {
 			if (f != null) {
 				f.delete();
