@@ -879,10 +879,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 		// final int includeMask = getLastIncludeMask();
 
-		if (res.isExternalCall()) {
-			return new SearchPatternData(FUNCTION, REFERENCES, true, "",
-					SearchUtil.getRefFromOpenRes(res));
-		}
+		// if (res.isExternalCall()) {
+		// return new SearchPatternData(FUNCTION, REFERENCES, true, "",
+		// SearchUtil.getRefFromOpenRes(res));
+		// }
 		// switch (element.getElementType()) {
 		// case IErlElement.PACKAGE_FRAGMENT:
 		// case IErlElement.PACKAGE_DECLARATION:

@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.ErlideUIPlugin;
 
@@ -128,6 +130,12 @@ public class ExceptionHandler {
 		}
 	}
 
+	protected void perform(final BackendException e, final Shell shell,
+			final String title, final String message) {
+		ErlLogger.error(e);
+		displayMessageDialog(e.getMessage(), shell, title, message);
+	}
+
 	private void displayMessageDialog(final String exceptionMessage,
 			final Shell shell, final String title, final String message) {
 		final StringWriter msg = new StringWriter();
@@ -142,4 +150,10 @@ public class ExceptionHandler {
 		}
 		MessageDialog.openError(shell, title, msg.toString());
 	}
+
+	public static void handle(final BackendException e, final Shell shell,
+			final String title, final String message) {
+		fgInstance.perform(e, shell, title, message);
+	}
+
 }

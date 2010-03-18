@@ -8,13 +8,16 @@ public class ErlangSearchElement {
 	private final ErlangFunction function;
 	private final String arguments;
 	private final boolean subClause;
+	private final String attribute;
 
 	ErlangSearchElement(final String moduleName, final ErlangFunction function,
-			final String arguments, final boolean subClause) {
+			final String arguments, final boolean subClause,
+			final String attribute) {
 		this.moduleName = moduleName;
 		this.function = function;
 		this.arguments = arguments;
 		this.subClause = subClause;
+		this.attribute = attribute;
 	}
 
 	public String getModuleName() {
@@ -29,12 +32,15 @@ public class ErlangSearchElement {
 	public boolean equals(final Object o) {
 		if (o instanceof ErlangSearchElement) {
 			final ErlangSearchElement e = (ErlangSearchElement) o;
-			if (e.moduleName.equals(moduleName) && e.function.equals(function)
-					&& e.subClause == subClause) {
-				if (e.arguments == null) {
-					return arguments == null;
+			if (e.moduleName.equals(moduleName)) {
+				final boolean functionEqual = e.function == null ? function == null
+						: e.function.equals(function);
+				if (functionEqual && e.subClause == subClause) {
+					if (e.arguments == null) {
+						return arguments == null;
+					}
+					return e.arguments.equals(arguments);
 				}
-				return e.arguments.equals(arguments);
 			}
 		}
 		return false;
@@ -48,7 +54,9 @@ public class ErlangSearchElement {
 			hashCode++;
 		}
 		hashCode = hashCode * multiplier + moduleName.hashCode();
-		hashCode = hashCode * multiplier + function.hashCode();
+		if (function != null) {
+			hashCode = hashCode * multiplier + function.hashCode();
+		}
 		if (arguments != null) {
 			hashCode = hashCode * multiplier + arguments.hashCode();
 		}
@@ -61,6 +69,10 @@ public class ErlangSearchElement {
 
 	public boolean isSubClause() {
 		return subClause;
+	}
+
+	public String getAttribute() {
+		return attribute;
 	}
 
 }

@@ -26,12 +26,19 @@ import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ErlangIncludeRef;
+import org.erlide.core.search.ErlangMacroRef;
+import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.internal.ExceptionHandler;
 
 import erlang.ErlideOpen;
 import erlang.OpenResult;
@@ -221,35 +228,48 @@ public abstract class FindAction extends SelectionDispatchAction {
 		final ISelection sel = getSelection();
 		final ITextSelection textSel = (ITextSelection) sel;
 		final int offset = textSel.getOffset();
+		final String scannerModuleName = ErlangToolkit
+				.createScannerModuleName(module);
+		OpenResult res;
 		try {
-			final String scannerModuleName = ErlangToolkit
-					.createScannerModuleName(module);
-			final OpenResult res = ErlideOpen.open(b, scannerModuleName,
-					offset, "", ErlangCore.getModel().getPathVars());
-			ErlLogger.debug("open " + res);
+			res = ErlideOpen.open(b, scannerModuleName, offset, "", ErlangCore
+					.getModel().getPathVars());
+			ErlLogger.debug("find " + res);
 
 			// final String title =
 			// "SearchMessages.SearchElementSelectionDialog_title";
 			// final String message =
 			// "SearchMessages.SearchElementSelectionDialog_message";
 
+			ErlangElementRef ref;
 			if (res.isExternalCall()) {
-				performNewSearch(SearchUtil.getRefFromOpenRes(res));
+				ref = new ErlangExternalFunctionCallRef(res.getName(), res
+						.getFun(), res.getArity());
 			} else if (res.isLocalCall()) {
-				performNewSearch(new ErlangExternalFunctionCallRef(module
-						.getModuleName(), res.getFun(), res.getArity()));
+				ref = new ErlangExternalFunctionCallRef(module.getModuleName(),
+						res.getFun(), res.getArity());
+			} else if (res.isMacro()) {
+				ref = new ErlangMacroRef(ErlideUtil.unquote(res.getName()));
+			} else if (res.isRecord()) {
+				ref = new ErlangRecordRef(ErlideUtil.unquote(res.getName()));
+			} else if (res.isInclude()) {
+				ref = new ErlangIncludeRef(res.getName());
+			} else {
+				ref = null;
 			}
-		} catch (final Exception e) {
-			// final String title = "SearchMessages.Search_Error_search_title";
-			// final String message = "SearchMessages.Search_Error_codeResolve";
-			// ExceptionHandler.handle(e, getShell(), title, message);
-			ErlLogger.debug(e);
+			if (ref != null) {
+				performNewSearch(ref);
+			}
+		} catch (final BackendException e) {
+			final String title = "SearchMessages.Search_Error_search_title";
+			final String message = "SearchMessages.Search_Error_codeResolve";
+			ExceptionHandler.handle(e, getShell(), title, message);
 		}
 	}
 
 	abstract protected List<String> getScope();
 
-	private void performNewSearch(final ErlangExternalFunctionCallRef ref) {
+	private void performNewSearch(final ErlangElementRef ref) {
 
 		final ErlSearchQuery query = new ErlSearchQuery(ref,
 				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,

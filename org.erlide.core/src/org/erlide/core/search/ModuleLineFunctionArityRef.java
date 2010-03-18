@@ -9,16 +9,18 @@ public class ModuleLineFunctionArityRef {
 	private final ErlangFunction function;
 	private final String clauseHead;
 	private final boolean subClause;
+	private final String attribute;
 
 	public ModuleLineFunctionArityRef(final String moduleName, final int line,
-			final String function, final int arity, final String clauseHead,
-			final boolean subClause) {
+			final ErlangFunction function, final String clauseHead,
+			final boolean subClause, final String attribute) {
 		super();
 		this.moduleName = moduleName;
 		this.line = line;
 		this.subClause = subClause;
-		this.function = new ErlangFunction(function, arity);
+		this.function = function;
 		this.clauseHead = clauseHead;
+		this.attribute = attribute;
 	}
 
 	public String getModuleName() {
@@ -27,14 +29,6 @@ public class ModuleLineFunctionArityRef {
 
 	public int getLine() {
 		return line;
-	}
-
-	public String getFunctionName() {
-		return function.name;
-	}
-
-	public int getArity() {
-		return function.arity;
 	}
 
 	public ErlangFunction getFunction() {
@@ -47,6 +41,10 @@ public class ModuleLineFunctionArityRef {
 
 	public boolean isSubClause() {
 		return subClause;
+	}
+
+	public String getAttribute() {
+		return attribute;
 	}
 
 }

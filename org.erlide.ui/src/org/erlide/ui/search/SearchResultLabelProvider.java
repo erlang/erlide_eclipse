@@ -74,15 +74,19 @@ public class SearchResultLabelProvider extends LabelProvider implements
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
 			final String arguments = ese.getArguments();
 			final ErlangFunction function = ese.getFunction();
-			if (ese.isSubClause()) {
-				return function.name + arguments;
-			} else {
-				final String nameWithArity = function.getNameWithArity();
-				if (arguments != null) {
-					return nameWithArity + "  " + arguments;
+			if (function != null) {
+				if (ese.isSubClause()) {
+					return function.name + arguments;
 				} else {
-					return nameWithArity;
+					final String nameWithArity = function.getNameWithArity();
+					if (arguments != null) {
+						return nameWithArity + "  " + arguments;
+					} else {
+						return nameWithArity;
+					}
 				}
+			} else {
+				return ese.getAttribute();
 			}
 		} else if (element instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) element;
@@ -117,9 +121,9 @@ public class SearchResultLabelProvider extends LabelProvider implements
 		} else if (element instanceof ErlangSearchElement) {
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
 			if (ese.isSubClause()) {
-				kind = Kind.FUNCTION;
-			} else {
 				kind = Kind.CLAUSE;
+			} else {
+				kind = Kind.FUNCTION;
 			}
 		} else if (element instanceof ErlangFunction) {
 			kind = Kind.FUNCTION;

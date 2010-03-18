@@ -1,5 +1,7 @@
 package org.erlide.ui.search;
 
+import static erlang.ErlideSearchServer.includeUse;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +13,18 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ErlangIncludeRef;
+import org.erlide.core.search.ErlangMacroRef;
+import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
 import erlang.ErlideSearchServer;
 
 public class ErlSearchQuery implements ISearchQuery {
-	private final ErlangExternalFunctionCallRef searchRef;
+	private final ErlangElementRef searchRef;
 	// String module;
 	// String fun;
 	// int arity;
@@ -43,8 +49,8 @@ public class ErlSearchQuery implements ISearchQuery {
 	// this.scope = scope;
 	// }
 
-	public ErlSearchQuery(final ErlangExternalFunctionCallRef ref,
-			final int searchFor, final int limitTo, final List<String> scope) {
+	public ErlSearchQuery(final ErlangElementRef ref, final int searchFor,
+			final int limitTo, final List<String> scope) {
 		searchRef = ref;
 		this.searchFor = searchFor;
 		this.limitTo = limitTo;
@@ -78,9 +84,22 @@ public class ErlSearchQuery implements ISearchQuery {
 		// in... ev portionera ut lite
 		// TODO should be setScope
 		ErlideSearchServer.addModules(backend, scope);
-		fResult = ErlideSearchServer.functionUse(backend,
-				searchRef.getModule(), searchRef.getFunction(), searchRef
-						.getArity());
+		if (searchRef instanceof ErlangExternalFunctionCallRef) {
+			final ErlangExternalFunctionCallRef r = (ErlangExternalFunctionCallRef) searchRef;
+			fResult = ErlideSearchServer.functionUse(backend, r.getModule(), r
+					.getFunction(), r.getArity());
+		} else if (searchRef instanceof ErlangMacroRef) {
+			final ErlangMacroRef r = (ErlangMacroRef) searchRef;
+			fResult = ErlideSearchServer.macroOrRecordUse(backend, "macro", r
+					.getMacro());
+		} else if (searchRef instanceof ErlangRecordRef) {
+			final ErlangRecordRef r = (ErlangRecordRef) searchRef;
+			fResult = ErlideSearchServer.macroOrRecordUse(backend, "record", r
+					.getRecord());
+		} else if (searchRef instanceof ErlangIncludeRef) {
+			final ErlangIncludeRef r = (ErlangIncludeRef) searchRef;
+			fResult = includeUse(backend, r.getFilename());
+		}
 		final List<Match> l = new ArrayList<Match>(fResult.size());
 		final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
 				fResult.size());

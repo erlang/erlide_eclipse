@@ -25,8 +25,6 @@ import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 
-import erlang.OpenResult;
-
 public class SearchUtil {
 
 	// static public String[] getWorkingSetsScope(final IWorkingSet[]
@@ -113,15 +111,6 @@ public class SearchUtil {
 				(ISearchQuery) query);
 	}
 
-	public static ErlangExternalFunctionCallRef getRefFromOpenRes(
-			final OpenResult res) {
-		if (!res.isExternalCall()) {
-			return null;
-		}
-		return new ErlangExternalFunctionCallRef(res.getName(), res.getFun(),
-				res.getArity());
-	}
-
 	public static ErlangExternalFunctionCallRef getRefFromErlElement(
 			final IErlElement element) {
 		if (element instanceof IErlFunction) {
@@ -143,7 +132,7 @@ public class SearchUtil {
 	public static Match createMatch(final ModuleLineFunctionArityRef ref) {
 		final ErlangSearchElement ese = new ErlangSearchElement(ref
 				.getModuleName(), ref.getFunction(), ref.getClauseHead(), ref
-				.isSubClause());
+				.isSubClause(), ref.getAttribute());
 		return new Match(ese, Match.UNIT_LINE, ref.getLine(), 0);
 	}
 

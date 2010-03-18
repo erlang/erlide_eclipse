@@ -80,8 +80,8 @@ public class ErlangSearchTreeContentProvider extends
 			if (!moduleNames.contains(moduleName)) {
 				moduleNames.add(moduleName);
 			}
-			final ErlangFunction function = ese.getFunction();
 			if (ese.isSubClause()) {
+				final ErlangFunction function = ese.getFunction();
 				addChild(moduleName, function);
 				addChild(function, ese);
 			} else {

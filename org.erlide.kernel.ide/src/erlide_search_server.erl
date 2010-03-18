@@ -23,6 +23,7 @@
          stop/0,
          add_modules/1,
          find_refs/1,
+         find_refs/2,
          find_refs/3]).
 
 %%
@@ -64,6 +65,13 @@ find_refs(Ref) ->
     R = server_cmd(find_refs, Ref),
     ?D(R),
     R.
+
+find_refs(macro, M) ->
+    find_refs({macro, M});
+find_refs(record, R) ->
+    find_refs({record, R});
+find_refs(include, F) ->
+    find_refs({include, F}).
 
 find_refs(M, F, A) ->
     find_refs({call, M, F, A}).
@@ -147,10 +155,12 @@ reply(Cmd, From, R) ->
     From ! {Cmd, self(), R}.
 
 do_cmd(add_modules, Modules, State) ->
-    ?D({add_modules, Modules}),
     do_add_modules(Modules, State);
 do_cmd(find_refs, Ref, State) ->
-    do_find_refs(Ref, State);
+    ?D(Ref),
+    R = do_find_refs(Ref, State),
+    ?D(R),
+    R;
 do_cmd(state, _, State) ->
     {State, State}.
 
@@ -202,14 +212,31 @@ node_to_data({tree, record_expr, _, _} = Node) ->
     {record_expr, {R, _}} = erl_syntax_lib:analyze_record_expr(Node),
     {record, R};
 node_to_data({tree, macro, _, Macro}) ->
-    {macro, {tree, _Kind, _Attrs, Value}, _} = Macro,
-    {macro, Value};
+    {macro, {tree, _Kind, _Attrs, Name}, _} = Macro,
+    {macro, Name};
 node_to_data({tree, function, _, _} = Node) ->
     F = erl_syntax_lib:analyze_function(Node),
     {function, F};
 node_to_data({tree, clause, _, {clause, Args, _, _Body}}) ->
     C = [erl_prettypr:format(Arg) || Arg <- Args],
     {clause, C};
+%% {tree,attribute,
+%%       {attr,10,[],none},
+%%       {attribute,{atom,10,include},[{string,10,"b.hrl"}]}}
+node_to_data({tree, attribute, _, _} = Node) ->
+    ?D(Node),
+    {_, _, _, Attr} = Node,
+    case Attr of
+        {attribute, {atom, _, include}, Value} ->
+            case Value of
+                [{string, _, S}] ->
+                    {include, S};
+                _ ->
+                    false
+            end;
+        _ ->
+            false
+    end;
 node_to_data(_) ->
     false.
 
@@ -227,9 +254,15 @@ node_to_ref(Module, Node, {CurFunc, CurClause, HasClauses, Refs} = Acc) ->
             {CurFunc, C, HasClauses, Refs};
         Data ->
             ?D(Data),
+            CurFuncOrAttr = case Data of
+                                {include, S} ->
+                                    "-include(\""++S++"\")";
+                                _ ->
+                                    CurFunc
+                            end,
             {Kind, Line} = get_node_kind_and_line_no(Node),
             Ref = #ref{module=Module, line=Line, kind=Kind, 
-                       data=Data, function=CurFunc, clause=CurClause,
+                       data=Data, function=CurFuncOrAttr, clause=CurClause,
                        has_clauses=HasClauses},
             {CurFunc, CurClause, HasClauses, [Ref | Refs]}
     end.
@@ -254,6 +287,7 @@ module_refs(Filename) when is_list(Filename) ->
     {_, _, _, MoreRefs} = fold_nodes(fun(Node, Acc) ->
                                           node_to_ref(Module, Node, Acc) 
                                   end, {none, none, false, []}, Forms),
+    ?D(MoreRefs),
     {Module, MoreRefs}.
 
 
