@@ -38,6 +38,8 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection extends
 	}
 
 	protected OtpErlangList getSelectedPos() {
+		if (selectedPositions == null)
+			return new OtpErlangList();
 		OtpErlangList ret;
 		OtpErlangObject[] selection = new OtpErlangObject[selectedPositions
 				.size()];

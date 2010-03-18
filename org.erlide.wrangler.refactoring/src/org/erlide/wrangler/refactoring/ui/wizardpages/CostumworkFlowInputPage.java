@@ -1,10 +1,9 @@
-package org.erlide.wrangler.refactoring.tmp;
+package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
-import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 
 public class CostumworkFlowInputPage extends SimpleInputPage {
 

@@ -18,10 +18,10 @@ import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactorin
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
-import org.erlide.wrangler.refactoring.tmp.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;

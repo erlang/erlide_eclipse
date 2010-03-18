@@ -123,6 +123,13 @@
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.macroGroup"
                style="push">
          </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.foldagainstmacro"
+               label="%foldMacroName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.macroGroup"
+               style="push">
+         </action>
          <!-- Experimental
          <action
                class="org.erlide.wrangler.refactoring.core.tupletorecord.TupleToRecordAction"

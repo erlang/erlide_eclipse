@@ -3,7 +3,6 @@ package org.erlide.wrangler.refactoring.backend.internal;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
 import org.eclipse.jface.text.IDocument;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
@@ -62,8 +61,15 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 		return syntaxTree;
 	}
 
+	/**
+	 * Returns pairs which represents a selection in a module.
+	 * 
+	 * @param doc
+	 *            the document which containing the module
+	 * @return selections
+	 */
 	public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(
-			IDocument doc) {
+			final IDocument doc) {
 		HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
 		for (Entry<IRange, OtpErlangTuple> r : positionDefs.entrySet()) {
 			ret.put(new ErlRange(r.getKey(), doc), r.getValue());
