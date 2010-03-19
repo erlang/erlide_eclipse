@@ -211,6 +211,7 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 				if (refactoring == null)
 					return;
 
+				// fold against macro definition
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.foldagainstmacro")) {
 				refactoring = new FoldAgainstMacro();
@@ -222,6 +223,13 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 								"Select expressions which should be folded!",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
+				// normalize record expression
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.normalizerecordexpression")) {
+				boolean showDefaultFields = MessageDialog.openQuestion(
+						activeShell, "Showing defaults",
+						"Show record fields with default values?");
+				refactoring = new NormalizeRecordExpression(showDefaultFields);
 			} else
 				return;
 		}
