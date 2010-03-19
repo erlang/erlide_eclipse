@@ -25,7 +25,7 @@
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.ExpressionSearchAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.expressionsearch"
-               label="&amp;Search expression..."
+               label="&amp;Search identical expression..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
          <action
