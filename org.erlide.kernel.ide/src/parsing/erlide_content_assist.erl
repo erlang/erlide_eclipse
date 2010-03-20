@@ -79,6 +79,7 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 
 
 check_record_tokens(Tokens) ->
+    ?D(Tokens),
     check_record_tokens(Tokens, false).
 
 check_record_tokens([], A) ->
@@ -88,6 +89,7 @@ check_record_tokens([eof | _], A) ->
 check_record_tokens([#token{kind=eof} | _], A) ->
     A;
 check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
+    ?D(Rest),
     check_record_tokens(Rest, true);
 check_record_tokens([#token{kind='#'}], _) ->
     true;
@@ -95,7 +97,8 @@ check_record_tokens([#token{kind='{'} | Rest], _) ->
     check_record_tokens(Rest, true);
 check_record_tokens([#token{kind=','} | Rest], _) ->
     check_record_tokens(Rest, true);
-check_record_tokens([#token{kind=dot} | Rest], A) ->
+check_record_tokens([#token{kind=Dot} | Rest], A) 
+  when Dot=:=dot; Dot=:='.' ->
     check_record_tokens(Rest, A);
 check_record_tokens([#token{kind=atom} | Rest], A) ->
     check_record_tokens(Rest, A);
