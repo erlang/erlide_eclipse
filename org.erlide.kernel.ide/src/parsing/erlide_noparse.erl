@@ -16,7 +16,7 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+-define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
 -define(CACHE_VERSION, 19).
@@ -29,26 +29,29 @@
 %% API Functions
 %%
 
-initial_parse(ScannerName, ModuleFileName, InitialTextBin, StateDir, ErlidePath, UpdateCaches) ->
-	InitialText = binary_to_list(InitialTextBin),
+initial_parse(ScannerName, ModuleFileName, InitialTextBin, 
+              StateDir, ErlidePath, UpdateCaches) ->
+    InitialText = binary_to_list(InitialTextBin),
     try
-	?D({StateDir, ModuleFileName, ErlidePath}),
+        ?D({StateDir, ModuleFileName, ErlidePath}),
         RenewFun = fun(_F) ->
-			   do_parse(ScannerName, ModuleFileName, InitialText,
-				    StateDir, ErlidePath, UpdateCaches) 
-		   end,
+                           do_parse(ScannerName, ModuleFileName, 
+                                    InitialText, StateDir, ErlidePath,
+                                    UpdateCaches) 
+                   end,
         CacheFun = fun(D) ->
-			   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
-						      InitialText, StateDir, ErlidePath, UpdateCaches),
-			   D 
-		   end,
-    	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
+                           erlide_scanner_server:initialScan(
+                             ScannerName, ModuleFileName, InitialText,
+                             StateDir, ErlidePath, UpdateCaches),
+                           D
+                   end,
+        CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
         {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
-							   ?CACHE_VERSION, RenewFun, CacheFun,
-							   UpdateCaches),
+                                                           ?CACHE_VERSION, RenewFun, CacheFun,
+                                                           UpdateCaches),
         %%erlide_noparse_server:update_state(ScannerName, Res),
-	?D(updated),
+        ?D(updated),
         {ok, Res, Cached}
     catch
         error:Reason ->
@@ -416,8 +419,8 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
-    _ExternalRefs = get_refs(Rest),
-    %?D([Rest, ExternalRefs]),
+    ExternalRefs = get_refs(Rest),
+    ?D([Rest, ExternalRefs]),
     #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
 %%             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
             name=Name, args=get_between_pars(Rest), head=get_head(Rest) 
