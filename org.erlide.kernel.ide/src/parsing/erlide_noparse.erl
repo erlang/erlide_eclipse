@@ -1,6 +1,6 @@
+%% Description: Split source files into functions and clauses and collects references
 %% Author: jakob
 %% Created: Mar 23, 2006
-%% Description: TODO: Add description to erlide_noparse
 
 -module(erlide_noparse).
 
@@ -19,11 +19,12 @@
 -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 19).
+-define(CACHE_VERSION, 21).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
+-include("erlide_refs.hrl").
 
 %%
 %% API Functions
@@ -47,9 +48,9 @@ initial_parse(ScannerName, ModuleFileName, InitialTextBin,
                    end,
         CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
-        {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
-                                                           ?CACHE_VERSION, RenewFun, CacheFun,
-                                                           UpdateCaches),
+        {Cached, Res} = erlide_util:check_and_renew_cached(
+                          ModuleFileName, CacheFileName, ?CACHE_VERSION, 
+                          RenewFun, CacheFun, UpdateCaches),
         %%erlide_noparse_server:update_state(ScannerName, Res),
         ?D(updated),
         {ok, Res, Cached}
@@ -74,19 +75,15 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, code_dont_use, external_refs_dont_use, comment}).
--record(clause, {pos, name, args, head, code_dont_use, name_pos, external_refs_dont_use}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, comment}).
+-record(clause, {pos, name, args, head, name_pos}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 -record(module, {name, erlide_path, model}).
--record(position, {offset, length}).
--record(external_call, {module, function, arity, position}).
--record(macro_ref, {macro, position}).
--record(record_ref, {record, position}).
 
 do_parse(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches) ->
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir, ErlidePath, UpdateCaches),
-	do_parse2(ScannerName, Toks, ErlidePath).
+    do_parse2(ScannerName, Toks, ErlidePath).
 
 do_parse2(_ScannerName, Toks, _ErlidePath) ->
     ?D({do_parse, _ScannerName, length(Toks)}),
@@ -112,32 +109,32 @@ fixup_model(#model{forms=Forms, comments=Comments}) ->
     ?D(a),
     FixedForms = fixup_forms(Forms),
     ?D(a),
-	#model{forms=FixedForms, comments=FixedComments}.
+    #model{forms=FixedForms, comments=FixedComments}.
 
 fixup_forms(Forms) ->
-	[fixup_form(Form) || Form <- Forms].
+    [fixup_form(Form) || Form <- Forms].
 
 fixup_tokens(Tokens) ->
     [fixup_token(Token) || Token <- Tokens].
 
 fixup_token(#token{value=Value} = Token) when is_list(Value) ->
-	Token#token{value=to_binary(Value)};
+    Token#token{value=to_binary(Value)};
 fixup_token(#token{text=Text} = Token) when is_list(Text) ->
-	Token#token{value=to_binary(Text)};
+    Token#token{value=to_binary(Text)};
 fixup_token(Token) ->
-	Token.
+    Token.
 
 fixup_form(#function{comment=Comment, clauses=Clauses} = Function) ->
-	Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
+    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
 fixup_form(#clause{head=Head} = Clause) ->
-	Clause#clause{head=to_binary(Head), args=[]};
+    Clause#clause{head=to_binary(Head), args=[]};
 fixup_form(Other) ->
-	Other.
+    Other.
 
 to_binary(Comment) when is_list(Comment) ->
-	iolist_to_binary(Comment);
+    iolist_to_binary(Comment);
 to_binary(Other) ->
-	Other.
+    Other.
 
 parse_test(ScannerName, File) ->
     erlide_scanner_server:scan_uncached(ScannerName, File, ""),
@@ -158,16 +155,17 @@ classify_and_collect(C) ->
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
     %?D(ClauseList),
-    Clauses = [fix_clause(C) || C <- ClauseList],
+    {Clauses, Refs} = fix_clauses(ClauseList, [], []),
     %?D(length(Clauses)),
-    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP} | _] = Clauses,
+    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs | _] = Clauses,
     Arity = erlide_text:guess_arity(A),
-    case Clauses of					% only show subclauses when more than one
-        [_] ->
-            #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
-        _ ->
-            #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
-    end;
+    Function = case Clauses of  	% only show subclauses when more than one
+                   [_] ->
+                       #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
+                   _ ->
+                       #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
+               end,
+    {Function, Refs};
 cac(attribute, Attribute) ->
     ?D(Attribute),
     case Attribute of
@@ -416,21 +414,27 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
     end.
 
 %% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
+fix_clauses([], ClAcc, RefAcc) ->
+    {lists:reverse(ClAcc), lists:reverse(RefAcc)};
+fix_clauses([C | Rest], ClAcc, RefAcc) ->
+    {Clause, Refs} = fix_clause(C),
+    fix_clauses(Rest, [Clause | ClAcc], Refs++RefAcc).
+
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
     ExternalRefs = get_refs(Rest),
-    ?D([Rest, ExternalRefs]),
-    #clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
-%%             name=Name, args=get_between_pars(Rest), head=get_head(Rest), code=Code,
-            name=Name, args=get_between_pars(Rest), head=get_head(Rest) 
-            }.
+    ?D({ExternalRefs, Rest}),
+    {#clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
+             name=Name, args=get_between_pars(Rest), head=get_head(Rest)},
+     ExternalRefs}.
 
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
 scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
-    _D = erlide_scanner_server:initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
-	?D(_D),
+    _D = erlide_scanner_server:initialScan(
+           ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
+    ?D(_D),
     S = erlide_scanner_server:getTokens(ScannerName),
     S.
 
@@ -468,23 +472,25 @@ scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache
 get_refs([]) ->
     [];
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
-                     #token{kind=atom, value=F, offset=Offset2, length=Length2},
-                     #token{kind='('} | Rest]) ->
+          #token{kind=atom, value=F, offset=Offset2, length=Length2},
+          #token{kind='('} | Rest]) ->
     Arity = erlide_text:guess_arity(Rest),
-    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
-    XC = #external_call{module = M, function=F, arity=Arity, position=Position},
+    XC = #external_call{module = M, function=F, arity=Arity, offset=Offset,
+                        length=Length2+Offset2-Offset},
     [XC | get_refs(Rest)];
-get_refs([#token{kind='?', offset=Offset}, 
-          #token{kind=atom, value=_M, text=M, offset=Offset2, length=Length2} | Rest]) ->
-    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
-    MR = #macro_ref{macro=M, position=Position},
+get_refs([#token{kind=atom, value=F, offset=Offset, length=Length},
+          #token{kind='('} | Rest]) ->
+    Arity = erlide_text:guess_arity(Rest),
+    XC = #local_call{function=F, arity=Arity, offset=Offset, length=Length},
+    [XC | get_refs(Rest)];
+get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest]) ->
+    MR = #macro_ref{macro=M, offset=Offset, length=Length},
     [MR | get_refs(Rest)];
 get_refs([#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=_R, offset=Offset2, length=Length2, text=R} | Rest]) ->
-    Position = #position{offset=Offset, length=Length2+Offset2-Offset},
-    RR = #record_ref{record=R, position=Position},
+          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
+    RR = #record_ref{record=R, offset=Offset, length=Length2+Offset2-Offset},
     [RR | get_refs(Rest)];
-get_refs([_|Rest]) ->
+get_refs([_ | Rest]) ->
     get_refs(Rest).
 
 %% @spec (Tokens::tokens()) -> {tokens(), tokens()}
@@ -570,10 +576,12 @@ get_function_comments(Forms, Comments) ->
 
 get_function_comment(F, []) ->
     F;
-get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{last_line=LastLine, value=Value} | _])
+get_function_comment(#function{name_pos={{Line, _}, _}}=F, 
+                     [#token{last_line=LastLine, value=Value} | _])
   when LastLine+1=:=Line; LastLine+2=:=Line->
     F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
-get_function_comment(#function{name_pos={{Line, _}, _}}=F, [#token{line=LastLine, last_line=undefined, value=Value} | _])
+get_function_comment(#function{name_pos={{Line, _}, _}}=F,
+                     [#token{line=LastLine, last_line=undefined, value=Value} | _])
   when LastLine+1=:=Line; LastLine+2=:=Line->
     F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(F, [_ | Rest]) ->

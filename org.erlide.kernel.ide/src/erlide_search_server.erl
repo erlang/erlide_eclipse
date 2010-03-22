@@ -1,6 +1,6 @@
+%% Description: Search server
 %% Author: jakob (jakobce at g mail dot com)
 %% Created: 10 mar 2010
-%% Description: 
 
 -module(erlide_search_server).
 
@@ -8,7 +8,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
@@ -24,7 +24,8 @@
          add_modules/1,
          find_refs/1,
          find_refs/2,
-         find_refs/3]).
+         find_refs/3,
+         state/0]).
 
 %%
 %% Internal Exports
@@ -38,7 +39,7 @@
 
 -define(SERVER, erlide_search_server).
 -record(state, {modules=[], refs=[]}). %% FIXME overly simple data model
--record(ref, {module_no, line, data, function, clause, has_clauses}).
+-record(ref, {module_no, data, function, clause, has_clauses}).
 -record(module, {path, mtime}).
 
 %%
@@ -53,8 +54,7 @@ stop() ->
 
 add_modules(Modules) ->
     R = server_cmd(add_modules, Modules),
-    S = server_cmd(state),
-    ?D(S),
+    ?D(state()),
     R.
 
 state() ->
@@ -172,9 +172,11 @@ get_module(ModN, Modules) ->
     {value, {ModN, Module}} = lists:keysearch(ModN, 1, Modules),
     Module.
 
+get_pos()
+
 find_data([], _, _, Acc) ->
     Acc;
-find_data([#ref{module_no=ModN, line=L, function=F, clause=C, data=D, has_clauses=H} | Rest], 
+find_data([#ref{module_no=ModN, function=F, clause=C, data=D, has_clauses=H} | Rest], 
           Data, Modules, Acc) ->
     case D of
         Data ->
@@ -225,8 +227,9 @@ node_to_data({tree, application, _, _} = Node) ->
         {M, {F, A}} -> {call, M, F, A};
         {F, A} -> {call, F, A}
     end;
-node_to_data({tree, record_expr, _, _} = Node) ->
-    {record_expr, {R, _}} = erl_syntax_lib:analyze_record_expr(Node),
+node_to_data({tree, Record, _, _} = Node) 
+  when Record=:=record_expr; Record=:=record_access; Record=:=record_index_expr->
+    {_, {R, _}} = erl_syntax_lib:analyze_record_expr(Node),
     {record, R};
 node_to_data({tree, macro, _, Macro}) ->
     {macro, {tree, _Kind, _Attrs, Name}, _} = Macro,
