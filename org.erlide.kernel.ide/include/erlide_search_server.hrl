@@ -4,7 +4,7 @@
 
 -define(SEARCH_SERVER, erlide_search_server).
 
--record(ref, {data, offset, length, function, clause, has_clauses}).
+-record(ref, {data, offset, length, function, arity, clause, sub_clause}).
 %% function is a {F, A} tuple
 
 -record(external_call, {module, function, arity}).

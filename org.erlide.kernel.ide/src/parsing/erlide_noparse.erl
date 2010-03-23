@@ -77,8 +77,8 @@ reparse(ScannerName) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, comment, refs}).
--record(clause, {pos, name, args, head, name_pos, refs}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, comment}).
+-record(clause, {pos, name, args, head, name_pos}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
 %% -record(module, {name, erlide_path, model}).
@@ -134,9 +134,9 @@ fixup_token(Token) ->
     Token.
 
 fixup_form(#function{comment=Comment, clauses=Clauses} = Function) ->
-    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[], refs=u};
+    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
 fixup_form(#clause{head=Head} = Clause) ->
-    Clause#clause{head=to_binary(Head), args=[], refs=u};
+    Clause#clause{head=to_binary(Head), args=[]};
 fixup_form(Other) ->
     Other.
 
@@ -166,17 +166,18 @@ classify_and_collect([C | Rest], Acc, RefsAcc) ->
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
     %?D(ClauseList),
-    {Clauses, Refs} = fix_clauses(ClauseList, [], []),
+    ClausesAndRefs = fix_clauses(ClauseList),
     %?D(length(Clauses)),
-    [#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs | _] = Clauses,
+    [{#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
     Arity = erlide_text:guess_arity(A),
-    Function = case Clauses of  	% only show subclauses when more than one
+    Function = case ClausesAndRefs of  	% only show subclauses when more than one
                    [_] ->
                        #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
                    _ ->
+                       Clauses = [C || {C, _} <- ClausesAndRefs],
                        #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
                end,
-    {Function, Refs};
+    {Function, fix_refs(ClausesAndRefs, Function)};
 cac(attribute, Attribute) ->
     ?D(Attribute),
     case Attribute of
@@ -425,11 +426,14 @@ split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
     end.
 
 %% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
-fix_clauses([], ClAcc, RefAcc) ->
-    {lists:reverse(ClAcc), lists:reverse(RefAcc)};
-fix_clauses([C | Rest], ClAcc, RefAcc) ->
+fix_clauses(Clauses) ->
+    fix_clauses(Clauses, []).
+
+fix_clauses([], Acc) ->
+    lists:reverse(Acc);
+fix_clauses([C | Rest], Acc) ->
     {Clause, Refs} = fix_clause(C),
-    fix_clauses(Rest, [Clause | ClAcc], fix_refs(Clause, Refs)++RefAcc).
+    fix_clauses(Rest, [{Clause, Refs} | Acc]).
 
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
@@ -440,7 +444,22 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
              name=Name, args=get_between_pars(Rest), head=get_head(Rest)},
      ExternalRefs}.
 
+fix_refs(ClausesAndRefs, Function) ->
+    fix_refs(ClausesAndRefs, Function, []).
 
+fix_refs([], _, Acc) ->
+    Acc;
+fix_refs([{Clause, Refs} | Rest], Function, Acc) ->
+    fix_refs(Rest, Function, fix_refs(Refs, Clause, Function, Acc)).
+
+fix_refs([], _Clause, _Function, Acc) ->
+    Acc;
+fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
+         #function{name=Name, arity=Arity, clauses=Clauses}=Function, Acc) ->
+    SubClause = Clauses =:= [],
+    Ref = #ref{data=RefData, offset=Offset, length=Length, function=Name, 
+               arity=Arity, clause=Head, sub_clause=SubClause},
+    fix_refs(Rest, Clause, Function, [Ref | Acc]).
 
 scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
