@@ -11,6 +11,7 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -583,10 +584,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	public void setChildren(final IErlElement[] children) {
-		fChildren.clear();
-		for (final IErlElement i : children) {
-			fChildren.add(i);
-		}
+		fChildren = Arrays.asList(children);
 	}
 
 	/**
