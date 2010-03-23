@@ -15,17 +15,24 @@
 
 -include_lib("kernel/include/file.hrl").
 
+-include("erlide_search_server.hrl").
+
 %%
 %% Exported Functions
 %%
 
+
+%% called from Java
 -export([start/0, 
          stop/0,
-         add_modules/1,
-         find_refs/1,
+%%          add_modules/1,
          find_refs/2,
          find_refs/3,
+         find_refs/4,
          state/0]).
+
+%% called from Erlang
+-export([destroyed/1]).
 
 %%
 %% Internal Exports
@@ -38,9 +45,8 @@
 %%
 
 -define(SERVER, erlide_search_server).
--record(state, {modules=[], refs=[]}). %% FIXME overly simple data model
--record(ref, {module_no, data, function, clause, has_clauses}).
--record(module, {path, mtime}).
+-record(state, {modules=[]}). %% FIXME still too simple data model
+-record(module, {path, scanner_name, refs}).
 
 %%
 %% API Functions
@@ -52,29 +58,32 @@ start() ->
 stop() ->
     server_cmd(stop).
 
-add_modules(Modules) ->
-    R = server_cmd(add_modules, Modules),
-    ?D(state()),
-    R.
+%% add_modules(Modules) ->
+%%     R = server_cmd(add_modules, Modules),
+%%     ?D(state()),
+%%     R.
 
 state() ->
     server_cmd(state).
 
-find_refs(Ref) ->
-    ?D(Ref),
-    R = server_cmd(find_refs, Ref),
+find_refs(Ref, Modules) ->
+    ?D({Ref, Modules}),
+    R = server_cmd(find_refs, {Ref, Modules}),
     ?D(R),
     R.
 
-find_refs(macro, M) ->
-    find_refs({macro, M});
-find_refs(record, R) ->
-    find_refs({record, R});
-find_refs(include, F) ->
-    find_refs({include, F}).
+find_refs(macro, M, Modules) ->
+    find_refs({macro_ref, M}, Modules);
+find_refs(record, R, Modules) ->
+    find_refs({record_ref, R}, Modules);
+find_refs(include, F, Modules) ->
+    find_refs({include, F}, Modules).
 
-find_refs(M, F, A) ->
-    find_refs({call, M, F, A}).
+find_refs(M, F, A, Modules) ->
+    find_refs({external_call, M, F, A}, Modules).
+
+destroyed(ScannerName) ->
+    server_cmd(destroyed, ScannerName).
 
 %%
 %% Local Functions
@@ -154,8 +163,8 @@ cmd(Cmd, From, Args, State) ->
 reply(Cmd, From, R) ->
     From ! {Cmd, self(), R}.
 
-do_cmd(add_modules, Modules, State) ->
-    do_add_modules(Modules, State);
+%% do_cmd(add_modules, Modules, State) ->
+%%     do_add_modules(Modules, State);
 do_cmd(find_refs, Ref, State) ->
     ?D(Ref),
     R = do_find_refs(Ref, State),
@@ -164,60 +173,57 @@ do_cmd(find_refs, Ref, State) ->
 do_cmd(state, _, State) ->
     {State, State}.
 
-do_find_refs(Data, #state{refs=Refs, modules=Modules} = State) ->
-    Found = find_data(Refs, Data, Modules, []),
+do_find_refs(Data, #state{modules=Modules} = State) ->
+    Found = lists:foldl(fun(#module{refs=Refs,
+                                    scanner_name=M}, Acc) ->
+                                find_data(Data, Refs, M, Acc)
+                        end, [], Modules), 
     {{ok, Found}, State}.
-
-get_module(ModN, Modules) ->
-    {value, {ModN, Module}} = lists:keysearch(ModN, 1, Modules),
-    Module.
-
-get_pos()
 
 find_data([], _, _, Acc) ->
     Acc;
-find_data([#ref{module_no=ModN, function=F, clause=C, data=D, has_clauses=H} | Rest], 
-          Data, Modules, Acc) ->
+find_data([#ref{function=F, clause=C, data=D, has_clauses=H, offset=O, length=L} | Rest],
+          Data, M, Acc) ->
     case D of
         Data ->
-            find_data(Rest, Data, Modules, [{get_module(ModN, Modules), L-1, F, format_clause(C), H} | Acc]);
+            find_data(Rest, Data, M, [{M, L-1, F, C, H, O, L} | Acc]);
         _ ->
-            find_data(Rest, Data, Modules, Acc)
+            find_data(Rest, Data, M, Acc)
     end.
 
-format_clause([], Acc) ->
-    lists:flatten([Acc, ")"]);
-format_clause([Arg], Acc) ->
-    lists:flatten([Acc, Arg, ")"]);
-format_clause([Arg | Rest], Acc) ->
-    format_clause(Rest, [Acc, Arg, ", "]).
+%% format_clause([], Acc) ->
+%%     lists:flatten([Acc, ")"]);
+%% format_clause([Arg], Acc) ->
+%%     lists:flatten([Acc, Arg, ")"]);
+%% format_clause([Arg | Rest], Acc) ->
+%%     format_clause(Rest, [Acc, Arg, ", "]).
 
-format_clause([_|_] = Args) ->
-    format_clause(Args, "(");
-format_clause(Else) ->
-    Else.
+%% format_clause([_|_] = Args) ->
+%%     format_clause(Args, "(");
+%% format_clause(Else) ->
+%%     Else.
 
-get_max_module_no([], N) ->
-    N;
-get_max_module_no([{I, _Module} | Rest], N) when N < I ->
-    get_max_module_no(Rest, I);
-get_max_module_no([_ | Rest], N) ->
-    get_max_module_no(Rest, N).
+%% get_max_module_no([], N) ->
+%%     N;
+%% get_max_module_no([{I, _Module} | Rest], N) when N < I ->
+%%     get_max_module_no(Rest, I);
+%% get_max_module_no([_ | Rest], N) ->
+%%     get_max_module_no(Rest, N).
 
-do_add_modules([], State) ->
-    ?D(State),
-    State;
-do_add_modules([Filename | Rest], State = #state{refs = Refs, modules = Modules}) ->
-    ?D(Filename),
-    N = get_max_module_no(Modules, 0)+1,
-    case module_refs(Filename, Modules, N) of
-        {Module, MoreRefs} ->
-            ?D({Module, MoreRefs}),
-            do_add_modules(Rest, State#state{refs = MoreRefs ++ Refs,
-                                             modules = [{N, Module} | Modules]});
-        false ->
-            do_add_modules(Rest, State)
-    end.
+%% do_add_modules([], State) ->
+%%     ?D(State),
+%%     State;
+%% do_add_modules([Filename | Rest], State = #state{refs = Refs, modules = Modules}) ->
+%%     ?D(Filename),
+%%     N = get_max_module_no(Modules, 0)+1,
+%%     case module_refs(Filename, Modules, N) of
+%%         {Module, MoreRefs} ->
+%%             ?D({Module, MoreRefs}),
+%%             do_add_modules(Rest, State#state{refs = MoreRefs ++ Refs,
+%%                                              modules = [{N, Module} | Modules]});
+%%         false ->
+%%             do_add_modules(Rest, State)
+%%     end.
 
 get_node_line_no({tree, _Kind, {attr, Line, _, _}, _}) ->
     Line.

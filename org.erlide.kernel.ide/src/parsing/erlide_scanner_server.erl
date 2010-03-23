@@ -11,6 +11,7 @@
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
+-include("erlide_search_server.hrl").
 
 %%
 %% Exported Functions
@@ -41,6 +42,7 @@ create(ScannerName, ErlidePath) when is_atom(ScannerName) ->
 %%    server_cmd(create, {ScannerName, ErlidePath}).
 
 destroy(ScannerName) when is_atom(ScannerName) ->
+    erlide_search_server:destroyed(ScannerName),
     server_cmd(ScannerName, stop).
 
 getText(ScannerName) when is_atom(ScannerName) ->
