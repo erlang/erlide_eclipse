@@ -5,18 +5,19 @@ import org.erlide.core.erlang.util.ErlangFunction;
 public class ModuleLineFunctionArityRef {
 
 	private final String moduleName;
-	private final int line;
+	private final int offset, length;
 	private final ErlangFunction function;
 	private final String clauseHead;
 	private final boolean subClause;
 	private final String attribute;
 
-	public ModuleLineFunctionArityRef(final String moduleName, final int line,
-			final ErlangFunction function, final String clauseHead,
-			final boolean subClause, final String attribute) {
-		super();
+	public ModuleLineFunctionArityRef(final String moduleName,
+			final int offset, final int length, final ErlangFunction function,
+			final String clauseHead, final boolean subClause,
+			final String attribute) {
 		this.moduleName = moduleName;
-		this.line = line;
+		this.offset = offset;
+		this.length = length;
 		this.subClause = subClause;
 		this.function = function;
 		this.clauseHead = clauseHead;
@@ -25,10 +26,6 @@ public class ModuleLineFunctionArityRef {
 
 	public String getModuleName() {
 		return moduleName;
-	}
-
-	public int getLine() {
-		return line;
 	}
 
 	public ErlangFunction getFunction() {
@@ -45,6 +42,14 @@ public class ModuleLineFunctionArityRef {
 
 	public String getAttribute() {
 		return attribute;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public int getOffset() {
+		return offset;
 	}
 
 }

@@ -81,14 +81,12 @@ public class ErlModule extends Openable implements IErlModule {
 	protected synchronized boolean buildStructure(final IProgressMonitor pm)
 			throws ErlModelException {
 		final String path = getFilePath();
-		final String erlidePath = getErlidePath();
 		if (scanner == null) {
 			parsed = false;
 		}
 		final boolean initialParse = !parsed;
 		final String text = initialParse ? initialText : "";
-		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath,
-				updateCaches);
+		parsed = ErlParser.parse(this, text, initialParse, path, updateCaches);
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -103,10 +101,6 @@ public class ErlModule extends Openable implements IErlModule {
 			timestamp = IResource.NULL_STAMP;
 		}
 		return parsed;
-	}
-
-	protected String getErlidePath() {
-		return fFile.getFullPath().toString();
 	}
 
 	/**
@@ -362,11 +356,10 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private ErlScanner getNewScanner() {
 		final String path = getFilePath();
-		final String erlidePath = getErlidePath();
-		if (path == null || erlidePath == null) {
+		if (path == null) {
 			return null;
 		}
-		return new ErlScanner(this, initialText, path, erlidePath);
+		return new ErlScanner(this, initialText, path);
 	}
 
 	public void fixExportedFunctions() {

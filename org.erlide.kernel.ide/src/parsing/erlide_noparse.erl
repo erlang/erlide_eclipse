@@ -8,7 +8,12 @@
 %% Exported Functions
 %%
 
--export([initial_parse/6, reparse/1]).
+%% called from Java
+-export([initial_parse/5, reparse/1]).
+
+%% called from Erlang
+-export([read_module_refs/3]).
+
 
 -compile(export_all).
 
@@ -19,7 +24,7 @@
 -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 21).
+-define(CACHE_VERSION, 22).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -31,21 +36,20 @@
 %%
 
 initial_parse(ScannerName, ModuleFileName, InitialTextBin, 
-              StateDir, ErlidePath, UpdateCaches) ->
+              StateDir, UpdateCaches) ->
     InitialText = binary_to_list(InitialTextBin),
     try
-        ?D({StateDir, ModuleFileName, ErlidePath}),
+        ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
                            do_parse(ScannerName, ModuleFileName, RefsFileName,
-                                    InitialText, StateDir, ErlidePath,
-                                    UpdateCaches) 
+                                    InitialText, StateDir, UpdateCaches, true) 
                    end,
         CacheFun = fun(D) ->
                            erlide_scanner_server:initialScan(
                              ScannerName, ModuleFileName, InitialText,
-                             StateDir, ErlidePath, UpdateCaches),
+                             StateDir, UpdateCaches),
                            D
                    end,
         CacheFileName = BaseName ++ ".noparse",
@@ -63,12 +67,32 @@ initial_parse(ScannerName, ModuleFileName, InitialTextBin,
 
 reparse(ScannerName) ->
     try
-        Res = do_parse(ScannerName, "", "", "", "", "", false),
+        Res = do_parse(ScannerName, "", "", "", "", false, true),
         %%erlide_noparse_server:update_state(ScannerName, Res),
         {ok, Res, unused}
     catch
         error:Reason ->
             {error, Reason}
+    end.
+
+read_module_refs(ScannerName, ModulePath, StateDir) ->
+    ?D(ScannerName),
+    BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
+    RefsFileName = BaseName ++ ".refs",
+    ?D(RefsFileName),
+    case file:read_file(RefsFileName) of
+        {ok, Binary} ->
+            ?D(byte_size(Binary)),
+            binary_to_term(Binary);
+        _ ->
+            {ok, B} = file:read_file(ModulePath),
+            ?D(byte_size(B)),
+            InitialText = binary_to_list(B),
+            do_parse(ScannerName, ModulePath, RefsFileName, InitialText, StateDir, false, false),
+            ?D(parsed),
+            {ok, Binary} = file:read_file(RefsFileName),
+            ?D(byte_size(Binary)),
+            binary_to_term(Binary)
     end.
 
 %%
@@ -84,12 +108,12 @@ reparse(ScannerName) ->
 %% -record(module, {name, erlide_path, model}).
 
 do_parse(ScannerName, ModuleFileName, RefsFileName, InitalText, StateDir, 
-         ErlidePath, UpdateCaches) ->
+         UpdateCaches, UpdateSearchServer) ->
     Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir,
-                ErlidePath, UpdateCaches),
-    do_parse2(ScannerName, RefsFileName, Toks, StateDir).
+                UpdateCaches),
+    do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer).
 
-do_parse2(ScannerName, RefsFileName, Toks, StateDir) ->
+do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     ?D({do_parse, ScannerName, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
@@ -100,17 +124,25 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir) ->
     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
-    %%erlide_noparse_server:create(ScannerName, Model, ErlidePath),
+    %%erlide_noparse_server:create(ScannerName, Model),
     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
     ?D(erts_debug:flat_size(FixedModel)),
     %% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
+    ?D(StateDir),
     case StateDir of
         "" -> ok;
         _ ->
-            file:write(RefsFileName, term_to_binary(Refs))
+            ?D({RefsFileName, Refs}),
+            file:write_file(RefsFileName, term_to_binary(Refs))
     end,
+    update_search_server(UpdateSearchServer, ScannerName, Refs),
     FixedModel.
+
+update_search_server(true, ScannerName, Refs) ->
+    erlide_search_server:add_module_refs(ScannerName, Refs);
+update_search_server(_, _, _) ->
+    ok.
 
 fixup_model(#model{forms=Forms, comments=Comments}) ->
     ?D(a),
@@ -161,7 +193,7 @@ classify_and_collect([eof], Acc, RefsAcc) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};
 classify_and_collect([C | Rest], Acc, RefsAcc) ->
     {R, Refs} = cac(check_class(C), C),
-    classify_and_collect(Rest, [R | Acc], [Refs | RefsAcc]).
+    classify_and_collect(Rest, [R | Acc], Refs++RefsAcc).
 
 cac(function, Tokens) ->
     ClauseList = split_clauses(Tokens),
@@ -193,8 +225,10 @@ cac(attribute, Attribute) ->
             ?D(Args),
             Extra = to_string(Args),
             ?D(Extra),
-            #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra};
+            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                        name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra},
+             [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
+                   arity=-1, clause="", sub_clause=false}]};
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
@@ -203,21 +237,22 @@ cac(attribute, Attribute) ->
             PosLength = LastOffset - Offset + LastLength,
             Between = get_between_outer_pars(Attribute),
             Extra = to_string(Between),
-            #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=get_attribute_args(Name, Between, Args), extra=Extra};
+            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                        name=Name, args=get_attribute_args(Name, Between, Args), 
+                        extra=Extra}, []};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
-            #attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=[]}
+            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                       name=Name, args=[]}, []}
     end;
 cac(other, [#token{value=Name, line=Line,
                    offset=Offset, length=Length} | _]) ->
-    #other{pos={{Line, Line, Offset}, Length}, name=Name};
+    {#other{pos={{Line, Line, Offset}, Length}, name=Name}, []};
 cac(_, _D) ->
     %?D(_D),
-    eof.
+    {eof, []}.
 
 get_attribute_args(import, Between, _Args) ->
     From = get_first_of_kind(atom, Between),
@@ -449,23 +484,28 @@ fix_refs(ClausesAndRefs, Function) ->
 
 fix_refs([], _, Acc) ->
     Acc;
-fix_refs([{Clause, Refs} | Rest], Function, Acc) ->
-    fix_refs(Rest, Function, fix_refs(Refs, Clause, Function, Acc)).
+fix_refs([{Clause, Refs} | Rest], Function, Acc0) ->
+    Acc1 = fix_refs(Refs, Clause, Function, Acc0),
+    fix_refs(Rest, Function, Acc1).
 
 fix_refs([], _Clause, _Function, Acc) ->
     Acc;
 fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
          #function{name=Name, arity=Arity, clauses=Clauses}=Function, Acc) ->
-    SubClause = Clauses =:= [],
+    SubClause = case Clauses of
+                    [] -> false;
+                    [_] -> false;
+                    _ -> true
+                end,
     Ref = #ref{data=RefData, offset=Offset, length=Length, function=Name, 
                arity=Arity, clause=Head, sub_clause=SubClause},
     fix_refs(Rest, Clause, Function, [Ref | Acc]).
 
-scan(ScannerName, "", _, _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
+scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
-scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches) ->
+scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCaches) ->
     _D = erlide_scanner_server:initialScan(
-           ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCaches),
+           ScannerName, ModuleFileName, InitialText, StateDir, UpdateCaches),
     ?D(_D),
     S = erlide_scanner_server:getTokens(ScannerName),
     S.

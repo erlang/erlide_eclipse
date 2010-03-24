@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -73,7 +74,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	}
 
 	@Override
-	protected List<String> getScope() {
+	protected List<IResource> getScope() {
 		final ErlangEditor editor = getEditor();
 		if (editor != null) {
 			final IEditorInput editorInput = editor.getEditorInput();

@@ -47,16 +47,13 @@ public final class ErlParser {
 	 *            the initial text
 	 * @param initialParse
 	 *            true if first time parse
-	 * @param erlidePath
-	 *            path to resource in eclipse
 	 * @param updateCaches
 	 *            update the the caches
 	 * @return -record(model, {forms, comments}).
 	 */
 	public static boolean parse(final IErlModule module,
 			final String initialText, final boolean initialParse,
-			final String moduleFilePath, final String erlidePath,
-			final boolean updateCaches) {
+			final String moduleFilePath, final boolean updateCaches) {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		if (b == null || module == null) {
 			return false;
@@ -74,8 +71,7 @@ public final class ErlParser {
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
-					moduleFilePath, initialText, stateDir, erlidePath,
-					updateCaches);
+					moduleFilePath, initialText, stateDir, updateCaches);
 		} else {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
@@ -274,7 +270,7 @@ public final class ErlParser {
 			final int i, final OtpErlangTuple clause) {
 		final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
 		final OtpErlangObject head = clause.elementAt(4);
-		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(6);
+		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(5);
 		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i, Util
 				.stringValue(head));
 		try {
@@ -288,10 +284,9 @@ public final class ErlParser {
 
 	private static void setNamePos(final ErlMember f,
 			final OtpErlangTuple namePos) throws OtpErlangRangeException {
-		final OtpErlangTuple tpos = namePos;
-		final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
+		final OtpErlangTuple tpos1 = (OtpErlangTuple) namePos.elementAt(0);
 		final int ofs = ((OtpErlangLong) tpos1.elementAt(1)).intValue();
-		final int len = ((OtpErlangLong) tpos.elementAt(1)).intValue();
+		final int len = ((OtpErlangLong) namePos.elementAt(1)).intValue();
 		f.setNameRangeStartEnd(ofs, ofs + len);
 	}
 

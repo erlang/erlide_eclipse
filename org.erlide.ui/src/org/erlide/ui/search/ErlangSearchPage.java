@@ -13,6 +13,7 @@ package org.erlide.ui.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogPage;
@@ -262,7 +263,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		final SearchPatternData data = getPatternData();
 
 		// Setup search scope
-		List<String> scope = null;
+		List<IResource> scope = null;
 		switch (getContainer().getSelectedScope()) {
 		case ISearchPageContainer.WORKSPACE_SCOPE:
 			scope = SearchUtil.getWorkspaceScope();

@@ -12,6 +12,7 @@ package org.erlide.ui.search;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -267,7 +268,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	abstract protected List<String> getScope();
+	abstract protected List<IResource> getScope();
 
 	private void performNewSearch(final ErlangElementRef ref) {
 

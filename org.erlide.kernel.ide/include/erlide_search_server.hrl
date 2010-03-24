@@ -2,15 +2,16 @@
 %% Author: jakob (jakobce at g mail dot com)
 %% Created: 21 mar 2010
 
--define(SEARCH_SERVER, erlide_search_server).
-
 -record(ref, {data, offset, length, function, arity, clause, sub_clause}).
-%% function is a {F, A} tuple
 
 -record(external_call, {module, function, arity}).
 -record(local_call, {function, arity}).
 -record(macro_ref, {macro}).
 -record(record_ref, {record}).
+-record(macro_def, {macro}).
+-record(record_def, {record}).
+-record(type_ref, {type}).
+-record(type_def, {type}).
 
 %% förslag på hur scanner, parser och search jobbar ihop:
 %%

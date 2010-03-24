@@ -5,6 +5,7 @@ import static erlang.ErlideSearchServer.includeUse;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -12,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
@@ -29,12 +31,14 @@ public class ErlSearchQuery implements ISearchQuery {
 	// String fun;
 	// int arity;
 	// IErlElement element;
-	private final List<String> scope;
+	private final List<IResource> scope;
 	private final int searchFor; // REFERENCES, DECLARATIONS or
 	// ALL_OCCURRENCES
 	private final int limitTo;
 	private ErlangSearchResult fSearchResult;
 	private List<ModuleLineFunctionArityRef> fResult;
+
+	private String stateDir = null;
 
 	// public ErlSearchQuery(final String module, final String fun,
 	// final int arity, final String[] scope) {
@@ -50,7 +54,7 @@ public class ErlSearchQuery implements ISearchQuery {
 	// }
 
 	public ErlSearchQuery(final ErlangElementRef ref, final int searchFor,
-			final int limitTo, final List<String> scope) {
+			final int limitTo, final List<IResource> scope) {
 		searchRef = ref;
 		this.searchFor = searchFor;
 		this.limitTo = limitTo;
@@ -83,22 +87,22 @@ public class ErlSearchQuery implements ISearchQuery {
 		// FIXME här ska vi se till att alla resurser (moduler) i scope läggs
 		// in... ev portionera ut lite
 		// TODO should be setScope
-		ErlideSearchServer.addModules(backend, scope);
+		// ErlideSearchServer.addModules(backend, scope);
 		if (searchRef instanceof ErlangExternalFunctionCallRef) {
 			final ErlangExternalFunctionCallRef r = (ErlangExternalFunctionCallRef) searchRef;
 			fResult = ErlideSearchServer.functionUse(backend, r.getModule(), r
-					.getFunction(), r.getArity());
+					.getFunction(), r.getArity(), scope, getStateDir());
 		} else if (searchRef instanceof ErlangMacroRef) {
 			final ErlangMacroRef r = (ErlangMacroRef) searchRef;
 			fResult = ErlideSearchServer.macroOrRecordUse(backend, "macro", r
-					.getMacro());
+					.getMacro(), scope, getStateDir());
 		} else if (searchRef instanceof ErlangRecordRef) {
 			final ErlangRecordRef r = (ErlangRecordRef) searchRef;
 			fResult = ErlideSearchServer.macroOrRecordUse(backend, "record", r
-					.getRecord());
+					.getRecord(), scope, getStateDir());
 		} else if (searchRef instanceof ErlangIncludeRef) {
 			final ErlangIncludeRef r = (ErlangIncludeRef) searchRef;
-			fResult = includeUse(backend, r.getFilename());
+			fResult = includeUse(backend, r.getFilename(), scope, getStateDir());
 		}
 		final List<Match> l = new ArrayList<Match>(fResult.size());
 		final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
@@ -111,5 +115,12 @@ public class ErlSearchQuery implements ISearchQuery {
 		fSearchResult.setResult(result);
 		fSearchResult.addMatches(l.toArray(new Match[l.size()]));
 		return Status.OK_STATUS;
+	}
+
+	private String getStateDir() {
+		if (stateDir == null) {
+			stateDir = ErlangPlugin.getDefault().getStateLocation().toString();
+		}
+		return stateDir;
 	}
 }

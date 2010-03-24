@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
@@ -32,32 +33,27 @@ public class SearchUtil {
 	// return null;
 	// }
 
-	static public List<String> getProjectScope(final IProject project) {
+	static public List<IResource> getProjectScope(final IProject project) {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
-			try {
-				final List<String> result = new ArrayList<String>(1);
-				addProjectEbin(p, result);
-				return result;
-			} catch (final ErlModelException e) {
-				ErlLogger.error(e); // TODO report this
-			}
+			final List<IResource> result = new ArrayList<IResource>();
+			// FIXME: gå igenom källkodsmappar...
+			// addProjectEbin(p, result);
+			return result;
 		}
 		return null;
 	}
 
-	static public List<String> getWorkspaceScope() {
+	static public List<IResource> getWorkspaceScope() {
 		try {
 			final Collection<IErlProject> erlangProjects = ErlangCore
 					.getModel().getErlangProjects();
-			final List<String> result = new ArrayList<String>(erlangProjects
-					.size());
+			final List<IResource> result = new ArrayList<IResource>(
+					erlangProjects.size());
 			for (final IErlProject i : erlangProjects) {
 				final List<IErlModule> modules = i.getModules();
 				for (final IErlModule j : modules) {
-					result
-							.add(j.getResource().getLocation()
-									.toPortableString());
+					result.add(j.getResource());
 				}
 				// addProjectEbin(i, result);
 			}
@@ -68,21 +64,17 @@ public class SearchUtil {
 		return null;
 	}
 
-	public static List<String> getProjectsScope(final String[] projectNames) {
+	public static List<IResource> getProjectsScope(final String[] projectNames) {
 		final IErlModel model = ErlangCore.getModel();
-		final List<String> result = new ArrayList<String>(projectNames.length);
+		final List<IResource> result = new ArrayList<IResource>(
+				projectNames.length);
 		for (final String i : projectNames) {
 			final IErlProject p = model.getErlangProject(i);
-			try {
-				addProjectEbin(p, result);
-			} catch (final ErlModelException e) {
-				ErlLogger.error(e); // TODO report this
-			}
 		}
 		return result;
 	}
 
-	public static List<String> getSelectionScope(final ISelection selection) {
+	public static List<IResource> getSelectionScope(final ISelection selection) {
 		assert false;
 		// TODO Auto-generated method stub
 		return null;
@@ -133,7 +125,7 @@ public class SearchUtil {
 		final ErlangSearchElement ese = new ErlangSearchElement(ref
 				.getModuleName(), ref.getFunction(), ref.getClauseHead(), ref
 				.isSubClause(), ref.getAttribute());
-		return new Match(ese, Match.UNIT_LINE, ref.getLine(), 0);
+		return new Match(ese, ref.getOffset(), ref.getLength());
 	}
 
 	// public static String toString(final IWorkingSet[] workingSets) {

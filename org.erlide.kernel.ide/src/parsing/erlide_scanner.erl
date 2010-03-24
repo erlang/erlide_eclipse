@@ -24,7 +24,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 20).
+-define(CACHE_VERSION, 22).
 
 light_scan_string(B) ->
     S = binary_to_list(B),
@@ -139,26 +139,24 @@ lines_to_text(Lines) ->
                  lines = [], % [{Length, String}]
                  tokens = [], % [{Length, [Token]}]
                  cachedTokens = [],
-                 erlide_path="",
                  log = []}).
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
-    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText, ErlidePath) end,
+    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
     erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UpdateCache).
 
-do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
-    {ok, B} = file:read_file(ModuleFileName),
-    InitialText = binary_to_list(B),
-    do_scan(ScannerName, InitialText, ErlidePath).
+%% do_scan_uncached(ScannerName, ModuleFileName) ->
+%%     {ok, B} = file:read_file(ModuleFileName),
+%%     InitialText = binary_to_list(B),
+%%     do_scan(ScannerName, InitialText).
 
-do_scan(ScannerName, InitialText, ErlidePath) ->
+do_scan(ScannerName, InitialText) ->
     ?D(do_scan),
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     ?D([ScannerName]), % , InitialText, LineTokens]),
-    #module{name=ScannerName, lines=Lines, tokens=LineTokens,
-            erlide_path=ErlidePath}.
+    #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of

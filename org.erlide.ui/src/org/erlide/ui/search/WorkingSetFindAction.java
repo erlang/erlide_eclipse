@@ -12,6 +12,7 @@ package org.erlide.ui.search;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.erlang.IErlElement;
@@ -94,7 +95,7 @@ public class WorkingSetFindAction extends FindAction {
 	}
 
 	@Override
-	protected List<String> getScope() {
+	protected List<IResource> getScope() {
 		return fAction.getScope();
 	}
 
