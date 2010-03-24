@@ -1,8 +1,10 @@
 package org.erlide.core.erlang.internal;
 
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.jinterface.util.ErlLogger;
 
 /**
  * 
@@ -36,7 +38,11 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
 	public ISourceRange getNameRange() {
 		if (fNameRangeOffset == 0 && fNameRangeLength == 0) {
-			return getSourceRange();
+			try {
+				return getSourceRange();
+			} catch (ErlModelException e) {
+				ErlLogger.error(e); // will never happen
+			}
 		}
 		return new SourceRange(fNameRangeOffset, fNameRangeLength);
 	}

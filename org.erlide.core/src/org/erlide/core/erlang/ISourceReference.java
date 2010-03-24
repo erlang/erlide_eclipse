@@ -61,7 +61,7 @@ public interface ISourceReference {
 	 * @return the source range, or <code>null</code> if this element has no
 	 *         associated source code
 	 */
-	ISourceRange getSourceRange();
+	ISourceRange getSourceRange() throws ErlModelException;
 
 	public int getLineStart();
 
