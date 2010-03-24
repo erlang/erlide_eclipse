@@ -21,7 +21,7 @@
 %% Include files
 %%
 
--define(DEBUG, 1).
+%% -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
 -define(CACHE_VERSION, 22).
@@ -134,7 +134,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
         "" -> ok;
         _ ->
             ?D({RefsFileName, Refs}),
-            file:write_file(RefsFileName, term_to_binary(Refs))
+            file:write_file(RefsFileName, term_to_binary(Refs, [{compressed, 1}]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
     FixedModel.

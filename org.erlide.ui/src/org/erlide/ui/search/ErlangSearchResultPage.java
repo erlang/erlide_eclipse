@@ -8,8 +8,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -191,14 +189,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				if (offset != 0) {
 					if (editor instanceof ErlangEditor) {
 						final ErlangEditor ee = (ErlangEditor) editor;
-						final IDocument doc = ee.getDocument();
-						int lineOffset;
-						try {
-							lineOffset = doc.getLineOffset(offset);
-							ee.selectAndReveal(lineOffset, length);
-						} catch (final BadLocationException e) {
-							e.printStackTrace();
-						}
+						ee.selectAndReveal(offset, length);
 					} else if (editor != null) {
 						showWithMarker(editor, file, offset, length);
 					}
