@@ -218,6 +218,7 @@ public class ErlModel extends Openable implements IErlModel {
 	/*
 	 * @see IErlElement
 	 */
+	@Override
 	public IResource getResource() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
@@ -622,7 +623,7 @@ public class ErlModel extends Openable implements IErlModel {
 		String result = getExternal(project, externalFlag, service, key,
 				"org.erlide.ui");
 		if ("".equals(result)) {
-			result = getExternal(project, externalFlag, service, key,
+			result = getExternal(null, externalFlag, service, key,
 					ErlangPlugin.PLUGIN_ID);
 		}
 		return result;
