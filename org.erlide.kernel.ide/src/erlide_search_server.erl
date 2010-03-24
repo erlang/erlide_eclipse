@@ -81,6 +81,8 @@ find_refs(record, R, Modules, StateDir) ->
 find_refs(include, F, Modules, StateDir) ->
     find_refs({include, F}, Modules, StateDir).
 
+find_refs(function_def, F, A, Modules, StateDir) ->
+    find_refs({function_def, F, A}, Modules, StateDir);
 find_refs(M, F, A, Modules, StateDir) 
   when is_atom(M), is_atom(F), is_integer(A), is_list(Modules), 
        is_list(StateDir) ->

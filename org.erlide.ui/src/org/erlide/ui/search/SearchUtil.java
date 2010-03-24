@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
@@ -18,11 +22,18 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlMacroDef;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ErlangFunctionDefRef;
+import org.erlide.core.search.ErlangMacroRef;
+import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -37,8 +48,26 @@ public class SearchUtil {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
 			final List<IResource> result = new ArrayList<IResource>();
-			// FIXME: gå igenom källkodsmappar...
-			// addProjectEbin(p, result);
+			final OldErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(project);
+			final List<String> sourcePaths = prefs.getSourceDirs();
+			for (String path : sourcePaths) {
+				IFolder folder = project.getFolder(new Path(path));
+				if (folder != null) {
+					try {
+						for (IResource r : folder.members()) {
+							if (r instanceof IFile) {
+								IFile f = (IFile) r;
+								if (ErlideUtil.hasModuleExtension(f.getName())) {
+									result.add(f);
+								}
+							}
+						}
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			return result;
 		}
 		return null;
@@ -103,16 +132,27 @@ public class SearchUtil {
 				(ISearchQuery) query);
 	}
 
-	public static ErlangExternalFunctionCallRef getRefFromErlElement(
-			final IErlElement element) {
+	public static ErlangElementRef getRefFromErlElementAndLimit(
+			final IErlElement element, final int limit) {
 		if (element instanceof IErlFunction) {
 			final IErlFunction function = (IErlFunction) element;
-			return new ErlangExternalFunctionCallRef(ErlideUtil
-					.withoutExtension(function.getModule().getName()), function
-					.getName(), function.getArity());
+			if (limit == IErlSearchConstants.REFERENCES) {
+				return new ErlangExternalFunctionCallRef(ErlideUtil
+						.withoutExtension(function.getModule().getName()),
+						function.getName(), function.getArity());
+			} else if (limit == IErlSearchConstants.DECLARATIONS) {
+				return new ErlangFunctionDefRef(function.getName(), function
+						.getArity());
+			}
+		} else if (element instanceof IErlMacroDef) {
+			IErlMacroDef m = (IErlMacroDef) element;
+			return new ErlangMacroRef(m.getDefinedName());
+		} else if (element instanceof IErlRecordDef) {
+			IErlRecordDef r = (IErlRecordDef) element;
+			return new ErlangRecordRef(r.getDefinedName());
 		} else if (element instanceof IErlFunctionClause) {
 			final IErlFunctionClause clause = (IErlFunctionClause) element;
-			getRefFromErlElement(clause.getParent());
+			getRefFromErlElementAndLimit(clause.getParent(), limit);
 		}
 		return null;
 	}

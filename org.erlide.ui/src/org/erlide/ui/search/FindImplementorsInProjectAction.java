@@ -28,7 +28,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  * 
  * @since 3.0
  */
-public class FindReferencesInProjectAction extends FindReferencesAction {
+public class FindImplementorsInProjectAction extends FindImplementorsAction {
 
 	/**
 	 * Creates a new <code>FindReferencesInProjectAction</code>. The action
@@ -38,7 +38,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	 * @param site
 	 *            the site providing context information for this action
 	 */
-	public FindReferencesInProjectAction(final IWorkbenchSite site) {
+	public FindImplementorsInProjectAction(final IWorkbenchSite site) {
 		super(site);
 	}
 
@@ -49,7 +49,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	 * @param editor
 	 *            the Java editor
 	 */
-	public FindReferencesInProjectAction(final ErlangEditor editor) {
+	public FindImplementorsInProjectAction(final ErlangEditor editor) {
 		super(editor);
 	}
 
@@ -61,7 +61,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	@Override
 	void init() {
 		setText("Project");
-		setToolTipText("Find references in selected projects");
+		setToolTipText("Find declarations in selected projects");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);

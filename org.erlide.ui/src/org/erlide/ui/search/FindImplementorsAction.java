@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,31 +14,30 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
- * Finds references to the selected element in the enclosing project of the
- * selected element. The action is applicable to selections representing a Java
- * element.
+ * Finds references of the selected element in the workspace. The action is
+ * applicable to selections representing a Java element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @since 3.0
+ * @since 2.0
  */
-public class FindReferencesInProjectAction extends FindReferencesAction {
+public class FindImplementorsAction extends FindAction {
 
 	/**
-	 * Creates a new <code>FindReferencesInProjectAction</code>. The action
-	 * requires that the selection provided by the site's selection provider is
-	 * of type <code>IStructuredSelection</code>.
+	 * Creates a new <code>FindReferencesAction</code>. The action requires that
+	 * the selection provided by the site's selection provider is of type
+	 * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
 	 * 
 	 * @param site
 	 *            the site providing context information for this action
 	 */
-	public FindReferencesInProjectAction(final IWorkbenchSite site) {
+	public FindImplementorsAction(final IWorkbenchSite site) {
 		super(site);
 	}
 
@@ -49,50 +48,49 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	 * @param editor
 	 *            the Java editor
 	 */
-	public FindReferencesInProjectAction(final ErlangEditor editor) {
+	public FindImplementorsAction(final ErlangEditor editor) {
 		super(editor);
 	}
 
 	@Override
 	Class<?>[] getValidTypes() {
-		return new Class[] { IErlElement.class };
+		return new Class[] { IErlFunction.class };
+		// FIXME should we use this?
 	}
 
 	@Override
 	void init() {
-		setText("Project");
-		setToolTipText("Find references in selected projects");
+		setText("Workspace");
+		setToolTipText("Find declarations in workspace");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-		// IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);
+		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
+	}
+
+	@Override
+	int getLimitTo() {
+		return IErlSearchConstants.DECLARATIONS;
 	}
 
 	@Override
 	protected List<IResource> getScope() {
-		return getProjectScope();
+		return SearchUtil.getWorkspaceScope();
 	}
 
 	// QuerySpecification createQuery(IErlElement element)
-	// throws JavaModelException {
+	// throws JavaModelException, InterruptedException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-	// JavaEditor editor = getEditor();
-	//
-	// IJavaSearchScope scope;
-	// String description;
 	// final boolean isInsideJRE = factory.isInsideJRE(element);
-	// if (editor != null) {
-	// scope = factory.createJavaProjectSearchScope(editor
-	// .getEditorInput(), isInsideJRE);
-	// description = factory.getProjectScopeDescription(editor
-	// .getEditorInput(), isInsideJRE);
-	// } else {
-	// scope = factory.createJavaProjectSearchScope(element
-	// .getJavaProject(), isInsideJRE);
-	// description = factory.getProjectScopeDescription(element
-	// .getJavaProject(), isInsideJRE);
-	// }
+	//
+	// IJavaSearchScope scope = factory.createWorkspaceScope(isInsideJRE);
+	// final String description = factory
+	// .getWorkspaceScopeDescription(isInsideJRE);
 	// return new ElementQuerySpecification(element, getLimitTo(), scope,
 	// description);
 	// }
-
+	//
+	// public void run(IErlElement element) {
+	// SearchUtil.warnIfBinaryConstant(element, getShell());
+	// super.run(element);
+	// }
 }

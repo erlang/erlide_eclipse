@@ -55,7 +55,7 @@ public class FindReferencesAction extends FindAction {
 	@Override
 	Class<?>[] getValidTypes() {
 		return new Class[] { IErlFunction.class };
-		// FIXME fler h�r
+		// FIXME should we use this?
 	}
 
 	@Override
@@ -67,6 +67,7 @@ public class FindReferencesAction extends FindAction {
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
 	}
 
+	@Override
 	int getLimitTo() {
 		return IErlSearchConstants.REFERENCES;
 	}

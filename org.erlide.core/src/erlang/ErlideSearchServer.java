@@ -40,6 +40,23 @@ public class ErlideSearchServer {
 				stateDir);
 	}
 
+	public static List<ModuleLineFunctionArityRef> functionDef(final Backend b,
+			final String name, final int arity, final List<IResource> scope,
+			final String stateDir) {
+		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
+		try {
+			OtpErlangObject r = b.call("erlide_search_server", "find_refs",
+					"aaixs", "function_def", name, arity,
+					getModulesFromScope(scope), stateDir);
+			if (Util.isOk(r)) {
+				addSearchResult(result, r);
+			}
+		} catch (Exception e) {
+			ErlLogger.error(e); // TODO report error
+		}
+		return result;
+	}
+
 	public static List<ModuleLineFunctionArityRef> macroOrRecordUse(
 			final Backend b, final String macroOrRecord, final String name,
 			final List<IResource> scope, final String stateDir) {

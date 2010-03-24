@@ -1,7 +1,5 @@
 package org.erlide.ui.search;
 
-import static erlang.ErlideSearchServer.includeUse;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +15,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ErlangFunctionDefRef;
 import org.erlide.core.search.ErlangIncludeRef;
 import org.erlide.core.search.ErlangMacroRef;
 import org.erlide.core.search.ErlangRecordRef;
@@ -32,32 +31,16 @@ public class ErlSearchQuery implements ISearchQuery {
 	// int arity;
 	// IErlElement element;
 	private final List<IResource> scope;
-	private final int searchFor; // REFERENCES, DECLARATIONS or
+	// private final int limitTo; // REFERENCES, DECLARATIONS or
 	// ALL_OCCURRENCES
-	private final int limitTo;
 	private ErlangSearchResult fSearchResult;
 	private List<ModuleLineFunctionArityRef> fResult;
 
-	private String stateDir = null;
+	private String stateDirCached = null;
 
-	// public ErlSearchQuery(final String module, final String fun,
-	// final int arity, final String[] scope) {
-	// this.module = module;
-	// this.fun = fun;
-	// this.arity = arity;
-	// this.scope = scope;
-	// }
-
-	// public ErlSearchQuery(final IErlElement element, final String[] scope) {
-	// this.element = element;
-	// this.scope = scope;
-	// }
-
-	public ErlSearchQuery(final ErlangElementRef ref, final int searchFor,
-			final int limitTo, final List<IResource> scope) {
+	public ErlSearchQuery(final ErlangElementRef ref,
+			final List<IResource> scope) {
 		searchRef = ref;
-		this.searchFor = searchFor;
-		this.limitTo = limitTo;
 		this.scope = scope;
 	}
 
@@ -102,7 +85,12 @@ public class ErlSearchQuery implements ISearchQuery {
 					.getRecord(), scope, getStateDir());
 		} else if (searchRef instanceof ErlangIncludeRef) {
 			final ErlangIncludeRef r = (ErlangIncludeRef) searchRef;
-			fResult = includeUse(backend, r.getFilename(), scope, getStateDir());
+			fResult = ErlideSearchServer.includeUse(backend, r.getFilename(),
+					scope, getStateDir());
+		} else if (searchRef instanceof ErlangFunctionDefRef) {
+			ErlangFunctionDefRef r = (ErlangFunctionDefRef) searchRef;
+			fResult = ErlideSearchServer.functionDef(backend, r.getName(), r
+					.getArity(), scope, getStateDir());
 		}
 		final List<Match> l = new ArrayList<Match>(fResult.size());
 		final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
@@ -118,9 +106,9 @@ public class ErlSearchQuery implements ISearchQuery {
 	}
 
 	private String getStateDir() {
-		if (stateDir == null) {
-			stateDir = ErlangPlugin.getDefault().getStateLocation().toString();
+		if (stateDirCached == null) {
+			stateDirCached = ErlangPlugin.getDefault().getStateLocation().toString();
 		}
-		return stateDir;
+		return stateDirCached;
 	}
 }

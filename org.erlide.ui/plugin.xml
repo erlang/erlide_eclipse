@@ -567,6 +567,12 @@
             sequence="M1+M2+G">
       </key>
       <key
+            commandId="org.erlide.ui.search.implementors.in.workspace"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+G">
+      </key>
+      <key
             commandId="org.erlide.ui.actions.clearCache"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -661,6 +667,30 @@
              id="org.erlide.ui.actions.ReferencesInProject"
              label="&amp;Project"
              menubarPath="org.eclipse.search.menu/referencesSubMenu/group1"
+             retarget="true">
+       </action>
+       <menu
+             id="implementorsSubMenu"
+             label="De&amp;clarations"
+             path="org.eclipse.search.menu/contextMenuActionsGroup">
+          <separator
+                name="group2">
+          </separator>
+       </menu>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.implementors.in.workspace"
+             id="org.erlide.ui.search.actions.ImplementorsInWorkspace"
+             label="&amp;Workspace"
+             menubarPath="org.eclipse.search.menu/implementorsSubMenu/group2"
+             retarget="true">
+       </action>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.implementors.in.project"
+             id="org.erlide.ui.actions.ImplementorsInProject"
+             label="&amp;Project"
+             menubarPath="org.eclipse.search.menu/implementorsSubMenu/group2"
              retarget="true">
        </action>
     </actionSet>
@@ -1248,6 +1278,17 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.erlide.ui.search.category.search"
+            description="Declarations in Workspace"
+            id="org.erlide.ui.search.implementors.in.workspace"
+            name="Declarations in Workspace">
+      </command>
+      <command
+            categoryId="org.erlide.ui.search.category.search"
+            id="org.erlide.ui.search.implementors.in.project"
+            name="Declarations in Project">
+      </command>
       <command
             categoryId="org.erlide.ui.search.category.search"
             description="References in Workspace"

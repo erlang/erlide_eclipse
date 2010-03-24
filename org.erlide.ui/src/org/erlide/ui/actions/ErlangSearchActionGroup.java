@@ -19,6 +19,7 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.search.ImplementorsSearchGroup;
 import org.erlide.ui.search.ReferencesSearchGroup;
 
 /**
@@ -40,7 +41,8 @@ public class ErlangSearchActionGroup extends ActionGroup {
 	// private ReadReferencesSearchGroup fReadAccessGroup;
 	// private WriteReferencesSearchGroup fWriteAccessGroup;
 	// private DeclarationsSearchGroup fDeclarationsGroup;
-	// private ImplementorsSearchGroup fImplementorsGroup;
+	private final ImplementorsSearchGroup fImplementorsGroup;
+
 	// private OccurrencesSearchGroup fOccurrencesGroup;
 
 	/**
@@ -82,7 +84,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		// fReadAccessGroup = new ReadReferencesSearchGroup(fEditor);
 		// fWriteAccessGroup = new WriteReferencesSearchGroup(fEditor);
 		// fDeclarationsGroup = new DeclarationsSearchGroup(fEditor);
-		// fImplementorsGroup = new ImplementorsSearchGroup(fEditor);
+		fImplementorsGroup = new ImplementorsSearchGroup(fEditor);
 		// fOccurrencesGroup = new OccurrencesSearchGroup(fEditor);
 	}
 
@@ -91,7 +93,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		// fReadAccessGroup = new ReadReferencesSearchGroup(site);
 		// fWriteAccessGroup = new WriteReferencesSearchGroup(site);
 		// fDeclarationsGroup = new DeclarationsSearchGroup(site);
-		// fImplementorsGroup = new ImplementorsSearchGroup(site);
+		fImplementorsGroup = new ImplementorsSearchGroup(site);
 		// fOccurrencesGroup = new OccurrencesSearchGroup(site);
 	}
 
@@ -102,7 +104,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 	public void setContext(final ActionContext context) {
 		fReferencesGroup.setContext(context);
 		// fDeclarationsGroup.setContext(context);
-		// fImplementorsGroup.setContext(context);
+		fImplementorsGroup.setContext(context);
 		// fReadAccessGroup.setContext(context);
 		// fWriteAccessGroup.setContext(context);
 		// fOccurrencesGroup.setContext(context);
@@ -116,7 +118,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		super.fillActionBars(actionBar);
 		fReferencesGroup.fillActionBars(actionBar);
 		// fDeclarationsGroup.fillActionBars(actionBar);
-		// fImplementorsGroup.fillActionBars(actionBar);
+		fImplementorsGroup.fillActionBars(actionBar);
 		// fReadAccessGroup.fillActionBars(actionBar);
 		// fWriteAccessGroup.fillActionBars(actionBar);
 		// fOccurrencesGroup.fillActionBars(actionBar);
@@ -132,6 +134,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 		// if (PreferenceConstants.getPreferenceStore().getBoolean(
 		// PreferenceConstants.SEARCH_USE_REDUCED_MENU)) {
 		fReferencesGroup.fillContextMenu(menu);
+		fImplementorsGroup.fillContextMenu(menu);
 		// fDeclarationsGroup.fillContextMenu(menu);
 		//
 		// if (fEditor == null) {
@@ -177,7 +180,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
 	public void dispose() {
 		fReferencesGroup.dispose();
 		// fDeclarationsGroup.dispose();
-		// fImplementorsGroup.dispose();
+		fImplementorsGroup.dispose();
 		// fReadAccessGroup.dispose();
 		// fWriteAccessGroup.dispose();
 		// fOccurrencesGroup.dispose();

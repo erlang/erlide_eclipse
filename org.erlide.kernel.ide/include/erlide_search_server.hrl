@@ -6,6 +6,7 @@
 
 -record(external_call, {module, function, arity}).
 -record(local_call, {function, arity}).
+-record(function_def, {function, arity}).
 -record(macro_ref, {macro}).
 -record(record_ref, {record}).
 -record(macro_def, {macro}).

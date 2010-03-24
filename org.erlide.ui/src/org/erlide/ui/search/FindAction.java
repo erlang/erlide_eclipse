@@ -12,6 +12,8 @@ package org.erlide.ui.search;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
@@ -21,8 +23,11 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -30,6 +35,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
+import org.erlide.core.search.ErlangFunctionDefRef;
 import org.erlide.core.search.ErlangIncludeRef;
 import org.erlide.core.search.ErlangMacroRef;
 import org.erlide.core.search.ErlangRecordRef;
@@ -244,11 +250,23 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 			ErlangElementRef ref;
 			if (res.isExternalCall()) {
-				ref = new ErlangExternalFunctionCallRef(res.getName(), res
-						.getFun(), res.getArity());
+				if (getLimitTo() == IErlSearchConstants.REFERENCES) {
+					ref = new ErlangExternalFunctionCallRef(res.getName(), res
+							.getFun(), res.getArity());
+				} else if (getLimitTo() == IErlSearchConstants.DECLARATIONS) {
+					ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
+				} else {
+					ref = null;
+				}
 			} else if (res.isLocalCall()) {
-				ref = new ErlangExternalFunctionCallRef(module.getModuleName(),
-						res.getFun(), res.getArity());
+				if (getLimitTo() == IErlSearchConstants.REFERENCES) {
+					ref = new ErlangExternalFunctionCallRef(module
+							.getModuleName(), res.getFun(), res.getArity());
+				} else if (getLimitTo() == IErlSearchConstants.DECLARATIONS) {
+					ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
+				} else {
+					ref = null;
+				}
 			} else if (res.isMacro()) {
 				ref = new ErlangMacroRef(ErlideUtil.unquote(res.getName()));
 			} else if (res.isRecord()) {
@@ -268,12 +286,13 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
+	abstract int getLimitTo();
+
 	abstract protected List<IResource> getScope();
 
 	private void performNewSearch(final ErlangElementRef ref) {
 
 		final ErlSearchQuery query = new ErlSearchQuery(ref,
-				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,
 				getScope());
 		if (query.canRunInBackground()) {
 			/*
@@ -334,10 +353,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	private void performNewSearch(final IErlElement element) {
-		final ErlangExternalFunctionCallRef ref = SearchUtil
-				.getRefFromErlElement(element);
+		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimit(
+				element, getLimitTo());
 		final ErlSearchQuery query = new ErlSearchQuery(ref,
-				IErlSearchConstants.REFERENCES, IErlSearchConstants.FUNCTION,
 				getScope());
 		if (query.canRunInBackground()) {
 			/*
@@ -375,8 +393,34 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return fEditor;
 	}
 
-	// private ErlangEditor getEditor() {
-	// return fEditor;
-	// }
+	protected List<IResource> getProjectScope() {
+		TextEditor editor = getEditor();
+		if (editor != null) {
+			final IEditorInput editorInput = editor.getEditorInput();
+			if (editorInput instanceof IFileEditorInput) {
+				final IFileEditorInput input = (IFileEditorInput) editorInput;
+				final IFile file = input.getFile();
+				final IProject project = file.getProject();
+				return SearchUtil.getProjectScope(project);
+			}
+		} else {
+			IWorkbenchSite site = getSite();
+			final ISelection selection = site.getSelectionProvider()
+					.getSelection();
+			if (selection instanceof IStructuredSelection) {
+				final IStructuredSelection ss = (IStructuredSelection) selection;
+				final Object element = ss.getFirstElement();
+				if (element instanceof IErlElement) {
+					final IErlElement e = (IErlElement) element;
+					return SearchUtil.getProjectScope(e.getResource()
+							.getProject());
+				} else if (element instanceof IResource) {
+					IResource r = (IResource) element;
+					return SearchUtil.getProjectScope(r.getProject());
+				}
+			}
+		}
+		return null;
+	}
 
 }

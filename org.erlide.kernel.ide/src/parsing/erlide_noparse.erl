@@ -482,8 +482,10 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
 fix_refs(ClausesAndRefs, Function) ->
     fix_refs(ClausesAndRefs, Function, []).
 
-fix_refs([], _, Acc) ->
-    Acc;
+fix_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, Acc) ->
+    Ref = #ref{data=#function_def{function=Name, arity=Arity}, offset=Offset, 
+               length=Length, function=Name, arity=Arity, clause="", sub_clause=false},
+    [Ref | Acc];
 fix_refs([{Clause, Refs} | Rest], Function, Acc0) ->
     Acc1 = fix_refs(Refs, Clause, Function, Acc0),
     fix_refs(Rest, Function, Acc1).

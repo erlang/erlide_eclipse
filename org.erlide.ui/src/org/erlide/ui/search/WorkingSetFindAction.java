@@ -85,8 +85,9 @@ public class WorkingSetFindAction extends FindAction {
 		return fAction.canOperateOn(element);
 	}
 
+	@Override
 	int getLimitTo() {
-		return -1;
+		return fAction.getLimitTo();
 	}
 
 	@Override

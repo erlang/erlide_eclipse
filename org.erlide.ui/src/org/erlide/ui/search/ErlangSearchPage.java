@@ -292,8 +292,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		final int searchFor = data.getSearchFor();
 		final int limitTo = data.getLimitTo();
 
-		final ErlSearchQuery query = new ErlSearchQuery(fRef, searchFor,
-				limitTo, scope);
+		final ErlSearchQuery query = new ErlSearchQuery(fRef, scope);
 		NewSearchUI.runQueryInBackground(query);
 		return true;
 	}
@@ -850,7 +849,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 	private SearchPatternData determineInitValuesFrom(final IErlElement e) {
 		final ErlangExternalFunctionCallRef ref = SearchUtil
-				.getRefFromErlElement(e);
+				.getRefFromErlElementAndLimit(e);
 		if (ref == null) {
 			return null;
 		}
