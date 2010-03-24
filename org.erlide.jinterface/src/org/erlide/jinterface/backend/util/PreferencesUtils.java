@@ -25,7 +25,9 @@ public final class PreferencesUtils {
 	public static String packArray(final String[] strs) {
 		final StringBuilder result = new StringBuilder();
 		for (final String s : strs) {
-			result.append(s).append(SEP);
+			if (s.length() > 0) {
+				result.append(s).append(SEP);
+			}
 		}
 		return result.toString();
 	}
