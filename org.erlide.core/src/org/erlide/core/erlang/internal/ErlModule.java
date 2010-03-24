@@ -148,12 +148,9 @@ public class ErlModule extends Openable implements IErlModule {
 				if (e instanceof ISourceReference) {
 					final ISourceReference ch = (ISourceReference) e;
 					ISourceRange r;
-					try {
-						r = ch.getSourceRange();
-						if (r != null && r.hasPosition(position)) {
-							return true;
-						}
-					} catch (final ErlModelException e1) {
+					r = ch.getSourceRange();
+					if (r != null && r.hasPosition(position)) {
+						return true;
 					}
 				}
 				return false;

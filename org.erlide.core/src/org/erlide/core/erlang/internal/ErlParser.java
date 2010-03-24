@@ -287,7 +287,7 @@ public final class ErlParser {
 		final OtpErlangTuple tpos1 = (OtpErlangTuple) namePos.elementAt(0);
 		final int ofs = ((OtpErlangLong) tpos1.elementAt(1)).intValue();
 		final int len = ((OtpErlangLong) namePos.elementAt(1)).intValue();
-		f.setNameRangeStartEnd(ofs, ofs + len);
+		f.setNameRange(ofs, len);
 	}
 
 	/**
@@ -470,8 +470,8 @@ public final class ErlParser {
 
 	private static void setPos(final SourceRefElement e, final int line,
 			final int lastLine, final int ofs, final int len) {
-		e.setSourceRangeStart(ofs);
-		e.setSourceRangeEnd(ofs + len - 1);
+		e.setSourceRangeOffset(ofs);
+		e.setSourceRangeLength(len - 1);
 		// FIXME: why is the token 1 char too long?
 		e.setLineStart(line);
 		e.setLineEnd(lastLine);
