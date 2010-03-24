@@ -60,16 +60,14 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return result + ", line=" + (getLineStart() + 1) + ">";
 	}
 
-	public void setNameRangeStartEnd(final int start, final int end) {
-		// TODO Auto-generated method stub
-	}
-
 	public String getHoverHelp() {
 		return null;
 	}
 
 	public ISourceRange getNameRange() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setNameRange(final int offset, final int length) {
 	}
 }
