@@ -37,6 +37,12 @@
             <groupMarker
                   name="org.erlide.wrangler.refactoring.macroGroup">
             </groupMarker>
+            <separator
+                  name="org.erlide.wrangler.refactoring.separator5">
+            </separator>
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.quickcheckGroup">
+            </groupMarker>
          </menu>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
@@ -135,6 +141,27 @@
                id="org.erlide.wrangler.refactoring.normalizerecordexpression"
                label="%normalizeRecordExpressionName"
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.macroGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.introducelet"
+               label="%introduceLetName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.mergelet"
+               label="%mergeLetName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.mergeforall"
+               label="%mergeForAllName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
                style="push">
          </action>
          <!-- Experimental

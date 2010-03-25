@@ -12,6 +12,7 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.ExpressionPosRpcMessage;
+import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;

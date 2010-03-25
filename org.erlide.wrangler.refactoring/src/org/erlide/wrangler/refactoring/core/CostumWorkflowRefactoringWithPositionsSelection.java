@@ -1,10 +1,9 @@
-package org.erlide.wrangler.refactoring.core.internal;
+package org.erlide.wrangler.refactoring.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangList;

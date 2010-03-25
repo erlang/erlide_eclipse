@@ -11,6 +11,7 @@ import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
+import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;

@@ -14,14 +14,15 @@ import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
+import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldAgainstMacro;
 import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldRemoteExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.IntroduceLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
@@ -230,6 +231,21 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 						activeShell, "Showing defaults",
 						"Show record fields with default values?");
 				refactoring = new NormalizeRecordExpression(showDefaultFields);
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.introducelet")) {
+
+				pages.add(new CostumworkFlowInputPage("Introduce ?LET",
+						"Please type the pattern variable name!",
+						"Pattern variable name:",
+						"New name must be a valid Erlang atom!",
+						new VariableNameValidator()));
+				refactoring = new IntroduceLetRefactoring();
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.mergelet")) {
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.mergeforall")) {
+
 			} else
 				return;
 		}

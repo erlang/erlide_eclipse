@@ -21,9 +21,13 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
 
+	OtpErlangTuple resultTuple;
+
 	@Override
 	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
 			throws WranglerRpcParsingException {
+		this.resultTuple = resultTuple;
+
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
 		if (resultTuple.elementAt(0).toString().equals("ok")) {
 
@@ -40,11 +44,20 @@ public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
 				setQuestion(msg.stringValue());
 			} else {
 				setUnsuccessful(msg.stringValue());
-				return;
 			}
+			return;
 		}
 
 		throw new WranglerRpcParsingException(resultTuple.toString());
 
+	}
+
+	/**
+	 * Returns the raw result object from Wrangler
+	 * 
+	 * @return result from Wrangler
+	 */
+	public OtpErlangTuple getResultObject() {
+		return resultTuple;
 	}
 }

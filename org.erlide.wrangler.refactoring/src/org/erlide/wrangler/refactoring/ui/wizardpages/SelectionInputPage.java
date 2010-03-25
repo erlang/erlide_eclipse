@@ -12,7 +12,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.erlide.wrangler.refactoring.core.internal.CostumWorkflowRefactoringWithPositionsSelection;
+import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.ExpressionCheckButtonListener;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
