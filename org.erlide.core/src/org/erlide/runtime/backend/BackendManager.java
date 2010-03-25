@@ -59,6 +59,7 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public final class BackendManager extends OtpNodeStatus implements
 		IEpmdListener {
@@ -86,6 +87,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	private final Map<Bundle, CodeBundle> codeBundles;
 
 	private final EpmdWatcher epmdWatcher;
+	private final Set<ErlideBackend> allBackends;
 
 	@SuppressWarnings("synthetic-access")
 	private static final class LazyBackendManagerHolder {
@@ -100,6 +102,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		ideBackend = null;
 		executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
 		buildBackends = new HashMap<String, ErlideBackend>();
+		allBackends = Sets.newHashSet();
 		listeners = new ArrayList<BackendListener>();
 		codeBundles = Maps.newHashMap();
 
@@ -116,11 +119,12 @@ public final class BackendManager extends OtpNodeStatus implements
 		ErlideBackend b = null;
 
 		final boolean isRemoteNode = nodeName.contains("@");
+		boolean watch = true;
 		if (exists || isRemoteNode) {
 			ErlLogger.debug("create standalone " + options + " backend '"
 					+ info + "' " + Thread.currentThread());
 			b = new ErlideBackend(info);
-
+			watch = false;
 		} else if (options.contains(BackendOptions.AUTOSTART)) {
 			ErlLogger.debug("create managed " + options + " backend '" + info
 					+ "' " + Thread.currentThread());
@@ -135,18 +139,21 @@ public final class BackendManager extends OtpNodeStatus implements
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
 			return null;
 		}
-
+		addBackend(b);
 		b.setLaunch(launch);
 		if (launch != null) {
 			DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
 		}
-		initializeBackend(options, b);
-
+		initializeBackend(options, b, watch);
 		return b;
 	}
 
+	private synchronized void addBackend(ErlideBackend b) {
+		allBackends.add(b);
+	}
+
 	private void initializeBackend(final Set<BackendOptions> options,
-			ErlideBackend b) {
+			ErlideBackend b, boolean watchNode) {
 		b.initializeRuntime();
 		if (b.isDistributed()) {
 			b.connect();
@@ -155,7 +162,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			}
 			boolean monitorNode = options.contains(BackendOptions.IDE)
 					&& "true".equals(System.getProperty("erlide.monitor.ide"));
-			b.initErlang(monitorNode);
+			b.initErlang(monitorNode, watchNode);
 			b.registerStatusHandler(this);
 			b.setDebug(options.contains(BackendOptions.DEBUG));
 			b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
@@ -192,6 +199,7 @@ public final class BackendManager extends OtpNodeStatus implements
 				throw new BackendException(
 						"IDE backend is not created - check configuration!");
 			}
+			ideBackend.addProjectPath(project);
 			return ideBackend;
 		}
 		final String version = info.getVersion().asMajor().toString();
@@ -208,8 +216,9 @@ public final class BackendManager extends OtpNodeStatus implements
 			b = createBackend(info, options, null);
 			buildBackends.put(version, b);
 		}
-		ErlLogger.info("BUILD project %s on %s", project.getName(), info
-				.getVersion());
+		b.addProjectPath(project);
+
+		ErlLogger.info("BUILD project %s on %s", project.getName(), info);
 		return b;
 	}
 
@@ -260,7 +269,6 @@ public final class BackendManager extends OtpNodeStatus implements
 			synchronized (ideBackendLock) {
 				if (ideBackend == null) {
 					try {
-						// System.out.println("CREATE ide");
 						createIdeBackend();
 					} catch (BackendException e) {
 						ErlLogger.error("Could not start IDE backend: "
@@ -309,19 +317,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public Collection<ErlideBackend> getAllBackends() {
-		final Set<ErlideBackend> ebs = new HashSet<ErlideBackend>();
-		if (ideBackend != null) {
-			// we don't want to activate backend if it didn't exist, so don't
-			// use getIdeBackend()
-			ebs.add(ideBackend);
-		}
-		for (final Set<ErlideBackend> b : executionBackends.values()) {
-			ebs.addAll(b);
-		}
-		for (final ErlideBackend b : buildBackends.values()) {
-			ebs.add(b);
-		}
-		return ebs;
+		return Collections.unmodifiableCollection(allBackends);
 	}
 
 	private void addCodeBundle(IExtension extension) {
@@ -484,6 +480,16 @@ public final class BackendManager extends OtpNodeStatus implements
 			}
 			ErlangCore.getBackendManager().addCodeBundle(extension);
 		}
+	}
+
+	public Backend getByName(String nodeName) {
+		Collection<ErlideBackend> list = getAllBackends();
+		for (Backend b : list) {
+			if (b.getName().equals(nodeName)) {
+				return b;
+			}
+		}
+		return null;
 	}
 
 }

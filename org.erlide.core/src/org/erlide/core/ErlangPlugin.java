@@ -13,6 +13,7 @@ package org.erlide.core;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
@@ -71,6 +72,8 @@ public class ErlangPlugin extends Plugin {
 	 * Resource bundle.
 	 */
 	private ResourceBundle resourceBundle;
+
+	private Logger logger;
 
 	/**
 	 * The constructor.
@@ -136,6 +139,7 @@ public class ErlangPlugin extends Plugin {
 
 			ErlangCore.getModelManager().shutdown();
 		} finally {
+			logger = null;
 			// ensure we call super.stop as the last thing
 			super.stop(context);
 			plugin = null;
@@ -152,8 +156,8 @@ public class ErlangPlugin extends Plugin {
 	 */
 	@Override
 	public void start(final BundleContext context) throws Exception {
-		ErlLogger.init(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toPortableString(), Platform.inDebugMode());
+		logger = ErlLogger.init(ResourcesPlugin.getWorkspace().getRoot()
+				.getLocation().toPortableString(), Platform.inDebugMode());
 		ErlLogger.debug("Starting CORE " + Thread.currentThread());
 		super.start(context);
 

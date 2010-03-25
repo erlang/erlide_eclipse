@@ -54,7 +54,7 @@ public class ErlideDoc {
 		return res;
 	}
 
-	public static String getOtpDocLoation(final Backend b) {
+	public static String getOtpDocLocation(final Backend b) {
 		// OtpErlangObject res = null;
 		// try {
 		// // commented out since target doesn't exist

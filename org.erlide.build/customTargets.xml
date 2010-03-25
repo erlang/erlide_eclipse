@@ -169,7 +169,7 @@
     <target name="-createNightlyBuildSiteXml" if="isNightlyBuild">
     	<echo>${siteXmlFile}</echo>
         <echo file="${siteXmlFile}">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;site&gt;
+&lt;site url=&quot;http://downloads.sourceforge.net/project/erlide/updateNightly/&quot;&gt;
 		&lt;description&gt;Nightly builds for erlIDE&lt;/description&gt;
 </echo>
 		

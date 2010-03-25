@@ -54,6 +54,7 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
@@ -345,7 +346,7 @@ public class ErlTextHover implements ITextHover,
 								return null;
 							}
 							final IFile file = (IFile) r;
-							m = ErlModelUtils.getModule(file);
+							m = ModelUtils.getModule(file);
 						}
 						int arity = -1;
 						try {
@@ -361,7 +362,7 @@ public class ErlTextHover implements ITextHover,
 						}
 						try {
 							m.open(null);
-							f = ErlModelUtils.findFunction(m, erlangFunction);
+							f = ModelUtils.findFunction(m, erlangFunction);
 							element = f;
 						} catch (final ErlModelException e) {
 						}

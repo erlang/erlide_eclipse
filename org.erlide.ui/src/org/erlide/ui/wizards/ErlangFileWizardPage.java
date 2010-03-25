@@ -31,7 +31,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -44,12 +43,11 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.wizards.templates.ErlangSourceContextTypeBehaviour;
-import org.erlide.ui.wizards.templates.ErlangSourceContextTypeComment;
-import org.erlide.ui.wizards.templates.ErlangSourceContextTypeLayout;
+import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.templates.ErlangSourceContextTypeModule;
+import org.erlide.ui.templates.ModuleVariableResolver;
 import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
 import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
-import org.erlide.ui.wizards.templates.ModuleVariableResolver;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -57,8 +55,7 @@ import org.erlide.ui.wizards.templates.ModuleVariableResolver;
  * OR with the extension that matches the expected one (erl).
  */
 
-public class ErlangFileWizardPage extends WizardPage implements
-		SelectionListener {
+public class ErlangFileWizardPage extends WizardPage {
 
 	public boolean gettingInput = false;
 	private Text containerText;
@@ -67,8 +64,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 	private Combo skeleton;
 	private FunctionGroup functionGroup;
 	private final ISelection fSelection;
-	private final Template[] behaviours;
+	private final Template[] moduleTemplates;
 	private final ModifyListener fModifyListener;
+	private TemplateContextType fContextType = null;
 
 	/**
 	 * Constructor for SampleNewWizardPage.
@@ -81,9 +79,11 @@ public class ErlangFileWizardPage extends WizardPage implements
 		setDescription("This wizard creates a new erlang source file.");
 		fSelection = selection;
 
-		behaviours = ErlangSourceContextTypeComment.getDefault()
-				.getTemplateStore().getTemplates(
-						ErlangSourceContextTypeBehaviour.getDefault().getId());
+		moduleTemplates = ErlideUIPlugin
+				.getDefault()
+				.getTemplateStore()
+				.getTemplates(
+						ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
 		fModifyListener = new ModifyListener() {
 			public void modifyText(final ModifyEvent e) {
 				dialogChanged();
@@ -156,9 +156,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 
 		skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
 				| SWT.READ_ONLY);
-		skeleton.add("None");
+		// skeleton.add("None");
 
-		for (final Template element : behaviours) {
+		for (final Template element : moduleTemplates) {
 			skeleton.add(element.getName());
 		}
 		skeleton.select(0);
@@ -194,9 +194,9 @@ public class ErlangFileWizardPage extends WizardPage implements
 				String txt;
 				if (pp.hasSourceDir(container.getFullPath())) {
 					txt = container.getFullPath().toString();
-				} else if (pp.getSourceDirs().length > 0) {
+				} else if (pp.getSourceDirs().size() > 0) {
 					txt = container.getFolder(
-							new Path(pp.getSourceDirs()[0].toString()))
+							new Path(pp.getSourceDirs().get(0).toString()))
 							.getFullPath().toString();
 				} else {
 					txt = container.getFullPath().toString();
@@ -284,14 +284,22 @@ public class ErlangFileWizardPage extends WizardPage implements
 	 * @return The skeleton that the new file is to consist of.
 	 */
 	public String getSkeleton() {
-		if (skeleton.getSelectionIndex() > 0) {
-			return parse(behaviours[skeleton.getSelectionIndex() - 1],
-					ErlangSourceContextTypeBehaviour.getDefault());
+		final int index = skeleton.getSelectionIndex();
+		if (index < 0 || index >= moduleTemplates.length) {
+			return "";
 		}
-		return parse(ErlangSourceContextTypeComment.getDefault()
-				.getTemplateStore().getTemplateData(
-						"org.erlide.ui.erlangsource.modulelayout")
-				.getTemplate(), ErlangSourceContextTypeLayout.getDefault());
+		return parse(moduleTemplates[index], getContextType());
+	}
+
+	private TemplateContextType getContextType() {
+		if (fContextType == null) {
+			fContextType = ErlideUIPlugin
+					.getDefault()
+					.getContextTypeRegistry()
+					.getContextType(
+							ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+		}
+		return fContextType;
 	}
 
 	private String parse(final Template template,
@@ -304,11 +312,6 @@ public class ErlangFileWizardPage extends WizardPage implements
 
 		ExportedFunctionsVariableResolver.getDefault().clearFunctions();
 		LocalFunctionsVariableResolver.getDefault().clearFunctions();
-
-		/*
-		 * final LocalFunctionsVariableResolver h =
-		 * LocalFunctionsVariableResolver .getDefault();
-		 */
 
 		for (int i = 0; i < functionGroup.getFunctionData().length; i++) {
 			final Function fun = functionGroup.getFunctionData()[i];
@@ -338,28 +341,5 @@ public class ErlangFileWizardPage extends WizardPage implements
 			return null;
 		}
 		return tb.getString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
-	 * .swt.events.SelectionEvent)
-	 */
-	public void widgetDefaultSelected(final SelectionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
-	 * .events.SelectionEvent)
-	 */
-	public void widgetSelected(final SelectionEvent e) {
-
 	}
 }

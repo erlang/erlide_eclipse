@@ -307,11 +307,11 @@ convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
 convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
     T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
+convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
 	   Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
+convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
 	   Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
@@ -406,15 +406,19 @@ kind_small(Kind) when is_atom(Kind) ->
 	end.
 
 fixup_macro(L, O, G) ->
+	?D({macro, L, O, G}),
 	%%     V = [$? | atom_to_list(V0)],
 	<<?TOK_MACRO, L:24, O:24, (G+1):24>>.
 
 fixup_tokens([], Acc) ->
 	erlang:iolist_to_binary(Acc);
-fixup_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
+fixup_tokens([{'?', {{L, O}, _}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
+fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
+    T = fixup_macro(L, O, G),
+    fixup_tokens(Rest, [Acc | T]);
+fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
 fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->

@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2006 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -49,5 +49,9 @@ public class IErlangHelpContextIds {
 	public static final String OPEN_MODULE_ACTION = "openModuleAction";
 
 	public static final String LINK_EDITOR_ACTION = "linkEditorAction";
+
+	public static final String BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG = "selectDefaultOutputFolderDialog";
+
+	public static final String BP_CREATE_NEW_FOLDER = "createNewFolder";
 
 }

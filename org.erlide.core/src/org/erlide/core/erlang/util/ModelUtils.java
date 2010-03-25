@@ -13,12 +13,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -43,6 +46,9 @@ public class ModelUtils {
 	 */
 	public static String findIncludeFile(final IProject project,
 			final String filePath, final String externalIncludes) {
+		if (project == null) {
+			return filePath;
+		}
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		final OldErlangProjectProperties prefs = ErlangCore
@@ -124,7 +130,8 @@ public class ModelUtils {
 				re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
 						element.getFilenameLastPart(),
 						org.erlide.core.erlang.util.PluginUtils
-								.getIncludePathFilter(project, m.getResource().getParent()));
+								.getIncludePathFilter(project, m.getResource()
+										.getParent()));
 				if (re != null) {
 					project = p;
 					break;
@@ -140,7 +147,8 @@ public class ModelUtils {
 					}
 					re = ResourceUtil.recursiveFindNamedResourceWithReferences(
 							project, s, org.erlide.core.erlang.util.PluginUtils
-									.getIncludePathFilter(project, m.getResource().getParent()));
+									.getIncludePathFilter(project, m
+											.getResource().getParent()));
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
@@ -157,6 +165,54 @@ public class ModelUtils {
 					}
 				}
 			}
+		}
+		return null;
+	}
+
+	public static IErlTypespec findTypespec(final IErlModule module,
+			final String name) throws ErlModelException {
+		final List<? extends IErlElement> children = module.getChildren();
+		for (final IErlElement element : children) {
+			if (element instanceof IErlTypespec) {
+				final IErlTypespec t = (IErlTypespec) element;
+				if (t.getName().equals(name)) {
+					return t;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static IErlFunction findFunction(final IErlModule module,
+			final ErlangFunction erlangFunction) throws ErlModelException {
+		final List<? extends IErlElement> children = module.getChildren();
+		for (final IErlElement element : children) {
+			if (element instanceof IErlFunction) {
+				final IErlFunction f = (IErlFunction) element;
+				if (f.getFunction().equals(erlangFunction)) {
+					return f;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static IErlModule getModule(final String moduleName) {
+		final IErlModel model = ErlangCore.getModel();
+		try {
+			model.open(null);
+			return model.findModule(moduleName);
+		} catch (final ErlModelException e) {
+		}
+		return null;
+	}
+
+	public static IErlModule getModule(final IFile file) {
+		final IErlModel model = ErlangCore.getModel();
+		try {
+			model.open(null);
+			return model.findModule(file);
+		} catch (final ErlModelException e) {
 		}
 		return null;
 	}

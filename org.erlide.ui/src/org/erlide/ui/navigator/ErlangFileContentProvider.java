@@ -25,8 +25,8 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
 		IResourceChangeListener, IResourceDeltaVisitor,
@@ -59,7 +59,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		Object[] result = NO_CHILDREN;
 		try {
 			if (parentElement instanceof IFile) {
-				final IErlModule mod = ErlModelUtils
+				final IErlModule mod = ModelUtils
 						.getModule((IFile) parentElement);
 				if (mod != null) {
 					mod.open(null);
@@ -175,10 +175,13 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 	}
 
 	private void doRefresh(final IFile file) {
-		new UIJob("Update Erlang Model in CommonViewer") {
+		final String title = "Update Erlang Model in CommonViewer: "
+				+ file.getName();
+		new UIJob(title) {
 			@Override
 			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (viewer != null && !viewer.getControl().isDisposed()) {
+					ErlLogger.debug(title);
 					viewer.refresh(file);
 				}
 				return Status.OK_STATUS;

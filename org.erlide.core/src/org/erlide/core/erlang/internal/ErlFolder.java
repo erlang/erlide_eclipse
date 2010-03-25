@@ -108,14 +108,14 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return getModule(this, name);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.erlide.core.erlang.IErlFolder#getModules()
+	 */
 	public List<IErlModule> getModules() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
-
-		for (final IErlElement e : this.getChildren()) {
-			if (e instanceof IErlModule) {
-				result.add((IErlModule) e);
-			}
-		}
+		addModules(result);
 		return result;
 	}
 

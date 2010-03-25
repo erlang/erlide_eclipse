@@ -2,33 +2,33 @@
 <templates>
 
 <template
-  name="File Comment"
+  name="file_comment"
   description="%descriptionFileComment"
-  context="org.erlide.ui.erlangsource.template.context.generate"
+  context="org.erlide.ui.erlangsource.template.context.module.element"
   id="org.erlide.ui.erlangsource.filecomment">%% Author: ${user}
 %% Created: ${date}
 %% Description: TODO: Add description to ${module}</template>
 
 <template
-  name="Behaviour Comment"
+  name="behaviour_comment"
   description="%descriptionBehaviourComment"
-  context="org.erlide.ui.erlangsource.template.context.generate"
+  context="org.erlide.ui.erlangsource.template.context.module.element"
   id="org.erlide.ui.erlangsource.behaviourcomment">%%
 %% Behaviours
 %%</template>
 
 <template
-  name="Export Comment"
+  name="export_comment"
   description="%descriptionExportComment"
-  context="org.erlide.ui.erlangsource.template.context.generate"
+  context="org.erlide.ui.erlangsource.template.context.module.element"
   id="org.erlide.ui.erlangsource.exportcomment">%%
 %% Exports
 %%</template>
 
 <template
-  name="Function Comment"
+  name="function_comment"
   description="%descriptionFunctionComment"
-  context="org.erlide.ui.erlangsource.template.context.generate"
+  context="org.erlide.ui.erlangsource.template.context.module.element"
   id="org.erlide.ui.erlangsource.functioncomment">%%
 %% TODO: Add description of ${function_name}/${function_arity}
 %%</template>

@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -58,8 +57,7 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = prefs.getSourceDirs();
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (i.equals(".")) {
@@ -80,7 +78,7 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final String[] includePaths = prefs.getIncludeDirs();
+		final List<String> includePaths = prefs.getIncludeDirs();
 		final IPath path = con.getFullPath();
 		for (final String i : includePaths) {
 			if (i.equals(".")) {
@@ -101,8 +99,7 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = PreferencesUtils.unpackList(prefs
-				.getSourceDirsString());
+		final List<String> sourcePaths = prefs.getSourceDirs();
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
@@ -128,7 +125,8 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static ContainerFilter getIncludePathFilter(final IProject project, final IContainer current) {
+	public static ContainerFilter getIncludePathFilter(final IProject project,
+			final IContainer current) {
 		return new ContainerFilter() {
 			public boolean accept(final IContainer container) {
 				return container.equals(current) || isOnIncludePath(container);

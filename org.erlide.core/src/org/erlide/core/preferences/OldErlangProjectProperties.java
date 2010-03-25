@@ -10,6 +10,10 @@
 
 package org.erlide.core.preferences;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -24,18 +28,20 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements
 		IPreferenceChangeListener {
 
 	private IProject project;
 
-	private String sourceDirs = ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS;
-	private String usePathZ = ProjectPreferencesConstants.DEFAULT_USE_PATHZ;
+	private List<String> sourceDirs = PreferencesUtils
+			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
 	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
-	private String includeDirs = ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS;
+	private List<String> includeDirs = PreferencesUtils
+			.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
 	private RuntimeVersion runtimeVersion = new RuntimeVersion(
@@ -83,14 +89,16 @@ public final class OldErlangProjectProperties implements
 			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
 
-		sourceDirs = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
+		String sourceDirsStr = node.get(
+				ProjectPreferencesConstants.SOURCE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-		includeDirs = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
+		sourceDirs = PreferencesUtils.unpackList(sourceDirsStr);
+		String includeDirsStr = node.get(
+				ProjectPreferencesConstants.INCLUDE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+		includeDirs = PreferencesUtils.unpackList(includeDirsStr);
 		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
 				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-		usePathZ = node.get(ProjectPreferencesConstants.USE_PATHZ,
-				ProjectPreferencesConstants.DEFAULT_USE_PATHZ);
 		runtimeVersion = new RuntimeVersion(node.get(
 				ProjectPreferencesConstants.RUNTIME_VERSION, null));
 		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
@@ -136,10 +144,11 @@ public final class OldErlangProjectProperties implements
 		node.removePreferenceChangeListener(this);
 
 		try {
-			node.put(ProjectPreferencesConstants.SOURCE_DIRS, sourceDirs);
-			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, includeDirs);
+			node.put(ProjectPreferencesConstants.SOURCE_DIRS, PreferencesUtils
+					.packList(sourceDirs));
+			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, PreferencesUtils
+					.packList(includeDirs));
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
-			node.put(ProjectPreferencesConstants.USE_PATHZ, usePathZ);
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
 			if (runtimeVersion.isDefined()) {
@@ -169,20 +178,12 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public String getIncludeDirsString() {
-		return includeDirs;
+	public List<String> getIncludeDirs() {
+		return Collections.unmodifiableList(includeDirs);
 	}
 
-	public void setIncludeDirsString(final String dirs) {
-		includeDirs = dirs;
-	}
-
-	public String[] getIncludeDirs() {
-		return PreferencesUtils.unpackArray(includeDirs);
-	}
-
-	public void setIncludeDirs(final String[] dirs) {
-		includeDirs = PreferencesUtils.packArray(dirs);
+	public void setIncludeDirs(final Collection<String> includeDirs2) {
+		includeDirs = Lists.newArrayList(includeDirs2);
 	}
 
 	public String getOutputDir() {
@@ -208,39 +209,12 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public boolean getUsePathZ() {
-		return Boolean.parseBoolean(usePathZ);
+	public List<String> getSourceDirs() {
+		return Collections.unmodifiableList(sourceDirs);
 	}
 
-	public void setUsePathZ(final boolean pz) {
-		final boolean z = Boolean.parseBoolean(usePathZ);
-		if (z != pz) {
-			for (final ErlideBackend b : ErlangCore.getBackendManager()
-					.getExecutionBackends(project)) {
-
-				final String p = project.getLocation().append(outputDir)
-						.toString();
-				b.removePath(p);
-				b.addPath(pz, p);
-			}
-		}
-		usePathZ = Boolean.toString(pz);
-	}
-
-	public String getSourceDirsString() {
-		return sourceDirs;
-	}
-
-	public void setSourceDirsString(final String dirs) {
-		sourceDirs = dirs;
-	}
-
-	public String[] getSourceDirs() {
-		return PreferencesUtils.unpackArray(sourceDirs);
-	}
-
-	public void setSourceDirs(final String[] dirs) {
-		sourceDirs = PreferencesUtils.packArray(dirs);
+	public void setSourceDirs(final Collection<String> sourceDirs2) {
+		sourceDirs = Lists.newArrayList(sourceDirs2);
 	}
 
 	public String buildCommandLine() {
@@ -251,9 +225,9 @@ public final class OldErlangProjectProperties implements
 		return "";
 	}
 
-	public String buildIncludeDirs(final String[] dirs) {
+	public String buildIncludeDirs(final List<String> list) {
 		final StringBuilder incs = new StringBuilder();
-		for (final String element : dirs) {
+		for (final String element : list) {
 			final IPath loc = project.getLocation();
 			IPath inc = new Path(element);
 			ErlLogger.debug("* " + inc);
@@ -329,4 +303,5 @@ public final class OldErlangProjectProperties implements
 	public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
 		this.runtimeVersion = runtimeVersion;
 	}
+
 }

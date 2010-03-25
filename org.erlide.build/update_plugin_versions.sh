@@ -3,8 +3,12 @@
 BASE=$1
 COMMIT=$2
 
+# $COMMIT = co   = comit changes
+#           dry  = dry-run, just test versions
+#                = modify plugin/feature versions
+
 CRT=$(git branch | grep '*' | cut -d ' ' -f 2)
-PROJECTS=$(git log --name-only $1..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
+PROJECTS=$(git log --name-only $BASE..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
 
 function inc_version {
   local VER=$1
@@ -139,15 +143,22 @@ then
 	  then
 		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < org.erlide/feature.xml > org.erlide/feature.xml1
 		mv org.erlide/feature.xml1 org.erlide/feature.xml
-	  fi
+
+		NEW_=$(echo $NEW | sed 's/.qualifier//')
+		VER_=$(echo $VER | sed 's/.qualifier//')
+		mv CHANGES CHANGES.old		
+		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
+		echo "" >> CHANGES
+		git log v$NEW_..$CRT --oneline >> CHANGES
+		echo "" >> CHANGES
+		cat CHANGES.old >> CHANGES
+		rm CHANGES.old
+
+	fi
   fi
 fi
 
 if [ "$COMMIT" = "co" ] 
 then
-  git commit -a -m "updated version numbers *"
+  git commit -a -m "prepared $VER_"
 fi
-
-
-
-

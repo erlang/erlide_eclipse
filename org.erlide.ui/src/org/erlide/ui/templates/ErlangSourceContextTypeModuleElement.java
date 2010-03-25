@@ -8,21 +8,30 @@
  *     Lukas Larsson
  *******************************************************************************/
 
-package org.erlide.ui.wizards.templates;
+package org.erlide.ui.templates;
 
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
-public class ErlangSourceContextTypeBehaviour extends TemplateContextType {
+public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
 
-	private static ErlangSourceContextTypeBehaviour fInstance;
+	private static ErlangSourceContextTypeModuleElement fInstance;
+
+	/** This context's id */
+	public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID = "org.erlide.ui.erlangsource.template.context.module.element"; //$NON-NLS-1$
+
+	public static ErlangSourceContextTypeModuleElement getDefault() {
+		if (fInstance == null) {
+			fInstance = new ErlangSourceContextTypeModuleElement();
+		}
+		return fInstance;
+	}
 
 	/**
 	 * Creates a new XML context type.
 	 */
-	public ErlangSourceContextTypeBehaviour() {
+	public ErlangSourceContextTypeModuleElement() {
 		addGlobalResolvers();
-		fInstance = this;
 	}
 
 	private void addGlobalResolvers() {
@@ -34,11 +43,11 @@ public class ErlangSourceContextTypeBehaviour extends TemplateContextType {
 		addResolver(new GlobalTemplateVariables.User());
 	}
 
-	public static ErlangSourceContextTypeBehaviour getDefault() {
-		if (fInstance == null) {
-			fInstance = new ErlangSourceContextTypeBehaviour();
-		}
-		return fInstance;
-	}
+	// public static ErlangSourceContextTypeModule getDefault() {
+	// if (fInstance == null) {
+	// fInstance = new ErlangSourceContextTypeModule();
+	// }
+	// return fInstance;
+	// }
 
 }

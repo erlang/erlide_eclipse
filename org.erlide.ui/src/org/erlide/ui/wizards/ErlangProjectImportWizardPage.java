@@ -37,6 +37,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.FocusEvent;
@@ -57,12 +58,15 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
+import org.eclipse.ui.dialogs.IOverwriteQuery;
+import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
@@ -74,7 +78,7 @@ import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public class ErlangProjectImportWizardPage extends
-		ErlangWizardResourceImportPage {
+		ErlangWizardResourceImportPage implements Listener, IOverwriteQuery {
 	// widgets
 	protected Combo sourceNameField;
 
@@ -128,7 +132,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Creates an instance of this class
 	 */
 	protected ErlangProjectImportWizardPage(final String name,
-			final IWorkbench aWorkbench, final IStructuredSelection selection) {
+			final IStructuredSelection selection) {
 		super(name, selection);
 	}
 
@@ -140,9 +144,8 @@ public class ErlangProjectImportWizardPage extends
 	 * @param selection
 	 *            IStructuredSelection
 	 */
-	public ErlangProjectImportWizardPage(final IWorkbench aWorkbench,
-			final IStructuredSelection selection) {
-		this("alfa beta", aWorkbench, selection);//$NON-NLS-1$
+	public ErlangProjectImportWizardPage(final IStructuredSelection selection) {
+		this("alfa beta", selection);//$NON-NLS-1$
 		setTitle(ErlangDataTransferMessages.DataTransfer_fileSystemTitle);
 		setDescription(ErlangDataTransferMessages.FileImport_importFileSystem);
 	}
@@ -225,31 +228,6 @@ public class ErlangProjectImportWizardPage extends
 		};
 		selectTypesButton.addSelectionListener(listener);
 		setButtonLayoutData(selectTypesButton);
-
-		// selectAllButton = createButton(buttonComposite,
-		// IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
-		//
-		// listener = new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// setAllSelections(true);
-		// }
-		// };
-		// selectAllButton.addSelectionListener(listener);
-		// setButtonLayoutData(selectAllButton);
-
-		// deselectAllButton = createButton(buttonComposite,
-		// IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
-		//
-		// listener = new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// setAllSelections(false);
-		// }
-		// };
-		// deselectAllButton.addSelectionListener(listener);
-		// setButtonLayoutData(deselectAllButton);
-
 	}
 
 	/*
@@ -275,21 +253,6 @@ public class ErlangProjectImportWizardPage extends
 		overwriteExistingResourcesCheckbox
 				.setText(ErlangDataTransferMessages.FileImport_overwriteExisting);
 		overwriteExistingResourcesCheckbox.setEnabled(false);
-
-		// // create containers radio
-		// createContainerStructureButton = new Button(optionsGroup, SWT.RADIO);
-		// createContainerStructureButton.setFont(optionsGroup.getFont());
-		// createContainerStructureButton
-		// .setText(ErlangDataTransferMessages.FileImport_createComplete);
-		// createContainerStructureButton.setSelection(false);
-		//
-		// // create selection only radio
-		// createOnlySelectedButton = new Button(optionsGroup, SWT.RADIO);
-		// createOnlySelectedButton.setFont(optionsGroup.getFont());
-		// createOnlySelectedButton
-		// .setText(ErlangDataTransferMessages.FileImport_createSelectedFolders)
-		// ;
-		// createOnlySelectedButton.setSelection(true);
 
 		// copy projects into workspace
 		copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup, SWT.CHECK);
@@ -452,7 +415,7 @@ public class ErlangProjectImportWizardPage extends
 	 * Update the receiver from the source name field.
 	 */
 
-	void updateFromSourceField() {
+	private void updateFromSourceField() {
 
 		setSourceName(sourceNameField.getText());
 		// Update enablements when this is selected
@@ -667,8 +630,8 @@ public class ErlangProjectImportWizardPage extends
 							1000);
 			project.setDescription(description, new SubProgressMonitor(monitor,
 					300));
-			int subTicks = 600 / fileSystemObjects.size();
-			for (Object fso : fileSystemObjects) {
+			final int subTicks = 600 / fileSystemObjects.size();
+			for (final Object fso : fileSystemObjects) {
 				if (fso instanceof File) {
 					File f = (File) fso;
 					for (;;) {
@@ -678,18 +641,18 @@ public class ErlangProjectImportWizardPage extends
 						}
 						path = f.getParent();
 						if (path.equals(projectPath)) {
-							String name = f.getName();
-							IPath location = new Path(f.getAbsolutePath());
+							final String name = f.getName();
+							final IPath location = new Path(f.getAbsolutePath());
 							IFile file = null;
 							IFolder folder = null;
 							IResource resource;
-							boolean directory = f.isDirectory();
+							final boolean directory = f.isDirectory();
 							if (directory) {
 								resource = folder = project.getFolder(name);
 							} else {
 								resource = file = project.getFile(name);
 							}
-							SubProgressMonitor subMonitor = new SubProgressMonitor(
+							final SubProgressMonitor subMonitor = new SubProgressMonitor(
 									monitor, subTicks);
 							if (!resource.isLinked()) {
 								if (directory) {
@@ -850,6 +813,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param event
 	 *            Event
 	 */
+	@Override
 	public void handleEvent(final Event event) {
 		if (event.widget == sourceBrowseButton) {
 			handleSourceBrowseButtonPressed();
@@ -991,7 +955,6 @@ public class ErlangProjectImportWizardPage extends
 	 * Since Finish was pressed, write widget values to the dialog store so that
 	 * they will persist into the next invocation of this wizard page
 	 */
-	@Override
 	protected void saveWidgetValues() {
 		final IDialogSettings settings = getDialogSettings();
 		if (settings != null) {
@@ -1178,7 +1141,7 @@ public class ErlangProjectImportWizardPage extends
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
-		resetSelection();
+		// resetSelection();
 		if (visible) {
 			sourceNameField.setFocus();
 		}
@@ -1351,4 +1314,108 @@ public class ErlangProjectImportWizardPage extends
 	// // WizardResourceImportPage
 	// return false;
 	// }
+	/**
+	 * Display an error dialog with the specified message.
+	 * 
+	 * @param message
+	 *            the error message
+	 */
+	protected void displayErrorDialog(final String message) {
+		MessageDialog.openError(getContainer().getShell(),
+				getErrorDialogTitle(), message);
+	}
+
+	/**
+	 * Display an error dislog with the information from the supplied exception.
+	 * 
+	 * @param exception
+	 *            Throwable
+	 */
+	protected void displayErrorDialog(final Throwable exception) {
+		String message = exception.getMessage();
+		// Some system exceptions have no message
+		if (message == null) {
+			message = NLS.bind(
+					IDEWorkbenchMessages.WizardDataTransfer_exceptionMessage,
+					exception);
+		}
+		displayErrorDialog(message);
+	}
+
+	/**
+	 * Get the title for an error dialog. Subclasses should override.
+	 */
+	@Override
+	protected String getErrorDialogTitle() {
+		return IDEWorkbenchMessages.WizardExportPage_internalErrorTitle;
+	}
+
+	/**
+	 * The <code>WizardDataTransfer</code> implementation of this
+	 * <code>IOverwriteQuery</code> method asks the user whether the existing
+	 * resource at the given path should be overwritten.
+	 * 
+	 * @param pathString
+	 * @return the user's reply: one of <code>"YES"</code>, <code>"NO"</code>,
+	 *         <code>"ALL"</code>, or <code>"CANCEL"</code>
+	 */
+	public String queryOverwrite(final String pathString) {
+
+		final Path path = new Path(pathString);
+
+		String messageString;
+		// Break the message up if there is a file name and a directory
+		// and there are at least 2 segments.
+		if (path.getFileExtension() == null || path.segmentCount() < 2) {
+			messageString = NLS.bind(
+					IDEWorkbenchMessages.WizardDataTransfer_existsQuestion,
+					pathString);
+		} else {
+			messageString = NLS
+					.bind(
+							IDEWorkbenchMessages.WizardDataTransfer_overwriteNameAndPathQuestion,
+							path.lastSegment(), path.removeLastSegments(1)
+									.toOSString());
+		}
+
+		final MessageDialog dialog = new MessageDialog(getContainer()
+				.getShell(), IDEWorkbenchMessages.Question, null,
+				messageString, MessageDialog.QUESTION, new String[] {
+						IDialogConstants.YES_LABEL,
+						IDialogConstants.YES_TO_ALL_LABEL,
+						IDialogConstants.NO_LABEL,
+						IDialogConstants.NO_TO_ALL_LABEL,
+						IDialogConstants.CANCEL_LABEL }, 0) {
+		};
+		final String[] response = new String[] { YES, ALL, NO, NO_ALL, CANCEL };
+		// run in syncExec because callback is from an operation,
+		// which is probably not running in the UI thread.
+		getControl().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				dialog.open();
+			}
+		});
+		return dialog.getReturnCode() < 0 ? CANCEL : response[dialog
+				.getReturnCode()];
+	}
+
+	/**
+	 * Displays a Yes/No question to the user with the specified message and
+	 * returns the user's response.
+	 * 
+	 * @param message
+	 *            the question to ask
+	 * @return <code>true</code> for Yes, and <code>false</code> for No
+	 */
+	protected boolean queryYesNoQuestion(final String message) {
+		final MessageDialog dialog = new MessageDialog(getContainer()
+				.getShell(), IDEWorkbenchMessages.Question, null, message,
+				MessageDialog.NONE, new String[] { IDialogConstants.YES_LABEL,
+						IDialogConstants.NO_LABEL }, 0) {
+		};
+		// ensure yes is the default
+
+		return dialog.open() == 0;
+	}
+
 }

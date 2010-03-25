@@ -16,12 +16,12 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.builder.DialyzerBuilder;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -47,14 +47,16 @@ public class ErlangNature implements IProjectNature {
 	 *        getErlangNature at the same time and more than one nature ended up
 	 *        being created from project.getNature().
 	 */
-	public static synchronized ErlangNature getErlangNature(IProject project) {
+	public static synchronized ErlangNature getErlangNature(
+			final IProject project) {
 		if (project != null && project.isOpen()) {
 			try {
-				IProjectNature n = project.getNature(ErlangPlugin.NATURE_ID);
+				final IProjectNature n = project
+						.getNature(ErlangPlugin.NATURE_ID);
 				if (n instanceof ErlangNature) {
 					return (ErlangNature) n;
 				}
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				ErlLogger.info(e);
 			}
 		}
@@ -66,23 +68,16 @@ public class ErlangNature implements IProjectNature {
 	 *         existing projects)
 	 */
 	public static List<ErlangNature> getAllErlangNatures() {
-		List<ErlangNature> natures = new ArrayList<ErlangNature>();
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject[] projects = root.getProjects();
-		for (IProject project : projects) {
-			ErlangNature nature = getErlangNature(project);
+		final List<ErlangNature> natures = new ArrayList<ErlangNature>();
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final IProject[] projects = root.getProjects();
+		for (final IProject project : projects) {
+			final ErlangNature nature = getErlangNature(project);
 			if (nature != null) {
 				natures.add(nature);
 			}
 		}
 		return natures;
-	}
-
-	public static ErlangNature getPythonNature(IResource resource) {
-		if (resource == null) {
-			return null;
-		}
-		return getPythonNature(resource.getProject());
 	}
 
 	/**
@@ -93,11 +88,14 @@ public class ErlangNature implements IProjectNature {
 	public void configure() throws CoreException {
 		final IProjectDescription description = project.getDescription();
 		if (!hasBuildSpec(description.getBuildSpec())) {
-			final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
+			final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 2];
 			System.arraycopy(old, 0, specs, 0, old.length);
-			final ICommand command = description.newCommand();
+			ICommand command = description.newCommand();
 			command.setBuilderName(ErlangPlugin.BUILDER_ID);
 			specs[old.length] = command;
+			command = description.newCommand();
+			command.setBuilderName(DialyzerBuilder.BUILDER_ID);
+			specs[old.length + 1] = command;
 			description.setBuildSpec(specs);
 			project.setDescription(description, new NullProgressMonitor());
 		}
@@ -117,7 +115,9 @@ public class ErlangNature implements IProjectNature {
 			int i = 0;
 			int j = 0;
 			while (j < old.length) {
-				if (!ErlangPlugin.BUILDER_ID.equals(old[j].getBuilderName())) {
+				final String oldBuilderName = old[j].getBuilderName();
+				if (!ErlangPlugin.BUILDER_ID.equals(oldBuilderName)
+						&& !DialyzerBuilder.BUILDER_ID.equals(oldBuilderName)) {
 					specs[i++] = old[j];
 				}
 				j++;
@@ -164,7 +164,9 @@ public class ErlangNature implements IProjectNature {
 	private int getBuildSpecCount(final ICommand[] commands) {
 		int count = 0;
 		for (final ICommand element : commands) {
-			if (ErlangPlugin.BUILDER_ID.equals(element.getBuilderName())) {
+			if (ErlangPlugin.BUILDER_ID.equals(element.getBuilderName())
+					|| DialyzerBuilder.BUILDER_ID.equals(element
+							.getBuilderName())) {
 				count++;
 			}
 		}

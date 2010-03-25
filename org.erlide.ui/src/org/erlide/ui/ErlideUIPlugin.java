@@ -52,6 +52,9 @@ import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
+import org.erlide.ui.templates.ErlangSourceContextTypeModule;
+import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
+import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -97,9 +100,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	private ErlConsoleManager erlConMan;
 
 	/** Key to store custom templates. */
-	private static final String CUSTOM_TEMPLATES_KEY= "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
+	private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
 
-	
 	/**
 	 * The constructor.
 	 */
@@ -442,17 +444,18 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	private ContributionTemplateStore fStore;
 
 	private void startPeriodicDump() {
-		String env = System.getenv("erlide.internal.coredump");
+		final String env = System.getenv("erlide.internal.coredump");
 		if ("true".equals(env)) {
-			Job job = new Job("Erlang node info dump") {
+			final Job job = new Job("Erlang node info dump") {
 
 				@Override
 				protected IStatus run(final IProgressMonitor monitor) {
 					try {
 						final ErlideBackend ideBackend = ErlangCore
 								.getBackendManager().getIdeBackend();
-						String info = ErlBackend.getSystemInfo(ideBackend);
-						String sep = "\n++++++++++++++++++++++\n";
+						final String info = ErlBackend
+								.getSystemInfo(ideBackend);
+						final String sep = "\n++++++++++++++++++++++\n";
 						ErlLogger.debug(sep + info + sep);
 					} finally {
 						schedule(DUMP_INTERVAL);
@@ -476,13 +479,21 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	}
 
 	public TemplateStore getTemplateStore() {
+		// this is to avoid recursive call when fContextTypeRegistry is null
+		getContextTypeRegistry();
 		if (fStore == null) {
-			fStore= new ContributionTemplateStore(getContextTypeRegistry(), getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
+			fStore = new ErlideContributionTemplateStore(
+					getContextTypeRegistry(), getPreferenceStore(),
+					CUSTOM_TEMPLATES_KEY);
 			try {
 				fStore.load();
-			} catch (IOException e) {
-				getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
+			} catch (final IOException e) {
+				getLog()
+						.log(
+								new Status(IStatus.ERROR, PLUGIN_ID,
+										IStatus.OK, "", e)); //$NON-NLS-1$ 
 			}
+			ErlangSourceContextTypeModule.getDefault().addElementResolvers();
 		}
 		return fStore;
 	}
@@ -490,8 +501,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	public ContextTypeRegistry getContextTypeRegistry() {
 		if (fContextTypeRegistry == null) {
 			// create an configure the contexts available in the template editor
-			fContextTypeRegistry= new ContributionContextTypeRegistry();
-			fContextTypeRegistry.addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE);
+			fContextTypeRegistry = new ContributionContextTypeRegistry();
+			fContextTypeRegistry
+					.addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
+			fContextTypeRegistry
+					.addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+			fContextTypeRegistry
+					.addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
 		}
 		return fContextTypeRegistry;
 	}

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchesListener2;
@@ -29,12 +30,15 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendShell;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.internal.CodeManager;
 import org.osgi.framework.Bundle;
+
+import com.ericsson.otp.erlang.OtpErlangBinary;
 
 /**
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
@@ -95,8 +99,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	}
 
 	@Override
-	public void initErlang(boolean monitor) {
-		super.initErlang(monitor);
+	public void initErlang(boolean monitor, boolean watch) {
+		super.initErlang(monitor, watch);
 		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
 	}
 
@@ -234,7 +238,12 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		if (outDir.length() > 0) {
 			ErlLogger.debug("backend %s: add path %s", getName(), outDir);
 			if (isDistributed()) {
-				addPath(false/* prefs.getUsePathZ() */, outDir);
+				boolean accessible = ErlideUtil.isAccessible(this, outDir);
+				if (accessible) {
+					addPath(false/* prefs.getUsePathZ() */, outDir);
+				} else {
+					loadBeamsFromDir(outDir);
+				}
 			} else {
 				final File f = new File(outDir);
 				for (final File file : f.listFiles()) {
@@ -247,6 +256,30 @@ public final class ErlideBackend extends Backend implements IDisposable,
 					} catch (final IOException e) {
 						e.printStackTrace();
 					}
+				}
+			}
+		}
+	}
+
+	private void loadBeamsFromDir(final String outDir) {
+		File dir = new File(outDir);
+		for (File f : dir.listFiles()) {
+			final Path path = new Path(f.getPath());
+			if (path.getFileExtension() != null
+					&& "beam".compareTo(path.getFileExtension()) == 0) {
+				final String m = path.removeFileExtension().lastSegment();
+				try {
+					boolean ok = false;
+					final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
+							path);
+					if (bin != null) {
+						ok = ErlBackend.loadBeam(this, m, bin);
+					}
+					if (!ok) {
+						ErlLogger.error("Could not load %s", m);
+					}
+				} catch (final Exception ex) {
+					ErlLogger.warn(ex);
 				}
 			}
 		}

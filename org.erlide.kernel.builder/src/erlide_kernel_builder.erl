@@ -6,7 +6,8 @@
 
 init() ->
 	spawn(fun()->
-				  erlide_batch:start(erlide_builder),
+				  %% is started by erlide_kernel_common
+				  %% erlide_batch:start(erlide_builder),
 				  ok
 		  end),
 	ok.

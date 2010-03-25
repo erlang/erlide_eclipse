@@ -24,17 +24,13 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlModule;
@@ -56,12 +52,10 @@ import org.erlide.ui.util.eclipse.BrowserInformationControl;
  * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
-public class EditorConfiguration extends TextSourceViewerConfiguration {
+public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
 	final ErlangEditor editor;
 	private ITextDoubleClickStrategy doubleClickStrategy;
-	protected ErlHighlightScanner fHighlightScanner;
-	protected final IColorManager colorManager;
 	private ICharacterPairMatcher fBracketMatcher;
 	private ErlReconciler reconciler;
 
@@ -76,20 +70,9 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 *            the color manager
 	 */
 	public EditorConfiguration(final IPreferenceStore store,
-			final ErlangEditor leditor, final IColorManager lcolorManager) {
-		super(store);
-		colorManager = lcolorManager;
+			final ErlangEditor leditor, final IColorManager colorManager) {
+		super(store, colorManager);
 		editor = leditor;
-	}
-
-	/**
-	 * The standard content types
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredContentTypes(org.eclipse.jface.text.source.ISourceViewer)
-	 */
-	@Override
-	public String[] getConfiguredContentTypes(final ISourceViewer sourceViewer) {
-		return IErlangPartitions.LEGAL_PARTITIONS;
 	}
 
 	/**
@@ -109,45 +92,12 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		return doubleClickStrategy;
 	}
 
-	/**
-	 * Creates and returns the fHighlightScanner
-	 * 
-	 * @return the highlighting fHighlightScanner
-	 */
-	protected ErlHighlightScanner getHighlightScanner(
-			final ISourceViewer sourceViewer) {
-		if (fHighlightScanner == null) {
-			fHighlightScanner = new ErlHighlightScanner(colorManager,
-					sourceViewer, true);
-		}
-		return fHighlightScanner;
-	}
-
 	public ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
 			fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
 					"{", "}", "[", "]", "<<", ">>" });
 		}
 		return fBracketMatcher;
-	}
-
-	/**
-	 * Creates the reconciler
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
-	 */
-	@Override
-	public IPresentationReconciler getPresentationReconciler(
-			final ISourceViewer sourceViewer) {
-		final PresentationReconciler areconciler = new PresentationReconciler();
-
-		final ErlHighlightScanner scan = getHighlightScanner(sourceViewer);
-		if (scan != null) {
-			final DefaultDamagerRepairer dr = new ErlDamagerRepairer(scan);
-			areconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-			areconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		}
-		return areconciler;
 	}
 
 	/*
@@ -180,12 +130,6 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 	 */
 	protected ITextEditor getEditor() {
 		return editor;
-	}
-
-	@Override
-	public String getConfiguredDocumentPartitioning(
-			final ISourceViewer sourceViewer) {
-		return IErlangPartitions.ERLANG_PARTITIONING;
 	}
 
 	@Override
@@ -240,7 +184,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 					final Shell parent) {
 				if (parent.getText().length() == 0
 						&& BrowserInformationControl.isAvailable(parent)) {
-					BrowserInformationControl info = new BrowserInformationControl(
+					final BrowserInformationControl info = new BrowserInformationControl(
 							parent, JFaceResources.DIALOG_FONT, EditorsUI
 									.getTooltipAffordanceString()) {
 						@Override
@@ -314,7 +258,7 @@ public class EditorConfiguration extends TextSourceViewerConfiguration {
 		return new IInformationControlCreator() {
 			public IInformationControl createInformationControl(
 					final Shell parent) {
-				String affordance = getAdditionalInfoAffordanceString();
+				final String affordance = getAdditionalInfoAffordanceString();
 				return new DefaultInformationControl(parent, affordance);
 			}
 		};

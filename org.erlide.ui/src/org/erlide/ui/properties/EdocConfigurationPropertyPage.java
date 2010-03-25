@@ -73,7 +73,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 	@Override
 	protected Control createContents(final Composite parent) {
 		fInitialLocation = null;
-		final String s = ErlideDoc.getOtpDocLoation(ErlangCore
+		final String s = ErlideDoc.getOtpDocLocation(ErlangCore
 				.getBackendManager().getIdeBackend());
 		try {
 			fInitialLocation = new URL("file", null, s);
