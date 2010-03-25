@@ -7,12 +7,14 @@
 -record(external_call, {module, function, arity}).
 -record(local_call, {function, arity}).
 -record(function_def, {function, arity}).
+-record(include_ref, {filename}).
 -record(macro_ref, {macro}).
 -record(record_ref, {record}).
 -record(macro_def, {macro}).
 -record(record_def, {record}).
 -record(type_ref, {type}).
 -record(type_def, {type}).
+-record(module_def, {module}).
 
 %% förslag på hur scanner, parser och search jobbar ihop:
 %%

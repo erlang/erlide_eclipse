@@ -4,13 +4,12 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangMacroRef extends ErlangElementRef {
+public class ErlangMacroDefRef extends ErlangElementRef {
 
-	private static final OtpErlangAtom MACRO_DEF_ATOM = new OtpErlangAtom(
-			"macro_def");
+	private static final OtpErlangAtom MACRO_REF_ATOM = new OtpErlangAtom("macro_ref");
 	private final String macro;
 
-	public ErlangMacroRef(final String macro) {
+	public ErlangMacroDefRef(final String macro) {
 		super();
 		this.macro = macro;
 	}
@@ -26,8 +25,8 @@ public class ErlangMacroRef extends ErlangElementRef {
 
 	@Override
 	public OtpErlangObject getSearchObject() {
-		return new OtpErlangTuple(new OtpErlangObject[] { MACRO_DEF_ATOM,
-				new OtpErlangAtom(macro) });
+		return new OtpErlangTuple(new OtpErlangObject[] {
+				MACRO_REF_ATOM, new OtpErlangAtom(macro) });
 	}
 
 }

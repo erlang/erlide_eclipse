@@ -1,5 +1,9 @@
 package org.erlide.core.search;
 
-public class ErlangElementRef {
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+public abstract class ErlangElementRef {
+
+	public abstract OtpErlangObject getSearchObject();
 
 }

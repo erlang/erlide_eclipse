@@ -32,13 +32,7 @@ import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.ErlangElementRef;
-import org.erlide.core.search.ErlangExternalFunctionCallRef;
-import org.erlide.core.search.ErlangFunctionDefRef;
-import org.erlide.core.search.ErlangIncludeRef;
-import org.erlide.core.search.ErlangMacroRef;
-import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -249,33 +243,8 @@ public abstract class FindAction extends SelectionDispatchAction {
 			// "SearchMessages.SearchElementSelectionDialog_message";
 
 			ErlangElementRef ref;
-			if (res.isExternalCall()) {
-				if (getLimitTo() == IErlSearchConstants.REFERENCES) {
-					ref = new ErlangExternalFunctionCallRef(res.getName(), res
-							.getFun(), res.getArity());
-				} else if (getLimitTo() == IErlSearchConstants.DECLARATIONS) {
-					ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
-				} else {
-					ref = null;
-				}
-			} else if (res.isLocalCall()) {
-				if (getLimitTo() == IErlSearchConstants.REFERENCES) {
-					ref = new ErlangExternalFunctionCallRef(module
-							.getModuleName(), res.getFun(), res.getArity());
-				} else if (getLimitTo() == IErlSearchConstants.DECLARATIONS) {
-					ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
-				} else {
-					ref = null;
-				}
-			} else if (res.isMacro()) {
-				ref = new ErlangMacroRef(ErlideUtil.unquote(res.getName()));
-			} else if (res.isRecord()) {
-				ref = new ErlangRecordRef(ErlideUtil.unquote(res.getName()));
-			} else if (res.isInclude()) {
-				ref = new ErlangIncludeRef(res.getName());
-			} else {
-				ref = null;
-			}
+			ref = SearchUtil.getRefFromOpenResultAndLimitTo(module, res,
+					getLimitTo());
 			if (ref != null) {
 				performNewSearch(ref);
 			}
@@ -292,8 +261,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 	private void performNewSearch(final ErlangElementRef ref) {
 
-		final ErlSearchQuery query = new ErlSearchQuery(ref,
-				getScope());
+		final ErlSearchQuery query = new ErlSearchQuery(ref, getScope());
 		if (query.canRunInBackground()) {
 			/*
 			 * This indirection with Object as parameter is needed to prevent
@@ -353,10 +321,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	private void performNewSearch(final IErlElement element) {
-		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimit(
+		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimitTo(
 				element, getLimitTo());
-		final ErlSearchQuery query = new ErlSearchQuery(ref,
-				getScope());
+		final ErlSearchQuery query = new ErlSearchQuery(ref, getScope());
 		if (query.canRunInBackground()) {
 			/*
 			 * This indirection with Object as parameter is needed to prevent

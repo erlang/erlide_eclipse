@@ -1,17 +1,23 @@
 package org.erlide.core.search;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
 public class ErlangFunctionDefRef extends ErlangElementRef {
-	private final String name;
+	private static final OtpErlangAtom FUNCTION_DEF_ATOM = new OtpErlangAtom("function_def");
+	private final String function;
 	private final int arity;
 
-	public ErlangFunctionDefRef(final String name, final int arity) {
+	public ErlangFunctionDefRef(final String function, final int arity) {
 		super();
-		this.name = name;
+		this.function = function;
 		this.arity = arity;
 	}
 
-	public String getName() {
-		return name;
+	public String getFunction() {
+		return function;
 	}
 
 	public int getArity() {
@@ -20,7 +26,17 @@ public class ErlangFunctionDefRef extends ErlangElementRef {
 
 	@Override
 	public String toString() {
-		return name + "/" + arity;
+		if (arity == -1) {
+			return function;
+		}
+		return function + "/" + arity;
+	}
+
+	@Override
+	public OtpErlangObject getSearchObject() {
+		return new OtpErlangTuple(new OtpErlangObject[] {
+				FUNCTION_DEF_ATOM, new OtpErlangAtom(function),
+				new OtpErlangLong(arity) });
 	}
 
 }

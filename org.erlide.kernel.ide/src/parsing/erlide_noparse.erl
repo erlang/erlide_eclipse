@@ -9,7 +9,7 @@
 %%
 
 %% called from Java
--export([initial_parse/5, reparse/1]).
+-export([initial_parse/6, reparse/1]).
 
 %% called from Erlang
 -export([read_module_refs/3]).
@@ -36,7 +36,7 @@
 %%
 
 initial_parse(ScannerName, ModuleFileName, InitialTextBin, 
-              StateDir, UpdateCaches) ->
+              StateDir, UpdateCaches, UpdateSearchServer) ->
     InitialText = binary_to_list(InitialTextBin),
     try
         ?D({StateDir, ModuleFileName}),
@@ -44,7 +44,8 @@ initial_parse(ScannerName, ModuleFileName, InitialTextBin,
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
                            do_parse(ScannerName, ModuleFileName, RefsFileName,
-                                    InitialText, StateDir, UpdateCaches, true) 
+                                    InitialText, StateDir, UpdateCaches, 
+                                    UpdateSearchServer) 
                    end,
         CacheFun = fun(D) ->
                            erlide_scanner_server:initialScan(
@@ -85,10 +86,9 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             ?D(byte_size(Binary)),
             binary_to_term(Binary);
         _ ->
-            {ok, B} = file:read_file(ModulePath),
-            ?D(byte_size(B)),
-            InitialText = binary_to_list(B),
-            do_parse(ScannerName, ModulePath, RefsFileName, InitialText, StateDir, false, false),
+            {ok, InitialTextBin} = file:read_file(ModulePath),
+            initial_parse(ScannerName, ModulePath, InitialTextBin,
+                          StateDir, true, false),
             ?D(parsed),
             {ok, Binary} = file:read_file(RefsFileName),
             ?D(byte_size(Binary)),
@@ -134,7 +134,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
         "" -> ok;
         _ ->
             ?D({RefsFileName, Refs}),
-            file:write_file(RefsFileName, term_to_binary(Refs, [{compressed, 1}]))
+            file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
     FixedModel.
@@ -237,9 +237,10 @@ cac(attribute, Attribute) ->
             PosLength = LastOffset - Offset + LastLength,
             Between = get_between_outer_pars(Attribute),
             Extra = to_string(Between),
+            AttrArgs = get_attribute_args(Name, Between, Args),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                        name=Name, args=get_attribute_args(Name, Between, Args), 
-                        extra=Extra}, []};
+                        name=Name, args=AttrArgs, 
+                        extra=Extra}, make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
@@ -538,6 +539,31 @@ get_refs([#token{kind='#', offset=Offset},
     [RR | get_refs(Rest)];
 get_refs([_ | Rest]) ->
     get_refs(Rest).
+
+make_attribute_ref(Name, Between, Extra, Offset, Length) ->
+    ?D({Name, Between, Offset, Length}),
+    case make_attribute_ref(Name, Between, Extra) of
+        [] -> 
+            [];
+        Data ->
+            [#ref{data=Data, offset=Offset, length=Length, function=Name, 
+                  arity=-1, clause="", sub_clause=false}]
+    end.
+
+make_attribute_ref(module, _, Extra) ->
+    #module_def{module=Extra};
+make_attribute_ref(record, Between, _) ->
+    Name = case Between of
+               {N, _} -> N;
+               N -> N
+           end,
+    #record_def{record=Name};
+make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
+    #macro_def{macro=Name};
+make_attribute_ref(define, Name, _) ->
+    #macro_def{macro=Name};
+make_attribute_ref(_, _, _) ->
+    [].
 
 %% @spec (Tokens::tokens()) -> {tokens(), tokens()}
 %% @type tokens() = [#token]

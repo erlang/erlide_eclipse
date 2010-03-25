@@ -1,6 +1,5 @@
 package org.erlide.ui.search;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,10 +31,15 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangExternalFunctionCallRef;
 import org.erlide.core.search.ErlangFunctionDefRef;
+import org.erlide.core.search.ErlangIncludeRef;
+import org.erlide.core.search.ErlangMacroDefRef;
 import org.erlide.core.search.ErlangMacroRef;
+import org.erlide.core.search.ErlangRecordDefRef;
 import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
+
+import erlang.OpenResult;
 
 public class SearchUtil {
 
@@ -45,32 +49,41 @@ public class SearchUtil {
 	// }
 
 	static public List<IResource> getProjectScope(final IProject project) {
+		final List<IResource> result = new ArrayList<IResource>();
 		final IErlProject p = ErlangCore.getModel().findProject(project);
-		if (p != null) {
-			final List<IResource> result = new ArrayList<IResource>();
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-			final List<String> sourcePaths = prefs.getSourceDirs();
-			for (String path : sourcePaths) {
-				IFolder folder = project.getFolder(new Path(path));
-				if (folder != null) {
-					try {
-						for (IResource r : folder.members()) {
-							if (r instanceof IFile) {
-								IFile f = (IFile) r;
-								if (ErlideUtil.hasModuleExtension(f.getName())) {
-									result.add(f);
-								}
+		addProjectScope(p, result);
+		return result;
+	}
+
+	private static void addProjectScope(final IErlProject p,
+			final List<IResource> result) {
+		if (p == null) {
+			return;
+		}
+		IProject project = p.getProject();
+		if (project == null) {
+			return;
+		}
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		final List<String> sourcePaths = prefs.getSourceDirs();
+		for (String path : sourcePaths) {
+			IFolder folder = project.getFolder(new Path(path));
+			if (folder != null) {
+				try {
+					for (IResource r : folder.members()) {
+						if (r instanceof IFile) {
+							IFile f = (IFile) r;
+							if (ErlideUtil.hasModuleExtension(f.getName())) {
+								result.add(f);
 							}
 						}
-					} catch (CoreException e) {
-						e.printStackTrace();
 					}
+				} catch (CoreException e) {
+					e.printStackTrace();
 				}
 			}
-			return result;
 		}
-		return null;
 	}
 
 	static public List<IResource> getWorkspaceScope() {
@@ -80,7 +93,7 @@ public class SearchUtil {
 			final List<IResource> result = new ArrayList<IResource>(
 					erlangProjects.size());
 			for (final IErlProject i : erlangProjects) {
-				final List<IErlModule> modules = i.getModules();
+				final List<IErlModule> modules = i.getModulesAndHeaders();
 				for (final IErlModule j : modules) {
 					result.add(j.getResource());
 				}
@@ -99,6 +112,7 @@ public class SearchUtil {
 				projectNames.length);
 		for (final String i : projectNames) {
 			final IErlProject p = model.getErlangProject(i);
+			addProjectScope(p, result);
 		}
 		return result;
 	}
@@ -107,19 +121,6 @@ public class SearchUtil {
 		assert false;
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	private static void addProjectEbin(final IErlProject i,
-			final List<String> result) throws ErlModelException {
-		final IProject project = i.getProject();
-		if (project.exists()) {
-			final String loc = project.getFolder(i.getOutputLocation())
-					.getLocation().toString();
-			final File f = new File(loc);
-			if (f.isDirectory()) {
-				result.add(loc);
-			}
-		}
 	}
 
 	public static void runQueryInBackground(final Object query) {
@@ -132,15 +133,15 @@ public class SearchUtil {
 				(ISearchQuery) query);
 	}
 
-	public static ErlangElementRef getRefFromErlElementAndLimit(
-			final IErlElement element, final int limit) {
+	public static ErlangElementRef getRefFromErlElementAndLimitTo(
+			final IErlElement element, final int limitTo) {
 		if (element instanceof IErlFunction) {
 			final IErlFunction function = (IErlFunction) element;
-			if (limit == IErlSearchConstants.REFERENCES) {
+			if (limitTo == IErlSearchConstants.REFERENCES) {
 				return new ErlangExternalFunctionCallRef(ErlideUtil
 						.withoutExtension(function.getModule().getName()),
 						function.getName(), function.getArity());
-			} else if (limit == IErlSearchConstants.DECLARATIONS) {
+			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
 				return new ErlangFunctionDefRef(function.getName(), function
 						.getArity());
 			}
@@ -152,7 +153,7 @@ public class SearchUtil {
 			return new ErlangRecordRef(r.getDefinedName());
 		} else if (element instanceof IErlFunctionClause) {
 			final IErlFunctionClause clause = (IErlFunctionClause) element;
-			getRefFromErlElementAndLimit(clause.getParent(), limit);
+			getRefFromErlElementAndLimitTo(clause.getParent(), limitTo);
 		}
 		return null;
 	}
@@ -168,6 +169,41 @@ public class SearchUtil {
 		return new Match(ese, ref.getOffset(), ref.getLength());
 	}
 
+	public static ErlangElementRef getRefFromOpenResultAndLimitTo(
+			final IErlModule module, final OpenResult res, final int limitTo) {
+		ErlangElementRef ref = null;
+		String unquoted = ErlideUtil.unquote(res.getName());
+		if (res.isExternalCall()) {
+			if (limitTo == IErlSearchConstants.REFERENCES) {
+				ref = new ErlangExternalFunctionCallRef(res.getName(), res
+						.getFun(), res.getArity());
+			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
+				ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
+			}
+		} else if (res.isLocalCall()) {
+			if (limitTo == IErlSearchConstants.REFERENCES) {
+				ref = new ErlangExternalFunctionCallRef(module.getModuleName(),
+						res.getFun(), res.getArity());
+			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
+				ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
+			}
+		} else if (res.isMacro()) {
+			if (limitTo == IErlSearchConstants.REFERENCES) {
+				ref = new ErlangMacroRef(unquoted);
+			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
+				ref = new ErlangMacroDefRef(unquoted);
+			}
+		} else if (res.isRecord()) {
+			if (limitTo == IErlSearchConstants.REFERENCES) {
+				ref = new ErlangRecordRef(unquoted);
+			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
+				ref = new ErlangRecordDefRef(unquoted);
+			}
+		} else if (res.isInclude()) {
+			ref = new ErlangIncludeRef(res.getName());
+		}
+		return ref;
+	}
 	// public static String toString(final IWorkingSet[] workingSets) {
 	// Arrays.sort(workingSets, new Comparator<IWorkingSet>() {
 	// private final Collator fCollator = Collator.getInstance();
@@ -202,16 +238,16 @@ public class SearchUtil {
 	//
 	// // Settings store
 	// private static final String DIALOG_SETTINGS_KEY =
-	// "JavaElementSearchActions"; //$NON-NLS-1$
+	// "JavaElementSearchActions";
 	// private static final String STORE_LRU_WORKING_SET_NAMES =
-	// "lastUsedWorkingSetNames"; //$NON-NLS-1$
+	// "lastUsedWorkingSetNames";
 	//
 	// private static final String BIN_PRIM_CONST_WARN_DIALOG_ID =
-	// "BinaryPrimitiveConstantWarningDialog"; //$NON-NLS-1$
+	// "BinaryPrimitiveConstantWarningDialog";
 	//
 	// public static boolean isSearchPlugInActivated() {
 	// return Platform.getBundle("org.eclipse.search").getState() ==
-	// Bundle.ACTIVE; //$NON-NLS-1$
+	// Bundle.ACTIVE;
 	// }
 	//
 	// private static IDialogSettings getDialogStoreSection() {

@@ -4,12 +4,13 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangRecordRef extends ErlangElementRef {
+public class ErlangRecordDefRef extends ErlangElementRef {
 
-	private static final OtpErlangAtom RECORD_REF_ATOM = new OtpErlangAtom("record_ref");
+	private static final OtpErlangAtom RECORD_DEF_ATOM = new OtpErlangAtom(
+			"record_def");
 	private final String record;
 
-	public ErlangRecordRef(final String record) {
+	public ErlangRecordDefRef(final String record) {
 		super();
 		this.record = record;
 	}
@@ -25,7 +26,7 @@ public class ErlangRecordRef extends ErlangElementRef {
 
 	@Override
 	public OtpErlangObject getSearchObject() {
-		return new OtpErlangTuple(new OtpErlangObject[] {
-				RECORD_REF_ATOM, new OtpErlangAtom(record) });
+		return new OtpErlangTuple(new OtpErlangObject[] { RECORD_DEF_ATOM,
+				new OtpErlangAtom(record) });
 	}
 }

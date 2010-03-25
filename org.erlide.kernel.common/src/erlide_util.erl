@@ -157,7 +157,7 @@ join([H|T], Sep) ->
 renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
     ?D(SourceFileModDate),
     BinDate = date_to_bin(SourceFileModDate),
-    B = term_to_binary(Term, [{compressed, 1}]),
+    B = term_to_binary(Term, [compressed]),
     _Delete = file:delete(CacheFileName),
     _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>).
 

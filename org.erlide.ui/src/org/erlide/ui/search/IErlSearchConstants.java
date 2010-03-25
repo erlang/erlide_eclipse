@@ -4,7 +4,7 @@ public interface IErlSearchConstants {
 
 	int REFERENCES = 0;
 	int DECLARATIONS = 1;
-	int ALL_OCCURRENCES = 2;
+	// int ALL_OCCURRENCES = 2;
 
 	int FUNCTION = 1;
 	int MODULE = 2;

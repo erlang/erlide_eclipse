@@ -434,6 +434,7 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * @see IErlElement
 	 */
+	@Override
 	public IResource getResource() {
 		return getCorrespondingResource();
 	}
@@ -552,6 +553,30 @@ public class ErlProject extends Openable implements IErlProject {
 		final OldErlangProjectProperties props = getProperties();
 		for (final String src : props.getSourceDirs()) {
 			final IFolder folder = fProject.getFolder(src);
+			IResource[] members;
+			try {
+				members = folder.members();
+				for (final IResource res : members) {
+					final IErlModule module = getModule(res.getName());
+					if (module != null) {
+						result.add(module);
+					}
+				}
+			} catch (final CoreException e) {
+				// e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public List<IErlModule> getModulesAndHeaders() throws ErlModelException {
+		final List<IErlModule> result = new ArrayList<IErlModule>();
+		final OldErlangProjectProperties props = getProperties();
+		List<String> folders = new ArrayList<String>();
+		folders.addAll(props.getSourceDirs());
+		folders.addAll(props.getIncludeDirs());
+		for (final String f : folders) {
+			final IFolder folder = fProject.getFolder(f);
 			IResource[] members;
 			try {
 				members = folder.members();

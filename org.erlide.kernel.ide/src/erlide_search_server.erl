@@ -27,8 +27,6 @@
          stop/0,
          %% add_modules/1,
          find_refs/3,
-         find_refs/4,
-         find_refs/5,
          state/0]).
 
 %% called from Erlang
@@ -69,24 +67,11 @@ state() ->
     server_cmd(state).
 
 %% modules is {ScannerName, ModulePath}
-find_refs(Ref, Modules, StateDir) ->
+find_refs(Ref, Modules, StateDir) when is_tuple(Ref), is_list(Modules), 
+                                       is_list(StateDir) ->
     R = server_cmd(find_refs, {Ref, Modules, StateDir}),
     ?D(R),
     R.
-
-find_refs(macro, M, Modules, StateDir) ->
-    find_refs({macro_ref, M}, Modules, StateDir);
-find_refs(record, R, Modules, StateDir) ->
-    find_refs({record_ref, R}, Modules, StateDir);
-find_refs(include, F, Modules, StateDir) ->
-    find_refs({include, F}, Modules, StateDir).
-
-find_refs(function_def, F, A, Modules, StateDir) ->
-    find_refs({function_def, F, A}, Modules, StateDir);
-find_refs(M, F, A, Modules, StateDir) 
-  when is_atom(M), is_atom(F), is_integer(A), is_list(Modules), 
-       is_list(StateDir) ->
-    find_refs({external_call, M, F, A}, Modules, StateDir).
 
 remove_module(ScannerName) ->
     server_cmd(remove_module, ScannerName).
@@ -196,10 +181,7 @@ do_find_refs([{ScannerName, ModulePath} | Rest], Ref, StateDir,
     ?D(Refs),
     Acc1 = find_data(Refs, Ref, ModulePath, Acc0),
     ?D(Acc1),
-    do_find_refs(Rest, Ref, StateDir, State, Acc1);
-do_find_refs(A, B, C, D, E) ->
-    ?D({A, B, C, D, E}),
-    erlang:exit(badarg).
+    do_find_refs(Rest, Ref, StateDir, State, Acc1).
 
 find_data([], _, _, Acc) ->
     Acc;

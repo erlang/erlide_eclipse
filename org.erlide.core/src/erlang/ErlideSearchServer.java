@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -33,71 +34,13 @@ public class ErlideSearchServer {
 		return new OtpErlangList(result);
 	}
 
-	public static List<ModuleLineFunctionArityRef> functionUse(final Backend b,
-			final FunctionRef ref, final List<IResource> scope,
-			final String stateDir) {
-		return functionUse(b, ref.module, ref.function, ref.arity, scope,
-				stateDir);
-	}
-
-	public static List<ModuleLineFunctionArityRef> functionDef(final Backend b,
-			final String name, final int arity, final List<IResource> scope,
-			final String stateDir) {
-		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
-		try {
-			OtpErlangObject r = b.call("erlide_search_server", "find_refs",
-					"aaixs", "function_def", name, arity,
-					getModulesFromScope(scope), stateDir);
-			if (Util.isOk(r)) {
-				addSearchResult(result, r);
-			}
-		} catch (Exception e) {
-			ErlLogger.error(e); // TODO report error
-		}
-		return result;
-	}
-
-	public static List<ModuleLineFunctionArityRef> macroOrRecordUse(
-			final Backend b, final String macroOrRecord, final String name,
-			final List<IResource> scope, final String stateDir) {
-		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
-		try {
-			final OtpErlangObject r = b.call("erlide_search_server",
-					"find_refs", "aaxs", macroOrRecord, name,
-					getModulesFromScope(scope), stateDir);
-			if (Util.isOk(r)) {
-				addSearchResult(result, r);
-			}
-		} catch (final Exception e) {
-			ErlLogger.error(e); // TODO report error
-		}
-		return result;
-	}
-
-	public static List<ModuleLineFunctionArityRef> includeUse(final Backend b,
-			final String name, final List<IResource> scope,
+	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
+			final ErlangElementRef ref, final List<IResource> scope,
 			final String stateDir) {
 		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
 		try {
 			final OtpErlangObject r = b.call("erlide_search_server",
-					"find_refs", "asxs", "include", name,
-					getModulesFromScope(scope), stateDir);
-			if (Util.isOk(r)) {
-				addSearchResult(result, r);
-			}
-		} catch (final Exception e) {
-			ErlLogger.error(e); // TODO report error
-		}
-		return result;
-	}
-
-	public static List<ModuleLineFunctionArityRef> functionUse(final Backend b,
-			final String mod, final String fun, final int arity,
-			final List<IResource> scope, final String stateDir) {
-		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
-		try {
-			final OtpErlangObject r = b.call("erlide_search_server",
-					"find_refs", "aaixs", mod, fun, arity,
+					"find_refs", "xxs", ref.getSearchObject(),
 					getModulesFromScope(scope), stateDir);
 			if (Util.isOk(r)) {
 				addSearchResult(result, r);

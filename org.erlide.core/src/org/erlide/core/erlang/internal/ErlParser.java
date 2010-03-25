@@ -71,7 +71,7 @@ public final class ErlParser {
 			final String stateDir = ErlangPlugin.getDefault()
 					.getStateLocation().toString();
 			res = ErlideNoparse.initialParse(b, scannerModuleName,
-					moduleFilePath, initialText, stateDir, updateCaches);
+					moduleFilePath, initialText, stateDir, updateCaches, true);
 		} else {
 			res = ErlideNoparse.reparse(b, scannerModuleName);
 		}
@@ -310,7 +310,6 @@ public final class ErlParser {
 				final String s = Util.stringValue(extra);
 				final ErlAttribute r = new ErlAttribute(parent, nameS, o, s);
 				setPos(r, pos);
-				// r.setParseTree(val);
 				return r;
 			}
 		} else if ("import".equals(nameS)) {
@@ -325,7 +324,6 @@ public final class ErlParser {
 					final ErlImport imp = new ErlImport(parent, importModule
 							.atomValue(), functionList);
 					setPos(imp, pos);
-					// imp.setParseTree(val);
 					return imp;
 				}
 			}
@@ -333,7 +331,6 @@ public final class ErlParser {
 			final OtpErlangList functionList = (OtpErlangList) val;
 			final ErlExport ex = new ErlExport(parent, functionList);
 			setPos(ex, pos);
-			// ex.setParseTree(val);
 			return ex;
 		} else if ("record".equals(nameS)) {
 			if (val instanceof OtpErlangTuple) {
@@ -349,7 +346,6 @@ public final class ErlParser {
 					final ErlRecordDef r = new ErlRecordDef(parent, recordName,
 							s, l);
 					setPos(r, pos);
-					// r.setParseTree(val);
 					return r;
 				}
 			}
@@ -361,7 +357,6 @@ public final class ErlParser {
 						: null;
 				final ErlRecordDef r = new ErlRecordDef(parent, recordName, s);
 				setPos(r, pos);
-				// r.setParseTree(val);
 				return r;
 			}
 		} else if ("type".equals(nameS) || "spec".equals(nameS)
