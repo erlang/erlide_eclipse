@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
-public class DuplicateCodeInputDialog extends AbstractInputDialog {
+public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private int minToks;
 
@@ -29,7 +29,7 @@ public class DuplicateCodeInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
 
-	public DuplicateCodeInputDialog(Shell parentShell, String dialogTitle) {
+	public DuplicateCodeDetectionInputDialog(Shell parentShell, String dialogTitle) {
 		super(parentShell, dialogTitle);
 	}
 

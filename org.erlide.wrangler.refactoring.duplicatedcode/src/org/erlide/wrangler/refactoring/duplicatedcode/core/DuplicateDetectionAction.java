@@ -14,7 +14,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
-import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeInputDialog;
+import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeDetectionInputDialog;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -105,7 +105,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 	protected boolean getUserInput() {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-		DuplicateCodeInputDialog inputd = new DuplicateCodeInputDialog(shell,
+		DuplicateCodeDetectionInputDialog inputd = new DuplicateCodeDetectionInputDialog(shell,
 				"Identical code detection...");
 		inputd.open();
 

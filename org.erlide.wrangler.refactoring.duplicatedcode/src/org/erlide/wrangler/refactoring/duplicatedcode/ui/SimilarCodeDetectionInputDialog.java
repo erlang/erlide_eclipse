@@ -10,11 +10,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
-public class SimilarCodeInputDialog extends AbstractInputDialog {
+public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
 	private Text minToksText;
@@ -27,7 +26,7 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 
 	private Text simScoreText;
 
-	public SimilarCodeInputDialog(Shell parentShell, String title) {
+	public SimilarCodeDetectionInputDialog(Shell parentShell, String title) {
 		super(parentShell, title);
 	}
 
@@ -131,22 +130,18 @@ public class SimilarCodeInputDialog extends AbstractInputDialog {
 		return composite;
 	}
 
-	protected Spinner createValueSpinner(Composite parent, int min, int max,
-			int digits, int value) {
-		Spinner ret = new Spinner(parent, SWT.BORDER);
-		ret.setMinimum(min);
-		ret.setMaximum(max);
-		ret.setDigits(digits);
-		ret.setSelection(value);
-
-		GridData gd = new GridData();
-		gd.verticalIndent = 2;
-		gd.horizontalAlignment = SWT.RIGHT;
-		gd.grabExcessHorizontalSpace = true;
-		ret.setLayoutData(gd);
-
-		return ret;
-	}
+	/*
+	 * protected Spinner createValueSpinner(Composite parent, int min, int max,
+	 * int digits, int value) { Spinner ret = new Spinner(parent, SWT.BORDER);
+	 * ret.setMinimum(min); ret.setMaximum(max); ret.setDigits(digits);
+	 * ret.setSelection(value);
+	 * 
+	 * GridData gd = new GridData(); gd.verticalIndent = 2;
+	 * gd.horizontalAlignment = SWT.RIGHT; gd.grabExcessHorizontalSpace = true;
+	 * ret.setLayoutData(gd);
+	 * 
+	 * return ret; }
+	 */
 
 	public double getSimScore() {
 		return simScore;

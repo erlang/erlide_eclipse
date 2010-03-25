@@ -35,9 +35,16 @@
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
          <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarSearchAction"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.similarexpressionsearch"
+               label="Search si&amp;milar expression..."
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
+               style="push">
+         </action>
+         <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarDetectionAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.similarcodedetection"
-               label="Detect &amp;similar code..."
+               label="Detect s&amp;imilar code..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
                style="push">
          </action>

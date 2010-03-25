@@ -9,7 +9,7 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
-import org.erlide.wrangler.refactoring.duplicatedcode.ui.SimilarCodeInputDialog;
+import org.erlide.wrangler.refactoring.duplicatedcode.ui.SimilarCodeDetectionInputDialog;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -61,7 +61,7 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 	protected boolean getUserInput() {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-		SimilarCodeInputDialog inputd = new SimilarCodeInputDialog(shell,
+		SimilarCodeDetectionInputDialog inputd = new SimilarCodeDetectionInputDialog(shell,
 				"Similar code detection...");
 
 		inputd.open();
