@@ -11,6 +11,12 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Rename variable refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override

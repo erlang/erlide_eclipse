@@ -18,6 +18,12 @@ import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Rename module refactoring integration class
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
 	boolean renameTestMod;

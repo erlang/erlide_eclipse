@@ -3,9 +3,19 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Abstratc input page class
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class InputPage extends WranglerPage {
 
-	public InputPage(String name) {
+	/**
+	 * @param name
+	 *            input page title
+	 */
+	public InputPage(final String name) {
 		super(name);
 	}
 

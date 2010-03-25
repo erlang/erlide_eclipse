@@ -15,6 +15,12 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 import com.ericsson.otp.erlang.OtpErlangBoolean;
 
+/**
+ * Move function refactoring integration class
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override
@@ -47,7 +53,14 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 				GlobalParameters.getTabWidth());
 	}
 
-	public IRefactoringRpcMessage run2(IErlSelection selection) {
+	/**
+	 * Call an RPC
+	 * 
+	 * @param selection
+	 *            erlang selection
+	 * @return parsed RPC message
+	 */
+	public IRefactoringRpcMessage run2(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"move_fun_1_eclipse", "siisxxi", sel.getFilePath(),

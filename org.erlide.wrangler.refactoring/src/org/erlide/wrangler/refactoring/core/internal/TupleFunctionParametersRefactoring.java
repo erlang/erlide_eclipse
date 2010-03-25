@@ -13,6 +13,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Tuple function parameters refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class TupleFunctionParametersRefactoring extends
 		SimpleOneStepWranglerRefactoring {
 	protected int numberOfTuplingParameters = -1;

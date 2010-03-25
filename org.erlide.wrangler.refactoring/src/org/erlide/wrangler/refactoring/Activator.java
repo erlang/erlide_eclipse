@@ -98,6 +98,12 @@ public class Activator extends AbstractUIPlugin {
 		}
 	}
 
+	/**
+	 * Returns with the Wrangler integration plugin path
+	 * 
+	 * @return path of the plugin
+	 * @throws IOException
+	 */
 	public static Path getPluginPath() throws IOException {
 		URL url;
 		Bundle b = getDefault().getBundle();

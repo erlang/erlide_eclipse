@@ -109,7 +109,7 @@ public class ChangedFile {
 	/**
 	 * True if the file name is changed during the refactoring.
 	 * 
-	 * @return
+	 * @return true if the file name has changed
 	 */
 	public boolean isNameChanged() {
 		return !newPath.equals(oldPath);
@@ -118,7 +118,7 @@ public class ChangedFile {
 	/**
 	 * Returns the IPath object of the old path.
 	 * 
-	 * @return
+	 * @return IPath object
 	 */
 	public IPath getIPath() {
 		IFile f;

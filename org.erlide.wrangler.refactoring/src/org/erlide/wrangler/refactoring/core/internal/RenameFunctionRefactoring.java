@@ -16,6 +16,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 
+/**
+ * Rename function refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
 	@Override

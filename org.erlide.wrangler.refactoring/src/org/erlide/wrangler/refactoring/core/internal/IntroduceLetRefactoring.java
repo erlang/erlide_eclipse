@@ -18,6 +18,12 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Introduce ?LET expression refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 
 	OtpErlangObject expr, parentExpr;

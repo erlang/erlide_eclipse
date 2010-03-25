@@ -49,6 +49,12 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 
+/**
+ * This class is for handling the refactoring calls.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RefactoringMenuAction extends AbstractWranglerAction {
 
 	public void run(IAction action) {

@@ -18,8 +18,14 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 public abstract class CostumWorkflowRefactoring extends
 		SimpleWranglerRefactoring {
 
-	public RefactoringStatus status;
+	protected RefactoringStatus status;
 
+	/**
+	 * Runs an RPC like run()
+	 * 
+	 * @param selection
+	 * @return parsed refactoring message
+	 */
 	public abstract IRefactoringRpcMessage runAlternative(
 			IErlSelection selection);
 
@@ -29,6 +35,13 @@ public abstract class CostumWorkflowRefactoring extends
 		return status;
 	}
 
+	/**
+	 * Returns a worklfow controller object, in which the refactoring behaviour
+	 * can be modified.
+	 * 
+	 * @param shell
+	 * @return refactoring workflow controller
+	 */
 	public abstract RefactoringWorkflowController getWorkflowController(
 			Shell shell);
 

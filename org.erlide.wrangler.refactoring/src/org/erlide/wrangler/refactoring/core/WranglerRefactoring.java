@@ -27,6 +27,14 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 public abstract class WranglerRefactoring extends Refactoring {
 	protected ArrayList<ChangedFile> changedFiles;
 
+	/**
+	 * Run the RPC call. Usually only one RPC call is needed, for this, this
+	 * function is used to do the trick.
+	 * 
+	 * @param sel
+	 *            selected code piece
+	 * @return parsed refactoring message
+	 */
 	public abstract IRefactoringRpcMessage run(IErlSelection sel);
 
 	@Override

@@ -34,6 +34,9 @@ public interface IRpcMessage {
 
 	/**
 	 * Parses an RpcResult object.
+	 * 
+	 * @param result
+	 *            result of an RPC
 	 */
 	public void parse(RpcResult result);
 
