@@ -22,25 +22,40 @@
 -define(ModuleGraphTab, wrangler_modulegraph_tab).
 
 -define(DEFAULT_TABWIDTH, 8).  %% default number of characters represented by a Tab key.
+-define(DEFAULT_EUNIT_TEST_SUFFIX, "_test").
+-define(DEFAULT_EUNIT_GENERATOR_SUFFIX, "_test_").
+-define(DEFAULT_EUNIT_TESTMODULE_SUFFIX, "_tests").
+-define(DEFAULT_EQC_PROP_PREFIX, "prop_").
+-define(DEFAULT_TS_MODULE_SUFFIX, "_SUITE").
+-define(EMACS, true).
+-define(MONITOR, true).
+
 
 -ifdef(EMACS).
--define(wrangler_io(__String, __Args), io:format(__String, __Args)).
+-define(wrangler_io(__String, __Args), refac_io:format(__String, __Args)).
 -else.
 -define(wrangler_io(__String, __Args), ok).
 -endif.
-      
+     
+%%-define(DEBUG, true)
+ 
+-ifdef(DEBUG).
+-define(debug(__String, __Args), ?wrangler_io(__String, __Args)).
+-else.
+-define(debug(__String, __Args), ok).
+-endif.
 
+     
 -type(filename()::string()).
 -type(modulename()::atom()).
 -type(functionname()::atom()).
--type(arity()::integer()).
+-type(functionarity()::integer()).
 -type(dir()::string()).
 -type(syntaxTree()::any()).    %% any() should be refined.
 -type(pos()::{integer(), integer()}).
 -type(line()::integer()).
 -type(col()::integer()).
--type(boolean()::true|false).
--type(key():: attributes | errors | exports | functions | imports | module | records | rules | warnings).
+-type(key():: attributes | errors | exports | functions | imports | module_imports | module | records | rules | warnings).
 -type(moduleInfo()::[{key(), any()}]).  %% any() should be refined.
 -type(anyterm()::any()).
 -type(editor()::emacs|eclipse).
@@ -51,7 +66,40 @@
 	       | {'whitespace', pos(), whitespace()} | {'comment', pos(), string()}).
 
 -type(scc_order()::[[{{atom(), atom(), integer()}, syntaxTree()}]]).
--type(callercallee()::[{{modulename(), functionname(), arity()}, [{modulename(), functionname(), arity()}]}]).
+-type(callercallee()::[{{modulename(), functionname(), functionarity()}, [{modulename(), functionname(), functionarity()}]}]).
 -type(external_calls()::[{atom(), atom(), integer()}]).
 -record(callgraph, {'callercallee', 'scc_order', 'external_calls'}).
       
+%% type defined by typer:
+-record(typer_analysis,
+	{mode					,
+	 macros      = []			, % {macro_name, value}
+	 includes    = []			,
+	 
+	 %% Esp for Dialyzer
+	 %% ----------------------
+	 code_server = dialyzer_codeserver:new(),
+	 callgraph   = dialyzer_callgraph:new(),
+	 ana_files   = [],
+	 plt         = none,
+	 
+	 %% Esp for TypEr
+	 %% ----------------------
+	 t_files     = [], 
+	 
+	 %% For choosing between contracts or comments
+	 contracts   = true,
+	 
+	 %% Any file in 'final_files' is compilable.
+	 %% And we need to keep it as {FileName,ModuleName}
+	 %% in case filename does NOT match with moduleName
+	 final_files = [],  
+	 
+	 ex_func     = typer_map:new(),
+	 record      = typer_map:new(),
+	 
+	 %% Functions: the line number of the function 
+	 %%            should be kept as well
+	 func        = typer_map:new(),
+	 inc_func    = typer_map:new(),
+	 trust_plt   = dialyzer_plt:new()}).

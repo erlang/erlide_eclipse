@@ -195,12 +195,16 @@ parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
 -spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], integer(), atom())
       -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, true, SearchPaths, TabWidth, FileFormat) ->
-    case refac_epp_dodger:parse_file(FName, [{tab, TabWidth}, {format, FileFormat}]) of
+    case
+      refac_epp_dodger:parse_file(FName, [{tab, TabWidth}, {format, FileFormat}])
+	of
       {ok, Forms} ->
 	  Dir = filename:dirname(FName),
 	  DefaultIncl2 = [filename:join(Dir, X) || X <- refac_misc:default_incls()],
 	  Includes = SearchPaths ++ DefaultIncl2,
-	  {Info0, Ms} = case refac_epp:parse_file(FName, Includes, [], TabWidth, FileFormat) of
+	  {Info0, Ms} = case
+			  refac_epp:parse_file(FName, Includes, [], TabWidth, FileFormat)
+			    of
 			  {ok, Fs, {MDefs, MUses}} ->
 			      ST = refac_recomment:recomment_forms(Fs, []),
 			      Info1 = refac_syntax_lib:analyze_forms(ST),
@@ -213,7 +217,7 @@ parse_annotate_file(FName, true, SearchPaths, TabWidth, FileFormat) ->
 	  Info = refac_syntax_lib:analyze_forms(SyntaxTree),
 	  Info2 = merge_module_info(Info0, Info),
 	  AnnAST0 = annotate_bindings(FName, SyntaxTree, Info2, Ms, TabWidth),
-	  AnnAST = refac_type_annotation:type_ann_ast(FName, Info2, AnnAST0, SearchPaths, TabWidth),
+	  AnnAST = refac_atom_annotation:type_ann_ast(FName, Info2, AnnAST0, SearchPaths, TabWidth),
 	  {ok, {AnnAST, Info2}};
       {error, Reason} -> erlang:error(Reason)
     end;
@@ -221,7 +225,9 @@ parse_annotate_file(FName, false, SearchPaths, TabWidth, FileFormat) ->
     Dir = filename:dirname(FName),
     DefaultIncl2 = [filename:join(Dir, X) || X <- refac_misc:default_incls()],
     Includes = SearchPaths ++ DefaultIncl2,
-    case refac_epp:parse_file(FName, Includes, [], TabWidth, FileFormat) of
+    case
+      refac_epp:parse_file(FName, Includes, [], TabWidth, FileFormat)
+	of
       {ok, Forms, Ms} -> Forms1 = lists:filter(fun (F) ->
 						       case F of
 							 {attribute, _, file, _} -> false;

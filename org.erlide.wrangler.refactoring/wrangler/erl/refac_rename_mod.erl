@@ -61,13 +61,7 @@
 
 -export([rename_mod/4, rename_mod_1/5, rename_mod_eclipse/4, rename_mod_1_eclipse/5]).
 
--import(refac_atom_utils, [output_atom_warning_msg/3]).
-
--import(refac_atom_utils, [check_atoms/4]).
-
--import(refac_atom_utils, [stop_atom_process/1]).
-
--import(refac_atom_utils, [start_atom_process/0]).
+-import(refac_atom_utils, [output_atom_warning_msg/3,check_atoms/4,start_atom_process/0,stop_atom_process/1]).
 
 -include("../include/wrangler.hrl").
 

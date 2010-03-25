@@ -73,6 +73,8 @@ add_fun_def_info(F, ModName, DefinedFuns, ImportedFuns) ->
 			    add_fun_def_info_in_import(F);
 			export ->
 		 	    add_fun_def_info_in_export(F, ModName, DefinedFuns);
+			spec ->
+			     add_fun_def_info_in_spec(F, ModName, DefinedFuns);
 			_ ->
 			    add_fun_def_info_in_form(F,ModName, DefinedFuns, ImportedFuns ) 
 		    end;
@@ -114,6 +116,36 @@ add_fun_def_info_in_import(F) ->
 	    end;					    
 	_ -> F
     end.
+
+add_fun_def_info_in_spec(Form, ModName, DefinedFuns) ->
+    Name = refac_syntax:attribute_name(Form),
+    Args = refac_syntax:attribute_arguments(Form),
+    [H|T] = Args, 
+    case refac_syntax:type(H) of
+	tuple ->
+	    case refac_syntax:tuple_elements(H) of
+		[F, A] ->
+		    case {refac_syntax:type(F), refac_syntax:type(A)} of
+			{atom, integer} ->
+			    FunName = refac_syntax:atom_value(F),
+			    Arity = refac_syntax:integer_value(A),
+			    Pos = refac_syntax:get_pos(F),
+			    case lists:keysearch({ModName, FunName, Arity}, 1, DefinedFuns) of
+				{value, {{ModName, FunName, Arity}, DefinePos}} ->
+				    Ann ={fun_def, {ModName, FunName, Arity, Pos, DefinePos}};
+				false ->
+				    Ann = {fun_def, {ModName, FunName, Arity, Pos, ?DEFAULT_LOC}}
+			    end,
+			    F1 = update_ann(F, Ann),
+			    H1 =rewrite(H, refac_syntax:tuple([F1,A])),
+			    rewrite(Form, refac_syntax:attribute(Name, [H1|T]));
+			_ -> Form
+		    end;
+		_ -> Form
+	    end;
+	_ -> Form
+    end.
+
  
 add_fun_def_info_in_export(F, ModName, DefinedFuns) ->
     Fun = fun(Node) ->

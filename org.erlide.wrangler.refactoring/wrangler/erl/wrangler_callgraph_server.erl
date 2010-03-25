@@ -196,28 +196,64 @@ do_build_callgraph(FName, DirList) ->
 
 -spec(called_funs/1::(syntaxTree()) ->
 	     [{modulename(), functionname(), functionarity()}]).
-called_funs(Tree) ->
+called_funs(Node) ->
     Fun = fun (T, S) ->
-		case refac_syntax:type(T) of
-		  application ->
-			Op = refac_syntax:application_operator(T),
-			case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
-			    {value, {fun_def, {M, F, A, _, _}}} 
-			    when M =/= '_' andalso F =/= '_' ->
-				ordsets:add_element({M, F, A}, S);
-			    _ -> S
-			end;
-		    implicit_fun ->
-			case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
-			    {value, {fun_def, {M, F, A, _, _}}} 
-			    when M =/= '_' andalso F =/= '_' ->
-				ordsets:add_element({M, F, A}, S);
-			    _ -> S
-			end;
-		    _ -> S
+		  case refac_syntax:type(T) of
+		      atom ->
+			  case lists:keysearch(type, 1, refac_syntax:get_ann(T)) of
+			      {value, {type, {f_atom, [M, F, A]}}} ->
+				  case is_atom(M) andalso M =/= '_' andalso
+				      is_atom(F) andalso F =/= '_' of
+				      true ->
+					  ordsets:add_element({M, F, A}, S);
+				      false->
+					  S
+				  end;
+			      _ -> S
+			  end;
+		      _ -> S
+		  end
+	end,
+    Fun1 =fun(C,S) ->
+		  refac_syntax_lib:fold(Fun, S, C)
+	  end,		  
+    Fun2 = fun(F, S) ->
+		   case refac_syntax:type(F) of
+		       function ->refac_syntax:function_clauses(F)++S;
+		       _ -> S
+		   end
+	 end,
+    Cs = refac_syntax_lib:fold(Fun2,[], Node),	
+    case Cs of 
+	[] -> called_funs_1(Node);
+	_ -> ordsets:from_list(lists:foldl(Fun1, ordsets:new(), Cs))
+    end.
+
+
+called_funs_1(Tree) ->
+    Fun = fun (T, S) ->
+		  case refac_syntax:type(T) of
+		      application ->
+			  Op = refac_syntax:application_operator(T),
+			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
+			      {value, {fun_def, {M, F, A, _, _}}} 
+				when M =/= '_' andalso F =/= '_' ->
+				  ordsets:add_element({M, F, A}, S);
+			      _ -> S
+			  end;
+		      implicit_fun ->
+			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
+			      {value, {fun_def, {M, F, A, _, _}}} 
+				when M =/= '_' andalso F =/= '_' ->
+				  ordsets:add_element({M, F, A}, S);
+			      _ -> S
+			  end;
+		      _ -> S
 		end
 	end,
-    refac_syntax_lib:fold(Fun, ordsets:new(), Tree).
+    ordsets:from_list(refac_syntax_lib:fold(Fun, ordsets:new(), Tree)).
+
+
 
     
 get_sorted_funs(ModName, AnnAST) ->

@@ -60,7 +60,7 @@ collect_atoms(Tree, AtomNames) ->
 		  application ->
 		      Operator = refac_syntax:application_operator(T),
 		      collect_atoms_1(AtomNames, S, Operator, function);
-		  module_qualifier ->
+	 	  module_qualifier ->
 		      Mod = refac_syntax:module_qualifier_argument(T),
 		      Fun = refac_syntax:module_qualifier_body(T),
 		      S1 = collect_atoms_1(AtomNames, S, Mod, module),

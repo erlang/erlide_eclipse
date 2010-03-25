@@ -42,14 +42,14 @@
 	 format_search_paths/1,default_incls/0, get_toks/1,reset_attrs/1,
 	 get_env_vars/1,get_var_exports/1,get_bound_vars/1,get_free_vars/1,
 	 is_expr/1,is_pattern/1, is_exported/2, inscope_funs/1,update_ann/2,
-	 callback_funs/1, is_callback_fun/3, rewrite/2]).
+	 delete_from_ann/2, callback_funs/1, is_callback_fun/3, rewrite/2]).
 
 -include("../include/wrangler.hrl").
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
--spec group_by(integer(), [tuple()]) -> [tuple()].
+-spec group_by(integer(), [tuple()]) -> [[tuple()]].
 group_by(N, TupleList) ->
-    SortedTupleList = lists:ukeysort(N, TupleList),
+    SortedTupleList = lists:keysort(N, lists:usort(TupleList)),
     group_by(N, SortedTupleList, []).
 
 group_by(_N,[],Acc) -> Acc;
@@ -622,6 +622,13 @@ update_ann(Tree, {Key, Val}) ->
 	    {value, _} -> lists:keyreplace(Key, 1, As0, {Key, Val});
 	    _ -> As0 ++ [{Key, Val}]
 	  end,
+    refac_syntax:set_ann(Tree, As1).
+
+
+-spec(delete_from_ann(Node::syntaxTree(), Key::atom()) -> syntaxTree()).
+delete_from_ann(Tree, Key) ->
+    As0=refac_syntax:get_ann(Tree),
+    As1 = lists:keydelete(Key, 1,As0),
     refac_syntax:set_ann(Tree, As1).
 
 

@@ -31,7 +31,8 @@
 
 -module(refac_module_graph). 
 
--export([module_graph/1, get_called_mods/2, module_graph_to_dot/4, module_subgraph_to_dot/4]). 
+-export([module_graph/1, get_called_mods/2, module_graph_to_dot/4,
+	 module_subgraph_to_dot/4, scc_graph_to_dot/3]). 
 
 -include("../include/wrangler.hrl").
 
@@ -168,8 +169,7 @@ analyze_all_files_with_called_funs(ModDirs, SearchPaths)->
     ModNames = [M || {M, _} <- refac_util:get_modules_by_file(Files)],
     [{{Mod, Dir},analyze_mod_with_called_funs({Mod, Dir}, ModNames, SearchPaths)}
      || {Mod, Dir}<-ModDirs].
-   
-
+  
 analyze_mod_with_called_funs({Mod, Dir}, ModNames, SearchPaths) ->
     File = filename:join(Dir, atom_to_list(Mod) ++ ".erl"),
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(File, true, SearchPaths),
@@ -185,7 +185,6 @@ analyze_mod_with_called_funs({Mod, Dir}, ModNames, SearchPaths) ->
 		    end,
     CalledModFuns = collect_called_modules_with_called_funs(Mod, AnnAST, ModNames),
     Res = ImportedMods0 ++ ImportedMods1 ++ CalledModFuns,
-    refac_io:format("Mod:\n~p\n", [Mod]),
     ordsets:from_list(group_by_mod_names(Res)).
    
 
@@ -197,30 +196,12 @@ collect_called_modules_with_called_funs(ModName, AnnAST, ModNames) ->
 			      ||F<-refac_syntax:form_list_elements(AnnAST)]),
     [{M, [{F,A}]}||{M, F, A}<-CalledFuns, M/=ModName, lists:member(M, ModNames)].
    
- 
+
 group_by_mod_names(ModFuns) ->
-    ModFuns1 = group_by(1, ModFuns),
-    refac_io:format("ModFuns1:\n~p\n", [ModFuns1]),
-    Res =[{hd(Ms), lists:append(Fs)}||MFs<-ModFuns1, {Ms, Fs} <-[lists:unzip(MFs)]],
-    refac_io:format("Res:\n~p\n", [Res]),
-    Res.
-    
-
--spec group_by(integer(), [tuple()]) -> [tuple()].
-group_by(N, TupleList) ->
-    SortedTupleList = lists:keysort(N, lists:usort(TupleList)),
-    group_by(N, SortedTupleList, []).
-
-group_by(_N,[],Acc) -> Acc;
-group_by(N,TupleList = [T| _Ts],Acc) ->
-    E = element(N,T),
-    {TupleList1,TupleList2} = 
-	lists:partition(fun (T1) ->
-				element(N,T1) == E
-			end,
-			TupleList),
-    group_by(N,TupleList2,Acc ++ [TupleList1]).
-
+    ModFuns1 = refac_misc:group_by(1, ModFuns),
+    [{hd(Ms), lists:append(Fs)}||MFs<-ModFuns1, {Ms, Fs} <-[lists:unzip(MFs)]].
+   
+  
 -spec (module_subgraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
 module_subgraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     DotFile = filename:dirname(OutFile)++filename:rootname(OutFile)++".dot",
@@ -228,7 +209,7 @@ module_subgraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     MG = digraph:new(),
     add_edges(ModCallerCallees, [], MG),
     SG=digraph_utils:subgraph(MG, ModNames, []),
-    to_dot(SG,DotFile, WithLabel),
+    to_dot(SG,DotFile, WithLabel, [], false),
     digraph:delete(SG),
     digraph:delete(MG).
 
@@ -238,8 +219,22 @@ module_graph_to_dot(OutFile, NotCareMods, SearchPaths, WithLabel) ->
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
     MG = digraph:new(),
     add_edges(ModCallerCallees,NotCareMods,  MG),
-    to_dot(MG,DotFile, WithLabel),
+    Sccs = digraph_utils:strong_components(MG),
+    Sccs1 = [Scc||Scc<-Sccs, length(Scc)>1],
+    to_dot(MG,DotFile, WithLabel, Sccs1, false),
     digraph:delete(MG).
+
+-spec (scc_graph_to_dot/3::(filename(), [filename()|dir()], boolean()) ->true). 			  
+scc_graph_to_dot(OutFile, SearchPaths, WithLabel) -> 
+    DotFile = filename:rootname(OutFile)++".dot",
+    ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
+    MG = digraph:new(),
+    add_edges(ModCallerCallees,[],  MG),
+    Sccs = digraph_utils:strong_components(MG),
+    Sccs1 = [Scc||Scc<-Sccs, length(Scc)>1],
+    to_dot(MG,DotFile, WithLabel, Sccs1, true),
+    digraph:delete(MG).
+
 
 add_edges([], _NotCareMods, MG) ->
     MG;
@@ -274,31 +269,57 @@ digraph_add_edge(From, To, Label, MG) ->
     digraph:add_edge(MG, {From, To}, From, To, Label),
     MG.
 
-to_dot(MG, File, WithLabel) ->
+to_dot(MG, File, WithLabel, SccNodes, OnlySccs) ->
     Edges = [digraph:edge(MG, X) || X <- digraph:edges(MG)],
     EdgeList=[{X, Y, Label} || {_, X, Y, Label} <- Edges],
-    edge_list_to_dot(EdgeList, File, "ModuleGraph", WithLabel).
+    edge_list_to_dot(EdgeList, File, "ModuleGraph", WithLabel, SccNodes, OnlySccs).
     
-edge_list_to_dot(Edges, OutFileName, GraphName, WithLabel) ->
+edge_list_to_dot(Edges, OutFileName, GraphName, WithLabel, Sccs, OnlySccs) ->
     {NodeList1, NodeList2, _} = lists:unzip3(Edges),
     NodeList = NodeList1 ++ NodeList2,
     NodeSet = ordsets:from_list(NodeList),
     Start = ["digraph ",GraphName ," {"],
-    VertexList = [node_format(V) ||V <- NodeSet],
+    VertexList = case OnlySccs of
+		     true ->
+			 [node_format(V, []) ||V <- NodeSet, is_scc_node(V, Sccs)];
+		     false ->
+			 [node_format(V, Sccs) ||V <- NodeSet]
+		 end,
     End = ["graph [", GraphName, "=", GraphName, "]}"],
-    EdgeList = [edge_format(X, Y, Label, WithLabel) || {X,Y, Label} <- Edges],
+    EdgeList = case OnlySccs of 
+		   true ->
+		       [edge_format(X, Y, Label, WithLabel)
+			|| {X,Y, Label} <- Edges,
+			   is_scc_edge({X, Y}, Sccs)];
+		   false ->
+		       [edge_format(X, Y, Label, WithLabel) || {X,Y, Label} <- Edges]
+	       end,
     String = [Start, VertexList, EdgeList, End],
     ok = file:write_file(OutFileName, list_to_binary(String)).
 
 
-node_format(V) ->
+is_scc_node(V, Sccs) ->
+    lists:member(V, lists:append(Sccs)).
+
+is_scc_edge({V1, V2}, Sccs) ->
+    lists:any(fun(Scc) ->
+		      lists:member(V1, Scc) andalso
+			  lists:member(V2, Scc)
+	      end, Sccs).
+
+node_format(V, Sccs) ->
     String = io_lib:format("~p", [V]),
     {Width, Heigth} = calc_dim(String),
     W = (Width div 7 + 1) * 0.55,
     H = Heigth * 0.4,
     SL = io_lib:format("~f", [W]),
     SH = io_lib:format("~f", [H]),
-    [String, " [width=", SL, " heigth=", SH, " ", "", "];\n"].
+    case is_scc_node(V, Sccs) of 
+	true ->
+	    [String, " [width=", SL, " heigth=", SH, " color=purple, style=filled", " ", "", "];\n"];
+	false ->
+	    [String, " [width=", SL, " heigth=", SH, " ", "", "];\n"]
+    end.
 
 calc_dim(String) ->
   calc_dim(String, 1, 0, 0).
@@ -324,10 +345,18 @@ edge_format(V1, V2, Label, WithLabel) ->
 
 format_label([]) ->
     "";
-format_label([{F,A},{F1,A1}|T]) ->
-    io_lib:format("~p/~p,~p/~p\n", [F, A,F1, A1]) ++ format_label(T);
 format_label([{F,A}|T]) ->
-    io_lib:format("~p/~p.", [F, A])++format_label(T).
+    case T of 
+	[] ->
+	    io_lib:format("~p/~p.", [F, A]);
+	[{F1, A1}|T1] ->
+	    case T1 of 
+		[] ->
+		    io_lib:format("~p/~p,~p/~p,", [F, A, F1, A1])++format_label(T1);
+		_ ->
+		    io_lib:format("~p/~p,~p/~p,", [F, A, F1, A1])++"\\n"++format_label(T1)
+		end
+    end.
 
 
 

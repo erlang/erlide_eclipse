@@ -41,6 +41,8 @@
 	 large_modules/3, non_tail_recursive_servers_in_file/3, non_tail_recursive_servers_in_dirs/2,
 	 not_flush_unknown_messages_in_file/3, not_flush_unknown_messages_in_dirs/2]).
 
+-export([gen_module_graph/4, gen_module_scc_graph/3, gen_function_callgraph/3]).
+
 -include("../include/wrangler.hrl").
 
 -define (not_sure_atom,'*wrangler-not-able-to-decide*').
@@ -699,6 +701,31 @@ non_flush_format_result(Funs) ->
 	    ?wrangler_io("\n The following functions are servers without flush of unknown messages:\n",[]),
 	    format_result_1(Funs)
     end.
+
+
+
+-spec (gen_module_graph/4::(filename(), string(), [filename()|dir()], boolean()) ->true).
+gen_module_graph(OutFile, NotCareMods, SearchPaths, WithLabel) ->
+    ?wrangler_io("\nCMD: ~p:gen_module_graph(~p, ~p, ~p, ~p).\n",
+		 [?MODULE, OutFile, NotCareMods, SearchPaths, WithLabel]),
+    NotCareMods1 = [list_to_atom(T)|| T<-string:tokens(NotCareMods, ", ")],
+    refac_module_graph:module_graph_to_dot(OutFile, NotCareMods1, SearchPaths, WithLabel).
+   
+-spec(gen_module_scc_graph/3::(filename(), [filename()|dir()], boolean()) ->true).
+gen_module_scc_graph(OutFile, SearchPaths, WithLabel)->
+    ?wrangler_io("\nCMD: ~p:gen_module_scc_graph(~p, ~p, ~p).\n",
+		 [?MODULE, OutFile, SearchPaths, WithLabel]),
+    refac_module_graph:scc_graph_to_dot(OutFile, SearchPaths, WithLabel).
+    
+
+
+   
+-spec(gen_function_callgraph/3::(filename(), filename(),[filename()|dir()]) ->true).
+gen_function_callgraph(OutFile, FileName, SearchPaths)->
+     ?wrangler_io("\nCMD: ~p:gen_function_callgraph(~p, ~p, ~p).\n",
+ 		 [?MODULE, OutFile, FileName, SearchPaths]),
+     wrangler_callgraph_server:fun_callgraph_to_dot(OutFile, FileName).
+   
 
 
 

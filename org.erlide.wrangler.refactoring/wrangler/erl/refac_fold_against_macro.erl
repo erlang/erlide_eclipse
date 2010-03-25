@@ -90,7 +90,7 @@ fold_against_macro(FileName, Line, Col, SearchPaths, TabWidth, Editor, Cmd) ->
 						   Candidates),
 			      {ok, Regions, Cmd};
 			  eclipse ->
-			      {ok, Candidates, MacroDef}
+			      {ok, {MacroDef, Candidates}}
 		      end
 	    end;
 	{error, _} ->
@@ -106,11 +106,20 @@ fold_against_macro_1_eclipse(FileName, CandidatesToFold, MacroDef, SearchPaths, 
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     CandidatesToFold1 =[{StartLine, StartCol, EndLine, EndCol, MacroApp, MacroDef} ||
 			   {{{StartLine, StartCol}, {EndLine, EndCol}}, MacroApp} <- CandidatesToFold],
-    AnnAST1 = fold_against_macro_1_1(AnnAST, CandidatesToFold1),
+    AnnAST1 = fold_against_macro_1_1_eclipse(AnnAST, CandidatesToFold1),
     Src = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
     Res = [{FileName, FileName, Src}],
     {ok, Res}.
  
+fold_against_macro_1_1_eclipse(AnnAST, []) ->
+    AnnAST;
+fold_against_macro_1_1_eclipse(AnnAST, [{StartLine, StartCol, EndLine, EndCol,MacroApp, MacroDef}|Tail] ) ->
+    Args = refac_syntax:attribute_arguments(MacroDef),
+    MacroBody = tl(Args),
+    TMacroApp=transform(MacroApp),
+    AnnAST1 = refac_new_macro:replace_expr_with_macro(AnnAST, {MacroBody, {StartLine, StartCol}, {EndLine, EndCol}}, TMacroApp),
+    fold_against_macro_1_1_eclipse(AnnAST1, Tail).
+
 
 -spec(fold_against_macro_1/5::(filename(), [{integer(), integer(), integer(), integer(), syntaxTree(), syntaxTree()}],
 			       [dir()], integer(), string()) ->

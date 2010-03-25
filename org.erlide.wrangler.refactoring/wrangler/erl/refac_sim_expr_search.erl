@@ -32,6 +32,9 @@
 
 -export([sim_expr_search_in_buffer/6,sim_expr_search_in_dirs/6, normalise_record_expr/5]).
 
+-export([sim_expr_search_in_buffer_eclipse/6, sim_expr_search_in_dirs_eclipse/6, 
+	 normalise_record_expr_eclipse/5]).
+
 -include("../include/wrangler.hrl").
 
 -define(DefaultSimiScore, 0.8).
@@ -50,18 +53,18 @@
 %% <p>
 
 -spec(sim_expr_search_in_buffer/6::(filename(), pos(), pos(), string(),[dir()],integer())
-      -> {ok, [{integer(), integer(), integer(), integer()}]}).    
+      -> {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).    
 sim_expr_search_in_buffer(FName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:sim_expr_search(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
+    ?wrangler_io("\nCMD: ~p:sim_expr_search_in_buffer(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, Line1, Col1, SimiScore0, SearchPaths, TabWidth]),
     SimiScore = get_simi_score(SimiScore0),
     {FunDef, Exprs, SE} = get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth),
-    {Ranges, AntiUnifier} = search_and_gen_anti_unifier(FName, {FName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
+    {Ranges, AntiUnifier} = search_and_gen_anti_unifier([FName], {FName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
     refac_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
 
 
 -spec(sim_expr_search_in_dirs/6::(filename(), pos(), pos(), string(),[dir()],integer())
-      -> {ok, [{integer(), integer(), integer(), integer()}]}).    
+      ->{ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).     
 sim_expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, SearchPaths, TabWidth]),
@@ -71,6 +74,36 @@ sim_expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, Simi
     {Ranges, AntiUnifier} = search_and_gen_anti_unifier(Files, {FileName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
     refac_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
 
+
+-spec(sim_expr_search_in_buffer_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
+      -> {ok, {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
+sim_expr_search_in_buffer_eclipse(FName, Start, End, SimiScore0, SearchPaths, TabWidth) ->
+    sim_expr_search_eclipse(FName, Start, End, [FName], SimiScore0, SearchPaths, TabWidth).
+
+  
+
+-spec(sim_expr_search_in_dirs_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
+    ->{ok,  {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
+sim_expr_search_in_dirs_eclipse(FileName, Start, End, SimiScore0, SearchPaths, TabWidth) ->
+    Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
+    sim_expr_search_eclipse(FileName, Start, End, Files, SimiScore0, SearchPaths, TabWidth).
+    
+
+sim_expr_search_eclipse(CurFileName, Start, End, FilesToSearch, SimiScore0, SearchPaths, TabWidth) ->
+    SimiScore = get_simi_score_eclipse(SimiScore0),
+    {FunDef, Exprs, SE} = get_fundef_and_expr(CurFileName, Start, End, SearchPaths, TabWidth),
+    {Ranges, AntiUnifier} = search_and_gen_anti_unifier(FilesToSearch, {CurFileName, FunDef, Exprs, SE},
+							SimiScore, SearchPaths, TabWidth),
+    Ranges1 = [{{FileName, StartLine, StartCol}, {FileName, EndLine, EndCol}}
+	       || {FileName, {{StartLine, StartCol}, {EndLine, EndCol}}} <- Ranges],
+    case length(Ranges1) =< 1 of
+      true ->
+	  {ok, {[], ""}};
+      _ ->
+	  {ok, {Ranges1, refac_prettypr:format(AntiUnifier)}}
+    end.
+
+   
 search_and_gen_anti_unifier(Files, {FName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth) ->
     {_Start, End} = SE,
     Res = lists:append([search_similar_expr_1(F, Exprs, SimiScore, SearchPaths, TabWidth) || F <- Files]),
@@ -89,16 +122,32 @@ search_similar_expr_1(FName, Exprs, SimiScore, SearchPaths, TabWidth) ->
 	_E1:_E2 ->
 	    []
     end.
-
+ 
 do_search_similar_expr(FileName, AnnAST, RecordInfo, Exprs, SimiScore) when is_list(Exprs) ->
-    F0 = fun (FunNode, Acc) ->
-		 F = fun (T, Acc1) ->
-			     Exprs1 = get_expr_seqs(T),
-			     do_search_similar_expr_1(FileName, Exprs, Exprs1, RecordInfo, SimiScore, FunNode) ++ Acc1
-		     end,
-		 refac_syntax_lib:fold(F, Acc, FunNode)
-	 end,
-    do_search_similar_expr_1(AnnAST, F0).
+    case length(Exprs)>1 of 
+	true ->
+	    F0 = fun (FunNode, Acc) ->
+			 F = fun (T, Acc1) ->
+				     Exprs1 = get_expr_seqs(T),
+				     do_search_similar_expr_1(FileName, Exprs, Exprs1, RecordInfo, SimiScore, FunNode) ++ Acc1
+			     end,
+			 refac_syntax_lib:fold(F, Acc, FunNode)
+		 end,
+	    do_search_similar_expr_1(AnnAST, F0);
+	false ->
+	    Expr = hd(Exprs),
+	    F0 = fun (FunNode, Acc) ->
+			 F = fun (T, Acc1) ->
+				     case refac_misc:is_expr(T) of 
+					 true ->
+					     do_search_similar_expr_1(FileName, Expr, T, RecordInfo, SimiScore, FunNode) ++ Acc1;
+					 _ -> Acc1
+				     end
+			     end,
+			 refac_syntax_lib:fold(F, Acc, FunNode)
+		 end,
+	    do_search_similar_expr_1(AnnAST, F0)
+    end.
 
 
 do_search_similar_expr_1(AnnAST, Fun) ->
@@ -127,7 +176,7 @@ overlapped_locs({Start1, End1}, {Start2, End2}) ->
       Start2 =< Start1 andalso End1 =< End2.
 
 
-do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNode) ->
+do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNode) when is_list(Exprs1) ->
     Len1 = length(Exprs1),
     Len2 = length(Exprs2),
     case Len1 =< Len2 of
@@ -140,7 +189,7 @@ do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNod
 		_ ->
 		    NormalisedExprs21 =normalise_expr(Exprs21, RecordInfo),
 		    ExportedVars = vars_to_export(FunNode, E2, Exprs21),
-		    case anti_unification:anti_unification(Exprs1, NormalisedExprs21) of
+		    case anti_unification:anti_unification_with_score(Exprs1, NormalisedExprs21, SimiScore) of
 			none ->
 			    do_search_similar_expr_1(FileName, Exprs1, tl(Exprs2), RecordInfo, SimiScore, FunNode);
 			SubSt ->
@@ -149,8 +198,28 @@ do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNod
 			    [{{FileName, {S2, E2}}, EVs, SubSt}]++
 				do_search_similar_expr_1(FileName, Exprs1, tl(Exprs2), RecordInfo, SimiScore, FunNode)
 		    end
+	    end;
+	_ ->[]
+    end;
+do_search_similar_expr_1(FileName, Expr1, Expr2, RecordInfo, SimiScore, FunNode) ->
+    {S1, E1} = refac_misc:get_start_end_loc(Expr1),
+    {S2, E2} = refac_misc:get_start_end_loc(Expr2),
+    case overlapped_locs({S1, E1}, {S2, E2}) of
+	true -> [];
+	_ ->
+	    NormalisedExpr21 =normalise_expr(Expr2, RecordInfo),
+	    ExportedVars = vars_to_export(FunNode, E2, Expr2),
+	    Res =anti_unification:anti_unification_with_score(Expr1, NormalisedExpr21, SimiScore),
+	    case Res of 
+		none ->
+		    [];
+		SubSt ->
+		    EVs = [SE1 || {SE1, SE2} <- SubSt, refac_syntax:type(SE2) == variable,
+				  lists:member({refac_syntax:variable_name(SE2), get_var_define_pos(SE2)}, ExportedVars)],
+		    [{{FileName, {S2, E2}}, EVs, SubSt}]
 	    end
     end.
+
     
 get_var_define_pos(V) ->
     {value, {def, DefinePos}} = lists:keysearch(def,1, refac_syntax:get_ann(V)),
@@ -179,7 +248,13 @@ get_simi_score(SimiScore0) ->
 	     end;			      
 	_:_ -> throw({error, "Parameter input is invalid."})
     end.
-    
+
+get_simi_score_eclipse(SimiScore) ->
+    case SimiScore>=0.1 andalso SimiScore=<1.0 of 
+	true -> SimiScore;
+	_ ->?DefaultSimiScore
+    end.
+
 
 get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
@@ -208,8 +283,18 @@ normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, TabWid
 		 [?MODULE, FName, Line, Col, ShowDefault, SearchPaths, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":normalise_record_expr(" ++ "\"" ++
 	    FName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "},"
-											   ++ atom_to_list(ShowDefault) ++ " [" ++ refac_misc:format_search_paths(SearchPaths)
+	++ atom_to_list(ShowDefault) ++ " [" ++ refac_misc:format_search_paths(SearchPaths)
 	      ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, emacs, Cmd).
+   
+
+-spec normalise_record_expr_eclipse/5::(filename(), pos(), boolean(), [dir()], integer()) ->
+				       {ok, [{filename(), filename(), string()}]}.
+normalise_record_expr_eclipse(FName, Pos, ShowDefault, SearchPaths, TabWidth) ->
+    normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, eclipse, "").
+     
+
+normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, Editor, Cmd) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, [], TabWidth),
     RecordExpr = pos_to_record_expr(AnnAST, Pos),
     case refac_syntax:type(refac_syntax:record_expr_type(RecordExpr)) of
@@ -217,8 +302,7 @@ normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, TabWid
       _ -> throw({error, "Wrangler can only normalise a record expression with an atom as the record name."})
     end,
     {AnnAST1, _Changed} = normalise_record_expr_1(FName, AnnAST, Pos, ShowDefault, SearchPaths, TabWidth),
-    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST1}], Cmd),
-    {ok, [FName]}.
+    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd).
 
 
 normalise_record_expr_1(FName, AnnAST, Pos, ShowDefault, SearchPaths, TabWidth) ->
