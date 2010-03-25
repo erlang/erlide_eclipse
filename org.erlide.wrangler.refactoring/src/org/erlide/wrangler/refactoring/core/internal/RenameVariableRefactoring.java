@@ -9,7 +9,6 @@ import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
-import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring {
@@ -19,9 +18,8 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
-			SelectionKind kind = sel.getDetailedKind();
-			if (kind == SelectionKind.VARIABLE)
-				return new RefactoringStatus();
+			// SelectionKind kind = sel.getDetailedKind();
+			return new RefactoringStatus();
 		}
 
 		return RefactoringStatus

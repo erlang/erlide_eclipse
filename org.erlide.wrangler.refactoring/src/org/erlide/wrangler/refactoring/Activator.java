@@ -58,8 +58,8 @@ public class Activator extends AbstractUIPlugin {
 			IPath wranglerRootPath = pluginPath.append("wrangler");
 			String wranglerEbinPath = wranglerRootPath.append("ebin")
 					.toOSString();
-			// FIXME: grant that the source is shipped with the release or move
-			// the necessary files somewhere else
+			String wranglerAppPath = wranglerRootPath.append("app")
+					.toOSString();
 
 			String wranglerSrcPath = wranglerRootPath.append("erl")
 					.toOSString();
@@ -73,8 +73,8 @@ public class Activator extends AbstractUIPlugin {
 
 			ErlangCode.addPathA(mb, wranglerEbinPath);
 			ErlangCode.addPathA(mb, wranglerSrcPath);
+			ErlangCode.addPathA(mb, wranglerAppPath);
 			ErlLogger.debug("Wrangler path has been added.");
-			// ErlangCode.addPathA(mb, wranglerRootPath.toOSString());
 
 			RpcResult res = mb.call_noexception("code", "load_file", "a",
 					"wrangler");
