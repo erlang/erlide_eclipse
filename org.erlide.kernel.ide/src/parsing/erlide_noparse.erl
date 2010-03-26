@@ -137,6 +137,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
             file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
+    ?D(FixedModel),
     FixedModel.
 
 update_search_server(true, ScannerName, Refs) ->
@@ -545,6 +546,9 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     case make_attribute_ref(Name, Between, Extra) of
         [] -> 
             [];
+        [AName, Data] ->
+            [#ref{data=Data, offset=Offset, length=Length, function=AName, 
+                  arity=-1, clause="", sub_clause=false}];
         Data ->
             [#ref{data=Data, offset=Offset, length=Length, function=Name, 
                   arity=-1, clause="", sub_clause=false}]
@@ -552,16 +556,19 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
 
 make_attribute_ref(module, _, Extra) ->
     #module_def{module=Extra};
-make_attribute_ref(record, Between, _) ->
+make_attribute_ref(record, Between, _E) ->
+    ?D({Between, _E}),
     Name = case Between of
                {N, _} -> N;
                N -> N
            end,
-    #record_def{record=Name};
+    R= #record_def{record=Name},
+    ?D(R),
+    [Name, R];
 make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
-    #macro_def{macro=Name};
+    [Name, #macro_def{macro=Name}];
 make_attribute_ref(define, Name, _) ->
-    #macro_def{macro=Name};
+    [Name, #macro_def{macro=Name}];
 make_attribute_ref(_, _, _) ->
     [].
 

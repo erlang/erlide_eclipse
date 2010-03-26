@@ -17,6 +17,8 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.search.ErlangElementRef;
+import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 public class SearchResultLabelProvider extends LabelProvider implements
@@ -31,11 +33,13 @@ public class SearchResultLabelProvider extends LabelProvider implements
 
 	private int fOrder;
 	private final boolean fIsInTree;
+	private ErlangElementRef ref;
 
 	// private final String[] fArgs = new String[2];
 
 	public SearchResultLabelProvider(final AbstractTextSearchViewPage page,
 			final int order, final boolean isInTree) {
+		setRef(null);
 		fIsInTree = isInTree;
 		fImageProvider = new ErlangElementImageProvider();
 		fOrder = order;
@@ -72,22 +76,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 			return new Path(s).lastSegment();
 		} else if (element instanceof ErlangSearchElement) {
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
-			final String arguments = ese.getArguments();
-			final ErlangFunction function = ese.getFunction();
-			if (function != null) {
-				if (ese.isSubClause()) {
-					return function.name + arguments;
-				} else {
-					final String nameWithArity = function.getNameWithArity();
-					if (arguments != null) {
-						return nameWithArity + "  " + arguments;
-					} else {
-						return nameWithArity;
-					}
-				}
-			} else {
-				return ese.getAttribute();
-			}
+			return getRef().searchElementToString(ese);
 		} else if (element instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) element;
 			return f.getNameWithArity();
@@ -120,11 +109,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 			kind = Kind.MODULE;
 		} else if (element instanceof ErlangSearchElement) {
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
-			if (ese.isSubClause()) {
-				kind = Kind.CLAUSE;
-			} else {
-				kind = Kind.FUNCTION;
-			}
+			kind = getRef().searchElementToKind(ese);
 		} else if (element instanceof ErlangFunction) {
 			kind = Kind.FUNCTION;
 		}
@@ -180,5 +165,13 @@ public class SearchResultLabelProvider extends LabelProvider implements
 
 	private boolean isInTree() {
 		return fIsInTree;
+	}
+
+	public void setRef(final ErlangElementRef ref) {
+		this.ref = ref;
+	}
+
+	public ErlangElementRef getRef() {
+		return ref;
 	}
 }

@@ -12,8 +12,11 @@ package org.erlide.ui.editors.erl.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.cleanup.CleanUpProviders;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 /*******************************************************************************
  * <p>
@@ -25,33 +28,34 @@ import org.erlide.jinterface.util.ErlLogger;
  *******************************************************************************/
 public class CleanUpAction extends Action {
 
-	/**
-	 * <p>
-	 * Erlang module to be acted upon.
-	 * </p>
-	 */
-	private final IResource resource;
+	private final IWorkbenchSite site;
 
-	/**
-	 * <p>
-	 * Construct a {@link CleanUpAction} for a particular {@link IResource}
-	 * for an Erlang module.
-	 * </p>
-	 * 
-	 * @param resource {@link IResource} for a an Erlang 
-	 */
-	public CleanUpAction(IResource resource) {
+	public CleanUpAction(final IWorkbenchSite site) {
 		super("Clean Up...");
-		this.resource = resource;
+		this.site = site;
 	}
 
 	@Override
 	public void run() {
 		try {
+			final ErlangEditor editor = (ErlangEditor) getSite().getPage()
+					.getActiveEditor();
+			final IErlModule module = editor.getModule();
+			if (module == null) {
+				return;
+			}
+			final IResource resource = module.getResource();
+			if (resource == null) {
+				return;
+			}
 			CleanUpProviders.createForIResource(resource).cleanUp();
 		} catch (Exception e) {
 			ErlLogger.debug(e);
 		}
+	}
+
+	private IWorkbenchSite getSite() {
+		return site;
 	}
 
 }

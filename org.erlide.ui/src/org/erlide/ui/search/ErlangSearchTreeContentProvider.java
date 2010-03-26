@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.search.ErlangSearchElement;
 
 public class ErlangSearchTreeContentProvider extends
 		ErlangSearchContentProvider implements ITreeContentProvider {

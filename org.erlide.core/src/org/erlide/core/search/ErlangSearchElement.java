@@ -1,4 +1,4 @@
-package org.erlide.ui.search;
+package org.erlide.core.search;
 
 import org.erlide.core.erlang.util.ErlangFunction;
 
@@ -10,9 +10,9 @@ public class ErlangSearchElement {
 	private final boolean subClause;
 	private final String attribute;
 
-	ErlangSearchElement(final String moduleName, final ErlangFunction function,
-			final String arguments, final boolean subClause,
-			final String attribute) {
+	public ErlangSearchElement(final String moduleName,
+			final ErlangFunction function, final String arguments,
+			final boolean subClause, final String attribute) {
 		this.moduleName = moduleName;
 		this.function = function;
 		this.arguments = arguments;

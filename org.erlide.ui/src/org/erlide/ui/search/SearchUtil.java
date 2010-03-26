@@ -36,6 +36,7 @@ import org.erlide.core.search.ErlangMacroDefRef;
 import org.erlide.core.search.ErlangMacroRef;
 import org.erlide.core.search.ErlangRecordDefRef;
 import org.erlide.core.search.ErlangRecordRef;
+import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 

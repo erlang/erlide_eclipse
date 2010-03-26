@@ -14,6 +14,7 @@ import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.search.ErlangElementRef;
+import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
@@ -86,5 +87,9 @@ public class ErlSearchQuery implements ISearchQuery {
 					.toString();
 		}
 		return stateDirCached;
+	}
+
+	public ErlangElementRef getRef() {
+		return searchRef;
 	}
 }

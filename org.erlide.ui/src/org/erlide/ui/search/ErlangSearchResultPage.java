@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultViewPart;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
@@ -35,6 +36,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.search.NewErlSearchActionGroup;
@@ -109,6 +111,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			return SHOW_IN_TARGETS;
 		}
 	};
+	private SearchResultLabelProvider innerLabelProvider = null;
 
 	public ErlangSearchResultPage() {
 		// fSortByNameAction = new SortAction(
@@ -145,24 +148,30 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void configureTableViewer(final TableViewer viewer) {
 		viewer.setUseHashlookup(true);
-		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
-				this, fCurrentSortOrder, false);
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(
-				innerLabelProvider, PlatformUI.getWorkbench()
+				getInnerLabelProvider(), PlatformUI.getWorkbench()
 						.getDecoratorManager().getLabelDecorator(), null));
 		viewer.setContentProvider(new ErlangSearchTableContentProvider(this));
 		viewer.setComparator(new DecoratorIgnoringViewerSorter(
-				innerLabelProvider));
+				getInnerLabelProvider()));
 		fContentProvider = (IErlSearchContentProvider) viewer
 				.getContentProvider();
 		addDragAdapters(viewer);
 	}
 
+	private SearchResultLabelProvider getInnerLabelProvider() {
+		if (innerLabelProvider == null) {
+			innerLabelProvider = new SearchResultLabelProvider(this,
+					fCurrentSortOrder, false);
+		}
+		return innerLabelProvider;
+	}
+
 	@Override
 	protected void configureTreeViewer(final TreeViewer viewer) {
 		viewer.setUseHashlookup(true);
-		final SearchResultLabelProvider innerLabelProvider = new SearchResultLabelProvider(
-				this, SearchResultLabelProvider.SHOW_LABEL, true);
+		innerLabelProvider = new SearchResultLabelProvider(this,
+				SearchResultLabelProvider.SHOW_LABEL, true);
 		viewer.setLabelProvider(new DecoratingStyledCellLabelProvider(
 				innerLabelProvider, PlatformUI.getWorkbench()
 						.getDecoratorManager().getLabelDecorator(), null));
@@ -364,6 +373,16 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			}
 		}
 		return label;
+	}
+
+	@Override
+	public void setInput(final ISearchResult newSearch, final Object viewState) {
+		super.setInput(newSearch, viewState);
+		AbstractTextSearchResult input = getInput();
+		if (input != null) {
+			ErlSearchQuery q = (ErlSearchQuery) input.getQuery();
+			getInnerLabelProvider().setRef(q.getRef());
+		}
 	}
 
 }

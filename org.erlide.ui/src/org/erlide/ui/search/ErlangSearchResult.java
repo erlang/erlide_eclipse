@@ -17,6 +17,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangSearchResult extends AbstractTextSearchResult implements

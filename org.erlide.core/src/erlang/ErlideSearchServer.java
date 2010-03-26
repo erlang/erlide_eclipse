@@ -76,8 +76,13 @@ public class ErlideSearchServer {
 			String attribute;
 			if (functionNameOrAttr instanceof OtpErlangAtom) {
 				OtpErlangAtom functionA = (OtpErlangAtom) functionNameOrAttr;
-				function = new ErlangFunction(functionA.atomValue(), arity);
-				attribute = null;
+				if (arity != -1) {
+					function = new ErlangFunction(functionA.atomValue(), arity);
+					attribute = null;
+				} else {
+					function = null;
+					attribute = functionA.atomValue();
+				}
 			} else {
 				function = null;
 				attribute = Util.stringValue(functionNameOrAttr);
