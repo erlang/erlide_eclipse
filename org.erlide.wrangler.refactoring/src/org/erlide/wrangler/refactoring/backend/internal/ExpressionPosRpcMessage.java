@@ -28,9 +28,15 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 		try {
 			OtpErlangObject wranglerResult = resultTuple.elementAt(1);
 			if (resultTuple.elementAt(0).toString().equals("ok")) {
-				syntaxTree = ((OtpErlangTuple) wranglerResult).elementAt(0);
-				OtpErlangList posDefList = (OtpErlangList) ((OtpErlangTuple) wranglerResult)
-						.elementAt(1);
+				OtpErlangList posDefList;
+				if (wranglerResult instanceof OtpErlangTuple) {
+					syntaxTree = ((OtpErlangTuple) wranglerResult).elementAt(0);
+					posDefList = (OtpErlangList) ((OtpErlangTuple) wranglerResult)
+							.elementAt(1);
+				} else {
+					syntaxTree = null;
+					posDefList = (OtpErlangList) wranglerResult;
+				}
 
 				positionDefs = new HashMap<IRange, OtpErlangTuple>();
 				OtpErlangObject[] elements = posDefList.elements();

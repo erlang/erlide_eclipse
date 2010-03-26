@@ -24,6 +24,7 @@ import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactorin
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.MergeLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
@@ -248,7 +249,13 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 				refactoring = new IntroduceLetRefactoring();
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.mergelet")) {
-
+				refactoring = new MergeLetRefactoring();
+				pages
+						.add(new SelectionInputPage(
+								"Merge ?LET expressions",
+								"Please select expressions which whould be merged!",
+								"Select expressions which should be merged",
+								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.mergeforall")) {
 

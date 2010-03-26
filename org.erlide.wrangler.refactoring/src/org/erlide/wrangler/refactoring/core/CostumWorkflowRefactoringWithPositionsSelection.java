@@ -23,15 +23,26 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection extends
 	protected HashMap<IErlRange, OtpErlangTuple> positions;
 	protected ArrayList<IErlRange> selectedPositions;
 
+	/**
+	 * Get those exporessions with positions which can be selected by the user.
+	 * 
+	 * @return List of positions
+	 */
 	public List<IErlRange> getPositions() {
-		ArrayList<IErlRange> ret = new ArrayList<IErlRange>();
-		for (IErlRange r : positions.keySet()) {
+		final ArrayList<IErlRange> ret = new ArrayList<IErlRange>();
+		for (final IErlRange r : positions.keySet()) {
 			ret.add(r);
 		}
 
 		return ret;
 	}
 
+	/**
+	 * Setter method, which offers the ability to set the selected positions.
+	 * 
+	 * @param l
+	 *            selected positions
+	 */
 	public void setSelectedPos(ArrayList<IErlRange> l) {
 		selectedPositions = l;
 	}
