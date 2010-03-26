@@ -24,6 +24,7 @@ import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactorin
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.MergeForAllRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
@@ -258,6 +259,13 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.mergeforall")) {
+				refactoring = new MergeForAllRefactoring();
+				pages
+						.add(new SelectionInputPage(
+								"Merge ?FORALL expressions",
+								"Please select expressions which whould be merged!",
+								"Select expressions which should be merged",
+								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
 			} else
 				return;

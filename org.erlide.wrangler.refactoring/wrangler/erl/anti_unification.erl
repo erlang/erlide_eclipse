@@ -71,10 +71,11 @@ anti_unification_same_type(Expr1, Expr2) ->
 	    _ ->
 		case variable_replaceable(Expr1, Expr2) of
 		  true ->
+			
 		      case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Expr1)) of
-			{value, {fun_def, {M, _, A, _, _}}} ->
+			{value, {fun_def, {M, F, A, _, _}}} ->
 			    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Expr2)) of
-			      {value, {fun_def, {M, _, A, _, _}}} ->
+			      {value, {fun_def, {M, F, A, _, _}}} ->
 				  [];
 			      _ -> [{Expr1, Expr2}]
 			    end;

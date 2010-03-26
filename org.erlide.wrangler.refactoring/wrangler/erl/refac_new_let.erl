@@ -471,18 +471,22 @@ merge_forall_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
 
 
 
--spec(merge_let_1_eclipse/4::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, syntaxTree()}],
+-spec(merge_let_1_eclipse/4::(FileName::filename(), Candidates::[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}],
 			      SearchPaths::[dir()], TabWidth::integer()) ->
 				   {'ok', [{filename(), filename(),string()}]}).
 merge_let_1_eclipse(FileName, Candidates, SearchPaths, TabWidth) ->
-    merge_1(FileName, Candidates, SearchPaths, TabWidth, "", eclipse).
+    Candidates1 = [{{StartLine, StartCol, EndLine, EndCol}, NewLetApp}||
+		      {{{StartLine, StartCol}, {EndLine, EndCol}}, NewLetApp}<-Candidates],
+    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse).
 
 
 -spec(merge_forall_1_eclipse/4::(FileName::filename(), Candidates::[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}],
 				 SearchPaths::[dir()], TabWidth::integer()) -> 
 				      {'ok', [{filename(), filename(),string()}]}).
 merge_forall_1_eclipse(FileName, Candidates, SearchPaths, TabWidth) ->
-    merge_1(FileName, Candidates, SearchPaths, TabWidth, "", eclipse).
+    Candidates1 = [{{StartLine, StartCol, EndLine, EndCol}, NewLetApp}||
+		      {{{StartLine, StartCol}, {EndLine, EndCol}}, NewLetApp}<-Candidates],
+    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse).
 
 
 merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, Editor) ->
@@ -512,7 +516,7 @@ do_merge_1(Tree, Candidates) ->
     {{StartLine, StartCol}, {EndLine, EndCol}} = refac_misc:get_start_end_loc(Tree),
     case lists:keysearch({StartLine, StartCol, EndLine, EndCol}, 1, Candidates) of
       {value, {_, NewLetApp}} ->
-	  {list_to_term(NewLetApp), true};
+	  {NewLetApp, true};
       _ -> {Tree, false}
     end.
 
