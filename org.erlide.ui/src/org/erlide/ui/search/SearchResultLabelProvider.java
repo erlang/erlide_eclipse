@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.search.ErlangElementRef;
 import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
@@ -33,13 +32,11 @@ public class SearchResultLabelProvider extends LabelProvider implements
 
 	private int fOrder;
 	private final boolean fIsInTree;
-	private ErlangElementRef ref;
 
 	// private final String[] fArgs = new String[2];
 
 	public SearchResultLabelProvider(final AbstractTextSearchViewPage page,
 			final int order, final boolean isInTree) {
-		setRef(null);
 		fIsInTree = isInTree;
 		fImageProvider = new ErlangElementImageProvider();
 		fOrder = order;
@@ -76,12 +73,43 @@ public class SearchResultLabelProvider extends LabelProvider implements
 			return new Path(s).lastSegment();
 		} else if (element instanceof ErlangSearchElement) {
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
-			return getRef().searchElementToString(ese);
+			return searchElementToString(ese);
 		} else if (element instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) element;
 			return f.getNameWithArity();
 		}
 		return "";
+	}
+
+	private static String searchElementFunctionToString(
+			final ErlangSearchElement ese) {
+		ErlangFunction f = ese.getFunction();
+		String a = ese.getArguments();
+		if (ese.isSubClause()) {
+			return f.name + a;
+		} else {
+			final String nameWithArity = f.getNameWithArity();
+			if (a != null) {
+				return nameWithArity + "  " + a;
+			} else {
+				return nameWithArity;
+			}
+		}
+	}
+
+	private String searchElementToString(final ErlangSearchElement ese) {
+		switch (ese.getKind()) {
+		case ATTRIBUTE:
+			return ese.getAttribute();
+		case CLAUSE:
+		case FUNCTION:
+			return searchElementFunctionToString(ese);
+		case RECORD_DEF:
+			return "record_definition: " + ese.getFunction().name;
+		case MACRO_DEF:
+			return "macro_definition: " + ese.getFunction().name;
+		}
+		return ese.getAttribute();
 	}
 
 	private StyledString getMatchCountText(final Object element) {
@@ -109,7 +137,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 			kind = Kind.MODULE;
 		} else if (element instanceof ErlangSearchElement) {
 			final ErlangSearchElement ese = (ErlangSearchElement) element;
-			kind = getRef().searchElementToKind(ese);
+			kind = ese.getKind();
 		} else if (element instanceof ErlangFunction) {
 			kind = Kind.FUNCTION;
 		}
@@ -167,11 +195,4 @@ public class SearchResultLabelProvider extends LabelProvider implements
 		return fIsInTree;
 	}
 
-	public void setRef(final ErlangElementRef ref) {
-		this.ref = ref;
-	}
-
-	public ErlangElementRef getRef() {
-		return ref;
-	}
 }

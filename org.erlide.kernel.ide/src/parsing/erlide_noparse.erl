@@ -229,7 +229,7 @@ cac(attribute, Attribute) ->
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                         name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra},
              [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
-                   arity=-1, clause="", sub_clause=false}]};
+                   arity=-2, clause="", sub_clause=false}]};
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
@@ -546,16 +546,16 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     case make_attribute_ref(Name, Between, Extra) of
         [] -> 
             [];
-        [AName, Data] ->
+        {Arity, AName, Data} ->
             [#ref{data=Data, offset=Offset, length=Length, function=AName, 
-                  arity=-1, clause="", sub_clause=false}];
-        Data ->
+                  arity=Arity, clause="", sub_clause=false}];
+        {Arity, Data} ->
             [#ref{data=Data, offset=Offset, length=Length, function=Name, 
-                  arity=-1, clause="", sub_clause=false}]
+                  arity=Arity, clause="", sub_clause=false}]
     end.
 
 make_attribute_ref(module, _, Extra) ->
-    #module_def{module=Extra};
+    {-3, #module_def{module=Extra}};
 make_attribute_ref(record, Between, _E) ->
     ?D({Between, _E}),
     Name = case Between of
@@ -564,11 +564,11 @@ make_attribute_ref(record, Between, _E) ->
            end,
     R= #record_def{record=Name},
     ?D(R),
-    [Name, R];
+    {-4, Name, R};
 make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
-    [Name, #macro_def{macro=Name}];
+    {-5, Name, #macro_def{macro=Name}};
 make_attribute_ref(define, Name, _) ->
-    [Name, #macro_def{macro=Name}];
+    {-5, Name, #macro_def{macro=Name}};
 make_attribute_ref(_, _, _) ->
     [].
 

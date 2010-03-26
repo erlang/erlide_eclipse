@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultViewPart;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
@@ -373,16 +372,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 			}
 		}
 		return label;
-	}
-
-	@Override
-	public void setInput(final ISearchResult newSearch, final Object viewState) {
-		super.setInput(newSearch, viewState);
-		AbstractTextSearchResult input = getInput();
-		if (input != null) {
-			ErlSearchQuery q = (ErlSearchQuery) input.getQuery();
-			getInnerLabelProvider().setRef(q.getRef());
-		}
 	}
 
 }

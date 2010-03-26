@@ -1,7 +1,5 @@
 package org.erlide.core.search;
 
-import org.erlide.core.erlang.IErlElement.Kind;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -40,16 +38,6 @@ public class ErlangFunctionCallRef extends ErlangElementRef {
 	public OtpErlangObject getSearchObject() {
 		return new OtpErlangTuple(new OtpErlangObject[] { FUNCTION_CALL_ATOM,
 				new OtpErlangAtom(function), new OtpErlangLong(arity) });
-	}
-
-	@Override
-	public String searchElementToString(final ErlangSearchElement ese) {
-		return searchElementFunctionToString(ese);
-	}
-
-	@Override
-	public Kind searchElementToKind(final ErlangSearchElement ese) {
-		return searchElementFunctionToKind(ese);
 	}
 
 }

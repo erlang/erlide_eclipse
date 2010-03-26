@@ -1,5 +1,6 @@
 package org.erlide.core.search;
 
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlangFunction;
 
 public class ErlangSearchElement {
@@ -9,15 +10,17 @@ public class ErlangSearchElement {
 	private final String arguments;
 	private final boolean subClause;
 	private final String attribute;
+	private final Kind kind;
 
 	public ErlangSearchElement(final String moduleName,
 			final ErlangFunction function, final String arguments,
-			final boolean subClause, final String attribute) {
+			final boolean subClause, final String attribute, final Kind kind) {
 		this.moduleName = moduleName;
 		this.function = function;
 		this.arguments = arguments;
 		this.subClause = subClause;
 		this.attribute = attribute;
+		this.kind = kind;
 	}
 
 	public String getModuleName() {
@@ -73,6 +76,10 @@ public class ErlangSearchElement {
 
 	public String getAttribute() {
 		return attribute;
+	}
+
+	public Kind getKind() {
+		return kind;
 	}
 
 }

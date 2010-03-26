@@ -4,10 +4,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
 
 public class ModuleLineFunctionArityRef {
 
-	// FIXME: att göra: något sätt att tala om vad som hittats...
-	// IErlElement.Kind? Class<?>? Eller en instans av ErlangElementRef som
-	// presenterar resultatet i en metod? kanske det sistnämnda är bäst ändå....
-
 	private final String moduleName;
 	private final int offset, length;
 	private final ErlangFunction function;

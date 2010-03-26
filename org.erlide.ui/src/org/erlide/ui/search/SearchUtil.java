@@ -26,6 +26,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.search.ErlangElementRef;
@@ -166,8 +167,27 @@ public class SearchUtil {
 	public static Match createMatch(final ModuleLineFunctionArityRef ref) {
 		final ErlangSearchElement ese = new ErlangSearchElement(ref
 				.getModuleName(), ref.getFunction(), ref.getClauseHead(), ref
-				.isSubClause(), ref.getAttribute());
+				.isSubClause(), ref.getAttribute(), refToKind(ref));
 		return new Match(ese, ref.getOffset(), ref.getLength());
+	}
+
+	private static Kind refToKind(final ModuleLineFunctionArityRef ref) {
+		switch (ref.getFunction().arity) {
+		case -2:
+			return Kind.TYPESPEC;
+		case -3:
+			return Kind.ATTRIBUTE; // Kind.MODULE; ?
+		case -4:
+			return Kind.RECORD_DEF;
+		case -5:
+			return Kind.MACRO_DEF;
+		}
+		if (ref.getAttribute() != null) {
+			return Kind.ATTRIBUTE;
+		} else if (ref.isSubClause()) {
+			return Kind.CLAUSE;
+		}
+		return Kind.FUNCTION;
 	}
 
 	public static ErlangElementRef getRefFromOpenResultAndLimitTo(

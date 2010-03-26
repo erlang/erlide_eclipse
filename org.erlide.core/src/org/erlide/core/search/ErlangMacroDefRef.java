@@ -1,7 +1,5 @@
 package org.erlide.core.search;
 
-import org.erlide.core.erlang.IErlElement.Kind;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -30,16 +28,6 @@ public class ErlangMacroDefRef extends ErlangElementRef {
 	public OtpErlangObject getSearchObject() {
 		return new OtpErlangTuple(new OtpErlangObject[] { MACRO_DEF_ATOM,
 				new OtpErlangAtom(macro) });
-	}
-
-	@Override
-	public String searchElementToString(final ErlangSearchElement ese) {
-		return "macro_definition: " + ese.getAttribute();
-	}
-
-	@Override
-	public Kind searchElementToKind(final ErlangSearchElement ese) {
-		return Kind.MACRO_DEF;
 	}
 
 }

@@ -1,7 +1,5 @@
 package org.erlide.core.search;
 
-import org.erlide.core.erlang.IErlElement.Kind;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -32,13 +30,4 @@ public class ErlangRecordDefRef extends ErlangElementRef {
 				new OtpErlangAtom(record) });
 	}
 
-	@Override
-	public String searchElementToString(final ErlangSearchElement ese) {
-		return "record_definition: " + ese.getAttribute();
-	}
-
-	@Override
-	public Kind searchElementToKind(final ErlangSearchElement ese) {
-		return Kind.RECORD_DEF;
-	}
 }
