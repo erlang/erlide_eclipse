@@ -134,6 +134,7 @@ public class LiveExpressionsView extends ViewPart implements
 			super();
 		}
 
+		@SuppressWarnings("unchecked")
 		public void inputChanged(final Viewer v, final Object oldInput,
 				final Object newInput) {
 			if (newInput instanceof List<?>) {
