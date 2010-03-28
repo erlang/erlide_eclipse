@@ -10,7 +10,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.jface.action.IMenuManager;
@@ -585,7 +584,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 				try {
 					part = page.openEditor(input, editorId);
 				} catch (final PartInitException e) {
-					DebugUIPlugin
+					ErlideUIPlugin
 							.errorDialog(
 									dwindow.getShell(),
 									ActionMessages.OpenBreakpointMarkerAction_Go_to_Breakpoint_1,
@@ -815,4 +814,5 @@ public class DebuggerTraceView extends AbstractDebugView implements
 	public List<DebugTraceEvent> getEventsForLaunch(final IDebugTarget target) {
 		return eventMap.get(target);
 	}
+
 }
