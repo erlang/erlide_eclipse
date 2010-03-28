@@ -740,8 +740,8 @@
           id="org.erlide.ui.compare.ErlContentViewerCreator">
     </viewer>
     <contentTypeBinding
-          contentTypeId="org.erlide.ui.compare.ErlContentViewerCreator"
-          contentViewerId="org.erlide.core.content.erlang">
+          contentTypeId="org.erlide.core.content.erlang"
+          contentViewerId="org.erlide.ui.compare.ErlContentViewerCreator">
     </contentTypeBinding>
  </extension>
  <extension
@@ -749,8 +749,7 @@
     <viewer
           class="org.erlide.ui.internal.compare.ErlMergeViewerCreator"
           extensions="erl,hrl,erl2"
-          id="org.erlide.ui.compare.ErlContentMergeViewerCreator"
-          label="Erlang Source Compare"/>
+          id="org.erlide.ui.compare.ErlContentMergeViewerCreator"/>
     <contentTypeBinding
           contentMergeViewerId="org.erlide.ui.compare.ErlContentMergeViewerCreator"
           contentTypeId="org.erlide.core.content.erlang"/>
@@ -760,8 +759,7 @@
     <viewer
           class="org.erlide.ui.internal.compare.ErlStructureDiffViewerCreator"
           extensions="erl,hrl"
-          id="org.erlide.ui.compare.ErlStructureMergeViewerCreator"
-          label="Erlang Structure Compare">
+          id="org.erlide.ui.compare.ErlStructureMergeViewerCreator">
     </viewer>
  </extension>
    <extension
