@@ -93,7 +93,7 @@ public class LiveExpressionsView extends ViewPart implements
 			fExpr = s;
 		}
 
-		public void setDoEval(boolean eval) {
+		public void setDoEval(final boolean eval) {
 			doEval = eval;
 		}
 
@@ -200,9 +200,9 @@ public class LiveExpressionsView extends ViewPart implements
 	@Override
 	public void createPartControl(final Composite parent) {
 		label = new Label(parent, SWT.NULL);
-		viewer = new CheckboxTableViewer(parent, SWT.SINGLE | SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
-		final Table t = (Table) viewer.getControl();
+		final Table t = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
+				| SWT.FULL_SELECTION | SWT.CHECK);
+		viewer = new CheckboxTableViewer(t);
 
 		final GridData labelLData = new GridData();
 		labelLData.verticalAlignment = GridData.BEGINNING;
