@@ -40,6 +40,11 @@
             <separator
                   name="org.erlide.wrangler.refactoring.separator5">
             </separator>
+         </menu>
+         <menu
+               id="org.erlide.wrangler.refactoring.quickcheck"
+               label="%quickcheckmenu"
+               path="edit">
             <groupMarker
                   name="org.erlide.wrangler.refactoring.quickcheckGroup">
             </groupMarker>
@@ -147,32 +152,45 @@
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                id="org.erlide.wrangler.refactoring.introducelet"
                label="%introduceLetName"
-               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
                style="push">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                id="org.erlide.wrangler.refactoring.mergelet"
                label="%mergeLetName"
-               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
                style="push">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                id="org.erlide.wrangler.refactoring.mergeforall"
                label="%mergeForAllName"
-               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.quickcheckGroup"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
                style="push">
          </action>
-         <!-- Experimental
          <action
-               class="org.erlide.wrangler.refactoring.core.tupletorecord.TupleToRecordAction"
-               enablesFor="+"
-               id="org.erlide.wrangler.refactoring.tupletorecord"
-               label="%tupleToRecordName"
-               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.tupleGroup">
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.eqc_statemtorecord"
+               label="%eqc_statemtorecordName"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
+               style="push">
          </action>
-         -->
+         <action
+               class="org.erlide.wrangler.refactoring.EditorActionDelegate3"
+               id="org.erlide.wrangler.refactoring.eqc_fsmtorecord"
+               label="%eqc_fsmtorecordName"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.gen_fsmtorecord"
+               label="%gen_fsmtorecordName"
+               menubarPath="org.erlide.wrangler.refactoring.quickcheck/org.erlide.wrangler.refactoring.quickcheckGroup"
+               style="push">
+         </action> 
+         
       </editorContribution>
    </extension>
    <extension

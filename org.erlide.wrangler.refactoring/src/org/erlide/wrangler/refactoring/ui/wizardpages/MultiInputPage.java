@@ -2,16 +2,11 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.widgets.Composite;
 
-public class MultiInputPage extends InputPage {
+public abstract class MultiInputPage extends InputPage {
 
 	public MultiInputPage(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
-	public void createControl(Composite parent) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public abstract void createControl(Composite parent);
 }

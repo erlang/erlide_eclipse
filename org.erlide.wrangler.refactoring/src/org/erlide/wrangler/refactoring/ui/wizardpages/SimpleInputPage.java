@@ -24,6 +24,20 @@ public class SimpleInputPage extends InputPage {
 
 	protected Composite composite;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            Refactoring name (title)
+	 * @param description
+	 *            description
+	 * @param labelText
+	 *            input label's text
+	 * @param inputErrorMsg
+	 *            error message in case of wrong input
+	 * @param validator
+	 *            validator object
+	 */
 	public SimpleInputPage(String name, String description, String labelText,
 			String inputErrorMsg, IValidator validator) {
 		super(name);

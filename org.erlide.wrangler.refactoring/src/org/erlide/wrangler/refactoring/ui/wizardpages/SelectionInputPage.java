@@ -31,7 +31,8 @@ public class SelectionInputPage extends InputPage {
 	Label inputLabel;
 
 	public SelectionInputPage(String name, String description,
-			String labelText, CostumWorkflowRefactoringWithPositionsSelection refac) {
+			String labelText,
+			CostumWorkflowRefactoringWithPositionsSelection refac) {
 		super(name);
 		setDescription(description);
 		this.labelText = labelText;
@@ -96,6 +97,12 @@ public class SelectionInputPage extends InputPage {
 	public IWizardPage getNextPage() {
 		setSelectedPositions();
 		return super.getNextPage();
+	}
+
+	@Override
+	protected boolean isInputValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

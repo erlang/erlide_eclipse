@@ -85,7 +85,11 @@
 	 eqc_statem_to_fsm_eclipse/4, 
 	 new_let_eclipse/6, new_let_1_eclipse/6,
 	 merge_forall_eclipse/3, merge_forall_1_eclipse/4, 
-         merge_let_eclipse/3, merge_let_1_eclipse/4]).
+         merge_let_eclipse/3, merge_let_1_eclipse/4,
+	 eqc_statem_to_record_eclipse/3,eqc_statem_to_record_1_eclipse/7,
+	 eqc_fsm_to_record_eclipse/3,eqc_fsm_to_record_1_eclipse/7,
+	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7
+	]).
 
 -export([try_refactoring/3, try_inspector/3]).
 -include("../include/wrangler.hrl").
@@ -1048,6 +1052,24 @@ eqc_statem_to_record_1(FileName, RecordName, RecordFields, StateFuns, IsTuple, S
     try_refactoring(refac_state_to_record, eqc_statem_to_record_1, 
 		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
 
+%%@private
+-spec(eqc_statem_to_record_eclipse/3::(filename(),[dir()], integer()) -> 
+					     {error, string()} |
+						{'ok', non_tuple, [{atom(), atom(), integer()}]} | 
+						{'ok', {tuple, integer()}, [{atom(), atom(), integer()}]}).
+eqc_statem_to_record_eclipse(FileName, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, eqc_statem_to_record_eclipse, [FileName, SearchPaths, TabWidth]).
+
+%%@private
+-spec(eqc_statem_to_record_1_eclipse/7::(FileName::filename(), RecordName::string(), RecordFields::[string()],
+					StateFuns::[{atom(), atom(), integer()}], IsTuple::boolean(),
+					SearchPaths::[dir()], TabWidth::integer()) ->
+					      {error, string()} |
+					      {ok, [{filename(), filename(), string()}]}).
+eqc_statem_to_record_1_eclipse(FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, eqc_statem_to_record_1_eclipse, 
+		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
+    
 %% =============================================================================================
 %% @doc Turn a non-record representation of eqc_fsm state into a record representation.
 %% <p> This refactoring introduce a record to represent the state used by eqc_fsm. 
@@ -1069,6 +1091,27 @@ eqc_fsm_to_record_1(FileName, RecordName, RecordFields, StateFuns, IsTuple, Sear
     try_refactoring(refac_state_to_record, eqc_fsm_to_record_1, 
 		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
 
+
+%%@private
+-spec(eqc_fsm_to_record_eclipse/3::(filename(),[dir()], integer()) -> 
+					 {error, string()} |
+					 {'ok', non_tuple, [{atom(), atom(), integer()}]} | 
+					     {'ok', {tuple, integer()}, [{atom(), atom(), integer()}]}).
+eqc_fsm_to_record_eclipse(FileName, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, eqc_fsm_to_record_eclipse, [FileName, SearchPaths, TabWidth]).
+
+%%@private
+-spec(eqc_fsm_to_record_1_eclipse/7::(FileName::filename(), RecordName::string(), RecordFields::[string()],
+					StateFuns::[{atom(), atom(), integer()}], IsTuple::boolean(),
+					SearchPaths::[dir()], TabWidth::integer()) ->
+					   {error, string()} |
+					       {ok, [{filename(), filename(), string()}]}).
+eqc_fsm_to_record_1_eclipse(FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, eqc_fsm_to_record_1_eclipse, 
+		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
+    
+
+
 %% =============================================================================================
 %% @doc Turn a non-record representation of gen_fsm state into a record representation.
 %% <p> This refactoring introduce a record to represent the state used by eqc_statem. 
@@ -1089,9 +1132,30 @@ gen_fsm_to_record_1(FileName, RecordName, RecordFields, StateFuns, IsTuple, Sear
     try_refactoring(refac_state_to_record, gen_fsm_to_record_1, 
 		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
 
+
+%%@private
+-spec(gen_fsm_to_record_eclipse/3::(filename(),[dir()], integer()) ->
+					  {error, string()} |
+					 {'ok', non_tuple, [{atom(), atom(), integer()}]} | 
+					     {'ok', {tuple, integer()}, [{atom(), atom(), integer()}]}).
+gen_fsm_to_record_eclipse(FileName, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, gen_fsm_to_record_eclipse, [FileName, SearchPaths, TabWidth]).
+
+%%@private
+-spec(gen_fsm_to_record_1_eclipse/7::(FileName::filename(), RecordName::string(), RecordFields::[string()],
+					StateFuns::[{atom(), atom(), integer()}], IsTuple::boolean(),
+					SearchPaths::[dir()], TabWidth::integer()) ->
+					   {error, string()} |
+					       {ok, [{filename(), filename(), string()}]}).
+gen_fsm_to_record_1_eclipse(FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth) ->
+    try_refactoring(refac_state_to_record, gen_fsm_to_record_1_eclipse, 
+		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
+  
+
 %@private
 eqc_statem_to_fsm(FileName, StateName, SearchPaths, TabWidth) ->
     try_refactoring(refac_statem_to_fsm, eqc_statem_to_fsm, [FileName, StateName, SearchPaths, TabWidth]).
+
 
 %@private
 eqc_statem_to_fsm_eclipse(FileName, StateName, SearchPaths, TabWidth) ->
@@ -1099,15 +1163,15 @@ eqc_statem_to_fsm_eclipse(FileName, StateName, SearchPaths, TabWidth) ->
 
 %%@private
 try_to_apply(Mod, Fun, Args, Msg) -> 
-    %%try 
-      apply(Mod, Fun, Args).
-     %%catch
-	%% throw:Error -> 
-	  %%   Error;    %% wrangler always throws Error in the format of '{error, string()}';
-	 %%E1:E2->
-     	   %%  refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
-	    %% {error, Msg}
-     %%end.
+%%    try 
+	apply(Mod, Fun, Args).
+%%     catch
+%%	 throw:Error -> 
+%%	     Error;    %% wrangler always throws Error in the format of '{error, string()}';
+%%	 E1:E2->
+  %%   	     refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
+%%	     {error, Msg}
+  %%   end.
 
 %%@private
 try_refactoring(Mod, Fun, Args) ->

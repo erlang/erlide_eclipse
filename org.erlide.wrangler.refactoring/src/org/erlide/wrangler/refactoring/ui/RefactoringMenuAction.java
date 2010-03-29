@@ -16,6 +16,9 @@ import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.GenFsmStateDataToRecordRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldAgainstMacro;
 import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
@@ -40,6 +43,7 @@ import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
@@ -266,6 +270,24 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 								"Please select expressions which whould be merged!",
 								"Select expressions which should be merged",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.eqc_statemtorecord")) {
+				refactoring = new EqcStatemStateDataToRecordRefactoring();
+				pages.add(new RecordDataInputPage(
+						"eqc_statem State Data To Record"));
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.eqc_fsmtorecord")) {
+				refactoring = new EqcFsmStateDataToRecordRefactoring();
+				pages.add(new RecordDataInputPage(
+						"eqc_fsm State Data To Record"));
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.gen_fsmtorecord")) {
+				refactoring = new GenFsmStateDataToRecordRefactoring();
+				pages.add(new RecordDataInputPage(
+						"gen_fsm State Data To Record"));
 
 			} else
 				return;
