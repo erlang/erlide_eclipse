@@ -375,11 +375,11 @@ public class FunctionGroup extends Group implements SelectionListener {
 	private void removeEdit() {
 		if (fEditingItem != null) {
 			final String[] parts = fEditingItem.getText(0).split("<");
-			String functionName = parts[0];
+			StringBuilder functionName = new StringBuilder(parts[0]);
 			for (int i = 1; i < parts.length - 2; i++) {
-				functionName += "<" + parts[i];
+				functionName.append('<').append(parts[i]);
 			}
-			fEditingItem.setText(0, functionName);
+			fEditingItem.setText(0, functionName.toString());
 			fEditingItem = null;
 		}
 	}

@@ -215,7 +215,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 		}
 	}
 
-	public class ColumnLabelProvider extends CellLabelProvider {
+	public static class ColumnLabelProvider extends CellLabelProvider {
 
 		@Override
 		public void update(final ViewerCell cell) {

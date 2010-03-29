@@ -135,7 +135,7 @@ public class ErlReconciler implements IReconciler {
 		 * Set reset flag to false, so that it will reconcile, only to be used
 		 * by {@link ErlReconciler#reconcileNow()}
 		 */
-		public void unreset() {
+		public synchronized void unreset() {
 			fReset = false;
 		}
 

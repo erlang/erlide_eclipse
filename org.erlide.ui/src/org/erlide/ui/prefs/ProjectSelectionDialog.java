@@ -35,7 +35,7 @@ import org.erlide.ui.util.StatusInfo;
 
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 
-	final class OurLabelProvider implements ILabelProvider {
+	final static class OurLabelProvider implements ILabelProvider {
 		public Image getImage(final Object element) {
 			// TODO Auto-generated method stub
 			return null;

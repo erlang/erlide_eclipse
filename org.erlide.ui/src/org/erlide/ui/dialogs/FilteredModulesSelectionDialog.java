@@ -506,7 +506,7 @@ public class FilteredModulesSelectionDialog extends
 	/**
 	 * Viewer filter which filters resources due to current working set
 	 */
-	class CustomWorkingSetFilter extends ViewerFilter {
+	static class CustomWorkingSetFilter extends ViewerFilter {
 		private final ResourceWorkingSetFilter resourceWorkingSetFilter = new ResourceWorkingSetFilter();
 
 		/**
@@ -649,7 +649,7 @@ public class FilteredModulesSelectionDialog extends
 		}
 	}
 
-	protected class MatchAnySearchPattern extends SearchPattern {
+	protected static class MatchAnySearchPattern extends SearchPattern {
 
 		public MatchAnySearchPattern() {
 			super(SearchPattern.RULE_PATTERN_MATCH);

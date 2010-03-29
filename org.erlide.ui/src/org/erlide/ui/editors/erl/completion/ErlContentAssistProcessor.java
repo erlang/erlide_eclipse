@@ -69,7 +69,7 @@ import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
-	public class CompletionNameComparer implements
+	public static class CompletionNameComparer implements
 			Comparator<ICompletionProposal> {
 
 		public int compare(final ICompletionProposal o1,
