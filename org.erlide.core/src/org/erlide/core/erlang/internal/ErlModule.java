@@ -363,18 +363,6 @@ public class ErlModule extends Openable implements IErlModule {
 		return new ErlScanner(this, initialText, path);
 	}
 
-	public void fixExportedFunctions() {
-		try {
-			final List<? extends IErlElement> functions = getChildrenOfType(IErlElement.Kind.FUNCTION);
-			for (final IErlElement erlElement : functions) {
-				final ErlFunction f = (ErlFunction) erlElement;
-				final boolean exported = findExport(f.getFunction()) != null;
-				f.setExported(exported);
-			}
-		} catch (final ErlModelException e) {
-		}
-	}
-
 	public void reconcileText(final int offset, final int removeLength,
 			final String newText, final IProgressMonitor mon) {
 		if (scannerDisposed) {

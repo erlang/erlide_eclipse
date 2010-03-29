@@ -101,7 +101,7 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, comment}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, comment, exported}).
 -record(clause, {pos, name, args, head, name_pos}).
 -record(attribute, {pos, name, args, extra}).
 -record(other, {pos, name, tokens}).
@@ -120,7 +120,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     %?D({UncommentToks}),
     Functions = split_after_dots(UncommentToks, [], []),
     ?D(length(Functions)),
-    {Collected, Refs} = classify_and_collect(Functions, [], []),
+    {Collected, Refs} = classify_and_collect(Functions, [], [], [], []),
     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
@@ -188,30 +188,33 @@ to_binary(Other) ->
 %%     %%erlide_noparse_server:create(ScannerName, Model, ""),
 %%     ok.
 
-classify_and_collect([], Acc, RefsAcc) ->
+classify_and_collect([], Acc, RefsAcc, _Exports, _Imports) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};
-classify_and_collect([eof], Acc, RefsAcc) ->
+classify_and_collect([eof], Acc, RefsAcc, _Exports, _Imports) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};
-classify_and_collect([C | Rest], Acc, RefsAcc) ->
-    {R, Refs} = cac(check_class(C), C),
-    classify_and_collect(Rest, [R | Acc], Refs++RefsAcc).
+classify_and_collect([C | Rest], Acc, RefsAcc, Exports, Imports) ->
+    {R, Refs, MoreExports, MoreImports} = cac(check_class(C), C, Exports, Imports),
+    classify_and_collect(Rest, [R | Acc], Refs++RefsAcc, MoreExports++Exports, MoreImports++Imports).
 
-cac(function, Tokens) ->
+cac(function, Tokens, Exports, Imports) ->
     ClauseList = split_clauses(Tokens),
     %?D(ClauseList),
     ClausesAndRefs = fix_clauses(ClauseList),
     %?D(length(Clauses)),
     [{#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
     Arity = erlide_text:guess_arity(A),
+    Exported = get_exported({N, Arity}, Exports),
     Function = case ClausesAndRefs of  	% only show subclauses when more than one
                    [_] ->
-                       #function{pos=P, name=N, arity=Arity, args=A, head=H, clauses=[], name_pos=NP};
+                       #function{pos=P, name=N, arity=Arity, args=A, head=H, 
+                                 clauses=[], name_pos=NP, exported=Exported};
                    _ ->
                        Clauses = [C || {C, _} <- ClausesAndRefs],
-                       #function{pos=P, name=N, arity=Arity, clauses=Clauses, name_pos=NP}
+                       #function{pos=P, name=N, arity=Arity, clauses=Clauses, 
+                                 name_pos=NP, exported=Exported}
                end,
-    {Function, fix_refs(ClausesAndRefs, Function)};
-cac(attribute, Attribute) ->
+    {Function, fix_refs(ClausesAndRefs, Function, Imports), [], []};
+cac(attribute, Attribute, _Exports, _Imports) ->
     ?D(Attribute),
     case Attribute of
         [#token{kind='-', offset=Offset, line=Line},
@@ -226,10 +229,11 @@ cac(attribute, Attribute) ->
             ?D(Args),
             Extra = to_string(Args),
             ?D(Extra),
+            {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                        name=Name, args=get_attribute_args(Kind, Args, Args), extra=Extra},
+                        name=Name, args=AttrArgs, extra=Extra},
              [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
-                   arity=-2, clause="", sub_clause=false}]};
+                   arity=-2, clause="", sub_clause=false}], [], []};
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
@@ -238,39 +242,50 @@ cac(attribute, Attribute) ->
             PosLength = LastOffset - Offset + LastLength,
             Between = get_between_outer_pars(Attribute),
             Extra = to_string(Between),
-            AttrArgs = get_attribute_args(Name, Between, Args),
+            {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                         name=Name, args=AttrArgs, 
-                        extra=Extra}, make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)};
+                        extra=Extra},
+             make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength),
+             Exports, Imports};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=[]}, []}
+                       name=Name, args=[]}, [], [], []}
     end;
-cac(other, [#token{value=Name, line=Line,
-                   offset=Offset, length=Length} | _]) ->
-    {#other{pos={{Line, Line, Offset}, Length}, name=Name}, []};
-cac(_, _D) ->
-    %?D(_D),
-    {eof, []}.
+cac(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _], 
+    _Exports, _Imports) ->
+    {#other{pos={{Line, Line, Offset}, Length}, name=Name}, [], [], []};
+cac(_, _D, _E, _I) ->
+    {eof, [], [], []}.
+
+get_exports(export, Args) ->
+    Args;
+get_exports(_, _) ->
+    [].
+
+get_exported(F_A, Exports) ->
+    lists:member(F_A, Exports).
 
 get_attribute_args(import, Between, _Args) ->
     From = get_first_of_kind(atom, Between),
     Tokens = get_between(Between, '[', ']'),
-    {From, fun_arity_from_tokens(Tokens)};
+    Import = {From, fun_arity_from_tokens(Tokens)},
+    {Import, [], [Import]};
 get_attribute_args(export, Between, _Args) ->
     Tokens = get_between(Between, '[', ']'),
-    fun_arity_from_tokens(Tokens);
+    Exports = fun_arity_from_tokens(Tokens),
+    {Exports, Exports, []};
 get_attribute_args(record, Between, _Args) ->
-    %?D({Between, _Args}),
-    RecordToken = hd(Between),
+    [RecordToken | _] = Between,
     RecordName = RecordToken#token.value,
     Tokens = get_between(Between, '{', '}'),
-    {RecordName, field_list_from_tokens(Tokens)};
+    R = {RecordName, field_list_from_tokens(Tokens)},
+    {R, [], []};
 get_attribute_args(_, _Between, Args) ->
-    Args.
+    {Args, [], []}.
 
 check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
     function;
@@ -481,29 +496,31 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
              name=Name, args=get_between_pars(Rest), head=get_head(Rest)},
      ExternalRefs}.
 
-fix_refs(ClausesAndRefs, Function) ->
-    fix_refs(ClausesAndRefs, Function, []).
+fix_refs(ClausesAndRefs, Function, Imports) ->
+    fix_refs(ClausesAndRefs, Function, Imports, []).
 
-fix_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, Acc) ->
+fix_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, _Imports, Acc) ->
     Ref = #ref{data=#function_def{function=Name, arity=Arity}, offset=Offset, 
                length=Length, function=Name, arity=Arity, clause="", sub_clause=false},
     [Ref | Acc];
-fix_refs([{Clause, Refs} | Rest], Function, Acc0) ->
-    Acc1 = fix_refs(Refs, Clause, Function, Acc0),
-    fix_refs(Rest, Function, Acc1).
+fix_refs([{Clause, Refs} | Rest], Function, Imports, Acc0) ->
+    Acc1 = fix_refs(Refs, Clause, Function, Imports, Acc0),
+    fix_refs(Rest, Function, Imports, Acc1).
 
-fix_refs([], _Clause, _Function, Acc) ->
+fix_refs([], _Clause, _Function, _Imports, Acc) ->
     Acc;
 fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
-         #function{name=Name, arity=Arity, clauses=Clauses}=Function, Acc) ->
+         #function{name=Name, arity=Arity, clauses=Clauses}=Function, 
+         Imports, Acc) ->
     SubClause = case Clauses of
                     [] -> false;
                     [_] -> false;
                     _ -> true
                 end,
-    Ref = #ref{data=RefData, offset=Offset, length=Length, function=Name, 
+    NewRefData = fix_imported_ref(RefData, Imports),
+    Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name, 
                arity=Arity, clause=Head, sub_clause=SubClause},
-    fix_refs(Rest, Clause, Function, [Ref | Acc]).
+    fix_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
 
 scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
     erlide_scanner_server:getTokens(ScannerName);    
@@ -514,8 +531,16 @@ scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCaches) ->
     S = erlide_scanner_server:getTokens(ScannerName),
     S.
 
+fix_imported_ref(#local_call{function=F, arity=A}=RefData, [{Module, Imports} | Rest]) ->
+    case lists:member({F, A}, Imports) of
+        true -> #external_call{module=Module, function=F, arity=A};
+        false -> fix_imported_ref(RefData, Rest)
+    end;
+fix_imported_ref(RefData, _Imports) ->
+    RefData.
+
 %% find references in code
-%% VERY simple, M:F(_ ...), #R, ?M, and that's it
+%% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, and that's it
 %% returns {Offset, Length, Ref}
 get_refs([]) ->
     [];

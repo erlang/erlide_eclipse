@@ -114,8 +114,6 @@ public final class ErlParser {
 				}
 			}
 		}
-		mm.fixExportedFunctions();
-
 		return true;
 	}
 
@@ -225,7 +223,7 @@ public final class ErlParser {
 	 *            module
 	 * @param el
 	 *            -record(function, {pos, name, arity, args, head, clauses,
-	 *            name_pos, code, external_refs, comment}).
+	 *            name_pos, comment, exported}).
 	 * @return ErlFunction
 	 */
 	private static ErlFunction makeErlFunction(final IErlModule parent,
@@ -236,13 +234,16 @@ public final class ErlParser {
 		final OtpErlangObject head = el.elementAt(5);
 		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(7);
 		ErlFunction f = null;
+		OtpErlangObject commentO = el.elementAt(8);
+		final OtpErlangAtom exportedA = (OtpErlangAtom) el.elementAt(9);
+		boolean exported = "true".equals(exportedA.atomValue());
 		try {
-			String comment = Util.stringValue(el.elementAt(10));
+			String comment = Util.stringValue(commentO);
 			if (comment != null) {
 				comment = comment.replaceAll("\n", "<br/>");
 			}
 			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), Util.stringValue(head), comment);
+					.intValue(), Util.stringValue(head), comment, exported);
 		} catch (final OtpErlangRangeException e) {
 			return f;
 		}
