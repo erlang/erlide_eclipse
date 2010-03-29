@@ -68,6 +68,9 @@ public class RpcInterfaceGenerator {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if (res == null) {
+				return;
+			}
 			final OtpErlangTuple r = (OtpErlangTuple) res;
 			res = r.elementAt(1);
 			List<OtpErlangObject> l = null;

@@ -60,7 +60,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 		return null;
 	}
 
-	public List<ErlangExternalFunctionCallRef> getResult() {
+	public synchronized List<ErlangExternalFunctionCallRef> getResult() {
 		return result;
 	}
 

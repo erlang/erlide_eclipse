@@ -180,8 +180,7 @@ public final class BuilderUtils {
 				// handle changed resource
 				if (!resource.isDerived()) {
 					if (isInCodePath(resource, my_project)) {
-						final BuildResource bres = new BuildResource(
-								resource);
+						final BuildResource bres = new BuildResource(resource);
 						result.add(bres);
 						monitor.worked(1);
 					}
@@ -860,6 +859,7 @@ public final class BuilderUtils {
 		if (res == null) {
 			ErlLogger.warn("error compiling erl file: "
 					+ resource.getResource().getProjectRelativePath());
+			return;
 		}
 		try {
 			completeCompile(project, resource.getResource(), res.get(), b,
@@ -877,6 +877,7 @@ public final class BuilderUtils {
 		if (res == null) {
 			ErlLogger.warn("error compiling yrl file: "
 					+ resource.getResource().getProjectRelativePath());
+			return;
 		}
 		try {
 			completeCompile(project, resource.getResource(), res.get(), b,
