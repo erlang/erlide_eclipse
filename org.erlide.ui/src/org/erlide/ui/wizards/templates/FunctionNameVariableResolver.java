@@ -19,10 +19,6 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
 
 	private String fFunctionName;
 
-	public FunctionNameVariableResolver() {
-		fInstance = this;
-	}
-
 	public static FunctionNameVariableResolver getDefault() {
 		if (fInstance == null) {
 			fInstance = new FunctionNameVariableResolver();

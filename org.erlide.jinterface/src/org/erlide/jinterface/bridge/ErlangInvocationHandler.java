@@ -2,6 +2,7 @@ package org.erlide.jinterface.bridge;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class ErlangInvocationHandler implements InvocationHandler {
 
@@ -12,7 +13,7 @@ public class ErlangInvocationHandler implements InvocationHandler {
 	throws Throwable {
 
 		System.out.format(">> wrap: %s.%s(%s)", proxy.toString(), method
-				.getName(), args);
+				.getName(), Arrays.toString(args));
 
 		return null;
 	}

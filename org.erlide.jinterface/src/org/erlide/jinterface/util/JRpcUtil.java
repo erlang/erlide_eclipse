@@ -14,6 +14,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class JRpcUtil {
 	public static OtpErlangObject execute(final OtpErlangObject target,
 			final OtpErlangObject method, final OtpErlangObject[] args) {
 
-		debug("EXEC:: " + target + ":" + method + " " + args + " >"
-				+ (args == null ? 0 : args.length));
+		debug("EXEC:: " + target + ":" + method + " " + Arrays.toString(args)
+				+ " >" + (args == null ? 0 : args.length));
 
 		final MethodDescription description = getDescription(method);
 
@@ -66,11 +67,9 @@ public class JRpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (final Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return OtpErlang.mkTuple(
-							new OtpErlangAtom("error"), new OtpErlangString(
-									String
-											.format("Bad RPC: %s", e
-													.getMessage())));
+					return OtpErlang.mkTuple(new OtpErlangAtom("error"),
+							new OtpErlangString(String.format("Bad RPC: %s", e
+									.getMessage())));
 				}
 
 			}

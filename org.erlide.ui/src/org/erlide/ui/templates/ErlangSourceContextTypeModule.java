@@ -25,10 +25,9 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 	/**
 	 * Creates a new XML context type.
 	 */
-	public ErlangSourceContextTypeModule() {
+	private ErlangSourceContextTypeModule() {
 		addGlobalResolvers();
 		addModuleResolver();
-		fInstance = this; 
 	}
 
 	private void addModuleResolver() {
@@ -58,7 +57,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 
 	public static ErlangSourceContextTypeModule getDefault() {
 		if (fInstance == null) {
-			new ErlangSourceContextTypeModule();
+			fInstance = new ErlangSourceContextTypeModule();
 		}
 		return fInstance;
 	}
