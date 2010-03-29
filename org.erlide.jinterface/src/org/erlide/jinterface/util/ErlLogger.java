@@ -148,6 +148,7 @@ public class ErlLogger {
 					pw.close();
 					sb.append(sw.toString());
 				} catch (final Exception ex) {
+					// ignore
 				}
 			}
 			return sb.toString();

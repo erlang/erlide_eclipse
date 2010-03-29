@@ -38,15 +38,16 @@ public class Signature {
 
 	@Override
 	public String toString() {
-		String res = "";
+		StringBuilder res = new StringBuilder();
 		if (this.content != null) {
-			res = "(";
+			res.append('(');
 			for (final Signature s : this.content) {
-				res += s.toString() + ",";
+				res.append(s.toString()).append(',');
 			}
-			res = res.substring(0, res.length() - 1) + ")";
+			// FIXME remove first char
+			res.append(')');
 		}
-		return this.kind + res;
+		return this.kind + res.toString();
 	}
 
 	public static synchronized Signature[] parse(final String signature)

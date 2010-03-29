@@ -120,7 +120,7 @@ public class ErlReconciler implements IReconciler {
 		/**
 		 * Reset the background thread as the text viewer has been changed,
 		 */
-		public void reset() {
+		public synchronized void reset() {
 			if (fDelay > 0) {
 				fReset = true;
 			} else {

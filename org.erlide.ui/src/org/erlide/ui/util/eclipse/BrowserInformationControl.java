@@ -83,7 +83,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            none
 	 * @return <code>true</code> if this control is available
 	 */
-	public static boolean isAvailable(Composite parent) {
+	public static boolean isAvailable(final Composite parent) {
 		if (!fgAvailabilityChecked) {
 			try {
 				Browser browser = new Browser(parent, SWT.NONE);
@@ -182,8 +182,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            <code>true</code> if the control should be resizable
 	 * @since 3.4
 	 */
-	public BrowserInformationControl(Shell parent, String symbolicFontName,
-			boolean resizable) {
+	public BrowserInformationControl(final Shell parent,
+			final String symbolicFontName, final boolean resizable) {
 		super(parent, resizable);
 		fSymbolicFontName = symbolicFontName;
 		create();
@@ -201,8 +201,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            <code>null</code> if the status field should be hidden
 	 * @since 3.4
 	 */
-	public BrowserInformationControl(Shell parent, String symbolicFontName,
-			String statusFieldText) {
+	public BrowserInformationControl(final Shell parent,
+			final String symbolicFontName, final String statusFieldText) {
 		super(parent, statusFieldText);
 		fSymbolicFontName = symbolicFontName;
 		create();
@@ -219,8 +219,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            the manager or <code>null</code> if toolbar is not desired
 	 * @since 3.4
 	 */
-	public BrowserInformationControl(Shell parent, String symbolicFontName,
-			ToolBarManager toolBarManager) {
+	public BrowserInformationControl(final Shell parent,
+			final String symbolicFontName, final ToolBarManager toolBarManager) {
 		super(parent, toolBarManager);
 		fSymbolicFontName = symbolicFontName;
 		create();
@@ -232,7 +232,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * .swt.widgets.Composite)
 	 */
 	@Override
-	protected void createContent(Composite parent) {
+	protected void createContent(final Composite parent) {
 		fBrowser = new Browser(parent, SWT.NONE);
 
 		Display display = getShell().getDisplay();
@@ -242,20 +242,20 @@ public class BrowserInformationControl extends AbstractInformationControl
 				.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 		fBrowser.addKeyListener(new KeyListener() {
 
-			public void keyPressed(KeyEvent e) {
+			public void keyPressed(final KeyEvent e) {
 				if (e.character == 0x1B) {
 					dispose(); // XXX: Just hide? Would avoid constant
 					// recreations.
 				}
 			}
 
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(final KeyEvent e) {
 			}
 		});
 
 		fBrowser.addProgressListener(new ProgressAdapter() {
 			@Override
-			public void completed(ProgressEvent event) {
+			public void completed(final ProgressEvent event) {
 				fCompleted = true;
 			}
 		});
@@ -296,7 +296,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * {@inheritDoc} This control can handle {@link String} and
 	 * {@link BrowserInformationControlInput}.
 	 */
-	public void setInput(Object input) {
+	public void setInput(final Object input) {
 		Assert.isLegal(input == null || input instanceof String
 				|| input instanceof BrowserInformationControlInput);
 
@@ -367,7 +367,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @see IInformationControl#setVisible(boolean)
 	 */
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		Shell shell = getShell();
 		if (shell.isVisible() == visible) {
 			return;
@@ -422,7 +422,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @see org.eclipse.jface.text.AbstractInformationControl#setSize(int, int)
 	 */
 	@Override
-	public void setSize(int width, int height) {
+	public void setSize(final int width, final int height) {
 		fBrowser.setRedraw(false); // avoid flickering
 		try {
 			super.setSize(width, height);
@@ -578,7 +578,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            the location listener
 	 * @since 3.4
 	 */
-	public void addLocationListener(LocationListener listener) {
+	public void addLocationListener(final LocationListener listener) {
 		fBrowser.addLocationListener(listener);
 	}
 
@@ -586,7 +586,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @see IInformationControl#setForegroundColor(Color)
 	 */
 	@Override
-	public void setForegroundColor(Color foreground) {
+	public void setForegroundColor(final Color foreground) {
 		super.setForegroundColor(foreground);
 		fBrowser.setForeground(foreground);
 	}
@@ -595,7 +595,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @see IInformationControl#setBackgroundColor(Color)
 	 */
 	@Override
-	public void setBackgroundColor(Color background) {
+	public void setBackgroundColor(final Color background) {
 		super.setBackgroundColor(background);
 		fBrowser.setBackground(background);
 	}
@@ -615,7 +615,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            the listener to add
 	 * @since 3.4
 	 */
-	public void addInputChangeListener(IInputChangedListener inputChangeListener) {
+	public void addInputChangeListener(
+			final IInputChangedListener inputChangeListener) {
 		Assert.isNotNull(inputChangeListener);
 		fInputChangeListeners.add(inputChangeListener);
 	}
@@ -629,7 +630,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @since 3.4
 	 */
 	public void removeInputChangeListener(
-			IInputChangedListener inputChangeListener) {
+			final IInputChangedListener inputChangeListener) {
 		fInputChangeListeners.remove(inputChangeListener);
 	}
 
@@ -641,7 +642,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * @since 3.4
 	 */
 	public void setDelayedInputChangeListener(
-			IInputChangedListener inputChangeListener) {
+			final IInputChangedListener inputChangeListener) {
 		fDelayedInputChangeListener = inputChangeListener;
 	}
 
@@ -663,7 +664,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 *            the new input, or <code>null</code> to request cancellation
 	 * @since 3.4
 	 */
-	public void notifyDelayedInputChange(Object newInput) {
+	public void notifyDelayedInputChange(final Object newInput) {
 		if (fDelayedInputChangeListener != null) {
 			fDelayedInputChangeListener.inputChanged(newInput);
 		}
@@ -693,14 +694,14 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 * (int, int)
 	 */
 	@Override
-	public Point computeSizeConstraints(int widthInChars, int heightInChars) {
+	public Point computeSizeConstraints(final int widthInChars,
+			final int heightInChars) {
 		if (fSymbolicFontName == null) {
 			return null;
 		}
 
 		GC gc = new GC(fBrowser);
-		Font font = fSymbolicFontName == null ? JFaceResources.getDialogFont()
-				: JFaceResources.getFont(fSymbolicFontName);
+		Font font = JFaceResources.getFont(fSymbolicFontName);
 		gc.setFont(font);
 		int width = gc.getFontMetrics().getAverageCharWidth();
 		int height = gc.getFontMetrics().getHeight();

@@ -314,7 +314,8 @@ public class Backend extends OtpNodeStatus {
 		return "";
 	}
 
-	private boolean init(final OtpErlangPid jRex, boolean monitor, boolean watch) {
+	private boolean init(final OtpErlangPid jRex, final boolean monitor,
+			final boolean watch) {
 		try {
 			// reload(backend);
 			call("erlide_kernel_common", "init", "poo", jRex, monitor, watch);
@@ -328,7 +329,8 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
-	public void initErlang(boolean monitor, boolean watch) {
+	public synchronized void initErlang(final boolean monitor,
+			final boolean watch) {
 		final boolean inited = init(getEventPid(), monitor, watch);
 		if (!inited) {
 			setAvailable(false);
@@ -352,7 +354,7 @@ public class Backend extends OtpNodeStatus {
 		return stopped;
 	}
 
-	private RpcFuture makeAsyncCall(final OtpErlangObject gleader,
+	private synchronized RpcFuture makeAsyncCall(final OtpErlangObject gleader,
 			final String module, final String fun, final String signature,
 			final Object... args0) throws RpcException, SignatureException {
 		checkAvailability();
@@ -401,7 +403,7 @@ public class Backend extends OtpNodeStatus {
 		return fNode.ping(fPeer, 500);
 	}
 
-	public void registerStatusHandler(OtpNodeStatus handler) {
+	public void registerStatusHandler(final OtpNodeStatus handler) {
 		if (fNode != null) {
 			fNode.registerStatusHandler(handler);
 			fNode.registerStatusHandler(this);
@@ -432,7 +434,7 @@ public class Backend extends OtpNodeStatus {
 		fDebug = b;
 	}
 
-	public void setExitStatus(final int v) {
+	public synchronized void setExitStatus(final int v) {
 		exitStatus = v;
 	}
 
@@ -513,7 +515,7 @@ public class Backend extends OtpNodeStatus {
 		return false;
 	}
 
-	public void input(String string) throws IOException {
+	public void input(final String string) throws IOException {
 		// XXX
 		System.out.println("INPUT???");
 	}
@@ -522,7 +524,7 @@ public class Backend extends OtpNodeStatus {
 		return fNode.createMbox();
 	}
 
-	public OtpMbox createMbox(String name) {
+	public OtpMbox createMbox(final String name) {
 		return fNode.createMbox(name);
 	}
 

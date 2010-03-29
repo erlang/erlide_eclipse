@@ -160,7 +160,7 @@ public class ReportPreferencePage extends PreferencePage implements
 
 		final Job j = new Job("send error report") {
 			@Override
-			public IStatus run(IProgressMonitor monitor) {
+			public IStatus run(final IProgressMonitor monitor) {
 				final String location = ErlideUtil.getReportFile();
 
 				final ProblemData data = gatherProblemData(attach, title,
@@ -170,7 +170,7 @@ public class ReportPreferencePage extends PreferencePage implements
 
 				Job inner = new UIJob("update report ui") {
 					@Override
-					public IStatus runInUIThread(IProgressMonitor amonitor) {
+					public IStatus runInUIThread(final IProgressMonitor amonitor) {
 						sendButton.setText("Done!");
 						responseLabel.setVisible(true);
 						locationLabel.setText(location);
@@ -214,6 +214,7 @@ public class ReportPreferencePage extends PreferencePage implements
 				pw.println(data.erlideLog);
 			} finally {
 				pw.flush();
+				pw.close();
 				out.close();
 			}
 		} catch (final IOException e) {

@@ -370,16 +370,20 @@ public final class ErlideUtil {
 		try {
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(new FileInputStream(log), "UTF-8"));
-			for (;;) {
-				String line = reader.readLine();
-				if (line == null) {
-					break;
+			try {
+				for (;;) {
+					String line = reader.readLine();
+					if (line == null) {
+						break;
+					}
+					line = line.trim();
+					if (line.length() == 0) {
+						continue;
+					}
+					result.append(line).append('\n');
 				}
-				line = line.trim();
-				if (line.length() == 0) {
-					continue;
-				}
-				result.append(line).append('\n');
+			} finally {
+				reader.close();
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
@@ -393,19 +397,23 @@ public final class ErlideUtil {
 		try {
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(new FileInputStream(log), "UTF-8"));
-			for (;;) {
-				String line = reader.readLine();
-				if (line == null) {
-					break;
+			try {
+				for (;;) {
+					String line = reader.readLine();
+					if (line == null) {
+						break;
+					}
+					line = line.trim();
+					if (line.length() == 0) {
+						continue;
+					}
+					if (line.startsWith("!SESSION ")) {
+						result.clear();
+					}
+					result.add(line);
 				}
-				line = line.trim();
-				if (line.length() == 0) {
-					continue;
-				}
-				if (line.startsWith("!SESSION ")) {
-					result.clear();
-				}
-				result.add(line);
+			} finally {
+				reader.close();
 			}
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
@@ -456,16 +464,20 @@ public final class ErlideUtil {
 			try {
 				final BufferedReader reader = new BufferedReader(
 						new InputStreamReader(new FileInputStream(log), "UTF-8"));
-				for (;;) {
-					String line = reader.readLine();
-					if (line == null) {
-						break;
+				try {
+					for (;;) {
+						String line = reader.readLine();
+						if (line == null) {
+							break;
+						}
+						line = line.trim();
+						if (line.length() == 0) {
+							continue;
+						}
+						result.append(line).append('\n');
 					}
-					line = line.trim();
-					if (line.length() == 0) {
-						continue;
-					}
-					result.append(line).append('\n');
+				} finally {
+					reader.close();
 				}
 			} catch (final Exception e) {
 			}

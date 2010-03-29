@@ -251,7 +251,7 @@ public final class ErlUtils {
 			return new String(((OtpErlangBinary) target).binaryValue());
 		} else if (target instanceof OtpErlangList) {
 			try {
-				return new String(((OtpErlangList) target).stringValue());
+				return ((OtpErlangList) target).stringValue();
 			} catch (OtpErlangException e) {
 				return target.toString();
 			}

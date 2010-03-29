@@ -48,7 +48,7 @@ public class MonitorView extends ViewPart {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
 		boolean devMode = ErlideUtil.isDeveloper();
@@ -56,7 +56,7 @@ public class MonitorView extends ViewPart {
 			button = new Button(composite, SWT.NONE);
 			button.addSelectionListener(new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					FileDialog fd = new FileDialog(composite.getShell(),
 							SWT.OPEN);
 					fd.setText("Open log file");
@@ -144,7 +144,7 @@ public class MonitorView extends ViewPart {
 		File file = null;
 		File[] logs = dir.listFiles(new FilenameFilter() {
 
-			public boolean accept(File dir, String name) {
+			public boolean accept(final File dir, final String name) {
 				if (name.startsWith(user)) {
 					return true;
 				}
@@ -163,19 +163,23 @@ public class MonitorView extends ViewPart {
 		return file;
 	}
 
-	private String readFile(File file) throws IOException {
+	private String readFile(final File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String ls = System.getProperty("line.separator");
-		while ((line = reader.readLine()) != null) {
-			stringBuilder.append(line);
-			stringBuilder.append(ls);
+		try {
+			String line = null;
+			StringBuilder stringBuilder = new StringBuilder();
+			String ls = System.getProperty("line.separator");
+			while ((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+			return stringBuilder.toString();
+		} finally {
+			reader.close();
 		}
-		return stringBuilder.toString();
 	}
 
-	private List<MonitorEntry> filterMonitorEntries(String log) {
+	private List<MonitorEntry> filterMonitorEntries(final String log) {
 		Pattern hdr = Pattern.compile("\\{erlide_monitor,");
 		Pattern tl = Pattern.compile("\\}\\.");
 		List<MonitorEntry> result = new ArrayList<MonitorEntry>();
@@ -205,18 +209,19 @@ public class MonitorView extends ViewPart {
 	private static class TreeContentProvider implements ITreeContentProvider {
 		private final Object[] EMPTY = new Object[0];
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(final Viewer viewer, final Object oldInput,
+				final Object newInput) {
 		}
 
 		public void dispose() {
 		}
 
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
 			return getChildren(inputElement);
 		}
 
 		@SuppressWarnings("unchecked")
-		public Object[] getChildren(Object parentElement) {
+		public Object[] getChildren(final Object parentElement) {
 			if (parentElement instanceof List<?>) {
 				List<Object> items = (List<Object>) parentElement;
 				return items.toArray(new Object[items.size()]);
@@ -267,24 +272,24 @@ public class MonitorView extends ViewPart {
 			return EMPTY;
 		}
 
-		public Object getParent(Object element) {
+		public Object getParent(final Object element) {
 			return null;
 		}
 
-		public boolean hasChildren(Object element) {
+		public boolean hasChildren(final Object element) {
 			return getChildren(element).length > 0;
 		}
 	}
 
 	private static class ViewerLabelProvider extends LabelProvider {
 		@Override
-		public Image getImage(Object element) {
+		public Image getImage(final Object element) {
 			return super.getImage(element);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public String getText(Object element) {
+		public String getText(final Object element) {
 			if (element instanceof MonitorEntry) {
 				return new SimpleDateFormat()
 						.format(((MonitorEntry) element).time);

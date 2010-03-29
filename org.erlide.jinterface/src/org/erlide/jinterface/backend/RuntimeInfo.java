@@ -190,7 +190,7 @@ public class RuntimeInfo {
 	 * @param args
 	 * @return
 	 */
-	private String[] split(String args) {
+	private String[] split(final String args) {
 		Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
 		Matcher m = p.matcher(args);
 		List<String> tokens = new ArrayList<String>();
@@ -325,16 +325,16 @@ public class RuntimeInfo {
 	}
 
 	protected static String cvt(final Collection<String> path) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (String s : path) {
 			if (s.length() > 0) {
 				if (s.contains(" ")) {
 					s = "\"" + s + "\"";
 				}
-				result += s + ";";
+				result.append(s).append(';');
 			}
 		}
-		return result;
+		return result.toString();
 	}
 
 	public RuntimeVersion getVersion() {

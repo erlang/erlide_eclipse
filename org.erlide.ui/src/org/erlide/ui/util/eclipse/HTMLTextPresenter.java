@@ -39,7 +39,7 @@ public class HTMLTextPresenter implements
 	private int fCounter;
 	private final boolean fEnforceUpperLineLimit;
 
-	public HTMLTextPresenter(boolean enforceUpperLineLimit) {
+	public HTMLTextPresenter(final boolean enforceUpperLineLimit) {
 		super();
 		fEnforceUpperLineLimit = enforceUpperLineLimit;
 	}
@@ -48,14 +48,14 @@ public class HTMLTextPresenter implements
 		this(true);
 	}
 
-	protected Reader createReader(String hoverInfo,
-			TextPresentation presentation) {
+	protected Reader createReader(final String hoverInfo,
+			final TextPresentation presentation) {
 		return new HTML2TextReader(new StringReader(hoverInfo), presentation);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void adaptTextPresentation(TextPresentation presentation,
-			int offset, int insertLength) {
+	protected void adaptTextPresentation(final TextPresentation presentation,
+			final int offset, final int insertLength) {
 
 		int yoursStart = offset;
 		int yoursEnd = offset + insertLength - 1;
@@ -82,8 +82,8 @@ public class HTMLTextPresenter implements
 		}
 	}
 
-	private void append(StringBuffer buffer, String string,
-			TextPresentation presentation) {
+	private void append(final StringBuffer buffer, final String string,
+			final TextPresentation presentation) {
 
 		int length = string.length();
 		buffer.append(string);
@@ -95,7 +95,7 @@ public class HTMLTextPresenter implements
 		fCounter += length;
 	}
 
-	private String getIndent(String line) {
+	private String getIndent(final String line) {
 		int length = line.length();
 
 		int i = 0;
@@ -114,8 +114,9 @@ public class HTMLTextPresenter implements
 	 * @deprecated
 	 */
 	@Deprecated
-	public String updatePresentation(Display display, String hoverInfo,
-			TextPresentation presentation, int maxWidth, int maxHeight) {
+	public String updatePresentation(final Display display,
+			final String hoverInfo, final TextPresentation presentation,
+			final int maxWidth, final int maxHeight) {
 		return updatePresentation((Drawable) display, hoverInfo, presentation,
 				maxWidth, maxHeight);
 	}
@@ -126,8 +127,9 @@ public class HTMLTextPresenter implements
 	 * 
 	 * @since 3.2
 	 */
-	public String updatePresentation(Drawable drawable, String hoverInfo,
-			TextPresentation presentation, int maxWidth, int maxHeight) {
+	public String updatePresentation(final Drawable drawable,
+			final String hoverInfo, final TextPresentation presentation,
+			final int maxWidth, final int maxHeight) {
 
 		if (hoverInfo == null) {
 			return null;
@@ -137,8 +139,7 @@ public class HTMLTextPresenter implements
 		try {
 
 			StringBuffer buffer = new StringBuffer();
-			int maxNumberOfLines = Math.round(maxHeight
-					/ gc.getFontMetrics().getHeight());
+			int maxNumberOfLines = maxHeight / gc.getFontMetrics().getHeight();
 
 			fCounter = 0;
 			LineBreakingReader reader = new LineBreakingReader(createReader(
@@ -202,7 +203,8 @@ public class HTMLTextPresenter implements
 		}
 	}
 
-	private String trim(StringBuffer buffer, TextPresentation presentation) {
+	private String trim(final StringBuffer buffer,
+			final TextPresentation presentation) {
 
 		int length = buffer.length();
 

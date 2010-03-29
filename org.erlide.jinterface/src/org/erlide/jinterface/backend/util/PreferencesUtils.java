@@ -39,11 +39,15 @@ public final class PreferencesUtils {
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(
 					file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.length() > 0) {
-					res.add(line);
+			try {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.length() > 0) {
+						res.add(line);
+					}
 				}
+			} finally {
+				reader.close();
 			}
 		} catch (final IOException e) {
 		}
