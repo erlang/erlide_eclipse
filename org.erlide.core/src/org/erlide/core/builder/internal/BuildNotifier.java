@@ -35,25 +35,13 @@ public class BuildNotifier {
 	protected int fTotalWork;
 	protected String previousSubtask;
 
-	static int newErrorCount = 0;
-	static int fixedErrorCount = 0;
-	static int newWarningCount = 0;
-	static int fixedWarningCount = 0;
-
-	public static void resetProblemCounters() {
-		newErrorCount = 0;
-		fixedErrorCount = 0;
-		newWarningCount = 0;
-		fixedWarningCount = 0;
-	}
-
 	public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
 		fMonitor = monitor;
 		fCancelling = false;
-		fNewErrorCount = newErrorCount;
-		fFixedErrorCount = fixedErrorCount;
-		fNewWarningCount = newWarningCount;
-		fFixedWarningCount = fixedWarningCount;
+		fNewErrorCount = 0;
+		fFixedErrorCount = 0;
+		fNewWarningCount = 0;
+		fFixedWarningCount = 0;
 		fWorkDone = 0;
 		fTotalWork = 1000000;
 	}
@@ -116,11 +104,6 @@ public class BuildNotifier {
 	}
 
 	public void done() {
-		newErrorCount = fNewErrorCount;
-		fixedErrorCount = fFixedErrorCount;
-		newWarningCount = fNewWarningCount;
-		fixedWarningCount = fFixedWarningCount;
-
 		updateProgress(1.0f);
 		subTask(BuilderMessages.build_done);
 		if (fMonitor != null) {

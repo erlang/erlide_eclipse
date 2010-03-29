@@ -110,7 +110,6 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
 					+ " of " + project.getName());
 		}
-		BuildNotifier.resetProblemCounters();
 		try {
 			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
@@ -232,7 +231,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void initializeBuilder(IProgressMonitor monitor) {
+	private void initializeBuilder(final IProgressMonitor monitor) {
 		IProject currentProject = getProject();
 		notifier = new BuildNotifier(monitor, currentProject);
 		notifier.begin();
@@ -244,8 +243,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<BuildResource> getResourcesToBuild(int kind, Map args,
-			IProject currentProject) throws CoreException {
+	private Set<BuildResource> getResourcesToBuild(final int kind,
+			final Map args, final IProject currentProject) throws CoreException {
 		Set<BuildResource> resourcesToBuild = Sets.newHashSet();
 		IProgressMonitor submon = new NullProgressMonitor();
 		// new SubProgressMonitor(monitor, 10);
