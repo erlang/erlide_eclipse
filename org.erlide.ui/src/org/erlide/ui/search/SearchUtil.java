@@ -193,11 +193,12 @@ public class SearchUtil {
 	public static ErlangElementRef getRefFromOpenResultAndLimitTo(
 			final IErlModule module, final OpenResult res, final int limitTo) {
 		ErlangElementRef ref = null;
-		String unquoted = ErlideUtil.unquote(res.getName());
+		String name = res.getName();
+		String unquoted = name != null ? ErlideUtil.unquote(name) : null;
 		if (res.isExternalCall()) {
 			if (limitTo == IErlSearchConstants.REFERENCES) {
-				ref = new ErlangExternalFunctionCallRef(res.getName(), res
-						.getFun(), res.getArity());
+				ref = new ErlangExternalFunctionCallRef(name, res.getFun(), res
+						.getArity());
 			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
 				ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
 			}
@@ -221,7 +222,7 @@ public class SearchUtil {
 				ref = new ErlangRecordDefRef(unquoted);
 			}
 		} else if (res.isInclude()) {
-			ref = new ErlangIncludeRef(res.getName());
+			ref = new ErlangIncludeRef(name);
 		}
 		return ref;
 	}
