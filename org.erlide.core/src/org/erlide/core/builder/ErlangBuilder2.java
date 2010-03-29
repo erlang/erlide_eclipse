@@ -246,6 +246,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 						// TODO create markers for clashes
 					}
 				} catch (Exception e) {
+					// ignore?
 				}
 			}
 			return msg.equals(new OtpErlangAtom("stop"));

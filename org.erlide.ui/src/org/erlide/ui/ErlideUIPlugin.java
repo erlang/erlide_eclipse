@@ -111,7 +111,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	public ErlideUIPlugin() {
 		super();
 		plugin = this;
-
 		try {
 			resourceBundle = ResourceBundle
 					.getBundle("org.erlide.ui.ErlideUIPluginResources");
@@ -119,7 +118,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 			x.printStackTrace();
 			resourceBundle = null;
 		}
-
 	}
 
 	/**
@@ -177,6 +175,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 	 * @return The plugin
 	 */
 	public static ErlideUIPlugin getDefault() {
+		if (plugin == null) {
+			plugin = new ErlideUIPlugin();
+		}
 		return plugin;
 	}
 

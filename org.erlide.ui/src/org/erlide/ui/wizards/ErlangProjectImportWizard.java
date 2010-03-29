@@ -57,7 +57,6 @@ import erlang.ErlideImport;
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
 	// {
 	private IStructuredSelection selection;
-
 	private ErlangProjectImportWizardPage mainPage;
 	private ErlangProjectImportIncludeAndSourceDirsWizardPage importIncludeAndSourceDirsPage;
 	private Collection<String> resources;
