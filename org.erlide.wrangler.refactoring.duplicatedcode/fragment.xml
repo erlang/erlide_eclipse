@@ -25,26 +25,26 @@
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.ExpressionSearchAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.expressionsearch"
-               label="&amp;Search identical expression..."
+               label="&amp;Search Identical Expression..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.DuplicateDetectionAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.detection"
-               label="Detect duplicated &amp;code..."
+               label="Detect Duplicated &amp;Code..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarSearchAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.similarexpressionsearch"
-               label="Search si&amp;milar expression..."
+               label="Search Si&amp;milar Expression..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
                style="push">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarDetectionAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.similarcodedetection"
-               label="Detect s&amp;imilar code..."
+               label="Detect S&amp;imilar Code..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
                style="push">
          </action>
