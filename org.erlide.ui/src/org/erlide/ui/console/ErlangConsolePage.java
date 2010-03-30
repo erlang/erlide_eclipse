@@ -62,6 +62,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -73,7 +74,6 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendShell;
@@ -504,7 +504,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 		action.configureAction(ConsoleMessages.TextConsolePage_SelectAllText,
 				ConsoleMessages.TextConsolePage_SelectAllDescrip,
 				ConsoleMessages.TextConsolePage_SelectAllDescrip);
-		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.SELECT_ALL);
+		action
+				.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
 				IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
 		setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
@@ -516,7 +517,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 				ConsoleMessages.TextConsolePage_CutDescrip);
 		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
-		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.CUT);
+		action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_CUT);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
 				IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
 		setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
@@ -528,7 +529,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 				ConsoleMessages.TextConsolePage_CopyDescrip);
 		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.COPY);
+		action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_COPY);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
 				IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
 		setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
@@ -540,7 +541,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 				ConsoleMessages.TextConsolePage_PasteDescrip);
 		action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
-		action.setActionDefinitionId(IWorkbenchActionDefinitionIds.PASTE);
+		action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_PASTE);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
 				IConsoleHelpContextIds.CONSOLE_PASTE_ACTION);
 		setGlobalAction(actionBars, ActionFactory.PASTE.getId(), action);
