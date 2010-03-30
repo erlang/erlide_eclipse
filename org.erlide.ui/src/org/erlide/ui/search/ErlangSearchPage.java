@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
-import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,6 +38,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
@@ -56,36 +57,33 @@ import erlang.OpenResult;
 public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 	private static class SearchPatternData {
-		private ErlangElementRef ref;
+		// private final ErlangElementRef ref;
 		// private final int includeMask;
 		private final String pattern;
 		private final int scope;
 		private final IWorkingSet[] workingSets;
+		private final int limitTo;
 
-		public SearchPatternData(final String pattern,
-				final ErlangElementRef ref) {
-			this(pattern, ref, ISearchPageContainer.WORKSPACE_SCOPE, null);
-		}
-
-		public SearchPatternData(final String pattern,
-				final ErlangElementRef ref, final int scope,
-				final IWorkingSet[] workingSets) {
+		public SearchPatternData(final String pattern, final int scope,
+				final int limitTo, final IWorkingSet[] workingSets) {
 			this.pattern = pattern;
 			this.scope = scope;
+			this.limitTo = limitTo;
 			this.workingSets = workingSets;
-			setRef(ref);
+			// ref = SearchUtil.getRefFromStringAndLimitTo(module, pattern,
+			// limitTo);
 		}
 
-		public final void setRef(final ErlangElementRef ref) {
-			this.ref = ref;
-		}
-
-		public ErlangElementRef getRef() {
-			return ref;
-		}
+		// public ErlangElementRef getRef() {
+		// return ref;
+		// }
 
 		public int getScope() {
 			return scope;
+		}
+
+		public int getLimitTo() {
+			return limitTo;
 		}
 
 		public IWorkingSet[] getWorkingSets() {
@@ -97,8 +95,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// }
 
 		public void store(final IDialogSettings settings) {
+			settings.put("pattern", pattern); //$NON-NLS-1$
 			settings.put("scope", scope); //$NON-NLS-1$
-			settings.put("ref", ref != null ? ref.toString() : "");
+			settings.put("limitTo", limitTo); //$NON-NLS-1$
 			if (workingSets != null) {
 				final String[] wsIds = new String[workingSets.length];
 				for (int i = 0; i < workingSets.length; i++) {
@@ -111,58 +110,33 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 
 		public static SearchPatternData create(final IDialogSettings settings) {
-			// final String pattern = settings.get("pattern");
-			// if (pattern.length() == 0) {
-			// return null;
-			// }
-			// IErlElement elem = null;
-			// final String handleId = settings.get("javaElement");
-			// 
-			// if (handleId != null && handleId.length() > 0) {
-			// final IErlElement restored = JavaCore.create(handleId);
-			// if (restored != null && isSearchableType(restored)
-			// && restored.exists()) {
-			// elem = restored;
-			// }
-			// }
-			// final String[] wsIds = settings.getArray("workingSets");
-			// 
-			// IWorkingSet[] workingSets = null;
-			// if (wsIds != null && wsIds.length > 0) {
-			// final IWorkingSetManager workingSetManager = PlatformUI
-			// .getWorkbench().getWorkingSetManager();
-			// workingSets = new IWorkingSet[wsIds.length];
-			// for (int i = 0; workingSets != null && i < wsIds.length; i++) {
-			// workingSets[i] = workingSetManager.getWorkingSet(wsIds[i]);
-			// if (workingSets[i] == null) {
-			// workingSets = null;
-			// }
-			// }
-			// }
-			//
-			// try {
-			// final int searchFor = settings.getInt("searchFor");
-			// final int scope = settings.getInt("scope");
-			// final int limitTo = settings.getInt("limitTo");
-			// final boolean isCaseSensitive = settings
-			// .getBoolean("isCaseSensitive");
-			//
-			// int includeMask;
-			// if (settings.get("includeMask") != null) {
-			// includeMask = settings.getInt("includeMask");
-			// } else {
-			// includeMask = JavaSearchScopeFactory.NO_JRE;
-			// if (settings.get("includeJRE") == null ? forceIncludeAll(limitTo,
-			// elem) :
-			// settings.getBoolean("includeJRE")) {
-			// includeMask = JavaSearchScopeFactory.ALL;
-			// }
-			// }
-			// return new SearchPatternData(searchFor, limitTo, pattern,
-			// isCaseSensitive, elem, scope, workingSets, includeMask);
-			// } catch (final NumberFormatException e) {
-			// return null;
-			// }
+			final String pattern = settings.get("pattern");
+			if (pattern.length() == 0) {
+				return null;
+			}
+			final String[] wsIds = settings.getArray("workingSets");
+
+			IWorkingSet[] workingSets = null;
+			if (wsIds != null && wsIds.length > 0) {
+				final IWorkingSetManager workingSetManager = PlatformUI
+						.getWorkbench().getWorkingSetManager();
+				workingSets = new IWorkingSet[wsIds.length];
+				for (int i = 0; workingSets != null && i < wsIds.length; i++) {
+					workingSets[i] = workingSetManager.getWorkingSet(wsIds[i]);
+					if (workingSets[i] == null) {
+						workingSets = null;
+					}
+				}
+			}
+
+			try {
+				final int scope = settings.getInt("scope");
+				final int limitTo = settings.getInt("limitTo");
+				return new SearchPatternData(pattern, scope, limitTo,
+						workingSets);
+
+			} catch (final NumberFormatException e) {
+			}
 			return null;
 		}
 
@@ -171,17 +145,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 	}
 
-	// // search for
-	// private final static int MODULE = IErlSearchConstants.MODULE;
-	// private final static int FUNCTION = IErlSearchConstants.FUNCTION;
-	// private final static int RECORD = IErlSearchConstants.RECORD;
-	// private final static int MACRO = IErlSearchConstants.MACRO;
-
 	// limit to
 	private final static int DECLARATIONS = IErlSearchConstants.DECLARATIONS;
 	private final static int REFERENCES = IErlSearchConstants.REFERENCES;
-	// private final static int ALL_OCCURRENCES =
-	// IErlSearchConstants.ALL_OCCURRENCES;
+	private final static int ALL_OCCURRENCES = IErlSearchConstants.ALL_OCCURRENCES;
 
 	public static final String PARTICIPANT_EXTENSION_POINT = "org.eclipse.erlang.ui.queryParticipants"; //$NON-NLS-1$
 
@@ -191,7 +158,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 	// Dialog store id constants
 	private final static String PAGE_NAME = "ErlangSearchPage"; //$NON-NLS-1$
-	// private final static String STORE_INCLUDE_MASK = "INCLUDE_MASK";
 	// //$NON-NLS-1$
 	private final static String STORE_HISTORY = "HISTORY"; //$NON-NLS-1$
 	private final static String STORE_HISTORY_SIZE = "HISTORY_SIZE"; //$NON-NLS-1$
@@ -199,16 +165,14 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private final List<SearchPatternData> fPreviousSearchPatterns;
 
 	private SearchPatternData fInitialData;
-	private ErlangElementRef fRef;
 	private boolean fFirstTime = true;
 	private IDialogSettings fDialogSettings;
 
 	private Combo fPattern;
 	private ISearchPageContainer fContainer;
-	private Button[] fLimitTo;
 
 	// private Button[] fSearchFor;
-	// private Button[] fLimitTo;
+	private Button[] fLimitTo;
 
 	// private Button[] fIncludeMasks;
 
@@ -254,29 +218,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			// SearchUtil.updateLRUWorkingSets(workingSets);
 			// }
 		}
-
-		final ErlSearchQuery query = new ErlSearchQuery(fRef, scope);
-		NewSearchUI.runQueryInBackground(query);
+		ErlangElementRef ref = SearchUtil.getRefFromStringAndLimitTo(null, data
+				.getPattern(), data.getLimitTo());
+		SearchUtil.runQuery(ref, scope, getShell());
 		return true;
 	}
-
-	// private int getIncludeMask() {
-	// int mask = 0;
-	// for (int i = 0; i < fIncludeMasks.length; i++) {
-	// final Button button = fIncludeMasks[i];
-	// if (button.getSelection()) {
-	// mask |= getIntData(button);
-	// }
-	// }
-	// return mask;
-	// }
-
-	// private void setIncludeMask(final int includeMask, final int limitTo) {
-	// for (int i = 0; i < fIncludeMasks.length; i++) {
-	// final Button button = fIncludeMasks[i];
-	// button.setSelection((includeMask & getIntData(button)) != 0);
-	// }
-	// }
 
 	private String[] getPreviousSearchPatterns() {
 		// Search results are not persistent
@@ -287,24 +233,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 		return patterns;
 	}
-
-	// private int getSearchFor() {
-	// for (int i = 0; i < fSearchFor.length; i++) {
-	// final Button button = fSearchFor[i];
-	// if (button.getSelection()) {
-	// return getIntData(button);
-	// }
-	// }
-	// Assert.isTrue(false, "shouldNeverHappen");
-	// return -1;
-	// }
-	//
-	// private void setSearchFor(final int searchFor) {
-	// for (int i = 0; i < fSearchFor.length; i++) {
-	// final Button button = fSearchFor[i];
-	// button.setSelection(searchFor == getIntData(button));
-	// }
-	// }
 
 	private String getPattern() {
 		return fPattern.getText();
@@ -331,8 +259,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		if (match != null) {
 			fPreviousSearchPatterns.remove(match);
 		}
-		match = new SearchPatternData(pattern, fRef, getContainer()
-				.getSelectedScope(), getContainer().getSelectedWorkingSets());// ,
+		match = new SearchPatternData(pattern, getContainer()
+				.getSelectedScope(), getLimitTo(), getContainer()
+				.getSelectedWorkingSets());// ,
 		// getIncludeMask());
 
 		fPreviousSearchPatterns.add(0, match); // insert on top
@@ -500,7 +429,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private boolean isValidSearchPattern() {
-		if (fRef != null || getPattern().length() > 0) {
+		// FIXME borde kollas ordentligt! kanske via open
+		if (getPattern().length() > 0) {
 			return true;
 		}
 		return false;
@@ -519,11 +449,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
 	private void doPatternModified() {
 		if (fInitialData != null
-				&& getPattern().equals(fInitialData.getPattern())
-				&& fInitialData.getRef() != null) {
-			fRef = fInitialData.getRef();
-		} else {
-			fRef = null;
+				&& getPattern().equals(fInitialData.getPattern())) {
+			;
+			;
 		}
 	}
 
@@ -543,7 +471,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		// setIncludeMask(initialData.getIncludeMask(), limitToVal);
 
 		fPattern.setText(initialData.getPattern());
-		fRef = initialData.getRef();
 
 		if (initialData.getWorkingSets() != null) {
 			getContainer().setSelectedWorkingSets(initialData.getWorkingSets());
@@ -554,28 +481,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		fInitialData = initialData;
 	}
 
-	// private Control createSearchFor(final Composite parent) {
-	// final Group result = new Group(parent, SWT.NONE);
-	// result.setText("Search"); // SearchMessages.SearchPage_searchFor_label);
-	// result.setLayout(new GridLayout(2, true));
-	//
-	// fSearchFor = new Button[] {
-	// // createButton(result, SWT.RADIO,
-	// // SearchMessages.SearchPage_searchFor_type, TYPE, true),
-	// createButton(result, SWT.RADIO, "Function", FUNCTION, false),
-	// createButton(result, SWT.RADIO, "Module", MODULE, false),
-	// createButton(result, SWT.RADIO, "Record", RECORD, false),
-	// createButton(result, SWT.RADIO, "Macro", MACRO, false) };
-	//
-	// // Fill with dummy radio buttons
-	// final Label filler = new Label(result, SWT.NONE);
-	// filler.setVisible(false);
-	// filler.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-	// 1));
-	//
-	// return result;
-	// }
-
 	private Control createLimitTo(final Composite parent) {
 		final Group result = new Group(parent, SWT.NONE);
 		result.setText("Limit to");
@@ -584,44 +489,12 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		fLimitTo = new Button[] {
 				createButton(result, SWT.RADIO, "Declarations", DECLARATIONS,
 						false),
-				createButton(result, SWT.RADIO, "References", REFERENCES, true)
-		// createButton(result, SWT.RADIO, "All occurrences",
-		// ALL_OCCURRENCES, false)
-		};
+				createButton(result, SWT.RADIO, "References", REFERENCES, true),
+				createButton(result, SWT.RADIO, "All occurrences",
+						ALL_OCCURRENCES, false) };
 
-		// final SelectionAdapter listener = new SelectionAdapter() {
-		// @Override
-		// public void widgetSelected(SelectionEvent e) {
-		// updateUseJRE();
-		// }
-		// };
-		// for (int i = 0; i < fLimitTo.length; i++) {
-		// fLimitTo[i].addSelectionListener(listener);
-		// }
 		return result;
 	}
-
-	// private Control createIncludeMask(final Composite parent) {
-	// final Group result = new Group(parent, SWT.NONE);
-	// result.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-	// 1));
-	// result.setText("Search in");
-	// result.setLayout(new GridLayout(4, false));
-	// fIncludeMasks = new Button[] {
-	// createButton(result, SWT.CHECK,
-	// SearchMessages.SearchPage_searchIn_sources,
-	// JavaSearchScopeFactory.SOURCES, true),
-	// createButton(result, SWT.CHECK,
-	// SearchMessages.SearchPage_searchIn_projects,
-	// JavaSearchScopeFactory.PROJECTS, true),
-	// createButton(result, SWT.CHECK,
-	// SearchMessages.SearchPage_searchIn_jre,
-	// JavaSearchScopeFactory.JRE, false),
-	// createButton(result, SWT.CHECK,
-	// SearchMessages.SearchPage_searchIn_libraries,
-	// JavaSearchScopeFactory.LIBS, true), };
-	// return result;
-	// }
 
 	private Button createButton(final Composite parent, final int style,
 			final String text, final int data, final boolean isSelected) {
@@ -643,32 +516,27 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			if (activePart instanceof ErlangEditor) {
 				final ErlangEditor erlangEditor = (ErlangEditor) activePart;
 				final IErlModule module = erlangEditor.getModule();
-				if (module == null) {
-					return;
+				if (module != null) {
+					// TODO how in the world can we find the proper build
+					// backend?
+					final Backend b = ErlangCore.getBackendManager()
+							.getIdeBackend();
+					final ISelection ssel = erlangEditor.getSite()
+							.getSelectionProvider().getSelection();
+					final ITextSelection textSel = (ITextSelection) ssel;
+					final int offset = textSel.getOffset();
+					OpenResult res;
+					try {
+						final String scannerModuleName = ErlangToolkit
+								.createScannerModuleName(module);
+						res = ErlideOpen.open(b, scannerModuleName, offset, "",
+								ErlangCore.getModel().getPathVars());
+					} catch (final BackendException e) {
+						res = null;
+					}
+					ErlLogger.debug("searchPage(open) " + res);
+					initData = determineInitValuesFrom(module, res);
 				}
-				// TODO how in the world can we find the proper build backend?
-				final Backend b = ErlangCore.getBackendManager()
-						.getIdeBackend();
-				final ISelection ssel = erlangEditor.getSite()
-						.getSelectionProvider().getSelection();
-				final ITextSelection textSel = (ITextSelection) ssel;
-				final int offset = textSel.getOffset();
-				OpenResult res;
-				try {
-					final String scannerModuleName = ErlangToolkit
-							.createScannerModuleName(module);
-					res = ErlideOpen.open(b, scannerModuleName, offset, "",
-							ErlangCore.getModel().getPathVars());
-				} catch (final BackendException e) {
-					res = null;
-				}
-				ErlLogger.debug("searchPage(open) " + res);
-
-				// final String title =
-				// "SearchMessages.SearchElementSelectionDialog_title";
-				// final String message =
-				// "SearchMessages.SearchElementSelectionDialog_message";
-				initData = determineInitValuesFrom(res);
 			}
 			if (initData == null) {
 				initData = trySimpleTextSelection((ITextSelection) sel);
@@ -679,162 +547,58 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 
 		fInitialData = initData;
-		fRef = initData.getRef();
-
-		// setSearchFor(initData.getSearchFor());
-		// final int limitToVal =
-		// setIncludeMask(initData.getIncludeMask(), limitToVal);
 
 		fPattern.setText(initData.getPattern());
 	}
-
-	// private void updateUseJRE() {
-	// setIncludeMask(getIncludeMask(), getLimitTo());
-	// }
-
-	// private static boolean forceIncludeAll(final int limitTo, IErlElement
-	// elem) {
-	// return elem != null
-	// && (limitTo == DECLARATIONS || limitTo == IMPLEMENTORS);
-	// }
 
 	private SearchPatternData tryStructuredSelection(
 			final IStructuredSelection selection) {
 		if (selection == null || selection.size() > 1) {
 			return null;
 		}
-
 		final Object o = selection.getFirstElement();
 		SearchPatternData res = null;
-		// TODO kan inte vara IErlElement ju
 		if (o instanceof IErlElement) {
 			res = determineInitValuesFrom((IErlElement) o);
 		}
-		// else if (o instanceof LogicalPackage) {
-		// LogicalPackage lp = (LogicalPackage) o;
-		// return new SearchPatternData(PACKAGE, REFERENCES, fIsCaseSensitive,
-		// lp.getElementName(), null, getLastIncludeMask());
-		// } else if (o instanceof IAdaptable) {
-		// IErlElement element = (IErlElement) ((IAdaptable) o)
-		// .getAdapter(IErlElement.class);
-		// if (element != null) {
-		// res = determineInitValuesFrom(element);
-		// }
-		// }
-		// if (res == null && o instanceof IAdaptable) {
-		// final IWorkbenchAdapter adapter = (IWorkbenchAdapter) ((IAdaptable)
-		// o)
-		// .getAdapter(IWorkbenchAdapter.class);
-		// if (adapter != null) {
-		// return new SearchPatternData(TYPE, REFERENCES,
-		// fIsCaseSensitive, adapter.getLabel(o), null,
-		// getLastIncludeMask());
-		// }
-		// }
 		return res;
 	}
 
-	private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimitTo(e,
-				getLimitTo());
-		if (ref == null) {
-			return null;
-		}
-		return new SearchPatternData("", ref);
+	private int getIntData(final Button button) {
+		return ((Integer) button.getData()).intValue();
 	}
-
-	// final static boolean isSearchableType(IErlElement element) {
-	// switch (element.getElementType()) {
-	// case IErlElement.PACKAGE_FRAGMENT:
-	// case IErlElement.PACKAGE_DECLARATION:
-	// case IErlElement.IMPORT_DECLARATION:
-	// case IErlElement.TYPE:
-	// case IErlElement.FIELD:
-	// case IErlElement.METHOD:
-	// return true;
-	// }
-	// return false;
-	// }
 
 	private int getLimitTo() {
-		// TODO Auto-generated method stub
-		return 0;
+		for (int i = 0; i < fLimitTo.length; i++) {
+			Button button = fLimitTo[i];
+			if (button.getSelection()) {
+				return getIntData(button);
+			}
+		}
+		return -1;
 	}
 
-	private SearchPatternData determineInitValuesFrom(final OpenResult res) {
-		// try {
-		// JavaSearchScopeFactory factory=
-		// JavaSearchScopeFactory.getInstance();
-		// boolean isInsideJRE= factory.isInsideJRE(element);
+	private SearchPatternData determineInitValuesFrom(final IErlModule module,
+			final OpenResult res) {
 		if (res == null) {
 			return null;
 		}
-		// final int includeMask = getLastIncludeMask();
+		ErlangElementRef ref = SearchUtil.getRefFromOpenResultAndLimitTo(
+				module, res, REFERENCES);
+		SearchPatternData searchPatternData = new SearchPatternData(ref
+				.toString(), ISearchPageContainer.WORKSPACE_SCOPE, REFERENCES,
+				null);
+		return searchPatternData;
+	}
 
-		// if (res.isExternalCall()) {
-		// return new SearchPatternData(FUNCTION, REFERENCES, true, "",
-		// SearchUtil.getRefFromOpenRes(res));
-		// }
-		// switch (element.getElementType()) {
-		// case IErlElement.PACKAGE_FRAGMENT:
-		// case IErlElement.PACKAGE_DECLARATION:
-		// return new SearchPatternData(PACKAGE, REFERENCES, true, element
-		// .getElementName(), element, includeMask);
-		// case IErlElement.IMPORT_DECLARATION: {
-		// IImportDeclaration declaration = (IImportDeclaration) element;
-		// if (declaration.isOnDemand()) {
-		// final String name = Signature.getQualifier(declaration
-		// .getElementName());
-		// return new SearchPatternData(PACKAGE, DECLARATIONS, true,
-		// name, element, JavaSearchScopeFactory.ALL);
-		// }
-		// return new SearchPatternData(TYPE, DECLARATIONS, true, element
-		// .getElementName(), element, JavaSearchScopeFactory.ALL);
-		// }
-		// case IErlElement.TYPE:
-		// return new SearchPatternData(TYPE, REFERENCES, true,
-		// PatternStrings.getTypeSignature((IType) element),
-		// element, includeMask);
-		// case IErlElement.COMPILATION_UNIT: {
-		// IType mainType = ((ICompilationUnit) element).findPrimaryType();
-		// if (mainType != null) {
-		// return new SearchPatternData(TYPE, REFERENCES, true,
-		// PatternStrings.getTypeSignature(mainType),
-		// mainType, includeMask);
-		// }
-		// break;
-		// }
-		// case IErlElement.CLASS_FILE: {
-		// IType mainType = ((IClassFile) element).getType();
-		// if (mainType.exists()) {
-		// return new SearchPatternData(TYPE, REFERENCES, true,
-		// PatternStrings.getTypeSignature(mainType),
-		// mainType, includeMask);
-		// }
-		// break;
-		// }
-		// case IErlElement.FIELD:
-		// return new SearchPatternData(FIELD, REFERENCES, true,
-		// PatternStrings.getFieldSignature((IField) element),
-		// element, includeMask);
-		// case IErlElement.METHOD:
-		// IMethod method = (IMethod) element;
-		// final int searchFor = method.isConstructor() ? CONSTRUCTOR
-		// : METHOD;
-		// return new SearchPatternData(searchFor, REFERENCES, true,
-		// PatternStrings.getMethodSignature(method), element,
-		// includeMask);
-		// }
-		//
-		// } catch (JavaModelException e) {
-		// if (!e.isDoesNotExist()) {
-		// ExceptionHandler.handle(e,
-		// SearchMessages.Search_Error_javaElementAccess_title,
-		// SearchMessages.Search_Error_javaElementAccess_message);
-		// }
-		// // element might not exist
-		// }
-		return null;
+	private SearchPatternData determineInitValuesFrom(final IErlElement e) {
+		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimitTo(
+				e, getLimitTo());
+		if (ref == null) {
+			return null;
+		}
+		return new SearchPatternData(ref.toString(),
+				ISearchPageContainer.WORKSPACE_SCOPE, REFERENCES, null);
 	}
 
 	private SearchPatternData trySimpleTextSelection(
@@ -847,7 +611,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				i++;
 			}
 			if (i > 0) {
-				return new SearchPatternData(selectedText.substring(0, i), null);
+				String s = selectedText.substring(0, i);
+				// FIXME find the module from the editor somehow
+				return new SearchPatternData(s, getContainer()
+						.getSelectedScope(), getLimitTo(), getContainer()
+						.getSelectedWorkingSets());
 			}
 		}
 		return null;
@@ -858,16 +626,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 			return fPreviousSearchPatterns.get(0);
 		}
 
-		return new SearchPatternData("", null);
+		return new SearchPatternData("", ISearchPageContainer.WORKSPACE_SCOPE,
+				REFERENCES, null);
 	}
-
-	// private int getLastIncludeMask() {
-	// try {
-	// return getDialogSettings().getInt(STORE_INCLUDE_MASK);
-	// } catch (final NumberFormatException e) {
-	// return JavaSearchScopeFactory.NO_JRE;
-	// }
-	// }
 
 	/*
 	 * Implements method from ISearchPage
@@ -937,7 +698,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	 */
 	private void writeConfiguration() {
 		final IDialogSettings s = getDialogSettings();
-		// s.put(STORE_INCLUDE_MASK, getIncludeMask());
 
 		final int historySize = Math.min(fPreviousSearchPatterns.size(),
 				HISTORY_SIZE);

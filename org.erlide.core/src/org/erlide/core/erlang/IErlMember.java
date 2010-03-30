@@ -22,14 +22,8 @@ public interface IErlMember extends IErlElement, ISourceReference,
 	 *         <code>null</code> if this member is not declared in a compilation
 	 *         unit (for example, a binary type)
 	 */
-	IErlModule getModule();
-
-	// OtpErlangObject getParseTree();
-
 	void setNameRange(int offset, int length);
 
 	ISourceRange getNameRange();
-
-	// String getHoverHelp();
 
 }

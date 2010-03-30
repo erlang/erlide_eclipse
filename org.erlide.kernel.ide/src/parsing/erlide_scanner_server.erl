@@ -108,7 +108,7 @@ match_test(Module, Text) ->
 
 scan_test(Module) ->
     ModText = getText(Module),
-    M = erlide_scanner:do_scan(dont_care, ModText, "don't care"),
+    M = erlide_scanner:do_scan(dont_care, ModText),
     T = erlide_scanner:get_all_tokens(M),
     case getTokens(Module) of
         T ->

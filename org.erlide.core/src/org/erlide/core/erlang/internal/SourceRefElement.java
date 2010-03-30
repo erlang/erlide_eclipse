@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
@@ -98,14 +97,6 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		if (openableParentInfo == null) {
 			openableParent.open(pm);
 		}
-	}
-
-	/**
-	 * @see IMember
-	 */
-	@Override
-	public IErlModule getModule() {
-		return ((ErlElement) getParent()).getModule();
 	}
 
 	/**

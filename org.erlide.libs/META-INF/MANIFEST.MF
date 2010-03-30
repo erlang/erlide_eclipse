@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.1.2
-Bundle-Vendor: Erlide.org
+Bundle-Version: 1.1.3
+Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  commons-net-1.4.1.jar,

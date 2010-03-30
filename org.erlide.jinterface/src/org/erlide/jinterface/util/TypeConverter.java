@@ -163,63 +163,11 @@ public final class TypeConverter {
 			}
 
 			if (cls.isArray()) {
-				OtpErlangObject[] els = null;
-				if (obj instanceof OtpErlangList) {
-					els = ((OtpErlangList) obj).elements();
-				}
-				if (obj instanceof OtpErlangTuple) {
-					els = ((OtpErlangTuple) obj).elements();
-				}
-				if (els != null) {
-					final Object arr = Array.newInstance(
-							cls.getComponentType(), els.length);
-					for (int i = 0; i < els.length; i++) {
-						Array.set(arr, i, erlang2java(els[i], cls
-								.getComponentType()));
-					}
-					return arr;
-				}
-				if (obj instanceof OtpErlangString) {
-					final byte[] s = ((OtpErlangString) obj).stringValue()
-							.getBytes();
-					final Object arr = Array.newInstance(
-							cls.getComponentType(), s.length);
-
-					for (int i = 0; i < s.length; i++) {
-						Array.set(arr, i, s[i]);
-					}
-					return arr;
-				}
-				return new Object[0];
+				return cvtArray(obj, cls);
 			}
 
 			if (cls == String.class) {
-				if (obj instanceof OtpErlangString) {
-					return ((OtpErlangString) obj).stringValue();
-				}
-				if (obj instanceof OtpErlangAtom) {
-					return ((OtpErlangAtom) obj).atomValue();
-				}
-				if (obj instanceof OtpErlangBinary) {
-					return new String(((OtpErlangBinary) obj).binaryValue());
-				}
-				if (obj instanceof OtpErlangList) {
-					final OtpErlangObject[] els = ((OtpErlangList) obj)
-							.elements();
-					final StringBuilder res = new StringBuilder();
-					for (final OtpErlangObject el : els) {
-						if (el instanceof OtpErlangLong) {
-							final long l = ((OtpErlangLong) el).longValue();
-							res.append((char) (l & 0xFFFF));
-						} else {
-							res.append(erlang2java(el, String.class));
-						}
-					}
-					return res.toString();
-				}
-				throw new SignatureException("wrong arg type "
-						+ obj.getClass().getName()
-						+ ", can't convert to String");
+				return cvtString(obj);
 			}
 			if (cls == char.class || cls == Character.class || cls == int.class
 					|| cls == Integer.class || cls == byte.class
@@ -292,6 +240,64 @@ public final class TypeConverter {
 		}
 	}
 
+	private static String cvtString(final OtpErlangObject obj)
+			throws SignatureException {
+		if (obj instanceof OtpErlangString) {
+			return ((OtpErlangString) obj).stringValue();
+		}
+		if (obj instanceof OtpErlangAtom) {
+			return ((OtpErlangAtom) obj).atomValue();
+		}
+		if (obj instanceof OtpErlangBinary) {
+			return new String(((OtpErlangBinary) obj).binaryValue());
+		}
+		if (obj instanceof OtpErlangList) {
+			final OtpErlangObject[] els = ((OtpErlangList) obj).elements();
+			final StringBuilder res = new StringBuilder();
+			for (final OtpErlangObject el : els) {
+				if (el instanceof OtpErlangLong) {
+					final long l = ((OtpErlangLong) el).longValue();
+					res.append((char) (l & 0xFFFF));
+				} else {
+					res.append(erlang2java(el, String.class));
+				}
+			}
+			return res.toString();
+		}
+		throw new SignatureException("wrong arg type "
+				+ obj.getClass().getName() + ", can't convert to String");
+	}
+
+	private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)
+			throws SignatureException {
+		OtpErlangObject[] els = null;
+		if (obj instanceof OtpErlangList) {
+			els = ((OtpErlangList) obj).elements();
+		}
+		if (obj instanceof OtpErlangTuple) {
+			els = ((OtpErlangTuple) obj).elements();
+		}
+		if (els != null) {
+			final Object arr = Array.newInstance(cls.getComponentType(),
+					els.length);
+			for (int i = 0; i < els.length; i++) {
+				Array.set(arr, i, erlang2java(els[i], cls.getComponentType()));
+			}
+			return arr;
+		}
+		if (obj instanceof OtpErlangString) {
+			final byte[] s = ((OtpErlangString) obj).stringValue().getBytes();
+			final Object arr = Array.newInstance(cls.getComponentType(),
+					s.length);
+
+			for (int i = 0; i < s.length; i++) {
+				Array.set(arr, i, s[i]);
+			}
+			return arr;
+		}
+		return new Object[0];
+	}
+
 	/**
 	 * Converts Java objects to Erlang terms.<br/>
 	 * 
@@ -317,15 +323,7 @@ public final class TypeConverter {
 			return java2erlang(obj);
 		}
 		if (obj instanceof String) {
-			if (type.kind == 's') {
-				return new OtpErlangString((String) obj);
-			} else if (type.kind == 'a') {
-				return new OtpErlangAtom((String) obj);
-			} else if (type.kind == 'b') {
-				return new OtpErlangBinary(((String) obj).getBytes());
-			} else {
-				failConversion(obj, type);
-			}
+			return cvtString(obj, type);
 		}
 		if (obj instanceof Character) {
 			if (type.kind == 'i') {
@@ -334,24 +332,7 @@ public final class TypeConverter {
 			failConversion(obj, type);
 		}
 		if (obj instanceof Number) {
-			if (obj instanceof Float) {
-				if (type.kind == 'd') {
-					return new OtpErlangFloat((Float) obj);
-				}
-				failConversion(obj, type);
-			} else if (obj instanceof Double) {
-				if (type.kind == 'd') {
-					return new OtpErlangDouble((Double) obj);
-				}
-				failConversion(obj, type);
-			} else if (type.kind == 'i') {
-				if (obj instanceof BigInteger) {
-					return new OtpErlangLong((BigInteger) obj);
-				}
-				return new OtpErlangLong(((Number) obj).longValue());
-			} else {
-				failConversion(obj, type);
-			}
+			return cvtNumber(obj, type);
 		}
 		if (obj instanceof Boolean) {
 			if (type.kind == 'o') {
@@ -457,6 +438,43 @@ public final class TypeConverter {
 			return ObjRefCache.registerTarget(obj);
 		}
 		failConversion(obj, type);
+		return null;
+	}
+
+	private static OtpErlangObject cvtNumber(final Object obj,
+			final Signature type) throws SignatureException {
+		if (obj instanceof Float) {
+			if (type.kind == 'd') {
+				return new OtpErlangFloat((Float) obj);
+			}
+			failConversion(obj, type);
+		} else if (obj instanceof Double) {
+			if (type.kind == 'd') {
+				return new OtpErlangDouble((Double) obj);
+			}
+			failConversion(obj, type);
+		} else if (type.kind == 'i') {
+			if (obj instanceof BigInteger) {
+				return new OtpErlangLong((BigInteger) obj);
+			}
+			return new OtpErlangLong(((Number) obj).longValue());
+		} else {
+			failConversion(obj, type);
+		}
+		return null;
+	}
+
+	private static OtpErlangObject cvtString(final Object obj,
+			final Signature type) throws SignatureException {
+		if (type.kind == 's') {
+			return new OtpErlangString((String) obj);
+		} else if (type.kind == 'a') {
+			return new OtpErlangAtom((String) obj);
+		} else if (type.kind == 'b') {
+			return new OtpErlangBinary(((String) obj).getBytes());
+		} else {
+			failConversion(obj, type);
+		}
 		return null;
 	}
 

@@ -374,12 +374,12 @@ public final class BackendManager extends OtpNodeStatus implements
 			final Collection<String> started, final Collection<String> stopped) {
 		for (final String b : started) {
 			final String name = b + "@" + host;
-			ErlLogger.info("(epmd) started: '%s'", name);
+			// ErlLogger.debug("(epmd) started: '%s'", name);
 			remoteStatus(name, true, null);
 		}
 		for (final String b : stopped) {
 			final String name = b + "@" + host;
-			ErlLogger.info("(epmd) stopped: '%s'", name);
+			// ErlLogger.debug("(epmd) stopped: '%s'", name);
 			remoteStatus(name, false, null);
 		}
 

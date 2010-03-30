@@ -11,10 +11,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.Match;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -39,8 +42,11 @@ import org.erlide.core.search.ErlangRecordDefRef;
 import org.erlide.core.search.ErlangRecordRef;
 import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 
+import erlang.ErlideOpen;
 import erlang.OpenResult;
 
 public class SearchUtil {
@@ -190,6 +196,22 @@ public class SearchUtil {
 		return Kind.FUNCTION;
 	}
 
+	public static ErlangElementRef getRefFromStringAndLimitTo(
+			final IErlModule module, final String pattern, final int limitTo) {
+		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+		try {
+			OpenResult res = ErlideOpen.getOpenInfo(b, pattern, "", ErlangCore
+					.getModel().getPathVars());
+			ErlLogger.debug("find " + res);
+			ErlangElementRef ref = SearchUtil.getRefFromOpenResultAndLimitTo(
+					module, res, limitTo);
+			return ref;
+		} catch (BackendException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static ErlangElementRef getRefFromOpenResultAndLimitTo(
 			final IErlModule module, final OpenResult res, final int limitTo) {
 		ErlangElementRef ref = null;
@@ -204,8 +226,10 @@ public class SearchUtil {
 			}
 		} else if (res.isLocalCall()) {
 			if (limitTo == IErlSearchConstants.REFERENCES) {
-				ref = new ErlangExternalFunctionCallRef(module.getModuleName(),
-						res.getFun(), res.getArity());
+				if (module != null) {
+					ref = new ErlangExternalFunctionCallRef(module
+							.getModuleName(), res.getFun(), res.getArity());
+				}
 			} else if (limitTo == IErlSearchConstants.DECLARATIONS) {
 				ref = new ErlangFunctionDefRef(res.getFun(), res.getArity());
 			}
@@ -226,6 +250,38 @@ public class SearchUtil {
 		}
 		return ref;
 	}
+
+	public static void runQuery(final ErlangElementRef ref, List<IResource> scope, Shell shell) {
+		final ErlSearchQuery query = new ErlSearchQuery(ref, scope);
+		if (query.canRunInBackground()) {
+			/*
+			 * This indirection with Object as parameter is needed to prevent
+			 * the loading of the Search plug-in: the VM verifies the method
+			 * call and hence loads the types used in the method signature,
+			 * eventually triggering the loading of a plug-in (in this case
+			 * ISearchQuery results in Search plug-in being loaded).
+			 */
+			NewSearchUI.runQueryInBackground(query);
+		} else {
+			final IProgressService progressService = PlatformUI.getWorkbench()
+					.getProgressService();
+			/*
+			 * This indirection with Object as parameter is needed to prevent
+			 * the loading of the Search plug-in: the VM verifies the method
+			 * call and hence loads the types used in the method signature,
+			 * eventually triggering the loading of a plug-in (in this case it
+			 * would be ISearchQuery).
+			 */
+			final IStatus status = NewSearchUI.runQueryInForeground(
+					progressService, query);
+			if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
+				ErrorDialog.openError(shell,
+						"SearchMessages.Search_Error_search_title",
+						"SearchMessages.Search_Error_search_message", status);
+			}
+		}
+	}
+
 	// public static String toString(final IWorkingSet[] workingSets) {
 	// Arrays.sort(workingSets, new Comparator<IWorkingSet>() {
 	// private final Collator fCollator = Collator.getInstance();
@@ -319,4 +375,5 @@ public class SearchUtil {
 	// restoreFromOldFormat();
 	// }
 	// }
+
 }

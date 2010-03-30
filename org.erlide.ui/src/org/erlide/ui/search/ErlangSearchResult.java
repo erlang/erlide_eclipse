@@ -39,22 +39,39 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
 	@Override
 	public void removeMatch(final Match match) {
-		super.removeMatch(match);
 		final Object element = match.getElement();
-		if (getMatchCount(element) == 0) {
-			result.remove(element);
+		if (getMatchCount(element) == 1) {
+			removeElement(element);
 		}
+		super.removeMatch(match);
 	}
 
 	@Override
 	public void removeMatches(final Match[] matches) {
-		super.removeMatches(matches);
 		for (final Match match : matches) {
 			final Object element = match.getElement();
-			if (getMatchCount(element) == 0) {
-				result.remove(element);
+			int matchCount = getMatchCount(element);
+			if (matchCount == 1) {
+				removeElement(element);
+			} else if (matchCount == countMatches(element, matches)) {
+				removeElement(element);
 			}
 		}
+		super.removeMatches(matches);
+	}
+
+	private synchronized void removeElement(final Object element) {
+		result.remove(element);
+	}
+
+	private int countMatches(final Object element, final Match[] matches) {
+		int result = 0;
+		for (Match match : matches) {
+			if (match.getElement().equals(element)) {
+				result++;
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -88,8 +105,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 		return null;
 	}
 
-	public List<ErlangSearchElement> getResult() {
-		return result;
+	public synchronized List<ErlangSearchElement> getResult() {
+		return new ArrayList<ErlangSearchElement>(result);
 	}
 
 	public synchronized void setResult(final List<ErlangSearchElement> result) {

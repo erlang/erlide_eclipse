@@ -217,13 +217,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	/**
-	 * @see IMember
-	 */
-	public IErlModule getModule() {
-		return null;
-	}
-
-	/**
 	 * @see IErlElement
 	 */
 	public String getName() {
@@ -251,6 +244,19 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		do {
 			if (current instanceof IErlProject) {
 				return (IErlProject) current;
+			}
+		} while ((current = current.getParent()) != null);
+		return null;
+	}
+
+	public IErlModule getModule() {
+		IErlElement current = this;
+		do {
+			if (current instanceof IErlModule) {
+				return (IErlModule) current;
+			}
+			if (current instanceof IErlProject) {
+				return null;
 			}
 		} while ((current = current.getParent()) != null);
 		return null;

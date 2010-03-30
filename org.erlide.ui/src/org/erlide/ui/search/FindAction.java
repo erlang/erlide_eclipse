@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
@@ -323,34 +322,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	private void performNewSearch(final IErlElement element) {
 		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimitTo(
 				element, getLimitTo());
-		final ErlSearchQuery query = new ErlSearchQuery(ref, getScope());
-		if (query.canRunInBackground()) {
-			/*
-			 * This indirection with Object as parameter is needed to prevent
-			 * the loading of the Search plug-in: the VM verifies the method
-			 * call and hence loads the types used in the method signature,
-			 * eventually triggering the loading of a plug-in (in this case
-			 * ISearchQuery results in Search plug-in being loaded).
-			 */
-			NewSearchUI.runQueryInBackground(query);
-		} else {
-			final IProgressService progressService = PlatformUI.getWorkbench()
-					.getProgressService();
-			/*
-			 * This indirection with Object as parameter is needed to prevent
-			 * the loading of the Search plug-in: the VM verifies the method
-			 * call and hence loads the types used in the method signature,
-			 * eventually triggering the loading of a plug-in (in this case it
-			 * would be ISearchQuery).
-			 */
-			final IStatus status = NewSearchUI.runQueryInForeground(
-					progressService, query);
-			if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
-				ErrorDialog.openError(getShell(),
-						"SearchMessages.Search_Error_search_title",
-						"SearchMessages.Search_Error_search_message", status);
-			}
-		}
+		SearchUtil.runQuery(ref, getScope(), getShell());
 	}
 
 	/**

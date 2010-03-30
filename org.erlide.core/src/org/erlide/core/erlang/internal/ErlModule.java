@@ -435,7 +435,7 @@ public class ErlModule extends Openable implements IErlModule {
 		setStructureKnown(false);
 	}
 
-	public void disposeParser() {
+	public synchronized void disposeParser() {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 		ErlideNoparse.destroy(b, getModuleName());
 		disposeScanner();
@@ -520,10 +520,5 @@ public class ErlModule extends Openable implements IErlModule {
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public IErlModule getModule() {
-		return this;
 	}
 }

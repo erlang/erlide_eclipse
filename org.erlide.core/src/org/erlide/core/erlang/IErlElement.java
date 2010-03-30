@@ -32,6 +32,34 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ * 
+ */
 public interface IErlElement extends IAdaptable {
 
 	enum Kind {
@@ -71,6 +99,13 @@ public interface IErlElement extends IAdaptable {
 	 * Returns the enclosing IErlProject if there is one
 	 */
 	IErlProject getErlProject();
+
+	/**
+	 * Get module if this element is contained in one (or is one)
+	 * 
+	 * @return module or null
+	 */
+	IErlModule getModule();
 
 	/**
 	 * Returns the resource that corresponds directly to this element, or

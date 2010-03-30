@@ -77,116 +77,25 @@ public final class BuilderUtils {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())) {
-				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-				case IResourceDelta.CHANGED:
-					// handle changed resource
-					if (!resource.isDerived()) {
-						if (isInCodePath(resource, my_project)) {
-							final BuildResource bres = new BuildResource(
-									resource);
-							result.add(bres);
-							monitor.worked(1);
-						}
-					}
-					break;
-				case IResourceDelta.REMOVED:
-					// handle removed resource
-					MarkerHelper.deleteMarkers(resource);
-
-					IPath beam = new Path(prefs.getOutputDir());
-					final IPath module = beam.append(resource.getName())
-							.removeFileExtension();
-					beam = module.addFileExtension("beam").setDevice(null);
-					final IResource br = my_project.findMember(beam);
-					if (br != null) {
-						try {
-							br.delete(true, null);
-						} catch (final Exception e) {
-							ErlLogger.warn(e);
-						}
-					}
-
-					// was it derived from a yrl?
-					final IPath yrlp = resource.getProjectRelativePath()
-							.removeFileExtension().addFileExtension("yrl");
-					final IResource yrl = my_project.findMember(yrlp);
-					if (yrl != null) {
-						// FIXME BuildResource
-						final BuildResource bres = new BuildResource(resource);
-						result.add(bres);
-						monitor.worked(1);
-					}
-
-					break;
-				}
+				handleErlFile(delta, resource, my_project, prefs);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "hrl".equals(resource.getFileExtension())
 					&& isInIncludedPath(resource, my_project)) {
-				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-				case IResourceDelta.REMOVED:
-				case IResourceDelta.CHANGED:
-					final int n = result.size();
-					addDependents(resource, my_project, result);
-					monitor.worked(result.size() - n);
-					break;
-				}
+				handleHrlFile(delta, resource, my_project);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "yrl".equals(resource.getFileExtension())
 					&& isInCodePath(resource, my_project)) {
-				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-				case IResourceDelta.CHANGED:
-					// FIXME BuildResource
-					final BuildResource bres = new BuildResource(resource);
-					result.add(bres);
-					monitor.worked(1);
-					break;
-
-				case IResourceDelta.REMOVED:
-					MarkerHelper.deleteMarkers(resource);
-
-					IPath erl = resource.getProjectRelativePath()
-							.removeFileExtension();
-					erl = erl.addFileExtension("erl").setDevice(null);
-					final IResource br = my_project.findMember(erl);
-					if (br != null) {
-						try {
-							br.delete(true, null);
-						} catch (final Exception e) {
-							ErlLogger.warn(e);
-						}
-						monitor.worked(1);
-					}
-					break;
-				}
+				handleYrlFile(delta, resource, my_project);
 			}
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "beam".equals(resource.getFileExtension())
 					&& isInOutputPath(resource, my_project)) {
-				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-				case IResourceDelta.CHANGED:
-					break;
-				case IResourceDelta.REMOVED:
-					final String[] p = resource.getName().split("\\.");
-					final SearchVisitor searcher = new SearchVisitor(p[0], null);
-					my_project.accept(searcher);
-					if (searcher.fResult != null) {
-						// FIXME BuildResource
-						final BuildResource bres = new BuildResource(
-								searcher.fResult);
-						result.add(bres);
-						monitor.worked(1);
-					}
-					break;
-				}
+				handleBeamFile(delta, resource, my_project);
 			}
 			// return true to continue visiting children.
 			if (resource.getType() == IResource.FOLDER
@@ -195,13 +104,125 @@ public final class BuilderUtils {
 			}
 			return true;
 		}
+
+		private void handleBeamFile(final IResourceDelta delta,
+				final IResource resource, final IProject my_project)
+				throws CoreException {
+			switch (delta.getKind()) {
+			case IResourceDelta.ADDED:
+			case IResourceDelta.CHANGED:
+				break;
+			case IResourceDelta.REMOVED:
+				final String[] p = resource.getName().split("\\.");
+				final SearchVisitor searcher = new SearchVisitor(p[0], null);
+				my_project.accept(searcher);
+				if (searcher.fResult != null) {
+					// FIXME BuildResource
+					final BuildResource bres = new BuildResource(
+							searcher.fResult);
+					result.add(bres);
+					monitor.worked(1);
+				}
+				break;
+			}
+		}
+
+		private void handleYrlFile(final IResourceDelta delta,
+				final IResource resource, final IProject my_project) {
+			switch (delta.getKind()) {
+			case IResourceDelta.ADDED:
+			case IResourceDelta.CHANGED:
+				// FIXME BuildResource
+				final BuildResource bres = new BuildResource(resource);
+				result.add(bres);
+				monitor.worked(1);
+				break;
+
+			case IResourceDelta.REMOVED:
+				MarkerHelper.deleteMarkers(resource);
+
+				IPath erl = resource.getProjectRelativePath()
+						.removeFileExtension();
+				erl = erl.addFileExtension("erl").setDevice(null);
+				final IResource br = my_project.findMember(erl);
+				if (br != null) {
+					try {
+						br.delete(true, null);
+					} catch (final Exception e) {
+						ErlLogger.warn(e);
+					}
+					monitor.worked(1);
+				}
+				break;
+			}
+		}
+
+		private void handleHrlFile(final IResourceDelta delta,
+				final IResource resource, final IProject my_project)
+				throws ErlModelException {
+			switch (delta.getKind()) {
+			case IResourceDelta.ADDED:
+			case IResourceDelta.REMOVED:
+			case IResourceDelta.CHANGED:
+				final int n = result.size();
+				addDependents(resource, my_project, result);
+				monitor.worked(result.size() - n);
+				break;
+			}
+		}
+
+		private void handleErlFile(final IResourceDelta delta,
+				final IResource resource, final IProject my_project,
+				final OldErlangProjectProperties prefs) {
+			switch (delta.getKind()) {
+			case IResourceDelta.ADDED:
+			case IResourceDelta.CHANGED:
+				// handle changed resource
+				if (!resource.isDerived()) {
+					if (isInCodePath(resource, my_project)) {
+						final BuildResource bres = new BuildResource(resource);
+						result.add(bres);
+						monitor.worked(1);
+					}
+				}
+				break;
+			case IResourceDelta.REMOVED:
+				// handle removed resource
+				MarkerHelper.deleteMarkers(resource);
+
+				IPath beam = new Path(prefs.getOutputDir());
+				final IPath module = beam.append(resource.getName())
+						.removeFileExtension();
+				beam = module.addFileExtension("beam").setDevice(null);
+				final IResource br = my_project.findMember(beam);
+				if (br != null) {
+					try {
+						br.delete(true, null);
+					} catch (final Exception e) {
+						ErlLogger.warn(e);
+					}
+				}
+
+				// was it derived from a yrl?
+				final IPath yrlp = resource.getProjectRelativePath()
+						.removeFileExtension().addFileExtension("yrl");
+				final IResource yrl = my_project.findMember(yrlp);
+				if (yrl != null) {
+					// FIXME BuildResource
+					final BuildResource bres = new BuildResource(resource);
+					result.add(bres);
+					monitor.worked(1);
+				}
+
+				break;
+			}
+		}
 	}
 
 	private static class ErlangResourceVisitor implements IResourceVisitor {
 
 		private final Set<BuildResource> result;
 		private final IProgressMonitor monitor;
-		private final boolean isOnTestPath = false;
 
 		public ErlangResourceVisitor(final Set<BuildResource> result,
 				final IProgressMonitor monitor) {
@@ -838,6 +859,7 @@ public final class BuilderUtils {
 		if (res == null) {
 			ErlLogger.warn("error compiling erl file: "
 					+ resource.getResource().getProjectRelativePath());
+			return;
 		}
 		try {
 			completeCompile(project, resource.getResource(), res.get(), b,
@@ -855,6 +877,7 @@ public final class BuilderUtils {
 		if (res == null) {
 			ErlLogger.warn("error compiling yrl file: "
 					+ resource.getResource().getProjectRelativePath());
+			return;
 		}
 		try {
 			completeCompile(project, resource.getResource(), res.get(), b,

@@ -36,13 +36,12 @@ public class ErlideOpen {
 	}
 
 	@SuppressWarnings("boxing")
-	public static OtpErlangObject getOpenInfo(final Backend b,
-			final String scannerName, final int offset,
+	public static OpenResult getOpenInfo(final Backend b, final String s,
 			final String externalModules, final OtpErlangList pathVars)
 			throws BackendException {
-		final OtpErlangObject res = b.call("erlide_open", "open_info", "aisx",
-				scannerName, offset, externalModules, pathVars);
-		return res;
+		final OtpErlangObject res = b.call("erlide_open", "open_info", "ssx",
+				s, externalModules, pathVars);
+		return new OpenResult(res);
 	}
 
 	@SuppressWarnings("boxing")

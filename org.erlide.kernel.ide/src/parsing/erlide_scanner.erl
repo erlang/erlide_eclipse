@@ -16,9 +16,9 @@
 %% Exported Functions
 %%
 
--compile(export_all).
-
--export([light_scan_string/1]).
+-export([light_scan_string/1, scan_string/1, convert_tokens/1,
+         tokens_to_string/1, do_scan/2, get_all_tokens/1, initial_scan/5,
+         get_token_at/2, replace_text/4, lines_to_text/1, get_token_window/4]).
 
 %%
 %% API Functions
@@ -35,6 +35,12 @@ light_scan_string(B) ->
         {error, _, _} ->
             error
     end.
+
+scan_string(B) when is_binary(B) ->
+    scan_string(binary_to_list(B));
+scan_string(L) when is_list(L) ->
+    M = do_scan('', L),
+    get_all_tokens(M).
 
 %%
 %% Local Functions
