@@ -1,15 +1,18 @@
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.ui.ErlideUIConstants;
@@ -28,9 +31,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
 
 	private FindImplementorsAction fFindImplementorsAction;
 	private FindImplementorsInProjectAction fFindImplementorsInProjectAction;
-
-	// private FindReferencesInWorkingSetAction
-	// fFindReferencesInWorkingSetAction;
+	private FindImplementorsInWorkingSetAction fFindImplementorsInWorkingSetAction;
 
 	/**
 	 * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
@@ -54,19 +55,17 @@ public class ImplementorsSearchGroup extends ActionGroup {
 		fFindImplementorsInProjectAction
 				.setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
 
-		// fFindReferencesInWorkingSetAction = new
-		// FindReferencesInWorkingSetAction(
-		// site);
-		// fFindReferencesInWorkingSetAction
-		// .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
+		fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
+				site);
+		fFindImplementorsInWorkingSetAction
+				.setActionDefinitionId("org.erlide.ui.search.implementors.in.workset");
 
 		// register the actions as selection listeners
 		final ISelectionProvider provider = fSite.getSelectionProvider();
 		final ISelection selection = provider.getSelection();
 		registerAction(fFindImplementorsAction, provider, selection);
 		registerAction(fFindImplementorsInProjectAction, provider, selection);
-		// registerAction(fFindReferencesInWorkingSetAction, provider,
-		// selection);
+		registerAction(fFindImplementorsInWorkingSetAction, provider, selection);
 	}
 
 	/**
@@ -92,18 +91,16 @@ public class ImplementorsSearchGroup extends ActionGroup {
 				fEditor);
 		fFindImplementorsInProjectAction
 				.setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
-		fEditor.setAction(
-				"SearchReferencesInProject", fFindImplementorsInProjectAction); //$NON-NLS-1$
+		fEditor
+				.setAction(
+						"SearchImplementorsInProject", fFindImplementorsInProjectAction); //$NON-NLS-1$
 
-		// fFindReferencesInWorkingSetAction = new
-		// FindReferencesInWorkingSetAction(
-		// fEditor);
-		// fFindReferencesInWorkingSetAction
-		// .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
-		// fEditor
-		// .setAction(
-		// "SearchReferencesInWorkingSet", fFindReferencesInWorkingSetAction);
-		// //$NON-NLS-1$
+		fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
+				fEditor);
+		fFindImplementorsInWorkingSetAction
+				.setActionDefinitionId("org.erlide.ui.search.implementors.in.workset");
+		fEditor.setAction("SearchImplementorsInWorkingSet",
+				fFindImplementorsInWorkingSetAction);
 	}
 
 	private void registerAction(final SelectionDispatchAction action,
@@ -139,21 +136,24 @@ public class ImplementorsSearchGroup extends ActionGroup {
 		}
 	}
 
-	// private void addWorkingSetAction(final IWorkingSet[] workingSets,
-	// final IMenuManager manager) {
-	// FindAction action;
-	// if (fEditor != null) {
-	// action = new WorkingSetFindAction(fEditor,
-	// new FindReferencesInWorkingSetAction(fEditor, workingSets),
-	// SearchUtil.toString(workingSets));
-	// } else {
-	// action = new WorkingSetFindAction(fSite,
-	// new FindReferencesInWorkingSetAction(fSite, workingSets),
-	// SearchUtil.toString(workingSets));
-	// }
-	// action.update(getContext().getSelection());
-	// addAction(action, manager);
-	// }
+	private void addWorkingSetAction(final IWorkingSet[] workingSets,
+			final IMenuManager manager) {
+		FindAction action;
+		if (fEditor != null) {
+			action = new WorkingSetFindAction(fEditor,
+					new FindReferencesInWorkingSetAction(fEditor, workingSets),
+					SearchUtil.toString(workingSets));
+		} else {
+			action = new WorkingSetFindAction(fSite,
+					new FindReferencesInWorkingSetAction(fSite, workingSets),
+					SearchUtil.toString(workingSets));
+		}
+		ActionContext context = getContext();
+		if (context != null) {
+			action.update(context.getSelection());
+		}
+		addAction(action, manager);
+	}
 
 	/*
 	 * (non-Javadoc) Method declared on ActionGroup.
@@ -164,17 +164,14 @@ public class ImplementorsSearchGroup extends ActionGroup {
 				IContextMenuConstants.GROUP_SEARCH);
 		addAction(fFindImplementorsAction, erlangSearchMM);
 		addAction(fFindImplementorsInProjectAction, erlangSearchMM);
-		// addAction(fFindReferencesInHierarchyAction, javaSearchMM);
 
-		// erlangSearchMM.add(new Separator());
-		//
-		// final Iterator iter =
-		// SearchUtil.getLRUWorkingSets().sortedIterator();
-		// while (iter.hasNext()) {
-		// addWorkingSetAction((IWorkingSet[]) iter.next(), erlangSearchMM);
-		// }
-		// addAction(fFindReferencesInWorkingSetAction, erlangSearchMM);
-		//
+		erlangSearchMM.add(new Separator());
+
+		for (IWorkingSet[] i : SearchUtil.getLRUWorkingSets().getSorted()) {
+			addWorkingSetAction(i, erlangSearchMM);
+		}
+		addAction(fFindImplementorsInWorkingSetAction, erlangSearchMM);
+
 		if (!erlangSearchMM.isEmpty()) {
 			manager.appendToGroup(fGroupId, erlangSearchMM);
 		}
@@ -189,11 +186,11 @@ public class ImplementorsSearchGroup extends ActionGroup {
 		if (provider != null) {
 			disposeAction(fFindImplementorsAction, provider);
 			disposeAction(fFindImplementorsInProjectAction, provider);
-			// disposeAction(fFindReferencesInWorkingSetAction, provider);
+			disposeAction(fFindImplementorsInWorkingSetAction, provider);
 		}
 		fFindImplementorsAction = null;
 		fFindImplementorsInProjectAction = null;
-		// fFindReferencesInWorkingSetAction = null;
+		fFindImplementorsInWorkingSetAction = null;
 		updateGlobalActionHandlers();
 		super.dispose();
 	}
@@ -206,9 +203,9 @@ public class ImplementorsSearchGroup extends ActionGroup {
 			fActionBars.setGlobalActionHandler(
 					ErlideUIConstants.FIND_IMPLEMENTORS_IN_PROJECT,
 					fFindImplementorsInProjectAction);
-			// fActionBars.setGlobalActionHandler(
-			// IErlideUIConstants.FIND_REFERENCES_IN_WORKING_SET,
-			// fFindReferencesInWorkingSetAction);
+			fActionBars.setGlobalActionHandler(
+					ErlideUIConstants.FIND_IMPLEMENTORS_IN_WORKING_SET,
+					fFindImplementorsInWorkingSetAction);
 		}
 	}
 

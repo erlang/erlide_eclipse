@@ -201,8 +201,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.util,
    org.eclipse.core.runtime.preferences,
    org.eclipse.swt.widgets",
- org.erlide.ui.properties.internal;x-internal:=true,
- org.erlide.ui.search;x-internal:=true;
+ org.erlide.ui.properties.internal;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.resource,
@@ -310,6 +309,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs"
 Require-Bundle: org.eclipse.compare,
+ org.eclipse.core.expressions;bundle-version="3.4.1",
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.editors,

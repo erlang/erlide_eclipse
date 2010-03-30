@@ -26,12 +26,15 @@
 -export([start/0, 
          stop/0,
          %% add_modules/1,
-         find_refs/3,
-         state/0]).
+         find_refs/3]).
 
 %% called from Erlang
 -export([remove_module/1,
          add_module_refs/2]).
+
+%% for testing
+
+-export([state/0, modules/0]).
 
 %%
 %% Internal Exports
@@ -66,10 +69,17 @@ stop() ->
 state() ->
     server_cmd(state).
 
+modules() ->
+    server_cmd(modules).
+
 %% modules is {ScannerName, ModulePath}
-find_refs(Ref, Modules, StateDir) when is_tuple(Ref), is_list(Modules), 
-                                       is_list(StateDir) ->
-    R = server_cmd(find_refs, {Ref, Modules, StateDir}),
+find_refs(Pattern, Modules, StateDir) 
+  when is_tuple(Pattern), is_list(Modules), is_list(StateDir) ->
+    find_refs([Pattern], Modules, StateDir);
+find_refs(Pattern, Modules, StateDir) 
+  when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
+    ?D(Pattern),
+    R = server_cmd(find_refs, {Pattern, Modules, StateDir}),
     ?D(R),
     R.
 
@@ -112,7 +122,8 @@ server_cmd(Command, Args) ->
             {Command, _Pid, Result} ->
                 Result
         end
-    catch _:Exception ->
+    catch
+        _:Exception ->
               {error, Exception}
     end.
 
@@ -169,35 +180,51 @@ do_cmd(find_refs, {Ref, Modules, StateDir}, State) ->
     R = do_find_refs(Modules, Ref, StateDir, State, []),
     ?D(R),
     R;
+do_cmd(remove_module, Module, #state{modules=Modules0} = State) ->
+    Modules1 = lists:keydelete(Module, #module.scanner_name, Modules0),
+    State#state{modules=Modules1};
 do_cmd(state, _, State) ->
-    {State, State}.
+    {State, State};
+do_cmd(modules, _, #state{modules=Modules} = State) ->
+    Names = [M || #module{scanner_name=M} <- Modules],
+    {Names, State}.
 
 do_find_refs([], _, _, State, Acc) ->
     {{ok, Acc}, State};
-do_find_refs([{ScannerName, ModulePath} | Rest], Ref, StateDir, 
+do_find_refs([{ScannerName, ModulePath} | Rest], Pattern, StateDir, 
              #state{modules=Modules} = State, Acc0) ->
     ?D(ScannerName),
     Refs = get_module_refs(ScannerName, ModulePath, StateDir, Modules),
-    ?D(Refs),
-    Acc1 = find_data(Refs, Ref, ModulePath, Acc0),
+    Mod = get_module_name(ModulePath),
+    Acc1 = find_data(Refs, Pattern, Mod, ModulePath, Acc0),
     ?D(Acc1),
-    do_find_refs(Rest, Ref, StateDir, State, Acc1).
+    do_find_refs(Rest, Pattern, StateDir, State, Acc1).
 
-find_data([], _, _, Acc) ->
+get_module_name(ModulePath) ->
+    L = filename:rootname(filename:basename(ModulePath)),
+    list_to_atom(L).
+
+find_data([], _, _, _, Acc) ->
     Acc;
 find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O, length=L, sub_clause=S} | Rest],
-          Data, M, Acc) ->
-    case D of
-        Data ->
-            find_data(Rest, Data, M, [{M, F, A, C, S, O, L} | Acc]);
-        _ ->
-            find_data(Rest, Data, M, Acc)
-    end.
+          Pattern, Mod, M, Acc) ->
+    NewAcc = case check_pattern(Pattern, Mod, D) of
+                 true ->
+                     [{M, F, A, C, S, O, L} | Acc];
+                 false ->
+                     Acc
+             end,
+    find_data(Rest, Pattern, Mod, M, NewAcc).
+
+check_pattern(Pattern, Mod, #local_call{function=F, arity=A})->
+    lists:member(#external_call{module=Mod, function=F, arity=A}, Pattern);
+check_pattern(Pattern, _Mod, D) ->
+    lists:member(D, Pattern).
 
 get_module_refs(ScannerName, ModulePath, StateDir, Modules) ->
     ?D(Modules),
     case lists:keysearch(ScannerName, #module.scanner_name, Modules) of
-        {value, {ScannerName, #module{refs=Refs}}} ->
+        {value, #module{refs=Refs}} ->
             ?D(ye),
             Refs;
         false ->
@@ -209,6 +236,9 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
     erlide_noparse:read_module_refs(ScannerName, ModulePath, StateDir).
 
 do_add_module_refs(Module, Refs, #state{modules=Modules0} = State) ->
+    ?D(Module),
     Modules1 = lists:keydelete(Module, #module.scanner_name, Modules0),
-    Modules2 = [[#module{scanner_name=Module, refs=Refs}] | Modules1],
+    Modules2 = [#module{scanner_name=Module, refs=Refs} | Modules1],
+    ?D(Modules1),
+    ?D(Modules2),
     State#state{modules=Modules2}.

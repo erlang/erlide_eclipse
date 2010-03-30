@@ -1,4 +1,4 @@
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -35,10 +35,8 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.ui.internal.search.NewErlSearchActionGroup;
 
 public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 

@@ -54,4 +54,6 @@ public class IErlangHelpContextIds {
 
 	public static final String BP_CREATE_NEW_FOLDER = "createNewFolder";
 
+	public static final String WORKING_SET_ASSIGNMENTS_DIALOG = "workingSetAssigmentsDialog";
+
 }

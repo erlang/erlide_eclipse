@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -56,11 +56,6 @@ public class WorkingSetFindAction extends FindAction {
 	}
 
 	@Override
-	Class<?>[] getValidTypes() {
-		return null; // ignore, we override canOperateOn
-	}
-
-	@Override
 	void init() {
 		// ignore: do our own init in 'init(FindAction, String)'
 	}
@@ -96,8 +91,12 @@ public class WorkingSetFindAction extends FindAction {
 	}
 
 	@Override
-	protected List<IResource> getScope() {
+	protected Collection<IResource> getScope() {
 		return fAction.getScope();
 	}
 
+	@Override
+	protected String getScopeDescription() {
+		return "working set '" + getText() + "'";
+	}
 }

@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -54,11 +53,6 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
 	}
 
 	@Override
-	Class<?>[] getValidTypes() {
-		return new Class[] { IErlElement.class };
-	}
-
-	@Override
 	void init() {
 		setText("Project");
 		setToolTipText("Find declarations in selected projects");
@@ -68,10 +62,14 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
 	}
 
 	@Override
-	protected List<IResource> getScope() {
+	protected Collection<IResource> getScope() {
 		return getProjectScope();
 	}
 
+	@Override
+	protected String getScopeDescription() {
+		return SearchUtil.getProjectScopeDescription(getProjectScope());
+	}
 	// QuerySpecification createQuery(IErlElement element)
 	// throws JavaModelException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();

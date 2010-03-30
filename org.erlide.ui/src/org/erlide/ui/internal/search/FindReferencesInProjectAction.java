@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -54,11 +53,6 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	}
 
 	@Override
-	Class<?>[] getValidTypes() {
-		return new Class[] { IErlElement.class };
-	}
-
-	@Override
 	void init() {
 		setText("Project");
 		setToolTipText("Find references in selected projects");
@@ -68,31 +62,13 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 	}
 
 	@Override
-	protected List<IResource> getScope() {
+	protected Collection<IResource> getScope() {
 		return getProjectScope();
 	}
 
-	// QuerySpecification createQuery(IErlElement element)
-	// throws JavaModelException {
-	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-	// JavaEditor editor = getEditor();
-	//
-	// IJavaSearchScope scope;
-	// String description;
-	// final boolean isInsideJRE = factory.isInsideJRE(element);
-	// if (editor != null) {
-	// scope = factory.createJavaProjectSearchScope(editor
-	// .getEditorInput(), isInsideJRE);
-	// description = factory.getProjectScopeDescription(editor
-	// .getEditorInput(), isInsideJRE);
-	// } else {
-	// scope = factory.createJavaProjectSearchScope(element
-	// .getJavaProject(), isInsideJRE);
-	// description = factory.getProjectScopeDescription(element
-	// .getJavaProject(), isInsideJRE);
-	// }
-	// return new ElementQuerySpecification(element, getLimitTo(), scope,
-	// description);
-	// }
+	@Override
+	protected String getScopeDescription() {
+		return SearchUtil.getProjectScopeDescription(getProjectScope());
+	}
 
 }

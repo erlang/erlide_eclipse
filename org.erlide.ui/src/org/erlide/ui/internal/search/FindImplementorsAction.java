@@ -8,13 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -27,7 +27,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  * 
  * @since 2.0
  */
-public class FindReferencesAction extends FindAction {
+public class FindImplementorsAction extends FindAction {
 
 	/**
 	 * Creates a new <code>FindReferencesAction</code>. The action requires that
@@ -37,7 +37,7 @@ public class FindReferencesAction extends FindAction {
 	 * @param site
 	 *            the site providing context information for this action
 	 */
-	public FindReferencesAction(final IWorkbenchSite site) {
+	public FindImplementorsAction(final IWorkbenchSite site) {
 		super(site);
 	}
 
@@ -48,20 +48,14 @@ public class FindReferencesAction extends FindAction {
 	 * @param editor
 	 *            the Java editor
 	 */
-	public FindReferencesAction(final ErlangEditor editor) {
+	public FindImplementorsAction(final ErlangEditor editor) {
 		super(editor);
-	}
-
-	@Override
-	Class<?>[] getValidTypes() {
-		return new Class[] { IErlFunction.class };
-		// FIXME should we use this?
 	}
 
 	@Override
 	void init() {
 		setText("Workspace");
-		setToolTipText("Find references in workspace");
+		setToolTipText("Find declarations in workspace");
 		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
 		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
@@ -69,14 +63,18 @@ public class FindReferencesAction extends FindAction {
 
 	@Override
 	int getLimitTo() {
-		return IErlSearchConstants.REFERENCES;
+		return ErlangSearchPattern.DEFINITIONS;
 	}
 
 	@Override
-	protected List<IResource> getScope() {
+	protected Collection<IResource> getScope() {
 		return SearchUtil.getWorkspaceScope();
 	}
 
+	@Override
+	protected String getScopeDescription() {
+		return SearchUtil.getWorkspaceScopeDescription();
+	}
 	// QuerySpecification createQuery(IErlElement element)
 	// throws JavaModelException, InterruptedException {
 	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();

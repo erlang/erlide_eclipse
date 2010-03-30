@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;

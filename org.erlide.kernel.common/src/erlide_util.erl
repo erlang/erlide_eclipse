@@ -17,6 +17,7 @@
 -export([check_and_renew_cached/5, check_and_renew_cached/6, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
 -export([pack/1, unpack/1, join/2]).
 -export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
+-export([get_auto_imported/1, add_auto_imported/1]).
 
 %%
 %% API Functions
@@ -149,6 +150,21 @@ join([], Sep) when is_list(Sep) ->
     [];
 join([H|T], Sep) ->
     H ++ lists:append([Sep ++ X || X <- T]).
+
+add_auto_imported(Imports) ->
+    [{erlang, get_auto_imported("")} | Imports].
+
+get_auto_imported(Prefix) when is_list(Prefix) ->
+    case catch erlang:module_info(exports) of
+        Val when is_list(Val) ->
+            lists:filter(fun({N, A}) ->
+                                 lists:prefix(Prefix, atom_to_list(N)) andalso
+                                     erl_internal:bif(N, A)
+                         end, Val);
+        _Error ->
+            ?D(_Error),
+            error
+    end.
 
 %%
 %% Local Functions

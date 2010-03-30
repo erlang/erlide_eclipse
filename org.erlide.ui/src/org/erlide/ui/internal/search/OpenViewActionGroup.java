@@ -1,6 +1,5 @@
 package org.erlide.ui.internal.search;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -9,7 +8,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -206,14 +204,14 @@ public class OpenViewActionGroup extends ActionGroup {
 
 		fOpenPropertiesDialog = new PropertyDialogAction(site, provider);
 		fOpenPropertiesDialog
-				.setActionDefinitionId(IWorkbenchCommandConstants.FILE_PROPERTIES);
+				.setActionDefinitionId("org.eclipse.ui.file.properties"); // $NON-NLS-1$
 
 		initialize(provider);
 	}
 
 	private void initialize(final ISelectionProvider provider) {
 		fSelectionProvider = provider;
-		final ISelection selection = provider.getSelection();
+		final ISelection selection = fSelectionProvider.getSelection();
 		// fOpenSuperImplementation.update(selection);
 		// fOpenExternalJavadoc.update(selection);
 		// fOpenTypeHierarchy.update(selection);
@@ -278,6 +276,8 @@ public class OpenViewActionGroup extends ActionGroup {
 		return site;
 	}
 
+	public static final String NAVIGATE_SHOW_IN_QUICK_MENU = "org.eclipse.ui.navigate.showInQuickMenu"; //$NON-NLS-1$
+
 	private String getShowInMenuLabel() {
 		String keyBinding = null;
 
@@ -285,7 +285,7 @@ public class OpenViewActionGroup extends ActionGroup {
 				.getWorkbench().getAdapter(IBindingService.class);
 		if (bindingService != null) {
 			keyBinding = bindingService
-					.getBestActiveBindingFormattedFor(IWorkbenchCommandConstants.NAVIGATE_SHOW_IN_QUICK_MENU);
+					.getBestActiveBindingFormattedFor(NAVIGATE_SHOW_IN_QUICK_MENU);
 		}
 
 		if (keyBinding == null) {
@@ -327,11 +327,12 @@ public class OpenViewActionGroup extends ActionGroup {
 		}
 	}
 
-//	private void appendToGroup(final IMenuManager menu, final IAction action) {
-//		if (action.isEnabled()) {
-//			menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, action);
-//		}
-//	}
+	// private void appendToGroup(final IMenuManager menu, final IAction action)
+	// {
+	// if (action.isEnabled()) {
+	// menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, action);
+	// }
+	// }
 
 	private IStructuredSelection getStructuredSelection() {
 		final ISelection selection = getContext().getSelection();

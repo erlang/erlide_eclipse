@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import java.text.MessageFormat;
 
@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.search.ErlangSearchElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 public class SearchResultLabelProvider extends LabelProvider implements
@@ -83,12 +82,11 @@ public class SearchResultLabelProvider extends LabelProvider implements
 
 	private static String searchElementFunctionToString(
 			final ErlangSearchElement ese) {
-		ErlangFunction f = ese.getFunction();
 		String a = ese.getArguments();
 		if (ese.isSubClause()) {
-			return f.name + a;
+			return ese.getName() + a;
 		} else {
-			final String nameWithArity = f.getNameWithArity();
+			final String nameWithArity = ese.getName() + "/" + ese.getArity();
 			if (a != null) {
 				return nameWithArity + "  " + a;
 			} else {
@@ -100,16 +98,16 @@ public class SearchResultLabelProvider extends LabelProvider implements
 	private String searchElementToString(final ErlangSearchElement ese) {
 		switch (ese.getKind()) {
 		case ATTRIBUTE:
-			return ese.getAttribute();
+			return ese.getName();
 		case CLAUSE:
 		case FUNCTION:
 			return searchElementFunctionToString(ese);
 		case RECORD_DEF:
-			return "record_definition: " + ese.getFunction().name;
+			return "record_definition: " + ese.getName();
 		case MACRO_DEF:
-			return "macro_definition: " + ese.getFunction().name;
+			return "macro_definition: " + ese.getName();
 		}
-		return ese.getAttribute();
+		return ese.getName();
 	}
 
 	private StyledString getMatchCountText(final Object element) {

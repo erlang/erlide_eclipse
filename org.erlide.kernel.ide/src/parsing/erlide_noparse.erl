@@ -31,6 +31,13 @@
 -include("erlide_scanner.hrl").
 -include("erlide_search_server.hrl").
 
+%% special arity flags
+-define(ARI_TYPESPEC, -2).
+-define(ARI_ATTRIBUTE, -3).
+-define(ARI_RECORD_DEF, -4).
+-define(ARI_MACRO_DEF, -5).
+-define(ARI_INCLUDE, -6).
+
 %%
 %% API Functions
 %%
@@ -120,7 +127,9 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     %?D({UncommentToks}),
     Functions = split_after_dots(UncommentToks, [], []),
     ?D(length(Functions)),
-    {Collected, Refs} = classify_and_collect(Functions, [], [], [], []),
+    AutoImports = erlide_util:add_auto_imported([]),
+    ?D(AutoImports),
+    {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
@@ -146,11 +155,8 @@ update_search_server(_, _, _) ->
     ok.
 
 fixup_model(#model{forms=Forms, comments=Comments}) ->
-    ?D(a),
     FixedComments = fixup_tokens(Comments),
-    ?D(a),
     FixedForms = fixup_forms(Forms),
-    ?D(a),
     #model{forms=FixedForms, comments=FixedComments}.
 
 fixup_forms(Forms) ->
@@ -217,6 +223,7 @@ cac(function, Tokens, Exports, Imports) ->
 cac(attribute, Attribute, _Exports, _Imports) ->
     ?D(Attribute),
     case Attribute of
+        %% -spec, -type or -opaque
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
           when (Kind=:='spec') or ((Kind=:=atom) and (Value=:='type'))
@@ -230,10 +237,13 @@ cac(attribute, Attribute, _Exports, _Imports) ->
             Extra = to_string(Args),
             ?D(Extra),
             {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
+            ?D({AttrArgs, Extra}),
+            ExternalRefs = get_refs(Extra, ?ARI_TYPESPEC, AttrArgs),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                         name=Name, args=AttrArgs, extra=Extra},
              [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
-                   arity=-2, clause="", sub_clause=false}], [], []};
+                   arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []};
+        %% other attributes
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
@@ -243,10 +253,11 @@ cac(attribute, Attribute, _Exports, _Imports) ->
             Between = get_between_outer_pars(Attribute),
             Extra = to_string(Between),
             {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
+            ?D({AttrArgs, Between}),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                        name=Name, args=AttrArgs, 
-                        extra=Extra},
-             make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength),
+                        name=Name, args=AttrArgs, extra=Extra},
+             make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)++
+                 make_attribute_arg_refs(Name, AttrArgs, Between),
              Exports, Imports};
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
@@ -491,7 +502,7 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength,
     ExternalRefs = get_refs(Rest),
-    ?D({ExternalRefs, Rest}),
+%%     ?D({ExternalRefs, Rest}),
     {#clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
              name=Name, args=get_between_pars(Rest), head=get_head(Rest)},
      ExternalRefs}.
@@ -541,7 +552,8 @@ fix_imported_ref(RefData, _Imports) ->
 
 %% find references in code
 %% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, and that's it
-%% returns {Offset, Length, Ref}
+%% returns {Offset, Length, Ref}, which is made into proper refs
+%% by fix_refs
 get_refs([]) ->
     [];
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
@@ -566,10 +578,63 @@ get_refs([#token{kind='#', offset=Offset},
 get_refs([_ | Rest]) ->
     get_refs(Rest).
 
+%% find type references in spec, type and opaque
+%% also VERY simple, type(), ?M, #R, only
+%% returns proper refs
+get_refs(_, _, []) ->
+    [];
+get_refs(Name, Arity, [#token{kind=macro, value=M, offset=Offset, 
+                              length=Length} | Rest]) ->
+    MR = make_macro_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
+    [MR | get_refs(Name, Arity, Rest)];
+get_refs(Name, Arity, [#token{kind='#', offset=Offset}, 
+          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
+    RR = make_record_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
+    [RR | get_refs(Name, Arity, Rest)];
+get_refs(Name, Arity, [#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
+               #token{kind=atom, value=T, offset=Offset2, length=Length2},
+               #token{kind='('}, #token{kind=')'} | Rest]) ->
+    XT = make_type_ref(Offset, Length2+Offset2-Offset, #type_ref{module=M, type=T}, Name, Arity),
+    [XT | get_refs(Name, Arity, Rest)];
+get_refs(Name, Arity, [#token{kind=atom, value=T, offset=Offset, length=Length},
+               #token{kind='('}, #token{kind=')'} | Rest]) ->
+    XT = make_type_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
+    [XT | get_refs(Name, Arity, Rest)];
+get_refs(Name, Arity, [_ | Rest]) ->
+    get_refs(Name, Arity, Rest).
+
+make_type_ref(Offset, Length, Data, Name, Arity) ->
+    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
+         clause="", sub_clause=false}.
+
+make_macro_ref(Offset, Length, Data, Name, Arity) ->
+    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
+         clause="", sub_clause=false}.
+
+make_record_ref(Offset, Length, Data, Name, Arity) ->
+    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
+         clause="", sub_clause=false}.
+
+make_attribute_arg_refs(define, Name, [#token{}, #token{kind='('} | Rest]) ->
+    get_refs(Name, ?ARI_MACRO_DEF, skip_to_rparen(Rest));
+make_attribute_arg_refs(define, Name, [#token{}, #token{kind=','} | Rest]) ->
+    get_refs(Name, ?ARI_MACRO_DEF, Rest);
+make_attribute_arg_refs(record, {Name, _}, [#token{}, #token{kind=','} | Rest]) ->
+    get_refs(Name, ?ARI_RECORD_DEF, Rest);
+make_attribute_arg_refs(_, _, _) ->
+    [].
+
+skip_to_rparen([]) ->
+    [];
+skip_to_rparen([#token{kind=')'} | Rest]) ->
+    Rest;
+skip_to_rparen([_ | Rest]) ->
+    skip_to_rparen(Rest).
+
 make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     ?D({Name, Between, Offset, Length}),
     case make_attribute_ref(Name, Between, Extra) of
-        [] -> 
+        [] ->
             [];
         {Arity, AName, Data} ->
             [#ref{data=Data, offset=Offset, length=Length, function=AName, 
@@ -580,7 +645,7 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     end.
 
 make_attribute_ref(module, _, Extra) ->
-    {-3, #module_def{module=Extra}};
+    {?ARI_ATTRIBUTE, #module_def{module=Extra}};
 make_attribute_ref(record, Between, _E) ->
     ?D({Between, _E}),
     Name = case Between of
@@ -589,13 +654,21 @@ make_attribute_ref(record, Between, _E) ->
            end,
     R= #record_def{record=Name},
     ?D(R),
-    {-4, Name, R};
+    {?ARI_RECORD_DEF, Name, R};
 make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
-    {-5, Name, #macro_def{macro=Name}};
+    {?ARI_MACRO_DEF, Name, #macro_def{macro=Name}};
 make_attribute_ref(define, Name, _) ->
-    {-5, Name, #macro_def{macro=Name}};
+    {?ARI_MACRO_DEF, Name, #macro_def{macro=Name}};
+make_attribute_ref(include, _, Extra) ->
+    {?ARI_INCLUDE, #include_ref{filename=unquote(Extra)}};
 make_attribute_ref(_, _, _) ->
     [].
+
+unquote(L) ->
+    lists:reverse(unquote_first(lists:reverse(unquote_first(L)))).
+
+unquote_first([$" | Rest]) ->
+    Rest.
 
 %% @spec (Tokens::tokens()) -> {tokens(), tokens()}
 %% @type tokens() = [#token]

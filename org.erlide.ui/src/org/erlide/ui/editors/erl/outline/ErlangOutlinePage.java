@@ -38,6 +38,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
@@ -276,6 +277,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
 		};
 
+		final IPageSite site = getSite();
+		IContextService service = (IContextService) site
+				.getService(IContextService.class);
+		service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
+
 		final MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
@@ -285,7 +291,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 				contextMenuAboutToShow(m);
 			}
 		});
-		final IPageSite site = getSite();
 		final Menu menu = manager.createContextMenu(tree);
 		tree.setMenu(menu);
 

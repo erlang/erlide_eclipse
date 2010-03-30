@@ -37,20 +37,21 @@ public class ErlideOpen {
 
 	@SuppressWarnings("boxing")
 	public static OpenResult getOpenInfo(final Backend b, final String s,
-			final String externalModules, final OtpErlangList pathVars)
-			throws BackendException {
-		final OtpErlangObject res = b.call("erlide_open", "open_info", "ssx",
-				s, externalModules, pathVars);
+			final List<OtpErlangObject> imports, final String externalModules,
+			final OtpErlangList pathVars) throws BackendException {
+		final OtpErlangObject res = b.call("erlide_open", "open_info", "slxsx",
+				s, imports, externalModules, pathVars);
 		return new OpenResult(res);
 	}
 
 	@SuppressWarnings("boxing")
 	public static OpenResult open(final Backend b, final String scannerName,
-			final int offset, final String externalModules,
-			final OtpErlangList pathVars) throws BackendException {
+			final int offset, final List<OtpErlangObject> imports,
+			final String externalModules, final OtpErlangList pathVars)
+			throws BackendException {
 		ErlLogger.debug("open offset " + offset);
-		final OtpErlangObject res = b.call("erlide_open", "open", "aisx",
-				scannerName, offset, externalModules, pathVars);
+		final OtpErlangObject res = b.call("erlide_open", "open", "ailxsx",
+				scannerName, offset, imports, externalModules, pathVars);
 		return new OpenResult(res);
 	}
 

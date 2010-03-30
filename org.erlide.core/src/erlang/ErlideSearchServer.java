@@ -1,11 +1,11 @@
 package erlang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.search.ErlangElementRef;
+import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -22,20 +22,22 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideSearchServer {
 
-	private static OtpErlangList getModulesFromScope(final List<IResource> scope) {
+	private static OtpErlangList getModulesFromScope(
+			final Collection<IResource> scope) {
 		OtpErlangObject result[] = new OtpErlangObject[scope.size()];
-		for (int i = 0, n = result.length; i < n; ++i) {
-			IResource r = scope.get(i);
+		int i = 0;
+		for (IResource r : scope) {
 			result[i] = new OtpErlangTuple(new OtpErlangObject[] {
 					new OtpErlangAtom(ErlangToolkit
 							.createScannerModuleNameFromResource(r)),
 					new OtpErlangString(r.getLocation().toPortableString()) });
+			i++;
 		}
 		return new OtpErlangList(result);
 	}
 
 	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
-			final ErlangElementRef ref, final List<IResource> scope,
+			final ErlangSearchPattern ref, final Collection<IResource> scope,
 			final String stateDir) {
 		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
 		try {
@@ -65,31 +67,23 @@ public class ErlideSearchServer {
 			 */
 			final OtpErlangTuple modLineT = (OtpErlangTuple) i;
 			String modName = Util.stringValue(modLineT.elementAt(0));
-			OtpErlangObject functionNameOrAttr = modLineT.elementAt(1);
+			OtpErlangObject nameO = modLineT.elementAt(1);
 			final OtpErlangLong arityL = (OtpErlangLong) modLineT.elementAt(2);
 			int arity = arityL.intValue();
 			String clauseHead = Util.stringValue(modLineT.elementAt(3));
 			OtpErlangAtom subClause = (OtpErlangAtom) modLineT.elementAt(4);
 			OtpErlangLong offsetL = (OtpErlangLong) modLineT.elementAt(5);
 			OtpErlangLong lengthL = (OtpErlangLong) modLineT.elementAt(6);
-			ErlangFunction function;
-			String attribute;
-			if (functionNameOrAttr instanceof OtpErlangAtom) {
-				OtpErlangAtom functionA = (OtpErlangAtom) functionNameOrAttr;
-				if (arity != -1) {
-					function = new ErlangFunction(functionA.atomValue(), arity);
-					attribute = null;
-				} else {
-					function = null;
-					attribute = functionA.atomValue();
-				}
+			String name;
+			if (nameO instanceof OtpErlangAtom) {
+				OtpErlangAtom nameA = (OtpErlangAtom) nameO;
+				name = nameA.atomValue();
 			} else {
-				function = null;
-				attribute = Util.stringValue(functionNameOrAttr);
+				name = Util.stringValue(nameO);
 			}
 			result.add(new ModuleLineFunctionArityRef(modName, offsetL
-					.intValue(), lengthL.intValue(), function, clauseHead,
-					"true".equals(subClause.atomValue()), attribute));
+					.intValue(), lengthL.intValue(), name, arity, clauseHead,
+					"true".equals(subClause.atomValue())));
 		}
 	}
 

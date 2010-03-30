@@ -8,13 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -102,23 +104,24 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
 		return null;
 	}
 
-	// QuerySpecification createQuery(IErlElement element)
-	// throws JavaModelException, InterruptedException {
-	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-	//
-	// IWorkingSet[] workingSets = fWorkingSets;
-	// if (fWorkingSets == null) {
-	// workingSets = factory.queryWorkingSets();
-	// if (workingSets == null) {
-	// return super.createQuery(element); // in workspace
-	// }
-	// }
-	// SearchUtil.updateLRUWorkingSets(workingSets);
-	// IJavaSearchScope scope = factory.createJavaSearchScope(workingSets,
-	// true);
-	// final String description = factory.getWorkingSetScopeDescription(
-	// workingSets, true);
-	// return new ElementQuerySpecification(element, getLimitTo(), scope,
-	// description);
-	// }
+	@Override
+	protected String getScopeDescription() {
+		return SearchUtil.getWorkingSetsScopeDescription(fWorkingSets);
+	}
+
+	@Override
+	public void run(final IErlElement element) {
+		try {
+			super.performNewSearch(element, getWorkingSetsScope(fWorkingSets));
+		} catch (InterruptedException e) {
+		}
+	}
+
+	@Override
+	public void run(final ITextSelection selection) {
+		try {
+			performNewSearch(selection, getWorkingSetsScope(fWorkingSets));
+		} catch (InterruptedException e) {
+		}
+	}
 }

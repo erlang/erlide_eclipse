@@ -124,9 +124,11 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 		ErlangCore.getModel().removeModelChangeListener(this);
 	}
 
-	public void inputChanged(final Viewer aViewer, final Object oldInput,
+	public void inputChanged(final Viewer viewer, final Object oldInput,
 			final Object newInput) {
-		viewer = (StructuredViewer) aViewer;
+		if (viewer instanceof StructuredViewer) {
+			this.viewer = (StructuredViewer) viewer;
+		}
 	}
 
 	/*

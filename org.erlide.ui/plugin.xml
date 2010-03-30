@@ -402,6 +402,23 @@
           id="org.erlide.ui.erlangEditorScope"
           name="Erlang Editor"
           parentId="org.eclipse.ui.textEditorScope"/>
+    <context
+          id="org.erlide.ui.erlangOutlineAndNavigatorScope"
+          name="Erlang Outline and Navigator"
+          parentId="org.eclipse.ui.contexts.window">
+    </context>
+    <context
+          description="Debugging Erlang"
+          id="org.erlide.debug.ui.debugging"
+          name="Debugging Erlang"
+          parentId="org.eclipse.debug.ui.debugging">
+    </context>
+    <context
+          description="Replaying Erlang Trace"
+          id="org.erlide.debug.ui.debugging.trace"
+          name="Debugging Trace"
+          parentId="org.eclipse.debug.ui.debugging">
+    </context>
  </extension>    
  <extension
        point="org.erlide.ui.foldingStructureProviders">
@@ -502,6 +519,42 @@
             id="org.erlide.ui.actions.cleanUp"
             name="Clean Up...">
       </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="Definitions in Workspace"
+            id="org.erlide.ui.search.implementors.in.workspace"
+            name="Definitions in Workspace">
+      </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="Definitions in Project"
+            id="org.erlide.ui.search.implementors.in.project"
+            name="Definitions in Project">
+      </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="Definitions in Working Sets"
+            id="org.erlide.ui.search.implementors.in.workset"
+            name="Definitions in Working Sets...">
+      </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="References in Workspace"
+            id="org.erlide.ui.search.references.in.workspace"
+            name="References in Workspace">
+      </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="References in Project"
+            id="org.erlide.ui.search.references.in.project"
+            name="References in Project">
+      </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            description="References in Working Sets"
+            id="org.erlide.ui.search.references.in.workset"
+            name="References in Working Sets...">
+      </command>
 
  </extension>
  <extension
@@ -567,8 +620,20 @@
             sequence="M1+M2+G">
       </key>
       <key
+            commandId="org.erlide.ui.search.references.in.workspace"
+            contextId="org.erlide.ui.erlangOutlineAndNavigatorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+G">
+      </key>
+      <key
             commandId="org.erlide.ui.search.implementors.in.workspace"
             contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+G">
+      </key>
+      <key
+            commandId="org.erlide.ui.search.implementors.in.workspace"
+            contextId="org.erlide.ui.erlangOutlineAndNavigatorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+G">
       </key>
@@ -669,9 +734,18 @@
              menubarPath="org.eclipse.search.menu/referencesSubMenu/group1"
              retarget="true">
        </action>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.references.in.workset"
+             id="org.erlide.ui.search.actions.ReferencesInWorkingSet"
+             label="Working &amp;Set..."
+             menubarPath="org.eclipse.search.menu/referencesSubMenu/group2"
+             retarget="true"
+             style="push">
+       </action>
        <menu
              id="implementorsSubMenu"
-             label="De&amp;clarations"
+             label="De&amp;finitions"
              path="org.eclipse.search.menu/contextMenuActionsGroup">
           <separator
                 name="group2">
@@ -692,6 +766,15 @@
              label="&amp;Project"
              menubarPath="org.eclipse.search.menu/implementorsSubMenu/group2"
              retarget="true">
+       </action>
+       <action
+             allowLabelUpdate="true"
+             definitionId="org.erlide.ui.search.implementors.in.workset"
+             id="org.erlide.ui.search.actions.ImplementorsInWorkingSet"
+             label="Working &amp;Set..."
+             menubarPath="org.eclipse.search.menu/implementorsSubMenu/group2"
+             retarget="true"
+             style="push">
        </action>
     </actionSet>
     <actionSet
@@ -863,6 +946,9 @@
             <actionExtension
                   pattern="org.eclipse.ui.navigator.resources.*">
             </actionExtension>
+            <actionExtension
+                  pattern="org.erlide.ui.search.*">
+            </actionExtension>
          </includes>
       </viewerActionBinding>
       <dragAssistant
@@ -968,6 +1054,25 @@
          </commonSorter>
       </navigatorContent>
    </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="org.erlide.ui.actions.ErlangLinkHelperAction"
+            id="org.erlide.ui.navigator.linkHelper">
+         <selectionEnablement>
+            <or>
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+               </adapt>
+            </or>
+         </selectionEnablement>
+         <editorInputEnablement>
+            <instanceof
+                  value="org.eclipse.ui.IFileEditorInput">
+            </instanceof>
+         </editorInputEnablement>
+      </linkHelper>
+   </extension>
 
    <!-- Bind the Properties content extension to the viewer -->
    <extension
@@ -1012,22 +1117,6 @@
                menubarPath="erlidemenu1">
          </action>
       </viewerContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.linkHelper">
-      <linkHelper
-            class="org.erlide.ui.actions.ErlangLinkHelperAction"
-            id="org.erlide.ui.navigator.linkHelper">
-         <selectionEnablement>
-            <or>
-               <adapt
-                     type="org.eclipse.core.resources.IFile">
-               </adapt>
-            </or></selectionEnablement>
-            <editorInputEnablement>
-				<instanceof value="org.eclipse.ui.IFileEditorInput"/>
-			</editorInputEnablement>
-      </linkHelper>
    </extension>
    <extension
          point="org.eclipse.ui.decorators">
@@ -1153,19 +1242,6 @@
       </factory>
    </extension>
    <extension
-         point="org.eclipse.ui.contexts">
-      <context
-            description="Debugging Erlang"
-            id="org.erlide.debug.ui.debugging"
-            name="Debugging Erlang"
-            parentId="org.eclipse.debug.ui.debugging"/>
-      <context
-            description="Replaying Erlang Trace"
-            id="org.erlide.debug.ui.debugging.trace"
-            name="Debugging Trace"
-            parentId="org.eclipse.debug.ui.debugging"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.erlide.ui.perspectives.ErlangPerspective">
@@ -1275,35 +1351,10 @@
       </wizard>
    </extension>
    <extension
-         point="org.eclipse.ui.commands">
-      <command
-            categoryId="org.erlide.ui.search.category.search"
-            description="Declarations in Workspace"
-            id="org.erlide.ui.search.implementors.in.workspace"
-            name="Declarations in Workspace">
-      </command>
-      <command
-            categoryId="org.erlide.ui.search.category.search"
-            id="org.erlide.ui.search.implementors.in.project"
-            name="Declarations in Project">
-      </command>
-      <command
-            categoryId="org.erlide.ui.search.category.search"
-            description="References in Workspace"
-            id="org.erlide.ui.search.references.in.workspace"
-            name="References in Workspace">
-      </command>
-      <command
-            categoryId="org.erlide.ui.search.category.search"
-            id="org.erlide.ui.search.references.in.project"
-            name="References in Project">
-      </command>
-   </extension>
-   <extension
          point="org.eclipse.search.searchPages">
       <page
             canSearchEnclosingProjects="true"
-            class="org.erlide.ui.search.ErlangSearchPage"
+            class="org.erlide.ui.internal.search.ErlangSearchPage"
             extensions="erl:90, hrl:90, yrl:90"
             icon="icons/full/obj16/erlang020.gif"
             id="org.erlide.ui.ErlangSearchPage"
@@ -1315,9 +1366,9 @@
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
-            class="org.erlide.ui.search.ErlangSearchResultPage"
+            class="org.erlide.ui.internal.search.ErlangSearchResultPage"
             id="org.erlide.ui.ErlangSearchResultPage"
-            searchResultClass="org.erlide.ui.search.ErlangSearchResult">
+            searchResultClass="org.erlide.ui.internal.search.ErlangSearchResult">
       </viewPage>
    </extension>
    <extension
@@ -1422,13 +1473,6 @@
       </resolver>
    </extension>
    <extension
-       point="org.eclipse.ui.contexts">
-    	<context
-          id="org.erlide.ui.erlangEditorScope"
-          name="Erlang Editor"
-          parentId="org.eclipse.ui.textEditorScope"/>
- 	</extension>
-   <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerType="org.erlide.core.dialyzewarningmarker"
@@ -1454,5 +1498,12 @@
             verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
             verticalRulerPreferenceValue="true">
       </specification>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.erlide.ui.internal.search.ReferencesInWorkspaceHandler"
+            commandId="org.erlide.ui.search.references.in.workspace">
+      </handler>
    </extension>
 </plugin>

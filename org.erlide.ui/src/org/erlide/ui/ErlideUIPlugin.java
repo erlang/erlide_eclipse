@@ -401,6 +401,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 		}
 		menu.add(new Separator(IContextMenuConstants.GROUP_OPEN));
 		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
+		menu.add(new Separator(IContextMenuConstants.GROUP_SEARCH));
 		menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
 		menu.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
 	}

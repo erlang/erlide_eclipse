@@ -1,4 +1,4 @@
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

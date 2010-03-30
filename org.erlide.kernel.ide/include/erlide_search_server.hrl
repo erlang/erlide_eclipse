@@ -12,7 +12,7 @@
 -record(record_ref, {record}).
 -record(macro_def, {macro}).
 -record(record_def, {record}).
--record(type_ref, {type}).
+-record(type_ref, {module, type}).
 -record(type_def, {type}).
 -record(module_def, {module}).
 

@@ -50,9 +50,17 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
 import erlang.ErlideOpen;
 
 public class ErlModelUtils {
+
+	private static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
+			0);
 
 	public static IErlModule getModule(final IEditorPart editor) {
 		if (editor == null || !(editor instanceof AbstractDecoratedTextEditor)) {
@@ -99,11 +107,30 @@ public class ErlModelUtils {
 		return res;
 	}
 
-	public static Collection<IErlImport> getImportsAsList(final IErlModule mod) {
+	public static List<OtpErlangObject> getImportsAsList(final IErlModule mod) {
 		if (mod == null) {
-			return new ArrayList<IErlImport>(0);
+			return NO_IMPORTS;
 		}
-		return mod.getImports();
+		Collection<IErlImport> imports = mod.getImports();
+		if (imports.isEmpty()) {
+			return NO_IMPORTS;
+		}
+		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(imports
+				.size());
+		for (IErlImport i : imports) {
+			List<ErlangFunction> functions = i.getFunctions();
+			OtpErlangObject funsT[] = new OtpErlangObject[functions.size()];
+			int j = 0;
+			for (ErlangFunction f : functions) {
+				funsT[j] = f.getNameArityTuple();
+				j++;
+			}
+			OtpErlangTuple modFunsT = new OtpErlangTuple(new OtpErlangObject[] {
+					new OtpErlangAtom(i.getImportModule()),
+					new OtpErlangList(funsT) });
+			result.add(modFunsT);
+		}
+		return result;
 	}
 
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,

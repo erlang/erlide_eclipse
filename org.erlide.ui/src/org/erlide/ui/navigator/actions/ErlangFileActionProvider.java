@@ -2,6 +2,8 @@ package org.erlide.ui.navigator.actions;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
@@ -36,8 +38,12 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 			final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
 			openAction = new OpenErlangAction(workbenchSite.getPage(),
 					workbenchSite.getSelectionProvider());
-			searchActionGroup = new ErlangSearchActionGroup(workbenchSite
-					.getPart().getSite());
+			final IWorkbenchPartSite site = workbenchSite.getPart().getSite();
+			searchActionGroup = new ErlangSearchActionGroup(site);
+			final IContextService service = (IContextService) site
+					.getService(IContextService.class);
+			service
+					.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
 		}
 	}
 

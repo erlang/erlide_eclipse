@@ -1,31 +1,30 @@
 /**
  * 
  */
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.search.ErlangSearchElement;
 
 public class ErlangSearchTreeContentProvider extends
 		ErlangSearchContentProvider implements ITreeContentProvider {
 
 	private final Object[] EMPTY_ARR = new Object[0];
 
-	private final AbstractTreeViewer fTreeViewer;
+	private final TreeViewer fTreeViewer;
 	private final Map<Object, List<Object>> childMap;
 	private final Map<Object, Object> parentMap;
 	private final List<String> moduleNames;
 	private ErlangSearchResult fResult;
 
-	public ErlangSearchTreeContentProvider(final AbstractTreeViewer viewer,
+	public ErlangSearchTreeContentProvider(final TreeViewer viewer,
 			final ErlangSearchResultPage page) {
 		super(page);
 		fTreeViewer = viewer;
@@ -77,19 +76,24 @@ public class ErlangSearchTreeContentProvider extends
 		parentMap.clear();
 		childMap.clear();
 		for (final ErlangSearchElement ese : eses) {
-			final String moduleName = ese.getModuleName();
-			if (!moduleNames.contains(moduleName)) {
-				moduleNames.add(moduleName);
-			}
-			if (ese.isSubClause()) {
-				final ErlangFunction function = ese.getFunction();
-				addChild(moduleName, function);
-				addChild(function, ese);
-			} else {
-				addChild(moduleName, ese);
-			}
+			addElement(ese);
 		}
 
+	}
+
+	private void addElement(final ErlangSearchElement ese) {
+		final String moduleName = ese.getModuleName();
+		if (!moduleNames.contains(moduleName)) {
+			moduleNames.add(moduleName);
+		}
+		if (ese.isSubClause()) {
+			final ErlangFunction function = new ErlangFunction(ese.getName(),
+					ese.getArity());
+			addChild(moduleName, function);
+			addChild(function, ese);
+		} else {
+			addChild(moduleName, ese);
+		}
 	}
 
 	public Object[] getChildren(final Object parentElement) {
@@ -128,10 +132,33 @@ public class ErlangSearchTreeContentProvider extends
 
 	@Override
 	public void elementsChanged(final Object[] updatedElements) {
-		// FIXME ska det vara så här? eller ska vi kolla med
-		// updatedElements?
-		// vi måste nog kolla med updatedElements för att remove ska
-		// funka...
-		clear();
+		final TreeViewer viewer = getViewer();
+		final int elementLimit = getElementLimit();
+		final boolean treeLimited = elementLimit != -1;
+		List<Object> toRemove = new ArrayList<Object>();
+		for (Object element : updatedElements) {
+			if (fResult.getMatchCount(element) > 0) {
+				if (viewer.testFindItem(element) != null) {
+					viewer.update(element, null);
+				} else {
+					if (!treeLimited
+							|| viewer.getTree().getItemCount() < elementLimit) {
+						addElement((ErlangSearchElement) element);
+					}
+				}
+			} else {
+				toRemove.add(element);
+			}
+		}
+		viewer.remove(toRemove.toArray());
+		viewer.refresh();
+	}
+
+	private int getElementLimit() {
+		return getPage().getElementLimit().intValue();
+	}
+
+	private TreeViewer getViewer() {
+		return fTreeViewer;
 	}
 }

@@ -7,8 +7,8 @@
 %% Exported Functions
 %%
 
--export([modules/0, dump_module/1, dump_log/0, create/3, destroy/1, logging/1, all/0, stop/0, find/3,
-         xdump/0]).
+-export([modules/0, dump_module/1, dump_log/0, create/3, destroy/1, logging/1,
+         all/0, stop/0, find/3, xdump/0]).
 
 -compile(export_all).
 

@@ -1,25 +1,24 @@
-package org.erlide.core.search;
+package org.erlide.ui.internal.search;
 
 import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.util.ErlangFunction;
 
 public class ErlangSearchElement {
 
 	private final String moduleName;
-	private final ErlangFunction function;
+	private final String name;
+	private final int arity;
 	private final String arguments;
 	private final boolean subClause;
-	private final String attribute;
 	private final Kind kind;
 
-	public ErlangSearchElement(final String moduleName,
-			final ErlangFunction function, final String arguments,
-			final boolean subClause, final String attribute, final Kind kind) {
+	public ErlangSearchElement(final String moduleName, final String name,
+			final int arity, final String arguments, final boolean subClause,
+			final Kind kind) {
 		this.moduleName = moduleName;
-		this.function = function;
+		this.name = name;
+		this.arity = arity;
 		this.arguments = arguments;
 		this.subClause = subClause;
-		this.attribute = attribute;
 		this.kind = kind;
 	}
 
@@ -27,22 +26,18 @@ public class ErlangSearchElement {
 		return moduleName;
 	}
 
-	public ErlangFunction getFunction() {
-		return function;
-	}
-
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof ErlangSearchElement) {
 			final ErlangSearchElement e = (ErlangSearchElement) o;
-			if (e.moduleName.equals(moduleName)) {
-				final boolean functionEqual = e.function == null ? function == null
-						: e.function.equals(function);
-				if (functionEqual && e.subClause == subClause) {
-					if (e.arguments == null) {
-						return arguments == null;
+			if (e.moduleName.equals(moduleName) && e.name.equals(name)) {
+				if (e.arity == arity) {
+					if (e.subClause == subClause) {
+						if (e.arguments == null) {
+							return arguments == null;
+						}
+						return e.arguments.equals(arguments);
 					}
-					return e.arguments.equals(arguments);
 				}
 			}
 		}
@@ -57,9 +52,10 @@ public class ErlangSearchElement {
 			hashCode++;
 		}
 		hashCode = hashCode * multiplier + moduleName.hashCode();
-		if (function != null) {
-			hashCode = hashCode * multiplier + function.hashCode();
+		if (name != null) {
+			hashCode = hashCode * multiplier + name.hashCode();
 		}
+		hashCode = hashCode * multiplier + arity;
 		if (arguments != null) {
 			hashCode = hashCode * multiplier + arguments.hashCode();
 		}
@@ -74,12 +70,16 @@ public class ErlangSearchElement {
 		return subClause;
 	}
 
-	public String getAttribute() {
-		return attribute;
-	}
-
 	public Kind getKind() {
 		return kind;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getArity() {
+		return arity;
 	}
 
 }

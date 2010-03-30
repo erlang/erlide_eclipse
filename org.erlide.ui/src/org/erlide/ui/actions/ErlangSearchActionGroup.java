@@ -19,8 +19,8 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.search.ImplementorsSearchGroup;
-import org.erlide.ui.search.ReferencesSearchGroup;
+import org.erlide.ui.internal.search.ImplementorsSearchGroup;
+import org.erlide.ui.internal.search.ReferencesSearchGroup;
 
 /**
  * Action group that adds erlang search actions to a context menu and the global

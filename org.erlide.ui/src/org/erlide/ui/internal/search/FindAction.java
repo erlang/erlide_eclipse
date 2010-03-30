@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -25,13 +25,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ErlangElementRef;
+import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -39,6 +43,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
+import org.erlide.ui.util.ErlModelUtils;
 
 import erlang.ErlideOpen;
 import erlang.OpenResult;
@@ -57,12 +62,10 @@ public abstract class FindAction extends SelectionDispatchAction {
 	// private static final IErlElement RETURN_WITHOUT_BEEP = JavaCore
 	// .create(JavaPlugin.getWorkspace().getRoot());
 
-	private final Class<?>[] fValidTypes;
 	private ErlangEditor fEditor;
 
 	FindAction(final IWorkbenchSite site) {
 		super(site);
-		fValidTypes = getValidTypes();
 		init();
 	}
 
@@ -80,29 +83,19 @@ public abstract class FindAction extends SelectionDispatchAction {
 	 */
 	abstract void init();
 
-	/**
-	 * Called once by the constructors to get the list of the valid input types
-	 * of the action. To be overridden by implementors of this action.
-	 * 
-	 * @return the valid input types of the action
-	 */
-	abstract Class<?>[] getValidTypes();
-
 	private boolean canOperateOn(final IStructuredSelection sel) {
 		return sel != null && !sel.isEmpty()
 				&& canOperateOn(getErlElement(sel, true));
 	}
 
 	boolean canOperateOn(final IErlElement element) {
-		if (element == null || fValidTypes == null || fValidTypes.length == 0) {
-			// || !ActionUtil.isOnBuildPath(element)) {
-			return false;
-		}
-
-		for (int i = 0; i < fValidTypes.length; i++) {
-			if (fValidTypes[i].isInstance(element)) {
-				return true;
-			}
+		if (element instanceof IErlFunctionClause) {
+			return true;
+		} else if (element instanceof IErlPreprocessorDef) {
+			return true;
+		} else if (element instanceof IErlAttribute) {
+			IErlAttribute a = (IErlAttribute) element;
+			return a.getName().startsWith("include");
 		}
 		return false;
 	}
@@ -127,17 +120,12 @@ public abstract class FindAction extends SelectionDispatchAction {
 			final boolean silent) {
 		if (selection.size() == 1) {
 			final Object firstElement = selection.getFirstElement();
-			IErlElement elem = null;
 			if (firstElement instanceof IErlElement) {
-				elem = (IErlElement) firstElement;
+				return (IErlElement) firstElement;
 			} else if (firstElement instanceof IAdaptable) {
-				elem = (IErlElement) ((IAdaptable) firstElement)
+				return (IErlElement) ((IAdaptable) firstElement)
 						.getAdapter(IErlElement.class);
 			}
-			// if (elem != null) {
-			// return getTypeIfPossible(elem, silent);
-			// }
-			return elem;
 		}
 		return null;
 	}
@@ -217,6 +205,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 	 */
 	@Override
 	public void run(final ITextSelection selection) {
+		performNewSearch(selection, getScope());
+	}
+
+	protected void performNewSearch(final ITextSelection selection,
+			final Collection<IResource> scope) {
 		// if (!ActionUtil.isProcessable(fEditor)) {
 		// return;
 		// }
@@ -232,8 +225,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 				.createScannerModuleName(module);
 		OpenResult res;
 		try {
-			res = ErlideOpen.open(b, scannerModuleName, offset, "", ErlangCore
-					.getModel().getPathVars());
+			res = ErlideOpen.open(b, scannerModuleName, offset, ErlModelUtils
+					.getImportsAsList(module), "", ErlangCore.getModel()
+					.getPathVars());
 			ErlLogger.debug("find " + res);
 
 			// final String title =
@@ -241,11 +235,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 			// final String message =
 			// "SearchMessages.SearchElementSelectionDialog_message";
 
-			ErlangElementRef ref;
-			ref = SearchUtil.getRefFromOpenResultAndLimitTo(module, res,
-					getLimitTo());
+			ErlangSearchPattern ref;
+			ref = SearchUtil.getSearchPatternFromOpenResultAndLimitTo(module,
+					offset, res, getLimitTo());
 			if (ref != null) {
-				performNewSearch(ref);
+				performNewSearch(ref, scope);
 			}
 		} catch (final BackendException e) {
 			final String title = "SearchMessages.Search_Error_search_title";
@@ -256,11 +250,47 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 	abstract int getLimitTo();
 
-	abstract protected List<IResource> getScope();
+	abstract protected Collection<IResource> getScope();
 
-	private void performNewSearch(final ErlangElementRef ref) {
+	abstract protected String getScopeDescription();
 
-		final ErlSearchQuery query = new ErlSearchQuery(ref, getScope());
+	/*
+	 * Method declared on SelectionChangedAction.
+	 */
+	@Override
+	public void selectionChanged(final IStructuredSelection selection) {
+		setEnabled(canOperateOn(selection));
+	}
+
+	/*
+	 * Method declared on SelectionChangedAction.
+	 */
+	@Override
+	public void selectionChanged(final ITextSelection selection) {
+		setEnabled(true); // FIXME japps
+	}
+
+	/**
+	 * Executes this action for the given java element.
+	 * 
+	 * @param element
+	 *            The erlang element to be found.
+	 */
+	public void run(final IErlElement element) {
+		performNewSearch(element, getScope());
+	}
+
+	protected void performNewSearch(final IErlElement element,
+			final Collection<IResource> scope) {
+		final ErlangSearchPattern pattern = SearchUtil
+				.getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
+		SearchUtil.runQuery(pattern, scope, getScopeDescription(), getShell());
+	}
+
+	private void performNewSearch(final ErlangSearchPattern ref,
+			final Collection<IResource> scope) {
+		final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
+				getScopeDescription());
 		if (query.canRunInBackground()) {
 			/*
 			 * This indirection with Object as parameter is needed to prevent
@@ -290,41 +320,6 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	/*
-	 * Method declared on SelectionChangedAction.
-	 */
-	@Override
-	public void selectionChanged(final IStructuredSelection selection) {
-		setEnabled(canOperateOn(selection));
-	}
-
-	/*
-	 * Method declared on SelectionChangedAction.
-	 */
-	@Override
-	public void selectionChanged(final ITextSelection selection) {
-		setEnabled(true); // FIXME japps
-	}
-
-	/**
-	 * Executes this action for the given java element.
-	 * 
-	 * @param element
-	 *            The erlang element to be found.
-	 */
-	public void run(final IErlElement element) {
-
-		// will return true except for debugging purposes.
-		performNewSearch(element);
-
-	}
-
-	private void performNewSearch(final IErlElement element) {
-		final ErlangElementRef ref = SearchUtil.getRefFromErlElementAndLimitTo(
-				element, getLimitTo());
-		SearchUtil.runQuery(ref, getScope(), getShell());
-	}
-
 	/**
 	 * @return the fEditor
 	 */
@@ -332,7 +327,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return fEditor;
 	}
 
-	protected List<IResource> getProjectScope() {
+	protected Collection<IResource> getProjectScope() {
 		TextEditor editor = getEditor();
 		if (editor != null) {
 			final IEditorInput editorInput = editor.getEditorInput();
@@ -360,6 +355,20 @@ public abstract class FindAction extends SelectionDispatchAction {
 			}
 		}
 		return null;
+	}
+
+	protected Collection<IResource> getWorkingSetsScope(
+			final IWorkingSet[] workingSets) throws InterruptedException {
+		IWorkingSet[] ws = workingSets;
+		if (ws == null) {
+			ws = SearchUtil.queryWorkingSets();
+		}
+		if (ws != null) {
+			SearchUtil.updateLRUWorkingSets(ws);
+			return SearchUtil.getWorkingSetsScope(ws);
+		} else {
+			return SearchUtil.getWorkspaceScope();
+		}
 	}
 
 }
