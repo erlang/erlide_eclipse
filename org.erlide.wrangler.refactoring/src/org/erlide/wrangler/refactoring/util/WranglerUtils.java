@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -240,10 +241,14 @@ public class WranglerUtils {
 		return "";
 	}
 
-	static public IFile geFileFromPath(String pathString)
+	static public IFile getFileFromPath(String pathString)
 			throws WranglerException {
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		Path path = new Path(pathString);
+		return getFileFromPath(path);
+	}
+
+	public static IFile getFileFromPath(IPath path) throws WranglerException {
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IFile[] files = root.findFilesForLocation(path);
 		if (files.length > 0)
 			return files[0];

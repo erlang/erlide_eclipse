@@ -90,7 +90,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 			OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
 			String fileNameStr = fileName.stringValue();
-			IFile file = WranglerUtils.geFileFromPath(fileNameStr);
+			IFile file = WranglerUtils.getFileFromPath(fileNameStr);
 			DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
 					file, startLine.intValue(), startCol.intValue(), endLine
 							.intValue(), endCol.intValue() + 1);
