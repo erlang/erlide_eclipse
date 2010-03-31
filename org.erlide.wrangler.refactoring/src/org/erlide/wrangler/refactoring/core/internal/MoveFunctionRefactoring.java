@@ -13,8 +13,6 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
-import com.ericsson.otp.erlang.OtpErlangBoolean;
-
 /**
  * Move function refactoring integration class
  * 
@@ -46,10 +44,10 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 	public IRefactoringRpcMessage run(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
-				"move_fun_eclipse", "siisxxi", sel.getFilePath(),
+				"move_fun_eclipse", "siisxi", sel.getFilePath(),
 				sel.getMemberRange().getStartLine(),
 				sel.getMemberRange().getStartCol(), userInput,
-				new OtpErlangBoolean(false), sel.getSearchPath(),
+				/* new OtpErlangBoolean(false), */sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
 
@@ -66,7 +64,7 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 				"move_fun_1_eclipse", "siisxxi", sel.getFilePath(),
 				sel.getMemberRange().getStartLine(),
 				sel.getMemberRange().getStartCol(), userInput,
-				new OtpErlangBoolean(false), sel.getSearchPath(),
+				/* new OtpErlangBoolean(false), */sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
 

@@ -307,5 +307,12 @@
          </action>
       </objectContribution>
    </extension>
+   <extension
+         point="org.erlide.ui.erlDndAdapter">
+      <client
+            class="org.erlide.wrangler.refactoring.ui.dnd.MoveFunctionDropHandler"
+            name="Move function">
+      </client>
+   </extension>
 
 </plugin>
