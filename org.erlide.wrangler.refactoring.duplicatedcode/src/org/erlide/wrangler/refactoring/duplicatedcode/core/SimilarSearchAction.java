@@ -64,6 +64,6 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 		inputd.open();
 		simScore = (float) inputd.getSimScore();
 		onlyInFile = inputd.onlyinFile();
-		return true;
+		return inputd.isFinished();
 	}
 }
