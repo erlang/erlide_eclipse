@@ -80,10 +80,9 @@ public class TupleFunctionParametersRefactoring extends
 	public IRefactoringRpcMessage run(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
-				"tuple_funpar_eclipse", "siisxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartLine(),
-				sel.getSelectionRange().getStartCol(),
-				String.valueOf(numberOfTuplingParameters), sel.getSearchPath(),
+				"tuple_funpar_eclipse", "sxxxi", sel.getFilePath(),
+				sel.getSelectionRange().getStartPos(),
+				sel.getSelectionRange().getEndPos(), sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
 
