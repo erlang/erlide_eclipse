@@ -185,7 +185,9 @@ public class Backend extends OtpNodeStatus {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
-				throw new RpcException("could not restart backend");
+				throw new RpcException(String.format(
+						"could not restart backend %s (exitstatus=%d restarted=%d)", getInfo(),
+						exitStatus, restarted));
 			}
 		}
 	}
