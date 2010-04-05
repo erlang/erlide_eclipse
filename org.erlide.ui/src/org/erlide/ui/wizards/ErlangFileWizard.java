@@ -61,6 +61,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
 	public ErlangFileWizard() {
 		super();
 		setNeedsProgressMonitor(true);
+		setWindowTitle("New Erlang module");
 	}
 
 	/**
