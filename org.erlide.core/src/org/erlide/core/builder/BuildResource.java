@@ -3,6 +3,7 @@
  */
 package org.erlide.core.builder;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 
 public final class BuildResource {
@@ -14,6 +15,11 @@ public final class BuildResource {
 	public BuildResource(IResource res, String out) {
 		resource = res;
 		output = out;
+	}
+
+	public BuildResource(IResource res, IContainer out) {
+		resource = res;
+		output = out.getRawLocation().toString();
 	}
 
 	public BuildResource(IResource res) {
