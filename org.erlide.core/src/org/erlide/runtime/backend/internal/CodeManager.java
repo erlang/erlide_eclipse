@@ -160,25 +160,6 @@ public class CodeManager {
 		// ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
 	}
 
-	@SuppressWarnings("unused")
-	private void loadStubCode(final Bundle b, final IExtensionRegistry reg) {
-		// load all stub code
-		final IConfigurationElement[] stubs = reg.getConfigurationElementsFor(
-				ErlangPlugin.PLUGIN_ID, "javaRpcStubs");
-		for (final IConfigurationElement stub : stubs) {
-			final IContributor c = stub.getContributor();
-			if (c.getName().equals(b.getSymbolicName())) {
-				final String decl = stub.getAttribute("onlyDeclared");
-				// ErlLogger.debug(" STUB: %s %s",
-				// stub.getAttribute("class"),
-				// decl);
-				ErlBackend.generateRpcStub(stub.getAttribute("class"),
-						decl == null ? false : Boolean.parseBoolean(decl),
-						backend);
-			}
-		}
-	}
-
 	private boolean addPath(final List<PathItem> l, final String path) {
 		if (path == null) {
 			return false;

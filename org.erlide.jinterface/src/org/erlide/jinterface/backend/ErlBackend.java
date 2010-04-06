@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.jinterface.backend.util.Util;
-import org.erlide.jinterface.rpc.generator.RpcStubGenerator;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
@@ -268,18 +267,6 @@ public class ErlBackend {
 		} catch (final Exception e) {
 			return "System information could not be retrieved...";
 		}
-	}
-
-	public static void generateRpcStub(final String className,
-			final boolean onlyDeclared, final Backend b) {
-		generateRpcStub(TypeConverter.getClassByName(className), onlyDeclared,
-				b);
-	}
-
-	public static void generateRpcStub(final Class<?> cls,
-			final boolean onlyDeclared, final Backend b) {
-		final String s = RpcStubGenerator.generate(cls, onlyDeclared);
-		generateRpcStub(b, s);
 	}
 
 }
