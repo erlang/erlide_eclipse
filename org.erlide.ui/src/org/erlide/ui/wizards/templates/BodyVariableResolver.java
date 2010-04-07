@@ -19,10 +19,6 @@ public class BodyVariableResolver extends TemplateVariableResolver {
 
 	private String fBody = "ok";
 
-	public BodyVariableResolver() {
-		fInstance = this;
-	}
-
 	public static BodyVariableResolver getDefault() {
 		if (fInstance == null) {
 			fInstance = new BodyVariableResolver();

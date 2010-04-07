@@ -103,7 +103,7 @@ public class EdocView extends AbstractInfoView {
 	/**
 	 * The Javadoc view's select all action.
 	 */
-	private class SelectAllAction extends Action {
+	private static class SelectAllAction extends Action {
 
 		/** The control. */
 		private final Control fControl;
@@ -120,7 +120,8 @@ public class EdocView extends AbstractInfoView {
 		 *            the selection provider
 		 */
 		public SelectAllAction(final Control control,
-				final SelectionProvider selectionProvider) {
+				final SelectionProvider selectionProvider,
+				final boolean useBrowserWidget) {
 			super("selectAll");
 
 			Assert.isNotNull(control);
@@ -129,9 +130,9 @@ public class EdocView extends AbstractInfoView {
 			fSelectionProvider = selectionProvider;
 
 			// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
-			setEnabled(!fIsUsingBrowserWidget);
+			setEnabled(!useBrowserWidget);
 
-			this.setText("Select All");
+			setText("Select All");
 			setToolTipText("Select All");
 			setDescription("Select All");
 
@@ -333,7 +334,8 @@ public class EdocView extends AbstractInfoView {
 	protected void createActions() {
 		super.createActions();
 		fSelectAllAction = new SelectAllAction(getControl(),
-				(SelectionProvider) getSelectionProvider());
+				(SelectionProvider) getSelectionProvider(),
+				fIsUsingBrowserWidget);
 	}
 
 	/*

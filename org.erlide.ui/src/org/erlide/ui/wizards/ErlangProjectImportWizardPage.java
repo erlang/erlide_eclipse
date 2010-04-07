@@ -75,39 +75,27 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
-import org.erlide.ui.util.ResourceTreeAndListGroup;
 
 public class ErlangProjectImportWizardPage extends
 		ErlangWizardResourceImportPage implements Listener, IOverwriteQuery {
 	// widgets
 	protected Combo sourceNameField;
-
 	protected Button overwriteExistingResourcesCheckbox;
-
 	protected Button copyProjectsIntoWorkspaceCheckbox;
-
 	// protected Button createContainerStructureButton;
-	// //
 	// protected Button createOnlySelectedButton;
-
 	protected Button sourceBrowseButton;
-
 	protected Button selectTypesButton;
-
 	// protected Button selectAllButton;
-
 	// protected Button deselectAllButton;
 
 	// A boolean to indicate if the user has typed anything
 	boolean entryChanged = false;
-
 	boolean copyFiles = false;
 
 	// dialog store id constants
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
-
 	private final static String STORE_OVERWRITE_EXISTING_RESOURCES_ID = "WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID";//$NON-NLS-1$
-
 	private static final String SELECT_TYPES_TITLE = ErlangDataTransferMessages.DataTransfer_selectTypes;
 
 	// private static final String SELECT_ALL_TITLE =
@@ -117,15 +105,10 @@ public class ErlangProjectImportWizardPage extends
 	// ErlangDataTransferMessages.DataTransfer_deselectAll;
 
 	private static final String SELECT_SOURCE_TITLE = ErlangDataTransferMessages.FileImport_selectSourceTitle;
-
 	private static final String SELECT_SOURCE_MESSAGE = ErlangDataTransferMessages.FileImport_selectSource;
-
 	protected static final String SOURCE_EMPTY_MESSAGE = ErlangDataTransferMessages.FileImport_sourceEmpty;
-
 	private String projectName;
-
 	protected Path projectPath;
-
 	private Composite sourceContainerGroup;
 
 	/**
@@ -274,12 +257,10 @@ public class ErlangProjectImportWizardPage extends
 							// setAllSelections(tr);
 							enableButtonGroup(false);
 							enableResourceTreeGroup(true);
-
 						}
 					}
 				});
 		// copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
-
 	}
 
 	/**
@@ -472,7 +453,7 @@ public class ErlangProjectImportWizardPage extends
 	 * @param enable
 	 */
 	protected void enableResourceTreeGroup(final boolean enable) {
-		ResourceTreeAndListGroup.enableFolderComposite(enable);
+		selectionGroup.enableFolderComposite(enable);
 	}
 
 	/**

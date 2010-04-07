@@ -231,14 +231,15 @@ public class ErlideUIPluginImages {
 	/*
 	 * Helper method to access the image registry from the JavaPlugin class.
 	 */
-	/* package */static ImageRegistry getImageRegistry() {
+	static ImageRegistry getImageRegistry() {
 		if (fgImageRegistry == null) {
-			fgImageRegistry = new ImageRegistry();
+			ImageRegistry reg = new ImageRegistry();
 			for (final Object element : fgAvoidSWTErrorMap.keySet()) {
 				final String key = (String) element;
-				fgImageRegistry.put(key, fgAvoidSWTErrorMap.get(key));
+				reg.put(key, fgAvoidSWTErrorMap.get(key));
 			}
 			fgAvoidSWTErrorMap = null;
+			fgImageRegistry = reg;
 		}
 		return fgImageRegistry;
 	}

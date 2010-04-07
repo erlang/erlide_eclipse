@@ -80,7 +80,7 @@ public final class MarkerHelper {
 	 * @param resource
 	 * @param errorList
 	 */
-	public static void addErrorMarkers(IResource resource,
+	public static void addErrorMarkers(final IResource resource,
 			final OtpErlangList errorList) {
 		for (final OtpErlangObject odata : errorList.elements()) {
 			try {
@@ -102,9 +102,14 @@ public final class MarkerHelper {
 						try {
 							final IErlModel model = ErlangCore.getModel();
 							final String includeFile = ModelUtils
-									.findIncludeFile(project, fileName, model.getExternal(model
-											.findProject(project),
-											ErlangCore.EXTERNAL_INCLUDES));
+									.findIncludeFile(
+											project,
+											fileName,
+											model
+													.getExternal(
+															model
+																	.findProject(project),
+															ErlangCore.EXTERNAL_INCLUDES));
 							if (includeFile != null) {
 								res = ResourceUtil.openExternal(includeFile);
 							}
@@ -344,21 +349,28 @@ public final class MarkerHelper {
 			input = file.getContents();
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(input));
-			String line = reader.readLine();
-			final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
-			int numline = 0;
-			while (line != null) {
-				if (line.matches("^[^%]*%+[ \t]*(TODO|XXX|FIXME).*")) {
-					cl.add(new Tuple<String, Integer>(line, numline));
+			try {
+				String line = reader.readLine();
+				final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
+				int numline = 0;
+				while (line != null) {
+					if (line.matches("^[^%]*%+[ \t]*(TODO|XXX|FIXME).*")) {
+						cl.add(new Tuple<String, Integer>(line, numline));
+					}
+					numline++;
+					line = reader.readLine();
 				}
-				numline++;
-				line = reader.readLine();
-			}
 
-			for (final Tuple<String, Integer> c : cl) {
-				mkMarker(resource, c.o2, c.o1, "TODO", IMarker.PRIORITY_NORMAL);
-				mkMarker(resource, c.o2, c.o1, "XXX", IMarker.PRIORITY_NORMAL);
-				mkMarker(resource, c.o2, c.o1, "FIXME", IMarker.PRIORITY_HIGH);
+				for (final Tuple<String, Integer> c : cl) {
+					mkMarker(resource, c.o2, c.o1, "TODO",
+							IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c.o2, c.o1, "XXX",
+							IMarker.PRIORITY_NORMAL);
+					mkMarker(resource, c.o2, c.o1, "FIXME",
+							IMarker.PRIORITY_HIGH);
+				}
+			} finally {
+				reader.close();
 			}
 		} catch (final CoreException e) {
 			// TODO Auto-generated catch block

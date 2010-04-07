@@ -13,6 +13,7 @@ package org.erlide.jinterface.util;
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -48,36 +49,37 @@ public class IOServer implements Runnable {
 							+ " : " + msg);
 
 					if (msg instanceof OtpErlangTuple) {
-						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
-						final String tag = ((OtpErlangAtom) tuple.elementAt(0))
-								.atomValue();
-						if ("io_request".equals(tag)) {
-							final OtpErlangPid from = (OtpErlangPid) tuple
-									.elementAt(1);
-							final OtpErlangObject replyAs = tuple.elementAt(2);
-							final OtpErlangTuple request = (OtpErlangTuple) tuple
-									.elementAt(3);
-							final OtpErlangObject reply = processRequest(from,
-									request);
-							final OtpErlangTuple replyMsg = OtpErlang
-									.mkTuple(new OtpErlangAtom("io_reply"),
-											replyAs, reply);
-							mbox.send(from, replyMsg);
-						} else {
-							ErlLogger.debug("IOServer: unknown message " + msg);
-						}
+						handleMessage(msg);
 					} else {
 						ErlLogger.debug("IOServer: unknown message " + msg);
 					}
 				}
+			} catch (OtpErlangExit e) {
+				done = true;
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		} while (!done || !Thread.interrupted());
 	}
 
-	private final OtpErlangObject error = OtpErlang.mkTuple(
-			new OtpErlangAtom("error"), new OtpErlangAtom("request"));
+	private void handleMessage(final OtpErlangObject msg) {
+		final OtpErlangTuple tuple = (OtpErlangTuple) msg;
+		final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
+		if ("io_request".equals(tag)) {
+			final OtpErlangPid from = (OtpErlangPid) tuple.elementAt(1);
+			final OtpErlangObject replyAs = tuple.elementAt(2);
+			final OtpErlangTuple request = (OtpErlangTuple) tuple.elementAt(3);
+			final OtpErlangObject reply = processRequest(from, request);
+			final OtpErlangTuple replyMsg = OtpErlang.mkTuple(
+					new OtpErlangAtom("io_reply"), replyAs, reply);
+			mbox.send(from, replyMsg);
+		} else {
+			ErlLogger.debug("IOServer: unknown message " + msg);
+		}
+	}
+
+	private final OtpErlangObject error = OtpErlang.mkTuple(new OtpErlangAtom(
+			"error"), new OtpErlangAtom("request"));
 
 	private OtpErlangObject processRequest(final OtpErlangPid from,
 			final OtpErlangObject arequest) {
@@ -190,9 +192,8 @@ public class IOServer implements Runnable {
 						return callback.setOpts(opts);
 					}
 				} else if ("get_geometry".equals(tag)) {
-					return OtpErlang.mkTuple(
-							new OtpErlangAtom("error"), new OtpErlangAtom(
-									"enotsup"));
+					return OtpErlang.mkTuple(new OtpErlangAtom("error"),
+							new OtpErlangAtom("enotsup"));
 				} else {
 					return error;
 				}

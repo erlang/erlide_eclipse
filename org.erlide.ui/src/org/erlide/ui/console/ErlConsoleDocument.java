@@ -33,10 +33,11 @@ public final class ErlConsoleDocument extends Document implements
 
 		if (LEGAL_CONTENT_TYPES == null) {
 			IoRequestKind[] values = IoRequestKind.values();
-			LEGAL_CONTENT_TYPES = new String[values.length];
-			for (int i = 0; i < LEGAL_CONTENT_TYPES.length; i++) {
-				LEGAL_CONTENT_TYPES[i] = values[i].name();
+			String[] ss = new String[values.length];
+			for (int i = 0; i < values.length; i++) {
+				ss[i] = values[i].name();
 			}
+			LEGAL_CONTENT_TYPES = ss;
 		}
 
 		Assert.isNotNull(shell);

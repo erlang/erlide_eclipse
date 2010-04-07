@@ -55,7 +55,7 @@ public class AssemblaHandler extends TicketHandlerImpl {
 	public URL getLoginURL(final String user, final String pass)
 			throws MalformedURLException {
 		if (checkUser(user)) {
-			final String str = String.format(MYURL, user, pass);
+			final String str = String.format(MYURL+"?user=%s&pass=%s", user, pass);
 			return new URL(str);
 		}
 		return null;

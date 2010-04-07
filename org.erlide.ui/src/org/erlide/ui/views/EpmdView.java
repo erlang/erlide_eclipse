@@ -70,7 +70,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 
 	}
 
-	class TreeLabelProvider extends LabelProvider {
+	static class TreeLabelProvider extends LabelProvider {
 		@Override
 		public String getText(final Object element) {
 			return super.getText(element);

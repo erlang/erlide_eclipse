@@ -269,7 +269,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 		return erlideRuntime;
 	}
 
-	public RuntimeInfo getDefaultRuntime() {
+	public synchronized RuntimeInfo getDefaultRuntime() {
 		return getRuntime(getDefaultRuntimeName());
 	}
 

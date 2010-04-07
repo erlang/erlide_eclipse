@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IPath;
@@ -47,28 +48,19 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	Object root;
 
 	private Object currentTreeSelection;
-
 	Collection<Object> expandedTreeNodes = new HashSet<Object>();
-
 	Map<Object, List<Object>> checkedStateStore = new HashMap<Object, List<Object>>(
 			9);
-
 	Collection<Object> whiteCheckedTreeItems = new HashSet<Object>();
-
 	final ITreeContentProvider treeContentProvider;
-
 	private final IStructuredContentProvider listContentProvider;
-
 	private final ILabelProvider treeLabelProvider;
-
 	private final ILabelProvider listLabelProvider;
 
 	// widgets
 	CheckboxTreeViewer treeViewer;
-
 	CheckboxTableViewer listViewer;
-
-	private static Composite folderComposite;
+	private Composite folderComposite;
 
 	// height hint for viewers
 	private static int PREFERRED_HEIGHT = 150;
@@ -1114,16 +1106,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 		// Update the store before the hierarchy to prevent updating parents
 		// before all of the children are done
-		final Iterator<Object> keyIterator = items.keySet().iterator();
-		while (keyIterator.hasNext()) {
-			final Object key = keyIterator.next();
-			final List<Object> selections = items.get(key);
+		for (Entry<Object, List<Object>> entry : items.entrySet()) {
 			// Replace the items in the checked state store with those from the
 			// supplied items
-			checkedStateStore.put(key, selections);
-			selectedNodes.add(key);
+			checkedStateStore.put(entry, entry.getValue());
+			selectedNodes.add(entry);
 			// proceed up the tree element hierarchy
-			final Object parent = treeContentProvider.getParent(key);
+			final Object parent = treeContentProvider.getParent(entry);
 			if (parent != null) {
 				// proceed up the tree element hierarchy and make sure
 				// everything is in the table
@@ -1149,7 +1138,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 	/**
 	 * 
 	 */
-	public static void enableFolderComposite(final boolean enabled) {
+	public void enableFolderComposite(final boolean enabled) {
 		folderComposite.setEnabled(enabled);
 	}
 

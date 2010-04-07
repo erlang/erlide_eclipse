@@ -27,7 +27,7 @@ public class ManagedLauncher implements IDisposable {
 	private final ILaunch launch;
 	private IStreamsProxy proxy;
 
-	public ManagedLauncher(ILaunch aLaunch) {
+	public ManagedLauncher(final ILaunch aLaunch) {
 		Assert.isNotNull(aLaunch);
 		launch = aLaunch;
 		proxy = null;
@@ -43,7 +43,8 @@ public class ManagedLauncher implements IDisposable {
 		stop();
 	}
 
-	public void startRuntime(final RuntimeInfo info, Map<String, String> my_env) {
+	public void startRuntime(final RuntimeInfo info,
+			final Map<String, String> my_env) {
 		if (info == null) {
 			ErlLogger.error("Trying to start backend with null info");
 			return;
@@ -150,6 +151,7 @@ public class ManagedLauncher implements IDisposable {
 						}
 					} finally {
 						pw.flush();
+						pw.close();
 						out.close();
 					}
 				} catch (final IOException e) {
@@ -175,7 +177,7 @@ public class ManagedLauncher implements IDisposable {
 				return createdDump;
 			}
 
-			private void move(File in, File out) throws IOException {
+			private void move(final File in, final File out) throws IOException {
 				InputStream ins = new FileInputStream(in);
 				OutputStream outs = new FileOutputStream(out);
 				try {
@@ -202,7 +204,7 @@ public class ManagedLauncher implements IDisposable {
 			}
 
 			FilenameFilter filter = new FilenameFilter() {
-				public boolean accept(File dir, String name) {
+				public boolean accept(final File dir, final String name) {
 					return name.matches("^core.[0-9]+$");
 				}
 			};

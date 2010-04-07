@@ -15,22 +15,13 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import junit.framework.Assert;
+
 import org.erlide.jinterface.util.IConvertible;
 import org.erlide.jinterface.util.TypeConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangDouble;
-import com.ericsson.otp.erlang.OtpErlangFloat;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.Signature;
-import com.ericsson.otp.erlang.SignatureException;
 
 public class RpcConverterTest {
 
@@ -152,7 +143,7 @@ public class RpcConverterTest {
 		final String sig = "aslsilpfd";
 		final Signature[] result = Signature.parse(sig);
 		final String expect = "[a, s, l(s), i, l(p), f, d]";
-		assertTrue(Arrays.toString(result).equals(expect));
+		Assert.assertEquals(expect, Arrays.toString(result));
 	}
 
 	@Test

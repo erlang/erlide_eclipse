@@ -19,10 +19,6 @@ public class ArgumentsVariableResolver extends TemplateVariableResolver {
 
 	private int fArity;
 
-	public ArgumentsVariableResolver() {
-		fInstance = this;
-	}
-
 	public static ArgumentsVariableResolver getDefault() {
 		if (fInstance == null) {
 			fInstance = new ArgumentsVariableResolver();

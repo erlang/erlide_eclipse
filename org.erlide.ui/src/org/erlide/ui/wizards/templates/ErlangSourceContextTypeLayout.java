@@ -21,7 +21,6 @@ public class ErlangSourceContextTypeLayout extends TemplateContextType {
 	 */
 	public ErlangSourceContextTypeLayout() {
 		addGlobalResolvers();
-		fInstance = this;
 	}
 
 	private void addGlobalResolvers() {

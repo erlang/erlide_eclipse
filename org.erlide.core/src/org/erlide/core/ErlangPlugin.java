@@ -96,6 +96,9 @@ public class ErlangPlugin extends Plugin {
 	 * @return The plugin
 	 */
 	public static ErlangPlugin getDefault() {
+		if (plugin == null) {
+			plugin = new ErlangPlugin();
+		}
 		return plugin;
 	}
 
@@ -189,17 +192,17 @@ public class ErlangPlugin extends Plugin {
 
 		ResourcesPlugin.getWorkspace().addSaveParticipant(this,
 				new ISaveParticipant() {
-					public void doneSaving(ISaveContext context1) {
+					public void doneSaving(final ISaveContext context1) {
 					}
 
-					public void prepareToSave(ISaveContext context1)
+					public void prepareToSave(final ISaveContext context1)
 							throws CoreException {
 					}
 
-					public void rollback(ISaveContext context1) {
+					public void rollback(final ISaveContext context1) {
 					}
 
-					public void saving(ISaveContext context1)
+					public void saving(final ISaveContext context1)
 							throws CoreException {
 						savePluginPreferences();
 					}

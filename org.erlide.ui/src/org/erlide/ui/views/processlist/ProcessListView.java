@@ -45,8 +45,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.events.EventHandler;
-import org.erlide.runtime.backend.ErlideBackendVisitor;
 import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.runtime.backend.ErlideBackendVisitor;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 
@@ -312,14 +312,15 @@ public class ProcessListView extends ViewPart {
 						getBackend(), pid);
 				if (r instanceof OtpErlangList) {
 					final OtpErlangList l = (OtpErlangList) r;
-					String s = "";
+					StringBuilder s = new StringBuilder();
 					for (int i = 0; i < l.arity(); i++) {
 						final OtpErlangTuple e = (OtpErlangTuple) l
 								.elementAt(i);
-						s += " " + e.elementAt(0).toString() + "\t= "
-								+ e.elementAt(1).toString() + "\n";
+						s.append(' ').append(e.elementAt(0).toString()).append(
+								"\t= ").append(e.elementAt(1).toString())
+								.append('\n');
 					}
-					showMessage(s);
+					showMessage(s.toString());
 				} else {
 					showMessage("Process "
 							+ pid.toString()

@@ -120,7 +120,7 @@ public class ErlReconciler implements IReconciler {
 		/**
 		 * Reset the background thread as the text viewer has been changed,
 		 */
-		public void reset() {
+		public synchronized void reset() {
 			if (fDelay > 0) {
 				fReset = true;
 			} else {
@@ -135,7 +135,7 @@ public class ErlReconciler implements IReconciler {
 		 * Set reset flag to false, so that it will reconcile, only to be used
 		 * by {@link ErlReconciler#reconcileNow()}
 		 */
-		public void unreset() {
+		public synchronized void unreset() {
 			fReset = false;
 		}
 

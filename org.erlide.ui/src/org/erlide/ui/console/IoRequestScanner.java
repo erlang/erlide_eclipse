@@ -25,13 +25,14 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 	private int crtOffset;
 	private int crtLength;
 
-	public IoRequestScanner(BackendShell model) {
+	public IoRequestScanner(final BackendShell model) {
 		Assert.isNotNull(model);
 		this.model = model;
 	}
 
-	public void setPartialRange(IDocument document, int offset, int length,
-			String contentType, int partitionOffset) {
+	public void setPartialRange(final IDocument document, final int offset,
+			final int length, final String contentType,
+			final int partitionOffset) {
 		docOffset = offset;
 		docLength = length;
 		IoRequest req = model.findAtPos(docOffset);
@@ -68,7 +69,8 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 		return token;
 	}
 
-	public void setRange(IDocument document, int offset, int length) {
+	public void setRange(final IDocument document, final int offset,
+			final int length) {
 		docOffset = offset;
 		docLength = length;
 		IoRequest req = model.findAtPos(docOffset);
@@ -80,11 +82,11 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 		crtLength = 0;
 	}
 
-	private class IoRequestToken implements IToken {
+	private static class IoRequestToken implements IToken {
 
 		private final String data;
 
-		public IoRequestToken(IoRequest req) {
+		public IoRequestToken(final IoRequest req) {
 			if (req == null) {
 				data = null;
 			} else {

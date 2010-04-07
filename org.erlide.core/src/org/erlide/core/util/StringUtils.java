@@ -5,11 +5,12 @@ public final class StringUtils {
 	private StringUtils() {
 	}
 
-	public static String join(String[] cmds) {
-		String result = "";
-		for (String cmd : cmds)
-			result += cmd + " ";
-		return result;
+	public static String join(final String[] cmds) {
+		StringBuilder result = new StringBuilder();
+		for (String cmd : cmds) {
+			result.append(cmd).append(' ');
+		}
+		return result.toString();
 	}
 
 }

@@ -148,24 +148,24 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
-	public synchronized void send(final OtpErlangPid pid, final Object msg) {
+	public void send(final OtpErlangPid pid, final Object msg) {
 		if (!available) {
 			return;
 		}
 		try {
-			RpcUtil.send(fNode, pid, msg);
+			RpcUtil.send(getNode(), pid, msg);
 		} catch (final SignatureException e) {
 			// shouldn't happen
 			ErlLogger.warn(e);
 		}
 	}
 
-	public synchronized void send(final String name, final Object msg) {
+	public void send(final String name, final Object msg) {
 		if (!available) {
 			return;
 		}
 		try {
-			RpcUtil.send(fNode, fPeer, name, msg);
+			RpcUtil.send(getNode(), getPeer(), name, msg);
 		} catch (final SignatureException e) {
 			// shouldn't happen
 			ErlLogger.warn(e);
@@ -185,7 +185,9 @@ public class Backend extends OtpNodeStatus {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
-				throw new RpcException("could not restart backend");
+				throw new RpcException(String.format(
+						"could not restart backend %s (exitstatus=%d restarted=%d)", getInfo(),
+						exitStatus, restarted));
 			}
 		}
 	}
@@ -201,8 +203,8 @@ public class Backend extends OtpNodeStatus {
 	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
 
-		if (fNode != null) {
-			fNode.close();
+		if (getNode() != null) {
+			getNode().close();
 		}
 		if (eventDaemon != null) {
 			eventDaemon.stop();
@@ -234,12 +236,12 @@ public class Backend extends OtpNodeStatus {
 					len, cookie);
 			fPeer = BackendUtil.buildNodeName(label, true);
 
-			eventBox = fNode.createMbox("rex");
+			eventBox = getNode().createMbox("rex");
 			int tries = 20;
 			while (!available && tries > 0) {
 				ErlLogger.debug("# try to connect...");
-				available = fNode.ping(fPeer, RETRY_DELAY + (20 - tries)
-						* RETRY_DELAY / 5);
+				available = getNode().ping(getPeer(),
+						RETRY_DELAY + (20 - tries) * RETRY_DELAY / 5);
 				tries--;
 			}
 			if (available) {
@@ -288,7 +290,7 @@ public class Backend extends OtpNodeStatus {
 	}
 
 	public String getJavaNodeName() {
-		return fNode.node();
+		return getNode().node();
 	}
 
 	public String getName() {
@@ -298,8 +300,12 @@ public class Backend extends OtpNodeStatus {
 		return fInfo.getNodeName();
 	}
 
-	public String getPeer() {
+	public synchronized String getPeer() {
 		return fPeer;
+	}
+
+	private synchronized OtpNode getNode() {
+		return fNode;
 	}
 
 	private String getScriptId() throws BackendException {
@@ -314,7 +320,8 @@ public class Backend extends OtpNodeStatus {
 		return "";
 	}
 
-	private boolean init(final OtpErlangPid jRex, boolean monitor, boolean watch) {
+	private boolean init(final OtpErlangPid jRex, final boolean monitor,
+			final boolean watch) {
 		try {
 			// reload(backend);
 			call("erlide_kernel_common", "init", "poo", jRex, monitor, watch);
@@ -328,7 +335,8 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
-	public void initErlang(boolean monitor, boolean watch) {
+	public synchronized void initErlang(final boolean monitor,
+			final boolean watch) {
 		final boolean inited = init(getEventPid(), monitor, watch);
 		if (!inited) {
 			setAvailable(false);
@@ -356,7 +364,7 @@ public class Backend extends OtpNodeStatus {
 			final String module, final String fun, final String signature,
 			final Object... args0) throws RpcException, SignatureException {
 		checkAvailability();
-		return RpcUtil.sendRpcCall(fNode, fPeer, gleader, module, fun,
+		return RpcUtil.sendRpcCall(getNode(), getPeer(), gleader, module, fun,
 				signature, args0);
 	}
 
@@ -372,8 +380,8 @@ public class Backend extends OtpNodeStatus {
 			final String fun, final String signature, final Object... args0)
 			throws RpcException, SignatureException {
 		checkAvailability();
-		final OtpErlangObject result = RpcUtil.rpcCall(fNode, fPeer, gleader,
-				module, fun, timeout, signature, args0);
+		final OtpErlangObject result = RpcUtil.rpcCall(getNode(), getPeer(),
+				gleader, module, fun, timeout, signature, args0);
 		return result;
 	}
 
@@ -388,7 +396,8 @@ public class Backend extends OtpNodeStatus {
 			final String fun, final String signature, final Object... args0)
 			throws SignatureException, RpcException {
 		checkAvailability();
-		RpcUtil.rpcCast(fNode, fPeer, gleader, module, fun, signature, args0);
+		RpcUtil.rpcCast(getNode(), getPeer(), gleader, module, fun, signature,
+				args0);
 	}
 
 	protected void makeCast(final String module, final String fun,
@@ -398,13 +407,13 @@ public class Backend extends OtpNodeStatus {
 	}
 
 	public boolean ping() {
-		return fNode.ping(fPeer, 500);
+		return getNode().ping(getPeer(), 500);
 	}
 
-	public void registerStatusHandler(OtpNodeStatus handler) {
-		if (fNode != null) {
-			fNode.registerStatusHandler(handler);
-			fNode.registerStatusHandler(this);
+	public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
+		if (getNode() != null) {
+			getNode().registerStatusHandler(handler);
+			getNode().registerStatusHandler(this);
 		}
 	}
 
@@ -415,8 +424,8 @@ public class Backend extends OtpNodeStatus {
 		}
 		restarted++;
 		ErlLogger.info("restarting runtime for %s", toString());
-		if (fNode != null) {
-			fNode.close();
+		if (getNode() != null) {
+			getNode().close();
 			fNode = null;
 		}
 		initializeRuntime();
@@ -432,7 +441,7 @@ public class Backend extends OtpNodeStatus {
 		fDebug = b;
 	}
 
-	public void setExitStatus(final int v) {
+	public synchronized void setExitStatus(final int v) {
 		exitStatus = v;
 	}
 
@@ -513,17 +522,17 @@ public class Backend extends OtpNodeStatus {
 		return false;
 	}
 
-	public void input(String string) throws IOException {
+	public void input(final String string) throws IOException {
 		// XXX
 		System.out.println("INPUT???");
 	}
 
 	public OtpMbox createMbox() {
-		return fNode.createMbox();
+		return getNode().createMbox();
 	}
 
-	public OtpMbox createMbox(String name) {
-		return fNode.createMbox(name);
+	public OtpMbox createMbox(final String name) {
+		return getNode().createMbox(name);
 	}
 
 	@Override

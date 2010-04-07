@@ -152,10 +152,10 @@ public final class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static RpcFuture sendRpcCall(final OtpNode node, final String peer,
-			final OtpErlangObject gleader, final String module,
-			final String fun, final String signature, final Object... args0)
-			throws SignatureException {
+	public static synchronized RpcFuture sendRpcCall(final OtpNode node,
+			final String peer, final OtpErlangObject gleader,
+			final String module, final String fun, final String signature,
+			final Object... args0) throws SignatureException {
 		final OtpErlangObject[] args = convertArgs(signature, args0);
 
 		OtpErlangObject res = null;
@@ -175,8 +175,8 @@ public final class RpcUtil {
 	 * @return
 	 * @throws RpcException
 	 */
-	public static OtpErlangObject getRpcResult(final OtpMbox mbox, String env)
-			throws RpcException {
+	public static OtpErlangObject getRpcResult(final OtpMbox mbox,
+			final String env) throws RpcException {
 		return getRpcResult(mbox, INFINITY, env);
 	}
 
@@ -190,7 +190,7 @@ public final class RpcUtil {
 	 * @throws RpcException
 	 */
 	public static OtpErlangObject getRpcResult(final OtpMbox mbox,
-			final long timeout, String env) throws RpcException {
+			final long timeout, final String env) throws RpcException {
 		assert mbox != null;
 
 		OtpErlangObject res = null;

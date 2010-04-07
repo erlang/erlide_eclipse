@@ -19,7 +19,7 @@ public class ErlStructureDiffViewerCreator implements IViewerCreator {
 		return viewer;
 	}
 
-	private class ErlViewerComparator extends ViewerComparator {
+	private static class ErlViewerComparator extends ViewerComparator {
 		@Override
 		public int compare(final Viewer viewer, final Object e1, final Object e2) {
 			final ErlNode en1 = getErlNode(e1);

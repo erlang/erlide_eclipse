@@ -55,8 +55,8 @@ import org.erlide.ui.editors.util.EditorUtility;
 
 public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
-	public class TableContentProvider implements IStructuredContentProvider,
-			IErlSearchContentProvider {
+	public static class TableContentProvider implements
+			IStructuredContentProvider, IErlSearchContentProvider {
 
 		private final Object[] EMPTY_ARR = new Object[0];
 
@@ -127,7 +127,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 	}
 
-	public class ErlangLabelProvider extends LabelProvider {
+	public static class ErlangLabelProvider extends LabelProvider {
 
 		public static final int SHOW_LABEL = 1;
 		public static final int SHOW_LABEL_PATH = 2;
@@ -216,7 +216,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 		}
 	}
 
-	public class TreeContentProvider implements ITreeContentProvider,
+	public static class TreeContentProvider implements ITreeContentProvider,
 			IErlSearchContentProvider {
 
 		private final Object[] EMPTY_ARR = new Object[0];
@@ -638,8 +638,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 				final int fileCount = getInput().getElements().length;
 				if (itemCount < fileCount) {
 					final String format = "{0} (showing {1} of {2} files)";
-					return MessageFormat.format(format, label, new Integer(
-							itemCount), new Integer(fileCount));
+					return MessageFormat.format(format, label, Integer
+							.valueOf(itemCount), Integer.valueOf(fileCount));
 				}
 			}
 		}

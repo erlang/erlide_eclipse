@@ -50,7 +50,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 	BuildNotifier notifier;
 
 	@Override
-	protected void clean(IProgressMonitor monitor) throws CoreException {
+	protected void clean(final IProgressMonitor monitor) throws CoreException {
 		IProject currentProject = getProject();
 		if (currentProject == null || !currentProject.isAccessible()) {
 			return;
@@ -99,8 +99,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
+	protected IProject[] build(final int kind, final Map args,
+			final IProgressMonitor monitor) throws CoreException {
 		IProject project = getProject();
 		if (project == null || !project.isAccessible()) {
 			return new IProject[0];
@@ -111,7 +111,6 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 					+ " of " + project.getName() + " @ "
 					+ new Date(System.currentTimeMillis()));
 		}
-		BuildNotifier.resetProblemCounters();
 		try {
 			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
@@ -175,8 +174,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<String> getResourcesToBuild(int kind, Map args, IProject project)
-			throws CoreException {
+	private Set<String> getResourcesToBuild(final int kind, final Map args,
+			final IProject project) throws CoreException {
 		Set<BuildResource> result = Sets.newHashSet();
 		IProgressMonitor submon = new NullProgressMonitor();
 		// new SubProgressMonitor(monitor, 10);
@@ -208,7 +207,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		return paths;
 	}
 
-	private void initializeBuilder(IProgressMonitor monitor)
+	private void initializeBuilder(final IProgressMonitor monitor)
 			throws CoreException, BackendException {
 		IProject currentProject = getProject();
 		notifier = new BuildNotifier(monitor, currentProject);
@@ -222,7 +221,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
 	class BuildHandler implements EventHandler {
 
-		public boolean handleEvent(OtpErlangObject msg) {
+		public boolean handleEvent(final OtpErlangObject msg) {
 			notifier.checkCancel();
 
 			ErlLogger.debug(">>> %s", msg);
@@ -247,6 +246,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 						// TODO create markers for clashes
 					}
 				} catch (Exception e) {
+					// ignore?
 				}
 			}
 			return msg.equals(new OtpErlangAtom("stop"));

@@ -25,7 +25,9 @@ public final class PreferencesUtils {
 	public static String packArray(final String[] strs) {
 		final StringBuilder result = new StringBuilder();
 		for (final String s : strs) {
-			result.append(s).append(SEP);
+			if (!"".equals(s)) {
+				result.append(s).append(SEP);
+			}
 		}
 		return result.toString();
 	}
@@ -39,11 +41,15 @@ public final class PreferencesUtils {
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(
 					file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.length() > 0) {
-					res.add(line);
+			try {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.length() > 0) {
+						res.add(line);
+					}
 				}
+			} finally {
+				reader.close();
 			}
 		} catch (final IOException e) {
 		}

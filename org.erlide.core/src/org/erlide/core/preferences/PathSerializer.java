@@ -43,9 +43,13 @@ public final class PathSerializer {
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(
 					file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				res.add(line);
+			try {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					res.add(line);
+				}
+			} finally {
+				reader.close();
 			}
 		} catch (final IOException e) {
 		}

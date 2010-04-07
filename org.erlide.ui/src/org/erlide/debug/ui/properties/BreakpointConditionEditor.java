@@ -61,7 +61,7 @@ public class BreakpointConditionEditor {
 			final ErlangLineBreakpointPropertyPage page) {
 		fPage = page;
 		fBreakpoint = fPage.getBreakpoint();
-		String condition = new String();
+		String condition = "";
 		try {
 			condition = fBreakpoint.getCondition();
 			fErrorMessage = "Enter a condition";

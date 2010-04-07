@@ -23,8 +23,8 @@ import com.ericsson.otp.erlang.RpcConverterTest;
 
 @RunWith(Suite.class)
 @SuiteClasses( { PatternMatchTest.class, JInterfaceTest.class,
-	RpcConverterTest.class, ErlRpcTest.class, RuntimeInfoTest.class,
+		RpcConverterTest.class, ErlRpcTest.class, RuntimeInfoTest.class,
 		RuntimeVersionTest.class })
-	public class AllTests {
+public class AllTests {
 
 }

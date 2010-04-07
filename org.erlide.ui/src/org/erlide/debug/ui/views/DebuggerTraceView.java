@@ -215,7 +215,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 		}
 	}
 
-	public class ColumnLabelProvider extends CellLabelProvider {
+	public static class ColumnLabelProvider extends CellLabelProvider {
 
 		@Override
 		public void update(final ViewerCell cell) {
@@ -271,7 +271,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 					s = module;
 					try {
 						final int line = lin.intValue();
-						s = s += ":" + line; //$NON-NLS-1$
+						s += ":" + line; //$NON-NLS-1$
 					} catch (final OtpErlangRangeException e) {
 					}
 					break;
@@ -589,7 +589,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 									dwindow.getShell(),
 									ActionMessages.OpenBreakpointMarkerAction_Go_to_Breakpoint_1,
 									ActionMessages.OpenBreakpointMarkerAction_Exceptions_occurred_attempting_to_open_the_editor_for_the_breakpoint_resource_2,
-									e); // 
+									e); //
 				}
 			}
 		}

@@ -840,7 +840,7 @@ public final class Util {
 			int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
-		final Comparable mid = sortedCollection[(left + right) / 2];
+		final Comparable mid = sortedCollection[(left + right) >>> 1];
 		do {
 			while (sortedCollection[left].compareTo(mid) < 0) {
 				left++;
@@ -867,7 +867,7 @@ public final class Util {
 	private static void quickSort(final int[] list, int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
-		final int mid = list[(left + right) / 2];
+		final int mid = list[(left + right) >>> 1];
 		do {
 			while (list[left] < mid) {
 				left++;
@@ -898,7 +898,7 @@ public final class Util {
 			int right, final Comparer comparer) {
 		final int original_left = left;
 		final int original_right = right;
-		final Object mid = sortedCollection[(left + right) / 2];
+		final Object mid = sortedCollection[(left + right) >>> 1];
 		do {
 			while (comparer.compare(sortedCollection[left], mid) < 0) {
 				left++;
@@ -963,7 +963,7 @@ public final class Util {
 			int right) {
 		final int original_left = left;
 		final int original_right = right;
-		final String mid = sortedCollection[(left + right) / 2];
+		final String mid = sortedCollection[(left + right) >>> 1];
 		do {
 			while (sortedCollection[left].compareTo(mid) < 0) {
 				left++;
@@ -994,7 +994,7 @@ public final class Util {
 			int left, int right) {
 		final int original_left = left;
 		final int original_right = right;
-		final String mid = sortedCollection[(left + right) / 2];
+		final String mid = sortedCollection[(left + right) >>> 1];
 		do {
 			while (sortedCollection[left].compareTo(mid) > 0) {
 				left++;
