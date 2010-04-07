@@ -15,19 +15,19 @@
 		 incFuncAcc=[],	
 		 dialyzerObj=[]}).
 
-get_type_info_using_typer(File) ->
+get_type_info_using_typer(FFF) ->
     PLT = filename:join(?WRANGLER_DIR, "plt/dialyzer_plt"),
-    Analysis = #typer_analysis{plt=PLT},
-    Analysis1 = Analysis#typer_analysis{ana_files = [File]},
+    Analysis = #typer_analysis{plt = PLT},
+    Analysis1 = Analysis#typer_analysis{ana_files = [FFF]},
     Analysis2 = collect(Analysis1),
     TypeInfo = get_type_info(Analysis2),
     ?debug("FinalFiles1:\n~p\n", [TypeInfo#typer_analysis.final_files]),
-    Fun = fun({F, Module}) -> 
-		  RecMap=lookup(F, TypeInfo#typer_analysis.record),
+    Fun = fun ({F, Module}) ->
+		  RecMap = lookup(F, TypeInfo#typer_analysis.record),
 		  TypeInfoPlt = TypeInfo#typer_analysis.trust_plt,
 		  case dialyzer_plt:lookup_module(TypeInfoPlt, Module) of
-		      none -> [];
-		      {value, List} -> {F, List, RecMap}
+		    none -> [];
+		    {value, List} -> {F, List, RecMap}
 		  end
 	  end,
     lists:map(Fun, TypeInfo#typer_analysis.final_files).
@@ -58,32 +58,17 @@ get_type_info(#typer_analysis{callgraph = CallGraph,
 collect(Analysis) ->
     NewPlt =dialyzer_plt:merge_plts([Analysis#typer_analysis.trust_plt, 
 				     Analysis#typer_analysis.plt]),
-    NewAnalysis = lists:foldl(fun collect_one_file_info/2, 
-			      Analysis#typer_analysis{trust_plt = NewPlt}, 
-			      Analysis#typer_analysis.ana_files),
-    %% Process Remote Types
-    TmpCServer = NewAnalysis#typer_analysis.code_server,
-    NewCServer =
-	try
-	    NewRecords = dialyzer_codeserver:get_temp_records(TmpCServer),
-	    OldRecords = dialyzer_plt:get_types(NewPlt),
-	    MergedRecords = dialyzer_utils:merge_records(NewRecords, OldRecords),
-	    TmpCServer1 = dialyzer_codeserver:set_temp_records(MergedRecords, TmpCServer),
-	    TmpCServer2 = dialyzer_utils:process_record_remote_types(TmpCServer1),
-	    dialyzer_contracts:process_contract_remote_types(TmpCServer2)
-	catch
-	    throw:{error, ErrorMsg} ->
-		throw({error, ErrorMsg})
-	end,
-    NewAnalysis#typer_analysis{code_server = NewCServer}.
-
+    lists:foldl(fun collect_one_file_info/2, 
+		Analysis#typer_analysis{trust_plt = NewPlt}, 
+		Analysis#typer_analysis.ana_files).
+   
 collect_one_file_info(File, Analysis) ->
     ?debug("File:\n~p\n", [File]),
     Ds = [{d,Name,Val} || {Name,Val} <- Analysis#typer_analysis.macros],
     %% Current directory should also be included in "Includes".
     Includes = [filename:dirname(File)|Analysis#typer_analysis.includes],
     Is = [{i,Dir} || Dir <- Includes],
-    Options = dialyzer_utils:src_compiler_opts() ++ Is ++ Ds,
+    Options = src_compiler_opts() ++ Is ++ Ds,
     case dialyzer_utils:get_abstract_code_from_src(File, Options) of
 	{error, Reason} ->
 	    throw({error, Reason});
@@ -103,12 +88,12 @@ analyze_core_tree(Core, Records, SpecInfo, Analysis, File) ->
   Module = list_to_atom(filename:basename(File, ".erl")),
   TmpTree = cerl:from_records(Core),
   CS1 = Analysis#typer_analysis.code_server,
-  NextLabel = dialyzer_codeserver:get_next_core_label(CS1),
+  NextLabel = get_next_core_label(CS1),
   {Tree, NewLabel} = cerl_trees:label(TmpTree, NextLabel),
-  CS2 = dialyzer_codeserver:insert(Module, Tree, CS1),
-  CS3 = dialyzer_codeserver:set_next_core_label(NewLabel, CS2),
-  CS4 = dialyzer_codeserver:store_temp_records(Module, Records, CS3),
-  CS5 = dialyzer_codeserver:store_temp_contracts(Module, SpecInfo, CS4),
+  CS2 = insert(Module, Tree, CS1),
+  CS3 = set_next_core_label(NewLabel, CS2),
+  CS4 = store_temp_records(Module, Records, CS3),
+  CS5 = store_temp_contracts(Module, SpecInfo, CS4),
   Ex_Funcs = [{0,F,A} || {_,_,{F,A}} <- cerl:module_exports(Tree)],
   TmpCG = Analysis#typer_analysis.callgraph,
   CG = dialyzer_callgraph:scan_core_tree(Tree, TmpCG),
@@ -155,3 +140,59 @@ analyze_one_function({Var, FunBody} = Function, Acc) ->
 
 lookup(Key, Dict) ->
   try dict:fetch(Key, Dict) catch error:_ -> none end.
+
+
+%% get_types(#plt{types = Types}) ->
+%%   Types.
+
+
+src_compiler_opts() ->
+  [no_copt, to_core, binary, return_errors, 
+   no_inline, strict_record_tests, strict_record_updates].
+
+
+get_next_core_label(CS) ->
+    try dialyzer_codeserver:get_next_core_label(CS) of
+	Res -> Res
+    catch
+	_E1:_E2->
+	    dialyzer_codeserver:next_core_label(CS)
+    end.
+
+insert(Mod, Tree, CS) ->
+    try dialyzer_codeserver:insert(Mod, Tree, CS) of 
+	Res ->
+	     Res
+    catch
+	_E1:_E2->
+	    dialyzer_codeserver:insert([{Mod, Tree}],CS)
+    end.	    
+
+set_next_core_label(NewLabel, CS) ->	
+    try dialyzer_codeserver:set_next_core_label(NewLabel, CS) of
+	Res ->
+	     Res
+    catch
+	_E1:_E2 ->
+	    dialyzer_codeserver:update_next_core_label(NewLabel, CS)
+    end.
+
+
+store_temp_records(Module, Records, CS) ->
+    try dialyzer_codeserver:store_temp_records(Module, Records, CS) of 
+	Res ->
+          Res
+    catch
+  	_E1:_E2 ->
+	    dialyzer_codeserver:store_records(Module, Records, CS) 
+    end.
+
+store_temp_contracts(Module, SpecInfo, CS) ->
+    try  dialyzer_codeserver:store_temp_contracts(Module, SpecInfo, CS) of
+	Res ->
+	    Res
+    catch
+	_E1:_E2 ->
+	    dialyzer_codeserver:store_contracts(Module, SpecInfo, CS)
+    end.
+	

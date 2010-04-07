@@ -42,11 +42,11 @@ public class RecordDataInputPage extends MultiInputPage {
 	 */
 	public RecordDataInputPage(String name) {
 		super(name);
-		refactoring = (QuickCheckStateRefactoring) getRefactoring();
 	}
 
 	@Override
 	public void createControl(Composite parent) {
+		refactoring = (QuickCheckStateRefactoring) getRefactoring();
 		composite = new Composite(parent, SWT.NONE);
 
 		recordNameLabel = new Label(composite, SWT.LEFT);

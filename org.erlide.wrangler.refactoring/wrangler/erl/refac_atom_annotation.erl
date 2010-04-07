@@ -903,7 +903,8 @@ server_ref_type() ->
 				_ -> any
 			    end;
 			_ -> any
-		    end
+		    end;
+		_ -> any			
 	    catch
 		_E1:_E2 -> any
 	    end

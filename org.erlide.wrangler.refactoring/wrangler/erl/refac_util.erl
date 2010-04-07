@@ -32,7 +32,7 @@
 
 -module(refac_util).   
 
--export([parse_annotate_file/3, parse_annotate_file/4,
+-export([parse_annotate_file/2,parse_annotate_file/3, parse_annotate_file/4,
 	 parse_annotate_file/5, quick_parse_annotate_file/3,
 	 write_refactored_files/1, write_refactored_files/3,
 	 write_refactored_files/4,
@@ -172,6 +172,13 @@ write_refactored_files(Results, Editor, Cmd) ->
 %%  representation is a subset of the <code>syntaxTree()</code> representation.
 %% 
 %%  For the data structures used by the AST nodes, please refer to <a href="refac_syntax.html"> refac_syntax </a>.
+
+
+-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean())
+                           -> {ok, {syntaxTree(), moduleInfo()}}).
+parse_annotate_file(FName, ByPassPreP) ->
+    parse_annotate_file(FName, ByPassPreP, [], ?DEFAULT_TABWIDTH).
+
 
 -spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()])
                            -> {ok, {syntaxTree(), moduleInfo()}}).
