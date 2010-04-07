@@ -170,49 +170,17 @@ public class TermParser {
 			result.start = i;
 			result.end = i;
 			if (c <= 'z' && c >= 'a') {
-				result.kind = TokenKind.ATOM;
-				while (result.end < s.length() && (c >= 'a' && c <= 'z')
-						|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
-						|| c == '_') {
-					c = s.charAt(result.end++);
-				}
-				result.end--;
+				scanAtom(s, result);
 			} else if (c == '\'') {
-				result.kind = TokenKind.ATOM;
-				c = s.charAt(++result.end);
-				// TODO add escape!
-				while (result.end < s.length() && c != '\'') {
-					c = s.charAt(result.end++);
-				}
+				scanQAtom(s, result);
 			} else if (c == '"') {
-				result.kind = TokenKind.STRING;
-				c = s.charAt(++result.end);
-				// TODO add escape!
-				while (result.end < s.length() && c != '"') {
-					c = s.charAt(result.end++);
-				}
+				scanString(s, result);
 			} else if ((c >= 'A' && c <= 'Z') || c == '_') {
-				result.kind = TokenKind.VARIABLE;
-				while (result.end < s.length() && (c >= 'a' && c <= 'z')
-						|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
-						|| c == '_' || c == ':') {
-					c = s.charAt(result.end++);
-				}
-				result.end--;
+				scanVariable(s, result);
 			} else if (c <= '9' && c >= '0') {
-				result.kind = TokenKind.INTEGER;
-				while (result.end < s.length() && (c >= '0' && c <= '9')) {
-					c = s.charAt(result.end++);
-				}
-				result.end--;
+				scanInteger(s, result);
 			} else if (c == '~') {
-				result.kind = TokenKind.PLACEHOLDER;
-				c = s.charAt(++result.end);
-				while (result.end <= s.length()
-						&& ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) {
-					c = s.charAt(result.end++);
-				}
-				result.end--;
+				scanPlaceholder(s, result);
 			} else if (c == '{') {
 				result.kind = TokenKind.TUPLESTART;
 				result.end = result.start + 1;
@@ -244,6 +212,71 @@ public class TermParser {
 						.substring(1, result.text.length() - 1);
 			}
 			return result;
+		}
+
+		private static void scanPlaceholder(final String s, final Token result) {
+			char c;
+			result.kind = TokenKind.PLACEHOLDER;
+			c = s.charAt(++result.end);
+			while (result.end <= s.length()
+					&& ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) {
+				c = s.charAt(result.end++);
+			}
+			result.end--;
+		}
+
+		private static void scanInteger(final String s, final Token result) {
+			char c;
+			c = s.charAt(result.end);
+			result.kind = TokenKind.INTEGER;
+			while (result.end < s.length() && (c >= '0' && c <= '9')) {
+				c = s.charAt(result.end++);
+			}
+			result.end--;
+		}
+
+		private static void scanVariable(final String s, final Token result) {
+			char c;
+			c = s.charAt(result.end);
+			result.kind = TokenKind.VARIABLE;
+			while (result.end < s.length() && (c >= 'a' && c <= 'z')
+					|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+					|| c == '_' || c == ':') {
+				c = s.charAt(result.end++);
+			}
+			result.end--;
+		}
+
+		private static void scanString(final String s, final Token result) {
+			char c;
+			result.kind = TokenKind.STRING;
+			c = s.charAt(++result.end);
+			// TODO add escape!
+			while (result.end < s.length() && c != '"') {
+				c = s.charAt(result.end++);
+			}
+		}
+
+		private static void scanQAtom(final String s, final Token result) {
+			char c;
+			result.kind = TokenKind.ATOM;
+			c = s.charAt(++result.end);
+			// TODO add escape!
+			while (result.end < s.length() && c != '\'') {
+				c = s.charAt(result.end++);
+			}
+		}
+
+		private static void scanAtom(final String s, final Token result) {
+			char c;
+			c = s.charAt(result.end);
+			result.kind = TokenKind.ATOM;
+			while (result.end < s.length() && (c >= 'a' && c <= 'z')
+					|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+					|| c == '_') {
+				c = s.charAt(result.end++);
+			}
+			result.end--;
 		}
 	}
 

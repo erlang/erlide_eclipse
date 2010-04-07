@@ -734,13 +734,34 @@
           structureCreatorId="org.erlide.ui.compare.ErlStructureCreator"/>
  </extension>
  <extension
-       point="org.eclipse.compare.contentMergeViewers">
+       point="org.eclipse.compare.contentViewers">
     <viewer
           class="org.erlide.ui.internal.compare.ErlContentViewerCreator"
-          id="org.erlide.ui.compare.ErlContentViewerCreator"/>
+          extensions="erl,hrl,erl2"
+          id="org.erlide.ui.compare.ErlContentViewerCreator">
+    </viewer>
     <contentTypeBinding
-          contentMergeViewerId="org.erlide.ui.compare.ErlContentViewerCreator"
+          contentTypeId="org.erlide.core.content.erlang"
+          contentViewerId="org.erlide.ui.compare.ErlContentViewerCreator">
+    </contentTypeBinding>
+ </extension>
+ <extension
+       point="org.eclipse.compare.contentMergeViewers">
+    <viewer
+          class="org.erlide.ui.internal.compare.ErlMergeViewerCreator"
+          extensions="erl,hrl,erl2"
+          id="org.erlide.ui.compare.ErlContentMergeViewerCreator"/>
+    <contentTypeBinding
+          contentMergeViewerId="org.erlide.ui.compare.ErlContentMergeViewerCreator"
           contentTypeId="org.erlide.core.content.erlang"/>
+ </extension>
+ <extension
+       point="org.eclipse.compare.structureMergeViewers">
+    <viewer
+          class="org.erlide.ui.internal.compare.ErlStructureDiffViewerCreator"
+          extensions="erl,hrl"
+          id="org.erlide.ui.compare.ErlStructureMergeViewerCreator">
+    </viewer>
  </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">

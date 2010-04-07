@@ -28,11 +28,10 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.EditorConfiguration;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 
 public class ErlMergeViewer extends TextMergeViewer {
-
-	private static final String TITLE = "ErlMergeViewer.title"; //$NON-NLS-1$
 
 	private IPropertyChangeListener fPreferenceChangeListener;
 
@@ -45,7 +44,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 	public ErlMergeViewer(final Composite parent, final int styles,
 			final CompareConfiguration mp) {
 		super(parent, styles, mp);
-		fPreferenceStore = ErlideUIPlugin.getDefault().getPreferenceStore();
+		fPreferenceStore = ErlangEditor.getErlangEditorPreferenceStore();
 		if (fPreferenceStore != null) {
 			fPreferenceChangeListener = new IPropertyChangeListener() {
 
@@ -156,7 +155,7 @@ public class ErlMergeViewer extends TextMergeViewer {
 
 	@Override
 	public String getTitle() {
-		return ErlideUIPlugin.getResourceString(TITLE);
+		return ErlideUIPlugin.getResourceString("Erlang Source Compare");
 	}
 
 	@Override

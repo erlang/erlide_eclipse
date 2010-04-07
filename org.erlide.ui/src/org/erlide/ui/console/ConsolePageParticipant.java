@@ -130,6 +130,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 		fEOFHandler = new EOFHandler();
 
 		// set global ref, used by the SendToConsole action
+		// FIXME global is bad, use project's page (keyed by backend?)
 		ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
 	}
 

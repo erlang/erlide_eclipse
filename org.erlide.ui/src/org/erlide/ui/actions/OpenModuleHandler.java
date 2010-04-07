@@ -71,33 +71,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 		if (event.getParameter(PARAM_ID_FILE_PATH) == null) {
 			// Prompt the user for the resource to open.
 			Object[] result = queryFileResource();
-
-			if (result != null) {
-				for (int i = 0; i < result.length; i++) {
-					if (result[i] instanceof IFile) {
-						files.add((IFile) result[i]);
-					} else if (result[i] instanceof String) {
-						try {
-							String path = (String) result[i];
-							IFile[] cons = ResourcesPlugin.getWorkspace()
-									.getRoot().findFilesForLocation(
-											new Path(path));
-							for (IFile con : cons) {
-								if (con.getProject() != ResourceUtil
-										.getExternalFilesProject()
-										|| cons.length == 1) {
-									files.add(con);
-								}
-							}
-							if (files.size() == 0) {
-								IFile file = ResourceUtil.openExternal(path);
-								files.add(file);
-							}
-						} catch (CoreException e) {
-						}
-					}
-				}
-			}
+			promptForFiles(files, result);
 
 		} else {
 			// Use the given parameter.
@@ -133,6 +107,34 @@ public final class OpenModuleHandler extends Action implements IHandler,
 		}
 
 		return null;
+	}
+
+	private void promptForFiles(final List<IFile> files, Object[] result) {
+		if (result != null) {
+			for (int i = 0; i < result.length; i++) {
+				if (result[i] instanceof IFile) {
+					files.add((IFile) result[i]);
+				} else if (result[i] instanceof String) {
+					try {
+						String path = (String) result[i];
+						IFile[] cons = ResourcesPlugin.getWorkspace().getRoot()
+								.findFilesForLocation(new Path(path));
+						for (IFile con : cons) {
+							if (con.getProject() != ResourceUtil
+									.getExternalFilesProject()
+									|| cons.length == 1) {
+								files.add(con);
+							}
+						}
+						if (files.size() == 0) {
+							IFile file = ResourceUtil.openExternal(path);
+							files.add(file);
+						}
+					} catch (CoreException e) {
+					}
+				}
+			}
+		}
 	}
 
 	public final void init(final IWorkbenchWindow window) {

@@ -76,6 +76,16 @@ import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 public class ErlangOutlinePage extends ContentOutlinePage implements
 		IErlModelChangeListener, ISortableContentOutlinePage {
 
+	IErlModule fModule;
+	private ErlangEditor fEditor;
+	private CompositeActionGroup fActionGroups;
+	private TreeViewer fOutlineViewer;
+	private MemberFilterActionGroup fMemberFilterActionGroup;
+	private final IDocumentProvider fDocumentProvider;
+	private SortAction fSortAction;
+	private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
+	private ToggleLinkingAction fToggleLinkingAction;
+
 	public class ErlangOutlineViewer extends TreeViewer {
 
 		public ErlangOutlineViewer(final Tree tree) {
@@ -177,24 +187,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 	public void setSelection(final ISelection selection) {
 		fOutlineViewer.setSelection(selection);
 	}
-
-	IErlModule fModule;
-
-	private ErlangEditor fEditor;
-
-	private CompositeActionGroup fActionGroups;
-
-	private ErlangOutlineViewer fOutlineViewer;
-
-	private MemberFilterActionGroup fMemberFilterActionGroup;
-
-	private final IDocumentProvider fDocumentProvider;
-
-	private SortAction fSortAction;
-
-	private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
-
-	private org.erlide.ui.editors.erl.outline.ErlangOutlinePage.ToggleLinkingAction fToggleLinkingAction;
 
 	/**
 	 * 

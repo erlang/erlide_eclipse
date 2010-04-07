@@ -1,3 +1,23 @@
+List of user visible changes between 0.7.4 and 0.7.5 (20100329)
+
+29ea28f fixed debugging on multiple nodes
+5f36d95 removed use of deprecated constructor
+e7e14b4 fixed ext.point id reference
+86c1bd9 removed reference to DebugUIPlugin
+d9051de removed illegal ErlStructureDiffViewer
+909df95 added license files for libraries
+8dbb3a9 removed epmd notification messages
+232d265 simplified some complicated functions
+1f411e9 simplify TermParser
+33a309a 533-code-completion---record-fields-after---doesn-t-work
+a846064 fix NPE when clicking @ in autocompletion info ctrl
+e6dd70f NPE on External Files
+82a7662 fixed isAccessible
+8ac1c59 fix bug in MarkerHelper
+79acd84 updated plugin provider name
+7c61bac erlang diff working and useful
+78b0843 531-indentation-in-lists-with-embedded-expressions-isn-t-quite-right
+
 List of user visible changes between 0.7.3 and 0.7.4 (20100304)
 
 a58f276 added dialyzer support
