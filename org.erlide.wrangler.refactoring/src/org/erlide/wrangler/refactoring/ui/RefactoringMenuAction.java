@@ -17,13 +17,13 @@ import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.GenFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldAgainstMacro;
 import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FoldRemoteExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.GenFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
@@ -35,6 +35,7 @@ import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameProcessRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameVariableRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.TupleFunctionParametersRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.UnfoldFunctionApplicationRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring.State;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
@@ -289,7 +290,12 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 				pages.add(new RecordDataInputPage(
 						"gen_fsm State Data To Record"));
 
-			} else
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
+				refactoring = new UnfoldFunctionApplicationRefactoring();
+			}
+
+			else
 				return;
 		}
 

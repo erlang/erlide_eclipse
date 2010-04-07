@@ -40,6 +40,13 @@
          </menu>
          <action
                class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
+               id="org.erlide.wrangler.refactoring.unfoldfunctionapplication"
+               label="%unfoldFunctionName"
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.general"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.RefactoringMenuAction"
                enablesFor="+"
                id="org.erlide.wrangler.refactoring.tuplefunctonparameters"
                label="%tupleFunParamsName"
