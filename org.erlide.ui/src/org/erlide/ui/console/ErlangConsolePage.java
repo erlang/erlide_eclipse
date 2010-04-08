@@ -393,6 +393,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 		consoleText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
+				if (fConsole.isStopped()) {
+					return;
+				}
 				final boolean isHistoryCommand = ((e.stateMask & SWT.CTRL) == SWT.CTRL)
 						&& ((e.keyCode == SWT.ARROW_UP) || (e.keyCode == SWT.ARROW_DOWN));
 				if ((e.character != (char) 0) || isHistoryCommand) {

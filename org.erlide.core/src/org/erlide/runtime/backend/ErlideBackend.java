@@ -51,6 +51,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	private BackendShellManager shellManager;
 
 	private ILaunch launch;
+	private boolean managed = false;
 
 	public ErlideBackend(final RuntimeInfo info) throws BackendException {
 		super(info);
@@ -292,5 +293,13 @@ public final class ErlideBackend extends Backend implements IDisposable,
 				}
 			}
 		}
+	}
+
+	public boolean isManaged() {
+		return managed;
+	}
+
+	public void setManaged(boolean b) {
+		managed = b;
 	}
 }

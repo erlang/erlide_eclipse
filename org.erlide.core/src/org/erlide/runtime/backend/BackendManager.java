@@ -134,6 +134,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			launcher.startRuntime(info, env);
 			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
 			b.setStreamsProxy(streamsProxy);
+			b.setManaged(true);
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);
