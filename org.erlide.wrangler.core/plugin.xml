@@ -4,11 +4,11 @@
    <extension
          point="org.erlide.core.codepath">
       <beam_dir
-            context="ide"
+            context="any"
             path="/wrangler/ebin">
       </beam_dir>
       <beam_dir
-            context="ide"
+            context="any"
             path="/wrangler/app">
       </beam_dir>
       <init
