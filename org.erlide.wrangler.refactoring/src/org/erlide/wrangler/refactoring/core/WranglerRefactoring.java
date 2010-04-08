@@ -67,20 +67,21 @@ public abstract class WranglerRefactoring extends Refactoring {
 			throw new CoreException(s);
 		}
 
-		// notifyErlide();
+		notifyErlide();
 		return change;
 	}
 
-	/*
-	 * protected void notifyErlide() { IErlModel model = ErlangCore.getModel();
-	 * for (ChangedFile f : changedFiles) { IFile file; try { file =
-	 * WranglerUtils.getFileFromPath(f.getIPath()); IErlElement element =
-	 * model.findElement(file); IErlModule m = (IErlModule) element;
-	 * m.resourceChanged(); model.notifyChange(m); } catch (Exception e) {
-	 * e.printStackTrace(); } }
-	 * 
-	 * }
-	 */
+	protected void notifyErlide() {
+		/*
+		 * IErlModel model = ErlangCore.getModel(); for (ChangedFile f :
+		 * changedFiles) { IFile file; try { file =
+		 * WranglerUtils.getFileFromPath(f.getIPath()); IErlElement element =
+		 * model.findElement(file); IErlModule m = (IErlModule) element;
+		 * m.resourceChanged(); model.notifyChange(m); } catch (Exception e) {
+		 * e.printStackTrace(); } }
+		 */
+
+	}
 
 	@Override
 	public abstract String getName();
