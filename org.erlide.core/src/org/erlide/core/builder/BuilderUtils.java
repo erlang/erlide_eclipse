@@ -676,7 +676,8 @@ public final class BuilderUtils {
 		return visitor.getFound();
 	}
 
-	static void refreshOutputDir(final IProject project) throws CoreException {
+	public static void refreshOutputDir(final IProject project)
+			throws CoreException {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final String outputDir = prefs.getOutputDir();
@@ -750,8 +751,9 @@ public final class BuilderUtils {
 		MarkerHelper.deleteMarkers(res);
 
 		final String outputDir = bres.getOutput() == null ? projectPath.append(
-				prefs.getOutputDir()).toString() : projectPath.append(
-				bres.getOutput()).toString();
+				prefs.getOutputDir()).toString() : (bres.getOutput()
+				.startsWith("/") ? bres.getOutput() : projectPath.append(
+				bres.getOutput()).toString());
 		ensureDirExists(outputDir);
 
 		final List<String> includeDirs = getAllIncludeDirs(project);
