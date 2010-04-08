@@ -129,6 +129,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
 	 * debug.core.ILaunch[])
 	 */
 	public void launchesRemoved(ILaunch[] launches) {
+		update();
 	}
 
 	/*

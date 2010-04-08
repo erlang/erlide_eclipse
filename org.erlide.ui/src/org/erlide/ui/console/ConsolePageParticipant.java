@@ -46,6 +46,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.part.ShowInContext;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.console.actions.ConsoleRemoveAllTerminatedAction;
 import org.erlide.ui.console.actions.ConsoleRemoveLaunchAction;
@@ -69,9 +70,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	private ShowWhenContentChangesAction fStdOut;
 
 	private ErlangConsole fConsole;
-
 	private IPageBookViewPage fPage;
-
 	private IConsoleView fView;
 
 	private EOFHandler fEOFHandler;
@@ -116,6 +115,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 		fView = (IConsoleView) fPage.getSite().getPage().findView(
 				IConsoleConstants.ID_CONSOLE_VIEW);
+
+		ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
+		fTerminate.setEnabled(backend.isManaged());
 
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		DebugUITools.getDebugContextManager().getContextService(

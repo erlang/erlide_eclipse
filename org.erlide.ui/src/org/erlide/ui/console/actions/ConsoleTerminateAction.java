@@ -18,7 +18,12 @@ import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.texteditor.IUpdate;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlangConsole;
 
 /**
@@ -54,8 +59,8 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 	 * @see org.eclipse.ui.texteditor.IUpdate#update()
 	 */
 	public void update() {
-		// IProcess process = fConsole.getBackend();
-		// setEnabled(process.canTerminate());
+		ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
+		setEnabled(backend.isManaged() && !backend.isStopped());
 	}
 
 	/*
@@ -65,18 +70,25 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 	 */
 	@Override
 	public void run() {
-		// FIXME
-		// try {
-		// final ErlideBackend backend = fConsole.getBackend();
-		// ErlangCore.getBackendManager().dispose(backend);
-		// ILaunch launch = backend.getLaunch();
-		// if (launch != null) {
-		// killTargets(launch);
-		// launch.terminate();
-		// }
-		// } catch (DebugException e) {
-		// // TODO: report exception
-		// }
+		// FIXME what's wrong here?
+		try {
+			final ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
+			ErlangCore.getBackendManager().dispose(backend);
+			ILaunch launch = backend.getLaunch();
+			if (launch != null) {
+				killTargets(launch);
+				launch.terminate();
+
+				setEnabled(false);
+				fConsole.stop();
+
+				ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
+				IConsoleManager conMan = consolePlugin.getConsoleManager();
+				conMan.removeConsoles(new IConsole[] { fConsole });
+			}
+		} catch (DebugException e) {
+			// TODO: report exception
+		}
 	}
 
 	private void killTargets(ILaunch launch) throws DebugException {
