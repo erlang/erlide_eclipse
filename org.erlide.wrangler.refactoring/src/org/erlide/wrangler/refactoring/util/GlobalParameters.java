@@ -41,6 +41,7 @@ public class GlobalParameters {
 
 	// TODO:: if the module is selected it is not handled
 	public static void setSelection(ISelection selection) {
+
 		if (editor == null) {
 			IWorkbench instance = PlatformUI.getWorkbench();
 			IWorkbenchWindow activeWorkbenchWindow = instance

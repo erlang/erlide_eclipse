@@ -4,7 +4,7 @@ Bundle-Name: Duplicated code detection fragment
 Bundle-SymbolicName: org.erlide.wrangler.refactoring.duplicatedcode;singleton:=true
 Bundle-Version: 0.9.0.qualifier
 Bundle-Vendor: UKC
-Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.9.0"
+Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.9.0.qualifier"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.erlide.wrangler.refactoring.core.exception,
  org.erlide.wrangler.refactoring.duplicatedcode,

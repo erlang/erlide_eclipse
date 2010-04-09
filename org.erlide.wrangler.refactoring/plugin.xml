@@ -302,6 +302,46 @@
                menubarPath="org.erlide.wrangler.refactoring.modulecontribution.menu/org.erlide.wrangler.refactoring.popup.module">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.erlide.wrangler.refactoring.preprocessordefcontribution"
+            objectClass="org.erlide.core.erlang.IErlPreprocessorDef">
+         <menu
+               id="org.erlide.wrangler.refactoring.preprocessordefcontribution.menu"
+               label="Refactor">
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.popup.preprocessordef">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               id="org.erlide.wrangler.refactoring.popupmenu.normailzerecord"
+               label="%normalizeRecordExpressionName"
+               menubarPath="org.erlide.wrangler.refactoring.preprocessordefcontribution.menu/org.erlide.wrangler.refactoring.popup.preprocessordef">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.ui.PopupMenuAction"
+               id="org.erlide.wrangler.refactoring.popumenu.foldagainstmacro"
+               label="%foldMacroName"
+               menubarPath="org.erlide.wrangler.refactoring.preprocessordefcontribution.menu/org.erlide.wrangler.refactoring.popup.preprocessordef">
+         </action>
+      </objectContribution>
+      <viewerContribution
+            id="org.erlide.wrangler.refactoring.duplicatedcodeviewercontribution"
+            targetID="org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView">
+         <menu
+               id="org.erlide.wrangler.refactoring.duplicated.menu"
+               label="Refactor">
+            <groupMarker
+                  name="org.erlide.wrangler.refactoring.duplicated">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.erlide.wrangler.refactoring.Action3"
+               id="org.erlide.wrangler.refactoring.action3"
+               label="label">
+         </action>
+      </viewerContribution>
    </extension>
    <extension
          point="org.erlide.ui.erlDndAdapter">

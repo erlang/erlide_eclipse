@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
@@ -13,6 +14,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.FoldAgainstMacro;
 import org.erlide.wrangler.refactoring.core.internal.FoldLocalExpressionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.FunctionToProcessRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
@@ -61,7 +63,8 @@ public class PopupMenuAction implements IObjectActionDelegate {
 
 			IProject project = GlobalParameters.getWranglerSelection()
 					.getErlElement().getErlProject().getProject();
-			ArrayList<String> moduleList = WranglerUtils.getModuleNames(project);
+			ArrayList<String> moduleList = WranglerUtils
+					.getModuleNames(project);
 			String moduleName = GlobalParameters.getWranglerSelection()
 					.getErlElement().getResource().getName();
 			moduleList.remove(WranglerUtils.removeExtension(moduleName));
@@ -74,10 +77,12 @@ public class PopupMenuAction implements IObjectActionDelegate {
 				.equals("org.erlide.wrangler.refactoring.popupmenu.foldexpression")) {
 
 			refactoring = new FoldLocalExpressionRefactoring();
-			pages.add(new SelectionInputPage("Fold expression",
-					"Please select expression which should be fold!",
-					"Select expressions which should be folded!",
-					(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
+			pages
+					.add(new SelectionInputPage(
+							"Fold expression",
+							"Please select expression which should be fold!",
+							"Select expressions which should be folded!",
+							(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.popupmenu.functiontoprocess")) {
@@ -86,6 +91,23 @@ public class PopupMenuAction implements IObjectActionDelegate {
 					"Please type the new process name!", "New process name:",
 					"New process name must be an Erlang atom!",
 					new AtomValidator()));
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.popupmenu.normailzerecord")) {
+			boolean showDefaultFields = MessageDialog.openQuestion(PlatformUI
+					.getWorkbench().getDisplay().getActiveShell(),
+					"Showing defaults",
+					"Show record fields with default values?");
+			refactoring = new NormalizeRecordExpression(showDefaultFields);
+
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.popumenu.foldagainstmacro")) {
+			refactoring = new FoldAgainstMacro();
+			pages
+					.add(new SelectionInputPage(
+							"Fold against macro definition",
+							"Please select expression which should be fold!",
+							"Select expressions which should be folded!",
+							(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 		} else
 			return;
 
