@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.internal.utils.IStringPoolParticipant;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -25,7 +31,10 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 import erlang.ErlideOpen;
 
@@ -215,6 +224,26 @@ public class ModelUtils {
 		} catch (final ErlModelException e) {
 		}
 		return null;
+	}
+
+	public static Collection<IPath> getProvidedSourcePaths() {
+		List<IPath> result = Lists.newArrayList();
+		try {
+			final IExtensionRegistry reg = RegistryFactory.getRegistry();
+			final IConfigurationElement[] stubs = reg
+					.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+							"sourcePathProvider");
+			for (final IConfigurationElement stub : stubs) {
+				final IContributor c = stub.getContributor();
+				System.out.println(" >>> " + c);
+				SourcePathProvider provider = (SourcePathProvider) stub
+						.createExecutableExtension("class");
+				result.addAll(provider.getSourcePaths());
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
