@@ -18,11 +18,9 @@ import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlangConsole;
 
@@ -60,7 +58,8 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 	 */
 	public void update() {
 		ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
-		setEnabled(backend.isManaged() && !backend.isStopped());
+		setEnabled(backend.isManaged() && !backend.isStopped()
+				&& backend != BackendManager.getDefault().getIdeBackend());
 	}
 
 	/*
@@ -70,33 +69,30 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 	 */
 	@Override
 	public void run() {
-		// FIXME what's wrong here?
 		try {
 			final ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
-			ErlangCore.getBackendManager().dispose(backend);
 			ILaunch launch = backend.getLaunch();
 			if (launch != null) {
-				killTargets(launch);
-				launch.terminate();
+				terminate(launch);
 
 				setEnabled(false);
 				fConsole.stop();
-
-				ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
-				IConsoleManager conMan = consolePlugin.getConsoleManager();
-				conMan.removeConsoles(new IConsole[] { fConsole });
 			}
+			ErlangCore.getBackendManager().dispose(backend);
 		} catch (DebugException e) {
 			// TODO: report exception
 		}
 	}
 
-	private void killTargets(ILaunch launch) throws DebugException {
+	private void terminate(ILaunch launch) throws DebugException {
 		IDebugTarget[] debugTargets = launch.getDebugTargets();
 		for (IDebugTarget target : debugTargets) {
 			if (target.canTerminate()) {
 				target.terminate();
 			}
+		}
+		if (launch.canTerminate()) {
+			launch.terminate();
 		}
 	}
 
