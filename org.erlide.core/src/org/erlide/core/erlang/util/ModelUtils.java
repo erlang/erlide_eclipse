@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.internal.utils.IStringPoolParticipant;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
@@ -13,7 +12,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -31,7 +29,6 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -226,22 +223,20 @@ public class ModelUtils {
 		return null;
 	}
 
-	public static Collection<IPath> getProvidedSourcePaths() {
-		List<IPath> result = Lists.newArrayList();
-		try {
-			final IExtensionRegistry reg = RegistryFactory.getRegistry();
-			final IConfigurationElement[] stubs = reg
-					.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
-							"sourcePathProvider");
-			for (final IConfigurationElement stub : stubs) {
-				final IContributor c = stub.getContributor();
-				System.out.println(" >>> " + c);
-				SourcePathProvider provider = (SourcePathProvider) stub
+	public static Collection<SourcePathProvider> getSourcePathProviders() {
+		List<SourcePathProvider> result = Lists.newArrayList();
+		final IExtensionRegistry reg = RegistryFactory.getRegistry();
+		final IConfigurationElement[] elements = reg
+				.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+						"sourcePathProvider");
+		for (final IConfigurationElement element : elements) {
+			try {
+				SourcePathProvider provider = (SourcePathProvider) element
 						.createExecutableExtension("class");
-				result.addAll(provider.getSourcePaths());
+				result.add(provider);
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
-		} catch (CoreException e) {
-			e.printStackTrace();
 		}
 		return result;
 	}
