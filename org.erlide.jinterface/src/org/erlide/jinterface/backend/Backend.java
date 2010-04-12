@@ -12,6 +12,8 @@ package org.erlide.jinterface.backend;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.erlide.jinterface.backend.events.EventDaemon;
 import org.erlide.jinterface.backend.events.LogEventHandler;
@@ -20,7 +22,6 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -61,6 +62,7 @@ public class Backend extends OtpNodeStatus {
 	private EventDaemon eventDaemon;
 	private boolean monitor = false;
 	private boolean watch = true;
+	private BackendShellManager shellManager;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -185,7 +187,9 @@ public class Backend extends OtpNodeStatus {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
-				throw new RpcException("could not restart backend");
+				String msg = "could not restart backend %s (exitstatus=%d restarted=%d)";
+				throw new RpcException(String.format(msg, getInfo(),
+						exitStatus, restarted));
 			}
 		}
 	}
@@ -200,6 +204,9 @@ public class Backend extends OtpNodeStatus {
 
 	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
+		if (shellManager != null) {
+			shellManager.dispose();
+		}
 
 		if (fNode != null) {
 			fNode.close();
@@ -342,6 +349,7 @@ public class Backend extends OtpNodeStatus {
 
 	public void initializeRuntime() {
 		dispose(true);
+		shellManager = new BackendShellManager();
 	}
 
 	public boolean isDebug() {
@@ -543,4 +551,48 @@ public class Backend extends OtpNodeStatus {
 		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
 				direction, info));
 	}
+
+	private class BackendShellManager implements IDisposable {
+
+		private final HashMap<String, BackendShell> fShells;
+
+		public BackendShellManager() {
+			fShells = new HashMap<String, BackendShell>();
+		}
+
+		public BackendShell getShell(final String id) {
+			final BackendShell shell = fShells.get(id);
+			return shell;
+		}
+
+		public synchronized BackendShell openShell(final String id) {
+			BackendShell shell = getShell(id);
+			if (shell == null) {
+				shell = new BackendShell(Backend.this, id);
+				fShells.put(id, shell);
+			}
+			return shell;
+		}
+
+		public synchronized void closeShell(final String id) {
+			final BackendShell shell = getShell(id);
+			if (shell != null) {
+				fShells.remove(id);
+				shell.close();
+			}
+		}
+
+		public void dispose() {
+			final Collection<BackendShell> c = fShells.values();
+			for (final BackendShell backendShell : c) {
+				backendShell.close();
+			}
+			fShells.clear();
+		}
+	}
+
+	public BackendShell getShell(String id) {
+		return shellManager.openShell(id);
+	}
+
 }

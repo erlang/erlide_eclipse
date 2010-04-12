@@ -12,8 +12,6 @@ package org.erlide.runtime.backend;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
@@ -48,7 +46,6 @@ public final class ErlideBackend extends Backend implements IDisposable,
 
 	private final CodeManager codeManager;
 	private IStreamsProxy proxy;
-	private BackendShellManager shellManager;
 
 	private ILaunch launch;
 
@@ -66,14 +63,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		} catch (final DebugException e) {
 			e.printStackTrace();
 		}
-		shellManager.dispose();
 		dispose(false);
-	}
-
-	@Override
-	public void initializeRuntime() {
-		super.initializeRuntime();
-		shellManager = new BackendShellManager();
 	}
 
 	@Override
@@ -133,8 +123,9 @@ public final class ErlideBackend extends Backend implements IDisposable,
 		launch = launch2;
 	}
 
+	@Override
 	public BackendShell getShell(final String id) {
-		final BackendShell shell = shellManager.openShell(id);
+		final BackendShell shell = super.getShell(id);
 		if (proxy != null) {
 			final IStreamMonitor errorStreamMonitor = proxy
 					.getErrorStreamMonitor();
@@ -194,45 +185,6 @@ public final class ErlideBackend extends Backend implements IDisposable,
 			final IStreamMonitor outputStreamMonitor = proxy
 					.getOutputStreamMonitor();
 			outputStreamMonitor.addListener(this);
-		}
-	}
-
-	private class BackendShellManager implements IDisposable {
-
-		private final HashMap<String, BackendShell> fShells;
-
-		public BackendShellManager() {
-			fShells = new HashMap<String, BackendShell>();
-		}
-
-		public BackendShell getShell(final String id) {
-			final BackendShell shell = fShells.get(id);
-			return shell;
-		}
-
-		public synchronized BackendShell openShell(final String id) {
-			BackendShell shell = getShell(id);
-			if (shell == null) {
-				shell = new BackendShell(ErlideBackend.this, id);
-				fShells.put(id, shell);
-			}
-			return shell;
-		}
-
-		public synchronized void closeShell(final String id) {
-			final BackendShell shell = getShell(id);
-			if (shell != null) {
-				fShells.remove(id);
-				shell.close();
-			}
-		}
-
-		public void dispose() {
-			final Collection<BackendShell> c = fShells.values();
-			for (final BackendShell backendShell : c) {
-				backendShell.close();
-			}
-			fShells.clear();
 		}
 	}
 
