@@ -379,23 +379,46 @@ public class Backend extends OtpNodeStatus {
 				args0);
 	}
 
+	protected void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+			final String module, final String fun, final String signature,
+			final Object... args) throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
+				signature, args);
+	}
+
 	protected void makeAsyncCbCall(final RpcCallback cb, final String module,
 			final String fun, final String signature, final Object... args)
 			throws RpcException, SignatureException {
-		makeAsyncCbCall(cb, new OtpErlangAtom("user"), module, fun, signature,
-				args);
+		makeAsyncCbCall(cb, DEFAULT_TIMEOUT, new OtpErlangAtom("user"), module,
+				fun, signature, args);
 	}
 
-	private void makeAsyncCbCall(final RpcCallback cb,
+	private void makeAsyncCbCall(final RpcCallback cb, final int timeout,
 			final OtpErlangObject gleader, final String module,
 			final String fun, final String signature, final Object... args)
 			throws RpcException, SignatureException {
 		checkAvailability();
-		
-		WHAT TO DO HERE???
-		
-		RpcUtil.sendRpcCall(fNode, fPeer, gleader, module, fun, signature,
-				args);
+
+		final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, gleader,
+				module, fun, signature, args);
+		Runnable target = new Runnable() {
+			public void run() {
+				OtpErlangObject result;
+				try {
+					result = future.get(timeout);
+					cb.run(result);
+				} catch (RpcException e) {
+					// TODO do we want to treat a timeout differently?
+					ErlLogger.error("Could not execute RPC " + module + ":"
+							+ fun + " : " + e.getMessage());
+				}
+			}
+		};
+		// We can't use jobs here, it's an Eclipse dependency
+		Thread thread = new Thread(target);
+		thread.setDaemon(true);
+		thread.setName("async " + module + ":" + fun);
+		thread.start();
 	}
 
 	protected OtpErlangObject makeCall(final int timeout,
