@@ -109,6 +109,18 @@ public class Backend extends OtpNodeStatus {
 		}
 	}
 
+	public void async_call_cb(final RpcCallback cb, final String m,
+			final String f, final String signature, final Object... args)
+			throws BackendException {
+		try {
+			makeAsyncCbCall(cb, m, f, signature, args);
+		} catch (final RpcException e) {
+			throw new BackendException(e);
+		} catch (SignatureException e) {
+			throw new BackendException(e);
+		}
+	}
+
 	public void cast(final String m, final String f, final String signature,
 			final Object... args) throws BackendException {
 		try {
@@ -373,6 +385,48 @@ public class Backend extends OtpNodeStatus {
 			SignatureException {
 		return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
 				args0);
+	}
+
+	protected void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+			final String module, final String fun, final String signature,
+			final Object... args) throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
+				signature, args);
+	}
+
+	protected void makeAsyncCbCall(final RpcCallback cb, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, DEFAULT_TIMEOUT, new OtpErlangAtom("user"), module,
+				fun, signature, args);
+	}
+
+	private void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+			final OtpErlangObject gleader, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		checkAvailability();
+
+		final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, gleader,
+				module, fun, signature, args);
+		Runnable target = new Runnable() {
+			public void run() {
+				OtpErlangObject result;
+				try {
+					result = future.get(timeout);
+					cb.run(result);
+				} catch (RpcException e) {
+					// TODO do we want to treat a timeout differently?
+					ErlLogger.error("Could not execute RPC " + module + ":"
+							+ fun + " : " + e.getMessage());
+				}
+			}
+		};
+		// We can't use jobs here, it's an Eclipse dependency
+		Thread thread = new Thread(target);
+		thread.setDaemon(true);
+		thread.setName("async " + module + ":" + fun);
+		thread.start();
 	}
 
 	protected OtpErlangObject makeCall(final int timeout,
