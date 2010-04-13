@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution.
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -36,6 +36,7 @@ public class ErlLaunchData {
 	public final String prjs;
 	public final boolean console;
 	public final boolean isInternal;
+	public final boolean loadAllNodes;
 
 	@SuppressWarnings("unchecked")
 	public ErlLaunchData(ILaunchConfiguration config, boolean internal)
@@ -65,6 +66,8 @@ public class ErlLaunchData {
 				new ArrayList<String>());
 		console = config.getAttribute(ErlLaunchAttributes.CONSOLE, true);
 		isInternal = config.getAttribute(ErlLaunchAttributes.INTERNAL, false);
+		loadAllNodes = config.getAttribute(ErlLaunchAttributes.LOAD_ALL_NODES,
+				false);
 	}
 
 	public void debugPrint(String mode) {
@@ -86,6 +89,7 @@ public class ErlLaunchData {
 		ErlLogger.info("  hasBackend: " + isInternal);
 		ErlLogger.info("  debugFlags: " + debugFlags);
 		ErlLogger.info("  interpretedModules: " + interpretedModules);
+		ErlLogger.info("  loadAllNodes: " + loadAllNodes);
 		if (startMe) {
 			ErlLogger.info("  * start it if not running");
 		}

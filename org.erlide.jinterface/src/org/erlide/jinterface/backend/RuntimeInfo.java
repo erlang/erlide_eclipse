@@ -29,15 +29,14 @@ public class RuntimeInfo {
 	private String nodeName = "";
 	private String workingDir = "";
 	private boolean managed; // will it be started/stopped by us?
-
 	private RuntimeVersion version;
 	private String name;
 	private List<String> codePath;
 	private String suffix = "";
 	private boolean useLongName = true;
 	private boolean startShell = false;
-
 	private boolean console = true;
+	private boolean loadAllNodes = false;
 
 	public RuntimeInfo() {
 		super();
@@ -63,6 +62,7 @@ public class RuntimeInfo {
 		rt.version = o.version;
 		rt.useLongName = o.useLongName;
 		rt.startShell = o.startShell;
+		rt.loadAllNodes = o.loadAllNodes;
 		return rt;
 	}
 
@@ -364,5 +364,13 @@ public class RuntimeInfo {
 
 	public boolean hasConsole() {
 		return console;
+	}
+
+	public void setLoadAllNodes(boolean loadAllNodes) {
+		this.loadAllNodes = loadAllNodes;
+	}
+
+	public boolean loadOnAllNodes() {
+		return loadAllNodes;
 	}
 }

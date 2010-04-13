@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -39,9 +39,11 @@ public interface ErlLaunchAttributes {
 	final String DEFAULT_WORKING_DIR = ".";
 
 	final String EXTRA_ARGS = prefix + ".extra_args";
-	
+
 	final String CONSOLE = prefix + ".console";
 	final String INTERNAL = prefix + ".has_backend";
 
 	final String DEBUG_TRACED_MODULES = ".traced_modules";
+
+	final String LOAD_ALL_NODES = prefix + ".loadAllNodes";
 }

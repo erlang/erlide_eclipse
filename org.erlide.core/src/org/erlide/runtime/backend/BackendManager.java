@@ -76,7 +76,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public enum BackendOptions {
-		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE
+		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
 	}
 
 	private volatile ErlideBackend ideBackend;

@@ -274,6 +274,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 	 * org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
 	 * .swt.widgets.Composite)
 	 */
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void createControl(final Composite parent) {
 		interpretedModules = new ArrayList<IErlModule>();
 
