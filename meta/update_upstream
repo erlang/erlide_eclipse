@@ -2,9 +2,7 @@ B=$(git branch | grep "*" | cut -c 3-)
 git checkout next
 git push upstream next
 git checkout pu
-git rebase next
 git push upstream +pu
 git checkout later
-git rebase pu
 git push upstream +later
 git checkout $B
