@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.osgi.framework.Bundle;
@@ -74,6 +75,8 @@ public class ErlangPlugin extends Plugin {
 	private ResourceBundle resourceBundle;
 
 	private Logger logger;
+
+	private PlatformChangeListener platformListener;
 
 	/**
 	 * The constructor.
@@ -139,8 +142,8 @@ public class ErlangPlugin extends Plugin {
 	public void stop(final BundleContext context) throws Exception {
 		try {
 			ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
-
 			ErlangCore.getModelManager().shutdown();
+			platformListener.dispose();
 		} finally {
 			logger = null;
 			// ensure we call super.stop as the last thing
@@ -163,6 +166,8 @@ public class ErlangPlugin extends Plugin {
 				.getLocation().toPortableString(), Platform.inDebugMode());
 		ErlLogger.debug("Starting CORE " + Thread.currentThread());
 		super.start(context);
+
+		platformListener = new PlatformChangeListener();
 
 		String dev = "";
 		if (ErlideUtil.isDeveloper()) {
