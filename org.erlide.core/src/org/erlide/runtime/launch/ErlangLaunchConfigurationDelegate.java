@@ -121,6 +121,9 @@ public class ErlangLaunchConfigurationDelegate implements
 		if (!data.console) {
 			options.add(BackendOptions.NO_CONSOLE);
 		}
+		if (data.loadAllNodes) {
+			options.add(BackendOptions.LOAD_ALL_NODES);
+		}
 
 		// important, so that we don't get the "normal" console
 		launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, "false");
