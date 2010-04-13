@@ -175,6 +175,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		rt.setArgs(data.xtraArgs);
 		rt.useLongName(data.longName);
 		rt.hasConsole(data.console);
+		rt.setLoadAllNodes(data.loadAllNodes);
 		return rt;
 	}
 

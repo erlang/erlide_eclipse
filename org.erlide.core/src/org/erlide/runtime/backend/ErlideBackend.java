@@ -293,4 +293,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
 			}
 		}
 	}
+
+	public boolean doLoadOnAllNodes() {
+		return getInfo().loadOnAllNodes();
+	}
 }
