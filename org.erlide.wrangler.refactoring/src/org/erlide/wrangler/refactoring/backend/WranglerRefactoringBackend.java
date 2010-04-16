@@ -85,4 +85,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		return backend.call_noexception(MODULE, functionName, signature,
 				parameters);
 	}
+
+	public RpcResult callWithoutParser(final int timeout,
+			final String functionName, final String signature,
+			final Object... parameters) {
+		return backend.call_noexception(timeout, MODULE, functionName,
+				signature, parameters);
+	}
 }

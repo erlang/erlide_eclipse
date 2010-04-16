@@ -25,6 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
+	private static final int TIMEOUT = 60000;
 	protected boolean onlyInfile;
 	protected int minToks;
 	protected int minClones;
@@ -53,14 +54,14 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(functionName, "xiiis", fpl,
-					minToks, minClones, GlobalParameters.getTabWidth(),
+			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+					fpl, minToks, minClones, GlobalParameters.getTabWidth(),
 					suffixPath);
 		} else {
 			functionName = "duplicated_code_eclipse";
-			result = backend.callWithoutParser(functionName, "xiiis", sel
-					.getSearchPath(), minToks, minClones, GlobalParameters
-					.getTabWidth(), suffixPath);
+			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+					sel.getSearchPath(), minToks, minClones, GlobalParameters
+							.getTabWidth(), suffixPath);
 		}
 
 		if (!result.isOk())
@@ -105,8 +106,8 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 	protected boolean getUserInput() {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-		DuplicateCodeDetectionInputDialog inputd = new DuplicateCodeDetectionInputDialog(shell,
-				"Identical code detection...");
+		DuplicateCodeDetectionInputDialog inputd = new DuplicateCodeDetectionInputDialog(
+				shell, "Identical code detection...");
 		inputd.open();
 
 		onlyInfile = inputd.onlyInFile();
