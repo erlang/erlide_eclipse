@@ -677,8 +677,9 @@ public class ErlModel extends Openable implements IErlModel {
 	}
 
 	public IErlModule getModuleFor(IErlElement elem) {
-		while(elem!=null && elem instanceof IErlModule)
+		while (elem != null && !(elem instanceof IErlModule)) {
 			elem = elem.getParent();
+		}
 		return (IErlModule) elem;
 	}
 }
