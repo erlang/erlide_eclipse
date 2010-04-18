@@ -114,6 +114,14 @@ public class ErlangLaunchConfigurationDelegate implements
 				.noneOf(BackendOptions.class);
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			options.add(BackendOptions.DEBUG);
+			if ("".equals(data.nodeName)) {
+				throw new CoreException(
+						new Status(
+								IStatus.ERROR,
+								ErlangPlugin.PLUGIN_ID,
+								"A node name has to be specified in the "
+										+ "configuration dialog when launching in debug mode!"));
+			}
 		}
 		if (data.startMe) {
 			options.add(BackendOptions.AUTOSTART);

@@ -208,6 +208,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
 				final File f = new File(outDir);
 				for (final File file : f.listFiles()) {
 					String name = file.getName();
+					if (!name.endsWith(".beam"))
+						continue;
 					name = name.substring(0, name.length() - 5);
 					try {
 						ErlideUtil.loadModuleViaInput(this, project, name);
