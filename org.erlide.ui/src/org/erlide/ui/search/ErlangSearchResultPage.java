@@ -394,7 +394,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
 	// private final EditorOpener fEditorOpener = new EditorOpener();
 
-	private static final String[] SHOW_IN_TARGETS = new String[] { IPageLayout.ID_RES_NAV };
+	private static final String[] SHOW_IN_TARGETS = new String[] { IPageLayout.ID_PROJECT_EXPLORER };
 	private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
 		@SuppressWarnings("synthetic-access")
 		public String[] getShowInTargetIds() {
