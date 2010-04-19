@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,8 +25,10 @@ public abstract class AbstractDuplicatesSearcherAction implements
 
 	public void run(IAction action) {
 		if (getUserInput()) {
+			IProgressMonitor monitor = new NullProgressMonitor();
 			try {
 				IResultParser result;
+				monitor.beginTask("Detecting..", 0);
 
 				result = callRefactoring();
 				if (result.isSuccessful()) {
@@ -41,6 +45,8 @@ public abstract class AbstractDuplicatesSearcherAction implements
 				displayErrorNotification(rpcErrorMsg);
 			} catch (IOException e) {
 				displayErrorNotification(rpcErrorMsg);
+			} finally {
+				monitor.done();
 			}
 		}
 
