@@ -27,7 +27,7 @@
 -define(DEFAULT_EUNIT_TESTMODULE_SUFFIX, "_tests").
 -define(DEFAULT_EQC_PROP_PREFIX, "prop_").
 -define(DEFAULT_TS_MODULE_SUFFIX, "_SUITE").
--define(EMACS, true).
+%%-define(EMACS, true).
 -define(MONITOR, true).
 
 
