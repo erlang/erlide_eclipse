@@ -1,15 +1,17 @@
 package org.erlide.core.erlang.internal;
 
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.jinterface.util.ErlLogger;
 
 /**
  * 
  * @author Vlad Dumitrescu
  */
 public abstract class ErlMember extends SourceRefElement implements IErlMember {
-	int fNameRangeStart, fNameRangeEnd;
+	int fNameRangeOffset, fNameRangeLength;
 
 	protected ErlMember(final IErlElement parent, final String name) {
 		super(parent, name);
@@ -29,17 +31,20 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 		return true;
 	}
 
-	public void setNameRangeStartEnd(final int start, final int end) {
-		fNameRangeStart = start;
-		fNameRangeEnd = end;
+	public void setNameRange(final int offset, final int length) {
+		fNameRangeOffset = offset;
+		fNameRangeLength = length;
 	}
 
 	public ISourceRange getNameRange() {
-		if (fNameRangeStart == 0 && fNameRangeEnd == 0) {
-			return new SourceRange(getSourceRangeStart(), getSourceRangeEnd()
-					- getSourceRangeStart());
+		if (fNameRangeOffset == 0 && fNameRangeLength == 0) {
+			try {
+				return getSourceRange();
+			} catch (ErlModelException e) {
+				ErlLogger.error(e); // will never happen
+			}
 		}
-		return new SourceRange(fNameRangeStart, fNameRangeEnd - fNameRangeStart);
+		return new SourceRange(fNameRangeOffset, fNameRangeLength);
 	}
 
 }

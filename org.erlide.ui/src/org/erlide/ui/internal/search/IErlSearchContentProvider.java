@@ -1,4 +1,4 @@
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
 public interface IErlSearchContentProvider {
 

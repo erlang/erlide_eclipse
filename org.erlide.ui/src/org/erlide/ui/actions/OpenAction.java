@@ -154,9 +154,9 @@ public class OpenAction extends SelectionDispatchAction {
 			final IErlProject erlProject = module.getErlProject();
 			final IErlModel model = ErlangCore.getModel();
 			final OpenResult res = ErlideOpen.open(b, ErlangToolkit
-					.createScannerModuleName(editor.getModule()), offset, model
-					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
-					model.getPathVars());
+					.createScannerModuleName(module), offset, ErlModelUtils
+					.getImportsAsList(module), model.getExternal(erlProject,
+					ErlangCore.EXTERNAL_MODULES), model.getPathVars());
 			ErlLogger.debug("open " + res);
 			openOpenResult(editor, module, b, offset, erlProject, res);
 		} catch (final Exception e) {

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -18,6 +19,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -259,5 +261,14 @@ public class ResourceUtil {
 				project.getName());
 		p.open(null);
 		return file;
+	}
+
+	public static IFile getFileFromLocation(final String location) {
+		final IWorkspaceRoot wr = ResourcesPlugin.getWorkspace().getRoot();
+		final IFile[] f = wr.findFilesForLocationURI(URIUtil.toURI(location));
+		if (f.length > 0) {
+			return f[0];
+		}
+		return null;
 	}
 }

@@ -14,7 +14,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangFunction {
 
 	public String name;
-
 	public int arity;
 
 	/**
@@ -92,4 +91,8 @@ public class ErlangFunction {
 		return ErlFunction.getNameWithParameters(name, arity);
 	}
 
+	public OtpErlangTuple getNameArityTuple() {
+		return new OtpErlangTuple(new OtpErlangObject[] {
+				new OtpErlangAtom(name), new OtpErlangLong(arity) });
+	}
 }

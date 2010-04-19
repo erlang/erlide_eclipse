@@ -86,7 +86,7 @@ public class ErlangElementImageProvider {
 		return getImageLabel(computeDescriptor(element, flags));
 	}
 
-	private Image getImageLabel(final ImageDescriptor descriptor) {
+	public Image getImageLabel(final ImageDescriptor descriptor) {
 		if (descriptor == null) {
 			return null;
 		}

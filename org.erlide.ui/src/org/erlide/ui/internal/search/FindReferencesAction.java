@@ -8,10 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
+import java.util.Collection;
+
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -50,12 +53,6 @@ public class FindReferencesAction extends FindAction {
 	}
 
 	@Override
-	Class<?>[] getValidTypes() {
-		return new Class[] { IErlFunction.class };
-		// FIXME fler h�r
-	}
-
-	@Override
 	void init() {
 		setText("Workspace");
 		setToolTipText("Find references in workspace");
@@ -64,13 +61,19 @@ public class FindReferencesAction extends FindAction {
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
 	}
 
+	@Override
 	int getLimitTo() {
-		return IErlSearchConstants.REFERENCES;
+		return ErlangSearchPattern.REFERENCES;
 	}
 
 	@Override
-	protected String[] getScope() {
+	protected Collection<IResource> getScope() {
 		return SearchUtil.getWorkspaceScope();
+	}
+
+	@Override
+	protected String getScopeDescription() {
+		return SearchUtil.getWorkspaceScopeDescription();
 	}
 
 	// QuerySpecification createQuery(IErlElement element)

@@ -32,6 +32,34 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ *
+ */
+/**
+ * @author jakob
+ * 
+ */
 public interface IErlElement extends IAdaptable {
 
 	enum Kind {
@@ -73,6 +101,13 @@ public interface IErlElement extends IAdaptable {
 	IErlProject getErlProject();
 
 	/**
+	 * Get module if this element is contained in one (or is one)
+	 * 
+	 * @return module or null
+	 */
+	IErlModule getModule();
+
+	/**
 	 * Returns the resource that corresponds directly to this element, or
 	 * <code>null</code> if there is no resource that corresponds to this
 	 * element.
@@ -81,6 +116,8 @@ public interface IErlElement extends IAdaptable {
 	 * its underlying <code>IFile</code>. There are no corresponding resources
 	 * for <code>IAttributes</code>,<code>IFunctions</code>, etc.
 	 * <p>
+	 * This differs from getResource, which returns the parents resource, if the
+	 * element doesn't correspond directly to a resource.
 	 * 
 	 * @return the corresponding resource, or <code>null</code> if none
 	 * @throws ErlModelException
@@ -142,16 +179,16 @@ public interface IErlElement extends IAdaptable {
 	 */
 	ISchedulingRule getSchedulingRule();
 
-	/**
-	 * Returns the smallest underlying resource that contains this element, or
-	 * <code>null</code> if this element is not contained in a resource.
-	 * 
-	 * @return the underlying resource, or <code>null</code> if none
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its underlying resource
-	 */
-	IResource getUnderlyingResource() throws ErlModelException;
+	// /**
+	// * Returns the smallest underlying resource that contains this element, or
+	// * <code>null</code> if this element is not contained in a resource.
+	// *
+	// * @return the underlying resource, or <code>null</code> if none
+	// * @throws ErlModelException
+	// * if this element does not exist or if an exception occurs
+	// * while accessing its underlying resource
+	// */
+	// IResource getUnderlyingResource() throws ErlModelException;
 
 	/**
 	 * Returns whether this Erlang element is read-only. An element is read-only

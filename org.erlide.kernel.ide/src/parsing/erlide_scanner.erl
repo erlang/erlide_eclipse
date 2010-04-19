@@ -16,15 +16,15 @@
 %% Exported Functions
 %%
 
--compile(export_all).
-
--export([light_scan_string/1]).
+-export([light_scan_string/1, scan_string/1, convert_tokens/1,
+         tokens_to_string/1, do_scan/2, get_all_tokens/1, initial_scan/5,
+         get_token_at/2, replace_text/4, lines_to_text/1, get_token_window/4]).
 
 %%
 %% API Functions
 %%
 
--define(CACHE_VERSION, 20).
+-define(CACHE_VERSION, 22).
 
 light_scan_string(B) ->
     S = binary_to_list(B),
@@ -35,6 +35,12 @@ light_scan_string(B) ->
         {error, _, _} ->
             error
     end.
+
+scan_string(B) when is_binary(B) ->
+    scan_string(binary_to_list(B));
+scan_string(L) when is_list(L) ->
+    M = do_scan('', L),
+    get_all_tokens(M).
 
 %%
 %% Local Functions
@@ -139,26 +145,24 @@ lines_to_text(Lines) ->
                  lines = [], % [{Length, String}]
                  tokens = [], % [{Length, [Token]}]
                  cachedTokens = [],
-                 erlide_path="",
                  log = []}).
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
-    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText, ErlidePath) end,
+    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
     erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UpdateCache).
 
-do_scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
-    {ok, B} = file:read_file(ModuleFileName),
-    InitialText = binary_to_list(B),
-    do_scan(ScannerName, InitialText, ErlidePath).
+%% do_scan_uncached(ScannerName, ModuleFileName) ->
+%%     {ok, B} = file:read_file(ModuleFileName),
+%%     InitialText = binary_to_list(B),
+%%     do_scan(ScannerName, InitialText).
 
-do_scan(ScannerName, InitialText, ErlidePath) ->
+do_scan(ScannerName, InitialText) ->
     ?D(do_scan),
     Lines = split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     ?D([ScannerName]), % , InitialText, LineTokens]),
-    #module{name=ScannerName, lines=Lines, tokens=LineTokens,
-            erlide_path=ErlidePath}.
+    #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
 
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of

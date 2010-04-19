@@ -23,14 +23,14 @@ public class ErlideScanner {
 
 	public static void initialScan(final String module,
 			final String moduleFileName, final String initialText,
-			final String erlidePath, final boolean updateCaches) {
+			final boolean updateCaches) {
 		final String stateDir = ErlangPlugin.getDefault().getStateLocation()
 				.toString();
 		try {
 			final OtpErlangObject res = ErlangCore.getBackendManager()
 					.getIdeBackend().call(ERLIDE_SCANNER, "initialScan",
-							"asssso", module, moduleFileName, initialText,
-							stateDir, erlidePath, updateCaches);
+							"assso", module, moduleFileName, initialText,
+							stateDir, updateCaches);
 			ErlLogger.debug("initialScan " + module + " " + res);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);

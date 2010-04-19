@@ -568,7 +568,10 @@ public class LiveExpressionsView extends ViewPart implements
 				display.asyncExec(new Runnable() {
 
 					public void run() {
-						if (viewer != null && viewer.getControl().isDisposed()) {
+						if (viewer == null) {
+							return;
+						}
+						if (viewer.getControl().isDisposed()) {
 							return;
 						}
 						viewer.refresh();

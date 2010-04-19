@@ -21,6 +21,7 @@ public class OpenResult {
 	private boolean isLocalCall = false;
 	private boolean isInclude = false;
 	private boolean isVariable = false;
+	private boolean isDefine = false;
 
 	public OpenResult(final OtpErlangObject res) {
 		if (!(res instanceof OtpErlangTuple)) {
@@ -52,9 +53,10 @@ public class OpenResult {
 				// } else if (external.equals("variable")) {
 				// final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
 				// final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
-			} else if (kind.equals("record") || kind.equals("macro")) {
-				isMacro = kind.equals("macro");
-				isRecord = kind.equals("record");
+			} else if (kind.startsWith("record") || kind.startsWith("macro")) {
+				isMacro = kind.startsWith("macro");
+				isRecord = kind.startsWith("record");
+				isDefine = kind.endsWith("_def");
 				final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
 				name = element.toString();
 				if (isMacro) {
@@ -129,6 +131,10 @@ public class OpenResult {
 		return isVariable;
 	}
 
+	public boolean isDefine() {
+		return isDefine;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -138,11 +144,19 @@ public class OpenResult {
 	public String toString() {
 		final StringBuilder b = new StringBuilder("OpenResult {");
 		if (isRecord) {
-			b.append("record ").append(name);
+			b.append("record");
+			if (isDefine) {
+				b.append("_def");
+			}
+			b.append(' ').append(name);
+		} else if (isMacro) {
+			b.append("macro");
+			if (isDefine) {
+				b.append("_def");
+			}
+			b.append(' ').append(name);
 		} else if (isInclude) {
 			b.append("include \"").append(name).append("\"");
-		} else if (isMacro) {
-			b.append("macro ").append(name);
 		} else if (isRecord) {
 			b.append("record ").append(name);
 		} else if (isExternalCall) {
@@ -156,5 +170,4 @@ public class OpenResult {
 		b.append("}");
 		return b.toString();
 	}
-
 }

@@ -60,9 +60,6 @@ public interface ISourceReference {
 	 * 
 	 * @return the source range, or <code>null</code> if this element has no
 	 *         associated source code
-	 * @exception ErlModelException
-	 *                if an exception occurs while accessing its corresponding
-	 *                resource
 	 */
 	ISourceRange getSourceRange() throws ErlModelException;
 

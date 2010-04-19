@@ -444,7 +444,7 @@ public final class ErlideUtil {
 			strBin.deleteCharAt(strBin.length() - 1);
 			strBin.append(">>");
 			final String cmd = String.format(fmt, module, module, strBin
-					.toString(), module);
+					.toString());
 			b.input(cmd);
 		}
 	}
