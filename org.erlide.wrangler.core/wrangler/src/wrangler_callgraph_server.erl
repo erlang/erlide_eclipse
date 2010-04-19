@@ -276,7 +276,7 @@ get_sorted_funs(ModName, AnnAST) ->
 fun_callgraph_to_png(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
     lists:foreach(fun(FName)->
-			  refac_io:format("currentfile:\n~p\n", [FName]),
+			  %% refac_io:format("currentfile:\n~p\n", [FName]),
 			  BaseName = filename:basename(FName, ".erl"),
 			  DotFileName=BaseName++"_callgraph.dot",
 			  PngFileName =BaseName++"_callgraph.png",
@@ -288,7 +288,7 @@ fun_callgraph_to_png(FileNameDirs) ->
 fun_callgraph_to_dot(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
     lists:foreach(fun(FName)->
-			  refac_io:format("currentfile:\n~p\n", [FName]),
+			  %% refac_io:format("currentfile:\n~p\n", [FName]),
 			  BaseName = filename:basename(FName, ".erl"),
 			  DotFileName=BaseName++"_callgraph.dot",
 			  fun_callgraph_to_dot(DotFileName, FName)

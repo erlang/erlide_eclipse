@@ -80,6 +80,10 @@ duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
 					   integer(), integer(), string()}]).
 duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth) ->
     FileNames = refac_util:expand_files(DirFileList, ".erl"),
+    case FileNames of 
+	[] -> throw({error, "No .erl files were found"});
+	_ -> ok
+    end,
     ?debug("Files:\n~p\n", [FileNames]),
     ?debug("Constructing suffix tree and collecting clones from the suffix tree.\n", []),
     {Toks, ProcessedToks} = tokenize(FileNames, TabWidth),
@@ -645,7 +649,7 @@ do_expr_anti_unification_1(Exp1, Exp2) ->
 do_anti_unify_macros(Exp1, Exp2) ->
     MacroName1 =refac_code_search_utils:identifier_name(refac_syntax:macro_name(Exp1)),
     MacroName2 =refac_code_search_utils:identifier_name(refac_syntax:macro_name(Exp2)),
-    case MacroName1 = MacroName2 of 
+    case MacroName1 == MacroName2 of 
 	true ->
 	    case refac_syntax:macro_arguments(Exp1) of
 		none -> [];

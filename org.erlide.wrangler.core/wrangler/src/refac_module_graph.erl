@@ -31,8 +31,11 @@
 
 -module(refac_module_graph). 
 
--export([module_graph/1, get_called_mods/2, module_graph_to_dot/4,
-	 module_subgraph_to_dot/4, scc_graph_to_dot/3]). 
+-export([module_graph/1, get_called_mods/2, module_graph_to_dot/3, module_graph_to_dot/4,
+	 module_subgraph_to_dot/4, scc_graph_to_dot/3, module_graph_with_funs/1,
+	 module_callergraph_to_dot/4]). 
+
+-export([add_edges/3]).
 
 -include("../include/wrangler.hrl").
 
@@ -157,9 +160,11 @@ get_client_modules({Mod, Dir}, List) ->
 %%
 %%==========================================================================================
 
+module_graph_with_funs(SearchPaths) ->
+    create_caller_callee_graph_with_called_funs(SearchPaths).
+
 create_caller_callee_graph_with_called_funs(SearchPaths) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
-    refac_io:format("Files:\n~p\n", [Files]),
     ModMap = refac_util:get_modules_by_file(Files),
     analyze_all_files_with_called_funs(ModMap, SearchPaths).
 
@@ -213,6 +218,21 @@ module_subgraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     digraph:delete(SG),
     digraph:delete(MG).
 
+
+-spec (module_callergraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
+module_callergraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
+    DotFile = filename:rootname(OutFile)++".dot",
+    ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
+    ModCallerCallees1=[{Caller, [{CalleeMod, CalleeFuns}]}||
+			  {Caller, Callees}<-ModCallerCallees, 
+			  {CalleeMod, CalleeFuns}<-Callees,
+			  lists:member(CalleeMod, ModNames)],
+    MG = digraph:new(),
+    add_edges(ModCallerCallees1, [], MG),
+    to_dot(MG,DotFile, WithLabel, [], false),
+    digraph:delete(MG).
+
+
 -spec (module_graph_to_dot/4::(filename(), [modulename()], [filename()|dir()], boolean()) ->true). 			  
 module_graph_to_dot(OutFile, NotCareMods, SearchPaths, WithLabel) -> 
     DotFile = filename:rootname(OutFile)++".dot",
@@ -224,13 +244,21 @@ module_graph_to_dot(OutFile, NotCareMods, SearchPaths, WithLabel) ->
     to_dot(MG,DotFile, WithLabel, Sccs1, false),
     digraph:delete(MG).
 
+
+module_graph_to_dot(DotFile, ModGraph, WithLabel) ->
+    MG = digraph:new(),
+    add_edges(ModGraph, [], MG),
+    to_dot(MG, DotFile, WithLabel, [], false),
+    digraph:delete(MG).
+
+
 -spec (scc_graph_to_dot/3::(filename(), [filename()|dir()], boolean()) ->true). 			  
 scc_graph_to_dot(OutFile, SearchPaths, WithLabel) -> 
     DotFile = filename:rootname(OutFile)++".dot",
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
     MG = digraph:new(),
     add_edges(ModCallerCallees,[],  MG),
-    Sccs = digraph_utils:strong_components(MG),
+    Sccs = digraph_utils:cyclic_strong_components(MG),
     Sccs1 = [Scc||Scc<-Sccs, length(Scc)>1],
     to_dot(MG,DotFile, WithLabel, Sccs1, true),
     digraph:delete(MG).
@@ -331,14 +359,17 @@ calc_dim([_|T], H, TmpW, MaxW) ->
 calc_dim([], H, TmpW, MaxW) ->
   {erlang:max(TmpW, MaxW), H}.
 
-
+edge_format([],_,_,_) ->
+    "";
+edge_format(_,[],_,_) ->
+    "";
 edge_format(V1, V2, Label, WithLabel) ->
     String = [io_lib:format("~p", [V1]), " -> ",
 	      io_lib:format("~p", [V2])],
     case WithLabel of 
 	true ->
 	    [String, " [", "label=", "\"", format_label(Label),  "\"", "];\n"];
-	false ->
+	_ ->
 	    [String, " [", "];\n"]
     end.
   
@@ -359,5 +390,3 @@ format_label([{F,A}|T]) ->
     end.
 
 
-
- %% refac_module_graph:module_graph_to_dot("c:/cygwin/home/hl/wrangler-0.8.8/src/modulegraph", [wrangler, wrangler_distel, refac_util, refac_syntax_lib, refac_syntax, refac_io, refac_prettypr, refac_parse, refac_statem_to_fsm, refac_fun_to_process, refac_instrument, refac_tuple_to_record, refac_misc, refac_add_a_tag,refac_rename_process,refac_annotate_pid, refac_register_pid, refac_recomment, refac_scan, refac_epp, refac_epp_dodger, refac_atom_utils], ["c:/cygwin/home/hl/wrangler-0.8.8./src"], true).

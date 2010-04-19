@@ -126,15 +126,15 @@ collect_atoms(Tree, AtomNames) ->
 				  when not (is_atom(MName) andalso MName /= '_' andalso
 					      is_atom(FName) andalso FName /= '_' andalso
 						is_integer(Arity)) ->
-				  Pos =
-				      S ++ [{atom, Pos, AtomVal}];   %% This should be improved; as we know T is a function atom;
-			      {value, _} -> S;
-			      _ ->
-				  S ++ [{atom, Pos, AtomVal}]
+				    
+				    S ++ [{atom, Pos, AtomVal}];   %% This should be improved; as we know T is a function atom;
+				{value, _} -> S;
+				_ ->
+				    S ++ [{atom, Pos, AtomVal}]
 			    end;
-			false -> S
+			  false -> S
 		      end;
-		  _ -> S
+		    _ -> S
 		end
 	end,
     refac_syntax_lib:fold(F, [], Tree).

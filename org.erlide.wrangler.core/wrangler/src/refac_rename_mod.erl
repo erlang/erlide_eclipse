@@ -98,14 +98,19 @@ rename_mod(FileName, NewName, SearchPaths, TabWidth, Editor) ->
 	  {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
 	  case lists:keysearch(module, 1, Info) of
 	    {value, {module, OldModName}} ->
-		NewModName = list_to_atom(NewName),
-		TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-		case pre_cond_check(FileName, OldModName, NewModName, TestFrameWorkUsed, SearchPaths) of
-		  ok -> do_rename_mod(FileName, [{OldModName, NewModName}],
-				      AnnAST, SearchPaths, Editor, TabWidth, Cmd);
-		  Other -> Other
-		end;
-	    false -> {error, "Wrangler could not infer the current module name."}
+		  case is_tuple(OldModName) of
+		      true -> throw({error, "Renaming of parameterised module is not supported yet."});
+		      false -> ok
+		  end,
+		  NewModName = list_to_atom(NewName),
+		  TestFrameWorkUsed = refac_util:test_framework_used(FileName),
+		  case pre_cond_check(FileName, OldModName, NewModName, TestFrameWorkUsed, SearchPaths) of
+		      ok -> 
+			  do_rename_mod(FileName, [{OldModName, NewModName}],
+					AnnAST, SearchPaths, Editor, TabWidth, Cmd);
+		      Other -> Other
+		  end;
+	      false -> {error, "Wrangler could not infer the current module name."}
 	  end;
       false -> {error, "Invalid new module name!"}
     end.

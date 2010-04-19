@@ -88,11 +88,12 @@
          merge_let_eclipse/3, merge_let_1_eclipse/4,
 	 eqc_statem_to_record_eclipse/3,eqc_statem_to_record_1_eclipse/7,
 	 eqc_fsm_to_record_eclipse/3,eqc_fsm_to_record_1_eclipse/7,
-	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7,
-	 init_eclipse/0
+	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7
 	]).
 
 -export([try_refactoring/3, try_inspector/3]).
+
+-export([init_eclipse/0]).
 -include("../include/wrangler.hrl").
 
 %% ====================================================================================================
@@ -938,7 +939,7 @@ normalise_record_expr_eclipse(FileName, Pos, ShowDefault, SearchPaths, TabWidth)
 %%</p>
 
 -spec(new_let/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-	      {error, string()} | {ok, [filename()]} |{question, string(), {list(), list()}}).
+	      {error, string()} | {ok, [filename()]} |{question, string(), list(), list(),string()}).
 new_let(FileName, Start, End, PatName, SearchPaths, TabWidth) -> 
     try_refactoring(refac_new_let, new_let, [FileName, Start, End, PatName, SearchPaths, TabWidth]).
 
@@ -1152,8 +1153,6 @@ gen_fsm_to_record_1_eclipse(FileName, RecordName, RecordFields, StateFuns, IsTup
     try_refactoring(refac_state_to_record, gen_fsm_to_record_1_eclipse, 
 		    [FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth]).
   
-init_eclipse()->
-	application:start(wrangler_app).
 
 %@private
 eqc_statem_to_fsm(FileName, StateName, SearchPaths, TabWidth) ->
@@ -1166,15 +1165,15 @@ eqc_statem_to_fsm_eclipse(FileName, StateName, SearchPaths, TabWidth) ->
 
 %%@private
 try_to_apply(Mod, Fun, Args, Msg) -> 
-    try 
-	apply(Mod, Fun, Args)
-     catch
-	 throw:Error -> 
-	     Error;    %% wrangler always throws Error in the format of '{error, string()}';
-	 E1:E2->
-     	     refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
-	     {error, Msg}
-     end.
+    %%try 
+		apply(Mod, Fun, Args).
+    %% catch
+	%% throw:Error -> 
+	%%     Error;    %% wrangler always throws Error in the format of '{error, string()}';
+	%% _E1:_E2->
+    %% 	     %%refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
+	%%     {error, Msg}
+    %% end.
 
 %%@private
 try_refactoring(Mod, Fun, Args) ->
@@ -1188,3 +1187,8 @@ try_inspector(Mod, Fun, Args) ->
 	"please report error to erlang-refactor@kent.ac.uk.",
     try_to_apply(Mod, Fun, Args, Msg).
 
+
+%%@private
+init_eclipse() ->
+    application:start(wrangler_app).
+    

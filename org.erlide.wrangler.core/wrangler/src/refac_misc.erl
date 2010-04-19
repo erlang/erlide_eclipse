@@ -42,7 +42,8 @@
 	 format_search_paths/1,default_incls/0, get_toks/1,reset_attrs/1,
 	 get_env_vars/1,get_var_exports/1,get_bound_vars/1,get_free_vars/1,
 	 is_expr/1,is_pattern/1, is_exported/2, inscope_funs/1,update_ann/2,
-	 delete_from_ann/2, callback_funs/1, is_callback_fun/3, rewrite/2]).
+	 delete_from_ann/2, callback_funs/1, is_callback_fun/3, rewrite/2,
+	 get_range/1]).
 
 -include("../include/wrangler.hrl").
 
