@@ -25,12 +25,11 @@
 %% called from Java
 -export([start/0, 
          stop/0,
-         %% add_modules/1,
          find_refs/3]).
 
 %% called from Erlang
 -export([remove_module/1,
-         add_module_refs/2]).
+         add_module_refs/3]).
 
 %% for testing
 
@@ -49,7 +48,7 @@
 -define(SERVER, erlide_search_server).
 
 -record(state, {modules=[], dummy}). %% FIXME still too simple data model
--record(module, {scanner_name, refs}).
+-record(module, {scanner_name, module_name, refs}).
 
 %%
 %% API Functions
@@ -171,8 +170,8 @@ cmd(Cmd, From, Args, State) ->
 reply(Cmd, From, R) ->
     From ! {Cmd, self(), R}.
 
-do_cmd(add_module_refs, {Module, Refs}, State) ->
-    do_add_module_refs(Module, Refs, State);
+do_cmd(add_module_refs, {ScannerName, Refs}, State) ->
+    do_add_module_refs(ScannerName, Refs, State);
 do_cmd(find_refs, {Ref, Modules, StateDir}, State) ->
     ?D(Ref),
     ?D(Modules),
@@ -235,10 +234,10 @@ get_module_refs(ScannerName, ModulePath, StateDir, Modules) ->
 read_module_refs(ScannerName, ModulePath, StateDir) ->
     erlide_noparse:read_module_refs(ScannerName, ModulePath, StateDir).
 
-do_add_module_refs(Module, Refs, #state{modules=Modules0} = State) ->
-    ?D(Module),
-    Modules1 = lists:keydelete(Module, #module.scanner_name, Modules0),
-    Modules2 = [#module{scanner_name=Module, refs=Refs} | Modules1],
+do_add_module_refs(ScannerName, Refs, #state{modules=Modules0} = State) ->
+    ?D(ScannerName),
+    Modules1 = lists:keydelete(ScannerName, #module.scanner_name, Modules0),
+    Modules2 = [#module{scanner_name=ScannerName, refs=Refs} | Modules1],
     ?D(Modules1),
     ?D(Modules2),
     State#state{modules=Modules2}.

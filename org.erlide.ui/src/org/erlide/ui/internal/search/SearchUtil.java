@@ -252,7 +252,8 @@ public class SearchUtil {
 			if (module != null && offset != -1) {
 				try {
 					IErlElement e = module.getElementAt(offset);
-					if (e != null && e.getKind() == IErlElement.Kind.TYPESPEC) {
+					if (e != null
+							&& (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
 						return new ErlangSearchPattern(
 								ErlangSearchPattern.SEARCHFOR_TYPE, name, res
 										.getFun(), 1, limitTo);
@@ -271,7 +272,7 @@ public class SearchUtil {
 					try {
 						IErlElement e = module.getElementAt(offset);
 						if (e != null
-								&& e.getKind() == IErlElement.Kind.TYPESPEC) {
+								&& (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
 							return new ErlangSearchPattern(
 									ErlangSearchPattern.SEARCHFOR_TYPE, name,
 									res.getFun(), 1, limitTo);
