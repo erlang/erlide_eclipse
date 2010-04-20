@@ -214,7 +214,8 @@ public class OpenAction extends SelectionDispatchAction {
 		if (res.isExternalCall()) {
 			if (editor != null) {
 				final IErlElement e = editor.getElementAt(offset, true);
-				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+				if (e.getKind() == IErlElement.Kind.TYPESPEC
+						|| e.getKind() == IErlElement.Kind.RECORD_DEF) {
 					if (ErlModelUtils.openExternalType(res.getName(), res
 							.getFun(), res.getPath(), project)) {
 						return;
@@ -254,7 +255,8 @@ public class OpenAction extends SelectionDispatchAction {
 		} else if (res.isLocalCall()) {
 			if (editor != null) {
 				final IErlElement e = editor.getElementAt(offset, true);
-				if (e.getKind() == IErlElement.Kind.TYPESPEC) {
+				if (e.getKind() == IErlElement.Kind.TYPESPEC
+						|| e.getKind() == IErlElement.Kind.RECORD_DEF) {
 					if (ErlModelUtils.openTypeInEditor(res.getFun(), editor)) {
 						return;
 					}
