@@ -48,15 +48,11 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
-import erlang.ErlideOpen;
 import erlang.OpenResult;
 
 public class SearchUtil {
@@ -304,35 +300,20 @@ public class SearchUtil {
 
 	public static ErlangSearchPattern getSearchPattern(final IErlModule module,
 			final int searchFor, final String pattern, final int limitTo) {
-		if (searchFor == ErlangSearchPage.SEARCHFOR_ANYTHING) {
-			final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			try {
-				OpenResult res = ErlideOpen.getOpenInfo(b, pattern,
-						ErlModelUtils.getImportsAsList(module), "", ErlangCore
-								.getModel().getPathVars());
-				ErlLogger.debug("find " + res);
-				return SearchUtil.getSearchPatternFromOpenResultAndLimitTo(
-						module, -1, res, limitTo);
-			} catch (BackendException e) {
-				e.printStackTrace();
-			}
-		} else {
-			String moduleName = "", name = pattern;
-			int arity = 0;
-			int p = pattern.indexOf(':');
-			if (p != -1) {
-				moduleName = pattern.substring(0, p);
-				name = pattern.substring(p + 1);
-			}
-			p = name.indexOf('/');
-			if (p != -1) {
-				arity = Integer.valueOf(name.substring(p + 1));
-				name = name.substring(0, p);
-			}
-			return new ErlangSearchPattern(searchFor, moduleName, name, arity,
-					limitTo);
+		String moduleName = "", name = pattern;
+		int arity = 0;
+		int p = pattern.indexOf(':');
+		if (p != -1) {
+			moduleName = pattern.substring(0, p);
+			name = pattern.substring(p + 1);
 		}
-		return null;
+		p = name.indexOf('/');
+		if (p != -1) {
+			arity = Integer.valueOf(name.substring(p + 1));
+			name = name.substring(0, p);
+		}
+		return new ErlangSearchPattern(searchFor, moduleName, name, arity,
+				limitTo);
 	}
 
 	public static void runQuery(final ErlangSearchPattern ref,

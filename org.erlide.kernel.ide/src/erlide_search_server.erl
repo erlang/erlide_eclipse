@@ -29,7 +29,7 @@
 
 %% called from Erlang
 -export([remove_module/1,
-         add_module_refs/3]).
+         add_module_refs/2]).
 
 %% for testing
 
@@ -217,6 +217,8 @@ find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O, length=L, sub_c
 
 check_pattern(Pattern, Mod, #local_call{function=F, arity=A})->
     lists:member(#external_call{module=Mod, function=F, arity=A}, Pattern);
+check_pattern(Pattern, Mod, #type_ref{module='_', type=T}) ->
+    lists:member(#type_ref{module=Mod, type=T}, Pattern);
 check_pattern(Pattern, _Mod, D) ->
     lists:member(D, Pattern).
 

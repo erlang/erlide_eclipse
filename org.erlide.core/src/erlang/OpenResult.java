@@ -167,6 +167,9 @@ public class OpenResult {
 		} else if (isVariable) {
 			b.append("variable ").append(name);
 		}
+		if (path != null && path.length() > 0) {
+			b.append(" \"").append(path).append('"');
+		}
 		b.append("}");
 		return b.toString();
 	}

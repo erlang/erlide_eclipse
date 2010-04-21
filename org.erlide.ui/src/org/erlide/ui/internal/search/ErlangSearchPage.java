@@ -151,7 +151,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private final static int ALL_OCCURRENCES = ErlangSearchPattern.ALL_OCCURRENCES;
 
 	// search for
-	public final static int SEARCHFOR_ANYTHING = 0;
 	private final static int SEARCHFOR_FUNCTION = ErlangSearchPattern.SEARCHFOR_FUNCTION;
 	private final static int SEARCHFOR_RECORD = ErlangSearchPattern.SEARCHFOR_RECORD;
 	private final static int SEARCHFOR_MACRO = ErlangSearchPattern.SEARCHFOR_MACRO;
@@ -510,7 +509,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		result.setLayout(new GridLayout(2, true));
 
 		fSearchFor = new Button[] {
-				createRadioButton(result, "Term", SEARCHFOR_ANYTHING, true),
 				createRadioButton(result, "Function", SEARCHFOR_FUNCTION),
 				createRadioButton(result, "Record", SEARCHFOR_RECORD),
 				createRadioButton(result, "Macro", SEARCHFOR_MACRO),
@@ -637,7 +635,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 				.getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
 						REFERENCES);
 		String patternString = pattern == null ? "" : pattern.patternString();
-		int searchFor = pattern == null ? SEARCHFOR_ANYTHING : pattern
+		int searchFor = pattern == null ? SEARCHFOR_FUNCTION : pattern
 				.getSearchFor();
 		SearchPatternData searchPatternData = new SearchPatternData(
 				patternString, ISearchPageContainer.WORKSPACE_SCOPE,
@@ -682,7 +680,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		}
 
 		return new SearchPatternData("", ISearchPageContainer.WORKSPACE_SCOPE,
-				REFERENCES, SEARCHFOR_ANYTHING, null);
+				REFERENCES, SEARCHFOR_FUNCTION, null);
 	}
 
 	/*

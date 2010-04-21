@@ -48,8 +48,14 @@ public class ErlangSearchTreeContentProvider extends
 			final Object newInput) {
 		if (newInput instanceof ErlangSearchResult) {
 			fResult = (ErlangSearchResult) newInput;
-			initialize(fResult.getResult());
+			initialize(fResult);
 		}
+	}
+
+	@Override
+	protected void initialize(final ErlangSearchResult result) {
+		super.initialize(result);
+		initialize(result.getResult());
 	}
 
 	private void addChild(final Object parent, final Object child) {
@@ -65,6 +71,23 @@ public class ErlangSearchTreeContentProvider extends
 			final List<Object> children = new ArrayList<Object>(1);
 			children.add(child);
 			childMap.put(parent, children);
+		}
+	}
+
+	private void removeChild(final Object parent, final Object child) {
+		if (parentMap.containsKey(child)) {
+			parentMap.remove(child);
+		}
+		if (childMap.containsKey(parent)) {
+			List<Object> children = childMap.get(parent);
+			if (children != null) {
+				children.remove(child);
+				if (children.isEmpty()) {
+					childMap.remove(parent);
+				} else {
+					childMap.put(parent, children);
+				}
+			}
 		}
 	}
 
@@ -96,6 +119,22 @@ public class ErlangSearchTreeContentProvider extends
 		}
 	}
 
+	private void removeElement(final ErlangSearchElement ese) {
+		final String moduleName = ese.getModuleName();
+		if (ese.isSubClause()) {
+			final ErlangFunction function = new ErlangFunction(ese.getName(),
+					ese.getArity());
+			removeChild(moduleName, function);
+			removeChild(function, ese);
+		} else {
+			removeChild(moduleName, ese);
+		}
+		List<Object> moduleChildren = childMap.get(moduleName);
+		if (moduleChildren == null && moduleNames.contains(moduleName)) {
+			moduleNames.remove(moduleName);
+		}
+	}
+
 	public Object[] getChildren(final Object parentElement) {
 		final List<Object> l = childMap.get(parentElement);
 		if (l == null) {
@@ -107,18 +146,6 @@ public class ErlangSearchTreeContentProvider extends
 	public boolean hasChildren(final Object element) {
 		return childMap.containsKey(element);
 	}
-
-	// @Override
-	// public synchronized void elementsChanged(final Object[]
-	// updatedElements) {
-	// for (int i = 0; i < updatedElements.length; i++) {
-	// if (fResult.getMatchCount(updatedElements[i]) > 0) {
-	// insert(updatedElements[i], true);
-	// } else {
-	// remove(updatedElements[i], true);
-	// }
-	// }
-	// }
 
 	public Object getParent(final Object element) {
 		return parentMap.get(element);
@@ -132,24 +159,37 @@ public class ErlangSearchTreeContentProvider extends
 
 	@Override
 	public void elementsChanged(final Object[] updatedElements) {
+		if (getSearchResult() == null) {
+			return;
+		}
 		final TreeViewer viewer = getViewer();
 		final int elementLimit = getElementLimit();
 		final boolean treeLimited = elementLimit != -1;
-		List<Object> toRemove = new ArrayList<Object>();
+		int n = updatedElements.length;
+		List<Object> toRemove = new ArrayList<Object>(n);
+		List<Object> toAdd = new ArrayList<Object>(n);
+		List<Object> toUpdate = new ArrayList<Object>(n);
 		for (Object element : updatedElements) {
 			if (fResult.getMatchCount(element) > 0) {
 				if (viewer.testFindItem(element) != null) {
-					viewer.update(element, null);
+					toUpdate.add(element);
 				} else {
 					if (!treeLimited
 							|| viewer.getTree().getItemCount() < elementLimit) {
-						addElement((ErlangSearchElement) element);
+						toAdd.add(element);
 					}
 				}
 			} else {
 				toRemove.add(element);
 			}
 		}
+		for (Object element : toRemove) {
+			removeElement((ErlangSearchElement) element);
+		}
+		for (Object element : toAdd) {
+			addElement((ErlangSearchElement) element);
+		}
+		viewer.update(toUpdate.toArray(), null);
 		viewer.remove(toRemove.toArray());
 		viewer.refresh();
 	}
