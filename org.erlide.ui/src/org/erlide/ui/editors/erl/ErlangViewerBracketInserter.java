@@ -179,83 +179,81 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
 
         // early pruning to slow down normal typing as little as possible
         if (!event.doit || validator.earlyCancelCheck()) {
-            return;
-        }
-        switch (event.character) {
-        case '(':
-        case '{':
-        case '[':
-        case '\'':
-        case '\"':
-            break;
-        default:
-            return;
-        }
-
-        final IDocument document = sourceViewer.getDocument();
-
-        final Point selection = sourceViewer.getSelectedRange();
-        final int offset = selection.x;
-        final int length = selection.y;
-        try {
-            final String selStr = fEmbraceSelection ? document.get(offset,
-                    length) : "";
-            if (selStr.length() == 0) {
-                final int kind = getKindOfBracket(document, offset, length);
-                // if (isStopper(kind)) {
-                // return;
-                // }
-                if (kind == '(' || kind == '{' || kind == '[') {
-                    return;
-                }
-
-                switch (event.character) {
-                case '(':
-                    if (!fCloseParens || kind == ')') {
-                        return;
-                    }
-                    break;
-
-                case '[':
-                    if (!fCloseBrackets || kind == ']') {
-                        return;
-                    }
-                    break;
-                case '{':
-                    if (!fCloseBraces || kind == '}') {
-                        return;
-                    }
-                    break;
-                case '\'':
-                    if (!fCloseAtoms || kind == '\'') {
-                        return;
-                    }
-                    break;
-                case '"':
-                    if (!fCloseStrings || kind == '"') {
-                        return;
-                    }
-                    break;
-
-                default:
-                    return;
-                }
-
-                if (!validator.validInput()) {
-                    return;
-                }
+            switch (event.character) {
+            case '(':
+            case '{':
+            case '[':
+            case '\'':
+            case '\"':
+                break;
+            default:
+                return;
             }
-            final char character = event.character;
-            final char closingCharacter = getPeerCharacter(character);
-            updateDocument(document, offset, length, selStr, character,
-                    closingCharacter);
 
-            event.doit = false;
+            final IDocument document = sourceViewer.getDocument();
 
-        } catch (final BadLocationException e) {
-            ErlLogger.error(e);
-        } catch (final BadPositionCategoryException e) {
-            ErlLogger.error(e);
+            final Point selection = sourceViewer.getSelectedRange();
+            final int offset = selection.x;
+            final int length = selection.y;
+            try {
+                final String selStr = fEmbraceSelection ? document.get(offset,
+                        length) : "";
+                if (selStr.length() == 0) {
+                    final int kind = getKindOfBracket(document, offset, length);
+                    // if (isStopper(kind)) {
+                    // return;
+                    // }
+                    if (kind == '(' || kind == '{' || kind == '[') {
+                        return;
+                    }
+
+                    switch (event.character) {
+                    case '(':
+                        if (!fCloseParens || kind == ')') {
+                            return;
+                        }
+                        break;
+
+                    case '[':
+                        if (!fCloseBrackets || kind == ']') {
+                            return;
+                        }
+                        break;
+                    case '{':
+                        if (!fCloseBraces || kind == '}') {
+                            return;
+                        }
+                        break;
+                    case '\'':
+                        if (!fCloseAtoms || kind == '\'') {
+                            return;
+                        }
+                        break;
+                    case '"':
+                        if (!fCloseStrings || kind == '"') {
+                            return;
+                        }
+                        break;
+
+                    default:
+                        return;
+                    }
+
+                    if (!validator.validInput()) {
+                        return;
+                    }
+                }
+                final char character = event.character;
+                final char closingCharacter = getPeerCharacter(character);
+                updateDocument(document, offset, length, selStr, character,
+                        closingCharacter);
+
+                event.doit = false;
+            } catch (final BadLocationException e) {
+                ErlLogger.error(e);
+            } catch (final BadPositionCategoryException e) {
+                ErlLogger.error(e);
+            }
         }
     }
 

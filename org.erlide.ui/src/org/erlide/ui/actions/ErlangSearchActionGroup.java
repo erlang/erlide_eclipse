@@ -187,4 +187,5 @@ public class ErlangSearchActionGroup extends ActionGroup {
 
         super.dispose();
     }
+
 }

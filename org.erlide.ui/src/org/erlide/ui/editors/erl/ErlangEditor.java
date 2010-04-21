@@ -12,6 +12,7 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
@@ -116,6 +117,7 @@ import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
+import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
@@ -290,7 +292,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
             // ErlLogger.debug("event:: " + key);
-            if ("markingOccurences".equals(key)) {
+            if (key.indexOf('/') != -1
+                    && key.split("/")[0]
+                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
+                readBracketInserterPrefs(getBracketInserter());
+            } else if ("markingOccurences".equals(key)) {
                 final boolean newBooleanValue = event.getNewValue().equals(
                         "true");
                 if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
@@ -1144,6 +1150,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             throw filterUTF8Exception(e);
         }
 
+        readBracketInserterPrefs(getBracketInserter());
+
+        final ISourceViewer sourceViewer = getSourceViewer();
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);
 
@@ -1667,7 +1676,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return fActionGroups;
     }
 
-    private boolean isFoldingEnabled() {
+    public static boolean isFoldingEnabled() {
         return ErlideUIPlugin.getDefault().getPreferenceStore()
                 .getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
     }
@@ -1951,6 +1960,24 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      */
     public Object getReconcilerLock() {
         return fReconcilerLock;
+    }
+
+    public static void readBracketInserterPrefs(
+            final ErlangViewerBracketInserter bracketInserter) {
+        final List<Boolean> prefs = SmartTypingPreferencePage
+                .getBracketInserterPreferences();
+        bracketInserter.setCloseAtomsEnabled(prefs
+                .get(SmartTypingPreferencePage.ATOMS));
+        bracketInserter.setCloseBracketsEnabled(prefs
+                .get(SmartTypingPreferencePage.BRACKETS));
+        bracketInserter.setCloseStringsEnabled(prefs
+                .get(SmartTypingPreferencePage.STRINGS));
+        bracketInserter.setCloseBracesEnabled(prefs
+                .get(SmartTypingPreferencePage.BRACES));
+        bracketInserter.setCloseParensEnabled(prefs
+                .get(SmartTypingPreferencePage.PARENS));
+        bracketInserter.setEmbraceSelectionEnabled(prefs
+                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
     }
 
 }

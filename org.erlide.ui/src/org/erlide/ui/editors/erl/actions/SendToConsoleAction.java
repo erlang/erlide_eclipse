@@ -5,14 +5,14 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.console.ErlangConsolePage;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class SendToConsoleAction extends SelectionDispatchAction {
 
-    private final ErlangEditor fEditor;
+    private final ITextEditor fEditor;
 
     @Override
     public void run(ITextSelection selection) {
@@ -23,7 +23,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
             // if selection is empty, grab the whole line
             if (selection.getLength() == 0) { // don't use isEmpty()!
                 selection = ErlangTextEditorAction.extendSelectionToWholeLines(
-                        fEditor.getDocument(), selection);
+                        fEditor.getDocumentProvider().getDocument(
+                                fEditor.getEditorInput()), selection);
             }
             // try to make the text a full erlang expression, ending with dot
             String text = selection.getText().trim();
@@ -42,7 +43,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 
     public SendToConsoleAction(final IWorkbenchSite site,
             final ResourceBundle bundle, final String prefix,
-            final ErlangEditor editor) {
+            final ITextEditor editor) {
         super(site);
         setText(getString(bundle, prefix + "label")); //$NON-NLS-1$
         setToolTipText(getString(bundle, prefix + "tooltip")); //$NON-NLS-1$

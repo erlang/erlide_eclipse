@@ -34,6 +34,7 @@ import org.erlide.utils.Util;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlangTextEditorAction extends TextEditorAction {
+
     final protected String fErlModule;
     final protected String fErlFunction;
 
