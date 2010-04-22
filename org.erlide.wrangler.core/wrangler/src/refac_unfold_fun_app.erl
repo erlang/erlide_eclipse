@@ -130,7 +130,7 @@ side_cond_analysis_1(FunDef, App, AnnAST) ->
 	  UsedMacros = refac_misc:collect_used_macros(C),
 	  CPos = refac_syntax:get_pos(C),
 	  AppPos = refac_syntax:get_pos(App),
-	  case check_macro_defs(Fs, UsedMacros, min_pos(CPos, AppPos), max_pos(CPos, AppPos)) of
+	  case check_macro_defs(Fs, UsedMacros, min(CPos, AppPos), max(CPos, AppPos)) of
 	    [] ->
 		{ok, {C, {Subst, MatchExprs}}};
 	    Ms -> return_error_msg(Ms)
@@ -139,24 +139,16 @@ side_cond_analysis_1(FunDef, App, AnnAST) ->
       throw:E2 ->
 	  throw(E2)
     end.
+ 
+
+min(P1, P2) when P1>P2 -> P2;
+min(P1,_P2) -> P1.
+
+ 
+max(P1, P2) when P1>=P2 -> P1;
+max(_P1,P2) -> P2.
 
 
-min_pos({Line, Col}, {Line1, Col1}) ->
-    case {Line, Col}>= {Line1, Col1} of 
-	true ->
-	    {Line1, Col1};
-	false ->
-	    {Line, Col}
-    end.
-
-max_pos({Line, Col}, {Line1, Col1}) ->
-    case {Line, Col}>= {Line1, Col1} of 
-	true ->
-	    {Line, Col};
-	false ->
-	    {Line1, Col1}
-    end.
-    
 return_error_msg(Ms) ->
     MsStr = format(Ms),
     case length(Ms) of

@@ -662,47 +662,74 @@ format_label([{F,A}|T]) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-cluster(File, SearchPaths) ->
+cluster(File, Sum, SearchPaths) ->
     Files = refac_util:expand_files(SearchPaths, ".erl"),
     refac_io:format("Files:\n~p\n", [Files]),
+    Files1=case Files of 
+	       [] -> [File];
+	       _ -> Files
+	   end,	
     #callgraph{callercallee = CallerCallees} =
-	wrangler_callgraph_server:get_callgraph(Files),
+	wrangler_callgraph_server:get_callgraph(Files1),
     CG = digraph:new(),
     add_edges(CallerCallees, CG),
-    Matrix = generate_fun_dist_matrix(File, CG),
+    Coms =gen_components(File),
+    refac_io:format("Coms:\n~p\n", [Coms]),
+    Matrix = generate_fun_dist_matrix(File, CG, Coms),
     Funs = exported_funs(File),
     refac_io:format("Funs:\n~p\n", [Funs]),
-    %%refac_io:format("Matrix:\n~p\n", [Matrix]),
-    Cs =agglomerative_cluster(Matrix, CG),
-    refac_io:format("Cs:\n~p\n", [Cs]),
+    %% refac_io:format("Matrix:\n~p\n", [Matrix]),
+    Cs =agglomerative_cluster(Matrix, CG, Coms),
+     refac_io:format("Cs:\n~p\n", [Cs]),
     Cs1= lists:usort(lists:append(Cs)),
-    Cs2 =[C||C<-Cs1, is_component(C, CG)],
-    Cs3 = remove_sub_lists(Cs2),
-    refac_io:format("Cs1:\n~p\n", [Cs1]),
+    FunSizePairs = get_fun_size_pairs(File, SearchPaths),
+    Cs2 =[analyze_a_group(C, CG, FunSizePairs)||C<-Cs1],
+    Cs3 = [{C, {IsClosed, SizeRatio}}||{C, IsClosed, SizeRatio}<-Cs2, 
+				     IsClosed/=1],
     refac_io:format("Cs2:\n~p\n", [Cs2]),  
     refac_io:format("Cs3:\n~p\n", [Cs3]),  
-    digraph:delete(CG).
+    digraph:delete(CG),
+    Cs4=remove_sub_clusters(Cs3),
+    refac_io:format("Cs4:\n~p\n", [Cs4]),
+    Cs5=lists:sublist(Cs4, Sum-1),
+    RemFuns=Funs--lists:append([element(1,C)||C<-Cs5]),
+    Res =[RemFuns|Cs5],
+    refac_io:format("Res:\n~p\n", [Res]),
+    Res.
+ 
 
-generate_fun_dist_matrix(File, CG) ->
+gen_components(FileName) ->
+    CallerCalleesWithDef = wrangler_callgraph_server:build_callercallee_callgraph([FileName]),
+    CallerCallees = [{{M,F,A}, [{M1,F1,A1}||{M1,F1,A1}<-Callee, M1==M]}
+		     || {{{M,F,A}, _}, Callee}<-CallerCalleesWithDef],
+    CallerCallees1=[{Caller, Callees}||{Caller, Callees}<-CallerCallees, 
+				       Callees/=[]],
+    CG = digraph:new(),
+    add_edges(CallerCallees1,  CG),
+    Coms=digraph_utils:components(CG),
+    digraph:delete(CG),
+    Coms.
+
+generate_fun_dist_matrix(File, CG, Coms) ->
     Funs = exported_funs(File),
     IntialMatrix = [{[F], [{[F1], undefined}||F1<-Funs]}||F<- Funs],
-    update_dist(IntialMatrix, CG).
+    update_dist(IntialMatrix, CG, Coms).
 
-agglomerative_cluster(Matrix, CG) ->
-    agglomerative_cluster(Matrix, CG,[]).
+agglomerative_cluster(Matrix, CG, Coms) ->
+    agglomerative_cluster(Matrix, CG, Coms,[]).
 
-agglomerative_cluster(_Matric=[_], _CG,  Acc) ->
+agglomerative_cluster(_Matric=[_], _CG,  _Coms,Acc) ->
     lists:reverse(Acc);
-agglomerative_cluster(Matrix, CG, Acc) ->
+agglomerative_cluster(Matrix, CG, Coms, Acc) ->
     %% refac_io:format("Matrix:\n~p\n", [Matrix]),
     {FG, Dist} = find_min_dist(Matrix),
     refac_io:format("FG:\n~p\n", [FG]),
     refac_io:format("Dist:\n~p\n", [Dist]),
     Matrix1=group_funs(Matrix, FG),
-    Matrix2 = update_dist(Matrix1, CG),
+    Matrix2 = update_dist(Matrix1, CG, Coms),
     Cs = [F||{F, _}<- Matrix2],
-    %% refac_io:format("Cs:\n~p\n", [Cs]),
-    agglomerative_cluster(Matrix2, CG, [Cs|Acc]).
+   %% refac_io:format("Cs:\n~p\n", [Cs]),
+    agglomerative_cluster(Matrix2, CG, Coms, [Cs|Acc]).
     
 find_min_dist(Matrix) ->
     {FG, Dist}=
@@ -710,12 +737,14 @@ find_min_dist(Matrix) ->
 			    lists:foldl(fun({E, Dist}, {Acc0, Min0}) ->
 						case Dist>=Min0 of
 						    true -> {Acc0,Min0};
-						    false ->
-							{RowKey++E, Dist}
+						    false when Dist/={0,0,0}->
+							{RowKey++E, Dist};
+						    _ -> {Acc0, Min0}
 						end
 					end, {Acc, Min}, RowElems)
-		    end, {[],{1,1}}, Matrix),
+		    end, {[], {1,1,1}}, Matrix),
     {lists:usort(FG), Dist}.
+
 
 group_funs(Matrix, FunsToGroup) ->
     Matrix1 =[{RowKey1, group_cols(RowElems1, FunsToGroup)}
@@ -751,33 +780,35 @@ remove_duplicated_keys([{Key, V}|T], Keys, Tuples1) ->
 	    remove_duplicated_keys(T, [Key|Keys],[{Key, V}|Tuples1])
     end.
 
-update_dist(Matrix, CG) ->
+update_dist(Matrix, CG, Coms) ->
     [{RowKey, RowElems1} ||{RowKey, RowElems}<-Matrix,
 			   RowElems1<-[[{ColKey, Dist1}
 					||{ColKey, Dist}<-RowElems,
-					  Dist1<-[update_dist(RowKey, ColKey, Dist, CG)]]]].
+					  Dist1<-[update_dist(RowKey, ColKey, Dist, CG, Coms)]]]].
 
-update_dist(RowKey, ColKey, Dist, CG) ->
+update_dist(RowKey, ColKey, Dist, CG, Coms) ->
     case Dist of 
 	undefined ->
-	    calculate_dist(RowKey, ColKey, CG);
+	    calculate_dist(RowKey, ColKey, CG, Coms);
 	_ -> Dist
     end.
 
-calculate_dist(FunGroup1=[{M, _F, _A}|_], FunGroup2, CG) ->
+calculate_dist(FunGroup1=[{M, _F, _A}|_], FunGroup2, CG, Coms) ->
     case lists:usort(FunGroup1) == lists:usort(FunGroup2) of
-      true -> {1,1};
+      true -> {0, 0,0};
       false ->
 	    FunGroup1Reachable = digraph_utils:reachable(FunGroup1, CG),
 	    FunGroup1ReachingMods =lists:usort([M1||{M1, _F1, _A1}<-digraph_utils:reaching(FunGroup1, CG), M1/=M]),
-	    %%refac_io:format("ReachingMods1:\n~p\n", [FunGroup1ReachingMods]),
-	    %% refac_io:format("FunGroup1:\n~p\n", [FunGroup1]),
-	    %% refac_io:format("FunGroupReachable1:\n~p\n", [FunGroup1Reachable]),
 	    FunGroup2Reachable = digraph_utils:reachable(FunGroup2, CG),
 	    FunGroup2ReachingMods =lists:usort([M1||{M1, _F1, _A1}<-digraph_utils:reaching(FunGroup2, CG), M1/=M]),
-	    %%refac_io:format("ReachingMods2:\n~p\n", [FunGroup2ReachingMods]),
 	    CommonReachable = list_insection(FunGroup1Reachable, FunGroup2Reachable),
-	    CommonReachableScore=1-2 * length(CommonReachable) / (length(FunGroup1Reachable) + length(FunGroup2Reachable)),
+	    IsSubList=case is_sub_list(FunGroup2Reachable, FunGroup1Reachable) orelse 
+			  is_sub_list(FunGroup1Reachable, FunGroup2Reachable) of 
+			  true -> 1;
+			  false ->0
+		      end,
+	    CommonReachableScore=1-(0.5*2 * length(CommonReachable) / (length(FunGroup1Reachable) + length(FunGroup2Reachable))+
+				    0.5 * IsSubList),
 	    CommonReaching=list_insection(FunGroup1ReachingMods, FunGroup2ReachingMods),
 	    CommonReachingScore=case FunGroup1ReachingMods==[] andalso FunGroup2ReachingMods==[] of 
 				    true -> 0;
@@ -785,23 +816,97 @@ calculate_dist(FunGroup1=[{M, _F, _A}|_], FunGroup2, CG) ->
 					1-2 * length(CommonReaching) / 
 					    (length(FunGroup1ReachingMods) + length(FunGroup2ReachingMods))
 				end,
-	    refac_io:format("Es:\n~p\n", [{FunGroup1, FunGroup2}]),
-	    refac_io:format("dist:\n~p\n", [{CommonReachableScore, CommonReachingScore}]),
-	    {CommonReachableScore, CommonReachingScore}							  
+	    InSameCom = is_in_same_component(FunGroup1, FunGroup2, Coms),
+	    {InSameCom, CommonReachableScore,CommonReachingScore}
     end.
 
+is_in_same_component(FunGroup1, FunGroup2, Coms) ->
+    R =lists:any(fun(C) ->
+			 is_sub_list(FunGroup1, C) andalso 
+			     is_sub_list(FunGroup2, C)
+		 end, Coms),
+    case R of 
+	true ->
+	    0;
+	false ->
+	    1
+    end.
+
+analyze_a_group(C, CG, FunSizePairs) ->
+    Res ={C, is_component(C, CG), cluster_size_ratio(C, CG, FunSizePairs)},
+    refac_io:format("GroupData:\n~p\n", [Res]),
+    Res.
 
 is_component([], _CG) ->
     false;
 is_component(Vs=[{M, _F, _A}|_T], CG) ->
-    InEdges=lists:sort([{V1, V2}|| V<-Vs, E<-digraph:in_edges(CG,V), 
+    Rs = [{M1, F1, A1} || {M1, F1, A1} <- digraph_utils:reachable(Vs, CG),
+			  M == M1],
+    InEdges=lists:usort([{V1, V2}|| R<-Rs,  E<-digraph:in_edges(CG,R), 
 				   {_, V1, V2, _}<-[digraph:edge(CG, E)]]),
-    InVs=element(1, lists:unzip(InEdges)),
-    OutEdges=lists:sort([{V1, {M2, F2, A2}}|| V<-Vs, E<-digraph:out_edges(CG,V), 
-					      {_, V1, {M2, F2,A2}, _}<-
-						  [digraph:edge(CG, E)], M2==M]),
-    OutVs=element(2, lists:unzip(OutEdges)),
-    not (list_subtract(InVs, Vs)=/=[] andalso list_subtract(OutVs, Vs)=/=[]).
+    OutEdges=lists:usort([{V1, {M2, F2, A2}}|| R<-Rs, E<-digraph:out_edges(CG,R), 
+					      {_, V1, {M2, F2,A2}, _}<-[digraph:edge(CG, E)], M2==M]),
+    refac_io:format("Vs:\n~p\n", [Vs]),
+    %%TODO: REFINE THIS !!
+    case list_subtract(InEdges, OutEdges)==[] andalso list_subtract(OutEdges, InEdges)==[] of 
+	true -> 0;
+	_ -> case not(list_subtract(InEdges, OutEdges)/=[] andalso list_subtract(OutEdges, InEdges)/=[]) of 
+		 true ->
+		      0.5;
+		 false ->
+		     1
+	     end
+    end.
+
+cluster_size_ratio(C=[{M, _F, _A}|_T], CG, FunSizePairs) ->
+    Rs = [{M1, F1, A1} || {M1, F1, A1} <- digraph_utils:reachable(C, CG),
+			  M == M1],
+    AllVs=lists:usort(C++Rs),
+    CSize=lists:sum([Size||{F, Size}<-FunSizePairs, lists:member(F, AllVs)]),
+    TotalSize =lists:sum([Size||{_, Size}<-FunSizePairs]),
+    refac_io:format("CSize:\n~p\n", [CSize]),
+    refac_io:format("TotlaSize:\n~p\n", [TotalSize]),    
+    abs(CSize/TotalSize-0.5).
+				 
+get_fun_size_pairs(File, SearchPaths)->    
+    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(File, true, SearchPaths),
+    Forms = refac_syntax:form_list_elements(AnnAST),
+    Fun = fun(Form) ->
+		  case lists:keysearch(fun_def,1,refac_syntax:get_ann(Form)) of 
+		      {value, {fun_def, {M, F, A, _,_}}} ->
+			  Toks = refac_misc:get_toks(Form),
+			  CodeLines = [element(1, element(2, T)) ||
+					  T <- Toks, element(1, T) /= whitespace, 
+					  element(1, T) /= comment],
+			  [{{M, F, A}, length(refac_misc:remove_duplicates(CodeLines))}];
+		      false ->
+			  []
+		  end
+	  end,
+    lists:append([Fun(F)||F<-Forms]).
+
+
+remove_sub_clusters(C) ->
+    remove_sub_clusters(lists:keysort(2,C),[]).
+
+remove_sub_clusters([], Acc)->
+    lists:reverse(Acc);
+remove_sub_clusters([{C, {Closed, SizeRatio}}|T], Acc) ->
+    case lists:any(fun({C1, _})->
+			   C--C1/=C 
+		   end, Acc) of 
+	true ->
+	    remove_sub_clusters(T, Acc);
+	false ->
+	    remove_sub_clusters(T, [{C, {Closed, SizeRatio}}|Acc])
+    end.
+			  
+								 
+			  
+				 
+				
+    
+
 
  
 %% wrangler_modularity_inspection:gen_module_graph("ibrowse_mg.dot", [],["c:/cygwin/home/hl/modularity_casestudy/apache-couchdb-0.11.0/src/ibrowse"], true).

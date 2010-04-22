@@ -260,7 +260,8 @@ display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], St
 display_search_results(Ranges, AntiUnifier, Type) ->
     case Ranges of
 	[_] -> 
-	    ?wrangler_io("No "++Type++" expression has been found.\n", []);
+	    ?wrangler_io("No "++Type++" expression has been found.\n", []),
+	    {ok, Ranges};
 	_ -> 
 	    ?wrangler_io("~p expressions (including the expression selected)"
 			 " which are "++Type++" to the expression selected have been found. \n", [length(Ranges)]),

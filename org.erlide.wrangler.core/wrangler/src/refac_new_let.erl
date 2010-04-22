@@ -42,7 +42,7 @@
 
 %% =============================================================================================
 -spec(new_let/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-	     {'ok', [filename()]} | {question, string(), {list(), list()}}).
+	     {'ok', [filename()]} | {question, string(), list(), list(), string()}).
 new_let(FileName, Start, End, NewPatName, SearchPaths, TabWidth) ->
     new_let(FileName, Start, End, NewPatName, SearchPaths, TabWidth, emacs).
 
@@ -77,7 +77,7 @@ new_let(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPa
 			emacs ->
 			    {question, Msg, term_to_list(Expr), term_to_list(ParentExpr), Cmd};
 			eclipse ->
-			    {question, Msg, Expr, ParentExpr}
+			    {question, Msg, {Expr, ParentExpr}}
 		      end
 		end;
 	    {error, Reason} -> throw({error, Reason})

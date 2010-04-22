@@ -35,8 +35,9 @@
 -behaviour(gen_server).
 
 %% API
--export([start_wrangler_error_logger/0, get_logged_errors/0, 
-	 add_error_to_logger/1, remove_error_from_logger/1]).
+-export([start_wrangler_error_logger/0,
+	 get_logged_info/0, add_to_logger/1,
+	 remove_from_logger/1, remove_all_from_logger/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -54,14 +55,17 @@
 start_wrangler_error_logger() ->
     gen_server:start_link({local, wrangler_error_logger}, ?MODULE, [], []).
 
-get_logged_errors() ->
+get_logged_info() ->
     gen_server:call(wrangler_error_logger, get_errors).
 
-add_error_to_logger(Error) ->
+add_to_logger(Error) ->
     gen_server:cast(wrangler_error_logger, {add, Error}).
 
-remove_error_from_logger(FileName) ->
+remove_from_logger(FileName) ->
     gen_server:cast(wrangler_error_logger, {remove, FileName}).
+
+remove_all_from_logger() ->
+    gen_server:cast(wrangler_error_logger, remove_all).    
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
@@ -88,7 +92,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 %% this function also reset the state of the error logger.
 handle_call(get_errors, _From, _State=#state{errors=Errors}) ->
-    {reply, Errors,  #state{}}.
+    {reply, Errors,  #state{errors=[]}}.
 
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
@@ -96,11 +100,23 @@ handle_call(get_errors, _From, _State=#state{errors=Errors}) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast({add, {FileName, Error}}, _State=#state{errors=Errors}) ->
-    {noreply, #state{errors=([{FileName, Error}|lists:keydelete(FileName, 1, Errors)])}};
+handle_cast({add, {warning, Msg}}, _State = #state{errors = Errors}) ->
+    case lists:keysearch(warning, 1, Errors) of
+	{value, {warning, Str}} ->
+	    NewWarnMsg=Str++"\n"++Msg,
+	    NewErrors =lists:keyreplace(warning, 1, Errors, {warning, NewWarnMsg}),
+	    {noreply, #state{errors=NewErrors}};
+	false ->
+	    {noreply, #state{errors=[{warning, Msg}|Errors]}}
+    end;
+handle_cast({add, {FileName, Error}}, _State = #state{errors = Errors}) ->
+    {noreply, #state{errors = [{FileName, Error}| lists:keydelete(FileName, 1, Errors)]}};
 
-handle_cast({remove, FileName}, _State=#state{errors=Errors}) ->
-    {noreply, #state{errors=lists:keydelete(FileName, 1, Errors)}}.
+handle_cast({remove, FileName}, _State = #state{errors = Errors}) ->
+    {noreply, #state{errors = lists:keydelete(FileName, 1, Errors)}};
+handle_cast(remove_all, _State = #state{errors = _Errors}) ->
+    {noreply, #state{errors = []}}.
+
 
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |

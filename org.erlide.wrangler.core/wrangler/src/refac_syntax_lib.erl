@@ -1042,7 +1042,7 @@ get_value(DefPos) ->
 	{value_env, V} ->
 	    V;
 	_Other ->
-	    throw({error, "Wrangler error: unexpected message."})    
+	    throw({error, "Wrangler error: unexpected message"})    
     end.
 
 add_value({DefPos, V}) ->

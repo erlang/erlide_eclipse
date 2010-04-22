@@ -201,8 +201,7 @@ pre_cond_check(FileName, Info, NewFunName, OldFunDefMod, OldFunName, Arity) ->
     Inscope_Funs = [{F, A} || {_M, F, A} <- refac_misc:inscope_funs(Info)],
     if OldFunDefMod == ModName ->
 	   case lists:member({NewFunName, Arity}, Inscope_Funs) orelse
-		  erlang:is_builtin(erlang, NewFunName, Arity) orelse
-		    erl_internal:bif(erlang, NewFunName, Arity)
+	       erl_internal:bif(erlang, NewFunName, Arity)
 	       of
 	     true ->
 		 {error, atom_to_list(NewFunName) ++ "/" ++
@@ -536,7 +535,7 @@ renamed_warn_msg(FunName) ->
 not_renamed_warn_msg(FunName) ->
     "\n=================================================================================\n"
     "WARNING: Wrangler could not infer whether the uses of '" ++ atom_to_list(FunName) ++
-      "' at the following positions refer to the function renamed, and they are not renamed."
+      "' at the following position(line)s refer to the function renamed, and they are not renamed."
       " Please check manually!\n".
 
 rewrite(E1, E2) ->

@@ -96,7 +96,7 @@ expression_search_in_buffer(FName, StartLine, StartCol, EndLine, EndCol, SearchP
    wrangler:identical_expression_search_in_buffer(FName, {StartLine, StartCol}, {EndLine, EndCol}, SearchPaths, TabWidth).
 
 -spec(expression_search_in_dirs/7::(filename(), integer(), integer(), integer(), integer(),[dir()],integer()) -> 
-					 {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).
+					 {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]} |{error, string()}).
 expression_search_in_dirs(FName, StartLine, StartCol, EndLine, EndCol, SearchPaths, TabWidth) ->
     wrangler:identical_expression_search_in_dirs(FName, {StartLine, StartCol}, {EndLine, EndCol}, SearchPaths, TabWidth).
 
@@ -107,7 +107,7 @@ similar_expression_search_in_buffer(FName, StartLine, StartCol, EndLine, EndCol,
 
 
 -spec(similar_expression_search_in_dirs/8::(filename(), integer(), integer(), integer(), integer(),string(),[dir()], integer()) ->
-	     {ok, [{integer(), integer(), integer(), integer()}]} | {error, string()}).
+	     {ok, [{integer(), integer(), integer(), integer()}]}).
 similar_expression_search_in_dirs(FName, StartLine, StartCol, EndLine, EndCol, SimiScore, SearchPaths, TabWidth) ->
     wrangler:similar_expression_search_in_dirs(FName, {StartLine, StartCol}, {EndLine, EndCol}, SimiScore, SearchPaths, TabWidth).
 
@@ -211,7 +211,7 @@ apply_refactoring(Mod, Fun, Args, SearchPaths) ->
     case initial_checking(SearchPaths) of
       ok ->
 	  Res = apply(Mod, Fun, Args),
-	  check_wrangler_error_logger(),
+	  output_logged_msg(),
 	  Res;
       {error, Reason} -> {error, Reason}
     end.
@@ -240,27 +240,6 @@ check_undo_process() ->
 	    ok
     end.
 
-check_wrangler_error_logger() ->
-    Errors = wrangler_error_logger:get_logged_errors(),
-    case Errors of 
-	[] ->
-	     ok;
-	_ ->  ?wrangler_io("\n===============================WARNING===============================\n",[]),
-	      ?wrangler_io("There are syntax errors, or syntaxes not supported by Wrangler;"
-			   " functions/attribute containing these syntaxes are not affected by the refactoring.\n",[]),
-	      Msg =lists:flatmap(fun({FileName, Errs}) ->
-				    Str =io_lib:format("File:\n ~p\n", [FileName]),
-				    Str1 = Str ++ io_lib:format("Error(s):\n",[]),
-				    Str1++lists:flatmap(fun(E) ->
-							  case E of 
-							      {Pos, _Mod, Msg} ->io_lib:format(" ** ~p:~p **\n", [Pos, Msg]);
-							      M -> io_lib:format("**~p**\n", [M])
-							  end
-						  end,
-						  lists:reverse(Errs)) 
-				 end, Errors),
-	      ?wrangler_io(Msg, [])
-    end.
-    
-
-
+output_logged_msg() ->
+    Msg = wrangler:get_log_msg(),
+    ?wrangler_io(Msg, []).

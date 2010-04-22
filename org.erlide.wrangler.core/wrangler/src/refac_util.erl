@@ -76,7 +76,8 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp",  %% .erl.swp or .swp.erl?
 			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{FileName,NewFileName, false},SwpFileName};
+			    ok -> {{filename:join([FileName]),
+				    filename:join([NewFileName]), false},filename:join([SwpFileName])};
 			    {error,Reason} -> Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
 								  [filename:dirname(FileName), Reason]),
 					      throw({error, Msg})
@@ -85,7 +86,7 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp", 
 			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{FileName,NewFileName, IsNew},SwpFileName};
+			    ok -> {{filename:join([FileName]),filename:join([NewFileName]), IsNew},filename:join([SwpFileName])};
 			    {error, Reason}  -> 
 				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
 						    [filename:dirname(FileName), Reason]),
@@ -191,7 +192,7 @@ parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
     FileFormat = file_format(FName),
     case whereis(wrangler_ast_server) of
       undefined ->        %% this should not happen with Wrangler + Emacs.
-	  ?wrangler_io("wrangler_ast_aserver is not defined\n", []),
+	  ?wrangler_io("wrangler_ast_server is not defined\n", []),
 	  parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth, FileFormat);
       _ ->
 	  wrangler_ast_server:get_ast({FName, ByPassPreP, SearchPaths, TabWidth, FileFormat})

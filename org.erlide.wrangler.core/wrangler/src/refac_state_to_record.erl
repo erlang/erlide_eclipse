@@ -1089,7 +1089,6 @@ format_funs([{F,A}|T]) ->
 
 %%=====================================================================
 
-
 check_current_state_type(File, ModName, ModInfo, SM) ->
     TypeInfo = try refac_type_info:get_type_info_using_typer(File) of
  		   V -> V

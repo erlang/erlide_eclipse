@@ -175,7 +175,7 @@ code_change(_OldVsn, State, _Extra) ->
 		       {{ok, {syntaxTree(), moduleInfo()}}, #state{}}).      
 get_ast({FileName, false, SearchPaths, TabWidth, FileFormat}, State) ->
     %% always re-parse; otherwise need to check the change time of .hrl files.
-    wrangler_error_logger:remove_error_from_logger(FileName),
+    wrangler_error_logger:remove_from_logger(FileName),
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, false, SearchPaths, TabWidth, FileFormat),
     log_errors(FileName, Info),
     {{ok, {AnnAST, Info}}, State};
@@ -190,13 +190,13 @@ get_ast(Key = {FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat}, State =
 		      log_errors(FileName, Info),
 		      {{ok, {AnnAST, Info}}, State};
 		  false ->
-		      wrangler_error_logger:remove_error_from_logger(FileName),
+		      wrangler_error_logger:remove_from_logger(FileName),
 		      {ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 		      log_errors(FileName, Info1),
 		      {{ok, {AnnAST1, Info1}}, #state{asts = lists:keyreplace(Key, 1, ASTs, {Key, {AnnAST1, Info1, NewChecksum}})}}
 		end;
 	    false ->
-		wrangler_error_logger:remove_error_from_logger(FileName),
+		wrangler_error_logger:remove_from_logger(FileName),
 		{ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 		log_errors(FileName, Info),
 		{{ok, {AnnAST, Info}}, #state{asts = [{Key, {AnnAST, Info, refac_misc:filehash(FileName)}}| ASTs]}}
@@ -207,7 +207,7 @@ get_ast(Key = {FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat}, State =
 	    [{Key, {AnnAST, Info, Checksum}}] when Checksum =:= NewChecksum ->
 		{{ok, {AnnAST, Info}}, State};
 	    _ ->
-		wrangler_error_logger:remove_error_from_logger(FileName),
+		wrangler_error_logger:remove_from_logger(FileName),
 		{ok, {AnnAST1, Info1}} = refac_util:parse_annotate_file(FileName, ByPassPreP, SearchPaths, TabWidth, FileFormat),
 		dets:insert(TabFile, {Key, {AnnAST1, Info1, NewChecksum}}),
 		log_errors(FileName, Info1),
@@ -233,6 +233,6 @@ update_ast_1({Key, {AnnAST, Info, _Time}}, _State = #state{dets_tab = TabFile, a
 log_errors(FileName, Info) ->
     case lists:keysearch(errors, 1, Info) of
       {value, {errors, Error}} ->
-	  wrangler_error_logger:add_error_to_logger({FileName, Error});
+	  wrangler_error_logger:add_to_logger({FileName, Error});
       false -> ok
     end.

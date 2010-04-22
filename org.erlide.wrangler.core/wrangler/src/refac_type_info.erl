@@ -15,10 +15,10 @@
 		 incFuncAcc=[],	
 		 dialyzerObj=[]}).
 
-get_type_info_using_typer(FFF) ->
+get_type_info_using_typer(File) ->
     PLT = filename:join(?WRANGLER_DIR, "plt/dialyzer_plt"),
     Analysis = #typer_analysis{plt = PLT},
-    Analysis1 = Analysis#typer_analysis{ana_files = [FFF]},
+    Analysis1 = Analysis#typer_analysis{ana_files = [File]},
     Analysis2 = collect(Analysis1),
     TypeInfo = get_type_info(Analysis2),
     ?debug("FinalFiles1:\n~p\n", [TypeInfo#typer_analysis.final_files]),
@@ -166,7 +166,7 @@ insert(Mod, Tree, CS) ->
     catch
 	_E1:_E2->
 	    dialyzer_codeserver:insert([{Mod, Tree}],CS)
-    end.	    
+    end.     
 
 set_next_core_label(NewLabel, CS) ->	
     try dialyzer_codeserver:set_next_core_label(NewLabel, CS) of

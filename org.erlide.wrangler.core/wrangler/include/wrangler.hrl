@@ -11,7 +11,7 @@
 -record(attr, {pos = {0,0}, ann = [], com = none}).
 
 %% Will be edited by Makefile 
-%% -define(WRANGLER_DIR, "C:/cygwin/home/hl/wrangler/share/distel/wrangler").
+%% -define(WRANGLER_DIR, "/usr/local/share/wrangler").
 -define(WRANGLER_DIR, filename:dirname(lists:filter(fun(X)-> lists:suffix("wrangler/ebin", X) end, code:get_path()))  ).
 
 -define(DEFAULT_LOC, 
@@ -36,6 +36,8 @@
 -else.
 -define(wrangler_io(__String, __Args), ok).
 -endif.
+     
+-define(log_warning(String), wrangler_error_logger:add_to_logger({warning, String})).
      
 %%-define(DEBUG, true)
  

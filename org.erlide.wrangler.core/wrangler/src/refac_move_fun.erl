@@ -250,85 +250,127 @@ check_macros_records(FileName, TargetFileName, FunDef, SearchPaths, TabWidth) ->
 	  NewSearchPaths = SearchPaths ++ DefaultIncls,
 	  case refac_epp:parse_file(FileName, NewSearchPaths, [], TabWidth, refac_util:file_format(FileName)) of
 	    {ok, AST, {MDefs, _MUses}} ->
-		UsedMacroDefs = [{Name, {Args, refac_util:concat_toks(Toks)}}
-				 || {{_, Name}, {Args, Toks}} <- MDefs,
-				    lists:member(Name, UsedMacros)],
-		UsedRecordDefs = case UsedRecords of
-				   [] -> [];
-				   _ ->
-				       Info = get_mod_info_from_parse_tree(AST),
-				       case lists:keysearch(records, 1, Info) of
-					 {value, {records, RecordDefs}} ->
-					     [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
-					      || {Name, Fields} <- RecordDefs, lists:member(Name, UsedRecords)];
-					 _ -> []
-				       end
-				 end,
-		case length(UsedMacros) > length(UsedMacroDefs) of
-		  true -> UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <- UsedMacroDefs],
-			  ?wrangler_io("\nThe following macros are used by the function selected, but not defined.\n~p\n", [UnDefinedUsedMacros]),
-			  throw({error, "Some macros used by the function selected are not defined."});
-		  false -> ok
-		end,
-		case length(UsedRecords) > length(UsedRecordDefs) of
-		  true ->
-		      UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
-		      ?wrangler_io("\nThe following records are used by the function selected, but not defined.\n~p\n", [UnDefinedUsedRecords]),
-		      throw({error, "Some records used by the function selected are not defined."});
-		  false -> ok
-		end,
-		case refac_epp:parse_file(TargetFileName, NewSearchPaths, [], TabWidth, refac_util:file_format(TargetFileName)) of
-		  {ok, TargetAST, {MDefs1, _MUses1}} ->
-		      UsedMacroDefsInTargetFile = [{Name, {Args, refac_util:concat_toks(Toks)}}
-						   || {{_, Name}, {Args, Toks}} <- MDefs1, lists:member(Name, UsedMacros)],
-		      case length(UsedMacros) > length(UsedMacroDefsInTargetFile) of
-			false ->
-			    case length(UsedMacros) == length(UsedMacroDefsInTargetFile) of
-			      true ->
-				  case lists:keysort(1, UsedMacroDefs) == lists:keysort(1, UsedMacroDefsInTargetFile) of
-				    true -> ok;
-				    _ ->
-					?wrangler_io("\nThe following macros used by the function selected "
-						     "are defined differently in the target module:\n~p\n",
-						     [element(1, lists:unzip(lists:keysort(1, UsedMacroDefs) -- lists:keysort(1, UsedMacroDefsInTargetFile)))]),
-					throw({error, "Some macros used by the function selected are defined differently in the target module, still continue?"})
-				  end;
-			      _ -> ok
-			    end;
-			true ->
-			    ?wrangler_io("\nThe following macros used by the function selected "
-					 "are not defined in the target module.\n~p\n",
-					 [UsedMacros -- element(1, lists:unzip(UsedMacroDefsInTargetFile))]),
-			    throw({error, "Some macros used by the function selected are not defined in the target module."})
-		      end,
-		      TargetModInfo = get_mod_info_from_parse_tree(TargetAST),
-		      UsedRecordDefsInTargetFile = case lists:keysearch(records, 1, TargetModInfo) of
-						     {value, {records, RecordDefsInTargetFile}} ->
-							 [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
-							  || {Name, Fields} <- RecordDefsInTargetFile,
-							     lists:member(Name, UsedRecords)];
-						     _ -> []
-						   end,
-		      case length(UsedRecords) > length(UsedRecordDefsInTargetFile) of
-			true ->
-			    ?wrangler_io("\nThe following records used by the function selected "
-					 "are not defined in the target module.\n~p\n",
-					 [UsedRecords -- element(1, lists:unzip(UsedRecordDefsInTargetFile))]),
-			    throw({error, "Some records used by the function selected are not defined in the target file."});
-			_ -> case lists:keysort(1, UsedRecordDefs) == lists:keysort(1, UsedRecordDefsInTargetFile) of
-			       true -> true;
-			       _ ->
-				   ?wrangler_io("\nThe following records used by the function selected "
-						"are defined differently in the target module:\n~p\n",
-						[element(1, lists:unzip(lists:keysort(1, UsedRecordDefs) -- lists:keysort(1, UsedRecordDefsInTargetFile)))]),
-				   throw({error, "Some records used by the function selected are defined differently in the target module."})
-			     end
-		      end;
-		  _ -> throw({error, "Refactoring failed because Wrangler could not parse the target module."})
-		end;
-	    _ -> throw({error, "Refactoring failed because Wrangler could not parse the current module."})
+		  {UsedMacroDefs, UsedRecordDefs} = check_macros_records_in_current_file(UsedMacros, UsedRecords, AST, MDefs),
+		  check_marcos_records_in_target_file(TargetFileName, UsedMacros, UsedRecords, 
+						      UsedMacroDefs, UsedRecordDefs,NewSearchPaths,TabWidth);
+	      _ -> throw({error, "Refactoring failed because Wrangler could not parse the current module."})
 	  end
     end.
+
+check_macros_records_in_current_file(UsedMacros, UsedRecords, AST, MDefs) ->
+    UsedMacroDefs =
+	[{Name, {Args, refac_util:concat_toks(Toks)}}
+	 || {{_, Name}, {Args, Toks}} <- MDefs,
+	    lists:member(Name, UsedMacros)],
+    UsedRecordDefs =
+	case UsedRecords of
+	  [] -> [];
+	  _ ->
+	      Info = get_mod_info_from_parse_tree(AST),
+	      case lists:keysearch(records, 1, Info) of
+		{value, {records, RecordDefs}} ->
+		    [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
+		     || {Name, Fields} <- RecordDefs, lists:member(Name, UsedRecords)];
+		_ -> []
+	      end
+	end,
+    check_macros_in_current_file(UsedMacros, UsedMacroDefs),
+    check_records_in_current_file(UsedRecords, UsedRecordDefs),
+    {UsedMacroDefs, UsedRecordDefs}.
+
+
+check_macros_in_current_file(UsedMacros, UsedMacroDefs) ->
+    case length(UsedMacros) > length(UsedMacroDefs) of
+      true ->
+	  UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <- UsedMacroDefs],
+	  Msg = io_lib:format("\n Macro(s) used by the function selected, but not defined: ~p.",
+			      [UnDefinedUsedMacros]),
+	  ?wrangler_io(Msg, []),
+	  throw({error, Msg});
+      false -> ok
+    end.
+
+check_records_in_current_file(UsedRecords, UsedRecordDefs) ->
+    case length(UsedRecords) > length(UsedRecordDefs) of
+      true ->
+	  UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
+	  Msg1 = io_lib:format("\n Record(s) used by the function selected, but not defined: ~p.",
+			       [UnDefinedUsedRecords]),
+	  ?wrangler_io(Msg1, []),
+	  throw({error, Msg1});
+      false -> ok
+    end.
+
+
+check_marcos_records_in_target_file(TargetFileName, UsedMacros, UsedRecords,
+				    UsedMacroDefs, UsedRecordDefs, NewSearchPaths, TabWidth) ->
+    case refac_epp:parse_file(TargetFileName, NewSearchPaths, [], TabWidth,
+			      refac_util:file_format(TargetFileName))
+	of
+      {ok, TargetAST, {MDefs1, _MUses1}} ->
+	  UsedMacroDefsInTargetFile =
+	      [{Name, {Args, refac_util:concat_toks(Toks)}}
+	       || {{_, Name}, {Args, Toks}} <- MDefs1, lists:member(Name, UsedMacros)],
+	  check_macros_in_target_file(UsedMacros, UsedMacroDefs, UsedMacroDefsInTargetFile),
+	  TargetModInfo = get_mod_info_from_parse_tree(TargetAST),
+	  UsedRecordDefsInTargetFile = case lists:keysearch(records, 1, TargetModInfo) of
+					 {value, {records, RecordDefsInTargetFile}} ->
+					     [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
+					      || {Name, Fields} <- RecordDefsInTargetFile,
+						 lists:member(Name, UsedRecords)];
+					 _ -> []
+				       end,
+	  check_records_in_target_file(UsedRecords, UsedRecordDefs, UsedRecordDefsInTargetFile);
+      _ -> throw({error, "Refactoring failed because Wrangler could not parse the target module."})
+    end.
+
+
+check_macros_in_target_file(UsedMacros, UsedMacroDefs, UsedMacroDefsInTargetFile) ->
+    case length(UsedMacros) > length(UsedMacroDefsInTargetFile) of
+	true ->
+	    Msg = io_lib:format("\n Macros used by the function selected "
+				"are not defined in the target module: ~p.",
+				[UsedMacros -- element(1, lists:unzip(UsedMacroDefsInTargetFile))]),
+	    ?wrangler_io(Msg,[]),
+	    throw({error, Msg});
+	false ->
+	    case length(UsedMacros) == length(UsedMacroDefsInTargetFile) of
+		true ->
+		    case lists:keysort(1, UsedMacroDefs) == lists:keysort(1, UsedMacroDefsInTargetFile) of
+			true -> ok;
+			_ ->
+			    Msg1 = io_lib:format("\n Macro(s) used by the function selected "
+						 "are defined differently in the target module: ~p",
+						 [element(1, lists:unzip(lists:keysort(1, UsedMacroDefs)
+									 -- lists:keysort(1, UsedMacroDefsInTargetFile)))]),
+			    ?wrangler_io(Msg1 ++ ".", []),
+			    throw({warning, Msg1 ++ ", still continue?"})
+		    end;
+		_ -> ok
+	    end
+    end.
+
+check_records_in_target_file(UsedRecords, UsedRecordDefs, UsedRecordDefsInTargetFile) ->
+    case length(UsedRecords) > length(UsedRecordDefsInTargetFile) of
+      true ->
+	  Msg = io_lib:format("\n Records used by the function selected "
+			      "are not defined in the target module: ~p.",
+			      [UsedRecords -- element(1, lists:unzip(UsedRecordDefsInTargetFile))]),
+	  ?wrangler_io(Msg, []),
+	  throw({error, Msg});
+      _ ->
+	  case lists:keysort(1, UsedRecordDefs) == lists:keysort(1, UsedRecordDefsInTargetFile) of
+	    true -> true;
+	    _ ->
+		Msg1 = io_lib:format("\n Records used by the function selected "
+				     "are defined differently in the target module: ~p.",
+				     [element(1, lists:unzip(lists:keysort(1, UsedRecordDefs)
+							     -- lists:keysort(1, UsedRecordDefsInTargetFile)))]),
+		?wrangler_io(Msg1, []),
+		throw({error, Msg1})
+	  end
+    end.
+
 
 get_mod_info_from_parse_tree(AST) ->
     AST1 = lists:filter(fun (F) ->
@@ -423,21 +465,21 @@ do_transform_fun(Node, {FileName, {ModName, FunName, Arity}, TargetModName, InSc
 	    {value, {fun_def, {M, F, A, _, _}}} ->
 		case refac_syntax:type(Op) of
 		  atom ->
-		      case lists:member({M, F, A}, InScopeFunsInTargetMod) orelse
-			     erlang:is_builtin(M, F, A) orelse erl_internal:bif(M, F, A) orelse {M, F, A} == {ModName, FunName, Arity}
-			  of
-			true ->
-			    {Node, false};
-			_ when M =/= '_' ->
-			    {copy_pos_attrs(Node, refac_syntax:application(
-						    copy_pos_attrs(Op, refac_syntax:module_qualifier(refac_syntax:atom(M), Op)), Args)),
+			case lists:member({M, F, A}, InScopeFunsInTargetMod) orelse
+			    erl_internal:bif(M, F, A) orelse {M, F, A} == {ModName, FunName, Arity}
+			of
+			    true ->
+				{Node, false};
+			    _ when M =/= '_' ->
+				{copy_pos_attrs(Node, refac_syntax:application(
+							copy_pos_attrs(Op, refac_syntax:module_qualifier(refac_syntax:atom(M), Op)), Args)),
 			     true};
-			_ ->
-			    {Line, Col} = refac_syntax:get_pos(Op),
-			    Str = "Wrangler could not infer where the function " ++ atom_to_list(F) ++ "/" ++ integer_to_list(A) ++
+			    _ ->
+				{Line, Col} = refac_syntax:get_pos(Op),
+				Str = "Wrangler could not infer where the function " ++ atom_to_list(F) ++ "/" ++ integer_to_list(A) ++
 				    ", used at location {" ++ integer_to_list(Line) ++ "," ++ integer_to_list(Col) ++ "} in the current module, is defined.",
-			    throw({error, Str})
-		      end;
+				throw({error, Str})
+			end;
 		  _ ->
 		      case M == TargetModName of
 			true ->
@@ -460,8 +502,8 @@ do_transform_fun(Node, {FileName, {ModName, FunName, Arity}, TargetModName, InSc
 		  {atom, integer} ->
 		      case {refac_syntax:atom_value(Body), refac_syntax:integer_value(A)} of
 			{FunName, Arity} -> {Node, false};
-			_ -> {copy_pos_attrs(Node, refac_syntax:implicit_fun(copy_pos_attrs(Name,
-											    refac_syntax:module_qualifier(refac_syntax:atom(ModName), Name)))), true}
+			_ -> {copy_pos_attrs(Node, refac_syntax:implicit_fun(
+						     copy_pos_attrs(Name,refac_syntax:module_qualifier(refac_syntax:atom(ModName), Name)))), true}
 		      end;
 		  _ -> {Node, false}
 		end;
@@ -770,9 +812,10 @@ do_add_change_module_qualifier(Node, {FileName, {ModName, FunName, Arity}, Targe
 				  case {refac_syntax:atom_value(B), refac_syntax:integer_value(A)} of
 				    {FunName, Arity} ->
 					{copy_pos_attrs(Node,
-							refac_syntax:implicit_fun(copy_pos_attrs(Name,
-												 refac_syntax:module_qualifier(copy_pos_attrs(Mod,
-																	      refac_syntax:atom(TargetModName)), Body)))), true};
+							refac_syntax:implicit_fun(
+							  copy_pos_attrs(
+							    Name,refac_syntax:module_qualifier(
+								   copy_pos_attrs(Mod,refac_syntax:atom(TargetModName)), Body)))), true};
 				    _ -> {Node, false}
 				  end;
 			      _ -> {Node, false}

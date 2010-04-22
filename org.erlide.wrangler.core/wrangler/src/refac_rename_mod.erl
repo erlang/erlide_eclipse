@@ -498,7 +498,7 @@ renamed_warn_msg(OldModNames) ->
 not_renamed_warn_msg(OldModNames) ->
     case OldModNames of 
 	[M] ->"\n=================================================================================\n"
-		  "WARNING: Wrangler could not infer whether the uses of '"++atom_to_list(M)++"' at the following positions "
+		  "WARNING: Wrangler could not infer whether the uses of '"++atom_to_list(M)++"' at the following position(line)s "
 		  "refer to the module renamed, and they are not renamed. Please check manually!\n";
 	[M1, M2] ->"\n=================================================================================\n"		 
 		       "WARNING: Wrangler could not infer whether the uses of '"++atom_to_list(M1)++"', or'" 

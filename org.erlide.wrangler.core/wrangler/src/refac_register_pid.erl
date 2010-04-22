@@ -50,7 +50,7 @@
 %% Transformation:
 %% To perform the transformation, Wrangler needs to know, for each Pid!Msg expression, where the Pid is spawned. 
 %% A Pid is replacable only if Wrangler is sure that it is only associated with the spawn expression selected.
-%% @end
+%% @endi
 
 -module(refac_register_pid).
 

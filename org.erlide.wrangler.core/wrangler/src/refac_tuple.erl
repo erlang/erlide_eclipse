@@ -120,7 +120,7 @@ tuple_funpar(FileName, StartLoc = {StartLine, StartCol}, EndLoc = {EndLine, EndC
 tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index, Num, SearchPaths, TabWidth, Editor, Cmd) ->
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {ok, FunDefMod} = get_module_name(FileName, Info),
-    AnnAST1 = tuple_pars(AnnAST, FunDefMod, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth),
+    AnnAST1 = tuple_pars(FileName, AnnAST, FunDefMod, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth),
     case refac_misc:is_exported({FunName, Arity}, Info) of
       true ->
 	  ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
@@ -142,8 +142,7 @@ tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index, Num, SearchPaths, Tab
 pre_cond_check(FileName, FunName, OldArity, NewArity, Info) ->
     Inscope_Funs = [{F, A} || {_M, F, A} <- refac_misc:inscope_funs(Info)],
     case lists:member({FunName, NewArity}, Inscope_Funs) orelse
-	   erlang:is_builtin(erlang, FunName, NewArity) orelse
-	     erl_internal:bif(erlang, FunName, NewArity)
+	erl_internal:bif(erlang, FunName, NewArity)
 	of
       true ->
 	  throw({error, atom_to_list(FunName) ++ "/" ++
@@ -292,10 +291,9 @@ collect_implicit_funs(AnnAST, {FunName, Arity}) ->
 	end,
     element(1, ast_traverse_api:once_tdTU(F, AnnAST, {})).
     
-tuple_pars(AnnAST, ModName, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth) ->
+tuple_pars(FileName, AnnAST, ModName, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth) ->
     Forms = refac_syntax:form_list_elements(AnnAST),
-    Args = {ModName, ModName, FunName, Arity, Index,
-	    Num, SearchPaths, TabWidth},
+    Args = {FileName, ModName, ModName, FunName, Arity, Index,Num, SearchPaths, TabWidth},
     Forms1 = [F1 || F <- Forms, F1 <- do_tuple_fun_pars(F, Args)],
     AnnAST1 = refac_syntax:form_list(Forms1),
     case refac_misc:is_exported({FunName, Arity}, Info) of
@@ -334,12 +332,11 @@ do_tuple_fun_pars(Form, Args) ->
     end.
 
 
-tuple_pars_in_function(Form, _Others = {CurModName, FunDefMod, FunName, Arity,
-					Index, Num, SearchPaths, TabWidth}) ->
+tuple_pars_in_function(Form, Args = {_FileName, _CurModName, _FunDefMod, FunName, Arity,
+					Index, Num, _SearchPaths, _TabWidth}) ->
     Fun1 = refac_syntax:function_name(Form),
     FunName1 = refac_syntax:data(Fun1),
     FunArity1 = refac_syntax:function_arity(Form),
-    Args = {CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth},
     case {FunName1, FunArity1} of
       {FunName, Arity} ->
 	  Cs = refac_syntax:function_clauses(Form),
@@ -372,10 +369,9 @@ tuple_pars_in_function(Form, _Others = {CurModName, FunDefMod, FunName, Arity,
     end.
 
 
-tuple_pars_in_attribute(Form, _Others = {CurModName, FunDefMod, FunName, Arity,
-					 Index, Num, SearchPaths, TabWidth}) ->
+tuple_pars_in_attribute(Form, Args = {_FileName, _CurModName, _FunDefMod, FunName, Arity,
+					 _Index, Num, _SearchPaths, _TabWidth}) ->
     AttrName = refac_syntax:attribute_name(Form),
-    Args = {CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth},
     case refac_syntax:type(AttrName) of
       atom ->
 	  Name = refac_syntax:atom_value(AttrName),
@@ -422,7 +418,7 @@ tuple_actual_pars(Node, Args) ->
     element(1, ast_traverse_api:full_tdTP(fun do_tuple_actual_pars/2, Node, Args)).
  
 
-do_tuple_actual_pars(Node, Others = {CurModName, FunDefMod, FunName,
+do_tuple_actual_pars(Node, Others = {_FileName, CurModName, FunDefMod, FunName,
 				     Arity, Index, Num, _SearchPaths, _TabWith}) ->
     case refac_syntax:type(Node) of
       application ->
@@ -524,7 +520,7 @@ transform_apply_with_arity_of_2(Tree, CurModName, FunDefMod, FunName, Arity, Ind
       _ -> {Tree, false}
     end.
 
-transform_apply_style_calls(Node, {FileName, FunDefMod, FunName, Arity,
+transform_apply_style_calls(Node, {FileName, _ModName, FunDefMod, FunName, Arity,
 				   Index, Num, SearchPaths, TabWidth}) ->
     Op = refac_syntax:application_operator(Node),
     Args = refac_syntax:application_arguments(Node),
@@ -577,7 +573,7 @@ tuple_pars_in_client_modules(ClientFiles,FunDefMod, FunName,Arity, Index, Num, S
 	    {ok, {AnnAST, ModInfo}}= refac_util:parse_annotate_file(F, true, [], TabWidth),
 	    {ok, CurModName} = get_module_name(F, ModInfo),
 	    {AnnAST1, Modified} = tuple_pars_in_client_modules_1(
-				    AnnAST, CurModName,FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth),
+				    F,AnnAST, CurModName,FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth),
 	    case Modified of
 		true ->
 		    [{{F, F}, AnnAST1} | 
@@ -590,8 +586,8 @@ tuple_pars_in_client_modules(ClientFiles,FunDefMod, FunName,Arity, Index, Num, S
     end.
 
 
-tuple_pars_in_client_modules_1(AnnAST, CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth) ->
-    Args = {CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth},
+tuple_pars_in_client_modules_1(F, AnnAST, CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth) ->
+    Args = {F, CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth},
     ast_traverse_api:full_tdTP(fun do_tuple_actual_pars/2, AnnAST, Args).
     
 

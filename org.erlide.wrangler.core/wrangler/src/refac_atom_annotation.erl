@@ -49,8 +49,6 @@
 
 -export([type_ann_ast/5]).
 
--export([test/1]).
-
 -include("../include/wrangler.hrl").
 
 type_ann_ast(FileName, Info, AnnAST, SearchPaths, TabWidth) ->
@@ -371,29 +369,20 @@ do_type_ann_args({M, F, A}, MappedArgs, Args, Pid) ->
 	    case get_type_info(Pid, {M, F, A}) of 
 		none -> Args;
 		{ParTypes, _RtnTypes} ->
-		     %%   refac_io:format("do_type_ann_args:\n~p\n", [ParTypes]),
-		     %% refac_io:format("MappedArgs:\n~p\n", [MappedArgs]),
-		     %% refac_io:format("dArgs:\n~p\n", [Args]), 
 		    do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid)
 	    end;
 	{ParTypes, _RtnType} ->
-	     %% refac_io:format("do_type_ann_args:\n~p\n", [ParTypes]),
-	     %% refac_io:format("MappedArgs:\n~p\n", [MappedArgs]),
-	     %% refac_io:format("dArgs:\n~p\n", [Args]),    
 	    do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid)	    
     end.
 
 do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid) ->
     ZippedParTypeArgs = lists:zip(ParTypes, Args),
     lists:map(fun ({ParType, Arg}) ->
-		      %%refac_io:format("AT:\n~p\n", [{Arg, ParType}]),
 		      case ParType of
 			any ->
 			    Arg;
 			_ when is_function(ParType) ->
-			     %% refac_io:format("MappedArgS:\n~p\n", [MappedArgs]),
-			      %% refac_io:format("TMappedArgs:\n~p\n", [ParType(MappedArgs)]),
-			    add_type_info(ParType(MappedArgs), Arg, Pid);
+			      add_type_info(ParType(MappedArgs), Arg, Pid);
 			{f_atom, [M, F, Arity]} ->
 			    ?debug("T:\n~p\n", [ParType]),
 			    M1 = case is_function(M) of
@@ -913,35 +902,35 @@ server_ref_type() ->
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-test(Dir) ->
-    Files = refac_util:expand_files(Dir, ".erl"),
-    F=fun(Node, {Acc1, Acc2}) ->
-	      case refac_syntax:type(Node) of 
-		  atom ->
-		      Ann = refac_syntax:get_ann(Node),
-		      case lists:keysearch(type,1, Ann) of 
-			  {value, M} ->
-			      {[{refac_syntax:atom_value(Node), refac_syntax:get_pos(Node), M}|Acc1], Acc2};
-			  false ->
-			      {Acc1, [{refac_syntax:atom_value(Node), refac_syntax:get_pos(Node)}|Acc2]}
-		      end;
-		  _ ->
-		      Ann = refac_syntax:get_ann(Node),
-		      case lists:keysearch(type, 1, Ann) of 
-			  {value, _M} ->
-			      refac_io:format("\nType annotated to non-atom node\n");
-			  _ -> ok
-		      end,
-		      {Acc1, Acc2}
-	      end
-      end,
-    lists:foreach(fun(File) ->
-			  {ok, {AnnAST, _}} = refac_util:parse_annotate_file(File, true, [], 8),
-			  {Atoms1, Atoms2} = refac_syntax_lib:fold(F, {[], []}, AnnAST),
-			  refac_io:format("FileName:\n~p\n", [File]),
-			  refac_io:format("Known atoms:\n~p\n", [lists:reverse(Atoms1)]),
-			  refac_io:format("Unknown Atom info:\n~p\n", [lists:reverse(Atoms2)])
-		  end, Files).
+%% test(Dir) ->
+%%     Files = refac_util:expand_files(Dir, ".erl"),
+%%     F=fun(Node, {Acc1, Acc2}) ->
+%% 	      case refac_syntax:type(Node) of 
+%% 		  atom ->
+%% 		      Ann = refac_syntax:get_ann(Node),
+%% 		      case lists:keysearch(type,1, Ann) of 
+%% 			  {value, M} ->
+%% 			      {[{refac_syntax:atom_value(Node), refac_syntax:get_pos(Node), M}|Acc1], Acc2};
+%% 			  false ->
+%% 			      {Acc1, [{refac_syntax:atom_value(Node), refac_syntax:get_pos(Node)}|Acc2]}
+%% 		      end;
+%% 		  _ ->
+%% 		      Ann = refac_syntax:get_ann(Node),
+%% 		      case lists:keysearch(type, 1, Ann) of 
+%% 			  {value, _M} ->
+%% 			      refac_io:format("\nType annotated to non-atom node\n");
+%% 			  _ -> ok
+%% 		      end,
+%% 		      {Acc1, Acc2}
+%% 	      end
+%%       end,
+%%     lists:foreach(fun(File) ->
+%% 			  {ok, {AnnAST, _}} = refac_util:parse_annotate_file(File, true, [], 8),
+%% 			  {Atoms1, Atoms2} = refac_syntax_lib:fold(F, {[], []}, AnnAST),
+%% 			  refac_io:format("FileName:\n~p\n", [File]),
+%% 			  refac_io:format("Known atoms:\n~p\n", [lists:reverse(Atoms1)]),
+%% 			  refac_io:format("Unknown Atom info:\n~p\n", [lists:reverse(Atoms2)])
+%% 		  end, Files).
 
 	    
 

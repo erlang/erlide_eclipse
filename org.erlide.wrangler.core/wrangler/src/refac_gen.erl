@@ -95,12 +95,6 @@
 
 -include("../include/wrangler.hrl").
 
--import(refac_atom_utils, [collect_atoms/2]).
-
--import(refac_misc, [try_eval/4]).
-
--import(refac_misc, [apply_style_funs/0]).
-
 -export([generalise/6, gen_fun_1/11, gen_fun_clause/10]).
 
 -export([generalise_eclipse/6, gen_fun_1_eclipse/11, gen_fun_clause_eclipse/10]).
@@ -171,8 +165,7 @@ generalise(FileName, Start = {Line, Col}, End = {Line1, Col1}, ParName, SearchPa
     Inscope_Funs = [{F, A} || {_M, F, A} <- refac_misc:inscope_funs(Info)],
     NewArity = FunArity + 1,
     case lists:member({FunName, NewArity}, Inscope_Funs) orelse
-	   erlang:is_builtin(erlang, FunName, NewArity) orelse erl_internal:bif(erlang, FunName, NewArity)
-	of
+	  erl_internal:bif(erlang, FunName, NewArity) of
       true -> throw({error, "Function " ++
 			      atom_to_list(FunName) ++ "/" ++ integer_to_list(NewArity) ++ " is already in scope!"});
       false -> ok
@@ -339,11 +332,20 @@ gen_cond_analysis(Fun, Exp, ParName) ->
       {value, {category, guard_expression}} ->
 	  throw({error, "Generalisation over a guard expression is not supported."});
       {value, {category, application_op}} ->
-	  GuardRanges = collect_guard_ranges(Fun),
-	  {Start, End} = refac_misc:get_start_end_loc(Exp),
-	  case [{S, E} || {S, E} <- GuardRanges, S =< Start, End =< E] of
-	    [] -> ok;
-	    _ -> throw({error, "Generalisation over a function application "
+	    GuardRanges = collect_guard_ranges(Fun),
+	    {Start, End} = refac_misc:get_start_end_loc(Exp),
+	    case [{S, E} || {S, E} <- GuardRanges, S =< Start, End =< E] of
+	      [] -> case refac_misc:get_free_vars(Exp) of
+			[] -> ok;
+			_ ->
+			    case refac_syntax:type(Exp) of 
+				module_qualifier ->
+				    throw({error,"Generalisation over a qualified function name "
+					   "with free variables is not supported."});
+				_ -> ok
+			    end
+		    end;
+	      _ -> throw({error, "Generalisation over a function application "
 			       "in a guard expression is not supported."})
 	  end;
       _ -> ok
@@ -474,8 +476,8 @@ do_replace_exp_with_var(Tree, {ParName, Exp, SideEffect, Dups}) ->
       lists:member(refac_misc:get_start_end_loc(Tree), [Range| Dups])
 	of
       true ->
-	  FreeVars = [V || {V, _} <- refac_misc:get_free_vars(Exp)],
-	  Pars = [refac_syntax:variable(P) || P <- FreeVars],
+	    FreeVars = [V || {V, _} <- refac_misc:get_free_vars(Exp)],
+	    Pars = [refac_syntax:variable(P) || P <- FreeVars],
 	  case SideEffect of
 	    false ->
 		case FreeVars == [] of
@@ -505,7 +507,7 @@ do_add_actual_parameter(Tree, Others = {_FileName, FunName, Arity, Exp, Info, _S
 	  Args = refac_syntax:application_arguments(Tree),
 	  case get_fun_def_info(Op) of
 	    {M1, F1, A1} ->
-		case lists:keysearch({M1, F1, A1}, 1, apply_style_funs()) of
+		case lists:keysearch({M1, F1, A1}, 1, refac_misc:apply_style_funs()) of
 		  {value, _} ->
 		      transform_apply_style_calls(Tree, Others);
 		  false ->
@@ -530,6 +532,8 @@ do_add_actual_parameter(Tree, Others = {_FileName, FunName, Arity, Exp, Info, _S
       _ -> {Tree, false}
     end.
 
+
+%% The following two function should be refactored.
 transform_apply_with_arity_of_2(Tree, ModName, FunName, Arity, Exp) ->
     Op = refac_syntax:application_operator(Tree),
     Args = refac_syntax:application_arguments(Tree),
@@ -546,7 +550,7 @@ transform_apply_with_arity_of_2(Tree, ModName, FunName, Arity, Exp) ->
 		      Exp1 = refac_misc:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 		      case refac_syntax:type(Pars) of
 			list ->
-			    Pars0 = refac_syntax:list(refac_syntax:list_elements(Pars) ++ [Exp1]),
+			    Pars0 = refac_syntax:list(list_elements(Pars) ++ [Exp1]),
 			    Pars1 = refac_misc:rewrite(Pars, Pars0);
 			_ -> Op1 = refac_syntax:operator('++'),
 			     L = refac_syntax:list([Exp1]),
@@ -573,7 +577,7 @@ transform_apply_with_arity_of_2(Tree, ModName, FunName, Arity, Exp) ->
 			    Exp1 = refac_misc:update_ann(Exp, {range, ?DEFAULT_RANGE}),
 			    case refac_syntax:type(Pars) of
 			      list ->
-				  Pars0 = refac_syntax:list(refac_syntax:list_elements(Pars) ++ [Exp1]),
+				  Pars0 = refac_syntax:list(list_elements(Pars) ++ [Exp1]),
 				  Pars1 = refac_misc:rewrite(Pars, Pars0);
 			      _ -> Op1 = refac_syntax:operator('++'),
 				   L = refac_syntax:list([Exp1]),
@@ -604,11 +608,11 @@ transform_apply_style_calls(Node, {FileName, FunName, Arity, Exp, Info, SearchPa
 				 4 -> [none| Args];
 				 3 -> [none, none| Args]
 			       end,
-    Mod1 = try_eval(FileName, Mod, SearchPaths, TabWidth),
-    Fun1 = try_eval(FileName, Fun, SearchPaths, TabWidth),
+    Mod1 = refac_misc:try_eval(FileName, Mod, SearchPaths, TabWidth),
+    Fun1 = refac_misc:try_eval(FileName, Fun, SearchPaths, TabWidth),
     NewApp = fun () ->
 		     Exp1 = refac_misc:update_ann(Exp, {range, ?DEFAULT_RANGE}),
-		     Pars0 = refac_syntax:list(refac_syntax:list_elements(Pars) ++ [Exp1]),
+		     Pars0 = refac_syntax:list(list_elements(Pars) ++ [Exp1]),
 		     Pars1 = refac_misc:rewrite(Pars, Pars0),
 		     App = case length(Args) of
 			     5 -> refac_syntax:application(Op, [N1, N2, Mod, Fun, Pars1]);
@@ -649,13 +653,16 @@ add_parameter(C, NewPar) ->
 
 
 
-to_keep_original_fun(FileName, AnnAST, ModName, FunName, Arity, _Exp, Info) ->
+to_keep_original_fun(FileName, AnnAST, ModName, FunName, Arity, Exp, Info) ->
     refac_misc:is_exported({FunName, Arity}, Info) orelse
       is_eunit_special_function(FileName, atom_to_list(FunName), Arity) orelse
 	check_atoms(AnnAST, [FunName]) orelse
-	  check_implicit_and_apply_style_calls(AnnAST, ModName, FunName, Arity).
+	  check_implicit_and_apply_style_calls(AnnAST, ModName, FunName, Arity) orelse 
+	generalise_recursive_function_call(Exp, ModName, FunName, Arity) orelse
+        has_multiple_definitions(AnnAST, ModName, FunName, Arity). 
+     
 
-    
+   
 is_eunit_special_function(FileName, FunName, Arity) ->
     UsedTestFrameWorks = refac_util:test_framework_used(FileName),
     case lists:member(eunit, UsedTestFrameWorks) of
@@ -670,7 +677,7 @@ is_eunit_special_function(FileName, FunName, Arity) ->
 check_atoms(AnnAST, AtomNames) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of
-		    function -> collect_atoms(T, AtomNames);
+		    function -> refac_atom_utils:collect_atoms(T, AtomNames);
 		    _ -> []
 		end
 	end,
@@ -692,7 +699,7 @@ check_implicit_and_apply_style_calls(AnnAST, ModName, FunName, Arity) ->
 		      Op = refac_syntax:application_operator(Node),
 		      case get_fun_def_info(Op) of
 			{M1, F1, A1} ->
-			    case lists:keysearch({M1, F1, A1}, 1, apply_style_funs()) of
+			    case lists:keysearch({M1, F1, A1}, 1, refac_misc:apply_style_funs()) of
 			      {value, _} ->
 				  {Node, true};
 			      _ ->
@@ -730,6 +737,31 @@ check_implicit_and_apply_style_calls(AnnAST, ModName, FunName, Arity) ->
 	end,
     element(2, ast_traverse_api:once_tdTU(F, AnnAST, [])).
 
+
+generalise_recursive_function_call(Exp, ModName, FunName, Arity)->
+    Fun =fun(T, S) ->
+		 case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
+		     {value, {fun_def, {ModName, FunName, Arity, _P1, _P2}}} ->
+			 [true|S];
+		     _ ->
+			 S
+		 end
+	 end,
+    lists:member(true, refac_syntax_lib:fold(Fun, [], Exp)).
+
+has_multiple_definitions(AnnAST, ModName, FunName, Arity) ->
+    Fun=fun(F) ->
+		case  lists:keysearch(fun_def, 1, refac_syntax:get_ann(F)) of 
+		    {value, {fun_def, {ModName, FunName,Arity, _, _}}} ->
+			true;
+		    false -> false
+		end
+	end,
+    Forms = refac_syntax:form_list_elements(AnnAST),
+    Fs =[F||F<-Forms, Fun(F)],
+    length(Fs)>1.
+	
+		     
 
 check_side_effect(FileName, Exp, SearchPaths) ->
     case side_effect_api:has_side_effect(FileName, Exp, SearchPaths) of
@@ -832,3 +864,18 @@ collect_guard_ranges(Node) ->
 		  end
 	  end,
     refac_syntax_lib:fold(Fun, [], Node).
+
+
+list_elements(Node) ->
+    lists:reverse(list_elements(Node, [])).
+
+list_elements(Node, As) ->
+    case refac_syntax:type(Node) of
+	list ->
+	    As1 = lists:reverse(refac_syntax:list_prefix(Node)) ++ As,
+	    case refac_syntax:list_suffix(Node) of
+		none -> As1;
+		Tail -> list_elements(Tail, As1)
+	    end;
+	_ -> As  %% not necessary to be a proper list here.
+    end.

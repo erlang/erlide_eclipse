@@ -557,8 +557,9 @@ reorder_vars_to_export(LastExp, VarsToExport, Subst) ->
 					     {value, {Var, V}} -> [Var]
 					 end
 				 end, UnexportedVars),
-	    ?wrangler_io("Warning: some more expressions could have been folded if the function "
-			 "also exports the following variable(s):~p\n", Vars),
+	    Msg = io_lib:format("Warning: some more expressions could have been folded if the function "
+				"also exports the following variable(s):~p\n", Vars),
+	    ?log_warning(Msg),
 	    false
     end.
     

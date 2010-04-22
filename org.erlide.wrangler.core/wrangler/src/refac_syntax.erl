@@ -1999,8 +1999,8 @@ list_elements(Node) ->
 list_elements(Node, As) ->
     case type(Node) of
       list ->
-	  As1 = lists:reverse(list_prefix(Node)) ++ As,
-	  case list_suffix(Node) of
+	    As1 = lists:reverse(list_prefix(Node)) ++ As,
+	    case list_suffix(Node) of
 	    none -> As1;
 	    Tail -> list_elements(Tail, As1)
 	  end;

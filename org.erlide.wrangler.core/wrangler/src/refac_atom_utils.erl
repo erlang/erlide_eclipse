@@ -195,11 +195,11 @@ output_atom_warnings({NotRenamed, Renamed}, NotRenamedMsg, RenamedMsg) ->
 
 output_atom_not_renamed_warnings([], _Msg) -> ok;
 output_atom_not_renamed_warnings(NotRenamed, Msg) ->
-    ?wrangler_io(Msg, []),
+    ?log_warning(Msg),
     output_not_renamed_atom_info(NotRenamed).
 output_atom_renamed_warnings([], _Msg) -> ok;
 output_atom_renamed_warnings(Renamed, Msg) ->
-    ?wrangler_io(Msg, []),
+    ?log_warning(Msg),
     output_renamed_atom_info(Renamed).
 output_not_renamed_atom_info(FileAndPositions) ->
     Fun = fun ({FileName, Positions}) ->
@@ -209,7 +209,7 @@ output_not_renamed_atom_info(FileAndPositions) ->
 				end, Positions)
 	  end,
     Msg = lists:flatmap(Fun, FileAndPositions),
-    ?wrangler_io(Msg, []).
+    ?log_warning(Msg).
 
 output_renamed_atom_info(FileAndExprs) ->
     Fun = fun ({FileName, Exprs}) ->
@@ -221,4 +221,4 @@ output_renamed_atom_info(FileAndExprs) ->
 		  lists:flatmap(Fun0, Exprs)
 	  end,
     Msg = lists:flatmap(Fun, FileAndExprs),
-    ?wrangler_io(Msg, []).
+    ?log_warning(Msg).
