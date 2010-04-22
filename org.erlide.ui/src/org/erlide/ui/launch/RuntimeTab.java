@@ -26,6 +26,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,6 +50,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 	private Button startNodeCheckbox;
 	private Text cookieText;
 	private Text nameText;
+	private Button distributedLoadCheck;
 
 	private Collection<RuntimeInfo> runtimes;
 
@@ -67,20 +69,15 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				GridData.FILL_HORIZONTAL);
 		final GridData gd_runtimeGroup = new GridData(SWT.FILL, SWT.CENTER,
 				false, false);
-		gd_runtimeGroup.heightHint = 252;
+		gd_runtimeGroup.heightHint = 210;
 		runtimeGroup.setLayoutData(gd_runtimeGroup);
 		final GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 3;
 		runtimeGroup.setLayout(gridLayout);
-		new Label(runtimeGroup, SWT.NONE);
-
-		final Label label = new Label(runtimeGroup, SWT.NONE);
-		label.setText("       ");
-		new Label(runtimeGroup, SWT.NONE);
 
 		final Label runtimeLabel = new Label(runtimeGroup, SWT.NONE);
 		runtimeLabel.setLayoutData(new GridData());
-		runtimeLabel.setText("Backend");
+		runtimeLabel.setText("Name");
 
 		final List<String> rtl = new ArrayList<String>();
 		for (final RuntimeInfo r : runtimes) {
@@ -127,7 +124,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 				cookieText.setEnabled(!isNotDistributed);
 				startNodeCheckbox.setEnabled(!isNotDistributed);
 				if (isNotDistributed) {
-					setMessage("The Erlang node will be started as not distributed. "
+					setMessage("NOTE: The Erlang node will be started as not distributed. "
 							+ "The integrated debugger won't work, use the OTP one instead.\n"
 							+ "If you want a distributed node, enter a node name in the field below.");
 				} else {
@@ -221,10 +218,19 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 
-		final Label aLabel = new Label(runtimeGroup, SWT.WRAP);
-		aLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,
-				2, 1));
-		new Label(runtimeGroup, SWT.NONE);
+		distributedLoadCheck = createCheckButton(runtimeGroup,
+				"Load code on all connected nodes");
+		distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
+				false, false, 2, 1));
+		distributedLoadCheck.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				updateLaunchConfigurationDialog();
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				updateLaunchConfigurationDialog();
+			}
+		});
 
 	}
 
@@ -237,6 +243,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(ErlLaunchAttributes.WORKING_DIR,
 				ErlLaunchAttributes.DEFAULT_WORKING_DIR);
 		config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, "");
+		config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
 	}
 
 	public void initializeFrom(final ILaunchConfiguration config) {
@@ -291,6 +298,13 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		} catch (final CoreException e) {
 			argsText.setText("");
 		}
+		try {
+			final boolean loadAll = config.getAttribute(
+					ErlLaunchAttributes.LOAD_ALL_NODES, false);
+			distributedLoadCheck.setSelection(loadAll);
+		} catch (final CoreException e) {
+			distributedLoadCheck.setSelection(false);
+		}
 	}
 
 	public void performApply(final ILaunchConfigurationWorkingCopy config) {
@@ -305,6 +319,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		config.setAttribute(ErlLaunchAttributes.WORKING_DIR, workingDirText
 				.getText());
 		config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, argsText.getText());
+		config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES,
+				distributedLoadCheck.getSelection());
 	}
 
 	public String getName() {

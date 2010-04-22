@@ -76,7 +76,7 @@ public final class BackendManager extends OtpNodeStatus implements
 	}
 
 	public enum BackendOptions {
-		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE
+		DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
 	}
 
 	private volatile ErlideBackend ideBackend;
@@ -134,6 +134,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			launcher.startRuntime(info, env);
 			IStreamsProxy streamsProxy = launcher.getStreamsProxy();
 			b.setStreamsProxy(streamsProxy);
+			b.setManaged(true);
 		}
 		if (b == null) {
 			ErlLogger.error("Node %s not found, could not launch!", nodeName);

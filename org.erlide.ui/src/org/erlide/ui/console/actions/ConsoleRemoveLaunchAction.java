@@ -29,6 +29,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.IConsoleView;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlangConsole;
 
 /**
@@ -38,6 +39,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
 		IViewActionDelegate, IConsoleListener, ILaunchesListener2 {
 
 	private ILaunch fLaunch;
+	private IConsole fConsole;
 
 	// only used when a view action delegate
 	private IConsoleView fConsoleView;
@@ -57,10 +59,14 @@ public class ConsoleRemoveLaunchAction extends Action implements
 		ConsolePlugin.getDefault().getConsoleManager().addConsoleListener(this);
 	}
 
-	public ConsoleRemoveLaunchAction(Backend backend) {
+	public ConsoleRemoveLaunchAction(ErlangConsole console) {
 		this();
-		// FIXME
-		// fLaunch = backend.getLaunch();
+		this.fConsole = console;
+		Backend backend = console.getBackend();
+		if (backend instanceof ErlideBackend) {
+			ErlideBackend eb = (ErlideBackend) backend;
+			fLaunch = eb.getLaunch();
+		}
 		update();
 	}
 
@@ -86,6 +92,10 @@ public class ConsoleRemoveLaunchAction extends Action implements
 			ILaunchManager launchManager = DebugPlugin.getDefault()
 					.getLaunchManager();
 			launchManager.removeLaunch(launch);
+			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(
+					new IConsole[] { fConsole });
+			fConsoleView = null;
+			fLaunch = null;
 		}
 	}
 
@@ -110,44 +120,16 @@ public class ConsoleRemoveLaunchAction extends Action implements
 		update();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.debug.core.ILaunchesListener2#launchesTerminated(org.eclipse
-	 * .debug.core.ILaunch[])
-	 */
 	public void launchesTerminated(ILaunch[] launches) {
 		update();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.debug.core.ILaunchesListener#launchesRemoved(org.eclipse.
-	 * debug.core.ILaunch[])
-	 */
 	public void launchesRemoved(ILaunch[] launches) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.debug.core.ILaunchesListener#launchesAdded(org.eclipse.debug
-	 * .core.ILaunch[])
-	 */
 	public void launchesAdded(ILaunch[] launches) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.debug.core.ILaunchesListener#launchesChanged(org.eclipse.
-	 * debug.core.ILaunch[])
-	 */
 	public void launchesChanged(ILaunch[] launches) {
 	}
 
@@ -160,8 +142,11 @@ public class ConsoleRemoveLaunchAction extends Action implements
 		IConsole console = fConsoleView.getConsole();
 		if (console instanceof ErlangConsole) {
 			ErlangConsole pconsole = (ErlangConsole) console;
-			// FIXME
-			// return pconsole.getBackend().getLaunch();
+			Backend backend = pconsole.getBackend();
+			if (backend instanceof ErlideBackend) {
+				ErlideBackend eb = (ErlideBackend) backend;
+				return eb.getLaunch();
+			}
 		}
 		return null;
 	}

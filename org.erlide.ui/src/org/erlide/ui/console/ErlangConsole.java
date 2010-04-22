@@ -29,6 +29,7 @@ public class ErlangConsole extends TextConsole {
 	private final BackendShell shell;
 	protected ListenerList consoleListeners;
 	protected ErlangConsolePartitioner partitioner;
+	private boolean stopped = false;
 
 	public ErlangConsole(ErlideBackend backend) {
 		super(backend.getName(), null, null, true);
@@ -94,6 +95,14 @@ public class ErlangConsole extends TextConsole {
 	@Override
 	protected IConsoleDocumentPartitioner getPartitioner() {
 		return partitioner;
+	}
+
+	public void stop() {
+		stopped  = true;
+	}
+
+	public boolean isStopped() {
+		return stopped;
 	}
 
 }

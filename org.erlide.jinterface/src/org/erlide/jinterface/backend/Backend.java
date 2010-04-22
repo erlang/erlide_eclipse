@@ -12,6 +12,8 @@ package org.erlide.jinterface.backend;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.erlide.jinterface.backend.events.EventDaemon;
 import org.erlide.jinterface.backend.events.LogEventHandler;
@@ -20,7 +22,6 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -61,6 +62,7 @@ public class Backend extends OtpNodeStatus {
 	private EventDaemon eventDaemon;
 	private boolean monitor = false;
 	private boolean watch = true;
+	private BackendShellManager shellManager;
 
 	protected Backend(final RuntimeInfo info) throws BackendException {
 		if (info == null) {
@@ -102,6 +104,18 @@ public class Backend extends OtpNodeStatus {
 			throws BackendException {
 		try {
 			return makeAsyncCall(m, f, signature, args);
+		} catch (final RpcException e) {
+			throw new BackendException(e);
+		} catch (SignatureException e) {
+			throw new BackendException(e);
+		}
+	}
+
+	public void async_call_cb(final RpcCallback cb, final String m,
+			final String f, final String signature, final Object... args)
+			throws BackendException {
+		try {
+			makeAsyncCbCall(cb, m, f, signature, args);
 		} catch (final RpcException e) {
 			throw new BackendException(e);
 		} catch (SignatureException e) {
@@ -185,8 +199,8 @@ public class Backend extends OtpNodeStatus {
 			if (exitStatus >= 0 && restarted < 3) {
 				restart();
 			} else {
-				throw new RpcException(String.format(
-						"could not restart backend %s (exitstatus=%d restarted=%d)", getInfo(),
+				String msg = "could not restart backend %s (exitstatus=%d restarted=%d)";
+				throw new RpcException(String.format(msg, getInfo(),
 						exitStatus, restarted));
 			}
 		}
@@ -202,6 +216,9 @@ public class Backend extends OtpNodeStatus {
 
 	public void dispose(final boolean restart) {
 		ErlLogger.debug("disposing backend " + getName());
+		if (shellManager != null) {
+			shellManager.dispose();
+		}
 
 		if (getNode() != null) {
 			getNode().close();
@@ -350,6 +367,7 @@ public class Backend extends OtpNodeStatus {
 
 	public void initializeRuntime() {
 		dispose(true);
+		shellManager = new BackendShellManager();
 	}
 
 	public boolean isDebug() {
@@ -373,6 +391,48 @@ public class Backend extends OtpNodeStatus {
 			SignatureException {
 		return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
 				args0);
+	}
+
+	protected void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+			final String module, final String fun, final String signature,
+			final Object... args) throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
+				signature, args);
+	}
+
+	protected void makeAsyncCbCall(final RpcCallback cb, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		makeAsyncCbCall(cb, DEFAULT_TIMEOUT, new OtpErlangAtom("user"), module,
+				fun, signature, args);
+	}
+
+	private void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+			final OtpErlangObject gleader, final String module,
+			final String fun, final String signature, final Object... args)
+			throws RpcException, SignatureException {
+		checkAvailability();
+
+		final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, gleader,
+				module, fun, signature, args);
+		Runnable target = new Runnable() {
+			public void run() {
+				OtpErlangObject result;
+				try {
+					result = future.get(timeout);
+					cb.run(result);
+				} catch (RpcException e) {
+					// TODO do we want to treat a timeout differently?
+					ErlLogger.error("Could not execute RPC " + module + ":"
+							+ fun + " : " + e.getMessage());
+				}
+			}
+		};
+		// We can't use jobs here, it's an Eclipse dependency
+		Thread thread = new Thread(target);
+		thread.setDaemon(true);
+		thread.setName("async " + module + ":" + fun);
+		thread.start();
 	}
 
 	protected OtpErlangObject makeCall(final int timeout,
@@ -552,4 +612,48 @@ public class Backend extends OtpNodeStatus {
 		ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
 				direction, info));
 	}
+
+	private class BackendShellManager implements IDisposable {
+
+		private final HashMap<String, BackendShell> fShells;
+
+		public BackendShellManager() {
+			fShells = new HashMap<String, BackendShell>();
+		}
+
+		public BackendShell getShell(final String id) {
+			final BackendShell shell = fShells.get(id);
+			return shell;
+		}
+
+		public synchronized BackendShell openShell(final String id) {
+			BackendShell shell = getShell(id);
+			if (shell == null) {
+				shell = new BackendShell(Backend.this, id);
+				fShells.put(id, shell);
+			}
+			return shell;
+		}
+
+		public synchronized void closeShell(final String id) {
+			final BackendShell shell = getShell(id);
+			if (shell != null) {
+				fShells.remove(id);
+				shell.close();
+			}
+		}
+
+		public void dispose() {
+			final Collection<BackendShell> c = fShells.values();
+			for (final BackendShell backendShell : c) {
+				backendShell.close();
+			}
+			fShells.clear();
+		}
+	}
+
+	public BackendShell getShell(String id) {
+		return shellManager.openShell(id);
+	}
+
 }

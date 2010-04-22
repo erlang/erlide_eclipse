@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
+ * Copyright (c) 2009 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,16 +9,10 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
-public class NoBackendException extends BackendException {
+import com.ericsson.otp.erlang.OtpErlangObject;
 
-	private static final long serialVersionUID = 1L;
+public interface RpcCallback {
 
-	public NoBackendException(final Exception e) {
-		super(e);
-	}
-
-	public NoBackendException() {
-		super("The Erlang backend is not running. Functionality is limited.");
-	}
+	void run(OtpErlangObject value);
 
 }

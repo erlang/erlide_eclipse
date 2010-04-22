@@ -69,9 +69,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	private ShowWhenContentChangesAction fStdOut;
 
 	private ErlangConsole fConsole;
-
 	private IPageBookViewPage fPage;
-
 	private IConsoleView fView;
 
 	private EOFHandler fEOFHandler;
@@ -109,13 +107,15 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 		fPage = page;
 		fConsole = (ErlangConsole) console;
 
-		fRemoveTerminated = new ConsoleRemoveLaunchAction(fConsole.getBackend());
-		fRemoveAllTerminated = new ConsoleRemoveAllTerminatedAction();
 		fTerminate = new ConsoleTerminateAction(fConsole);
+		fRemoveTerminated = new ConsoleRemoveLaunchAction(fConsole);
+		// fRemoveAllTerminated = new ConsoleRemoveAllTerminatedAction();
 		fStdOut = new ShowStandardOutAction();
 
 		fView = (IConsoleView) fPage.getSite().getPage().findView(
 				IConsoleConstants.ID_CONSOLE_VIEW);
+
+		fTerminate.update();
 
 		DebugPlugin.getDefault().addDebugEventListener(this);
 		DebugUITools.getDebugContextManager().getContextService(

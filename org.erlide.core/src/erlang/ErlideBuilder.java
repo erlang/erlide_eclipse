@@ -53,7 +53,8 @@ public class ErlideBuilder {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
 				if (b.isDistributed()) {
-					b.call("erlide_builder", "load", "a", module);
+					b.call("erlide_builder", "load", "ao", module, b
+							.doLoadOnAllNodes());
 				} else {
 					ErlideUtil.loadModuleViaInput(b, project, module);
 				}

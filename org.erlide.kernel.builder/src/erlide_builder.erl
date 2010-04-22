@@ -19,11 +19,11 @@
 		 compile/1,
 		 compile/3,
 		 compile/4,
-		 load/1,
+		 load/2,
 		 compile_yrl/2,
 		 code_clash/0,
 		 source_clash/1,
-		 
+
 		 build_resources/5
 		]).
 
@@ -62,10 +62,10 @@ compile_options(F, Options, OutputDir) ->
 			{ok, [], [F1]};
 		{ok, Mod, _Bin, W} ->
 			Msg = {1, F, lists:flatten(io_lib:format("declared module name '~p' doesn't match file name '~p'", [Mod, FN])), ?ERROR},
-			{error, lists:sort([Msg | format_compile_msg(W, ?WARNING)])};    
+			{error, lists:sort([Msg | format_compile_msg(W, ?WARNING)])};
 		{ok, Mod, _Bin} ->
 			Msg = {1, F, lists:flatten(io_lib:format("declared module name '~p' doesn't match file name '~p'", [Mod, FN])), ?ERROR},
-			{error, [Msg]}    
+			{error, [Msg]}
 	end.
 
 format_compile_msg(L, Marker) when is_list(L) ->
@@ -73,12 +73,16 @@ format_compile_msg(L, Marker) when is_list(L) ->
 format_compile_msg({File, L}, Marker) ->
 	[{Ln, File, lists:flatten(M:format_error(D)), Marker} || {Ln, M, D} <- L].
 
-load(Mod) ->
+load(Mod, All) ->
 	case code:is_sticky(Mod) of
 		true ->
 			ok;
 		false ->
-			c:l(Mod)
+			if All ->
+                   c:nl(Mod);
+               true ->
+                   c:l(Mod)
+            end
 	end.
 
 mk_includes(L) ->
@@ -196,7 +200,7 @@ source_clash(Dirs) ->
 build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	spawn(fun() ->
 				  erlang:register(erlide_builder, self()),
-				  receive 
+				  receive
 					  start ->
 						  erlide_log:logp("Start building! ~p", [{Files, OutputDir, IncludeDirs, Options, Reporter}]),
 						  do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter),
@@ -210,15 +214,15 @@ do_build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
 	Fun = fun(F) ->
 				  Res = (catch build_one_file(F, OutputDir, IncludeDirs, Options)),
 				  Reporter ! {compile, Res},
-				  
+
 				  %% TODO scan tasks
-				  
+
 				  ok
 		  end,
 	lists:foreach(Fun, Files),
-	
+
 	%% TODO check code clashes
-	
+
 	Reporter ! stop,
 	ok.
 
@@ -229,7 +233,7 @@ build_one_file(F, OutputDir, IncludeDirs, Options) ->
 			compile(F, OutputDir, IncludeDirs, Options);
 		".yrl" ->
 			%% FIXME something is wrong here
-			ErlF = filename:join(filename:dirname(F), 
+			ErlF = filename:join(filename:dirname(F),
 								 filename:basename(F, "yrl")++"erl"),
 			erlide_log:logp("YRL ->  ~p ", [{F, ErlF}]),
 			case compile_yrl(F, ErlF) of

@@ -137,7 +137,6 @@ get_chars( How_many, String_buffer ) ->
 %		Result : ok | {error, Reason}
 get_until( Module, Function, Arguments, Cont, String_buffer ) ->
 	String = string_buffer_remaining( String_buffer ),
-	% FIXME apply => erl.lang:apply
 	case catch erlang:apply(Module, Function, [Cont, String | Arguments]) of
 	{done, Result, eof} ->
 		{Result, string_buffer_after_read( String_buffer, all_read )};
@@ -171,7 +170,6 @@ io_request( {put_chars, Chars}, {ok, String_buffer} ) ->
 		{{error, {mode, is_readonly}}, String_buffer}
 	end;
 io_request( {put_chars, Module, Func, Args}, String_buffer ) ->
-	% FIXME apply => erl.lang:apply
 	io_request( {put_chars, catch erlang:apply( Module, Func, Args )}, String_buffer );
 io_request( {get_chars, _Prompt, How_many}, {ok, String_buffer} ) ->
 	case string_buffer_is_readable( String_buffer ) of

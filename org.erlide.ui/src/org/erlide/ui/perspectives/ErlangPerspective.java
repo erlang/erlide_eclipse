@@ -93,7 +93,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 		layout.addShowViewShortcut(LiveExpressionsView.ID);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
-		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+		layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
 		//
 		layout.addNewWizardShortcut("org.erlide.ui.wizards.newproject");
 		layout.addNewWizardShortcut("org.erlide.ui.wizards.ErlangSourceFile");
