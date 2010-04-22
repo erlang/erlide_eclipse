@@ -30,7 +30,7 @@
 
 -compile(export_all).
 
--record(open_context, {externalModules, externalIncludes, pathVars}).
+-record(open_context, {externalModules, externalIncludes, pathVars, extraSourcePaths}).
 
 
 %%
