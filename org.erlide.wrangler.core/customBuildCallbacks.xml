@@ -17,26 +17,17 @@
 	<!--   build.result.folder - folder to contain the build results           -->
 	<!-- ===================================================================== -->
 	<target name="pre.build.jars">
-	</target>
-
-	<target name="pre.wrangler.jar">
-	</target>
-
-	<target name="post.wrangler.jar">
 		<mkdir dir="wrangler/ebin"/>
-		<apply executable="${erlang_R12}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R13}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="wrangler/ebin"/>
 			<arg value="-I"/>
 			<arg value="wrangler/include"/>
 			<arg value="+debug_info"/>
-			<fileset dir="wrangler/erl">
+			<fileset dir="wrangler/src">
 				<include name="**/*.erl"/>
 			</fileset>
 		</apply>
-	</target>
-
-	<target name="post.compile.wrangler.jar">
 	</target>
 
 	<!-- ===================================================================== -->
