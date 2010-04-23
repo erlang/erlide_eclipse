@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.core.erlang.util.SourcePathProvider;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -55,10 +58,24 @@ public class ErlideOpen {
 			final int offset, final String externalModules,
 			final OtpErlangList pathVars) throws BackendException {
 		ErlLogger.debug("open offset " + offset);
+		Collection<String> extra = getExtraSourcePaths();
 		final OtpErlangObject res = b.call("erlide_open", "open", "aix",
 				scannerName, offset, mkContext(externalModules, null, pathVars,
-						null));
+						extra));
 		return new OpenResult(res);
+	}
+
+	private static Collection<String> getExtraSourcePaths() {
+		Collection<SourcePathProvider> spps = ModelUtils
+				.getSourcePathProviders();
+		List<String> result = Lists.newArrayList();
+		for (SourcePathProvider spp : spps) {
+			Collection<IPath> paths = spp.getSourcePaths();
+			for (IPath p : paths) {
+				result.add(p.toString());
+			}
+		}
+		return result;
 	}
 
 	static OtpErlangTuple mkContext(String externalModules,
@@ -76,17 +93,9 @@ public class ErlideOpen {
 		result.add(externalModules != null ? new OtpErlangString(
 				externalModules) : UNDEFINED);
 		result.add(pathVars != null ? pathVars : UNDEFINED);
-		result.add(extraSourcePaths != null ? mkStringList(extraSourcePaths)
-				: UNDEFINED);
+		result.add(extraSourcePaths != null ? OtpErlang
+				.mkStringList(extraSourcePaths) : UNDEFINED);
 		return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
-	}
-
-	private static OtpErlangList mkStringList(Collection<String> args) {
-		List<OtpErlangObject> result = Lists.newArrayList();
-		for (String s : args) {
-			result.add(new OtpErlangString(s));
-		}
-		return OtpErlang.mkList(result);
 	}
 
 	public static OtpErlangTuple findFirstVar(final Backend b,
