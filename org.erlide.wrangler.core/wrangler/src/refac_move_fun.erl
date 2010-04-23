@@ -269,7 +269,7 @@ check_macros_records_in_current_file(UsedMacros, UsedRecords, AST, MDefs) ->
 	      Info = get_mod_info_from_parse_tree(AST),
 	      case lists:keysearch(records, 1, Info) of
 		{value, {records, RecordDefs}} ->
-		    [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
+		    [{Name, lists:keysort(1, [{F, prettyprint(FDef)} || {F, FDef} <- Fields])}
 		     || {Name, Fields} <- RecordDefs, lists:member(Name, UsedRecords)];
 		_ -> []
 	      end
@@ -283,9 +283,9 @@ check_macros_in_current_file(UsedMacros, UsedMacroDefs) ->
     case length(UsedMacros) > length(UsedMacroDefs) of
       true ->
 	  UnDefinedUsedMacros = UsedMacros -- [Name || {Name, _Def} <- UsedMacroDefs],
-	  Msg = io_lib:format("\n Macro(s) used by the function selected, but not defined: ~p.",
-			      [UnDefinedUsedMacros]),
-	  ?wrangler_io(Msg, []),
+	  Msg = format("Macro(s) used by the function selected, but not defined: ~p.",
+		       [UnDefinedUsedMacros]),
+	  ?wrangler_io("\n"++Msg, []),
 	  throw({error, Msg});
       false -> ok
     end.
@@ -294,9 +294,9 @@ check_records_in_current_file(UsedRecords, UsedRecordDefs) ->
     case length(UsedRecords) > length(UsedRecordDefs) of
       true ->
 	  UnDefinedUsedRecords = UsedRecords -- [Name || {Name, _Fields} <- UsedRecordDefs],
-	  Msg1 = io_lib:format("\n Record(s) used by the function selected, but not defined: ~p.",
+	  Msg1 = format("Record(s) used by the function selected, but not defined: ~p.",
 			       [UnDefinedUsedRecords]),
-	  ?wrangler_io(Msg1, []),
+	  ?wrangler_io("\n"++Msg1, []),
 	  throw({error, Msg1});
       false -> ok
     end.
@@ -315,7 +315,7 @@ check_marcos_records_in_target_file(TargetFileName, UsedMacros, UsedRecords,
 	  TargetModInfo = get_mod_info_from_parse_tree(TargetAST),
 	  UsedRecordDefsInTargetFile = case lists:keysearch(records, 1, TargetModInfo) of
 					 {value, {records, RecordDefsInTargetFile}} ->
-					     [{Name, lists:keysort(1, [{F, format(FDef)} || {F, FDef} <- Fields])}
+					     [{Name, lists:keysort(1, [{F, prettyprint(FDef)} || {F, FDef} <- Fields])}
 					      || {Name, Fields} <- RecordDefsInTargetFile,
 						 lists:member(Name, UsedRecords)];
 					 _ -> []
@@ -328,10 +328,10 @@ check_marcos_records_in_target_file(TargetFileName, UsedMacros, UsedRecords,
 check_macros_in_target_file(UsedMacros, UsedMacroDefs, UsedMacroDefsInTargetFile) ->
     case length(UsedMacros) > length(UsedMacroDefsInTargetFile) of
 	true ->
-	    Msg = io_lib:format("\n Macros used by the function selected "
-				"are not defined in the target module: ~p.",
-				[UsedMacros -- element(1, lists:unzip(UsedMacroDefsInTargetFile))]),
-	    ?wrangler_io(Msg,[]),
+	    Ms =UsedMacros -- element(1, lists:unzip(UsedMacroDefsInTargetFile)),
+	    Msg = format("Macros used by the function selected "
+			 "are not defined in the target module: ~p.",[Ms]),
+	    ?wrangler_io("\n"++Msg,[]),
 	    throw({error, Msg});
 	false ->
 	    case length(UsedMacros) == length(UsedMacroDefsInTargetFile) of
@@ -339,11 +339,11 @@ check_macros_in_target_file(UsedMacros, UsedMacroDefs, UsedMacroDefsInTargetFile
 		    case lists:keysort(1, UsedMacroDefs) == lists:keysort(1, UsedMacroDefsInTargetFile) of
 			true -> ok;
 			_ ->
-			    Msg1 = io_lib:format("\n Macro(s) used by the function selected "
-						 "are defined differently in the target module: ~p",
-						 [element(1, lists:unzip(lists:keysort(1, UsedMacroDefs)
-									 -- lists:keysort(1, UsedMacroDefsInTargetFile)))]),
-			    ?wrangler_io(Msg1 ++ ".", []),
+			    Ms=element(1, lists:unzip(lists:keysort(1, UsedMacroDefs)
+						       -- lists:keysort(1, UsedMacroDefsInTargetFile))),
+			    Msg1 = format("Macro(s) used by the function selected "
+					  "are defined differently in the target module: ~p", [Ms]),
+			    ?wrangler_io("\n"++Msg1 ++ ".", []),
 			    throw({warning, Msg1 ++ ", still continue?"})
 		    end;
 		_ -> ok
@@ -353,21 +353,21 @@ check_macros_in_target_file(UsedMacros, UsedMacroDefs, UsedMacroDefsInTargetFile
 check_records_in_target_file(UsedRecords, UsedRecordDefs, UsedRecordDefsInTargetFile) ->
     case length(UsedRecords) > length(UsedRecordDefsInTargetFile) of
       true ->
-	  Msg = io_lib:format("\n Records used by the function selected "
-			      "are not defined in the target module: ~p.",
-			      [UsedRecords -- element(1, lists:unzip(UsedRecordDefsInTargetFile))]),
-	  ?wrangler_io(Msg, []),
-	  throw({error, Msg});
+	    Ms = UsedRecords -- element(1, lists:unzip(UsedRecordDefsInTargetFile)),
+	    Msg = format("Records used by the function selected "
+			 "are not defined in the target module: ~p.", [Ms]),
+	    ?wrangler_io("\n"++Msg, []),
+	    throw({error, Msg});
       _ ->
 	  case lists:keysort(1, UsedRecordDefs) == lists:keysort(1, UsedRecordDefsInTargetFile) of
 	    true -> true;
-	    _ ->
-		Msg1 = io_lib:format("\n Records used by the function selected "
-				     "are defined differently in the target module: ~p.",
-				     [element(1, lists:unzip(lists:keysort(1, UsedRecordDefs)
-							     -- lists:keysort(1, UsedRecordDefsInTargetFile)))]),
-		?wrangler_io(Msg1, []),
-		throw({error, Msg1})
+	      _ ->
+		  Ms1= element(1, lists:unzip(lists:keysort(1, UsedRecordDefs)
+					     -- lists:keysort(1, UsedRecordDefsInTargetFile))),
+		  Msg1 = format("Records used by the function selected "
+				"are defined differently in the target module: ~p.",[Ms1]),
+		  ?wrangler_io("\n"++Msg1, []),
+		  throw({error, Msg1})
 	  end
     end.
 
@@ -1126,9 +1126,9 @@ do_rename_fun_in_tuples(Node, {FileName, SearchPaths, ModName, FunName, TargetMo
       _ -> {Node, false}
     end.
 
-format(none) ->
+prettyprint(none) ->
     none;
-format(Node) -> 
+prettyprint(Node) -> 
     refac_prettypr:format(Node).
 
 
@@ -1144,4 +1144,5 @@ not_renamed_warn_msg(FunName) ->
      "refer to the function moved.\n Please check manually for necessary module name changes!\n".
     
 
-
+format(Format, Options) ->
+    lists:flatten(io_lib:format(Format, Options)).
