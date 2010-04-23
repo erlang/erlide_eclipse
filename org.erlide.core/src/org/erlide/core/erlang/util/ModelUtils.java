@@ -224,6 +224,7 @@ public class ModelUtils {
 	}
 
 	public static Collection<SourcePathProvider> getSourcePathProviders() {
+		// TODO should be cached and listening to plugin changes?
 		List<SourcePathProvider> result = Lists.newArrayList();
 		final IExtensionRegistry reg = RegistryFactory.getRegistry();
 		final IConfigurationElement[] elements = reg

@@ -338,7 +338,7 @@ public class ErlTextHover implements ITextHover,
 							final String path = Util.stringValue(s4);
 							IResource r = null;
 							try {
-								r = ErlModelUtils.openExternalModule(mod, path,
+								r = ErlModelUtils.findExternalModule(mod, path,
 										module.getResource().getProject());
 							} catch (final CoreException e2) {
 							}

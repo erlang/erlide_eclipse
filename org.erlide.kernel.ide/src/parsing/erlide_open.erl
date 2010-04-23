@@ -22,7 +22,7 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
@@ -39,7 +39,7 @@
 
 
 open(Mod, Offset, #open_context{}=Context) ->
-    ?D({Mod, Offset, PathVars}),
+    ?D({Mod, Offset, Context}),
     try
         {TokensWComments, BeforeReversed} =
             erlide_scanner_server:getTokenWindow(Mod, Offset, 5, 100),
@@ -198,14 +198,17 @@ open_info(Mod, Offset, #open_context{}=Context) ->
             end
     end.
 
-get_source_from_module(Mod, #open_context{externalModules=ExternalModules, pathVars=PathVars}) ->
+get_source_from_module(Mod, Context) ->
     case catch get_source(Mod) of
         {'EXIT', _E} ->
-            ?D(_E),
-            get_source_from_external_modules(Mod, ExternalModules, PathVars);
-        [] ->
-            ?D([]),
-            get_source_from_external_modules(Mod, ExternalModules, PathVars);
+            ?D({get_source, _E}),
+            case catch select_external(get_erl_from_dirs(Context#open_context.extraSourcePaths), 
+                                       atom_to_list(Mod)) of
+                Path when is_list(Path) ->
+                    Path;
+                _ ->
+                    get_source_from_external_modules(Mod, Context)
+            end;
         Other ->
             Other
     end.
@@ -255,25 +258,41 @@ get_external_modules_files(Filenames, PathVars, Top, Done, Acc) ->
 	  end,
     lists:foldl(Fun, {Done, Acc}, Filenames).
 
-get_source_from_external_modules(Mod, ExternalModules, PathVars) ->
-    ?D({ExternalModules, PathVars}),
+get_source_from_external_modules(Mod, #open_context{externalModules=ExternalModules, 
+													pathVars=PathVars, 
+													extraSourcePaths=ExtraSources}=_Context) ->
+    ?D(_Context),
     L = get_external_modules_files(ExternalModules, PathVars),
-    ?D(L),
+    %%?D(lists:flatten(io_lib:format(">> ~p~n", [L]))),
+	?D({get_external_modules_files, length(L)}),
+	Extra = get_erl_from_dirs(ExtraSources),
+	?D({extra, Extra}),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
     not_found;
 select_external([P | Rest], Mod) ->
-    case filename:rootname(filename:basename(P)) of
+	Name = filename:rootname(filename:basename(P)),
+	%%?D({select_external, Name, Mod, P}),
+    case Name of
         Mod ->
             P;
         _ ->
             select_external(Rest, Mod)
     end.
 
+get_erl_from_dirs(undefined) ->
+	[];
+get_erl_from_dirs(L) ->
+	lists:flatmap(fun(X) -> get_erl_from_dir(X) end, 
+				  L).
+   
+get_erl_from_dir(D) ->
+	{ok, Fs} = file:list_dir(D),
+	[filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"] .
+
 get_source(Mod) ->
     L = Mod:module_info(compile),
-    ?D(L),
     {value, {source, Path}} = lists:keysearch(source, 1, L),
     case filelib:is_regular(Path) of
         true ->

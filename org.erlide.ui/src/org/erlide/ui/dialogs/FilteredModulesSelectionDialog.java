@@ -636,6 +636,7 @@ public class FilteredModulesSelectionDialog extends
 			if (ResourceUtil.hasErlangExtension(resource)) {
 				final IContainer container = resource.getParent();
 				if (PluginUtils.isOnSourcePath(container)
+						|| PluginUtils.isOnExtraPath(container)
 						|| PluginUtils.isOnIncludePath(container)) {
 					proxyContentProvider.add(resource, resourceFilter);
 				}

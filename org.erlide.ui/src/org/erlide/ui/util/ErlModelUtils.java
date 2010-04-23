@@ -310,7 +310,7 @@ public class ErlModelUtils {
 	public static boolean openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
 			final IProject project) throws CoreException {
-		final IResource r = openExternalModule(mod, path, project);
+		final IResource r = findExternalModule(mod, path, project);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -333,7 +333,7 @@ public class ErlModelUtils {
 
 	public static boolean openExternalType(final String mod, final String type,
 			final String path, final IProject project) throws CoreException {
-		final IResource r = openExternalModule(mod, path, project);
+		final IResource r = findExternalModule(mod, path, project);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -348,22 +348,20 @@ public class ErlModelUtils {
 		return false;
 	}
 
-	public static IResource openExternalModule(final String mod,
+	public static IResource findExternalModule(final String mod,
 			final String path, final IProject project) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName, PluginUtils.getSourcePathFilter(project));
-			if (r != null && !PluginUtils.isOnSourcePath(r.getParent())) {
-				r = null;
-			}
-		}
-		if (r == null) {
-			try {
-				r = ResourceUtil.openExternal(path);
-			} catch (final Exception e) {
-				ErlLogger.warn(e);
+			
+			if (r == null) {
+				try {
+					r = ResourceUtil.openExternal(path);
+				} catch (final Exception e) {
+					ErlLogger.warn(e);
+				}
 			}
 		}
 		return r;

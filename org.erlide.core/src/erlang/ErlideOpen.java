@@ -62,10 +62,11 @@ public class ErlideOpen {
 		final OtpErlangObject res = b.call("erlide_open", "open", "aix",
 				scannerName, offset, mkContext(externalModules, null, pathVars,
 						extra));
+		ErlLogger.debug(">>>> " + res);
 		return new OpenResult(res);
 	}
 
-	private static Collection<String> getExtraSourcePaths() {
+	public static Collection<String> getExtraSourcePaths() {
 		Collection<SourcePathProvider> spps = ModelUtils
 				.getSourcePathProviders();
 		List<String> result = Lists.newArrayList();
