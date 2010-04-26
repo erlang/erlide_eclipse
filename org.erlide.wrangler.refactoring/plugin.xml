@@ -550,19 +550,98 @@
          </separator>
          <command
                commandId="org.erlide.wrangler.refactoring.renameprocess"
-               	style="push">
+               id="org.erlide.wrangler.refactoring.renameprocess"
+               style="push">
 	</command>
          <command
                commandId="org.erlide.wrangler.refactoring.functiontoprocess"
-               	style="push">
+               id="org.erlide.wrangler.refactoring.functiontoprocess"
+               style="push">
 	</command>
          
  
          
          <command
                commandId="org.erlide.wrangler.refactoring.normalizerecordexpression"
-               	style="push">
+               id="org.erlide.wrangler.refactoring.normalizerecordexpression"
+               style="push">
 	</command>
+			<visibleWhen>
+			 	<with variable="activeEditorId">
+			    	<or>
+			      		<equals value="org.erlide.ui.editors.erl.ErlangEditor" />			 
+			 		</or>
+				</with>
+			</visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               label="%RefactoringMenu_Label">
+            <command
+                  commandId="org.erlide.wrangler.refactoring.renamemodule"
+                  id="org.erlide.wrangler.refactoring.renamemodule"
+                  style="push">
+			<visibleWhen>
+			    <iterate>
+			       <adapt type="org.eclipse.core.resources.IResource">
+			          <test property="org.eclipse.core.resources.name" 
+			                value="*.erl"/>
+			       </adapt>
+			    </iterate>
+			</visibleWhen>
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.renamefunction"
+                  id="org.erlide.wrangler.refactoring.renamefunction"
+                  style="push">
+			<visibleWhen>
+     		 	<iterate>
+          			<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+        		</iterate>       
+			</visibleWhen>                
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.movefunction"
+                  id="org.erlide.wrangler.refactoring.movefunction"
+                  style="push">
+			<visibleWhen>
+     		 	<iterate>
+          			<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+        		</iterate>       
+			</visibleWhen>  
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.functiontoprocess"
+                  id="org.erlide.wrangler.refactoring.functiontoprocess"
+                  style="push">
+            <visibleWhen>
+     		 	<iterate>
+          			<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+        		</iterate>       
+			</visibleWhen>  
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.foldagainstmacro"
+                  id="org.erlide.wrangler.refactoring.foldagainstmacro"
+                  style="push">
+            <visibleWhen>
+     		 	<iterate>
+          			<adapt type="org.erlide.core.erlang.IErlPreprocessorDef" />
+        		</iterate>       
+			</visibleWhen>                
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.normalizerecordexpression"
+                  id="org.erlide.wrangler.refactoring.normalizerecordexpression"
+                  style="push">
+            <visibleWhen>
+     		 	<iterate>
+          			<adapt type="org.erlide.core.erlang.IErlPreprocessorDef" />
+        		</iterate>       
+			</visibleWhen>                  
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -570,87 +649,87 @@
          point="org.eclipse.ui.handlers">
 	<handler
                commandId="org.erlide.wrangler.refactoring.unfoldfunctionapplication"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.tuplefunctonparameters"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.foldremoteexpression"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.foldlocalexpression"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.extractfunction"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.movefunction"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.generalise"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.renamemodule"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.renamefunction"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.renamevariable"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.foldagainstmacro"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.introducemacro"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.gen_fsmtorecord"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.eqc_fsmtorecord"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.eqc_statemtorecord"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.mergeforall"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.mergelet"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.introducelet"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.normalizerecordexpression"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.functiontoprocess"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
          <handler
                commandId="org.erlide.wrangler.refactoring.renameprocess"
-               	class="RefactoringHandler">
+               	class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 	</handler>
    </extension>
 

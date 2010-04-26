@@ -2,8 +2,10 @@ package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
@@ -56,21 +58,15 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 
-/**
- * This class is for handling the refactoring calls.
- * 
- * @author Gyorgy Orosz
- * @version %I%, %G%
- */
-public class RefactoringMenuAction extends AbstractWranglerAction {
+public class RefactoringHandler extends AbstractHandler {
 
-	public void run(IAction action) {
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 		GlobalParameters.setSelection(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getSelection());
 
 		DefaultWranglerRefactoringWizard wizard = null;
 		WranglerRefactoring refactoring = null;
-		String actionId = action.getId();
+		String actionId = event.getCommand().getId();
 
 		ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
 
@@ -171,7 +167,7 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 									(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
 				} else
-					return;
+					return null;
 
 				// run introduce macro refactoring
 			} else if (actionId
@@ -219,11 +215,11 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 					refactoring = runGenFunRefactoring(pages, activeShell);
 				} catch (OtpErlangRangeException e) {
 					e.printStackTrace();
-					return;
+					return null;
 				}
 
 				if (refactoring == null)
-					return;
+					return null;
 
 				// fold against macro definition
 			} else if (actionId
@@ -296,7 +292,7 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 			}
 
 			else
-				return;
+				return null;
 		}
 
 		// run the given refactoring's wizard
@@ -312,6 +308,7 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 
@@ -437,4 +434,5 @@ public class RefactoringMenuAction extends AbstractWranglerAction {
 			return null;
 		return refactoring;
 	}
+
 }
