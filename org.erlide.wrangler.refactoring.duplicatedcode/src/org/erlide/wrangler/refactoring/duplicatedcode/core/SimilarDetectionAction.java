@@ -61,8 +61,8 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 	protected boolean getUserInput() {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-		SimilarCodeDetectionInputDialog inputd = new SimilarCodeDetectionInputDialog(shell,
-				"Similar code detection...");
+		SimilarCodeDetectionInputDialog inputd = new SimilarCodeDetectionInputDialog(
+				shell, "Similar code detection...");
 
 		inputd.open();
 

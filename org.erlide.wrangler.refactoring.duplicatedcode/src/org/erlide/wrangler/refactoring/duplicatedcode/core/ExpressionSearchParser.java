@@ -51,7 +51,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 				endLine = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(1))
 						.elementAt(0);
 				endColumn = (OtpErlangLong) ((OtpErlangTuple) actPos
-						.elementAt(0)).elementAt(1);
+						.elementAt(1)).elementAt(1);
 
 				IErlSelection sel = GlobalParameters.getWranglerSelection();
 				instances.add(new DuplicatedCodeInstanceElement((IFile) sel

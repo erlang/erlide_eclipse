@@ -3,14 +3,13 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.DuplicatesUIManager;
@@ -18,12 +17,17 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
-public abstract class AbstractDuplicatesSearcherAction implements
-		IEditorActionDelegate {
+public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
+
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		run();
+		return null;
+	}
 
 	protected final String rpcErrorMsg = "An error occured during the refactoring!";
 
-	public void run(IAction action) {
+	public void run() {
+		selectionChanged();
 		if (getUserInput()) {
 			IProgressMonitor monitor = new NullProgressMonitor();
 			try {
@@ -62,13 +66,15 @@ public abstract class AbstractDuplicatesSearcherAction implements
 			throws WranglerRpcParsingException, CoreException, IOException,
 			WranglerWarningException;
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		GlobalParameters.setSelection(selection);
+	public void selectionChanged() {
+		GlobalParameters.setEditor(PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor());
 	}
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		GlobalParameters.setEditor(targetEditor);
-	}
+	/*
+	 * public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+	 * GlobalParameters.setEditor(targetEditor); }
+	 */
 
 	void displayErrorNotification(String errorMsg) {
 		MessageDialog.openError(PlatformUI.getWorkbench()
