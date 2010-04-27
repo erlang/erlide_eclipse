@@ -15,16 +15,41 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlModuleSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlTextMemberSelection;
+
+import com.ericsson.otp.erlang.OtpErlangString;
 
 public class GlobalParameters {
 	// TODO:: handle null exceptions
 	static IEditorPart editor = null;
 
 	static IErlSelection wranglerSelection = null;
+
+	static boolean hasQuickCheck = false;
+	static boolean isQCchecked = false;
+
+	public static boolean hasQuickCheck() {
+		if (isQCchecked)
+			return hasQuickCheck;
+		else {
+			RpcResult res = ErlangCore.getBackendManager().getIdeBackend()
+					.call_noexception("code", "which", "a", "eqc");
+			if (!res.isOk())
+				return false;
+			if (res.getValue() instanceof OtpErlangString) {
+				hasQuickCheck = true;
+				isQCchecked = true;
+			} else {
+				isQCchecked = true;
+				hasQuickCheck = false;
+			}
+			return hasQuickCheck;
+		}
+	}
 
 	public static int getTabWidth() {
 		return 1;

@@ -360,6 +360,12 @@
 					<command commandId="org.erlide.wrangler.refactoring.gen_fsmtorecord"
 						style="push">
 					</command>
+     <visibleWhen>
+        <test
+              property="org.erlide.wrangler.refactoring.hasQuickCheck"
+              value="true">
+        </test>
+     </visibleWhen>
 				</menu>
 				<separator name="org.erlide.wrangler.refactoring.separator3"
 					visible="true">
@@ -507,5 +513,15 @@
 			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 		</handler>
 	</extension>
+ <extension
+       point="org.eclipse.core.expressions.propertyTesters">
+    <propertyTester
+          class="org.erlide.wrangler.refactoring.ui.QuickCheckTester"
+          id="org.erlide.wrangler.refactoring.quickchecktester"
+          namespace="org.erlide.wrangler.refactoring"
+          properties="hasQuickCheck"
+          type="java.lang.Object">
+    </propertyTester>
+ </extension>
 
 </plugin>
