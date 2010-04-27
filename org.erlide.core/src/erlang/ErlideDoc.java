@@ -45,7 +45,8 @@ public class ErlideDoc {
 		ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
 		try {
 			final OtpErlangObject input = ide.call("erlide_open", "open",
-					"aisx", module, offset, externalModules, pathVars);
+					"aix", module, offset, ErlideOpen.mkContext(
+							externalModules, null, pathVars, null));
 			res = b.call("erlide_otp_doc", "get_doc", "xlxs", input, imports,
 					stateDir);
 		} catch (final BackendException e) {

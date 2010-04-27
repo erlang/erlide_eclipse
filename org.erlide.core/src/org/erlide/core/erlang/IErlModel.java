@@ -314,4 +314,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	OtpErlangList getPathVars();
 
 	IErlFunction findFunction(FunctionRef r);
+
+	IErlModule getModuleFor(IErlElement elem);
 }

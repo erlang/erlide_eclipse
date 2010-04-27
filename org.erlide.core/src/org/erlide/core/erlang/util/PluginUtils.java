@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang.util;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -22,6 +23,8 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
+
+import erlang.ErlideOpen;
 
 /**
  * Simple utility functions
@@ -137,8 +140,19 @@ public class PluginUtils {
 	public static ContainerFilter getSourcePathFilter(final IProject project) {
 		return new ContainerFilter() {
 			public boolean accept(final IContainer container) {
-				return isOnSourcePath(container);
+				return isOnSourcePath(container) || isOnExtraPath(container);
 			}
 		};
+	}
+
+	public static boolean isOnExtraPath(final IContainer con) {
+		final Collection<String> sourcePaths = ErlideOpen.getExtraSourcePaths();
+		final String path = con.getLocation().toString();
+		for (final String spath : sourcePaths) {
+			if (path.equals(spath)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -11,8 +11,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -26,6 +30,8 @@ import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 import erlang.ErlideOpen;
 
@@ -215,6 +221,25 @@ public class ModelUtils {
 		} catch (final ErlModelException e) {
 		}
 		return null;
+	}
+
+	public static Collection<SourcePathProvider> getSourcePathProviders() {
+		// TODO should be cached and listening to plugin changes?
+		List<SourcePathProvider> result = Lists.newArrayList();
+		final IExtensionRegistry reg = RegistryFactory.getRegistry();
+		final IConfigurationElement[] elements = reg
+				.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+						"sourcePathProvider");
+		for (final IConfigurationElement element : elements) {
+			try {
+				SourcePathProvider provider = (SourcePathProvider) element
+						.createExecutableExtension("class");
+				result.add(provider);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 }

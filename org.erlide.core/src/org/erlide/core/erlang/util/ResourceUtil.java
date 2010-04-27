@@ -236,10 +236,10 @@ public class ResourceUtil {
 	}
 
 	static public IFile openExternal(final String path) throws CoreException {
-		final IProject project = getExternalFilesProject();
 		if (path == null) {
 			return null;
 		}
+		final IProject project = getExternalFilesProject();
 		final IPath location = new Path(path);
 		final IFile file = project.getFile(location.lastSegment());
 		final IStatus status = ResourcesPlugin.getWorkspace()

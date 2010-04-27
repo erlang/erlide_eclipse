@@ -640,7 +640,7 @@ public final class TypeConverter {
 		return matchSignature(term, Signature.parse(signature)[0]);
 	}
 
-	public static OtpErlangObject encodeMap(
+	public static OtpErlangObject mapToProplist(
 			final Map<String, OtpErlangObject> map) {
 		final Set<Entry<String, OtpErlangObject>> v = map.entrySet();
 		final OtpErlangObject[] vv = new OtpErlangObject[v.size()];

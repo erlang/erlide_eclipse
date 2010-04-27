@@ -1,6 +1,9 @@
 package com.ericsson.otp.erlang;
 
 import java.util.Collection;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class OtpErlang {
 
@@ -14,6 +17,14 @@ public class OtpErlang {
 
 	public static OtpErlangTuple mkTuple(final OtpErlangObject... args) {
 		return new OtpErlangTuple(args);
+	}
+
+	public static OtpErlangList mkStringList(Collection<String> args) {
+		List<OtpErlangObject> result = Lists.newArrayList();
+		for (String s : args) {
+			result.add(new OtpErlangString(s));
+		}
+		return mkList(result);
 	}
 
 }
