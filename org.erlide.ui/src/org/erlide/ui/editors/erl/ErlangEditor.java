@@ -7,6 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *     Vlad Dumitrescu
+ *     Alain O'Dea
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 

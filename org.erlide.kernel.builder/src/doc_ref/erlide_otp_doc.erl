@@ -16,7 +16,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -36,18 +36,6 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
     	_Error ->
             ?D(_Error),
             error
-    end.
-
-get_auto_imported(Prefix) when is_list(Prefix) ->
-    case catch erlang:module_info(exports) of
-	Val when is_list(Val) ->
-	    lists:filter(fun({N, A}) ->
-				 lists:prefix(Prefix, atom_to_list(N)) andalso
-				     erl_internal:bif(N, A)
-			 end, Val);
-	_Error ->
-	    ?D(_Error),
-	    error
     end.
 
 get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
@@ -395,19 +383,20 @@ get_all_links_to_other() ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-get_doc(Input, Imports, StateDir) ->
+get_doc(Module, Input, StateDir) ->
     try
+        ?D(Input),
 	case Input of
-	    {external, M, Function, N, _Path} = External ->
+	    {external, M, F, A, _Path} = External ->
 		?D({open, External}),
-		case get_doc_for_external(StateDir, M, [{Function, N}]) of
+		case get_doc_for_external(StateDir, M, [{F, A}]) of
 		    D when is_list(D) ->
 			{ok, lists:flatten(D), External};
 		    _Error ->
 			External
 		end;
-	    {local, Function, N} = Local ->
-		case get_doc_for_imported(StateDir, Function, N, Imports) of
+	    {local, F, A} = Local ->
+		case get_doc_for_external(StateDir, Module, [{F, A}]) of
 		    D when is_list(D) ->
 			{ok, lists:flatten(D), Local};
 		    _Error ->
@@ -458,32 +447,6 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
 	    E
     end.
 
-get_doc_for_imported(StateDir, F, A, Imports) ->
-    ?D({F, A, Imports}),
-    ?D(get_auto_imported(atom_to_list(F))),
-    Mod = case lists:member({F, A}, get_auto_imported(atom_to_list(F))) of
-              true ->
-                  erlang;
-              false ->
-                  get_imported(Imports, {F, A})
-          end,
-    case Mod of
-	{error, E} ->
-	    {error, E};
-	_ ->
-	    get_doc_for_external(StateDir, Mod, [{F, A}])
-    end.
-
-get_imported([], _) ->
-    {error, doc_not_found};
-get_imported([{Mod, Funcs} | Rest], Func) ->
-    case lists:member(Func, Funcs) of
-        true ->
-            Mod;
-        false ->
-            get_imported(Rest, Func)
-    end.
-
 get_doc_from_fun_arity_list(Mod, List, StateDir) ->
     get_doc_for_external(StateDir, Mod, List).
 
@@ -511,7 +474,7 @@ get_sublist([_ | Rest], [F | FRest], Acc) ->
 get_proposals(Mod0, Prefix, StateDir) ->
     {Mod, Functions} = case Mod0 of
 		    '<auto_imported>' ->
-			{erlang, get_auto_imported(Prefix)};
+			{erlang, erlide_util:get_auto_imported(Prefix)};
 		    _ ->
 			{Mod0, get_exported(Mod0, Prefix)}
 		end,

@@ -11,6 +11,7 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -216,13 +217,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	/**
-	 * @see IMember
-	 */
-	public IErlModule getModule() {
-		return null;
-	}
-
-	/**
 	 * @see IErlElement
 	 */
 	public String getName() {
@@ -250,6 +244,19 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		do {
 			if (current instanceof IErlProject) {
 				return (IErlProject) current;
+			}
+		} while ((current = current.getParent()) != null);
+		return null;
+	}
+
+	public IErlModule getModule() {
+		IErlElement current = this;
+		do {
+			if (current instanceof IErlModule) {
+				return (IErlModule) current;
+			}
+			if (current instanceof IErlProject) {
+				return null;
 			}
 		} while ((current = current.getParent()) != null);
 		return null;
@@ -583,10 +590,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	}
 
 	public void setChildren(final IErlElement[] children) {
-		fChildren.clear();
-		for (final IErlElement i : children) {
-			fChildren.add(i);
-		}
+		fChildren = Arrays.asList(children);
 	}
 
 	/**
@@ -693,6 +697,21 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 	public final void accept(final IErlElementVisitor visitor, final int flags,
 			final IErlElement.Kind leafKind) throws ErlModelException {
 		getModel().accept(this, visitor, flags, leafKind);
+	}
+
+	/**
+	 * Return my corresponding resource. Overridden in IErlModule, IErlFolder
+	 * and IErlProject
+	 */
+	public IResource getCorrespondingResource() throws ErlModelException {
+		return null;
+	}
+
+	public IResource getResource() {
+		if (fParent != null) {
+			return fParent.getResource();
+		}
+		return null;
 	}
 
 }

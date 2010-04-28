@@ -25,11 +25,11 @@ public class ErlScanner implements IDisposable {
 	private final String moduleName;
 
 	public ErlScanner(final IErlModule module, final String initialText,
-			final String moduleFileName, final String erlidePath) {
+			final String moduleFileName) {
 		this.module = module;
 		moduleName = ErlangToolkit.createScannerModuleName(module);
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
-				erlidePath, false);
+				false);
 	}
 
 	public void dispose() {
@@ -48,11 +48,6 @@ public class ErlScanner implements IDisposable {
 	public String getScannerModuleName() {
 		return moduleName;
 	}
-
-	// public void rescan(final String fullText) {
-	// ErlideScanner.initialScan(moduleName, moduleFileName, fullText,
-	// erlidePath);
-	// }
 
 	public Collection<IErlComment> getComments() {
 		return module.getComments();

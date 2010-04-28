@@ -8,8 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
+import java.util.Collection;
+
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.erlang.IErlElement;
@@ -53,11 +56,6 @@ public class WorkingSetFindAction extends FindAction {
 	}
 
 	@Override
-	Class<?>[] getValidTypes() {
-		return null; // ignore, we override canOperateOn
-	}
-
-	@Override
 	void init() {
 		// ignore: do our own init in 'init(FindAction, String)'
 	}
@@ -82,8 +80,9 @@ public class WorkingSetFindAction extends FindAction {
 		return fAction.canOperateOn(element);
 	}
 
+	@Override
 	int getLimitTo() {
-		return -1;
+		return fAction.getLimitTo();
 	}
 
 	@Override
@@ -92,8 +91,12 @@ public class WorkingSetFindAction extends FindAction {
 	}
 
 	@Override
-	protected String[] getScope() {
+	protected Collection<IResource> getScope() {
 		return fAction.getScope();
 	}
 
+	@Override
+	protected String getScopeDescription() {
+		return "working set '" + getText() + "'";
+	}
 }

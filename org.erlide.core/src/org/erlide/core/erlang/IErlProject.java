@@ -147,6 +147,8 @@ public interface IErlProject extends IErlFolder {
 
 	List<IErlModule> getModules() throws ErlModelException;
 
+	List<IErlModule> getModulesAndHeaders() throws ErlModelException;
+
 	OldErlangProjectProperties getProperties();
 
 }

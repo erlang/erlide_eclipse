@@ -8,10 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.search;
+package org.erlide.ui.internal.search;
 
+import java.util.Collection;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -94,9 +99,28 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
 	}
 
 	@Override
-	protected String[] getScope() {
-		// return SearchUtil.getWorkingSetsScope(fWorkingSets);
-		return null;
+	protected Collection<IResource> getScope() {
+		if (fWorkingSets != null) {
+			return SearchUtil.getWorkingSetsScope(fWorkingSets);
+		} else {
+			return SearchUtil.getWorkspaceScope();
+		}
+	}
+
+	@Override
+	public void run(final IErlElement element) {
+		try {
+			super.performNewSearch(element, getWorkingSetsScope(fWorkingSets));
+		} catch (InterruptedException e) {
+		}
+	}
+
+	@Override
+	public void run(final ITextSelection selection) {
+		try {
+			performNewSearch(selection, getWorkingSetsScope(fWorkingSets));
+		} catch (InterruptedException e) {
+		}
 	}
 
 	// QuerySpecification createQuery(IErlElement element)

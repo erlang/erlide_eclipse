@@ -24,7 +24,7 @@ import org.erlide.core.erlang.util.ErlangFunction;
  */
 public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
-	private boolean fExported;
+	private final boolean fExported;
 
 	private int arity;
 
@@ -40,11 +40,13 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	 * @param comment
 	 */
 	protected ErlFunction(final ErlElement parent, final String name,
-			final int arity, final String head, final String comment) {
+			final int arity, final String head, final String comment,
+			final boolean exported) {
 		super(parent, name);
 		this.arity = arity;
 		this.head = head;
 		fComment = comment;
+		fExported = exported;
 	}
 
 	public List<IErlFunctionClause> getClauses() {
@@ -71,10 +73,6 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	public void setArity(final int i) {
 		arity = i;
-	}
-
-	public void setExported(final boolean exported) {
-		fExported = exported;
 	}
 
 	@Override
