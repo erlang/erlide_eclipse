@@ -42,7 +42,7 @@ public class UnfoldFunctionApplicationRefactoring extends
 	public IRefactoringRpcMessage run(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
-				"unfold_fun_app", "sxxi", sel.getFilePath(),
+				"unfold_fun_app_eclipse", "sxxi", sel.getFilePath(),
 				sel.getSelectionRange().getStartPos(), sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
