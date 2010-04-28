@@ -88,7 +88,7 @@
          <menu
                id="org.erlide.wrangler.refactormenu.duplicated"
                label="Identical Code"
-               mnemonic="R">
+               mnemonic="I">
          <command
                commandId="org.erlide.wrangler.refactoring.duplicated.searchidentical"
                id="org.erlide.wrangler.refactoring.duplicated.searchidentical"
