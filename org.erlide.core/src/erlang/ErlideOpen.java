@@ -38,19 +38,8 @@ public class ErlideOpen {
 			final String externalModules) throws BackendException {
 		final OtpErlangObject res2 = b.call("erlide_open",
 				"get_source_from_module", "ax", mod, mkContext(externalModules,
-						null, pathVars, null));
+						null, pathVars, null, null));
 		return res2;
-	}
-
-	@SuppressWarnings("boxing")
-	public static OpenResult getOpenInfo(final Backend b, final String s,
-			final List<OtpErlangObject> imports, final String externalModules,
-			final OtpErlangList pathVars) throws BackendException {
-		final OtpErlangObject res = b.call("erlide_open", "open_info", "aix",
-				scannerName, offset, mkContext(externalModules, null, pathVars,
-						null, imports));
-return new OpenResult(res);
-
 	}
 
 	@SuppressWarnings("boxing")
@@ -82,7 +71,8 @@ return new OpenResult(res);
 
 	static OtpErlangTuple mkContext(String externalModules,
 			String externalIncludes, OtpErlangList pathVars,
-			Collection<String> extraSourcePaths) {
+			Collection<String> extraSourcePaths,
+			Collection<OtpErlangObject> imports) {
 		OtpErlangAtom tag = new OtpErlangAtom("open_context");
 		final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");
 
@@ -97,6 +87,7 @@ return new OpenResult(res);
 		result.add(pathVars != null ? pathVars : UNDEFINED);
 		result.add(extraSourcePaths != null ? OtpErlang
 				.mkStringList(extraSourcePaths) : UNDEFINED);
+		result.add(imports != null ? OtpErlang.mkList(imports) : UNDEFINED);
 		return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
 	}
 
@@ -120,7 +111,7 @@ return new OpenResult(res);
 		try {
 			final OtpErlangObject res = b.call("erlide_open",
 					"get_external_modules", "sx", prefix, mkContext(
-							externalModules, null, pathVars, null));
+							externalModules, null, pathVars, null, null));
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangList l = (OtpErlangList) t.elementAt(1);
@@ -142,7 +133,7 @@ return new OpenResult(res);
 		try {
 			final OtpErlangObject res = b.call("erlide_open",
 					"get_external_include", "sx", filePath, mkContext(null,
-							externalIncludes, pathVars, null));
+							externalIncludes, pathVars, null, null));
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				return Util.stringValue(t.elementAt(1));
@@ -158,7 +149,7 @@ return new OpenResult(res);
 		try {
 			final OtpErlangObject res = b.call("erlide_open",
 					"get_external_module", "sx", mod, mkContext(
-							externalModules, null, pathVars, null));
+							externalModules, null, pathVars, null, null));
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				return Util.stringValue(t.elementAt(1));

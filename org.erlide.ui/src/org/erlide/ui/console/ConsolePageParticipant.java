@@ -109,7 +109,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 		fTerminate = new ConsoleTerminateAction(fConsole);
 		fRemoveTerminated = new ConsoleRemoveLaunchAction(fConsole);
-		// fRemoveAllTerminated = new ConsoleRemoveAllTerminatedAction();
+		fRemoveAllTerminated = new ConsoleRemoveAllTerminatedAction();
 		fStdOut = new ShowStandardOutAction();
 
 		fView = (IConsoleView) fPage.getSite().getPage().findView(
