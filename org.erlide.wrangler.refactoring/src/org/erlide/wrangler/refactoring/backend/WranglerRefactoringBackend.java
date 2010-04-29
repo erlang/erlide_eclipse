@@ -2,6 +2,7 @@ package org.erlide.wrangler.refactoring.backend;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.AbstractRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.RefactoringRpcMessage;
 
@@ -43,8 +44,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 */
 	public IRpcMessage callWithParser(IRpcMessage parser, String functionName,
 			String signature, Object... parameters) {
-		RpcResult res = backend.call_noexception(MODULE, functionName,
-				signature, parameters);
+		RpcResult res = callWithoutParser(functionName, signature, parameters);
 		parser.parse(res);
 		return parser;
 	}
@@ -62,8 +62,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 */
 	public AbstractRefactoringRpcMessage call(String functionName,
 			String signature, Object... parameters) {
-		RpcResult res = backend.call_noexception(MODULE, functionName,
-				signature, parameters);
+		RpcResult res = callWithoutParser(functionName, signature, parameters);
 		AbstractRefactoringRpcMessage message = new RefactoringRpcMessage();
 		message.parse(res);
 		return message;
@@ -82,6 +81,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 */
 	public RpcResult callWithoutParser(final String functionName,
 			final String signature, final Object... parameters) {
+		ErlLogger
+				.info("Wrangler call: " + makeLogStr(functionName, parameters));
 		return backend.call_noexception(MODULE, functionName, signature,
 				parameters);
 	}
@@ -89,7 +90,20 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	public RpcResult callWithoutParser(final int timeout,
 			final String functionName, final String signature,
 			final Object... parameters) {
+		ErlLogger
+				.info("Wrangler call: " + makeLogStr(functionName, parameters));
 		return backend.call_noexception(timeout, MODULE, functionName,
 				signature, parameters);
+	}
+
+	protected String makeLogStr(String function, Object[] parameters) {
+		String ret = function + "(";
+		for (Object o : parameters) {
+			ret += o.toString();
+			ret += ", ";
+		}
+		if (ret.endsWith(", "))
+			ret = ret.substring(0, ret.length() - 2);
+		return ret + ")";
 	}
 }
