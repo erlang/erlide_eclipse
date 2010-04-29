@@ -41,6 +41,7 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 					showDuplicatesView();
 					addDuplicates(result.getDuplicates());
 				} else {
+					DuplicatesUIManager.closeDuplicatesView();
 					displayErrorNotification(result.getErrorMessage());
 				}
 			} catch (WranglerWarningException e) {
