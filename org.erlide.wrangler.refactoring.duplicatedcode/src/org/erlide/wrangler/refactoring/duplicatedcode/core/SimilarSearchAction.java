@@ -44,7 +44,7 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 		} else {
 			functionName = "simi_expr_search_in_dirs_eclipse";
 		}
-		result = backend.callWithoutParser(functionName, "sxxxxi", sel
+		result = backend.callWithoutParser(TIMEOUT, functionName, "sxxxxi", sel
 				.getFilePath(), sel.getSelectionRange().getStartPos(), sel
 				.getSelectionRange().getEndPos(), new OtpErlangFloat(simScore),
 				sel.getSearchPath(), GlobalParameters.getTabWidth());

@@ -42,13 +42,13 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(functionName, "xiidxi", fpl,
-					minToks, minFreq, simScore, sel.getSearchPath(),
+			result = backend.callWithoutParser(TIMEOUT, functionName, "xiidxi",
+					fpl, minToks, minFreq, simScore, sel.getSearchPath(),
 					GlobalParameters.getTabWidth());
 		} else {
-			result = backend.callWithoutParser(functionName, "xiidxi", sel
-					.getSearchPath(), minToks, minFreq, simScore, sel
-					.getSearchPath(), GlobalParameters.getTabWidth());
+			result = backend.callWithoutParser(TIMEOUT, functionName, "xiidxi",
+					sel.getSearchPath(), minToks, minFreq, simScore, sel
+							.getSearchPath(), GlobalParameters.getTabWidth());
 		}
 
 		if (!result.isOk())

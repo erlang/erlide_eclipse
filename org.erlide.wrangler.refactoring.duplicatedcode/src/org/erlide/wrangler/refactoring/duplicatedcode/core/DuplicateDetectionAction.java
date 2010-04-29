@@ -25,7 +25,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
-	private static final int TIMEOUT = 180000;
 	protected boolean onlyInfile;
 	protected int minToks;
 	protected int minClones;

@@ -19,6 +19,8 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
+	protected static final int TIMEOUT = 180000;
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		run();
 		return null;
