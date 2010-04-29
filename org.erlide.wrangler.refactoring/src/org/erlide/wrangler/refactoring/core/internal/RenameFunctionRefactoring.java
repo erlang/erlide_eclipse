@@ -12,7 +12,6 @@ import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
-import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 
@@ -27,15 +26,15 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	@Override
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		if (sel instanceof IErlMemberSelection) {
-			SelectionKind kind = sel.getKind();
-			if (kind == SelectionKind.FUNCTION_CLAUSE
-					|| kind == SelectionKind.FUNCTION)
-				return new RefactoringStatus();
-		}
-		return RefactoringStatus
-				.createFatalErrorStatus("Please select a function!");
+		/*
+		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
+		 * instanceof IErlMemberSelection) { SelectionKind kind = sel.getKind();
+		 * if (kind == SelectionKind.FUNCTION_CLAUSE || kind ==
+		 * SelectionKind.FUNCTION) return new RefactoringStatus(); } return
+		 * RefactoringStatus
+		 * .createFatalErrorStatus("Please select a function!");
+		 */
+		return new RefactoringStatus();
 	}
 
 	@Override

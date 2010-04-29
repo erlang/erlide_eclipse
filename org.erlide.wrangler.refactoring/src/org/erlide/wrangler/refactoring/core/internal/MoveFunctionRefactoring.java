@@ -10,7 +10,6 @@ import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
-import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 /**
@@ -24,15 +23,15 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 	@Override
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		if (sel instanceof IErlMemberSelection) {
-			SelectionKind kind = sel.getKind();
-			if (kind == SelectionKind.FUNCTION_CLAUSE
-					|| kind == SelectionKind.FUNCTION)
-				return new RefactoringStatus();
-		}
-		return RefactoringStatus
-				.createFatalErrorStatus("Please select a function!");
+		/*
+		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
+		 * instanceof IErlMemberSelection) { SelectionKind kind = sel.getKind();
+		 * if (kind == SelectionKind.FUNCTION_CLAUSE || kind ==
+		 * SelectionKind.FUNCTION) return new RefactoringStatus(); } return
+		 * RefactoringStatus
+		 * .createFatalErrorStatus("Please select a function!");
+		 */
+		return new RefactoringStatus();
 	}
 
 	@Override
