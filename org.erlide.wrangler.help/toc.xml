@@ -1,30 +1,82 @@
 <toc label="Wrangler refactor tool" topic="html/general.html">
-   <topic href="html/general.html" label="General information">
-   </topic>
-   <topic href="html/refactorings.html" label="Refactorings">
-      <topic href="html/refactorings.html#Rename variable" label="Rename variable">
-      </topic>
-      <topic href="html/refactorings.html#Rename function" label="Rename function">
-      </topic>
-      <topic href="html/refactorings.html#Rename module" label="Rename module">
-      </topic>
-      <topic href="html/refactorings.html#Move function" label="Move function">
-      </topic>
-      <topic href="html/refactorings.html#Fold expression" label="Fold expression">
-      </topic>
-      <topic href="html/refactorings.html#Function extraction" label="Function extraction">
-      </topic>
-      <topic href="html/refactorings.html#Generalise function" label="Generalise function">
-      </topic>
-      <topic href="html/refactorings.html#Tuple function parameters" label="Tuple function parameters">
-      </topic>
-      <topic href="html/refactorings.html#Search expression" label="Search expression">
-      </topic>
-      <topic href="html/refactorings.html#Duplicated code detection" label="Duplicated code detection">
-      </topic>
-      <topic href="html/refactorings.html#Rename process" label="Rename process">
-      </topic>
-      <topic href="html/refactorings.html#Function to process" label="Function to process">
-      </topic>
-   </topic>
+	<topic href="html/general.html" label="General information">
+	</topic>
+	<topic href="html/refactorings.html" label="Refactorings">
+		<topic href="html/refactorings.html#General refactorings" label="General refactorings">
+			<topic href="html/refactorings.html#Rename variable" label="Rename variable">
+			</topic>
+			<topic href="html/refactorings.html#Rename function" label="Rename function">
+			</topic>
+			<topic href="html/refactorings.html#Rename module" label="Rename module">
+			</topic>
+			<topic href="html/refactorings.html#Generalise function" label="Generalise function">
+			</topic>
+			<topic href="html/refactorings.html#Move function" label="Move function">
+			</topic>
+			<topic href="html/refactorings.html#Function extraction" label="Function extraction">
+			</topic>
+			<topic
+				href="html/refactorings.html#Fold expression against local function"
+				label="Fold expression against local function">
+			</topic>
+			<topic
+				href="html/refactorings.html#Fold expression against remote function"
+				label="Fold expression against remote function">
+			</topic>
+			<topic href="html/refactorings.html#Tuple function parameters"
+				label="Tuple function parameters">
+			</topic>
+			<topic href="html/refactorings.html#Unfold function application"
+				label="Unfold function application">
+			</topic>
+		</topic>
+		<topic href="html/refactorings.html#Macro related refactorings"
+			label="Macro related refactorings">
+			<topic href="html/refactorings.html#Introduce Macro" label="Introduce Macro"></topic>
+			<topic href="html/refactorings.html#Fold against macro" label="Fold against macro"></topic>
+		</topic>
+		<topic
+			href="html/refactorings.html#Identical code recognizing refactorings"
+			label="Identical code recognizing refactorings">
+			<topic href="html/refactorings.html#Identical code detection"
+				label="Identical code detection">
+			</topic>
+			<topic href="html/refactorings.html#Search identical expression"
+				label="Search identical expression">
+			</topic>
+			<topic href="html/refactorings.html#Similar code detection"
+				label="Similar code detection">
+			</topic>
+			<topic href="html/refactorings.html#Similar expression search"
+				label="Similar expression search">
+			</topic>
+		</topic>
+		<topic href="html/refactorings.html#QuickCheck related refactorings"
+			label="QuickCheck related refactorings">
+			<topic href="html/refactorings.html#Introduce ?LET" label="Introduce ?LET">
+			</topic>
+			<topic href="html/refactorings.html#Merge ?LET" label="Merge ?LET">
+			</topic>
+			<topic href="html/refactorings.html#Merge ?FORALL" label="Merge ?FORALL">
+			</topic>
+			<topic href="html/refactorings.html#eqc_fsm State into a record"
+				label="eqc_fsm State into a record">
+			</topic>
+			<topic href="html/refactorings.html#eqc_statem State data to record"
+				label="eqc_statem State data to record">
+			</topic>
+			<topic href="html/refactorings.html#gen_fsm State data to record"
+				label="gen_fsm State data to record">
+			</topic>
+		</topic>
+		<topic href="html/refactorings.html#Other refactorings" label="Other refactorings">
+			<topic href="html/refactorings.html#Rename process" label="Rename process">
+			</topic>
+			<topic href="html/refactorings.html#Function to process" label="Function to process">
+			</topic>
+			<topic href="html/refactorings.html#Normalize record expression"
+				label="Normalize record expression">
+			</topic>
+		</topic>
+	</topic>
 </toc>
