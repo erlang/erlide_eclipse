@@ -60,7 +60,8 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 	}
 
 	protected String simplifyCodePartString(String input) {
-		return input.replace("\n", " ").replace("\t", "").replace("\r", "");
+		return input;// input.replace("\n", " ").replace("\t", "").replace("\r",
+						// "");
 
 	}
 }
