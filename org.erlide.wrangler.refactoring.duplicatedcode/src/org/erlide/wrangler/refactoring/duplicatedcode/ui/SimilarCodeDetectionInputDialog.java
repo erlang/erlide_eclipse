@@ -4,6 +4,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -117,6 +119,19 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 				GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
 						| GridData.HORIZONTAL_ALIGN_FILL
 						| GridData.VERTICAL_ALIGN_CENTER));
+		onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				validateInput();
+
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				validateInput();
+
+			}
+
+		});
 
 		errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
 		errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
