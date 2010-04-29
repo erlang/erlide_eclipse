@@ -45,7 +45,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	@Override
 	public IRefactoringRpcMessage run(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		IErlRange memberRange = sel.getMemberRange();
+		IErlRange memberRange = sel.getSelectionRange();
 
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_fun_eclipse", "siisxi", sel.getFilePath(),

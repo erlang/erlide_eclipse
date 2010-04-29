@@ -44,8 +44,8 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"move_fun_eclipse", "siisxi", sel.getFilePath(),
-				sel.getMemberRange().getStartLine(),
-				sel.getMemberRange().getStartCol(), userInput,
+				sel.getSelectionRange().getStartLine(),
+				sel.getSelectionRange().getStartCol(), userInput,
 				/* new OtpErlangBoolean(false), */sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
@@ -61,8 +61,8 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"move_fun_1_eclipse", "siisxxi", sel.getFilePath(),
-				sel.getMemberRange().getStartLine(),
-				sel.getMemberRange().getStartCol(), userInput,
+				sel.getSelectionRange().getStartLine(),
+				sel.getSelectionRange().getStartCol(), userInput,
 				/* new OtpErlangBoolean(false), */sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}

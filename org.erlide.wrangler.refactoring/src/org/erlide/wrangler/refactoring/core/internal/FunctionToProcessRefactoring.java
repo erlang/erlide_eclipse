@@ -1,7 +1,5 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -38,8 +36,8 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 				.getRefactoringBackend().callWithParser(
 						new ProcessRpcMessage(), "fun_to_process_eclipse",
 						"siisxi", sel.getFilePath(),
-						sel.getMemberRange().getStartLine(),
-						sel.getMemberRange().getStartCol(), userInput,
+						sel.getSelectionRange().getStartLine(),
+						sel.getSelectionRange().getStartCol(), userInput,
 						sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
