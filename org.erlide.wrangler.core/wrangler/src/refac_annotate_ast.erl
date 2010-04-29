@@ -213,13 +213,18 @@ add_fun_def_info_2(T, {ModName, DefinedFuns, ImportedFuns}) ->
 	_ -> T
     end.
 
+
 add_fun_def_info_in_function(T, ModName) ->
     Name = refac_syntax:function_name(T),
     Fun_Name = refac_syntax:atom_value(Name),
     Arity = refac_syntax:function_arity(T),
     Pos = refac_syntax:get_pos(T),
+    T1 = [begin  
+	      CPos = refac_syntax:get_pos(C),
+	      Ann = {fun_def, {ModName, Fun_Name, Arity, CPos, Pos}},
+	      update_ann(C, Ann) 
+	  end|| C <- refac_syntax:function_clauses(T)],
     Ann = {fun_def, {ModName, Fun_Name, Arity, Pos, Pos}},
-    T1 = [update_ann(C, Ann) || C <- refac_syntax:function_clauses(T)],
     Name1 = update_ann(Name, Ann),
     T2 = rewrite(T, refac_syntax:function(Name1, T1)),
     update_ann(T2, Ann).
