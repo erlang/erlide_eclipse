@@ -72,6 +72,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	}
 
 	protected void notifyErlide() {
+
 		/*
 		 * IErlModel model = ErlangCore.getModel(); for (ChangedFile f :
 		 * changedFiles) { IFile file; try { file =

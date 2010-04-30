@@ -66,34 +66,43 @@ public class GlobalParameters {
 
 	// TODO:: if the module is selected it is not handled
 	public static void setSelection(ISelection selection) {
+		try {
+			if (editor == null) {
+				IWorkbench instance = PlatformUI.getWorkbench();
+				IWorkbenchWindow activeWorkbenchWindow = instance
+						.getActiveWorkbenchWindow();
+				editor = activeWorkbenchWindow.getActivePage()
+						.getActiveEditor();
+			}
+			if (selection instanceof ITextSelection) {
+				IWorkbench instance = PlatformUI.getWorkbench();
+				IWorkbenchWindow activeWorkbenchWindow = instance
+						.getActiveWorkbenchWindow();
+				editor = activeWorkbenchWindow.getActivePage()
+						.getActiveEditor();
 
-		if (editor == null) {
-			IWorkbench instance = PlatformUI.getWorkbench();
-			IWorkbenchWindow activeWorkbenchWindow = instance
-					.getActiveWorkbenchWindow();
-			editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
-		}
-		if (selection instanceof ITextSelection) {
-
-			wranglerSelection = new ErlTextMemberSelection(
-					(ITextSelection) selection, (ITextEditor) editor);
-		} else if (selection instanceof ITreeSelection) {
-			Object firstElement = ((ITreeSelection) selection)
-					.getFirstElement();
-			if (firstElement instanceof IErlElement) {
-				IErlElement element = (IErlElement) firstElement;
-				IFile file = (IFile) element.getResource();
-				wranglerSelection = new ErlMemberSelection(element, file,
-						WranglerUtils.getDocument(file));
-			} else if (firstElement instanceof IFile) {
-				IFile file = (IFile) firstElement;
-				IErlModule module = ErlangCore.getModel().findModule(file);
-				wranglerSelection = new ErlModuleSelection(module, file);
+				wranglerSelection = new ErlTextMemberSelection(
+						(ITextSelection) selection, (ITextEditor) editor);
+			} else if (selection instanceof ITreeSelection) {
+				Object firstElement = ((ITreeSelection) selection)
+						.getFirstElement();
+				if (firstElement instanceof IErlElement) {
+					IErlElement element = (IErlElement) firstElement;
+					IFile file = (IFile) element.getResource();
+					wranglerSelection = new ErlMemberSelection(element, file,
+							WranglerUtils.getDocument(file));
+				} else if (firstElement instanceof IFile) {
+					IFile file = (IFile) firstElement;
+					IErlModule module = ErlangCore.getModel().findModule(file);
+					wranglerSelection = new ErlModuleSelection(module, file);
+				} else {
+					wranglerSelection = null;
+				}
 			} else {
 				wranglerSelection = null;
 			}
-		} else {
-			wranglerSelection = null;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		/*
