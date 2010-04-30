@@ -26,8 +26,13 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
@@ -41,7 +46,8 @@ public class WranglerUtils {
 		int lineOffset;
 		try {
 			lineOffset = doc.getLineOffset(line);
-			return ((offset - lineOffset) < 0 ? 0 : offset - lineOffset) + 1;
+			int ret = ((offset - lineOffset) < 0 ? 0 : offset - lineOffset);
+			return ret + 1;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 			return 0;
@@ -249,11 +255,35 @@ public class WranglerUtils {
 
 	public static IFile getFileFromPath(IPath path) throws WranglerException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IFile[] files = root.findFilesForLocation(path);
-		if (files.length > 0)
-			return files[0];
+		IFile file = root.getFile(path);
+		/*
+		 * if (files.length > 0) return files[0]; else
+		 */
+		if (file != null)
+			return file;
 		else
 			throw new WranglerException("File not found!");
 	}
 
+	public static void notifyErlide(ArrayList<ChangedFile> changedFiles) {
+
+		IErlModel model = ErlangCore.getModel();
+		for (ChangedFile f : changedFiles) {
+			IFile file;
+			try {
+				file = getFileFromPath(f.getIPath());
+				IErlElement element = model.findElement(file);
+				IErlModule m = (IErlModule) element;
+				m.resourceChanged();
+				IEditorPart editor = GlobalParameters.getEditor();
+				if (editor instanceof ErlangEditor)
+					((ErlangEditor) editor).resetAndCacheScannerAndParser();
+				model.notifyChange(m);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 }

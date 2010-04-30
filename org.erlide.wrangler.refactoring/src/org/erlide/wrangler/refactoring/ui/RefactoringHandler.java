@@ -7,6 +7,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
@@ -304,7 +305,9 @@ public class RefactoringHandler extends AbstractHandler {
 				wizard);
 
 		try {
-			op.run(shell, refactoring.getName());
+			int ret = op.run(shell, refactoring.getName());
+			if (RefactoringStatus.OK == ret)
+				WranglerUtils.notifyErlide(refactoring.getChangedFiles());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,13 @@ public abstract class WranglerRefactoring extends Refactoring {
 	protected ArrayList<ChangedFile> changedFiles;
 
 	/**
+	 * @return the changed files by the refactoring
+	 */
+	public ArrayList<ChangedFile> getChangedFiles() {
+		return changedFiles;
+	}
+
+	/**
 	 * Run the RPC call. Usually only one RPC call is needed, for this, this
 	 * function is used to do the trick.
 	 * 
@@ -67,20 +74,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 			throw new CoreException(s);
 		}
 
-		notifyErlide();
 		return change;
-	}
-
-	protected void notifyErlide() {
-		/*
-		 * IErlModel model = ErlangCore.getModel(); for (ChangedFile f :
-		 * changedFiles) { IFile file; try { file =
-		 * WranglerUtils.getFileFromPath(f.getIPath()); IErlElement element =
-		 * model.findElement(file); IErlModule m = (IErlModule) element;
-		 * m.resourceChanged(); model.notifyChange(m); } catch (Exception e) {
-		 * e.printStackTrace(); } }
-		 */
-
 	}
 
 	@Override
