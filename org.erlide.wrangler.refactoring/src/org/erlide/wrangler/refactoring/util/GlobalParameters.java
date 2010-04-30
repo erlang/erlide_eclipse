@@ -134,4 +134,8 @@ public class GlobalParameters {
 		}
 		return true;
 	}
+
+	public static IEditorPart getEditor() {
+		return editor;
+	}
 }
