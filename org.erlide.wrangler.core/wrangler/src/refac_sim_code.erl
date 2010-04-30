@@ -65,7 +65,7 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
 	[] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []);
 	_ ->
 	    _Time1 = now(),
-	    ?debug("Searching for initial clone candidates...\n", []),
+  	    ?wrangler_io("Searching for initial clone candidates...\n", []),
 	    %% ?debug("current time:~p\n", [time()]),
 	    generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
 	    %%?debug("\ngeneralise and hash ast done.\n",[]),
@@ -73,7 +73,7 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
 	    Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
 	    stop_hash_process(Pid),
 	    %% ?debug("\nInitial candiates finished\n",[]),
-	    ?debug("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
+	    ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
 	    CloneCheckPid = start_clone_check_process(),
 	    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
 	    _Time2 = now(),
@@ -149,7 +149,7 @@ get_parameters_1(Input, DefaultVal, MinVal) ->
 -spec(get_parameters_eclipse/3::(integer(), integer(), float())->
 			      {integer(), integer(), float()}).
 get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1) ->
-    MinLen = case MinLen1 =< 1 of
+    MinLen = case MinLen1 < 1 of
 		 true ->
 		     ?DEFAULT_LEN;
 	       _ -> MinLen1
@@ -159,11 +159,12 @@ get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1) ->
 		      ?DEFAULT_FREQ;
 		_ -> MinFreq1
 	      end,
-    SimiScore = case SimiScore1 == 0.1 andalso SimiScore1 =< 1.0
+    SimiScore = case SimiScore1 >= 0.1 andalso SimiScore1 =< 1.0
 		of
 		    true -> SimiScore1;
 		    _ -> ?DefaultSimiScore
 		end,
+    refac_io:format("\n~p\n", [{MinLen, MinFreq, SimiScore}]),
     {MinLen, MinFreq, SimiScore}.
 
 
@@ -243,7 +244,7 @@ examine_clone_sets([], _MinFreq, _SimiScore, ASTTab, _VarTab, RangeTab,Pid, _Num
 	    [get_generalised_form(ASTTab, RangeTab, C)||C<-Cs]
     end;
 examine_clone_sets([C|Cs],MinFreq, SimiScore, ASTTab, VarTab, RangeTab, Pid, Num) ->
-    ?debug("\nChecking the ~pth clone candidate...", [Num]),
+    ?wrangler_io("\nChecking the ~pth clone candidate...", [Num]),
     Res =examine_a_clone_set(C, MinFreq, SimiScore, ASTTab, VarTab, RangeTab,Pid),
     add_new_clones(Pid, Res),
     examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, Pid, Num+1).
@@ -456,7 +457,7 @@ clone_check_loop(Cs) ->
 	stop ->
 	    ok;
 	_Msg -> 
-	    ?debug("Unexpected message:\n~p\n",[_Msg]),
+	    ?wrangler_io("Unexpected message:\n~p\n",[_Msg]),
 	     ok	
     end.
     

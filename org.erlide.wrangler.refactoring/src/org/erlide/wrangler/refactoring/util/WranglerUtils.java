@@ -24,7 +24,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -204,7 +204,8 @@ public class WranglerUtils {
 				.getDefaultEditor(file.getName());
 
 		try {
-			return page.openEditor(new FileEditorInput(file), desc.getId());
+			return IDE.openEditor(page, file);
+			// return page.openEditor(new FileEditorInput(file), desc.getId());
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -242,7 +243,9 @@ public class WranglerUtils {
 			}
 			return out.toString();
 		} catch (CoreException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return "";
 	}
