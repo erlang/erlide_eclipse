@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.erlide"
-      label="Erlang IDE"
-      version="0.8.5.qualifier"
-      provider-name="erlide.org"
-      image="erlang120.gif">
-   <install-handler/>
+      id="org.erlide.sdk"
+      label="erlide SDK"
+      version="0.8.2.qualifier"
+      provider-name="erlide.org">
 
    <description>
-      This feature provides Erlang IDE support for Eclipse.
+      This feature provides Erlang IDE support for Eclipse, 
+      including unit and functional testing. 
 For bug reports and feature requests, please use the SouceForge
 trackers at http://sourceforge.net/projects/erlide/.
 Mailing to erlide-devel@sf.net would be the second option.
@@ -226,68 +225,47 @@ litigation.
    </url>
 
    <includes
-         id="org.erlide.headless"
+         id="org.erlide"
          version="0.0.0"/>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui"/>
-      <import plugin="org.eclipse.help.webapp"/>
-   </requires>
-
-   <plugin
-         id="org.erlide.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.erlide.help"
-         download-size="0"
-         install-size="0"
+   <includes
+         id="org.erlide.selfhost"
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.wrangler.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.wrangler.help"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.wrangler.refactoring"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.wrangler.refactoring.duplicatedcode"
+         id="org.erlide.core.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
          fragment="true"
          unpack="false"/>
+
+   <plugin
+         id="org.erlide.jinterface.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.testing"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.ui.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.kernel.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

@@ -1,0 +1,25 @@
+#! /bin/bash
+
+# arguments:
+# WORKSPACE - location of the source code root
+# JAVA_HOME - location of JDK
+# erlang_R12 - location of R12
+# erlang_R13 - location of R13 
+# BUCKMINSTER - location of the Bucky installation
+# TARGET - location of eclipse installation that defines the target system 
+
+WORKSPACE=$1
+JAVA_HOME=$2
+erlang_R12=$3
+erlang_R13=$4
+BUCKMINSTER=$5
+TARGET=$6 
+
+cp org.erlide.site/erl.epf org.erlide.site/_erl.epf
+sed -e "s%#{erlang_R12}%${erlang_R12}%g" -e "s%#{erlang_R13}%${erlang_R13}%g" org.erlide.site/erl.epf > org.erlide.site/_erl.epf
+
+cp org.erlide.site/bucky_cmds org.erlide.site/_bucky_cmds
+sed -e "s%#{WORKSPACE}%${WORKSPACE}%g" -e "s%#{TARGET}%${TARGET}%g" -e "s%#{JAVA_HOME}%${JAVA_HOME}%g" org.erlide.site/bucky_cmds > org.erlide.site/_bucky_cmds
+
+${JAVA_HOME}/bin/java -Dbuckminster.output.root=${WORKSPACE}/buckminster.output -Dbuckminster.temp.root=${WORKSPACE}/buckminster.temp -jar ${BUCKMINSTER}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${WORKSPACE}/org.erlide.site/_bucky_cmds
+
