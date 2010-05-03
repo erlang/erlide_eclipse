@@ -294,6 +294,14 @@ public class ErlModelUtils {
 		return false;
 	}
 
+	public static String checkPredefinedMacro(final String definedName,
+			final IErlModule m) {
+		if ("?MODULE".equals(definedName)) {
+			return m.getModuleName();
+		}
+		return definedName;
+	}
+
 	/**
 	 * Open an editor on the given module and select the given erlang function
 	 * 

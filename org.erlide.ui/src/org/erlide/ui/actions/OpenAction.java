@@ -317,8 +317,9 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 					: IErlElement.Kind.RECORD_DEF;
-			final String[] s = new String[] { definedName,
-					ErlideUtil.unquote(definedName) };
+			String unquoted = ErlideUtil.unquote(definedName);
+			final String[] s = new String[] { definedName, unquoted,
+					ErlModelUtils.checkPredefinedMacro(unquoted, module) };
 			for (final String string : s) {
 				if (ErlModelUtils.openPreprocessorDef(b, project, page, module,
 						string, type, model.getExternal(erlProject,
