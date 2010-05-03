@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -214,6 +215,16 @@ public class WranglerUtils {
 
 	}
 
+	static public IDocument getDocument() {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorPart part = page.getActiveEditor();
+		ITextEditor editor = (ITextEditor) part;
+		IDocumentProvider dp = editor.getDocumentProvider();
+		IDocument doc = dp.getDocument(editor.getEditorInput());
+		return doc;
+	}
+
 	static public IDocument getDocument(IFile file) {
 		return new Document(getFileContent(file));
 	}
@@ -258,12 +269,15 @@ public class WranglerUtils {
 
 	public static IFile getFileFromPath(IPath path) throws WranglerException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IFile file = root.getFile(path);
+		IFile[] files = // root.findFilesForLocation(path);
+		root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil
+				.toURI(path));
+		if (files.length > 0)
+			return files[0];// else
+
 		/*
-		 * if (files.length > 0) return files[0]; else
+		 * if (file != null) return file;
 		 */
-		if (file != null)
-			return file;
 		else
 			throw new WranglerException("File not found!");
 	}
