@@ -1,4 +1,9 @@
 <plugin>
 <extension point="org.eclipse.help.toc"><toc primary="true" file="toc.xml"></toc></extension>
 <extension point="org.eclipse.help.index"><index file="html/index.xml"></index></extension>
+<extension point="org.eclipse.help.contexts">
+    <contexts
+         file="erlideContext.xml">
+    </contexts>
+</extension>
 </plugin>
