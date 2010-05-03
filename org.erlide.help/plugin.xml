@@ -1,1 +1,4 @@
-<plugin provider-name="Erlide project" version="1.0" id="org.erlide.help" name="Erlide Help"><extension point="org.eclipse.help.toc"><toc primary="true" file="toc.xml"></toc></extension><extension point="org.eclipse.help.index"><index file="index.xml"></index></extension></plugin>
+<plugin>
+<extension point="org.eclipse.help.toc"><toc primary="true" file="toc.xml"></toc></extension>
+<extension point="org.eclipse.help.index"><index file="html/index.xml"></index></extension>
+</plugin>
