@@ -52,6 +52,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.util.ErlModelUtils;
 
 import erlang.ErlideOpen;
@@ -362,8 +363,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		setControl(result);
 
 		Dialog.applyDialogFont(result);
-		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(result,
-		// IJavaHelpContextIds.JAVA_SEARCH_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(result,
+				IErlangHelpContextIds.ERLANG_SEARCH_PAGE);
 	}
 
 	/*
