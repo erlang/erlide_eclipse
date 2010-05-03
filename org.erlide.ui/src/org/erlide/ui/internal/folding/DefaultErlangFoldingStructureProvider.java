@@ -43,6 +43,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -120,22 +121,34 @@ public class DefaultErlangFoldingStructureProvider implements
 		boolean match(ErlangProjectionAnnotation annotation);
 	}
 
-	private static final class ErlangElementSetFilter implements Filter {
-
-		private final Set<IErlElement> fSet;
+	private static abstract class MatchCollapsedFilter implements Filter {
 
 		private final boolean fMatchCollapsed;
 
-		ErlangElementSetFilter(final Set<IErlElement> set,
-				final boolean matchCollapsed) {
-			fSet = set;
+		public MatchCollapsedFilter(final boolean matchCollapsed) {
 			fMatchCollapsed = matchCollapsed;
 		}
 
+		public boolean stateMatch(final ErlangProjectionAnnotation annotation) {
+			return fMatchCollapsed == annotation.isCollapsed();
+
+		}
+
+	}
+
+	private static final class ErlangElementSetFilter extends
+			MatchCollapsedFilter {
+
+		private final Set<IErlElement> fSet;
+
+		ErlangElementSetFilter(final Set<IErlElement> set,
+				final boolean matchCollapsed) {
+			super(matchCollapsed);
+			fSet = set;
+		}
+
 		public boolean match(final ErlangProjectionAnnotation annotation) {
-			final boolean stateMatch = fMatchCollapsed == annotation
-					.isCollapsed();
-			if (stateMatch && !annotation.isComment()
+			if (stateMatch(annotation) && !annotation.isComment()
 					&& !annotation.isMarkedDeleted()) {
 				final IErlElement element = annotation.getElement();
 				if (fSet.contains(element)) {
@@ -439,38 +452,59 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseTypespecs = false;
 
+	private static class FunctionsFilter extends MatchCollapsedFilter {
+
+		public FunctionsFilter(final boolean matchCollapsed) {
+			super(matchCollapsed);
+		}
+
+		public boolean match(final ErlangProjectionAnnotation annotation) {
+			if (stateMatch(annotation) && !annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
+				final IErlElement element = annotation.getElement();
+				Kind kind = element.getKind();
+				return kind == Kind.FUNCTION || kind == Kind.CLAUSE;
+			}
+			return false;
+		}
+	}
+
+	private final class CommentsFilter extends MatchCollapsedFilter {
+
+		public CommentsFilter(final boolean matchCollapsed) {
+			super(matchCollapsed);
+		}
+
+		public boolean match(final ErlangProjectionAnnotation annotation) {
+			if (stateMatch(annotation) && annotation.isComment()
+					&& !annotation.isMarkedDeleted()) {
+				return true;
+			}
+			return false;
+		}
+	}
+
 	/* filters */
 	/**
 	 * Member filter, matches nested members (but not top-level types).
 	 * 
 	 * @since 3.2
 	 */
-	private final Filter fMemberFilter = new Filter() {
-
-		public boolean match(final ErlangProjectionAnnotation annotation) {
-			if (!annotation.isCollapsed() && !annotation.isComment()
-					&& !annotation.isMarkedDeleted()) {
-				final IErlElement element = annotation.getElement();
-				return element instanceof IParent;
-			}
-			return false;
-		}
-	};
+	private final Filter fCollapseFunctionsFilter = new FunctionsFilter(false);
 
 	/**
 	 * Comment filter, matches comments.
 	 * 
 	 * @since 3.2
 	 */
-	private final Filter fCommentFilter = new Filter() {
+	private final Filter fCollapseCommentsFilter = new CommentsFilter(false);
+
+	private final Filter fExpandAllFilter = new Filter() {
 
 		public boolean match(final ErlangProjectionAnnotation annotation) {
-			if (!annotation.isCollapsed() && annotation.isComment()
-					&& !annotation.isMarkedDeleted()) {
-				return true;
-			}
-			return false;
+			return annotation.isCollapsed();
 		}
+
 	};
 
 	public DefaultErlangFoldingStructureProvider() {
@@ -972,21 +1006,36 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	/*
-	 * @see IErlangFoldingStructureProviderExtension#collapseMembers()
+	 * (non-Javadoc)
 	 * 
-	 * @since 3.2
+	 * @see
+	 * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
+	 * #collapseFunctions()
 	 */
-	public void collapseMembers() {
-		modifyFiltered(fMemberFilter, false);
+	public void collapseFunctions() {
+		modifyFiltered(fCollapseFunctionsFilter, false);
 	}
 
 	/*
-	 * @see IErlangFoldingStructureProviderExtension#collapseComments()
+	 * (non-Javadoc)
 	 * 
-	 * @since 3.2
+	 * @see
+	 * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
+	 * #collapseComments()
 	 */
 	public void collapseComments() {
-		modifyFiltered(fCommentFilter, false);
+		modifyFiltered(fCollapseCommentsFilter, false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
+	 * #expandAll()
+	 */
+	public void expandAll() {
+		modifyFiltered(fExpandAllFilter, true);
 	}
 
 	/*
