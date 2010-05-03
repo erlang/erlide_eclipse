@@ -82,8 +82,8 @@ public class ErlideOpen {
 		result.add(tag);
 		result.add(externalModules != null ? new OtpErlangString(
 				externalModules) : UNDEFINED);
-		result.add(externalModules != null ? new OtpErlangString(
-				externalModules) : UNDEFINED);
+		result.add(externalIncludes != null ? new OtpErlangString(
+				externalIncludes) : UNDEFINED);
 		result.add(pathVars != null ? pathVars : UNDEFINED);
 		result.add(extraSourcePaths != null ? OtpErlang
 				.mkStringList(extraSourcePaths) : UNDEFINED);

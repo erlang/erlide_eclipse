@@ -12,8 +12,9 @@
          get_source_from_module/2,
          get_include_lib/1,
          get_external_modules/2,
-         get_external_module/2
-         ]).
+         get_external_module/2,
+         get_external_include/2
+        ]).
 
 %% TODO (JC) there are some code duplication in external modules (and includes) handling
 
@@ -75,7 +76,8 @@ open_info(S, #open_context{}=Context) when is_list(S); is_binary(S) ->
             {error, E}
     end.
 
-get_external_include(FilePath, ExternalIncludes, PathVars) ->
+get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes, 
+                                             pathVars=PathVars}) ->
     ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
     get_ext_inc(ExtIncPaths, FilePath).
 
@@ -92,7 +94,7 @@ try_open_aux(Offset, Tokens, BeforeReversed, Context) ->
     case Tokens of
         [#token{offset=O} | _] = Tokens when O =< Offset ->
             ?D(Tokens),
-	    o_tokens(Tokens, Context, BeforeReversed),
+            o_tokens(Tokens, Context, BeforeReversed),
             case BeforeReversed of
                 [] ->
                     not_found;
@@ -159,7 +161,7 @@ o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, v
          Context, _) ->
     o_external(Module, Function, Rest, Context);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
-	 Context, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
+         Context, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
     o_external(Module, Function, Arity, Context);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
          Context, _BeforeReversed) ->
@@ -196,7 +198,7 @@ o_include_lib([#token{kind='('}, #token{kind=string, value=Path} | _]) ->
     {include, File} = get_include_lib(Path),
     throw({open, {include, File}});
 o_include_lib(_) ->
-        no.
+    no.
 
 o_macro(Value) ->
     throw({open, {macro, Value}}).
@@ -224,13 +226,13 @@ o_external(Module, Function, Arity, Context) when is_integer(Arity) ->
     throw({open, {external, Module, Function, Arity, P}}).
 
 o_local(Function, Arity, #open_context{imports=Imports}=Context) ->
-   case get_imported(Imports, {Function, Arity}) of
-       false ->
-           throw({open, {local, Function, Arity}});
-       Module ->
-           P = get_source_from_module(Module, Context),
-           throw({open, {external, Module, Function, Arity, P}})
-   end.
+    case get_imported(Imports, {Function, Arity}) of
+        false ->
+            throw({open, {local, Function, Arity}});
+        Module ->
+            P = get_source_from_module(Module, Context),
+            throw({open, {external, Module, Function, Arity, P}})
+    end.
 
 get_imported([], _) ->
     false;
@@ -271,10 +273,10 @@ get_external_modules_files(PackedFileNames, PathVars) ->
 
 replace_path_var(FileName, PathVars) ->
     case filename:split(FileName) of
-         [Var | Rest] ->
+        [Var | Rest] ->
             filename:join([replace_path_var_aux(Var, PathVars) | Rest]);
-         _ ->
-             FileName
+        _ ->
+            FileName
     end.
 
 replace_path_var_aux(Var, PathVars) ->
@@ -311,21 +313,21 @@ get_external_modules_files(Filenames, PathVars, Top, Done, Acc) ->
     lists:foldl(Fun, {Done, Acc}, Filenames).
 
 get_source_from_external_modules(Mod, #open_context{externalModules=ExternalModules,
-													pathVars=PathVars,
-													extraSourcePaths=ExtraSources}=_Context) ->
+                                                    pathVars=PathVars,
+                                                    extraSourcePaths=ExtraSources}=_Context) ->
     ?D(_Context),
     L = get_external_modules_files(ExternalModules, PathVars),
     %%?D(lists:flatten(io_lib:format(">> ~p~n", [L]))),
-	?D({get_external_modules_files, length(L)}),
-	Extra = get_erl_from_dirs(ExtraSources),
-	?D({extra, Extra}),
+    ?D({get_external_modules_files, length(L)}),
+    Extra = get_erl_from_dirs(ExtraSources),
+    ?D({extra, Extra}),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->
     not_found;
 select_external([P | Rest], Mod) ->
-	Name = filename:rootname(filename:basename(P)),
-	%%?D({select_external, Name, Mod, P}),
+    Name = filename:rootname(filename:basename(P)),
+    %%?D({select_external, Name, Mod, P}),
     case Name of
         Mod ->
             P;
@@ -334,14 +336,14 @@ select_external([P | Rest], Mod) ->
     end.
 
 get_erl_from_dirs(undefined) ->
-	[];
+    [];
 get_erl_from_dirs(L) ->
-	lists:flatmap(fun(X) -> get_erl_from_dir(X) end,
-				  L).
+    lists:flatmap(fun(X) -> get_erl_from_dir(X) end,
+                  L).
 
 get_erl_from_dir(D) ->
-	{ok, Fs} = file:list_dir(D),
-	[filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"] .
+    {ok, Fs} = file:list_dir(D),
+    [filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"] .
 
 get_source(Mod) ->
     L = Mod:module_info(compile),
