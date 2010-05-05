@@ -149,10 +149,14 @@ o_tokens([#token{kind=atom, value=define} | Rest], _, _) ->
     o_macro_def(Rest);
 o_tokens([#token{kind=atom, value=record} | Rest], _, [#token{kind='-'} | _]) ->
     o_record_def(Rest);
-o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _) ->
+o_tokens([#token{kind=macro, value=Value} | _], _, [#token{kind='#'} | _]) ->
     o_record(Value);
 o_tokens([#token{kind=macro, value=Value} | _], _, _) ->
     o_macro(Value);
+o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _) ->
+    o_record(Value);
+o_tokens([#token{kind='#'}, #token{kind=macro, value=Value} | _], _, _) ->
+    o_record(Value);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function},
           #token{kind='/'}, #token{kind=integer, value=Arity} | _],
          Context, _) ->

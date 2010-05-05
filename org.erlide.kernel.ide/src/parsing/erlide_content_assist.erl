@@ -61,6 +61,10 @@ get_var_tokens(Tokens, Prefix) ->
 
 get_var_tokens([], _Prefix, Acc) ->
     Acc;
+get_var_tokens([{'?', _}, {var, _Pos, _Value} | Rest], Prefix, Acc) ->
+    get_var_tokens(Rest, Prefix, Acc);
+get_var_tokens([{'#', _}, {var, _Pos, _Value} | Rest], Prefix, Acc) ->
+    get_var_tokens(Rest, Prefix, Acc);
 get_var_tokens([{var, _Pos, Value} | Rest], Prefix, Acc) ->
     S = atom_to_list(Value),
     case S of
@@ -80,7 +84,7 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 
 check_record_tokens(Tokens) ->
     ?D(Tokens),
-    check_record_tokens(Tokens, false).
+    check_record_tokens(Tokens, 0) == 1.
 
 check_record_tokens([], A) ->
     A;
@@ -88,26 +92,30 @@ check_record_tokens([eof | _], A) ->
     A;
 check_record_tokens([#token{kind=eof} | _], A) ->
     A;
-check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], _) ->
+check_record_tokens([#token{kind='#'}, #token{kind=atom} | Rest], A) ->
     ?D(Rest),
-    check_record_tokens(Rest, true);
+    check_record_tokens(Rest, A+1);
 check_record_tokens([#token{kind='#'}], _) ->
-    true;
-check_record_tokens([#token{kind='{'} | Rest], _) ->
-    check_record_tokens(Rest, true);
-check_record_tokens([#token{kind=','} | Rest], _) ->
-    check_record_tokens(Rest, true);
+    1;
+check_record_tokens([#token{kind='{'} | Rest], A) ->
+    check_record_tokens(Rest, A+1);
+check_record_tokens([#token{kind=','} | Rest], 0) ->
+    check_record_tokens(Rest, 1);
+check_record_tokens([#token{kind='}'} | Rest], A) ->
+    check_record_tokens(Rest, A-1);
 check_record_tokens([#token{kind=Dot} | Rest], A) 
   when Dot=:=dot; Dot=:='.' ->
     check_record_tokens(Rest, A);
 check_record_tokens([#token{kind=atom} | Rest], A) ->
     check_record_tokens(Rest, A);
-check_record_tokens(L, _) ->
+check_record_tokens([#token{kind='='} | Rest], A) when A > 0 ->
+    check_record_tokens(Rest, A-1);
+check_record_tokens(L, A) ->
     case erlide_text:skip_expr(L) of
 	L ->
-	    check_record_tokens(tl(L), false);
+	    check_record_tokens(tl(L), A);
 	Rest ->
-	    check_record_tokens(Rest, false)
+	    check_record_tokens(Rest, A)
     end.
 
 get_function_head(Fun, Arity) ->

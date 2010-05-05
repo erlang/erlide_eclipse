@@ -23,10 +23,10 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 	 * @param imports
 	 * @param module
 	 */
-	protected ErlRecordDef(final IErlElement parent, final String record,
-			final String extra, final OtpErlangList fields) {
+	protected ErlRecordDef(final IErlElement parent, final String extra,
+			final OtpErlangList fields) {
 		super(parent, "record_definition");
-		this.record = record;
+		record = uptoCommaOrParen(extra);
 		this.extra = extra;
 		this.fields = new ArrayList<String>();
 		if (fields != null) {
@@ -37,9 +37,8 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 		}
 	}
 
-	public ErlRecordDef(final IErlModule parent, final String recordName,
-			final String s) {
-		this(parent, recordName, s, null);
+	public ErlRecordDef(final IErlModule parent, final String s) {
+		this(parent, s, null);
 	}
 
 	public Kind getKind() {
