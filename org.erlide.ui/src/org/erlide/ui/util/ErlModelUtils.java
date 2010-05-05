@@ -305,12 +305,17 @@ public class ErlModelUtils {
 	 *            function arity
 	 * @param path
 	 *            path to module (including .erl)
+	 * @param checkAllProjects
+	 *            if true, check all projects in workspace, otherwise only
+	 *            consider projects referred from project
 	 * @throws CoreException
 	 */
 	public static boolean openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
-			final IProject project) throws CoreException {
-		final IResource r = openExternalModule(mod, path, project);
+			final IProject project, final boolean checkAllProjects)
+			throws CoreException {
+		final IResource r = openExternalModule(mod, path, project,
+				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -332,8 +337,10 @@ public class ErlModelUtils {
 	}
 
 	public static boolean openExternalType(final String mod, final String type,
-			final String path, final IProject project) throws CoreException {
-		final IResource r = openExternalModule(mod, path, project);
+			final String path, final IProject project,
+			final boolean checkAllProjects) throws CoreException {
+		final IResource r = openExternalModule(mod, path, project,
+				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -349,7 +356,8 @@ public class ErlModelUtils {
 	}
 
 	public static IResource openExternalModule(final String mod,
-			final String path, final IProject project) throws CoreException {
+			final String path, final IProject project,
+			final boolean checkAllProjects) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
@@ -357,6 +365,13 @@ public class ErlModelUtils {
 					modFileName, PluginUtils.getSourcePathFilter(project));
 			if (r != null && !PluginUtils.isOnSourcePath(r.getParent())) {
 				r = null;
+			}
+		}
+		if (r == null && checkAllProjects) {
+			IErlModel model = ErlangCore.getModel();
+			IErlModule module = model.findModule(mod);
+			if (module != null) {
+				r = module.getResource();
 			}
 		}
 		if (r == null) {

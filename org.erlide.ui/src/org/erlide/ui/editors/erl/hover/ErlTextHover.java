@@ -206,7 +206,7 @@ public class ErlTextHover implements ITextHover,
 					@Override
 					public void setSize(int width, int height) {
 						// TODO default size is too small
-						Point bounds = this.getSizeConstraints();
+						Point bounds = getSizeConstraints();
 						if (bounds != null) {
 							if (bounds.x != SWT.DEFAULT) {
 								width = Math.min(bounds.x, width * 2);
@@ -338,8 +338,10 @@ public class ErlTextHover implements ITextHover,
 							final String path = Util.stringValue(s4);
 							IResource r = null;
 							try {
-								r = ErlModelUtils.openExternalModule(mod, path,
-										module.getResource().getProject());
+								r = ErlModelUtils
+										.openExternalModule(mod, path, module
+												.getResource().getProject(),
+												true);
 							} catch (final CoreException e2) {
 							}
 							if (!(r instanceof IFile)) {
