@@ -554,8 +554,71 @@
             description="References in Working Sets"
             id="org.erlide.ui.search.references.in.workset"
             name="References in Working Sets...">
+       </command>
+       <command
+            id="org.erlide.ui.commands.folding.expandCollapseAll"
+            name="Expand/Collapse All">
+         <commandParameter
+               id="org.erlide.ui.commands.expandCollapseParameter"
+               name="Expand/Collapse"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="org.erlide.ui.commands.foldWhatParameter"
+               name="What to fold"
+               optional="true">
+         </commandParameter>
       </command>
 
+ </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="popup:#AbstractTextEditorRulerContext">
+       <separator
+             name="org.erlide.ui.separator1"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.erlide.ui.commands.folding.expandCollapseAll"
+             label="Collapse All Comments"
+             style="push">
+          <parameter
+                name="org.erlide.ui.commands.expandCollapseParameter"
+                value="collapse">
+          </parameter>
+          <parameter
+                name="org.erlide.ui.commands.foldWhatParameter"
+                value="comments">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.commands.folding.expandCollapseAll"
+             label="Collapse All Functions"
+             style="push">
+          <parameter
+                name="org.erlide.ui.commands.expandCollapseParameter"
+                value="collapse">
+          </parameter>
+          <parameter
+                name="org.erlide.ui.commands.foldWhatParameter"
+                value="functions">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.commands.folding.expandCollapseAll"
+             label="Expand All"
+             style="push">
+          <parameter
+                name="org.erlide.ui.commands.expandCollapseParameter"
+                value="expand">
+          </parameter>
+          <parameter
+                name="org.erlide.ui.commands.foldWhatParameter"
+                value="all">
+          </parameter>
+       </command>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -658,6 +721,13 @@
             sequence="M1+M2+M"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
 
+ </extension>
+ <extension
+       point="org.eclipse.ui.handlers">
+    <handler
+          class="org.erlide.ui.editors.erl.handlers.ExpandCollapseAllHandler"
+          commandId="org.erlide.ui.commands.folding.expandCollapseAll">
+    </handler>
  </extension>
  <extension
        point="org.eclipse.ui.actionSets">

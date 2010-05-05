@@ -121,6 +121,7 @@ import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
+import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
 import org.erlide.ui.editors.erl.hover.IErlangAnnotation;
 import org.erlide.ui.editors.erl.outline.ErlangContentProvider;
@@ -1820,6 +1821,22 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	private Object getLock() {
 		return lock;
+	}
+
+	public void expandCollapseFunctionsOrComments(final boolean collapse,
+			final boolean comments) {
+		if (fProjectionModelUpdater instanceof IErlangFoldingStructureProviderExtension) {
+			IErlangFoldingStructureProviderExtension ext = (IErlangFoldingStructureProviderExtension) fProjectionModelUpdater;
+			if (collapse) {
+				if (comments) {
+					ext.collapseComments();
+				} else {
+					ext.collapseFunctions();
+				}
+			} else {
+				ext.expandAll();
+			}
+		}
 	}
 
 }
