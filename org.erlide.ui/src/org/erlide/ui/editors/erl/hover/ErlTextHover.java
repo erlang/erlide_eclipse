@@ -336,7 +336,7 @@ public class ErlTextHover implements ITextHover,
 								try {
 									r = ErlModelUtils.findExternalModule(mod,
 											path, module.getResource()
-													.getProject());
+													.getProject(), true);
 								} catch (final CoreException e2) {
 								}
 							} else {
