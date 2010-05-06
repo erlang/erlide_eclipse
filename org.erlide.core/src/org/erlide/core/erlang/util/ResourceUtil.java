@@ -43,26 +43,13 @@ public class ResourceUtil {
 
 	/**
 	 * <p>
-	 * the file extension of Erlang source files.
-	 * </p>
-	 */
-	public static final String EXTENSION_ERL = "erl";
-
-	/**
-	 * <p>
-	 * the file extension of Erlang header files
-	 * </p>
-	 */
-	public static final String EXTENSION_HRL = "hrl";
-
-	/**
-	 * <p>
 	 * returns whether the passed resource is an Erlang source file, as
 	 * recognized by the file extensions '.erl' and '.hrl'.
 	 * </p>
 	 */
 	public static boolean hasErlangExtension(final IResource resource) {
-		return has(resource, EXTENSION_ERL) || has(resource, EXTENSION_HRL);
+		String ext = resource.getFileExtension();
+		return ErlideUtil.isModuleExtension(ext);
 	}
 
 	/**
@@ -197,11 +184,6 @@ public class ResourceUtil {
 			}
 		}
 		return null;
-	}
-
-	private static boolean has(final IResource resource, final String extension) {
-		final String resExt = resource.getFileExtension();
-		return resExt != null && resExt.equalsIgnoreCase(extension);
 	}
 
 	private static IErlProject getErlProject(final IProject project) {
