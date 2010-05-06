@@ -10,7 +10,9 @@
 package org.erlide.core.erlang.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -46,21 +48,8 @@ public class PluginUtils {
 				.getMessage(), x);
 	}
 
-	/**
-	 * Checks to see if the specified container is on the source path
-	 * 
-	 * @param con
-	 *            the container
-	 * @return the indicator of the source path
-	 */
-	public static boolean isOnSourcePath(final IContainer con) {
-		final IProject project = con.getProject();
-		/*
-		 * Get the project settings so that we can find the source nodes
-		 */
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final List<String> sourcePaths = prefs.getSourceDirs();
+	public static boolean isOnPaths(final IContainer con,
+			final IProject project, final List<String> sourcePaths) {
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (i.equals(".")) {
@@ -74,25 +63,45 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static boolean isOnIncludePath(final IContainer con) {
-		final IProject project = con.getProject();
-		/*
-		 * Get the project settings so that we can find the source nodes
-		 */
+	/**
+	 * Checks to see if the specified container is on the source path
+	 * 
+	 * @param container
+	 *            container to check
+	 * @return true if the container is on the project's source path
+	 */
+	public static boolean isOnSourcePath(final IContainer container) {
+		final IProject project = container.getProject();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> includePaths = prefs.getIncludeDirs();
-		final IPath path = con.getFullPath();
-		for (final String i : includePaths) {
+		return isOnPaths(container, project, prefs.getSourceDirs());
+	}
+
+	/**
+	 * Checks if the specified container is on the include path
+	 * 
+	 * @param container
+	 *            container to check
+	 * @return true if the container is on the project's include path
+	 */
+	public static boolean isOnIncludePath(final IContainer container) {
+		final IProject project = container.getProject();
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		return isOnPaths(container, project, prefs.getIncludeDirs());
+	}
+
+	public static Set<IPath> getFullPaths(final IProject project,
+			final List<String> sourcePaths) {
+		HashSet<IPath> result = new HashSet<IPath>();
+		for (String i : sourcePaths) {
 			if (i.equals(".")) {
-				if (project.getFullPath().equals(path)) {
-					return true;
-				}
-			} else if (project.getFolder(i).getFullPath().equals(path)) {
-				return true;
+				result.add(project.getFullPath());
+			} else {
+				result.add(project.getFolder(i).getFullPath());
 			}
 		}
-		return false;
+		return result;
 	}
 
 	public static boolean isSourcePathParent(final IFolder con) {
