@@ -84,7 +84,7 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 
 check_record_tokens(Tokens) ->
     ?D(Tokens),
-    check_record_tokens(Tokens, 0) == 1.
+    check_record_tokens(Tokens, 0).
 
 check_record_tokens([], A) ->
     A;
@@ -99,8 +99,8 @@ check_record_tokens([#token{kind='#'}], _) ->
     1;
 check_record_tokens([#token{kind='{'} | Rest], A) ->
     check_record_tokens(Rest, A+1);
-check_record_tokens([#token{kind=','} | Rest], 0) ->
-    check_record_tokens(Rest, 1);
+check_record_tokens([#token{kind=','} | Rest], 1) ->
+    check_record_tokens(Rest, 2);
 check_record_tokens([#token{kind='}'} | Rest], A) ->
     check_record_tokens(Rest, A-1);
 check_record_tokens([#token{kind=Dot} | Rest], A) 

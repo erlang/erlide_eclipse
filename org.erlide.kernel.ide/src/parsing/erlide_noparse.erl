@@ -30,25 +30,25 @@
 %%
 
 initial_parse(ScannerName, ModuleFileName, InitialTextBin, StateDir, ErlidePath, UpdateCaches) ->
-	InitialText = binary_to_list(InitialTextBin),
+    InitialText = binary_to_list(InitialTextBin),
     try
-	?D({StateDir, ModuleFileName, ErlidePath}),
+        ?D({StateDir, ModuleFileName, ErlidePath}),
         RenewFun = fun(_F) ->
-			   do_parse(ScannerName, ModuleFileName, InitialText,
-				    StateDir, ErlidePath, UpdateCaches) 
-		   end,
+                           do_parse(ScannerName, ModuleFileName, InitialText,
+                                    StateDir, ErlidePath, UpdateCaches) 
+                   end,
         CacheFun = fun(D) ->
-			   erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
-						      InitialText, StateDir, ErlidePath, UpdateCaches),
-			   D 
-		   end,
-    	CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
+                           erlide_scanner_server:initialScan(ScannerName, ModuleFileName, 
+                                                             InitialText, StateDir, ErlidePath, UpdateCaches),
+                           D 
+                   end,
+        CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".noparse"),
         ?D(CacheFileName),
         {Cached, Res} = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName,
-							   ?CACHE_VERSION, RenewFun, CacheFun,
-							   UpdateCaches),
+                                                           ?CACHE_VERSION, RenewFun, CacheFun,
+                                                           UpdateCaches),
         %%erlide_noparse_server:update_state(ScannerName, Res),
-	?D(updated),
+        ?D(updated),
         {ok, Res, Cached}
     catch
         error:Reason ->
@@ -109,7 +109,7 @@ fixup_model(#model{forms=Forms, comments=Comments}) ->
     ?D(a),
     FixedForms = fixup_forms(Forms),
     ?D(a),
-	#model{forms=FixedForms, comments=FixedComments}.
+    #model{forms=FixedForms, comments=FixedComments}.
 
 fixup_forms(Forms) ->
 	[fixup_form(Form) || Form <- Forms].
@@ -118,23 +118,23 @@ fixup_tokens(Tokens) ->
     [fixup_token(Token) || Token <- Tokens].
 
 fixup_token(#token{value=Value} = Token) when is_list(Value) ->
-	Token#token{value=to_binary(Value)};
+    Token#token{value=to_binary(Value)};
 fixup_token(#token{text=Text} = Token) when is_list(Text) ->
-	Token#token{value=to_binary(Text)};
+    Token#token{value=to_binary(Text)};
 fixup_token(Token) ->
-	Token.
+    Token.
 
 fixup_form(#function{comment=Comment, clauses=Clauses} = Function) ->
-	Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
+    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
 fixup_form(#clause{head=Head} = Clause) ->
-	Clause#clause{head=to_binary(Head), args=[]};
+    Clause#clause{head=to_binary(Head), args=[]};
 fixup_form(Other) ->
-	Other.
+    Other.
 
 to_binary(Comment) when is_list(Comment) ->
-	iolist_to_binary(Comment);
+    iolist_to_binary(Comment);
 to_binary(Other) ->
-	Other.
+    Other.
 
 parse_test(ScannerName, File) ->
     erlide_scanner_server:scan_uncached(ScannerName, File, ""),
@@ -142,9 +142,9 @@ parse_test(ScannerName, File) ->
     {UncommentToks, Comments} = extract_comments(Toks),
     Functions = split_after_dots(UncommentToks, [], []),
     Collected = [classify_and_collect(I) || I <- Functions, I =/= [eof]],
-    _Model = #model{forms=Collected, comments=Comments},
+    Model = #model{forms=Collected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model, ""),
-    ok.
+    {ok, Model}.
 
 classify_and_collect(C) ->
     %?D(C),
@@ -188,7 +188,7 @@ cac(attribute, Attribute) ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
-            Between = get_between_outer_pars(Attribute),
+            Between = get_between_outer_pars(Attribute, '(', ')'),
             Extra = to_string(Between),
             #attribute{pos={{Line, LastLine, Offset}, PosLength},
                        name=Name, args=get_attribute_args(Name, Between, Args), extra=Extra};
@@ -214,10 +214,10 @@ get_attribute_args(export, Between, _Args) ->
     Tokens = get_between(Between, '[', ']'),
     fun_arity_from_tokens(Tokens);
 get_attribute_args(record, Between, _Args) ->
-	%?D({Between, _Args}),
+    %?D({Between, _Args}),
     RecordToken = hd(Between),
-	RecordName = RecordToken#token.value,
-    Tokens = get_between(Between, '{', '}'),
+    RecordName = RecordToken#token.value,
+    Tokens = get_between_outer_pars(Between, '{', '}'),
     {RecordName, field_list_from_tokens(Tokens)};
 get_attribute_args(_, _Between, Args) ->
     Args.
@@ -296,35 +296,35 @@ get_head(T) ->
     end.
 
 get_args(T) ->
-    case get_between_outer_pars(T) of
+    case get_between_outer_pars(T, '(', ')') of
         "" ->
             "";
         P ->
             "("++to_string(P)++")"
     end.
 
-get_between_outer_pars(T) ->
-    case skip_to(T, '(') of
+get_between_outer_pars(T, L, R) ->
+    case skip_to(T, L) of
         [] ->
             [];
         [_ | S] ->
-            {R, _Rest} = gbop(S),
-            lists:reverse(tl(lists:reverse(R)))
+            {RL, _Rest} = gbop(S, L, R),
+            lists:reverse(tl(lists:reverse(RL)))
     end.
 
-gbop([]) ->
+gbop([], _L, _R) ->
     {[], []};
-gbop([eof | _]) ->
+gbop([eof | _], _L, _R) ->
     {[], []};
-gbop([#token{kind=')'}=T | Rest]) ->
+gbop([#token{kind=R}=T | Rest], _L, R) ->
     {[T], Rest};
-gbop([#token{kind='('}=T | Rest]) ->
-    {R, Rest1} = gbop(Rest),
-    {R2, Rest2} = gbop(Rest1),
-    {[T] ++ R ++ R2, Rest2};
-gbop([T | Rest]) ->
-    {R, Rest1} = gbop(Rest),
-    {[T] ++ R, Rest1}.
+gbop([#token{kind=L}=T | Rest], L, R) ->
+    {R1, Rest1} = gbop(Rest, L, R),
+    {R2, Rest2} = gbop(Rest1, L, R),
+    {[T] ++ R1 ++ R2, Rest2};
+gbop([T | Rest], L, R) ->
+    {LR, Rest1} = gbop(Rest, L, R),
+    {[T] ++ LR, Rest1}.
 
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
