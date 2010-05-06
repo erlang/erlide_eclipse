@@ -410,11 +410,18 @@ public class ErlModelUtils {
 				}
 			}
 		}
+		if (r == null) {
+			ErlLogger.debug(
+					"findExternalModule not found yet, checkAllProjects %b",
+					checkAllProjects);
+		}
 		if (r == null && checkAllProjects) {
 			IErlModel model = ErlangCore.getModel();
 			IErlModule module = model.findModule(mod);
+			ErlLogger.debug("findExternalModule module %s", module);
 			if (module != null) {
 				r = module.getResource();
+				ErlLogger.debug("findExternalModule r %s", r);
 			}
 		}
 		if (r == null) {
