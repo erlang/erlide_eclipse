@@ -25,9 +25,10 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 	/**
 	 * Creates a new XML context type.
 	 */
-	private ErlangSourceContextTypeModule() {
+	public ErlangSourceContextTypeModule() {
 		addGlobalResolvers();
 		addModuleResolver();
+		// TODO should we set fInstance here?
 	}
 
 	private void addModuleResolver() {
