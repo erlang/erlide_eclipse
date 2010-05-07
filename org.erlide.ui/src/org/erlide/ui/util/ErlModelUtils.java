@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
@@ -43,6 +45,7 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
@@ -416,12 +419,19 @@ public class ErlModelUtils {
 					checkAllProjects);
 		}
 		if (r == null && checkAllProjects) {
-			IErlModel model = ErlangCore.getModel();
-			IErlModule module = model.findModule(mod);
-			ErlLogger.debug("findExternalModule module %s", module);
-			if (module != null) {
-				r = module.getResource();
-				ErlLogger.debug("findExternalModule r %s", r);
+			final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+					.getRoot();
+			IProject[] projects = workspaceRoot.getProjects();
+			for (IProject p : projects) {
+				if (ErlideUtil.hasErlangNature(p)) {
+					ErlLogger.debug("searching project %s", p.getName());
+					r = ResourceUtil.recursiveFindNamedResource(p, modFileName,
+							PluginUtils.getSourcePathFilter(p));
+					if (r != null) {
+						ErlLogger.debug("found %s", r);
+						break;
+					}
+				}
 			}
 		}
 		if (r == null) {

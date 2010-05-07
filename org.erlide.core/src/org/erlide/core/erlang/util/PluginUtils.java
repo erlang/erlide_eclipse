@@ -35,7 +35,6 @@ import erlang.ErlideOpen;
  * @author Eric Merritt [cyberlync at yahoo dot com] Vlad Jakob C
  */
 public class PluginUtils {
-
 	/**
 	 * Displays an error that occured during the project creation. *
 	 * 
@@ -140,18 +139,36 @@ public class PluginUtils {
 	public static ContainerFilter getIncludePathFilter(final IProject project,
 			final IContainer current) {
 		return new ContainerFilter() {
+			private final Set<IPath> paths = getFullPaths(project, ErlangCore
+					.getProjectProperties(project).getIncludeDirs());
+
 			public boolean accept(final IContainer container) {
-				return container.equals(current) || isOnIncludePath(container);
+				return container.equals(current)
+						|| paths.contains(container.getFullPath());
 			}
 		};
 	}
 
+	private static final class SourcePathContainerFilter implements
+			ContainerFilter {
+		private final Set<IPath> paths;
+		private final Set<String> extra;
+
+		private SourcePathContainerFilter(final IProject project) {
+			paths = getFullPaths(project, ErlangCore.getProjectProperties(
+					project).getSourceDirs());
+			extra = new HashSet<String>();
+			extra.addAll(ErlideOpen.getExtraSourcePaths());
+		}
+
+		public boolean accept(final IContainer container) {
+			return paths.contains(container.getFullPath())
+					|| extra.contains(container.getLocation().toString());
+		}
+	}
+
 	public static ContainerFilter getSourcePathFilter(final IProject project) {
-		return new ContainerFilter() {
-			public boolean accept(final IContainer container) {
-				return isOnSourcePath(container) || isOnExtraPath(container);
-			}
-		};
+		return new SourcePathContainerFilter(project);
 	}
 
 	public static boolean isOnExtraPath(final IContainer con) {
