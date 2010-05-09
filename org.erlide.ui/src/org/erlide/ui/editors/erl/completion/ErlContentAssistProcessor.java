@@ -66,6 +66,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideContextAssist;
 import erlang.ErlideDoc;
+import erlang.ErlideContextAssist.RecordCompletion;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
@@ -137,31 +138,27 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
 					project.getProject());
 			final IErlElement element = getElementAt(offset);
-			int recordWhat = 0;
+			RecordCompletion rc = null;
 			if (hashMarkPos >= 0) {
-				recordWhat = ErlideContextAssist.checkRecordCompletion(b,
-						before.substring(hashMarkPos));
-				ErlLogger.debug("recordWhat %d", recordWhat);
+				rc = ErlideContextAssist.checkRecordCompletion(b, before
+						.substring(hashMarkPos));
 			}
-			if (recordWhat == 1) {
+			if (rc != null && rc.isNameWanted()) {
 				flags = RECORD_DEFS;
 				pos = hashMarkPos;
-				before = before.substring(hashMarkPos + 1);
-			} else if (recordWhat == 2) {
+				before = rc.getPrefix();
+			} else if (rc != null && rc.isFieldWanted()) {
 				flags = RECORD_FIELDS;
 				pos = hashMarkPos;
 				if (dotPos > hashMarkPos) {
-					moduleOrRecord = before.substring(hashMarkPos + 1, dotPos);
-					before = before.substring(dotPos + 1);
+					pos = dotPos;
 				} else if (leftBracketPos > hashMarkPos) {
-					moduleOrRecord = before.substring(hashMarkPos + 1,
-							leftBracketPos);
-					final int n = atomPrefixLength(doc, offset);
-					before = before.substring(before.length() - n);
+					pos = leftBracketPos;
 				} else {
-					moduleOrRecord = before.substring(hashMarkPos + 1);
-					before = "";
+					assert false;
 				}
+				before = rc.getPrefix();
+				moduleOrRecord = rc.getName();
 			} else if (colonPos > commaPos && colonPos > parenPos) {
 				moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
 						0, colonPos)));
