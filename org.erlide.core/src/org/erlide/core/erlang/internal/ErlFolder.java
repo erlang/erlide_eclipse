@@ -77,18 +77,14 @@ public class ErlFolder extends Openable implements IErlFolder {
 				final IOpenable o = (IOpenable) parent;
 				o.open(null);
 			}
+			boolean hasExtension = ErlideUtil.hasExtension(name);
 			for (final IErlElement e : parent.getChildren()) {
 				if (e instanceof IErlModule) {
 					final IErlModule m = (IErlModule) e;
-					if (ErlideUtil.hasExtension(name)) {
-						if (m.getName().equals(name)) {
-							return m;
-						}
-					} else {
-						if (ErlideUtil.withoutExtension(m.getName()).equals(
-								name)) {
-							return m;
-						}
+					String moduleName = hasExtension ? m.getName() : m
+							.getModuleName();
+					if (moduleName.equals(name)) {
+						return m;
 					}
 				} else if (e instanceof IParent) {
 					final IParent p = (IParent) e;
