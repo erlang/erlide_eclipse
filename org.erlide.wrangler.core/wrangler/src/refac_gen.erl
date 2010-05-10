@@ -207,6 +207,8 @@ generalise(FileName, Start = {Line, Col}, End = {Line1, Col1}, ParName, SearchPa
 		     TabWidth::integer(), Dups::[{pos(), pos()}], LogCmd::string())
       -> {ok, [filename()]}).
 gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, SearchPaths,TabWidth, Dups, LogCmd) ->
+     %% ?wrangler_io("\nCMD: ~p:gen_fun_1(~p, ~p, ~p, ~p,~p,~p,~p,~p,~p,~p,~p).\n",
+     %% 		  [?MODULE,SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, SearchPaths,TabWidth, Dups, LogCmd]),
     gen_fun_1(SideEffect, FileName,ParName, FunName, Arity, DefPos, Exp, SearchPaths,TabWidth,Dups, emacs, LogCmd).
 
 -spec(gen_fun_1_eclipse/11::(SideEffect::boolean(), FileName::filename(),ParName::atom(), FunName::atom(), 
@@ -754,7 +756,7 @@ has_multiple_definitions(AnnAST, ModName, FunName, Arity) ->
 		case  lists:keysearch(fun_def, 1, refac_syntax:get_ann(F)) of 
 		    {value, {fun_def, {ModName, FunName,Arity, _, _}}} ->
 			true;
-		    false -> false
+		    _ -> false
 		end
 	end,
     Forms = refac_syntax:form_list_elements(AnnAST),
