@@ -272,14 +272,17 @@ public class WranglerUtils {
 		IFile[] files = // root.findFilesForLocation(path);
 		root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil
 				.toURI(path));
+
 		if (files.length > 0)
 			return files[0];// else
-
+		else
+			return root.getFile(path);
 		/*
 		 * if (file != null) return file;
 		 */
-		else
-			throw new WranglerException("File not found!");
+		/*
+		 * else throw new WranglerException("File not found!");
+		 */
 	}
 
 	public static void notifyErlide(ArrayList<ChangedFile> changedFiles) {
