@@ -15,8 +15,12 @@ public class ErlideDialyze {
 			final Collection<String> files, final String plt,
 			final Collection<String> includeDirs, final boolean fromSource) {
 		try {
+			ErlLogger.debug(
+					"dialyze files %s plt %s includeDirs %s fromSource %b",
+					files.toString(), plt, includeDirs.toString(), fromSource);
 			final OtpErlangObject result = backend.call("erlide_dialyze",
 					"dialyze", "lsslso", files, plt, includeDirs, fromSource);
+			ErlLogger.debug("result %s", result.toString());
 			return result;
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
