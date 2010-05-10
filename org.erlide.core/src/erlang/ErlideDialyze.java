@@ -50,4 +50,8 @@ public class ErlideDialyze {
 		return null;
 	}
 
+	private void warn() {
+
+	}
+
 }
