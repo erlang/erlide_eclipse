@@ -31,10 +31,8 @@ dialyze(Files, Plt, Includes, FromSource) ->
 			     {check_plt, false},
 			     {from, From},
 			     {include_dirs, Includes}]) of
-	{'EXIT', {dialyzer_error, E}} ->
-	    {error, lists:flatten(E)};
-	{_Error, E} ->
-	    {error, lists:flatten(E)};
+	{_ErrorOrExit, E} ->
+	    {error, flat(E)};
 	Result ->
 	    Result
     end.
@@ -50,3 +48,7 @@ check_plt(Plt) ->
 %% Local Functions
 %%
 
+flat({dialyzer_error, E}) ->
+    flat(E);
+flat(L) ->
+    lists:flatten(L).
