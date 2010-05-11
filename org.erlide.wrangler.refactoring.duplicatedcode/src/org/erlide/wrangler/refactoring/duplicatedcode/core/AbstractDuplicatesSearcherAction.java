@@ -19,7 +19,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
-	protected static final int TIMEOUT = 180000;
+	protected static final int TIMEOUT = Integer.MAX_VALUE;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		run();
@@ -28,6 +28,7 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
 	protected final String rpcErrorMsg = "An error occured during the refactoring!";
 
+	// TODO: run it in a new thread
 	public void run() {
 		selectionChanged();
 		if (getUserInput()) {
