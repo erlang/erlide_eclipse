@@ -85,7 +85,7 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 
 check_record_tokens(Tokens) ->
     ?D(Tokens),
-    case check_record_tokens(no_record, Tokens, '', '') of
+    case check_record_tokens(no_record, Tokens, false, '', '', '') of
         L when is_list(L) -> check_record_tokens(L); % Shouldn't happen
         {State, Name, Prefix} -> {state_to_num(State), Name, Prefix}
     end.
@@ -103,56 +103,68 @@ state_to_num(_) -> ?NO_RECORD.
 %% 2 #r            record_name
 %% 3 #rec.         record_want_dot_field
 %% 4 #rec.f        record_dot_field
-%% 5 #rec{         record_want_field (recurse)
-%% 6 {             no_record (recurse)
+%% 5 #rec{         record_want_field (recurse*)
+%% 6 {             no_record (recurse*)
 %% 7 #rec{f        record_field
 %% 8 #rec{field=v, record_want_field
-%% 9 #rec{field=   within_record
-%% 10 (all other)  no_record or within_record
-%% we carry around the state, the current record name and the before, they
-%% are returned with the current state if we're done
-%% the position is calculated by the caller, we don't need as much 
-%% syntax context for that
-%% recursion is needed iff we hit a '{', to keep track of current record
+%% 9 #rec{field=   no_record
+%% 10 (all other)  no_record
+%% We carry around the state, the current record name, the before and a 
+%% within-record-flag, they are returned with the current state if we're done.
+%% The position is calculated by the caller, we don't need as much syntax 
+%% context for that.
+%% Recursion is needed iff we hit a '{', to keep track of current record
 %% so we keep going until we run out of tokens or hit a '}' {
 %% we return a tuple when tokens are done and a list if we get a '}'
 
-check_record_tokens(State, [], R, B) ->
+check_record_tokens(State, [], _W, R, B, _PrevR) ->
     {State, R, B};
-check_record_tokens(State, [#token{kind='}'} | Rest], R, B) ->
+check_record_tokens(_State, [#token{kind='}'} | Rest], _W, _R, _B, _PrevR) ->
+    ?D('}'),
     Rest; %% either we've recursed, or we left the record, so this is safe
-check_record_tokens(State, [#token{kind='#'} | Rest], R, B) -> % 1
-    check_record_tokens(record_want_name, Rest, R, B);
-check_record_tokens(record_want_name, [#token{kind=atom, value=V} | Rest], _R, _B) -> % 2
-    check_record_tokens(record_name, Rest, V, V);
-check_record_tokens(record_want_name, [#token{kind=macro, value=V} | Rest], _R, _B) -> % 2
-    check_record_tokens(record_name, Rest, V, V);
-check_record_tokens(record_name, [#token{kind=Dot} | Rest], R, B) % 3 
+check_record_tokens(_State, [#token{kind='#'} | Rest], W, R, B, PrevR) -> % 1
+    check_record_tokens(record_want_name, Rest, W, R, B, PrevR);
+check_record_tokens(record_want_name, [#token{kind=atom, value=V} | Rest], W, R, _B, _PrevR) -> % 2
+    ?D(V),
+    check_record_tokens(record_name, Rest, W, V, V, R);
+check_record_tokens(record_want_name, [#token{kind=macro, value=V} | Rest], W, R, _B, _PrevR) -> % 2
+    ?D(V),
+    check_record_tokens(record_name, Rest, W, V, V, R);
+check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, PrevR) % 3 
   when Dot=:='.'; Dot=:=dot->
-    check_record_tokens(record_want_dot_field, Rest, B, '');
+    check_record_tokens(record_want_dot_field, Rest, W, B, '', PrevR);
 check_record_tokens(record_want_dot_field, [#token{kind=atom, value=V} | Rest],
-                    R, _B) -> % 4
-    check_record_tokens(record_dot_field, Rest, R, V);
-check_record_tokens(record_name, [#token{kind='{'} | Rest], R, B) -> % 5
-    case check_record_tokens(record_want_field, Rest, B, '') of
-        L when is_list(L) -> check_record_tokens(no_record, L, R, B);
-        T -> T
+                    W, R, _B, PrevR) -> % 4
+    check_record_tokens(record_dot_field, Rest, W, R, V, PrevR);
+check_record_tokens(record_name, [#token{kind='{'} | Rest], W, R, B, PrevR) -> % 5
+    ?D('{'),
+    ?D({W, R, B}),
+    case check_record_tokens(record_want_field, Rest, true, B, '', B) of
+        L when is_list(L) ->
+            ?D({L, W}),
+            check_record_tokens(no_record, L, W, PrevR, '', PrevR);
+        T ->
+            ?D(T),
+            T
     end;
-check_record_tokens(State, [#token{kind='{'} | Rest], R, B) -> % 6
-    case check_record_tokens(no_record, Rest, B, '') of
-        L when is_list(L) -> check_record_tokens(no_record, L, R, B);
-        T -> T
+check_record_tokens(State, [#token{kind='{'} | Rest], W, R, B, PrevR) -> % 6
+    ?D('{'),
+    case check_record_tokens(no_record, Rest, false, B, '', B) of
+        L when is_list(L) -> 
+            ?D(L),
+            check_record_tokens(State, L, W, R, '', PrevR);
+        T -> 
+            ?D(T),
+            T
     end;
-check_record_tokens(record_want_field, [#token{kind=atom, value=V} | Rest], R, B) -> % 7
-    check_record_tokens(record_field, Rest, R, V);
-check_record_tokens(within_record, [#token{kind=','} | Rest], R, B) -> % 8
-    check_record_tokens(record_want_field, Rest, R, B);
-check_record_tokens(record_field, [#token{kind='='} | Rest], R, B) -> % 9
-    check_record_tokens(within_record, Rest, R, '');
-check_record_tokens(within_record, [_ | Rest], R, B) -> % 10A
-    check_record_tokens(within_record, Rest, R, B);
-check_record_tokens(State, [_ | Rest], R, B) -> % 10B
-    check_record_tokens(no_record, Rest, R, B).
+check_record_tokens(record_want_field, [#token{kind=atom, value=V} | Rest], W, R, _B, PrevR) -> % 7
+    check_record_tokens(record_field, Rest, W, R, V, PrevR);
+check_record_tokens(no_record, [#token{kind=','} | Rest], true, R, _B, PrevR) -> % 8
+    check_record_tokens(record_want_field, Rest, true, R, '', PrevR);
+check_record_tokens(record_field, [#token{kind='='} | Rest], W, R, _B, PrevR) -> % 9
+    check_record_tokens(no_record, Rest, W, R, '', PrevR);
+check_record_tokens(_State, [_ | Rest], W, R, B, PrevR) -> % 10
+    check_record_tokens(no_record, Rest, W, R, B, PrevR).
 
 get_function_head(Fun, Arity) ->
     erlide_otp_doc:fix_proposals([{Fun, Arity}], [""], 0).

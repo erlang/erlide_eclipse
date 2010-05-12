@@ -140,8 +140,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final IErlElement element = getElementAt(offset);
 			RecordCompletion rc = null;
 			if (hashMarkPos >= 0) {
-				rc = ErlideContextAssist.checkRecordCompletion(b, before
-						.substring(hashMarkPos));
+				rc = ErlideContextAssist.checkRecordCompletion(b, before);
 			}
 			if (rc != null && rc.isNameWanted()) {
 				flags = RECORD_DEFS;
