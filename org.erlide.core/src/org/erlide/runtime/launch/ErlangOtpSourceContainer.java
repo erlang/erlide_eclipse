@@ -9,20 +9,18 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourceContainerType;
 import org.eclipse.debug.core.sourcelookup.containers.CompositeSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
-import org.erlide.jinterface.backend.RuntimeInfo;
 
 public class ErlangOtpSourceContainer extends CompositeSourceContainer
 		implements ISourceContainer {
 
-	private final String otpHome;
+	private final IPath otpHome;
 
-	public ErlangOtpSourceContainer(final RuntimeInfo info) {
-		otpHome = info.getOtpHome();
+	public ErlangOtpSourceContainer(final IPath otpHome) {
+		this.otpHome = otpHome;
 	}
 
 	public String getName() {
@@ -111,8 +109,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
 
 	@Override
 	protected ISourceContainer[] createSourceContainers() throws CoreException {
-		final IPath p = new Path(otpHome);
-		final IPath lib = p.addTrailingSeparator().append("lib")
+		final IPath lib = otpHome.addTrailingSeparator().append("lib")
 				.addTrailingSeparator();
 		final Set<String> moduleNames = modules(lib.toFile());
 		final List<IPath> moduleDirs = new ArrayList<IPath>();

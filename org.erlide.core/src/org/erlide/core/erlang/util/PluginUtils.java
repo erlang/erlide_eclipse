@@ -16,9 +16,12 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
@@ -180,5 +183,11 @@ public class PluginUtils {
 			}
 		}
 		return false;
+	}
+
+	public static IPath resolvePath(String path) {
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		return pvm.resolvePath(new Path(path));
 	}
 }

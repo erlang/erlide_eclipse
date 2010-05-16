@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
@@ -31,10 +32,12 @@ public class ErlangSourcePathComputerDelegate implements
 		if (containers.isEmpty()) {
 			containers.add(new WorkspaceSourceContainer());
 		}
-		String runtimeName= configuration.getAttribute(ErlLaunchAttributes.RUNTIME_NAME, "").trim();
+		String runtimeName = configuration.getAttribute(
+				ErlLaunchAttributes.RUNTIME_NAME, "").trim();
 		final RuntimeInfo info = ErlangCore.getRuntimeInfoManager().getRuntime(
 				runtimeName);
-		containers.add(new ErlangOtpSourceContainer(info));
+		containers
+				.add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
 		return containers.toArray(new ISourceContainer[containers.size()]);
 	}
 
