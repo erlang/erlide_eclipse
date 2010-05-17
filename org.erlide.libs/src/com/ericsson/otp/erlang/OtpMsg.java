@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
+ * retrieved online at http://www.erlang.org/.
  * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
  * 
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- * 
- *     $Id$
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -30,10 +31,10 @@ package com.ericsson.otp.erlang;
  * 
  * <p>
  * The header information that is available is as follows: <lu>
- * <li>a tag indicating the type of message
- * <li>the intended recipient of the message, either as a {@link OtpErlangPid
- * pid} or as a String, but never both.
- * <li>(sometimes) the sender of the message. Due to some eccentric
+ * <li> a tag indicating the type of message
+ * <li> the intended recipient of the message, either as a
+ * {@link OtpErlangPid pid} or as a String, but never both.
+ * <li> (sometimes) the sender of the message. Due to some eccentric
  * characteristics of the Erlang distribution protocol, not all messages have
  * information about the sending process. In particular, only messages whose tag
  * is {@link OtpMsg#regSendTag regSendTag} contain sender information. </lu>
@@ -164,25 +165,24 @@ public class OtpMsg {
      * </p>
      * 
      * <ul>
-     * <li>sendTag identifies a "normal" message. The recipient is a
-     * {@link OtpErlangPid Pid} and it is available through
-     * {@link #getRecipientPid getRecipientPid()}. Sender information is not
-     * available. The message body can be retrieved with {@link #getMsg
-     * getMsg()}.</li>
+     * <li> sendTag identifies a "normal" message. The recipient is a
+     * {@link OtpErlangPid Pid} and it is available through {@link
+     * #getRecipientPid getRecipientPid()}. Sender information is not available.
+     * The message body can be retrieved with {@link #getMsg getMsg()}. </li>
      * 
-     * <li>regSendTag also identifies a "normal" message. The recipient here is
+     * <li> regSendTag also identifies a "normal" message. The recipient here is
      * a String and it is available through {@link #getRecipientName
      * getRecipientName()}. Sender information is available through
      * #getSenderPid getSenderPid()}. The message body can be retrieved with
-     * {@link #getMsg getMsg()}.</li>
+     * {@link #getMsg getMsg()}. </li>
      * 
-     * <li>linkTag identifies a link request. The Pid of the sender is
-     * available, as well as the Pid to which the link should be made.</li>
+     * <li> linkTag identifies a link request. The Pid of the sender is
+     * available, as well as the Pid to which the link should be made. </li>
      * 
-     * <li>exitTag and exit2Tag messages are sent as a result of broken links.
+     * <li> exitTag and exit2Tag messages are sent as a result of broken links.
      * Both sender and recipient Pids and are available through the
      * corresponding methods, and the "reason" is available through
-     * {@link #getMsg getMsg()}.</li>
+     * {@link #getMsg getMsg()}. </li>
      * </ul>
      */
     public int type() {
@@ -205,7 +205,7 @@ public class OtpMsg {
      * @return an Erlang term.
      * 
      * @exception OtpErlangDecodeException
-     *                if the byte stream could not be deserialized.
+     *                    if the byte stream could not be deserialized.
      * 
      */
     public OtpErlangObject getMsg() throws OtpErlangDecodeException {

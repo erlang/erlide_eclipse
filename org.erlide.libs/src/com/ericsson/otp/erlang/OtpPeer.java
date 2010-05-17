@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -27,9 +28,9 @@ import java.net.UnknownHostException;
  */
 public class OtpPeer extends AbstractNode {
     int distChoose = 0; /*
-			 * this is set by OtpConnection and is the highest
-			 * common protocol version we both support
-			 */
+     * this is set by OtpConnection and is the highest
+     * common protocol version we both support
+     */
 
     OtpPeer() {
 	super();
@@ -39,7 +40,7 @@ public class OtpPeer extends AbstractNode {
      * Create a peer node.
      * 
      * @param node
-     *            the name of the node.
+     *                the name of the node.
      */
     public OtpPeer(final String node) {
 	super(node);
@@ -49,22 +50,21 @@ public class OtpPeer extends AbstractNode {
      * Create a connection to a remote node.
      * 
      * @param self
-     *            the local node from which you wish to connect.
+     *                the local node from which you wish to connect.
      * 
      * @return a connection to the remote node.
      * 
      * @exception java.net.UnknownHostException
-     *                if the remote host could not be found.
+     *                    if the remote host could not be found.
      * 
      * @exception java.io.IOException
-     *                if it was not possible to connect to the remote node.
+     *                    if it was not possible to connect to the remote node.
      * 
      * @exception OtpAuthException
-     *                if the connection was refused by the remote node.
+     *                    if the connection was refused by the remote node.
      * 
      * @deprecated Use the corresponding method in {@link OtpSelf} instead.
      */
-
     @Deprecated
     public OtpConnection connect(final OtpSelf self) throws IOException,
 	    UnknownHostException, OtpAuthException {

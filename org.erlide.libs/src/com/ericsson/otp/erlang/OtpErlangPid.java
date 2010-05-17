@@ -38,7 +38,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * Create a unique Erlang PID belonging to the local node.
      * 
      * @param self
-     *            the local node.
+     *                the local node.
      * 
      * @deprecated use OtpLocalNode:createPid() instead
      */
@@ -57,11 +57,11 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *            the stream containing the encoded PID.
+     *                the stream containing the encoded PID.
      * 
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external
-     *                representation of an Erlang PID.
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang PID.
      */
     public OtpErlangPid(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -77,18 +77,19 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * Create an Erlang pid from its components.
      * 
      * @param node
-     *            the nodename.
+     *                the nodename.
      * 
      * @param id
-     *            an arbitrary number. Only the low order 15 bits will be used.
+     *                an arbitrary number. Only the low order 15 bits will be
+     *                used.
      * 
      * @param serial
-     *            another arbitrary number. Only the low order 13 bits will be
-     *            used.
+     *                another arbitrary number. Only the low order 13 bits will
+     *                be used.
      * 
      * @param creation
-     *            yet another arbitrary number. Only the low order 2 bits will
-     *            be used.
+     *                yet another arbitrary number. Only the low order 2 bits
+     *                will be used.
      */
     public OtpErlangPid(final String node, final int id, final int serial,
 	    final int creation) {
@@ -149,7 +150,8 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * Convert this PID to the equivalent Erlang external representation.
      * 
      * @param buf
-     *            an output stream to which the encoded PID should be written.
+     *                an output stream to which the encoded PID should be
+     *                written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -161,7 +163,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
      * equal.
      * 
      * @param port
-     *            the other PID to compare to.
+     *                the other PID to compare to.
      * 
      * @return true if the PIDs are equal, false otherwise.
      */
@@ -176,15 +178,15 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
 	return creation == pid.creation && serial == pid.serial && id == pid.id
 		&& node.compareTo(pid.node) == 0;
     }
-
+    
     @Override
     protected int doHashCode() {
-	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
 	hash.combine(creation, serial);
 	hash.combine(id, node.hashCode());
 	return hash.valueOf();
     }
-
+    
     public int compareTo(final Object o) {
 	if (!(o instanceof OtpErlangPid)) {
 	    return -1;

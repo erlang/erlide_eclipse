@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -127,8 +128,8 @@ public class OtpMbox {
      * </p>
      * 
      * @param name
-     *            the name to register for the mailbox. Specify null to
-     *            unregister the existing name from this mailbox.
+     *                the name to register for the mailbox. Specify null to
+     *                unregister the existing name from this mailbox.
      * 
      * @return true if the name was available, or false otherwise.
      */
@@ -153,11 +154,11 @@ public class OtpMbox {
      *         of the next message waiting in this mailbox.
      * 
      * @exception OtpErlangDecodeException
-     *                if the message can not be decoded.
+     *                    if the message can not be decoded.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      */
     public OtpErlangObject receive() throws OtpErlangExit,
 	    OtpErlangDecodeException {
@@ -174,18 +175,18 @@ public class OtpMbox {
      * Wait for a message to arrive for this mailbox.
      * 
      * @param timeout
-     *            the time, in milliseconds, to wait for a message before
-     *            returning null.
+     *                the time, in milliseconds, to wait for a message before
+     *                returning null.
      * 
      * @return an {@link OtpErlangObject OtpErlangObject} representing the body
      *         of the next message waiting in this mailbox.
      * 
      * @exception OtpErlangDecodeException
-     *                if the message can not be decoded.
+     *                    if the message can not be decoded.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      */
     public OtpErlangObject receive(final long timeout) throws OtpErlangExit,
 	    OtpErlangDecodeException {
@@ -210,8 +211,8 @@ public class OtpMbox {
      *         message waiting in this mailbox.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      * 
      */
     public OtpInputStream receiveBuf() throws OtpErlangExit {
@@ -222,19 +223,19 @@ public class OtpMbox {
      * Wait for a message to arrive for this mailbox.
      * 
      * @param timeout
-     *            the time, in milliseconds, to wait for a message before
-     *            returning null.
+     *                the time, in milliseconds, to wait for a message before
+     *                returning null.
      * 
      * @return a byte array representing the still-encoded body of the next
      *         message waiting in this mailbox.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      * 
      * @exception InterruptedException
-     *                if no message if the method times out before a message
-     *                becomes available.
+     *                    if no message if the method times out before a message
+     *                    becomes available.
      */
     public OtpInputStream receiveBuf(final long timeout)
 	    throws InterruptedException, OtpErlangExit {
@@ -253,8 +254,8 @@ public class OtpMbox {
      *         well as the body of the next message waiting in this mailbox.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      * 
      */
     public OtpMsg receiveMsg() throws OtpErlangExit {
@@ -280,18 +281,18 @@ public class OtpMbox {
      * Wait for a message to arrive for this mailbox.
      * 
      * @param timeout
-     *            the time, in milliseconds, to wait for a message.
+     *                the time, in milliseconds, to wait for a message.
      * 
      * @return an {@link OtpMsg OtpMsg} containing the header information as
      *         well as the body of the next message waiting in this mailbox.
      * 
      * @exception OtpErlangExit
-     *                if a linked {@link OtpErlangPid pid} has exited or has
-     *                sent an exit signal to this mailbox.
+     *                    if a linked {@link OtpErlangPid pid} has exited or has
+     *                    sent an exit signal to this mailbox.
      * 
      * @exception InterruptedException
-     *                if no message if the method times out before a message
-     *                becomes available.
+     *                    if no message if the method times out before a message
+     *                    becomes available.
      */
     public OtpMsg receiveMsg(final long timeout) throws InterruptedException,
 	    OtpErlangExit {
@@ -321,11 +322,11 @@ public class OtpMbox {
      * another {@link OtpMbox mailbox} or an Erlang process.
      * 
      * @param to
-     *            the {@link OtpErlangPid pid} identifying the intended
-     *            recipient of the message.
+     *                the {@link OtpErlangPid pid} identifying the intended
+     *                recipient of the message.
      * 
      * @param msg
-     *            the body of the message to send.
+     *                the body of the message to send.
      * 
      */
     public void send(final OtpErlangPid to, final OtpErlangObject msg) {
@@ -349,10 +350,10 @@ public class OtpMbox {
      * mailbox.
      * 
      * @param name
-     *            the registered name of recipient mailbox.
+     *                the registered name of recipient mailbox.
      * 
      * @param msg
-     *            the body of the message to send.
+     *                the body of the message to send.
      * 
      */
     public void send(final String name, final OtpErlangObject msg) {
@@ -363,14 +364,14 @@ public class OtpMbox {
      * Send a message to a named mailbox created from another node.
      * 
      * @param name
-     *            the registered name of recipient mailbox.
+     *                the registered name of recipient mailbox.
      * 
      * @param node
-     *            the name of the remote node where the recipient mailbox is
-     *            registered.
+     *                the name of the remote node where the recipient mailbox is
+     *                registered.
      * 
      * @param msg
-     *            the body of the message to send.
+     *                the body of the message to send.
      * 
      */
     public void send(final String name, final String node,
@@ -411,14 +412,15 @@ public class OtpMbox {
      * </p>
      * 
      * @param reason
-     *            an Erlang term describing the reason for the exit.
+     *                an Erlang term describing the reason for the exit.
      */
     public void exit(final OtpErlangObject reason) {
 	home.closeMbox(this, reason);
     }
 
     /**
-     * Equivalent to <code>exit(new OtpErlangAtom(reason))</code>. </p>
+     * Equivalent to <code>exit(new OtpErlangAtom(reason))</code>.
+     * </p>
      * 
      * @see #exit(OtpErlangObject)
      */
@@ -434,11 +436,11 @@ public class OtpMbox {
      * </p>
      * 
      * @param to
-     *            the {@link OtpErlangPid pid} to which the exit signal should
-     *            be sent.
+     *                the {@link OtpErlangPid pid} to which the exit signal
+     *                should be sent.
      * 
      * @param reason
-     *            an Erlang term indicating the reason for the exit.
+     *                an Erlang term indicating the reason for the exit.
      */
     // it's called exit, but it sends exit2
     public void exit(final OtpErlangPid to, final OtpErlangObject reason) {
@@ -505,12 +507,12 @@ public class OtpMbox {
      * </p>
      * 
      * @param to
-     *            the {@link OtpErlangPid pid} representing the object to link
-     *            to.
+     *                the {@link OtpErlangPid pid} representing the object to
+     *                link to.
      * 
      * @exception OtpErlangExit
-     *                if the {@link OtpErlangPid pid} referred to does not exist
-     *                or could not be reached.
+     *                    if the {@link OtpErlangPid pid} referred to does not
+     *                    exist or could not be reached.
      * 
      */
     public void link(final OtpErlangPid to) throws OtpErlangExit {
@@ -545,8 +547,8 @@ public class OtpMbox {
      * </p>
      * 
      * @param to
-     *            the {@link OtpErlangPid pid} representing the object to unlink
-     *            from.
+     *                the {@link OtpErlangPid pid} representing the object to
+     *                unlink from.
      * 
      */
     public void unlink(final OtpErlangPid to) {
@@ -588,10 +590,10 @@ public class OtpMbox {
      * </p>
      * 
      * @param node
-     *            the name of the node to ping.
+     *                the name of the node to ping.
      * 
      * @param timeout
-     *            the time, in milliseconds, before reporting failure.
+     *                the time, in milliseconds, before reporting failure.
      */
     public boolean ping(final String node, final long timeout) {
 	return home.ping(node, timeout);
@@ -666,7 +668,6 @@ public class OtpMbox {
      * @return true if both Objects are mailboxes with the same identifying
      *         {@link OtpErlangPid pids}.
      */
-
     @Override
     public boolean equals(final Object o) {
 	if (!(o instanceof OtpMbox)) {
@@ -675,11 +676,6 @@ public class OtpMbox {
 
 	final OtpMbox m = (OtpMbox) o;
 	return m.self.equals(self);
-    }
-
-    @Override
-    public int hashCode() {
-	return self.hashCode();
     }
 
     /*

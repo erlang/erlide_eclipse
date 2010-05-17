@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -44,11 +45,11 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * Erlang external format.
      * 
      * @param buf
-     *            the stream containing the encoded value.
+     *                the stream containing the encoded value.
      * 
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external
-     *                representation of an Erlang float.
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang float.
      */
     public OtpErlangDouble(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -70,7 +71,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * @return the value of this object, as a float.
      * 
      * @exception OtpErlangRangeException
-     *                if the value cannot be represented as a float.
+     *                    if the value cannot be represented as a float.
      */
     public float floatValue() throws OtpErlangRangeException {
 	final float f = (float) d;
@@ -96,9 +97,9 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * Convert this double to the equivalent Erlang external representation.
      * 
      * @param buf
-     *            an output stream to which the encoded value should be written.
+     *                an output stream to which the encoded value should be
+     *                written.
      */
-
     @Override
     public void encode(final OtpOutputStream buf) {
 	buf.write_double(d);
@@ -109,18 +110,23 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      * same value.
      * 
      * @param o
-     *            the float to compare to.
+     *                the float to compare to.
      * 
      * @return true if the floats have the same value.
      */
-
     @Override
     public boolean equals(final Object o) {
 	if (!(o instanceof OtpErlangDouble)) {
 	    return false;
 	}
 
-	final OtpErlangDouble dd = (OtpErlangDouble) o;
-	return this.d == dd.d;
+	final OtpErlangDouble d = (OtpErlangDouble) o;
+	return this.d == d.d;
+    }
+    
+    @Override
+    protected int doHashCode() {
+	Double v = new Double(d);
+	return v.hashCode();
     }
 }

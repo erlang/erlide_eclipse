@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -38,16 +39,16 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * Create an atom from the given string.
      * 
      * @param atom
-     *            the string to create the atom from.
+     *                the string to create the atom from.
      * 
      * @exception java.lang.IllegalArgumentException
-     *                if the string is empty ("") or contains more than
-     *                {@link #maxAtomLength maxAtomLength} characters.
+     *                    if the string is null or contains more than
+     *                    {@link #maxAtomLength maxAtomLength} characters.
      */
     public OtpErlangAtom(final String atom) {
-	if (atom == null || atom.length() < 1) {
+	if (atom == null) {
 	    throw new java.lang.IllegalArgumentException(
-		    "Atom must be non-empty");
+		    "null string value");
 	}
 
 	if (atom.length() > maxAtomLength) {
@@ -62,11 +63,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *            the stream containing the encoded atom.
+     *                the stream containing the encoded atom.
      * 
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external
-     *                representation of an Erlang atom.
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang atom.
      */
     public OtpErlangAtom(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
@@ -127,7 +128,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      * Determine if two atoms are equal.
      * 
      * @param o
-     *            the other object to compare to.
+     *                the other object to compare to.
      * 
      * @return true if the atoms are equal, false otherwise.
      */
@@ -141,12 +142,18 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
 	final OtpErlangAtom atom = (OtpErlangAtom) o;
 	return this.atom.compareTo(atom.atom) == 0;
     }
+    
+    @Override
+    protected int doHashCode() {
+	return atom.hashCode();
+    }
 
     /**
      * Convert this atom to the equivalent Erlang external representation.
      * 
      * @param buf
-     *            an output stream to which the encoded atom should be written.
+     *                an output stream to which the encoded atom should be
+     *                written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {

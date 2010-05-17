@@ -19,6 +19,8 @@
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
+import java.lang.Character;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Provides a Java representation of Erlang strings.
@@ -41,19 +43,20 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      * Create an Erlang string from a list of integers.
      * 
      * @return an Erlang string with Unicode code units.
-     * 
+     *
      * @throws OtpErlangException
-     *             for non-proper and non-integer lists.
+     *                for non-proper and non-integer lists.
      * @throws OtpErlangRangeException
-     *             if an integer in the list is not a valid Unicode code point
-     *             according to Erlang.
+     *                if an integer in the list is not
+     *                a valid Unicode code point according to Erlang.
      */
-    public OtpErlangString(final OtpErlangList list) throws OtpErlangException {
-	final String s = list.stringValue();
+    public OtpErlangString(final OtpErlangList list)
+	    throws OtpErlangException {
+	String s = list.stringValue();
 	final int n = s.length();
-	for (int i = 0; i < n; i = s.offsetByCodePoints(i, 1)) {
-	    final int cp = s.codePointAt(i);
-	    if (!isValidCodePoint(cp)) {
+	for (int i = 0;  i < n;  i = s.offsetByCodePoints(i, 1)) {
+	    int cp = s.codePointAt(i);
+	    if (! isValidCodePoint(cp)) {
 		throw new OtpErlangRangeException("Invalid CodePoint: " + cp);
 	    }
 	}
@@ -136,8 +139,7 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 
 	return false;
     }
-
-    @Override
+    
     protected int doHashCode() {
 	return str.hashCode();
     }
@@ -145,38 +147,52 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
     /**
      * Create Unicode code points from a String.
      * 
-     * @param s
-     *            a String to convert to an Unicode code point array
-     * 
-     * @return the corresponding array of integers representing Unicode code
-     *         points
+     * @param  s
+     *             a String to convert to an Unicode code point array
+     *
+     * @return the corresponding array of integers representing
+     *         Unicode code points
      */
 
     public static int[] stringToCodePoints(final String s) {
 	final int m = s.codePointCount(0, s.length());
-	final int[] codePoints = new int[m];
-	for (int i = 0, j = 0; j < m; i = s.offsetByCodePoints(i, 1), j++) {
+	final int [] codePoints = new int[m];
+	for (int i = 0, j = 0;  j < m;  i = s.offsetByCodePoints(i, 1), j++) {
 	    codePoints[j] = s.codePointAt(i);
 	}
 	return codePoints;
     }
 
     /**
-     * Validate a code point according to Erlang definition; Unicode 3.0. That
-     * is; valid in the range U+0..U+10FFFF, but not in the range U+D800..U+DFFF
-     * (surrogat pairs), nor U+FFFE..U+FFFF (non-characters).
-     * 
-     * @param cp
-     *            the code point value to validate
-     * 
-     * @return true if the code point is valid, false otherwise.
+     * Validate a code point according to Erlang definition; Unicode 3.0.
+     * That is; valid in the range U+0..U+10FFFF, but not in the range
+     * U+D800..U+DFFF (surrogat pairs), nor U+FFFE..U+FFFF (non-characters).
+     *
+     * @param  cp
+     *             the code point value to validate
+     *
+     * @return true if the code point is valid,
+     *         false otherwise.
      */
 
     public static boolean isValidCodePoint(final int cp) {
-	// Erlang definition of valid Unicode code points;
+	// Erlang definition of valid Unicode code points; 
 	// Unicode 3.0, XML, et.al.
-	return (cp >>> 16) <= 0x10 // in 0..10FFFF; Unicode range
-		&& (cp & ~0x7FF) != 0xD800 // not in D800..DFFF; surrogate range
-		&& (cp & ~1) != 0xFFFE; // not in FFFE..FFFF; non-characters
+	return (cp>>>16) <= 0x10 // in 0..10FFFF; Unicode range
+	    && (cp & ~0x7FF) != 0xD800 // not in D800..DFFF; surrogate range
+	    && (cp & ~1) != 0xFFFE; // not in FFFE..FFFF; non-characters
+    }
+
+    /**
+     * Construct a String from a Latin-1 (ISO-8859-1) encoded byte array,
+     * if Latin-1 is available, otherwise use the default encoding. 
+     *
+     */
+    public static String newString(final byte[] bytes) {
+	try {
+	    return new String(bytes, "ISO-8859-1");
+	} catch (final UnsupportedEncodingException e) {
+	}
+	return new String(bytes);
     }
 }

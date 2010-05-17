@@ -1,4 +1,4 @@
-/*
+/* 
  * %CopyrightBegin%
  * 
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
@@ -74,7 +74,7 @@ public class OtpNode extends OtpLocalNode {
     OtpNodeStatus handler;
 
     // flags
-    int flags = 0;
+    private int flags = 0;
 
     /**
      * <p>
@@ -314,13 +314,13 @@ public class OtpNode extends OtpLocalNode {
      * OtpNodeStatus} handler object contains callback methods, that will be
      * called when certain events occur.
      * 
-     * @param aHandler
+     * @param handler
      *            the callback object to register. To clear the handler, specify
      *            null as the handler to use.
      * 
      */
-    public synchronized void registerStatusHandler(final OtpNodeStatus aHandler) {
-	this.handler = aHandler;
+    public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
+	this.handler = handler;
     }
 
     /**
