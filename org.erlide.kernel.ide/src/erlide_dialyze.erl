@@ -48,6 +48,8 @@ check_plt(Plt) ->
 %% Local Functions
 %%
 
+flat({{dialyzer_error, E}, _}) ->
+    flat(E);
 flat({dialyzer_error, E}) ->
     flat(E);
 flat(L) ->
