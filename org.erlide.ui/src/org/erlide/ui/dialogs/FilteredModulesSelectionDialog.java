@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -94,6 +96,8 @@ public class FilteredModulesSelectionDialog extends
 	private String title;
 	final IContainer container;
 	final int typeMask;
+	private Comparator<Object> fComparator = null;
+	private Collator fCollator = null;
 
 	/**
 	 * Creates a new instance of the class
@@ -328,33 +332,36 @@ public class FilteredModulesSelectionDialog extends
 
 	@Override
 	protected Comparator<Object> getItemsComparator() {
-		return new Comparator<Object>() {
-
-			public int compare(final Object o1, final Object o2) {
-				final Collator collator = Collator.getInstance();
-				final String s1 = o1 instanceof IResource ? ((IResource) o1)
-						.getName() : (String) o1;
-				final String s2 = o2 instanceof IResource ? ((IResource) o2)
-						.getName() : (String) o2;
-				final int comparability = collator.compare(s1, s2);
-				if (comparability == 0) {
-					// IPath p1 = resource1.getFullPath();
-					// IPath p2 = resource2.getFullPath();
-					// int c1 = p1.segmentCount();
-					// int c2 = p2.segmentCount();
-					// for (int i = 0; i < c1 && i < c2; i++) {
-					// comparability = collator.compare(p1.segment(i), p2
-					// .segment(i));
-					// if (comparability != 0) {
-					// return comparability;
-					// }
-					// }
-					// comparability = c2 - c1;
+		if (fComparator == null) {
+			final Collator collator = Collator.getInstance();
+			if (collator instanceof RuleBasedCollator) {
+				RuleBasedCollator rbc = (RuleBasedCollator) collator;
+				String rules = rbc.getRules();
+				String newRules = rules.replaceFirst("<\'.\'<", "<")
+						.replaceFirst("<\'_\'<", "<\'.\'<\'_\'<");
+				try {
+					fCollator = new RuleBasedCollator(newRules);
+				} catch (ParseException e) {
+					e.printStackTrace();
+					fCollator = collator;
 				}
-
-				return comparability;
 			}
-		};
+
+			fComparator = new Comparator<Object>() {
+
+				public int compare(final Object o1, final Object o2) {
+					final String s1 = o1 instanceof IResource ? ((IResource) o1)
+							.getName()
+							: (String) o1;
+					final String s2 = o2 instanceof IResource ? ((IResource) o2)
+							.getName()
+							: (String) o2;
+					final int comparability = fCollator.compare(s1, s2);
+					return comparability;
+				}
+			};
+		}
+		return fComparator;
 	}
 
 	@Override
