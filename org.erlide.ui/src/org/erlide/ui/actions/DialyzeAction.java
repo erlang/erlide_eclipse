@@ -76,30 +76,6 @@ public class DialyzeAction implements IObjectActionDelegate {
 			ErlLogger.error(e);
 		}
 
-		// for (final IErlProject p : modules.keySet()) {
-		// final IProject project = p.getProject();
-		// Backend backend;
-		// try {
-		// backend = ErlangCore.getBackendManager().getBuildBackend(
-		// project);
-		// final List<String> files = new ArrayList<String>();
-		// for (final IErlModule m : modules.get(p)) {
-		// files.add(m.getResource().getLocation().toPortableString());
-		// }
-		// final List<String> includeDirs = new ArrayList<String>();
-		// for (final String i : p.getProperties().getIncludeDirs()) {
-		// final String s = project.getLocation().append(i)
-		// .toPortableString();
-		// includeDirs.add(s);
-		// }
-		// final OtpErlangObject result = ErlideDialyze.dialyze(backend,
-		// files, plt, includeDirs);
-		// addDialyzeWarningMarkersFromResult(p, result);
-		// } catch (final BackendException e) {
-		// ErlLogger.error(e);
-		// }
-		// }
-
 	}
 
 	private Shell getShell() {
