@@ -1,5 +1,6 @@
 package org.erlide.core.builder;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -156,14 +157,19 @@ public class DialyzerUtils {
 			final IFolder f = project.getFolder(ep.getOutputLocation());
 			final IResource[] members = f.members(false);
 			for (final IResource i : members) {
-				files.add(i.getLocation().toPortableString());
+				IPath p = i.getLocation();
+				if (p.toFile().exists())
+				files.add(p.toPortableString());
 			}
 		}
 		for (final String i : ep.getProperties().getIncludeDirs()) {
 			final IPath path = new Path(i);
 			project.getFile(path);
-			final String s = project.getLocation().append(i).toPortableString();
-			includeDirs.add(s);
+			IPath p= project.getLocation().append(i);
+			final String s = p.toPortableString();
+			if (p.toFile().exists()) {
+				includeDirs.add(s);
+			}
 		}
 	}
 
