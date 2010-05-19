@@ -11,6 +11,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDialyze {
 
+	private static final int LONG_TIMEOUT = 100000;
+
 	public static OtpErlangObject dialyze(final Backend backend,
 			final Collection<String> files, final String plt,
 			final Collection<String> includeDirs, final boolean fromSource) {
@@ -18,8 +20,9 @@ public class ErlideDialyze {
 			ErlLogger.debug(
 					"dialyze files %s plt %s includeDirs %s fromSource %b",
 					files.toString(), plt, includeDirs.toString(), fromSource);
-			final OtpErlangObject result = backend.call("erlide_dialyze",
-					"dialyze", "lsslso", files, plt, includeDirs, fromSource);
+			final OtpErlangObject result = backend.call(LONG_TIMEOUT,
+					"erlide_dialyze", "dialyze", "lsslso", files, plt,
+					includeDirs, fromSource);
 			ErlLogger.debug("result %s", result.toString());
 			return result;
 		} catch (final Exception e) {
