@@ -113,6 +113,7 @@ import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
+import org.erlide.ui.editors.erl.actions.CleanUpAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
 import org.erlide.ui.editors.erl.actions.IndentAction;
@@ -174,6 +175,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
 	ToggleFoldingRunner fFoldingRunner;
 	private CompileAction compileAction;
+	private CleanUpAction cleanUpAction;
 	private ScannerListener scannerListener;
 	private ClearCacheAction clearCacheAction;
 	private CallHierarchyAction callhierarchy;
@@ -413,6 +415,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
 		setAction("Compile file", compileAction);
 
+		cleanUpAction = new CleanUpAction(getSite());
+		cleanUpAction
+				.setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
+		setAction("Clean Up...", cleanUpAction);
+
 		if (ErlideUtil.isTest()) {
 			testAction = new TestAction(ErlangEditorMessages
 					.getBundleForConstructedKeys(), "Test.", this, getModule());
@@ -487,6 +494,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
 				toggleCommentAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
+		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
 		menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
 		final ActionContext context = new ActionContext(getSelectionProvider()

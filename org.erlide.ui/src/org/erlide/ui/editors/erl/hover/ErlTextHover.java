@@ -38,7 +38,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlModelException;
@@ -207,7 +206,7 @@ public class ErlTextHover implements ITextHover,
 					@Override
 					public void setSize(int width, int height) {
 						// TODO default size is too small
-						Point bounds = getSizeConstraints();
+						org.eclipse.swt.graphics.Point bounds = getSizeConstraints();
 						if (bounds != null) {
 							if (bounds.x != SWT.DEFAULT) {
 								width = Math.min(bounds.x, width * 2);
