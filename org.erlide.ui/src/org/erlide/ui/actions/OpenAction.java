@@ -109,26 +109,6 @@ public class OpenAction extends SelectionDispatchAction {
 
 	}
 
-	// public static List<Tuple> getPathVars() {
-	// final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-	// .getPathVariableManager();
-	// final String[] names = pvm.getPathVariableNames();
-	// final ArrayList<Tuple> result = new ArrayList<Tuple>(names.length);
-	// for (final String name : names) {
-	// result.add(new Tuple().add(name).add(
-	// pvm.getValue(name).toOSString()));
-	// }
-	// return result;
-	// }
-	//
-	// public OpenAction(final ErlangEditor editor, final String
-	// externalModules,
-	// final String externalIncludes) {
-	// this(editor.getEditorSite(), externalModules, externalIncludes);
-	// fEditor = editor;
-	// setText(ActionMessages.OpenAction_declaration_label);
-	// }
-
 	/*
 	 * (non-Javadoc) Method declared on SelectionDispatchAction.
 	 */
