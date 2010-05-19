@@ -8,12 +8,19 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
@@ -29,6 +36,38 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class DialyzeAction implements IObjectActionDelegate {
+
+	public static class DialyzerMessageDialog extends MessageDialog {
+
+		public static void openError(final Shell parent, final String title,
+				final String message) {
+			MessageDialog dialog = new DialyzerMessageDialog(parent, title,
+					null, message, MessageDialog.ERROR,
+					new String[] { IDialogConstants.OK_LABEL }, 0);
+			dialog.open();
+		}
+
+		private final String dialogMessage;
+
+		public DialyzerMessageDialog(final Shell parentShell,
+				final String dialogTitle, final Image dialogTitleImage,
+				final String dialogMessage, final int dialogImageType,
+				final String[] dialogButtonLabels, final int defaultIndex) {
+			super(parentShell, dialogTitle, dialogTitleImage, "",
+					dialogImageType, dialogButtonLabels, defaultIndex);
+			this.dialogMessage = dialogMessage;
+		}
+
+		@Override
+		protected Control createCustomArea(final Composite parent) {
+			Text text = new Text(parent, SWT.BORDER | SWT.V_SCROLL
+					| SWT.READ_ONLY | SWT.MULTI | SWT.WRAP);
+			text.setText(dialogMessage);
+			GridData gd = new GridData(550, 300);
+			text.setLayoutData(gd);
+			return text;
+		}
+	}
 
 	private final class DialyzeOperation implements IRunnableWithProgress {
 
@@ -68,8 +107,8 @@ public class DialyzeAction implements IObjectActionDelegate {
 			final Throwable t = e.getCause();
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					MessageDialog.openError(getShell(), "Dialyzer error", t
-							.getMessage());
+					DialyzerMessageDialog.openError(getShell(),
+							"Dialyzer error", t.getMessage());
 				}
 			});
 		} catch (final InterruptedException e) {
@@ -92,8 +131,8 @@ public class DialyzeAction implements IObjectActionDelegate {
 				try {
 					model.open(null);
 					if (i instanceof IResource) {
-						DialyzerUtils.addModulesFromResource(model,
-								(IResource) i, modules);
+						IResource r = (IResource) i;
+						DialyzerUtils.addModulesFromResource(model, r, modules);
 					}
 				} catch (final ErlModelException e) {
 					e.printStackTrace();

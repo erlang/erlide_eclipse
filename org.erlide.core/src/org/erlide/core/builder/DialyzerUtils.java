@@ -1,6 +1,5 @@
 package org.erlide.core.builder;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +23,7 @@ import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
@@ -120,7 +120,6 @@ public class DialyzerUtils {
 		final Set<IErlProject> keySet = modules.keySet();
 		final String pltPath = prefs.getPltPath();
 		for (final IErlProject p : keySet) {
-			monitor.subTask("Dialyzing " + p.getName());
 			final IProject project = p.getProject();
 			removeDialyzerWarningMarkers(project);
 			try {
@@ -128,8 +127,10 @@ public class DialyzerUtils {
 						.getBuildBackend(project);
 				final List<String> files = new ArrayList<String>();
 				final List<String> includeDirs = new ArrayList<String>();
-				collectFilesAndIncludeDirs(p, modules, project, files,
+				final List<String> names = new ArrayList<String>();
+				collectFilesAndIncludeDirs(p, modules, project, files, names,
 						includeDirs, fromSource);
+				monitor.subTask("Dialyzing " + getFileNames(names));
 				final OtpErlangObject result = ErlideDialyze.dialyze(backend,
 						files, pltPath, includeDirs, fromSource);
 				checkDialyzeError(result);
@@ -142,35 +143,45 @@ public class DialyzerUtils {
 		}
 	}
 
+	private static String getFileNames(final List<String> names) {
+		if (names.size() == 0) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder(100);
+		for (String name : names) {
+			if (sb.length() > 100) {
+				sb.append("..., ");
+				break;
+			}
+			sb.append(name);
+			sb.append(", ");
+		}
+		return sb.substring(0, sb.length() - 2);
+	}
+
 	public static void collectFilesAndIncludeDirs(final IErlProject ep,
 			final Map<IErlProject, Set<IErlModule>> modules,
 			final IProject project, final List<String> files,
-			final List<String> includeDirs, final boolean fromSource)
-			throws CoreException {
+			final List<String> names, final List<String> includeDirs,
+			final boolean fromSource) throws CoreException {
 		if (fromSource) {
 			for (final IErlModule m : modules.get(ep)) {
-				IResource resource;
-				resource = m.getResource();
-				files.add(resource.getLocation().toPortableString());
+				if (ErlideUtil.hasErlExtension(m.getName())) {
+					IResource resource = m.getResource();
+					files.add(resource.getLocation().toPortableString());
+				}
 			}
 		} else {
 			final IFolder f = project.getFolder(ep.getOutputLocation());
 			final IResource[] members = f.members(false);
 			for (final IResource i : members) {
 				IPath p = i.getLocation();
-				if (p.toFile().exists())
-				files.add(p.toPortableString());
+				if (p.toFile().exists()) {
+					files.add(p.toPortableString());
+				}
 			}
 		}
-		for (final String i : ep.getProperties().getIncludeDirs()) {
-			final IPath path = new Path(i);
-			project.getFile(path);
-			IPath p= project.getLocation().append(i);
-			final String s = p.toPortableString();
-			if (p.toFile().exists()) {
-				includeDirs.add(s);
-			}
-		}
+		BuilderUtils.getIncludeDirs(project, includeDirs);
 	}
 
 	public static void checkDialyzeError(final OtpErlangObject result)
@@ -181,7 +192,8 @@ public class DialyzerUtils {
 		}
 		if (result instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) result;
-			final String s = Util.stringValue(t.elementAt(1));
+			final String s = Util.stringValue(t.elementAt(1)).replaceAll(
+					"\\\\n", "\n");
 			throw new DialyzerErrorException(s);
 		}
 	}
