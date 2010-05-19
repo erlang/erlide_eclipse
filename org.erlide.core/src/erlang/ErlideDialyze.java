@@ -11,12 +11,15 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDialyze {
 
+	private static final int LONG_TIMEOUT = 100000;
+
 	public static OtpErlangObject dialyze(final Backend backend,
 			final Collection<String> files, final String plt,
 			final Collection<String> includeDirs, final boolean fromSource) {
 		try {
-			final OtpErlangObject result = backend.call("erlide_dialyze",
-					"dialyze", "lsslso", files, plt, includeDirs, fromSource);
+			final OtpErlangObject result = backend.call(LONG_TIMEOUT,
+					"erlide_dialyze", "dialyze", "lsslso", files, plt,
+					includeDirs, fromSource);
 			return result;
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
