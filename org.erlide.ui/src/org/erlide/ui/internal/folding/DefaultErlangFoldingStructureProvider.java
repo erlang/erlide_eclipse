@@ -427,15 +427,15 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseHeaderComments = true;
 
-	private boolean fCollapseEdoc = false;
+	private final boolean fCollapseEdoc = false;
 
 	private boolean fCollapseComments = false;
 
 	private boolean fCollapseClauses = false;
 
-	private boolean fCollapseMacroDeclarations = false;
+	private final boolean fCollapseMacroDeclarations = false;
 
-	private boolean fCollapseExports = false;
+	private final boolean fCollapseExports = false;
 
 	private boolean fCollapseTypespecs = false;
 
@@ -479,6 +479,7 @@ public class DefaultErlangFoldingStructureProvider implements
 	public void install(final ITextEditor editor, final ProjectionViewer viewer) {
 		if (editor instanceof ErlangEditor) {
 			fFirstTimeInitialCollapse = true;
+			ErlLogger.debug("install");
 			fEditor = editor;
 			fViewer = viewer;
 			fViewer.addProjectionListener(this);
@@ -519,10 +520,23 @@ public class DefaultErlangFoldingStructureProvider implements
 			fElementListener = new ElementChangedListener();
 			ErlangCore.getModelManager().addElementChangedListener(
 					fElementListener);
-			final IErlElementDelta d = new ErlElementDelta(
-					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-					fModule);
-			processDelta(d);
+			boolean structureKnown = false;
+			try {
+				structureKnown = fModule.isStructureKnown();
+			} catch (ErlModelException e1) {
+			}
+			if (structureKnown) {
+				final IErlElementDelta d = new ErlElementDelta(
+						IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+						fModule);
+				processDelta(d);
+			} else {
+				try {
+					fModule.open(null);
+				} catch (ErlModelException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -555,18 +569,12 @@ public class DefaultErlangFoldingStructureProvider implements
 				.getPreferenceStore();
 		fAllowCollapsing = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
-		fCollapseEdoc = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EDOC);
 		fCollapseClauses = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
 		fCollapseHeaderComments = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS);
 		fCollapseComments = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
-		fCollapseMacroDeclarations = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS);
-		fCollapseExports = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EXPORTS);
 		fCollapseTypespecs = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_TYPESPECS);
 	}
@@ -645,6 +653,19 @@ public class DefaultErlangFoldingStructureProvider implements
 			collapse = fAllowCollapsing && fCollapseTypespecs;
 			createProjection = true;
 		}
+		int pos = -1;
+		if (element instanceof ISourceReference) {
+			ISourceReference sr = (ISourceReference) element;
+			try {
+				pos = sr.getSourceRange().getOffset();
+			} catch (ErlModelException e) {
+			}
+		}
+		ErlLogger
+				.debug(
+						"kind %s pos %d collapse %b createProjection %b fFirstTimeInitialCollapse %b",
+						element.getKind().toString(), pos, collapse,
+						createProjection, fFirstTimeInitialCollapse);
 		if (createProjection) {
 			final IRegion region = computeProjectionRanges(element);
 			if (region != null) {
@@ -728,6 +749,12 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	protected void processDelta(final IErlElementDelta delta) {
+		ErlLogger.debug("processDelta");
+		// try {
+		// throw new BackendException();
+		// } catch (BackendException e) {
+		// e.printStackTrace();
+		// }
 
 		if (!isInstalled()) {
 			return;
@@ -824,6 +851,8 @@ public class DefaultErlangFoldingStructureProvider implements
 			final Annotation[] changes = new Annotation[updates.size()];
 			updates.toArray(changes);
 			model.modifyAnnotations(removals, additions, changes);
+			ErlLogger
+					.debug("processDelta, setting fFirstTimeInitialCollapse to false");
 			fFirstTimeInitialCollapse = false;
 		} finally {
 			fCachedDocument = null;
