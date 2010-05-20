@@ -10,7 +10,9 @@ import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideContextAssist {
@@ -34,20 +36,68 @@ public class ErlideContextAssist {
 		return result;
 	}
 
-	public static boolean checkRecordCompletion(final Backend b,
+	// -define(NO_RECORD, 0).
+	// -define(RECORD_NAME, 1).
+	// -define(RECORD_FIELD, 2).
+	public static final int RECORD_NAME = 1;
+	public static final int RECORD_FIELD = 2;
+
+	public static class RecordCompletion {
+		public RecordCompletion(final int kind, final String name,
+				final String prefix) {
+			super();
+			this.kind = kind;
+			this.name = name;
+			this.prefix = prefix;
+		}
+
+		public RecordCompletion(final OtpErlangTuple r)
+				throws OtpErlangRangeException {
+			OtpErlangLong kindL = (OtpErlangLong) r.elementAt(0);
+			OtpErlangAtom nameA = (OtpErlangAtom) r.elementAt(1);
+			OtpErlangAtom prefixA = (OtpErlangAtom) r.elementAt(2);
+			kind = kindL.intValue();
+			name = nameA.atomValue();
+			prefix = prefixA.atomValue();
+		}
+
+		private final int kind;
+		private final String name;
+		private final String prefix;
+
+		public boolean isNameWanted() {
+			return kind == RECORD_NAME;
+		}
+
+		public boolean isFieldWanted() {
+			return kind == RECORD_FIELD;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getPrefix() {
+			return prefix;
+		}
+	}
+
+	public static RecordCompletion checkRecordCompletion(final Backend b,
 			final String substring) {
 		try {
 			final OtpErlangObject res = b.call("erlide_content_assist",
 					"check_record", "s", substring);
 			if (Util.isOk(res)) {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
-				final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(1);
-				return a.booleanValue();
+				final OtpErlangTuple r = (OtpErlangTuple) t.elementAt(1);
+				return new RecordCompletion(r);
 			}
 		} catch (final BackendException e) {
 			e.printStackTrace();
+		} catch (OtpErlangRangeException e) {
+			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 
 	@SuppressWarnings("boxing")

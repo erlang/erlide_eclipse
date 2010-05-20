@@ -344,8 +344,7 @@ public final class ErlParser {
 							: null;
 					final OtpErlangList l = (OtpErlangList) recordTuple
 							.elementAt(1);
-					final ErlRecordDef r = new ErlRecordDef(parent, recordName,
-							s, l);
+					final ErlRecordDef r = new ErlRecordDef(parent, s, l);
 					setPos(r, pos);
 					return r;
 				}
@@ -356,7 +355,7 @@ public final class ErlParser {
 				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
 						.stringValue()
 						: null;
-				final ErlRecordDef r = new ErlRecordDef(parent, recordName, s);
+				final ErlRecordDef r = new ErlRecordDef(parent, s);
 				setPos(r, pos);
 				return r;
 			}
@@ -376,7 +375,7 @@ public final class ErlParser {
 				final String s = Util.stringValue(extra);
 				// final ErlMacroDef r = new ErlMacroDef(parent, o.toString(),
 				// s);
-				final ErlMacroDef r = new ErlMacroDef(parent, s);
+				final ErlMember r = new ErlMacroDef(parent, s);
 				setPos(r, pos);
 				// r.setParseTree(val);
 				return r;
@@ -390,7 +389,7 @@ public final class ErlParser {
 					if (o instanceof OtpErlangTuple) {
 						o = ((OtpErlangTuple) o).elementAt(2);
 					}
-					ErlMacroDef r;
+					ErlMember r;
 					if (o instanceof OtpErlangAtom) {
 						final String macroName = ((OtpErlangAtom) o)
 								.atomValue();

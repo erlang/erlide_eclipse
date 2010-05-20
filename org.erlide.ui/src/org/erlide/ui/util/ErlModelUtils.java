@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
@@ -43,6 +45,7 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
@@ -321,6 +324,14 @@ public class ErlModelUtils {
 		return false;
 	}
 
+	public static String checkPredefinedMacro(final String definedName,
+			final IErlModule m) {
+		if ("?MODULE".equals(definedName)) {
+			return m.getModuleName();
+		}
+		return definedName;
+	}
+
 	/**
 	 * Open an editor on the given module and select the given erlang function
 	 * 
@@ -332,12 +343,17 @@ public class ErlModelUtils {
 	 *            function arity
 	 * @param path
 	 *            path to module (including .erl)
+	 * @param checkAllProjects
+	 *            if true, check all projects in workspace, otherwise only
+	 *            consider projects referred from project
 	 * @throws CoreException
 	 */
 	public static boolean openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
-			final IProject project) throws CoreException {
-		final IResource r = findExternalModule(mod, path, project);
+			final IProject project, final boolean checkAllProjects)
+			throws CoreException {
+		final IResource r = findExternalModule(mod, path, project,
+				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -359,8 +375,10 @@ public class ErlModelUtils {
 	}
 
 	public static boolean openExternalType(final String mod, final String type,
-			final String path, final IProject project) throws CoreException {
-		final IResource r = findExternalModule(mod, path, project);
+			final String path, final IProject project,
+			final boolean checkAllProjects) throws CoreException {
+		final IResource r = findExternalModule(mod, path, project,
+				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
 			try {
@@ -376,19 +394,51 @@ public class ErlModelUtils {
 	}
 
 	public static IResource findExternalModule(final String mod,
-			final String path, final IProject project) throws CoreException {
+			final String path, final IProject project,
+			final boolean checkAllProjects) throws CoreException {
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {
 			r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
 					modFileName, PluginUtils.getSourcePathFilter(project));
-			
+
 			if (r == null) {
 				try {
 					r = ResourceUtil.openExternal(path);
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
+				if (r != null && !PluginUtils.isOnSourcePath(r.getParent())) {
+					r = null;
+				}
+			}
+		}
+		if (r == null) {
+			ErlLogger.debug(
+					"findExternalModule not found yet, checkAllProjects %b",
+					checkAllProjects);
+		}
+		if (r == null && checkAllProjects) {
+			final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+					.getRoot();
+			IProject[] projects = workspaceRoot.getProjects();
+			for (IProject p : projects) {
+				if (ErlideUtil.hasErlangNature(p)) {
+					ErlLogger.debug("searching project %s", p.getName());
+					r = ResourceUtil.recursiveFindNamedResource(p, modFileName,
+							PluginUtils.getSourcePathFilter(p));
+					if (r != null) {
+						ErlLogger.debug("found %s", r);
+						break;
+					}
+				}
+			}
+		}
+		if (r == null) {
+			try {
+				r = ResourceUtil.openExternal(path);
+			} catch (final Exception e) {
+				ErlLogger.warn(e);
 			}
 		}
 		return r;

@@ -250,7 +250,7 @@ cac(attribute, Attribute, _Exports, _Imports) ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
-            Between = get_between_outer_pars(Attribute),
+            Between = get_between_outer_pars(Attribute, '(', ')'),
             Extra = to_string(Between),
             {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
             ?D({AttrArgs, Between}),
@@ -292,7 +292,7 @@ get_attribute_args(export, Between, _Args) ->
 get_attribute_args(record, Between, _Args) ->
     [RecordToken | _] = Between,
     RecordName = RecordToken#token.value,
-    Tokens = get_between(Between, '{', '}'),
+    Tokens = get_between_outer_pars(Between, '{', '}'),
     R = {RecordName, field_list_from_tokens(Tokens)},
     {R, [], []};
 get_attribute_args(_, _Between, Args) ->
@@ -372,35 +372,35 @@ get_head(T) ->
     end.
 
 get_args(T) ->
-    case get_between_outer_pars(T) of
+    case get_between_outer_pars(T, '(', ')') of
         "" ->
             "";
         P ->
             "("++to_string(P)++")"
     end.
 
-get_between_outer_pars(T) ->
-    case skip_to(T, '(') of
+get_between_outer_pars(T, L, R) ->
+    case skip_to(T, L) of
         [] ->
             [];
         [_ | S] ->
-            {R, _Rest} = gbop(S),
-            lists:reverse(tl(lists:reverse(R)))
+            {RL, _Rest} = gbop(S, L, R),
+            lists:reverse(tl(lists:reverse(RL)))
     end.
 
-gbop([]) ->
+gbop([], _L, _R) ->
     {[], []};
-gbop([eof | _]) ->
+gbop([eof | _], _L, _R) ->
     {[], []};
-gbop([#token{kind=')'}=T | Rest]) ->
+gbop([#token{kind=R}=T | Rest], _L, R) ->
     {[T], Rest};
-gbop([#token{kind='('}=T | Rest]) ->
-    {R, Rest1} = gbop(Rest),
-    {R2, Rest2} = gbop(Rest1),
-    {[T] ++ R ++ R2, Rest2};
-gbop([T | Rest]) ->
-    {R, Rest1} = gbop(Rest),
-    {[T] ++ R, Rest1}.
+gbop([#token{kind=L}=T | Rest], L, R) ->
+    {R1, Rest1} = gbop(Rest, L, R),
+    {R2, Rest2} = gbop(Rest1, L, R),
+    {[T] ++ R1 ++ R2, Rest2};
+gbop([T | Rest], L, R) ->
+    {LR, Rest1} = gbop(Rest, L, R),
+    {[T] ++ LR, Rest1}.
 
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 

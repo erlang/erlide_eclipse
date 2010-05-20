@@ -11,7 +11,6 @@
 package org.erlide.ui.actions;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -39,7 +38,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.erlang.util.SourcePathProvider;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -47,6 +45,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
+import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -214,22 +213,25 @@ public class OpenAction extends SelectionDispatchAction {
 		final IProject project = erlProject == null ? null : erlProject
 				.getProject();
 		if (res.isExternalCall()) {
+			boolean checkAllProjects = NavigationPreferencePage
+					.getCheckAllProjects();
 			if (editor != null) {
 				final IErlElement e = editor.getElementAt(offset, true);
 				if (e.getKind() == IErlElement.Kind.TYPESPEC
 						|| e.getKind() == IErlElement.Kind.RECORD_DEF) {
-					if (ErlModelUtils.openExternalType(res.getName(), res
-							.getFun(), res.getPath(), project)) {
+					if (ErlModelUtils
+							.openExternalType(res.getName(), res.getFun(), res
+									.getPath(), project, checkAllProjects)) {
 						return;
 					}
 				}
 			}
 			if (!ErlModelUtils.openExternalFunction(res.getName(), res
-					.getFunction(), res.getPath(), project)) {
+					.getFunction(), res.getPath(), project, checkAllProjects)) {
 				ErlModelUtils.openExternalFunction(res.getName(),
 						new ErlangFunction(res.getFun(),
 								IErlModel.UNKNOWN_ARITY), res.getPath(),
-						project);
+						project, checkAllProjects);
 			}
 		} else if (res.isInclude()) {
 			final IContainer parent = module == null ? null : module
@@ -284,8 +286,10 @@ public class OpenAction extends SelectionDispatchAction {
 				if (res2 instanceof OtpErlangString && mod != null) {
 					final OtpErlangString otpErlangString = (OtpErlangString) res2;
 					final String path = otpErlangString.stringValue();
+					boolean checkAllProjects = NavigationPreferencePage
+							.getCheckAllProjects();
 					ErlModelUtils.openExternalFunction(mod, res.getFunction(),
-							path, project);
+							path, project, checkAllProjects);
 				} else {
 					ErlModelUtils.openFunctionInEditor(new ErlangFunction(res
 							.getFun(), IErlModel.UNKNOWN_ARITY), editor);
@@ -321,8 +325,9 @@ public class OpenAction extends SelectionDispatchAction {
 			}
 			final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
 					: IErlElement.Kind.RECORD_DEF;
-			final String[] s = new String[] { definedName,
-					ErlideUtil.unquote(definedName) };
+			String unquoted = ErlideUtil.unquote(definedName);
+			final String[] s = new String[] { definedName, unquoted,
+					ErlModelUtils.checkPredefinedMacro(unquoted, module) };
 			for (final String string : s) {
 				if (ErlModelUtils.openPreprocessorDef(b, project, page, module,
 						string, type, model.getExternal(erlProject,

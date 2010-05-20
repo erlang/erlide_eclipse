@@ -69,10 +69,10 @@ public class ErlideOpen {
 		return result;
 	}
 
-	static OtpErlangTuple mkContext(String externalModules,
-			String externalIncludes, OtpErlangList pathVars,
-			Collection<String> extraSourcePaths,
-			Collection<OtpErlangObject> imports) {
+	static OtpErlangTuple mkContext(final String externalModules,
+			final String externalIncludes, final OtpErlangList pathVars,
+			final Collection<String> extraSourcePaths,
+			final Collection<OtpErlangObject> imports) {
 		OtpErlangAtom tag = new OtpErlangAtom("open_context");
 		final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");
 

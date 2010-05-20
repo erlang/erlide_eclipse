@@ -168,8 +168,17 @@
 	
     <target name="-createNightlyBuildSiteXml" if="isNightlyBuild">
     	<echo>${siteXmlFile}</echo>
+		<if>
+		  <not><isset property="siteLoc"/></not>
+		  <then>
+		    <property name="siteUrl" value=""/>
+		  </then>
+		  <else>
+		    <property name="siteUrl" value="url=&quot;http://downloads.sourceforge.net/project/erlide/${siteLoc}&quot;"/>
+		  </else>
+		</if>
         <echo file="${siteXmlFile}">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;site url=&quot;http://downloads.sourceforge.net/project/erlide/updateNightly/&quot;&gt;
+&lt;site ${siteUrl}&gt;
 		&lt;description&gt;Nightly builds for erlIDE&lt;/description&gt;
 </echo>
 		
@@ -177,7 +186,8 @@
         <echo file="${siteXmlFile}" append="true">		&lt;category-def name=&quot;Nightly&quot;
             label=&quot;Nightly builds&quot;&gt;
 		&lt;/category-def&gt;
-&lt;/site&gt;</echo>
+&lt;/site&gt;
+</echo>
     </target>
 
 	<target name="-appendFeatureElement">

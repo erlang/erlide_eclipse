@@ -22,6 +22,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideSearchServer {
 
+	private static final int SEARCH_LONG_TIMEOUT = 50000;
+
 	private static OtpErlangList getModulesFromScope(
 			final Collection<IResource> scope) {
 		OtpErlangObject result[] = new OtpErlangObject[scope.size()];
@@ -41,9 +43,10 @@ public class ErlideSearchServer {
 			final String stateDir) {
 		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
 		try {
-			final OtpErlangObject r = b.call("erlide_search_server",
-					"find_refs", "xxs", ref.getSearchObject(),
-					getModulesFromScope(scope), stateDir);
+			final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
+					"erlide_search_server", "find_refs", "xxs", ref
+							.getSearchObject(), getModulesFromScope(scope),
+					stateDir);
 			if (Util.isOk(r)) {
 				addSearchResult(result, r);
 			}

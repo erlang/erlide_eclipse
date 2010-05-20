@@ -121,6 +121,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 	 */
 	void resetAndCacheScannerAndParser(String newText);
 
+	/**
+	 * Get the module name without extension
+	 *
+	 * @return name as string
+	 */
 	String getModuleName();
 
 	IErlFunction findFunction(ErlangFunction erlangFunction);

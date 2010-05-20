@@ -46,7 +46,7 @@ add_project(ProjectDir) ->
 
 add_dirs([]) ->
 	ok;
-add_dirs([BeamDir | Rest]) ->
+add_dirs([BeamDir | Rest]) ->
 	start(),
 	update(),
 	?D(BeamDir),
