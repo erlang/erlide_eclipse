@@ -1,7 +1,5 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -11,9 +9,14 @@ import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
-import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Rename variable refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override
@@ -21,10 +24,10 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
-			SelectionKind kind = sel.getDetailedKind();
-			if (kind == SelectionKind.VARIABLE)
-				return new RefactoringStatus();
+			// SelectionKind kind = sel.getDetailedKind();
+			return new RefactoringStatus();
 		}
+
 		return RefactoringStatus
 				.createFatalErrorStatus("Please select a variable!");
 	}
@@ -43,4 +46,5 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 				sel.getSelectionRange().getStartCol(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
+
 }

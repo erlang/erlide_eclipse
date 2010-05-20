@@ -1,12 +1,12 @@
-#Tue May 26 14:40:57 CEST 2009
-backend_version=R12B
+#Fri Mar 12 15:19:50 CET 2010
+backend_version=R13B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
-include_dirs=wrangler/hrl
+include_dirs=wrangler/include;
 make_unique=true
 output_dir=wrangler/ebin
 runtimes=r12-5
-source_dirs=wrangler/erl
+source_dirs=wrangler/erl;
 type=NORMAL
 use_pathz=true

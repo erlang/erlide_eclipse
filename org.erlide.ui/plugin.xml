@@ -2,6 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
+   <extension-point id="erlDndAdapter" name="Erlide Drag and Drop Adapter" schema="schema/erlDndAdapter.exsd"/>
 
      <extension
          point="org.eclipse.ui.editors">
@@ -1128,6 +1129,15 @@
                class="org.erlide.ui.navigator.ErlElementPositionSorter"
                id="org.erlide.ui.navigator.ErlElementPositionSorterId">
          </commonSorter>
+         <dropAssistant
+               class="org.erlide.ui.navigator.dnd.ErlCommonDropAdapterAssistant"
+               id="org.erlide.ui.ErlDropAssistant">
+            <possibleDropTargets>
+               <instanceof
+                     value="java.lang.Object">
+               </instanceof>
+            </possibleDropTargets>
+         </dropAssistant>
       </navigatorContent>
    </extension>
    <extension

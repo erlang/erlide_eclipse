@@ -11,6 +11,7 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.IDuplicatedCodeResultDi
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 
 public class DuplicatesUIManager {
+	public static final String duplicatedView = "org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView";
 	// private static List<DuplicatedCode> result;
 	private static IDuplicatedCodeResultDisplayer dupDisplayer;
 
@@ -30,13 +31,24 @@ public class DuplicatesUIManager {
 		try {
 
 			@SuppressWarnings("unused")
-			IViewPart view = window
-					.getActivePage()
-					.showView(
-							"org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView");
+			IViewPart view = window.getActivePage().showView(duplicatedView);
 
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void closeDuplicatesView() {
+		IWorkbench workbench = PlatformUI.getWorkbench();
+
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		IViewPart view;
+		try {
+			view = window.getActivePage().showView(duplicatedView);
+			window.getActivePage().hideView(view);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

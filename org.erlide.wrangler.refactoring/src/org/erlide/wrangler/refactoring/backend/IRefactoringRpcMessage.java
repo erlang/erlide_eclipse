@@ -14,7 +14,7 @@ public interface IRefactoringRpcMessage extends IRpcMessage {
 	 * Successful refactorings contains source file modification, which are
 	 * represented with filename-source code pairs
 	 * 
-	 * @return
+	 * @return changed files list
 	 */
 	public ArrayList<ChangedFile> getRefactoringChangeset();
 

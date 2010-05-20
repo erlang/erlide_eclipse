@@ -21,12 +21,14 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
+	private final String emptyErrorMessage = "No expression found!";
+
 	public DuplicateDetectionParser(OtpErlangObject obj) {
 		super(obj);
 	}
 
 	// [{ [{ {filename(), integer(), integer()} , {filename(), integer(),
-	// integer()} }], integer(), integer()}]
+	// integer()} }], integer(), integer(), string()}]
 	public void parse(OtpErlangObject object) {
 		try {
 			// TODO testing all cases
@@ -38,7 +40,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			} else {
 				OtpErlangList resultList = (OtpErlangList) object;
 				if (resultList.arity() == 0) {
-					setUnSuccessful("There is not any duplicates...");
+					setUnSuccessful(emptyErrorMessage);
 					return;
 				}
 
@@ -54,12 +56,18 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
 	}
 
+	// { [{ {filename(), integer(), integer()} , {filename(), integer(),
+	// integer()} }], integer(), integer(), string()}
 	protected DuplicatedCodeElement parseDuplicates(OtpErlangObject object)
 			throws OtpErlangRangeException, WranglerException {
 		OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
 		OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple
 				.elementAt(0);
 		LinkedHashMap<IFile, List<DuplicatedCodeInstanceElement>> values = new LinkedHashMap<IFile, List<DuplicatedCodeInstanceElement>>();
+
+		OtpErlangString suggestion = (OtpErlangString) listElementTuple
+				.elementAt(3);
+		String suggStr = suggestion.stringValue();
 
 		OtpErlangObject[] elements = duplicateCodeList.elements();
 
@@ -77,10 +85,11 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 			OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
 			String fileNameStr = fileName.stringValue();
-			IFile file = WranglerUtils.geFileFromPath(fileNameStr);
+			IFile file = WranglerUtils.getFileFromPath(fileNameStr);
 			DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
 					file, startLine.intValue(), startCol.intValue(), endLine
 							.intValue(), endCol.intValue() + 1);
+			instance.setSuggestedCode(suggStr);
 			if (values.containsKey(file)) {
 				values.get(file).add(instance);
 			} else {
@@ -92,11 +101,13 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
 		DuplicatedCodeElement result = new DuplicatedCodeElement(values
 				.entrySet().iterator().next().getValue().get(0));
+		result.setSuggestedCode(suggStr);
 
 		for (Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values
 				.entrySet()) {
 			DuplicatedFileElement dupFile = new DuplicatedFileElement(entry
 					.getKey());
+			dupFile.setSuggestedCode(suggStr);
 			for (DuplicatedCodeInstanceElement instance : entry.getValue()) {
 				dupFile.addChild(instance);
 			}

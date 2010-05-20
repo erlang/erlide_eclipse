@@ -3,7 +3,6 @@ package org.erlide.wrangler.refactoring.duplicatedcode.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 import org.eclipse.core.resources.IFile;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeInstanceElement;
@@ -45,16 +44,20 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
 			Iterator<OtpErlangObject> it = posList.iterator();
 			while (it.hasNext()) {
 				actPos = (OtpErlangTuple) it.next();
-				startLine = (OtpErlangLong) actPos.elementAt(0);
-				startColumn = (OtpErlangLong) actPos.elementAt(1);
-				endLine = (OtpErlangLong) actPos.elementAt(2);
-				endColumn = (OtpErlangLong) actPos.elementAt(3);
+				startLine = (OtpErlangLong) ((OtpErlangTuple) actPos
+						.elementAt(0)).elementAt(0);
+				startColumn = (OtpErlangLong) ((OtpErlangTuple) actPos
+						.elementAt(0)).elementAt(1);
+				endLine = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(1))
+						.elementAt(0);
+				endColumn = (OtpErlangLong) ((OtpErlangTuple) actPos
+						.elementAt(1)).elementAt(1);
 
 				IErlSelection sel = GlobalParameters.getWranglerSelection();
 				instances.add(new DuplicatedCodeInstanceElement((IFile) sel
 						.getErlElement().getResource(), startLine.intValue(),
 						startColumn.intValue(), endLine.intValue(), endColumn
-								.intValue()));
+								.intValue() + 1));
 			}
 
 			DuplicatedCodeInstanceElement defaultInstance = instances.get(0);

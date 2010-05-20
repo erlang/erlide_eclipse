@@ -23,23 +23,11 @@
 		<ul>
 			<li>layout-preserving</li>
 			<li>supports Eclipse <code>undo</code>/<code>redo</code> operations</li>
-			<li>integrated with<a href="http://erlide.sourceforge.net/">Erlide</a></li>
+			<li>integrated with <a href="http://erlide.sourceforge.net/">Erlide</a></li>
 			<li>supports cross-module refactorings</li>
 			<li>supports preview of the changes</li>
 		</ul>
-		<p><b><a href="refactorings.html">Refactorings Implemented</a></b></p>
-		<ul>
-			<li>Rename variable name</li>
-			<li>Rename function name</li>
-			<li>Rename module name</li>
-			<li>Move function to another module</li>
-			<li>Fold expression against function</li>
-			<li>Function extraction</li>
-			<li>Generalise function</li>
-			<li>Tuple function parameters</li>
-			<li>Search expression</li>
-			<li>Detect duplicated code parts</li>
-		</ul>
+		<p><b><a href="refactorings.html">Implemented Refactorings</a></b></p>
 	<h2>How Wrangler refactoring works</h2>
 	<p>Each refactoring can be invoked from the <em>Refactor</em> menu selecting its name.</p> 
 	<img alt="Refactor menu" src="../images/refactor-menu.png"> 
@@ -47,18 +35,25 @@
 	<img alt="Wizard" src="../images/rename-variable-dialog.png">
 	<p>If the result of the selected refactoring is undesirable, it can be cancelled after previewing it.</p>
 	<img alt="Preview window" src="../images/preview.png">
-	<h2>Planned features</h2>
+	<p>Refactorings can be also called from the Navigator/Outline view by right clicking on an Erlang element, and then selecting the Refactor menu.<br> 
+	Some of them (such as rename function refactoring) also has a shortcut (e.g. CTRL + ALT + R F), in this case it is possible to call the refactoring with the key combination.</p>
+	<!--<h2>Planned features</h2>
 	<ul>
 		<li>Tighter integration with Eclipse / Erlide</li>
-		<li>Process related refactorings</li>
-	</ul>
+		<li>Emacs keybindings</li>
+		<li>New refactorings</li>
+	</ul-->
 	<h2>Links</h2>
 	<ul>
+		<li><a href="http://code.google.com/p/wranglerintegration/">Wrangler integration project page</li>
+		<li><a href="http://github.com/oroszgy/erlide">Wrangler integration code repository</li>
+		<li><a href="http://www.cs.kent.ac.uk/projects/wrangler/">Wrangler home page</a></li>		
+		<li><a href="https://launchpad.net/~oroszgy/+archive/wrangler">Wrangler installer for Debian Linux</li>
+		<li><a href="http://erlide.org">Erlide project site</a></li>
+		<li><a href="http://erlide.sourceforge.net/update">Erlide update site</a></li>
+		<li><a href="https://www.assembla.com/spaces/dashboard/index/erlide">Erlide bug tracker</a></li>		
 		<li><a href="http://www.erlang.org">Open source Erlang</a></li>
-		<li><a href="http://www.cs.kent.ac.uk/projects/forse/">Wrangler home page</a></li>
-		<li><a href="http://erlide.sourceforge.net/">Erlide project site</a></li>
-		<li><a href="http://erlide.sourceforge.net/update">Update site</a></li>
-		<li><a href="https://www.assembla.com/spaces/dashboard/index/erlide">Bug tracker</a></li>
+		<li><a href="http://www.protest-project.eu/">Protest Project</a></li>
 	</ul>
 	</body>
 </html>

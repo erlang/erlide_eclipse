@@ -5,7 +5,8 @@
 	</head><head>
 	<body>
 	<h1>Refactorings</h1>
-	<h2><a name="Rename variable">Rename variable</a></h2>
+	<h2><a name="General refactorings">General refactorings</a></h2>
+	<h3><a name="Rename variable">Rename variable</a></h3>
 		Rename a variable with a new name supplied by the user.
 		<p> This refactoring has a local effect, i.e., it only affects the function clause 
 		in which the refactoring is initialised.</p>
@@ -22,7 +23,7 @@
 		Wrangler will ask you for the new name.</p>
 		<p><b>Shortcut:</b></p><code> SHIFT+ALT+R V </code>
 		
-	<h2><a name="Rename function">Rename function</a></h2>
+	<h3><a name="Rename function">Rename function</a></h3>
 		Rename a function with a new name supplied by the user.
 		<p> When renaming an exported function, this refactoring has a global effect, that is, 
 		it affects all those modules in which this function is imported/used.</p>
@@ -37,9 +38,10 @@
 		<p> <b>Usage:</b> to apply this refactoring, point the cursor to any occurrence of this 
 		function name, then select <em> Rename Function... </em> from the <em> Refactor </em> menu, 
 		after that, Wrangler will ask you for the function"s new name.</p>
+		<p><b>Note:</b> It is also possible to call the refactoring from the Outline/Navigator view's popup menu.</p>
 		<p><b>Shortcut:</b></p><code> SHIFT+ALT+R F </code>
 		
-	<h2><a name="Rename module">Rename module</a></h2>
+	<h3><a name="Rename module">Rename module</a></h3>
 		Rename a module with a new name supplied by the user.
 		<p> This refactoring affects all those modules in which the module name is used.</p>
 		
@@ -50,64 +52,12 @@
 	 	refactoring changes the filename as well. </li>
 	 	</ul>
 		<p> <b>Usage:</b> to apply this refactoring, point the cursor anywhere in the module to be renamed, then select 
-		<em> Rename Module... </em> from the <em> Refactor </em> menu, after that, the refactorer will prompt to enter 
-		the new module name.</p>
+		<em> Rename Module... </em> from the <em> Refactor </em> menu, after that, the refactorer will prompt to select 
+		the target module name.</p>
+		<p><b>Note:</b> It is also possible to call the refactoring from the Outline/Navigator view's popup menu.</p>
 		<p><b>Shortcut:</b></p><code> SHIFT+ALT+R M </code>
 	
-	<h2><a name="Move function">Move function</a></h2>
-		Move a function definition from its current module to another.
-		<p> This refactoring has a global effect, i.e., it affects all the modules - in the project - in which 
-		the function is imported/used.</p>
-		
-		<p> This refactoring assumes that an Erlang module name always matches its file name.</p>
-		
-		<p> Suppose we move function <em> foo/n </em> from its current module <em> M </em> 
-		to module <em> N </em>, then the following <em> side-conditions </em> apply to 
-		this refactoring:</p> 
-		<ul>
-		<li> If <em> foo/n </em> is already in scope in module <em> N </em>, then its defining 
-		module should be  <em> M </em>.</li>
-		<li> Function <em> foo/n </em> should not contain any uses of <em> implicit fun expressions </em> (Note: move a 
-		collection of functions together to another module will be supported by another refactoring).</li>
-		</ul>
-		<p> <b>Usage</b>: to apply this refactoring, point the cursor at the function definition, then 
-		select <em> Move function...</em> from the <em> Refactor </em> menu, 
-		Wrangler will ask you to select one of the existing modules. </p>
-		<p><b>Shortcut:</b></p><code> SHIFT+ALT+M </code>
-	
-	<h2><a name="Fold expression">Fold expression</a></h2>
-		Fold expressions against a function definition.
-		<p>This refactoring replaces instances of the right-hand side of a function clause definition by
-		the corresponding left-hand side with necessary parameter substitutions.</p>
-		
-		<p> In the case that a candidate expression/expression sequence  needs to export some variables which 
-		are used by the code following code, that expression/expression sequence will be replaced by a match 
-		expression, whose left-hand side it the exported variable(s), and right-hand side is the function
-		application.</p>
-		
-		<p> This refactoring does not support folding against function clauses with guard expressions, or 
-		function clauses with complex formal parameters, such as tuples, lists, or records. </p>
-		
-		<p> <b>Usage</b>: first point the cursor to the function clause against which expressions will be 
-		folded if the function is defined in the current module, then select <em> Fold expression... </em> 
-		from the <em> Refactor </em> menu; after that Wrangler will search the current module for expressions 
-		which are instances of the right-hand side of the selected function clause.</p>
-		
-		<p> If no candidate expression has been found, a message will be given, and the refactoring 
-		finishes; otherwise you a wizard window appears and you can select those expressions which would like to be folded.
-		For the smarter usage in this stage of the process moving the cursor above the selectable expressions - in the dialog window - 
-		they are highlighted in the background on by one.</p>
-	
-	<h2><a name="Function extraction">Function extraction</a></h2>
-		Introduce a new function to represent an expression or expression sequence.
-		<p> This refactoring allows the user to introduce a new function to represent a selected expression or expression 
-		sequence, and replace the selected code with a call to the new function.  Free variables
-		within the selected code become the formal parameters of the function definition.</p>
-		<p>	<b>Usage</b>: highlight the expression/expression sequence of interest, then selected the <em>Function extraction...</em> 
-		from the <em>Refactor</em> menu, Wrangler will then ask you for the new function name.
-		</p>
-	
-	<h2><a name="Generalise function">Generalise function</a></h2>
+	<h3><a name="Generalise function">Generalise function</a></h3>
 		<p>Generalise a function definition by selecting a sub-expression of its right-hand 
 		side and making this the value of a new argument added to the definition of the function. 
 		The sub-expression becomes the actual parameter at the call sites. </p>
@@ -158,10 +108,73 @@
 		</ul>
 		<p> <b>Usage</b>: to apply this refactoring, highlight the expression first, then  select 
 		<em> Generalise function... </em> from the <em>Refactor</em> menu, after 
-		that the refactorer will ask for the new name. </p>
-
+		that the refactorer will ask for the new parameter name. </p>
 	
-	<h2><a name="Tuple function parameters">Tuple function parameters</a></h2>
+	
+	<h3><a name="Move function">Move function</a></h3>
+		Move a function definition from its current module to another.
+		<p> This refactoring has a global effect, i.e., it affects all the modules - in the project - in which 
+		the function is imported/used.</p>
+		
+		<p> This refactoring assumes that an Erlang module name always matches its file name.</p>
+		
+		<p> Suppose we move function <em> foo/n </em> from its current module <em> M </em> 
+		to module <em> N </em>, then the following <em> side-conditions </em> apply to 
+		this refactoring:</p> 
+		<ul>
+		<li> If <em> foo/n </em> is already in scope in module <em> N </em>, then its defining 
+		module should be  <em> M </em>.</li>
+		<li> Function <em> foo/n </em> should not contain any uses of <em> implicit fun expressions </em> (Note: move a 
+		collection of functions together to another module will be supported by another refactoring).</li>
+		</ul>
+		<p> <b>Usage</b>: to apply this refactoring, point the cursor at the function definition, then 
+		select <em> Move function...</em> from the <em> Refactor </em> menu, 
+		Wrangler will ask you to select one of the existing modules. </p>
+		<p><b>Note:</b> It is also possible to call the refactoring from the Outline/Navigator view's popup menu. Moreover user could move function with
+		drag'n'drop in the Navigator view as well.</p>
+		<p><b>Shortcut:</b></p><code> SHIFT+ALT+M </code>
+		
+	<h3><a name="Function extraction">Function extraction</a></h3>
+		Introduce a new function to represent an expression or expression sequence.
+		<p> This refactoring allows the user to introduce a new function to represent a selected expression or expression 
+		sequence, and replace the selected code with a call to the new function.  Free variables
+		within the selected code become the formal parameters of the function definition.</p>
+		<p>	<b>Usage</b>: highlight the expression/expression sequence of interest, then selected the <em>Function extraction...</em> 
+		from the <em>Refactor</em> menu, Wrangler will then ask you for the new function name.
+		</p>
+	
+	
+	<h3><a name="Fold expression against local function">Fold expression against local function</a></h3>
+		Fold expressions against a function definition.
+		<p>This refactoring replaces instances of the right-hand side of a function clause definition by
+		the corresponding left-hand side with necessary parameter substitutions.</p>
+		
+		<p> In the case that a candidate expression/expression sequence  needs to export some variables which 
+		are used by the code following code, that expression/expression sequence will be replaced by a match 
+		expression, whose left-hand side it the exported variable(s), and right-hand side is the function
+		application.</p>
+		
+		<p> This refactoring does not support folding against function clauses with guard expressions, or 
+		function clauses with complex formal parameters, such as tuples, lists, or records. </p>
+		
+		<p> <b>Usage</b>: first point the cursor to the function clause against which expressions will be 
+		folded if the function is defined in the current module, then select <em> Fold expression... </em> 
+		from the <em> Refactor </em> menu; after that Wrangler will search the current module for expressions 
+		which are instances of the right-hand side of the selected function clause. A dialog is shown, where user can review, and select the 
+		candidates.</p>
+		
+		<p> If no candidate expression has been found, a message will be given, and the refactoring 
+		finishes; otherwise you a wizard window appears and you can select those expressions which would like to be folded.
+		For the smarter usage in this stage of the process moving the cursor above the selectable expressions - in the dialog window - 
+		they are highlighted in the background on by one.</p>
+		
+	<h3><a name="Fold expression against remote function">Fold expression against remote function</a></h3>
+	<p>This refactoring does the some as <a href="refactorings.html#Fold expression against local function">Fold expression against local function</a>, except the
+	except that the remote function can be selected from a different module.</p>
+	<div align="center"><img src="../images/fold_exp_remote.png" width="579" height="212" border="0" alt=""></div>
+	<p><b>Usage:</b> start the refactoring from the <em>Refactor</em> menu, then select the remote function clause from the dialog box.</p>
+	
+	<h3><a name="Tuple function parameters">Tuple function parameters</a></h3>
 		Turn some consecutive parameters of a function into a tuple parameter.
 		<p>When the function under consideration is exported by the module where it is defined, 
 		this refactoring has a global effect. </p>
@@ -173,28 +186,42 @@
 		<li> In the case that the function is imported by another module, then <code>f/n</code> 
 		should not be already in scope (either defined or imported) in that module. </li>
 		</ul>
-		<p> <b>Usage</b>: to apply this refactoring, point the cursor to the parameter which is going to be the first 
-		element of the tuple, then select <em> Tuple function parameters... </em> from the <em> Refactor </em> menu, 
-		after that, Wrangler will ask you to enter the number of parameters to include into the tuple.
+		<p> <b>Usage</b>: to apply this refactoring, highlight the arguments to be grouped into a tuple from the function definition, then select 
+		<em> Tuple function parameters... </em> from the <em> Refactor </em> menu.
 		</p>
 		
-	<h2><a name="Search expression">Search expression</a></h2>
-	Search for clones of an expression/expression sequence selected in the current file.
- 
-		<p> This functionality allows searching for clones of a selected expression or expression 
-		sequence.  The found clones are syntactically identical to the code fragment selected  after consistent renaming of variables, 
-		except for variations in literals, layout and comments. 
-		</p>
-		<p> When the selected code contains multiple, but non-continuous sequence of, expressions, the first
-		continuous sequence of expressions is taken as the user-selected expression. A continuous sequence of
-		expressions is a sequence of expressions separated by ','. </p>
-		Usage: highlight the expression/expression sequence of interest, then selected  <em>Search expression...</em> from 
-		the <em> Refactor </em> menu. 
-		<p>Then the 'Duplicated code' view appears in the bottom of the workbench, where double clicking on the found expressions 
-		results to highlightion of the according code part in the editor.
+	<h3><a name="Unfold function application">Unfold function application</a></h3>
+		Unfold a function application to an instance of the function's body.
+		<p>This refactoring replaces a function application with an instance of the function body. 
+		With the current implementation, Wrangler unfolds a function application only if the function is defined in the same module, 
+		and Wrangler could work out which function clause to use (in case the function definition contains multiple function clauses).</p>
+
+		<p><b>Usage:</b> Point the cursor to the function name in the function application to unfold, then select <em>Unfold Function Application...</em> from <em>Refactor</em>.</p>
 	
-	<h2><a name="Duplicated code detection">Duplicated code detection</a></h2>
-	A duplicated code detector that works with multiple Erlang modules as well.	
+	<h2><a name="Macro related refactorings">Macro related refactorings</a></h2>
+	
+	<h3><a name="Introduce Macro"></a>Introduce macro</h3>
+	Introduce a macro to represent a syntactically well-formed expression/pattern or a sequence of expressions/patterns.
+	<p>This refactoring allows the user to define a new macro to represent a expression/pattern or sequence of expressions/patterns selected by the user, 
+	and replace the selected code with an application of the macro. 
+	Free variables within the selected code become the formal parameters of the macro definition.</p>
+
+	<p><b>Usage:</b> Highlight the expression of interest, then selected the <em>Introduce a Macro</em> from Refactor, Wrangler will then prompt for the new macro name.</p>
+	
+	<h3><a name="Fold against macro"></a>Fold against macro</h3>
+	Fold expressions/patterns against a macro definition.
+	<p>This refactoring replaces instances of the right-hand side of a macro definition by the corresponding left-hand side
+	 with necessary parameter substitutions.</p>
+
+	<p><b>Usage:</b> to apply this refactoring, first point the cursor to the macro definition against which candidate expressions/candidates 
+	will be folded; then select <em>Fold Against Macro Definition</em> from the <em>Refactor</em> menu; after that, Wrangler will search 
+	the current module for expressions/patterns which are instances of the right-hand side of the selected macro definition; and direct you through the refactoring process. 
+	(see <a src="refactorings.html#Fold expression against local function">Fold expression against local function</a></p>
+	
+	<h2><a name="Identical code recognizing refactorings">Identical code recognizing refactorings</a></h2>
+		
+		<h3><a name="Identical code detection">Identical code detection</a></h3>
+		An identical code detector that works with multiple Erlang modules as well.	
 		<p> This function reports duplicated code fragments found in the current Erlang module (if selected, then in the project), it does 
 		not remove those code clones though. The user will be prompted for three parameters: the minimum number of 
 		tokens a cloned code fragment should have, the minimum number of times a code fragment appears in the program and where to detect (current module/project). 
@@ -203,11 +230,98 @@
 		identical after consistent renaming of variables, except for variations in literals, layout and comments.
 		</p>
 		<p>
-		Usage: simply select the  <em> Detect duplicated code  </em> from the <em>Refactor</em> menu, 
+		<b>Usage:</b> simply select the  <em> Detect Identical code  </em> from the <em>Refactor/Identical Code</em> menu, 
 		then an input dialog appears which is for typing the necessary parameters. Finally the 'Duplicated code' view appears in the bottom of the workbench, where double clicking on the found expressions 
 		results to highlightion of the according code part in the editor. Results are grouped by duplications and modules.
 		</p>
-	<h2><a name="Rename process">Rename process</a></h2>
+		<div align="center"><img src="../images/duplicated_view.png" width="716" height="212" border="0" alt=""></div>
+		<p>The refactoring also suggest you a generalised function, which can be used instead of the duplicates. It can be copied to the clipboard clicking on the <img src="../images/copy-icon.png" width="16" height="16" border="0" alt="Copy generalised function to clipboard"> icon.
+		</p>
+				
+		<h3><a name="Search identical expression">Search identical expression</a></h3>
+		Search for clones of an expression/expression sequence selected in the current file.
+ 		
+		<p> This functionality allows searching for clones of a selected expression or expression 
+		sequence.  The found clones are syntactically identical to the code fragment selected  after consistent renaming of variables, 
+		except for variations in literals, layout and comments. 
+		</p>
+		<p> When the selected code contains multiple, but non-continuous sequence of, expressions, the first
+		continuous sequence of expressions is taken as the user-selected expression. A continuous sequence of
+		expressions is a sequence of expressions separated by ','. </p>
+		Usage: highlight the expression/expression sequence of interest, then selected  <em>Search expression...</em> from 
+		the <em>Refactor/Identical code</em> menu. 
+		<p>Then the 'Duplicated code' view appears in the bottom of the workbench, where double clicking on the found expressions 
+		results to highlightion of the according code part in the editor.
+
+		<h3><a name="Similar code detection"></a>Similar code detection</h3>
+		A similar code detector that searches for similar code in the current module or across multiple Erlang modules.
+
+		<p>This function reports similar expression sequences found in the project directories, 
+		but does not remove those clones though. The algorithm is based on the notion of anti-unification, or the least common generalisation. 
+		The user needs to provide three parameters to be used by the clone detector, and they are: the minimum length of an expression sequence, the minimum number of duplication times, and a similarity score which should be between 0.1 and 1.0.</p>
+
+		<p><b>Usage:</b> select <em>Detect Similar Code</em> from <em>Refactor/Identical Code</em> menu, Wrangler will then prompt to input the parameters needed.
+		The results will be displayed in the Duplicated code view. The refactoring also suggest you a generalised function, which can be used instead of the duplicates. It can be copied to the clipboard clicking on the <img src="../images/copy-icon.png" width="16" height="16" border="0" alt="Copy generalised function to clipboard"> icon.
+		</p></p>		
+		
+		
+		<h3><a name="Similar expression search">Similar expression search</a></h3>
+		Search expression search in the current Erlang buffer.
+
+		<p>This functionality allows searching for expression sequence that are similar to the expression sequence selected. 
+		In this context, two expressions, A and B say, are similar if there exists an anti-unifier, say C, of A and B, 
+		and C satisfies the similarity score specified by the user (the calculation calculated of similarity score is going to be further explored).</p>
+		
+		<p><b>Usage:</b> highlight the expression sequence of interest, then selected <em>Similar Expression Search</em> from <em>Refactor/Identical code</em>, then Wrangler will ask you about the similarity score.
+		Finally the results will be displayed in the Duplicated code view. The refactoring also suggest you a generalised function, which can be used instead of the duplicates. It can be copied to the clipboard clicking on the <img src="../images/copy-icon.png" width="16" height="16" border="0" alt="Copy generalised function to clipboard"> icon.
+		</p>
+	<h2><a name="QuickCheck related refactorings">QuickCheck related refactorings</a></h2>
+		<p><em>Please note, that these refactorings are only enabled when QuickCheck is installed.</em></p>
+		<h3><a name="Introduce ?LET"></a>Introduce ?LET</h3>
+		Introduce ?LET.
+
+		<p>Bind the values generated by a generator to a variable, so that the values generated by the generator can be referred by other generators. 
+		The refactoring helps to introduce dependency between QuickCheck generators. This refactoring is especially for QuickCheck users.</p>
+
+		<p><b>Usage:</b> highlight the expression, which should be a QuickCheck generator, then select the refactoring command, you will be prompted for the pattern variable name.</p>
+		
+		<h3><a name="Merge ?LET"></a>Merge ?LET</h3>
+		Merge nested but independent ?LETs into one ?LET.
+
+		<p>This refactoring combines multiple nested, but undependent, ?LETs into one; the latter representation has better shrinking performance. This refactoring is especially for QuickCheck users.</p>
+
+		<p><b>Usage:</b> Select the refactoring command, and Wrangler will search for candidates to merge automatically, guide you through the candidates found one by one, and ask you to decide whether to merge.</p>
+		
+		<h3><a name="Merge ?FORALL"></a>Merge ?FORALL</h3>
+		Merge nested but undependent ?FORALLs into one ?FORALL.
+
+		<p>This refactoring combines multiple nested, but undependent, ?FORALLs into one; the latter representation has better shrinking performance. This refactoring is especially for QuickCheck users.</p>
+
+		<p><b>Usage:</b> Select the refactoring command, and Wrangler will search for candidates to merge automatically, guide you through the candidates found one by one, and ask you to decide whether to merge.</p>
+
+		<h3><a name="eqc_fsm State into a record"></a>eqc_fsm State into a record</h3>
+		Turn a non-record representation of eqc_fsm state into a record representation.
+
+		<p>This refactoring introduce a record to represent the state used by eqc_fsm. This refactoring is especially for QuickCheck users.</p>
+
+		<p><b>Usage:</b> Select the refactoring command, and Wrangler will check the current type of the state machine, and prompt you to input the record and field names if Wrangler is able to proceed the refactoring.</p>
+		
+		<h3><a name="eqc_statem State data to record"></a>eqc_statem State data to record</h3>
+		Turn a non-record representation of eqc_statem state into a record representation.
+
+		<p>This refactoring introduce a record to represent the state used by eqc_statem. This refactoring is especially for QuickCheck users.</p>
+
+		<p><b>Usage:</b> Select the refactoring command, and Wrangler will check the current type of the state machine, and prompt you to input the record and field names if Wrangler is able to proceed the refactoring.</p>
+		
+		<h3><a name="gen_fsm State data to record"></a>gen_fsm State data to record</h3>
+		Turn a non-record representation of gen_fsm state into a record representation.
+
+		<p>This refactoring introduce a record to represent the state used by eqc_statem.</p>
+
+		<p><b>Usage:</b> Select the refactoring command, and Wrangler will check the current type of the state machine, and prompt you to input the record and field names if Wrangler is able to proceed the refactoring.</p>
+		
+	<h2><a name="Other refactorings">Other refactorings</a></h2>
+	<h3><a name="Rename process">Rename process</a></h3>
 	Rename a registered process with a new name supplied by the user.
 		<p> To apply this refactoring, point the cursor to the process name, then select
 		<em>Rename process</em> from the  <em>Refactor</em> menu, after that, Wrangler will prompt
@@ -225,7 +339,8 @@
 			registration expressions, where it is easier for Wrangler to infer that the atom is a process name.</li>
 		</ul>
 		</p>
-	<h2><a name="Function to process">Function to process</a></h2>
+		
+	<h3><a name="Function to process">Function to process</a></h3>
 	Turn a function into a server process.
 		<p>This refactoring turns a function into a server process, and all the function calls to this function into process communication.
 		Turning a function into a server process provides potential for memorisation of calculated values, adding states to the process, etc.
@@ -275,6 +390,11 @@
 		<em>Convert Function to Process</em> from the <em>Refactor</em> menu, after that, Wrangler will prompt 
 		 to enter the process registration name.
 		</p>
+		
+		<h3><a name="Normalize record expression"></a>Normalize record expression</h3>
+		Reorder the record fields in a record expression to be consistent with the record definition.
 
+		<p><b>Usage:</b> point cursor to the record expression interested, then select <em>Normalise Record Expression</em> from <em>Refactor</em>.</p>
+		
 	</body>
 </html>

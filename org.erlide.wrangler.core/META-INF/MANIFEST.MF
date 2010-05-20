@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wrangler Core Plugin
+Bundle-SymbolicName: org.erlide.wrangler.core;singleton:=true
+Bundle-Version: 0.8.8.qualifier
+Bundle-Vendor: UKC
+Require-Bundle: org.erlide.core

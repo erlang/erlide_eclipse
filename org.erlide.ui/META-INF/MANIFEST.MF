@@ -160,6 +160,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.navigator,
    org.eclipse.ui,
    org.eclipse.jface.viewers",
+ org.erlide.ui.navigator.dnd,
  org.erlide.ui.perspectives;x-internal:=true;uses:="org.eclipse.ui",
  org.erlide.ui.prefs;x-internal:=true;
   uses:="org.erlide.runtime.backend,

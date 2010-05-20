@@ -3,6 +3,8 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
@@ -10,6 +12,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
+import org.erlide.wrangler.refactoring.core.SimpleWranglerRefactoring;
+import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
+import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 public class ComboInputPage extends InputPage {
 
@@ -44,7 +49,7 @@ public class ComboInputPage extends InputPage {
 		// gridData.horizontalSpan = 2;
 		// inputLabel.setLayoutData(gridData);
 
-		selectionList = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+		selectionList = new Combo(composite, SWT.DROP_DOWN);
 		for (String s : moduleNames) {
 			selectionList.add(s);
 		}
@@ -75,5 +80,29 @@ public class ComboInputPage extends InputPage {
 			}
 		});
 
+		final IValidator validator = new AtomValidator();
+
+		selectionList.addModifyListener(new ModifyListener() {
+
+			public void modifyText(ModifyEvent e) {
+				if (validator.isValid(selectionList.getText())) {
+					((SimpleWranglerRefactoring) getRefactoring())
+							.setUserInput(selectionList.getText());
+					setErrorMessage(null);
+					setPageComplete(true);
+				} else {
+					setPageComplete(false);
+					setErrorMessage("Module name must be a a valid atom!");
+				}
+			}
+
+		});
+
+	}
+
+	@Override
+	protected boolean isInputValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

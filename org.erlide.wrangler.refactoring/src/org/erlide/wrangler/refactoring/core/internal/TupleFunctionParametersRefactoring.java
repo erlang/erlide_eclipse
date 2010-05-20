@@ -13,6 +13,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Tuple function parameters refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class TupleFunctionParametersRefactoring extends
 		SimpleOneStepWranglerRefactoring {
 	protected int numberOfTuplingParameters = -1;
@@ -74,10 +80,9 @@ public class TupleFunctionParametersRefactoring extends
 	public IRefactoringRpcMessage run(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
-				"tuple_funpar_eclipse", "siisxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartLine(),
-				sel.getSelectionRange().getStartCol(),
-				String.valueOf(numberOfTuplingParameters), sel.getSearchPath(),
+				"tuple_funpar_eclipse", "sxxxi", sel.getFilePath(),
+				sel.getSelectionRange().getStartPos(),
+				sel.getSelectionRange().getEndPos(), sel.getSearchPath(),
 				GlobalParameters.getTabWidth());
 	}
 

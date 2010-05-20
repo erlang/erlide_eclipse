@@ -3,14 +3,15 @@ package org.erlide.wrangler.refactoring.backend.internal;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
+import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public abstract class AbstractRpcMessage implements IRpcMessage {
-	protected boolean isSuccessful = false;
+	protected RefactoringState refactoringState = RefactoringState.ERROR;
 
-	protected String errorMessage = "";
+	protected String messageString = "";
 
 	/**
 	 * Parses the Erlang object and stores the result.
@@ -37,21 +38,40 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 	protected abstract void parseRefactoringMessage(OtpErlangTuple resultTuple)
 			throws WranglerException;
 
-	public String getMessage() {
-		return errorMessage;
+	public String getMessageString() {
+		return messageString;
 	}
 
 	public boolean isSuccessful() {
-		return isSuccessful;
+		return refactoringState == RefactoringState.OK;
+	}
+
+	public RefactoringState getRefactoringState() {
+		return refactoringState;
 	}
 
 	protected void setUnsuccessful(String errorMsg) {
-		this.errorMessage = errorMsg;
-		this.isSuccessful = false;
+		this.messageString = errorMsg;
+		this.refactoringState = RefactoringState.ERROR;
+	}
+
+	protected void setWarning(String message) {
+		this.messageString = message;
+		this.refactoringState = RefactoringState.WARNING;
+	}
+
+	protected void setQuestion(String message) {
+		this.messageString = message;
+		this.refactoringState = RefactoringState.QUESTION;
 	}
 
 	protected void setSuccessful() {
-		this.errorMessage = "";
-		this.isSuccessful = true;
+		this.messageString = "";
+		this.refactoringState = RefactoringState.OK;
+	}
+
+	protected void setState(String message, RefactoringState state) {
+		this.messageString = message;
+		this.refactoringState = state;
 	}
 }

@@ -78,6 +78,7 @@
     			<include name="org.erlide.help/**"/>
 
     			<include name="org.erlide.wrangler.help/**"/>
+    			<include name="org.erlide.wrangler.core/**"/>
     			<include name="org.erlide.wrangler.refactoring/**"/>
     			<include name="org.erlide.wrangler.refactoring.duplicatedcode/**"/>
 

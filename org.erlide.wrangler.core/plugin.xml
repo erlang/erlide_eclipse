@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.erlide.core.codepath">
+      <beam_dir
+            context="any"
+            path="/wrangler/ebin">
+      </beam_dir>
+      <beam_dir
+            context="any"
+            path="/wrangler/app">
+      </beam_dir>
+      <init
+            function="init_eclipse"
+            module="wrangler">
+      </init>
+   </extension>
+
+</plugin>

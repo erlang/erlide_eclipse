@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.2"?>
+<?eclipse version="3.3"?>
 <fragment>
    <extension
          point="org.eclipse.ui.views">
@@ -17,7 +17,7 @@
             restorable="true">
       </view>
    </extension>
-   <extension
+<!--   <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
             id="org.erlide.wrangler.refactoring.duplicatedcode.editorContribution"
@@ -25,16 +25,92 @@
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.ExpressionSearchAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.expressionsearch"
-               label="&amp;Search expression..."
+               label="&amp;Search Identical Expression..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
          </action>
          <action
                class="org.erlide.wrangler.refactoring.duplicatedcode.core.DuplicateDetectionAction"
                id="org.erlide.wrangler.refactoring.duplicatedcode.detection"
-               label="Detect duplicated &amp;code..."
+               label="Detect Duplicated &amp;Code..."
                menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarSearchAction"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.similarexpressionsearch"
+               label="Search Si&amp;milar Expression..."
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
+               style="push">
+         </action>
+         <action
+               class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarDetectionAction"
+               id="org.erlide.wrangler.refactoring.duplicatedcode.similarcodedetection"
+               label="Detect S&amp;imilar Code..."
+               menubarPath="org.erlide.wrangler.refactoring.refactormenu/org.erlide.wrangler.refactoring.searchGroup"
+               style="push">
          </action>
       </editorContribution>
    </extension>
+-->
+<extension point="org.eclipse.ui.commands">
+		<category id="org.erlide.wrangler.refactoring.duplicated" name="Identical Code">
+		</category>
+		<command id="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+			name="&amp;Search Identical Expression..." categoryId="org.erlide.wrangler.refactoring.duplicated">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+			name="&amp;Detect Identical Code..." categoryId="org.erlide.wrangler.refactoring.duplicated">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+			name="&amp;Search Similar Expression..." categoryId="org.erlide.wrangler.refactoring.duplicated">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+			name="&amp;Detect Similar Code..." categoryId="org.erlide.wrangler.refactoring.duplicated">
+		</command>
+</extension>
+<extension point="org.eclipse.ui.handlers">
+		<handler commandId="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+			class="org.erlide.wrangler.refactoring.duplicatedcode.core.ExpressionSearchAction">
+		</handler>
+		<handler commandId="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+		    class="org.erlide.wrangler.refactoring.duplicatedcode.core.DuplicateDetectionAction">
+		</handler>
+		<handler commandId="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+			class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarSearchAction">
+		</handler>
+		<handler commandId="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+			class="org.erlide.wrangler.refactoring.duplicatedcode.core.SimilarDetectionAction">
+		</handler>
+</extension>
+<extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.erlide.wrangler.refactormenu?before=org.erlide.wrangler.refactormenu.quickcheck">
+         <menu
+               id="org.erlide.wrangler.refactormenu.duplicated"
+               label="Identical Code"
+               mnemonic="I">
+         <command
+               commandId="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+               id="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+               style="push">
+	</command>
+	<command
+               commandId="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+               id="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+               style="push">
+	</command>
+	<command
+               commandId="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+               id="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+               style="push">
+	</command>	
+	<command
+               commandId="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+               id="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+               style="push">
+	</command>		
+	</menu>
+      </menuContribution>
+</extension>
 
 </fragment>

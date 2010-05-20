@@ -13,6 +13,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Rename process refactorings integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 
 	protected String undecidables;
