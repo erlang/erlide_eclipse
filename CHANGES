@@ -1,4 +1,11 @@
-List of user-visible changes between 0.7.5 and 0.8 (20100427)
+List of user visible changes between 0.8.0 and 0.8.1 (20100520)
+
+43e47a2 merge latest wrangler codebase update r1483
+8fa6512 fix #384 #418 #540 #542
+4f266b4 Merge branch '549-open-module-dialog---too-slow' 
+9d4026b 533-code-completion---record-fields-after---doesn-t-work
+
+List of user-visible changes between 0.7.5 and 0.8.0 (20100427)
 
 7c3ca3c Merge branch 'open-typespec-in-records' into pu
 2d8045d Merge remote branch 'vlad/e35' into pu
