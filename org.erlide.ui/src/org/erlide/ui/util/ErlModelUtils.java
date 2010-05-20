@@ -490,6 +490,10 @@ public class ErlModelUtils {
 		return null;
 	}
 
+	public static String[] getPredefinedMacroNames() {
+		return new String[] { "MODULE", "LINE", "FILE" };
+	}
+
 	// public static IErlElement getEditorInputErlElement(final IEditorInput
 	// input) {
 	// final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();

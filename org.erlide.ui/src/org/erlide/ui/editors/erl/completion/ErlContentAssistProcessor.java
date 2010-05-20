@@ -272,13 +272,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final IErlRecordDef recordDef = (IErlRecordDef) p;
 		final List<String> fields = recordDef.getFields();
 		for (final String field : fields) {
-			if (field.startsWith(prefix)) {
-				final int alength = prefix.length();
-				result.add(new CompletionProposal(field, offset - alength,
-						alength, field.length()));
-			}
+			addIfMatches(field, prefix, offset, result);
 		}
 		return result;
+	}
+
+	private void addIfMatches(final String name, final String prefix,
+			final int offset, final List<ICompletionProposal> result) {
+		int length = prefix.length();
+		if (name.regionMatches(true, 0, prefix, 0, length)) {
+			result.add(new CompletionProposal(name, offset - length, length,
+					name.length()));
+		}
 	}
 
 	private List<ICompletionProposal> getModules(final Backend b,
@@ -413,9 +418,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		for (final IErlPreprocessorDef pd : defs) {
 			final String name = pd.getDefinedName();
-			if (name.startsWith(prefix)) {
-				result.add(new CompletionProposal(name, offset
-						- prefix.length(), prefix.length(), name.length()));
+			addIfMatches(name, prefix, offset, result);
+		}
+		if (kind == Kind.MACRO_DEF) {
+			String[] names = ErlModelUtils.getPredefinedMacroNames();
+			for (String name : names) {
+				addIfMatches(name, prefix, offset, result);
 			}
 		}
 		return result;
@@ -642,7 +650,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final ErlangFunction function, final String comment,
 			final boolean arityOnly, final List<String> parameterNames,
 			final List<ICompletionProposal> result) {
-		if (function.name.startsWith(prefix)) {
+		if (function.name.regionMatches(0, prefix, 0, prefix.length())) {
 			final int offs = function.name.length() - prefix.length();
 
 			final List<Point> offsetsAndLengths = new ArrayList<Point>();
