@@ -427,15 +427,9 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseHeaderComments = true;
 
-	private final boolean fCollapseEdoc = false;
-
 	private boolean fCollapseComments = false;
 
 	private boolean fCollapseClauses = false;
-
-	private final boolean fCollapseMacroDeclarations = false;
-
-	private final boolean fCollapseExports = false;
 
 	private boolean fCollapseTypespecs = false;
 
@@ -479,7 +473,6 @@ public class DefaultErlangFoldingStructureProvider implements
 	public void install(final ITextEditor editor, final ProjectionViewer viewer) {
 		if (editor instanceof ErlangEditor) {
 			fFirstTimeInitialCollapse = true;
-			ErlLogger.debug("install");
 			fEditor = editor;
 			fViewer = viewer;
 			fViewer.addProjectionListener(this);
@@ -633,8 +626,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			final IErlComment c = (IErlComment) element;
 			if (c.isHeader()) {
 				collapse = fAllowCollapsing && fCollapseHeaderComments;
-			} else if (c.isEdoc()) {
-				collapse = fAllowCollapsing && fCollapseEdoc;
 			} else {
 				collapse = fAllowCollapsing && fCollapseComments;
 			}
@@ -642,30 +633,15 @@ public class DefaultErlangFoldingStructureProvider implements
 		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
-			collapse = fAllowCollapsing && fCollapseExports;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
-			collapse = fAllowCollapsing && fCollapseMacroDeclarations;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
 			collapse = fAllowCollapsing && fCollapseTypespecs;
 			createProjection = true;
 		}
-		int pos = -1;
-		if (element instanceof ISourceReference) {
-			ISourceReference sr = (ISourceReference) element;
-			try {
-				pos = sr.getSourceRange().getOffset();
-			} catch (ErlModelException e) {
-			}
-		}
-		ErlLogger
-				.debug(
-						"kind %s pos %d collapse %b createProjection %b fFirstTimeInitialCollapse %b",
-						element.getKind().toString(), pos, collapse,
-						createProjection, fFirstTimeInitialCollapse);
 		if (createProjection) {
 			final IRegion region = computeProjectionRanges(element);
 			if (region != null) {
@@ -749,13 +725,6 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	protected void processDelta(final IErlElementDelta delta) {
-		ErlLogger.debug("processDelta");
-		// try {
-		// throw new BackendException();
-		// } catch (BackendException e) {
-		// e.printStackTrace();
-		// }
-
 		if (!isInstalled()) {
 			return;
 		}
@@ -851,8 +820,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			final Annotation[] changes = new Annotation[updates.size()];
 			updates.toArray(changes);
 			model.modifyAnnotations(removals, additions, changes);
-			ErlLogger
-					.debug("processDelta, setting fFirstTimeInitialCollapse to false");
 			fFirstTimeInitialCollapse = false;
 		} finally {
 			fCachedDocument = null;
