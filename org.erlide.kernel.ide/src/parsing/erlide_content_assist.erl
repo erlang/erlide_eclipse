@@ -122,23 +122,26 @@ check_record_tokens(State, [], _W, R, B, _PrevR) ->
 check_record_tokens(_State, [#token{kind='}'} | Rest], _W, _R, _B, _PrevR) ->
     ?D('}'),
     Rest; %% either we've recursed, or we left the record, so this is safe
-check_record_tokens(_State, [#token{kind='#'} | Rest], W, R, B, PrevR) -> % 1
-    check_record_tokens(record_want_name, Rest, W, R, B, PrevR);
+check_record_tokens(_State, [#token{kind='#'} | Rest], W, _R, _B, PrevR) -> % 1
+    check_record_tokens(record_want_name, Rest, W, '', '', PrevR);
 check_record_tokens(record_want_name, [#token{kind=atom, value=V} | Rest], W, R, _B, _PrevR) -> % 2
     ?D(V),
     check_record_tokens(record_name, Rest, W, V, V, R);
 check_record_tokens(record_want_name, [#token{kind=macro, value=V} | Rest], W, R, _B, _PrevR) -> % 2
-    ?D(V),
+    ?D({V, Rest}),
     check_record_tokens(record_name, Rest, W, V, V, R);
+check_record_tokens(record_want_name, [#token{kind='?'} | Rest], W, R, _B, _PrevR) -> % 2
+    ?D(Rest),
+    check_record_tokens(record_name, Rest, W, '?', '?', R);
 check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, PrevR) % 3 
   when Dot=:='.'; Dot=:=dot->
     check_record_tokens(record_want_dot_field, Rest, W, B, '', PrevR);
 check_record_tokens(record_want_dot_field, [#token{kind=atom, value=V} | Rest],
                     W, R, _B, PrevR) -> % 4
     check_record_tokens(record_dot_field, Rest, W, R, V, PrevR);
-check_record_tokens(record_name, [#token{kind='{'} | Rest], W, R, B, PrevR) -> % 5
+check_record_tokens(record_name, [#token{kind='{'} | Rest], W, _R, B, PrevR) -> % 5
     ?D('{'),
-    ?D({W, R, B}),
+    ?D({W, _R, B}),
     case check_record_tokens(record_want_field, Rest, true, B, '', B) of
         L when is_list(L) ->
             ?D({L, W}),
