@@ -130,6 +130,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final int leftBracketPos = before.lastIndexOf('{');
 			final int interrogationMarkPos = before.lastIndexOf('?');
 			final String prefix = getPrefix(before);
+			List<String> fieldsSoFar = null;
 			List<ICompletionProposal> result;
 			int flags;
 			int pos;
@@ -158,6 +159,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 				before = rc.getPrefix();
 				moduleOrRecord = rc.getName();
+				fieldsSoFar = rc.getFields();
 			} else if (colonPos > commaPos && colonPos > parenPos) {
 				moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
 						0, colonPos)));
@@ -196,7 +198,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
-					project, b);
+					fieldsSoFar, project, b);
 			final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
 					doc, offset - before.length(), before.length());
 			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
@@ -210,7 +212,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private List<ICompletionProposal> addCompletions(final int flags,
 			final int offset, final String prefix, final String moduleOrRecord,
-			final int pos, final IErlProject project, final Backend backend)
+			final int pos, final List<String> fieldsSoFar,
+			final IErlProject project, final Backend backend)
 			throws CoreException, OtpErlangRangeException, BadLocationException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		if ((flags & DECLARED_FUNCTIONS) != 0) {
@@ -235,7 +238,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 		if ((flags & RECORD_FIELDS) != 0) {
 			addSorted(result, getRecordFieldCompletions(backend,
-					moduleOrRecord, offset, prefix, pos));
+					moduleOrRecord, offset, prefix, pos, fieldsSoFar));
 		}
 		if ((flags & MACRO_DEFS) != 0) {
 			addSorted(result, getMacroOrRecordCompletions(backend, offset,
@@ -256,7 +259,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private List<ICompletionProposal> getRecordFieldCompletions(
 			final Backend b, final String recordName, final int offset,
-			final String prefix, final int hashMarkPos) {
+			final String prefix, final int hashMarkPos,
+			final List<String> fieldsSoFar) {
 		if (module == null) {
 			return EMPTY_COMPLETIONS;
 		}
@@ -274,7 +278,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final IErlRecordDef recordDef = (IErlRecordDef) p;
 		final List<String> fields = recordDef.getFields();
 		for (final String field : fields) {
-			if (field.startsWith(prefix)) {
+			if (field.startsWith(prefix) && !fieldsSoFar.contains(field)) {
 				final int alength = prefix.length();
 				result.add(new CompletionProposal(field, offset - alength,
 						alength, field.length()));
@@ -695,19 +699,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			} catch (final OtpErlangRangeException e) {
 			}
 		}
-	}
-
-	private int atomPrefixLength(final IDocument doc, final int offset) {
-		try {
-			for (int n = offset - 1; n >= 0; n--) {
-				final char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c)) {
-					return offset - n - 1;
-				}
-			}
-		} catch (final BadLocationException e) {
-		}
-		return 0;
 	}
 
 	private String getPrefix(final String before) {
