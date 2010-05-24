@@ -11,16 +11,17 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDialyze {
 
-	private static final int LONG_TIMEOUT = 100000;
+	private static final int LONG_TIMEOUT = 20000;
+	private static final int FILE_TIMEOUT = 20000;
+	private static final int INCLUDE_TIMEOUT = 4000;
 
 	public static OtpErlangObject dialyze(final Backend backend,
 			final Collection<String> files, final String plt,
 			final Collection<String> includeDirs, final boolean fromSource) {
 		try {
-			ErlLogger.debug(
-					"dialyze files %s plt %s includeDirs %s fromSource %b",
-					files.toString(), plt, includeDirs.toString(), fromSource);
-			final OtpErlangObject result = backend.call(LONG_TIMEOUT,
+			int timeout = files.size() * FILE_TIMEOUT + includeDirs.size()
+					* INCLUDE_TIMEOUT + LONG_TIMEOUT;
+			final OtpErlangObject result = backend.call(timeout,
 					"erlide_dialyze", "dialyze", "lsslso", files, plt,
 					includeDirs, fromSource);
 			ErlLogger.debug("result %s", result.toString());
