@@ -15,11 +15,14 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlReconciler implements IReconciler {
 
 	/** The reconciling strategy. */
 	private final IErlReconcilingStrategy fStrategy;
+
+	private final int fErlReconcilerCount;
 
 	public ErlReconciler(final IErlReconcilingStrategy strategy,
 			final boolean isIncremental, final boolean chunkReconciler) {
@@ -31,6 +34,8 @@ public class ErlReconciler implements IReconciler {
 		fStrategy = strategy;
 		setIsIncrementalReconciler(isIncremental);
 		fChunkReconciler = chunkReconciler;
+		fErlReconcilerCount = ErlideUIPlugin.getPrefsNode().getInt(
+				"erlangReconcilerCount", 10);
 	}
 
 	/**
@@ -101,7 +106,7 @@ public class ErlReconciler implements IReconciler {
 		 */
 		public void suspendCallerWhileDirty() {
 			boolean isDirty = true;
-			int i = 10;
+			int i = fErlReconcilerCount;
 			// we don't want to sit in this loop forever if something crashes
 			while (i > 0 && isDirty) {
 				synchronized (fDirtyRegionQueue) {
