@@ -336,7 +336,8 @@ public class ErlModelUtils {
 			}
 		}
 		if (pd != null) {
-			final IEditorPart editor = EditorUtility.openInEditor(m);
+			final IEditorPart editor = EditorUtility.openInEditor(pd
+					.getModule());
 			EditorUtility.revealInEditor(editor, pd);
 			return true;
 		}
