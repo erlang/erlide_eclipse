@@ -35,7 +35,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
@@ -318,24 +317,16 @@ public class OpenAction extends SelectionDispatchAction {
 			if (page == null) {
 				return;
 			}
-			final boolean macro = res.isMacro();
 			final String definedName = res.getName();
 			if (definedName.length() == 0) {
 				return;
 			}
-			final IErlElement.Kind type = macro ? IErlElement.Kind.MACRO_DEF
+			final IErlElement.Kind kind = res.isMacro() ? IErlElement.Kind.MACRO_DEF
 					: IErlElement.Kind.RECORD_DEF;
-			String unquoted = ErlideUtil.unquote(definedName);
-			final String[] s = new String[] { definedName, unquoted,
-					ErlModelUtils.checkPredefinedMacro(unquoted, module) };
-			for (final String string : s) {
-				if (ErlModelUtils.openPreprocessorDef(b, project, page, module,
-						string, type, model.getExternal(erlProject,
-								ErlangCore.EXTERNAL_INCLUDES),
-						new ArrayList<IErlModule>())) {
-					break;
-				}
-			}
+			ErlModelUtils.openPreprocessorDef(b, project, page, module,
+					definedName, kind, model.getExternal(erlProject,
+							ErlangCore.EXTERNAL_INCLUDES),
+					new ArrayList<IErlModule>());
 		}
 	}
 }

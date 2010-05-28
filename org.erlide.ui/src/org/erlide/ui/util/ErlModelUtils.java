@@ -42,6 +42,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
@@ -138,14 +139,15 @@ public class ErlModelUtils {
 
 	public static IErlPreprocessorDef findPreprocessorDef(final Backend b,
 			final IProject project, final IErlModule module,
-			final String definedName, final IErlElement.Kind type,
+			final String definedName, final IErlElement.Kind kind,
 			final String externalIncludes) {
 		try {
-			return findPreprocessorDef(b, project, module, definedName, type,
+			return findPreprocessorDef(b, project, module, definedName, kind,
 					externalIncludes, new ArrayList<IErlModule>());
-		} catch (final CoreException e) {
-			return null;
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**
@@ -160,47 +162,60 @@ public class ErlModelUtils {
 	 * @throws CoreException
 	 */
 	private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
-			final IProject project, IErlModule m, final String definedName,
-			final IErlElement.Kind type, final String externalIncludes,
-			final List<IErlModule> modulesDone) throws CoreException {
-		if (m == null) {
+			final IProject project, IErlModule module,
+			final String definedName, final IErlElement.Kind kind,
+			final String externalIncludes, final List<IErlModule> modulesDone)
+			throws CoreException {
+		if (module == null) {
 			return null;
 		}
-		modulesDone.add(m);
-		m.open(null);
-		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
-		if (pd != null) {
-			return pd;
+		modulesDone.add(module);
+		module.open(null);
+		String names[];
+		final String unquoted = ErlideUtil.unquote(definedName);
+		if (kind == Kind.RECORD_DEF) {
+			names = new String[] { definedName, unquoted,
+					checkMacroValue(unquoted, module) };
+		} else {
+			names = new String[] { definedName, unquoted };
 		}
-		final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
-		for (final ErlangIncludeFile element : includes) {
-			IResource re = ResourceUtil
-					.recursiveFindNamedResourceWithReferences(project, element
-							.getFilenameLastPart(), PluginUtils
-							.getIncludePathFilter(project, m.getResource()
-									.getParent()));
-			if (re == null) {
-				try {
-					String s = element.getFilename();
-					if (element.isSystemInclude()) {
-						s = ErlideOpen.getIncludeLib(b, s);
-					} else {
-						s = ModelUtils.findIncludeFile(project, s,
-								externalIncludes);
-					}
-					re = ResourceUtil.openExternal(s);
-				} catch (final Exception e) {
-					ErlLogger.warn(e);
-				}
+		for (final String name : names) {
+			final IErlPreprocessorDef pd = module.findPreprocessorDef(name,
+					kind);
+			if (pd != null) {
+				return pd;
 			}
-			if (re != null && re instanceof IFile) {
-				m = ModelUtils.getModule((IFile) re);
-				if (m != null && !modulesDone.contains(m)) {
-					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
-							project, m, definedName, type, externalIncludes,
-							modulesDone);
-					if (pd2 != null) {
-						return pd2;
+			final Collection<ErlangIncludeFile> includes = module
+					.getIncludedFiles();
+			for (final ErlangIncludeFile element : includes) {
+				IResource re = ResourceUtil
+						.recursiveFindNamedResourceWithReferences(project,
+								element.getFilenameLastPart(), PluginUtils
+										.getIncludePathFilter(project, module
+												.getResource().getParent()));
+				if (re == null) {
+					try {
+						String s = element.getFilename();
+						if (element.isSystemInclude()) {
+							s = ErlideOpen.getIncludeLib(b, s);
+						} else {
+							s = ModelUtils.findIncludeFile(project, s,
+									externalIncludes);
+						}
+						re = ResourceUtil.openExternal(s);
+					} catch (final Exception e) {
+						ErlLogger.warn(e);
+					}
+				}
+				if (re != null && re instanceof IFile) {
+					module = ModelUtils.getModule((IFile) re);
+					if (module != null && !modulesDone.contains(module)) {
+						final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
+								project, module, name, kind, externalIncludes,
+								modulesDone);
+						if (pd2 != null) {
+							return pd2;
+						}
 					}
 				}
 			}
@@ -264,21 +279,25 @@ public class ErlModelUtils {
 	 * @param m
 	 * @param definedName
 	 * @param type
+	 * @param findPreprocessorDef
+	 *            TODO
 	 * @throws CoreException
 	 * @throws ErlModelException
 	 * @throws PartInitException
 	 */
 	public static boolean openPreprocessorDef(final Backend b,
-			final IProject project, final IWorkbenchPage page, IErlModule m,
-			final String definedName, final IErlElement.Kind type,
-			final String externalIncludes, final List<IErlModule> modulesDone)
-			throws CoreException, ErlModelException, PartInitException {
+			final IProject project, final IWorkbenchPage page,
+			final IErlModule m, final String definedName,
+			final IErlElement.Kind type, final String externalIncludes,
+			final List<IErlModule> modulesDone) throws CoreException,
+			ErlModelException, PartInitException {
 		if (m == null) {
 			return false;
 		}
 		modulesDone.add(m);
 		m.open(null);
-		final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
+		final IErlPreprocessorDef pd = findPreprocessorDef(b, project, m,
+				definedName, type, externalIncludes, modulesDone);
 		if (pd == null) {
 			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
@@ -305,9 +324,9 @@ public class ErlModelUtils {
 					}
 				}
 				if (re != null && re instanceof IFile) {
-					m = ModelUtils.getModule((IFile) re);
-					if (m != null && !modulesDone.contains(m)) {
-						if (openPreprocessorDef(b, project, page, m,
+					IErlModule m2 = ModelUtils.getModule((IFile) re);
+					if (m2 != null && !modulesDone.contains(m2)) {
+						if (openPreprocessorDef(b, project, page, m2,
 								definedName, type, externalIncludes,
 								modulesDone)) {
 							return true;
@@ -324,10 +343,29 @@ public class ErlModelUtils {
 		return false;
 	}
 
-	public static String checkPredefinedMacro(final String definedName,
+	public static String checkMacroValue(final String definedName,
 			final IErlModule m) {
 		if ("?MODULE".equals(definedName)) {
 			return m.getModuleName();
+		}
+		IErlPreprocessorDef def = m.findPreprocessorDef(
+				withoutInterrogationMark(definedName), Kind.MACRO_DEF);
+		if (def != null) {
+			String extra = def.getExtra();
+			int p = extra.indexOf(',');
+			if (p != -1) {
+				String s = extra.substring(p + 1).trim();
+				if (s.length() > 0) {
+					return s;
+				}
+			}
+		}
+		return definedName;
+	}
+
+	private static String withoutInterrogationMark(final String definedName) {
+		if (definedName.startsWith("?")) {
+			return definedName.substring(1);
 		}
 		return definedName;
 	}
