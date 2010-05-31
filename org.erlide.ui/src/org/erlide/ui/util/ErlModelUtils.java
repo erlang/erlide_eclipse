@@ -141,11 +141,25 @@ public class ErlModelUtils {
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind kind,
 			final String externalIncludes) {
-		try {
-			return findPreprocessorDef(b, project, module, definedName, kind,
-					externalIncludes, new ArrayList<IErlModule>());
-		} catch (CoreException e) {
-			e.printStackTrace();
+		final String unquoted = ErlideUtil.unquote(definedName);
+		String[] names;
+		if (kind == Kind.RECORD_DEF) {
+			names = new String[] { definedName, unquoted,
+					checkMacroValue(unquoted, module) };
+		} else {
+			names = new String[] { definedName, unquoted };
+		}
+		for (String name : names) {
+			try {
+				IErlPreprocessorDef pd = findPreprocessorDef(b, project,
+						module, name, kind, externalIncludes,
+						new ArrayList<IErlModule>());
+				if (pd != null) {
+					return pd;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -162,60 +176,48 @@ public class ErlModelUtils {
 	 * @throws CoreException
 	 */
 	private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
-			final IProject project, IErlModule module,
-			final String definedName, final IErlElement.Kind kind,
-			final String externalIncludes, final List<IErlModule> modulesDone)
-			throws CoreException {
+			final IProject project, IErlModule module, final String name,
+			final IErlElement.Kind kind, final String externalIncludes,
+			final List<IErlModule> modulesDone) throws CoreException {
 		if (module == null) {
 			return null;
 		}
 		modulesDone.add(module);
 		module.open(null);
-		String names[];
-		final String unquoted = ErlideUtil.unquote(definedName);
-		if (kind == Kind.RECORD_DEF) {
-			names = new String[] { definedName, unquoted,
-					checkMacroValue(unquoted, module) };
-		} else {
-			names = new String[] { definedName, unquoted };
+		final IErlPreprocessorDef pd = module.findPreprocessorDef(name, kind);
+		if (pd != null) {
+			return pd;
 		}
-		for (final String name : names) {
-			final IErlPreprocessorDef pd = module.findPreprocessorDef(name,
-					kind);
-			if (pd != null) {
-				return pd;
-			}
-			final Collection<ErlangIncludeFile> includes = module
-					.getIncludedFiles();
-			for (final ErlangIncludeFile element : includes) {
-				IResource re = ResourceUtil
-						.recursiveFindNamedResourceWithReferences(project,
-								element.getFilenameLastPart(), PluginUtils
-										.getIncludePathFilter(project, module
-												.getResource().getParent()));
-				if (re == null) {
-					try {
-						String s = element.getFilename();
-						if (element.isSystemInclude()) {
-							s = ErlideOpen.getIncludeLib(b, s);
-						} else {
-							s = ModelUtils.findIncludeFile(project, s,
-									externalIncludes);
-						}
-						re = ResourceUtil.openExternal(s);
-					} catch (final Exception e) {
-						ErlLogger.warn(e);
+		final Collection<ErlangIncludeFile> includes = module
+				.getIncludedFiles();
+		for (final ErlangIncludeFile element : includes) {
+			IResource re = ResourceUtil
+					.recursiveFindNamedResourceWithReferences(project, element
+							.getFilenameLastPart(), PluginUtils
+							.getIncludePathFilter(project, module.getResource()
+									.getParent()));
+			if (re == null) {
+				try {
+					String s = element.getFilename();
+					if (element.isSystemInclude()) {
+						s = ErlideOpen.getIncludeLib(b, s);
+					} else {
+						s = ModelUtils.findIncludeFile(project, s,
+								externalIncludes);
 					}
+					re = ResourceUtil.openExternal(s);
+				} catch (final Exception e) {
+					ErlLogger.warn(e);
 				}
-				if (re != null && re instanceof IFile) {
-					module = ModelUtils.getModule((IFile) re);
-					if (module != null && !modulesDone.contains(module)) {
-						final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
-								project, module, name, kind, externalIncludes,
-								modulesDone);
-						if (pd2 != null) {
-							return pd2;
-						}
+			}
+			if (re != null && re instanceof IFile) {
+				module = ModelUtils.getModule((IFile) re);
+				if (module != null && !modulesDone.contains(module)) {
+					final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
+							project, module, name, kind, externalIncludes,
+							modulesDone);
+					if (pd2 != null) {
+						return pd2;
 					}
 				}
 			}
@@ -272,11 +274,20 @@ public class ErlModelUtils {
 		return modulesFound;
 	}
 
+	public static boolean openPreprocessorDef(final Backend b,
+			final IProject project, final IWorkbenchPage page,
+			final IErlModule module, final String name,
+			final IErlElement.Kind kind, final String externalIncludes)
+			throws PartInitException, ErlModelException, CoreException {
+		return openPreprocessorDef(b, project, page, module, name, kind,
+				externalIncludes, new ArrayList<IErlModule>());
+	}
+
 	/**
 	 * @param b
 	 * @param project
 	 * @param page
-	 * @param m
+	 * @param module
 	 * @param definedName
 	 * @param type
 	 * @param findPreprocessorDef
@@ -285,24 +296,25 @@ public class ErlModelUtils {
 	 * @throws ErlModelException
 	 * @throws PartInitException
 	 */
-	public static boolean openPreprocessorDef(final Backend b,
+	private static boolean openPreprocessorDef(final Backend b,
 			final IProject project, final IWorkbenchPage page,
-			final IErlModule m, final String definedName,
+			final IErlModule module, final String definedName,
 			final IErlElement.Kind type, final String externalIncludes,
 			final List<IErlModule> modulesDone) throws CoreException,
 			ErlModelException, PartInitException {
-		if (m == null) {
+		if (module == null) {
 			return false;
 		}
-		modulesDone.add(m);
-		m.open(null);
-		final IErlPreprocessorDef pd = findPreprocessorDef(b, project, m,
-				definedName, type, externalIncludes, modulesDone);
+		modulesDone.add(module);
+		module.open(null);
+		final IErlPreprocessorDef pd = findPreprocessorDef(b, project, module,
+				definedName, type, externalIncludes);
 		if (pd == null) {
-			final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
+			final Collection<ErlangIncludeFile> includes = module
+					.getIncludedFiles();
 			for (final ErlangIncludeFile element : includes) {
 				final String filenameLastPart = element.getFilenameLastPart();
-				final IResource resource = m.getResource();
+				final IResource resource = module.getResource();
 				final IContainer parent = resource.getParent();
 				final ContainerFilter includePathFilter = PluginUtils
 						.getIncludePathFilter(project, parent);

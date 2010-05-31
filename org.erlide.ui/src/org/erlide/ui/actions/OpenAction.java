@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -325,8 +323,7 @@ public class OpenAction extends SelectionDispatchAction {
 					: IErlElement.Kind.RECORD_DEF;
 			ErlModelUtils.openPreprocessorDef(b, project, page, module,
 					definedName, kind, model.getExternal(erlProject,
-							ErlangCore.EXTERNAL_INCLUDES),
-					new ArrayList<IErlModule>());
+							ErlangCore.EXTERNAL_INCLUDES));
 		}
 	}
 }

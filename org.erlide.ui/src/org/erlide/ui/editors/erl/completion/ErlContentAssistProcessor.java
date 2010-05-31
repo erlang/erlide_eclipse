@@ -697,19 +697,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 
-	private int atomPrefixLength(final IDocument doc, final int offset) {
-		try {
-			for (int n = offset - 1; n >= 0; n--) {
-				final char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c)) {
-					return offset - n - 1;
-				}
-			}
-		} catch (final BadLocationException e) {
-		}
-		return 0;
-	}
-
 	private String getPrefix(final String before) {
 		for (int n = before.length() - 1; n >= 0; --n) {
 			final char c = before.charAt(n);
