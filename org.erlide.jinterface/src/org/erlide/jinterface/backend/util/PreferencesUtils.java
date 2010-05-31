@@ -11,11 +11,7 @@ public final class PreferencesUtils {
 	private static final String SEP = ";";
 
 	public static String packList(final Iterable<String> list) {
-		final StringBuilder result = new StringBuilder();
-		for (final String s : list) {
-			result.append(s).append(SEP);
-		}
-		return result.toString();
+		return packList(list, SEP);
 	}
 
 	public static List<String> unpackList(final String string) {
@@ -57,6 +53,15 @@ public final class PreferencesUtils {
 	}
 
 	private PreferencesUtils() {
+	}
+
+	public static String packList(final Iterable<String> list, String sep) {
+		final StringBuilder result = new StringBuilder();
+		for (final String s : list) {
+			result.append(s).append(sep);
+		}
+		String r = result.substring(0, result.length()-sep.length());
+		return r;
 	}
 
 	public static List<String> unpackList(final String string, final String sep) {
