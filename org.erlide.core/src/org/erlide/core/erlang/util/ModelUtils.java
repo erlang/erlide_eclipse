@@ -136,7 +136,7 @@ public class ModelUtils {
 				re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
 						element.getFilenameLastPart(),
 						org.erlide.core.erlang.util.PluginUtils
-								.getIncludePathFilter(project, m.getResource()
+								.getIncludePathFilter(p, m.getResource()
 										.getParent()));
 				if (re != null) {
 					project = p;
@@ -158,8 +158,7 @@ public class ModelUtils {
 				} catch (final Exception e) {
 					ErlLogger.warn(e);
 				}
-			}
-			if (re != null && re instanceof IFile) {
+			} else if (re instanceof IFile) {
 				m = ErlModelManager.getDefault().getErlangModel().findModule(
 						(IFile) re);
 				if (m != null && !modulesDone.contains(m)) {
