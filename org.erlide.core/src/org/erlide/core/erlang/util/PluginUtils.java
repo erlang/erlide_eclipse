@@ -157,7 +157,7 @@ public class PluginUtils {
 		private final Set<IPath> paths;
 		private final Set<String> extra;
 
-		private SourcePathContainerFilter(final IProject project) {
+		SourcePathContainerFilter(final IProject project) {
 			paths = getFullPaths(project, ErlangCore.getProjectProperties(
 					project).getSourceDirs());
 			extra = new HashSet<String>();

@@ -18,6 +18,7 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -51,6 +52,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -77,11 +79,12 @@ public class ErlangLaunchConfigurationDelegate implements
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
-		doLaunch(config, mode, launch, false);
+		doLaunch(config, mode, launch, false, null);
 	}
 
-	private void doLaunch(final ILaunchConfiguration config, final String mode,
-			final ILaunch launch, final boolean internal) throws CoreException {
+	protected Backend doLaunch(final ILaunchConfiguration config,
+			final String mode, final ILaunch launch, final boolean internal,
+			final Map<String, String> env) throws CoreException {
 
 		final ErlLaunchData data = new ErlLaunchData(config, internal);
 
@@ -91,7 +94,7 @@ public class ErlangLaunchConfigurationDelegate implements
 					.getProject(s);
 			if (project == null) {
 				ErlLogger.error("Launch: project not found: '%s'!", s);
-				return;
+				return null;
 			}
 			projects.add(project);
 		}
@@ -106,7 +109,7 @@ public class ErlangLaunchConfigurationDelegate implements
 				data.runtime);
 		if (rt0 == null) {
 			ErlLogger.error("Could not find runtime %s", data.runtime);
-			return;
+			return null;
 		}
 		final RuntimeInfo rt = buildRuntimeInfo(internal, data, rt0);
 
@@ -138,13 +141,13 @@ public class ErlangLaunchConfigurationDelegate implements
 
 		if (data.isInternal) {
 			ErlLogger.debug("Not creating a backend");
-			return;
+			return null;
 		}
 
 		ErlideBackend backend;
 		try {
 			backend = ErlangCore.getBackendManager().createBackend(rt, options,
-					launch, null);
+					launch, env);
 			if (backend == null) {
 				ErlLogger.error("Launch: could not create backend!");
 				final Status s = new Status(IStatus.ERROR,
@@ -159,6 +162,7 @@ public class ErlangLaunchConfigurationDelegate implements
 					DebugException.REQUEST_FAILED, e.getMessage(), null);
 			throw new DebugException(s);
 		}
+		return backend;
 	}
 
 	private RuntimeInfo buildRuntimeInfo(final boolean internal,
@@ -364,8 +368,11 @@ public class ErlangLaunchConfigurationDelegate implements
 				ErlideDebug.interpret(backend, f.getLocation().toString(),
 						distributed, interpret);
 			} else {
-				ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
-						+ module);
+				if (false) {
+				} else {
+					ErlLogger.debug("IGNORED MISSING interpret " + project
+							+ ":" + module);
+				}
 			}
 
 		} catch (final ErlModelException e) {
@@ -398,6 +405,6 @@ public class ErlangLaunchConfigurationDelegate implements
 	public void launchInternal(final ILaunchConfiguration configuration,
 			final String mode, final ILaunch launch,
 			final IProgressMonitor monitor) throws CoreException {
-		doLaunch(configuration, mode, launch, true);
+		doLaunch(configuration, mode, launch, true, null);
 	}
 }
