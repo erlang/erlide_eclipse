@@ -344,8 +344,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
-		// ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
-		// ")");
+		 ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
+		 ")");
 		final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
 		final String event = a.atomValue();
 		final int what = getMetaWhat(event);
@@ -503,8 +503,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 			} else if (status.equals("exit")) {
 				erlangProcess.setStatus(status);
-				final OtpErlangAtom esa = (OtpErlangAtom) intEvent.elementAt(3);
-				erlangProcess.setExitStatus(esa.atomValue());
+				final OtpErlangObject esa = intEvent.elementAt(3);
+				erlangProcess.setExitStatus(esa.toString());
 				erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
 			} else if (status.equals("running")) {
 				erlangProcess.setStatus(status);
