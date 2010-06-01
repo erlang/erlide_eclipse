@@ -433,7 +433,7 @@ public final class BuilderUtils {
 		if (eprj != null) {
 			final List<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
-				final boolean wasKnown = m.isStructureKnown();
+				m.getScanner();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
 					if (BuilderUtils.samePath(ifile.getFilename(), resource
@@ -447,10 +447,7 @@ public final class BuilderUtils {
 						break;
 					}
 				}
-				if (!wasKnown) {
-					m.disposeScanner();
-					m.disposeParser();
-				}
+				m.disposeScanner();
 			}
 		}
 	}
@@ -556,7 +553,7 @@ public final class BuilderUtils {
 			if (eprj != null) {
 				final IErlModule m = eprj.getModule(source.getName());
 				if (m != null) {
-					final boolean wasKnown = m.isStructureKnown();
+					m.getScanner();
 					final Collection<ErlangIncludeFile> incs = m
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
@@ -570,10 +567,7 @@ public final class BuilderUtils {
 							break;
 						}
 					}
-					if (!wasKnown) {
-						m.disposeScanner();
-						m.disposeParser();
-					}
+					m.disposeScanner();
 				}
 			}
 		}
@@ -751,9 +745,9 @@ public final class BuilderUtils {
 		MarkerHelper.deleteMarkers(res);
 
 		final String outputDir = bres.getOutput() == null ? projectPath.append(
-				prefs.getOutputDir()).toString() : (bres.getOutput()
-				.startsWith("/") ? bres.getOutput() : projectPath.append(
-				bres.getOutput()).toString());
+				prefs.getOutputDir()).toString() : bres.getOutput().startsWith(
+				"/") ? bres.getOutput() : projectPath.append(bres.getOutput())
+				.toString();
 		ensureDirExists(outputDir);
 
 		final List<String> includeDirs = getAllIncludeDirs(project);

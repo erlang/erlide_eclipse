@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlFunction;
@@ -320,12 +319,8 @@ public final class MarkerHelper {
 		if (m == null) {
 			return;
 		}
-		final boolean hadScanner = m.hasScanner();
-		final ErlScanner s = m.getScanner();
-		if (s == null) {
-			return;
-		}
-		final Collection<IErlComment> cl = s.getComments();
+		m.getScanner();
+		final Collection<IErlComment> cl = m.getComments();
 		for (final IErlComment c : cl) {
 			final String text = c.getName();
 			final int line = c.getLineStart();
@@ -333,9 +328,7 @@ public final class MarkerHelper {
 			mkMarker(resource, line, text, "XXX", IMarker.PRIORITY_NORMAL);
 			mkMarker(resource, line, text, "FIXME", IMarker.PRIORITY_HIGH);
 		}
-		if (!hadScanner) {
-			m.disposeScanner(); // TODO JC this is a hack
-		}
+		m.disposeScanner();
 	}
 
 	private static void getNoScanMarkersFor(final IResource resource,

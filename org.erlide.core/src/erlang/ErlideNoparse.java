@@ -45,13 +45,13 @@ public class ErlideNoparse {
 		return res;
 	}
 
-	public static void destroy(final Backend b, final String module) {
-		try {
-			b.call("erlide_noparse_server", "destroy", "a", module);
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
-		}
-	}
+	// public static void destroy(final Backend b, final String module) {
+	// try {
+	// b.call("erlide_noparse_server", "destroy", "a", module);
+	// } catch (final Exception e) {
+	// ErlLogger.warn(e);
+	// }
+	// }
 
 	public static IErlFunction getFunction(final IErlModule module,
 			final String name, final int arity) {

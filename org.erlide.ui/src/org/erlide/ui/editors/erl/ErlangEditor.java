@@ -278,8 +278,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	public void disposeModule() {
 		final IErlModule module = getModule();
 		if (module != null) {
-			module.disposeScanner();
-			module.disposeParser();
 			module.dispose();
 		}
 	}
@@ -733,7 +731,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 		final IErlModule module = getModule();
 		if (module != null) {
-			module.reenableScanner();
 			fErlangEditorErrorTickUpdater.updateEditorImage(module);
 		}
 
