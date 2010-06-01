@@ -172,10 +172,15 @@ fixup_token(#token{text=Text} = Token) when is_list(Text) ->
 fixup_token(Token) ->
     Token.
 
-fixup_form(#function{comment=Comment, clauses=Clauses} = Function) ->
-    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=[]};
-fixup_form(#clause{head=Head} = Clause) ->
-    Clause#clause{head=to_binary(Head), args=[]};
+binary_args(Args) when is_list(Args) ->
+    [iolist_to_binary(A) || A <- Args];
+binary_args(_) ->
+    [].
+
+fixup_form(#function{comment=Comment, clauses=Clauses, args=Args} = Function) ->
+    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=binary_args(Args)};
+fixup_form(#clause{head=Head, args=Args} = Clause) ->
+    Clause#clause{head=to_binary(Head), args=binary_args(Args)};
 fixup_form(Other) ->
     Other.
 
@@ -208,7 +213,8 @@ cac(function, Tokens, Exports, Imports) ->
     ClausesAndRefs = fix_clauses(ClauseList),
     %?D(length(Clauses)),
     [{#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
-    Arity = erlide_text:guess_arity(A),
+    ?D(A),
+    Arity = length(A),
     Exported = get_exported({N, Arity}, Exports),
     Function = case ClausesAndRefs of  	% only show subclauses when more than one
                    [_] ->
@@ -405,9 +411,6 @@ gbop([T | Rest], L, R) ->
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
 
-get_between_pars(T) ->
-    get_between(T, '(', ')').
-
 last_not_eof(L) -> 
     case lists:reverse(L) of
         [eof, Last | _] ->
@@ -500,12 +503,16 @@ fix_clauses([C | Rest], Acc) ->
 
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
-    PosLength = LastOffset - Offset + LastLength,
+    PosLength = LastOffset - Offset + LastLength+1,
     ExternalRefs = get_refs(Rest),
-%%     ?D({ExternalRefs, Rest}),
     {#clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
-             name=Name, args=get_between_pars(Rest), head=get_head(Rest)},
+             name=Name, args=get_function_args(Rest), head=get_head(Rest)},
      ExternalRefs}.
+
+get_function_args(Tokens) ->
+    P = get_between_outer_pars(Tokens, '(', ')'),
+    L = erlide_text:split_comma_list(P),
+    [to_string(A) || A <- L].
 
 fix_refs(ClausesAndRefs, Function, Imports) ->
     fix_refs(ClausesAndRefs, Function, Imports, []).

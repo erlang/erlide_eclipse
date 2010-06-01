@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.List;
+
 public interface IErlFunctionClause extends IErlMember {
 
 	public String getHead();
 
 	public String getFunctionName();
+
+	public List<String> getParameters();
 
 	int getArity();
 

@@ -19,7 +19,7 @@
          is_paren/1,
          is_op1/1, is_op2/1,
          is_block_start_token/1,
-         guess_arity/1,
+         guess_arity/1, split_comma_list/1,
          clean_tokens/2,
          get_line_offsets/1,
          detab/3, entab/3, start_column/2, initial_whitespace/1,
@@ -179,6 +179,28 @@ is_block_start_token(#token{kind=Kind}) ->
 is_block_start_token(T) ->
     lists:member(T, ['fun', 'case', 'begin', 'if', 'try']).
 
+
+split_comma_list(Tokens) ->
+    ?D(Tokens),
+    R = split_comma_list(Tokens, [], []),
+    ?D(R),
+    R.
+
+split_comma_list([], [], P) ->
+    lists:reverse(P);
+split_comma_list([], A, P) ->
+    lists:reverse(P, [A]);
+split_comma_list([#token{kind=')'} | _], [], P) ->
+    lists:reverse(P);
+split_comma_list([#token{kind=')'} | _], A, P) ->
+    lists:reverse(P, [A]);
+split_comma_list([#token{kind=','} | Rest], A, P) ->
+    split_comma_list(Rest, [], [A | P]);
+split_comma_list(Tokens, _A, P) ->
+    Rest = skip_expr(Tokens),
+    Expr = lists:sublist(Tokens, 1, length(Tokens) - length(Rest)),
+    split_comma_list(Rest, Expr, P).
+
 %%
 %% guess_arity: guess function arity from a tokenized parameter list
 %%
@@ -221,7 +243,7 @@ skip_expr([Tup | Rest]) ->
             skip_block_end(Rest);
         false ->
             case Rest of
-                [{Op,_, _} | R] ->
+                [#token{kind=Op} | R] ->
                     case is_op2(Op) of
                         true ->
                             skip_expr(R);
