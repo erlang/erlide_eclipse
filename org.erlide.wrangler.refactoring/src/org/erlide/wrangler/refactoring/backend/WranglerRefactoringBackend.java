@@ -81,10 +81,12 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 */
 	public RpcResult callWithoutParser(final String functionName,
 			final String signature, final Object... parameters) {
-		ErlLogger
-				.info("Wrangler call: " + makeLogStr(functionName, parameters));
-		return backend.call_noexception(MODULE, functionName, signature,
-				parameters);
+		/*
+		 * ErlLogger .info("Wrangler call: " + makeLogStr(functionName,
+		 * parameters)); RpcResult res = backend.call_noexception(MODULE,
+		 * functionName, signature, parameters);
+		 */
+		return callWithoutParser(-1, functionName, signature, parameters);
 	}
 
 	public RpcResult callWithoutParser(final int timeout,
@@ -92,8 +94,17 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 			final Object... parameters) {
 		ErlLogger
 				.info("Wrangler call: " + makeLogStr(functionName, parameters));
-		return backend.call_noexception(timeout, MODULE, functionName,
-				signature, parameters);
+		RpcResult res;
+		if (timeout < 0)
+			res = backend.call_noexception(MODULE, functionName, signature,
+					parameters);
+		else
+			res = backend.call_noexception(timeout, MODULE, functionName,
+					signature, parameters);
+		RpcResult err = backend.call_noexception("wrangler_error_logger",
+				"get_logged_info", "");
+		ErlLogger.info("Warning: " + err);
+		return res;
 	}
 
 	protected String makeLogStr(String function, Object[] parameters) {

@@ -10,6 +10,8 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.BundleContext;
 
+import com.ericsson.otp.erlang.OtpErlangList;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -100,6 +102,11 @@ public class Activator extends AbstractUIPlugin {
 		 * "Could not load the ebin files!" )); } catch (Exception e) {
 		 * e.printStackTrace(); } }
 		 */
+
+		res = mb.call_noexception("wrangler_error_logger", "init", "x",
+				new OtpErlangList());
+
+		ErlLogger.debug("Error logger started:" + res);
 	}
 
 	/**
