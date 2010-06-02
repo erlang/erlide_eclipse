@@ -227,7 +227,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			}
 			for (final String pm : data.interpretedModules) {
 				final String[] pms = pm.split(":");
-				interpret(backend, pms[0], pms[1], distributed, true);
+				getDebugHelper().interpret(backend, pms[0], pms[1], distributed, true);
 			}
 			// send started to target
 			DebugPlugin.getDefault().addDebugEventListener(
@@ -246,6 +246,10 @@ public class ErlangLaunchConfigurationDelegate implements
 		} else {
 			runInitial(data.module, data.function, data.args, backend);
 		}
+	}
+
+	protected ErlangDebugHelper getDebugHelper() {
+		return new ErlangDebugHelper();
 	}
 
 	private static void registerProjects(final ErlideBackend backend,
@@ -350,35 +354,6 @@ public class ErlangLaunchConfigurationDelegate implements
 			}
 		}
 		return null;
-	}
-
-	public static void interpret(final Backend backend, final String project,
-			final String module, final boolean distributed,
-			final boolean interpret) {
-		final IErlProject eprj = ErlangCore.getModel()
-				.getErlangProject(project);
-		final IProject iprj = eprj.getProject();
-		try {
-			final IFolder r = iprj.getFolder(eprj.getOutputLocation());
-			final String beam = ErlideUtil.withoutExtension(module) + ".beam";
-			final IFile f = r.getFile(beam);
-			if (f.exists()) {
-				final String de = interpret ? "" : "de";
-				ErlLogger.debug(de + "interpret " + beam);
-				ErlideDebug.interpret(backend, f.getLocation().toString(),
-						distributed, interpret);
-			} else {
-				if (false) {
-				} else {
-					ErlLogger.debug("IGNORED MISSING interpret " + project
-							+ ":" + module);
-				}
-			}
-
-		} catch (final ErlModelException e) {
-			ErlLogger.warn(e);
-		}
-
 	}
 
 	void runInitial(final String module, final String function,
