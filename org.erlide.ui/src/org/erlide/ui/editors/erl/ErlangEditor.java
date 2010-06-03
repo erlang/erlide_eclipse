@@ -181,6 +181,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private final Object lock = new Object();
 	// private final boolean initFinished = false;
 	private SendToConsoleAction sendToConsole;
+	private IErlModule fModule = null;
 
 	/**
 	 * Simple constructor
@@ -279,6 +280,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		final IErlModule module = getModule();
 		if (module != null) {
 			module.dispose();
+			fModule = null;
 		}
 	}
 
@@ -721,6 +723,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				document.removeDocumentListener(scannerListener);
 			}
 			disposeModule();
+			resetReconciler();
 		}
 
 		super.doSetInput(input);
@@ -784,7 +787,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	public IErlModule getModule() {
-		return ErlModelUtils.getModule(getEditorInput(), getDocumentProvider());
+		if (fModule == null) {
+			fModule = ErlModelUtils.getModule(getEditorInput(),
+					getDocumentProvider());
+		}
+		return fModule;
 	}
 
 	/**
@@ -1633,8 +1640,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (module == null) {
 			return;
 		}
-		reconcileNow();
+		resetReconciler();
 		module.resetAndCacheScannerAndParser(getDocument().get());
+	}
+
+	public void resetReconciler() {
+		((EditorConfiguration) getSourceViewerConfiguration())
+				.resetReconciler();
 	}
 
 	public void reconcileNow() {

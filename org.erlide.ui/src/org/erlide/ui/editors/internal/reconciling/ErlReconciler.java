@@ -653,6 +653,7 @@ public class ErlReconciler implements IReconciler {
 				fDirtyRegionQueue.purgeQueue();
 			}
 			fThread.reset();
+			initialProcess();
 		}
 	}
 

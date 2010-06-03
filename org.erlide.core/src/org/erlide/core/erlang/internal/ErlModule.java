@@ -346,7 +346,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public void getScanner() {
+	public synchronized void getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
 		}
@@ -361,8 +361,9 @@ public class ErlModule extends Openable implements IErlModule {
 		return new ErlScanner(this, initialText, path);
 	}
 
-	public void reconcileText(final int offset, final int removeLength,
-			final String newText, final IProgressMonitor mon) {
+	public synchronized void reconcileText(final int offset,
+			final int removeLength, final String newText,
+			final IProgressMonitor mon) {
 		if (scanner == null) {
 			// There are two places that we make the initial scanner... this
 			// is one too
@@ -389,7 +390,7 @@ public class ErlModule extends Openable implements IErlModule {
 	 * org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime
 	 * .IProgressMonitor)
 	 */
-	public void postReconcile(final IProgressMonitor mon) {
+	public synchronized void postReconcile(final IProgressMonitor mon) {
 		if (!fIgnoreNextPostReconcile) {
 			try {
 				open(mon);
@@ -409,12 +410,12 @@ public class ErlModule extends Openable implements IErlModule {
 
 	}
 
-	public void finalReconcile() {
+	public synchronized void finalReconcile() {
 		fIgnoreNextReconcile = true;
 		fIgnoreNextPostReconcile = true;
 	}
 
-	public void initialReconcile() {
+	public synchronized void initialReconcile() {
 		fIgnoreNextReconcile = true;
 		fIgnoreNextPostReconcile = true;
 	}
@@ -505,7 +506,9 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public synchronized void resetAndCacheScannerAndParser(final String newText) {
-		scanner = null;
+		while (scanner != null) {
+			disposeScanner();
+		}
 		initialText = newText;
 		parsed = false;
 		updateCaches = true;

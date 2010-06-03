@@ -12,6 +12,8 @@ package org.erlide.core.erlang;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
+
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.
  * <p>
@@ -49,4 +51,6 @@ public interface IParent {
 	void removeChild(IErlElement e);
 
 	IErlElement getChildNamed(String s);
+
+	IErlElement getChildWithResource(IResource rsrc);
 }
