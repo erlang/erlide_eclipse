@@ -424,10 +424,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> getExternalCallCompletions(
-			final Backend b, final IErlProject project,
-			final String moduleName, final int offset, final String aprefix,
-			final boolean arityOnly) throws OtpErlangRangeException,
-			CoreException {
+			final Backend b, final IErlProject project, String moduleName,
+			final int offset, final String aprefix, final boolean arityOnly)
+			throws OtpErlangRangeException, CoreException {
+		moduleName = ErlModelUtils.checkMacroValue(moduleName, module);
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		// we have an external call

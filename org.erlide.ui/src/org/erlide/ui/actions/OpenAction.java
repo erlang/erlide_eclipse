@@ -216,19 +216,20 @@ public class OpenAction extends SelectionDispatchAction {
 				final IErlElement e = editor.getElementAt(offset, true);
 				if (e.getKind() == IErlElement.Kind.TYPESPEC
 						|| e.getKind() == IErlElement.Kind.RECORD_DEF) {
-					if (ErlModelUtils
-							.openExternalType(res.getName(), res.getFun(), res
-									.getPath(), project, checkAllProjects)) {
+					if (ErlModelUtils.openExternalType(res.getName(), res
+							.getFun(), res.getPath(), module, project,
+							checkAllProjects)) {
 						return;
 					}
 				}
 			}
 			if (!ErlModelUtils.openExternalFunction(res.getName(), res
-					.getFunction(), res.getPath(), project, checkAllProjects)) {
+					.getFunction(), res.getPath(), module, project,
+					checkAllProjects)) {
 				ErlModelUtils.openExternalFunction(res.getName(),
 						new ErlangFunction(res.getFun(),
 								IErlModel.UNKNOWN_ARITY), res.getPath(),
-						project, checkAllProjects);
+						module, project, checkAllProjects);
 			}
 		} else if (res.isInclude()) {
 			final IContainer parent = module == null ? null : module
@@ -286,7 +287,7 @@ public class OpenAction extends SelectionDispatchAction {
 					boolean checkAllProjects = NavigationPreferencePage
 							.getCheckAllProjects();
 					ErlModelUtils.openExternalFunction(mod, res.getFunction(),
-							path, project, checkAllProjects);
+							path, module, project, checkAllProjects);
 				} else {
 					ErlModelUtils.openFunctionInEditor(new ErlangFunction(res
 							.getFun(), IErlModel.UNKNOWN_ARITY), editor);

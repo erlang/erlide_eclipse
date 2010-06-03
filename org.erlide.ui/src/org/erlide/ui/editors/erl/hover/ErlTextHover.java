@@ -315,9 +315,6 @@ public class ErlTextHover implements ITextHover,
 						return null;
 					}
 					String definedName = a1.atomValue();
-					if (definedName.charAt(0) == '?') {
-						definedName = definedName.substring(1);
-					}
 					// TODO code below should be cleaned up, we should factorize
 					// and
 					// use same code for content assist, open and hover
@@ -330,7 +327,8 @@ public class ErlTextHover implements ITextHover,
 						} else if (openKind.equals("external")) {
 							final OtpErlangAtom a2 = (OtpErlangAtom) t
 									.elementAt(2);
-							final String mod = definedName;
+							final String mod = ErlModelUtils.checkMacroValue(
+									definedName, module);
 							definedName = a2.atomValue();
 							arityLong = (OtpErlangLong) t.elementAt(3);
 							IResource r = null;
@@ -341,7 +339,7 @@ public class ErlTextHover implements ITextHover,
 								final String path = Util.stringValue(s4);
 								try {
 									r = ErlModelUtils.findExternalModule(mod,
-											path, module.getResource()
+											path, module, module.getResource()
 													.getProject(), true);
 								} catch (final CoreException e2) {
 								}
@@ -392,13 +390,15 @@ public class ErlTextHover implements ITextHover,
 						}
 						result.append(comment);
 					} else {
+						if (definedName.charAt(0) == '?') {
+							definedName = definedName.substring(1);
+						}
 						final IErlElement.Kind kindToFind = openKind
 								.equals("record") ? IErlElement.Kind.RECORD_DEF
 								: IErlElement.Kind.MACRO_DEF;
 						final IErlProject project = module.getProject();
 						final IProject proj = project == null ? null
 								: (IProject) project.getResource();
-						definedName = a1.toString();
 						final String externalIncludes = model.getExternal(
 								erlProject, ErlangCore.EXTERNAL_INCLUDES);
 						IErlPreprocessorDef pd = ErlModelUtils

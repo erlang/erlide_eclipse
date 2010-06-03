@@ -401,9 +401,9 @@ public class ErlModelUtils {
 	 */
 	public static boolean openExternalFunction(final String mod,
 			final ErlangFunction function, final String path,
-			final IProject project, final boolean checkAllProjects)
-			throws CoreException {
-		final IResource r = findExternalModule(mod, path, project,
+			final IErlModule module, final IProject project,
+			final boolean checkAllProjects) throws CoreException {
+		final IResource r = findExternalModule(mod, path, module, project,
 				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
@@ -426,9 +426,9 @@ public class ErlModelUtils {
 	}
 
 	public static boolean openExternalType(final String mod, final String type,
-			final String path, final IProject project,
+			final String path, final IErlModule module, final IProject project,
 			final boolean checkAllProjects) throws CoreException {
-		final IResource r = findExternalModule(mod, path, project,
+		final IResource r = findExternalModule(mod, path, module, project,
 				checkAllProjects);
 		if (r != null && r instanceof IFile) {
 			final IFile f = (IFile) r;
@@ -444,9 +444,12 @@ public class ErlModelUtils {
 		return false;
 	}
 
-	public static IResource findExternalModule(final String mod,
-			final String path, final IProject project,
+	public static IResource findExternalModule(String mod, final String path,
+			final IErlModule module, final IProject project,
 			final boolean checkAllProjects) throws CoreException {
+		if (mod.startsWith("?")) {
+			mod = checkMacroValue(mod, module);
+		}
 		final String modFileName = mod + ".erl";
 		IResource r = null;
 		if (project != null) {

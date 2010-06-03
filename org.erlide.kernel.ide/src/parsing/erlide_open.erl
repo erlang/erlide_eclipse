@@ -49,7 +49,7 @@ open(Mod, Offset, #open_context{imports=Imports0}=Context) ->
             erlide_scanner_server:getTokenWindow(Mod, Offset, 5, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Offset, TokensWComments, BeforeReversed,
-                 Context),
+                 Context#open_context{imports=Imports}),
         error
     catch
         throw:{open, Res} ->
@@ -149,10 +149,6 @@ o_tokens([#token{kind=atom, value=define} | Rest], _, _) ->
     o_macro_def(Rest);
 o_tokens([#token{kind=atom, value=record} | Rest], _, [#token{kind='-'} | _]) ->
     o_record_def(Rest);
-o_tokens([#token{kind=macro, value=Value} | _], _, [#token{kind='#'} | _]) ->
-    o_record(Value);
-o_tokens([#token{kind=macro, value=Value} | _], _, _) ->
-    o_macro(Value);
 o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _) ->
     o_record(Value);
 o_tokens([#token{kind='#'}, #token{kind=macro, value=Value} | _], _, _) ->
@@ -164,6 +160,9 @@ o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, v
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
          Context, _) ->
     o_external(Module, Function, Rest, Context);
+o_tokens([#token{kind=macro, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
+         Context, _) ->
+    o_external(Module, Function, Rest, Context);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
          Context, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
     o_external(Module, Function, Arity, Context);
@@ -173,6 +172,10 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integ
 o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _],
          Context, [#token{kind=atom, value=Function} | _]) ->
     o_local(Function, Arity, Context);
+o_tokens([#token{kind=macro, value=Value} | _], _, [#token{kind='#'} | _]) ->
+    o_record(Value);
+o_tokens([#token{kind=macro, value=Value} | _], _, _) ->
+    o_macro(Value);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest],
          Context, BeforeReversed) ->
     case consider_local(BeforeReversed) of
