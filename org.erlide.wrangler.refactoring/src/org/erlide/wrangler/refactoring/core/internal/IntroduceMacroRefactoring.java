@@ -30,7 +30,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class IntroduceMacroRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		// Guess, no initial condition
 		return new RefactoringStatus();
@@ -42,7 +42,7 @@ public class IntroduceMacroRefactoring extends SimpleOneStepWranglerRefactoring 
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		// TODO: extend it
 

@@ -32,13 +32,12 @@ public abstract class SimpleOneStepWranglerRefactoring extends
 	 * If the refactoring returns with a warning message, wrangler should know
 	 * that the user asked to continue. It is done by calling a function.
 	 * 
-	 * @param sel
 	 * @return a refactoring message
 	 */
 	// public abstract IRefactoringRpcMessage runAfterWarning(IErlSelection
 	// sel);
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

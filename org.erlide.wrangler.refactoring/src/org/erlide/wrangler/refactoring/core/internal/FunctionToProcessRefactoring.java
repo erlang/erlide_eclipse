@@ -26,7 +26,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -41,7 +41,7 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 	}
 
 	@Override
-	protected ProcessRpcMessage checkUndecidables(IErlMemberSelection sel) {
+	protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
 		return (ProcessRpcMessage) WranglerBackendManager
 				.getRefactoringBackend().callWithParser(
 						new ProcessRpcMessage(), "fun_to_process_eclipse",
@@ -62,7 +62,7 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fun_to_process_1_eclipse", "siisxi", sel.getFilePath(),

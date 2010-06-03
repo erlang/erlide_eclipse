@@ -31,7 +31,7 @@ import org.incava.util.diff.Difference;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class ChangesetMaker {
+public final class ChangesetMaker {
 
 	static private File inFile;
 	// static private File outFile;
@@ -48,7 +48,8 @@ public class ChangesetMaker {
 	 * @return list of chars
 	 */
 	@SuppressWarnings("boxing")
-	private static ArrayList<Character> convertArrayToArrayList(char[] charArray) {
+	private static ArrayList<Character> convertArrayToArrayList(
+			final char[] charArray) {
 		ArrayList<Character> result = new ArrayList<Character>();
 		for (char c : charArray) {
 			result.add(c);
@@ -62,7 +63,7 @@ public class ChangesetMaker {
 	 * @param diff
 	 * @return
 	 */
-	private static TextEdit createEditFromDiff(Difference diff) {
+	private static TextEdit createEditFromDiff(final Difference diff) {
 		TextEdit result = null;
 
 		// delete
@@ -110,12 +111,20 @@ public class ChangesetMaker {
 	// }
 
 	/**
-	 * Readsthe input file, compares with the given new string, then creates
+	 * Reads the input file, compares with the given new string, then creates
 	 * Eclipse's <code>TextEdit</code>-s.
+	 * 
+	 * @param in
+	 *            original file
+	 * @param out
+	 *            modified file content
+	 * @return list of edit objects
+	 * @throws IOException
+	 *             if the file could not be read
 	 */
 	@SuppressWarnings("unchecked")
-	static public ArrayList<TextEdit> createEdits(File in, String out)
-			throws IOException {
+	static public ArrayList<TextEdit> createEdits(final File in,
+			final String out) throws IOException {
 		inFile = in;
 
 		ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
@@ -146,8 +155,8 @@ public class ChangesetMaker {
 	 * @param deletedEnd
 	 * @return
 	 */
-	private static TextEdit createReplaceEdit(int addedStart, int addedEnd,
-			int deletedStart, int deletedEnd) {
+	private static TextEdit createReplaceEdit(final int addedStart,
+			final int addedEnd, final int deletedStart, final int deletedEnd) {
 		TextEdit result = new MultiTextEdit();
 
 		int addedLength = addedEnd - addedStart + 1;
@@ -180,7 +189,7 @@ public class ChangesetMaker {
 	 *            string's ending position
 	 * @return
 	 */
-	private static String getString(int from, int to) {
+	private static String getString(final int from, final int to) {
 		String s = "";
 		// from, to+1
 		for (char c : outFileCharArray) {
@@ -199,7 +208,8 @@ public class ChangesetMaker {
 	 *             if any i/o error occurs this exception is raised.
 	 */
 	@SuppressWarnings("boxing")
-	static private ArrayList<Character> readFile(File file) throws IOException {
+	static private ArrayList<Character> readFile(final File file)
+			throws IOException {
 
 		ArrayList<Character> result = new ArrayList<Character>();
 		BufferedReader input = new BufferedReader(new FileReader(file));

@@ -15,13 +15,29 @@ import java.util.ArrayList;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
 
+/**
+ * Refactoring Wizard class which used for integrating Wrangler refactorings
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class DefaultWranglerRefactoringWizard extends
 		AbstractWranglerRefactoringWizard {
 
-	private ArrayList<WranglerPage> pages;
+	private final ArrayList<WranglerPage> pages;
 
-	public DefaultWranglerRefactoringWizard(Refactoring refactoring, int flags,
-			ArrayList<WranglerPage> pages) {
+	/**
+	 * Default constructor
+	 * 
+	 * @param refactoring
+	 *            integrated refactoring
+	 * @param flags
+	 *            flags
+	 * @param pages
+	 *            input pages which should be shown
+	 */
+	public DefaultWranglerRefactoringWizard(final Refactoring refactoring,
+			final int flags, final ArrayList<WranglerPage> pages) {
 		super(refactoring, flags);
 		this.pages = pages;
 		setWindowTitle(refactoring.getName());

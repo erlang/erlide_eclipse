@@ -34,7 +34,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 	protected String undecidables;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -55,7 +55,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_process_1_eclipse", "sssxi", sel.getFilePath(),
 				undecidables, userInput, sel.getSearchPath(),
@@ -64,7 +64,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected ProcessRpcMessage checkUndecidables(IErlMemberSelection sel) {
+	protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
 		return (ProcessRpcMessage) WranglerBackendManager
 				.getRefactoringBackend().callWithParser(
 						new ProcessRpcMessage(), "rename_process_eclipse",

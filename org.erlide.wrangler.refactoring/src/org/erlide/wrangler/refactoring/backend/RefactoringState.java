@@ -20,5 +20,32 @@ package org.erlide.wrangler.refactoring.backend;
  * @version %I%, %G%
  */
 public enum RefactoringState {
-	OK, ERROR, WARNING, QUESTION, MULTI_INSTANCES, UNKNOWN_SIDE_EFFECT, MORE_THAN_ONE_CLAUSE;
+	/**
+	 * refactoring succeeds
+	 */
+	OK,
+	/**
+	 * refactoring fails
+	 */
+	ERROR,
+	/**
+	 * refactoring succeeds, but has warning message
+	 */
+	WARNING,
+	/**
+	 * refactoring returns with a question
+	 */
+	QUESTION,
+	/**
+	 * multi_instances - for fold expression
+	 */
+	MULTI_INSTANCES,
+	/**
+	 * unknown_side_effect - for fold expression
+	 */
+	UNKNOWN_SIDE_EFFECT,
+	/**
+	 * more_than_one_clause - for fold expression
+	 */
+	MORE_THAN_ONE_CLAUSE;
 }

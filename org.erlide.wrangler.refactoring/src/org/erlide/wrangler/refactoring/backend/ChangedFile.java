@@ -59,7 +59,8 @@ public class ChangedFile {
 	 * @param newFileContent
 	 *            New content of the source file.
 	 */
-	public ChangedFile(String oldPath, String newPath, String newFileContent) {
+	public ChangedFile(final String oldPath, final String newPath,
+			final String newFileContent) {
 		this.oldPath = oldPath;
 		this.newPath = newPath;
 		this.newFileContent = newFileContent;
@@ -102,7 +103,7 @@ public class ChangedFile {
 	 * @throws IOException
 	 *             if the given path could not be found on the workspace
 	 */
-	private IFile findEclipseRepresentation(String anOldPath)
+	private IFile findEclipseRepresentation(final String anOldPath)
 			throws IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();

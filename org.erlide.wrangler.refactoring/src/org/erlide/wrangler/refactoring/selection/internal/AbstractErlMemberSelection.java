@@ -32,7 +32,7 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		return document;
 	}
 
-	public AbstractErlMemberSelection(ITextEditor editor) {
+	public AbstractErlMemberSelection(final ITextEditor editor) {
 		ITextSelection selection = (ITextSelection) (editor
 				.getSelectionProvider().getSelection());
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
@@ -41,8 +41,8 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		store(selection, afile, document);
 	}
 
-	protected void store(ITextSelection selection, IFile afile,
-			IDocument adocument) {
+	protected void store(final ITextSelection selection, final IFile afile,
+			final IDocument adocument) {
 		this.file = afile;
 		textSelection = selection;
 	}

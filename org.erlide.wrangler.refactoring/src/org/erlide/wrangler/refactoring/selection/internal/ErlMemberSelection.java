@@ -24,8 +24,8 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
 	protected IErlMember member;
 
-	public ErlMemberSelection(IErlElement element, IFile file,
-			IDocument document) {
+	public ErlMemberSelection(final IErlElement element, final IFile file,
+			final IDocument document) {
 		this.document = document;
 		this.file = file;
 		this.element = element;

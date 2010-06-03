@@ -19,11 +19,17 @@ package org.erlide.wrangler.refactoring.exception;
 public class WranglerException extends Exception {
 
 	/**
-	 * 
+	 * ID
 	 */
 	private static final long serialVersionUID = 6955527507414603986L;
 
-	public WranglerException(String message) {
+	/**
+	 * Constructor
+	 * 
+	 * @param message
+	 *            message string
+	 */
+	public WranglerException(final String message) {
 		super(message);
 	}
 

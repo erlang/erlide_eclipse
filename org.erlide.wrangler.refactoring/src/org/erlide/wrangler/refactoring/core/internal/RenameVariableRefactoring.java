@@ -30,7 +30,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -48,7 +48,7 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_var_eclipse", "siisxi", sel.getFilePath(),

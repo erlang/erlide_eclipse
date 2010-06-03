@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.core;
 
-
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -22,13 +20,19 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Process related refactoring integration class
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class ProcessRelatedRefactoring extends
 		SimpleWranglerRefactoring {
 
 	protected String undecidables;
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 
@@ -45,13 +49,17 @@ public abstract class ProcessRelatedRefactoring extends
 			return RefactoringStatus
 					.createWarningStatus(getUndecidableWarningMessage());
 		} else {
-			return RefactoringStatus.createFatalErrorStatus(msg.getMessageString());
+			return RefactoringStatus.createFatalErrorStatus(msg
+					.getMessageString());
 
 		}
 	}
 
 	protected abstract String getUndecidableWarningMessage();
 
+	/**
+	 * @noreference This method is not intended to be referenced by clients.
+	 */
 	protected abstract ProcessRpcMessage checkUndecidables(
 			IErlMemberSelection sel);
 }

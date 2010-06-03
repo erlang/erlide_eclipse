@@ -34,7 +34,7 @@ public class TupleFunctionParametersRefactoring extends
 	protected int numberOfTuplingParameters = -1;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -53,7 +53,7 @@ public class TupleFunctionParametersRefactoring extends
 				.createFatalErrorStatus("Please select function parameters!");
 	}
 
-	private int calculateParametersNumber(String textFromEditor) {
+	private int calculateParametersNumber(final String textFromEditor) {
 		int noC = 0;
 		int depth = 0;
 		for (int i = 0; i < textFromEditor.length(); ++i) {
@@ -87,7 +87,7 @@ public class TupleFunctionParametersRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"tuple_funpar_eclipse", "sxxxi", sel.getFilePath(),

@@ -10,9 +10,15 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.validator;
 
+/**
+ * Validate a string which is not empty
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class NonEmptyStringValidator implements IValidator {
 
-	public boolean isValid(String text) {
+	public boolean isValid(final String text) {
 		return !text.equals("");
 	}
 

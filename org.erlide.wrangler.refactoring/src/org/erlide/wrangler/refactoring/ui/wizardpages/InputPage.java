@@ -14,7 +14,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Abstratc input page class
+ * Abstract input page class
  * 
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -42,7 +42,13 @@ public abstract class InputPage extends WranglerPage {
 		return super.performFinish();
 	}
 
-	protected void controlWorkflow(Shell s) {
+	/**
+	 * Abstract method which could be use for controlling the workflow.
+	 * 
+	 * @param s
+	 *            shell
+	 */
+	protected void controlWorkflow(final Shell s) {
 	}
 
 	abstract protected boolean isInputValid();

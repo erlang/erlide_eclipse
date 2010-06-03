@@ -12,15 +12,27 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * Simple class which should represent an input page, which only displays
+ * information
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class InfoPage extends WranglerPage {
 
-	public InfoPage(String name) {
+	/**
+	 * Default constructor
+	 * 
+	 * @param name
+	 *            title
+	 */
+	public InfoPage(final String name) {
 		super(name);
 	}
 
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

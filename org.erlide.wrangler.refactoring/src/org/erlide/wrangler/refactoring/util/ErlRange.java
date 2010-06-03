@@ -13,17 +13,47 @@ package org.erlide.wrangler.refactoring.util;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
+/**
+ * Specified Range, which has offset attributes.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlRange extends Range implements IErlRange {
 	protected int offset, length;
 
-	public ErlRange(int startLine, int startCol, int endLine, int endCol,
-			int offset, int length) {
+	/**
+	 * Constructor
+	 * 
+	 * @param startLine
+	 *            start line
+	 * @param startCol
+	 *            start column
+	 * @param endLine
+	 *            end line
+	 * @param endCol
+	 *            end column
+	 * @param offset
+	 *            selection's offset
+	 * @param length
+	 *            selection's length
+	 */
+	public ErlRange(final int startLine, final int startCol, final int endLine,
+			final int endCol, final int offset, final int length) {
 		super(startLine, startCol, endLine, endCol);
 		this.offset = offset;
 		this.length = length;
 	}
 
-	public ErlRange(IRange range, IDocument doc) {
+	/**
+	 * Constructor with a range and a document
+	 * 
+	 * @param range
+	 *            selection range
+	 * @param doc
+	 *            containing document
+	 */
+	public ErlRange(final IRange range, final IDocument doc) {
 		super(range.getStartLine(), range.getStartCol(), range.getEndLine(),
 				range.getEndCol());
 

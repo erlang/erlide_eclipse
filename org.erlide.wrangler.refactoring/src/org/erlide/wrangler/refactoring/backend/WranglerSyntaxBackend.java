@@ -32,9 +32,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class WranglerSyntaxBackend implements IWranglerBackend {
 	protected Backend backend;
-	protected static String MODULE = "refac_util";
-	protected static String PARSE_FUNCTION = "parse_annotate_file";
-	protected static String VAR_FUNCTION = "pos_to_var_name";
+	protected static final String MODULE = "refac_util";
+	protected static final String PARSE_FUNCTION = "parse_annotate_file";
+	protected static final String VAR_FUNCTION = "pos_to_var_name";
 
 	/**
 	 * @param backend

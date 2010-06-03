@@ -29,6 +29,13 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Input page which displays text snippet positions and offers to user tp select
+ * one or more of them
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class SelectionInputPage extends InputPage {
 	CostumWorkflowRefactoringWithPositionsSelection refactoring;
 
@@ -40,16 +47,28 @@ public class SelectionInputPage extends InputPage {
 
 	Label inputLabel;
 
-	public SelectionInputPage(String name, String description,
-			String labelText,
-			CostumWorkflowRefactoringWithPositionsSelection refac) {
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            dialog title
+	 * @param description
+	 *            dialog description
+	 * @param labelText
+	 *            label of the input data
+	 * @param refac
+	 *            Wrangler refactoring
+	 */
+	public SelectionInputPage(final String name, final String description,
+			final String labelText,
+			final CostumWorkflowRefactoringWithPositionsSelection refac) {
 		super(name);
 		setDescription(description);
 		this.labelText = labelText;
 		refactoring = refac;
 	}
 
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 
 		inputLabel = new Label(composite, SWT.LEFT);

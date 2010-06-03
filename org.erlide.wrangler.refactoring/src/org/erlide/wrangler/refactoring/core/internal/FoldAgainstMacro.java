@@ -35,7 +35,7 @@ public class FoldAgainstMacro extends
 	protected OtpErlangObject syntaxTree;
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 			@Override
 			public void doRefactoring() {
@@ -44,12 +44,12 @@ public class FoldAgainstMacro extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		return null;
 	}
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection selection = GlobalParameters.getWranglerSelection();
 
@@ -85,7 +85,7 @@ public class FoldAgainstMacro extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fold_against_macro_1_eclipse", "sxxxi", sel.getFilePath(),
@@ -94,7 +94,7 @@ public class FoldAgainstMacro extends
 	}
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

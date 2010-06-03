@@ -16,21 +16,61 @@ import org.erlide.core.erlang.IErlElement;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
+/**
+ * Interface for Erlang selection
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public interface IErlSelection extends ISelection {
 	public enum SelectionKind {
 		MODULE, FUNCTION, FUNCTION_CLAUSE, EXPRESSION, VARIABLE;
 	}
 
+	/**
+	 * Get the sort of the selection
+	 * 
+	 * Erlide interface is used to get the kind.
+	 * 
+	 * @return kind of the selection
+	 */
 	public SelectionKind getKind();
 
+	/**
+	 * Get detailed kind of the selection.
+	 * 
+	 * Wrangler interface is used to get the kind
+	 * 
+	 * @return kind of the selection
+	 */
 	public SelectionKind getDetailedKind();
 
+	/**
+	 * Get the actual selection's file path.
+	 * 
+	 * @return file path string
+	 */
 	public String getFilePath();
 
+	/**
+	 * Get the actual file
+	 * 
+	 * @return Ifile object
+	 */
 	public IFile getFile();
 
+	/**
+	 * Get the actual's selections project's search path.
+	 * 
+	 * @return list of directories
+	 */
 	public OtpErlangList getSearchPath();
 
+	/**
+	 * Get the corresponding Erlang element
+	 * 
+	 * @return IErlElement object
+	 */
 	public IErlElement getErlElement();
 
 }

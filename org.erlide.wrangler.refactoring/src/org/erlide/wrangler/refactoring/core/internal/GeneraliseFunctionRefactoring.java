@@ -56,34 +56,34 @@ public class GeneraliseFunctionRefactoring extends
 		ok, error, multi_instance, unknown_side_effect, more_than_one_clause;
 	};
 
-	private State state;
+	private final State state;
 	private String errorMessage;
 	private GenFunRefactoringMessage message;
 
 	private boolean onlyInClause;
 	private boolean sideEffect;
 
-	public GeneraliseFunctionRefactoring(State state, String text) {
+	public GeneraliseFunctionRefactoring(final State state, final String text) {
 		this.state = state;
 		this.errorMessage = text;
 
 	}
 
-	public GeneraliseFunctionRefactoring(State state,
-			GenFunRefactoringMessage message) {
+	public GeneraliseFunctionRefactoring(final State state,
+			final GenFunRefactoringMessage message) {
 		this.state = state;
 		this.message = message;
 	}
 
-	public GeneraliseFunctionRefactoring(State state,
-			GenFunRefactoringMessage message, boolean onlyInClause) {
+	public GeneraliseFunctionRefactoring(final State state,
+			final GenFunRefactoringMessage message, final boolean onlyInClause) {
 		this(state, message);
 		this.onlyInClause = onlyInClause;
 	}
 
-	public GeneraliseFunctionRefactoring(State state,
-			GenFunRefactoringMessage message, boolean onlyInClause,
-			boolean sideEffect) {
+	public GeneraliseFunctionRefactoring(final State state,
+			final GenFunRefactoringMessage message, final boolean onlyInClause,
+			final boolean sideEffect) {
 		this(state, message, onlyInClause);
 		this.sideEffect = sideEffect;
 
@@ -94,7 +94,7 @@ public class GeneraliseFunctionRefactoring extends
 	 */
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		if (state == State.error)
 			return RefactoringStatus.createFatalErrorStatus(errorMessage);
@@ -131,7 +131,7 @@ public class GeneraliseFunctionRefactoring extends
 	 * @return
 	 */
 	protected HashMap<IErlRange, OtpErlangTuple> createPositionList(
-			OtpErlangList positions) {
+			final OtpErlangList positions) {
 		try {
 			HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
 			IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
@@ -155,7 +155,7 @@ public class GeneraliseFunctionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 
 		if (this.state == State.ok)
 			return message;
@@ -164,7 +164,7 @@ public class GeneraliseFunctionRefactoring extends
 		else {
 			HashMap<GenFunReturnParameterName, OtpErlangObject> p = message
 					.getParameters();
-			OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp, dupsInfun, logCmd;
+			OtpErlangObject sideEffectPar, parName, funName, arity, funDefPos, exp, logCmd;
 			sideEffectPar = p.get(GenFunReturnParameterName.sideEffect);
 			parName = p.get(GenFunReturnParameterName.parName);
 			funName = p.get(GenFunReturnParameterName.funName);
@@ -215,7 +215,8 @@ public class GeneraliseFunctionRefactoring extends
 
 	}
 
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	@Override
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);
@@ -229,7 +230,7 @@ public class GeneraliseFunctionRefactoring extends
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 			@Override
 			public void doRefactoring() {
@@ -238,7 +239,7 @@ public class GeneraliseFunctionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		return null;
 	}
 

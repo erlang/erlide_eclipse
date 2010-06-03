@@ -34,7 +34,7 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		/*
 		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
@@ -53,7 +53,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getSelectionRange();
 
@@ -63,7 +63,8 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	@Override
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getMemberRange();
 
@@ -74,9 +75,10 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
+			@Override
 			public void doRefactoring() {
 				IErlSelection sel = GlobalParameters.getWranglerSelection();
 				IRefactoringRpcMessage message = run(sel);

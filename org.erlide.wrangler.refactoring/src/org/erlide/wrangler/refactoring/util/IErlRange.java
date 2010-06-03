@@ -10,10 +10,25 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
-
+/**
+ * Interface for defining range in Text documents
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public interface IErlRange extends IRange {
 
+	/**
+	 * Get the selection's offset
+	 * 
+	 * @return offset of the selection
+	 */
 	public int getOffset();
 
+	/**
+	 * Get the selection's length
+	 * 
+	 * @return length of the selection
+	 */
 	public int getLength();
 }

@@ -34,13 +34,14 @@ public abstract class CostumWorkflowRefactoring extends
 	 * Runs an RPC like run()
 	 * 
 	 * @param selection
+	 *            erlang selection
 	 * @return parsed refactoring message
 	 */
 	public abstract IRefactoringRpcMessage runAlternative(
 			IErlSelection selection);
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		return status;
 	}
@@ -50,6 +51,7 @@ public abstract class CostumWorkflowRefactoring extends
 	 * can be modified.
 	 * 
 	 * @param shell
+	 *            shell
 	 * @return refactoring workflow controller
 	 */
 	public abstract RefactoringWorkflowController getWorkflowController(

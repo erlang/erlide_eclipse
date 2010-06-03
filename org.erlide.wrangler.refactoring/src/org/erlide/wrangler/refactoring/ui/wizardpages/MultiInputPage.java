@@ -12,9 +12,21 @@ package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * Input page which offers to input multiple data
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class MultiInputPage extends InputPage {
 
-	public MultiInputPage(String name) {
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            title
+	 */
+	public MultiInputPage(final String name) {
 		super(name);
 	}
 

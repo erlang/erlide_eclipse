@@ -35,18 +35,17 @@ public class EqcStatemStateDataToRecordRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 
-		return (IRefactoringRpcMessage) WranglerBackendManager
-				.getRefactoringBackend().call("eqc_statem_to_record_1_eclipse",
-						"ssxxxxi", sel.getFilePath(), getRecordName(),
-						getFieldsName(), stateFuns,
-						new OtpErlangBoolean(fieldCount > 1),
-						sel.getSearchPath(), GlobalParameters.getTabWidth());
+		return WranglerBackendManager.getRefactoringBackend().call(
+				"eqc_statem_to_record_1_eclipse", "ssxxxxi", sel.getFilePath(),
+				getRecordName(), getFieldsName(), stateFuns,
+				new OtpErlangBoolean(fieldCount > 1), sel.getSearchPath(),
+				GlobalParameters.getTabWidth());
 	}
 
 	@Override
-	protected StateDataToRecordRpcMessage runFirst(IErlMemberSelection sel) {
+	protected StateDataToRecordRpcMessage runFirst(final IErlMemberSelection sel) {
 		IRefactoringRpcMessage parser = new StateDataToRecordRpcMessage();
 
 		return (StateDataToRecordRpcMessage) WranglerBackendManager

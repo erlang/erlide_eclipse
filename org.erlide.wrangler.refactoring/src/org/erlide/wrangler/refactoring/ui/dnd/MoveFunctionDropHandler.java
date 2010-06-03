@@ -33,13 +33,22 @@ import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizar
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Implements san erlide drag'n'drop extension point
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
+	/**
+	 * Default constructor
+	 */
 	public MoveFunctionDropHandler() {
 	}
 
-	public IStatus validateDrop(Object target, int operation,
-			TransferData transferType) {
+	public IStatus validateDrop(final Object target, final int operation,
+			final TransferData transferType) {
 		ISelection sel = (ISelection) LocalSelectionTransfer.getInstance()
 				.nativeToJava(transferType);
 		TreeSelection s = (TreeSelection) sel;
@@ -52,8 +61,8 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 		return Status.CANCEL_STATUS;
 	}
 
-	public IStatus handleDrop(CommonDropAdapter dropAdapter,
-			DropTargetEvent dropTargetEvent, Object target) {
+	public IStatus handleDrop(final CommonDropAdapter dropAdapter,
+			final DropTargetEvent dropTargetEvent, final Object target) {
 
 		// get the source data
 		TransferData td = dropAdapter.getCurrentTransfer();

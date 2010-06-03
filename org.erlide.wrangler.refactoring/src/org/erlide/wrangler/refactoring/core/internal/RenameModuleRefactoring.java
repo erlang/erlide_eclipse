@@ -39,7 +39,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	boolean renameTestMod;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		// since any selection contains a module, it can be applied
 		return new RefactoringStatus();
@@ -51,14 +51,14 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_mod_eclipse", "ssxi", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
 	@Override
-	public Change createChange(IProgressMonitor pm) throws CoreException,
+	public Change createChange(final IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
 
 		CompositeChange c = (CompositeChange) super.createChange(pm);
@@ -76,7 +76,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
 			@Override
@@ -118,7 +118,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection sel) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_mod_1_eclipse", "ssxib", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth(),

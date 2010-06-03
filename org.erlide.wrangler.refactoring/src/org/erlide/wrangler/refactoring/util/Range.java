@@ -16,22 +16,59 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Selection range in text documents.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class Range implements IRange {
 	protected int startLine, startCol, endLine, endCol;
 
-	public Range(int startLine, int startCol, int endLine, int endCol) {
+	/**
+	 * Constructor with range starting and ending positions
+	 * 
+	 * @param startLine
+	 *            start line
+	 * @param startCol
+	 *            start column
+	 * @param endLine
+	 *            end line
+	 * @param endCol
+	 *            end column
+	 */
+	public Range(final int startLine, final int startCol, final int endLine,
+			final int endCol) {
 		this.startLine = startLine;
 		this.startCol = startCol;
 		this.endLine = endLine;
 		this.endCol = endCol;
 	}
 
-	public Range(OtpErlangTuple position) throws OtpErlangRangeException {
+	/**
+	 * Constructor with position in an Erlang tuple
+	 * 
+	 * @param position
+	 *            {{StartingLine, StartingColumn},{EndingLine, EndingColumn}}
+	 * @throws OtpErlangRangeException
+	 *             if the given tuple is not well formed
+	 */
+	public Range(final OtpErlangTuple position) throws OtpErlangRangeException {
 		this((OtpErlangTuple) position.elementAt(0), (OtpErlangTuple) position
 				.elementAt(1));
 	}
 
-	public Range(OtpErlangTuple startPos, OtpErlangTuple endPos)
+	/**
+	 * Constructor with positions in Erlang tuples
+	 * 
+	 * @param startPos
+	 *            {StartingLine, StartingColumn}
+	 * @param endPos
+	 *            {EndingLine, EndingColumn}
+	 * @throws OtpErlangRangeException
+	 *             if the given tuples are not well-formed
+	 */
+	public Range(final OtpErlangTuple startPos, final OtpErlangTuple endPos)
 			throws OtpErlangRangeException {
 		this(((OtpErlangLong) startPos.elementAt(0)).intValue(),
 				((OtpErlangLong) startPos.elementAt(1)).intValue(),
@@ -56,13 +93,13 @@ public class Range implements IRange {
 	}
 
 	public OtpErlangTuple getStartPos() {
-		return OtpErlang.mkTuple(new OtpErlangInt(startLine),
-				new OtpErlangInt(startCol));
+		return OtpErlang.mkTuple(new OtpErlangInt(startLine), new OtpErlangInt(
+				startCol));
 	}
 
 	public OtpErlangTuple getEndPos() {
-		return OtpErlang.mkTuple(new OtpErlangInt(endLine),
-				new OtpErlangInt(endCol));
+		return OtpErlang.mkTuple(new OtpErlangInt(endLine), new OtpErlangInt(
+				endCol));
 	}
 
 	@Override

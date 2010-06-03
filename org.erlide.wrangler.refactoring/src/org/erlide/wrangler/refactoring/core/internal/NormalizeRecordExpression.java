@@ -8,7 +8,7 @@
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
-package org.erlide.wrangler.refactoring.ui;
+package org.erlide.wrangler.refactoring.core.internal;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,7 +32,7 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  */
 public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring {
 
-	private boolean showDefault;
+	private final boolean showDefault;
 
 	/**
 	 * @param showDefault
@@ -44,7 +44,7 @@ public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring 
 	}
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -64,7 +64,7 @@ public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring 
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"normalise_record_expr_eclipse", "sxxxi", sel.getFilePath(),

@@ -50,12 +50,12 @@ public class RecordDataInputPage extends MultiInputPage {
 	 * @param name
 	 *            title
 	 */
-	public RecordDataInputPage(String name) {
+	public RecordDataInputPage(final String name) {
 		super(name);
 	}
 
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		refactoring = (QuickCheckStateRefactoring) getRefactoring();
 		composite = new Composite(parent, SWT.NONE);
 
@@ -75,7 +75,7 @@ public class RecordDataInputPage extends MultiInputPage {
 
 		ModifyListener modifyListener = new ModifyListener() {
 
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				isInputValid();
 			}
 

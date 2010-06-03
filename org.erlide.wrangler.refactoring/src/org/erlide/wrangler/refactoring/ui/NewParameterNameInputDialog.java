@@ -23,21 +23,41 @@ import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 
+/**
+ * Input dialog which accpets a single input data.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class NewParameterNameInputDialog extends AbstractInputDialog {
 
 	private Text newParameterName;
 	private String data;
 
-	public NewParameterNameInputDialog(Shell parentShell, String title) {
+	/**
+	 * Constructor
+	 * 
+	 * @param parentShell
+	 *            shell
+	 * @param title
+	 *            dialog title
+	 */
+	public NewParameterNameInputDialog(final Shell parentShell,
+			final String title) {
 		super(parentShell, title);
 	}
 
+	/**
+	 * Get input data
+	 * 
+	 * @return input string
+	 */
 	public String getData() {
 		return data;
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) {
+	protected Control createDialogArea(final Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
 		Label newParameterNameLabel = new Label(composite, SWT.WRAP);
@@ -53,7 +73,7 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
 		newParameterName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		newParameterName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				data = newParameterName.getText();
 				validateInput();
 			}

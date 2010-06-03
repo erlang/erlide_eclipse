@@ -26,6 +26,13 @@ import org.erlide.wrangler.refactoring.core.SimpleWranglerRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
+/**
+ * Input page which displays a combo input element, and offers to select on of
+ * the listed elements
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ComboInputPage extends InputPage {
 
 	protected String labelText;
@@ -38,8 +45,20 @@ public class ComboInputPage extends InputPage {
 
 	protected Combo selectionList;
 
-	public ComboInputPage(String name, String description, String labelText,
-			ArrayList<String> moduleNames) {
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            Input page title
+	 * @param description
+	 *            description of the input page
+	 * @param labelText
+	 *            label text of the input data
+	 * @param moduleNames
+	 *            list of possible selections
+	 */
+	public ComboInputPage(final String name, final String description,
+			final String labelText, final ArrayList<String> moduleNames) {
 		super(name);
 		this.setDescription(description);
 		this.labelText = labelText;
@@ -48,7 +67,7 @@ public class ComboInputPage extends InputPage {
 		setPageComplete(false);
 	}
 
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 
 		inputLabel = new Label(composite, SWT.LEFT);
@@ -79,11 +98,11 @@ public class ComboInputPage extends InputPage {
 
 		selectionList.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 
 			@SuppressWarnings("synthetic-access")
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				((SimpleOneStepWranglerRefactoring) getRefactoring())
 						.setUserInput(selectionList.getText());
 				setPageComplete(true);
@@ -94,7 +113,7 @@ public class ComboInputPage extends InputPage {
 
 		selectionList.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				if (validator.isValid(selectionList.getText())) {
 					((SimpleWranglerRefactoring) getRefactoring())
 							.setUserInput(selectionList.getText());

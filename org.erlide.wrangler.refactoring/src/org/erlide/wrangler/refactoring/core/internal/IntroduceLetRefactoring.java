@@ -39,7 +39,7 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 	OtpErlangObject expr, parentExpr;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		// FIXME: what are the preconditions? add them!
 		return new RefactoringStatus();
@@ -51,7 +51,7 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"new_let_eclipse", "sxxsxi", sel.getFilePath(),
@@ -61,7 +61,7 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
 			@Override
@@ -100,7 +100,7 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"new_let_1_eclipse", "ssxxxi", sel.getFilePath(), userInput,

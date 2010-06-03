@@ -39,7 +39,7 @@ public class FoldLocalExpressionRefactoring extends
 	 * Preprocessing the file(s), and finding the candidates to fold.
 	 */
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 
 		IErlSelection selection = GlobalParameters.getWranglerSelection();
@@ -78,7 +78,7 @@ public class FoldLocalExpressionRefactoring extends
 	 * Fold the selected expression(s).
 	 */
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,
@@ -87,7 +87,7 @@ public class FoldLocalExpressionRefactoring extends
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 			@Override
 			public void doRefactoring() {
@@ -96,12 +96,12 @@ public class FoldLocalExpressionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		return null;
 	}
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

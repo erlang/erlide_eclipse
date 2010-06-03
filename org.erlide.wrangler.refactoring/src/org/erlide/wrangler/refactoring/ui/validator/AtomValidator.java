@@ -10,9 +10,15 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.validator;
 
+/**
+ * Validate a string which is an Erlang atom.ss
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class AtomValidator implements IValidator {
 
-	public boolean isValid(String s) {
+	public boolean isValid(final String s) {
 		if (s.length() == 0) {
 			return false;
 		}

@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-
-
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -19,12 +17,18 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Rpc message parser for process related refactorings
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
 
 	protected boolean hasUndecidables = false;
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
 		if (resultTuple.elementAt(0).toString().equals("ok")) {
@@ -44,6 +48,11 @@ public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
 
 	}
 
+	/**
+	 * Returns true if refactoring is unsure...
+	 * 
+	 * @return true if is unsure
+	 */
 	public boolean hasUndecidables() {
 		return hasUndecidables;
 	}

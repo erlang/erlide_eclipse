@@ -13,10 +13,25 @@ package org.erlide.wrangler.refactoring.ui.wizard;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
+/**
+ * Abstract wizard which should be used for integrating wrangler refactoringss
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractWranglerRefactoringWizard extends
 		RefactoringWizard {
 
-	public AbstractWranglerRefactoringWizard(Refactoring refactoring, int flags) {
+	/**
+	 * Default constructor
+	 * 
+	 * @param refactoring
+	 *            refactoring
+	 * @param flags
+	 *            flags
+	 */
+	public AbstractWranglerRefactoringWizard(final Refactoring refactoring,
+			final int flags) {
 		super(refactoring, flags);
 	}
 

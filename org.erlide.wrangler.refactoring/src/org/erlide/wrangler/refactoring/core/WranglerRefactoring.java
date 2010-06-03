@@ -63,7 +63,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 			throws CoreException, OperationCanceledException;
 
 	@Override
-	public Change createChange(IProgressMonitor pm) throws CoreException,
+	public Change createChange(final IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
 		pm.beginTask("Creating vhanges", changedFiles.size() + 1);
 		CompositeChange change = new CompositeChange(getName());

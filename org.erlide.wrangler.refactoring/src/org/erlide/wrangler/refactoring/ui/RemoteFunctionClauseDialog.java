@@ -33,6 +33,13 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Input dialog which shows up all the function clauses in all modules in the
+ * project
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
 	IErlMemberSelection initianlSelection = (IErlMemberSelection) GlobalParameters
@@ -48,6 +55,14 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 				initianlSelection);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parentShell
+	 *            shell
+	 * @param title
+	 *            Dialog title
+	 */
 	public RemoteFunctionClauseDialog(final Shell parentShell,
 			final String title) {
 		super(parentShell, title);
@@ -56,7 +71,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 	private IErlFunctionClause functionClause = null;
 
 	@Override
-	protected Control createDialogArea(Composite parent) {
+	protected Control createDialogArea(final Composite parent) {
 
 		Composite composite = (Composite) super.createDialogArea(parent);
 		final Tree functionClausesTree;
@@ -100,7 +115,6 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 					List<IErlFunctionClause> clauses = filterClauses(f
 							.getChildren());
 					functionName.setData(f);
-					int i = 0;
 					for (IErlFunctionClause c : clauses) {
 						TreeItem clauseName = new TreeItem(functionName, 0);
 						clauseName.setText(String.valueOf(c.getName()));
@@ -112,13 +126,13 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 			// listen to treeitem selection
 			functionClausesTree.addSelectionListener(new SelectionListener() {
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				public void widgetDefaultSelected(final SelectionEvent e) {
 				}
 
 				// if a function or a function clause is selected, then
 				// highlight it
 				// and store the selection
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 
 					TreeItem[] selectedItems = functionClausesTree
 							.getSelection();
@@ -152,7 +166,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 		return composite;
 	}
 
-	protected List<IErlFunctionClause> filterClauses(List<IErlElement> children) {
+	protected List<IErlFunctionClause> filterClauses(
+			final List<IErlElement> children) {
 		ArrayList<IErlFunctionClause> clauses = new ArrayList<IErlFunctionClause>();
 		for (IErlElement e : children) {
 			if (e instanceof IErlFunctionClause)
@@ -161,7 +176,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 		return clauses;
 	}
 
-	protected List<IErlFunction> filterFunctions(List<IErlElement> elements) {
+	protected List<IErlFunction> filterFunctions(
+			final List<IErlElement> elements) {
 		ArrayList<IErlFunction> functions = new ArrayList<IErlFunction>();
 		for (IErlElement e : elements) {
 			if (e instanceof IErlFunction)

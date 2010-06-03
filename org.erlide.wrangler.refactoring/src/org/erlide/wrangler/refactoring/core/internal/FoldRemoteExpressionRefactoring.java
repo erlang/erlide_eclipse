@@ -35,29 +35,30 @@ public class FoldRemoteExpressionRefactoring extends
 		CostumWorkflowRefactoringWithPositionsSelection {
 
 	// the selected module, on which, the refactoring will be applied
-	private IErlMemberSelection selection;
+	private final IErlMemberSelection selection;
 	// the selected function clause, which is applied on the module
-	private IErlFunctionClause functionClause;
+	private final IErlFunctionClause functionClause;
 	protected OtpErlangObject syntaxTree;
 
-	public FoldRemoteExpressionRefactoring(IErlFunctionClause functionClause,
-			IErlMemberSelection selection) {
+	public FoldRemoteExpressionRefactoring(
+			final IErlFunctionClause functionClause,
+			final IErlMemberSelection selection) {
 		this.functionClause = functionClause;
 		this.selection = selection;
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return null;
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		return null;
 	}
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		if (functionClause == null) {
 			return RefactoringStatus
@@ -103,7 +104,7 @@ public class FoldRemoteExpressionRefactoring extends
 	}
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);
@@ -117,7 +118,7 @@ public class FoldRemoteExpressionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,

@@ -25,7 +25,8 @@ public class SyntaxInfo {
 	 * @param definitionPosColumn
 	 *            expression starting column
 	 */
-	public SyntaxInfo(Type type, int definitionPosLine, int definitionPosColumn) {
+	public SyntaxInfo(final Type type, final int definitionPosLine,
+			final int definitionPosColumn) {
 		this.definitionPosColumn = definitionPosColumn;
 		this.definitionPosLine = definitionPosLine;
 		this.type = type;
@@ -51,7 +52,18 @@ public class SyntaxInfo {
 	 * @version %I%, %G%
 	 */
 	public enum Type {
-		EXPRESSION, VARIABLE, NONE;
+		/**
+		 * selection is an expression
+		 */
+		EXPRESSION,
+		/**
+		 * selection is a variable
+		 */
+		VARIABLE,
+		/**
+		 * selection is sg. else
+		 */
+		NONE;
 	}
 
 }

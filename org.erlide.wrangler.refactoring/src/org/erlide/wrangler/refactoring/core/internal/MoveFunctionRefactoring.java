@@ -31,7 +31,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		/*
 		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
@@ -50,7 +50,7 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"move_fun_eclipse", "siisxi", sel.getFilePath(),
@@ -78,7 +78,7 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
 	}
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

@@ -27,13 +27,20 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * RpcResult parser which parses object which got from Fold expression
+ * refactorings
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 
 	protected OtpErlangObject syntaxTree;
 	protected HashMap<IRange, OtpErlangTuple> positionDefs;
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 		try {
 			OtpErlangObject wranglerResult = resultTuple.elementAt(1);
@@ -73,6 +80,11 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 
 	}
 
+	/**
+	 * Returns a syntax tree object which is got from Wrangler
+	 * 
+	 * @return syntax tree wrapped in an Erlang object
+	 */
 	public OtpErlangObject getSyntaxTree() {
 		return syntaxTree;
 	}

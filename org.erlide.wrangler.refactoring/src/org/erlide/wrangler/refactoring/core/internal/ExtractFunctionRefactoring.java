@@ -28,7 +28,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection selection = GlobalParameters.getWranglerSelection();
 
@@ -46,7 +46,7 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fun_extraction_eclipse", "sxxsi", sel.getFilePath(),
@@ -57,7 +57,7 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
 			@Override
@@ -89,7 +89,7 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fun_extraction_eclipse", "sxxsi", sel.getFilePath(),

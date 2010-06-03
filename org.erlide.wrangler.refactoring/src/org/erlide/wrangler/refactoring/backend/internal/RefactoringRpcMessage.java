@@ -34,7 +34,7 @@ public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
 	OtpErlangTuple resultTuple;
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerRpcParsingException {
 		this.resultTuple = resultTuple;
 

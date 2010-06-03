@@ -53,7 +53,7 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection extends
 	 * @param l
 	 *            selected positions
 	 */
-	public void setSelectedPos(ArrayList<IErlRange> l) {
+	public void setSelectedPos(final ArrayList<IErlRange> l) {
 		selectedPositions = l;
 	}
 

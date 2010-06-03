@@ -27,14 +27,15 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
-	public ErlTextMemberSelection(ITextSelection selection, ITextEditor editor) {
+	public ErlTextMemberSelection(final ITextSelection selection,
+			final ITextEditor editor) {
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
 		document = editor.getDocumentProvider().getDocument(input);
 		IFile file = input.getFile();
 		store(selection, file, document);
 	}
 
-	public ErlTextMemberSelection(ITextEditor editor) {
+	public ErlTextMemberSelection(final ITextEditor editor) {
 		super(editor);
 	}
 

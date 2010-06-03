@@ -21,14 +21,28 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * RpcResult parser class for parsing results of a n generalise function
+ * refactoring
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
+	/**
+	 * Generalise function's possible parameters names
+	 * 
+	 * 
+	 * @author Gyorgy Orosz
+	 * @version %I%, %G%
+	 */
 	public enum GenFunReturnParameterName {
 		parName, funName, arity, funDefPos, exp, sideEffect, dupsInFun, logCmd, noOfClauses, dupsInClause;
 	}
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
 		String state = resultTuple.elementAt(0).toString();
@@ -109,6 +123,11 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
 	protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters = null;
 
+	/**
+	 * Get parameters in a map
+	 * 
+	 * @return parameter name. value pairs
+	 */
 	public HashMap<GenFunReturnParameterName, OtpErlangObject> getParameters() {
 		return parameters;
 	}

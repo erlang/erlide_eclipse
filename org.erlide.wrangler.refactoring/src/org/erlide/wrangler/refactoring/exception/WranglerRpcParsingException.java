@@ -10,10 +10,21 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.exception;
 
-
+/**
+ * Wrangler exception is thrown when the result of an rpc could not be parsed
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class WranglerRpcParsingException extends WranglerException {
 
-	public WranglerRpcParsingException(String message) {
+	/**
+	 * Constructor
+	 * 
+	 * @param message
+	 *            message string
+	 */
+	public WranglerRpcParsingException(final String message) {
 		super(message);
 	}
 

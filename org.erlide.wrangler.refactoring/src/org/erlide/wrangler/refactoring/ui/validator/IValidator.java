@@ -10,6 +10,20 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.validator;
 
+/**
+ * Interface for validator classes. Implementors should implemet a class which
+ * is for validatin g a string.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public interface IValidator {
+	/**
+	 * Validate a string
+	 * 
+	 * @param text
+	 *            input string
+	 * @return true if the string is valid, else false
+	 */
 	boolean isValid(String text);
 }

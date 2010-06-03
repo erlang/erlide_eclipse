@@ -12,10 +12,21 @@ package org.erlide.wrangler.refactoring.backend;
 
 import org.erlide.core.erlang.ErlangCore;
 
+/**
+ * Stores Erlide backends for wrangler , and has interface to access them
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class WranglerBackendManager {
 	static WranglerRefactoringBackend refactoringBackend = null;
 	static WranglerSyntaxBackend syntaxBackend = null;
 
+	/**
+	 * Returns an Erlide backend which is used to run Wrangler refactorings
+	 * 
+	 * @return Erlide backend
+	 */
 	public static WranglerRefactoringBackend getRefactoringBackend() {
 		if (refactoringBackend == null)
 			refactoringBackend = new WranglerRefactoringBackend(ErlangCore
@@ -23,6 +34,11 @@ public class WranglerBackendManager {
 		return refactoringBackend;
 	}
 
+	/**
+	 * Returns an Erlide backend which is used for sending syntax RPCs
+	 * 
+	 * @return Erlide backend
+	 */
 	public static WranglerSyntaxBackend getSyntaxBackend() {
 		if (syntaxBackend == null)
 			syntaxBackend = new WranglerSyntaxBackend(ErlangCore

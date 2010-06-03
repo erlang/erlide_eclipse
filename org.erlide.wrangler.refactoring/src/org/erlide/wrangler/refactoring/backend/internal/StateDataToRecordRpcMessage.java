@@ -30,7 +30,7 @@ public class StateDataToRecordRpcMessage extends AbstractRefactoringRpcMessage {
 	protected OtpErlangObject stateFuns;
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
