@@ -214,8 +214,9 @@ public class OpenAction extends SelectionDispatchAction {
 					.getCheckAllProjects();
 			if (editor != null) {
 				final IErlElement e = editor.getElementAt(offset, true);
-				if (e.getKind() == IErlElement.Kind.TYPESPEC
-						|| e.getKind() == IErlElement.Kind.RECORD_DEF) {
+				if (e != null
+						&& (e.getKind() == IErlElement.Kind.TYPESPEC || e
+								.getKind() == IErlElement.Kind.RECORD_DEF)) {
 					if (ErlModelUtils.openExternalType(res.getName(), res
 							.getFun(), res.getPath(), module, project,
 							checkAllProjects)) {
