@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.eclipse.core.runtime.CoreException;
@@ -13,10 +23,16 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Function to process refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -31,7 +47,7 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 	}
 
 	@Override
-	protected ProcessRpcMessage checkUndecidables(IErlMemberSelection sel) {
+	protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
 		return (ProcessRpcMessage) WranglerBackendManager
 				.getRefactoringBackend().callWithParser(
 						new ProcessRpcMessage(), "fun_to_process_eclipse",
@@ -52,7 +68,7 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fun_to_process_1_eclipse", "siisxi", sel.getFilePath(),

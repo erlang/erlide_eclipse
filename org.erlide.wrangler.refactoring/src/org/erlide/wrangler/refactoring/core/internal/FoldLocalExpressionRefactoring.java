@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import java.util.ArrayList;
@@ -20,6 +30,12 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Fold expression against local function refactoring integrations
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FoldLocalExpressionRefactoring extends
 		CostumWorkflowRefactoringWithPositionsSelection {
 
@@ -29,7 +45,7 @@ public class FoldLocalExpressionRefactoring extends
 	 * Preprocessing the file(s), and finding the candidates to fold.
 	 */
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 
 		IErlSelection selection = GlobalParameters.getWranglerSelection();
@@ -68,7 +84,7 @@ public class FoldLocalExpressionRefactoring extends
 	 * Fold the selected expression(s).
 	 */
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,
@@ -77,7 +93,7 @@ public class FoldLocalExpressionRefactoring extends
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 			@Override
 			public void doRefactoring() {
@@ -86,12 +102,12 @@ public class FoldLocalExpressionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		return null;
 	}
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

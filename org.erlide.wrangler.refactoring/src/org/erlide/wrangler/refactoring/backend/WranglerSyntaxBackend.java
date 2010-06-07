@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
@@ -22,9 +32,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class WranglerSyntaxBackend implements IWranglerBackend {
 	protected Backend backend;
-	protected static String MODULE = "refac_util";
-	protected static String PARSE_FUNCTION = "parse_annotate_file";
-	protected static String VAR_FUNCTION = "pos_to_var_name";
+	protected static final String MODULE = "refac_util";
+	protected static final String PARSE_FUNCTION = "parse_annotate_file";
+	protected static final String VAR_FUNCTION = "pos_to_var_name";
 
 	/**
 	 * @param backend

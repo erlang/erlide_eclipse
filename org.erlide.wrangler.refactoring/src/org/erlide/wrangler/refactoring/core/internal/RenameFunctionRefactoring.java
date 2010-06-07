@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +34,7 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		/*
 		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
@@ -43,7 +53,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection selection) {
+	public IRefactoringRpcMessage run(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getSelectionRange();
 
@@ -53,7 +63,8 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
-	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
+	@Override
+	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getMemberRange();
 
@@ -64,9 +75,10 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
+			@Override
 			public void doRefactoring() {
 				IErlSelection sel = GlobalParameters.getWranglerSelection();
 				IRefactoringRpcMessage message = run(sel);

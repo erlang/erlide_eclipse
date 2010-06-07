@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.swt.SWT;
@@ -11,6 +21,12 @@ import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.core.SimpleWranglerRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
+/**
+ * Input page for wrangler integration which accepts only one parameter
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class SimpleInputPage extends InputPage {
 	protected String labelText;
 
@@ -38,8 +54,9 @@ public class SimpleInputPage extends InputPage {
 	 * @param validator
 	 *            validator object
 	 */
-	public SimpleInputPage(String name, String description, String labelText,
-			String inputErrorMsg, IValidator validator) {
+	public SimpleInputPage(final String name, final String description,
+			final String labelText, final String inputErrorMsg,
+			final IValidator validator) {
 		super(name);
 		this.setDescription(description);
 		this.inputErrorMsg = inputErrorMsg;
@@ -49,7 +66,7 @@ public class SimpleInputPage extends InputPage {
 
 	}
 
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
 
 		inputLabel = new Label(composite, SWT.LEFT);
@@ -74,7 +91,7 @@ public class SimpleInputPage extends InputPage {
 
 		inputText.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				isInputValid();
 			}
 
@@ -82,6 +99,7 @@ public class SimpleInputPage extends InputPage {
 
 	}
 
+	@Override
 	protected boolean isInputValid() {
 		if (validator.isValid(inputText.getText())) {
 			((SimpleWranglerRefactoring) getRefactoring())

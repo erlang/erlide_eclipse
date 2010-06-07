@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
@@ -17,6 +27,13 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Abstract class, which has common methods for running a duplicated search
+ * refactoring
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
 	protected static final int TIMEOUT = Integer.MAX_VALUE;
@@ -28,8 +45,11 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
 	protected final String rpcErrorMsg = "An error occured during the refactoring!";
 
-	// TODO: run it in a new thread
+	/**
+	 * Runs the refactoring.
+	 */
 	public void run() {
+		// TODO: run it in a new thread
 		selectionChanged();
 		if (getUserInput()) {
 			IProgressMonitor monitor = new NullProgressMonitor();
@@ -70,6 +90,9 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 			throws WranglerRpcParsingException, CoreException, IOException,
 			WranglerWarningException;
 
+	/**
+	 * Handles the event when a selectino is changed in the workbench
+	 */
 	public void selectionChanged() {
 		GlobalParameters.setEditor(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getActiveEditor());

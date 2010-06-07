@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
@@ -15,16 +25,37 @@ import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Selected Erlang member, from the editor
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
-	public ErlTextMemberSelection(ITextSelection selection, ITextEditor editor) {
+	/**
+	 * Constructor
+	 * 
+	 * @param selection
+	 *            textselection from an Erlang editor
+	 * @param editor
+	 *            editor, where the text is selected
+	 */
+	public ErlTextMemberSelection(final ITextSelection selection,
+			final ITextEditor editor) {
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
 		document = editor.getDocumentProvider().getDocument(input);
 		IFile file = input.getFile();
 		store(selection, file, document);
 	}
 
-	public ErlTextMemberSelection(ITextEditor editor) {
+	/**
+	 * Constructor
+	 * 
+	 * @param editor
+	 *            editor, which contains the selection
+	 */
+	public ErlTextMemberSelection(final ITextEditor editor) {
 		super(editor);
 	}
 

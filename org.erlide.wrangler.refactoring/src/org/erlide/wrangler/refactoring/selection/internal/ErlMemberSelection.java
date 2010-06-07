@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
@@ -9,13 +19,29 @@ import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Represents an Erlang member selection
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlMemberSelection extends AbstractErlMemberSelection {
 	protected IErlElement element;
 
 	protected IErlMember member;
 
-	public ErlMemberSelection(IErlElement element, IFile file,
-			IDocument document) {
+	/**
+	 * Constructor
+	 * 
+	 * @param element
+	 *            Erlang element - Erlide representation
+	 * @param file
+	 *            the file which contains the selection
+	 * @param document
+	 *            document which contains the selection
+	 */
+	public ErlMemberSelection(final IErlElement element, final IFile file,
+			final IDocument document) {
 		this.document = document;
 		this.file = file;
 		this.element = element;

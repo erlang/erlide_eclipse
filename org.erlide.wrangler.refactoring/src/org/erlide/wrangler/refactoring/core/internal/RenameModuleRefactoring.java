@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.eclipse.core.runtime.CoreException;
@@ -29,7 +39,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	boolean renameTestMod;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		// since any selection contains a module, it can be applied
 		return new RefactoringStatus();
@@ -41,14 +51,14 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_mod_eclipse", "ssxi", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
 	@Override
-	public Change createChange(IProgressMonitor pm) throws CoreException,
+	public Change createChange(final IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
 
 		CompositeChange c = (CompositeChange) super.createChange(pm);
@@ -66,7 +76,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public RefactoringWorkflowController getWorkflowController(Shell shell) {
+	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
 			@Override
@@ -108,7 +118,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(IErlSelection sel) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_mod_1_eclipse", "ssxib", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth(),

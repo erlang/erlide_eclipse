@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
@@ -33,6 +43,7 @@ import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeForAllRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.NormalizeRecordExpression;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameProcessRefactoring;
@@ -59,9 +70,15 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 
+/**
+ * Handles refactoring commands
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RefactoringHandler extends AbstractHandler {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		GlobalParameters.setSelection(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getSelection());
 
@@ -324,7 +341,7 @@ public class RefactoringHandler extends AbstractHandler {
 	 * @throws OtpErlangRangeException
 	 */
 	protected WranglerRefactoring runGenFunRefactoring(
-			ArrayList<WranglerPage> pages, Shell activeShell)
+			final ArrayList<WranglerPage> pages, final Shell activeShell)
 			throws OtpErlangRangeException {
 		WranglerRefactoring refactoring = null;
 
