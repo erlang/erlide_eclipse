@@ -55,10 +55,6 @@ public class ErlModule extends Openable implements IErlModule {
 	private boolean parsed = false;
 	private boolean updateCaches = true;
 
-	// These are needed to ignore the initial INSERT of all text and final
-	// DELETE of all text
-	private boolean fIgnoreNextReconcile = false;
-	private boolean fIgnoreNextPostReconcile = false;
 	private final ModuleKind moduleKind;
 
 	protected ErlModule(final IErlElement parent, final String name,
@@ -81,16 +77,15 @@ public class ErlModule extends Openable implements IErlModule {
 			parsed = false;
 		}
 		final boolean initialParse = !parsed;
-		final String text = initialParse ? initialText : "";
-		parsed = ErlParser.parse(this, text, initialParse, path, updateCaches);
-		final IErlModel model = getModel();
-		if (model != null) {
-			model.notifyChange(this);
-		}
 		if (scanner == null) {
 			// There are two places that we make the initial scanner... this
 			// is one
 			getScanner();
+		}
+		parsed = ErlParser.parse(this, initialParse, path, updateCaches);
+		final IErlModel model = getModel();
+		if (model != null) {
+			model.notifyChange(this);
 		}
 		getScanner();
 		// update timestamp (might be IResource.NULL_STAMP if original does not
@@ -346,7 +341,7 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public synchronized void getScanner() {
+	public void getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
 		}
@@ -369,18 +364,15 @@ public class ErlModule extends Openable implements IErlModule {
 			// is one too
 			getScanner();
 		}
-		if (!fIgnoreNextReconcile) {
-			getScanner();
-			if (scanner != null) {
-				scanner.replaceText(offset, removeLength, newText);
-			}
-			if (mon != null) {
-				mon.worked(1);
-			}
-			setStructureKnown(false);
-			disposeScanner();
+		getScanner();
+		if (scanner != null) {
+			scanner.replaceText(offset, removeLength, newText);
 		}
-		fIgnoreNextReconcile = false;
+		if (mon != null) {
+			mon.worked(1);
+		}
+		setStructureKnown(false);
+		disposeScanner();
 	}
 
 	/*
@@ -391,17 +383,14 @@ public class ErlModule extends Openable implements IErlModule {
 	 * .IProgressMonitor)
 	 */
 	public synchronized void postReconcile(final IProgressMonitor mon) {
-		if (!fIgnoreNextPostReconcile) {
-			try {
-				open(mon);
-			} catch (final ErlModelException e) {
-				ErlLogger.warn(e);
-			}
-			if (mon != null) {
-				mon.worked(1);
-			}
+		try {
+			open(mon);
+		} catch (final ErlModelException e) {
+			ErlLogger.warn(e);
 		}
-		fIgnoreNextPostReconcile = false;
+		if (mon != null) {
+			mon.worked(1);
+		}
 	}
 
 	@Override
@@ -410,14 +399,14 @@ public class ErlModule extends Openable implements IErlModule {
 
 	}
 
-	public synchronized void finalReconcile() {
-		fIgnoreNextReconcile = true;
-		fIgnoreNextPostReconcile = true;
+	public synchronized void initialReconcile() {
+		// currently unused
+		// Note that the ErlReconciler doesn't send the first full-text
+		// reconcile that the built-in reconciler does
 	}
 
-	public synchronized void initialReconcile() {
-		fIgnoreNextReconcile = true;
-		fIgnoreNextPostReconcile = true;
+	public synchronized void finalReconcile() {
+		// currently unused
 	}
 
 	public String getModuleName() {

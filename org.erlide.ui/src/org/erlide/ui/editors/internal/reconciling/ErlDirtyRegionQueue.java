@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Queue used by {@link org.eclipse.jface.text.reconciler.Reconciler} to manage
  * dirty regions. When a dirty region is inserted into the queue, the queue
- * tries to fold it into the neighboring dirty region.
+ * tries to fold it into the neighbouring dirty region.
  * 
  * @see org.eclipse.jface.text.reconciler.Reconciler
  * @see org.eclipse.jface.text.reconciler.DirtyRegion
@@ -51,51 +51,39 @@ public class ErlDirtyRegionQueue {
 	}
 
 	/**
-	 * Returns the number of regions in the queue.
-	 * 
-	 * @return the dirty-region queue-size
-	 */
-	public int getSize() {
-		return fDirtyRegions.size();
-	}
-
-	/**
 	 * Throws away all entries in the queue.
 	 */
 	public void purgeQueue() {
 		fDirtyRegions.clear();
 	}
 
-	/**
-	 * Removes and returns the first dirty region in the queue
-	 * 
-	 * @return the next dirty region on the queue
-	 */
-	public ErlDirtyRegion removeNextDirtyRegion() {
+	public ErlDirtyRegion getNextDirtyRegion() {
 		if (fDirtyRegions.size() == 0) {
 			return null;
 		}
 		final ErlDirtyRegion dr = fDirtyRegions.get(0);
-		fDirtyRegions.remove(0);
 		return dr;
 	}
 
-	/**
-	 * Removes and returns all dirty regions in the queue
-	 * 
-	 * @return all regions
-	 */
-	public List<ErlDirtyRegion> removeAllDirtyRegions() {
+	public List<ErlDirtyRegion> getAllDirtyRegions() {
 		if (fDirtyRegions.size() == 0) {
 			return null;
 		}
 		final List<ErlDirtyRegion> d = new ArrayList<ErlDirtyRegion>(
 				fDirtyRegions);
-		fDirtyRegions.clear();
 		return d;
 	}
 
 	public boolean isEmpty() {
 		return fDirtyRegions.isEmpty();
 	}
+
+	public void removeAll(final List<ErlDirtyRegion> rs) {
+		fDirtyRegions.removeAll(rs);
+	}
+
+	public void remove(final ErlDirtyRegion r) {
+		fDirtyRegions.remove(r);
+	}
+
 }

@@ -9,7 +9,7 @@
 %%
 
 %% called from Java
--export([initial_parse/6, reparse/1]).
+-export([initial_parse/5, reparse/1]).
 
 %% called from Erlang
 -export([read_module_refs/3]).
@@ -42,29 +42,20 @@
 %% API Functions
 %%
 
-initial_parse(ScannerName, ModuleFileName, InitialTextBin, 
-              StateDir, UpdateCaches, UpdateSearchServer) ->
-    InitialText = binary_to_list(InitialTextBin),
+initial_parse(ScannerName, ModuleFileName, StateDir, UpdateCaches,
+              UpdateSearchServer) ->
     try
         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
-                           do_parse(ScannerName, ModuleFileName, RefsFileName,
-                                    InitialText, StateDir, UpdateCaches, 
-                                    UpdateSearchServer) 
-                   end,
-        CacheFun = fun(D) ->
-                           erlide_scanner_server:initialScan(
-                             ScannerName, ModuleFileName, InitialText,
-                             StateDir, UpdateCaches),
-                           D
+                           do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer)
                    end,
         CacheFileName = BaseName ++ ".noparse",
         ?D(CacheFileName),
         {Cached, Res} = erlide_util:check_and_renew_cached(
                           ModuleFileName, CacheFileName, ?CACHE_VERSION, 
-                          RenewFun, CacheFun, UpdateCaches),
+                          RenewFun, UpdateCaches),
         %%erlide_noparse_server:update_state(ScannerName, Res),
         ?D(updated),
         {ok, Res, Cached}
@@ -75,7 +66,7 @@ initial_parse(ScannerName, ModuleFileName, InitialTextBin,
 
 reparse(ScannerName) ->
     try
-        Res = do_parse(ScannerName, "", "", "", "", false, true),
+        Res = do_parse(ScannerName, "", "", true),
         %%erlide_noparse_server:update_state(ScannerName, Res),
         {ok, Res, unused}
     catch
@@ -94,8 +85,11 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             binary_to_term(Binary);
         _ ->
             {ok, InitialTextBin} = file:read_file(ModulePath),
-            initial_parse(ScannerName, ModulePath, InitialTextBin,
-                          StateDir, true, false),
+            InitialText = binary_to_list(InitialTextBin),
+            _D = erlide_scanner_server:initialScan(
+                   ScannerName, ModulePath, InitialText, StateDir, true),
+            ?D(_D),
+            initial_parse(ScannerName, ModulePath, StateDir, true, false),
             ?D(parsed),
             {ok, Binary} = file:read_file(RefsFileName),
             ?D(byte_size(Binary)),
@@ -114,10 +108,8 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
 -record(other, {pos, name, tokens}).
 %% -record(module, {name, erlide_path, model}).
 
-do_parse(ScannerName, ModuleFileName, RefsFileName, InitalText, StateDir, 
-         UpdateCaches, UpdateSearchServer) ->
-    Toks = scan(ScannerName, ModuleFileName, InitalText, StateDir,
-                UpdateCaches),
+do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
+    Toks = erlide_scanner_server:getTokens(ScannerName), 
     do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer).
 
 do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
@@ -533,15 +525,6 @@ fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
                arity=Arity, clause=Head, sub_clause=SubClause},
     fix_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
 
-scan(ScannerName, "", _, _, _) -> % reparse, just get the tokens, they are updated by reconciler 
-    erlide_scanner_server:getTokens(ScannerName);    
-scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCaches) ->
-    _D = erlide_scanner_server:initialScan(
-           ScannerName, ModuleFileName, InitialText, StateDir, UpdateCaches),
-    ?D(_D),
-    S = erlide_scanner_server:getTokens(ScannerName),
-    S.
-
 fix_imported_ref(#local_call{function=F, arity=A}=RefData, [{Module, Imports} | Rest]) ->
     case lists:member({F, A}, Imports) of
         true -> #external_call{module=Module, function=F, arity=A};
@@ -701,49 +684,6 @@ vars(Tokens) when is_list(Tokens) ->
 vars(_) ->
     [].
 
-%% do_vdump1(#module{model=M}) ->
-%%     Forms = M#model.forms,
-%%     [[{F#function.name, vars(F#function.code), [{C#clause.head, vars(C#clause.code)} || C <- F#function.clauses]}]
-%%     || F <- Forms, is_record(F, function)].
-    
-%% do_get_vars(FOrC, Module) ->
-%%     case find_function_or_clause(FOrC, Module) of
-%%         #function{code=Code} ->
-%%             {ok, vars(Code)};
-%%         #clause{code=Code} ->
-%%             {ok, vars(Code)};
-%%         _ ->
-%%             not_found
-%%     end.
-
-%% find_function_or_clause({F, A, Head}, Module) ->
-%%     ffoc((Module#module.model)#model.forms, F, A, Head);
-%% find_function_or_clause({F, A}, Module) ->
-%%     ffoc((Module#module.model)#model.forms, F, A).
-%% 
-%% ffoc([], _F, _A) ->
-%%     not_found;
-%% ffoc([#function{name=F, arity=A} = Function | _], F, A) ->
-%%     Function;
-%% ffoc([_ | R], F, A) ->
-%%     ffoc(R, F, A).
-%% 
-%% ffoc(L, F, A, Head) ->
-%%     case ffoc(L, F, A) of
-%%         #function{clauses=C} ->
-%%             ffoc(C, Head);
-%%         not_found ->
-%%             not_found
-%%     end.
-%% 
-%% ffoc([], _Head) ->
-%%     not_found;
-%% ffoc([#clause{head=Head} = Clause | _], Head) ->
-%%     Clause;
-%% ffoc([_ | R], Head) ->
-%%     ffoc(R, Head).
-
-       
 get_function_comments(Forms, Comments) ->
     lists:map(fun(#function{} = F) ->
 		      get_function_comment(F, Comments);

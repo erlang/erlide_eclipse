@@ -15,6 +15,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlReconciler implements IReconciler {
@@ -47,8 +48,6 @@ public class ErlReconciler implements IReconciler {
 		private boolean fCanceled = false;
 		/** Has the reconciler been reset. */
 		private boolean fReset = false;
-		/** Some changes need to be processed. */
-		boolean fIsDirty = false;
 		/** Is a reconciling strategy active. */
 		private boolean fIsActive = false;
 
@@ -81,9 +80,7 @@ public class ErlReconciler implements IReconciler {
 		 * @since 3.0
 		 */
 		public boolean isDirty() {
-			synchronized (fDirtyRegionQueue) {
-				return fIsDirty || !fDirtyRegionQueue.isEmpty();
-			}
+			return !fDirtyRegionQueue.isEmpty();
 		}
 
 		/**
@@ -107,18 +104,21 @@ public class ErlReconciler implements IReconciler {
 		public void suspendCallerWhileDirty() {
 			boolean isDirty = true;
 			int i = fErlReconcilerCount;
-			// we don't want to sit in this loop forever if something crashes
 			while (i > 0 && isDirty) {
+				i--;
 				synchronized (fDirtyRegionQueue) {
-					i--;
 					isDirty = isDirty();
 					if (isDirty) {
 						try {
 							fDirtyRegionQueue.wait(fDelay);
-						} catch (final InterruptedException x) {
+						} catch (InterruptedException x) {
 						}
 					}
 				}
+			}
+			if (i == 0 || isDirty) {
+				ErlLogger
+						.debug("broke out of loop i %d isDirty %b", i, isDirty);
 			}
 		}
 
@@ -181,47 +181,48 @@ public class ErlReconciler implements IReconciler {
 					if (fDirtyRegionQueue.isEmpty()) {
 						continue;
 					}
-					fIsDirty = true;
-				}
-				synchronized (this) {
-					if (fReset) {
-						fReset = false;
-						continue;
-					}
-				}
-
-				List<ErlDirtyRegion> rs = null;
-				ErlDirtyRegion r = null;
-				synchronized (fDirtyRegionQueue) {
-					if (fChunkReconciler) {
-						rs = fDirtyRegionQueue.removeAllDirtyRegions();
-					} else {
-						r = fDirtyRegionQueue.removeNextDirtyRegion();
-					}
-				}
-				fIsActive = true;
-
-				if (fProgressMonitor != null) {
-					fProgressMonitor.setCanceled(false);
-				}
-
-				if (fChunkReconciler) {
-					if (rs != null) {
-						for (final ErlDirtyRegion dirtyRegion : rs) {
-							process(dirtyRegion);
+					synchronized (this) {
+						if (fReset) {
+							fReset = false;
+							continue;
 						}
 					}
-				} else {
-					process(r);
-				}
-				postProcess();
-				synchronized (fDirtyRegionQueue) {
-					if (fDirtyRegionQueue.isEmpty()) {
-						fDirtyRegionQueue.notifyAll();
-						fIsDirty = false;
+
+					List<ErlDirtyRegion> rs = null;
+					ErlDirtyRegion r = null;
+					synchronized (fDirtyRegionQueue) {
+						if (fChunkReconciler) {
+							rs = fDirtyRegionQueue.getAllDirtyRegions();
+						} else {
+							r = fDirtyRegionQueue.getNextDirtyRegion();
+						}
 					}
+					fIsActive = true;
+
+					if (fProgressMonitor != null) {
+						fProgressMonitor.setCanceled(false);
+					}
+
+					if (fChunkReconciler) {
+						if (rs != null) {
+							for (final ErlDirtyRegion dirtyRegion : rs) {
+								process(dirtyRegion);
+							}
+						}
+					} else {
+						process(r);
+					}
+					postProcess();
+					synchronized (fDirtyRegionQueue) {
+						if (fChunkReconciler) {
+							fDirtyRegionQueue.removeAll(rs);
+						} else {
+							fDirtyRegionQueue.remove(r);
+						}
+						fDirtyRegionQueue.notifyAll();
+					}
+					fIsActive = false;
 				}
-				fIsActive = false;
 			}
 		}
 	}
@@ -318,11 +319,11 @@ public class ErlReconciler implements IReconciler {
 				aboutToBeReconciled();
 			}
 
-			if (fIsIncrementalReconciler) {
-				final DocumentEvent e = new DocumentEvent(fDocument, 0, 0,
-						fDocument.get());
-				createDirtyRegion(e);
-			}
+			// if (fIsIncrementalReconciler) {
+			// final DocumentEvent e = new DocumentEvent(fDocument, 0, 0,
+			// fDocument.get());
+			// createDirtyRegion(e);
+			// }
 
 			startReconciling();
 		}
@@ -514,6 +515,7 @@ public class ErlReconciler implements IReconciler {
 			}
 			fDirtyRegionQueue.addDirtyRegion(new ErlDirtyRegion(e.getOffset(),
 					e.getLength(), text));
+			fDirtyRegionQueue.notifyAll();
 		}
 	}
 

@@ -206,9 +206,8 @@ reply(Cmd, From, R) ->
 %%     NewMod = erlide_scanner:do_scan_uncached(Mod, ModuleFileName),
 %%     NewMod;
 do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, UpdateCache}, _Module) ->
-    ?D({initial_scan, Mod}),
+    ?D({initial_scan, Mod, length(InitialText)}),
     {Cached, NewMod} = erlide_scanner:initial_scan(Mod, ModuleFileName, InitialText, StateDir, UpdateCache),
-    ?D({done, Mod}),
     {{ok, Cached}, NewMod};
 do_cmd(dump_module, [], Module) ->
     {Module, Module};
