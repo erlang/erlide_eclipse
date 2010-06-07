@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -18,6 +19,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -43,26 +45,13 @@ public class ResourceUtil {
 
 	/**
 	 * <p>
-	 * the file extension of Erlang source files.
-	 * </p>
-	 */
-	public static final String EXTENSION_ERL = "erl";
-
-	/**
-	 * <p>
-	 * the file extension of Erlang header files
-	 * </p>
-	 */
-	public static final String EXTENSION_HRL = "hrl";
-
-	/**
-	 * <p>
 	 * returns whether the passed resource is an Erlang source file, as
 	 * recognized by the file extensions '.erl' and '.hrl'.
 	 * </p>
 	 */
 	public static boolean hasErlangExtension(final IResource resource) {
-		return has(resource, EXTENSION_ERL) || has(resource, EXTENSION_HRL);
+		String ext = resource.getFileExtension();
+		return ErlideUtil.isModuleExtension(ext);
 	}
 
 	/**
@@ -199,11 +188,6 @@ public class ResourceUtil {
 		return null;
 	}
 
-	private static boolean has(final IResource resource, final String extension) {
-		final String resExt = resource.getFileExtension();
-		return resExt != null && resExt.equalsIgnoreCase(extension);
-	}
-
 	private static IErlProject getErlProject(final IProject project) {
 		return ErlangCore.getModel().findProject(project);
 	}
@@ -236,10 +220,10 @@ public class ResourceUtil {
 	}
 
 	static public IFile openExternal(final String path) throws CoreException {
-		final IProject project = getExternalFilesProject();
 		if (path == null) {
 			return null;
 		}
+		final IProject project = getExternalFilesProject();
 		final IPath location = new Path(path);
 		final IFile file = project.getFile(location.lastSegment());
 		final IStatus status = ResourcesPlugin.getWorkspace()
@@ -259,5 +243,14 @@ public class ResourceUtil {
 				project.getName());
 		p.open(null);
 		return file;
+	}
+
+	public static IFile getFileFromLocation(final String location) {
+		final IWorkspaceRoot wr = ResourcesPlugin.getWorkspace().getRoot();
+		final IFile[] f = wr.findFilesForLocationURI(URIUtil.toURI(location));
+		if (f.length > 0) {
+			return f[0];
+		}
+		return null;
 	}
 }

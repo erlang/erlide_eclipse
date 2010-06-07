@@ -373,4 +373,5 @@ public class RuntimeInfo {
 	public boolean loadOnAllNodes() {
 		return loadAllNodes;
 	}
+
 }

@@ -66,6 +66,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.ErlideContextAssist;
 import erlang.ErlideDoc;
+import erlang.ErlideContextAssist.RecordCompletion;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
@@ -100,7 +101,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private static final int ARITY_ONLY = 0x1000;
 	private static final int UNEXPORTED_ONLY = 0x2000;
 
-	private static final ICompletionProposal[] NO_COMPLETIONS = new ICompletionProposal[0];
 	private static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
 
 	private final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
@@ -117,11 +117,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	public ICompletionProposal[] computeCompletionProposals(
 			final ITextViewer viewer, final int offset) {
 		if (module == null) {
-			return new ICompletionProposal[0];
+			return null;
 		}
 		try {
 			final IDocument doc = viewer.getDocument();
-			String before = getBefore(doc, offset);
+			String before = getBefore(viewer, doc, offset);
 			final int commaPos = before.lastIndexOf(',');
 			final int colonPos = before.lastIndexOf(':');
 			final int hashMarkPos = before.lastIndexOf('#');
@@ -138,33 +138,35 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
 					project.getProject());
 			final IErlElement element = getElementAt(offset);
-			if (hashMarkPos >= 0
-					&& ErlideContextAssist.checkRecordCompletion(b, before
-							.substring(hashMarkPos))) {
-				if (dotPos >= 0) {
-					flags = RECORD_FIELDS;
-					pos = hashMarkPos;
-					moduleOrRecord = before.substring(hashMarkPos + 1, dotPos);
-					before = before.substring(dotPos + 1);
+			RecordCompletion rc = null;
+			if (hashMarkPos >= 0) {
+				rc = ErlideContextAssist.checkRecordCompletion(b, before);
+			}
+			if (rc != null && rc.isNameWanted()) {
+				flags = RECORD_DEFS;
+				pos = hashMarkPos;
+				before = rc.getPrefix();
+			} else if (rc != null && rc.isFieldWanted()) {
+				flags = RECORD_FIELDS;
+				pos = hashMarkPos;
+				if (dotPos > hashMarkPos) {
+					pos = dotPos;
 				} else if (leftBracketPos > hashMarkPos) {
-					flags = RECORD_FIELDS;
-					pos = hashMarkPos;
-					moduleOrRecord = before.substring(hashMarkPos + 1,
-							leftBracketPos);
-					final int n = atomPrefixLength(doc, offset);
-					before = before.substring(before.length() - n);
+					pos = leftBracketPos;
 				} else {
-					flags = RECORD_DEFS;
-					pos = hashMarkPos;
-					before = before.substring(hashMarkPos + 1);
+					assert false;
 				}
+				before = rc.getPrefix();
+				moduleOrRecord = rc.getName();
 			} else if (colonPos > commaPos && colonPos > parenPos) {
 				moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
 						0, colonPos)));
 				flags = EXTERNAL_FUNCTIONS;
 				pos = colonPos;
 				before = before.substring(colonPos + 1);
-			} else if (interrogationMarkPos >= 0) {
+			} else if (interrogationMarkPos > hashMarkPos
+					&& interrogationMarkPos > commaPos
+					&& interrogationMarkPos > colonPos) {
 				flags = MACRO_DEFS;
 				pos = interrogationMarkPos;
 				before = before.substring(interrogationMarkPos + 1);
@@ -202,7 +204,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			return result.toArray(new ICompletionProposal[result.size()]);
 		} catch (final Exception e) {
 			ErlLogger.warn(e);
-			return NO_COMPLETIONS;
+			return null;
 		}
 	}
 
@@ -718,8 +720,22 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		return before;
 	}
 
-	private String getBefore(final IDocument doc, final int offset) {
+	private String getBefore(final ITextViewer viewer, final IDocument doc,
+			final int offset) {
 		try {
+			if (module != null) {
+				try {
+					IErlElement element = module.getElementAt(offset);
+					if (element instanceof ISourceReference) {
+						ISourceReference sr = (ISourceReference) element;
+						int start = sr.getSourceRange().getOffset();
+						if (start <= offset) {
+							return doc.get(start, offset - start);
+						}
+					}
+				} catch (ErlModelException e) {
+				}
+			}
 			for (int n = offset - 1; n >= 0; --n) {
 				final char c = doc.getChar(n);
 				final int type = Character.getType(c);

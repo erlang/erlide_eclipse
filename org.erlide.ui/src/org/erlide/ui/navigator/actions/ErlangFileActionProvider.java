@@ -2,22 +2,25 @@ package org.erlide.ui.navigator.actions;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.erlide.ui.actions.ErlangSearchActionGroup;
 
 public class ErlangFileActionProvider extends CommonActionProvider {
 
 	private OpenErlangAction openAction;
+	private ErlangSearchActionGroup searchActionGroup;
 
 	/**
 	 * Construct Erlang File Action provider.
 	 */
 	public ErlangFileActionProvider() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -35,6 +38,12 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 			final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
 			openAction = new OpenErlangAction(workbenchSite.getPage(),
 					workbenchSite.getSelectionProvider());
+			final IWorkbenchPartSite site = workbenchSite.getPart().getSite();
+			searchActionGroup = new ErlangSearchActionGroup(site);
+			final IContextService service = (IContextService) site
+					.getService(IContextService.class);
+			service
+					.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
 		}
 	}
 
@@ -66,6 +75,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
 		if (openAction.isEnabled()) {
 			menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, openAction);
 		}
+		searchActionGroup.fillContextMenu(menu);
 	}
 
 }

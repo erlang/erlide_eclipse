@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.util.ArrayList;
@@ -19,10 +29,22 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Parser class for Identical expression search refactorings
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
 	private final String emptyErrorMessage = "No expression found!";
 
+	/**
+	 * Constructor
+	 * 
+	 * @param obj
+	 *            object to be parsed
+	 */
 	public DuplicateDetectionParser(OtpErlangObject obj) {
 		super(obj);
 	}

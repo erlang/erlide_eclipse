@@ -64,6 +64,11 @@ check_function_call([#token{kind=atom, value=F}, #token{kind='/'}, #token{kind=i
                     Index) when Index > -1 ->
     ?D({Index, {F, Arity}}),
     {ok, F, Arity};
+check_function_call([#token{kind=atom, value=M}, #token{kind=':'},
+                     #token{kind=atom, value=F}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
+                    Index) when Index > -1 ->
+    ?D({Index, {F, Arity}}),
+    {ok, M, F, Arity};
 check_function_call([_|Rest]=_L, Index) when Index > -1 ->
     ?D({nomatch, Index, _L}),
     check_function_call(Rest, Index-1);

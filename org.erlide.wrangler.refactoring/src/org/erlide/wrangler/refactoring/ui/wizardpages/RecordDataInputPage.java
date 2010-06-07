@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import java.util.ArrayList;
@@ -40,12 +50,12 @@ public class RecordDataInputPage extends MultiInputPage {
 	 * @param name
 	 *            title
 	 */
-	public RecordDataInputPage(String name) {
+	public RecordDataInputPage(final String name) {
 		super(name);
 	}
 
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		refactoring = (QuickCheckStateRefactoring) getRefactoring();
 		composite = new Composite(parent, SWT.NONE);
 
@@ -65,7 +75,7 @@ public class RecordDataInputPage extends MultiInputPage {
 
 		ModifyListener modifyListener = new ModifyListener() {
 
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(final ModifyEvent e) {
 				isInputValid();
 			}
 

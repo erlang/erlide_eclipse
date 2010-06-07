@@ -81,14 +81,12 @@ public class ErlModule extends Openable implements IErlModule {
 	protected synchronized boolean buildStructure(final IProgressMonitor pm)
 			throws ErlModelException {
 		final String path = getFilePath();
-		final String erlidePath = getErlidePath();
 		if (scanner == null) {
 			parsed = false;
 		}
 		final boolean initialParse = !parsed;
 		final String text = initialParse ? initialText : "";
-		parsed = ErlParser.parse(this, text, initialParse, path, erlidePath,
-				updateCaches);
+		parsed = ErlParser.parse(this, text, initialParse, path, updateCaches);
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -103,10 +101,6 @@ public class ErlModule extends Openable implements IErlModule {
 			timestamp = IResource.NULL_STAMP;
 		}
 		return parsed;
-	}
-
-	protected String getErlidePath() {
-		return fFile.getFullPath().toString();
 	}
 
 	/**
@@ -151,16 +145,17 @@ public class ErlModule extends Openable implements IErlModule {
 			throws ErlModelException {
 		return getModel().innermostThat(this, new IErlangFirstThat() {
 			public boolean firstThat(final IErlElement e) {
-				if (e instanceof ISourceReference) {
-					final ISourceReference ch = (ISourceReference) e;
-					ISourceRange r;
-					try {
+				try {
+					if (e instanceof ISourceReference) {
+						final ISourceReference ch = (ISourceReference) e;
+						ISourceRange r;
 						r = ch.getSourceRange();
 						if (r != null && r.hasPosition(position)) {
 							return true;
 						}
-					} catch (final ErlModelException e1) {
 					}
+				} catch (ErlModelException e1) {
+					ErlLogger.error(e1);
 				}
 				return false;
 			}
@@ -186,7 +181,13 @@ public class ErlModule extends Openable implements IErlModule {
 		return moduleKind;
 	}
 
+	@Override
 	public IResource getResource() {
+		return getCorrespondingResource();
+	}
+
+	@Override
+	public IResource getCorrespondingResource() {
 		return fFile;
 	}
 
@@ -356,23 +357,10 @@ public class ErlModule extends Openable implements IErlModule {
 
 	private ErlScanner getNewScanner() {
 		final String path = getFilePath();
-		final String erlidePath = getErlidePath();
-		if (path == null || erlidePath == null) {
+		if (path == null) {
 			return null;
 		}
-		return new ErlScanner(this, initialText, path, erlidePath);
-	}
-
-	public void fixExportedFunctions() {
-		try {
-			final List<? extends IErlElement> functions = getChildrenOfType(IErlElement.Kind.FUNCTION);
-			for (final IErlElement erlElement : functions) {
-				final ErlFunction f = (ErlFunction) erlElement;
-				final boolean exported = findExport(f.getFunction()) != null;
-				f.setExported(exported);
-			}
-		} catch (final ErlModelException e) {
-		}
+		return new ErlScanner(this, initialText, path);
 	}
 
 	public void reconcileText(final int offset, final int removeLength,
@@ -532,10 +520,5 @@ public class ErlModule extends Openable implements IErlModule {
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public IErlModule getModule() {
-		return this;
 	}
 }

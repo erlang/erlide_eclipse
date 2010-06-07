@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.HashMap;
@@ -11,29 +21,43 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * For SelectionInputDialog every selectable element is connected with an object
+ * from this class, to handle mouseover events
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ExpressionCheckButtonListener implements MouseTrackListener {
 
-	private IErlMemberSelection selection;
-	private HashMap<Button, IErlRange> checkButtons;
+	private final IErlMemberSelection selection;
+	private final HashMap<Button, IErlRange> checkButtons;
 
-	public ExpressionCheckButtonListener(HashMap<Button, IErlRange> checkButtons) {
+	/**
+	 * Constructor
+	 * 
+	 * @param checkButtons
+	 *            Elements which should be monitored
+	 */
+	public ExpressionCheckButtonListener(
+			final HashMap<Button, IErlRange> checkButtons) {
 		this.checkButtons = checkButtons;
 		this.selection = (IErlMemberSelection) GlobalParameters
 				.getWranglerSelection();
 	}
 
-	public void mouseEnter(MouseEvent e) {
+	public void mouseEnter(final MouseEvent e) {
 		setHighlight(e.widget);
 	}
 
-	public void mouseExit(MouseEvent e) {
+	public void mouseExit(final MouseEvent e) {
 		resetHighlight();
 	}
 
-	public void mouseHover(MouseEvent e) {
+	public void mouseHover(final MouseEvent e) {
 	}
 
-	private void setHighlight(Widget w) {
+	private void setHighlight(final Widget w) {
 		int offset = checkButtons.get(w).getOffset();
 		int length = checkButtons.get(w).getLength();
 		WranglerUtils.highlightSelection(offset, length, selection);

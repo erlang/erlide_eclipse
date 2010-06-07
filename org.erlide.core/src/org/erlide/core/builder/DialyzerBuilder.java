@@ -41,14 +41,17 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
 		final IErlModel model = ErlangCore.getModel();
 		final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
 		DialyzerUtils.addModulesFromResource(model, project, modules);
-		try {
-			DialyzerUtils.doDialyze(monitor, modules, prefs);
-		} catch (final InvocationTargetException e) {
-			ErlLogger.error(e);
-			final String msg = NLS.bind(BuilderMessages.build_dialyzerProblem,
-					e.getTargetException().getLocalizedMessage());
-			MarkerHelper.addProblemMarker(project, null, msg, 0,
-					IMarker.SEVERITY_ERROR);
+		if (modules.size() != 0) {
+			try {
+				DialyzerUtils.doDialyze(monitor, modules, prefs);
+			} catch (final InvocationTargetException e) {
+				ErlLogger.error(e);
+				final String msg = NLS.bind(
+						BuilderMessages.build_dialyzerProblem, e
+								.getTargetException().getLocalizedMessage());
+				MarkerHelper.addProblemMarker(project, null, msg, 0,
+						IMarker.SEVERITY_ERROR);
+			}
 		}
 		return null;
 	}

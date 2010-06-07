@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -47,7 +47,6 @@ import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
@@ -55,6 +54,8 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.core.erlang.util.PluginUtils;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
@@ -84,7 +85,7 @@ public class ErlTextHover implements ITextHover,
 		ITextHoverExtension2 {
 
 	private final IErlModule fModule;
-	private static URL fgStyleSheet;
+	private static URL fgStyleSheet = null;
 	private IInformationControlCreator fHoverControlCreator;
 	private PresenterControlCreator fPresenterControlCreator;
 	private final ErlangEditor fEditor;
@@ -96,6 +97,9 @@ public class ErlTextHover implements ITextHover,
 	}
 
 	public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
+		if (fModule == null) {
+			return null;
+		}
 		if (fEditor != null) {
 			fEditor.reconcileNow();
 		}
@@ -112,6 +116,9 @@ public class ErlTextHover implements ITextHover,
 
 	private void initStyleSheet() {
 		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+		if (fgStyleSheet != null) {
+			return;
+		}
 		fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
 		if (fgStyleSheet != null) {
 
@@ -206,7 +213,7 @@ public class ErlTextHover implements ITextHover,
 					@Override
 					public void setSize(int width, int height) {
 						// TODO default size is too small
-						Point bounds = this.getSizeConstraints();
+						Point bounds = getSizeConstraints();
 						if (bounds != null) {
 							if (bounds.x != SWT.DEFAULT) {
 								width = Math.min(bounds.x, width * 2);
@@ -264,7 +271,7 @@ public class ErlTextHover implements ITextHover,
 		// element = module.getElementAt(hoverRegion.getOffset());
 		// } catch (Exception e) {
 		// }
-		final Collection<IErlImport> fImports = ErlModelUtils
+		final Collection<OtpErlangObject> fImports = ErlModelUtils
 				.getImportsAsList(module);
 
 		final int offset = hoverRegion.getOffset();
@@ -316,7 +323,6 @@ public class ErlTextHover implements ITextHover,
 					// use same code for content assist, open and hover
 					if (openKind.equals("local") || openKind.equals("external")) {
 						IErlModule m = null;
-						IErlFunction f = null;
 						OtpErlangLong arityLong = null;
 						if (openKind.equals("local")) {
 							arityLong = (OtpErlangLong) t.elementAt(2);
@@ -327,20 +333,30 @@ public class ErlTextHover implements ITextHover,
 							final String mod = definedName;
 							definedName = a2.atomValue();
 							arityLong = (OtpErlangLong) t.elementAt(3);
-							final OtpErlangString s4;
-							if (t.elementAt(4) instanceof OtpErlangString) {
-								s4 = (OtpErlangString) t.elementAt(4);
-							} else {
-								final String msg = "unrecognized value: %s, expected a string instead of %s";
-								ErlLogger.warn(msg, t, t.elementAt(4));
-								return null;
-							}
-							final String path = Util.stringValue(s4);
 							IResource r = null;
-							try {
-								r = ErlModelUtils.openExternalModule(mod, path,
-										module.getResource().getProject());
-							} catch (final CoreException e2) {
+							if (t.arity() > 3
+									&& t.elementAt(4) instanceof OtpErlangString) {
+								final OtpErlangString s4 = (OtpErlangString) t
+										.elementAt(4);
+								final String path = Util.stringValue(s4);
+								try {
+									r = ErlModelUtils.findExternalModule(mod,
+											path, module.getResource()
+													.getProject(), true);
+								} catch (final CoreException e2) {
+								}
+							} else {
+								final String modFileName = mod + ".erl";
+								IProject project = module.getResource()
+										.getProject();
+								if (project != null) {
+									r = ResourceUtil
+											.recursiveFindNamedResourceWithReferences(
+													project,
+													modFileName,
+													PluginUtils
+															.getSourcePathFilter(project));
+								}
 							}
 							if (!(r instanceof IFile)) {
 								return null;
@@ -360,6 +376,7 @@ public class ErlTextHover implements ITextHover,
 						if (m == null) {
 							return null;
 						}
+						IErlFunction f = null;
 						try {
 							m.open(null);
 							f = ModelUtils.findFunction(m, erlangFunction);
@@ -381,8 +398,7 @@ public class ErlTextHover implements ITextHover,
 						final IErlProject project = module.getProject();
 						final IProject proj = project == null ? null
 								: (IProject) project.getResource();
-						definedName = OpenResult.removeQuestionMark(a1
-								.toString());
+						definedName = a1.toString();
 						final String externalIncludes = model.getExternal(
 								erlProject, ErlangCore.EXTERNAL_INCLUDES);
 						IErlPreprocessorDef pd = ErlModelUtils

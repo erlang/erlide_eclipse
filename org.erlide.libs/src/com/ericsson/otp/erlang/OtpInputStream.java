@@ -31,7 +31,7 @@ import java.math.BigDecimal;
  */
 public class OtpInputStream extends ByteArrayInputStream {
 
-    public static final int DECODE_INT_LISTS_AS_STRINGS = 1;
+    public static int DECODE_INT_LISTS_AS_STRINGS = 1;
 
     private final int flags;
 
@@ -213,7 +213,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
-	
+	;
 	return (b[0] << 8 & 0xff00) + (b[1] & 0xff);
     }
 
@@ -232,7 +232,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
-	
+	;
 	return (b[0] << 24 & 0xff000000) + (b[1] << 16 & 0xff0000)
 		+ (b[2] << 8 & 0xff00) + (b[3] & 0xff);
     }
@@ -252,6 +252,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
+	;
 	return (b[1] << 8 & 0xff00) + (b[0] & 0xff);
     }
 
@@ -270,6 +271,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
+	;
 	return (b[3] << 24 & 0xff000000) + (b[2] << 16 & 0xff0000)
 		+ (b[1] << 8 & 0xff00) + (b[0] & 0xff);
     }
@@ -292,6 +294,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
+	;
 	long v = 0;
 	while (n-- > 0) {
 	    v = v << 8 | (long) b[n] & 0xff;
@@ -317,6 +320,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	} catch (final IOException e) {
 	    throw new OtpErlangDecodeException("Cannot read from input stream");
 	}
+	;
 	long v = 0;
 	for (int i = 0; i < n; i++) {
 	    v = v << 8 | (long) b[i] & 0xff;
@@ -363,7 +367,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	strbuf = new byte[len];
 	this.readN(strbuf);
-	atom = new String(strbuf);
+	atom = OtpErlangString.newString(strbuf);
 
 	if (atom.length() > OtpExternal.maxAtomLength) {
 	    atom = atom.substring(0, OtpExternal.maxAtomLength);
@@ -484,7 +488,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	    // get the string
 	    this.readN(strbuf);
-	    str = new String(strbuf);
+	    str = OtpErlangString.newString(strbuf);
 
 	    // find the exponent prefix 'e' in the string
 	    epos = str.indexOf('e', 0);
@@ -1012,7 +1016,6 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    }
 	    return new OtpErlangFun(pid, module, index, uniq, freeVars);
 	} else if (tag == OtpExternal.newFunTag) {
-	    @SuppressWarnings("unused")
 	    final int n = read4BE();
 	    final int arity = read1();
 	    final byte[] md5 = new byte[16];
@@ -1067,7 +1070,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    len = read2BE();
 	    strbuf = new byte[len];
 	    this.readN(strbuf);
-	    return new String(strbuf);
+	    return OtpErlangString.newString(strbuf);
 	case OtpExternal.nilTag:
 	    return "";
 	case OtpExternal.listTag: // List when unicode +
@@ -1075,9 +1078,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 	    intbuf = new int[len];
 	    for (int i = 0; i < len; i++) {
 		intbuf[i] = read_int();
-		if (!OtpErlangString.isValidCodePoint(intbuf[i])) {
-		    throw new OtpErlangDecodeException("Invalid CodePoint: "
-			    + intbuf[i]);
+		if (! OtpErlangString.isValidCodePoint(intbuf[i])) {
+		    throw new OtpErlangDecodeException
+			("Invalid CodePoint: " + intbuf[i]);
 		}
 	    }
 	    read_nil();
@@ -1108,8 +1111,8 @@ public class OtpInputStream extends ByteArrayInputStream {
 
 	final int size = read4BE();
 	final byte[] buf = new byte[size];
-	final java.util.zip.InflaterInputStream is = new java.util.zip.InflaterInputStream(
-		this);
+	final java.util.zip.InflaterInputStream is = 
+	    new java.util.zip.InflaterInputStream(this);
 	try {
 	    final int dsize = is.read(buf, 0, size);
 	    if (dsize != size) {

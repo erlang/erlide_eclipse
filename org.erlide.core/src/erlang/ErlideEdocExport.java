@@ -27,7 +27,7 @@ public class ErlideEdocExport {
 			final Map<String, OtpErlangObject> options) throws RpcException,
 			BackendException {
 		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		final OtpErlangObject opts = TypeConverter.encodeMap(options);
+		final OtpErlangObject opts = TypeConverter.mapToProplist(options);
 		b.call(15000, "edoc", "files", "lsx", files, opts);
 	}
 }

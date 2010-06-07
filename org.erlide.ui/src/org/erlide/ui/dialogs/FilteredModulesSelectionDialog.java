@@ -14,10 +14,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -69,9 +73,12 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+
+import erlang.ErlideOpen;
 
 /**
  * Shows a list of resources to the user with a text entry field for a string
@@ -91,6 +98,8 @@ public class FilteredModulesSelectionDialog extends
 	private String title;
 	final IContainer container;
 	final int typeMask;
+	private Comparator<Object> fComparator = null;
+	private Collator fCollator = null;
 
 	/**
 	 * Creates a new instance of the class
@@ -325,33 +334,36 @@ public class FilteredModulesSelectionDialog extends
 
 	@Override
 	protected Comparator<Object> getItemsComparator() {
-		return new Comparator<Object>() {
-
-			public int compare(final Object o1, final Object o2) {
-				final Collator collator = Collator.getInstance();
-				final String s1 = o1 instanceof IResource ? ((IResource) o1)
-						.getName() : (String) o1;
-				final String s2 = o2 instanceof IResource ? ((IResource) o2)
-						.getName() : (String) o2;
-				final int comparability = collator.compare(s1, s2);
-				if (comparability == 0) {
-					// IPath p1 = resource1.getFullPath();
-					// IPath p2 = resource2.getFullPath();
-					// int c1 = p1.segmentCount();
-					// int c2 = p2.segmentCount();
-					// for (int i = 0; i < c1 && i < c2; i++) {
-					// comparability = collator.compare(p1.segment(i), p2
-					// .segment(i));
-					// if (comparability != 0) {
-					// return comparability;
-					// }
-					// }
-					// comparability = c2 - c1;
+		if (fComparator == null) {
+			final Collator collator = Collator.getInstance();
+			if (collator instanceof RuleBasedCollator) {
+				RuleBasedCollator rbc = (RuleBasedCollator) collator;
+				String rules = rbc.getRules();
+				String newRules = rules.replaceFirst("<\'.\'<", "<")
+						.replaceFirst("<\'_\'<", "<\'.\'<\'_\'<");
+				try {
+					fCollator = new RuleBasedCollator(newRules);
+				} catch (ParseException e) {
+					e.printStackTrace();
+					fCollator = collator;
 				}
-
-				return comparability;
 			}
-		};
+
+			fComparator = new Comparator<Object>() {
+
+				public int compare(final Object o1, final Object o2) {
+					final String s1 = o1 instanceof IResource ? ((IResource) o1)
+							.getName()
+							: (String) o1;
+					final String s2 = o2 instanceof IResource ? ((IResource) o2)
+							.getName()
+							: (String) o2;
+					final int comparability = fCollator.compare(s1, s2);
+					return comparability;
+				}
+			};
+		}
+		return fComparator;
 	}
 
 	@Override
@@ -547,6 +559,8 @@ public class FilteredModulesSelectionDialog extends
 		private final ModuleFilter resourceFilter;
 		private final IProgressMonitor progressMonitor;
 		private final List<IResource> projects;
+		private final Set<IPath> validPaths = new HashSet<IPath>();
+		private final Set<String> extraLocations = new HashSet<String>();
 
 		/**
 		 * Creates new ResourceProxyVisitor instance.
@@ -566,7 +580,7 @@ public class FilteredModulesSelectionDialog extends
 			this.progressMonitor = progressMonitor;
 			final IResource[] resources = container.members();
 			projects = new ArrayList<IResource>(Arrays.asList(resources));
-
+			extraLocations.addAll(ErlideOpen.getExtraSourcePaths());
 			if (progressMonitor != null) {
 				progressMonitor.beginTask("Searching", projects.size());
 			}
@@ -580,22 +594,27 @@ public class FilteredModulesSelectionDialog extends
 
 			final IResource resource = proxy.requestResource();
 
-			if (projects.remove(resource.getProject())
-					|| projects.remove(resource)) {
+			IProject project = resource.getProject();
+			if (projects.remove(project) || projects.remove(resource)) {
 				progressMonitor.worked(1);
+				addPaths(project);
 			}
 
-			if (resource.getProject() == resource) {
+			if (project == resource) {
+				// FIXME (JC) all this seems too much... is it really necessary?
+				// couldn't we just assume all links in external files should be
+				// matchable?
+
 				// navigate even "external" lists
 				final IErlModel model = ErlangCore.getModel();
-				final IProject prj = resource.getProject();
-				if (prj != null) {
+				if (project != null) {
 					final String extMods = model.getExternal(model
-							.findProject(prj), ErlangCore.EXTERNAL_MODULES);
+							.findProject(project), ErlangCore.EXTERNAL_MODULES);
 					final List<String> files = new ArrayList<String>();
 					files.addAll(PreferencesUtils.unpackList(extMods));
-					final String extIncs = model.getExternal(model
-							.findProject(prj), ErlangCore.EXTERNAL_INCLUDES);
+					final String extIncs = model
+							.getExternal(model.findProject(project),
+									ErlangCore.EXTERNAL_INCLUDES);
 					files.addAll(PreferencesUtils.unpackList(extIncs));
 
 					final IPathVariableManager pvm = ResourcesPlugin
@@ -603,8 +622,8 @@ public class FilteredModulesSelectionDialog extends
 					for (final String str : files) {
 						IResource fres;
 						try {
-							fres = ResourceUtil.recursiveFindNamedResource(prj,
-									str, null);
+							fres = ResourceUtil.recursiveFindNamedResource(
+									project, str, null);
 						} catch (final CoreException e) {
 							fres = null;
 						}
@@ -619,7 +638,7 @@ public class FilteredModulesSelectionDialog extends
 								if (v.isAbsolute()) {
 									path = v.toString();
 								} else {
-									path = prj.getLocation().append(v)
+									path = project.getLocation().append(v)
 											.toString();
 								}
 								proxyContentProvider.add(path, resourceFilter);
@@ -635,8 +654,10 @@ public class FilteredModulesSelectionDialog extends
 
 			if (ResourceUtil.hasErlangExtension(resource)) {
 				final IContainer container = resource.getParent();
-				if (PluginUtils.isOnSourcePath(container)
-						|| PluginUtils.isOnIncludePath(container)) {
+				if (validPaths.contains(container.getFullPath())
+						|| !extraLocations.isEmpty()
+						&& extraLocations.contains(container.getLocation()
+								.toString())) {
 					proxyContentProvider.add(resource, resourceFilter);
 				}
 			}
@@ -646,6 +667,15 @@ public class FilteredModulesSelectionDialog extends
 			}
 
 			return true;
+		}
+
+		private void addPaths(final IProject project) {
+			final OldErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(project);
+			validPaths.addAll(PluginUtils.getFullPaths(project, prefs
+					.getIncludeDirs()));
+			validPaths.addAll(PluginUtils.getFullPaths(project, prefs
+					.getSourceDirs()));
 		}
 	}
 

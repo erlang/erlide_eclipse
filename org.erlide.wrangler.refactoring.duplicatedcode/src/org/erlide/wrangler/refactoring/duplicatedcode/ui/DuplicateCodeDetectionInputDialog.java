@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -15,6 +25,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
+/**
+ * Input dialog for getting necessary input for duplicated code detection
+ * refactoring
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private int minToks;
@@ -29,18 +46,42 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
 
-	public DuplicateCodeDetectionInputDialog(Shell parentShell, String dialogTitle) {
+	/**
+	 * Constructor
+	 * 
+	 * @param parentShell
+	 *            SWT shell
+	 * @param dialogTitle
+	 *            dialog title
+	 */
+	public DuplicateCodeDetectionInputDialog(Shell parentShell,
+			String dialogTitle) {
 		super(parentShell, dialogTitle);
 	}
 
+	/**
+	 * Gets the value of minimal tokens
+	 * 
+	 * @return number of minimal tokens
+	 */
 	public int getMinToks() {
 		return minToks;
 	}
 
+	/**
+	 * Gets the value of minimal clone numbers
+	 * 
+	 * @return minimal clones number
+	 */
 	public int getMinClones() {
 		return minClones;
 	}
 
+	/**
+	 * Gets the value of the 'run only in the current module' checkbox
+	 * 
+	 * @return true, if the refactoring will be run in only the current module
+	 */
 	public boolean onlyInFile() {
 		return workOnlyInCurrentFile;
 	}

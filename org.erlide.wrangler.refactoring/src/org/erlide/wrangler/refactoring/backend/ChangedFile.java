@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
 import java.io.File;
@@ -49,7 +59,8 @@ public class ChangedFile {
 	 * @param newFileContent
 	 *            New content of the source file.
 	 */
-	public ChangedFile(String oldPath, String newPath, String newFileContent) {
+	public ChangedFile(final String oldPath, final String newPath,
+			final String newFileContent) {
 		this.oldPath = oldPath;
 		this.newPath = newPath;
 		this.newFileContent = newFileContent;
@@ -92,7 +103,7 @@ public class ChangedFile {
 	 * @throws IOException
 	 *             if the given path could not be found on the workspace
 	 */
-	private IFile findEclipseRepresentation(String anOldPath)
+	private IFile findEclipseRepresentation(final String anOldPath)
 			throws IOException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();

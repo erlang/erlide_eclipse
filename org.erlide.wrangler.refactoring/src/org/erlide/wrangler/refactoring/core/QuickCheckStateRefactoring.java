@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core;
 
 import java.util.ArrayList;
@@ -30,7 +40,7 @@ public abstract class QuickCheckStateRefactoring extends
 	private List<String> fieldsNames;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		// FIXME: what kind of preconditions do I need?
 		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
@@ -46,6 +56,9 @@ public abstract class QuickCheckStateRefactoring extends
 		}
 	}
 
+	/**
+	 * @noreference This method is not intended to be referenced by clients.
+	 */
 	protected abstract StateDataToRecordRpcMessage runFirst(
 			IErlMemberSelection sel);
 
@@ -66,7 +79,7 @@ public abstract class QuickCheckStateRefactoring extends
 	 * @param fieldNames
 	 *            field names
 	 */
-	public void setRecordData(String name, List<String> fieldNames) {
+	public void setRecordData(final String name, final List<String> fieldNames) {
 		this.recordName = name;
 		this.fieldsNames = fieldNames;
 	}

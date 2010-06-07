@@ -25,16 +25,6 @@ public class ErlModuleWithoutResource extends ErlModule {
 		return path;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.erlide.core.erlang.internal.ErlModule#getErlidePath()
-	 */
-	@Override
-	protected String getErlidePath() {
-		return path;
-	}
-
 	public void dispose(final Object info) {
 		ErlangCore.getModelManager().removeModule(this);
 	}

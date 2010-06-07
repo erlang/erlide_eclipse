@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
 import org.erlide.jinterface.backend.Backend;
@@ -14,8 +24,11 @@ import org.erlide.wrangler.refactoring.backend.internal.RefactoringRpcMessage;
  * @version %I%, %G%
  */
 public class WranglerRefactoringBackend implements IWranglerBackend {
-	static String MODULE = "wrangler";
-	static String RENAME_FUNCTION = "rename_fun_eclipse";
+	/**
+	 * Wrangler module name
+	 */
+	final static public String MODULE = "wrangler";
+	final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
 	protected Backend backend;
 
@@ -25,7 +38,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 * @param backend
 	 *            Erlide backend
 	 */
-	public WranglerRefactoringBackend(Backend backend) {
+	public WranglerRefactoringBackend(final Backend backend) {
 		this.backend = backend;
 	}
 
@@ -42,8 +55,9 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 *            parameters array
 	 * @return parsed RPC message
 	 */
-	public IRpcMessage callWithParser(IRpcMessage parser, String functionName,
-			String signature, Object... parameters) {
+	public IRpcMessage callWithParser(final IRpcMessage parser,
+			final String functionName, final String signature,
+			final Object... parameters) {
 		RpcResult res = callWithoutParser(functionName, signature, parameters);
 		parser.parse(res);
 		return parser;
@@ -59,9 +73,10 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 * @param parameters
 	 *            parameters in an array
 	 * @return parsed RPC message
+	 * @noreference This method is not intended to be referenced by clients.
 	 */
-	public AbstractRefactoringRpcMessage call(String functionName,
-			String signature, Object... parameters) {
+	public AbstractRefactoringRpcMessage call(final String functionName,
+			final String signature, final Object... parameters) {
 		RpcResult res = callWithoutParser(functionName, signature, parameters);
 		AbstractRefactoringRpcMessage message = new RefactoringRpcMessage();
 		message.parse(res);
@@ -89,6 +104,19 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		return callWithoutParser(-1, functionName, signature, parameters);
 	}
 
+	/**
+	 * Send an RPC without using any RpcResult parser
+	 * 
+	 * @param timeout
+	 *            timeout for the RPC
+	 * @param functionName
+	 *            function name
+	 * @param signature
+	 *            signature for the parameters
+	 * @param parameters
+	 *            parameters
+	 * @return RpcResult object
+	 */
 	public RpcResult callWithoutParser(final int timeout,
 			final String functionName, final String signature,
 			final Object... parameters) {
@@ -107,7 +135,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		return res;
 	}
 
-	protected String makeLogStr(String function, Object[] parameters) {
+	protected String makeLogStr(final String function, final Object[] parameters) {
 		String ret = function + "(";
 		for (Object o : parameters) {
 			ret += o.toString();

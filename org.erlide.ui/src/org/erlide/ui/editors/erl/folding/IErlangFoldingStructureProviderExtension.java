@@ -14,7 +14,12 @@ public interface IErlangFoldingStructureProviderExtension {
 	/**
 	 * Collapses all members except for top level types.
 	 */
-	void collapseMembers();
+	void collapseFunctions();
+
+	/**
+	 * Expand all
+	 */
+	void expandAll();
 
 	/**
 	 * Collapses all comments.

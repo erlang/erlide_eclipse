@@ -39,7 +39,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * Create a bitstr from a byte array
      * 
      * @param bin
-     *            the array of bytes from which to create the bitstr.
+     *                the array of bytes from which to create the bitstr.
      */
     public OtpErlangBitstr(final byte[] bin) {
 	this.bin = new byte[bin.length];
@@ -51,9 +51,9 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * Create a bitstr with pad bits from a byte array.
      * 
      * @param bin
-     *            the array of bytes from which to create the bitstr.
+     *                the array of bytes from which to create the bitstr.
      * @param pad_bits
-     *            the number of unused bits in the low end of the last byte.
+     *                the number of unused bits in the low end of the last byte.
      */
     public OtpErlangBitstr(final byte[] bin, final int pad_bits) {
 	this.bin = new byte[bin.length];
@@ -83,16 +83,16 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * external format.
      * 
      * @param buf
-     *            the stream containing the encoded bitstr.
+     *                the stream containing the encoded bitstr.
      * 
      * @exception OtpErlangDecodeException
-     *                if the buffer does not contain a valid external
-     *                representation of an Erlang bitstr.
+     *                    if the buffer does not contain a valid external
+     *                    representation of an Erlang bitstr.
      */
     public OtpErlangBitstr(final OtpInputStream buf)
 	    throws OtpErlangDecodeException {
 	final int pbs[] = { 0 }; // This is ugly just to get a value-result
-	// parameter
+				    // parameter
 	bin = buf.read_bitstr(pbs);
 	pad_bits = pbs[0];
 
@@ -104,7 +104,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * java.io.Serializable or java.io.Externalizable.
      * 
      * @param o
-     *            the object to serialize and create this bitstr from.
+     *                the object to serialize and create this bitstr from.
      */
     public OtpErlangBitstr(final Object o) {
 	try {
@@ -225,8 +225,8 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * Convert this bitstr to the equivalent Erlang external representation.
      * 
      * @param buf
-     *            an output stream to which the encoded bitstr should be
-     *            written.
+     *                an output stream to which the encoded bitstr should be
+     *                written.
      */
     @Override
     public void encode(final OtpOutputStream buf) {
@@ -238,7 +238,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      * same byte length and tail length, and the array of bytes is identical.
      * 
      * @param o
-     *            the bitstr to compare to.
+     *                the bitstr to compare to.
      * 
      * @return true if the bitstrs contain the same bits, false otherwise.
      */
@@ -266,15 +266,15 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
 
 	return true;
     }
-
+    
     @Override
     protected int doHashCode() {
-	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(15);
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(15);
 	hash.combine(bin);
 	hash.combine(pad_bits);
 	return hash.valueOf();
     }
-
+    
     @Override
     public Object clone() {
 	final OtpErlangBitstr that = (OtpErlangBitstr) super.clone();

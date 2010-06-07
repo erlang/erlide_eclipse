@@ -1,6 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring;
-
-import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -109,12 +117,6 @@ public class Activator extends AbstractUIPlugin {
 		ErlLogger.debug("Error logger started:" + res);
 	}
 
-	/**
-	 * Returns with the Wrangler integration plugin path
-	 * 
-	 * @return path of the plugin
-	 * @throws IOException
-	 */
 	/*
 	 * public static Path getPluginPath() throws IOException { URL url; Bundle b
 	 * = getDefault().getBundle(); url = FileLocator.find(b, new Path(""),

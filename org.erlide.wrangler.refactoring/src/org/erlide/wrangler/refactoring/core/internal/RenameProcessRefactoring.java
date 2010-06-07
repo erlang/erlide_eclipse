@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +34,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 	protected String undecidables;
 
 	@Override
-	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		if (sel instanceof IErlMemberSelection) {
@@ -45,7 +55,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"rename_process_1_eclipse", "sssxi", sel.getFilePath(),
 				undecidables, userInput, sel.getSearchPath(),
@@ -54,7 +64,7 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@SuppressWarnings("boxing")
 	@Override
-	protected ProcessRpcMessage checkUndecidables(IErlMemberSelection sel) {
+	protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
 		return (ProcessRpcMessage) WranglerBackendManager
 				.getRefactoringBackend().callWithParser(
 						new ProcessRpcMessage(), "rename_process_eclipse",

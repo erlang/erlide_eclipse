@@ -40,6 +40,7 @@ import org.erlide.runtime.debug.ErlangDebugElement;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.IErlangDebugNode;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
+import org.erlide.runtime.launch.ErlangDebugHelper;
 import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
@@ -290,7 +291,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
 		if (erlangDebugTarget.getInterpretedModules().contains(
 				moduleWoExtension) != interpret) {
-			ErlangLaunchConfigurationDelegate.interpret(backend, project,
+			//FIXME this isn't correct!!!
+			new ErlangDebugHelper().interpret(backend, project,
 					module, distributed, interpret);
 		}
 	}

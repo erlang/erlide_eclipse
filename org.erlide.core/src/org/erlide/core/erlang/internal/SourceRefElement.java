@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
@@ -28,8 +27,8 @@ import org.erlide.jinterface.backend.util.Util;
  */
 abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
-	protected int fSourceRangeStart;
-	protected int fSourceRangeEnd;
+	protected int fSourceRangeOffset;
+	protected int fSourceRangeLength;
 	protected int lineStart, lineEnd;
 
 	protected SourceRefElement(final IErlElement parent, final String name) {
@@ -101,19 +100,12 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	}
 
 	/**
-	 * @see IMember
-	 */
-	@Override
-	public IErlModule getModule() {
-		return ((ErlElement) getParent()).getModule();
-	}
-
-	/**
 	 * Elements within compilation units and class files have no corresponding
 	 * resource.
 	 * 
 	 * @see IErlElement
 	 */
+	@Override
 	public IResource getCorrespondingResource() throws ErlModelException {
 		if (!exists()) {
 			throw newNotPresentException();
@@ -135,13 +127,6 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 			current = current.getParent();
 		}
 		return null;
-	}
-
-	/*
-	 * @see IErlElement
-	 */
-	public IResource getResource() {
-		return getParent().getResource();
 	}
 
 	/**
@@ -170,19 +155,18 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 	 * @see ISourceReference
 	 */
 	public ISourceRange getSourceRange() throws ErlModelException {
-		return new SourceRange(fSourceRangeStart, fSourceRangeEnd
-				- fSourceRangeStart + 1);
+		return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
 	}
 
-	/**
-	 * @see IErlElement
-	 */
-	public IResource getUnderlyingResource() throws ErlModelException {
-		if (!exists()) {
-			throw newNotPresentException();
-		}
-		return getParent().getUnderlyingResource();
-	}
+	// /**
+	// * @see IErlElement
+	// */
+	// public IResource getUnderlyingResource() throws ErlModelException {
+	// if (!exists()) {
+	// throw newNotPresentException();
+	// }
+	// return getParent().getUnderlyingResource();
+	// }
 
 	/**
 	 * @see IParent
@@ -230,24 +214,12 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		getModel().rename(elements, dests, renamings, force, monitor);
 	}
 
-	/**
-	 */
-	public int getSourceRangeEnd() {
-		return fSourceRangeEnd;
+	protected void setSourceRangeOffset(final int offset) {
+		fSourceRangeOffset = offset;
 	}
 
-	/**
-	 */
-	public int getSourceRangeStart() {
-		return fSourceRangeStart;
-	}
-
-	protected void setSourceRangeEnd(final int end) {
-		fSourceRangeEnd = end;
-	}
-
-	protected void setSourceRangeStart(final int start) {
-		fSourceRangeStart = start;
+	protected void setSourceRangeLength(final int length) {
+		fSourceRangeLength = length;
 	}
 
 	protected void setLineStart(final int lineStart) {
@@ -258,12 +230,12 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		return lineStart;
 	}
 
-	public int getLineEnd() {
-		return lineEnd;
-	}
-
 	protected void setLineEnd(final int lineEnd) {
 		this.lineEnd = lineEnd;
+	}
+
+	public int getLineEnd() {
+		return lineEnd;
 	}
 
 	@Override
@@ -272,15 +244,8 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 			return false;
 		}
 		final SourceRefElement r = (SourceRefElement) o;
-		return fSourceRangeStart == r.fSourceRangeStart
-				&& fSourceRangeEnd == r.fSourceRangeEnd;
-	}
-
-	public void setPositions(final SourceRefElement source) {
-		setSourceRangeStart(source.getSourceRangeStart());
-		setSourceRangeEnd(source.getSourceRangeEnd());
-		setLineStart(source.getLineStart());
-		setLineEnd(source.getLineEnd());
+		return fSourceRangeOffset == r.fSourceRangeOffset
+				&& fSourceRangeLength == r.fSourceRangeLength;
 	}
 
 }

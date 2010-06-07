@@ -9,19 +9,27 @@
  *******************************************************************************/
 package org.erlide.core.erlang.util;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
+
+import erlang.ErlideOpen;
 
 /**
  * Simple utility functions
@@ -30,7 +38,6 @@ import org.erlide.jinterface.util.ErlLogger;
  * @author Eric Merritt [cyberlync at yahoo dot com] Vlad Jakob C
  */
 public class PluginUtils {
-
 	/**
 	 * Displays an error that occured during the project creation. *
 	 * 
@@ -43,21 +50,8 @@ public class PluginUtils {
 				.getMessage(), x);
 	}
 
-	/**
-	 * Checks to see if the specified container is on the source path
-	 * 
-	 * @param con
-	 *            the container
-	 * @return the indicator of the source path
-	 */
-	public static boolean isOnSourcePath(final IContainer con) {
-		final IProject project = con.getProject();
-		/*
-		 * Get the project settings so that we can find the source nodes
-		 */
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final List<String> sourcePaths = prefs.getSourceDirs();
+	public static boolean isOnPaths(final IContainer con,
+			final IProject project, final List<String> sourcePaths) {
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (i.equals(".")) {
@@ -71,25 +65,45 @@ public class PluginUtils {
 		return false;
 	}
 
-	public static boolean isOnIncludePath(final IContainer con) {
-		final IProject project = con.getProject();
-		/*
-		 * Get the project settings so that we can find the source nodes
-		 */
+	/**
+	 * Checks to see if the specified container is on the source path
+	 * 
+	 * @param container
+	 *            container to check
+	 * @return true if the container is on the project's source path
+	 */
+	public static boolean isOnSourcePath(final IContainer container) {
+		final IProject project = container.getProject();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> includePaths = prefs.getIncludeDirs();
-		final IPath path = con.getFullPath();
-		for (final String i : includePaths) {
+		return isOnPaths(container, project, prefs.getSourceDirs());
+	}
+
+	/**
+	 * Checks if the specified container is on the include path
+	 * 
+	 * @param container
+	 *            container to check
+	 * @return true if the container is on the project's include path
+	 */
+	public static boolean isOnIncludePath(final IContainer container) {
+		final IProject project = container.getProject();
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
+		return isOnPaths(container, project, prefs.getIncludeDirs());
+	}
+
+	public static Set<IPath> getFullPaths(final IProject project,
+			final List<String> sourcePaths) {
+		HashSet<IPath> result = new HashSet<IPath>();
+		for (String i : sourcePaths) {
 			if (i.equals(".")) {
-				if (project.getFullPath().equals(path)) {
-					return true;
-				}
-			} else if (project.getFolder(i).getFullPath().equals(path)) {
-				return true;
+				result.add(project.getFullPath());
+			} else {
+				result.add(project.getFolder(i).getFullPath());
 			}
 		}
-		return false;
+		return result;
 	}
 
 	public static boolean isSourcePathParent(final IFolder con) {
@@ -128,17 +142,52 @@ public class PluginUtils {
 	public static ContainerFilter getIncludePathFilter(final IProject project,
 			final IContainer current) {
 		return new ContainerFilter() {
+			private final Set<IPath> paths = getFullPaths(project, ErlangCore
+					.getProjectProperties(project).getIncludeDirs());
+
 			public boolean accept(final IContainer container) {
-				return container.equals(current) || isOnIncludePath(container);
+				return container.equals(current)
+						|| paths.contains(container.getFullPath());
 			}
 		};
 	}
 
+	private static final class SourcePathContainerFilter implements
+			ContainerFilter {
+		private final Set<IPath> paths;
+		private final Set<String> extra;
+
+		SourcePathContainerFilter(final IProject project) {
+			paths = getFullPaths(project, ErlangCore.getProjectProperties(
+					project).getSourceDirs());
+			extra = new HashSet<String>();
+			extra.addAll(ErlideOpen.getExtraSourcePaths());
+		}
+
+		public boolean accept(final IContainer container) {
+			return paths.contains(container.getFullPath())
+					|| extra.contains(container.getLocation().toString());
+		}
+	}
+
 	public static ContainerFilter getSourcePathFilter(final IProject project) {
-		return new ContainerFilter() {
-			public boolean accept(final IContainer container) {
-				return isOnSourcePath(container);
+		return new SourcePathContainerFilter(project);
+	}
+
+	public static boolean isOnExtraPath(final IContainer con) {
+		final Collection<String> sourcePaths = ErlideOpen.getExtraSourcePaths();
+		final String path = con.getLocation().toString();
+		for (final String spath : sourcePaths) {
+			if (path.equals(spath)) {
+				return true;
 			}
-		};
+		}
+		return false;
+	}
+
+	public static IPath resolvePath(String path) {
+		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+				.getPathVariableManager();
+		return pvm.resolvePath(new Path(path));
 	}
 }

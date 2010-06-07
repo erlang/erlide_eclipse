@@ -111,11 +111,12 @@ public final class ErlideUIConstants {
 
 	// Search Menu (action ID)
 	public static final String FIND_REFERENCES_IN_WORKSPACE = "org.erlide.ui.search.actions.ReferencesInWorkspace"; //$NON-NLS-1$
-
 	public static final String FIND_REFERENCES_IN_PROJECT = "org.erlide.ui.actions.ReferencesInProject"; //$NON-NLS-1$
+	public static final String FIND_REFERENCES_IN_WORKING_SET = "org.erlide.ui.search.actions.ReferencesInWorkingSet"; //$NON-NLS-1$;
 
-	// public static final String FIND_REFERENCES_IN_WORKING_SET=
-	// "org.eclipse.jdt.ui.actions.ReferencesInWorkingSet"; //$NON-NLS-1$
+	public static final String FIND_IMPLEMENTORS_IN_WORKSPACE = "org.erlide.ui.search.actions.ImplementorsInWorkspace"; //$NON-NLS-1$
+	public static final String FIND_IMPLEMENTORS_IN_PROJECT = "org.erlide.ui.search.actions.ImplementorsInProject"; //$NON-NLS-1$
+	public static final String FIND_IMPLEMENTORS_IN_WORKING_SET = "org.erlide.ui.search.actions.ImplementorsInWorkingSet"; //$NON-NLS-1$;
 
 	private ErlideUIConstants() {
 	}

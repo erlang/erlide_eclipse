@@ -1,19 +1,20 @@
-/* ``The contents of this file are subject to the Erlang Public License,
+/*
+ * %CopyrightBegin%
+ * 
+ * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * 
+ * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
- * retrieved via the world wide web at http://www.erlang.org/.
- *
+ * retrieved online at http://www.erlang.org/.
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * The Initial Developer of the Original Code is Ericsson Utvecklings AB.
- * Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
- * AB. All Rights Reserved.''
- *
- *     $Id$
+ * 
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -46,8 +47,28 @@ import java.net.Socket;
  * This class contains only static methods, there are no constructors.
  */
 public class OtpEpmd {
+
+    private static class EpmdPort {
+	private static int epmdPort = 0;
+	
+	public static int get() {
+	    if (epmdPort == 0) {
+		String env;
+		try {
+		    env = System.getenv("ERL_EPMD_PORT");
+		} 
+		catch (java.lang.SecurityException e) {
+		    env = null;
+		}
+		epmdPort = (env != null) ? Integer.parseInt(env) : 4369;
+	    }
+	    return epmdPort;
+	}	
+	public static void set(int port) {
+	    epmdPort = port;
+	}
+    }
     // common values
-    private static final int epmdPort = 4369;
     private static final byte stopReq = (byte) 115;
 
     // version specific value
@@ -80,6 +101,16 @@ public class OtpEpmd {
     // only static methods: no public constructors
     // hmm, idea: singleton constructor could spawn epmd process
     private OtpEpmd() {
+    }
+
+
+    /**
+     * Set the port number to be used to contact the epmd process.
+     * Only needed when the default port is not desired and system environment
+     * variable ERL_EPMD_PORT can not be read (applet).
+     */
+    public static void useEpmdPort(int port) {
+	EpmdPort.set(port);
     }
 
     /**
@@ -141,7 +172,7 @@ public class OtpEpmd {
 	Socket s = null;
 
 	try {
-	    s = new Socket((String) null, epmdPort);
+	    s = new Socket((String) null, EpmdPort.get());
 	    final OtpOutputStream obuf = new OtpOutputStream();
 	    obuf.write2BE(node.alive().length() + 1);
 	    obuf.write1(stopReq);
@@ -172,7 +203,7 @@ public class OtpEpmd {
 
 	try {
 	    final OtpOutputStream obuf = new OtpOutputStream();
-	    s = new Socket(node.host(), epmdPort);
+	    s = new Socket(node.host(), EpmdPort.get());
 
 	    // build and send epmd request
 	    // length[2], tag[1], alivename[n] (length = n+1)
@@ -233,7 +264,7 @@ public class OtpEpmd {
 
 	try {
 	    final OtpOutputStream obuf = new OtpOutputStream();
-	    s = new Socket(node.host(), epmdPort);
+	    s = new Socket(node.host(), EpmdPort.get());
 
 	    // build and send epmd request
 	    // length[2], tag[1], alivename[n] (length = n+1)
@@ -317,7 +348,7 @@ public class OtpEpmd {
 
 	try {
 	    final OtpOutputStream obuf = new OtpOutputStream();
-	    s = new Socket((String) null, epmdPort);
+	    s = new Socket((String) null, EpmdPort.get());
 
 	    obuf.write2BE(node.alive().length() + 3);
 
@@ -393,7 +424,7 @@ public class OtpEpmd {
 
 	try {
 	    final OtpOutputStream obuf = new OtpOutputStream();
-	    s = new Socket((String) null, epmdPort);
+	    s = new Socket((String) null, EpmdPort.get());
 
 	    obuf.write2BE(node.alive().length() + 13);
 
@@ -482,7 +513,7 @@ public class OtpEpmd {
 	try {
 	    final OtpOutputStream obuf = new OtpOutputStream();
 	    try {
-		s = new Socket(address, epmdPort);
+		s = new Socket(address, EpmdPort.get());
 
 		obuf.write2BE(1);
 		obuf.write1(names4req);
@@ -501,14 +532,6 @@ public class OtpEpmd {
 		    if (bytesRead == -1) {
 			break;
 		    }
-		    if (traceLevel >= traceThreshold) {
-			StringBuilder str = new StringBuilder();
-			for (int i = 0; i < bytesRead; i++) {
-			    str.append(Integer.toString(buffer[i]))
-				    .append(", ");
-			}
-			System.out.println("-> read (" + str.toString() + ") ");
-		    }
 		    out.write(buffer, 0, bytesRead);
 		}
 		final byte[] tmpbuf = out.toByteArray();
@@ -520,7 +543,7 @@ public class OtpEpmd {
 		final int n = tmpbuf.length;
 		final byte[] buf = new byte[n - 4];
 		System.arraycopy(tmpbuf, 4, buf, 0, n - 4);
-		final String all = new String(buf);
+		final String all = OtpErlangString.newString(buf);
 		return all.split("\n");
 	    } finally {
 		if (s != null) {

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
 import org.eclipse.core.resources.IFile;
@@ -23,6 +33,13 @@ import org.erlide.wrangler.refactoring.selection.internal.ErlTextMemberSelection
 
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Class which point to singleton objects, like the actual editor, and has
+ * functions which are 'global'.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class GlobalParameters {
 	// TODO:: handle null exceptions
 	static IEditorPart editor = null;
@@ -32,6 +49,11 @@ public class GlobalParameters {
 	static boolean hasQuickCheck = false;
 	static boolean isQCchecked = false;
 
+	/**
+	 * Checks if QuickCheck is installed in the current machine.
+	 * 
+	 * @return true if QC is installed, else false
+	 */
 	public static boolean hasQuickCheck() {
 		if (isQCchecked)
 			return hasQuickCheck;
@@ -51,21 +73,43 @@ public class GlobalParameters {
 		}
 	}
 
+	/**
+	 * Get the Eclipse default tab width
+	 * 
+	 * @return default tab width
+	 */
 	public static int getTabWidth() {
 		return 1;
 	}
 
-	public static void setEditor(IEditorPart _editor) {
+	/**
+	 * Stores the editor marked as 'current'
+	 * 
+	 * @param _editor
+	 *            stored editor
+	 */
+	public static void setEditor(final IEditorPart _editor) {
 		editor = _editor;
 		wranglerSelection = new ErlTextMemberSelection((ITextEditor) editor);
 	}
 
+	/**
+	 * Get the actual Erlang selection in the workbench
+	 * 
+	 * @return selection in the workbench
+	 */
 	public static IErlSelection getWranglerSelection() {
 		return wranglerSelection;
 	}
 
-	// TODO:: if the module is selected it is not handled
-	public static void setSelection(ISelection selection) {
+	/**
+	 * Stores a selection marked 'current'
+	 * 
+	 * @param selection
+	 *            Erlang selection
+	 */
+	public static void setSelection(final ISelection selection) {
+		// TODO:: if the module is selected it is not handled
 		try {
 			if (editor == null) {
 				IWorkbench instance = PlatformUI.getWorkbench();
@@ -114,8 +158,19 @@ public class GlobalParameters {
 
 	}
 
-	public static boolean showDecidableQuestion(Shell s, String question,
-			String title) {
+	/**
+	 * Shows a yes or no question in a dialog.
+	 * 
+	 * @param s
+	 *            shell
+	 * @param question
+	 *            question which should be asked
+	 * @param title
+	 *            dilaog box title
+	 * @return true if the answer is yes, else false
+	 */
+	public static boolean showDecidableQuestion(final Shell s,
+			final String question, final String title) {
 		boolean b;
 		try {
 			MessageBox mb = new MessageBox(s, SWT.ICON_WARNING | SWT.YES
@@ -135,6 +190,11 @@ public class GlobalParameters {
 		return true;
 	}
 
+	/**
+	 * Get the 'current' editor
+	 * 
+	 * @return actual editor
+	 */
 	public static IEditorPart getEditor() {
 		return editor;
 	}

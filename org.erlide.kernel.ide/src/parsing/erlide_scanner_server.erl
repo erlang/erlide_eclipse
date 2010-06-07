@@ -11,18 +11,19 @@
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
+-include("erlide_search_server.hrl").
 
 %%
 %% Exported Functions
 %%
 
--export([create/2, destroy/1, initialScan/6, getTokenAt/2, getTokenWindow/4, 
+-export([create/1, destroy/1, initialScan/5, getTokenAt/2, getTokenWindow/4, 
          getTokens/1, replaceText/4, check_all/2]).
 
 %% stop/0
 
 %% just for testing
--export([getTextLine/2, getText/1, dump_module/1, logging/1, scan_uncached/3]).
+-export([getTextLine/2, getText/1, dump_module/1, logging/1]).
 -export([dump_log/1]).
 %% all/0, modules/0, dump_log/0, check_all/2,
 
@@ -35,12 +36,11 @@
 
 %% -define(SERVER, erlide_scanner).
 
-create(ScannerName, ErlidePath) when is_atom(ScannerName) ->
-	spawn_server(ScannerName),
-	server_cmd(ScannerName, set_erlide_path, ErlidePath).
-%%    server_cmd(create, {ScannerName, ErlidePath}).
+create(ScannerName) when is_atom(ScannerName) ->
+	spawn_server(ScannerName).
 
 destroy(ScannerName) when is_atom(ScannerName) ->
+    erlide_search_server:remove_module(ScannerName),
     server_cmd(ScannerName, stop).
 
 getText(ScannerName) when is_atom(ScannerName) ->
@@ -59,15 +59,15 @@ getTokenWindow(ScannerName, Offset, Before, After)
 getTokenAt(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
     server_cmd(ScannerName, get_token_at, Offset).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache) 
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache) 
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
 	spawn_server(ScannerName),
     server_cmd(ScannerName, initial_scan,
-			   {ScannerName, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache}).
+               {ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache}).
 
-scan_uncached(ScannerName, ModuleFileName, ErlidePath) ->
-	spawn_server(ScannerName),
-    server_cmd(ScannerName, scan_uncached, {ModuleFileName, ErlidePath}).
+%% scan_uncached(ScannerName, ModuleFileName) ->
+%%     spawn_server(ScannerName),
+%%     server_cmd(ScannerName, scan_uncached, ModuleFileName).
 
 %%modules() ->
 %%    server_cmd(modules, []).
@@ -108,7 +108,7 @@ match_test(Module, Text) ->
 
 scan_test(Module) ->
     ModText = getText(Module),
-    M = erlide_scanner:do_scan(dont_care, ModText, "don't care"),
+    M = erlide_scanner:do_scan(dont_care, ModText),
     T = erlide_scanner:get_all_tokens(M),
     case getTokens(Module) of
         T ->
@@ -151,7 +151,6 @@ server_cmd(ScannerName, Command, Args) ->
                  lines = [], % [{Length, String}]
                  tokens = [], % [{Length, [Token]}]
                  cachedTokens = [],
-                 erlide_path="",
                  log = []}).
 
 spawn_server(ScannerName) ->
@@ -203,12 +202,12 @@ cmd(Cmd, From, Args, Module) ->
 reply(Cmd, From, R) ->
     From ! {Cmd, self(), R}.
 
-do_cmd(scan_uncached, {Mod, ModuleFileName, ErlidePath}, _) ->
-    NewMod = erlide_scanner:do_scan_uncached(Mod, ModuleFileName, ErlidePath),
-	NewMod;
-do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache}, _Module) ->
+%% do_cmd(scan_uncached, {Mod, ModuleFileName}, _) ->
+%%     NewMod = erlide_scanner:do_scan_uncached(Mod, ModuleFileName),
+%%     NewMod;
+do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, UpdateCache}, _Module) ->
     ?D({initial_scan, Mod}),
-    {Cached, NewMod} = erlide_scanner:initial_scan(Mod, ModuleFileName, InitialText, StateDir, ErlidePath, UpdateCache),
+    {Cached, NewMod} = erlide_scanner:initial_scan(Mod, ModuleFileName, InitialText, StateDir, UpdateCache),
     ?D({done, Mod}),
     {{ok, Cached}, NewMod};
 do_cmd(dump_module, [], Module) ->
@@ -225,14 +224,12 @@ do_cmd(get_text_line, Line, Module) ->
     {L, Module};
 do_cmd(get_tokens, [], Module) ->
     {erlide_scanner:get_all_tokens(Module), Module};
-do_cmd(logging, OnOff, Module) ->
-    put(log, []),
-    {put(logging, OnOff), Module};
 do_cmd(dump_log, [], Module) ->
     {get(log), Module};
 do_cmd(get_token_window, {Offset, Before, After}, Module) ->
     {erlide_scanner:get_token_window(Module, Offset, Before, After), Module};
-do_cmd(set_erlide_path, Path, Module) ->
-	Module#module{erlide_path=Path}.
+do_cmd(logging, OnOff, Module) ->
+    put(log, []),
+    {put(logging, OnOff), Module}.
 
 

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,13 +32,12 @@ public abstract class SimpleOneStepWranglerRefactoring extends
 	 * If the refactoring returns with a warning message, wrangler should know
 	 * that the user asked to continue. It is done by calling a function.
 	 * 
-	 * @param sel
 	 * @return a refactoring message
 	 */
 	// public abstract IRefactoringRpcMessage runAfterWarning(IErlSelection
 	// sel);
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
 		IRefactoringRpcMessage message = run(sel);

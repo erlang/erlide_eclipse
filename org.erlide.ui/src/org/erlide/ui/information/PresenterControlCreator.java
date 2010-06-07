@@ -147,7 +147,7 @@ public final class PresenterControlCreator extends
 		 */
 		@Override
 		public void run() {
-			final BrowserInformationControlInput infoInput = fInfoControl
+			final BrowserInformationControlInput input = fInfoControl
 					.getInput();
 			fInfoControl.notifyDelayedInputChange(null);
 			fInfoControl.dispose();
@@ -155,7 +155,7 @@ public final class PresenterControlCreator extends
 				final EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
 						.showView(EdocView.ID);
 				// TODO view.setInput(infoInput);
-				view.setText(infoInput.getHtml());
+				view.setText(input.getHtml());
 			} catch (final PartInitException e) {
 				ErlLogger.error(e);
 			}

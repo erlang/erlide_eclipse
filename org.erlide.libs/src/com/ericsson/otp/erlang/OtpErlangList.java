@@ -36,7 +36,7 @@ public class OtpErlangList extends OtpErlangObject implements
 
     private static final OtpErlangObject[] NO_ELEMENTS = new OtpErlangObject[0];
 
-    final OtpErlangObject[] elems;
+    final private OtpErlangObject[] elems;
 
     private OtpErlangObject lastTail = null;
 
@@ -48,8 +48,8 @@ public class OtpErlangList extends OtpErlangObject implements
     }
 
     /**
-     * Create a list of Erlang integers representing Unicode codePoints. This
-     * method does not check if the string contains valid code points.
+     * Create a list of Erlang integers representing Unicode codePoints.
+     * This method does not check if the string contains valid code points.
      * 
      * @param str
      *            the characters from which to create the list.
@@ -60,7 +60,7 @@ public class OtpErlangList extends OtpErlangObject implements
 	} else {
 	    final int[] codePoints = OtpErlangString.stringToCodePoints(str);
 	    elems = new OtpErlangObject[codePoints.length];
-	    for (int i = 0; i < elems.length; i++) {
+	    for (int i = 0;  i < elems.length;  i++) {
 		elems[i] = new OtpErlangInt(codePoints[i]);
 	    }
 	}
@@ -302,25 +302,25 @@ public class OtpErlangList extends OtpErlangObject implements
     public OtpErlangObject getLastTail() {
 	return lastTail;
     }
-
+    
     @Override
     protected int doHashCode() {
-	final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(4);
+	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(4);
 	final int a = arity();
 	if (a == 0) {
-	    return (int) 3468870702L;
+	    return (int)3468870702L;
 	}
 	for (int i = 0; i < a; i++) {
 	    hash.combine(elementAt(i).hashCode());
 	}
 	final OtpErlangObject t = getLastTail();
 	if (t != null) {
-	    final int h = t.hashCode();
+	    int h = t.hashCode();
 	    hash.combine(h, h);
 	}
 	return hash.valueOf();
     }
-
+    
     @Override
     public Object clone() {
 	try {
@@ -334,7 +334,7 @@ public class OtpErlangList extends OtpErlangObject implements
 	return iterator(0);
     }
 
-    Iterator<OtpErlangObject> iterator(final int start) {
+    private Iterator<OtpErlangObject> iterator(final int start) {
 	return new Itr(start);
     }
 
@@ -369,33 +369,33 @@ public class OtpErlangList extends OtpErlangObject implements
     }
 
     /**
-     * Convert a list of integers into a Unicode string, interpreting each
-     * integer as a Unicode code point value.
+     * Convert a list of integers into a Unicode string,
+     * interpreting each integer as a Unicode code point value.
      * 
-     * @return A java.lang.String object created through its constructor
-     *         String(int[], int, int).
-     * 
+     * @return A java.lang.String object created through its
+     *         constructor String(int[], int, int).
+     *
      * @exception OtpErlangException
-     *                for non-proper and non-integer lists.
-     * 
+     *                    for non-proper and non-integer lists.
+     *
      * @exception OtpErlangRangeException
-     *                if any integer does not fit into a Java int.
-     * 
+     *                    if any integer does not fit into a Java int.
+     *
      * @exception java.security.InvalidParameterException
-     *                if any integer is not within the Unicode range.
-     * 
+     *                    if any integer is not within the Unicode range.
+     *
      * @see String#String(int[], int, int)
-     * 
+     *
      */
 
     public String stringValue() throws OtpErlangException {
-	if (!isProper()) {
+	if (! isProper()) {
 	    throw new OtpErlangException("Non-proper list: " + this);
 	}
 	final int[] values = new int[arity()];
 	for (int i = 0; i < values.length; ++i) {
 	    final OtpErlangObject o = elementAt(i);
-	    if (!(o instanceof OtpErlangLong)) {
+	    if (! (o instanceof OtpErlangLong)) {
 		throw new OtpErlangException("Non-integer term: " + o);
 	    }
 	    final OtpErlangLong l = (OtpErlangLong) o;
@@ -404,6 +404,8 @@ public class OtpErlangList extends OtpErlangObject implements
 	return new String(values, 0, values.length);
     }
 
+
+
     public static class SubList extends OtpErlangList {
 	private static final long serialVersionUID = OtpErlangList.serialVersionUID;
 
@@ -411,7 +413,7 @@ public class OtpErlangList extends OtpErlangObject implements
 
 	private final OtpErlangList parent;
 
-	SubList(final OtpErlangList parent, final int start) {
+	private SubList(final OtpErlangList parent, final int start) {
 	    super();
 	    this.parent = parent;
 	    this.start = start;
@@ -479,7 +481,7 @@ public class OtpErlangList extends OtpErlangObject implements
 	 */
 	private int cursor;
 
-	Itr(final int cursor) {
+	private Itr(final int cursor) {
 	    this.cursor = cursor;
 	}
 
