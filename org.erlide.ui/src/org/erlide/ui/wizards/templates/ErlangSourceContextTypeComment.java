@@ -48,6 +48,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 	 */
 	public ErlangSourceContextTypeComment() {
 		addGlobalResolvers();
+		fInstance = this;
 	}
 
 	private void addGlobalResolvers() {
@@ -65,7 +66,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 	 */
 	public static ErlangSourceContextTypeComment getDefault() {
 		if (fInstance == null) {
-			fInstance = new ErlangSourceContextTypeComment();
+			new ErlangSourceContextTypeComment();
 		}
 		return fInstance;
 	}
