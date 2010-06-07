@@ -25,6 +25,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Extract function refactoring integration class.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 
 	@Override

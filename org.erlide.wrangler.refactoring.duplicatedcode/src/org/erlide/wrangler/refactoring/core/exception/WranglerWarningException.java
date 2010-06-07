@@ -12,6 +12,12 @@ package org.erlide.wrangler.refactoring.core.exception;
 
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 
+/**
+ * Exception which is used to indicate a warning
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class WranglerWarningException extends WranglerException {
 
 	protected WranglerWarningException(String message) {

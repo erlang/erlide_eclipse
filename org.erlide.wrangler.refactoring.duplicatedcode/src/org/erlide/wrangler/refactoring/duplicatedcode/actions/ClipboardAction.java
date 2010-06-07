@@ -11,15 +11,26 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * Handles the 'copy to clipboard' action.
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class ClipboardAction extends Action {
 	private final Display display;
 	private String text;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param display
+	 *            actual SWT display
+	 */
 	public ClipboardAction(Display display) {
 		this.display = display;
 	}
@@ -35,10 +46,5 @@ public class ClipboardAction extends Action {
 	@Override
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	private void showMessage(String message) {
-		MessageDialog.openInformation(display.getActiveShell(),
-				"Duplicated codes", message);
 	}
 }

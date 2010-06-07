@@ -29,7 +29,12 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-//TODO test
+/**
+ * Fold against macro refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FoldAgainstMacro extends
 		CostumWorkflowRefactoringWithPositionsSelection {
 	protected OtpErlangObject syntaxTree;

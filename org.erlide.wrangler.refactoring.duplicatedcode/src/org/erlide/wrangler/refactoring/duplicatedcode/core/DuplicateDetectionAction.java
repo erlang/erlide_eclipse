@@ -33,6 +33,12 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Idenctical code detection refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
 	protected boolean onlyInfile;

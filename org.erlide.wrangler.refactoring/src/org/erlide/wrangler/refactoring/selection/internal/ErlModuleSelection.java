@@ -14,9 +14,23 @@ import org.eclipse.core.resources.IFile;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 
+/**
+ * Represents an Erlang module which is selected by the user
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlModuleSelection extends AbstractErlSelection {
 	protected IErlModule module;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param module
+	 *            Erlang module - Erlide representation
+	 * @param file
+	 *            file, which contains the module
+	 */
 	public ErlModuleSelection(final IErlModule module, final IFile file) {
 		this.module = module;
 		this.file = file;

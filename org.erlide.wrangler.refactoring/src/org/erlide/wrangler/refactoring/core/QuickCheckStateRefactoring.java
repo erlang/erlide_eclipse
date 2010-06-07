@@ -56,6 +56,9 @@ public abstract class QuickCheckStateRefactoring extends
 		}
 	}
 
+	/**
+	 * @noreference This method is not intended to be referenced by clients.
+	 */
 	protected abstract StateDataToRecordRpcMessage runFirst(
 			IErlMemberSelection sel);
 

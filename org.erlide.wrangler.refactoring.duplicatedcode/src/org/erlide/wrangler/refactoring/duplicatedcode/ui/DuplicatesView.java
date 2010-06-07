@@ -25,6 +25,12 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.wrangler.refactoring.duplicatedcode.actions.ClipboardAction;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.AbstractResultTreeObject;
 
+/**
+ * Duplicates view
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicatesView extends ViewPart {
 	// private final class HighlightAction extends Action {
 	// public void run() {
@@ -36,18 +42,7 @@ public class DuplicatesView extends ViewPart {
 	// }
 
 	private TreeViewer viewer;
-	// private DrillDownAdapter drillDownAdapter;
-	private Action action1, action2;
 	private Action copyToClipboard;
-	private Action doubleClickAction;
-
-	/*
-	 * The content provider class is responsible for providing objects to the
-	 * view. It can wrap existing objects in adapters or simply return objects
-	 * as-is. These objects may be sensitive to the current input of the view,
-	 * or ignore it and always show the same content (like Task List, for
-	 * example).
-	 */
 
 	/**
 	 * The constructor.
@@ -55,6 +50,9 @@ public class DuplicatesView extends ViewPart {
 	public DuplicatesView() {
 	}
 
+	/**
+	 * Refresh the view
+	 */
 	public void refresh() {
 		viewer.refresh();
 	}

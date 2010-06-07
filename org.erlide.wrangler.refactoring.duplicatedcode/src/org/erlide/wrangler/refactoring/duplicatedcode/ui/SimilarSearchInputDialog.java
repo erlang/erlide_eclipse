@@ -25,6 +25,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
+/**
+ * Input dialog for getting input for Similar expression search refactoring
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimilarSearchInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
@@ -32,6 +38,14 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 	private boolean workOnlyInCurrentFile;
 	private Text simScoreText;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parentShell
+	 *            SWT shell
+	 * @param title
+	 *            dialog title
+	 */
 	public SimilarSearchInputDialog(Shell parentShell, String title) {
 		super(parentShell, title);
 	}
@@ -109,10 +123,21 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 
 	}
 
+	/**
+	 * Gets the user typed similarity score value
+	 * 
+	 * @return similarity score value
+	 */
 	public double getSimScore() {
 		return simScore;
 	}
 
+	/**
+	 * Returns the value of the checkbox 'run refactoring in only current
+	 * module'
+	 * 
+	 * @return true if the refactoring should run only in the current module
+	 */
 	public boolean onlyinFile() {
 		return workOnlyInCurrentFile;
 	}

@@ -16,12 +16,24 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Abstract class for common functions used by duplicates parsers
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public abstract class AbstractDuplicatesParser implements IResultParser {
 
 	protected String errorMessage;
 	protected boolean isSuccessful;
 	protected List<DuplicatedCodeElement> duplicates;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param obj
+	 *            object to be parsed
+	 */
 	public AbstractDuplicatesParser(OtpErlangObject obj) {
 		parse(obj);
 	}

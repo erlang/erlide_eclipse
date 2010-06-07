@@ -21,9 +21,18 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Unfold tuple application refactoring integration class.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class UnfoldFunctionApplicationRefactoring extends
 		SimpleOneStepWranglerRefactoring {
 
+	/**
+	 * Default constructor
+	 */
 	public UnfoldFunctionApplicationRefactoring() {
 	}
 

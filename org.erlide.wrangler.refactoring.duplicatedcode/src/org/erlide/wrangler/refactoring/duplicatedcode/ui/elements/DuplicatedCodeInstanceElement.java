@@ -15,6 +15,12 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Treeview element, which represents a single code part string
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 	private int startOffset;
@@ -25,6 +31,20 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 	// private ITextEditor containingEditor;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param containingFile
+	 *            file which contains the code part string
+	 * @param startLine
+	 *            starting line of the selection
+	 * @param startColumn
+	 *            starting column of the selection
+	 * @param endLine
+	 *            ending line of the selection
+	 * @param endColumn
+	 *            ending column of the selection
+	 */
 	public DuplicatedCodeInstanceElement(IFile containingFile, int startLine,
 			int startColumn, int endLine, int endColumn) {
 
@@ -44,10 +64,20 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 	}
 
+	/**
+	 * Return the starting offset of the represented selection
+	 * 
+	 * @return starting offset of the selection
+	 */
 	public int getStartOffset() {
 		return startOffset;
 	}
 
+	/**
+	 * Return the ending offset of the represented selection
+	 * 
+	 * @return ending offset of the selection
+	 */
 	public int getEndOffset() {
 		return endOffset;
 	}
@@ -56,10 +86,20 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 	 * public ITextEditor getEditor() { return containingEditor; }
 	 */
 
+	/**
+	 * Returns the file which contains the selection
+	 * 
+	 * @return file which contains the selection
+	 */
 	public IFile getContainingFile() {
 		return containingFile;
 	}
 
+	/**
+	 * Returns the string which is represented
+	 * 
+	 * @return code part string
+	 */
 	public String getCodePartString() {
 		return simplifyCodePartString(codePartString);
 	}
@@ -71,7 +111,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
 	protected String simplifyCodePartString(String input) {
 		return input;// input.replace("\n", " ").replace("\t", "").replace("\r",
-						// "");
+		// "");
 
 	}
 }

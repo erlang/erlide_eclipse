@@ -25,8 +25,20 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Parser class for expression search refactoring
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class ExpressionSearchParser extends AbstractDuplicatesParser {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param obj
+	 *            object to be parsed
+	 */
 	public ExpressionSearchParser(OtpErlangObject obj) {
 		super(obj);
 	}

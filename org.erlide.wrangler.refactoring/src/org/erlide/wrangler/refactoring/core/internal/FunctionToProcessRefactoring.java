@@ -23,6 +23,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Function to process refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
 
 	@Override

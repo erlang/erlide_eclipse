@@ -14,7 +14,19 @@ import java.util.List;
 
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 
+/**
+ * Interface for displaying duplicated codeparts.
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public interface IDuplicatedCodeResultDisplayer {
+	/**
+	 * Show the result of a duplicated search refactoring.
+	 * 
+	 * @param result
+	 *            result of the refactoring - duplicates
+	 */
 	public void showResult(List<DuplicatedCodeElement> result);
 
 }

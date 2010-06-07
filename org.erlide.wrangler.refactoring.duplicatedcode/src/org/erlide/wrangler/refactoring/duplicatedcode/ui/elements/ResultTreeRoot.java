@@ -10,6 +10,12 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
+/**
+ * Root element of a TreeView for Duplicates view
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class ResultTreeRoot extends AbstractResultTreeParent {
 
 	@Override
@@ -17,6 +23,9 @@ public class ResultTreeRoot extends AbstractResultTreeParent {
 		return "";
 	}
 
+	/**
+	 * Drops children elements.
+	 */
 	public void dropChildren() {
 		if (children != null)
 			children.clear();

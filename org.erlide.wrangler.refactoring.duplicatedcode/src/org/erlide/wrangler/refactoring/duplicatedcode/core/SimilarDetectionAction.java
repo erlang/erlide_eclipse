@@ -27,6 +27,12 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Similar code detection refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
 	int minToks;

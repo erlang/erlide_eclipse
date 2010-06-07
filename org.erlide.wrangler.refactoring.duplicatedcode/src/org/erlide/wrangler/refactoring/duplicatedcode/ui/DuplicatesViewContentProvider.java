@@ -14,6 +14,12 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.AbstractResult
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.ResultTreeRoot;
 
+/**
+ * Content provider for the duplicates view.
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicatesViewContentProvider implements
 		IStructuredContentProvider, ITreeContentProvider,
 		IDuplicatedCodeResultDisplayer {
@@ -66,6 +72,12 @@ public class DuplicatesViewContentProvider implements
 		invisibleRoot = new ResultTreeRoot();
 	}
 
+	/**
+	 * Add a child to the view.
+	 * 
+	 * @param child
+	 *            child to be added.
+	 */
 	public void addChild(AbstractResultTreeObject child) {
 		invisibleRoot.addChild(child);
 	}

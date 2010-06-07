@@ -12,8 +12,20 @@ package org.erlide.wrangler.refactoring.core.exception;
 
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 
+/**
+ * Exception for error handling in the integration
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class WranglerRefactoringException extends WranglerException {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param message
+	 *            error message
+	 */
 	public WranglerRefactoringException(String message) {
 		super(message);
 

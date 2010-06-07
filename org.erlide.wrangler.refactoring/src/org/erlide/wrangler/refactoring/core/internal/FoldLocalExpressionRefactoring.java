@@ -30,6 +30,12 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Fold expression against local function refactoring integrations
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FoldLocalExpressionRefactoring extends
 		CostumWorkflowRefactoringWithPositionsSelection {
 

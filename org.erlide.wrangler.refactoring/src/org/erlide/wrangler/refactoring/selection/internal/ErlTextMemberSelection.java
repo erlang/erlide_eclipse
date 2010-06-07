@@ -25,8 +25,22 @@ import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Selected Erlang member, from the editor
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param selection
+	 *            textselection from an Erlang editor
+	 * @param editor
+	 *            editor, where the text is selected
+	 */
 	public ErlTextMemberSelection(final ITextSelection selection,
 			final ITextEditor editor) {
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
@@ -35,6 +49,12 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 		store(selection, file, document);
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param editor
+	 *            editor, which contains the selection
+	 */
 	public ErlTextMemberSelection(final ITextEditor editor) {
 		super(editor);
 	}

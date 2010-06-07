@@ -23,6 +23,15 @@ import com.ericsson.otp.erlang.OtpErlangList;
  * @version %I%, %G%
  */
 public interface IErlSelection extends ISelection {
+	/**
+	 * Denotes the kind of a selection in the editor plain.
+	 * 
+	 * We can differentiate: module, functino, function clause, expression,
+	 * variable
+	 * 
+	 * @author Gyorgy Orosz
+	 * @version %I%, %G%
+	 */
 	public enum SelectionKind {
 		MODULE, FUNCTION, FUNCTION_CLAUSE, EXPRESSION, VARIABLE;
 	}

@@ -17,6 +17,12 @@ import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Expression search refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
 	@Override

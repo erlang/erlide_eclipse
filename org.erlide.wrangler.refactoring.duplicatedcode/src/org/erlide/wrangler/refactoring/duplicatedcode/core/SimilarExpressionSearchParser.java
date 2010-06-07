@@ -29,8 +29,21 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Parser for RPc messages which is sent by similar expresiion search
+ * refactoring
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param obj
+	 *            object to be parsed
+	 */
 	public SimilarExpressionSearchParser(OtpErlangObject obj) {
 		super(obj);
 	}

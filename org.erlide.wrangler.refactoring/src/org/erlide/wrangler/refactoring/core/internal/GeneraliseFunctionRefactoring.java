@@ -63,24 +63,62 @@ public class GeneraliseFunctionRefactoring extends
 	private boolean onlyInClause;
 	private boolean sideEffect;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param state
+	 *            state of the refactoring
+	 * @param text
+	 *            error message in case of wrong input
+	 */
 	public GeneraliseFunctionRefactoring(final State state, final String text) {
 		this.state = state;
 		this.errorMessage = text;
 
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param state
+	 *            state of the refactoring
+	 * @param message
+	 *            RPC message from Wrangler
+	 */
 	public GeneraliseFunctionRefactoring(final State state,
 			final GenFunRefactoringMessage message) {
 		this.state = state;
 		this.message = message;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param state
+	 *            state of the refactoring
+	 * @param message
+	 *            RPC message from Wrangler
+	 * @param onlyInClause
+	 *            user input
+	 */
 	public GeneraliseFunctionRefactoring(final State state,
 			final GenFunRefactoringMessage message, final boolean onlyInClause) {
 		this(state, message);
 		this.onlyInClause = onlyInClause;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param state
+	 *            state of the refactoring
+	 * @param message
+	 *            RPC message from Wrangler
+	 * @param onlyInClause
+	 *            user input
+	 * @param sideEffect
+	 *            user input
+	 */
 	public GeneraliseFunctionRefactoring(final State state,
 			final GenFunRefactoringMessage message, final boolean onlyInClause,
 			final boolean sideEffect) {

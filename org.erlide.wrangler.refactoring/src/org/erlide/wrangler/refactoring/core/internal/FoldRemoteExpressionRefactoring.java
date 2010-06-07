@@ -31,6 +31,12 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Fold expression against remote function refactoring integration
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class FoldRemoteExpressionRefactoring extends
 		CostumWorkflowRefactoringWithPositionsSelection {
 
@@ -40,6 +46,15 @@ public class FoldRemoteExpressionRefactoring extends
 	private final IErlFunctionClause functionClause;
 	protected OtpErlangObject syntaxTree;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param functionClause
+	 *            selected function clause, which against should be folded
+	 * @param selection
+	 *            the current position in the actual file, when the refactoring
+	 *            was started
+	 */
 	public FoldRemoteExpressionRefactoring(
 			final IErlFunctionClause functionClause,
 			final IErlMemberSelection selection) {

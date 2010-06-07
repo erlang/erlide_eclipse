@@ -25,6 +25,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
+/**
+ * Input dialog for getting input for the similar code detection refactorings
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
@@ -38,6 +44,14 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private Text simScoreText;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param parentShell
+	 *            SWT shell
+	 * @param title
+	 *            dialog title
+	 */
 	public SimilarCodeDetectionInputDialog(Shell parentShell, String title) {
 		super(parentShell, title);
 	}
@@ -168,18 +182,39 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 	 * return ret; }
 	 */
 
+	/**
+	 * Returns the user typed similarity score.
+	 * 
+	 * @return similarity scores
+	 */
 	public double getSimScore() {
 		return simScore;
 	}
 
+	/**
+	 * Returns the user typed minimal number of tokens
+	 * 
+	 * @return minimal number of tokens
+	 */
 	public int getMinToks() {
 		return minToks;
 	}
 
+	/**
+	 * Returns the user types minimal frequency value
+	 * 
+	 * @return minimal frequency value
+	 */
 	public int getMinFreq() {
 		return minFreq;
 	}
 
+	/**
+	 * Returns the value of the checkbox 'run refactoring in only current
+	 * module'
+	 * 
+	 * @return true if the refactoring should run only in the current module
+	 */
 	public boolean onlyinFile() {
 		return workOnlyInCurrentFile;
 	}

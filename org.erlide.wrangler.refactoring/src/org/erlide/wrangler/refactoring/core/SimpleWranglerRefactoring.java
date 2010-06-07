@@ -25,8 +25,8 @@ public abstract class SimpleWranglerRefactoring extends WranglerRefactoring {
 	 * Most of the refactorings needs an input parameter (e.g. new name). This
 	 * function is for setting this input.
 	 * 
-	 * @param userInputuser
-	 *            input data
+	 * @param userInput
+	 *            user input data
 	 */
 	public void setUserInput(final String userInput) {
 		this.userInput = userInput;

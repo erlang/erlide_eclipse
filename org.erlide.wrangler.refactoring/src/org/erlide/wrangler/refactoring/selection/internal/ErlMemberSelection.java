@@ -19,11 +19,27 @@ import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * Represents an Erlang member selection
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class ErlMemberSelection extends AbstractErlMemberSelection {
 	protected IErlElement element;
 
 	protected IErlMember member;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param element
+	 *            Erlang element - Erlide representation
+	 * @param file
+	 *            the file which contains the selection
+	 * @param document
+	 *            document which contains the selection
+	 */
 	public ErlMemberSelection(final IErlElement element, final IFile file,
 			final IDocument document) {
 		this.document = document;

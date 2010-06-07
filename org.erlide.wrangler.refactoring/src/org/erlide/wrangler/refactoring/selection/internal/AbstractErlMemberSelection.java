@@ -18,6 +18,12 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
+/**
+ * Abstract class for representing Erlang member selection
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		implements IErlMemberSelection {
 
@@ -25,6 +31,9 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 
 	protected IDocument document;
 
+	/**
+	 * Default constructor
+	 */
 	public AbstractErlMemberSelection() {
 	}
 
@@ -32,6 +41,12 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		return document;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param editor
+	 *            the erlang editor which is used to get the current selection
+	 */
 	public AbstractErlMemberSelection(final ITextEditor editor) {
 		ITextSelection selection = (ITextSelection) (editor
 				.getSelectionProvider().getSelection());

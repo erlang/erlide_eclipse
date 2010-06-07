@@ -12,11 +12,23 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
 import org.eclipse.core.resources.IFile;
 
+/**
+ * Element, which represents a module in the TreeView
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicatedFileElement extends AbstractResultTreeParent {
 	IFile containingFile;
 
 	// ITextEditor editor;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param containFile
+	 *            file which is represented
+	 */
 	public DuplicatedFileElement(IFile containFile) {
 		// this.editor = editor;
 		this.containingFile = containFile;
@@ -31,6 +43,11 @@ public class DuplicatedFileElement extends AbstractResultTreeParent {
 	 * public ITextEditor getTextEditor() { return editor; }
 	 */
 
+	/**
+	 * Returns the represented file
+	 * 
+	 * @return represented file
+	 */
 	public IFile getContainingFile() {
 		return containingFile;
 	}

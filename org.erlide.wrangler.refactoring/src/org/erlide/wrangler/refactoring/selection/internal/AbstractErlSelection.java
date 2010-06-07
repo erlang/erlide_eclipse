@@ -24,6 +24,12 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Abstract class which represents an Erlang selection.
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractErlSelection implements IErlSelection {
 
 	protected IFile file;

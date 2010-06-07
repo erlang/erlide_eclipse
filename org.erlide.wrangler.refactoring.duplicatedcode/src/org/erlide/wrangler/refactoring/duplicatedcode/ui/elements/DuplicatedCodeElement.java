@@ -10,11 +10,24 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
+/**
+ * TreeView element, which represents a set of duplicates
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicatedCodeElement extends AbstractResultTreeParent {
 
 	String codePartId;
 	DuplicatedCodeInstanceElement defaultCodePart;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param defaultInstance
+	 *            a particular element, which will be used to show the
+	 *            corresponding code part
+	 */
 	public DuplicatedCodeElement(DuplicatedCodeInstanceElement defaultInstance) {
 		this.defaultCodePart = defaultInstance;
 	}
@@ -24,6 +37,11 @@ public class DuplicatedCodeElement extends AbstractResultTreeParent {
 		return "\"" + defaultCodePart.getCodePartString() + "\"";
 	}
 
+	/**
+	 * Returns the default code part
+	 * 
+	 * @return default code part
+	 */
 	public DuplicatedCodeInstanceElement getCodePart() {
 		return defaultCodePart;
 	}
