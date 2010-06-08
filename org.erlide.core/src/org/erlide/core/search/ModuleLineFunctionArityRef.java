@@ -1,6 +1,5 @@
 package org.erlide.core.search;
 
-
 public class ModuleLineFunctionArityRef {
 
 	private final String moduleName;
@@ -50,4 +49,7 @@ public class ModuleLineFunctionArityRef {
 		return arity;
 	}
 
+	public boolean isMatch() {
+		return false;
+	}
 }

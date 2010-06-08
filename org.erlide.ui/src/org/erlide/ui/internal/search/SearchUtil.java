@@ -211,13 +211,18 @@ public class SearchUtil {
 	}
 
 	public static Match createMatch(final ModuleLineFunctionArityRef ref) {
-		final ErlangSearchElement ese = new ErlangSearchElement(ref
-				.getModuleName(), ref.getName(), ref.getArity(), ref
-				.getClauseHead(), ref.isSubClause(), refToKind(ref));
+		final ErlangSearchElement ese = searchElementFromRef(ref);
 		return new Match(ese, ref.getOffset(), ref.getLength());
 	}
 
-	private static Kind refToKind(final ModuleLineFunctionArityRef ref) {
+	public static ErlangSearchElement searchElementFromRef(
+			final ModuleLineFunctionArityRef ref) {
+		return new ErlangSearchElement(ref.getModuleName(), ref.getName(), ref
+				.getArity(), ref.getClauseHead(), ref.isSubClause(),
+				refToKind(ref));
+	}
+
+	public static Kind refToKind(final ModuleLineFunctionArityRef ref) {
 		switch (ref.getArity()) {
 		case ARI_TYPESPEC:
 			return Kind.TYPESPEC;

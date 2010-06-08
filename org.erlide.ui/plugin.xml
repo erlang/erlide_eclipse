@@ -1558,6 +1558,13 @@
             markerType="org.erlide.core.dialyzewarningmarker"
             name="org.erlide.ui.dialyzewarningmarkertype">
       </type>
+      <type
+            name="org.erlide.ui.occurrences">
+      </type>
+      <type
+            name="org.erlide.ui.occurrences.match"
+            super="org.erlide.ui.occurrences">
+      </type>
    </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
@@ -1577,6 +1584,48 @@
             textPreferenceValue="true"
             verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
             verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="org.erlide.ui.occurrences"
+            colorPreferenceKey="occurrenceIndicationColor"
+            colorPreferenceValue="212,212,212"
+            contributesToHeader="false"
+            highlightPreferenceKey="occurrenceHighlighting"
+            highlightPreferenceValue="true"
+            icon="$nl$/icons/full/obj16/searchm_obj.gif"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
+            label="Occurences"
+            overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="4"
+            showInNextPrevDropdownToolbarAction="true"
+            showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
+            textPreferenceKey="occurrenceIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="occurrenceTextStyle"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false">
+      </specification>
+      <specification
+            annotationType="org.erlide.ui.occurrences.match"
+            colorPreferenceKey="matchOccurrenceIndicationColor"
+            colorPreferenceValue="240,216,168"
+            highlightPreferenceKey="matchOccurrenceHighlighting"
+            highlightPreferenceValue="true"
+            label="Match Occurences"
+            overviewRulerPreferenceKey="matchOccurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="4"
+            textPreferenceKey="matchOccurrenceIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="matchOccurrenceTextStyle"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="matchOccurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false">
       </specification>
    </extension>
    <extension

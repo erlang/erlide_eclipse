@@ -235,9 +235,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 			// final String message =
 			// "SearchMessages.SearchElementSelectionDialog_message";
 
-			ErlangSearchPattern ref;
-			ref = SearchUtil.getSearchPatternFromOpenResultAndLimitTo(module,
-					offset, res, getLimitTo());
+			ErlangSearchPattern ref = SearchUtil
+					.getSearchPatternFromOpenResultAndLimitTo(module, offset,
+							res, getLimitTo());
 			if (ref != null) {
 				performNewSearch(ref, scope);
 			}

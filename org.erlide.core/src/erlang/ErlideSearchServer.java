@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
@@ -38,11 +39,18 @@ public class ErlideSearchServer {
 		return new OtpErlangList(result);
 	}
 
+	private static Object getModulesFromScope(final IErlModule module) {
+		String s = ErlangToolkit.createScannerModuleName(module);
+		return new OtpErlangList(new OtpErlangObject[] { new OtpErlangAtom(s) });
+	}
+
 	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
 			final ErlangSearchPattern ref, final Collection<IResource> scope,
 			final String stateDir) {
 		final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
 		try {
+			// ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
+			// getModulesFromScope(scope));
 			final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
 					"erlide_search_server", "find_refs", "xxs", ref
 							.getSearchObject(), getModulesFromScope(scope),
@@ -54,6 +62,15 @@ public class ErlideSearchServer {
 			ErlLogger.error(e); // TODO report error
 		}
 		return result;
+	}
+
+	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
+			final ErlangSearchPattern ref, final IErlModule module,
+			final String stateDir) {
+		List<IResource> l = new ArrayList<IResource>(1);
+		// TODO JC what if this module is resource-less?
+		l.add(module.getResource());
+		return findRefs(b, ref, l, stateDir);
 	}
 
 	private static void addSearchResult(
