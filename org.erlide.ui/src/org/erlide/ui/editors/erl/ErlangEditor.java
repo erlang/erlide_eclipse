@@ -2024,7 +2024,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		List<ErlangRef> result = new ArrayList<ErlangRef>(findRefs.size());
 		for (ModuleLineFunctionArityRef ref : findRefs) {
 			result.add(new ErlangRef(SearchUtil.searchElementFromRef(ref), ref
-					.getOffset(), ref.getLength(), ref.isMatch()));
+					.getOffset(), ref.getLength(), ref.isDef()));
 		}
 		return result;
 	}
@@ -2093,15 +2093,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private class ErlangRef {
 		final private ErlangSearchElement element;
 		final private int offset, length;
-		final private boolean match;
+		final private boolean def;
 
 		public ErlangRef(final ErlangSearchElement element, final int offset,
-				final int length, final boolean match) {
+				final int length, final boolean def) {
 			super();
 			this.element = element;
 			this.offset = offset;
 			this.length = length;
-			this.match = match;
+			this.def = def;
 		}
 
 		public ErlangSearchElement getElement() {
@@ -2120,8 +2120,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			return element.getKind();
 		}
 
-		public boolean isMatch() {
-			return match;
+		public boolean isDef() {
+			return def;
 		}
 
 		public String getDescription() {
@@ -2217,7 +2217,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 						.getLength());
 
 				String description = ref.getDescription();
-				String annotationType = ref.isMatch() ? "org.erlide.ui.occurrences.match" : "org.erlide.ui.occurrences"; //$NON-NLS-1$ //$NON-NLS-2$
+				String annotationType = ref.isDef() ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$ 
+						: "org.erlide.ui.occurrences";
 
 				annotationMap.put(new Annotation(annotationType, false,
 						description), position);

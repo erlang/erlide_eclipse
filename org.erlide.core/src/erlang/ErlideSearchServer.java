@@ -94,6 +94,7 @@ public class ErlideSearchServer {
 			OtpErlangAtom subClause = (OtpErlangAtom) modLineT.elementAt(4);
 			OtpErlangLong offsetL = (OtpErlangLong) modLineT.elementAt(5);
 			OtpErlangLong lengthL = (OtpErlangLong) modLineT.elementAt(6);
+			OtpErlangAtom isDef = (OtpErlangAtom) modLineT.elementAt(7);
 			String name;
 			if (nameO instanceof OtpErlangAtom) {
 				OtpErlangAtom nameA = (OtpErlangAtom) nameO;
@@ -103,7 +104,8 @@ public class ErlideSearchServer {
 			}
 			result.add(new ModuleLineFunctionArityRef(modName, offsetL
 					.intValue(), lengthL.intValue(), name, arity, clauseHead,
-					"true".equals(subClause.atomValue())));
+					"true".equals(subClause.atomValue()), "true".equals(isDef
+							.atomValue())));
 		}
 	}
 

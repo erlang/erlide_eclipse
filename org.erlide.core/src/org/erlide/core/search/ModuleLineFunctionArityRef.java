@@ -8,10 +8,12 @@ public class ModuleLineFunctionArityRef {
 	private final int arity;
 	private final String clauseHead;
 	private final boolean subClause;
+	private final boolean def;
 
 	public ModuleLineFunctionArityRef(final String moduleName,
 			final int offset, final int length, final String name,
-			final int arity, final String clauseHead, final boolean subClause) {
+			final int arity, final String clauseHead, final boolean subClause,
+			final boolean def) {
 		this.moduleName = moduleName;
 		this.offset = offset;
 		this.length = length;
@@ -19,6 +21,7 @@ public class ModuleLineFunctionArityRef {
 		this.name = name;
 		this.arity = arity;
 		this.clauseHead = clauseHead;
+		this.def = def;
 	}
 
 	public String getModuleName() {
@@ -49,7 +52,7 @@ public class ModuleLineFunctionArityRef {
 		return arity;
 	}
 
-	public boolean isMatch() {
-		return false;
+	public boolean isDef() {
+		return def;
 	}
 }

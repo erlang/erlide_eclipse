@@ -209,7 +209,7 @@ find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O, length=L, sub_c
           Pattern, Mod, M, Acc) ->
     NewAcc = case check_pattern(Pattern, Mod, D) of
                  true ->
-                     [{M, F, A, C, S, O, L} | Acc];
+                     [{M, F, A, C, S, O, L, is_def(D)} | Acc];
                  false ->
                      Acc
              end,
@@ -221,6 +221,12 @@ check_pattern(Pattern, Mod, #type_ref{module='_', type=T}) ->
     lists:member(#type_ref{module=Mod, type=T}, Pattern);
 check_pattern(Pattern, _Mod, D) ->
     lists:member(D, Pattern).
+
+is_def(#function_def{}) -> true;
+is_def(#macro_def{}) -> true;
+is_def(#type_def{}) -> true;
+is_def(#module_def{}) -> true;
+is_def(_) -> false.
 
 get_module_refs(ScannerName, ModulePath, StateDir, Modules) ->
     ?D(Modules),

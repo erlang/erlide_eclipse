@@ -1562,7 +1562,7 @@
             name="org.erlide.ui.occurrences">
       </type>
       <type
-            name="org.erlide.ui.occurrences.match"
+            name="org.erlide.ui.occurrences.definition"
             super="org.erlide.ui.occurrences">
       </type>
    </extension>
@@ -1611,20 +1611,20 @@
             verticalRulerPreferenceValue="false">
       </specification>
       <specification
-            annotationType="org.erlide.ui.occurrences.match"
-            colorPreferenceKey="matchOccurrenceIndicationColor"
+            annotationType="org.erlide.ui.occurrences.definition"
+            colorPreferenceKey="definitionOccurrenceIndicationColor"
             colorPreferenceValue="240,216,168"
-            highlightPreferenceKey="matchOccurrenceHighlighting"
+            highlightPreferenceKey="definitionOccurrenceHighlighting"
             highlightPreferenceValue="true"
-            label="Match Occurences"
-            overviewRulerPreferenceKey="matchOccurrenceIndicationInOverviewRuler"
+            label="Definition Occurences"
+            overviewRulerPreferenceKey="definitionOccurrenceIndicationInOverviewRuler"
             overviewRulerPreferenceValue="true"
             presentationLayer="4"
-            textPreferenceKey="matchOccurrenceIndication"
+            textPreferenceKey="definitionOccurrenceIndication"
             textPreferenceValue="false"
             textStylePreferenceKey="matchOccurrenceTextStyle"
             textStylePreferenceValue="NONE"
-            verticalRulerPreferenceKey="matchOccurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceKey="definitionOccurrenceIndicationInVerticalRuler"
             verticalRulerPreferenceValue="false">
       </specification>
    </extension>
