@@ -264,23 +264,23 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final IProject project = erlProject == null ? null
 				: (IProject) erlProject.getResource();
 		final IErlModel model = ErlangCore.getModel();
-		final IErlPreprocessorDef p = ErlModelUtils.findPreprocessorDef(b,
-				project, module, recordName, IErlElement.Kind.RECORD_DEF, model
-						.getExternal(erlProject, ErlangCore.EXTERNAL_INCLUDES));
-		if (p == null || !(p instanceof IErlRecordDef)) {
-			return EMPTY_COMPLETIONS;
-		}
-		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-		final IErlRecordDef recordDef = (IErlRecordDef) p;
-		final List<String> fields = recordDef.getFields();
-		for (final String field : fields) {
-			if (field.startsWith(prefix)) {
-				final int alength = prefix.length();
-				result.add(new CompletionProposal(field, offset - alength,
-						alength, field.length()));
+		IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(b, project,
+				module, recordName, Kind.RECORD_DEF, model.getExternal(
+						erlProject, ErlangCore.EXTERNAL_INCLUDES));
+		if (pd instanceof IErlRecordDef) {
+			final IErlRecordDef recordDef = (IErlRecordDef) pd;
+			final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
+			final List<String> fields = recordDef.getFields();
+			for (final String field : fields) {
+				if (field.startsWith(prefix)) {
+					final int alength = prefix.length();
+					result.add(new CompletionProposal(field, offset - alength,
+							alength, field.length()));
+				}
 			}
+			return result;
 		}
-		return result;
+		return EMPTY_COMPLETIONS;
 	}
 
 	private List<ICompletionProposal> getModules(final Backend b,
@@ -424,10 +424,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<ICompletionProposal> getExternalCallCompletions(
-			final Backend b, final IErlProject project,
-			final String moduleName, final int offset, final String aprefix,
-			final boolean arityOnly) throws OtpErlangRangeException,
-			CoreException {
+			final Backend b, final IErlProject project, String moduleName,
+			final int offset, final String aprefix, final boolean arityOnly)
+			throws OtpErlangRangeException, CoreException {
+		moduleName = ErlModelUtils.checkMacroValue(moduleName, module);
 		final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
 				.toString();
 		// we have an external call
@@ -695,19 +695,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			} catch (final OtpErlangRangeException e) {
 			}
 		}
-	}
-
-	private int atomPrefixLength(final IDocument doc, final int offset) {
-		try {
-			for (int n = offset - 1; n >= 0; n--) {
-				final char c = doc.getChar(n);
-				if (!isErlangIdentifierChar(c)) {
-					return offset - n - 1;
-				}
-			}
-		} catch (final BadLocationException e) {
-		}
-		return 0;
 	}
 
 	private String getPrefix(final String before) {
