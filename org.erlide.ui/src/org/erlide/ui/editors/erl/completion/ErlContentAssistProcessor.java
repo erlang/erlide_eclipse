@@ -566,33 +566,25 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<String> getParameterNames(final IErlFunction function) {
-		final String head = function.getHead();
+		List<String> parameters = function.getParameters();
 		final int arity = function.getArity();
 		final List<String> result = new ArrayList<String>(arity);
 		addEmptyParameterNames(arity, result);
-		addParametersFromFunctionHead(head, result);
+		addParametersFromFunctionParameters(parameters, result);
 		for (final IErlFunctionClause clause : function.getClauses()) {
-			addParametersFromFunctionHead(clause.getHead(), result);
+			addParametersFromFunctionParameters(clause.getParameters(), result);
 		}
 		return result;
 	}
 
-	/**
-	 * @param head
-	 * @param result
-	 */
-	private void addParametersFromFunctionHead(String head,
-			final List<String> result) {
-		if (head != null && head.length() > 1) {
-			head = betweenParens(head);
-			final String[] vars = head.split(",");
-			final int n = Math.min(vars.length, result.size());
-			for (int i = 0; i < n; ++i) {
-				if (result.get(i).equals("_")) {
-					final String var = vars[i].trim();
-					if (looksLikeParameter(var)) {
-						result.set(i, fixVarName(var));
-					}
+	private void addParametersFromFunctionParameters(
+			final List<String> parameters, final List<String> result) {
+		final int n = Math.min(parameters.size(), result.size());
+		for (int i = 0; i < n; ++i) {
+			if (result.get(i).equals("_")) {
+				final String var = parameters.get(i).trim();
+				if (looksLikeParameter(var)) {
+					result.set(i, fixVarName(var));
 				}
 			}
 		}

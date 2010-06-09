@@ -227,6 +227,7 @@ public final class ErlParser {
 		final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
 		final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
 		final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
+		final OtpErlangList parameters = (OtpErlangList) el.elementAt(4);
 		final OtpErlangObject head = el.elementAt(5);
 		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(7);
 		ErlFunction f = null;
@@ -239,7 +240,8 @@ public final class ErlParser {
 				comment = comment.replaceAll("\n", "<br/>");
 			}
 			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), Util.stringValue(head), comment, exported);
+					.intValue(), Util.stringValue(head), comment, exported,
+					parameters);
 		} catch (final OtpErlangRangeException e) {
 			return f;
 		}
@@ -266,10 +268,11 @@ public final class ErlParser {
 	private static ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
 			final int i, final OtpErlangTuple clause) {
 		final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
+		final OtpErlangList parameters = (OtpErlangList) clause.elementAt(3);
 		final OtpErlangObject head = clause.elementAt(4);
 		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(5);
 		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i, Util
-				.stringValue(head));
+				.stringValue(head), parameters);
 		try {
 			setNamePos(cl, cnamePos);
 		} catch (final OtpErlangRangeException e) {
@@ -333,8 +336,10 @@ public final class ErlParser {
 			if (val instanceof OtpErlangTuple) {
 				final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
 				if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
-					final String recordName = ((OtpErlangAtom) recordTuple
-							.elementAt(0)).toString();
+					// final String recordName = ((OtpErlangAtom) recordTuple
+					// .elementAt(0)).toString();
+					// TODO use above code rather than java string hacking to
+					// find record name!
 					final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
 							.stringValue()
 							: null;
@@ -346,8 +351,10 @@ public final class ErlParser {
 				}
 			}
 			if (val instanceof OtpErlangAtom) {
-				final OtpErlangAtom nameA = (OtpErlangAtom) val;
-				final String recordName = nameA.atomValue();
+				// final OtpErlangAtom nameA = (OtpErlangAtom) val;
+				// final String recordName = nameA.atomValue();
+				// TODO use above code rather than java string hacking to find
+				// record name!
 				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
 						.stringValue()
 						: null;
