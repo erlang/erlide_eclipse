@@ -91,16 +91,16 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
 	public String getLabel() {
 		final int matchCount = getMatchCount();
-		final String occurences = getOccurencesLabel(matchCount);
+		final String occurrences = getOccurrencesLabel(matchCount);
 		final String scope = query.getScopeDecsription();
-		return query.getLabel() + " - " + matchCount + " " + occurences
+		return query.getLabel() + " - " + matchCount + " " + occurrences
 				+ " in " + scope + ".";
 	}
 
-	private String getOccurencesLabel(final int matchCount) {
+	private String getOccurrencesLabel(final int matchCount) {
 		int limitTo = query.getPattern().getLimitTo();
 		if (limitTo == ErlangSearchPattern.ALL_OCCURRENCES) {
-			return matchCount == 1 ? "occurence" : "occurences";
+			return matchCount == 1 ? "occurrence" : "occurrences";
 		} else if (limitTo == ErlangSearchPattern.REFERENCES) {
 			return matchCount == 1 ? "reference" : "references";
 		} else {

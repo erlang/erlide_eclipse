@@ -15,6 +15,8 @@
 -record(type_ref, {module, type}).
 -record(type_def, {type}).
 -record(module_def, {module}).
+-record(var_def, {function, variable}).
+-record(var_ref, {function, variable}).
 
 %% förslag på hur scanner, parser och search jobbar ihop:
 %%

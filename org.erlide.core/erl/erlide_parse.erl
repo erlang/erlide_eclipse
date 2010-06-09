@@ -301,7 +301,7 @@ build_try(L,Es,Scs,{Ccs,As}) ->
 %% mapl(F,List)
 %% an alternative map which always maps from left to right
 %% and makes it possible to interrupt the mapping with throw on
-%% the first occurence from left as expected.
+%% the first occurrence from left as expected.
 %% can be removed when the jam machine (and all other machines)
 %% uses the standardized (Erlang 5.0) evaluation order (from left to right)
 mapl(F, [H|T]) ->

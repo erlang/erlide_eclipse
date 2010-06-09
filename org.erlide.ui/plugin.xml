@@ -775,7 +775,7 @@
                 name="contextMenuActionsGroup">
           </separator>
           <separator
-                name="occurencesActionsGroup">
+                name="occurrencesActionsGroup">
           </separator>
           <separator
                 name="extraSearchGroup">
@@ -1597,7 +1597,7 @@
             isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
             isGoToPreviousNavigationTarget="false"
             isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
-            label="Occurences"
+            label="Occurrences"
             overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
             overviewRulerPreferenceValue="true"
             presentationLayer="4"
@@ -1616,7 +1616,7 @@
             colorPreferenceValue="240,216,168"
             highlightPreferenceKey="definitionOccurrenceHighlighting"
             highlightPreferenceValue="true"
-            label="Definition Occurences"
+            label="Definition Occurrences"
             overviewRulerPreferenceKey="definitionOccurrenceIndicationInOverviewRuler"
             overviewRulerPreferenceValue="true"
             presentationLayer="4"

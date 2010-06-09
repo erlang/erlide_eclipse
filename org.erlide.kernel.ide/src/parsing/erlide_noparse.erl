@@ -14,9 +14,6 @@
 %% called from Erlang
 -export([read_module_refs/3]).
 
-
--compile(export_all).
-
 %%
 %% Include files
 %%
@@ -496,7 +493,7 @@ fix_clauses([C | Rest], Acc) ->
 fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength+1,
-    ExternalRefs = get_refs(Rest),
+    ExternalRefs = get_refs_in_code(Rest),
     {#clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
              name=Name, args=get_function_args(Rest), head=get_head(Rest)},
      ExternalRefs}.
@@ -527,7 +524,7 @@ fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
                     [_] -> false;
                     _ -> true
                 end,
-    NewRefData = fix_imported_ref(RefData, Imports),
+    NewRefData = fix_imported_ref(fix_var_ref(RefData, Name, Arity, Head), Imports),
     Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name, 
                arity=Arity, clause=Head, sub_clause=SubClause},
     fix_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
@@ -541,32 +538,44 @@ fix_imported_ref(RefData, _Imports) ->
     RefData.
 
 %% find references in code
-%% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, and that's it
+%% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, Variables and that's it
 %% returns {Offset, Length, Ref}, which is made into proper refs
 %% by fix_refs
-get_refs([]) ->
-    [];
-get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
+get_refs_in_code(L) ->
+	get_refs_in_code(L, [], []).
+
+get_refs_in_code([], Acc, Vars) ->
+    lists:reverse(Acc, fix_var_refs(Vars));
+get_refs_in_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
           #token{kind=atom, value=F, offset=Offset2, length=Length2},
-          #token{kind='('} | Rest]) ->
+          #token{kind='('} | Rest], Acc, Vars) ->
     Arity = erlide_text:guess_arity(Rest),
     XC = {Offset, Length2+Offset2-Offset, 
           #external_call{module = M, function=F, arity=Arity}},
-    [XC | get_refs(Rest)];
-get_refs([#token{kind=atom, value=F, offset=Offset, length=Length},
-          #token{kind='('} | Rest]) ->
+    get_refs_in_code(Rest, [XC | Acc], Vars);
+get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
+          #token{kind='('} | Rest], Acc, Vars) ->
     Arity = erlide_text:guess_arity(Rest),
     XC = {Offset, Length, #local_call{function=F, arity=Arity}},
-    [XC | get_refs(Rest)];
-get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest]) ->
+    get_refs_in_code(Rest, [XC | Acc], Vars);
+get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} 
+		 | Rest], Acc, Vars) ->
     MR = {Offset, Length, #macro_ref{macro=M}},
-    [MR | get_refs(Rest)];
-get_refs([#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
+    get_refs_in_code(Rest, [MR | Acc], Vars);
+get_refs_in_code([#token{kind='#', offset=Offset}, 
+          #token{kind=atom, value=R, offset=Offset2, length=Length2} 
+		 | Rest], Acc, Vars) ->
     RR = {Offset, Length2+Offset2-Offset, #record_ref{record=R}},
-    [RR | get_refs(Rest)];
-get_refs([_ | Rest]) ->
-    get_refs(Rest).
+    get_refs_in_code(Rest, [RR | Acc], Vars);
+get_refs_in_code([#token{kind=var, offset=Offset, length=Length, value=V} 
+				 | Rest], Acc, Vars) ->
+    VR = {Offset, Length, #var_ref{variable=V}},
+    get_refs_in_code(Rest, [VR | Acc], Vars);
+get_refs_in_code([_ | Rest], Acc, Vars) ->
+    get_refs_in_code(Rest, Acc, Vars).
+
+fix_var_refs(Vars) ->
+	Vars.
 
 %% find type references in spec, type and opaque
 %% also VERY simple, type(), ?M, #R, only
