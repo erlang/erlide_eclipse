@@ -42,7 +42,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -103,11 +102,7 @@ public class ErlTextHover implements ITextHover,
 		if (fEditor != null) {
 			fEditor.reconcileNow();
 		}
-		final ErlScanner scanner = fModule.getScanner();
-		if (scanner == null) {
-			return null;
-		}
-		final ErlToken token = scanner.getTokenAt(offset);
+		final ErlToken token = fModule.getScannerTokenAt(offset);
 		if (token == null) {
 			return null;
 		}

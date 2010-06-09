@@ -8,7 +8,6 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.actions.OpenAction;
@@ -61,11 +60,7 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		if (module == null) {
 			return null;
 		}
-		final ErlScanner scanner = module.getScanner();
-		if (scanner == null) {
-			return null;
-		}
-		final ErlToken token = scanner.getTokenAt(offset);
+		final ErlToken token = module.getScannerTokenAt(offset);
 		if (token == null) {
 			return null;
 		}

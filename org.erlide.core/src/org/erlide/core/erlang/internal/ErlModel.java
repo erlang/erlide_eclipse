@@ -444,7 +444,11 @@ public class ErlModel extends Openable implements IErlModel {
 		final IPath path = rsrc.getFullPath();
 		IParent p = this;
 		for (final String segment : path.segments()) {
-			final IErlElement c = p.getChildNamed(segment);
+			IErlElement c = p.getChildWithResource(rsrc);
+			if (c != null) {
+				return c;
+			}
+			c = p.getChildNamed(segment);
 			if (c == null) {
 				return null;
 			}

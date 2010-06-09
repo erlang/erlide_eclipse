@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
@@ -40,13 +40,10 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-
-import erlang.ErlideNoparse;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -58,11 +55,6 @@ public class ErlModule extends Openable implements IErlModule {
 	private boolean parsed = false;
 	private boolean updateCaches = true;
 
-	// These are needed to ignore the initial INSERT of all text and final
-	// DELETE of all text
-	private boolean fIgnoreNextReconcile = false;
-	private boolean fIgnoreNextPostReconcile = false;
-	private boolean scannerDisposed = false;
 	private final ModuleKind moduleKind;
 
 	protected ErlModule(final IErlElement parent, final String name,
@@ -85,8 +77,12 @@ public class ErlModule extends Openable implements IErlModule {
 			parsed = false;
 		}
 		final boolean initialParse = !parsed;
-		final String text = initialParse ? initialText : "";
-		parsed = ErlParser.parse(this, text, initialParse, path, updateCaches);
+		if (scanner == null) {
+			// There are two places that we make the initial scanner... this
+			// is one
+			getScanner();
+		}
+		parsed = ErlParser.parse(this, initialParse, path, updateCaches);
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -100,6 +96,7 @@ public class ErlModule extends Openable implements IErlModule {
 		} else {
 			timestamp = IResource.NULL_STAMP;
 		}
+		disposeScanner();
 		return parsed;
 	}
 
@@ -344,15 +341,11 @@ public class ErlModule extends Openable implements IErlModule {
 		return r;
 	}
 
-	public ErlScanner getScanner() {
+	public void getScanner() {
 		if (scanner == null) {
 			scanner = getNewScanner();
 		}
-		return scanner;
-	}
-
-	public boolean hasScanner() {
-		return scanner != null;
+		scanner.addRef();
 	}
 
 	private ErlScanner getNewScanner() {
@@ -363,23 +356,23 @@ public class ErlModule extends Openable implements IErlModule {
 		return new ErlScanner(this, initialText, path);
 	}
 
-	public void reconcileText(final int offset, final int removeLength,
-			final String newText, final IProgressMonitor mon) {
-		if (scannerDisposed) {
-			ErlLogger.debug("reconcileText scannerDisposed!");
-			return;
-		}
-		if (!fIgnoreNextReconcile) {
+	public synchronized void reconcileText(final int offset,
+			final int removeLength, final String newText,
+			final IProgressMonitor mon) {
+		if (scanner == null) {
+			// There are two places that we make the initial scanner... this
+			// is one too
 			getScanner();
-			if (scanner != null) {
-				scanner.replaceText(offset, removeLength, newText);
-			}
-			if (mon != null) {
-				mon.worked(1);
-			}
-			setStructureKnown(false);
 		}
-		fIgnoreNextReconcile = false;
+		getScanner();
+		if (scanner != null) {
+			scanner.replaceText(offset, removeLength, newText);
+		}
+		if (mon != null) {
+			mon.worked(1);
+		}
+		setStructureKnown(false);
+		disposeScanner();
 	}
 
 	/*
@@ -389,18 +382,15 @@ public class ErlModule extends Openable implements IErlModule {
 	 * org.erlide.core.erlang.IErlModule#postReconcile(org.eclipse.core.runtime
 	 * .IProgressMonitor)
 	 */
-	public void postReconcile(final IProgressMonitor mon) {
-		if (!fIgnoreNextPostReconcile) {
-			try {
-				open(mon);
-			} catch (final ErlModelException e) {
-				ErlLogger.warn(e);
-			}
-			if (mon != null) {
-				mon.worked(1);
-			}
+	public synchronized void postReconcile(final IProgressMonitor mon) {
+		try {
+			open(mon);
+		} catch (final ErlModelException e) {
+			ErlLogger.warn(e);
 		}
-		fIgnoreNextPostReconcile = false;
+		if (mon != null) {
+			mon.worked(1);
+		}
 	}
 
 	@Override
@@ -409,14 +399,14 @@ public class ErlModule extends Openable implements IErlModule {
 
 	}
 
-	public void finalReconcile() {
-		fIgnoreNextReconcile = true;
-		fIgnoreNextPostReconcile = true;
+	public synchronized void initialReconcile() {
+		// currently unused
+		// Note that the ErlReconciler doesn't send the first full-text
+		// reconcile that the built-in reconciler does
 	}
 
-	public void initialReconcile() {
-		fIgnoreNextReconcile = true;
-		fIgnoreNextPostReconcile = true;
+	public synchronized void finalReconcile() {
+		// currently unused
 	}
 
 	public String getModuleName() {
@@ -424,29 +414,24 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void disposeScanner() {
-		// TODO use reference counting to know if there are any editors on the
-		// module
 		if (scanner == null) {
 			return;
 		}
-		scanner.dispose();
-		scanner = null;
-		scannerDisposed = true;
+		ErlScanner s = scanner;
+		if (s.willDispose()) {
+			scanner = null;
+		}
+		s.dispose();
 		setStructureKnown(false);
 	}
 
-	public synchronized void disposeParser() {
-		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		ErlideNoparse.destroy(b, getModuleName());
-		disposeScanner();
-		setStructureKnown(false);
-		parsed = false;
-	}
-
-	public void reenableScanner() {
-		scannerDisposed = false;
-		setStructureKnown(false);
-	}
+	// public synchronized void disposeParser() {
+	// final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+	// ErlideNoparse.destroy(b, getModuleName());
+	// disposeScanner();
+	// setStructureKnown(false);
+	// parsed = false;
+	// }
 
 	public IErlProject getProject() {
 		for (IErlElement p = this; p != null; p = p.getParent()) {
@@ -462,6 +447,7 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public void dispose() {
+		disposeScanner();
 	}
 
 	public Set<IErlModule> getDirectDependents() throws ErlModelException {
@@ -509,7 +495,9 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public synchronized void resetAndCacheScannerAndParser(final String newText) {
-		scanner = null;
+		while (scanner != null) {
+			disposeScanner();
+		}
 		initialText = newText;
 		parsed = false;
 		updateCaches = true;
@@ -520,5 +508,12 @@ public class ErlModule extends Openable implements IErlModule {
 		} catch (final ErlModelException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public ErlToken getScannerTokenAt(final int offset) {
+		if (scanner != null) {
+			return scanner.getTokenAt(offset);
+		}
+		return null;
 	}
 }
