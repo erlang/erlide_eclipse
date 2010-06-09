@@ -12,7 +12,6 @@ package org.erlide.ui.prefs;
 import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT_PRINT_MARGIN;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_CLAUSES;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_COMMENTS;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_EDOC;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_ENABLED;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS;
 import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_PROVIDER;
@@ -57,7 +56,6 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(EDITOR_FOLDING_ENABLED, true);
 		store.setDefault(EDITOR_FOLDING_PROVIDER,
 				"org.erlide.ui.editors.defaultFoldingProvider");
-		store.setDefault(EDITOR_FOLDING_EDOC, false);
 		store.setDefault(EDITOR_FOLDING_HEADER_COMMENTS, true);
 		store.setDefault(EDITOR_FOLDING_COMMENTS, false);
 		store.setDefault(EDITOR_FOLDING_CLAUSES, false);
