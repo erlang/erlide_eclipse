@@ -291,8 +291,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				if (!fieldsSoFar.contains(field)) {
 					addIfMatches(field, prefix, offset, result);
 				}
-				return result;
 			}
+			return result;
 		}
 		return EMPTY_COMPLETIONS;
 	}
