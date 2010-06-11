@@ -12,7 +12,9 @@ package org.erlide.ui.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -35,6 +37,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
@@ -42,7 +45,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
@@ -119,8 +121,8 @@ public class ErlModelUtils {
 		if (imports.isEmpty()) {
 			return NO_IMPORTS;
 		}
-		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(imports
-				.size());
+		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
+				imports.size());
 		for (IErlImport i : imports) {
 			List<ErlangFunction> functions = i.getFunctions();
 			OtpErlangObject funsT[] = new OtpErlangObject[functions.size()];
@@ -141,17 +143,19 @@ public class ErlModelUtils {
 			final IProject project, final IErlModule module,
 			final String definedName, final IErlElement.Kind kind,
 			final String externalIncludes) {
-		final String unquoted = ErlideUtil.unquote(definedName);
-		String[] names;
+		String unquoted = ErlideUtil.unquote(definedName);
+		final Set<String> names = new HashSet<String>(3);
 		if (kind == Kind.RECORD_DEF) {
-			names = new String[] { definedName, unquoted,
-					checkMacroValue(unquoted, module) };
+			while (names.add(unquoted)) {
+				unquoted = checkMacroValue(unquoted, module);
+			}
 		} else {
-			names = new String[] { definedName, unquoted };
+			names.add(unquoted);
 		}
-		for (String name : names) {
+		names.add(definedName);
+		for (final String name : names) {
 			try {
-				IErlPreprocessorDef pd = findPreprocessorDef(b, project,
+				final IErlPreprocessorDef pd = findPreprocessorDef(b, project,
 						module, name, kind, externalIncludes,
 						new ArrayList<IErlModule>());
 				if (pd != null) {
