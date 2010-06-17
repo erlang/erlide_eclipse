@@ -1,9 +1,9 @@
-#Thu Nov 19 10:29:54 CET 2009
-backend_version=R11B
+#Thu Jun 17 08:49:11 CEST 2010
+backend_version=R12B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
-include_dirs=include
+include_dirs=include;
 output_dir=ebin
-source_dirs=src;src/erl_debugger;src/parsing;src/pprint;src/syntax
+source_dirs=src;src/erl_debugger;src/parsing;src/pprint;src/syntax;
 use_pathz=false

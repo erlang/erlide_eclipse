@@ -26,7 +26,7 @@
 	<!-- ===================================================================== -->
 	<target name="post.build.jars">
 		<mkdir dir="ebin"/>
-		<apply executable="${erlang_R11}/bin/erlc" failonerror="true" parallel="true">
+		<apply executable="${erlang_R12}/bin/erlc" failonerror="true" parallel="true">
 			<arg value="-o"/>
 			<arg value="ebin"/>
 			<arg value="-I"/>
