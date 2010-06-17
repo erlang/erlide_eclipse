@@ -80,7 +80,9 @@ public class ErlReconciler implements IReconciler {
 		 * @since 3.0
 		 */
 		public boolean isDirty() {
-			return !fDirtyRegionQueue.isEmpty();
+			synchronized (fDirtyRegionQueue) {
+				return !fDirtyRegionQueue.isEmpty();
+			}
 		}
 
 		/**
@@ -111,7 +113,7 @@ public class ErlReconciler implements IReconciler {
 					if (isDirty) {
 						try {
 							fDirtyRegionQueue.wait(fDelay);
-						} catch (InterruptedException x) {
+						} catch (final InterruptedException x) {
 						}
 					}
 				}
@@ -644,7 +646,7 @@ public class ErlReconciler implements IReconciler {
 	public void reconcileNow() {
 		fThread.unreset();
 		synchronized (fDirtyRegionQueue) {
-			fDirtyRegionQueue.notify();
+			fDirtyRegionQueue.notifyAll();
 		}
 		fThread.suspendCallerWhileDirty();
 	}
