@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site url="http://erlide.org/update">
+<site>
    <description name="erlIDE update site">
       To install Erlide, please point your Eclipse Update Manager at this site. We support Eclipse 3.4 and later.
    </description>
@@ -15,6 +15,7 @@
    <feature url="features/org.erlide.wrangler_0.5.3.200904200949.jar" id="org.erlide.wrangler" version="0.5.3.200904200949">
       <category name="unstable"/>
    </feature>
+   <feature url="features/org.erlide_0.8.4.qualifier.jar" id="org.erlide" version="0.8.4.qualifier"/>
    <category-def name="stable" label="erlIDE stable (Eclipse 3.4+)">
       <description>
          These builds have been around a little longer and are reasonably stable.

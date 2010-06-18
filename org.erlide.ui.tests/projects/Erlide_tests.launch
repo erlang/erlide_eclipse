@@ -19,7 +19,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;-consoleLog -verbose -debug"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-D_erlide.devel=true -Derlide.clearCacheAvailable=true -Xms96m -Xmx384m"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-D_erlide.devel=true -Derlide.clearCacheAvailable=true -Xms96m -Xmx384m&#13;&#10;-Declipse.p2.data.area=c:/apps/eclipse352_ref/eclipse/p2/&#13;&#10;-Declipse.p2.profile=SDKProfile"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.sdk.ide"/>
 <booleanAttribute key="show_selected_only" value="false"/>
@@ -27,6 +27,6 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<booleanAttribute key="useProduct" value="true"/>
+<booleanAttribute key="useProduct" value="false"/>
 <booleanAttribute key="usefeatures" value="false"/>
 </launchConfiguration>
