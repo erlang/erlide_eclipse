@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -27,21 +26,17 @@ public class ErlideSearchServer {
 
 	private static OtpErlangList getModulesFromScope(
 			final Collection<IResource> scope) {
-		OtpErlangObject result[] = new OtpErlangObject[scope.size()];
+		final OtpErlangObject result[] = new OtpErlangObject[scope.size()];
 		int i = 0;
-		for (IResource r : scope) {
+		for (final IResource r : scope) {
 			result[i] = new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom(ErlangToolkit
-							.createScannerModuleNameFromResource(r)),
+					new OtpErlangAtom(
+							ErlangToolkit
+									.createScannerModuleNameFromResource(r)),
 					new OtpErlangString(r.getLocation().toPortableString()) });
 			i++;
 		}
 		return new OtpErlangList(result);
-	}
-
-	private static Object getModulesFromScope(final IErlModule module) {
-		String s = ErlangToolkit.createScannerModuleName(module);
-		return new OtpErlangList(new OtpErlangObject[] { new OtpErlangAtom(s) });
 	}
 
 	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
@@ -51,10 +46,10 @@ public class ErlideSearchServer {
 		try {
 			// ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
 			// getModulesFromScope(scope));
-			final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
-					"erlide_search_server", "find_refs", "xxs", ref
-							.getSearchObject(), getModulesFromScope(scope),
-					stateDir);
+			final OtpErlangObject r = b
+					.call(SEARCH_LONG_TIMEOUT, "erlide_search_server",
+							"find_refs", "xxs", ref.getSearchObject(),
+							getModulesFromScope(scope), stateDir);
 			if (Util.isOk(r)) {
 				addSearchResult(result, r);
 			}
@@ -67,7 +62,7 @@ public class ErlideSearchServer {
 	public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
 			final ErlangSearchPattern ref, final IErlModule module,
 			final String stateDir) {
-		List<IResource> l = new ArrayList<IResource>(1);
+		final List<IResource> l = new ArrayList<IResource>(1);
 		// TODO JC what if this module is resource-less?
 		l.add(module.getResource());
 		return findRefs(b, ref, l, stateDir);
@@ -86,18 +81,19 @@ public class ErlideSearchServer {
 			 * find_data(Rest, Data, M, Acc) end.
 			 */
 			final OtpErlangTuple modLineT = (OtpErlangTuple) i;
-			String modName = Util.stringValue(modLineT.elementAt(0));
-			OtpErlangObject nameO = modLineT.elementAt(1);
+			final String modName = Util.stringValue(modLineT.elementAt(0));
+			final OtpErlangObject nameO = modLineT.elementAt(1);
 			final OtpErlangLong arityL = (OtpErlangLong) modLineT.elementAt(2);
-			int arity = arityL.intValue();
-			String clauseHead = Util.stringValue(modLineT.elementAt(3));
-			OtpErlangAtom subClause = (OtpErlangAtom) modLineT.elementAt(4);
-			OtpErlangLong offsetL = (OtpErlangLong) modLineT.elementAt(5);
-			OtpErlangLong lengthL = (OtpErlangLong) modLineT.elementAt(6);
-			OtpErlangAtom isDef = (OtpErlangAtom) modLineT.elementAt(7);
+			final int arity = arityL.intValue();
+			final String clauseHead = Util.stringValue(modLineT.elementAt(3));
+			final OtpErlangAtom subClause = (OtpErlangAtom) modLineT
+					.elementAt(4);
+			final OtpErlangLong offsetL = (OtpErlangLong) modLineT.elementAt(5);
+			final OtpErlangLong lengthL = (OtpErlangLong) modLineT.elementAt(6);
+			final OtpErlangAtom isDef = (OtpErlangAtom) modLineT.elementAt(7);
 			String name;
 			if (nameO instanceof OtpErlangAtom) {
-				OtpErlangAtom nameA = (OtpErlangAtom) nameO;
+				final OtpErlangAtom nameA = (OtpErlangAtom) nameO;
 				name = nameA.atomValue();
 			} else {
 				name = Util.stringValue(nameO);

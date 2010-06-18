@@ -45,7 +45,6 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -55,6 +54,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.util.ErlModelUtils;
 
+import erlang.ErlangSearchPattern;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 

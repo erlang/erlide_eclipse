@@ -121,7 +121,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.BackendException;
@@ -158,6 +157,7 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 
+import erlang.ErlangSearchPattern;
 import erlang.ErlideOpen;
 import erlang.ErlideSearchServer;
 import erlang.OpenResult;

@@ -14,6 +14,8 @@
 %% called from Erlang
 -export([read_module_refs/3]).
 
+%% -compile(export_all).
+
 %%
 %% Include files
 %%
@@ -267,11 +269,6 @@ cac(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _],
 cac(_, _D, _E, _I) ->
     {eof, [], [], []}.
 
-get_exports(export, Args) ->
-    Args;
-get_exports(_, _) ->
-    [].
-
 get_exported(F_A, Exports) ->
     lists:member(F_A, Exports).
 
@@ -332,26 +329,6 @@ to_string(Tokens) ->
     S = erlide_scanner:tokens_to_string(Tokens),
     erlide_text:strip(S).
 %%     unspacify(S).
-
-unspacify(S) ->
-    unspacify(S, false, "").
-
-is_space($\s) -> true;
-is_space($\t) -> true;
-is_space(_) -> false.
-
-unspacify([], _PrevSpace, Acc) ->
-    lists:reverse(Acc);
-unspacify([C | Rest], true, Acc) ->
-    case is_space(C) of
-       true -> unspacify(Rest, true, Acc);
-       false -> unspacify(Rest, false, [C | Acc])
-    end;
-unspacify([C | Rest], false, Acc) ->
-    case is_space(C) of
-       true -> unspacify(Rest, true, Acc);
-       false -> unspacify(Rest, is_space(C), [C | Acc])
-    end.
 
 get_head(T) ->
     case get_args(T) of
@@ -432,20 +409,6 @@ skip_to([#token{kind=Delim} | _] = L, Delim) ->
 skip_to([_ | Rest], Delim) ->
     skip_to(Rest, Delim).
 
-%% get_between([], _A, _B) ->
-%%     [];
-%% get_between([#token{kind = A} | Rest], A, B) ->
-%%     get_between2(Rest, B, []);
-%% get_between([_ | Rest], A, B) ->
-%%     get_between(Rest, A, B).
-%% 
-%% get_between2([], _B, Acc) ->
-%%     lists:reverse(Acc);
-%% get_between2([#token{kind = B} | _], B, Acc) ->
-%%     get_between2([], B, Acc);
-%% get_between2([T | Rest], B, Acc) ->
-%%     get_between2(Rest, B, [T | Acc]).
-
 reverse2(L) ->
     lists:reverse([lists:reverse(A) || A <- L]).
 
@@ -524,7 +487,7 @@ fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
                     [_] -> false;
                     _ -> true
                 end,
-    NewRefData = fix_imported_ref(fix_var_ref(RefData, Name, Arity, Head), Imports),
+    NewRefData = fix_imported_ref(RefData, Imports),
     Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name, 
                arity=Arity, clause=Head, sub_clause=SubClause},
     fix_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
@@ -538,88 +501,95 @@ fix_imported_ref(RefData, _Imports) ->
     RefData.
 
 %% find references in code
-%% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, Variables and that's it
+%% VERY simple, M:F(_ ...), F(_ ...), #R, ?M, and that's it
 %% returns {Offset, Length, Ref}, which is made into proper refs
 %% by fix_refs
 get_refs_in_code(L) ->
-	get_refs_in_code(L, [], []).
+	get_refs_in_code(L, []).
 
-get_refs_in_code([], Acc, Vars) ->
-    lists:reverse(Acc, fix_var_refs(Vars));
+get_refs_in_code([], Acc) ->
+    lists:reverse(Acc);
 get_refs_in_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
           #token{kind=atom, value=F, offset=Offset2, length=Length2},
-          #token{kind='('} | Rest], Acc, Vars) ->
+          #token{kind='('} | Rest], Acc) ->
     Arity = erlide_text:guess_arity(Rest),
-    XC = {Offset, Length2+Offset2-Offset, 
+    R = {Offset, Length2+Offset2-Offset, 
           #external_call{module = M, function=F, arity=Arity}},
-    get_refs_in_code(Rest, [XC | Acc], Vars);
+	get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
-          #token{kind='('} | Rest], Acc, Vars) ->
+          #token{kind='('} | Rest], Acc) ->
     Arity = erlide_text:guess_arity(Rest),
-    XC = {Offset, Length, #local_call{function=F, arity=Arity}},
-    get_refs_in_code(Rest, [XC | Acc], Vars);
-get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} 
-		 | Rest], Acc, Vars) ->
-    MR = {Offset, Length, #macro_ref{macro=M}},
-    get_refs_in_code(Rest, [MR | Acc], Vars);
+    R = {Offset, Length, #local_call{function=F, arity=Arity}},
+	get_refs_in_code(Rest, [R | Acc]);
+get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest], 
+		 Acc) ->
+    R = {Offset, Length, #macro_ref{macro=M}},
+	get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=R, offset=Offset2, length=Length2} 
-		 | Rest], Acc, Vars) ->
-    RR = {Offset, Length2+Offset2-Offset, #record_ref{record=R}},
-    get_refs_in_code(Rest, [RR | Acc], Vars);
-get_refs_in_code([#token{kind=var, offset=Offset, length=Length, value=V} 
-				 | Rest], Acc, Vars) ->
-    VR = {Offset, Length, #var_ref{variable=V}},
-    get_refs_in_code(Rest, [VR | Acc], Vars);
-get_refs_in_code([_ | Rest], Acc, Vars) ->
-    get_refs_in_code(Rest, Acc, Vars).
+          #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
+		 Acc) ->
+    R = {Offset, Length2+Offset2-Offset, #record_ref{record=Record}},
+	get_refs_in_code(Rest, [R | Acc]);
+get_refs_in_code([#token{kind=var, value=V, offset=Offset, length=Length} | Rest],
+		 Acc) ->
+    R = {Offset, Length, make_var_def_ref(Acc, V)},
+	get_refs_in_code(Rest, [R | Acc]);
+get_refs_in_code([_ | Rest], Acc) ->
+    get_refs_in_code(Rest, Acc).
 
-fix_var_refs(Vars) ->
-	Vars.
+make_var_def_ref([], Var) ->
+	#var_def{variable=Var};
+make_var_def_ref([{_, _, #var_def{variable=Var}} | _], Var) ->
+	#var_ref{variable=Var};
+make_var_def_ref([{_, _, #var_ref{variable=Var}} | _], Var) ->
+	#var_ref{variable=Var};
+make_var_def_ref([_ | Rest], Var) ->
+	make_var_def_ref(Rest, Var).
 
 %% find type references in spec, type and opaque
 %% also VERY simple, type(), ?M, #R, only
 %% returns proper refs
-get_refs(_, _, []) ->
-    [];
-get_refs(Name, Arity, [#token{kind=macro, value=M, offset=Offset, 
-                              length=Length} | Rest]) ->
-    MR = make_macro_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
-    [MR | get_refs(Name, Arity, Rest)];
-get_refs(Name, Arity, [#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest]) ->
-    RR = make_record_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
-    [RR | get_refs(Name, Arity, Rest)];
-get_refs(Name, Arity, [#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
-               #token{kind=atom, value=T, offset=Offset2, length=Length2},
-               #token{kind='('}, #token{kind=')'} | Rest]) ->
-    XT = make_type_ref(Offset, Length2+Offset2-Offset, #type_ref{module=M, type=T}, Name, Arity),
-    [XT | get_refs(Name, Arity, Rest)];
-get_refs(Name, Arity, [#token{kind=atom, value=T, offset=Offset, length=Length},
-               #token{kind='('}, #token{kind=')'} | Rest]) ->
-    XT = make_type_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
-    [XT | get_refs(Name, Arity, Rest)];
-get_refs(Name, Arity, [_ | Rest]) ->
-    get_refs(Name, Arity, Rest).
+get_refs(Tokens, Name, Arity) ->
+	get_refs(Tokens, Name, Arity, []).
 
-make_type_ref(Offset, Length, Data, Name, Arity) ->
-    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
-         clause="", sub_clause=false}.
+get_refs([], _, _, Acc) ->
+    lists:reverse(Acc);
+get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest],
+		 Name, Arity, Acc) ->
+    R = make_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
+    get_refs(Rest, Name, Arity, [R | Acc]);
+get_refs([#token{kind='#', offset=Offset},
+          #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest],
+		 Name, Arity, Acc) ->
+    R = make_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
+    get_refs(Rest, Name, Arity, [R | Acc]);
+get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
+		  #token{kind=atom, value=T, offset=Offset2, length=Length2},
+		  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+    R = make_ref(Offset, Length2+Offset2-Offset, 
+				 #type_ref{module=M, type=T}, Name, Arity),
+    get_refs(Rest, Name, Arity, [R | Acc]);
+get_refs([#token{kind=atom, value=T, offset=Offset, length=Length},
+		  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+    R = make_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
+    get_refs(Rest, Name, Arity, [R | Acc]);
+get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
+		 Name, Arity, Acc) ->
+	R = make_ref(Offset, Length, #var_ref{variable=V}, Name, Arity),
+    get_refs(Rest, Name, Arity, [R | Acc]);
+get_refs([_ | Rest], Name, Arity, Acc) ->
+    get_refs(Rest, Name, Arity, Acc).
 
-make_macro_ref(Offset, Length, Data, Name, Arity) ->
-    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
-         clause="", sub_clause=false}.
-
-make_record_ref(Offset, Length, Data, Name, Arity) ->
+make_ref(Offset, Length, Data, Name, Arity) ->
     #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
          clause="", sub_clause=false}.
 
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind='('} | Rest]) ->
-    get_refs(Name, ?ARI_MACRO_DEF, skip_to_rparen(Rest));
+    get_refs(skip_to_rparen(Rest), Name, ?ARI_MACRO_DEF);
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind=','} | Rest]) ->
-    get_refs(Name, ?ARI_MACRO_DEF, Rest);
+    get_refs(Rest, Name, ?ARI_MACRO_DEF);
 make_attribute_arg_refs(record, {Name, _}, [#token{}, #token{kind=','} | Rest]) ->
-    get_refs(Name, ?ARI_RECORD_DEF, Rest);
+    get_refs(Rest, Name, ?ARI_RECORD_DEF);
 make_attribute_arg_refs(_, _, _) ->
     [].
 
@@ -682,7 +652,7 @@ extract_comments([], _, TAcc, CAcc) ->
 extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
                          value=VNext}
                   | Rest], NNext, TAcc,
-                 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
+				 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
     NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext,
                          last_line=NNext},
     extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
@@ -690,15 +660,6 @@ extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, N+1, TAcc, [C | CAcc]);
 extract_comments([T | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, -1, [T | TAcc], CAcc).
-
-
-is_var(#token{kind=var}) -> true;
-is_var(_) -> false.
-
-vars(Tokens) when is_list(Tokens) ->
-    [Token || Token <- Tokens, is_var(Token)];
-vars(_) ->
-    [].
 
 get_function_comments(Forms, Comments) ->
     lists:map(fun(#function{} = F) ->
