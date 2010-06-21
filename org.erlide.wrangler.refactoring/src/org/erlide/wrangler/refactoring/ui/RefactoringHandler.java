@@ -23,6 +23,8 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
@@ -55,6 +57,7 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
+import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
@@ -69,6 +72,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Handles refactoring commands
@@ -328,8 +333,55 @@ public class RefactoringHandler extends AbstractHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		checkWarningMessages();
 		return null;
 
+	}
+
+	/**
+	 * Checks whether there is any warning messages, if yes displays a view,
+	 * containg all of them.
+	 */
+	protected void checkWarningMessages() {
+		try {
+			RpcResult res = WranglerBackendManager.getRefactoringBackend()
+					.getLoggedInfo();
+
+			if (res.isOk()) {
+				OtpErlangObject resobj = res.getValue();
+				if (!resobj.equals(new OtpErlangList())) {
+					OtpErlangList reslist = (OtpErlangList) resobj;
+					for (int i = 0; i < reslist.arity(); ++i) {
+						OtpErlangTuple restuple = (OtpErlangTuple) reslist
+								.elementAt(i);
+						OtpErlangString msg = (OtpErlangString) restuple
+								.elementAt(1);
+						String formattedString = formatWarningString(msg
+								.stringValue());
+						WarningViewManager.addWarningMessage(formattedString);
+					}
+				}
+			} else {
+				ErlLogger.error("Wrangler logging error:" + res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private String formatWarningString(String stringValue) {
+		try {
+			String ret = stringValue.replaceAll("\\s=+\\s", "");
+			ret = ret.replaceAll("WARNING:\\s*", "");
+			ret = ret.replaceAll("((\\n)(\\n))", "\n");
+			ret = ret.replaceAll("\\s+$", "");
+			return ret;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return stringValue;
+		}
 	}
 
 	/**

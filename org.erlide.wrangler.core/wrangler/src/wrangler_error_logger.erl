@@ -103,7 +103,7 @@ handle_call(get_errors, _From, _State=#state{errors=Errors}) ->
 handle_cast({add, {warning, Msg}}, _State = #state{errors = Errors}) ->
     case lists:keysearch(warning, 1, Errors) of
 	{value, {warning, Str}} ->
-	    NewWarnMsg=Str++"\n"++Msg,
+	    NewWarnMsg=Str++"\n"++lists:flatten(Msg),
 	    NewErrors =lists:keyreplace(warning, 1, Errors, {warning, NewWarnMsg}),
 	    {noreply, #state{errors=NewErrors}};
 	false ->

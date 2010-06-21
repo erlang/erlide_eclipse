@@ -523,5 +523,21 @@
           type="java.lang.Object">
     </propertyTester>
  </extension>
+ <extension
+       point="org.eclipse.ui.views">
+    <category
+          id="org.erlide.wrangler.refactoring.view"
+          name="Wrangler">
+    </category>
+    <view
+          allowMultiple="false"
+          category="org.erlide.wrangler.refactoring.view"
+          class="org.erlide.wrangler.refactoring.ui.warning.WarningView"
+          icon="icons/wrangler.gif"
+          id="org.erlide.wrangler.refactoring.ui.warning.WarningView"
+          name="Refactoring warning messages"
+          restorable="false">
+    </view>
+ </extension>
 
 </plugin>

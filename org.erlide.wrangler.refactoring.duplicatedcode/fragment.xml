@@ -3,18 +3,14 @@
 <fragment>
    <extension
          point="org.eclipse.ui.views">
-      <category
-            id="org.erlide.wrangler.refactoring.view"
-            name="Wrangler"
-            parentCategory="org.erlide.views">
-      </category>
       <view
+            allowMultiple="false"
             category="org.erlide.wrangler.refactoring.view"
             class="org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicatesView"
-            icon="icons/erlang.gif"
+            icon="icons/wrangler.gif"
             id="org.erlide.wrangler.refactoring.duplicatedcode.views.DuplicatedCodeView"
             name="Duplicated Codes View"
-            restorable="true">
+            restorable="false">
       </view>
    </extension>
 <!--   <extension

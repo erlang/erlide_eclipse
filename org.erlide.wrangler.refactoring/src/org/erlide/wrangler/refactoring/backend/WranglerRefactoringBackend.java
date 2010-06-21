@@ -129,9 +129,22 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		else
 			res = backend.call_noexception(timeout, MODULE, functionName,
 					signature, parameters);
-		RpcResult err = backend.call_noexception("wrangler_error_logger",
+
+		// ErlLogger.info("Warning: " + err);
+		return res;
+	}
+
+	/**
+	 * Gets logged info (warnings, errors) from Wrangler
+	 * 
+	 * @return log list
+	 */
+	public RpcResult getLoggedInfo() {
+		RpcResult res = backend.call_noexception("wrangler_error_logger",
 				"get_logged_info", "");
-		ErlLogger.info("Warning: " + err);
+		@SuppressWarnings("unused")
+		RpcResult res2 = backend.call_noexception("wrangler_error_logger",
+				"remove_all_from_logger", "");
 		return res;
 	}
 
