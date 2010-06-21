@@ -28,6 +28,7 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  * @version %I%, %G%
  */
 public class SimpleInputPage extends InputPage {
+	protected String defaultInput = "";
 	protected String labelText;
 
 	protected String inputErrorMsg;
@@ -97,6 +98,9 @@ public class SimpleInputPage extends InputPage {
 
 		});
 
+		inputText.setText(defaultInput);
+		((SimpleWranglerRefactoring) getRefactoring()).setUserInput(inputText
+				.getText());
 	}
 
 	@Override
@@ -112,5 +116,15 @@ public class SimpleInputPage extends InputPage {
 			setErrorMessage(inputErrorMsg);
 			return false;
 		}
+	}
+
+	/**
+	 * Sets the input text for the page
+	 * 
+	 * @param input
+	 *            default input text
+	 */
+	public void setInput(String input) {
+		defaultInput = input;
 	}
 }

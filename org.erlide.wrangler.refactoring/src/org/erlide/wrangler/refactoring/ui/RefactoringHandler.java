@@ -46,6 +46,7 @@ import org.erlide.wrangler.refactoring.core.internal.MergeForAllRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.NormalizeRecordExpression;
+import org.erlide.wrangler.refactoring.core.internal.PartitionExportsRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameProcessRefactoring;
@@ -56,6 +57,7 @@ import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactori
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
+import org.erlide.wrangler.refactoring.ui.validator.NormalDoulbeValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
@@ -287,7 +289,7 @@ public class RefactoringHandler extends AbstractHandler {
 				pages
 						.add(new SelectionInputPage(
 								"Merge ?FORALL expressions",
-								"Please select expressions which whould be merged!",
+								"Please select expressions which should be merged!",
 								"Select expressions which should be merged",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
@@ -312,6 +314,18 @@ public class RefactoringHandler extends AbstractHandler {
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
 				refactoring = new UnfoldFunctionApplicationRefactoring();
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.partitionexports")) {
+				refactoring = new PartitionExportsRefactoring();
+				SimpleInputPage page = new SimpleInputPage(
+						"Partition exports",
+						"Please input the the distance treshould between 0.1 and 1.0",
+						"Distance treshold",
+						"The value must be between 0.1 and 1.0",
+						new NormalDoulbeValidator());
+				page.setInput("0.8");
+				pages.add(page);
 			}
 
 			else

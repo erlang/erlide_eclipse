@@ -287,6 +287,11 @@
 		<command id="org.erlide.wrangler.refactoring.renameprocess"
 			name="%renameProcessName" categoryId="org.erlide.wrangler.refactoring">
 		</command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.partitionexports"
+        name="%partitionExportsName">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -383,6 +388,11 @@
 					id="org.erlide.wrangler.refactoring.normalizerecordexpression"
 					style="push">
 				</command>
+    <command
+          commandId="org.erlide.wrangler.refactoring.partitionexports"
+          id="org.erlide.wrangler.refactoring.partitionexports"
+          style="push">
+    </command>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -512,6 +522,10 @@
 		<handler commandId="org.erlide.wrangler.refactoring.renameprocess"
 			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 		</handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.partitionexports">
+  </handler>
 	</extension>
  <extension
        point="org.eclipse.core.expressions.propertyTesters">
