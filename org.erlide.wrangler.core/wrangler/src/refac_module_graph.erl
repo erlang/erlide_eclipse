@@ -353,11 +353,11 @@ calc_dim(String) ->
   calc_dim(String, 1, 0, 0).
 
 calc_dim("\\n" ++ T, H, TmpW, MaxW) ->
-  calc_dim(T, H+1, 0, erlang:max(TmpW, MaxW));
+  calc_dim(T, H+1, 0, refac_misc:max(TmpW, MaxW));
 calc_dim([_|T], H, TmpW, MaxW) ->
   calc_dim(T, H, TmpW+1, MaxW);
 calc_dim([], H, TmpW, MaxW) ->
-  {erlang:max(TmpW, MaxW), H}.
+  {refac_misc:max(TmpW, MaxW), H}.
 
 edge_format([],_,_,_) ->
     "";

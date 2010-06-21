@@ -867,10 +867,16 @@ mfa_type() ->
 
 f_atom_type() ->
     fun(Args)->
-	    [A1, A2, A3] = Args, 
-	    {f_atom, [try_eval(A1, fun is_atom/1), 
-		      try_eval(A2, fun is_atom/1),
-		      try_eval_length(A3)]}
+	    case Args of
+		[A1, A2, A3]-> 
+		    {f_atom, [try_eval(A1, fun is_atom/1), 
+			      try_eval(A2, fun is_atom/1),
+			      try_eval_length(A3)]};
+		[_A0,A1,A2,A3] ->
+		     {f_atom, [try_eval(A1, fun is_atom/1), 
+			      try_eval(A2, fun is_atom/1),
+			      try_eval_length(A3)]}
+	    end
     end.
 
 server_ref_type() ->

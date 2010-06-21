@@ -136,8 +136,9 @@ get_parameters_1(MinClonesStr, DefaultVal) ->
 %% =====================================================================
 %% tokenize a collection of concatenated Erlang files.
 
--spec(tokenize/2::([filename()], integer()) ->
-			{[token()], string()}).
+%% -spec(tokenize/2::([filename()], integer()) ->
+%% 			{[token()], string()})
+
 tokenize(FileList, TabWidth) ->
     Toks = lists:flatmap(fun(F) -> 
 				 Toks= refac_util:tokenize(F, false, TabWidth),

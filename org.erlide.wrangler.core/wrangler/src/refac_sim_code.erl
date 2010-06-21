@@ -164,7 +164,6 @@ get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1) ->
 		    true -> SimiScore1;
 		    _ -> ?DefaultSimiScore
 		end,
-    refac_io:format("\n~p\n", [{MinLen, MinFreq, SimiScore}]),
     {MinLen, MinFreq, SimiScore}.
 
 
@@ -256,7 +255,7 @@ examine_a_clone_set(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, Pid) ->
 	    C={_, {_, Freq}} = lists:last(Cs), 
 	    Res =examine_a_clone_class(C, MinFreq, SimiScore, ASTTab, VarTab, RangeTab),
 	    case Res of
-		[R]  when element(2, R)==Freq ->
+		[R]  when element(2,element(2, R))==Freq ->
 		    Res;
 		_ -> Cs1 = lists:sublist(Cs, 1, length(Cs)-1),
 		     examine_a_clone_set(group_cs(Cs1,[]), MinFreq, SimiScore, ASTTab, VarTab, RangeTab, Pid, Res)

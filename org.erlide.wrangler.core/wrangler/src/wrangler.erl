@@ -35,7 +35,7 @@
 %% @author Huiqing Li, Simon Thompson
 %%   [http://www.cs.kent.ac.uk/projects/wrangler]
 
-%% @version 0.8.7
+%% @version 0.8.8
 %% @end
 %%
 %% @doc This module describes the refactorings that are currently supported by Wrangler.
@@ -43,7 +43,7 @@
 
 -export([rename_var/6, rename_fun/6, rename_mod/4,
 	 rename_process/6, generalise/6, gen_fun_1/11, gen_fun_clause/10,
-	 move_fun/6, move_fun_1/6,
+	 move_fun/6, move_fun_1/7,
 	 duplicated_code_in_buffer/5,
 	 duplicated_code_in_dirs/5,
 	 identical_expression_search_in_buffer/5, identical_expression_search_in_dirs/5, 
@@ -61,7 +61,8 @@
 	 eqc_statem_to_record/3, eqc_statem_to_record_1/7,
  	 eqc_fsm_to_record/3, eqc_fsm_to_record_1/7, 
 	 gen_fsm_to_record/3, gen_fsm_to_record_1/7,
-	 eqc_statem_to_fsm/4]).
+	 eqc_statem_to_fsm/4,
+	 partition_exports/4]).
 
 -export([rename_var_eclipse/6, rename_fun_eclipse/6,
 	 rename_fun_1_eclipse/6, rename_mod_eclipse/4,
@@ -88,10 +89,11 @@
          merge_let_eclipse/3, merge_let_1_eclipse/4,
 	 eqc_statem_to_record_eclipse/3,eqc_statem_to_record_1_eclipse/7,
 	 eqc_fsm_to_record_eclipse/3,eqc_fsm_to_record_1_eclipse/7,
-	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7
+	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7,
+	 partition_exports_eclipse/4
 	]).
 
--export([try_refactoring/3, try_inspector/3, get_log_msg/0]).
+-export([try_refactoring/3, get_log_msg/0]).
 
 -export([init_eclipse/0]).
 -include("../include/wrangler.hrl").
@@ -338,10 +340,10 @@ move_fun(FileName, Line, Col, TargetModName,SearchPaths, TabWidth) ->
 
 
 %%@private
--spec(move_fun_1/6::(filename(),integer(),integer(), string(), [dir()], integer())
+-spec(move_fun_1/7::(filename(),integer(),integer(), string(),  boolean(),[dir()], integer())
       -> {ok, [filename()]} |{error, string()}).
-move_fun_1(FileName, Line, Col, TargetModName,SearchPaths, TabWidth) ->
-    try_refactoring(refac_move_fun, move_fun_1, [FileName, Line, Col, TargetModName, SearchPaths, TabWidth]).
+move_fun_1(FileName, Line, Col, TargetModName, CheckCond, SearchPaths, TabWidth) ->
+    try_refactoring(refac_move_fun, move_fun_1, [FileName, Line, Col, TargetModName, CheckCond, SearchPaths, TabWidth]).
 
 %%@private
 -spec(move_fun_eclipse/6::(filename(),integer(),integer(), string(), [dir()], integer())
@@ -1163,29 +1165,43 @@ eqc_statem_to_fsm(FileName, StateName, SearchPaths, TabWidth) ->
 eqc_statem_to_fsm_eclipse(FileName, StateName, SearchPaths, TabWidth) ->
     try_refactoring(refac_statem_to_fsm, eqc_statem_to_fsm_eclipse, [FileName, StateName, SearchPaths, TabWidth]).
 
+
+
+%=========================================================================================
+%%@doc Partition the exports of a module.
+-spec(partition_exports/4::(File::filename(), DistTreshold::string(), 
+			    SearchPaths::[filename()|dir()],TabWidth::integer()) ->
+				 {error, string()}|{ok, [filename()]}). 		  
+partition_exports(File, DistThreshold, SearchPaths, TabWidth)->
+     try_refactoring(wrangler_modularity_inspection, partition_exports, 
+		     [File, DistThreshold, SearchPaths, TabWidth]).
+   
+%%@private
+-spec(partition_exports_eclipse/4::(File::filename(), DistTreshold::float(), 
+				    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
+					 {error, string()}| {ok, [{filename(), filename(), string()}]}). 	  
+partition_exports_eclipse(File, DistThreshold, SearchPaths, TabWidth)->
+    try_refactoring(wrangler_modularity_inspection, partition_exports_eclipse, 
+		    [File, DistThreshold, SearchPaths, TabWidth]).
+
+
 %%@private
 try_to_apply(Mod, Fun, Args, Msg) -> 
-    try apply(Mod, Fun, Args)
-     catch
-	 throw:Error -> 
-	     Error;    %% wrangler always throws Error in the format of '{error, string()}';
-	 _E1:_E2->
+%%    try 
+apply(Mod, Fun, Args).
+  %%   catch
+	%% throw:Error -> 
+	  %%   Error;    %% wrangler always throws Error in the format of '{error, string()}';
+	 %%_E1:_E2->
      	     %%refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
-	     {error, Msg}
-     end.
+	   %%  {error, Msg}
+     %%%end.
 
 %%@private
 try_refactoring(Mod, Fun, Args) ->
     Msg = "Wrangler failed to perform this refactoring, "
 	"please report error to erlang-refactor@kent.ac.uk.",
     try_to_apply(Mod, Fun, Args, Msg).
-
-%%@private
-try_inspector(Mod, Fun, Args) -> 
-    Msg ="Wrangler failed to perform this functionality, "  
-	"please report error to erlang-refactor@kent.ac.uk.",
-    try_to_apply(Mod, Fun, Args, Msg).
-
 
 %%@private
 init_eclipse() ->

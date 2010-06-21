@@ -38,7 +38,7 @@
 -export([start_callgraph_server/0, get_callgraph/1, get_sccs_including_fun/2,
 	 build_scc_callgraph/1,build_callercallee_callgraph/1, called_funs/1,
 	 get_sorted_funs/2, fun_callgraph_to_dot/1, fun_callgraph_to_dot/2,
-	 fun_callgraph_to_png/1]).
+	 fun_callgraph_to_png/1, gen_digraph_callgraph/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -306,6 +306,14 @@ fun_callgraph_to_dot(DotFile, FileName) ->
     to_dot(MG,DotFile),
     digraph:delete(MG).
 
+
+gen_digraph_callgraph(FileName) ->
+    #callgraph{callercallee = CallerCallees} =
+	wrangler_callgraph_server:get_callgraph([FileName]),
+    CG = digraph:new(),
+    add_edges(CallerCallees, CG),
+    CG.
+
 add_edges([], MG) ->
     MG;
 add_edges([{Caller, Callees}|Left], MG) ->
@@ -364,11 +372,11 @@ calc_dim(String) ->
   calc_dim(String, 1, 0, 0).
 
 calc_dim("\\n" ++ T, H, TmpW, MaxW) ->
-  calc_dim(T, H+1, 0, erlang:max(TmpW, MaxW));
+  calc_dim(T, H+1, 0, refac_misc:max(TmpW, MaxW));
 calc_dim([_|T], H, TmpW, MaxW) ->
   calc_dim(T, H, TmpW+1, MaxW);
 calc_dim([], H, TmpW, MaxW) ->
-  {erlang:max(TmpW, MaxW), H}.
+  {refac_misc:max(TmpW, MaxW), H}.
 
 
 edge_format(V1, V2) ->

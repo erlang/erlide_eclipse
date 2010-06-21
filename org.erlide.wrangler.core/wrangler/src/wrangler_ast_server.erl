@@ -168,7 +168,7 @@ terminate(_Reason, _State=#state{dets_tab=TabFile}) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%--------------------------------------------------------------------
+%%----------------------------- ---------------------------------------
 %%% Internal functions
 %%--------------------------------------------------------------------
 -spec(get_ast/2::({filename(),boolean(), [dir()], integer(), atom()}, #state{}) ->

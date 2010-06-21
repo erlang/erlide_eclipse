@@ -94,9 +94,31 @@ same_type_expr_unification(Exp1, Exp2) ->
 	    _ -> {true, [{Exp1Name, rm_commments(Exp2)}]}
 	  end;
       atom ->
-	  case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
-	    true -> {true, []};
-	    _ -> false
+	    case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
+		true ->
+		    Ann1=refac_syntax:get_ann(Exp1),
+		    Ann2=refac_syntax:get_ann(Exp2),
+		    case lists:keysearch(fun_def,1,Ann1) of
+			{value, {fun_def, {M,F, A, _, _}}} ->
+			  case lists:keysearch(fun_def,1,Ann2) of
+			      {value, {fun_def, {M1,F1,A1, _,_}}} ->
+				  case {M, F,A}=={M1, F1, A1} of
+				      true-> {true, []};
+				      false ->
+					  false
+				  end;
+			      false->
+				  false
+			  end;
+			false ->
+			    case lists:keysearch(fun_def,1, Ann2) of
+				{value, _} ->
+				    false;
+				false ->
+				  {true, []}
+			    end
+		    end;
+		_ -> false
 	  end;
       operator ->
 	  case refac_syntax:operator_name(Exp1) == refac_syntax:operator_name(Exp2) of
@@ -142,8 +164,8 @@ non_same_type_expr_unification(Exp1, Exp2) ->
 	    false ->
 		false;
 	    true ->
-		Exp2Ann = refac_syntax:get_ann(Exp2),
-		Exp1Name = refac_syntax:variable_name(Exp1),
+		  Exp2Ann = refac_syntax:get_ann(Exp2),
+		  Exp1Name = refac_syntax:variable_name(Exp1),
 		case lists:keysearch(category, 1, Exp2Ann) of
 		  {value, {category, application_op}} ->
 		      case lists:keysearch(fun_def, 1, Exp2Ann) of

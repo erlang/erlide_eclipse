@@ -206,6 +206,12 @@ gen_fsm_to_record(FileName, SearchPaths, TabWidth) ->
 eqc_statem_to_fsm(FileName, StateName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, eqc_statem_to_fsm, [FileName, StateName, SearchPaths, TabWidth], SearchPaths).
 
+-spec(partition_exports/4::(File::filename(), DistTreshold::string(), 
+			    SearchPaths::[filename()|dir()],TabWidth::integer()) ->
+				 {error, string()}|{ok, [filename()]}).
+partition_exports(File, DistThreshold, SearchPaths, TabWidth)->
+    apply_refactoring(wrangler, partition_exports, [File, DistThreshold, SearchPaths, TabWidth], SearchPaths).
+
 
 apply_refactoring(Mod, Fun, Args, SearchPaths) ->
     case initial_checking(SearchPaths) of
@@ -231,6 +237,7 @@ check_searchpaths(SearchPaths) ->
 	     ?wrangler_io("The following directories specified in the search paths do not exist:\n~s", [InValidSearchPaths]),
 	     {error, "Some directories specified in the search paths do not exist!"}
     end.
+
 			  
 check_undo_process() ->
     case erlang:whereis(refactor_undo) of

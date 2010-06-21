@@ -1,6 +1,7 @@
 -module(anti_unification).
 
--export([anti_unification/2,anti_unification_with_score/3,generate_anti_unifier/3]).
+-export([anti_unification/2,anti_unification_with_score/3,generate_anti_unifier/3,
+	subst_sanity_check/2]).
 
 -include("../include/wrangler.hrl").
 
@@ -11,8 +12,8 @@
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec anti_unification([syntaxTree()]|syntaxTree(), [syntaxTree()]|syntaxTree()) ->
-			      [{syntaxTree(), syntaxTree()}] |none.
+%%-spec anti_unification([syntaxTree()]|syntaxTree(), [syntaxTree()]|syntaxTree()) ->
+%%			      [{syntaxTree(), syntaxTree()}] |none.
 anti_unification(Expr1, Expr2) ->
     try do_anti_unification(Expr1, Expr2) of 
 	Res ->
@@ -67,7 +68,36 @@ anti_unification_same_type(Expr1, Expr2) ->
       true ->
 	  case refac_syntax:concrete(Expr1) == refac_syntax:concrete(Expr2) of
 	    true ->
-		[];
+		  case refac_syntax:type(Expr1) of
+		      atom ->
+			  Ann1=refac_syntax:get_ann(Expr1),
+			  Ann2=refac_syntax:get_ann(Expr2),
+			  %% refac_io:format("Ann1:\n~p\n",[Ann1]),
+			  %% refac_io:format("Ann2:\n~p\n", [Ann2]),
+			  case lists:keysearch(fun_def,1,Ann1) of
+			      {value, {fun_def, {M,F, A, _, _}}} ->
+				  case lists:keysearch(fun_def,1,Ann2) of
+				      {value, {fun_def, {M1,F1,A1, _,_}}} ->
+					  case {M, F,A}=={M1, F1, A1} of
+					      true-> [];
+					      false ->
+						 %% refac_io:format("\nAnti:~p\n", [{Expr1, Expr2}]),
+						  [{Expr1, Expr2}]
+					  end;
+				      false->
+					  [{Expr1, Expr2}]
+				  end;
+			      false ->
+				  case lists:keysearch(fun_def,1, Ann2) of
+				      {value, _} ->
+					  [{Expr1, Expr2}];
+				      false ->
+					  []
+				  end
+			  end;
+		      _ ->
+			  []
+		  end;
 	    _ ->
 		case variable_replaceable(Expr1, Expr2) of
 		  true ->
@@ -149,8 +179,8 @@ anti_unification_same_type_1(E1,E2) ->
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec anti_unification_with_score([syntaxTree()]|syntaxTree(), [syntaxTree()]|syntaxTree(), float()) ->
-					 [{syntaxTree(), syntaxTree()}]|none.
+%%-spec anti_unification_with_score([syntaxTree()]|syntaxTree(), [syntaxTree()]|syntaxTree(), float()) ->
+%%					 [{syntaxTree(), syntaxTree()}]|none.
 anti_unification_with_score(Expr1, Expr2, SimiScore) ->
     try
 	do_anti_unification(Expr1, Expr2)
@@ -236,8 +266,8 @@ no_of_nodes(Node) ->
 
 %%TODO: refactor the third argument.
 
--spec generate_anti_unifier([syntaxTree()], [{syntaxTree(), syntaxTree()}], 
-			     {[atom()], [atom()]}) -> syntaxTree().
+%%-spec generate_anti_unifier([syntaxTree()], [{syntaxTree(), syntaxTree()}], 
+%%			     {[atom()], [atom()]}) -> syntaxTree().
 generate_anti_unifier(Exprs, SearchRes, ExportVars) ->
     FunName = refac_syntax:atom(new_fun),
     BVs = refac_misc:get_bound_vars(Exprs),

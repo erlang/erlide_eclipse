@@ -43,7 +43,7 @@
 	 get_env_vars/1,get_var_exports/1,get_bound_vars/1,get_free_vars/1,
 	 is_expr/1,is_pattern/1, is_exported/2, inscope_funs/1,update_ann/2,
 	 delete_from_ann/2, callback_funs/1, is_callback_fun/3, rewrite/2,
-	 get_range/1]).
+	 get_range/1, max/2, min/2]).
 
 -include("../include/wrangler.hrl").
 
@@ -673,3 +673,12 @@ is_callback_fun(ModInfo, Funname, Arity) ->
 -spec rewrite(syntaxTree(), syntaxTree())->syntaxTree().
 rewrite(Tree, Tree1) ->
     refac_syntax:copy_attrs(Tree, Tree1).
+
+
+max(X,Y) when X>Y ->
+     X;
+max(_,Y) -> Y.
+    
+min(X,Y) when X>Y ->
+     Y;
+min(X,_) -> X.

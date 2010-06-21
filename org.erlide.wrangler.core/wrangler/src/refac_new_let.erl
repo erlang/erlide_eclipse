@@ -210,16 +210,16 @@ get_enclosing_macro(Node, {Expr, Macro, Nth}) ->
 	    Name = refac_syntax:macro_name(Node),
 	    Args = refac_syntax:macro_arguments(Node),
 	    case refac_syntax:type(Name) of
-	    variable ->
-		  M = refac_syntax:variable_name(Name),
-		  Arity = length(Args),
-		  case {M, Arity} of
-		      {Macro, 3} ->
-			  B = element(Nth, list_to_tuple(Args)),
-			  case B of
-			      Expr ->
-				  {Node, true};
-			      _ -> {[], false}
+		variable when is_list(Args)->
+		    M = refac_syntax:variable_name(Name),
+		    Arity = length(Args),
+		    case {M, Arity} of
+			{Macro, 3} ->
+			    B = element(Nth, list_to_tuple(Args)),
+			    case B of
+				Expr ->
+				    {Node, true};
+				_ -> {[], false}
 			  end;
 		      _ ->
 			  {[], false}

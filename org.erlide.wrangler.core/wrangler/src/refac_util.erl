@@ -53,7 +53,7 @@
 
 %% Note: This function should not longer be used.
 
--spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
+%%-spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
 write_refactored_files(Files) ->
     F = fun ({{File1, File2}, AST}) ->
 		FileFormat = file_format(File1),
@@ -175,19 +175,19 @@ write_refactored_files(Results, Editor, Cmd) ->
 %%  For the data structures used by the AST nodes, please refer to <a href="refac_syntax.html"> refac_syntax </a>.
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean())
-                           -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean())
+%%                           -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP) ->
     parse_annotate_file(FName, ByPassPreP, [], ?DEFAULT_TABWIDTH).
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()])
-                           -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()])
+%%                           -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP, SearchPaths) ->
     parse_annotate_file(FName, ByPassPreP, SearchPaths, ?DEFAULT_TABWIDTH).
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], TabWidth::integer())
-      -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], TabWidth::integer())
+%%      -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
     FileFormat = file_format(FName),
     case whereis(wrangler_ast_server) of
@@ -200,8 +200,8 @@ parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
      
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], integer(), atom())
-      -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], integer(), atom())
+%%      -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, true, SearchPaths, TabWidth, FileFormat) ->
     case
       refac_epp_dodger:parse_file(FName, [{tab, TabWidth}, {format, FileFormat}])
@@ -273,7 +273,7 @@ quick_parse_annotate_file(FName, SearchPaths, TabWidth) ->
     end.
 
 %% =====================================================================
--spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
+%%-spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
 tokenize(File, WithLayout, TabWidth) ->
     {ok, Bin} = file:read_file(File),
     S = erlang:binary_to_list(Bin),
@@ -311,7 +311,7 @@ annotate_bindings(FName, AST, Info, Ms, TabWidth) ->
  
 
 %% Attach tokens to each form in the AST.
--spec add_tokens(syntaxTree(), [token()]) -> syntaxTree(). 		 
+%%-spec add_tokens(syntaxTree(), [token()]) -> syntaxTree(). 		 
 add_tokens(SyntaxTree, Toks) ->
     Fs = refac_syntax:form_list_elements(SyntaxTree),
     rewrite(SyntaxTree, refac_syntax:form_list(do_add_tokens(Toks, Fs))).
@@ -362,11 +362,10 @@ do_add_tokens(Toks, [F| Fs], NewFs) ->
     do_add_tokens(RemainToks, RemFs, [F1| NewFs]).
 
 
--spec add_range(syntaxTree(), [token()]) -> syntaxTree(). 
+%%-spec add_range(syntaxTree(), [token()]) -> syntaxTree(). 
 add_range(AST, Toks) ->
     ast_traverse_api:full_buTP(fun do_add_range/2, AST, Toks).
 do_add_range(Node, Toks) ->
-    
     {L, C} = case refac_syntax:get_pos(Node) of
 	       {Line, Col} -> {Line, Col};
 	       Line -> {Line, 0}
@@ -432,13 +431,31 @@ do_add_range(Node, Toks) ->
 	  {S1, _E1} = get_range(M),
 	  {_S2, E2} = get_range(F),
 	  refac_syntax:add_ann({range, {S1, E2}}, Node);
-      list ->
-	  LP = refac_misc:ghead("refac_util:do_add_range,list", refac_syntax:list_prefix(Node)),
-	  {{L1, C1}, {L2, C2}} = get_range(LP),
-	  case refac_syntax:list_suffix(Node) of
-	    none -> refac_syntax:add_ann({range, {{L1, C1 - 1}, {L2, C2 + 1}}}, Node);
-	    Tail -> {_S2, {L3, C3}} = get_range(Tail), refac_syntax:add_ann({range, {{L1, C1 - 1}, {L3, C3}}}, Node)
-	  end;
+      list ->  %% temporay fix!
+	    try
+		Es= refac_syntax:list_elements(Node),
+		case Es/=[] of 
+		    true->
+			Fst=refac_misc:ghead("refac_util:do_add_range,list", Es),
+			Last=refac_misc:glast("refac_util:do_add_range,list", Es),
+			{S1, _E1} = get_range(Fst),
+			{_, E2} = get_range(Last),
+			refac_syntax:add_ann({range, {S1, E2}}, Node);
+		    false ->
+			Node
+		end
+	    catch
+		_:_ ->
+		     LP = refac_misc:ghead("refac_util:do_add_range,list", refac_syntax:list_prefix(Node)),
+		     {{L1, C1}, {L2, C2}} = get_range(LP),
+		     case refac_syntax:list_suffix(Node) of
+		     	none -> 
+		    	    refac_syntax:add_ann({range, {{L1, C1 - 1}, {L2, C2 + 1}}}, Node);
+		     	Tail -> 
+			     {_S2, {L3, C3}} = get_range(Tail),
+		     	    refac_syntax:add_ann({range, {{L1, C1 - 1}, {L3, C3}}}, Node)
+		     end
+	    end;
       application ->
 	  O = refac_syntax:application_operator(Node),
 	  Args = refac_syntax:application_arguments(Node),
@@ -527,12 +544,12 @@ do_add_range(Node, Toks) ->
       attribute ->
 	  Name = refac_syntax:attribute_name(Node),
 	  Args = refac_syntax:attribute_arguments(Node),
-	  case Args of
+	  case Args of 
 	    none -> {S1, E1} = get_range(Name),
 		    S11 = extend_forwards(Toks, S1, '-'),
 		    refac_syntax:add_ann({range, {S11, E1}}, Node);
 	    _ -> case length(Args) > 0 of
-		   true -> Arg = refac_misc:glast("refac_util:do_add_range,attribute", Args),
+		     true -> Arg = refac_misc:glast("refac_util:do_add_range,attribute", Args),
 			   {S1, _E1} = get_range(Name),
 			   {_S2, E2} = get_range(Arg),
 			   S11 = extend_forwards(Toks, S1, '-'),
@@ -821,7 +838,7 @@ is_string(_) -> false.
 % @doc Attach syntax category information to AST nodes.
 %% =====================================================================
 
--spec(add_category(Node::syntaxTree()) -> syntaxTree()).
+%%-spec(add_category(Node::syntaxTree()) -> syntaxTree()).
 add_category(Node) ->
     case refac_syntax:type(Node) of
       form_list ->
@@ -971,7 +988,7 @@ rewrite(Tree, Tree1) ->
 %% @doc Recursively collect all the files with the given file extension 
 %%  in the specified directoris/files.
 
--spec(expand_files(FileDirs::[filename()|dir()], Ext::string()) -> [filename()]).
+%%-spec(expand_files(FileDirs::[filename()|dir()], Ext::string()) -> [filename()]).
 expand_files(FileDirs, Ext) ->
     expand_files(FileDirs, Ext, []).
 
@@ -1000,7 +1017,7 @@ expand_files([], _Ext, Acc) -> ordsets:from_list(Acc).
 %% @doc Return the list of files (Erlang modules) which make use of the functions 
 %% defined in File.
 
--spec(get_client_files(File::filename(), SearchPaths::[dir()]) -> [filename()]).
+%%-spec(get_client_files(File::filename(), SearchPaths::[dir()]) -> [filename()]).
 get_client_files(File, SearchPaths) ->
     File1 = filename:absname(filename:join(filename:split(File))),
     ClientFiles = wrangler_modulegraph_server:get_client_files(File1, SearchPaths),
@@ -1021,7 +1038,7 @@ get_client_files(File, SearchPaths) ->
 %% element of the tuple being the module name, and the second element 
 %% binding the directory name of the file to which the module belongs.
 
--spec(get_modules_by_file(Files::[filename()]) -> [{atom(), dir()}]).
+%%-spec(get_modules_by_file(Files::[filename()]) -> [{atom(), dir()}]).
 get_modules_by_file(Files) ->
     get_modules_by_file(Files, []).
 
@@ -1032,7 +1049,7 @@ get_modules_by_file([File | Left], Acc) ->
 get_modules_by_file([], Acc) -> lists:reverse(Acc).
 
 
--spec file_format(filename()) ->dos|mac|unix. 		 
+%%-spec file_format(filename()) ->dos|mac|unix. 		 
 file_format(File) ->  
     {ok, Bin} = file:read_file(File),
     S = erlang:binary_to_list(Bin),
@@ -1075,7 +1092,7 @@ scan_line_endings([_C|Cs], Cs1, Acc)->
 scan_line_endings([], Cs1, Acc)->
     lists:reverse([lists:usort(lists:reverse(Cs1))|Acc]).
 
--spec test_framework_used(filename()) ->[atom()]. 			 
+%%-spec test_framework_used(filename()) ->[atom()]. 			 
 test_framework_used(FileName) ->
     case refac_epp_dodger:parse_file(FileName, []) of
       {ok, Forms} ->
@@ -1120,7 +1137,7 @@ test_framework_used(FileName) ->
     end.
    
 
--spec(concat_toks(Toks::[token()]) ->string()).
+%%-spec(concat_toks(Toks::[token()]) ->string()).
 concat_toks(Toks) ->
     concat_toks(Toks, "").
 

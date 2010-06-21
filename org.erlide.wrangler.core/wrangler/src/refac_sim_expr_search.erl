@@ -110,6 +110,7 @@ search_and_gen_anti_unifier(Files, {FName, FunDef, Exprs, SE}, SimiScore, Search
     {Ranges, ExportVars, SubSt} = lists:unzip3(Res),
     ExportVars1 = {element(1, lists:unzip(vars_to_export(FunDef, End, Exprs))),
 		   lists:usort(lists:append(ExportVars))},
+    %% refac_io:format("Subst:\n~p\n",[SubSt]),
     AntiUnifier = anti_unification:generate_anti_unifier(Exprs, SubSt, ExportVars1),
     {[{FName, SE}| Ranges -- [{FName, SE}]], AntiUnifier}.
 

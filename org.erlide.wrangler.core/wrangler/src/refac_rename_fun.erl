@@ -103,8 +103,8 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 		      {ok, [{FileName, FileName, FileContent}]}
 		end
 	  end;
-      {error, _Reason} ->
-	  {error, "You have not selected a function name!"}
+      {error, Reason} ->
+	  {error, Reason}
     end.
 
 rename_fun_0(FileName, NewName, SearchPaths, TabWidth, Editor,
@@ -383,12 +383,13 @@ do_rename_fun_in_arity_qualifier(Tree, M, OldName, Arity, NewName) ->
 get_module_name(ModInfo) ->
     case lists:keysearch(module, 1, ModInfo) of
       {value, {module, ModName}} -> {ok, ModName};
-      false -> {error, "Can not get the current module name."}
+      false -> throw({error, "Wrangler could not infer the current module name; "
+		      "please check whether the module name is consistent with file name."})
     end.
 
 test_framework_aware_name_checking(UsedFrameWorks, OldFunName, Arity, NewFunName) ->
     eunit_name_checking(UsedFrameWorks, OldFunName, Arity, NewFunName),
-    eqc_name_checking(UsedFrameWorks, OldFunName, Arity, NewFunName),
+    eqc_name_checking(UsedFrameWorks , OldFunName, Arity, NewFunName),
     testserver_name_checking(UsedFrameWorks, OldFunName, Arity, NewFunName),
     commontest_name_checking(UsedFrameWorks, OldFunName, Arity, NewFunName).
 
