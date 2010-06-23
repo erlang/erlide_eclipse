@@ -246,7 +246,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs,
    org.erlide.core.erlang",
- org.erlide.ui.util.eclipse;x-internal:=true,
+ org.erlide.ui.util.eclipse.text;x-internal:=true,
  org.erlide.ui.views;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.erlide.runtime.backend,

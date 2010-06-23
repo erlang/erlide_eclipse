@@ -49,7 +49,7 @@ public class ErtsProcess extends RuntimeProcess {
 
 	/**
 	 * Write something out to the node process.
-	 * 
+	 *
 	 * @param value
 	 *            The system.
 	 * @throws IOException
@@ -67,7 +67,7 @@ public class ErtsProcess extends RuntimeProcess {
 
 	/**
 	 * if this isn't already stopped, try to stop it.
-	 * 
+	 *
 	 * @throws Throwable
 	 */
 	@Override
@@ -131,17 +131,6 @@ public class ErtsProcess extends RuntimeProcess {
 	public void terminate() throws DebugException {
 		ErlLogger.debug("ErtsProcess will be terminated: %s", getLabel());
 		super.terminate();
-	}
-
-	@Override
-	protected IStreamsProxy createStreamsProxy() {
-		String encoding = getLaunch().getAttribute(
-				DebugPlugin.ATTR_CONSOLE_ENCODING);
-		if (encoding == null) {
-			encoding = "ISO-8859-1";
-		}
-		streamsProxy = new StreamsProxy(getSystemProcess(), encoding);
-		return streamsProxy;
 	}
 
 	public IStreamsProxy getPrivateStreamsProxy() {

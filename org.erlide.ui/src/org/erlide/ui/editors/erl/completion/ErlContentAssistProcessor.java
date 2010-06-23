@@ -54,7 +54,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.eclipse.HTMLPrinter;
+import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangList;

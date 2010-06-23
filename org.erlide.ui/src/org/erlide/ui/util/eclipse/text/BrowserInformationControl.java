@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.util.eclipse;
+package org.erlide.ui.util.eclipse.text;
 
 import java.io.IOException;
 import java.io.StringReader;

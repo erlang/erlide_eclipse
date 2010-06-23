@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
@@ -52,11 +51,12 @@ import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
+import org.erlide.ui.util.eclipse.text.HTMLTextPresenter;
 import org.osgi.framework.Bundle;
 
 /**
  * View which shows Edoc for a given Erlang element.
- * 
+ *
  */
 public class EdocView extends AbstractInfoView {
 
@@ -64,7 +64,7 @@ public class EdocView extends AbstractInfoView {
 	/**
 	 * Preference key for the preference whether to show a dialog when the SWT
 	 * Browser widget is not available.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
@@ -113,7 +113,7 @@ public class EdocView extends AbstractInfoView {
 
 		/**
 		 * Creates the action.
-		 * 
+		 *
 		 * @param control
 		 *            the widget
 		 * @param selectionProvider
@@ -171,7 +171,7 @@ public class EdocView extends AbstractInfoView {
 
 		/**
 		 * Creates a new selection provider.
-		 * 
+		 *
 		 * @param control
 		 *            the widget
 		 */
@@ -342,7 +342,7 @@ public class EdocView extends AbstractInfoView {
 	 * @see
 	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction
 	 * ()
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	@Override
@@ -358,7 +358,7 @@ public class EdocView extends AbstractInfoView {
 	/*
 	 * @seeorg.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#
 	 * getCopyToClipboardAction()
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	@Override
@@ -444,7 +444,7 @@ public class EdocView extends AbstractInfoView {
 	/*
 	 * @see
 	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	@Override
