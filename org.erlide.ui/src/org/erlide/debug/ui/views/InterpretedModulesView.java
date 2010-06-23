@@ -41,7 +41,6 @@ import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.runtime.debug.IErlangDebugNode;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangDebugHelper;
-import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
