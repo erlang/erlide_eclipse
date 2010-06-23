@@ -37,8 +37,8 @@ import org.osgi.service.prefs.Preferences;
 
 /**
  * The editor preferences
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class IndentationPreferencePage extends ErlidePreferencePage implements
@@ -62,7 +62,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 			"before_binary_op", "after_binary_op", "before_arrow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"after_arrow", "after_unary_op", "clause", "case", "try", "catch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 			"function_parameters", "fun", "fun_body", "paren", "<<", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-			"end_paren" }; //$NON-NLS-1$ 
+			"end_paren" }; //$NON-NLS-1$
 
 	private static final String INDENT_DEFAULTS[] = new String[] { "4", "4", //$NON-NLS-1$ //$NON-NLS-2$
 			"2", "4", "4", "4", "4", "4", "4", "2", "3", "5", "1", "2", "0" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
@@ -110,7 +110,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 			final Composite c = parent;
 			final Label label = new Label(c, SWT.NONE);
 			label.setText(desc);
-			GridData gd = new GridData(SWT.BEGINNING, SWT.CENTER, true, false); // new
+			GridData gd = new GridData(SWT.END, SWT.CENTER, true, false); // new
 			// GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 			gd.horizontalIndent = 3;
 			label.setLayoutData(gd);
@@ -210,7 +210,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 
 	/**
 	 * Applies the status to the status line of a dialog page.
-	 * 
+	 *
 	 * @param page
 	 *            the dialog page
 	 * @param status
