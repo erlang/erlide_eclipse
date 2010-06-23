@@ -95,20 +95,11 @@ do_compile_yrl(In, Out) ->
 	erlide_yecc_msgs:start(),
 	group_leader(whereis(erlide_yecc_msgs), self()),
 	process_flag(trap_exit, true),
-	case compile_yrlR11(In, Out) of
-		notR11 -> compile_yrlR10(In, Out);
-		Result -> Result
-	end.
-
-stringify(X) -> lists:flatten(io_lib:format("~p", [X])).
-
-%% Compile Erlang file from R11
-compile_yrlR11(In, Out) ->
 	Args = [In, [{parserfile, Out}, {verbose, false}, {return, true}]],
 	Result = (catch apply(yecc, file, Args)),
 	case Result of
 		{'EXIT', {undef,_}} ->
-			notR11;
+			{error, "notR11"};
 		{error, Errors, Warnings} ->
 			Err = lists:flatmap(
 					fun({_Obj, Errs}) -> [ {Le,Mde,stringify(Mse),0} || {Le,Mde,Mse} <- Errs] end,
@@ -124,24 +115,7 @@ compile_yrlR11(In, Out) ->
 			{ok, Wrn, [Out]}
 	end.
 
-%% Compile Erlang file from R10
-compile_yrlR10(In, Out) ->
-	Verbose = false,
-	Args = [In, Out, Verbose],
-	Result = (catch apply(yecc, yecc, Args)),
-	case Result of
-		{'EXIT', {yecc, _Reason}} ->
-			erlide_yecc_msgs ! {get_msgs, self()},
-			receive
-				{msgs, Msgs} ->
-					{error, Msgs}
-				after 2000 ->
-					error
-			end;
-		_Other ->
-			ok
-	end.
-
+stringify(X) -> lists:flatten(io_lib:format("~p", [X])).
 
 %%% this part is adapted from the standard code module
 
