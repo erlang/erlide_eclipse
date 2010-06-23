@@ -19,7 +19,7 @@ fff() ->
        ?mmm:fff(),
        ?MODULE:fff(),
 
-       #navigation{aaa=3},
+	   #navigation{aaa=3},
        #?mmm{aaa=3},
        #?MODULE{bbb=3},
 
