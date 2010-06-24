@@ -591,7 +591,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		fContextMenuGroup.setContext(null);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(final Class required) {
 		if (IContentOutlinePage.class.equals(required)) {
@@ -2005,7 +2005,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		List<ErlangRef> refs = null;
 		final ErlangSearchPattern pattern = SearchUtil
 				.getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
-						ErlangSearchPattern.ALL_OCCURRENCES);
+						ErlangSearchPattern.ALL_OCCURRENCES, false);
 		if (pattern != null) {
 			final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
 					.findRefs(ideBackend, pattern, module, getStateDir());

@@ -56,6 +56,7 @@ import org.erlide.core.search.VariablePattern;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import erlang.ErlangSearchPattern;
@@ -183,7 +184,8 @@ public class SearchUtil {
 			final String withoutExtension = ErlideUtil
 					.withoutExtension(function.getModule().getName());
 			return new FunctionPattern(withoutExtension,
-					function.getFunctionName(), function.getArity(), limitTo);
+					function.getFunctionName(), function.getArity(), limitTo,
+					true);
 		} else if (element instanceof IErlMacroDef) {
 			final IErlMacroDef m = (IErlMacroDef) element;
 			final String unquoted = ErlideUtil.unquote(m.getDefinedName());
@@ -245,7 +247,7 @@ public class SearchUtil {
 
 	public static ErlangSearchPattern getSearchPatternFromOpenResultAndLimitTo(
 			final IErlModule module, final int offset, final OpenResult res,
-			final int limitTo) {
+			final int limitTo, final boolean matchAnyFunctionDefinition) {
 		final ErlangSearchPattern ref = null;
 		String name = res.getName();
 		final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
@@ -261,8 +263,14 @@ public class SearchUtil {
 					ErlLogger.warn(e1);
 				}
 			}
+			String oldName;
+			name = unquoted;
+			do {
+				oldName = name;
+				name = ErlModelUtils.checkMacroValue(name, module);
+			} while (!name.equals(oldName));
 			return new FunctionPattern(name, res.getFun(), res.getArity(),
-					limitTo);
+					limitTo, matchAnyFunctionDefinition);
 		} else if (res.isLocalCall()) {
 			if (module != null) {
 				name = module.getModuleName();
@@ -282,7 +290,7 @@ public class SearchUtil {
 				name = null;
 			}
 			return new FunctionPattern(name, res.getFun(), res.getArity(),
-					limitTo);
+					limitTo, matchAnyFunctionDefinition);
 		} else if (res.isMacro()) {
 			return new MacroPattern(unquoted, limitTo);
 		} else if (res.isRecord()) {
@@ -298,8 +306,8 @@ public class SearchUtil {
 						if (e instanceof IErlFunctionClause) {
 							final IErlFunctionClause c = (IErlFunctionClause) e;
 							return new VariablePattern(c.getFunctionName(),
-									c.getArity(), c.getHead(),
-									res.getName(), limitTo);
+									c.getArity(), c.getHead(), res.getName(),
+									limitTo);
 						}
 					} catch (final ErlModelException e1) {
 					}

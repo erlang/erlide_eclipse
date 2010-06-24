@@ -226,6 +226,9 @@ is_def(_) -> false.
 
 check_pattern(Pattern, Mod, #local_call{function=F, arity=A}, _, _, _)->
     lists:member(#external_call{module=Mod, function=F, arity=A}, Pattern);
+check_pattern(Pattern, Mod, #function_def{function=F, arity=A} = FD, _, _, _)->
+    lists:member(FD, Pattern) orelse
+		lists:member(#function_def_mod{module=Mod, function=F, arity=A}, Pattern);
 check_pattern(Pattern, Mod, #type_ref{module='_', type=T}, _, _, _) ->
     lists:member(#type_ref{module=Mod, type=T}, Pattern);
 check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->

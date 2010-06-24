@@ -21,6 +21,8 @@ public abstract class ErlangSearchPattern {
 			"function_call");
 	protected static final OtpErlangAtom FUNCTION_DEF_ATOM = new OtpErlangAtom(
 			"function_def");
+	protected static final OtpErlangAtom FUNCTION_DEF_MOD_ATOM = new OtpErlangAtom(
+			"function_def_mod");
 	static final OtpErlangAtom INCLUDE_REF_ATOM = new OtpErlangAtom(
 			"include_ref");
 	protected static final OtpErlangAtom MACRO_DEF_ATOM = new OtpErlangAtom(
@@ -63,7 +65,7 @@ public abstract class ErlangSearchPattern {
 			final int limitTo) {
 		switch (searchFor) {
 		case SEARCHFOR_FUNCTION:
-			return new FunctionPattern(module, name, arity, limitTo);
+			return new FunctionPattern(module, name, arity, limitTo, true);
 		case SEARCHFOR_INCLUDE:
 			return new IncludePattern(name, limitTo);
 		case SEARCHFOR_MACRO:
@@ -101,10 +103,14 @@ public abstract class ErlangSearchPattern {
 
 	protected OtpErlangObject makeMFAPatternObject(final OtpErlangAtom defAtom,
 			final OtpErlangAtom refAtom, final String m, final String f,
-			final int a) {
+			final int a, final boolean matchAnyFunctionDefinition) {
 		OtpErlangObject refs = null, defs = null;
 		if (limitTo != REFERENCES) {
-			defs = make3Tuple(defAtom, f, a);
+			if (matchAnyFunctionDefinition) {
+				defs = make3Tuple(defAtom, f, a);
+			} else {
+				defs = make4Tuple(defAtom, m, f, a);
+			}
 		}
 		if (limitTo != DEFINITIONS) {
 			refs = make4Tuple(refAtom, m, f, a);

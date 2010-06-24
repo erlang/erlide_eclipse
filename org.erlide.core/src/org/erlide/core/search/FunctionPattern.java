@@ -1,5 +1,6 @@
 package org.erlide.core.search;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 import erlang.ErlangSearchPattern;
@@ -9,13 +10,16 @@ public class FunctionPattern extends ErlangSearchPattern {
 	private final String module;
 	private final String name;
 	private final int arity;
+	private final boolean matchAnyFunctionDefinition;
 
 	public FunctionPattern(final String module, final String name,
-			final int arity, final int limitTo) {
+			final int arity, final int limitTo,
+			final boolean matchAnyFunctionDefinition) {
 		super(limitTo);
 		this.module = module;
 		this.name = name;
 		this.arity = arity;
+		this.matchAnyFunctionDefinition = matchAnyFunctionDefinition;
 	}
 
 	@Override
@@ -24,8 +28,10 @@ public class FunctionPattern extends ErlangSearchPattern {
 			return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM,
 					name, arity);
 		} else {
-			return makeMFAPatternObject(FUNCTION_DEF_ATOM, EXTERNAL_CALL_ATOM,
-					module, name, arity);
+			final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
+					: FUNCTION_DEF_MOD_ATOM;
+			return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, module, name,
+					arity, matchAnyFunctionDefinition);
 		}
 	}
 
