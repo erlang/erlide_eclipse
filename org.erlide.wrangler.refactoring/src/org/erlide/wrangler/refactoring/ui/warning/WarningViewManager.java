@@ -79,7 +79,7 @@ public class WarningViewManager {
 	/**
 	 * Hides the warning view.
 	 */
-	public static void closeDuplicatesView() {
+	public static void closeWarningView() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();

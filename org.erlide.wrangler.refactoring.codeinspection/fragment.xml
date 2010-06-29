@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+      <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="org.erlide.wrangler.refactoring.view"
+            class="org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView"
+            icon="icons/wrangler.gif"
+            id="org.erlide.wrangler.codeinspection.graphview"
+            name="Graph Viewer"
+            restorable="false">
+      </view>
+   </extension>
+   
+<!-- Toolbar buttons -->
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            targetID="org.erlide.wrangler.codeinspection.graphview"
+            id="org.erlide.wrangler.codeinspection.graphview.pushbutton">
+         <!-- Open button -->
+ <!--        <action
+               label="open"
+               icon="icons/Open16.gif"
+               tooltip="Open image"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.open">
+-->               
+               <!--id="org.eclipse.ui.file.open"-->
+         <!--/action-->
+         <!-- Rotation button -->
+         <action
+               label="Rotate"
+               icon="icons/Rotate16.gif"
+               tooltip="Rotate"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.rotate">
+         </action>
+         <!-- Fit button -->
+         <action
+               label="FitWindow"
+               icon="icons/Fit16.gif"
+               tooltip="Fit window"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.fit">
+         </action>
+         <!-- Original button -->
+         <action
+               label="OriginalSize"
+               icon="icons/Original16.gif"
+               tooltip="Original size"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.original">
+         </action>
+         <!-- ZoomIn button -->
+         <action
+               label="ZoomIn"
+               icon="icons/ZoomIn16.gif"
+               tooltip="Zoom in"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.zoomin">
+         </action>
+         <!-- ZoomOut button -->
+         <action
+               label="ZoomOut"
+               icon="icons/ZoomOut16.gif"
+               tooltip="Zoom out"
+               class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+               toolbarPath="push_group"
+               enablesFor="*"
+               id="toolbar.zoomout">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.erlide.wrangler.refactoring.codeinspection.actionSet"
+            label="Sample Action Set"
+            visible="true">
+         <menu
+               id="sampleMenu"
+               label="Sample &amp;Menu">
+            <separator
+                  name="sampleGroup">
+            </separator>
+         </menu>
+         <action
+               class="org.erlide.wrangler.refactoring.codeinspection.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="org.erlide.wrangler.refactoring.codeinspection.actions.SampleAction"
+               label="&amp;Sample Action"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world">
+         </action>
+      </actionSet>
+   </extension>
+
+</fragment>

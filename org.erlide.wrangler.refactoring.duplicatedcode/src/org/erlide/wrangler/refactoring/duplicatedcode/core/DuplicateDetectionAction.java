@@ -92,7 +92,14 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			ErlLogger.debug("Fragment is not loaded?! No C binary is run.");
 			return "";
 		}
-		Bundle fragment = bs[0];
+		Bundle fragment = null;
+		for (int i = 0; i < bs.length; ++i) {
+			if (bs[i].getSymbolicName().equals(
+					"org.erlide.wrangler.refactoring.duplicatedcode")) {
+				fragment = bs[i];
+				break;
+			}
+		}
 		java.net.URL url = FileLocator.find(fragment, new Path(""), null);
 		url = FileLocator.resolve(url);
 		IPath path = new Path(url.getPath());
