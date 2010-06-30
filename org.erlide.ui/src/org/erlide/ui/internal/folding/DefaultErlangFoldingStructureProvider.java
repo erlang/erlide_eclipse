@@ -11,8 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,6 +36,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModel;
@@ -43,7 +44,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -456,7 +456,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			if (stateMatch(annotation) && !annotation.isComment()
 					&& !annotation.isMarkedDeleted()) {
 				final IErlElement element = annotation.getElement();
-				Kind kind = element.getKind();
+				final Kind kind = element.getKind();
 				return kind == Kind.FUNCTION || kind == Kind.CLAUSE;
 			}
 			return false;
@@ -550,7 +550,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			boolean structureKnown = false;
 			try {
 				structureKnown = fModule.isStructureKnown();
-			} catch (ErlModelException e1) {
+			} catch (final ErlModelException e1) {
 			}
 			if (structureKnown) {
 				final IErlElementDelta d = new ErlElementDelta(
@@ -560,7 +560,7 @@ public class DefaultErlangFoldingStructureProvider implements
 			} else {
 				try {
 					fModule.open(null);
-				} catch (ErlModelException e) {
+				} catch (final ErlModelException e) {
 					e.printStackTrace();
 				}
 			}
@@ -1040,8 +1040,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * #collapseElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void collapseElements(final IErlElement[] elements) {
-		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
-				.asList(elements));
+		final Set<IErlElement> set = new HashSet<IErlElement>(
+				Arrays.asList(elements));
 		modifyFiltered(new ErlangElementSetFilter(set, false), false);
 	}
 
@@ -1051,8 +1051,8 @@ public class DefaultErlangFoldingStructureProvider implements
 	 * #expandElements(org.eclipse.jdt.core.IErlElement[])
 	 */
 	public void expandElements(final IErlElement[] elements) {
-		final Set<IErlElement> set = new HashSet<IErlElement>(Arrays
-				.asList(elements));
+		final Set<IErlElement> set = new HashSet<IErlElement>(
+				Arrays.asList(elements));
 		modifyFiltered(new ErlangElementSetFilter(set, true), true);
 	}
 
@@ -1096,8 +1096,8 @@ public class DefaultErlangFoldingStructureProvider implements
 			}
 		}
 
-		model.modifyAnnotations(null, null, modified
-				.toArray(new Annotation[modified.size()]));
+		model.modifyAnnotations(null, null,
+				modified.toArray(new Annotation[modified.size()]));
 	}
 
 	/*
