@@ -88,7 +88,19 @@
          point="org.eclipse.ui.commands">
       <command
             id="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
-            name="Cylcic dependent modules">
+            name="Detect Cyclic module dependecies...">
+      </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
+            name="Generate Funcion Callgraph">
+      </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
+            name="Generate Module Graph">
+      </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
+            name="Improper Inter Module Dependency">
       </command>
    </extension>
    <extension
@@ -96,6 +108,18 @@
       <handler
             class="GraphResultingInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies">
+      </handler>
+      <handler
+      		class="GraphResultingInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph">
+      </handler>
+      <handler
+      		class="GraphResultingInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph">
+      </handler>
+      <handler
+      		class="GraphResultingInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies">
       </handler>
    </extension>
    <extension
@@ -105,11 +129,30 @@
          <menu
                id="org.erlide.wrangler.codeinspectionmenu"
                label="Code Inspection"
+               mnemonic="I"
                tooltip="Code inspection functionalities">
             <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
+                  label="Generate Funcion Callgraph..."
+                  mnemonic="F"                  
+                  style="push">
+            </command>               
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
+                  label="Generate Module Graph..."
+                  mnemonic="M"
+                  style="push">
+            </command>
+            <command
                   commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
-                  label="Show cyclic dependent modules..."
-                  mnemonic="c"
+                  label="Cyclic Module Dependency..."
+                  mnemonic="C"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
+				  label="Improper Inter Module Dependency..."
+                  mnemonic="I"
                   style="push">
             </command>
          </menu>

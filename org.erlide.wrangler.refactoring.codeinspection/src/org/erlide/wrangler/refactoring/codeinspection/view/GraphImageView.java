@@ -10,10 +10,17 @@
  *******************************************************************************/
 package org.erlide.wrangler.refactoring.codeinspection.view;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -59,15 +66,15 @@ public class GraphImageView extends ViewPart {
 	// }
 
 	/**
-	 * Save file action class
+	 * Save image action class
 	 * 
 	 * @author Gyorgy Orosz
 	 */
-	public class SaveAction extends Action {
+	public class SaveImageAction extends Action {
 		/**
 		 * Constructor
 		 */
-		public SaveAction() {
+		public SaveImageAction() {
 			setText("Save image as...");
 			setToolTipText("Save image as...");
 			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
@@ -80,6 +87,44 @@ public class GraphImageView extends ViewPart {
 			imageCanvas.onFileSave();
 		}
 
+	}
+
+	/**
+	 * Save file action class
+	 * 
+	 * @author Gyorgy Orosz
+	 */
+	public class SaveDOTAction extends Action {
+		/**
+		 * Constructor
+		 */
+		public SaveDOTAction() {
+			setText("Save .dot file as...");
+			setToolTipText("Save .dot file as...");
+			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+					.getImageDescriptor(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
+
+		}
+
+		@Override
+		public void run() {
+			FileDialog fileChooser = new FileDialog(imageCanvas.getShell(),
+					SWT.SAVE);
+			fileChooser.setText("Save .dot file");
+			fileChooser.setFilterPath("");
+			fileChooser.setFilterExtensions(new String[] { "*.dot" });
+			fileChooser.setFilterNames(new String[] { "Graphviz file "
+					+ " (dot)" });
+			String filename = fileChooser.open();
+			if (filename != null) {
+				try {
+					FileUtils.copyFile(dotFile, new File(filename));
+				} catch (IOException e) {
+					MessageDialog.openError(imageCanvas.getShell(),
+							"Saving error", e.getMessage());
+				}
+			}
+		}
 	}
 
 	// public class RotateAction extends Action {
@@ -187,6 +232,7 @@ public class GraphImageView extends ViewPart {
 	 */
 	public static String VIEW_ID = "org.erlide.wrangler.codeinspection.graphview";
 	SWTImageCanvas imageCanvas;
+	private File dotFile = null;
 
 	/**
 	 * The constructor.
@@ -203,7 +249,8 @@ public class GraphImageView extends ViewPart {
 	public void createPartControl(Composite frame) {
 		imageCanvas = new SWTImageCanvas(frame);
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		mgr.add(new SaveAction());
+		mgr.add(new SaveImageAction());
+		mgr.add(new SaveDOTAction());
 	}
 
 	/**
@@ -223,8 +270,24 @@ public class GraphImageView extends ViewPart {
 		super.dispose();
 	}
 
+	/**
+	 * Set view title
+	 * 
+	 * @param title
+	 *            title string
+	 */
 	public void setViewTitle(String title) {
 		this.setPartName(title);
+	}
+
+	/**
+	 * Stores the given file
+	 * 
+	 * @param f
+	 *            dot file
+	 */
+	public void setDotFile(File f) {
+		this.dotFile = f;
 	}
 
 	/**

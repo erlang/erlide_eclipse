@@ -277,7 +277,7 @@ public class SWTImageCanvas extends Canvas {
 		String filename = fileChooser.open();
 		if (filename != null) {
 			ImageLoader imageLoader = new ImageLoader();
-			imageLoader.data = new ImageData[] { screenImage.getImageData() };
+			imageLoader.data = new ImageData[] { sourceImage.getImageData() };
 			Path p = new Path(filename);
 			if (p.getFileExtension() == "jpg")
 				imageLoader.save(filename, SWT.IMAGE_JPEG);

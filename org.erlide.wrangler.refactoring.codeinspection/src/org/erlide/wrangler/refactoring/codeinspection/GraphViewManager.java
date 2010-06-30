@@ -1,5 +1,7 @@
 package org.erlide.wrangler.refactoring.codeinspection;
 
+import java.io.File;
+
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -20,10 +22,11 @@ public class GraphViewManager {
 	 * @param img
 	 * @param title
 	 */
-	static public void setImage(Image img, String title) {
+	static public void setImage(Image img, String title, File dotFile) {
 		GraphImageView view = (GraphImageView) showView();
 		view.setViewTitle(title);
 		view.setImage(img);
+		view.setDotFile(dotFile);
 	}
 
 	/**

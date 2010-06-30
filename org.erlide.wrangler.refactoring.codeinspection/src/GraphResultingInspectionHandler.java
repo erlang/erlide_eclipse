@@ -23,28 +23,48 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String actionId = event.getCommand().getId();
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor().setFocus();
 		GlobalParameters.setSelection(PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getSelection());
 		try {
 			File tmpFile = File.createTempFile("wrangler_graph_", ".dot");
+			tmpFile.deleteOnExit();
 
 			IErlSelection wranglerSelection = GlobalParameters
 					.getWranglerSelection();
 
 			if (actionId
 					.equals("org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies")) {
-				runInspection("Cyclic module dependencies",
+				runInspection("Cyclic module dependency",
 						"There is no cyclic dependent modules in the project!",
 						tmpFile, "cyclic_dependent_modules", "ssx", tmpFile
 								.getAbsolutePath(), wranglerSelection
 								.getSearchPath(), new OtpErlangBoolean(true));
-			} else if (actionId.equals("")) {
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph")) {
+				runInspection("Function callgraph",
+						"There is no dependent functions in the module!",
+						tmpFile, "gen_function_callgraph", "sss", tmpFile
+								.getAbsolutePath(), wranglerSelection
+								.getFilePath(), wranglerSelection
+								.getSearchPath());
 
-			} else if (actionId.equals("")) {
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph")) {
+				runInspection("Module dependency graph",
+						"There is no dependent modules in the project!",
+						tmpFile, "gen_module_graph", "ssx", tmpFile
+								.getAbsolutePath(), wranglerSelection
+								.getSearchPath(), new OtpErlangBoolean(true));
 
-			} else if (actionId.equals("")) {
-
-			} else if (actionId.equals("")) {
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.codeinspection.improperdependecies")) {
+				runInspection("Improper module dependencies",
+						"There is no improper module dependecies!", tmpFile,
+						"improper_inter_module_calls", "ss", tmpFile
+								.getAbsolutePath(), wranglerSelection
+								.getSearchPath());
 
 			}
 
@@ -54,6 +74,23 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 		return event;
 	}
 
+	/**
+	 * Run code inspection function, and shows the result in the workbench
+	 * 
+	 * @param viewtTitle
+	 *            title of the view
+	 * @param noResultMessage
+	 *            if there is no result, this message will be displayed
+	 * @param tmpFile
+	 *            temp .dot file
+	 * @param functionName
+	 *            function to call
+	 * @param signature
+	 *            parameters signature
+	 * @param parameters
+	 *            function parameters
+	 * 
+	 */
 	protected void runInspection(String viewtTitle, String noResultMessage,
 			File tmpFile, String functionName, String signature,
 			Object... parameters) {
@@ -66,7 +103,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 				if (fis.available() > 0) {
 
 					Image img = GraphViz.load(fis, "png", new Point(0, 0));
-					GraphViewManager.setImage(img, viewtTitle);
+					GraphViewManager.setImage(img, viewtTitle, tmpFile);
 				} else
 					MessageDialog.openInformation(GlobalParameters.getEditor()
 							.getSite().getShell(), viewtTitle, noResultMessage);
