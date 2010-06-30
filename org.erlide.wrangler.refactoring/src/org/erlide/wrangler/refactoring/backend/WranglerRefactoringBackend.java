@@ -16,6 +16,8 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.AbstractRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.RefactoringRpcMessage;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+
 /**
  * This class handles the Erlide backends, and holds special ones for Wrangler
  * operations
@@ -28,6 +30,10 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 * Wrangler module name
 	 */
 	final static public String MODULE = "wrangler";
+	/**
+	 * Wrangler code inspection module name
+	 */
+	final static public String INSPECTION_MODULE = "wrangler_code_inspector";
 	final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
 	protected Backend backend;
@@ -132,6 +138,37 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
 		// ErlLogger.info("Warning: " + err);
 		return res;
+	}
+
+	/**
+	 * Call inspection function which returns with boolean values
+	 * 
+	 * @param functionName
+	 *            function to call
+	 * @param signature
+	 *            signature
+	 * @param parameters
+	 *            parameters
+	 * @return true if the call was successful, else false
+	 */
+	public boolean callSimpleInspection(final String functionName,
+			final String signature, final Object... parameters) {
+		ErlLogger
+				.info("Wrangler call: " + makeLogStr(functionName, parameters));
+		RpcResult res;
+		res = backend.call_noexception(INSPECTION_MODULE, functionName,
+				signature, parameters);
+		try {
+			if (res.isOk()) {
+				OtpErlangAtom b = (OtpErlangAtom) res.getValue();
+				return b.atomValue().equals("true")
+						|| b.atomValue().equals("ok");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
 	}
 
 	/**

@@ -85,28 +85,35 @@
       </viewContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.erlide.wrangler.refactoring.codeinspection.actionSet"
-            label="Sample Action Set"
-            visible="true">
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
+            name="Cylcic dependent modules">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="GraphResultingInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=org.erlide.wrangler.refactormenu">
          <menu
-               id="sampleMenu"
-               label="Sample &amp;Menu">
-            <separator
-                  name="sampleGroup">
-            </separator>
+               id="org.erlide.wrangler.codeinspectionmenu"
+               label="Code Inspection"
+               tooltip="Code inspection functionalities">
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
+                  label="Show cyclic dependent modules..."
+                  mnemonic="c"
+                  style="push">
+            </command>
          </menu>
-         <action
-               class="org.erlide.wrangler.refactoring.codeinspection.actions.SampleAction"
-               icon="icons/sample.gif"
-               id="org.erlide.wrangler.refactoring.codeinspection.actions.SampleAction"
-               label="&amp;Sample Action"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               tooltip="Hello, Eclipse world">
-         </action>
-      </actionSet>
+      </menuContribution>
    </extension>
 
 </fragment>

@@ -12,6 +12,7 @@ package org.erlide.wrangler.refactoring.codeinspection.view;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -222,13 +223,17 @@ public class GraphImageView extends ViewPart {
 		super.dispose();
 	}
 
+	public void setViewTitle(String title) {
+		this.setPartName(title);
+	}
+
 	/**
 	 * Loads the given image to the canvas
 	 * 
 	 * @param imgpath
 	 *            image path
 	 */
-	public void setImage(String imgpath) {
-		imageCanvas.loadImage(imgpath);
+	public void setImage(Image img) {
+		imageCanvas.setImage(img);
 	}
 }

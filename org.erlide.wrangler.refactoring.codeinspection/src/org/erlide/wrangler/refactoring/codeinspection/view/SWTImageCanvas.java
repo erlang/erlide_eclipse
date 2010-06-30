@@ -254,6 +254,17 @@ public class SWTImageCanvas extends Canvas {
 	}
 
 	/**
+	 * Load image
+	 * 
+	 * @param img
+	 *            image object
+	 */
+	public void setImage(Image img) {
+		sourceImage = img;
+		showOriginal();
+	}
+
+	/**
 	 * Save image to a file
 	 */
 	public void onFileSave() {

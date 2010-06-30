@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.codeinspection;
 
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -13,9 +14,16 @@ import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
  * 
  */
 public class GraphViewManager {
-	static public void setImage(String path) {
+	/**
+	 * Shows the image in the graph view with the given title.
+	 * 
+	 * @param img
+	 * @param title
+	 */
+	static public void setImage(Image img, String title) {
 		GraphImageView view = (GraphImageView) showView();
-		view.setImage(path);
+		view.setViewTitle(title);
+		view.setImage(img);
 	}
 
 	/**
