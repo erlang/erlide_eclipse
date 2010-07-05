@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -207,8 +206,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Tells whether the occurrence annotations are sticky i.e. whether they
-	 * stay even if there's no valid Java element at the current caret position.
-	 * Only valid if {@link #fMarkOccurrenceAnnotations} is <code>true</code>.
+	 * stay even if there's no valid erlang element at the current caret
+	 * position. Only valid if {@link #fMarkOccurrenceAnnotations} is
+	 * <code>true</code>.
 	 * 
 	 * @since 3.0
 	 */
@@ -420,6 +420,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& key.split("/")[0]
 							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
 				getBracketInserterPrefs();
+			} else if ("markingOccurences".equals(key)) {
+				final boolean newBooleanValue = event.getNewValue().equals(
+						"true");
+				if (newBooleanValue != fMarkOccurrenceAnnotations) {
+					fMarkOccurrenceAnnotations = newBooleanValue;
+					if (!fMarkOccurrenceAnnotations) {
+						uninstallOccurrencesFinder();
+					} else {
+						installOccurrencesFinder(true);
+					}
+				}
 			}
 		}
 	}
@@ -2022,10 +2033,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		fOccurrencesFinderJob = new OccurrencesFinderJob(document, refs,
 				selection);
-		// fOccurrencesFinderJob.setPriority(Job.DECORATE);
-		// fOccurrencesFinderJob.setSystem(true);
-		// fOccurrencesFinderJob.schedule();
-		fOccurrencesFinderJob.run(new NullProgressMonitor());
+		fOccurrencesFinderJob.setPriority(Job.DECORATE);
+		fOccurrencesFinderJob.setSystem(true);
+		fOccurrencesFinderJob.schedule();
+		// fOccurrencesFinderJob.run(new NullProgressMonitor());
 	}
 
 	private List<ErlangRef> getErlangRefs(
@@ -2091,12 +2102,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	protected boolean isMarkingOccurrences() {
-		return true; // TODO (JC) läs av preferenser på något sätt, måste vi
-		// skapa egen?
-		// IPreferenceStore store = getPreferenceStore();
-		// return store != null
-		// && store
-		// .getBoolean(PreferenceConstants.EDITOR_MARK_OCCURRENCES);
+		final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
+		return prefsNode.getBoolean("markingOccurences", true);
 	}
 
 	private class ErlangRef {
@@ -2173,14 +2180,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		private boolean isCanceled(final IProgressMonitor progressMonitor) {
-			return fCanceled || progressMonitor.isCanceled()
+			return fCanceled
+					|| progressMonitor.isCanceled()
 					|| fPostSelectionValidator != null
-					&& !fPostSelectionValidator.isValid(fSelection) /*
-																	 * ||
-																	 * fForcedMarkOccurrencesSelection
-																	 * ==
-																	 * fSelection
-																	 */
+					&& !(fPostSelectionValidator.isValid(fSelection) || fForcedMarkOccurrencesSelection == fSelection)
 					|| LinkedModeModel.hasInstalledModel(fDocument);
 		}
 
