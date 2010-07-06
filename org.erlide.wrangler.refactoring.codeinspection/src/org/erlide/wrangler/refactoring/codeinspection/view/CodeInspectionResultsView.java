@@ -59,6 +59,9 @@ public class CodeInspectionResultsView extends ViewPart {
 				IErlModule m = (IErlModule) e;
 				return m.getModuleName() + "\t\t- "
 						+ e.getResource().getFullPath().toString();
+			} else if (e instanceof IErlFunctionClause) {
+				IErlFunctionClause fc = (IErlFunctionClause) e;
+				return fc.getModule().getModuleName() + ":" + fc.toString();
 			}
 			return e.toString();
 		}

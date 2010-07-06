@@ -119,6 +119,10 @@
             id="org.erlide.wrangler.refactoring.codeinspection.dependencies"
             name="Dependencies Of A Module">
       </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
+            name="Non Tail Recursive Servers">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -145,6 +149,10 @@
       <handler
             class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies">
+      </handler>
+            <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive">
       </handler>
    </extension>
    <extension
@@ -190,6 +198,12 @@
                   commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies"
                   label="Dependencies Of A Module..."
                   mnemonic="D"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
+                  label="Non Tail Recursive Servers..."
+                  mnemonic="S"
                   style="push">
             </command>
          </menu>
