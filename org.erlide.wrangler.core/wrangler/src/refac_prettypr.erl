@@ -129,10 +129,13 @@ vertical_concat([{E, Form}| T], FileFormat, Acc) ->
     {ok, FToks, _} = refac_scan:string(F),
     EStr = [S || S <- refac_util:concat_toks(EToks), S =/= $\s, S =/= $'],
     FStr = [S || S <- refac_util:concat_toks(FToks), S =/= $\s, S =/= $'],
+    UseOriginalCode = (EStr == FStr) orelse
+	lists:usort(FStr--EStr)=="()" orelse
+	SpecialForm(Form),
     Acc1 = case Acc of
 	     "" -> Acc;
 	     _ ->
-		 case (EStr == FStr) or SpecialForm(Form) of
+		   case UseOriginalCode of
 		   true ->
 		       Acc;
 		   false when F =/= "" ->
@@ -142,7 +145,7 @@ vertical_concat([{E, Form}| T], FileFormat, Acc) ->
 		   _ -> Acc ++ Delimitor
 		 end
 	   end,
-    Str = case (EStr == FStr) or SpecialForm(Form) of
+    Str = case UseOriginalCode of
 	    true ->
 		refac_util:concat_toks(refac_misc:get_toks(Form));
 	    false ->
@@ -547,7 +550,6 @@ add_comment_prefix(S) -> [$%| S].
 
 %% This part ignores annotations and comments:
 
-
 lay_2(Node, Ctxt) ->
     case refac_syntax:type(Node) of
       %% We list literals and other common cases first.
@@ -735,8 +737,8 @@ lay_2(Node, Ctxt) ->
 	  D3 = lay_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
 	  HeadLastLn = case refac_syntax:clause_guard(Node) of
 			 none -> case Pats of
-				   [] -> get_start_line(Node);
-				   _ -> get_end_line(lists:last(Pats))
+				   [] -> get_end_line(Node);
+				   _ ->  get_end_line(lists:last(Pats))
 				 end;
 			 _ -> get_end_line(refac_syntax:clause_guard(Node))
 		       end,

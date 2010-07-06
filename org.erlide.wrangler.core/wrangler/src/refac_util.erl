@@ -630,15 +630,16 @@ do_add_range(Node, Toks) ->
 	  Fs = refac_syntax:binary_fields(Node),
 	  case Fs == [] of
 	    true -> refac_syntax:add_ann({range, {{L, C}, {L, C + 3}}}, Node);
-	    _ -> %% this should be changed when the parser is able 
-		%% to include location info for binary type qualifiers.
-		Hd = refac_misc:ghead("do_add_range:binary", Fs),
-		{S1, _E1} = get_range(Hd),
-		S11 = extend_forwards(Toks, S1, "<<"),
-		E21 = extend_backwards(Toks, S1, ">>"),
-		refac_syntax:add_ann({range, {S11, E21}}, Node)
+	    _ ->
+		  Hd = refac_misc:ghead("do_add_range:binary", Fs),
+		  Last= refac_misc:glast("do_add_range:binary", Fs),
+		  {S1, _E1} = get_range(Hd),
+		  {_S2, E2} = get_range(Last),
+		  S11 = extend_forwards(Toks, S1, "<<"),
+		  E21 = extend_backwards(Toks, E2, ">>"),
+		  refac_syntax:add_ann({range, {S11, E21}}, Node)
 	  end;
-      binary_field ->
+	binary_field ->
 	  Body = refac_syntax:binary_field_body(Node),
 	  Types = refac_syntax:binary_field_types(Node),
 	  {S1, E1} = get_range(Body),
@@ -647,7 +648,7 @@ do_add_range(Node, Toks) ->
 		      end,
 	  case E2 > E1  %%Temporal fix; need to change refac_syntax to make the pos info correct.
 	      of
-	    true ->
+	      true ->
 		refac_syntax:add_ann({range, {S1, E2}}, Node);
 	    false ->
 		refac_syntax:add_ann({range, {S1, E1}}, Node)
