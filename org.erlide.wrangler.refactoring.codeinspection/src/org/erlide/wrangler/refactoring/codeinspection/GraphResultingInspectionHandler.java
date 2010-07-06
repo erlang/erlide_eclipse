@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
+package org.erlide.wrangler.refactoring.codeinspection;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,13 +23,19 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
-import org.erlide.wrangler.refactoring.codeinspection.GraphViewManager;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 import com.abstratt.graphviz.GraphViz;
 import com.ericsson.otp.erlang.OtpErlangBoolean;
 
+/**
+ * This class is for handling commands which are from wrangler code inspection
+ * functionality, and result a graph.
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class GraphResultingInspectionHandler extends AbstractHandler {
 
 	@Override
@@ -95,7 +113,8 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 			File tmpFile, String functionName, String signature,
 			Object... parameters) {
 		try {
-			GraphViewManager.hideView();
+			CodeInspectionViewsManager
+					.hideView(CodeInspectionViewsManager.GRAPH_VIEW);
 			FileInputStream fis = new FileInputStream(tmpFile);
 			Boolean b = WranglerBackendManager.getRefactoringBackend()
 					.callSimpleInspection(functionName, signature, parameters);
@@ -103,7 +122,8 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 				if (fis.available() > 0) {
 
 					Image img = GraphViz.load(fis, "png", new Point(0, 0));
-					GraphViewManager.setImage(img, viewtTitle, tmpFile);
+					CodeInspectionViewsManager.showDotImage(img, viewtTitle,
+							tmpFile);
 				} else
 					MessageDialog.openInformation(GlobalParameters.getEditor()
 							.getSite().getShell(), viewtTitle, noResultMessage);

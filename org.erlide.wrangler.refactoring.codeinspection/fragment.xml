@@ -12,6 +12,15 @@
             name="Graph Viewer"
             restorable="false">
       </view>
+      <view
+            allowMultiple="true"
+            category="org.erlide.wrangler.refactoring.view"
+            class="org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView"
+            icon="icons/wrangler.gif"
+            id="org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview"
+            name="Code inspection results view"
+            restorable="false">
+      </view>
    </extension>
    
 <!-- Toolbar buttons -->
@@ -102,24 +111,40 @@
             id="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
             name="Improper Inter Module Dependency">
       </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.largemodules"
+            name="Large Modules">
+      </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.dependencies"
+            name="Dependencies Of A Module">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="GraphResultingInspectionHandler"
+            class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies">
       </handler>
       <handler
-      		class="GraphResultingInspectionHandler"
+      		class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph">
       </handler>
       <handler
-      		class="GraphResultingInspectionHandler"
+      		class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph">
       </handler>
       <handler
-      		class="GraphResultingInspectionHandler"
+      		class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies">
+      </handler>
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.largemodules">
+      </handler>
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies">
       </handler>
    </extension>
    <extension
@@ -153,6 +178,18 @@
                   commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
 				  label="Improper Inter Module Dependency..."
                   mnemonic="I"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.largemodules"
+                  label="Large Modules..."
+                  mnemonic="L"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies"
+                  label="Dependencies Of A Module..."
+                  mnemonic="D"
                   style="push">
             </command>
          </menu>

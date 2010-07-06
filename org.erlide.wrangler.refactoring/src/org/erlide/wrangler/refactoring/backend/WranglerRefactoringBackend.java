@@ -153,10 +153,10 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	 */
 	public boolean callSimpleInspection(final String functionName,
 			final String signature, final Object... parameters) {
-		ErlLogger
-				.info("Wrangler call: " + makeLogStr(functionName, parameters));
+		ErlLogger.info("Wrangler inspection call: "
+				+ makeLogStr(functionName, parameters));
 		RpcResult res;
-		res = backend.call_noexception(INSPECTION_MODULE, functionName,
+		res = backend.call_noexception(10000, INSPECTION_MODULE, functionName,
 				signature, parameters);
 		try {
 			if (res.isOk()) {
@@ -168,6 +168,28 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 			e.printStackTrace();
 		}
 		return false;
+
+	}
+
+	/**
+	 * Call an inspection function
+	 * 
+	 * @param functionName
+	 *            function name
+	 * @param signature
+	 *            signature
+	 * @param parameters
+	 *            function parameters
+	 * @return RpcResult wrapped result
+	 */
+	public RpcResult callInspection(final String functionName,
+			final String signature, final Object... parameters) {
+		ErlLogger.info("Wrangler inspection call: "
+				+ makeLogStr(functionName, parameters));
+		RpcResult res;
+		res = backend.call_noexception(INSPECTION_MODULE, functionName,
+				signature, parameters);
+		return res;
 
 	}
 

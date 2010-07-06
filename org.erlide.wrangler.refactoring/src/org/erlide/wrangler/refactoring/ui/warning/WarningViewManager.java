@@ -84,13 +84,8 @@ public class WarningViewManager {
 
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		IViewPart view;
-		try {
-			view = window.getActivePage().showView(warningViewID);
-			window.getActivePage().hideView(view);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
+		view = window.getActivePage().findView(warningViewID);
+		window.getActivePage().hideView(view);
 
 	}
-
 }
