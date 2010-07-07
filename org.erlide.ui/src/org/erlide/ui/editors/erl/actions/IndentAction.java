@@ -63,8 +63,8 @@ public class IndentAction extends ErlangTextEditorAction {
 					prefix, text, tabw, useTabs, prefs);
 			return r1;
 		} else {
-			final OtpErlangObject r1 = ErlideIndent.indentLines(b, template,
-					offset, length, text, tabw, useTabs, prefs, prefix);
+			final OtpErlangObject r1 = ErlideIndent.indentLines(b, offset,
+					length, text, tabw, useTabs, prefs);
 			return r1;
 		}
 	}
