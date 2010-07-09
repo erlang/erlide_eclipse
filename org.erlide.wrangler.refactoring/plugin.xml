@@ -287,11 +287,9 @@
 		<command id="org.erlide.wrangler.refactoring.renameprocess"
 			name="%renameProcessName" categoryId="org.erlide.wrangler.refactoring">
 		</command>
-  <command
-        categoryId="org.erlide.wrangler.refactoring"
-        id="org.erlide.wrangler.refactoring.partitionexports"
-        name="%partitionExportsName">
-  </command>
+		<command categoryId="org.erlide.wrangler.refactoring"
+			id="org.erlide.wrangler.refactoring.partitionexports" name="%partitionExportsName">
+		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -340,10 +338,8 @@
 				<separator name="org.erlide.wrangler.refactoring.separator2"
 					visible="true">
 				</separator>
-				<menu
-          id="org.erlide.wrangler.refactormenu.quickcheck"
-          label="QuickCheck"
-          mnemonic="C">
+				<menu id="org.erlide.wrangler.refactormenu.quickcheck" label="QuickCheck"
+					mnemonic="C">
 					<command commandId="org.erlide.wrangler.refactoring.introducelet"
 						style="push">
 					</command>
@@ -365,12 +361,11 @@
 					<command commandId="org.erlide.wrangler.refactoring.gen_fsmtorecord"
 						style="push">
 					</command>
-     <visibleWhen>
-        <test
-              property="org.erlide.wrangler.refactoring.hasQuickCheck"
-              value="true">
-        </test>
-     </visibleWhen>
+					<visibleWhen>
+						<test property="org.erlide.wrangler.refactoring.hasQuickCheck"
+							value="true">
+						</test>
+					</visibleWhen>
 				</menu>
 				<separator name="org.erlide.wrangler.refactoring.separator3"
 					visible="true">
@@ -388,11 +383,9 @@
 					id="org.erlide.wrangler.refactoring.normalizerecordexpression"
 					style="push">
 				</command>
-    <command
-          commandId="org.erlide.wrangler.refactoring.partitionexports"
-          id="org.erlide.wrangler.refactoring.partitionexports"
-          style="push">
-    </command>
+				<command commandId="org.erlide.wrangler.refactoring.partitionexports"
+					id="org.erlide.wrangler.refactoring.partitionexports" style="push">
+				</command>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -522,36 +515,24 @@
 		<handler commandId="org.erlide.wrangler.refactoring.renameprocess"
 			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 		</handler>
-  <handler
-        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
-        commandId="org.erlide.wrangler.refactoring.partitionexports">
-  </handler>
+		<handler class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+			commandId="org.erlide.wrangler.refactoring.partitionexports">
+		</handler>
 	</extension>
- <extension
-       point="org.eclipse.core.expressions.propertyTesters">
-    <propertyTester
-          class="org.erlide.wrangler.refactoring.ui.QuickCheckTester"
-          id="org.erlide.wrangler.refactoring.quickchecktester"
-          namespace="org.erlide.wrangler.refactoring"
-          properties="hasQuickCheck"
-          type="java.lang.Object">
-    </propertyTester>
- </extension>
- <extension
-       point="org.eclipse.ui.views">
-    <category
-          id="org.erlide.wrangler.refactoring.view"
-          name="Wrangler">
-    </category>
-    <view
-          allowMultiple="false"
-          category="org.erlide.wrangler.refactoring.view"
-          class="org.erlide.wrangler.refactoring.ui.warning.WarningView"
-          icon="icons/wrangler.gif"
-          id="org.erlide.wrangler.refactoring.ui.warning.WarningView"
-          name="Refactoring warning messages"
-          restorable="false">
-    </view>
- </extension>
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester class="org.erlide.wrangler.refactoring.ui.QuickCheckTester"
+			id="org.erlide.wrangler.refactoring.quickchecktester" namespace="org.erlide.wrangler.refactoring"
+			properties="hasQuickCheck" type="java.lang.Object">
+		</propertyTester>
+	</extension>
+	<extension point="org.eclipse.ui.views">
+		<category id="org.erlide.wrangler.refactoring.view" name="Wrangler">
+		</category>
+		<view allowMultiple="false" category="org.erlide.wrangler.refactoring.view"
+			class="org.erlide.wrangler.refactoring.ui.warning.WarningView" icon="icons/wrangler.gif"
+			id="org.erlide.wrangler.refactoring.ui.warning.WarningView" name="Refactoring warning messages"
+			restorable="false">
+		</view>
+	</extension>
 
 </plugin>
