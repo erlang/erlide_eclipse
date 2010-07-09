@@ -69,12 +69,12 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
 					fpl, minToks, minClones, GlobalParameters.getTabWidth(),
 					suffixPath);
 		} else {
 			functionName = "duplicated_code_eclipse";
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
 					sel.getSearchPath(), minToks, minClones, GlobalParameters
 							.getTabWidth(), suffixPath);
 		}

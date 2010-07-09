@@ -32,7 +32,7 @@ public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 				.getWranglerSelection();
 		WranglerRefactoringBackend backend = WranglerBackendManager
 				.getRefactoringBackend();
-		RpcResult result = backend.callWithoutParser(TIMEOUT,
+		RpcResult result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
 				"expr_search_eclipse", "sxxi", sel.getFilePath(), sel
 						.getSelectionRange().getStartPos(), sel
 						.getSelectionRange().getEndPos(), GlobalParameters

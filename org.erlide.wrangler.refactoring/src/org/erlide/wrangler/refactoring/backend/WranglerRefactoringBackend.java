@@ -37,6 +37,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 	final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
 	protected Backend backend;
+	public static final int UNLIMITED_TIMEOUT = Integer.MAX_VALUE;
 
 	/**
 	 * Default constructor
@@ -156,8 +157,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		ErlLogger.info("Wrangler inspection call: "
 				+ makeLogStr(functionName, parameters));
 		RpcResult res;
-		res = backend.call_noexception(10000, INSPECTION_MODULE, functionName,
-				signature, parameters);
+		res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
+				functionName, signature, parameters);
 		try {
 			if (res.isOk()) {
 				OtpErlangAtom b = (OtpErlangAtom) res.getValue();
@@ -187,8 +188,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 		ErlLogger.info("Wrangler inspection call: "
 				+ makeLogStr(functionName, parameters));
 		RpcResult res;
-		res = backend.call_noexception(INSPECTION_MODULE, functionName,
-				signature, parameters);
+		res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
+				functionName, signature, parameters);
 		return res;
 
 	}

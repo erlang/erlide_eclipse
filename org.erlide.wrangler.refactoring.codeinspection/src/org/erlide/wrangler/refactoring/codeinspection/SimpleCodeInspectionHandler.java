@@ -426,7 +426,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		InputDialog dialog = new InputDialog(shell, "Lines of a large module",
 				"Lines of a large module:", "", new IntegerInputValidator());
 		int ret = dialog.open();
-		if (ret == dialog.CANCEL)
+		if (ret == InputDialog.CANCEL)
 			return;
 		int lines = Integer.parseInt(dialog.getValue());
 		RpcResult res = WranglerBackendManager.getRefactoringBackend()
