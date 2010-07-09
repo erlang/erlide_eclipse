@@ -27,6 +27,7 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
@@ -40,12 +41,34 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 import erlang.FunctionRef;
 
+/**
+ * Handles commands, which needs only a listing UI, and inspects the code.
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		IHandler {
+	protected final class IntegerInputValidator implements IInputValidator {
+		@Override
+		public String isValid(String newText) {
+			try {
+				Integer.parseInt(newText);
+				return null;
+			} catch (Exception e) {
+				return "Please type an integer!";
+			}
+
+		}
+	}
+
 	static protected final String LARGE_MODULES_VIEW_ID = "largemodules";
 	static protected final String DEPENECIES_1_VIEW_ID = "dependencies1";
 	static protected final String DEPENECIES_2_VIEW_ID = "dependencies2";
 	static protected final String NON_TAIL_RECURSIVE_VIEW_ID = "nontailrecursive";
+	static protected final String NOT_FLUSH_UNKNOWN_MESSAGES = "notflush";
+	static protected final String NESTED_EXPRESSIONS = "nested";
+	static protected final String LONG_FUNCTIONS = "longfunctions";
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -70,9 +93,193 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.codeinspection.nontailrecursive")) {
 			handleNonTailRecursiveCall(wranglerSelection, shell);
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.codeinspection.notflush")) {
+			handleNotFlushUnknownMessages(wranglerSelection, shell);
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.codeinspection.nestedif")) {
+			handleNested(wranglerSelection, shell, "if");
+
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.codeinspection.nestedcase")) {
+			handleNested(wranglerSelection, shell, "case");
+
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.codeinspection.nestedreceive")) {
+			handleNested(wranglerSelection, shell, "receive");
+
+		} else if (actionId
+				.equals("org.erlide.wrangler.refactoring.codeinspection.longfunctions")) {
+			handleLongFunctions(wranglerSelection, shell);
 		}
 
 		return event;
+	}
+
+	private void handleLongFunctions(IErlSelection wranglerSelection,
+			Shell shell) {
+		try {
+			CodeInspectionViewsManager.hideView(LONG_FUNCTIONS);
+			// call inputdialog
+			InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
+					"Search for long functions", "Number of lines:",
+					"Search in the project", "", new IntegerInputValidator());
+			if (InputDialogWithCheckbox.OK == dialog.open()) {
+				int linesVal = Integer.parseInt(dialog.getValue());
+				boolean inProject = dialog.isCheckBoxChecked();
+				RpcResult res = null;
+				if (inProject) {
+					res = WranglerBackendManager.getRefactoringBackend()
+							.callInspection("long_functions_in_dirs_eclipse",
+									"ixi", linesVal,
+									wranglerSelection.getSearchPath(),
+									GlobalParameters.getTabWidth());
+				} else {
+					res = WranglerBackendManager.getRefactoringBackend()
+							.callInspection("long_functions_in_file_eclipse",
+									"sixi", wranglerSelection.getFilePath(),
+									linesVal,
+									wranglerSelection.getSearchPath(),
+									GlobalParameters.getTabWidth());
+				}
+				// handle rpc
+				ArrayList<IErlElement> elements = processFunctionResult(shell,
+						res);
+				if (elements == null)
+					return;
+				// show result
+				if (!elements.isEmpty()) {
+					CodeInspectionViewsManager.showErlElements(
+							"Long functions", elements, LONG_FUNCTIONS);
+				} else {
+					MessageDialog.openInformation(shell, "No result",
+							"Could not found any function which is longer, than "
+									+ linesVal + " lines.");
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void handleNested(IErlSelection wranglerSelection, Shell shell,
+			String type) {
+		try {
+			CodeInspectionViewsManager.hideView(NESTED_EXPRESSIONS + type);
+			// call inputdialog
+			InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
+					"Search for nested expression", "Nest level:",
+					"Search in the project", "", new IntegerInputValidator());
+			if (InputDialogWithCheckbox.OK == dialog.open()) {
+				int nestedVal = Integer.parseInt(dialog.getValue());
+				boolean inProject = dialog.isCheckBoxChecked();
+				RpcResult res = null;
+				if (inProject) {
+					res = WranglerBackendManager.getRefactoringBackend()
+							.callInspection("nested_exprs_in_dirs_eclipse",
+									"iaxi", nestedVal, type,
+									wranglerSelection.getSearchPath(),
+									GlobalParameters.getTabWidth());
+				} else {
+					res = WranglerBackendManager.getRefactoringBackend()
+							.callInspection("nested_exprs_in_file_eclipse",
+									"siaxi", wranglerSelection.getFilePath(),
+									nestedVal, type,
+									wranglerSelection.getSearchPath(),
+									GlobalParameters.getTabWidth());
+				}
+				// handle rpc
+				ArrayList<IErlElement> elements = processFunctionResult(shell,
+						res);
+				if (elements == null)
+					return;
+				// show result
+				if (!elements.isEmpty()) {
+					CodeInspectionViewsManager.showErlElements("Nested " + type
+							+ " expressions", elements, NESTED_EXPRESSIONS
+							+ type);
+				} else {
+					MessageDialog
+							.openInformation(shell, "No result",
+									"Could not found any " + nestedVal
+											+ " levels nested " + type
+											+ " expression!");
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void handleNotFlushUnknownMessages(IErlSelection wranglerSelection,
+			Shell shell) {
+		String inFile = "not_flush_unknown_messages_in_file_eclipse";
+		String inProject = "not_flush_unknown_messages_in_dirs_eclipse";
+		CodeInspectionViewsManager.hideView(NOT_FLUSH_UNKNOWN_MESSAGES);
+		Boolean answer = MessageDialog.openQuestion(shell,
+				"Find incomplete receive patterns",
+				"Would you like to run the scan in the whole project?");
+		try {
+			RpcResult result = null;
+			String function = "";
+			if (answer) {
+				function = inProject;
+				result = WranglerBackendManager.getRefactoringBackend()
+						.callInspection(function, "xi",
+								wranglerSelection.getSearchPath(),
+								GlobalParameters.getTabWidth());
+			} else {
+				function = inFile;
+				result = WranglerBackendManager.getRefactoringBackend()
+						.callInspection(function, "sxi",
+								wranglerSelection.getFilePath(),
+								wranglerSelection.getSearchPath(),
+								GlobalParameters.getTabWidth());
+			}
+
+			ArrayList<IErlElement> elements = processFunctionResult(shell,
+					result);
+
+			if (elements == null)
+				return;
+			if (!elements.isEmpty()) {
+				CodeInspectionViewsManager.showErlElements(
+						"Incomplete receive patterns", elements,
+						NOT_FLUSH_UNKNOWN_MESSAGES);
+			} else {
+				MessageDialog.openInformation(shell, "No result",
+						"Could not found any incomplete receive patterns!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private ArrayList<IErlElement> processFunctionResult(Shell shell,
+			RpcResult result) throws OtpErlangRangeException {
+		ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
+		OtpErlangObject obj = result.getValue();
+		OtpErlangTuple restuple = (OtpErlangTuple) obj;
+		OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
+		if (resindicator.atomValue().equals("ok")) {
+			OtpErlangList erlangFunctionList = (OtpErlangList) restuple
+					.elementAt(1);
+			for (int i = 0; i < erlangFunctionList.arity(); ++i) {
+				OtpErlangTuple fTuple = (OtpErlangTuple) erlangFunctionList
+						.elementAt(i);
+				IErlFunctionClause f = extractFunction(fTuple);
+				elements.add(f);
+			}
+		} else {
+			OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
+			MessageDialog.openError(shell, "Error", s.stringValue());
+			return null;
+		}
+		return elements;
 	}
 
 	private void handleNonTailRecursiveCall(IErlSelection wranglerSelection,
@@ -102,25 +309,10 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 								GlobalParameters.getTabWidth());
 			}
 
-			ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
-			OtpErlangObject obj = res.getValue();
-			OtpErlangTuple restuple = (OtpErlangTuple) obj;
-			OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
-			if (resindicator.atomValue().equals("ok")) {
-				OtpErlangList erlangFunctionList = (OtpErlangList) restuple
-						.elementAt(1);
-				for (int i = 0; i < erlangFunctionList.arity(); ++i) {
-					OtpErlangTuple fTuple = (OtpErlangTuple) erlangFunctionList
-							.elementAt(i);
-					IErlFunctionClause f = extractFunction(fTuple);
-					elements.add(f);
-				}
-			} else {
-				OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
-				MessageDialog.openError(shell, "Error", s.stringValue());
-				return;
-			}
+			ArrayList<IErlElement> elements = processFunctionResult(shell, res);
 
+			if (elements == null)
+				return;
 			if (!elements.isEmpty()) {
 				CodeInspectionViewsManager.showErlElements(
 						"Non tail recursive servers", elements,
@@ -232,19 +424,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 				LARGE_MODULES_VIEW_ID);
 
 		InputDialog dialog = new InputDialog(shell, "Lines of a large module",
-				"Lines of a large module:", "", new IInputValidator() {
-
-					@Override
-					public String isValid(String newText) {
-						try {
-							Integer.parseInt(newText);
-							return null;
-						} catch (Exception e) {
-							return "Please type an integer!";
-						}
-
-					}
-				});
+				"Lines of a large module:", "", new IntegerInputValidator());
 		int ret = dialog.open();
 		if (ret == dialog.CANCEL)
 			return;

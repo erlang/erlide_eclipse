@@ -123,6 +123,26 @@
             id="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
             name="Non Tail Recursive Servers">
       </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.notflush"
+            name="Not flush unknown messages">
+      </command>
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.nestedif"
+            name="Nested if expressions">
+      </command>      
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.nestedcase"
+            name="Nested case expressions">
+      </command>  
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.nestedreceive"
+            name="Nested receive expressions">
+      </command>  
+      <command
+            id="org.erlide.wrangler.refactoring.codeinspection.longfunctions"
+            name="Long functinos">
+      </command>                     
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -154,6 +174,26 @@
             class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
             commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive">
       </handler>
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.notflush">
+      </handler>    
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.nestedif">
+      </handler>   
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.nestedcase">
+      </handler>      
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.nestedreceive">
+      </handler>
+      <handler
+            class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+            commandId="org.erlide.wrangler.refactoring.codeinspection.longfunctions">
+      </handler>  
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -202,10 +242,40 @@
             </command>
             <command
                   commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
-                  label="Non Tail Recursive Servers..."
+                  label="Show Non Tail Recursive Servers..."
                   mnemonic="S"
                   style="push">
             </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.notflush"
+                  label="Incomplete Receive Patterns..."
+                  mnemonic="S"
+                  style="push">
+            </command>     
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.nestedif"
+                  label="Nested If Expressions..."
+                  mnemonic="I"
+                  style="push">
+            </command>        
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.nestedcase"
+                  label="Nested Case Expressions..."
+                  mnemonic="C"
+                  style="push">
+            </command>     
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.nestedreceive"
+                  label="Nested Receive Expressions..."
+                  mnemonic="R"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.erlide.wrangler.refactoring.codeinspection.longfunctions"
+                  label="Long Functions..."
+                  mnemonic="F"
+                  style="push">
+            </command>                      
          </menu>
       </menuContribution>
    </extension>
