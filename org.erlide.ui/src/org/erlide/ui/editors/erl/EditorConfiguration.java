@@ -45,7 +45,7 @@ import org.erlide.ui.information.ErlInformationPresenter;
 import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.IColorManager;
-import org.erlide.ui.util.eclipse.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
 /**
  * The editor configurator

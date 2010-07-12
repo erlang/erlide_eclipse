@@ -1,0 +1,8 @@
+In this directory add test projects that can be imported in a workspace 
+and tests can be run on them.
+
+The goal is to have a set of projects that depend on each other and recreate
+the most complex settings at user's site, including use of external_modules 
+and external_includes.
+
+This way we don't need to rely on testing at in a Shade environment.

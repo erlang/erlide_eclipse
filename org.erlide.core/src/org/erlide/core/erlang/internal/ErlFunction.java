@@ -18,6 +18,8 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlangFunction;
 
+import com.ericsson.otp.erlang.OtpErlangList;
+
 /**
  * 
  * @author Vlad Dumitrescu
@@ -32,6 +34,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	private final String fComment;
 
+	private final List<String> parameters;
+
 	/**
 	 * @param parent
 	 * @param name
@@ -41,12 +45,13 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	 */
 	protected ErlFunction(final ErlElement parent, final String name,
 			final int arity, final String head, final String comment,
-			final boolean exported) {
+			final boolean exported, final OtpErlangList parameters) {
 		super(parent, name);
 		this.arity = arity;
 		this.head = head;
 		fComment = comment;
 		fExported = exported;
+		this.parameters = ErlFunctionClause.getParameters(parameters);
 	}
 
 	public List<IErlFunctionClause> getClauses() {
@@ -152,6 +157,10 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
 	public String getFunctionName() {
 		return getName();
+	}
+
+	public List<String> getParameters() {
+		return parameters;
 	}
 
 }

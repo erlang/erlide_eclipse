@@ -57,10 +57,6 @@ public class DefaultErlangFoldingPreferenceBlock implements
 	private OverlayKey[] createKeys() {
 		final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
 
-		overlayKeys
-				.add(new OverlayPreferenceStore.OverlayKey(
-						TypeDescriptor.BOOLEAN,
-						PreferenceConstants.EDITOR_FOLDING_EDOC));
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				TypeDescriptor.BOOLEAN,
 				PreferenceConstants.EDITOR_FOLDING_CLAUSES));
@@ -70,12 +66,6 @@ public class DefaultErlangFoldingPreferenceBlock implements
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				TypeDescriptor.BOOLEAN,
 				PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS));
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-				TypeDescriptor.BOOLEAN,
-				PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS));
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-				TypeDescriptor.BOOLEAN,
-				PreferenceConstants.EDITOR_FOLDING_EXPORTS));
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
 				TypeDescriptor.BOOLEAN,
 				PreferenceConstants.EDITOR_FOLDING_TYPESPECS));
@@ -101,9 +91,6 @@ public class DefaultErlangFoldingPreferenceBlock implements
 		label
 				.setText(FoldingMessages.DefaultErlangFoldingPreferenceBlock_title);
 
-		addCheckBox(inner,
-				FoldingMessages.DefaultErlangFoldingPreferenceBlock_edoc,
-				PreferenceConstants.EDITOR_FOLDING_EDOC, 0);
 		addCheckBox(
 				inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_header_comments,
@@ -114,13 +101,6 @@ public class DefaultErlangFoldingPreferenceBlock implements
 		addCheckBox(inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_comments,
 				PreferenceConstants.EDITOR_FOLDING_COMMENTS, 0);
-		addCheckBox(
-				inner,
-				FoldingMessages.DefaultErlangFoldingPreferenceBlock_macro_declarations,
-				PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS, 0);
-		addCheckBox(inner,
-				FoldingMessages.DefaultErlangFoldingPreferenceBlock_exports,
-				PreferenceConstants.EDITOR_FOLDING_EXPORTS, 0);
 		addCheckBox(inner,
 				FoldingMessages.DefaultErlangFoldingPreferenceBlock_typespecs,
 				PreferenceConstants.EDITOR_FOLDING_TYPESPECS, 0);

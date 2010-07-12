@@ -1,6 +1,8 @@
 package erlang;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -43,27 +45,27 @@ public class ErlideContextAssist {
 	public static final int RECORD_FIELD = 2;
 
 	public static class RecordCompletion {
-		public RecordCompletion(final int kind, final String name,
-				final String prefix) {
-			super();
-			this.kind = kind;
-			this.name = name;
-			this.prefix = prefix;
-		}
+
+		private final int kind;
+		private final String name;
+		private final String prefix;
+		private final List<String> fields;
 
 		public RecordCompletion(final OtpErlangTuple r)
 				throws OtpErlangRangeException {
 			OtpErlangLong kindL = (OtpErlangLong) r.elementAt(0);
 			OtpErlangAtom nameA = (OtpErlangAtom) r.elementAt(1);
 			OtpErlangAtom prefixA = (OtpErlangAtom) r.elementAt(2);
+			OtpErlangList fieldL = (OtpErlangList) r.elementAt(3);
 			kind = kindL.intValue();
 			name = nameA.atomValue();
 			prefix = prefixA.atomValue();
+			fields = new ArrayList<String>(fieldL.arity());
+			for (OtpErlangObject object : fieldL) {
+				OtpErlangAtom f = (OtpErlangAtom) object;
+				getFields().add(f.atomValue());
+			}
 		}
-
-		private final int kind;
-		private final String name;
-		private final String prefix;
 
 		public boolean isNameWanted() {
 			return kind == RECORD_NAME;
@@ -80,6 +82,11 @@ public class ErlideContextAssist {
 		public String getPrefix() {
 			return prefix;
 		}
+
+		public List<String> getFields() {
+			return fields;
+		}
+
 	}
 
 	public static RecordCompletion checkRecordCompletion(final Backend b,

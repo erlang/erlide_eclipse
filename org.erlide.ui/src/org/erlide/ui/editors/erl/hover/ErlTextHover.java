@@ -42,7 +42,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -66,8 +65,8 @@ import org.erlide.ui.information.ErlInformationPresenter;
 import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.eclipse.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.HTMLPrinter;
+import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -103,11 +102,7 @@ public class ErlTextHover implements ITextHover,
 		if (fEditor != null) {
 			fEditor.reconcileNow();
 		}
-		final ErlScanner scanner = fModule.getScanner();
-		if (scanner == null) {
-			return null;
-		}
-		final ErlToken token = scanner.getTokenAt(offset);
+		final ErlToken token = fModule.getScannerTokenAt(offset);
 		if (token == null) {
 			return null;
 		}
@@ -315,9 +310,6 @@ public class ErlTextHover implements ITextHover,
 						return null;
 					}
 					String definedName = a1.atomValue();
-					if (definedName.charAt(0) == '?') {
-						definedName = definedName.substring(1);
-					}
 					// TODO code below should be cleaned up, we should factorize
 					// and
 					// use same code for content assist, open and hover
@@ -330,7 +322,8 @@ public class ErlTextHover implements ITextHover,
 						} else if (openKind.equals("external")) {
 							final OtpErlangAtom a2 = (OtpErlangAtom) t
 									.elementAt(2);
-							final String mod = definedName;
+							final String mod = ErlModelUtils.checkMacroValue(
+									definedName, module);
 							definedName = a2.atomValue();
 							arityLong = (OtpErlangLong) t.elementAt(3);
 							IResource r = null;
@@ -341,7 +334,7 @@ public class ErlTextHover implements ITextHover,
 								final String path = Util.stringValue(s4);
 								try {
 									r = ErlModelUtils.findExternalModule(mod,
-											path, module.getResource()
+											path, module, module.getResource()
 													.getProject(), true);
 								} catch (final CoreException e2) {
 								}
@@ -392,13 +385,15 @@ public class ErlTextHover implements ITextHover,
 						}
 						result.append(comment);
 					} else {
+						if (definedName.charAt(0) == '?') {
+							definedName = definedName.substring(1);
+						}
 						final IErlElement.Kind kindToFind = openKind
 								.equals("record") ? IErlElement.Kind.RECORD_DEF
 								: IErlElement.Kind.MACRO_DEF;
 						final IErlProject project = module.getProject();
 						final IProject proj = project == null ? null
 								: (IProject) project.getResource();
-						definedName = a1.toString();
 						final String externalIncludes = model.getExternal(
 								erlProject, ErlangCore.EXTERNAL_INCLUDES);
 						IErlPreprocessorDef pd = ErlModelUtils

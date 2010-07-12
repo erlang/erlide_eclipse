@@ -14,7 +14,7 @@ package org.erlide.core.preferences;
 
 /**
  * Constants used in project and plugin preferences
- * 
+ *
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
 public final class ProjectPreferencesConstants {
@@ -35,10 +35,10 @@ public final class ProjectPreferencesConstants {
 	public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
 	public static final String RUNTIME_VERSION = "backend_version";
-	public static final String DEFAULT_RUNTIME_VERSION = "R12B";
+	public static final String DEFAULT_RUNTIME_VERSION = "R13B";
 
 	public static final String RUNTIME_NAME = "backend_name";
-	public static final String DEFAULT_RUNTIME_NAME = "R12B";
+	public static final String DEFAULT_RUNTIME_NAME = "R13B";
 
 	public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
 	public static final String DEFAULT_EXTERNAL_MODULES = "";

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.util.eclipse;
+package org.erlide.ui.util.eclipse.text;
 
 /**
  * A browser input contains an input element and a previous and a next input, if

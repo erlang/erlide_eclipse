@@ -1,11 +1,17 @@
 #! /bin/sh
 
-BASE=$1
-COMMIT=$2
+if [ "$#" == "0" ] 
+then
+	echo "Check which plugin versions need to be updated and add commit info to the CHANGES file"
+	echo "Usage: $0 base cmd"
+	echo "    base = branch or tag for the latest build"
+	echo "    cmd = <nothing> : check which plugins need version updates"
+	echo "          run       : modify the plugins versions where needed, do not commit"
+	echo "          commit    : as above and commit changes"
+fi
 
-# $COMMIT = co   = comit changes
-#           dry  = dry-run, just test versions
-#                = modify plugin/feature versions
+BASE=$1
+CMD=$2
 
 CRT=$(git branch | grep '*' | cut -d ' ' -f 2)
 PROJECTS=$(git log --name-only $BASE..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
@@ -113,7 +119,7 @@ do
                   echo "$PRJ::"
 		  NEW=$(inc_version $NEW $CH)
 		  
-		  if [ "$COMMIT" != "dry" ]
+		  if [ "$CMD" != "" ]
 		  then
 			sed "s/Bundle-Version: $OLD/Bundle-Version: $NEW/" < $PRJ/META-INF/MANIFEST.MF > $PRJ/META-INF/MANIFEST.MF1
 			mv $PRJ/META-INF/MANIFEST.MF1 $PRJ/META-INF/MANIFEST.MF
@@ -139,7 +145,7 @@ then
 	  VER=$(inc_version $NEW $CHG)
 	  echo "-> $VER"
 	  
-	  if [ "$COMMIT" != "dry" ]
+	  if [ "$CMD" != "" ]
 	  then
 		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < org.erlide/feature.xml > org.erlide/feature.xml1
 		mv org.erlide/feature.xml1 org.erlide/feature.xml
@@ -158,7 +164,7 @@ then
   fi
 fi
 
-if [ "$COMMIT" = "co" ] 
+if [ "$CMD" = "commit" ] 
 then
   git commit -a -m "prepared $VER_"
 fi

@@ -566,6 +566,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		return null;
 	}
 
+	public IErlElement getChildWithResource(final IResource rsrc) {
+		if (this instanceof IParent) {
+			return getChildWithResource((IParent) this, rsrc);
+		}
+		return null;
+	}
+
 	/**
 	 * Returns <code>true</code> if this child is in my children collection
 	 */
@@ -685,6 +692,20 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 		try {
 			for (final IErlElement child : parent.getChildren()) {
 				if (child.getName().equals(name)) {
+					return child;
+				}
+			}
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static IErlElement getChildWithResource(final IParent parent,
+			final IResource rsrc) {
+		try {
+			for (final IErlElement child : parent.getChildren()) {
+				if (rsrc.equals(child.getResource())) {
 					return child;
 				}
 			}

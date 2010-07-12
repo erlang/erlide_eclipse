@@ -10,18 +10,35 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.jinterface.backend.util.Util;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
-	String head;
+	final String head;
+	final List<String> parameters;
 
 	protected ErlFunctionClause(final IErlElement parent, final String name,
-			final String head) {
+			final String head, final OtpErlangList parameters) {
 		super(parent, name);
 		this.head = head;
+		this.parameters = getParameters(parameters);
+	}
+
+	public static ArrayList<String> getParameters(final OtpErlangList parameters) {
+		ArrayList<String> pars = new ArrayList<String>(parameters.arity());
+		for (OtpErlangObject i : parameters) {
+			pars.add(Util.stringValue(i));
+		}
+		return pars;
 	}
 
 	public String getHead() {
@@ -58,5 +75,9 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 	public int getArity() {
 		final IErlFunction f = (IErlFunction) getParent();
 		return f.getArity();
+	}
+
+	public List<String> getParameters() {
+		return parameters;
 	}
 }

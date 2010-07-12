@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.util.eclipse;
+package org.erlide.ui.util.eclipse.text;
 
 import org.eclipse.jface.text.DefaultInformationControl;
 

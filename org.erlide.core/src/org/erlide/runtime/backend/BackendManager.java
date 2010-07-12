@@ -64,12 +64,11 @@ import com.google.common.collect.Sets;
 public final class BackendManager extends OtpNodeStatus implements
 		IEpmdListener {
 
-	public static final String DEFAULT_VERSION = "R12B";
+	public static final String DEFAULT_VERSION = "R13B";
 	public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
-			"R11B", "R12B", "R13B" };
+			"R12B", "R13B", "R14A" };
 	public static final String[] SUPPORTED_VERSIONS = new String[] { "",
-			"R11B-3", "R11B-4", "R11B-5", "R12B-1", "R12B-2", "R12B-3",
-			"R12B-4", "R12B-5", "R13B" };
+			"R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
 
 	public enum BackendEvent {
 		ADDED, REMOVED
@@ -232,6 +231,8 @@ public final class BackendManager extends OtpNodeStatus implements
 		try {
 			workingCopy = type.newInstance(null, "internal "
 					+ info.getNodeName());
+			workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+					"ISO-8859-1");
 			workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME, info
 					.getNodeName());
 			workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, info

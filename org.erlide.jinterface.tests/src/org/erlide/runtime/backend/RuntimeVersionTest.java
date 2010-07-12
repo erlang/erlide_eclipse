@@ -9,57 +9,50 @@ public class RuntimeVersionTest {
 
 	@Test
 	public void toString_1() {
-		final String expect = "R11";
+		final String expect = "R12";
 		final RuntimeVersion test = new RuntimeVersion(expect);
 		Assert.assertEquals(expect, test.toString());
 	}
 
 	@Test
 	public void toString_2() {
-		final String expect = "R11A";
+		final String expect = "R12A";
 		final RuntimeVersion test = new RuntimeVersion(expect);
 		Assert.assertEquals(expect, test.toString());
 	}
 
 	@Test
 	public void toString_3() {
-		final String expect = "R11A-3";
+		final String expect = "R12A-3";
 		final RuntimeVersion test = new RuntimeVersion(expect);
 		Assert.assertEquals(expect, test.toString());
 	}
 
 	@Test
-	public void compare_1() {
-		final RuntimeVersion test1 = new RuntimeVersion("R11");
-		final RuntimeVersion test2 = new RuntimeVersion("R12");
-		Assert.assertEquals(true, test1.compareTo(test2) < 0);
-	}
-
-	@Test
 	public void compare_2() {
-		final RuntimeVersion test1 = new RuntimeVersion("R11");
-		final RuntimeVersion test2 = new RuntimeVersion("R11A");
+		final RuntimeVersion test1 = new RuntimeVersion("R12");
+		final RuntimeVersion test2 = new RuntimeVersion("R12A");
 		Assert.assertEquals(true, test1.compareTo(test2) < 0);
 	}
 
 	@Test
 	public void compare_3() {
-		final RuntimeVersion test1 = new RuntimeVersion("R11A");
-		final RuntimeVersion test2 = new RuntimeVersion("R11B");
+		final RuntimeVersion test1 = new RuntimeVersion("R12A");
+		final RuntimeVersion test2 = new RuntimeVersion("R12B");
 		Assert.assertEquals(true, test1.compareTo(test2) < 0);
 	}
 
 	@Test
 	public void compare_4() {
-		final RuntimeVersion test1 = new RuntimeVersion("R11A-1");
-		final RuntimeVersion test2 = new RuntimeVersion("R11A-2");
+		final RuntimeVersion test1 = new RuntimeVersion("R12A-1");
+		final RuntimeVersion test2 = new RuntimeVersion("R12A-2");
 		Assert.assertEquals(true, test1.compareTo(test2) < 0);
 	}
 
 	@Test
 	public void compare_5() {
-		final RuntimeVersion test1 = new RuntimeVersion("R11A-3");
-		final RuntimeVersion test2 = new RuntimeVersion("R11B-1");
+		final RuntimeVersion test1 = new RuntimeVersion("R12A-3");
+		final RuntimeVersion test2 = new RuntimeVersion("R12B-1");
 		Assert.assertEquals(true, test1.compareTo(test2) < 0);
 	}
 

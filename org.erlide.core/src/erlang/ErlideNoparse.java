@@ -16,14 +16,13 @@ public class ErlideNoparse {
 
 	public static OtpErlangTuple initialParse(final Backend b,
 			final String scannerModuleName, final String moduleFileName,
-			final String initialText, final String stateDir,
-			final boolean updateCaches, final boolean updateRefs) {
+			final String stateDir, final boolean updateCaches,
+			final boolean updateRefs) {
 		OtpErlangTuple res = null;
 		try {
-			res = (OtpErlangTuple) b.call(2000000, ERLIDE_NOPARSE,
-					"initial_parse", "asbsoo", scannerModuleName,
-					moduleFileName, initialText, stateDir, updateCaches,
-					updateRefs);
+			res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
+					"initial_parse", "assoo", scannerModuleName,
+					moduleFileName, stateDir, updateCaches, updateRefs);
 			if (res.arity() > 2) {
 				ErlLogger.debug("initialParse " + res.elementAt(2));
 			}
@@ -45,13 +44,13 @@ public class ErlideNoparse {
 		return res;
 	}
 
-	public static void destroy(final Backend b, final String module) {
-		try {
-			b.call("erlide_noparse_server", "destroy", "a", module);
-		} catch (final Exception e) {
-			ErlLogger.warn(e);
-		}
-	}
+	// public static void destroy(final Backend b, final String module) {
+	// try {
+	// b.call("erlide_noparse_server", "destroy", "a", module);
+	// } catch (final Exception e) {
+	// ErlLogger.warn(e);
+	// }
+	// }
 
 	public static IErlFunction getFunction(final IErlModule module,
 			final String name, final int arity) {

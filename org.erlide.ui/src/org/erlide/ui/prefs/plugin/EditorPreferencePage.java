@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -39,6 +40,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.OverlayPreferenceStore;
 import org.erlide.ui.util.StatusInfo;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * The editor preferences
@@ -161,6 +163,10 @@ public class EditorPreferencePage extends PreferencePage implements
 						OverlayPreferenceStore.TypeDescriptor.INT,
 						AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH));
 
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.TypeDescriptor.INT,
+				"erlangReconcilerCount"));
+
 		overlayKeys
 				.add(new OverlayPreferenceStore.OverlayKey(
 						OverlayPreferenceStore.TypeDescriptor.STRING,
@@ -265,6 +271,8 @@ public class EditorPreferencePage extends PreferencePage implements
 				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH,
 				3, 0, true);
 
+		addTextField(appearanceComposite, "Reconciler lock counter:",
+				"erlangReconcilerCount", 5, 0, true);
 		// label = ErlEditorMessages.ErlEditorPreferencePage_printMarginColumn;
 		// addTextField(
 		// appearanceComposite,
@@ -539,6 +547,15 @@ public class EditorPreferencePage extends PreferencePage implements
 	public boolean performOk() {
 		fOverlayStore.propagate();
 		ErlideUIPlugin.getDefault().savePluginPreferences();
+		IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
+		prefsNode.put("erlangReconcilerCount", fOverlayStore
+				.getString("erlangReconcilerCount"));
+		try {
+			prefsNode.flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 

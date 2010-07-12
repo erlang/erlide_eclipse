@@ -33,9 +33,9 @@ import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.ui.util.eclipse.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.BrowserInformationControlInput;
-import org.erlide.ui.util.eclipse.BrowserInput;
+import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
+import org.erlide.ui.util.eclipse.text.BrowserInput;
 import org.erlide.ui.views.EdocView;
 
 import erlang.OpenResult;

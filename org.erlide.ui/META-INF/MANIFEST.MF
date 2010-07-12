@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.8.2.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -246,7 +246,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs,
    org.erlide.core.erlang",
- org.erlide.ui.util.eclipse;x-internal:=true,
+ org.erlide.ui.util.eclipse.text;x-internal:=true,
  org.erlide.ui.views;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.erlide.runtime.backend,

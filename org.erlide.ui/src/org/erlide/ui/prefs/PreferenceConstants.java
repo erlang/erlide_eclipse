@@ -55,15 +55,6 @@ public class PreferenceConstants {
 	public static final String EDITOR_FOLDING_PROVIDER = "editor_folding_provider"; //$NON-NLS-1$
 
 	/**
-	 * A named preference that stores the value for edoc folding for the default
-	 * folding provider.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 */
-	public static final String EDITOR_FOLDING_EDOC = "editor_folding_default_edoc"; //$NON-NLS-1$
-
-	/**
 	 * A named preference that stores the value for function clauses folding for
 	 * the default folding provider.
 	 * <p>
@@ -89,24 +80,6 @@ public class PreferenceConstants {
 	 * </p>
 	 */
 	public static final String EDITOR_FOLDING_HEADER_COMMENTS = "editor_folding_default_headers"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that stores the value for header comment folding for
-	 * the default folding provider.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 */
-	public static final String EDITOR_FOLDING_MACRO_DECLARATIONS = "editor_folding_macro_declarations"; //$NON-NLS-1$
-
-	/**
-	 * A named preference that stores the value for header comment folding for
-	 * the default folding provider.
-	 * <p>
-	 * Value is of type <code>Boolean</code>.
-	 * </p>
-	 */
-	public static final String EDITOR_FOLDING_EXPORTS = "editor_folding_exports"; //$NON-NLS-1$
 
 	/**
 	 * A named preference that stores the value for header comment folding for

@@ -1,3 +1,21 @@
+List of user visible changes between 0.8.1 and 0.8.2 (20100609)
+
+354b0b0 Merge branch '532-completion---confused-by-functions-defined-with-tuples' into shade_alpha
+48ebaa1 Merge branch 'indentation' into shade_alpha
+3cb0992 Merge branch 'reconciler-still-broken' into shade_alpha
+03a15f0 Merge branch '567-and-316' into shade_alpha
+f8e99ad Merge branch 'folding_preferences' into shade_alpha
+cf1c584 520-indentation-doesn-t-work-for-records-with-type-specs
+40c768a http://www.assembla.com/spaces/erlide/tickets/575-new-module---template-error
+5afbbd9 316-navigate-to--macrofied--modules
+b189074 Handles hover, autocompletion and open on record given with macros (even if they are defined without macro).
+095f84f 464-renaming-a-module-leaves-a-scanner-process-running
+4f11c62 469-editor---erlang-reconciler-still-broken
+a843eb2 532-completion---confused-by-functions-defined-with-tuples
+82c933d build with dialyzer only if there are any modules in the project
+868653d Added predefined macros (LINE, FILE, MODULE) for macro auto-completion and changed to case-insensitive matching (as in JDT)
+fb9c9e9 Removed some rarely used preferences for folding, and made sure it respects preferences on open.
+
 List of user visible changes between 0.8.0 and 0.8.1 (20100520)
 
 43e47a2 merge latest wrangler codebase update r1483

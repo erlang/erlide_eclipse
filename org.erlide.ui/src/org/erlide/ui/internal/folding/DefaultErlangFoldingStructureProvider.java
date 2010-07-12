@@ -440,15 +440,9 @@ public class DefaultErlangFoldingStructureProvider implements
 
 	private boolean fCollapseHeaderComments = true;
 
-	private boolean fCollapseEdoc = false;
-
 	private boolean fCollapseComments = false;
 
 	private boolean fCollapseClauses = false;
-
-	private boolean fCollapseMacroDeclarations = false;
-
-	private boolean fCollapseExports = false;
 
 	private boolean fCollapseTypespecs = false;
 
@@ -553,10 +547,23 @@ public class DefaultErlangFoldingStructureProvider implements
 			fElementListener = new ElementChangedListener();
 			ErlangCore.getModelManager().addElementChangedListener(
 					fElementListener);
-			final IErlElementDelta d = new ErlElementDelta(
-					IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-					fModule);
-			processDelta(d);
+			boolean structureKnown = false;
+			try {
+				structureKnown = fModule.isStructureKnown();
+			} catch (ErlModelException e1) {
+			}
+			if (structureKnown) {
+				final IErlElementDelta d = new ErlElementDelta(
+						IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
+						fModule);
+				processDelta(d);
+			} else {
+				try {
+					fModule.open(null);
+				} catch (ErlModelException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -589,18 +596,12 @@ public class DefaultErlangFoldingStructureProvider implements
 				.getPreferenceStore();
 		fAllowCollapsing = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
-		fCollapseEdoc = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EDOC);
 		fCollapseClauses = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
 		fCollapseHeaderComments = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS);
 		fCollapseComments = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
-		fCollapseMacroDeclarations = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_MACRO_DECLARATIONS);
-		fCollapseExports = store
-				.getBoolean(PreferenceConstants.EDITOR_FOLDING_EXPORTS);
 		fCollapseTypespecs = store
 				.getBoolean(PreferenceConstants.EDITOR_FOLDING_TYPESPECS);
 	}
@@ -659,8 +660,6 @@ public class DefaultErlangFoldingStructureProvider implements
 			final IErlComment c = (IErlComment) element;
 			if (c.isHeader()) {
 				collapse = fAllowCollapsing && fCollapseHeaderComments;
-			} else if (c.isEdoc()) {
-				collapse = fAllowCollapsing && fCollapseEdoc;
 			} else {
 				collapse = fAllowCollapsing && fCollapseComments;
 			}
@@ -668,12 +667,10 @@ public class DefaultErlangFoldingStructureProvider implements
 		} else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.EXPORT) {
-			collapse = fAllowCollapsing && fCollapseExports;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
-			collapse = fAllowCollapsing && fCollapseMacroDeclarations;
 			createProjection = true;
 		} else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
 			collapse = fAllowCollapsing && fCollapseTypespecs;
@@ -762,7 +759,6 @@ public class DefaultErlangFoldingStructureProvider implements
 	}
 
 	protected void processDelta(final IErlElementDelta delta) {
-
 		if (!isInstalled()) {
 			return;
 		}

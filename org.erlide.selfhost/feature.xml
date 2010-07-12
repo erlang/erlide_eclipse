@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.selfhost"
       label="Erlide Selfhost Feature"
-      version="0.1.1.qualifier"
+      version="0.1.2"
       provider-name="erlide.org">
 
    <description url="http://www.example.com/description">

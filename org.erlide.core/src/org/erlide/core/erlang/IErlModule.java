@@ -82,9 +82,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
 
-	boolean hasScanner();
+	void getScanner();
 
-	ErlScanner getScanner();
+	void disposeScanner();
 
 	void initialReconcile();
 
@@ -95,11 +95,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	void finalReconcile();
 
-	void disposeScanner();
+	// void reenableScanner();
 
-	void reenableScanner();
-
-	void disposeParser();
+	// void disposeParser();
 
 	void dispose();
 
@@ -123,10 +121,12 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
 	/**
 	 * Get the module name without extension
-	 *
+	 * 
 	 * @return name as string
 	 */
 	String getModuleName();
 
 	IErlFunction findFunction(ErlangFunction erlangFunction);
+
+	ErlToken getScannerTokenAt(int offset);
 }

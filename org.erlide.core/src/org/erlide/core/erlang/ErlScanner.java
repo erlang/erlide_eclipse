@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.Collection;
-
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.IDisposable;
 
@@ -21,19 +19,29 @@ import erlang.ErlideScanner;
  * Erlang syntax scanner
  */
 public class ErlScanner implements IDisposable {
-	private final IErlModule module;
 	private final String moduleName;
+	private int refCount = 0;
 
 	public ErlScanner(final IErlModule module, final String initialText,
 			final String moduleFileName) {
-		this.module = module;
 		moduleName = ErlangToolkit.createScannerModuleName(module);
 		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
 				false);
 	}
 
+	public void addRef() {
+		++refCount;
+	}
+
+	public boolean willDispose() {
+		return refCount == 1;
+	}
+
 	public void dispose() {
-		ErlideScanner.destroy(moduleName);
+		--refCount;
+		if (refCount == 0) {
+			ErlideScanner.destroy(moduleName);
+		}
 	}
 
 	public void replaceText(final int offset, final int removeLength,
@@ -49,7 +57,4 @@ public class ErlScanner implements IDisposable {
 		return moduleName;
 	}
 
-	public Collection<IErlComment> getComments() {
-		return module.getComments();
-	}
 }

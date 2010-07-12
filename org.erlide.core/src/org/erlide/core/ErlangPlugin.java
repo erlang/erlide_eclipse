@@ -22,6 +22,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IBundleGroup;
+import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -33,8 +35,8 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -176,19 +178,7 @@ public class ErlangPlugin extends Plugin {
 		if (ErlideUtil.isTest()) {
 			dev += " test ***";
 		}
-		String version;
-		Bundle feature = Platform.getBundle("org.erlide");
-		// TODO this is null, why?
-		if (feature == null) {
-			// when running launched from eclipse (testing), features aren't
-			// available
-			feature = getBundle();
-			version = "(" + (String) feature.getHeaders().get("Bundle-Version")
-					+ ")";
-		} else {
-			// TODO read from feature.xml
-			version = (String) feature.getHeaders().get("Bundle-Version");
-		}
+		String version = getFeatureVersion();
 		ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
 		ErlangCore.initializeRuntimesList();
@@ -214,6 +204,31 @@ public class ErlangPlugin extends Plugin {
 				});
 
 		ErlLogger.debug("Started CORE");
+	}
+
+	private String getFeatureVersion() {
+		String version = null;
+		try {
+			IBundleGroupProvider[] providers = Platform
+					.getBundleGroupProviders();
+			if (providers != null) {
+				for (IBundleGroupProvider provider : providers) {
+					IBundleGroup[] bundleGroups = provider.getBundleGroups();
+					for (IBundleGroup group : bundleGroups) {
+						if (group.getIdentifier().equals("org.erlide")) {
+							version = group.getVersion();
+						}
+					}
+				}
+			}
+		} catch (Throwable e) {
+			// ignore
+		}
+		Version coreVersion = getBundle().getVersion();
+		if (version == null || coreVersion.compareTo(new Version(version)) > 0) {
+			version = "(" + coreVersion.toString() + ")";
+		}
+		return version;
 	}
 
 	public static void log(final IStatus status) {
