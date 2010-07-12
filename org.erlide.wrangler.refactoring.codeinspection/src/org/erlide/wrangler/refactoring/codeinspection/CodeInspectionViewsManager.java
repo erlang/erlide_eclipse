@@ -42,11 +42,14 @@ public class CodeInspectionViewsManager {
 	 *            image
 	 * @param title
 	 *            view title
+	 * @param secondaryID
+	 *            view secondary id
 	 * @param dotFile
 	 *            .dot file which is displayed
 	 */
-	static public void showDotImage(Image img, String title, File dotFile) {
-		GraphImageView view = (GraphImageView) showView(GRAPH_VIEW);
+	static public void showDotImage(Image img, String title,
+			String secondaryID, File dotFile) {
+		GraphImageView view = (GraphImageView) showView(GRAPH_VIEW, secondaryID);
 		view.setViewTitle(title);
 		view.setImage(img);
 		view.setDotFile(dotFile);

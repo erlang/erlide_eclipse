@@ -37,6 +37,10 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  * 
  */
 public class GraphResultingInspectionHandler extends AbstractHandler {
+	protected static final String CYCLYC_VIEW_ID = "cyclic";
+	protected static final String FUNCTION_CALL_GRAPH_VIEW_ID = "functioncallgraph";
+	protected static final String MODULE_GRAPH_VIEW_ID = "modulegraph";
+	protected static final String IMPROPER_DEPENDECIES_VIEW_ID = "improperdependecies";
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -54,14 +58,18 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 
 			if (actionId
 					.equals("org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies")) {
-				runInspection("Cyclic module dependency",
+				Boolean answer = MessageDialog.openQuestion(PlatformUI
+						.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Labels", "Label edges with function names called?");
+				runInspection("Cyclic module dependency", CYCLYC_VIEW_ID,
 						"There is no cyclic dependent modules in the project!",
 						tmpFile, "cyclic_dependent_modules", "ssx", tmpFile
 								.getAbsolutePath(), wranglerSelection
-								.getSearchPath(), new OtpErlangBoolean(true));
+								.getSearchPath(), new OtpErlangBoolean(answer));
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph")) {
 				runInspection("Function callgraph",
+						FUNCTION_CALL_GRAPH_VIEW_ID,
 						"There is no dependent functions in the module!",
 						tmpFile, "gen_function_callgraph", "sss", tmpFile
 								.getAbsolutePath(), wranglerSelection
@@ -70,15 +78,19 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph")) {
-				runInspection("Module dependency graph",
+				Boolean answer = MessageDialog.openQuestion(PlatformUI
+						.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Labels", "Label edges with function names called?");
+				runInspection("Module dependency graph", MODULE_GRAPH_VIEW_ID,
 						"There is no dependent modules in the project!",
 						tmpFile, "gen_module_graph", "ssx", tmpFile
 								.getAbsolutePath(), wranglerSelection
-								.getSearchPath(), new OtpErlangBoolean(true));
+								.getSearchPath(), new OtpErlangBoolean(answer));
 
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.codeinspection.improperdependecies")) {
 				runInspection("Improper module dependencies",
+						IMPROPER_DEPENDECIES_VIEW_ID,
 						"There is no improper module dependecies!", tmpFile,
 						"improper_inter_module_calls", "ss", tmpFile
 								.getAbsolutePath(), wranglerSelection
@@ -109,12 +121,12 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 	 *            function parameters
 	 * 
 	 */
-	protected void runInspection(String viewtTitle, String noResultMessage,
-			File tmpFile, String functionName, String signature,
-			Object... parameters) {
+	protected void runInspection(String viewtTitle, String secondaryID,
+			String noResultMessage, File tmpFile, String functionName,
+			String signature, Object... parameters) {
 		try {
-			CodeInspectionViewsManager
-					.hideView(CodeInspectionViewsManager.GRAPH_VIEW);
+			CodeInspectionViewsManager.hideView(
+					CodeInspectionViewsManager.GRAPH_VIEW, secondaryID);
 			FileInputStream fis = new FileInputStream(tmpFile);
 			Boolean b = WranglerBackendManager.getRefactoringBackend()
 					.callSimpleInspection(functionName, signature, parameters);
@@ -123,7 +135,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 
 					Image img = GraphViz.load(fis, "png", new Point(0, 0));
 					CodeInspectionViewsManager.showDotImage(img, viewtTitle,
-							tmpFile);
+							secondaryID, tmpFile);
 				} else
 					MessageDialog.openInformation(GlobalParameters.getEditor()
 							.getSite().getShell(), viewtTitle, noResultMessage);
