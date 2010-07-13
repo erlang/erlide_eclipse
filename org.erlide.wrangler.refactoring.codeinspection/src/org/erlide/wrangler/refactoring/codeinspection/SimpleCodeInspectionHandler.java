@@ -28,6 +28,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
@@ -75,8 +76,15 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		String actionId = event.getCommand().getId();
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 				.getActiveEditor().setFocus();
-		GlobalParameters.setSelection(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getSelection());
+		try {
+			GlobalParameters.setSelection(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getSelection());
+		} catch (WranglerException e) {
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "Error", e
+					.getMessage());
+			return null;
+		}
 
 		IErlSelection wranglerSelection = GlobalParameters
 				.getWranglerSelection();

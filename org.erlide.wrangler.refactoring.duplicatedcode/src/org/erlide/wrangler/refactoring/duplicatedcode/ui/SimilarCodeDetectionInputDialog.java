@@ -40,7 +40,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 	private int minToks;
 	private int minFreq;
 	private float simScore;
-	private boolean workOnlyInCurrentFile;
+	private boolean workOnlyInCurrentFile = true;
 
 	private Text simScoreText;
 
@@ -166,6 +166,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 		setErrorMessage("");
 
 		applyDialogFont(composite);
+		validateInput();
 		return composite;
 	}
 

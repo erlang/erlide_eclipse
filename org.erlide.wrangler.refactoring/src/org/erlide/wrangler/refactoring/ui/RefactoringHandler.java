@@ -54,6 +54,7 @@ import org.erlide.wrangler.refactoring.core.internal.RenameVariableRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.TupleFunctionParametersRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.UnfoldFunctionApplicationRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring.State;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
@@ -86,8 +87,16 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class RefactoringHandler extends AbstractHandler {
 
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		GlobalParameters.setSelection(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getSelection());
+		try {
+			GlobalParameters.setSelection(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getSelection());
+		} catch (WranglerException e1) {
+
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "Error", e1
+					.getMessage());
+			return null;
+		}
 
 		DefaultWranglerRefactoringWizard wizard = null;
 		WranglerRefactoring refactoring = null;

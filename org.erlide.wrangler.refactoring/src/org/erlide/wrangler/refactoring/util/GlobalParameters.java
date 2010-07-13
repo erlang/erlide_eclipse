@@ -26,6 +26,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlModuleSelection;
@@ -108,7 +109,8 @@ public class GlobalParameters {
 	 * @param selection
 	 *            Erlang selection
 	 */
-	public static void setSelection(final ISelection selection) {
+	public static void setSelection(final ISelection selection)
+			throws WranglerException {
 		// TODO:: if the module is selected it is not handled
 		try {
 			if (editor == null) {
@@ -141,11 +143,15 @@ public class GlobalParameters {
 					wranglerSelection = new ErlModuleSelection(module, file);
 				} else {
 					wranglerSelection = null;
+					throw new WranglerException(
+							"Please select an Erlang element!");
 				}
 			} else {
 				wranglerSelection = null;
+				throw new WranglerException("Please select an Erlang element!");
+
 			}
-		} catch (Exception e) {
+		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
 

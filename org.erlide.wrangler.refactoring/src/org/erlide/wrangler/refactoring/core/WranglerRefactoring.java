@@ -65,7 +65,7 @@ public abstract class WranglerRefactoring extends Refactoring {
 	@Override
 	public Change createChange(final IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
-		pm.beginTask("Creating vhanges", changedFiles.size() + 1);
+		pm.beginTask("Creating changes", changedFiles.size() + 1);
 		CompositeChange change = new CompositeChange(getName());
 		pm.internalWorked(1);
 
@@ -81,7 +81,10 @@ public abstract class WranglerRefactoring extends Refactoring {
 		} catch (IOException e) {
 			Status s = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
 					.getMessage());
+
 			throw new CoreException(s);
+		} finally {
+			pm.done();
 		}
 
 		return change;

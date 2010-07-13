@@ -36,7 +36,7 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
 public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
 	private float simScore;
-	boolean onlyInFile;
+	boolean onlyInFile = true;
 
 	@Override
 	protected IResultParser callRefactoring()
@@ -54,10 +54,12 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 		} else {
 			functionName = "simi_expr_search_in_dirs_eclipse";
 		}
-		result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "sxxxxi", sel
-				.getFilePath(), sel.getSelectionRange().getStartPos(), sel
-				.getSelectionRange().getEndPos(), new OtpErlangFloat(simScore),
-				sel.getSearchPath(), GlobalParameters.getTabWidth());
+		result = backend.callWithoutParser(
+				WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+				"sxxxxi", sel.getFilePath(), sel.getSelectionRange()
+						.getStartPos(), sel.getSelectionRange().getEndPos(),
+				new OtpErlangFloat(simScore), sel.getSearchPath(),
+				GlobalParameters.getTabWidth());
 
 		if (result.isOk())
 			return new SimilarExpressionSearchParser(result.getValue());

@@ -35,7 +35,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
 	private float simScore;
-	private boolean workOnlyInCurrentFile;
+	private boolean workOnlyInCurrentFile = true;
 	private Text simScoreText;
 
 	/**
@@ -106,6 +106,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 		setErrorMessage("");
 
 		applyDialogFont(composite);
+		validateInput();
 		return composite;
 	}
 

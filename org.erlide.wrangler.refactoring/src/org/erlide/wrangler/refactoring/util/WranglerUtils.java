@@ -36,12 +36,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
@@ -465,23 +461,23 @@ public final class WranglerUtils {
 	 */
 	public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-		IErlModel model = ErlangCore.getModel();
-		for (ChangedFile f : changedFiles) {
-			IFile file;
-			try {
-				file = getFileFromPath(f.getIPath());
-				IErlElement element = model.findElement(file);
-				IErlModule m = (IErlModule) element;
-				m.resourceChanged();
-				IEditorPart editor = GlobalParameters.getEditor();
-				if (editor instanceof ErlangEditor)
-					((ErlangEditor) editor).resetAndCacheScannerAndParser();
-				model.notifyChange(m);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		// IErlModel model = ErlangCore.getModel();
+		// for (ChangedFile f : changedFiles) {
+		// IFile file;
+		// try {
+		// file = getFileFromPath(f.getNewPath());
+		// IErlElement element = model.findElement(file);
+		// IErlModule m = (IErlModule) element;
+		// m.resourceChanged();
+		// IEditorPart editor = GlobalParameters.getEditor();
+		// if (editor instanceof ErlangEditor)
+		// ((ErlangEditor) editor).resetAndCacheScannerAndParser();
+		// model.notifyChange(m);
+		//
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 	}
 }
