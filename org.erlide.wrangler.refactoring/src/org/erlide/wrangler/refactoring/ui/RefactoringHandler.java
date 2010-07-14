@@ -133,6 +133,7 @@ public class RefactoringHandler extends AbstractHandler {
 			// run rename module refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renamemodule")) {
+
 			pages.add(new CostumworkFlowInputPage("Rename module",
 					"Please type the new module name!", "New module name:",
 					"New module name must be a valid Erlang atom!",
@@ -341,6 +342,7 @@ public class RefactoringHandler extends AbstractHandler {
 				return null;
 		}
 
+		// refactoring.doBeforeRefactoring();
 		// run the given refactoring's wizard
 		wizard = new DefaultWranglerRefactoringWizard(refactoring,
 				RefactoringWizard.DIALOG_BASED_USER_INTERFACE, pages);
@@ -351,8 +353,11 @@ public class RefactoringHandler extends AbstractHandler {
 
 		try {
 			int ret = op.run(shell, refactoring.getName());
-			if (RefactoringStatus.OK == ret)
-				WranglerUtils.notifyErlide(refactoring.getChangedFiles());
+
+			if (RefactoringStatus.OK == ret) {
+				refactoring.doBeforeRefactoring();
+				refactoring.doAfterRefactoring();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -26,6 +26,7 @@ import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
+import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
  * Abstract class for implementing Wrangler refactorings. Implementors should
@@ -92,5 +93,20 @@ public abstract class WranglerRefactoring extends Refactoring {
 
 	@Override
 	public abstract String getName();
+
+	/**
+	 * This operation is run after doing the refactoring.
+	 */
+	public void doAfterRefactoring() {
+		WranglerUtils.notifyErlide(getChangedFiles());
+	}
+
+	/**
+	 * This operation is run before the refactoring is started.
+	 * 
+	 */
+	public void doBeforeRefactoring() {
+
+	}
 
 }

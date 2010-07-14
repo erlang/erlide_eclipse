@@ -37,6 +37,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
 	boolean renameTestMod;
+	IPath newFile;
 
 	@Override
 	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
@@ -61,18 +62,42 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	public Change createChange(final IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
 
-		CompositeChange c = (CompositeChange) super.createChange(pm);
+		pm.beginTask("Creating changes", changedFiles.size() + 1);
+		CompositeChange change = new CompositeChange(getName());
+		pm.internalWorked(1);
 
-		for (ChangedFile f : changedFiles) {
-			if (f.isNameChanged()) {
-				IPath p = f.getIPath();
-				String s = f.getNewName();
-				RenameResourceChange rch = new RenameResourceChange(p, s);
-				c.add(rch);
+		try {
+			Change c;
+			for (ChangedFile e : changedFiles) {
+
+				if (e.isNameChanged()) {
+					IPath p = e.getPath();
+					String s = e.getNewName();
+					RenameResourceChange rch = new RenameResourceChange(p, s);
+					newFile = e.getNewPath();
+					// c = e.createChanges((IFile) o);
+					// change.add(c);
+
+					change.add(rch);
+				} /*
+				 * else { c = e.createChanges(); if (c != null) change.add(c); }
+				 */
+				pm.internalWorked(1);
+
 			}
+			/*
+			 * } catch (Exception e) { Status s = new Status(IStatus.ERROR,
+			 * Activator.PLUGIN_ID, e .getMessage());
+			 * 
+			 * throw new CoreException(s);
+			 */
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pm.done();
 		}
 
-		return c;
+		return change;
 	}
 
 	@Override
@@ -124,4 +149,16 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 				sel.getSearchPath(), GlobalParameters.getTabWidth(),
 				renameTestMod);
 	}
+
+	// @Override
+	// public void doAfterRefactoring() {
+	// WranglerUtils.openFile(WranglerUtils.getFileFromPath(newFile));
+	// }
+	//
+	// @Override
+	// public void doBeforeRefactoring() {
+	// IEditorPart editorPart = GlobalParameters.getEditor();
+	// editorPart.getSite().getPage().closeEditor(editorPart, false);
+	// editorPart.dispose();
+	// }
 }

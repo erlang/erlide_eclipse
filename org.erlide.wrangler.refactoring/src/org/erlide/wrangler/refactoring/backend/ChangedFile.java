@@ -75,10 +75,14 @@ public class ChangedFile {
 	 * @throws IOException
 	 *             if an exception occurs while accessing the source file
 	 */
-	public Change createChanges() throws IOException {
-		IFile eclipseRep = findEclipseRepresentation(oldPath);
+	public Change createChanges(IFile file) throws IOException {
+		IFile eclipseRep;
+		if (file == null)
+			eclipseRep = findEclipseRepresentation(oldPath);
+		else
+			eclipseRep = file;
 
-		TextFileChange change = new TextFileChange(newPath, eclipseRep);
+		TextFileChange change = new TextFileChange(oldPath, eclipseRep);
 		File tf = new File(oldPath);
 		ArrayList<TextEdit> edits = ChangesetMaker.createEdits(tf,
 				newFileContent);
@@ -92,6 +96,11 @@ public class ChangedFile {
 		} else {
 			return null;
 		}
+	}
+
+	public Change createChanges() throws IOException {
+		return createChanges(null);
+
 	}
 
 	/**
@@ -131,10 +140,25 @@ public class ChangedFile {
 	 * 
 	 * @return IPath object
 	 */
-	public IPath getIPath() {
+	public IPath getPath() {
 		IFile f;
 		try {
 			f = findEclipseRepresentation(oldPath);
+		} catch (IOException e) {
+			return null;
+		}
+		return f.getFullPath();
+	}
+
+	/**
+	 * Returns the IPath object of the new paths
+	 * 
+	 * @return IPath object
+	 */
+	public IPath getNewPath() {
+		IFile f;
+		try {
+			f = findEclipseRepresentation(newPath);
 		} catch (IOException e) {
 			return null;
 		}

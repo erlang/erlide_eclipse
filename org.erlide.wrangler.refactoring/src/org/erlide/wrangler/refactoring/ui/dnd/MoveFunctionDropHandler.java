@@ -29,6 +29,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.ui.navigator.dnd.INavigatorDropHandler;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -69,7 +70,11 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 		ISelection sel = (ISelection) LocalSelectionTransfer.getInstance()
 				.nativeToJava(td);
 		TreeSelection s = (TreeSelection) sel;
-		GlobalParameters.setSelection(s);
+		try {
+			GlobalParameters.setSelection(s);
+		} catch (WranglerException e1) {
+			e1.printStackTrace();
+		}
 
 		// get the target data
 		String moduleName;

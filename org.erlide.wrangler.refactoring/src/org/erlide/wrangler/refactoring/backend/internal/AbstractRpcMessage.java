@@ -41,6 +41,7 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 				org.erlide.jinterface.util.ErlLogger.error(
 						"Erlide communication error: ", result);
 				setUnsuccessful("Communication error occured, please try again!");
+				ErlLogger.error(result.toString());
 				return;
 			}
 			OtpErlangTuple resultTuple = (OtpErlangTuple) result.getValue();
