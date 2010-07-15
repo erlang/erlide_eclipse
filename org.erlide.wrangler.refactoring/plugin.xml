@@ -397,6 +397,13 @@
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 			<menu label="%RefactoringMenu_Label">
+				<visibleWhen>
+					<with variable="activeEditorId">
+						<or>
+							<equals value="org.erlide.ui.editors.erl.ErlangEditor" />
+						</or>
+					</with>
+				</visibleWhen>
 				<command commandId="org.erlide.wrangler.refactoring.renamemodule"
 					id="org.erlide.wrangler.refactoring.renamemodule" style="push">
 					<visibleWhen>
