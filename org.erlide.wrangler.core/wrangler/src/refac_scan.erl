@@ -400,8 +400,8 @@ scan_string([$\r | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFo
     end;
 scan_string([$\n | Cs], Stack, Toks, {Line, _Col}, State,  Errors, TabWidth,FileFormat) ->
     scan_string(Cs, [$\n | Stack], Toks, {Line + 1, 1}, State, Errors, TabWidth,FileFormat);
-scan_string([$\\ | Cs], Stack, Toks, {Line, Col}, State,  Errors, TabWidth,FileFormat) ->
-    sub_scan_escape( Cs, [fun scan_string_escape/8, $\\ | Stack], Toks, {Line, Col+1}, State, Errors, TabWidth,FileFormat);
+%% scan_string([$\\ | Cs], Stack, Toks, {Line, Col}, State,  Errors, TabWidth,FileFormat) ->
+%%     sub_scan_escape( Cs, [fun scan_string_escape/8, $\\ | Stack], Toks, {Line, Col+1}, State, Errors, TabWidth,FileFormat);
 scan_string([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) 
    when C==$\t ->
     scan_string(Cs, [C | Stack], Toks, {Line, Col+TabWidth}, State,Errors, TabWidth,FileFormat);
@@ -440,8 +440,8 @@ scan_qatom([$\r|Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileForma
     end;
 scan_qatom([$\n | Cs], Stack, Toks, {Line, _Col}, State, Errors, TabWidth,FileFormat) ->
     scan_qatom(Cs, [$\n | Stack], Toks, {Line + 1, 1},State, Errors, TabWidth,FileFormat);
-scan_qatom([$\\ | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->
-    sub_scan_escape(Cs, [fun scan_qatom_escape/8, $\\ | Stack], Toks, {Line, Col+1}, State, Errors, TabWidth,FileFormat);
+%% scan_qatom([$\\ | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->
+%%     sub_scan_escape(Cs, [fun scan_qatom_escape/8, $\\ | Stack], Toks, {Line, Col+1}, State, Errors, TabWidth,FileFormat);
 scan_qatom([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat)
   when C==$\t ->
     scan_qatom(Cs, [C | Stack], Toks, {Line, Col+TabWidth}, State,  Errors, TabWidth,FileFormat);

@@ -876,7 +876,7 @@ intro_new_var(FileName, Start, End, NewVarName, SearchPaths, TabWidth) ->
 -spec(intro_new_var_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
 	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
 intro_new_var_eclipse(FileName, Start, End, NewVarName, SearchPaths, TabWidth) -> 
-    try_refactoring(refac_intro_new_var, intro_new_var, [FileName, Start, End, NewVarName, SearchPaths, TabWidth]).
+    try_refactoring(refac_intro_new_var, intro_new_var_eclipse, [FileName, Start, End, NewVarName, SearchPaths, TabWidth]).
 
 
 -spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
