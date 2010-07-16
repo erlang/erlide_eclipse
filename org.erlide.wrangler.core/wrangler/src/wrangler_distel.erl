@@ -129,6 +129,11 @@ unfold_fun_app(FileName, StartLine, StartCol, SearchPaths, TabWidth) ->
 new_macro(FName, StartLine, StartCol, EndLine, EndCol, MacroName, SearchPaths, TabWidth) ->
     apply_refactoring(wrangler, new_macro, [FName, {StartLine, StartCol}, {EndLine, EndCol}, MacroName, SearchPaths, TabWidth], SearchPaths).
 
+-spec(intro_new_var/7::(filename(), integer(), integer(), integer(), integer(), string(),integer()) ->
+	      {error, string()} | {ok, string()}).
+
+intro_new_var(FName, StartLine, StartCol, EndLine, EndCol, NewVarName, TabWidth) ->
+    apply_refactoring(wrangler, intro_new_var, [FName, {StartLine, StartCol}, {EndLine, EndCol}, NewVarName, [],TabWidth], []).
 
 -spec(fold_against_macro/5::(filename(), integer(), integer(), [dir()], integer()) ->
 	      {error, string()} | {ok, [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}]}).

@@ -183,7 +183,7 @@ pos_to_expr_1(Tree, Start, End) ->
     if (S >= Start) and (E =< End) ->
 	   case refac_misc:is_expr(Tree) of
 	     true ->
-		 [Tree];
+		   [Tree];
 	     _ ->
 		 Ts = refac_syntax:subtrees(Tree),
 		 R0 = [[pos_to_expr_1(T, Start, End) || T <- G] || G <- Ts],
@@ -193,7 +193,7 @@ pos_to_expr_1(Tree, Start, End) ->
        (S < Start) or (E > End) ->
 	   Ts = refac_syntax:subtrees(Tree),
 	   R0 = [[pos_to_expr_1(T, Start, End) || T <- G] || G <- Ts],
-	   lists:append(R0);
+	    lists:append(R0);
        true -> []
     end.
 

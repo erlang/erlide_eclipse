@@ -139,8 +139,11 @@ variable_replaceable(Exp) ->
 	    refac_syntax:type(Exp) == variable;
       _ ->
 	  T = refac_syntax:type(Exp),
-	  not lists:member(T, [match_expr, operator]) andalso
-	    get_var_exports(Exp) == []
+	  not lists:member(T, [match_expr, operator, generator, receive_expr, try_expr, 
+			      catch_expr]) andalso
+	    get_var_exports(Exp) == [] 
+		%% andalso
+		%%  refac_misc:get_free_vars(Exp)/=[]
     end.
 
 %% This function will be removed.
@@ -466,7 +469,9 @@ get_toks(Node) ->
 
 -spec(reset_attrs(Node::syntaxTree()) -> syntaxTree()).
 reset_attrs(Node) ->
-    ast_traverse_api:full_buTP(fun (T, _Others) -> refac_syntax:set_ann(T, [])
+    ast_traverse_api:full_buTP(fun (T, _Others) -> 
+				       T1=refac_syntax:set_ann(T, []),
+				       refac_syntax:remove_comments(T1)
 			       end, Node, {}).
 
 %% =====================================================================

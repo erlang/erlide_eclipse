@@ -62,7 +62,8 @@
  	 eqc_fsm_to_record/3, eqc_fsm_to_record_1/7, 
 	 gen_fsm_to_record/3, gen_fsm_to_record_1/7,
 	 eqc_statem_to_fsm/4,
-	 partition_exports/4]).
+	 partition_exports/4,
+	 intro_new_var/6]).
 
 -export([rename_var_eclipse/6, rename_fun_eclipse/6,
 	 rename_fun_1_eclipse/6, rename_mod_eclipse/4,
@@ -90,7 +91,7 @@
 	 eqc_statem_to_record_eclipse/3,eqc_statem_to_record_1_eclipse/7,
 	 eqc_fsm_to_record_eclipse/3,eqc_fsm_to_record_1_eclipse/7,
 	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7,
-	 partition_exports_eclipse/4
+	 partition_exports_eclipse/4, intro_new_var_eclipse/6
 	]).
 
 -export([try_refactoring/3, get_log_msg/0]).
@@ -865,11 +866,23 @@ rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, 
 %% from <em>Refactor</em>, Wrangler will then prompt for the new macro name.
 %% </p> 
 
+
+-spec(intro_new_var/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+	      {error, string()} | {ok, string()}).
+intro_new_var(FileName, Start, End, NewVarName, SearchPaths, TabWidth) -> 
+    try_refactoring(refac_intro_new_var, intro_new_var, [FileName, Start, End, NewVarName, SearchPaths, TabWidth]).
+
+%%@private
+-spec(intro_new_var_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+	      {error, string()} | {ok, [{filename(), filename(), string()}]}).
+intro_new_var_eclipse(FileName, Start, End, NewVarName, SearchPaths, TabWidth) -> 
+    try_refactoring(refac_intro_new_var, intro_new_var, [FileName, Start, End, NewVarName, SearchPaths, TabWidth]).
+
+
 -spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
 	      {error, string()} | {ok, string()}).
 new_macro(FileName, Start, End, MacroName, SearchPaths, TabWidth) -> 
     try_refactoring(refac_new_macro, new_macro, [FileName, Start, End, MacroName, SearchPaths, TabWidth]).
-
 
 %%@private
 -spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
@@ -1176,7 +1189,9 @@ partition_exports(File, DistThreshold, SearchPaths, TabWidth)->
      try_refactoring(wrangler_modularity_inspection, partition_exports, 
 		     [File, DistThreshold, SearchPaths, TabWidth]).
    
-%%@private
+%%@private; Interface function for eclipse.
+%% DisTreshold is a parameter inputted by the user:
+%% "Please input a distance threshould between 0 and 1.0 (default value: 0.8):"
 -spec(partition_exports_eclipse/4::(File::filename(), DistTreshold::float(), 
 				    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
 					 {error, string()}| {ok, [{filename(), filename(), string()}]}). 	  
@@ -1187,15 +1202,14 @@ partition_exports_eclipse(File, DistThreshold, SearchPaths, TabWidth)->
 
 %%@private
 try_to_apply(Mod, Fun, Args, Msg) -> 
-%%    try 
-apply(Mod, Fun, Args).
-  %%   catch
-	%% throw:Error -> 
-	  %%   Error;    %% wrangler always throws Error in the format of '{error, string()}';
-	 %%_E1:_E2->
-     	     %%refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
-	   %%  {error, Msg}
-     %%%end.
+    try apply(Mod, Fun, Args)
+     catch
+	 throw:Error -> 
+	     Error;    %% wrangler always throws Error in the format of '{error, string()}';
+	 E1:E2->
+     	     refac_io:format("E1E2:\n~p\n", [{E1, E2}]),
+	     {error, Msg}
+     end.
 
 %%@private
 try_refactoring(Mod, Fun, Args) ->

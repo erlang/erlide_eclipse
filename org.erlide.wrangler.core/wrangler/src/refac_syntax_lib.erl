@@ -425,7 +425,6 @@ annotate_bindings(Tree, Env, MDefs) ->
     stop_env_process(Pid),
     Tree1.
     
-
 var_annotate_clause(C, Env, Ms, VI) ->
     Pid=start_env_process(),
     {C1, _, _} = vann_clause(C, Env, Ms, VI, Pid),

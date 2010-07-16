@@ -187,18 +187,14 @@ display_clones_by_freq(Cs, Str) ->
     ?wrangler_io("\n===================================================================\n",[]),
     ?wrangler_io(Str++" Code Detection Results Sorted by the Number of Code Instances.\n",[]),
     ?wrangler_io("======================================================================\n",[]),		 
-    Cs1 = lists:sort(fun({_Range1, _Len1, F1, _},{_Range2, _Len2, F2,_})
-			-> F1 >= F2
-		     end, Cs),
+    Cs1 = lists:reverse(lists:keysort(3, Cs)),
     ?wrangler_io(display_clones(Cs1, Str),[]).
 
 display_clones_by_length(Cs, Str) ->
     ?wrangler_io("\n===================================================================\n",[]),
     ?wrangler_io(Str ++ " Code Detection Results Sorted by Code Size.\n",[]),
     ?wrangler_io("======================================================================\n",[]),		 
-    Cs1 = lists:sort(fun({_Range1, Len1, _F1, _},{_Range2, Len2, _F2,_})
-			-> Len1 =< Len2
-		     end, Cs),
+    Cs1 = lists:keysort(2,Cs),
     ?wrangler_io(display_clones(Cs1, Str),[]).
 
 
@@ -211,19 +207,30 @@ display_clones(Cs, Str) ->
 	_ -> display_clones_1(Cs)
     end.
 
-
 display_clones_1(Cs) ->
-    ?wrangler_io(display_clones_1(Cs, ""),[]).
+    lists:foreach(fun(C) -> 
+			  display_a_clone(C)
+		  end, Cs).
 
-display_clones_1([], Str) -> Str ++ "\n";
-display_clones_1([{Ranges, _Len, F, Code}| Cs], Str) ->
-    [{{File, StartLine, StartCol}, {File, EndLine, EndCol}}| Range] = lists:keysort(1, Ranges),
-    NewStr = compose_clone_info({File, StartLine, StartCol}, {File, EndLine, EndCol}, F, Range, Str),
-    NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n"++ io_lib:format("~s", [Code]) ++ "\n",
-    ?wrangler_io(NewStr1, []),
-    display_clones_1(Cs, "").
+display_a_clone(_C={Ranges, _Len, F,Code}) ->
+    [R| _Rs] = lists:keysort(1, Ranges),
+    NewStr = compose_clone_info(R, F, Ranges, ""),
+    NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
+    ?wrangler_io("~s", [NewStr1]).
 
-compose_clone_info({File, StartLine, StartCol}, {File, EndLine, EndCol}, F, Range, Str) ->
+%% display_clones_1(Cs) ->
+%%     Str = display_clones_1(Cs, ""),
+%%     refac_io:format("~s", [Str]).
+
+%% display_clones_1([], Str) -> Str ++ "\n";
+%% display_clones_1([{Ranges, _Len, F, Code}| Cs], Str) ->
+%%     [R| _Rs] = lists:keysort(1, Ranges),
+%%     NewStr = compose_clone_info(R, F, Ranges, Str),
+%%     NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
+%%     display_clones_1(Cs, NewStr1).
+
+%% io:format("~s",["dddd~p\nddd"])
+compose_clone_info({{File, StartLine, StartCol}, {File, EndLine, EndCol}}, F, Range, Str) ->
     case F - 1 of
 	1 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned once:\n",
 							 [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
@@ -234,16 +241,27 @@ compose_clone_info({File, StartLine, StartCol}, {File, EndLine, EndCol}, F, Rang
 	_ -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned ~p times:\n",
 							 [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol, F - 1]),
 	     display_clones_2(Range, Str1)
-    end.
-
+    end;
+compose_clone_info({{{File, StartLine, StartCol}, {File, EndLine, EndCol}}, _FunCall}, F, Range, Str) ->
+      case F - 1 of
+	  1 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned once:\n",
+							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
+	       display_clones_2(Range, Str1);
+	  2 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned twice:\n",
+							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
+	       display_clones_2(Range, Str1);
+	  _ -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned ~p times:\n",
+							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol, F - 1]),
+	       display_clones_2(Range, Str1)
+      end.
+    
 display_clones_2([], Str) -> Str ++ "\n";
 display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
-    Str1 = case Rs == [] of 
-	       true ->
-		   Str ++ File++io_lib:format(":~p.~p-~p.~p:  \n", [StartLine,lists:max([1, StartCol-1]),EndLine, EndCol]);
-	       _ ->
-		   Str ++ File++io_lib:format(":~p.~p-~p.~p:  \n", [StartLine, lists:max([1,StartCol-1]), EndLine, EndCol])
-	   end,
+    Str1 =Str ++ File++io_lib:format(":~p.~p-~p.~p:  \n", [StartLine, lists:max([1,StartCol-1]), EndLine, EndCol]),
+    display_clones_2(Rs, Str1);
+display_clones_2([{{{File, StartLine, StartCol}, {File, EndLine, EndCol}}, FunCall}|Rs], Str) ->
+    Str1 = Str ++ File++io_lib:format(":~p.~p-~p.~p:  ", [StartLine,lists:max([1, StartCol-1]),EndLine, EndCol])++
+	" \n   "++ FunCall ++ "\n",
     display_clones_2(Rs, Str1).
 
 

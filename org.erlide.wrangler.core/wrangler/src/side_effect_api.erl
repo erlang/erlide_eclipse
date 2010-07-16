@@ -26,12 +26,16 @@
 
 -module(side_effect_api).
 
--export([has_side_effect/3, build_local_side_effect_tab/2, build_lib_side_effect_tab/1]).
+-export([has_side_effect/1, has_side_effect/3, build_local_side_effect_tab/2, build_lib_side_effect_tab/1]).
 
 -include("../include/wrangler.hrl").
 
 
 %%=================================================================
+
+has_side_effect(Node) ->
+    has_side_effect(unknown, Node, []).
+    
 %% @doc Return true if the abstract syntax tree represented by Node has side effect, 
 %%      otherwise return false. As to parameters, File represents filename of the
 %%      code to which Node belongs,  Node is the abstract syntax tree representaion of 

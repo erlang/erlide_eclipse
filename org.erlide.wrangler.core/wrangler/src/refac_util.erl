@@ -41,6 +41,9 @@
 	 concat_toks/1, test_framework_used/1,
 	 get_modules_by_file/1]).
 
+-export([add_category/1]).
+
+
 -include("../include/wrangler.hrl").
 
 %% =====================================================================
@@ -304,12 +307,14 @@ merge_module_info(Info1, Info2) ->
     [{A,V}||{A, V}<-NewInfo, V=/=[]].
 	     
   
+  
 annotate_bindings(FName, AST, Info, Ms, TabWidth) ->
     Toks = tokenize(FName, true, TabWidth),
-    AnnAST0 = refac_syntax_lib:annotate_bindings(add_tokens(add_range(AST, Toks), Toks), ordsets:new(), Ms),
-    add_category(refac_annotate_ast:add_fun_define_locations(AnnAST0, Info)).
- 
+    AnnAST0 = refac_syntax_lib:annotate_bindings(add_tokens(AST, Toks), ordsets:new(), Ms),
+    AnnAST1 = add_range_to_body(AnnAST0, refac_syntax:form_list_elements(AnnAST0), "", ""),
+    refac_annotate_ast:add_fun_define_locations(AnnAST1, Info).
 
+   
 %% Attach tokens to each form in the AST.
 %%-spec add_tokens(syntaxTree(), [token()]) -> syntaxTree(). 		 
 add_tokens(SyntaxTree, Toks) ->
@@ -359,7 +364,8 @@ do_add_tokens(Toks, [F| Fs], NewFs) ->
 		     {Toks14 ++ Toks2, lists:reverse(Toks12) ++ Toks13}
 	end,
     F1 = refac_syntax:add_ann({toks, FormToks}, F),
-    do_add_tokens(RemainToks, RemFs, [F1| NewFs]).
+    F2 = add_category(add_range(F1, FormToks)),
+    do_add_tokens(RemainToks, RemFs, [F2| NewFs]).
 
 
 %%-spec add_range(syntaxTree(), [token()]) -> syntaxTree(). 
@@ -927,7 +933,7 @@ do_add_category(Node, C) ->
 			       _ -> add_category(Argument, C)
 			     end,
 		 Type1 = add_category(Type, record_type),
-		 Fields1 = add_category(Fields, C),
+		 Fields1 = add_category(Fields, record_field),
 		 Node1 = rewrite(Node, refac_syntax:record_expr(Argument1, Type1, Fields1)),
 		 {refac_syntax:add_ann({category, C}, Node1), true};
 	     record_index_expr ->
@@ -943,7 +949,7 @@ do_add_category(Node, C) ->
 		 Value = refac_syntax:record_field_value(Node),
 		 Value1 = case Value of
 			    none -> none;
-			    _ -> add_category(Value, C)
+			    _ -> add_category(Value, expression)
 			  end,
 		 Node1 = rewrite(Node, refac_syntax:record_field(Name1, Value1)),
 		 {refac_syntax:add_ann({category, record_field}, Node1), true};
