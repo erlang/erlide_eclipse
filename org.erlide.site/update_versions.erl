@@ -99,6 +99,9 @@ modify(Base, Projects) ->
 				   ok
 		   end,
 	lists:foreach(Fun3, CPs),
+	
+	%%update_CHANGES(Base, crt_branch()),
+	
 	ok.
 
 commit(Base, Projects) ->
@@ -306,3 +309,13 @@ remove_duplicates([]) ->
     [].
 
 remove_pairs(L1, L2) -> lists:filter(fun({X,_Y}) -> not lists:member(X, L1) end, L2).
+
+update_CHANGES(New, Crt) ->
+	Lines = read_file("CHANGES"),
+	Log = os:cmd("git log v"++New++".."++Crt++" --oneline"),
+	Lines1 = Lines++ ["List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))", "", Log],
+	{ok, F} = file:open("CHANGES", [write]),
+	io:format(F, "~s~n", [Lines1]),
+	file:close(F),
+	ok.
+	
