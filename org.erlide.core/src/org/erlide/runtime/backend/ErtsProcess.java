@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -24,6 +23,7 @@ import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.jinterface.util.ErlLogger;
 
+@SuppressWarnings("restriction")
 public class ErtsProcess extends RuntimeProcess {
 
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";

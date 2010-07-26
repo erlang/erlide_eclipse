@@ -195,6 +195,7 @@ public final class ErlideUtil {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	public static String getPath(final String name, final Bundle b) {
 		final URL entry = b.getEntry(name.replace(" ", "%20"));
 		if (entry != null) {
@@ -294,7 +295,7 @@ public final class ErlideUtil {
 	/**
 	 * Returns true if the given project is accessible and it has a Erlang
 	 * nature, otherwise false.
-	 * 
+	 *
 	 * @param project
 	 *            IProject
 	 * @return boolean

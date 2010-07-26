@@ -71,7 +71,9 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.dialogs,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.editors.erl;x-friends:="org.erlide.gunit";
+ org.erlide.ui.editors.erl;
+  x-friends:="org.erlide.gunit,
+   org.erlide.wrangler.refactoring";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
