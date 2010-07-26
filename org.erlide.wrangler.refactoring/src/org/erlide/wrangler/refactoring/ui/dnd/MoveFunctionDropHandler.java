@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
@@ -14,7 +15,6 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonDropAdapter;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.ui.navigator.dnd.INavigatorDropHandler;
@@ -30,7 +30,7 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
 	public IStatus validateDrop(Object target, int operation,
 			TransferData transferType) {
-		ISelection sel = (ISelection) LocalSelectionTransfer.getInstance()
+		ISelection sel = (ISelection) LocalSelectionTransfer.getTransfer()
 				.nativeToJava(transferType);
 		TreeSelection s = (TreeSelection) sel;
 		IErlElement e = (IErlElement) s.getFirstElement();
@@ -47,7 +47,7 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
 		// get the source data
 		TransferData td = dropAdapter.getCurrentTransfer();
-		ISelection sel = (ISelection) LocalSelectionTransfer.getInstance()
+		ISelection sel = (ISelection) LocalSelectionTransfer.getTransfer()
 				.nativeToJava(td);
 		TreeSelection s = (TreeSelection) sel;
 		GlobalParameters.setSelection(s);

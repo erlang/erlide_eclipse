@@ -6,7 +6,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.navigator.CommonDragAdapterAssistant;
 import org.eclipse.ui.part.PluginTransfer;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 
 public class ErlDragAdapterAssistant extends CommonDragAdapterAssistant {
 
@@ -17,7 +17,7 @@ public class ErlDragAdapterAssistant extends CommonDragAdapterAssistant {
 	public Transfer[] getSupportedTransferTypes() {
 		return new Transfer[] { PluginTransfer.getInstance(),
 				TextTransfer.getInstance(),
-				LocalSelectionTransfer.getInstance() };
+				LocalSelectionTransfer.getTransfer() };
 	}
 
 	@Override
