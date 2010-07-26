@@ -31,10 +31,9 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -101,7 +100,7 @@ public final class ErlangCore {
 	 * <li>Look for existing Erlang runtimes in a few obvious places and install
 	 * them, choosing a suitable one as default.</li>
 	 * </ul>
-	 * 
+	 *
 	 */
 	public static void initializeRuntimesList() {
 		if (getRuntimeInfoManager().getDefaultRuntime() != null) {
@@ -176,12 +175,12 @@ public final class ErlangCore {
 	 * values. These options allow to configure the behaviour of the underlying
 	 * components. The client may safely use the result as a template that they
 	 * can modify and then pass to <code>setOptions</code>.
-	 * 
+	 *
 	 * Helper constants have been defined on ErlangCore for each of the option
 	 * PLUGIN_ID and their possible constant values.
-	 * 
+	 *
 	 * Note: more options might be added in further releases.
-	 * 
+	 *
 	 * <pre>
 	 * RECOGNIZED OPTIONS:
 	 * COMPILER / Generating Source Debug Attribute
@@ -341,7 +340,7 @@ public final class ErlangCore {
 	 *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
 	 *     - default:           &quot;ignore&quot;
 	 * </pre>
-	 * 
+	 *
 	 * @return a mutable table containing the default settings of all known
 	 *         options (key type: <code>String</code>; value type:
 	 *         <code>String</code>)
@@ -354,16 +353,15 @@ public final class ErlangCore {
 
 		// see #initializeDefaultPluginPreferences() for changing default
 		// settings
-		final Preferences preferences = ErlangPlugin.getDefault()
-				.getPluginPreferences();
+		final IEclipsePreferences preferences = new DefaultScope()
+				.getNode(ErlangPlugin.PLUGIN_ID);
 		final HashSet<String> optionNames = getModelManager().getOptionNames();
 
 		// initialize preferences to their default
 		final Iterator<String> iterator = optionNames.iterator();
 		while (iterator.hasNext()) {
 			final String propertyName = iterator.next();
-			defaultOptions.put(propertyName, preferences
-					.getDefaultString(propertyName));
+			defaultOptions.put(propertyName, preferences.get(propertyName, ""));
 		}
 		// get encoding through resource plugin
 		defaultOptions.put(ErlangCoreOptions.CORE_ENCODING, getEncoding());
@@ -373,7 +371,7 @@ public final class ErlangCore {
 
 	/**
 	 * Returns the workspace root default charset encoding.
-	 * 
+	 *
 	 * @return the name of the default charset encoding for workspace root.
 	 * @see IContainer#getDefaultCharset()
 	 * @see ResourcesPlugin#getEncoding()
@@ -394,85 +392,9 @@ public final class ErlangCore {
 	}
 
 	/**
-	 * Helper method for returning one option value only. Equivalent to
-	 * <code>(String)ErlangCore.getOptions().get(optionName)</code> Note that it
-	 * may answer <code>null</code> if this option does not exist.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @param optionName
-	 *            the name of an option
-	 * @return the String value of a given option
-	 * @see ErlangCore#getDefaultOptions()
-	 */
-	public static String getOption(final String optionName) {
-
-		if (ErlangCoreOptions.CORE_ENCODING.equals(optionName)) {
-			return getEncoding();
-		}
-		final String propertyName = optionName;
-		if (ErlangCore.getModelManager().getOptionNames()
-				.contains(propertyName)) {
-			final Preferences preferences = ErlangPlugin.getDefault()
-					.getPluginPreferences();
-			return preferences.getString(propertyName).trim();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the table of the current options. Initially, all options have
-	 * their default values, and this method returns a table that includes all
-	 * known options.
-	 * <p>
-	 * For a complete description of the configurable options, see
-	 * <code>getDefaultOptions</code>.
-	 * </p>
-	 * 
-	 * @return table of current settings of all options (key type:
-	 *         <code>String</code>; value type: <code>String</code>)
-	 * @see ErlangCore#getDefaultOptions()
-	 */
-	public static Hashtable<String, String> getOptions() {
-
-		final Hashtable<String, String> options = new Hashtable<String, String>(
-				10);
-
-		// see #initializeDefaultPluginPreferences() for changing default
-		// settings
-		final Plugin thePlugin = ErlangPlugin.getDefault();
-		if (thePlugin != null) {
-			final Preferences preferences = thePlugin.getPluginPreferences();
-			final HashSet<String> optionNames = ErlangCore.getModelManager()
-					.getOptionNames();
-
-			// initialize preferences to their default
-			final Iterator<String> iterator = optionNames.iterator();
-			while (iterator.hasNext()) {
-				final String propertyName = iterator.next();
-				options.put(propertyName, preferences
-						.getDefaultString(propertyName));
-			}
-			// get preferences not set to their default
-			final String[] propertyNames = preferences.propertyNames();
-			for (final String propertyName : propertyNames) {
-				final String value = preferences.getString(propertyName).trim();
-				if (optionNames.contains(propertyName)) {
-					options.put(propertyName, value);
-				}
-			}
-			// get encoding through resource plugin
-			options.put(ErlangCoreOptions.CORE_ENCODING, getEncoding());
-		}
-		return options;
-	}
-
-	/**
 	 * Configures the given marker attribute map for the given Erlang element.
 	 * Used for markers, which denote a Erlang element rather than a resource.
-	 * 
+	 *
 	 * @param attributes
 	 *            the mutable marker attribute map (key type:
 	 *            <code>String</code>, value type: <code>String</code>)
@@ -491,7 +413,7 @@ public final class ErlangCore {
 	/**
 	 * Configures the given marker for the given Erlang element. Used for
 	 * markers, which denote a Erlang element rather than a resource.
-	 * 
+	 *
 	 * @param marker
 	 *            the marker to be configured
 	 * @param element
@@ -527,7 +449,7 @@ public final class ErlangCore {
 	 * If this method is called in the dynamic scope of another such call, this
 	 * method simply runs the action.
 	 * </p>
-	 * 
+	 *
 	 * @param action
 	 *            the action to perform
 	 * @param monitor
@@ -565,7 +487,7 @@ public final class ErlangCore {
 	 * can be run simultaneously with workspace changes in other threads. See
 	 * <code>IWorkspace.run(...)</code> for more details.
 	 * </p>
-	 * 
+	 *
 	 * @param action
 	 *            the action to perform
 	 * @param rule

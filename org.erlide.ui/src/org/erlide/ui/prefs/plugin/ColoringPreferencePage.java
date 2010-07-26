@@ -16,12 +16,12 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -70,7 +70,7 @@ import org.erlide.ui.util.PixelConverter;
 
 /**
  * The color preferences.
- * 
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ColoringPreferencePage extends PreferencePage implements
@@ -541,8 +541,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 				.getPreferenceStore();
 		final IPreferenceStore store = new ChainedPreferenceStore(
 				new IPreferenceStore[] {
-						new PreferencesAdapter(
-								createTemporaryCorePreferenceStore()),
+						createTemporaryCorePreferenceStore(),
 						generalTextStore });
 		final SourceViewer v = new ProjectionViewer(parent, null, null, false,
 				SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
@@ -562,8 +561,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 		return v;
 	}
 
-	private static Preferences createTemporaryCorePreferenceStore() {
-		final Preferences result = new Preferences();
+	private static IPreferenceStore createTemporaryCorePreferenceStore() {
+		final IPreferenceStore result = new PreferenceStore();
 		result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
 		return result;
 	}
@@ -596,9 +595,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 
 	/**
 	 * Returns the current highlighting color list item.
-	 * 
+	 *
 	 * @return the current highlighting color list item
-	 * 
+	 *
 	 */
 	TokenHighlight getHighlight() {
 		if (fListViewer == null) {
