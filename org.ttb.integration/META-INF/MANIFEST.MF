@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ttb for Eclipse
+Bundle-SymbolicName: org.ttb.integration;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.ttb.integration.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console,
+ org.erlide.core,
+ org.erlide.jinterface,
+ org.eclipse.debug.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Erlang Solutions

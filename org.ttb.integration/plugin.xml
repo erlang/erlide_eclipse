@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.ttb.integration.perspectives.ErlangTracingPerspective"
+            icon="icons/perspective.gif"
+            id="org.ttb.integration.perspectives.ErlangTracingPerspective"
+            name="Erlang Tracing">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.ttb.integration.views.ControlPanelView"
+            icon="icons/control-panel-view.gif"
+            id="org.ttb.integration.views.ControlPanelView"
+            name="Erlang tracing control panel">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.ttb.integration.views.SequenceDiagramView"
+            icon="icons/sequence-diagram-view.gif"
+            id="org.ttb.integration.views.SequenceDiagramView"
+            name="Erlang tracing results">
+      </view>
+   </extension>
+</plugin>
