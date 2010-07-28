@@ -7,7 +7,6 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
-import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.model.ITracePatternListObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.model.TracePatternList;
@@ -25,11 +24,12 @@ public class SequenceDiagramView extends ViewPart implements ITracePatternListOb
     public SequenceDiagramView() {
         TracePatternList.getInstance().addListener(this);
 
+        // TODO delete
         MessageConsole console = findConsole(CONSOLE_NAME);
         MessageConsoleStream out = console.newMessageStream();
         out.println("Hello from Generic console sample action");
         out.println("starting");
-        TtbBackend.getInstance().start();
+        // TtbBackend.getInstance().start();
         out.println("ok");
     }
 
@@ -65,19 +65,16 @@ public class SequenceDiagramView extends ViewPart implements ITracePatternListOb
 
     @Override
     public void addPattern(TracePattern tracePattern) {
-        // TODO Auto-generated method stub
-
+        // TODO
     }
 
     @Override
     public void removePattern(TracePattern tracePattern) {
-        // TODO Auto-generated method stub
-
+        // TODO
     }
 
     @Override
     public void updatePattern(TracePattern tracePattern) {
         // TODO Auto-generated method stub
-
     }
 }

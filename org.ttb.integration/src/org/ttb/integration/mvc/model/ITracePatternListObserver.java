@@ -13,5 +13,6 @@ public interface ITracePatternListObserver {
 
     public void removePattern(TracePattern tracePattern);
 
+    // TODO add oldPattern parameter
     public void updatePattern(TracePattern tracePattern);
 }

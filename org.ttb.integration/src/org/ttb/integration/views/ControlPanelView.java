@@ -1,5 +1,7 @@
 package org.ttb.integration.views;
 
+import java.util.Collection;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -14,7 +16,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
@@ -33,6 +38,8 @@ import org.ttb.integration.mvc.view.TracePatternLabelProvider;
 public class ControlPanelView extends ViewPart implements ITracePatternListObserver {
 
     private TableViewer tableViewer;
+    private Text projectName;
+    private final TtbBackend ttbBackend = new TtbBackend();
 
     public ControlPanelView() {
         TracePatternList.getInstance().addListener(this);
@@ -60,6 +67,7 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
         parent.setLayout(layout);
 
         createButtons(parent);
+        projectName = new Text(parent, SWT.BORDER);
         createTable(parent);
     }
 
@@ -91,16 +99,36 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
 
         // "Start/Stop" button
         final Button startButton = new Button(parent, SWT.PUSH | SWT.CENTER);
-        startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
+        // startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" :
+        // "Start");
+        startButton.setText(ttbBackend.isStarted() ? "Stop" : "Start");
         startButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (TtbBackend.getInstance().isStarted()) {
-                    TtbBackend.getInstance().stop();
+                Collection<ErlideBackend> backends = ErlangCore.getBackendManager().getAllBackends();
+                for (ErlideBackend erlideBackend : backends) {
+                    System.out.println(erlideBackend.getName());
+                }
+                // if (TtbBackend.getInstance().isStarted()) {
+                // TtbBackend.getInstance().stop();
+                // startButton.setText("Start");
+                // } else if (TtbBackend.getInstance().start()) {
+                // startButton.setText("Stop");
+                // }
+                if (ttbBackend.isStarted()) {
+                    ttbBackend.stop();
                     startButton.setText("Start");
-                } else if (TtbBackend.getInstance().start()) {
-                    startButton.setText("Stop");
+                } else {
+                    ttbBackend.setBackend(ErlangCore.getBackendManager().getByName(projectName.getText()));
+                    if (ttbBackend.start()) {
+                        startButton.setText("Stop");
+                        for (Object o : TracePatternList.getInstance().toArray()) {
+                            TracePattern tracePattern = (TracePattern) o;
+                            System.out.println("adding: " + tracePattern.getFunctionName());
+                            ttbBackend.addTracePattern(tracePattern);
+                        }
+                    }
                 }
             }
         });
@@ -157,11 +185,13 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
     @Override
     public void addPattern(TracePattern tracePattern) {
         tableViewer.add(tracePattern);
+        // TtbBackend.getInstance().addTracePattern(tracePattern);
     }
 
     @Override
     public void removePattern(TracePattern tracePattern) {
         tableViewer.remove(tracePattern);
+        // TtbBackend.getInstance().removeTracePattern(tracePattern);
     }
 
     @Override
