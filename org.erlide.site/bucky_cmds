@@ -3,8 +3,8 @@ setpref targetPlatformPath=#{TARGET}
 installJRE --location #{JAVA_HOME} --name erlide_jre
 importpreferences -F org.erlide.site/_erl.epf -S instance
 
-import #{WORKSPACE}/org.erlide.site/site.cquery
+import #{WORKSPACE}/#{SITE_PRJ}/site.cquery
 build -c -t 
 
-perform -D target.os=* -D target.ws=* -D target.arch=* -D qualifier.replacement.*=generator:buildTimestamp -D generator.buildTimestamp.format=yyyyMMddHHmm -D cbi.include.source=true -D site.pack200=true org.erlide.site#site.p2
+perform -D target.os=* -D target.ws=* -D target.arch=* -D qualifier.replacement.*=generator:buildTimestamp -D generator.buildTimestamp.format=yyyyMMddHHmm -D cbi.include.source=true -D site.pack200=true #{SITE_PRJ}#site.p2
 
