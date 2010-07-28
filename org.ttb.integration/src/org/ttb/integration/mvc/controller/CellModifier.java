@@ -2,8 +2,8 @@ package org.ttb.integration.mvc.controller;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
+import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.model.TracePatternList;
 import org.ttb.integration.mvc.view.Columns;
 
 /**
@@ -49,6 +49,6 @@ public class CellModifier implements ICellModifier {
             break;
         default:
         }
-        TracePatternList.getInstance().updatePattern(pattern);
+        TtbBackend.getInstance().updateTracePattern(pattern);
     }
 }

@@ -1,7 +1,5 @@
 package org.ttb.integration.views;
 
-import java.util.Collection;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -19,13 +17,11 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
-import org.ttb.integration.mvc.model.ITracePatternListObserver;
+import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.model.TracePatternList;
 import org.ttb.integration.mvc.view.Columns;
 import org.ttb.integration.mvc.view.TracePatternLabelProvider;
 
@@ -35,19 +31,19 @@ import org.ttb.integration.mvc.view.TracePatternLabelProvider;
  * @author Piotr Dorobisz
  * 
  */
-public class ControlPanelView extends ViewPart implements ITracePatternListObserver {
+public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     private TableViewer tableViewer;
-    private Text projectName;
-    private final TtbBackend ttbBackend = new TtbBackend();
+    private Text backendName;
+    private Button startButton;
 
     public ControlPanelView() {
-        TracePatternList.getInstance().addListener(this);
+        TtbBackend.getInstance().addListener(this);
     }
 
     @Override
     public void dispose() {
-        TracePatternList.getInstance().removeListener(this);
+        TtbBackend.getInstance().removeListener(this);
         super.dispose();
     }
 
@@ -67,7 +63,7 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
         parent.setLayout(layout);
 
         createButtons(parent);
-        projectName = new Text(parent, SWT.BORDER);
+        backendName = new Text(parent, SWT.BORDER);
         createTable(parent);
     }
 
@@ -79,7 +75,7 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TracePatternList.getInstance().addPattern(new TracePattern());
+                TtbBackend.getInstance().addTracePattern(new TracePattern());
             }
         });
 
@@ -92,43 +88,22 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
             public void widgetSelected(SelectionEvent e) {
                 TracePattern tracePattern = (TracePattern) ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
                 if (tracePattern != null) {
-                    TracePatternList.getInstance().removePattern(tracePattern);
+                    TtbBackend.getInstance().removeTracePattern(tracePattern);
                 }
             }
         });
 
         // "Start/Stop" button
-        final Button startButton = new Button(parent, SWT.PUSH | SWT.CENTER);
-        // startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" :
-        // "Start");
-        startButton.setText(ttbBackend.isStarted() ? "Stop" : "Start");
+        startButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+        startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
         startButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Collection<ErlideBackend> backends = ErlangCore.getBackendManager().getAllBackends();
-                for (ErlideBackend erlideBackend : backends) {
-                    System.out.println(erlideBackend.getName());
-                }
-                // if (TtbBackend.getInstance().isStarted()) {
-                // TtbBackend.getInstance().stop();
-                // startButton.setText("Start");
-                // } else if (TtbBackend.getInstance().start()) {
-                // startButton.setText("Stop");
-                // }
-                if (ttbBackend.isStarted()) {
-                    ttbBackend.stop();
-                    startButton.setText("Start");
+                if (TtbBackend.getInstance().isStarted()) {
+                    TtbBackend.getInstance().stop();
                 } else {
-                    ttbBackend.setBackend(ErlangCore.getBackendManager().getByName(projectName.getText()));
-                    if (ttbBackend.start()) {
-                        startButton.setText("Stop");
-                        for (Object o : TracePatternList.getInstance().toArray()) {
-                            TracePattern tracePattern = (TracePattern) o;
-                            System.out.println("adding: " + tracePattern.getFunctionName());
-                            ttbBackend.addTracePattern(tracePattern);
-                        }
-                    }
+                    TtbBackend.getInstance().start(ErlangCore.getBackendManager().getByName(backendName.getText()));
                 }
             }
         });
@@ -174,7 +149,7 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
         tableViewer.setCellModifier(new CellModifier());
 
         // input
-        tableViewer.setInput(TracePatternList.getInstance());
+        // tableViewer.setInput(TracePatternList.getInstance());
     }
 
     @Override
@@ -185,17 +160,25 @@ public class ControlPanelView extends ViewPart implements ITracePatternListObser
     @Override
     public void addPattern(TracePattern tracePattern) {
         tableViewer.add(tracePattern);
-        // TtbBackend.getInstance().addTracePattern(tracePattern);
     }
 
     @Override
     public void removePattern(TracePattern tracePattern) {
         tableViewer.remove(tracePattern);
-        // TtbBackend.getInstance().removeTracePattern(tracePattern);
     }
 
     @Override
     public void updatePattern(TracePattern tracePattern) {
         tableViewer.update(tracePattern, null);
+    }
+
+    @Override
+    public void startTracing() {
+        startButton.setText("Stop");
+    }
+
+    @Override
+    public void stopTracing() {
+        startButton.setText("Start");
     }
 }

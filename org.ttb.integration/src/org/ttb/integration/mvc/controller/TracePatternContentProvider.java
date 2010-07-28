@@ -2,7 +2,7 @@ package org.ttb.integration.mvc.controller;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.ttb.integration.mvc.model.TracePatternList;
+import org.ttb.integration.TtbBackend;
 
 /**
  * Content provider for trace patterns table.
@@ -17,7 +17,7 @@ public class TracePatternContentProvider implements IStructuredContentProvider {
 
     @Override
     public Object[] getElements(Object inputElement) {
-        return TracePatternList.getInstance().toArray();
+        return TtbBackend.getInstance().getTracePatternsArray();
     }
 
     @Override

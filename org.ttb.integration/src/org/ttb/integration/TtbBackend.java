@@ -1,26 +1,30 @@
 package org.ttb.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
+import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 
 /**
- * Backend which collects traces from all nodes which are being traced.
+ * Singleton class representing backend that collects traces.
  * 
  * @author Piotr Dorobisz
  * 
  */
 public class TtbBackend {
 
-    private Backend backend;// =
-                            // ErlangCore.getBackendManager().getIdeBackend();
-                            // private static final TtbBackend INSTANCE =
-                            // new TtbBackend();
-    private boolean started = false;
+    private final List<TracePattern> list = new ArrayList<TracePattern>();
+    private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
+    private Backend backend;
+    private static final TtbBackend INSTANCE = new TtbBackend();
+    private boolean started;
     private static final String MODULE = "ttb";
     private static final String FUN_TRACER = "tracer";
     private static final String FUN_STOP = "stop";
@@ -28,13 +32,12 @@ public class TtbBackend {
     private static final String FUN_TP = "tp";
     private static final String FUN_CTP = "ctp";
 
-    // public TtbBackend(Backend backend) {
-    // this.backend = backend;
-    // }
+    private TtbBackend() {
+    }
 
-    // public static TtbBackend getInstance() {
-    // return INSTANCE;
-    // }
+    public static TtbBackend getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Checks if tracing is started.
@@ -45,25 +48,34 @@ public class TtbBackend {
         return started;
     }
 
-    public void setBackend(Backend backend) {
-        this.backend = backend;
-    }
-
     /**
      * Starts tracing.
      * 
      * @return <code>true</code> if successful, <code>false</code> otherwise
      */
-    public boolean start() {
+    public boolean start(Backend backend) {
         if (!started) {
             synchronized (this) {
                 if (!started) {
-                    RpcResult rpcResult = backend.call_noexception(MODULE, FUN_TRACER, "", new Object[0]);
-                    if (rpcResult.isOk()) {
-                        rpcResult = backend.call_noexception(MODULE, FUN_P, "aa", "all", "call");
+                    try {
+                        this.backend = backend;
+                        backend.call(MODULE, FUN_TRACER, "", new Object[0]);
+                        backend.call(MODULE, FUN_P, "aa", "all", "call");
+                        for (TracePattern tracePattern : list) {
+                            if (tracePattern.isEnabled()) {
+                                try {
+                                    backend.call(MODULE, FUN_TP, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                } catch (BackendException e) {
+                                    ErlLogger.error("Could not add pattern: " + e.getMessage());
+                                }
+                            }
+                        }
                         started = true;
-                    } else {
-                        ErlLogger.error("Could not start tracing tool: " + rpcResult.getValue());
+                        for (ITraceNodeObserver listener : listeners) {
+                            listener.startTracing();
+                        }
+                    } catch (BackendException e) {
+                        ErlLogger.error("Could not start tracing tool: " + e.getMessage());
                     }
                 }
             }
@@ -76,25 +88,51 @@ public class TtbBackend {
      */
     public void stop() {
         if (started) {
-            RpcResult rpcResult = backend.call_noexception(MODULE, FUN_STOP, "x", new OtpErlangList(new OtpErlangAtom("format")));
-            System.out.println("stop:\n" + rpcResult.getValue());
-            if (rpcResult.isOk()) {
-                started = false;
-            } else {
-                ErlLogger.error("Could not stop tracing tool");
+            synchronized (this) {
+                if (started) {
+                    try {
+                        backend.call(MODULE, FUN_STOP, "x", new OtpErlangList(new OtpErlangAtom("format")));
+                        started = false;
+                        for (ITraceNodeObserver listener : listeners) {
+                            listener.stopTracing();
+                        }
+                    } catch (BackendException e) {
+                        ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
+                    }
+                }
             }
         }
     }
 
-    public void addTracePattern(TracePattern pattern) {
-        if (pattern.isEnabled()) {
-            RpcResult rpcResult = backend.call_noexception(MODULE, FUN_TP, "aax", pattern.getModuleName(), pattern.getFunctionName(), new OtpErlangList());
-            System.out.println("addTracePattern:\n" + rpcResult.getValue());
+    public synchronized void addListener(ITraceNodeObserver listener) {
+        listeners.add(listener);
+    }
+
+    public synchronized void removeListener(ITraceNodeObserver listener) {
+        listeners.remove(listener);
+    }
+
+    public Object[] getTracePatternsArray() {
+        return list.toArray();
+    }
+
+    public synchronized void addTracePattern(TracePattern pattern) {
+        list.add(pattern);
+        for (ITraceNodeObserver listener : listeners) {
+            listener.addPattern(pattern);
         }
     }
 
-    public void removeTracePattern(TracePattern pattern) {
-        RpcResult rpcResult = backend.call_noexception(MODULE, FUN_CTP, "aa", pattern.getModuleName(), pattern.getFunctionName());
-        System.out.println("removeTracePattern:\n" + rpcResult.getValue());
+    public synchronized void removeTracePattern(TracePattern pattern) {
+        list.remove(pattern);
+        for (ITraceNodeObserver listener : listeners) {
+            listener.removePattern(pattern);
+        }
+    }
+
+    public synchronized void updateTracePattern(TracePattern tracePattern) {
+        for (ITraceNodeObserver listener : listeners) {
+            listener.updatePattern(tracePattern);
+        }
     }
 }

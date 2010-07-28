@@ -7,9 +7,9 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
-import org.ttb.integration.mvc.model.ITracePatternListObserver;
+import org.ttb.integration.TtbBackend;
+import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.model.TracePatternList;
 
 /**
  * Sequence diagram which shows tracing results.
@@ -17,19 +17,18 @@ import org.ttb.integration.mvc.model.TracePatternList;
  * @author Piotr Dorobisz
  * 
  */
-public class SequenceDiagramView extends ViewPart implements ITracePatternListObserver {
+public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver {
 
     private final String CONSOLE_NAME = "ttb console";
 
     public SequenceDiagramView() {
-        TracePatternList.getInstance().addListener(this);
+        TtbBackend.getInstance().addListener(this);
 
         // TODO delete
         MessageConsole console = findConsole(CONSOLE_NAME);
         MessageConsoleStream out = console.newMessageStream();
         out.println("Hello from Generic console sample action");
         out.println("starting");
-        // TtbBackend.getInstance().start();
         out.println("ok");
     }
 
@@ -48,7 +47,7 @@ public class SequenceDiagramView extends ViewPart implements ITracePatternListOb
 
     @Override
     public void dispose() {
-        TracePatternList.getInstance().removeListener(this);
+        TtbBackend.getInstance().removeListener(this);
         super.dispose();
     }
 
@@ -76,5 +75,16 @@ public class SequenceDiagramView extends ViewPart implements ITracePatternListOb
     @Override
     public void updatePattern(TracePattern tracePattern) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void startTracing() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void stopTracing() {
+        // TODO Auto-generated method stub
+
     }
 }
