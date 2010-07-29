@@ -37,6 +37,7 @@ public class ErlReconciler implements IReconciler {
 		fChunkReconciler = chunkReconciler;
 		fErlReconcilerCount = ErlideUIPlugin.getPrefsNode().getInt(
 				"erlangReconcilerCount", 10);
+		ErlLogger.debug("fErlReconcilerCount %d", fErlReconcilerCount);
 	}
 
 	/**
@@ -183,48 +184,48 @@ public class ErlReconciler implements IReconciler {
 					if (fDirtyRegionQueue.isEmpty()) {
 						continue;
 					}
-					synchronized (this) {
-						if (fReset) {
-							fReset = false;
-							continue;
-						}
-					}
-
-					List<ErlDirtyRegion> rs = null;
-					ErlDirtyRegion r = null;
-					synchronized (fDirtyRegionQueue) {
-						if (fChunkReconciler) {
-							rs = fDirtyRegionQueue.getAllDirtyRegions();
-						} else {
-							r = fDirtyRegionQueue.getNextDirtyRegion();
-						}
-					}
-					fIsActive = true;
-
-					if (fProgressMonitor != null) {
-						fProgressMonitor.setCanceled(false);
-					}
-
-					if (fChunkReconciler) {
-						if (rs != null) {
-							for (final ErlDirtyRegion dirtyRegion : rs) {
-								process(dirtyRegion);
-							}
-						}
-					} else {
-						process(r);
-					}
-					postProcess();
-					synchronized (fDirtyRegionQueue) {
-						if (fChunkReconciler) {
-							fDirtyRegionQueue.removeAll(rs);
-						} else {
-							fDirtyRegionQueue.remove(r);
-						}
-						fDirtyRegionQueue.notifyAll();
-					}
-					fIsActive = false;
 				}
+				synchronized (this) {
+					if (fReset) {
+						fReset = false;
+						continue;
+					}
+				}
+
+				List<ErlDirtyRegion> rs = null;
+				ErlDirtyRegion r = null;
+				synchronized (fDirtyRegionQueue) {
+					if (fChunkReconciler) {
+						rs = fDirtyRegionQueue.getAllDirtyRegions();
+					} else {
+						r = fDirtyRegionQueue.getNextDirtyRegion();
+					}
+				}
+				fIsActive = true;
+
+				if (fProgressMonitor != null) {
+					fProgressMonitor.setCanceled(false);
+				}
+
+				if (fChunkReconciler) {
+					if (rs != null) {
+						for (final ErlDirtyRegion dirtyRegion : rs) {
+							process(dirtyRegion);
+						}
+					}
+				} else {
+					process(r);
+				}
+				postProcess();
+				synchronized (fDirtyRegionQueue) {
+					if (fChunkReconciler) {
+						fDirtyRegionQueue.removeAll(rs);
+					} else {
+						fDirtyRegionQueue.remove(r);
+					}
+					fDirtyRegionQueue.notifyAll();
+				}
+				fIsActive = false;
 			}
 		}
 	}

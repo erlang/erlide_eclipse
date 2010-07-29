@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -141,8 +140,8 @@ import erlang.ErlideScanner;
 
 /**
  * The actual editor itself
- * 
- * 
+ *
+ *
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
 public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
@@ -178,14 +177,14 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private ClearCacheAction clearCacheAction;
 	private CallHierarchyAction callhierarchy;
 	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
-	private final Object lock = new Object();
+	//private final Object lock = new Object();
 	// private final boolean initFinished = false;
 	private SendToConsoleAction sendToConsole;
 	private IErlModule fModule = null;
 
 	/**
 	 * Simple constructor
-	 * 
+	 *
 	 */
 	public ErlangEditor() {
 		super();
@@ -208,7 +207,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Simple disposer
-	 * 
+	 *
 	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
 	 */
 	@Override
@@ -340,7 +339,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected final boolean isActiveEditor() {
@@ -664,7 +663,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * <p>
 	 * The selection offset is model based.
 	 * </p>
-	 * 
+	 *
 	 * @param sourceViewer
 	 *            the source viewer
 	 * @return a region denoting the current signed selection, for a resulting
@@ -686,7 +685,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Sets the given message as error message to this editor's status line.
-	 * 
+	 *
 	 * @param msg
 	 *            message to be set
 	 */
@@ -700,7 +699,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Sets the given message as message to this editor's status line.
-	 * 
+	 *
 	 * @param msg
 	 *            message to be set
 	 * @since 3.0
@@ -752,10 +751,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	}
 
-	private void synchronizeOutline() {
-		synchronizeOutlinePage(computeHighlightRangeSourceReference());
-	}
-
 	protected ISourceReference computeHighlightRangeSourceReference() {
 		final ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer == null) {
@@ -800,7 +795,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * reconciled in advance. If it is <code>false</code> this method only
 	 * returns a result if the editor's input element does not need to be
 	 * reconciled.
-	 * 
+	 *
 	 * @param offset
 	 *            the offset included by the retrieved element
 	 * @param reconcile
@@ -839,7 +834,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		 * provider. If the selection provider is a post selection provider,
 		 * post selection changed events are the preferred choice, otherwise
 		 * normal selection changed events are requested.
-		 * 
+		 *
 		 * @param selectionProvider
 		 */
 		public void install(final ISelectionProvider selectionProvider) {
@@ -858,7 +853,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		/**
 		 * Removes this selection changed listener from the given selection
 		 * provider.
-		 * 
+		 *
 		 * @param selectionProvider
 		 *            the selection provider
 		 */
@@ -898,7 +893,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * Called from
 	 * org.erlide.ui.editors.erl.outline.ErlangOutlinePage.createControl
 	 * (...).new OpenAndLinkWithEditorHelper() {...}.linkToEditor(ISelection)
-	 * 
+	 *
 	 * @param selection
 	 */
 	public void doSelectionChanged(final ISelection selection) {
@@ -940,7 +935,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 	/**
 	 * Creates the outline page used with this editor.
-	 * 
+	 *
 	 * @return the created Erlang outline page
 	 */
 	protected ErlangOutlinePage createOutlinePage() {
@@ -971,7 +966,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/**
 	 * Synchronizes the outliner selection with the given element position in
 	 * the editor.
-	 * 
+	 *
 	 * @param element
 	 *            the java element to select
 	 */
@@ -982,7 +977,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/**
 	 * Synchronizes the outliner selection with the given element position in
 	 * the editor.
-	 * 
+	 *
 	 * @param element
 	 *            the java element to select
 	 * @param checkIfOutlinePageActive
@@ -1214,7 +1209,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		/**
 		 * Creates a dispatch action.
-		 * 
+		 *
 		 * @param resourceBundle
 		 *            the resource bundle
 		 * @param prefix
@@ -1241,7 +1236,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 			/**
 			 * Information provider used to present the information.
-			 * 
+			 *
 			 * @since 3.0
 			 */
 			class InformationProvider implements IInformationProvider,
@@ -1280,7 +1275,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				 * @see
 				 * org.eclipse.jface.text.information.IInformationProviderExtension2
 				 * #getInformationPresenterControlCreator()
-				 * 
+				 *
 				 * @since 3.0
 				 */
 				public IInformationControlCreator getInformationPresenterControlCreator() {
@@ -1400,7 +1395,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * Returns the annotation closest to the given range respecting the given
 	 * direction. If an annotation is found, the annotations current position is
 	 * copied into the provided annotation position.
-	 * 
+	 *
 	 * @param offset
 	 *            the region offset
 	 * @param length
@@ -1506,7 +1501,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	/**
 	 * Returns whether the given annotation is configured as a target for the
 	 * "Go to Next/Previous Annotation" actions
-	 * 
+	 *
 	 * @param annotation
 	 *            the annotation
 	 * @return <code>true</code> if this is a target, <code>false</code>
@@ -1515,7 +1510,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 */
 	@Override
 	protected boolean isNavigationTarget(final Annotation annotation) {
-		final Preferences preferences = EditorsUI.getPluginPreferences();
+		final IPreferenceStore preferences = EditorsUI.getPreferenceStore();
 		final AnnotationPreference preference = getAnnotationPreferenceLookup()
 				.getAnnotationPreference(annotation);
 		// See bug 41689
@@ -1671,7 +1666,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	 * The access to the fFoldingRunner field is not thread-safe, it is assumed
 	 * that <code>runWhenNextVisible</code> is only called from the UI thread.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	final class ToggleFoldingRunner implements IPartListener2 {
@@ -1828,9 +1823,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return listeners;
 	}
 
-	private Object getLock() {
-		return lock;
-	}
+	// private Object getLock() {
+	// return lock;
+	// }
 
 	public void expandCollapseFunctionsOrComments(final boolean collapse,
 			final boolean comments) {
