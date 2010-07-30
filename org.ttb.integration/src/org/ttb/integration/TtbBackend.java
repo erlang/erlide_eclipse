@@ -6,6 +6,7 @@ import java.util.List;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
+import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 
@@ -20,6 +21,7 @@ import com.ericsson.otp.erlang.OtpMbox;
  */
 public class TtbBackend {
 
+    private static final String PROCESS_NAME = "TraceDataCollector";
     private final List<TracePattern> list = new ArrayList<TracePattern>();
     private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
     private Backend backend;
@@ -35,6 +37,8 @@ public class TtbBackend {
     private static final String FUN_CTP = "ctp";
     private static final String FUN_FORMAT = "format";
     private static final String FUN_START = "start";
+    private CollectedDataList collectedData;
+    private OtpMbox otpMbox;
 
     private TtbBackend() {
     }
@@ -63,7 +67,7 @@ public class TtbBackend {
                 if (!started) {
                     try {
                         this.backend = backend;
-                        OtpMbox otpMbox = backend.createMbox("TraceDataCollector");
+                        otpMbox = backend.createMbox(PROCESS_NAME);
                         OtpErlangPid pid = otpMbox.self();
                         traceDataCollectorThread = new TraceDataCollectorThread(otpMbox);
                         backend.call(HELPER_MODULE, FUN_START, "x", pid);
@@ -83,6 +87,9 @@ public class TtbBackend {
                             listener.startTracing();
                         }
                     } catch (BackendException e) {
+                        if (otpMbox != null) {
+                            otpMbox.close();
+                        }
                         ErlLogger.error("Could not start tracing tool: " + e.getMessage());
                     }
                 }
@@ -99,22 +106,19 @@ public class TtbBackend {
             synchronized (this) {
                 if (started) {
                     try {
-                        // backend.call(TTB_MODULE, FUN_STOP, "x", new
-                        // OtpErlangList(new OtpErlangAtom("format")));
                         backend.call(HELPER_MODULE, FUN_STOP, "x", traceDataCollectorThread.getOtpMbox().self());
+                        collectedData = traceDataCollectorThread.getCollectedData();
                         started = false;
-
-                        // TraceDataCollectorThread traceDataCollectorThread =
-                        // new TraceDataCollectorThread(otpMbox);
-                        // traceDataCollectorThread.start();
-                        // backend.call(MODULE, FUN_FORMAT, "x", new
-                        // OtpErlangList(new OtpErlangAtom("fetch")));
 
                         for (ITraceNodeObserver listener : listeners) {
                             listener.stopTracing();
                         }
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
+                    } finally {
+                        if (otpMbox != null) {
+                            otpMbox.close();
+                        }
                     }
                 }
             }
@@ -151,5 +155,9 @@ public class TtbBackend {
         for (ITraceNodeObserver listener : listeners) {
             listener.updatePattern(tracePattern);
         }
+    }
+
+    public CollectedDataList getCollectedData() {
+        return collectedData;
     }
 }

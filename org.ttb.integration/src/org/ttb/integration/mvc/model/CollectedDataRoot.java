@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
 
-public class CollectedData implements ITreeNode {
+public class CollectedDataRoot implements ITreeNode {
 
-    private ITreeNode parent;
+    private final List<ITreeNode> children = new ArrayList<ITreeNode>();
     private final String label;
 
     // private static final ImageRegistry imageRegistry = new ImageRegistry();
-    // private static String IMAGE_NAME = "treeNode";
+    // private static String IMAGE_NAME = "treeRoot";
     //
     // static {
     // imageRegistry.put(IMAGE_NAME,
@@ -19,36 +19,33 @@ public class CollectedData implements ITreeNode {
     // IMAGE_NAME + ".gif"));
     // }
 
-    public CollectedData(String label) {
+    public CollectedDataRoot(String label) {
         this.label = label;
     }
 
     @Override
-    public ITreeNode getParent() {
-        return parent;
-    }
-
-    public void setParent(ITreeNode parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
     public boolean hasChildren() {
-        return false;
+        return (children != null && children.size() > 0);
     }
 
     @Override
     public List<ITreeNode> getChildren() {
-        return new ArrayList<ITreeNode>();
+        return children;
+    }
+
+    @Override
+    public ITreeNode getParent() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.label;
     }
 
     @Override
     public void addChild(ITreeNode child) {
+        children.add(child);
     }
 
     @Override

@@ -1,6 +1,10 @@
 package org.ttb.integration;
 
+import java.util.Date;
+
 import org.ttb.integration.mvc.model.CollectedData;
+import org.ttb.integration.mvc.model.CollectedDataList;
+import org.ttb.integration.mvc.model.CollectedDataRoot;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -18,7 +22,7 @@ public class TraceDataCollectorThread extends Thread {
 
     private final OtpMbox otpMbox;
     private boolean repeat = true;
-    private final CollectedData collectedData;
+    private final CollectedDataList collectedData;
 
     /**
      * Creates thread that will be receiving traces.
@@ -28,12 +32,13 @@ public class TraceDataCollectorThread extends Thread {
      */
     public TraceDataCollectorThread(OtpMbox otpMbox) {
         this.otpMbox = otpMbox;
-        this.collectedData = new CollectedData();
+        this.collectedData = new CollectedDataList();
     }
 
     @Override
     public void run() {
         System.out.println("thread started");
+        CollectedDataRoot collectedDataRoot = new CollectedDataRoot("trace result: " + new Date());
         while (repeat) {
             try {
                 OtpErlangObject otpErlangObject = otpMbox.receive();
@@ -41,18 +46,20 @@ public class TraceDataCollectorThread extends Thread {
                 if (otpErlangObject instanceof OtpErlangAtom) {
                     OtpErlangAtom atom = (OtpErlangAtom) otpErlangObject;
                     if (atom.atomValue().equals("stop")) {
+                        collectedData.addData(collectedDataRoot);
                         repeat = false;
                     }
+                } else {
+                    collectedDataRoot.addChild(new CollectedData(otpErlangObject.toString()));
                 }
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
         System.out.println("thread ended");
     }
 
-    public CollectedData getCollectedData() {
+    public CollectedDataList getCollectedData() {
         return collectedData;
     }
 

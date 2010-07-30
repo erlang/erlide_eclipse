@@ -1,15 +1,14 @@
 package org.ttb.integration.views;
 
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
 import org.ttb.integration.TtbBackend;
+import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
+import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 
 /**
  * Sequence diagram which shows tracing results.
@@ -20,29 +19,10 @@ import org.ttb.integration.mvc.model.TracePattern;
 public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver {
 
     private final String CONSOLE_NAME = "ttb console";
+    private TreeViewer treeViewer;
 
     public SequenceDiagramView() {
         TtbBackend.getInstance().addListener(this);
-
-        // TODO delete
-        MessageConsole console = findConsole(CONSOLE_NAME);
-        MessageConsoleStream out = console.newMessageStream();
-        out.println("Hello from Generic console sample action");
-        out.println("starting");
-        out.println("ok");
-    }
-
-    private MessageConsole findConsole(String name) {
-        ConsolePlugin plugin = ConsolePlugin.getDefault();
-        IConsoleManager conMan = plugin.getConsoleManager();
-        IConsole[] existing = conMan.getConsoles();
-        for (int i = 0; i < existing.length; i++)
-            if (name.equals(existing[i].getName()))
-                return (MessageConsole) existing[i];
-        // no console found, so create a new one
-        MessageConsole myConsole = new MessageConsole(name, null);
-        conMan.addConsoles(new IConsole[] { myConsole });
-        return myConsole;
     }
 
     @Override
@@ -53,7 +33,9 @@ public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver 
 
     @Override
     public void createPartControl(Composite parent) {
-        // TODO
+        treeViewer = new TreeViewer(parent);
+        treeViewer.setContentProvider(new CollectedTracesContentProvider());
+        treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
     }
 
     @Override
@@ -84,7 +66,7 @@ public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver 
 
     @Override
     public void stopTracing() {
-        // TODO Auto-generated method stub
-
+        CollectedDataList collectedData = TtbBackend.getInstance().getCollectedData();
+        treeViewer.setInput(collectedData);
     }
 }
