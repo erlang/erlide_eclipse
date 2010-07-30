@@ -47,16 +47,11 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 	public MoveFunctionDropHandler() {
 	}
 
-<<<<<<< HEAD
-	public IStatus validateDrop(final Object target, final int operation,
-			final TransferData transferType) {
-		ISelection sel = (ISelection) LocalSelectionTransfer.getInstance()
-=======
 	public IStatus validateDrop(Object target, int operation,
 			TransferData transferType) {
 		ISelection sel = (ISelection) LocalSelectionTransfer.getTransfer()
->>>>>>> next-erlide
-				.nativeToJava(transferType);
+
+		.nativeToJava(transferType);
 		TreeSelection s = (TreeSelection) sel;
 		IErlElement e = (IErlElement) s.getFirstElement();
 

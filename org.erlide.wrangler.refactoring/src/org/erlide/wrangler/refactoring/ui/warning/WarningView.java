@@ -84,8 +84,8 @@ public class WarningView extends ViewPart implements IWarningHandler {
 		}
 
 		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJS_WARN_TSK);
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
 		}
 	}
 
@@ -127,12 +127,10 @@ public class WarningView extends ViewPart implements IWarningHandler {
 		viewer.getControl().setFocus();
 	}
 
-	@Override
 	public void addMessage(String message) {
 		warningMessages.add(new WarningMessage(message));
 	}
 
-	@Override
 	public void refresh() {
 		try {
 			viewer.refresh();
@@ -142,7 +140,6 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
 	}
 
-	@Override
 	public void removeAll() {
 		warningMessages.clear();
 		this.refresh();

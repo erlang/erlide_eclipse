@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlang functionality for ttb integration
+Bundle-SymbolicName: org.ttb.integration.erlang;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Erlang Solutions

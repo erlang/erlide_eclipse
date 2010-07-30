@@ -9,11 +9,11 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * Singleton class representing backend that collects traces.
+ * Singleton class wrapping backend that collects traces.
  * 
  * @author Piotr Dorobisz
  * 
@@ -25,12 +25,16 @@ public class TtbBackend {
     private Backend backend;
     private static final TtbBackend INSTANCE = new TtbBackend();
     private boolean started;
-    private static final String MODULE = "ttb";
+    private TraceDataCollectorThread traceDataCollectorThread;
+    private static final String TTB_MODULE = "ttb";
+    private static final String HELPER_MODULE = "ttb_integration";
     private static final String FUN_TRACER = "tracer";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
     private static final String FUN_TP = "tp";
     private static final String FUN_CTP = "ctp";
+    private static final String FUN_FORMAT = "format";
+    private static final String FUN_START = "start";
 
     private TtbBackend() {
     }
@@ -59,17 +63,21 @@ public class TtbBackend {
                 if (!started) {
                     try {
                         this.backend = backend;
-                        backend.call(MODULE, FUN_TRACER, "", new Object[0]);
-                        backend.call(MODULE, FUN_P, "aa", "all", "call");
+                        OtpMbox otpMbox = backend.createMbox("TraceDataCollector");
+                        OtpErlangPid pid = otpMbox.self();
+                        traceDataCollectorThread = new TraceDataCollectorThread(otpMbox);
+                        backend.call(HELPER_MODULE, FUN_START, "x", pid);
+
                         for (TracePattern tracePattern : list) {
                             if (tracePattern.isEnabled()) {
                                 try {
-                                    backend.call(MODULE, FUN_TP, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    backend.call(TTB_MODULE, FUN_TP, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
                                 } catch (BackendException e) {
                                     ErlLogger.error("Could not add pattern: " + e.getMessage());
                                 }
                             }
                         }
+                        traceDataCollectorThread.start();
                         started = true;
                         for (ITraceNodeObserver listener : listeners) {
                             listener.startTracing();
@@ -91,8 +99,17 @@ public class TtbBackend {
             synchronized (this) {
                 if (started) {
                     try {
-                        backend.call(MODULE, FUN_STOP, "x", new OtpErlangList(new OtpErlangAtom("format")));
+                        // backend.call(TTB_MODULE, FUN_STOP, "x", new
+                        // OtpErlangList(new OtpErlangAtom("format")));
+                        backend.call(HELPER_MODULE, FUN_STOP, "x", traceDataCollectorThread.getOtpMbox().self());
                         started = false;
+
+                        // TraceDataCollectorThread traceDataCollectorThread =
+                        // new TraceDataCollectorThread(otpMbox);
+                        // traceDataCollectorThread.start();
+                        // backend.call(MODULE, FUN_FORMAT, "x", new
+                        // OtpErlangList(new OtpErlangAtom("fetch")));
+
                         for (ITraceNodeObserver listener : listeners) {
                             listener.stopTracing();
                         }

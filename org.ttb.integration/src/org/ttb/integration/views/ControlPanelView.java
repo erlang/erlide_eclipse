@@ -1,5 +1,10 @@
 package org.ttb.integration.views;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -11,12 +16,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
@@ -34,8 +41,8 @@ import org.ttb.integration.mvc.view.TracePatternLabelProvider;
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     private TableViewer tableViewer;
-    private Text backendName;
     private Button startButton;
+    private Combo backendNameCombo;
 
     public ControlPanelView() {
         TtbBackend.getInstance().addListener(this);
@@ -56,20 +63,78 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // Create a composite to hold the children
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_BOTH);
         parent.setLayoutData(gridData);
+        //
+        // // Set numColumns to 3 for the buttons
+        GridLayout layout = new GridLayout(3, false);
+        layout.marginWidth = 4;
 
-        // Set numColumns to 3 for the buttons
+        parent.setLayout(layout);
+        // parent.setLayout(new RowLayout(SWT.VERTICAL));
+
+        createPatternButtonsPanel(parent);
+        createTable(parent);
+        createStartStopPanel(parent);
+
+    }
+
+    private void createStartStopPanel(Composite parent) {
         GridLayout layout = new GridLayout(3, false);
         layout.marginWidth = 4;
         parent.setLayout(layout);
 
-        createButtons(parent);
-        backendName = new Text(parent, SWT.BORDER);
-        createTable(parent);
+        Composite composite = parent;
+        // Composite composite = new Composite(parent, 0);
+        // RowLayout layout = new RowLayout(SWT.HORIZONTAL);
+        // composite.setLayout(layout);
+
+        backendNameCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+        backendNameCombo.setItems(getBackendNames());
+
+        Button refreshButton = new Button(composite, SWT.PUSH | SWT.CENTER);
+        refreshButton.setText("Refresh");
+        refreshButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                backendNameCombo.setItems(getBackendNames());
+            }
+        });
+
+        // "Start/Stop" button
+        startButton = new Button(composite, SWT.PUSH | SWT.CENTER);
+        startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
+        startButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (TtbBackend.getInstance().isStarted()) {
+                    TtbBackend.getInstance().stop();
+                } else {
+                    TtbBackend.getInstance().start(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+                }
+            }
+        });
     }
 
-    private void createButtons(Composite parent) {
+    private String[] getBackendNames() {
+        Collection<ErlideBackend> backends = BackendManager.getDefault().getAllBackends();
+        List<String> backendNames = new ArrayList<String>();
+        for (ErlideBackend erlideBackend : backends) {
+            backendNames.add(erlideBackend.getName());
+        }
+        backendNames.add("test abcdefgh");// TODO remove it
+        Collections.sort(backendNames);
+        return backendNames.toArray(new String[backendNames.size()]);
+    }
+
+    private void createPatternButtonsPanel(Composite parent) {
+        Composite composite = parent;
+        // Composite composite = new Composite(parent, 0);
+        // RowLayout layout = new RowLayout(SWT.HORIZONTAL);
+        // composite.setLayout(layout);
+
         // "Add" button
-        Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
+        Button button = new Button(composite, SWT.PUSH | SWT.CENTER);
         button.setText("Add");
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -80,7 +145,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Remove" button
-        button = new Button(parent, SWT.PUSH | SWT.CENTER);
+        button = new Button(composite, SWT.PUSH | SWT.CENTER);
         button.setText("Remove");
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -89,21 +154,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 TracePattern tracePattern = (TracePattern) ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
                 if (tracePattern != null) {
                     TtbBackend.getInstance().removeTracePattern(tracePattern);
-                }
-            }
-        });
-
-        // "Start/Stop" button
-        startButton = new Button(parent, SWT.PUSH | SWT.CENTER);
-        startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
-        startButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (TtbBackend.getInstance().isStarted()) {
-                    TtbBackend.getInstance().stop();
-                } else {
-                    TtbBackend.getInstance().start(ErlangCore.getBackendManager().getByName(backendName.getText()));
                 }
             }
         });
@@ -147,9 +197,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[Columns.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
         tableViewer.setCellEditors(editors);
         tableViewer.setCellModifier(new CellModifier());
-
-        // input
-        // tableViewer.setInput(TracePatternList.getInstance());
     }
 
     @Override
