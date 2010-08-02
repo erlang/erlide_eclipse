@@ -7,7 +7,9 @@ import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.CollectedDataRoot;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 
 /**
@@ -50,7 +52,23 @@ public class TraceDataCollectorThread extends Thread {
                         repeat = false;
                     }
                 } else {
-                    collectedDataRoot.addChild(new CollectedData(otpErlangObject.toString()));
+                    // TODO introduce Enum or constant describing indices
+                    OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
+                    OtpErlangAtom nodeName = (OtpErlangAtom) tuple.elementAt(0);
+                    OtpErlangAtom moduleName = (OtpErlangAtom) tuple.elementAt(1);
+                    OtpErlangAtom functionName = (OtpErlangAtom) tuple.elementAt(2);
+                    OtpErlangList arguments = (OtpErlangList) tuple.elementAt(3);
+
+                    // TODO add fields to CollectedData to describe trail
+                    // details (not only label)
+                    CollectedData data = new CollectedData(moduleName + ": " + functionName + "/" + (arguments.arity() - 1));
+                    data.addChild(new CollectedData("module: " + moduleName));
+                    data.addChild(new CollectedData("function: " + functionName));
+                    OtpErlangObject objects[] = new OtpErlangObject[arguments.arity() - 1];
+                    System.arraycopy(arguments.elements(), 1, objects, 0, objects.length);
+                    data.addChild(new CollectedData("arguments: " + objects));
+
+                    collectedDataRoot.addChild(data);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

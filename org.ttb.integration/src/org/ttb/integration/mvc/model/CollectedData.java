@@ -4,20 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
+import org.ttb.integration.Activator;
+import org.ttb.integration.Images;
 
 public class CollectedData implements ITreeNode {
 
     private ITreeNode parent;
     private final String label;
-
-    // private static final ImageRegistry imageRegistry = new ImageRegistry();
-    // private static String IMAGE_NAME = "treeNode";
-    //
-    // static {
-    // imageRegistry.put(IMAGE_NAME,
-    // ImageDescriptor.createFromFile(TracePatternLabelProvider.class,
-    // IMAGE_NAME + ".gif"));
-    // }
+    private final List<ITreeNode> children = new ArrayList<ITreeNode>();
 
     public CollectedData(String label) {
         this.label = label;
@@ -39,21 +33,21 @@ public class CollectedData implements ITreeNode {
 
     @Override
     public boolean hasChildren() {
-        return false;
+        return (children != null && children.size() > 0);
     }
 
     @Override
     public List<ITreeNode> getChildren() {
-        return new ArrayList<ITreeNode>();
+        return children;
     }
 
     @Override
     public void addChild(ITreeNode child) {
+        children.add(child);
     }
 
     @Override
     public Image getImage() {
-        // return imageRegistry.get(IMAGE_NAME);
-        return null;
+        return Activator.getDefault().getImageRegistry().get(Images.TREE_NODE.toString());
     }
 }

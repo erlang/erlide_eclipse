@@ -1,10 +1,10 @@
 package org.ttb.integration.mvc.view;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.ttb.integration.Activator;
+import org.ttb.integration.Images;
 import org.ttb.integration.mvc.model.TracePattern;
 
 /**
@@ -15,24 +15,14 @@ import org.ttb.integration.mvc.model.TracePattern;
  */
 public class TracePatternLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-    private static final String CHECKED_IMAGE = "checked";
-    private static final String UNCHECKED_IMAGE = "unchecked";
-
-    private static final ImageRegistry imageRegistry = new ImageRegistry();
-
-    static {
-        imageRegistry.put(CHECKED_IMAGE, ImageDescriptor.createFromFile(TracePatternLabelProvider.class, CHECKED_IMAGE + ".gif"));
-        imageRegistry.put(UNCHECKED_IMAGE, ImageDescriptor.createFromFile(TracePatternLabelProvider.class, UNCHECKED_IMAGE + ".gif"));
-    }
-
     @Override
     public Image getColumnImage(Object element, int index) {
         TracePattern pattern = (TracePattern) element;
         if (index == Columns.ENABLED.ordinal()) {
             if (pattern.isEnabled())
-                return imageRegistry.get(CHECKED_IMAGE);
+                return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
             else
-                return imageRegistry.get(UNCHECKED_IMAGE);
+                return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
         } else
             return null;
     }
