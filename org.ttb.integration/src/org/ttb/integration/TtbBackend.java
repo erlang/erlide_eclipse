@@ -34,6 +34,7 @@ public class TtbBackend {
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
     private static final String FUN_TP = "tp";
+    private static final String FUN_TPL = "tpl";
     private static final String FUN_CTP = "ctp";
     private static final String FUN_FORMAT = "format";
     private static final String FUN_START = "start";
@@ -75,7 +76,7 @@ public class TtbBackend {
                         for (TracePattern tracePattern : list) {
                             if (tracePattern.isEnabled()) {
                                 try {
-                                    backend.call(TTB_MODULE, FUN_TP, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    backend.call(TTB_MODULE, FUN_TPL, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
                                 } catch (BackendException e) {
                                     ErlLogger.error("Could not add pattern: " + e.getMessage());
                                 }
