@@ -34,7 +34,7 @@ public class TraceDataCollectorThread extends Thread {
      */
     public TraceDataCollectorThread(OtpMbox otpMbox) {
         this.otpMbox = otpMbox;
-        this.collectedData = new CollectedDataList();
+        this.collectedData = CollectedDataList.getInstance();
     }
 
     @Override

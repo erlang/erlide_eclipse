@@ -12,6 +12,14 @@ import java.util.List;
 public class CollectedDataList {
 
     private final List<CollectedDataRoot> data = new ArrayList<CollectedDataRoot>();
+    private static final CollectedDataList INSTANCE = new CollectedDataList();
+
+    private CollectedDataList() {
+    }
+
+    public static CollectedDataList getInstance() {
+        return INSTANCE;
+    }
 
     public List<CollectedDataRoot> getData() {
         return data;
@@ -19,5 +27,9 @@ public class CollectedDataList {
 
     public void addData(CollectedDataRoot _data) {
         data.add(_data);
+    }
+
+    public void clear() {
+        data.clear();
     }
 }

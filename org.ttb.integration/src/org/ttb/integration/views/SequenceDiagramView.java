@@ -33,6 +33,22 @@ public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver 
 
     @Override
     public void createPartControl(Composite parent) {
+        // RowLayout rowLayout = new RowLayout();
+        // rowLayout.wrap = false;
+        // rowLayout.pack = false;
+        // rowLayout.justify = true;
+        // rowLayout.type = SWT.VERTICAL;
+        // rowLayout.marginLeft = 5;
+        // rowLayout.marginTop = 5;
+        // rowLayout.marginRight = 5;
+        // rowLayout.marginBottom = 5;
+        // rowLayout.spacing = 0;
+        //
+        // parent.setLayout(rowLayout);
+
+        // Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
+        // button.setText("Clear");
+
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(new CollectedTracesContentProvider());
         treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
