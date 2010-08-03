@@ -9,6 +9,7 @@ package org.ttb.integration.mvc.model;
 public class TracePattern {
 
     private boolean enabled;
+    private boolean local;
     private String moduleName;
     private String functionName;
 
@@ -28,6 +29,14 @@ public class TracePattern {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 
     public String getModuleName() {

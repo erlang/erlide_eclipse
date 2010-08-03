@@ -75,8 +75,9 @@ public class TtbBackend {
 
                         for (TracePattern tracePattern : list) {
                             if (tracePattern.isEnabled()) {
+                                String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
                                 try {
-                                    backend.call(TTB_MODULE, FUN_TPL, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    backend.call(TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
                                 } catch (BackendException e) {
                                     ErlLogger.error("Could not add pattern: " + e.getMessage());
                                 }

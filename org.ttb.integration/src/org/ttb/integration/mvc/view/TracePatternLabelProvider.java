@@ -23,6 +23,11 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
                 return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
             else
                 return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
+        } else if (index == Columns.LOCAL.ordinal()) {
+            if (pattern.isLocal())
+                return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
+            else
+                return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
         } else
             return null;
     }
@@ -37,6 +42,8 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
             return tracePattern.getModuleName();
         case FUNCTION_NAME:
             return tracePattern.getFunctionName();
+        case LOCAL:
+            break;
         default:
             break;
         }

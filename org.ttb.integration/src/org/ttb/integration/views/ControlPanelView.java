@@ -193,6 +193,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // editors
         CellEditor[] editors = new CellEditor[Columns.values().length];
         editors[Columns.ENABLED.ordinal()] = new CheckboxCellEditor(table);
+        editors[Columns.LOCAL.ordinal()] = new CheckboxCellEditor(table);
         editors[Columns.MODULE_NAME.ordinal()] = new TextCellEditor(table);
         editors[Columns.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
         tableViewer.setCellEditors(editors);

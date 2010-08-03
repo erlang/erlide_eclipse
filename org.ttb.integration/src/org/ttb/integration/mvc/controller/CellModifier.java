@@ -29,6 +29,8 @@ public class CellModifier implements ICellModifier {
             return pattern.getModuleName();
         case FUNCTION_NAME:
             return pattern.getFunctionName();
+        case LOCAL:
+            return new Boolean(pattern.isLocal());
         default:
             return null;
         }
@@ -46,6 +48,9 @@ public class CellModifier implements ICellModifier {
             break;
         case FUNCTION_NAME:
             pattern.setFunctionName((String) value);
+            break;
+        case LOCAL:
+            pattern.setLocal((Boolean) value);
             break;
         default:
         }
