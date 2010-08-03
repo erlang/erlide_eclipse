@@ -64,9 +64,12 @@ public class TraceDataCollectorThread extends Thread {
                     CollectedData data = new CollectedData(moduleName + ": " + functionName + "/" + (arguments.arity() - 1));
                     data.addChild(new CollectedData("module: " + moduleName));
                     data.addChild(new CollectedData("function: " + functionName));
-                    OtpErlangObject objects[] = new OtpErlangObject[arguments.arity() - 1];
-                    System.arraycopy(arguments.elements(), 1, objects, 0, objects.length);
-                    data.addChild(new CollectedData("arguments: " + objects));
+
+                    StringBuilder builder = new StringBuilder("arguments: ");
+                    for (int i = 1; i < arguments.arity(); i++) {
+                        builder.append(arguments.elementAt(i)).append(", ");
+                    }
+                    data.addChild(new CollectedData(builder.substring(0, builder.length() - 2)));
 
                     collectedDataRoot.addChild(data);
                 }
