@@ -86,8 +86,8 @@ public class LiveExpressionsView extends ViewPart implements
 
 	private static class LiveExpr {
 		String fExpr;
-		private String cachedValue;
-		boolean doEval = true;
+		private String cachedValue = "";
+		boolean doEval = false;
 
 		public LiveExpr(final String s) {
 			fExpr = s;
@@ -274,32 +274,6 @@ public class LiveExpressionsView extends ViewPart implements
 		contributeToActionBars();
 		hookGlobalActions();
 
-		// //////////////
-		// Implement a "fake" tooltip
-		// final Listener labelListener = new Listener()
-		// {
-		//
-		// public void handleEvent(Event event)
-		// {
-		// Label label = (Label) event.widget;
-		// Shell shell = label.getShell();
-		// switch (event.type)
-		// {
-		// case SWT.MouseDown :
-		// Event e = new Event();
-		// e.item = (TableItem) label.getData("_TABLEITEM");
-		// // Assuming table is single select, set the selection as
-		// // if the mouse down event went through to the table
-		// t.setSelection(new TableItem[]{(TableItem) e.item});
-		// t.notifyListeners(SWT.Selection, e);
-		// // fall through
-		// case SWT.MouseExit :
-		// shell.dispose();
-		// break;
-		// }
-		// }
-		// };
-
 		final Listener tableListener = new Listener() {
 
 			SourceViewerInformationControl info = null;
@@ -320,39 +294,38 @@ public class LiveExpressionsView extends ViewPart implements
 					final TableItem item = t
 							.getItem(new Point(event.x, event.y));
 					if (item != null) {
-						String str = "??";
-						// try
-						// {
-						// str = BackendUtil.prettyPrint(bk,
-						// item.getText(1));
-						// ErlLogger.debug(str);
-						final BackendEvalResult r = ErlBackend.eval(ErlangCore
-								.getBackendManager().getIdeBackend(),
-								"lists:flatten(io_lib:format(\"~p\", ["
-										+ item.getText(0) + "])).", null);
-						if (r.isOk()) {
-							str = ErlUtils.asString(r.getValue());
-						} else {
-							str = r.getErrorReason().toString();
+						String str = item.getText(1);
+						if (str.length() > 0) {
+							// ErlLogger.debug(str);
+							final BackendEvalResult r = ErlBackend.eval(
+									ErlangCore.getBackendManager()
+											.getIdeBackend(),
+									"lists:flatten(io_lib:format(\"~p\", ["
+											+ item.getText(1) + "])).", null);
+							if (r.isOk()) {
+								str = ErlUtils.asString(r.getValue());
+							} else {
+								str = r.getErrorReason().toString();
+							}
+							info = new SourceViewerInformationControl(t
+									.getShell(), SWT.ON_TOP | SWT.TOOL
+									| SWT.RESIZE, SWT.MULTI | SWT.WRAP,
+									PreferenceConstants.EDITOR_TEXT_FONT, null);
+							info.setForegroundColor(t.getDisplay()
+									.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+							info.setBackgroundColor(t.getDisplay()
+									.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+							info.setInformation(str);
+
+							final Rectangle rect = item.getBounds(1);
+							final int lw = t.getGridLineWidth();
+							final Point pt = t.toDisplay(rect.x + lw, rect.y
+									+ lw);
+							info.setLocation(pt);
+							info.setSize(rect.width + lw, t.getBounds().height
+									- rect.y);
+							info.setVisible(true);
 						}
-
-						info = new SourceViewerInformationControl(t.getShell(),
-								SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI
-										| SWT.WRAP,
-								PreferenceConstants.EDITOR_TEXT_FONT, null);
-						info.setForegroundColor(t.getDisplay().getSystemColor(
-								SWT.COLOR_INFO_FOREGROUND));
-						info.setBackgroundColor(t.getDisplay().getSystemColor(
-								SWT.COLOR_INFO_BACKGROUND));
-						info.setInformation(str);
-
-						final Rectangle rect = item.getBounds(1);
-						final int lw = t.getGridLineWidth();
-						final Point pt = t.toDisplay(rect.x + lw, rect.y + lw);
-						info.setLocation(pt);
-						info.setSize(rect.width + lw, t.getBounds().height
-								- rect.y);
-						info.setVisible(true);
 					}
 				}
 					break;
@@ -441,6 +414,7 @@ public class LiveExpressionsView extends ViewPart implements
 				el = (LiveExpr) element;
 			}
 			el.fExpr = (String) value;
+			el.cachedValue = "";
 			view.updateExpr(el);
 		}
 	}
@@ -491,7 +465,7 @@ public class LiveExpressionsView extends ViewPart implements
 
 			@Override
 			public void run() {
-				viewer.refresh();
+				refreshView();
 			}
 		};
 		refreshAction.setText("Refresh");
