@@ -15,12 +15,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -61,34 +58,24 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void createPartControl(Composite parent) {
-        addChildren(parent);
-    }
-
-    private void addChildren(Composite parent) {
-
-        final Composite container = parent;
-        container.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-        // final Composite container = new Composite(parent, SWT.NONE);
-        // final FillLayout containerLayout = new FillLayout(SWT.VERTICAL);
-        final RowLayout containerLayout = new RowLayout(SWT.VERTICAL);
-        container.setLayout(containerLayout);
+        // layout
+        final GridLayout containerLayout = new GridLayout(1, false);
+        parent.setLayout(containerLayout);
         containerLayout.marginWidth = 0;
         containerLayout.marginHeight = 0;
+        containerLayout.verticalSpacing = 3;
 
-        RowData rowData = new RowData();
-        container.setSize(500, 500);
-        rowData.width = 200;
-        rowData.height = 300;
-        container.setLayoutData(rowData);
-        // containerLayout.makeColumnsEqualWidth = false;
-        // containerLayout.verticalSpacing = 3;
-
-        createStartStopPanel(container);
-        TabFolder tabFolder = new TabFolder(container, SWT.BORDER);
+        // children
+        createStartStopPanel(parent);
+        TabFolder tabFolder = createTabs(parent);
         addProcessesTab(tabFolder);
         addFunctionsTab(tabFolder);
+    }
 
-        container.pack();
+    private TabFolder createTabs(Composite parent) {
+        TabFolder tabFolder = new TabFolder(parent, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        return tabFolder;
     }
 
     private void addProcessesTab(TabFolder tabFolder) {
@@ -113,7 +100,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         final Composite container = new Composite(tabFolder, SWT.NONE);
         final GridLayout containerLayout = new GridLayout(2, false);
         container.setLayout(containerLayout);
-        containerLayout.marginWidth = 0;
+        containerLayout.marginWidth = 10;
         containerLayout.marginHeight = 0;
         containerLayout.makeColumnsEqualWidth = false;
         containerLayout.verticalSpacing = 3;
@@ -126,6 +113,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private void createStartStopPanel(Composite parent) {
         final Composite container = new Composite(parent, SWT.NONE);
         final GridLayout containerLayout = new GridLayout(3, false);
+
+        container.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
+
         container.setLayout(containerLayout);
         containerLayout.marginWidth = 0;
         containerLayout.marginHeight = 0;
@@ -134,6 +124,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         backendNameCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
         backendNameCombo.setItems(getBackendNames());
+        backendNameCombo.setLayoutData(new GridData(200, SWT.DEFAULT));
 
         Button refreshButton = new Button(container, SWT.PUSH | SWT.CENTER);
         refreshButton.setText("Refresh");
@@ -167,19 +158,13 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         for (ErlideBackend erlideBackend : backends) {
             backendNames.add(erlideBackend.getName());
         }
-        backendNames.add("test abcdefgh");// TODO remove it
         Collections.sort(backendNames);
         return backendNames.toArray(new String[backendNames.size()]);
     }
 
     private void createPatternButtonsPanel(Composite parent) {
-        Composite composite = parent;
-        // Composite composite = new Composite(parent, 0);
-        // RowLayout layout = new RowLayout(SWT.HORIZONTAL);
-        // composite.setLayout(layout);
-
         // "Add" button
-        Button button = new Button(composite, SWT.PUSH | SWT.CENTER);
+        Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
         button.setText("Add");
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -190,7 +175,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Remove" button
-        button = new Button(composite, SWT.PUSH | SWT.CENTER);
+        button = new Button(parent, SWT.PUSH | SWT.CENTER);
         button.setText("Remove");
         button.addSelectionListener(new SelectionAdapter() {
 
