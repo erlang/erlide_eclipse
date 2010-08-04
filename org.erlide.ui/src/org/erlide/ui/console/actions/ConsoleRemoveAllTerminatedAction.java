@@ -25,6 +25,7 @@ import org.eclipse.ui.texteditor.IUpdate;
 /**
  * ConsoleRemoveAllTerminatedAction
  */
+@SuppressWarnings("restriction")
 public class ConsoleRemoveAllTerminatedAction extends Action implements
 		IUpdate, ILaunchesListener2 {
 
@@ -34,7 +35,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.texteditor.IUpdate#update()
 	 */
 	public void update() {
@@ -53,7 +54,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
 	@Override
@@ -80,7 +81,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.debug.core.ILaunchesListener#launchesRemoved(org.eclipse.
 	 * debug.core.ILaunch[])
@@ -93,7 +94,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.debug.core.ILaunchesListener#launchesAdded(org.eclipse.debug
 	 * .core.ILaunch[])
@@ -103,7 +104,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.debug.core.ILaunchesListener#launchesChanged(org.eclipse.
 	 * debug.core.ILaunch[])
@@ -113,7 +114,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.debug.core.ILaunchesListener2#launchesTerminated(org.eclipse
 	 * .debug.core.ILaunch[])
