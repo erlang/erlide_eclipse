@@ -111,7 +111,6 @@ public class TtbBackend {
                         backend.call(HELPER_MODULE, FUN_STOP, "x", traceDataCollectorThread.getOtpMbox().self());
                         collectedData = traceDataCollectorThread.getCollectedData();
                         started = false;
-
                         for (ITraceNodeObserver listener : listeners) {
                             listener.stopTracing();
                         }
