@@ -9,8 +9,8 @@
 
 
 start(Pid)->
-	ttb:tracer(all, [{handler, {create_handler(Pid), initial_state}}]),
-	ttb:p(all, call).
+	ttb:tracer(all, [{handler, {create_handler(Pid), initial_state}}]).
+%% 	ttb:p(all, call).
 
 stop(Pid)->
 	ttb:stop([format]),

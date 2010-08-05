@@ -1,7 +1,10 @@
 package org.ttb.integration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -10,6 +13,7 @@ import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
@@ -24,6 +28,8 @@ public class TtbBackend {
     private static final String PROCESS_NAME = "TraceDataCollector";
     private final List<TracePattern> list = new ArrayList<TracePattern>();
     private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
+    private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
+    private ProcessMode processMode;
     private Backend backend;
     private static final TtbBackend INSTANCE = new TtbBackend();
     private boolean started;
@@ -73,6 +79,15 @@ public class TtbBackend {
                         traceDataCollectorThread = new TraceDataCollectorThread(otpMbox);
                         backend.call(HELPER_MODULE, FUN_START, "x", pid);
 
+                        // setting process flags
+                        if (ProcessMode.BY_PID.equals(processMode)) {
+                            // setting flags for selected processes
+                        } else {
+                            // setting global flags
+                            backend.call(TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
+                        }
+
+                        // setting trace patterns
                         for (TracePattern tracePattern : list) {
                             if (tracePattern.isEnabled()) {
                                 String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
@@ -126,6 +141,16 @@ public class TtbBackend {
         }
     }
 
+    private OtpErlangObject[] createProcessFlagsArray(Set<ProcessFlag> set) {
+        OtpErlangObject[] array = new OtpErlangObject[set.size()];
+        Iterator<ProcessFlag> iterator = set.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            array[i++] = iterator.next().toAtom();
+        }
+        return array;
+    }
+
     public synchronized void addListener(ITraceNodeObserver listener) {
         listeners.add(listener);
     }
@@ -160,5 +185,25 @@ public class TtbBackend {
 
     public CollectedDataList getCollectedData() {
         return collectedData;
+    }
+
+    public void addProcessFlag(ProcessFlag flag) {
+        processFlags.add(flag);
+    }
+
+    public void removeProcessFlag(ProcessFlag flag) {
+        processFlags.remove(flag);
+    }
+
+    public void removeAllProcessFlag() {
+        processFlags.clear();
+    }
+
+    public ProcessMode getProcessMode() {
+        return processMode;
+    }
+
+    public void setProcessMode(ProcessMode processMode) {
+        this.processMode = processMode;
     }
 }
