@@ -705,7 +705,11 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	public IErlModule getModule(final String name) {
-		return ErlFolder.getModule(this, name);
+		return ErlFolder.getModule(this, name, false);
+	}
+
+	public IErlModule getModuleExt(final String name) {
+		return ErlFolder.getModule(this, name, true);
 	}
 
 	public boolean isSourcePathParent() {
