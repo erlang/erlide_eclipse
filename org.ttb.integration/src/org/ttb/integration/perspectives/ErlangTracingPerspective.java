@@ -1,8 +1,10 @@
 package org.ttb.integration.perspectives;
 
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * Perspective for tracing Erlang applications.
@@ -12,17 +14,37 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class ErlangTracingPerspective implements IPerspectiveFactory {
 
-    public static final String VIEW_ID = "org.ttb.integration.views.ControlPanelView123";
-    private static final String BOTTOM = "bottom";
+    public static final String CONTROL_PANEL_VIEW_ID = "org.ttb.integration.views.ControlPanelView";
+    public static final String TREE_VIEWER_VIEW_ID = "org.ttb.integration.views.TreeViewerView";
+    private static final String TOP_LEFT = "top left";
+    private static final String BOTTOM_LEFT = "bottom left";
+    private static final String BOTTOM_CENTER = "bottom center";
 
     @Override
     public void createInitialLayout(IPageLayout pageLayout) {
+        defineActions(pageLayout);
+        defineLayout(pageLayout);
+    }
 
-        pageLayout.addView(IPageLayout.ID_OUTLINE, IPageLayout.LEFT, 0.30f, pageLayout.getEditorArea());
-        // pageLayout.addView(IPageLayout.ID_OUTLINE, IPageLayout.LEFT, 0.30f,
-        // VIEW_ID);
+    private void defineActions(IPageLayout pageLayout) {
+        pageLayout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
+        pageLayout.addActionSet(IDebugUIConstants.DEBUG_ACTION_SET);
+        pageLayout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
+    }
 
-        IFolderLayout bot = pageLayout.createFolder(BOTTOM, IPageLayout.BOTTOM, 0.76f, pageLayout.getEditorArea());
-        bot.addView(VIEW_ID);
+    private void defineLayout(IPageLayout pageLayout) {
+        // top left
+        IFolderLayout topLeft = pageLayout.createFolder(TOP_LEFT, IPageLayout.LEFT, 0.30f, pageLayout.getEditorArea());
+        topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
+
+        // bottom left
+        IFolderLayout bottomLeft = pageLayout.createFolder(BOTTOM_LEFT, IPageLayout.BOTTOM, 0.40f, TOP_LEFT);
+        bottomLeft.addView(TREE_VIEWER_VIEW_ID);
+
+        // bottom center
+        IFolderLayout bottomCenter = pageLayout.createFolder(BOTTOM_CENTER, IPageLayout.BOTTOM, 0.60f, pageLayout.getEditorArea());
+        bottomCenter.addView(IPageLayout.ID_PROBLEM_VIEW);
+        bottomCenter.addView(IConsoleConstants.ID_CONSOLE_VIEW);
+        bottomCenter.addView(CONTROL_PANEL_VIEW_ID);
     }
 }

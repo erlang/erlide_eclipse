@@ -16,20 +16,17 @@
             allowMultiple="false"
             category="org.erlide.views"
             class="org.ttb.integration.views.ControlPanelView"
-            icon="icons/control-panel-view.gif"
+            icon="icons/controlPanelView.gif"
             id="org.ttb.integration.views.ControlPanelView"
             name="Erlang tracing control panel">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.ttb.integration.views.SequenceDiagramView"
-            icon="icons/sequence-diagram-view.gif"
-            id="org.ttb.integration.views.SequenceDiagramView"
-            name="Erlang tracing results">
+            class="org.ttb.integration.views.TreeViewerView"
+            icon="icons/treeViewerView.gif"
+            id="org.ttb.integration.views.TreeViewerView"
+            name="Erlang tracing tree viewer">
       </view>
    </extension>
 </plugin>

@@ -16,12 +16,12 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
  * @author Piotr Dorobisz
  * 
  */
-public class SequenceDiagramView extends ViewPart implements ITraceNodeObserver {
+public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private final String CONSOLE_NAME = "ttb console";
     private TreeViewer treeViewer;
 
-    public SequenceDiagramView() {
+    public TreeViewerView() {
         TtbBackend.getInstance().addListener(this);
     }
 
