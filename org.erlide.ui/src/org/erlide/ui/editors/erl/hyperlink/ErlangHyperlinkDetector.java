@@ -6,8 +6,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.actions.OpenAction;
@@ -15,47 +15,25 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
 import org.erlide.ui.util.ErlModelUtils;
 
-public class ErlangHyperlinkDetector implements IHyperlinkDetector {
+public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 
-	private final ErlangEditor editor;
-
-	/**
-	 * @param editor
-	 */
-	public ErlangHyperlinkDetector(final ErlangEditor editor) {
-		this.editor = editor;
+	public ErlangHyperlinkDetector() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(
-	 * org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion,
-	 * boolean)
-	 */
 	public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
 			final IRegion region, final boolean canShowMultipleHyperlinks) {
-
 		if (region == null) {
 			return null;
 		}
-
 		final IDocument document = textViewer.getDocument();
 		if (document == null) {
 			return null;
 		}
-
 		return detectHyperlinks(document, region.getOffset());
 	}
 
-	/**
-	 * @param doc
-	 * @param offset
-	 * @return
-	 */
 	private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
-
+		ErlangEditor editor = (ErlangEditor) getAdapter(ErlangEditor.class);
 		final IErlModule module = ErlModelUtils.getModule(editor);
 		if (module == null) {
 			return null;
@@ -73,8 +51,8 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		}
 		try {
 			final ITypedRegion partition = doc.getPartition(offset);
-			final ErlPartition erlPartition = new ErlPartition(token
-					.getOffset(), token.getLength(), partition.getType());
+			final ErlRegion erlPartition = new ErlRegion(token.getOffset(),
+					token.getLength(), partition.getType());
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
 				return null;
 			}
@@ -85,76 +63,42 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 		}
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	static class ErlPartition extends Region {
+	static class ErlRegion extends Region {
 		String type;
 
-		public ErlPartition(final int offset, final int length,
-				final String type) {
+		public ErlRegion(final int offset, final int length, final String type) {
 			super(offset, length);
 			this.type = type;
 		}
 
-		/**
-		 * @return
-		 */
 		public String getType() {
 			return type;
 		}
 
-		/**
-		 * @param string
-		 */
 		public void setType(final String string) {
 			type = string;
 		}
 
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	private static class ErlangSubHyperlink implements IHyperlink {
 		private final ErlangEditor editor;
-		private final ErlPartition subNameRegion;
+		private final ErlRegion subNameRegion;
 
-		/**
-		 * @param editor
-		 * @param partion
-		 */
 		public ErlangSubHyperlink(final ErlangEditor editor,
-				final ErlPartition partion) {
+				final ErlRegion partion) {
 			this.editor = editor;
 			subNameRegion = partion;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#getTypeLabel()
-		 */
 		public String getTypeLabel() {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#getHyperlinkText()
-		 */
 		public String getHyperlinkText() {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#open()
-		 */
 		public void open() {
 			final OpenAction action = (OpenAction) editor
 					.getAction(IErlangEditorActionDefinitionIds.OPEN);
@@ -163,11 +107,6 @@ public class ErlangHyperlinkDetector implements IHyperlinkDetector {
 			}
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.text.hyperlink.IHyperlink#getHyperlinkRegion()
-		 */
 		public IRegion getHyperlinkRegion() {
 			return subNameRegion;
 		}

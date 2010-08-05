@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -23,7 +25,6 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
@@ -38,7 +39,6 @@ import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
-import org.erlide.ui.editors.erl.hyperlink.ErlangHyperlinkDetector;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
 import org.erlide.ui.information.ErlInformationPresenter;
@@ -157,12 +157,9 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 			asst.enablePrefixCompletion(false);
 			asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
 
-			asst
-					.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-			asst
-					.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-			asst
-					.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+			asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+			asst.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+			asst.setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
 			return asst;
 		}
@@ -185,8 +182,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 				if (parent.getText().length() == 0
 						&& BrowserInformationControl.isAvailable(parent)) {
 					final BrowserInformationControl info = new BrowserInformationControl(
-							parent, JFaceResources.DIALOG_FONT, EditorsUI
-									.getTooltipAffordanceString()) {
+							parent, JFaceResources.DIALOG_FONT,
+							EditorsUI.getTooltipAffordanceString()) {
 						@Override
 						public IInformationControlCreator getInformationPresenterControlCreator() {
 							return new PresenterControlCreator();
@@ -194,36 +191,20 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 					};
 					return info;
 				} else {
-					return new DefaultInformationControl(parent, EditorsUI
-							.getTooltipAffordanceString(),
+					return new DefaultInformationControl(parent,
+							EditorsUI.getTooltipAffordanceString(),
 							new ErlInformationPresenter(true));
 				}
 			}
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public IHyperlinkDetector[] getHyperlinkDetectors(
-			final ISourceViewer sourceViewer) {
-		if (editor == null) {
-			return null;
-		}
-
-		// Add ErlangSubHyperlinkDetector to the list provided by the superclass
-
-		IHyperlinkDetector[] superDetectors = super
-				.getHyperlinkDetectors(sourceViewer);
-		if (superDetectors == null) {
-			superDetectors = new IHyperlinkDetector[0];
-		}
-		final IHyperlinkDetector[] ourDetectors = new IHyperlinkDetector[superDetectors.length + 1];
-		for (int i = 0; i < superDetectors.length; ++i) {
-			ourDetectors[i] = superDetectors[i];
-		}
-		ourDetectors[ourDetectors.length - 1] = new ErlangHyperlinkDetector(
-				editor);
-
-		return ourDetectors;
+	protected Map getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
+		Map map = super.getHyperlinkDetectorTargets(sourceViewer);
+		map.put("org.erlide.ui.hyperlinktarget", getEditor());
+		return map;
 	}
 
 	public void resetReconciler() {
