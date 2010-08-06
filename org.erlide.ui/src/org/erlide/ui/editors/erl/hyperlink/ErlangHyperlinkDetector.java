@@ -51,13 +51,12 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 		}
 		try {
 			final ITypedRegion partition = doc.getPartition(offset);
-			final ErlRegion erlPartition = new ErlRegion(token.getOffset(),
-					token.getLength(), partition.getType());
-			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(erlPartition.getType())) {
+			final ErlRegion region = new ErlRegion(token.getOffset(), token
+					.getLength(), partition.getType());
+			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(region.getType())) {
 				return null;
 			}
-			return new IHyperlink[] { new ErlangSubHyperlink(editor,
-					erlPartition) };
+			return new IHyperlink[] { new ErlangHyperlink(editor, region) };
 		} catch (final BadLocationException e) {
 			return null;
 		}
@@ -81,14 +80,14 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 
 	}
 
-	private static class ErlangSubHyperlink implements IHyperlink {
+	private static class ErlangHyperlink implements IHyperlink {
 		private final ErlangEditor editor;
-		private final ErlRegion subNameRegion;
+		private final ErlRegion region;
 
-		public ErlangSubHyperlink(final ErlangEditor editor,
+		public ErlangHyperlink(final ErlangEditor editor,
 				final ErlRegion partion) {
 			this.editor = editor;
-			subNameRegion = partion;
+			region = partion;
 		}
 
 		public String getTypeLabel() {
@@ -108,7 +107,7 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 		}
 
 		public IRegion getHyperlinkRegion() {
-			return subNameRegion;
+			return region;
 		}
 	}
 
