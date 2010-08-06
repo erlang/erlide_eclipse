@@ -389,6 +389,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[TracePatternColumn.LOCAL.ordinal()] = new CheckboxCellEditor(table);
         editors[TracePatternColumn.MODULE_NAME.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
+        editors[TracePatternColumn.ARITY.ordinal()] = new TextCellEditor(table);
         functionsTableViewer.setCellEditors(editors);
         functionsTableViewer.setCellModifier(new TracePatternCellModifier());
     }

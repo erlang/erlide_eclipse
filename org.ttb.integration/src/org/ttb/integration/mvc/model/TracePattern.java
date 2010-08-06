@@ -10,17 +10,11 @@ public class TracePattern {
 
     private boolean enabled;
     private boolean local;
-    private String moduleName;
-    private String functionName;
+    private int arity = -1;
+    private String moduleName = "";
+    private String functionName = "";
 
     public TracePattern() {
-        this(false, "", "");
-    }
-
-    public TracePattern(boolean enabled, String module, String functionName) {
-        this.enabled = enabled;
-        this.moduleName = module;
-        this.functionName = functionName;
     }
 
     public boolean isEnabled() {
@@ -53,5 +47,20 @@ public class TracePattern {
 
     public void setFunctionName(String functionName) {
         this.functionName = functionName;
+    }
+
+    public int getArity() {
+        return arity;
+    }
+
+    /**
+     * Sets arity. If given value is less than 0 it means that arity should not
+     * be specified while setting trace pattern (<code>ttb:tp</code> function).
+     * 
+     * @param arity
+     *            arity value
+     */
+    public void setArity(int arity) {
+        this.arity = arity;
     }
 }

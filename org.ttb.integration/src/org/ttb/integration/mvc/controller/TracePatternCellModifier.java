@@ -31,6 +31,11 @@ public class TracePatternCellModifier implements ICellModifier {
             return pattern.getFunctionName();
         case LOCAL:
             return new Boolean(pattern.isLocal());
+        case ARITY:
+            if (pattern.getArity() < 0)
+                return "";
+            else
+                return String.valueOf(pattern.getArity());
         default:
             return null;
         }
@@ -52,6 +57,17 @@ public class TracePatternCellModifier implements ICellModifier {
         case LOCAL:
             pattern.setLocal((Boolean) value);
             break;
+        case ARITY:
+            if (value == null || "".equals(value)) {
+                pattern.setArity(-1);
+            } else {
+                try {
+                    Integer arity = Integer.valueOf((String) value);
+                    if (arity >= 0)
+                        pattern.setArity(arity.intValue());
+                } catch (NumberFormatException e) {
+                }
+            }
         default:
         }
         TtbBackend.getInstance().updateTracePattern(pattern);

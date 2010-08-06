@@ -14,6 +14,7 @@ import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
 
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -99,7 +100,12 @@ public class TtbBackend {
                             if (tracePattern.isEnabled()) {
                                 String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
                                 try {
-                                    backend.call(TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    if (tracePattern.getArity() < 0) {
+                                        backend.call(TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    } else {
+                                        backend.call(TTB_MODULE, function, "aaxx", tracePattern.getModuleName(), tracePattern.getFunctionName(),
+                                                new OtpErlangInt(tracePattern.getArity()), new Object[0]);
+                                    }
                                 } catch (BackendException e) {
                                     ErlLogger.error("Could not add pattern: " + e.getMessage());
                                 }

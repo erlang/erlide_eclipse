@@ -42,6 +42,11 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
             return tracePattern.getModuleName();
         case FUNCTION_NAME:
             return tracePattern.getFunctionName();
+        case ARITY:
+            if (tracePattern.getArity() < 0)
+                return "";
+            else
+                return String.valueOf(tracePattern.getArity());
         case LOCAL:
             break;
         default:
