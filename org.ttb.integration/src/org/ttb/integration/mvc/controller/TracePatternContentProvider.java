@@ -22,7 +22,6 @@ public class TracePatternContentProvider implements IStructuredContentProvider {
 
     @Override
     public void dispose() {
-        // TODO
     }
 
     @Override

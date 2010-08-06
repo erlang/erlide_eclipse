@@ -30,12 +30,22 @@ import org.erlide.runtime.backend.ErlideBackend;
 import org.ttb.integration.ProcessFlag;
 import org.ttb.integration.ProcessMode;
 import org.ttb.integration.TtbBackend;
-import org.ttb.integration.mvc.controller.CellModifier;
+import org.ttb.integration.mvc.controller.ProcessCellModifier;
+import org.ttb.integration.mvc.controller.ProcessContentProvider;
+import org.ttb.integration.mvc.controller.TracePatternCellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
+import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.view.Columns;
+import org.ttb.integration.mvc.view.ProcessColumn;
+import org.ttb.integration.mvc.view.ProcessLabelProvider;
+import org.ttb.integration.mvc.view.TracePatternColumn;
 import org.ttb.integration.mvc.view.TracePatternLabelProvider;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideProclist;
 
 /**
  * Control panel for tracing settings.
@@ -45,9 +55,12 @@ import org.ttb.integration.mvc.view.TracePatternLabelProvider;
  */
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
-    private TableViewer tableViewer;
+    private TableViewer functionsTableViewer;
     private Button startButton;
     private Combo backendNameCombo;
+    private Composite currentProcessControl;
+    private ProcessMode currentProcessMode = ProcessMode.ALL;
+    private TableViewer processesTableViewer;
 
     public ControlPanelView() {
         TtbBackend.getInstance().addListener(this);
@@ -138,13 +151,12 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         containerLayout.verticalSpacing = 3;
 
         tabItem.setControl(container);
-        createProcessesRadioButtons(container);
-        createProcessesCheckBoxes(container);
+        createProcessRadioButtons(container);
+        createProcessControl(currentProcessMode, null, container);
     }
 
-    private void createProcessesRadioButtons(Composite parent) {
-        ProcessMode startMode = ProcessMode.ALL;
-        TtbBackend.getInstance().setProcessMode(startMode);
+    private void createProcessRadioButtons(final Composite parent) {
+        TtbBackend.getInstance().setProcessMode(currentProcessMode);
 
         final Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new GridLayout(4, false));
@@ -153,19 +165,46 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         for (final ProcessMode mode : ProcessMode.values()) {
             final Button button = new Button(container, SWT.RADIO);
             button.setText(mode.getName());
-            button.setSelection(startMode.equals(mode));
+            button.setSelection(currentProcessMode.equals(mode));
             button.addSelectionListener(new SelectionAdapter() {
+
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     if (button.getSelection()) {
                         TtbBackend.getInstance().setProcessMode(mode);
+                        createProcessControl(mode, currentProcessMode, parent);
+                        currentProcessMode = mode;
                     }
                 }
             });
         }
     }
 
-    private void createProcessesCheckBoxes(Composite parent) {
+    /**
+     * Creates either checkboxes for setting global flags or table for setting
+     * flags individually for each process.
+     * 
+     * @param newMode
+     * @param oldMode
+     * @param parent
+     */
+    private void createProcessControl(ProcessMode newMode, ProcessMode oldMode, Composite parent) {
+        boolean changeToByPidMode = ProcessMode.BY_PID.equals(newMode) && (oldMode == null || !ProcessMode.BY_PID.equals(oldMode));
+        boolean changeFromByPidMode = !ProcessMode.BY_PID.equals(newMode) && (oldMode == null || ProcessMode.BY_PID.equals(oldMode));
+
+        if (currentProcessControl != null && (changeToByPidMode || changeFromByPidMode))
+            currentProcessControl.dispose();
+
+        if (changeFromByPidMode) {
+            currentProcessControl = createProcessCheckBoxes(parent);
+            parent.layout(true);
+        } else if (changeToByPidMode) {
+            currentProcessControl = createProcessesTable(parent);
+            parent.layout(true);
+        }
+    }
+
+    private Composite createProcessCheckBoxes(Composite parent) {
         final Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new RowLayout());
 
@@ -186,6 +225,84 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 }
             });
         }
+        return container;
+    }
+
+    private Composite createProcessesTable(Composite parent) {
+        final Composite container = new Composite(parent, SWT.NONE);
+        container.setLayout(new GridLayout());
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.grabExcessVerticalSpace = true;
+
+        processesTableViewer = new TableViewer(container, style);
+        processesTableViewer.setUseHashlookup(true);
+
+        // table
+        Table table = processesTableViewer.getTable();
+        table.setLayoutData(gridData);
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
+        // columns
+        String columnProperties[] = new String[ProcessColumn.values().length + ProcessFlag.values().length];
+
+        // columns: process properties
+        for (ProcessColumn column : ProcessColumn.values()) {
+            TableColumn tableColumn = new TableColumn(table, SWT.LEFT, column.ordinal());
+            tableColumn.setResizable(true);
+            tableColumn.setMoveable(false);
+            tableColumn.setWidth(column.getWidth());
+            tableColumn.setText(column.getName());
+            columnProperties[column.ordinal()] = column.name();
+        }
+        // columns: process flags
+        for (ProcessFlag flag : ProcessFlag.values()) {
+            TableColumn tableColumn = new TableColumn(table, SWT.CENTER, ProcessColumn.values().length + flag.ordinal());
+            tableColumn.setResizable(true);
+            tableColumn.setMoveable(false);
+            tableColumn.setWidth(60);
+            tableColumn.setText(flag.getName());
+            columnProperties[ProcessColumn.values().length + flag.ordinal()] = flag.name();
+        }
+        processesTableViewer.setColumnProperties(columnProperties);
+
+        // providers
+        processesTableViewer.setLabelProvider(new ProcessLabelProvider());
+        processesTableViewer.setContentProvider(new ProcessContentProvider());
+
+        // input
+        ProcessOnList[] processesList = getProcessesList();
+        if (processesList != null) {
+            processesTableViewer.setInput(processesList);
+            TtbBackend.getInstance().setProcesses(processesList);
+        }
+
+        // editors
+        CellEditor[] editors = new CellEditor[ProcessFlag.values().length + ProcessFlag.values().length];
+        editors[ProcessColumn.SELECTED.ordinal()] = new CheckboxCellEditor(table);
+        for (ProcessFlag flag : ProcessFlag.values()) {
+            editors[ProcessColumn.values().length + flag.ordinal()] = new CheckboxCellEditor(table);
+        }
+        processesTableViewer.setCellEditors(editors);
+        processesTableViewer.setCellModifier(new ProcessCellModifier(processesTableViewer));
+
+        return container;
+    }
+
+    private ProcessOnList[] getProcessesList() {
+        if (ErlangCore.getBackendManager().getByName(backendNameCombo.getText()) != null) {
+            OtpErlangList processList = ErlideProclist.getProcessList(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+
+            ProcessOnList[] processes = new ProcessOnList[processList.arity()];
+            for (int i = 0; i < processList.arity(); i++) {
+                processes[i] = new ProcessOnList((OtpErlangTuple) processList.elementAt(i));
+            }
+            return processes;
+        }
+        return null;
     }
 
     // "Functions" tab methods
@@ -228,7 +345,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TracePattern tracePattern = (TracePattern) ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+                TracePattern tracePattern = (TracePattern) ((IStructuredSelection) functionsTableViewer.getSelection()).getFirstElement();
                 if (tracePattern != null) {
                     TtbBackend.getInstance().removeTracePattern(tracePattern);
                 }
@@ -241,39 +358,39 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.grabExcessVerticalSpace = true;
 
-        tableViewer = new TableViewer(parent, style);
-        tableViewer.setUseHashlookup(true);
+        functionsTableViewer = new TableViewer(parent, style);
+        functionsTableViewer.setUseHashlookup(true);
 
         // table
-        Table table = tableViewer.getTable();
+        Table table = functionsTableViewer.getTable();
         table.setLayoutData(gridData);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
         // columns
-        String columnProperties[] = new String[Columns.values().length];
-        for (Columns column : Columns.values()) {
-            TableColumn tableColumn = new TableColumn(table, SWT.CENTER, column.ordinal());
+        String columnProperties[] = new String[TracePatternColumn.values().length];
+        for (TracePatternColumn column : TracePatternColumn.values()) {
+            TableColumn tableColumn = new TableColumn(table, SWT.LEFT, column.ordinal());
             tableColumn.setResizable(true);
-            tableColumn.setMoveable(true);
+            tableColumn.setMoveable(false);
             tableColumn.setWidth(column.getWidth());
             tableColumn.setText(column.getName());
             columnProperties[column.ordinal()] = column.name();
         }
-        tableViewer.setColumnProperties(columnProperties);
+        functionsTableViewer.setColumnProperties(columnProperties);
 
         // providers
-        tableViewer.setLabelProvider(new TracePatternLabelProvider());
-        tableViewer.setContentProvider(new TracePatternContentProvider());
+        functionsTableViewer.setLabelProvider(new TracePatternLabelProvider());
+        functionsTableViewer.setContentProvider(new TracePatternContentProvider());
 
         // editors
-        CellEditor[] editors = new CellEditor[Columns.values().length];
-        editors[Columns.ENABLED.ordinal()] = new CheckboxCellEditor(table);
-        editors[Columns.LOCAL.ordinal()] = new CheckboxCellEditor(table);
-        editors[Columns.MODULE_NAME.ordinal()] = new TextCellEditor(table);
-        editors[Columns.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
-        tableViewer.setCellEditors(editors);
-        tableViewer.setCellModifier(new CellModifier());
+        CellEditor[] editors = new CellEditor[TracePatternColumn.values().length];
+        editors[TracePatternColumn.ENABLED.ordinal()] = new CheckboxCellEditor(table);
+        editors[TracePatternColumn.LOCAL.ordinal()] = new CheckboxCellEditor(table);
+        editors[TracePatternColumn.MODULE_NAME.ordinal()] = new TextCellEditor(table);
+        editors[TracePatternColumn.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
+        functionsTableViewer.setCellEditors(editors);
+        functionsTableViewer.setCellModifier(new TracePatternCellModifier());
     }
 
     private String[] getBackendNames() {
@@ -288,22 +405,21 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void setFocus() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void addPattern(TracePattern tracePattern) {
-        tableViewer.add(tracePattern);
+        functionsTableViewer.add(tracePattern);
     }
 
     @Override
     public void removePattern(TracePattern tracePattern) {
-        tableViewer.remove(tracePattern);
+        functionsTableViewer.remove(tracePattern);
     }
 
     @Override
     public void updatePattern(TracePattern tracePattern) {
-        tableViewer.update(tracePattern, null);
+        functionsTableViewer.update(tracePattern, null);
     }
 
     @Override

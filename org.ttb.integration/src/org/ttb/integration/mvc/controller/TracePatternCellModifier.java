@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.view.Columns;
+import org.ttb.integration.mvc.view.TracePatternColumn;
 
 /**
  * Cell modifier for trace patterns table.
@@ -12,7 +12,7 @@ import org.ttb.integration.mvc.view.Columns;
  * @author Piotr Dorobisz
  * 
  */
-public class CellModifier implements ICellModifier {
+public class TracePatternCellModifier implements ICellModifier {
 
     @Override
     public boolean canModify(Object element, String property) {
@@ -22,7 +22,7 @@ public class CellModifier implements ICellModifier {
     @Override
     public Object getValue(Object element, String property) {
         TracePattern pattern = (TracePattern) element;
-        switch (Columns.valueOf(property)) {
+        switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
             return new Boolean(pattern.isEnabled());
         case MODULE_NAME:
@@ -39,7 +39,7 @@ public class CellModifier implements ICellModifier {
     @Override
     public void modify(Object element, String property, Object value) {
         TracePattern pattern = (TracePattern) ((TableItem) element).getData();
-        switch (Columns.valueOf(property)) {
+        switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
             pattern.setEnabled((Boolean) value);
             break;

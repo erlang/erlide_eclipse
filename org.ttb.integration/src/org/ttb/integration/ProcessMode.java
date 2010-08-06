@@ -9,7 +9,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
  * 
  */
 public enum ProcessMode {
-    ALL("all", new OtpErlangAtom("all")), //
+    ALL("all (existing + new)", new OtpErlangAtom("all")), //
     NEW("new", new OtpErlangAtom("new")), //
     EXISTING("existing", new OtpErlangAtom("existing")), //
     BY_PID("selected", null);

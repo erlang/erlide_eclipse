@@ -11,6 +11,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
+import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -25,25 +26,24 @@ import com.ericsson.otp.erlang.OtpMbox;
  */
 public class TtbBackend {
 
-    private static final String PROCESS_NAME = "TraceDataCollector";
-    private final List<TracePattern> list = new ArrayList<TracePattern>();
-    private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
-    private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
-    private ProcessMode processMode;
-    private Backend backend;
     private static final TtbBackend INSTANCE = new TtbBackend();
-    private boolean started;
-    private TraceDataCollectorThread traceDataCollectorThread;
+    private static final String PROCESS_NAME = "TraceDataCollector";
     private static final String TTB_MODULE = "ttb";
     private static final String HELPER_MODULE = "ttb_integration";
-    private static final String FUN_TRACER = "tracer";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
     private static final String FUN_TP = "tp";
     private static final String FUN_TPL = "tpl";
-    private static final String FUN_CTP = "ctp";
-    private static final String FUN_FORMAT = "format";
     private static final String FUN_START = "start";
+
+    private final List<TracePattern> list = new ArrayList<TracePattern>();
+    private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
+    private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
+    private ProcessOnList[] processes;
+    private ProcessMode processMode;
+    private Backend backend;
+    private boolean started;
+    private TraceDataCollectorThread traceDataCollectorThread;
     private CollectedDataList collectedData;
     private OtpMbox otpMbox;
 
@@ -81,13 +81,20 @@ public class TtbBackend {
 
                         // setting process flags
                         if (ProcessMode.BY_PID.equals(processMode)) {
-                            // setting flags for selected processes
+                            // setting flags only for selected processes
+                            if (processes != null) {
+                                for (ProcessOnList process : processes) {
+                                    if (process.isSelected()) {
+                                        backend.call(TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
+                                    }
+                                }
+                            }
                         } else {
                             // setting global flags
                             backend.call(TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
                         }
 
-                        // setting trace patterns
+                        // setting function trace patterns
                         for (TracePattern tracePattern : list) {
                             if (tracePattern.isEnabled()) {
                                 String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
@@ -116,7 +123,7 @@ public class TtbBackend {
     }
 
     /**
-     * Stops tracing tool.
+     * Stops tracing.
      */
     public void stop() {
         if (started) {
@@ -205,5 +212,9 @@ public class TtbBackend {
 
     public void setProcessMode(ProcessMode processMode) {
         this.processMode = processMode;
+    }
+
+    public void setProcesses(ProcessOnList[] processes) {
+        this.processes = processes;
     }
 }

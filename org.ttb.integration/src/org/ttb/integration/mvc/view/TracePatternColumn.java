@@ -1,24 +1,24 @@
 package org.ttb.integration.mvc.view;
 
 /**
- * Enum describing table columns.
+ * Enum describing columns in trace pattern table.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public enum Columns {
+public enum TracePatternColumn {
     ENABLED("Enabled", 60), LOCAL("Local", 60), MODULE_NAME("Module name", 150), FUNCTION_NAME("Function name", 150);
 
     private final String name;
     private final int width;
 
-    private Columns(String name, int width) {
+    private TracePatternColumn(String name, int width) {
         this.name = name;
         this.width = width;
     }
 
-    public static Columns getByIndex(int index) {
-        for (Columns column : Columns.values()) {
+    public static TracePatternColumn getByIndex(int index) {
+        for (TracePatternColumn column : TracePatternColumn.values()) {
             if (column.ordinal() == index)
                 return column;
         }

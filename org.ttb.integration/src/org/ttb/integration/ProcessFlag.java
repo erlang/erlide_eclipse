@@ -24,6 +24,21 @@ public enum ProcessFlag {
         this.atom = atom;
     }
 
+    /**
+     * Returns enum value for given ordinal. If there is no enum with given
+     * ordinal it will return <code>null</code>.
+     * 
+     * @param index
+     * @return
+     */
+    public static ProcessFlag getByIndex(int index) {
+        for (ProcessFlag column : ProcessFlag.values()) {
+            if (column.ordinal() == index)
+                return column;
+        }
+        return null;
+    }
+
     public String getName() {
         return name;
     }

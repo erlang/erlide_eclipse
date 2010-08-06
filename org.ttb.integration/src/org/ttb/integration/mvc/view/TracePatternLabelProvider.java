@@ -18,12 +18,12 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
     @Override
     public Image getColumnImage(Object element, int index) {
         TracePattern pattern = (TracePattern) element;
-        if (index == Columns.ENABLED.ordinal()) {
+        if (index == TracePatternColumn.ENABLED.ordinal()) {
             if (pattern.isEnabled())
                 return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
             else
                 return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
-        } else if (index == Columns.LOCAL.ordinal()) {
+        } else if (index == TracePatternColumn.LOCAL.ordinal()) {
             if (pattern.isLocal())
                 return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
             else
@@ -35,7 +35,7 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
     @Override
     public String getColumnText(Object element, int index) {
         TracePattern tracePattern = (TracePattern) element;
-        switch (Columns.getByIndex(index)) {
+        switch (TracePatternColumn.getByIndex(index)) {
         case ENABLED:
             break;
         case MODULE_NAME:
