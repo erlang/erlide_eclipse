@@ -84,6 +84,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
+@SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
 		IPropertyChangeListener {
 	public static final String ID = "org.erlide.ui.views.console";

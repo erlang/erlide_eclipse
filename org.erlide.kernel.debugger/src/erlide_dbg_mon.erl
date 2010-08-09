@@ -3,19 +3,19 @@
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
 %% retrieved via the world wide web at http://www.erlang.org/.
-%% 
+%%
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
-%% 
+%%
 %% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
 %% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
 %% AB. All Rights Reserved.''
 -module(erlide_dbg_mon).
 
 -include_lib("kernel/include/file.hrl").
--include("erlide.hrl"). 
+-include("erlide.hrl").
 
 %% External exports
 -export([start/2, stop/0, interpret/3, line_breakpoint/3]).
@@ -32,18 +32,18 @@
 %% Internal exports
 -export([send_attached_to_java/2]).
 
-%% FIXME vi behver inget state! detta r mest till fr otp-debuggern,
+%% TODO vi behver inget state! detta r mest till fr otp-debuggern,
 %% s den sparar sig mellan varven...
 
 -record(state, {parent, %pid() remote
                 mode,      % local | global
                 starter,   % bool() 'true' if int was started by me
-                
+
                 focus, % #pinfo()
                 pinfos,    % [#pinfo{}] Debugged processes
-                
+
                 backtrace, % integer() Number of call frames to fetch
-                
+
                 attach     % false | {Flags, Function}
                }).
 
@@ -64,9 +64,9 @@ start(Mode, Flags) ->
     case whereis(?SERVER) of
 	undefined ->
 	    CallingPid = self(),
-	    Pid = spawn(fun () -> 
+	    Pid = spawn(fun () ->
 				 ?SAVE_CALLS,
-				 init(CallingPid, Mode, Flags) 
+				 init(CallingPid, Mode, Flags)
 			end),
 	    receive
 		{initialization_complete, Pid} ->
@@ -115,7 +115,7 @@ init(CallingPid, Mode, Flags) ->
                     starter = Bool,
                     pinfos  = []
                    },
-    
+
     State2 = State1#state{attach = Flags},
 
 
@@ -145,35 +145,35 @@ loop(State) ->
             log({parent, P}),
             erlide_int:auto_attach(State#state.attach, {?MODULE, send_attached_to_java, [P]}),
             loop(State#state{parent=P});
-        
+
 %%         dumpState ->
 %%             io:format("dbg_mon state:: ~p~n", [State]),
 %%             msg(State#state.parent, {dumpState, State, erlide_int:snapshot()}),
 %%             loop(State);
-        
+
         {cmd, Cmd, From} = _Msg ->
             %% 	    io:format("@ dbg_mon cmd: ~p~n", [_Msg]),
             log({gui_cmd, Cmd, From}),
             {Reply, State1} = gui_cmd(Cmd, State),
             From ! Reply,
             loop(State1);
-        
+
         stop ->
             gui_cmd(stopped, State);
-        
+
         %% From the interpreter process
         {int, Cmd} = Msg ->
             log({int_cmd, Cmd}),
-            msg(State#state.parent, Msg),	    
-            
+            msg(State#state.parent, Msg),
+
             State2 = int_cmd(Cmd, State),
             loop(State2);
-        
+
         Msg ->
             %%msg(State#state.parent, {unknown, Msg}),
             io:format("dbg_mon: unknown ~p", [Msg]),
             loop(State)
-    
+
     end.
 
 %%--Commands from the GUI---------------------------------------------
@@ -321,11 +321,11 @@ gui_cmd({focus, Pid, _Win}, State) ->
     State#state{focus=PInfo};
 gui_cmd(default, State) ->
 	State;
-	
+
 gui_cmd(Cmd, State) ->
 	io:format("@ dbg_mon: unknown ~p~n",[Cmd]),
 	State.
-	
+
 %%--Commands from the interpreter-------------------------------------
 
 int_cmd({interpret, _Mod}, State) ->
@@ -375,7 +375,7 @@ int_cmd({auto_attach, AutoAttach}, State) ->
     State#state{attach=AutoAttach};
 int_cmd({stack_trace, _Flag}, State) ->
     State;
-    
+
 int_cmd(_Other, State) ->
 	State.
 
@@ -452,14 +452,14 @@ cmd(Cmd) ->
 %% load_settings(Settings, State) ->
 %%     {AutoAttach, StackTrace, BackTrace, Files, Breaks} =
 %% 	Settings,
-%% 
+%%
 %%     case AutoAttach of
 %% 	false -> erlide_int:auto_attach(false);
 %% 	{Flags, Function} -> erlide_int:auto_attach(Flags, Function)
 %%     end,
-%% 
+%%
 %%     erlide_int:stack_trace(StackTrace),
-%% 
+%%
 %%     case State#state.mode of
 %% 	local -> lists:foreach(fun(File) -> erlide_int:i(File) end, Files);
 %% 	global -> lists:foreach(fun(File) -> erlide_int:ni(File) end, Files)
@@ -485,7 +485,7 @@ cmd(Cmd) ->
 %% 			  end
 %% 		  end,
 %% 		  Breaks),
-%% 
+%%
 %%     State#state{backtrace=BackTrace}.
 
 % TODO: Use of save settings
@@ -498,7 +498,7 @@ cmd(Cmd) ->
 %% 			  end,
 %% 			  erlide_int:interpreted()),
 %% 		erlide_int:all_breaks()},
-%% 
+%%
 %%     Binary = term_to_binary({debugger_settings, Settings}),
 %%     case file:write_file(SFile, Binary) of
 %% 	ok ->

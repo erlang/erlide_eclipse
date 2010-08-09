@@ -27,6 +27,7 @@ import org.erlide.ui.console.ErlangConsole;
 /**
  * ConsoleTerminateAction
  */
+@SuppressWarnings("restriction")
 public class ConsoleTerminateAction extends Action implements IUpdate {
 
 	private ErlangConsole fConsole;
@@ -53,7 +54,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.texteditor.IUpdate#update()
 	 */
 	public void update() {
@@ -64,7 +65,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
 	@Override
