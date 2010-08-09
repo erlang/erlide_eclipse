@@ -1,6 +1,13 @@
 package org.ttb.integration.views;
 
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.ttb.integration.TtbBackend;
@@ -18,7 +25,6 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
  */
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
-    private final String CONSOLE_NAME = "ttb console";
     private TreeViewer treeViewer;
 
     public TreeViewerView() {
@@ -33,51 +39,65 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void createPartControl(Composite parent) {
-        // RowLayout rowLayout = new RowLayout();
-        // rowLayout.wrap = false;
-        // rowLayout.pack = false;
-        // rowLayout.justify = true;
-        // rowLayout.type = SWT.VERTICAL;
-        // rowLayout.marginLeft = 5;
-        // rowLayout.marginTop = 5;
-        // rowLayout.marginRight = 5;
-        // rowLayout.marginBottom = 5;
-        // rowLayout.spacing = 0;
-        //
-        // parent.setLayout(rowLayout);
+        // layout
+        final GridLayout containerLayout = new GridLayout(1, false);
+        containerLayout.marginWidth = 0;
+        containerLayout.marginHeight = 0;
+        containerLayout.verticalSpacing = 3;
+        parent.setLayout(containerLayout);
 
-        // Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
-        // button.setText("Clear");
+        // children
+        createButtonPanel(parent);
+        createTreeViewerPanel(parent);
+    }
 
-        treeViewer = new TreeViewer(parent);
+    private void createButtonPanel(Composite parent) {
+        final Composite container = new Composite(parent, SWT.NONE);
+        container.setLayout(new RowLayout());
+
+        Button button = new Button(container, SWT.PUSH | SWT.CENTER);
+        button.setText("Clear");
+        button.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                CollectedDataList.getInstance().clear();
+                treeViewer.setInput(CollectedDataList.getInstance());
+            }
+        });
+    }
+
+    private void createTreeViewerPanel(Composite parent) {
+        final Composite container = new Composite(parent, SWT.NONE);
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        container.setLayout(new GridLayout());
+
+        treeViewer = new TreeViewer(container);
+        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        // providers
         treeViewer.setContentProvider(new CollectedTracesContentProvider());
         treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
     }
 
     @Override
     public void setFocus() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void addPattern(TracePattern tracePattern) {
-        // TODO
     }
 
     @Override
     public void removePattern(TracePattern tracePattern) {
-        // TODO
     }
 
     @Override
     public void updatePattern(TracePattern tracePattern) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void startTracing() {
-        // TODO Auto-generated method stub
     }
 
     @Override

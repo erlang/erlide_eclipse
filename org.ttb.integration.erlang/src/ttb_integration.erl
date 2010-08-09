@@ -21,7 +21,7 @@ create_handler(Pid) ->
 				{trace, {TracePid, _, Node}, call, {Mod, Fun, Arg}} ->
 					Pid ! {Node, Mod, Fun, [avoid_interpreting_as_string] ++ Arg};
 				_ ->
-					Pid ! trace_end
+					Pid ! Trace
 			end,
 			State
 	end.

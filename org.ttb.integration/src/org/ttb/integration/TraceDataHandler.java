@@ -71,7 +71,8 @@ public class TraceDataHandler {
                     collectedDataRoot.addChild(data);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                System.out.println("unknown tuple");
             }
         }
     }

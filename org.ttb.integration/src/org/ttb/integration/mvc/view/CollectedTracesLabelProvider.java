@@ -24,6 +24,5 @@ public class CollectedTracesLabelProvider extends LabelProvider {
 
     @Override
     public void dispose() {
-        // TODO
     }
 }
