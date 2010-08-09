@@ -82,7 +82,6 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void stopTracing() {
-        CollectedDataList collectedData = TtbBackend.getInstance().getCollectedData();
-        treeViewer.setInput(collectedData);
+        treeViewer.setInput(CollectedDataList.getInstance());
     }
 }

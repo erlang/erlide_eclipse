@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class representing traces collected from traced nodes.
+ * Class representing singleton set of traces collected from traced nodes.
  * 
  * @author Piotr Dorobisz
  * 

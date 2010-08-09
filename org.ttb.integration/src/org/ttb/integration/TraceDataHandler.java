@@ -3,7 +3,6 @@ package org.ttb.integration;
 import java.util.Date;
 
 import org.ttb.integration.mvc.model.CollectedData;
-import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.CollectedDataRoot;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -13,43 +12,41 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * Thread that collects traces via {@link OtpMbox} . Trace should be sent from
- * handler function given as one of arguments to the function
- * <code>ttb:format/2</code>.
+ * Handler which receives trace data from traced node. It receives data via
+ * given {@link OtpMbox}.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class TraceDataCollectorThread extends Thread {
+public class TraceDataHandler {
 
     private final OtpMbox otpMbox;
-    private boolean repeat = true;
-    private final CollectedDataList collectedData;
 
     /**
-     * Creates thread that will be receiving traces.
+     * Creates handler instance.
      * 
      * @param otpMbox
-     *            process mailbox used to receive data from erlang node
+     *            mailbox used for receiving data
      */
-    public TraceDataCollectorThread(OtpMbox otpMbox) {
+    public TraceDataHandler(OtpMbox otpMbox) {
         this.otpMbox = otpMbox;
-        this.collectedData = CollectedDataList.getInstance();
     }
 
-    @Override
-    public void run() {
-        System.out.println("thread started");
+    /**
+     * Returns collected data.
+     * 
+     * @return collected data
+     */
+    public CollectedDataRoot getData() {
         CollectedDataRoot collectedDataRoot = new CollectedDataRoot("trace result: " + new Date());
-        while (repeat) {
+        while (true) {
             try {
                 OtpErlangObject otpErlangObject = otpMbox.receive();
                 System.out.println("received: " + otpErlangObject);
                 if (otpErlangObject instanceof OtpErlangAtom) {
                     OtpErlangAtom atom = (OtpErlangAtom) otpErlangObject;
                     if (atom.atomValue().equals("stop")) {
-                        collectedData.addData(collectedDataRoot);
-                        repeat = false;
+                        return collectedDataRoot;
                     }
                 } else {
                     // TODO introduce Enum or constant describing indices
@@ -77,14 +74,5 @@ public class TraceDataCollectorThread extends Thread {
                 e.printStackTrace();
             }
         }
-        System.out.println("thread ended");
-    }
-
-    public CollectedDataList getCollectedData() {
-        return collectedData;
-    }
-
-    public OtpMbox getOtpMbox() {
-        return otpMbox;
     }
 }

@@ -10,6 +10,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.CollectedDataList;
+import org.ttb.integration.mvc.model.CollectedDataRoot;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
@@ -44,8 +45,6 @@ public class TtbBackend {
     private ProcessMode processMode;
     private Backend backend;
     private boolean started;
-    private TraceDataCollectorThread traceDataCollectorThread;
-    private CollectedDataList collectedData;
     private OtpMbox otpMbox;
 
     private TtbBackend() {
@@ -77,7 +76,6 @@ public class TtbBackend {
                         this.backend = backend;
                         otpMbox = backend.createMbox(PROCESS_NAME);
                         OtpErlangPid pid = otpMbox.self();
-                        traceDataCollectorThread = new TraceDataCollectorThread(otpMbox);
                         backend.call(HELPER_MODULE, FUN_START, "x", pid);
 
                         // setting process flags
@@ -111,7 +109,6 @@ public class TtbBackend {
                                 }
                             }
                         }
-                        traceDataCollectorThread.start();
                         started = true;
                         for (ITraceNodeObserver listener : listeners) {
                             listener.startTracing();
@@ -136,8 +133,10 @@ public class TtbBackend {
             synchronized (this) {
                 if (started) {
                     try {
-                        backend.call(HELPER_MODULE, FUN_STOP, "x", traceDataCollectorThread.getOtpMbox().self());
-                        collectedData = traceDataCollectorThread.getCollectedData();
+                        backend.call(HELPER_MODULE, FUN_STOP, "x", otpMbox.self());
+                        CollectedDataRoot collectedDataRoot = new TraceDataHandler(otpMbox).getData();
+                        CollectedDataList.getInstance().addData(collectedDataRoot);
+
                         started = false;
                         for (ITraceNodeObserver listener : listeners) {
                             listener.stopTracing();
@@ -194,10 +193,6 @@ public class TtbBackend {
         for (ITraceNodeObserver listener : listeners) {
             listener.updatePattern(tracePattern);
         }
-    }
-
-    public CollectedDataList getCollectedData() {
-        return collectedData;
     }
 
     public void addProcessFlag(ProcessFlag flag) {
