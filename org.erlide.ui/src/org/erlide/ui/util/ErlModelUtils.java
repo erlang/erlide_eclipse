@@ -37,6 +37,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
@@ -44,7 +45,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
@@ -117,23 +117,25 @@ public class ErlModelUtils {
 		if (mod == null) {
 			return NO_IMPORTS;
 		}
-		Collection<IErlImport> imports = mod.getImports();
+		final Collection<IErlImport> imports = mod.getImports();
 		if (imports.isEmpty()) {
 			return NO_IMPORTS;
 		}
-		List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
+		final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
 				imports.size());
-		for (IErlImport i : imports) {
-			List<ErlangFunction> functions = i.getFunctions();
-			OtpErlangObject funsT[] = new OtpErlangObject[functions.size()];
+		for (final IErlImport i : imports) {
+			final List<ErlangFunction> functions = i.getFunctions();
+			final OtpErlangObject funsT[] = new OtpErlangObject[functions
+					.size()];
 			int j = 0;
-			for (ErlangFunction f : functions) {
+			for (final ErlangFunction f : functions) {
 				funsT[j] = f.getNameArityTuple();
 				j++;
 			}
-			OtpErlangTuple modFunsT = new OtpErlangTuple(new OtpErlangObject[] {
-					new OtpErlangAtom(i.getImportModule()),
-					new OtpErlangList(funsT) });
+			final OtpErlangTuple modFunsT = new OtpErlangTuple(
+					new OtpErlangObject[] {
+							new OtpErlangAtom(i.getImportModule()),
+							new OtpErlangList(funsT) });
 			result.add(modFunsT);
 		}
 		return result;
@@ -161,7 +163,7 @@ public class ErlModelUtils {
 				if (pd != null) {
 					return pd;
 				}
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				e.printStackTrace();
 			}
 		}
@@ -340,7 +342,7 @@ public class ErlModelUtils {
 					}
 				}
 				if (re != null && re instanceof IFile) {
-					IErlModule m2 = ModelUtils.getModule((IFile) re);
+					final IErlModule m2 = ModelUtils.getModule((IFile) re);
 					if (m2 != null && !modulesDone.contains(m2)) {
 						if (openPreprocessorDef(b, project, page, m2,
 								definedName, type, externalIncludes,
@@ -365,13 +367,13 @@ public class ErlModelUtils {
 		if ("?MODULE".equals(definedName)) {
 			return m.getModuleName();
 		}
-		IErlPreprocessorDef def = m.findPreprocessorDef(
+		final IErlPreprocessorDef def = m.findPreprocessorDef(
 				withoutInterrogationMark(definedName), Kind.MACRO_DEF);
 		if (def != null) {
-			String extra = def.getExtra();
-			int p = extra.indexOf(',');
+			final String extra = def.getExtra();
+			final int p = extra.indexOf(',');
 			if (p != -1) {
-				String s = extra.substring(p + 1).trim();
+				final String s = extra.substring(p + 1).trim();
 				if (s.length() > 0) {
 					return s;
 				}
@@ -479,8 +481,8 @@ public class ErlModelUtils {
 		if (r == null && checkAllProjects) {
 			final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
 					.getRoot();
-			IProject[] projects = workspaceRoot.getProjects();
-			for (IProject p : projects) {
+			final IProject[] projects = workspaceRoot.getProjects();
+			for (final IProject p : projects) {
 				if (ErlideUtil.hasErlangNature(p)) {
 					ErlLogger.debug("searching project %s", p.getName());
 					r = ResourceUtil.recursiveFindNamedResource(p, modFileName,
@@ -626,29 +628,5 @@ public class ErlModelUtils {
 	public static String[] getPredefinedMacroNames() {
 		return new String[] { "MODULE", "LINE", "FILE" };
 	}
-
-	// public static IErlElement getEditorInputErlElement(final IEditorInput
-	// input) {
-	// final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
-	// for (final IWorkbenchWindow workbenchWindow : workbench
-	// .getWorkbenchWindows()) {
-	// final IWorkbenchPage page = workbenchWindow.getActivePage();
-	// if (page != null) {
-	// final IEditorPart part = page.getActiveEditor();
-	// if (part != null) {
-	// if (part instanceof AbstractDecoratedTextEditor) {
-	// final AbstractDecoratedTextEditor adte = (AbstractDecoratedTextEditor)
-	// part;
-	// final IErlModule module = getModule(input, adte
-	// .getDocumentProvider());
-	// if (module != null) {
-	// return module;
-	// }
-	// }
-	// }
-	// }
-	// }
-	// return null;
-	// }
 
 }

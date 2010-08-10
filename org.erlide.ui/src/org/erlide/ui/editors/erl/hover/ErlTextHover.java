@@ -59,6 +59,7 @@ import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.information.ErlInformationPresenter;
@@ -198,8 +199,8 @@ public class ErlTextHover implements ITextHover,
 			IInformationControl control;
 			if (BrowserInformationControl.isAvailable(parent)) {
 				control = new BrowserInformationControl(parent,
-						JFaceResources.DIALOG_FONT, EditorsUI
-								.getTooltipAffordanceString()) {
+						JFaceResources.DIALOG_FONT,
+						EditorsUI.getTooltipAffordanceString()) {
 					@Override
 					public IInformationControlCreator getInformationPresenterControlCreator() {
 						return fInformationPresenterControlCreator;
@@ -208,7 +209,7 @@ public class ErlTextHover implements ITextHover,
 					@Override
 					public void setSize(int width, int height) {
 						// TODO default size is too small
-						Point bounds = getSizeConstraints();
+						final Point bounds = getSizeConstraints();
 						if (bounds != null) {
 							if (bounds.x != SWT.DEFAULT) {
 								width = Math.min(bounds.x, width * 2);
@@ -221,8 +222,8 @@ public class ErlTextHover implements ITextHover,
 					}
 				};
 			} else {
-				control = new DefaultInformationControl(parent, EditorsUI
-						.getTooltipAffordanceString(),
+				control = new DefaultInformationControl(parent,
+						EditorsUI.getTooltipAffordanceString(),
 						new ErlInformationPresenter(true));
 			}
 			return control;
@@ -231,8 +232,8 @@ public class ErlTextHover implements ITextHover,
 
 	public static String getHoverTextForOffset(final int offset,
 			final ErlangEditor editor) {
-		final ErlTextHover h = new ErlTextHover(null, ErlModelUtils
-				.getModule(editor));
+		final ErlTextHover h = new ErlTextHover(null,
+				ErlModelUtils.getModule(editor));
 		final ITextViewer tv = editor.getViewer();
 		final IRegion r = h.getHoverRegion(tv, offset);
 		if (r == null) {
@@ -281,15 +282,18 @@ public class ErlTextHover implements ITextHover,
 				.toString();
 		final IErlProject erlProject = module.getProject();
 
-		Backend ide = ErlangCore.getBackendManager().getIdeBackend();
+		final BackendManager backendManager = ErlangCore.getBackendManager();
+		final Backend ide = backendManager.getIdeBackend();
 		try {
-			Backend b = ErlangCore.getBackendManager().getBuildBackend(
-					erlProject.getProject());
+			final IProject project = erlProject == null ? null : erlProject
+					.getProject();
+			final Backend b = erlProject == null ? ide : backendManager
+					.getBuildBackend(project);
 
 			final IErlModel model = ErlangCore.getModel();
-			r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir, ErlangToolkit
-					.createScannerModuleName(module), fImports, model
-					.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
+			r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,
+					ErlangToolkit.createScannerModuleName(module), fImports,
+					model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
 					model.getPathVars());
 			// ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
 			final OtpErlangTuple t = (OtpErlangTuple) r1;
@@ -334,14 +338,11 @@ public class ErlTextHover implements ITextHover,
 								final String path = Util.stringValue(s4);
 								try {
 									r = ErlModelUtils.findExternalModule(mod,
-											path, module, module.getResource()
-													.getProject(), true);
+											path, module, project, true);
 								} catch (final CoreException e2) {
 								}
 							} else {
 								final String modFileName = mod + ".erl";
-								IProject project = module.getResource()
-										.getProject();
 								if (project != null) {
 									r = ResourceUtil
 											.recursiveFindNamedResourceWithReferences(
@@ -391,18 +392,16 @@ public class ErlTextHover implements ITextHover,
 						final IErlElement.Kind kindToFind = openKind
 								.equals("record") ? IErlElement.Kind.RECORD_DEF
 								: IErlElement.Kind.MACRO_DEF;
-						final IErlProject project = module.getProject();
-						final IProject proj = project == null ? null
-								: (IProject) project.getResource();
 						final String externalIncludes = model.getExternal(
 								erlProject, ErlangCore.EXTERNAL_INCLUDES);
 						IErlPreprocessorDef pd = ErlModelUtils
-								.findPreprocessorDef(ide, proj, module,
+								.findPreprocessorDef(ide, project, module,
 										definedName, kindToFind,
 										externalIncludes);
 						if (pd == null) {
-							pd = ErlModelUtils.findPreprocessorDef(ide, proj,
-									module, ErlideUtil.unquote(definedName),
+							pd = ErlModelUtils.findPreprocessorDef(ide,
+									project, module,
+									ErlideUtil.unquote(definedName),
 									kindToFind, externalIncludes);
 						}
 						if (pd != null) {
@@ -412,7 +411,7 @@ public class ErlTextHover implements ITextHover,
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ErlLogger.warn(e);
 		}
 		if (result.length() > 0) {
@@ -420,8 +419,8 @@ public class ErlTextHover implements ITextHover,
 			HTMLPrinter.addPageEpilog(result);
 		}
 		// TODO set element
-		return new ErlBrowserInformationControlInput(null, element, result
-				.toString(), 20);
+		return new ErlBrowserInformationControlInput(null, element,
+				result.toString(), 20);
 	}
 
 }
