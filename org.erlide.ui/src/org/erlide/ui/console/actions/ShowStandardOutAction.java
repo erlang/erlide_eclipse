@@ -20,9 +20,10 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Toggles preference show the console when output is written to standard output
  * stream.
- * 
+ *
  * @since 3.3
  */
+@SuppressWarnings("restriction")
 public class ShowStandardOutAction extends ShowWhenContentChangesAction {
 
 	/**

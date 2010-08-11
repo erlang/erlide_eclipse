@@ -1586,4 +1586,24 @@
             commandId="org.erlide.ui.search.references.in.workspace">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            activate="true"
+            class="org.erlide.ui.editors.erl.hyperlink.ErlangHyperlinkDetector"
+            id="org.erlide.ui.hyperlinkDetector"
+            name="Erlang hyperlink detector"
+            targetId="org.erlide.ui.hyperlinktarget">
+      </hyperlinkDetector>
+   </extension>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+      <target
+            id="org.erlide.ui.hyperlinktarget"
+            name="Erlang editor">
+         <context
+               type="org.erlide.ui.editors.erl.ErlangEditor">
+         </context>
+      </target>
+   </extension>
 </plugin>

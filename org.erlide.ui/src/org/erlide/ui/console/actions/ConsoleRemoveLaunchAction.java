@@ -35,6 +35,7 @@ import org.erlide.ui.console.ErlangConsole;
 /**
  * ConsoleRemoveTerminatedAction
  */
+@SuppressWarnings("restriction")
 public class ConsoleRemoveLaunchAction extends Action implements
 		IViewActionDelegate, IConsoleListener, ILaunchesListener2 {
 

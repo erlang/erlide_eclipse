@@ -269,11 +269,11 @@ public class ErlModule extends Openable implements IErlModule {
 	}
 
 	public IErlFunction findFunction(final ErlangFunction function) {
-		for (final IErlElement m : fChildren) {
-			if (m instanceof IErlFunction) {
-				final IErlFunction f = (IErlFunction) m;
+		for (final IErlElement fun : fChildren) {
+			if (fun instanceof IErlFunction) {
+				final IErlFunction f = (IErlFunction) fun;
 				if (f.getName().equals(function.name)
-						&& f.getArity() == function.arity) {
+						&& ((function.arity < 0) || (f.getArity() == function.arity))) {
 					return f;
 				}
 			}

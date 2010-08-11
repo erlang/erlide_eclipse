@@ -316,4 +316,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 	IErlFunction findFunction(FunctionRef r);
 
 	IErlModule getModuleFor(IErlElement elem);
+
+	/** Search a module case_insensitive */
+	IErlModule findModuleExt(String module);
 }

@@ -37,18 +37,18 @@ stop(Server) ->
 
 
 shell_init(Client) ->
-	?SAVE_CALLS, 
+	?SAVE_CALLS,
 	%% Announce ourself as group leader.
 	%% This causes all calls to io:format(...) and such alike
 	%% to send their output to us.
 	group_leader(self(), self()),
-	
+
 	%% Next, start the shell
 	%% and link to it, so we know when it exits.
 	process_flag(trap_exit, true),
 	Reshd = shell:start(true),
 	link(Reshd),
-	
+
 	%% Go ahead and take care of user input!
 	case catch shell_loop(idle, Reshd, Client) of
 		{'EXIT', Reason} ->
@@ -70,10 +70,10 @@ shell_loop(State, Reshd, Client) ->
 				close ->
 					done
 			end;
-		
+
 		stop ->
 			done;
-		
+
 		{io_request, From, ReplyAs, Req} ->
 			case handle_io_request(Client, State, From, ReplyAs, Req) of
 				{ok, NewState} ->
@@ -81,13 +81,13 @@ shell_loop(State, Reshd, Client) ->
 				close ->
 					done
 			end;
-		
+
 		{'EXIT', Reshd, normal} ->
 			done;
-		
+
 		{'EXIT', Reshd, _OtherReason} ->
 			done;
-		
+
 		_Other ->
 			shell_loop(State, Reshd, Client)
 	end.
@@ -167,13 +167,13 @@ get_until(From, ReplyAs, Client, State, _Encoding, Prompt, Mod, Fun, Args) ->
 		{pending_request, Cont, PendingReqs} ->
 			NewState = {pending_request, Cont, PendingReqs++[NewReq]},
 			{ok, NewState};
-		
+
 		idle ->
 			print_prompt(Client, Prompt, From),
 			InitContinuation = init_cont(),
 			NewState = {pending_request, InitContinuation, [NewReq]},
 			{ok, NewState};
-		
+
 		{pending_input, Input} ->
 			InitContinuation = init_cont(),
 			TmpState = {pending_request, InitContinuation, [NewReq]},
@@ -196,24 +196,24 @@ handle_io_request(Client, State, From, ReplyAs, IoRequest) ->
 			put_chars(From, ReplyAs, State, latin1, Mod, Fun, Args);
 		{put_chars, Encoding, Mod, Fun, Args} ->
 			put_chars(From, ReplyAs, State, Encoding, Mod, Fun, Args);
-		
+
 		{put_chars, Text} ->
 			put_chars(From, ReplyAs, State, latin1, Text);
 		{put_chars, Encoding, Text} ->
 			put_chars(From, ReplyAs, State, Encoding, Text);
-		
+
 		{get_until, Prompt, Mod, Fun, Args} ->
 			get_until(From, ReplyAs, Client, State, latin1, Prompt, Mod, Fun, Args);
 		{get_until, Encoding, Prompt, Mod, Fun, Args} ->
 			get_until(From, ReplyAs, Client, State, Encoding, Prompt, Mod, Fun, Args);
-		
+
 		{get_geometry, _} ->
 			io_reply(From, ReplyAs, {error,enotsup}),
 			{ok, State};
-		
+
 		{requests, IoReqests} ->
 			handle_io_requests(Client, State, From, ReplyAs, IoReqests);
-		
+
 		UnexpectedIORequest ->
 			loginfo("~p:handle_io_request: Unexpected IORequest:~p~n",
 					[?MODULE, UnexpectedIORequest]),
@@ -253,7 +253,7 @@ print_prompt(_Client, Prompt, From) ->
 						 io_lib:format('~s', [TxtAtom]);
 					 {IoFun, PromptFmtStr, PromptArgs} ->
 						 case catch io_lib:IoFun(PromptFmtStr, PromptArgs) of
-							 {'EXIT',_Err} ->     
+							 {'EXIT',_Err} ->
 								 "???";
 							 T ->
 								 T
@@ -273,7 +273,7 @@ print_prompt(_Client, Prompt, From) ->
 	ok.
 
 loginfo(FmtStr, Args) ->
-	%% FIXME: Invent a way to log info.
+	%% TODO: Invent a way to log info.
 	%% Can't use the error_log module since someone may
 	%% add a log handler that does io:format. Then there
 	%% will be a deadlock, I think, if this is function

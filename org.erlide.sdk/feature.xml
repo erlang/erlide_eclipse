@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.erlide.sdk"
+      label="erlide SDK"
+      version="0.8.2.qualifier"
+      provider-name="erlide.org">
+
+   <description>
+      This feature provides Erlang IDE support for Eclipse, 
+      including unit and functional testing. 
+For bug reports and feature requests, please use the SouceForge
+trackers at http://sourceforge.net/projects/erlide/.
+Mailing to erlide-devel@sf.net would be the second option.
+   </description>
+
+   <copyright>
+      Copyright (c) 2004-2010 Vlad Dumitrescu, Jakob Cederlund, the Wrangler team and others.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License
+v1.0 which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0 
+is available from http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <url>
+      <update label="Erlide main update site" url="http://erlide.org/update/"/>
+   </url>
+
+   <includes
+         id="org.erlide"
+         version="0.0.0"/>
+
+   <includes
+         id="org.erlide.selfhost"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.core.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.jinterface.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.testing"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.ui.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.kernel.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

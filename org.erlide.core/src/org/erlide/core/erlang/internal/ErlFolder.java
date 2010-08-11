@@ -71,7 +71,8 @@ public class ErlFolder extends Openable implements IErlFolder {
 	 * @param name
 	 * @return
 	 */
-	public static IErlModule getModule(final IParent parent, final String name) {
+	public static IErlModule getModule(final IParent parent, final String name,
+			boolean caseinsensitive) {
 		try {
 			if (parent instanceof IOpenable) {
 				final IOpenable o = (IOpenable) parent;
@@ -83,12 +84,18 @@ public class ErlFolder extends Openable implements IErlFolder {
 					final IErlModule m = (IErlModule) e;
 					String moduleName = hasExtension ? m.getName() : m
 							.getModuleName();
-					if (moduleName.equals(name)) {
-						return m;
+					if (caseinsensitive) {
+						if (moduleName.equalsIgnoreCase(name)) {
+							return m;
+						}
+					} else {
+						if (moduleName.equals(name)) {
+							return m;
+						}
 					}
 				} else if (e instanceof IParent) {
 					final IParent p = (IParent) e;
-					final IErlModule m = getModule(p, name);
+					final IErlModule m = getModule(p, name, caseinsensitive);
 					if (m != null) {
 						return m;
 					}
@@ -101,7 +108,11 @@ public class ErlFolder extends Openable implements IErlFolder {
 	}
 
 	public IErlModule getModule(final String name) throws ErlModelException {
-		return getModule(this, name);
+		return getModule(this, name, false);
+	}
+
+	public IErlModule getModuleExt(final String name) throws ErlModelException {
+		return getModule(this, name, true);
 	}
 
 	/*
