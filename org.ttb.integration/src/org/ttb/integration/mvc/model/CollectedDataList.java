@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class CollectedDataList {
 
-    private final List<CollectedDataRoot> data = new ArrayList<CollectedDataRoot>();
+    private final List<ITreeNode> data = new ArrayList<ITreeNode>();
     private static final CollectedDataList INSTANCE = new CollectedDataList();
 
     private CollectedDataList() {
@@ -21,11 +21,11 @@ public class CollectedDataList {
         return INSTANCE;
     }
 
-    public List<CollectedDataRoot> getData() {
+    public List<ITreeNode> getData() {
         return data;
     }
 
-    public void addData(CollectedDataRoot _data) {
+    public void addData(ITreeNode _data) {
         data.add(_data);
     }
 

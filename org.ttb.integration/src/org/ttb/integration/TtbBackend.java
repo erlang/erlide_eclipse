@@ -10,8 +10,8 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.CollectedDataList;
-import org.ttb.integration.mvc.model.CollectedDataRoot;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
+import org.ttb.integration.mvc.model.ITreeNode;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
 
@@ -134,8 +134,8 @@ public class TtbBackend {
                 if (started) {
                     try {
                         backend.call(HELPER_MODULE, FUN_STOP, "x", otpMbox.self());
-                        CollectedDataRoot collectedDataRoot = new TraceDataHandler(otpMbox).getData();
-                        CollectedDataList.getInstance().addData(collectedDataRoot);
+                        ITreeNode root = new TraceDataHandler(otpMbox).getData();
+                        CollectedDataList.getInstance().addData(root);
 
                         started = false;
                         for (ITraceNodeObserver listener : listeners) {

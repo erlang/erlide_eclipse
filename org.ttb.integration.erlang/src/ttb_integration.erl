@@ -8,20 +8,22 @@
 -export([start/1, stop/1]).
 
 
-start(Pid)->
-	ttb:tracer(all, [{handler, {create_handler(Pid), initial_state}}]).
+start(HandlerPid)->
+	ttb:tracer(all, [{handler, {create_handler(HandlerPid), initial_state}}]).
 
-stop(Pid)->
+stop(HandlerPid)->
 	ttb:stop([format]),
-	Pid ! stop.
+	HandlerPid ! stop_tracing.
 
-create_handler(Pid) ->
+create_handler(HandlerPid) ->
 	fun(Fd, Trace, _TraceInfo, State) ->
 			case Trace of
-				{trace, {TracePid, _, Node}, call, {Mod, Fun, Arg}} ->
-					Pid ! {Node, Mod, Fun, [avoid_interpreting_as_string] ++ Arg};
+				{X, Pid, call, {Mod, Fun, Arg}} ->
+					HandlerPid ! {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}};
+				{X, Pid, spawn, Pid2, {M, F, Args}} ->
+					HandlerPid ! {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}};
 				_ ->
-					Pid ! Trace
+					HandlerPid ! Trace
 			end,
 			State
 	end.

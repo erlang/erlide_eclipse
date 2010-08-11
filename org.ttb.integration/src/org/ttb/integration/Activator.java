@@ -5,6 +5,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -66,5 +67,15 @@ public class Activator extends AbstractUIPlugin {
      */
     public static Activator getDefault() {
         return plugin;
+    }
+
+    /**
+     * Returns image stored in registry.
+     * 
+     * @param image
+     * @return image
+     */
+    public static Image getImage(Images image) {
+        return getDefault().getImageRegistry().get(image.toString());
     }
 }

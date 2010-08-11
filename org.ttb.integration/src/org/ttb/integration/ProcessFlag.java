@@ -10,11 +10,14 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
  */
 public enum ProcessFlag {
 
-    // TODO add all flags
-    SEND("send", new OtpErlangAtom("s")), //
-    RECEIVE("receive", new OtpErlangAtom("r")), //
     CALL("call", new OtpErlangAtom("c")), //
-    PROCS("procs", new OtpErlangAtom("p"));
+    PROCS("procs", new OtpErlangAtom("p")), //
+    RECEIVE("receive", new OtpErlangAtom("r")), //
+    SEND("send", new OtpErlangAtom("s")), //
+    SOFS("set on first spawn", new OtpErlangAtom("sofs")), //
+    SOFL("set on first link", new OtpErlangAtom("sofl")), //
+    SOL("set on link", new OtpErlangAtom("sol")), //
+    SOS("set on spawn", new OtpErlangAtom("sos"));
 
     private OtpErlangAtom atom;
     private String name;
