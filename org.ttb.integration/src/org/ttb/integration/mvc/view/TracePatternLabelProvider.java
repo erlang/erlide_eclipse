@@ -9,13 +9,12 @@ import org.ttb.integration.mvc.model.TracePattern;
 
 /**
  * Provider responsible for displaying trace patterns in table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePatternLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-    @Override
     public Image getColumnImage(Object element, int index) {
         TracePattern pattern = (TracePattern) element;
         if (index == TracePatternColumn.ENABLED.ordinal()) {
@@ -32,7 +31,6 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
             return null;
     }
 
-    @Override
     public String getColumnText(Object element, int index) {
         TracePattern tracePattern = (TracePattern) element;
         switch (TracePatternColumn.getByIndex(index)) {

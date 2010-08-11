@@ -7,9 +7,9 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Tree node displayed in treeviewer.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TreeNode implements ITreeNode {
 
@@ -31,54 +31,44 @@ public class TreeNode implements ITreeNode {
         this.image = image;
     }
 
-    @Override
     public ITreeNode getParent() {
         return parent;
     }
 
-    @Override
     public void setParent(ITreeNode parent) {
         this.parent = parent;
     }
 
-    @Override
     public String getLabel() {
         return label;
     }
 
-    @Override
     public boolean hasChildren() {
         return (children != null && children.size() > 0);
     }
 
-    @Override
     public List<ITreeNode> getChildren() {
         return children;
     }
 
-    @Override
     public void addChildren(ITreeNode... childrenList) {
         for (ITreeNode child : childrenList) {
             children.add(child);
         }
     }
 
-    @Override
     public void removeChild(ITreeNode child) {
         children.remove(child);
     }
 
-    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
-    @Override
     public void setImage(Image image) {
         this.image = image;
     }
 
-    @Override
     public Image getImage() {
         return image;
     }

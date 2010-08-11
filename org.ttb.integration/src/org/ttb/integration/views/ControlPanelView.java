@@ -49,9 +49,9 @@ import erlang.ErlideProclist;
 
 /**
  * Control panel for tracing settings.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
@@ -183,7 +183,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     /**
      * Creates either checkboxes for setting global flags or table for setting
      * flags individually for each process.
-     * 
+     *
      * @param newMode
      * @param oldMode
      * @param parent
@@ -408,27 +408,22 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
-    @Override
     public void addPattern(TracePattern tracePattern) {
         functionsTableViewer.add(tracePattern);
     }
 
-    @Override
     public void removePattern(TracePattern tracePattern) {
         functionsTableViewer.remove(tracePattern);
     }
 
-    @Override
     public void updatePattern(TracePattern tracePattern) {
         functionsTableViewer.update(tracePattern, null);
     }
 
-    @Override
     public void startTracing() {
         startButton.setText("Stop");
     }
 
-    @Override
     public void stopTracing() {
         startButton.setText("Start");
     }

@@ -19,9 +19,9 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 
 /**
  * Sequence diagram which shows tracing results.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
@@ -84,23 +84,18 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
-    @Override
     public void addPattern(TracePattern tracePattern) {
     }
 
-    @Override
     public void removePattern(TracePattern tracePattern) {
     }
 
-    @Override
     public void updatePattern(TracePattern tracePattern) {
     }
 
-    @Override
     public void startTracing() {
     }
 
-    @Override
     public void stopTracing() {
         treeViewer.setInput(CollectedDataList.getInstance());
     }

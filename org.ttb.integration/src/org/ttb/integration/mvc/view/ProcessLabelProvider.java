@@ -10,7 +10,6 @@ import org.ttb.integration.mvc.model.ProcessOnList;
 
 public class ProcessLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         ProcessOnList process = (ProcessOnList) element;
 
@@ -33,7 +32,6 @@ public class ProcessLabelProvider extends LabelProvider implements ITableLabelPr
         return null;
     }
 
-    @Override
     public String getColumnText(Object element, int columnIndex) {
 
         ProcessOnList process = (ProcessOnList) element;

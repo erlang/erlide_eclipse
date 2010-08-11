@@ -8,18 +8,16 @@ import org.ttb.integration.mvc.view.TracePatternColumn;
 
 /**
  * Cell modifier for trace patterns table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePatternCellModifier implements ICellModifier {
 
-    @Override
     public boolean canModify(Object element, String property) {
         return true;
     }
 
-    @Override
     public Object getValue(Object element, String property) {
         TracePattern pattern = (TracePattern) element;
         switch (TracePatternColumn.valueOf(property)) {
@@ -41,7 +39,6 @@ public class TracePatternCellModifier implements ICellModifier {
         }
     }
 
-    @Override
     public void modify(Object element, String property, Object value) {
         TracePattern pattern = (TracePattern) ((TableItem) element).getData();
         switch (TracePatternColumn.valueOf(property)) {

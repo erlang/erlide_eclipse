@@ -9,9 +9,9 @@ import org.ttb.integration.mvc.view.ProcessColumn;
 
 /**
  * Cell modifier for processes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ProcessCellModifier implements ICellModifier {
 
@@ -21,7 +21,6 @@ public class ProcessCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
-    @Override
     public boolean canModify(Object element, String property) {
         try {
             ProcessColumn column = ProcessColumn.valueOf(property);
@@ -34,7 +33,6 @@ public class ProcessCellModifier implements ICellModifier {
         return true;
     }
 
-    @Override
     public Object getValue(Object element, String property) {
         ProcessOnList process = (ProcessOnList) element;
 
@@ -54,7 +52,6 @@ public class ProcessCellModifier implements ICellModifier {
         return process.hasFlag(ProcessFlag.valueOf(property));
     }
 
-    @Override
     public void modify(Object element, String property, Object value) {
         ProcessOnList process = (ProcessOnList) ((TableItem) element).getData();
 

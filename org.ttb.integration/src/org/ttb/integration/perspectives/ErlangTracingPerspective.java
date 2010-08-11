@@ -8,9 +8,9 @@ import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * Perspective for tracing Erlang applications.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ErlangTracingPerspective implements IPerspectiveFactory {
 
@@ -20,7 +20,6 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
     private static final String BOTTOM_LEFT = "bottom left";
     private static final String BOTTOM_CENTER = "bottom center";
 
-    @Override
     public void createInitialLayout(IPageLayout pageLayout) {
         defineActions(pageLayout);
         defineLayout(pageLayout);
