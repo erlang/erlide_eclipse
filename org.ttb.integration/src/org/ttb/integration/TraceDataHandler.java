@@ -44,6 +44,7 @@ public class TraceDataHandler {
     private static final int INDEX_REGNAME = 3;
     private static final int INDEX_REASON = 3;
     private static final int INDEX_PROCESS2 = 3;
+    private static final int INDEX_INFO = 3;
 
     private static final int INDEX_TO = 4;
     private static final int INDEX_RETURN_VALUE = 4;
@@ -71,7 +72,7 @@ public class TraceDataHandler {
             try {
                 OtpErlangObject otpErlangObject = otpMbox.receive();
                 // TODO remove
-                System.out.println("received: " + otpErlangObject);
+                // System.out.println("received: " + otpErlangObject);
 
                 if (otpErlangObject instanceof OtpErlangAtom) {
                     OtpErlangAtom atom = (OtpErlangAtom) otpErlangObject;
@@ -93,10 +94,10 @@ public class TraceDataHandler {
                         node = processExitTrace(tuple);
                         break;
                     case GC_END:
-                        // TODO
+                        node = processGcTrace("GC end", Images.GC_END_NODE, tuple);
                         break;
                     case GC_START:
-                        // TODO
+                        node = processGcTrace("GC start", Images.GC_START_NODE, tuple);
                         break;
                     case GETTING_LINKED:
                         node = processLinkTrace("Getting linked", Images.GETTING_LINKED_NODE, tuple);
@@ -223,13 +224,30 @@ public class TraceDataHandler {
     private ITreeNode createMessageNode(OtpErlangObject message) {
         ITreeNode node = new TreeNode("message", Activator.getImage(Images.MESSAGE_NODE));
 
-        TreeNode messageNode = new TreeNode(message.toString());
-        messageNode.setImage(Activator.getImage(Images.TEXT_NODE));
+        TreeNode messageNode = new TreeNode(message.toString(), Activator.getImage(Images.TEXT_NODE));
         node.addChildren(messageNode);
         return node;
     }
 
     // functions processing different trace types
+
+    private ITreeNode processGcTrace(String label, Images image, OtpErlangTuple tuple) {
+        ITreeNode node = new TreeNode(label, Activator.getImage(image));
+        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+        processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        node.addChildren(processNode);
+
+        OtpErlangList list = (OtpErlangList) tuple.elementAt(INDEX_INFO);
+        for (OtpErlangObject otpErlangObject : list.elements()) {
+            OtpErlangTuple infoTuple = (OtpErlangTuple) otpErlangObject;
+            OtpErlangObject key = infoTuple.elementAt(0);
+            OtpErlangObject value = infoTuple.elementAt(1);
+            TreeNode treeNode = new TreeNode(key.toString() + ": " + value.toString());
+            treeNode.setImage(Activator.getImage(Images.INFO_NODE));
+            node.addChildren(treeNode);
+        }
+        return node;
+    }
 
     private ITreeNode processSpawnTrace(OtpErlangTuple tuple) {
         ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));

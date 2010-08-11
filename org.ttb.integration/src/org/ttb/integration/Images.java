@@ -19,6 +19,8 @@ public enum Images {
     CALL_NODE("treeviewer/callNode.png"), //
     EXIT_NODE("treeviewer/exitNode.png"), //
     FUNCTION_NODE("treeviewer/functionNode.png"), //
+    GC_END_NODE("treeviewer/gcEndNode.png"), //
+    GC_START_NODE("treeviewer/gcStartNode.png"), //
     GETTING_LINKED_NODE("treeviewer/gettingLinkedNode.png"), //
     GETTING_UNLINKED_NODE("treeviewer/gettingUnlinkedNode.png"), //
     IN_NODE("treeviewer/inNode.png"), //
