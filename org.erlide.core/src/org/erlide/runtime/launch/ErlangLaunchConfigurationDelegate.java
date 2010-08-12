@@ -216,7 +216,6 @@ public class ErlangLaunchConfigurationDelegate implements
 						final ErlangDebugNode edn = new ErlangDebugNode(target,
 								a.atomValue());
 						launch.addDebugTarget(edn);
-
 					}
 				}
 			}
@@ -227,9 +226,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			// send started to target
 			DebugPlugin.getDefault().addDebugEventListener(
 					new IDebugEventSetListener() {
-
 						public void handleDebugEvents(final DebugEvent[] events) {
-
 							runInitial(data.module, data.function, data.args,
 									backend);
 							DebugPlugin.getDefault().removeDebugEventListener(
