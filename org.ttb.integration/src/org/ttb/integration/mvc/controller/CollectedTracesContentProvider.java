@@ -67,26 +67,4 @@ public class CollectedTracesContentProvider implements /* ILazyTreeContentProvid
         if (currentChildCount != newChildCount)
             treeViewer.setChildCount(element, newChildCount);
     }
-
-    public void updateElement(Object parent, int index) {
-        ITreeNode childElement;
-        if (parent instanceof CollectedDataList) {
-            childElement = CollectedDataList.getInstance().get(index);
-        } else {
-            childElement = ((ITreeNode) parent).getChildren().get(index);
-        }
-        treeViewer.replace(parent, index, childElement);
-        treeViewer.setChildCount(childElement, childElement.getChildren().size());
-    }
-
-    public void updateChildCount(Object element, int currentChildCount) {
-        int newChildCount;
-        if (element instanceof CollectedDataList) {
-            newChildCount = CollectedDataList.getInstance().size();
-        } else {
-            newChildCount = ((ITreeNode) element).getChildren().size();
-        }
-        if (currentChildCount != newChildCount)
-            treeViewer.setChildCount(element, newChildCount);
-    }
 }
