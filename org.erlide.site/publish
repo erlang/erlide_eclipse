@@ -1,7 +1,13 @@
-# manual publishing for nightly builds
 
-bash -ex org.erlide.site/mirror_p2 /proj/uz/erlide/eclipse352/eclipse file:///home/eshadeln/.hudson/jobs/nightly_next/workspace/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2 file:///proj/uz/erlide/update_sites/update_nightly
+SOURCE=$1
+DEST=$2
+PASS=$3
 
-rsync -avz -e ssh --delete /proj/uz/erlide/update_sites/update_nightly vladdu,erlide@frs.sourceforge.net:/home/groups/e/er/erlide/frs/
+cat > f1 <<END
+
+END
+
+scp -r ${SOURCE}/* vladdu,erlide@frs.sourceforge.net:frs/${DEST}
+
 
 
