@@ -5,13 +5,16 @@
 %%
 %% Exported Functions
 %%
--export([start/1, stop/1]).
+-export([start/1, stop/1, stop_tracing/1]).
 
 
 start(HandlerPid)->
 	ttb:tracer(all, [{handler, {create_handler(HandlerPid), initial_state}}]).
 
-stop(HandlerPid)->
+stop(HandlerPid) ->
+	spawn(?MODULE, stop_tracing, [HandlerPid]).
+
+stop_tracing(HandlerPid)->
 	ttb:stop([format]),
 	HandlerPid ! stop_tracing.
 

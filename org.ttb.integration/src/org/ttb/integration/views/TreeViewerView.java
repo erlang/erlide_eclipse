@@ -19,9 +19,9 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 
 /**
  * Sequence diagram which shows tracing results.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
@@ -72,11 +72,12 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         container.setLayout(new GridLayout());
 
+        // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
         treeViewer = new TreeViewer(container);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
-        treeViewer.setContentProvider(new CollectedTracesContentProvider());
+        treeViewer.setContentProvider(new CollectedTracesContentProvider(treeViewer));
         treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
     }
 

@@ -32,4 +32,12 @@ public class CollectedDataList {
     public void clear() {
         data.clear();
     }
+
+    public ITreeNode get(int index) {
+        return data.get(index);
+    }
+
+    public int size() {
+        return data.size();
+    }
 }
