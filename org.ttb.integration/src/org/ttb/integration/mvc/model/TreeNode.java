@@ -7,9 +7,9 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Tree node displayed in treeviewer.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class TreeNode implements ITreeNode {
 
@@ -44,7 +44,7 @@ public class TreeNode implements ITreeNode {
     }
 
     public boolean hasChildren() {
-        return (children != null && children.size() > 0);
+        return children.size() > 0;
     }
 
     public List<ITreeNode> getChildren() {
