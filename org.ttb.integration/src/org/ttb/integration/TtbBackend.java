@@ -30,7 +30,7 @@ public class TtbBackend {
 
     private static final TtbBackend INSTANCE = new TtbBackend();
     private static final String PROCESS_NAME = "TraceDataCollector";
-    private static final String TTB_MODULE = "ttb";
+    private static final String TTB_MODULE = "ttbe";
     private static final String HELPER_MODULE = "ttb_integration";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";

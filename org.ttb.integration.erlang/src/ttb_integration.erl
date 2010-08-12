@@ -9,13 +9,13 @@
 
 
 start(HandlerPid)->
-	ttb:tracer(all, [{handler, {create_handler(HandlerPid), initial_state}}]).
+	ttbe:tracer(all, [{handler, {create_handler(HandlerPid), initial_state}}]).
 
 stop(HandlerPid) ->
 	spawn(?MODULE, stop_tracing, [HandlerPid]).
 
 stop_tracing(HandlerPid)->
-	ttb:stop([format]),
+	ttbe:stop([format]),
 	HandlerPid ! stop_tracing.
 
 create_handler(HandlerPid) ->

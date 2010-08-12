@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ttbe (ttb extension) source code
+Bundle-SymbolicName: org.ttb.integration.ttbe;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Erlang Solutions
