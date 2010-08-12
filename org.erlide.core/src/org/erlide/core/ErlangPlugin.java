@@ -40,8 +40,8 @@ import org.osgi.framework.Version;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  * @author jakob
@@ -97,7 +97,7 @@ public class ErlangPlugin extends Plugin {
 
 	/**
 	 * Returns the shared instance.
-	 * 
+	 *
 	 * @return The plugin
 	 */
 	public static ErlangPlugin getDefault() {
@@ -110,7 +110,7 @@ public class ErlangPlugin extends Plugin {
 	/**
 	 * Returns the string from the plugin's resource bundle, or 'key' if not
 	 * found.
-	 * 
+	 *
 	 * @param key
 	 *            The resource
 	 * @return The identified string
@@ -127,7 +127,7 @@ public class ErlangPlugin extends Plugin {
 
 	/**
 	 * Returns the plugin's resource bundle,
-	 * 
+	 *
 	 * @return The requested bundle
 	 */
 	public ResourceBundle getResourceBundle() {
@@ -137,7 +137,7 @@ public class ErlangPlugin extends Plugin {
 	/*
 	 * (non-Edoc) Shutdown the ErlangCore plug-in. <p> De-registers the
 	 * ErlModelManager as a resource changed listener and save participant. <p>
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.Plugin#stop(BundleContext)
 	 */
 	@Override
@@ -159,7 +159,7 @@ public class ErlangPlugin extends Plugin {
 	 * ErlModelManager as a resource changed listener and save participant.
 	 * Starts the background indexing, and restore saved classpath variable
 	 * values. <p> @throws Exception
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.Plugin#start(BundleContext)
 	 */
 	@Override
@@ -225,9 +225,8 @@ public class ErlangPlugin extends Plugin {
 			// ignore
 		}
 		Version coreVersion = getBundle().getVersion();
-		if (version == null || coreVersion.compareTo(new Version(version)) > 0) {
-			version = "(" + coreVersion.toString() + ")";
-		}
+		version = version == null ? "?" : version;
+		version = version + " (core=" + coreVersion.toString() + ")";
 		return version;
 	}
 

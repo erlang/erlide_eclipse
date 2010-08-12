@@ -47,7 +47,7 @@ file(M) -> erlide_int:file(M).
 interpretable(M) -> erlide_int:interpretable(M).
 auto_attach() -> nyi(auto_attach).
 auto_attach(_) -> nyi(auto_attach).
-auto_attach(_, _) ->nyi(auto_attach).
+auto_attach(Flags, Fnk) ->erlide_int:auto_attach(Flags, Fnk).
 stack_trace() -> nyi(stack_trace).
 stack_trace(_) -> nyi(stack_trace).
 break(Mod, Line) -> erlide_int:break(Mod, Line).
