@@ -1,0 +1,16 @@
+#! /bin/bash
+
+# arguments:
+# WORKSPACE - location of the source code root
+# JAVA_HOME - location of JDK
+# erlang_R12 - location of R12
+# erlang_R13 - location of R13 
+
+WORKSPACE=$1
+JAVA_HOME=$2
+erlang_R12=$3
+erlang_R13=$4
+
+# add here code to start eunit server or whatever
+# make a note where the reports are placed, needed for hudson
+
