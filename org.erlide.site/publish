@@ -1,13 +1,62 @@
 
-SOURCE=$1
-DEST=$2
-PASS=$3
+SOURCE_JOB=$1
+SOURCE_ID=$2
+BASE_SITE=$3
+DESTINATION=$4
+USER=$5
 
-cat > f1 <<END
+IN=${WORKSPACE}/../../${SOURCE_JOB}/builds/${SOURCE_ID}/archive/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
+OUT=${ERLIDE}/update_sites/${SOURCE_JOB}_${SOURCE_ID}
 
+rm -rf ${OUT}/*
+
+#if BASE_SITE, copy it to OUT
+if [ -n "$BASE_SITE" ]; then
+		cp -r $BASE_SITE $OUT
+fi
+
+# mirror job output to OUT
+bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} ${OUT}
+
+# if DEST=path, copy OUT to DEST
+if [ -d "${DESTINATION}" ]; then
+	cp -r ${OUT}/* ${DESTINATION}
+
+# else if DEST=name, scp OUT to sourceforge
+elif [ -n "${DESTINATION}" ]; then
+
+expect - << END
+	# exp_internal 1 # uncomment for debugging
+		
+	spawn sftp ${USER}@frs.sourceforge.net
+	expect "*sftp>"
+	send "rm frs/${DESTINATION}/*\r"
+	expect "*sftp>"
+	send "rm frs/${DESTINATION}/features/*\r"
+	expect "*sftp>"
+	send "rm frs/${DESTINATION}/plugins/*\r"
+	expect "*sftp>"
+	send "bye\r"
+	wait
+		
+	spawn scp -q -C -r ${OUT}/content.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+	expect eof
+	wait
+	spawn scp -q -C ${OUT}/artifacts.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+	expect eof
+	wait
+	spawn scp -q -C -r ${OUT}/features ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+	expect eof
+	wait
+	spawn scp -q -C -r ${OUT}/plugins ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+	expect eof
+	wait
 END
 
-scp -r ${SOURCE}/* vladdu,erlide@frs.sourceforge.net:frs/${DEST}
+# else do nothing
+
+fi
+
 
 
 
