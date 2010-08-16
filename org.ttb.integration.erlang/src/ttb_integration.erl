@@ -21,7 +21,7 @@ stop_tracing(HandlerPid)->
 create_handler(HandlerPid) ->
 	fun(Fd, Trace, _TraceInfo, State) ->
 			case Trace of
-				{X, Pid, call, {Mod, Fun, Arg}} ->
+				{X, Pid, call, {Mod, Fun, Arg}, Y} ->
 					HandlerPid ! {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}};
 				{X, Pid, spawn, Pid2, {M, F, Args}} ->
 					HandlerPid ! {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}};
