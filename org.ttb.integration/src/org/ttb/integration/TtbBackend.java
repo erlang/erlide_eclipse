@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
@@ -17,8 +18,6 @@ import org.ttb.integration.mvc.model.TracePattern;
 
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpMbox;
 
 /**
  * Singleton class wrapping backend that collects traces.
@@ -29,7 +28,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 public class TtbBackend {
 
     private static final TtbBackend INSTANCE = new TtbBackend();
-    private static final String PROCESS_NAME = "TraceDataCollector";
     private static final String TTB_MODULE = "ttb";
     private static final String HELPER_MODULE = "ttb_integration";
     private static final String FUN_STOP = "stop";
@@ -45,13 +43,42 @@ public class TtbBackend {
     private ProcessMode processMode;
     private Backend backend;
     private boolean started;
-    private OtpMbox otpMbox;
+    private TraceEventHandler handler;
 
     private TtbBackend() {
     }
 
     public static TtbBackend getInstance() {
         return INSTANCE;
+    }
+
+    private class TraceEventHandler extends EventHandler {
+
+        private final TraceDataHandler handler = new TraceDataHandler();
+        private final ITreeNode rootNode;
+
+        public TraceEventHandler() {
+            rootNode = handler.createRoot();
+            CollectedDataList.getInstance().addData(rootNode);
+        }
+
+        @Override
+        protected void doHandleMsg(OtpErlangObject msg) throws Exception {
+            OtpErlangObject message = getStandardEvent(msg, "trace_event");
+            if (message != null) {
+                if (handler.isLastMessage(message)) {
+                    finishTracing();
+                } else {
+                    ITreeNode newNode = handler.getData(message);
+                    if (newNode != null) {
+                        rootNode.addChildren(newNode);
+                        for (ITraceNodeObserver listener : listeners) {
+                            listener.receivedTraceData();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -74,9 +101,10 @@ public class TtbBackend {
                 if (!started) {
                     try {
                         this.backend = backend;
-                        otpMbox = backend.createMbox(PROCESS_NAME);
-                        OtpErlangPid pid = otpMbox.self();
-                        backend.call(HELPER_MODULE, FUN_START, "x", pid);
+                        handler = new TraceEventHandler();
+                        backend.getEventDaemon().addHandler(handler);
+
+                        backend.call(HELPER_MODULE, FUN_START, "", new Object[0]);
 
                         // setting process flags
                         if (ProcessMode.BY_PID.equals(processMode)) {
@@ -114,9 +142,6 @@ public class TtbBackend {
                             listener.startTracing();
                         }
                     } catch (BackendException e) {
-                        if (otpMbox != null) {
-                            otpMbox.close();
-                        }
                         ErlLogger.error("Could not start tracing tool: " + e.getMessage());
                     }
                 }
@@ -133,23 +158,21 @@ public class TtbBackend {
             synchronized (this) {
                 if (started) {
                     try {
-                        backend.call(HELPER_MODULE, FUN_STOP, "x", otpMbox.self());
-                        ITreeNode root = new TraceDataHandler(otpMbox).getData();
-                        CollectedDataList.getInstance().addData(root);
-
-                        started = false;
-                        for (ITraceNodeObserver listener : listeners) {
-                            listener.stopTracing();
-                        }
+                        backend.call(HELPER_MODULE, FUN_STOP, "");
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
                     } finally {
-                        if (otpMbox != null) {
-                            otpMbox.close();
-                        }
                     }
                 }
             }
+        }
+    }
+
+    private void finishTracing() {
+        backend.getEventDaemon().removeHandler(handler);
+        started = false;
+        for (ITraceNodeObserver listener : listeners) {
+            listener.stopTracing();
         }
     }
 

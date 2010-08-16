@@ -24,7 +24,6 @@ import com.ericsson.otp.erlang.OtpMbox;
  */
 public class TraceDataHandler {
 
-    private final OtpMbox otpMbox;
     private static final String ATOM_STOP_TRACING = "stop_tracing";
 
     // tuple fields
@@ -50,14 +49,20 @@ public class TraceDataHandler {
     private static final int INDEX_RETURN_VALUE = 4;
     private static final int INDEX_SPAWN_FUNCTION = 4;
 
-    /**
-     * Creates handler instance.
-     * 
-     * @param otpMbox
-     *            mailbox used for receiving data
-     */
-    public TraceDataHandler(OtpMbox otpMbox) {
-        this.otpMbox = otpMbox;
+    public boolean isLastMessage(OtpErlangObject message) {
+        if (message instanceof OtpErlangAtom) {
+            OtpErlangAtom atom = (OtpErlangAtom) message;
+            if (atom.atomValue().equals(ATOM_STOP_TRACING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ITreeNode createRoot() {
+        TreeNode rootNode = new TreeNode(new Date().toString());
+        rootNode.setImage(Activator.getDefault().getImageRegistry().get(Images.ROOT_NODE.toString()));
+        return rootNode;
     }
 
     /**
@@ -65,92 +70,59 @@ public class TraceDataHandler {
      * 
      * @return collected data
      */
-    public ITreeNode getData() {
-        ITreeNode rootNode = new TreeNode(new Date().toString());
-        rootNode.setImage(Activator.getDefault().getImageRegistry().get(Images.ROOT_NODE.toString()));
-        while (true) {
-            try {
-                OtpErlangObject otpErlangObject = otpMbox.receive();
-                // TODO remove
-                // System.out.println("received: " + otpErlangObject);
+    public ITreeNode getData(OtpErlangObject otpErlangObject) {
+        try {
+            // TODO remove
+            // System.out.println("received: " + otpErlangObject);
+            if (otpErlangObject instanceof OtpErlangTuple) {
+                OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
+                OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);
 
-                if (otpErlangObject instanceof OtpErlangAtom) {
-                    OtpErlangAtom atom = (OtpErlangAtom) otpErlangObject;
-                    if (atom.atomValue().equals(ATOM_STOP_TRACING)) {
-                        return rootNode;
-                    }
-                } else {
-                    OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
-                    OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);
-                    ITreeNode node = null;
-
-                    switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
-                    case CALL:
-                        node = processCallTrace(tuple);
-                        break;
-                    case EXCEPTION_FROM:
-                        break;
-                    case EXIT:
-                        node = processExitTrace(tuple);
-                        break;
-                    case GC_END:
-                        node = processGcTrace("GC end", Images.GC_END_NODE, tuple);
-                        break;
-                    case GC_START:
-                        node = processGcTrace("GC start", Images.GC_START_NODE, tuple);
-                        break;
-                    case GETTING_LINKED:
-                        node = processLinkTrace("Getting linked", Images.GETTING_LINKED_NODE, tuple);
-                        break;
-                    case GETTING_UNLINKED:
-                        node = processLinkTrace("Getting unlinked", Images.GETTING_UNLINKED_NODE, tuple);
-                        break;
-                    case IN:
-                        node = processInOutTrace("In", Images.IN_NODE, tuple);
-                        break;
-                    case LINK:
-                        node = processLinkTrace("Link", Images.LINK_NODE, tuple);
-                        break;
-                    case OUT:
-                        node = processInOutTrace("Out", Images.OUT_NODE, tuple);
-                        break;
-                    case RECEIVE:
-                        node = processReceiveTrace(tuple);
-                        break;
-                    case REGISTER:
-                        node = processRegisterTrace("Register", Images.REGISTER_NODE, tuple);
-                        break;
-                    case RETURN_FROM:
-                        node = processReturnTrace("Return from", Images.RETURN_FROM_NODE, tuple, true);
-                        break;
-                    case RETURN_TO:
-                        node = processReturnTrace("Return from", Images.RETURN_TO_NODE, tuple, false);
-                        break;
-                    case SEND:
-                        node = processSendTrace("Sent message", Images.SENT_MESSAGE_NODE, tuple);
-                        break;
-                    case SEND_TO_NON_EXISTING_PROCESS:
-                        node = processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
-                        break;
-                    case SPAWN:
-                        node = processSpawnTrace(tuple);
-                        break;
-                    case ULINK:
-                        node = processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
-                        break;
-                    case UNREGISTER:
-                        node = processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);
-                        break;
-                    }
-
-                    if (node != null) {
-                        rootNode.addChildren(node);
-                    }
+                switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
+                case CALL:
+                    return processCallTrace(tuple);
+                case EXCEPTION_FROM:
+                    return null;
+                case EXIT:
+                    return processExitTrace(tuple);
+                case GC_END:
+                    return processGcTrace("GC end", Images.GC_END_NODE, tuple);
+                case GC_START:
+                    return processGcTrace("GC start", Images.GC_START_NODE, tuple);
+                case GETTING_LINKED:
+                    return processLinkTrace("Getting linked", Images.GETTING_LINKED_NODE, tuple);
+                case GETTING_UNLINKED:
+                    return processLinkTrace("Getting unlinked", Images.GETTING_UNLINKED_NODE, tuple);
+                case IN:
+                    return processInOutTrace("In", Images.IN_NODE, tuple);
+                case LINK:
+                    return processLinkTrace("Link", Images.LINK_NODE, tuple);
+                case OUT:
+                    return processInOutTrace("Out", Images.OUT_NODE, tuple);
+                case RECEIVE:
+                    return processReceiveTrace(tuple);
+                case REGISTER:
+                    return processRegisterTrace("Register", Images.REGISTER_NODE, tuple);
+                case RETURN_FROM:
+                    return processReturnTrace("Return from", Images.RETURN_FROM_NODE, tuple, true);
+                case RETURN_TO:
+                    return processReturnTrace("Return from", Images.RETURN_TO_NODE, tuple, false);
+                case SEND:
+                    return processSendTrace("Sent message", Images.SENT_MESSAGE_NODE, tuple);
+                case SEND_TO_NON_EXISTING_PROCESS:
+                    return processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
+                case SPAWN:
+                    return processSpawnTrace(tuple);
+                case ULINK:
+                    return processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
+                case UNREGISTER:
+                    return processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);
                 }
-            } catch (Exception e) {
-                ErlLogger.error(e);
             }
+        } catch (Exception e) {
+            ErlLogger.error(e);
         }
+        return null;
     }
 
     // functions creating nodes

@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
@@ -95,9 +96,18 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
+        treeViewer.setInput(CollectedDataList.getInstance());
     }
 
     public void stopTracing() {
-        treeViewer.setInput(CollectedDataList.getInstance());
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                treeViewer.setInput(CollectedDataList.getInstance());
+            }
+        });
+    }
+
+    public void receivedTraceData() {
+        // treeViewer.setInput(CollectedDataList.getInstance());
     }
 }

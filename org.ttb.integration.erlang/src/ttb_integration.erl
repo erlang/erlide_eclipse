@@ -5,28 +5,32 @@
 %%
 %% Exported Functions
 %%
--export([start/1, stop/1, stop_tracing/1]).
+-export([start/0, stop/0, stop_tracing/0]).
 
 
-start(HandlerPid)->
-	ttb:tracer(all, [{handler, {create_handler(HandlerPid), initial_state}}]).
+start()->
+	ttb:tracer(all, [{handler, {create_handler(), initial_state}}]).
 
-stop(HandlerPid) ->
-	spawn(?MODULE, stop_tracing, [HandlerPid]).
+stop() ->
+	spawn(?MODULE, stop_tracing, []).
 
-stop_tracing(HandlerPid)->
+stop_tracing()->
 	ttb:stop([format]),
-	HandlerPid ! stop_tracing.
+	erlide_jrpc:event(trace_event, stop_tracing).
+	%% 	HandlerPid ! stop_tracing.
 
-create_handler(HandlerPid) ->
+create_handler() ->
 	fun(Fd, Trace, _TraceInfo, State) ->
 			case Trace of
 				{X, Pid, call, {Mod, Fun, Arg}} ->
-					HandlerPid ! {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}};
+%% 					HandlerPid ! {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}},
+					erlide_jrpc:event(trace_event, {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}});
 				{X, Pid, spawn, Pid2, {M, F, Args}} ->
-					HandlerPid ! {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}};
+%% 					HandlerPid ! {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}},
+					erlide_jrpc:event(trace_event, {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}});
 				_ ->
-					HandlerPid ! Trace
+%% 					HandlerPid ! Trace,
+					erlide_jrpc:event(trace_event, Trace)
 			end,
 			State
 	end.

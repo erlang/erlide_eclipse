@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -49,9 +50,9 @@ import erlang.ErlideProclist;
 
 /**
  * Control panel for tracing settings.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
@@ -116,12 +117,15 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // "Start/Stop" button
         startButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        // TODO what if tracing is stopped, i.e. viewer hasn't received yet all
+        // data? In this case button should be disabled
         startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
         startButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 if (TtbBackend.getInstance().isStarted()) {
+                    startButton.setEnabled(false);
                     TtbBackend.getInstance().stop();
                 } else {
                     TtbBackend.getInstance().start(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
@@ -183,7 +187,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     /**
      * Creates either checkboxes for setting global flags or table for setting
      * flags individually for each process.
-     *
+     * 
      * @param newMode
      * @param oldMode
      * @param parent
@@ -421,10 +425,22 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
-        startButton.setText("Stop");
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startButton.setText("Stop");
+            }
+        });
     }
 
     public void stopTracing() {
-        startButton.setText("Start");
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startButton.setText("Start");
+                startButton.setEnabled(true);
+            }
+        });
+    }
+
+    public void receivedTraceData() {
     }
 }
