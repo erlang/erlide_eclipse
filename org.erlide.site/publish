@@ -12,46 +12,23 @@ rm -rf ${OUT}/*
 
 #if BASE_SITE, copy it to OUT
 if [ -n "$BASE_SITE" ]; then
-		cp -r $BASE_SITE $OUT
+	#if [ ! -d "$BASE_SITE" ]; then
+	#	bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} http://erlide.org/update.backup ${BASE_SITE}
+	#fi
+	cp -r ${ERLIDE}/$BASE_SITE $OUT
 fi
 
 # mirror job output to OUT
-bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} ${OUT}
+bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
 
 # if DEST=path, copy OUT to DEST
 if [ -d "${DESTINATION}" ]; then
+	# rm -rf ${DESTINATION}/*  # TODO option to clean?
 	cp -r ${OUT}/* ${DESTINATION}
 
 # else if DEST=name, scp OUT to sourceforge
 elif [ -n "${DESTINATION}" ]; then
-
-expect - << END
-	# exp_internal 1 # uncomment for debugging
-		
-	spawn sftp ${USER}@frs.sourceforge.net
-	expect "*sftp>"
-	send "rm frs/${DESTINATION}/*\r"
-	expect "*sftp>"
-	send "rm frs/${DESTINATION}/features/*\r"
-	expect "*sftp>"
-	send "rm frs/${DESTINATION}/plugins/*\r"
-	expect "*sftp>"
-	send "bye\r"
-	wait
-		
-	spawn scp -q -C -r ${OUT}/content.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C ${OUT}/artifacts.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C -r ${OUT}/features ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C -r ${OUT}/plugins ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-END
+	bash -ex ${WORKSPACE}/org.erlide.site/upload ${OUT} ${DESTINATION} ${USER}
 
 # else do nothing
 
