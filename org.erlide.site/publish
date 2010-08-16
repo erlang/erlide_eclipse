@@ -15,7 +15,7 @@ if [ -n "$BASE_SITE" ]; then
 	#if [ ! -d "$BASE_SITE" ]; then
 	#	bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} http://erlide.org/update.backup ${BASE_SITE}
 	#fi
-	cp -r ${ERLIDE}/$BASE_SITE $OUT
+	cp -r ${ERLIDE}/$BASE_SITE/* $OUT
 fi
 
 # mirror job output to OUT

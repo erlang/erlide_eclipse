@@ -2,6 +2,8 @@ SOURCE=$1
 DESTINATION=$2
 USER=$3
 
+q=
+
 expect - << END
 	# exp_internal 1 # uncomment for debugging
 		
@@ -15,24 +17,11 @@ expect - << END
 	expect "*sftp>"
 	send "bye\r"
 	wait
-		
-	spawn scp -q -C -r ${SOURCE}/content.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C ${SOURCE}/artifacts.jar ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C -r ${SOURCE}/content.xml ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C ${SOURCE}/artifacts.xml ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C -r ${SOURCE}/features ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
-	spawn scp -q -C -r ${SOURCE}/plugins ${USER}@frs.sourceforge.net:frs/${DESTINATION}
-	expect eof
-	wait
 END
+
+scp $q -C ${SOURCE}/artifacts.* ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+scp $q -C ${SOURCE}/content.* ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+scp $q -C -r ${SOURCE}/features ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+scp $q -C -r ${SOURCE}/plugins ${USER}@frs.sourceforge.net:frs/${DESTINATION}
+
 
