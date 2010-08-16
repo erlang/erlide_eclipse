@@ -20,6 +20,9 @@ fi
 
 # mirror job output to OUT
 bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
+if [ $? != 0 ]; then 
+	exit $?
+fi
 
 # if DEST=path, copy OUT to DEST
 if [ -d "${DESTINATION}" ]; then
@@ -32,6 +35,10 @@ elif [ -n "${DESTINATION}" ]; then
 
 # else do nothing
 
+fi
+
+if [ $? != 0 ]; then 
+	exit $?
 fi
 
 
