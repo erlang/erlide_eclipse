@@ -14,8 +14,8 @@ import org.erlide.testing.erlang.RpcTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( { RpcTest.class })
+//@RunWith(Suite.class)
+//@Suite.SuiteClasses( { RpcTest.class })
 public class ErlangTests {
 
 }
