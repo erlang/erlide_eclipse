@@ -46,6 +46,14 @@ if [ $? != 0 ]; then
 	exit $?
 fi
 
+#FIXME: this is hardcoded...
+#if BASE_SITE, copy it to OUT
+if [ -n "$BASE_SITE" ]; then
+	cd ${ERLIDE}/update_sites
+	BASE=`echo $BASE_SITE | sed 's#update_sites/##'`
+	rm $BASE
+	ln -s $OUT $BASE
+fi
 
 
 
