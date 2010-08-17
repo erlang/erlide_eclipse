@@ -6,7 +6,7 @@ DESTINATION=$4
 USER=$5
 
 if [ "$SOURCE_ID" == "lastStable" ]; then
-	SOURCE_ID=`ls ${WORKSPACE}/../../${SOURCE_JOB}/lastStable | awk '{print $11}'`
+	SOURCE_ID=`ls -l ${WORKSPACE}/../../${SOURCE_JOB}/lastStable | awk '{print $11}'`
 else
 	SOURCE_ID=builds/$SOURCE_ID
 fi
