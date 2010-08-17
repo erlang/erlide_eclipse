@@ -5,10 +5,17 @@ BASE_SITE=$3
 DESTINATION=$4
 USER=$5
 
-IN=${WORKSPACE}/../../${SOURCE_JOB}/builds/${SOURCE_ID}/archive/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
+if [ "$SOURCE_ID" == "lastStable" ]; then
+	SOURCE_ID=`ls ${WORKSPACE}/../../${SOURCE_JOB}/lastStable | awk '{print $11}'`
+else
+	SOURCE_ID=builds/$SOURCE_ID
+fi
+
+IN=${WORKSPACE}/../../${SOURCE_JOB}/${SOURCE_ID}/archive/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
 OUT=${ERLIDE}/update_sites/${SOURCE_JOB}_${SOURCE_ID}
 
 rm -rf ${OUT}/*
+mkdir -p $OUT
 
 #if BASE_SITE, copy it to OUT
 if [ -n "$BASE_SITE" ]; then
