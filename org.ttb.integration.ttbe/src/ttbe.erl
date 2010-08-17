@@ -163,6 +163,7 @@ ensure_opt({PI,Client,Traci}) ->
     end.
 
 get_logname({local, F}) -> filename:basename(F);
+get_logname({wrap, F, _, _}) -> filename:basename(F);
 get_logname(F) -> filename:basename(F).
 
 nods(all) ->
@@ -290,6 +291,8 @@ write_config(ConfigFile,Config) ->
     write_config(ConfigFile,Config,[]).
 write_config(ConfigFile,all,Opt) ->
     write_config(ConfigFile,['_'],Opt);
+write_config(ConfigFile,Config,Opt) when not(is_list(Opt)) ->
+    write_config(ConfigFile,Config,[Opt]);
 write_config(ConfigFile,Nums,Opt) when is_list(Nums), is_integer(hd(Nums)); 
 				       Nums=:=['_'] ->
     F = fun(N) -> ets:select(?history_table,
