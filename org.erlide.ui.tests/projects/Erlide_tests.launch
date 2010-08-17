@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="true"/>
@@ -9,6 +9,20 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
+<booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="true"/>
+<listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
+<listEntry value="/org.erlide.wrangler.refactoring.duplicatedcode/bin"/>
+<listEntry value="/org.erlide.ui.tests/bin"/>
+<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.testing/bin"/>
+<listEntry value="/org.erlide.wrangler.refactoring/bin"/>
+<listEntry value="/org.erlide.ui/bin"/>
+<listEntry value="/org.erlide.jinterface.tests/bin"/>
+<listEntry value="/org.erlide.core.tests/bin"/>
+<listEntry value="/org.erlide.core/bin"/>
+<listEntry value="/org.erlide.selfhost.plugin/bin"/>
+<listEntry value="/org.erlide.libs/bin"/>
+</listAttribute>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Erlide_tests"/>
 <booleanAttribute key="default" value="true"/>
 <booleanAttribute key="includeOptional" value="true"/>

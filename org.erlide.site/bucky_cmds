@@ -6,5 +6,8 @@ importpreferences -F #{SITE_PRJ}/_erl.epf -S instance
 import #{WORKSPACE}/#{SITE_PRJ}/site.cquery
 build -c -t 
 
-#perform -D target.os=* -D target.ws=* -D target.arch=* -D qualifier.replacement.*=generator:buildTimestamp -D generator.buildTimestamp.format=yyyyMMddHHmm -D cbi.include.source=true -D site.pack200=true #{SITE_PRJ}#site.p2
+emma -l org.erlide.testing/junit_jinterface.launch -o #{WORKSPACE}/output/junit_result_jinterface.xml --xml #{WORKSPACE}/output/coverage_report_jinterface.xml --flatXML
+emma -l org.erlide.testing/junit_core.launch -o #{WORKSPACE}/output/junit_result_core.xml --xml #{WORKSPACE}/output/coverage_report_core.xml --flatXML
+emma -l org.erlide.testing/junit_ui.launch -o #{WORKSPACE}/output/junit_result_ui.xml --xml #{WORKSPACE}/output/coverage_report_ui.xml --flatXML
+
 perform --properties #{SITE_PRJ}/_buckminster.properties #{SITE_PRJ}#site.p2
