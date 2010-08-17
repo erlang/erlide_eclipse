@@ -29,4 +29,45 @@
             name="Erlang tracing tree viewer">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.ttb.integration.tracing"
+               label="%tracingCategory">
+            <command
+                  commandId="org.ttb.integration.createtracepattern"
+                  id="org.ttb.integration.createtracepattern"
+                  style="push">
+               <visibleWhen>
+                  <iterate>
+                     <adapt
+                           type="org.erlide.core.erlang.IErlFunctionClause">
+                     </adapt>
+                  </iterate>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="org.ttb.integration.tracing"
+            name="Tracing">
+      </category>
+      <command
+            category="org.ttb.integration.tracing"
+            id="org.ttb.integration.createtracepattern"
+            name="%createTracePattern">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.ttb.integration.ui.menu.CreateTracePatternHandler"
+            commandId="org.ttb.integration.createtracepattern">
+      </handler>
+   </extension>
 </plugin>

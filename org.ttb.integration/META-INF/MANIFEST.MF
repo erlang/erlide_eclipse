@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ttb for Eclipse
+Bundle-Name: Erlang tracing tool for Eclipse
 Bundle-SymbolicName: org.ttb.integration;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.ttb.integration.Activator
@@ -14,4 +14,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Localization: plugin
 Bundle-Vendor: Erlang Solutions
