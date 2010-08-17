@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
@@ -12,22 +12,22 @@
 <booleanAttribute key="clearwslog" value="false"/>
 <booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="true"/>
 <listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
+<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.wrangler.refactoring.duplicatedcode/bin"/>
 <listEntry value="/org.erlide.testing/bin"/>
-<listEntry value="/org.erlide.jinterface.tests/bin"/>
-<listEntry value="/org.erlide.wrangler.refactoring/bin"/>
 <listEntry value="/org.erlide.core.tests/bin"/>
-<listEntry value="/org.erlide.ui.tests/bin"/>
 <listEntry value="/org.erlide.selfhost.plugin/bin"/>
 <listEntry value="/org.erlide.core/bin"/>
-<listEntry value="/org.erlide.wrangler.refactoring.duplicatedcode/bin"/>
-<listEntry value="/org.erlide.ui/bin"/>
+<listEntry value="/org.erlide.jinterface.tests/bin"/>
 <listEntry value="/org.erlide.libs/bin"/>
-<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.wrangler.refactoring/bin"/>
+<listEntry value="/org.erlide.ui.tests/bin"/>
+<listEntry value="/org.erlide.ui/bin"/>
 </listAttribute>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
 <booleanAttribute key="default" value="true"/>
 <booleanAttribute key="includeOptional" value="true"/>
-<stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
+<stringAttribute key="location" value="${workspace_loc}/junit-workspace"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/org.erlide.jinterface.tests"/>
 </listAttribute>
@@ -35,8 +35,8 @@
 <listEntry value="4"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 <listEntry value="com.mountainminds.eclemma.ui.launchGroup.coverage"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.erlide.jinterface.tests"/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
