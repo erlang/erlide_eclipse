@@ -27,7 +27,6 @@ cp ${SITE_PRJ_PATH}/buckminster.properties ${SITE_PRJ_PATH}/_buckminster.propert
 echo "buckminster.output.root=${WORKSPACE}/buckminster.output" >> ${SITE_PRJ_PATH}/_buckminster.properties
 echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_buckminster.properties
  
-#LAUNCHER=${BUCKMINSTER}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar 
 LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1` 
  
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${SITE_PRJ_PATH}/_bucky_build
