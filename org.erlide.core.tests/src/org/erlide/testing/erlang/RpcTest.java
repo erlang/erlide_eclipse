@@ -23,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class RpcTest extends AbstractErlangTest {
 
-	//@Test
+	@Test
 	public void rpc() {
 		final OtpErlangAtom a = new OtpErlangAtom("1");
 		final OtpErlangLong b = new OtpErlangLong(2);

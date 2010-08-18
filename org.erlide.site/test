@@ -1,4 +1,3 @@
-#! /bin/bash
 
 # arguments:
 # WORKSPACE - location of the source code root
@@ -30,6 +29,8 @@ echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_
  
 #LAUNCHER=${BUCKMINSTER}/plugins/org.eclipse.equinox.launcher_1.0.201.R35x_v20090715.jar 
 LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1` 
+
+${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
  
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${SITE_PRJ_PATH}/_bucky_test
 
