@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 public class RpcTest extends AbstractErlangTest {
 
 	@Test
-	public void testRpc() {
+	public void rpc() {
 		final OtpErlangAtom a = new OtpErlangAtom("1");
 		final OtpErlangLong b = new OtpErlangLong(2);
 		final OtpErlangLong c = new OtpErlangLong(3);
@@ -35,8 +35,8 @@ public class RpcTest extends AbstractErlangTest {
 		assertTrue(rr.equals(l2));
 	}
 
-	@Test
-	public void testStringResult() {
+	//@Test
+	public void lists_reverse() {
 		final OtpErlangString l1 = new OtpErlangString("abc");
 
 		final OtpErlangString l2 = new OtpErlangString("cba");

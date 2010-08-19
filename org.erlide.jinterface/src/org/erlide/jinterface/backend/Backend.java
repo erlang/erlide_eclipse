@@ -466,10 +466,6 @@ public class Backend extends OtpNodeStatus {
 		makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
 	}
 
-	public boolean ping() {
-		return getNode().ping(getPeer(), 500);
-	}
-
 	public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
 		if (getNode() != null) {
 			getNode().registerStatusHandler(handler);
