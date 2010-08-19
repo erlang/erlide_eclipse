@@ -342,7 +342,7 @@ public class RefactoringHandler extends AbstractHandler {
 				return null;
 		}
 
-		// refactoring.doBeforeRefactoring();
+		refactoring.doBeforeRefactoring();
 		// run the given refactoring's wizard
 		wizard = new DefaultWranglerRefactoringWizard(refactoring,
 				RefactoringWizard.DIALOG_BASED_USER_INTERFACE, pages);
@@ -355,7 +355,6 @@ public class RefactoringHandler extends AbstractHandler {
 			int ret = op.run(shell, refactoring.getName());
 
 			if (RefactoringStatus.OK == ret) {
-				refactoring.doBeforeRefactoring();
 				refactoring.doAfterRefactoring();
 			}
 		} catch (Exception e) {

@@ -83,6 +83,7 @@ public class ChangedFile {
 			eclipseRep = file;
 
 		TextFileChange change = new TextFileChange(oldPath, eclipseRep);
+		// change.setSaveMode(TextFileChange.FORCE_SAVE);
 		File tf = new File(oldPath);
 		ArrayList<TextEdit> edits = ChangesetMaker.createEdits(tf,
 				newFileContent);
