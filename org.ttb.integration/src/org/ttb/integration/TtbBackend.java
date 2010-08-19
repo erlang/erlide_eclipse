@@ -17,6 +17,7 @@ import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
 
 import com.ericsson.otp.erlang.OtpErlangInt;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
@@ -28,8 +29,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class TtbBackend {
 
     private static final TtbBackend INSTANCE = new TtbBackend();
-    private static final String TTB_MODULE = "ttbe";
-    private static final String HELPER_MODULE = "ttb_integration";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
     private static final String FUN_TP = "tp";
@@ -104,7 +103,7 @@ public class TtbBackend {
                         handler = new TraceEventHandler();
                         backend.getEventDaemon().addHandler(handler);
 
-                        backend.call(HELPER_MODULE, FUN_START, "", new Object[0]);
+                        backend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "", new Object[0]);
 
                         // setting process flags
                         if (ProcessMode.BY_PID.equals(processMode)) {
@@ -112,13 +111,13 @@ public class TtbBackend {
                             if (processes != null) {
                                 for (ProcessOnList process : processes) {
                                     if (process.isSelected()) {
-                                        backend.call(TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
+                                        backend.call(Constants.TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
                                     }
                                 }
                             }
                         } else {
                             // setting global flags
-                            backend.call(TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
+                            backend.call(Constants.TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
                         }
 
                         // setting function trace patterns
@@ -126,11 +125,18 @@ public class TtbBackend {
                             if (tracePattern.isEnabled()) {
                                 String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
                                 try {
-                                    if (tracePattern.getArity() < 0) {
-                                        backend.call(TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), new Object[0]);
+                                    OtpErlangObject matchSpec = null;
+                                    if (tracePattern.getMatchSpec().getMsObject() != null) {
+                                        matchSpec = tracePattern.getMatchSpec().getMsObject();
                                     } else {
-                                        backend.call(TTB_MODULE, function, "aaxx", tracePattern.getModuleName(), tracePattern.getFunctionName(),
-                                                new OtpErlangInt(tracePattern.getArity()), new Object[0]);
+                                        matchSpec = new OtpErlangList();
+                                    }
+                                    if (tracePattern.getArity() < 0) {
+                                        backend.call(Constants.TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(),
+                                                matchSpec);
+                                    } else {
+                                        backend.call(Constants.TTB_MODULE, function, "aaxx", tracePattern.getModuleName(), tracePattern.getFunctionName(),
+                                                new OtpErlangInt(tracePattern.getArity()), matchSpec);
                                     }
                                 } catch (BackendException e) {
                                     ErlLogger.error("Could not add pattern: " + e.getMessage());
@@ -158,7 +164,7 @@ public class TtbBackend {
             synchronized (this) {
                 if (started) {
                     try {
-                        backend.call(HELPER_MODULE, FUN_STOP, "");
+                        backend.call(Constants.ERLANG_HELPER_MODULE, FUN_STOP, "");
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
                     } finally {

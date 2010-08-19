@@ -3,14 +3,15 @@ package org.ttb.integration.mvc.controller;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 import org.ttb.integration.TtbBackend;
+import org.ttb.integration.mvc.model.MatchSpec;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.view.TracePatternColumn;
 
 /**
  * Cell modifier for trace patterns table.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class TracePatternCellModifier implements ICellModifier {
 
@@ -34,6 +35,8 @@ public class TracePatternCellModifier implements ICellModifier {
                 return "";
             else
                 return String.valueOf(pattern.getArity());
+        case MATCH_SPEC:
+            return pattern.getMatchSpec();
         default:
             return null;
         }
@@ -65,6 +68,10 @@ public class TracePatternCellModifier implements ICellModifier {
                 } catch (NumberFormatException e) {
                 }
             }
+            break;
+        case MATCH_SPEC:
+            pattern.setMatchSpec((MatchSpec) value);
+            break;
         default:
         }
         TtbBackend.getInstance().updateTracePattern(pattern);

@@ -9,9 +9,9 @@ import org.ttb.integration.mvc.model.TracePattern;
 
 /**
  * Provider responsible for displaying trace patterns in table.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class TracePatternLabelProvider extends LabelProvider implements ITableLabelProvider {
 
@@ -47,6 +47,8 @@ public class TracePatternLabelProvider extends LabelProvider implements ITableLa
                 return String.valueOf(tracePattern.getArity());
         case LOCAL:
             break;
+        case MATCH_SPEC:
+            return tracePattern.getMatchSpec().getFunctionString();
         default:
             break;
         }

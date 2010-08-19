@@ -38,6 +38,7 @@ import org.ttb.integration.mvc.controller.TracePatternContentProvider;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.view.MatchSpecCellEditor;
 import org.ttb.integration.mvc.view.ProcessColumn;
 import org.ttb.integration.mvc.view.ProcessLabelProvider;
 import org.ttb.integration.mvc.view.TracePatternColumn;
@@ -394,6 +395,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[TracePatternColumn.MODULE_NAME.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.ARITY.ordinal()] = new TextCellEditor(table);
+        editors[TracePatternColumn.MATCH_SPEC.ordinal()] = new MatchSpecCellEditor(table);
         functionsTableViewer.setCellEditors(editors);
         functionsTableViewer.setCellModifier(new TracePatternCellModifier());
     }

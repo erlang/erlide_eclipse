@@ -13,8 +13,11 @@ public class TracePattern {
     private int arity = -1;
     private String moduleName = "";
     private String functionName = "";
+    private MatchSpec matchSpec;
 
     public TracePattern() {
+        this.matchSpec = new MatchSpec();
+        matchSpec.setFunctionString("");
     }
 
     public boolean isEnabled() {
@@ -62,5 +65,13 @@ public class TracePattern {
      */
     public void setArity(int arity) {
         this.arity = arity;
+    }
+
+    public MatchSpec getMatchSpec() {
+        return matchSpec;
+    }
+
+    public void setMatchSpec(MatchSpec matchSpec) {
+        this.matchSpec = matchSpec;
     }
 }
