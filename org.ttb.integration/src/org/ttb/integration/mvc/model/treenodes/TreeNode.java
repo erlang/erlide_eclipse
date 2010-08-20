@@ -1,4 +1,4 @@
-package org.ttb.integration.mvc.model;
+package org.ttb.integration.mvc.model.treenodes;
 
 import java.util.ArrayList;
 import java.util.List;

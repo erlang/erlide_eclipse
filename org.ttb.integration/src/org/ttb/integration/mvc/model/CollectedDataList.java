@@ -3,6 +3,8 @@ package org.ttb.integration.mvc.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ttb.integration.mvc.model.treenodes.ITreeNode;
+
 /**
  * Class representing singleton set of traces collected from traced nodes.
  * 

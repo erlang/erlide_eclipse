@@ -3,8 +3,10 @@ package org.ttb.integration;
 import java.util.Date;
 
 import org.erlide.jinterface.util.ErlLogger;
-import org.ttb.integration.mvc.model.ITreeNode;
-import org.ttb.integration.mvc.model.TreeNode;
+import org.ttb.integration.mvc.model.treenodes.FunctionNode;
+import org.ttb.integration.mvc.model.treenodes.ITreeNode;
+import org.ttb.integration.mvc.model.treenodes.ModuleNode;
+import org.ttb.integration.mvc.model.treenodes.TreeNode;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
@@ -163,14 +165,6 @@ public class TraceDataHandler {
             OtpErlangAtom moduleName = (OtpErlangAtom) functionTuple.elementAt(INDEX_FUNCTION_MODULE);
             OtpErlangAtom functionName = (OtpErlangAtom) functionTuple.elementAt(INDEX_FUNCTION_NAME);
 
-            // module name node
-            TreeNode moduleNameNode = new TreeNode("module: " + moduleName);
-            moduleNameNode.setImage(Activator.getImage(Images.INFO_NODE));
-
-            // function name node
-            TreeNode functionNameNode = new TreeNode("function: " + functionName);
-            functionNameNode.setImage(Activator.getImage(Images.INFO_NODE));
-
             // args or arity node
             TreeNode argsNode = new TreeNode();
             argsNode.setImage(Activator.getImage(Images.INFO_NODE));
@@ -193,6 +187,17 @@ public class TraceDataHandler {
                 } catch (OtpErlangRangeException e) {
                 }
             }
+
+            // module name node
+            TreeNode moduleNameNode = new ModuleNode(moduleName.atomValue());
+            moduleNameNode.setLabel("module: " + moduleName);
+            moduleNameNode.setImage(Activator.getImage(Images.INFO_NODE));
+
+            // function name node
+            TreeNode functionNameNode = new FunctionNode(moduleName.atomValue(), functionName.atomValue(), arityValue);
+            functionNameNode.setLabel("function: " + functionName);
+            functionNameNode.setImage(Activator.getImage(Images.INFO_NODE));
+
             node.addChildren(moduleNameNode, functionNameNode, argsNode);
             node.setLabel(label + " " + moduleName + ":" + functionName + "/" + arityValue);
 

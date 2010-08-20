@@ -2,7 +2,7 @@ package org.ttb.integration.mvc.view;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.ttb.integration.mvc.model.ITreeNode;
+import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 
 /**
  * Label provider for tree view of collected traces.

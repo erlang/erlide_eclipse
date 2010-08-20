@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.ttb.integration.mvc.model.CollectedDataList;
-import org.ttb.integration.mvc.model.ITreeNode;
+import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 
 /**
  * Content provider for tree view of collected traces.

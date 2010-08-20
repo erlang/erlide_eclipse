@@ -1,5 +1,6 @@
 package org.ttb.integration.views;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -16,11 +17,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.util.ErlModelUtils;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.model.treenodes.FunctionNode;
+import org.ttb.integration.mvc.model.treenodes.ITreeNode;
+import org.ttb.integration.mvc.model.treenodes.ModuleNode;
 import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 
 /**
@@ -115,7 +122,19 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private void doDoubleClick(DoubleClickEvent event) {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-        System.out.println("selection: " + selection.getFirstElement());
+        ITreeNode treeNode = (ITreeNode) selection.getFirstElement();
+        try {
+            if (treeNode instanceof FunctionNode) {
+                FunctionNode functionNode = (FunctionNode) treeNode;
+                ErlangFunction erlangFunction = new ErlangFunction(functionNode.getFunctionName(), functionNode.getArity());
+                ErlModelUtils.openExternalFunction(functionNode.getModuleName(), erlangFunction, null, null, null, true);
+            } else if (treeNode instanceof ModuleNode) {
+                ModuleNode moduleNode = (ModuleNode) treeNode;
+                ErlModelUtils.openExternalType(moduleNode.getModuleName(), moduleNode.getModuleName(), null, null, null, true);
+            }
+        } catch (CoreException e) {
+            ErlLogger.error(e);
+        }
     }
 
     @Override
