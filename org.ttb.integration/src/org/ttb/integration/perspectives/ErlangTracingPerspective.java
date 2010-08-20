@@ -5,12 +5,13 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
+import org.erlide.ui.ErlideUIConstants;
 
 /**
  * Perspective for tracing Erlang applications.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class ErlangTracingPerspective implements IPerspectiveFactory {
 
@@ -19,6 +20,7 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
     private static final String TOP_LEFT = "top left";
     private static final String BOTTOM_LEFT = "bottom left";
     private static final String BOTTOM_CENTER = "bottom center";
+    private static final String RIGHT = "right";
 
     public void createInitialLayout(IPageLayout pageLayout) {
         defineActions(pageLayout);
@@ -34,7 +36,7 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
     private void defineLayout(IPageLayout pageLayout) {
         // top left
         IFolderLayout topLeft = pageLayout.createFolder(TOP_LEFT, IPageLayout.LEFT, 0.30f, pageLayout.getEditorArea());
-        topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
+        topLeft.addView(ErlideUIConstants.NAVIGATOR_VIEW_ID);
 
         // bottom left
         IFolderLayout bottomLeft = pageLayout.createFolder(BOTTOM_LEFT, IPageLayout.BOTTOM, 0.40f, TOP_LEFT);
@@ -45,5 +47,9 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
         bottomCenter.addView(IPageLayout.ID_PROBLEM_VIEW);
         bottomCenter.addView(IConsoleConstants.ID_CONSOLE_VIEW);
         bottomCenter.addView(CONTROL_PANEL_VIEW_ID);
+
+        // right
+        IFolderLayout right = pageLayout.createFolder(RIGHT, IPageLayout.RIGHT, 0.75f, pageLayout.getEditorArea());
+        right.addView(IPageLayout.ID_OUTLINE);
     }
 }
