@@ -1,5 +1,8 @@
 package org.ttb.integration.views;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -10,6 +13,8 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
@@ -27,6 +32,8 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private TreeViewer treeViewer;
+    private Button clearButton;
+    private Button loadButton;
 
     public TreeViewerView() {
         TtbBackend.getInstance().addListener(this);
@@ -56,14 +63,30 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         final Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new RowLayout());
 
-        Button button = new Button(container, SWT.PUSH | SWT.CENTER);
-        button.setText("Clear");
-        button.addSelectionListener(new SelectionAdapter() {
+        clearButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        clearButton.setText("Clear");
+        clearButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 CollectedDataList.getInstance().clear();
                 treeViewer.setInput(CollectedDataList.getInstance());
+            }
+        });
+
+        loadButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        loadButton.setText("Load...");
+        loadButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                // TODO add support for multiple selection
+                FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+                // dialog.setFilterExtensions(new String[] { "*.*" });
+                dialog.setText("Load trace data...");
+                String selected = dialog.open();
+                if (selected != null)
+                    TtbBackend.getInstance().loadData(selected);
             }
         });
     }
@@ -80,6 +103,19 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         // providers
         treeViewer.setContentProvider(new CollectedTracesContentProvider(treeViewer));
         treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
+
+        // listener
+        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event) {
+                doDoubleClick(event);
+            }
+        });
+    }
+
+    private void doDoubleClick(DoubleClickEvent event) {
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        System.out.println("selection: " + selection.getFirstElement());
     }
 
     @Override
@@ -96,6 +132,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
+        loadButton.setEnabled(false);
+        clearButton.setEnabled(false);
         treeViewer.setInput(CollectedDataList.getInstance());
     }
 
@@ -103,11 +141,29 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 treeViewer.setInput(CollectedDataList.getInstance());
+                loadButton.setEnabled(true);
+                clearButton.setEnabled(true);
             }
         });
     }
 
     public void receivedTraceData() {
         // treeViewer.setInput(CollectedDataList.getInstance());
+    }
+
+    public void startLoading() {
+        loadButton.setEnabled(false);
+        clearButton.setEnabled(false);
+        treeViewer.setInput(CollectedDataList.getInstance());
+    }
+
+    public void stopLoading() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                treeViewer.setInput(CollectedDataList.getInstance());
+                loadButton.setEnabled(true);
+                clearButton.setEnabled(true);
+            }
+        });
     }
 }

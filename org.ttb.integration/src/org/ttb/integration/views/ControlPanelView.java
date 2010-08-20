@@ -445,4 +445,12 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     public void receivedTraceData() {
     }
+
+    public void startLoading() {
+        startButton.setEnabled(false);
+    }
+
+    public void stopLoading() {
+        startButton.setEnabled(true);
+    }
 }

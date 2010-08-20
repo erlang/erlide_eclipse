@@ -4,13 +4,14 @@ Bundle-Name: Erlang tracing tool for Eclipse
 Bundle-SymbolicName: org.ttb.integration;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.ttb.integration.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.ttb.integration.erlang,
+ org.ttb.integration.ttbe,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.console,
  org.erlide.core,
  org.erlide.jinterface,
  org.eclipse.debug.core,
- org.ttb.integration.erlang,
  org.eclipse.debug.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

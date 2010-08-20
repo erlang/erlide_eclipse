@@ -25,6 +25,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 public class TraceDataHandler {
 
     private static final String ATOM_STOP_TRACING = "stop_tracing";
+    private static final String ATOM_STOP_LOADING = "stop_loading";
 
     // tuple fields
     private static final int INDEX_PROCESS = 1;
@@ -49,10 +50,20 @@ public class TraceDataHandler {
     private static final int INDEX_RETURN_VALUE = 4;
     private static final int INDEX_SPAWN_FUNCTION = 4;
 
-    public boolean isLastMessage(OtpErlangObject message) {
+    public boolean isTracingFinished(OtpErlangObject message) {
         if (message instanceof OtpErlangAtom) {
             OtpErlangAtom atom = (OtpErlangAtom) message;
             if (atom.atomValue().equals(ATOM_STOP_TRACING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isLoadingFinished(OtpErlangObject message) {
+        if (message instanceof OtpErlangAtom) {
+            OtpErlangAtom atom = (OtpErlangAtom) message;
+            if (atom.atomValue().equals(ATOM_STOP_LOADING)) {
                 return true;
             }
         }
@@ -72,8 +83,6 @@ public class TraceDataHandler {
      */
     public ITreeNode getData(OtpErlangObject otpErlangObject) {
         try {
-            // TODO remove
-            // System.out.println("received: " + otpErlangObject);
             if (otpErlangObject instanceof OtpErlangTuple) {
                 OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
                 OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);

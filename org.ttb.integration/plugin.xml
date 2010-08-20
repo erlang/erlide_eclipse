@@ -40,13 +40,13 @@
                   commandId="org.ttb.integration.createtracepattern"
                   id="org.ttb.integration.createtracepattern"
                   style="push">
-               <visibleWhen>
+               <!--<visibleWhen>
                   <iterate>
                      <adapt
                            type="org.erlide.core.erlang.IErlFunctionClause">
                      </adapt>
                   </iterate>
-               </visibleWhen>
+               </visibleWhen>-->
             </command>
          </menu>
       </menuContribution>

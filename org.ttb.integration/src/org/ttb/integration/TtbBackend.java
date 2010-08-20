@@ -10,6 +10,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ITreeNode;
@@ -19,9 +20,10 @@ import org.ttb.integration.mvc.model.TracePattern;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
- * Singleton class wrapping backend that collects traces.
+ * Singleton class used for communication with Erlang nodes.
  * 
  * @author Piotr Dorobisz
  * 
@@ -34,6 +36,7 @@ public class TtbBackend {
     private static final String FUN_TP = "tp";
     private static final String FUN_TPL = "tpl";
     private static final String FUN_START = "start";
+    private static final String FUN_LOAD = "load";
 
     private final List<TracePattern> list = new ArrayList<TracePattern>();
     private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
@@ -41,7 +44,7 @@ public class TtbBackend {
     private ProcessOnList[] processes;
     private ProcessMode processMode;
     private Backend backend;
-    private boolean started;
+    private boolean tracing;
     private TraceEventHandler handler;
 
     private TtbBackend() {
@@ -65,8 +68,11 @@ public class TtbBackend {
         protected void doHandleMsg(OtpErlangObject msg) throws Exception {
             OtpErlangObject message = getStandardEvent(msg, "trace_event");
             if (message != null) {
-                if (handler.isLastMessage(message)) {
+                if (handler.isTracingFinished(message)) {
                     finishTracing();
+                } else if (handler.isLoadingFinished(message)) {
+                    finishLoading();
+                    // TODO handle error which may occur during loading
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
@@ -86,7 +92,7 @@ public class TtbBackend {
      * @return <code>true</code> if started, <code>false</code> otherwise
      */
     public boolean isStarted() {
-        return started;
+        return tracing;
     }
 
     /**
@@ -95,9 +101,9 @@ public class TtbBackend {
      * @return <code>true</code> if successful, <code>false</code> otherwise
      */
     public boolean start(Backend backend) {
-        if (!started) {
+        if (!tracing) {
             synchronized (this) {
-                if (!started) {
+                if (!tracing) {
                     try {
                         this.backend = backend;
                         handler = new TraceEventHandler();
@@ -143,7 +149,7 @@ public class TtbBackend {
                                 }
                             }
                         }
-                        started = true;
+                        tracing = true;
                         for (ITraceNodeObserver listener : listeners) {
                             listener.startTracing();
                         }
@@ -153,21 +159,40 @@ public class TtbBackend {
                 }
             }
         }
-        return started;
+        return tracing;
     }
 
     /**
      * Stops tracing.
      */
     public void stop() {
-        if (started) {
+        if (tracing) {
             synchronized (this) {
-                if (started) {
+                if (tracing) {
                     try {
                         backend.call(Constants.ERLANG_HELPER_MODULE, FUN_STOP, "");
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
+                        // TODO what if exception is thrown? - UI is locked
                     } finally {
+                    }
+                }
+            }
+        }
+    }
+
+    public void loadData(String path) {
+        if (!tracing) {
+            synchronized (this) {
+                if (!tracing) {
+                    try {
+                        handler = new TraceEventHandler();
+                        BackendManager.getDefault().getIdeBackend().getEventDaemon().addHandler(handler);
+                        BackendManager.getDefault().getIdeBackend().call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
+                    } catch (BackendException e) {
+                        ErlLogger.error("Could not load data: " + e.getMessage());
+                        // TODO what if exception is thrown? - UI is locked
+                        // forever
                     }
                 }
             }
@@ -176,9 +201,16 @@ public class TtbBackend {
 
     private void finishTracing() {
         backend.getEventDaemon().removeHandler(handler);
-        started = false;
+        tracing = false;
         for (ITraceNodeObserver listener : listeners) {
             listener.stopTracing();
+        }
+    }
+
+    private void finishLoading() {
+        BackendManager.getDefault().getIdeBackend().getEventDaemon().removeHandler(handler);
+        for (ITraceNodeObserver listener : listeners) {
+            listener.stopLoading();
         }
     }
 

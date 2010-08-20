@@ -29,4 +29,14 @@ public interface ITraceNodeObserver {
      * This method is invoked after receiving new trace data.
      */
     public void receivedTraceData();
+
+    /**
+     * This method is invoked after starting loading data from disk.
+     */
+    public void startLoading();
+
+    /**
+     * This method is invoked after finishing loading data from disk.
+     */
+    public void stopLoading();
 }
