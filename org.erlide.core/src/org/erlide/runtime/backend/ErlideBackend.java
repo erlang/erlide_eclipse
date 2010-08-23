@@ -156,7 +156,13 @@ public final class ErlideBackend extends Backend implements IDisposable,
 	@Override
 	public void input(final String s) throws IOException {
 		if (!isStopped()) {
-			proxy.write(s);
+			if (proxy != null) {
+				proxy.write(s);
+			} else {
+				ErlLogger
+						.warn("Could not load module on backend %s, stream proxy is null",
+								getInfo());
+			}
 		}
 	}
 
