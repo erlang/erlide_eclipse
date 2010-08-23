@@ -156,7 +156,7 @@ public class ModelUtils {
 									.getIncludePathFilter(project, m
 											.getResource().getParent()));
 				} catch (final Exception e) {
-					ErlLogger.warn(e);
+					//ErlLogger.warn(e);
 				}
 			} else if (re instanceof IFile) {
 				m = ErlModelManager.getDefault().getErlangModel().findModule(

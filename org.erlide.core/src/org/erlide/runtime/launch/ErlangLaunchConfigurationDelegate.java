@@ -71,6 +71,8 @@ import erlang.ErlideDebug;
 public class ErlangLaunchConfigurationDelegate implements
 		ILaunchConfigurationDelegate {
 
+	private ErlangDebugTarget target;
+
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
@@ -80,7 +82,6 @@ public class ErlangLaunchConfigurationDelegate implements
 	protected Backend doLaunch(final ILaunchConfiguration config,
 			final String mode, final ILaunch launch, final boolean internal,
 			final Map<String, String> env) throws CoreException {
-
 		final ErlLaunchData data = new ErlLaunchData(config, internal);
 
 		final Set<IProject> projects = new HashSet<IProject>();
@@ -198,7 +199,7 @@ public class ErlangLaunchConfigurationDelegate implements
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			final ILaunch launch = backend.getLaunch();
 			// add debug target
-			final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+			target = new ErlangDebugTarget(launch,
 					backend, projects, data.debugFlags);
 			// target.getWaiter().doWait();
 			launch.addDebugTarget(target);
@@ -373,5 +374,9 @@ public class ErlangLaunchConfigurationDelegate implements
 			final String mode, final ILaunch launch,
 			final IProgressMonitor monitor) throws CoreException {
 		doLaunch(configuration, mode, launch, true, null);
+	}
+	
+	public ErlangDebugTarget getDebugTarget() {
+		return target;
 	}
 }
