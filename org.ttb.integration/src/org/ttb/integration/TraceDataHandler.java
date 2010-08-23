@@ -1,16 +1,20 @@
 package org.ttb.integration;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
+import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 import org.ttb.integration.mvc.model.treenodes.TreeNode;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -52,6 +56,28 @@ public class TraceDataHandler {
     private static final int INDEX_RETURN_VALUE = 4;
     private static final int INDEX_SPAWN_FUNCTION = 4;
 
+    private Date lastTraceDate;
+    private final SimpleDateFormat rootDateFormatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+    private final SimpleDateFormat nodeDateFormatter = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yy");
+
+    /**
+     * Returns date formatter for formating date in root's label.
+     * 
+     * @return date formatter
+     */
+    public SimpleDateFormat getRootDateFormatter() {
+        return rootDateFormatter;
+    }
+
+    /**
+     * Return date of last trace that was passed to handler.
+     * 
+     * @return date
+     */
+    public Date getLastTraceDate() {
+        return lastTraceDate;
+    }
+
     public boolean isTracingFinished(OtpErlangObject message) {
         if (message instanceof OtpErlangAtom) {
             OtpErlangAtom atom = (OtpErlangAtom) message;
@@ -72,10 +98,18 @@ public class TraceDataHandler {
         return false;
     }
 
-    public ITreeNode createRoot() {
-        TreeNode rootNode = new TreeNode(new Date().toString());
-        rootNode.setImage(Activator.getDefault().getImageRegistry().get(Images.ROOT_NODE.toString()));
-        return rootNode;
+    /**
+     * Creates root of tree displaying tracing results. Label of created node is
+     * set to display date of last trace data which was passed to this handler
+     * (it is returned by {@link #getLastTraceDate()}). Root's start date is
+     * also set to this date.
+     * 
+     * @return tree root
+     */
+    public TracingResultsNode createRoot() {
+        TracingResultsNode node = new TracingResultsNode(rootDateFormatter.format(lastTraceDate));
+        node.setStartDate(lastTraceDate);
+        return node;
     }
 
     /**
@@ -88,6 +122,8 @@ public class TraceDataHandler {
             if (otpErlangObject instanceof OtpErlangTuple) {
                 OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
                 OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);
+
+                lastTraceDate = readTraceData(tuple);
 
                 switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
                 case CALL:
@@ -134,6 +170,28 @@ public class TraceDataHandler {
             ErlLogger.error(e);
         }
         return null;
+    }
+
+    private Date readTraceData(OtpErlangTuple tuple) throws OtpErlangRangeException {
+        OtpErlangTuple dateAndTimeTuple = (OtpErlangTuple) tuple.elementAt(tuple.arity() - 1);
+        OtpErlangTuple dateTuple = (OtpErlangTuple) dateAndTimeTuple.elementAt(0);
+        OtpErlangTuple timeTuple = (OtpErlangTuple) dateAndTimeTuple.elementAt(1);
+
+        int year = ((OtpErlangLong) dateTuple.elementAt(0)).intValue();
+        int month = ((OtpErlangLong) dateTuple.elementAt(1)).intValue() - 1;
+        int day = ((OtpErlangLong) dateTuple.elementAt(2)).intValue();
+        int hour = ((OtpErlangLong) timeTuple.elementAt(0)).intValue();
+        int minute = ((OtpErlangLong) timeTuple.elementAt(1)).intValue();
+        int second = ((OtpErlangLong) timeTuple.elementAt(2)).intValue();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, hour, minute, second);
+
+        return calendar.getTime();
+    }
+
+    private String createLabel(String text) {
+        return text + ": (" + nodeDateFormatter.format(lastTraceDate) + ") ";
     }
 
     // functions creating nodes
@@ -191,12 +249,10 @@ public class TraceDataHandler {
             // module name node
             TreeNode moduleNameNode = new ModuleNode(moduleName.atomValue());
             moduleNameNode.setLabel("module: " + moduleName);
-            moduleNameNode.setImage(Activator.getImage(Images.INFO_NODE));
 
             // function name node
             TreeNode functionNameNode = new FunctionNode(moduleName.atomValue(), functionName.atomValue(), arityValue);
             functionNameNode.setLabel("function: " + functionName);
-            functionNameNode.setImage(Activator.getImage(Images.INFO_NODE));
 
             node.addChildren(moduleNameNode, functionNameNode, argsNode);
             node.setLabel(label + " " + moduleName + ":" + functionName + "/" + arityValue);
@@ -218,7 +274,7 @@ public class TraceDataHandler {
     // functions processing different trace types
 
     private ITreeNode processGcTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode node = new TreeNode(label, Activator.getImage(image));
+        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
         ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
         node.addChildren(processNode);
@@ -245,7 +301,7 @@ public class TraceDataHandler {
         ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_SPAWN_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
 
-        ITreeNode node = new TreeNode("Spawn", Activator.getImage(Images.SPAWN_NODE));
+        ITreeNode node = new TreeNode(createLabel("Spawn"), Activator.getImage(Images.SPAWN_NODE));
         node.addChildren(processNode, processNode2, functionNode);
         return node;
     }
@@ -257,7 +313,7 @@ public class TraceDataHandler {
         ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
 
-        ITreeNode node = new TreeNode(label, Activator.getImage(image));
+        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
         node.addChildren(processNode, functionNode);
 
         if (showRetValue) {
@@ -276,7 +332,7 @@ public class TraceDataHandler {
         ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
 
-        ITreeNode node = new TreeNode(label, Activator.getImage(image));
+        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
         node.addChildren(processNode, functionNode);
         return node;
     }
@@ -286,7 +342,7 @@ public class TraceDataHandler {
         process.setImage(Activator.getImage(Images.REGISTER_NODE));
 
         TreeNode regName = new TreeNode("name: " + tuple.elementAt(INDEX_REGNAME).toString(), Activator.getImage(Images.INFO_NODE));
-        ITreeNode node = new TreeNode(label, Activator.getImage(image));
+        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
         node.addChildren(process, regName);
         return node;
     }
@@ -298,7 +354,7 @@ public class TraceDataHandler {
         ITreeNode process2Node = createProcessNode("process 2:", tuple.elementAt(INDEX_PROCESS2));
         process2Node.setImage(Activator.getImage(Images.PROCESS_NODE));
 
-        TreeNode node = new TreeNode(label);
+        TreeNode node = new TreeNode(createLabel(label));
         node.setImage(Activator.getImage(image));
         node.addChildren(process1Node, process2Node);
         return node;
@@ -312,7 +368,7 @@ public class TraceDataHandler {
         ITreeNode reasonTextNode = new TreeNode(tuple.elementAt(INDEX_REASON).toString());
         reasonNode.addChildren(reasonTextNode);
 
-        TreeNode node = new TreeNode("Exit");
+        TreeNode node = new TreeNode(createLabel("Exit"));
         node.setImage(Activator.getDefault().getImageRegistry().get(Images.EXIT_NODE.toString()));
         node.addChildren(processNode, reasonNode);
         return node;
@@ -323,7 +379,7 @@ public class TraceDataHandler {
         processNode.setImage(Activator.getImage(Images.RECEIVER_NODE));
         ITreeNode messageNode = createMessageNode(tuple.elementAt(INDEX_MESSAGE));
 
-        TreeNode node = new TreeNode("Received message");
+        TreeNode node = new TreeNode(createLabel("Received message"));
         node.setImage(Activator.getDefault().getImageRegistry().get(Images.RECEIVED_MESSAGE_NODE.toString()));
         node.addChildren(processNode, messageNode);
         return node;
@@ -338,14 +394,14 @@ public class TraceDataHandler {
 
         ITreeNode messageNode = createMessageNode(tuple.elementAt(INDEX_MESSAGE));
 
-        TreeNode node = new TreeNode(label);
+        TreeNode node = new TreeNode(createLabel(label));
         node.setImage(Activator.getImage(image));
         node.addChildren(senderNode, receiverNode, messageNode);
         return node;
     }
 
     private ITreeNode processCallTrace(OtpErlangTuple tuple) {
-        ITreeNode node = createFunctionNode("Call:", tuple.elementAt(INDEX_FUNCTION));
+        ITreeNode node = createFunctionNode(createLabel("Call"), tuple.elementAt(INDEX_FUNCTION));
         node.setImage(Activator.getImage(Images.CALL_NODE));
         return node;
     }

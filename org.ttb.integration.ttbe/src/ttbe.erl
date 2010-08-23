@@ -18,6 +18,7 @@
 %%
 -module(ttbe).
 -author('siri@erix.ericsson.se').
+-author('bartlomiej.puzon@erlang-solutions.com').
 
 %% API
 -export([tracer/0,tracer/1,tracer/2,p/2,stop/0,stop/1,start_trace/4]).
@@ -1279,8 +1280,14 @@ ip_to_file(Trace,{Port, ShellOutput}) ->
 
 show_trace(Trace, true) ->
     dbg:dhandler(Trace, standard_io);
-show_trace(_,_) ->
-    ok.
+show_trace(_Trace, false) ->
+    ok;
+show_trace(Trace, Pid) when is_pid(Pid) ->
+    %%This is only to enable erlide to build trace views in real time.
+    %%Sending trace data to handlers in real time has however
+    %%to be considered an interesting feature and should be
+    %%implemented in a generic way in the future
+    Pid ! {trace, Trace}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% For debugging

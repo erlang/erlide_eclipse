@@ -30,10 +30,13 @@ load_data(Path) ->
 create_handler() ->
 	fun(Fd, Trace, _TraceInfo, State) ->
 			case Trace of
-				{X, Pid, call, {Mod, Fun, Arg}, Y} ->
-					erlide_jrpc:event(trace_event, {X, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}});
-				{X, Pid, spawn, Pid2, {M, F, Args}} ->
-					erlide_jrpc:event(trace_event, {X, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}});
+				{trace_ts, Pid, call, {Mod, Fun, Arg}, Time} ->
+					erlide_jrpc:event(trace_event, {trace_ts, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}, calendar:now_to_local_time(Time)});
+				{trace_ts, Pid, spawn, Pid2, {M, F, Args}, Time} ->
+					erlide_jrpc:event(trace_event, {trace_ts, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
+				_ when is_tuple(Trace) ->
+					T = calendar:now_to_local_time(element(tuple_size(Trace), Trace)),
+					erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
 				_ ->
 					erlide_jrpc:event(trace_event, Trace)
 			end,

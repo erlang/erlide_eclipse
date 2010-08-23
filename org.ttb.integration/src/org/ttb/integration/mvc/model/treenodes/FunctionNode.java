@@ -1,5 +1,8 @@
 package org.ttb.integration.mvc.model.treenodes;
 
+import org.ttb.integration.Activator;
+import org.ttb.integration.Images;
+
 /**
  * Node representing function in treeviewer.
  * 
@@ -25,6 +28,7 @@ public class FunctionNode extends TreeNode {
         this.moduleName = moduleName;
         this.functionName = functionName;
         this.arity = arity;
+        setImage(Activator.getImage(Images.INFO_NODE));
     }
 
     public String getModuleName() {

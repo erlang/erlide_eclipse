@@ -16,6 +16,7 @@ import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
+import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -47,6 +48,8 @@ public class TtbBackend {
     private boolean tracing;
     private TraceEventHandler handler;
 
+    // private ITreeNode rootNode;
+
     private TtbBackend() {
     }
 
@@ -57,25 +60,34 @@ public class TtbBackend {
     private class TraceEventHandler extends EventHandler {
 
         private final TraceDataHandler handler = new TraceDataHandler();
-        private final ITreeNode rootNode;
-
-        public TraceEventHandler() {
-            rootNode = handler.createRoot();
-            CollectedDataList.getInstance().addData(rootNode);
-        }
+        private TracingResultsNode rootNode;
+        private boolean firstTrace = true;
 
         @Override
         protected void doHandleMsg(OtpErlangObject msg) throws Exception {
             OtpErlangObject message = getStandardEvent(msg, "trace_event");
             if (message != null) {
                 if (handler.isTracingFinished(message)) {
+                    if (rootNode != null) {
+                        rootNode.setEndDate(handler.getLastTraceDate());
+                        rootNode.generateLabel(handler.getRootDateFormatter());
+                    }
                     finishTracing();
                 } else if (handler.isLoadingFinished(message)) {
+                    if (rootNode != null) {
+                        rootNode.setEndDate(handler.getLastTraceDate());
+                        rootNode.generateLabel(handler.getRootDateFormatter());
+                    }
                     finishLoading();
                     // TODO handle error which may occur during loading
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
+                        if (firstTrace) {
+                            firstTrace = false;
+                            rootNode = handler.createRoot();
+                            CollectedDataList.getInstance().addData(rootNode);
+                        }
                         rootNode.addChildren(newNode);
                         for (ITraceNodeObserver listener : listeners) {
                             listener.receivedTraceData();
