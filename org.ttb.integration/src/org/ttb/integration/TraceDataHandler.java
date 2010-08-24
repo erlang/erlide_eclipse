@@ -160,7 +160,7 @@ public class TraceDataHandler {
                     return processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
                 case SPAWN:
                     return processSpawnTrace(tuple);
-                case ULINK:
+                case UNLINK:
                     return processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
                 case UNREGISTER:
                     return processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);

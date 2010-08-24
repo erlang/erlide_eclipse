@@ -5,11 +5,11 @@
 %%
 %% Exported Functions
 %%
--export([start/0, stop/0, stop_tracing/0, load/1, load_data/1, str2ms/1]).
+-export([start/2, stop/0, stop_tracing/0, load/1, load_data/1, str2ms/1]).
 
 
-start()->
-	ttbe:tracer(all, [{handler, {create_handler(), initial_state}}]).
+start(Nodes, FileName)->
+	ttbe:tracer(Nodes, [{handler, {create_handler(), initial_state}}, {file,{local, FileName}}]).
 
 stop() ->
 	spawn(?MODULE, stop_tracing, []).

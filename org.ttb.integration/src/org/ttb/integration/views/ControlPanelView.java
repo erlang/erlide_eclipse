@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.ttb.integration.ProcessFlag;
@@ -129,7 +130,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     startButton.setEnabled(false);
                     TtbBackend.getInstance().stop();
                 } else {
-                    TtbBackend.getInstance().start(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+                    ArrayList<Backend> backends = new ArrayList<Backend>();
+                    backends.add(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+                    TtbBackend.getInstance().start(backends);
                 }
             }
         });
