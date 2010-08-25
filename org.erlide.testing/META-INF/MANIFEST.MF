@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.testing;singleton:=true
-Bundle-Version: 0.5.3.qualifier
+Bundle-Version: 0.5.4.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit4,
@@ -11,9 +11,11 @@ Require-Bundle: org.junit4,
  org.erlide.jinterface;bundle-version="[0.6.6,1.0.0)",
  org.erlide.ui;bundle-version="[0.6.0,1.0.0)"
 Bundle-ClassPath: erlide-testing.jar,
- lib/hamcrest-all-1.1.jar,
- lib/jbehave-core-2.1.jar,
- lib/mockito-all-1.6.jar
+ lib/mockito-all-1.6.jar,
+ lib/jbehave-core-2.5.9.jar,
+ lib/hamcrest-all-1.2.jar,
+ lib/commons-collections-3.2.1.jar,
+ lib/commons-lang-2.5.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.erlide.testing,
  org.hamcrest,
@@ -37,11 +39,9 @@ Export-Package: org.erlide.testing,
  org.hamcrest.number;uses:="org.hamcrest",
  org.hamcrest.object;uses:="org.hamcrest",
  org.hamcrest.text;uses:="org.hamcrest",
- org.hamcrest.text.pattern;uses:="org.hamcrest,org.hamcrest.text.pattern.internal.naming",
- org.hamcrest.text.pattern.internal.ast;uses:="org.hamcrest.text.pattern,org.hamcrest.text.pattern.internal.naming",
- org.hamcrest.text.pattern.internal.naming,
  org.hamcrest.xml;uses:="org.w3c.dom,org.hamcrest",
  org.jbehave;uses:="org.jbehave.util",
+ org.jbehave.paranamer,
  org.jbehave.scenario;
   uses:="org.jbehave.scenario.parser,
    junit.framework,
@@ -52,6 +52,7 @@ Export-Package: org.erlide.testing,
  org.jbehave.scenario.annotations,
  org.jbehave.scenario.definition,
  org.jbehave.scenario.errors,
+ org.jbehave.scenario.i18n,
  org.jbehave.scenario.parser;uses:="org.jbehave.scenario,org.jbehave.scenario.definition",
  org.jbehave.scenario.reporters;uses:="org.jbehave.scenario.definition,new org.jbehave.scenario.reporters",
  org.jbehave.scenario.steps;
@@ -59,7 +60,6 @@ Export-Package: org.erlide.testing,
    org.jbehave.scenario.errors,
    org.jbehave.scenario.definition,
    org.jbehave.scenario.reporters",
- org.jbehave.util;uses:="org.hamcrest",
  org.mockito;
   uses:="org.mockito.internal.stubbing,
    org.mockito.internal.verification.api,
