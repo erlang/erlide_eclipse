@@ -283,10 +283,11 @@ public class TtbBackend {
     }
 
     public synchronized void addTracePattern(TracePattern pattern) {
-        tracePatterns.add(pattern);
-        System.out.println("size: " + tracePatterns.size());
-        for (ITraceNodeObserver listener : listeners) {
-            listener.addPattern(pattern);
+        if (!tracePatterns.contains(pattern)) {
+            tracePatterns.add(pattern);
+            for (ITraceNodeObserver listener : listeners) {
+                listener.addPattern(pattern);
+            }
         }
     }
 

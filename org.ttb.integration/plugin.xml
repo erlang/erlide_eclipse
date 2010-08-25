@@ -48,6 +48,25 @@
                   </iterate>
                </visibleWhen>-->
             </command>
+            <command
+                  commandId="org.ttb.integration.createtracepatternwithnoarity"
+                  id="org.ttb.integration.createtracepatternwithnoarity"
+                  style="push">
+            </command>
+            <separator
+                  name="org.ttb.integration.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.ttb.integration.removetracepattern"
+                  id="org.ttb.integration.removetracepattern"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.ttb.integration.removetracepatternwithnoarity"
+                  id="org.ttb.integration.removetracepatternwithnoarity"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -55,12 +74,27 @@
          point="org.eclipse.ui.commands">
       <category
             id="org.ttb.integration.tracing"
-            name="Tracing">
+            name="%tracingCategory">
       </category>
       <command
             category="org.ttb.integration.tracing"
             id="org.ttb.integration.createtracepattern"
             name="%createTracePattern">
+      </command>
+      <command
+            category="org.ttb.integration.tracing"
+            id="org.ttb.integration.createtracepatternwithnoarity"
+            name="%createTracePatternWithNoArity">
+      </command>
+      <command
+            category="org.ttb.integration.tracing"
+            id="org.ttb.integration.removetracepattern"
+            name="%removeTracePattern">
+      </command>
+      <command
+            category="org.ttb.integration.tracing"
+            id="org.ttb.integration.removetracepatternwithnoarity"
+            name="%removeTracePatternWithNoArity">
       </command>
    </extension>
    <extension
@@ -68,6 +102,18 @@
       <handler
             class="org.ttb.integration.ui.menu.CreateTracePatternHandler"
             commandId="org.ttb.integration.createtracepattern">
+      </handler>
+      <handler
+            class="org.ttb.integration.ui.menu.CreateTracePatternWithNoArityHandler"
+            commandId="org.ttb.integration.createtracepatternwithnoarity">
+      </handler>
+      <handler
+            class="org.ttb.integration.ui.menu.RemoveTracePatternHandler"
+            commandId="org.ttb.integration.removetracepattern">
+      </handler>
+      <handler
+            class="org.ttb.integration.ui.menu.RemoveTracePatternWithNoArityHandler"
+            commandId="org.ttb.integration.removetracepatternwithnoarity">
       </handler>
    </extension>
 </plugin>

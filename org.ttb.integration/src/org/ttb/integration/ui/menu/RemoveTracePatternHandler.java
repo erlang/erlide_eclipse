@@ -10,7 +10,7 @@ import org.erlide.core.erlang.internal.ErlFunction;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.model.TracePattern;
 
-public class CreateTracePatternHandler extends AbstractHandler {
+public class RemoveTracePatternHandler extends AbstractHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
@@ -25,9 +25,7 @@ public class CreateTracePatternHandler extends AbstractHandler {
                 tracePattern.setFunctionName(function.getFunctionName());
                 tracePattern.setModuleName(function.getModule().getModuleName());
                 tracePattern.setArity(function.getArity());
-                tracePattern.setLocal(true);
-                tracePattern.setEnabled(true);
-                TtbBackend.getInstance().addTracePattern(tracePattern);
+                TtbBackend.getInstance().removeTracePattern(tracePattern);
             }
         }
         return null;
