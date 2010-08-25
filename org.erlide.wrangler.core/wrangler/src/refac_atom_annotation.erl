@@ -263,21 +263,20 @@ do_atom_annotation(Node, {FileName, Pats, TestFrameWorkUsed, SearchPaths, TabWid
 	    Args = refac_syntax:application_arguments(Node),
 	    Arity = length(Args),
 	    Op1 = case refac_syntax:type(Op) of
-		  variable ->
+		      variable ->
 			  add_type_info({f_atom, ['_', try_eval(FileName, Op, SearchPaths, TabWidth,
 								   fun is_atom/1), Arity]}, Op, Pid);
-		  _ -> Op
-		end,
-	  Args = refac_syntax:application_arguments(Node),
-	  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op1))
-	  of
-	    {value, {fun_def, {M, F, A, _, _}}}
-		when M =/= '_' andalso F =/= '_' ->
-		Args1 = do_type_ann_args({M, F, A}, map_args(Pats, Args), Args, Pid),
-		{refac_misc:rewrite(Node, refac_syntax:application(Op1, Args1)), true};
-	    _ ->
-		{Node, false}
-	  end;
+		      _ -> Op
+		  end,
+	    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op1))
+	    of
+		{value, {fun_def, {M, F, A, _, _}}}
+		  when M =/= '_' andalso F =/= '_' ->
+		    Args1 = do_type_ann_args({M, F, A}, map_args(Pats, Args), Args, Pid),
+		    {refac_misc:rewrite(Node, refac_syntax:application(Op1, Args1)), true};
+		_ ->
+		    {Node, false}
+	    end;
       module_qualifier ->
 	  Ann = refac_syntax:get_ann(Node),
 	  {value, {fun_def, {_, _, Arity, _, _}}} = lists:keysearch(fun_def, 1, Ann),
@@ -384,8 +383,7 @@ do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid) ->
 			_ when is_function(ParType) ->
 			      add_type_info(ParType(MappedArgs), Arg, Pid);
 			{f_atom, [M, F, Arity]} ->
-			    ?debug("T:\n~p\n", [ParType]),
-			    M1 = case is_function(M) of
+			      M1 = case is_function(M) of
 				   true -> M(MappedArgs);
 				   _ -> M
 				 end,
@@ -476,7 +474,6 @@ map_args(Pats, ActualArgs) ->
 				      true ->
 					  ActualArg;
 				      _ ->
-					  ?debug("nth:\n~p\n", [length(Ps1) + 1]),
 					  fun (P) -> lists:nth(length(Ps1) + 1, P) end
 				  end;
 			      _ ->
@@ -704,7 +701,7 @@ type(erlang, spawn_link, 4) ->
 type(erlang, spawn_monitor, 3) -> 
     mfa_type();
 type(erlang, spawn_opt, 4) ->
-    {[any, m_atom, f_atom_type(), any, any], any};
+    {[m_atom, f_atom_type(), any, any], any};
 type(erlang, spawn_opt, 5) ->
     {[any, m_atom, f_atom_type(), any, any], any};
 type(erlang, whereis, 1) ->
@@ -874,6 +871,10 @@ f_atom_type() ->
 			      try_eval_length(A3)]};
 		[_A0,A1,A2,A3] ->
 		     {f_atom, [try_eval(A1, fun is_atom/1), 
+			      try_eval(A2, fun is_atom/1),
+			       try_eval_length(A3)]};
+		[_A0,A1,A2,A3,_A4] ->
+		    {f_atom, [try_eval(A1, fun is_atom/1), 
 			      try_eval(A2, fun is_atom/1),
 			      try_eval_length(A3)]}
 	    end

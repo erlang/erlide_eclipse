@@ -34,7 +34,7 @@
 -import(refac_misc, [update_ann/2]).
 -include("../include/wrangler.hrl").
 
--spec(add_fun_define_locations/2::(syntaxTree(), moduleInfo()) -> syntaxTree()).
+%%-spec(add_fun_define_locations/2::(syntaxTree(), moduleInfo()) -> syntaxTree()).
 add_fun_define_locations(AST, ModInfo) ->
     case lists:keysearch(module, 1, ModInfo) of
 	{value, {module, ModName}} -> ModName;

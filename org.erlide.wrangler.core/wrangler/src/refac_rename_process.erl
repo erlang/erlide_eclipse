@@ -37,13 +37,13 @@
 
 -include("../include/wrangler.hrl").
 
--spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {undecidables, string(), string()}| {ok, [filename()]}).
+%%-spec(rename_process/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {undecidables, string(), string()}| {ok, [filename()]}).
 rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_process_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_process_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {undecidables, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_process_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -83,15 +83,15 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
       false -> {error, "Invalid new process name."}
     end.
 
--spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), string()) -> {ok, [filename()]}).
+%%-spec(rename_process_1/6::(string(), string(), string(), [dir()], integer(), string()) -> {ok, [filename()]}).
 rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, Cmd) ->
     rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, emacs, Cmd).
 
--spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_process_1_eclipse/5::(string(), string(), string(), [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 rename_process_1_eclipse(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth) ->
     rename_process_1(FileName, OldProcessName, NewProcessName, SearchPaths, TabWidth, eclipse, "").
 
--spec(rename_process_1/7::(string(), string(), string(), [dir()], integer(), editor(), string()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_process_1/7::(string(), string(), string(), [dir()], integer(), editor(), string()) -> {ok, [filename()]}|{ok, [{filename(), filename(), string()}]}).
 rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWidth, Editor, Cmd) ->
     OldProcessName = list_to_atom(OldProcessName1),
     NewProcessName = list_to_atom(NewProcessName1),
@@ -226,28 +226,8 @@ do_rename_process(Node, {OldProcessName, NewProcessName}) ->
 	_ -> {Node, false}
     end.
 
-
-stop_tdTU(Function, S, Node) ->
-    {Res, _} = stop_tdTU_1(Function, S, Node),
-    Res.
-
-stop_tdTU_1(Function, S, Node) ->
-    case Function(Node, S) of
-      {R, true} -> {R, true};
-      {_R, false} ->
-	  case erl_syntax:subtrees(Node) of
-	    [] -> {[], false};
-	    Gs ->
-		Flattened_Gs = [T || G <- Gs, T <- G],
-		case Flattened_Gs of
-		  [] -> {[], false};
-		  [_H | _T1] -> S1 = [[stop_tdTU_1(Function, [], T) || T <- G] || G <- Gs],
-			      S2 = [S12 || G<-S1, {S12, _B} <- G],
-				{S++lists:append(S2), true}
-		end
-	  end
-    end.
-
+%% TODO: Check this error!!
+%% refac_rename_process.erl:233: The pattern [] can never match the type [any(),...]
 check_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
     Atoms = collect_atoms(CurrentFile, AtomName, SearchPaths, TabWidth),
     case Atoms of 
@@ -261,81 +241,10 @@ check_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
     
 collect_atoms(CurrentFile, AtomName, SearchPaths, TabWidth) ->
     Files = [CurrentFile| refac_util:expand_files(SearchPaths, ".erl") -- [CurrentFile]],
-    Res = lists:flatmap(fun (F) ->
-				collect_atoms(F, SearchPaths, TabWidth)
-			end, Files),
-    lists:filter(fun ({_F, _Pos, Name}) ->
-			 Name == AtomName
-		 end, Res).
-    
-collect_atoms(File, SearchPaths, TabWidth)->
-    {ok, {AnnAST,Info}} = refac_util:parse_annotate_file(File, true, SearchPaths, TabWidth),     
-    {value, {module, ModName}}= lists:keysearch(module,1, Info),
-    F= fun(Node, S) ->
-	       case refac_syntax:type(Node) of
-		   attribute -> {S, true};
-		   module_qualifier -> {S, true};
-		   arity_qualifier -> {S, true};
-		   atom -> 
-		       case lists:keysearch(fun_def,1, refac_syntax:get_ann(Node)) of 
-			       {value, _} -> {S, true};
-			   _ -> case lists:keysearch(pname,1, refac_syntax:get_ann(Node)) of 
-				    {value, _} ->
-					{S, true};
-				    _ -> {[Node|S], true}
-				end
-		       end;
-		   _ -> {S, false}					  
-	       end
-       end,
-    F2 = fun(Node, S) ->
-		 case refac_syntax:type(Node) of 
-		     application -> Op = refac_syntax:application_operator(Node),
-				    Args = list_to_tuple(refac_syntax:application_arguments(Node)),
-				    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of 
- 				      {value, {fun_def, {erlang, FunName, 3, _, _}}}-> 
-					    case lists:member(FunName, [apply, spawn, spawn_link]) of 
-						true ->
-						    Mod = element(1, Args),
-						    Fun = element(2, Args),
-						    S1 = case refac_syntax:type(Mod) of 
-							     atom -> [Mod|S];
-							     _ -> S
-							 end,
-						    case refac_syntax:type(Fun) of 
-							atom ->[Fun|S1];
-							_ -> S1
-						    end;
-						_ ->
-						    S
-					    end;
-					{value, {fun_def, {erlang, FunName, 4, _, _}}}-> 
-					    case lists:member(FunName, [spawn, spawn_link]) of 
-						true ->
-						    Mod = element(2, Args),
-						    Fun = element(3, Args),
-						    S1 = case refac_syntax:type(Mod) of 
-							     atom -> [Mod|S];
-							     _ -> S
-							 end,
-						    case refac_syntax:type(Fun) of 
-							atom ->[Fun|S1];
-							_ -> S1
-						    end;
-						_ ->
-						    S
-					    end;
-					_ ->
-					    S
-				    end;
-		     _ -> S
-		 end
-	 end,
-    Res1 = stop_tdTU(F, [], AnnAST), 
-    Res2 = refac_syntax_lib:fold(F2, [], AnnAST),
-    Res11 = lists:map(fun(A) -> {ModName, refac_syntax:get_pos(A), refac_syntax:atom_value(A)} end, Res1),
-    Res21 = lists:map(fun(A) -> {ModName, refac_syntax:get_pos(A), refac_syntax:atom_value(A)} end, Res2),
-    lists:subtract(lists:usort(Res11), lists:usort(Res21)).
-
+    lists:flatmap(fun (F) ->
+			  {ok, {AnnAST,_Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
+			  refac_atom_utils:collect_unsure_atoms_in_file(AnnAST, AtomName, p_atom)
+		  end, Files).
+  
 is_process_name(Name) ->
     refac_misc:is_fun_name(Name) and (list_to_atom(Name) =/= undefined).

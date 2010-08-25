@@ -63,7 +63,7 @@
 -export([move_fun/6, move_fun_1/7, move_fun_eclipse/6, move_fun_1_eclipse/6]).
 
 -export([analyze_file/3]).
--import(refac_atom_utils, [output_atom_warning_msg/3, check_atoms/4, 
+-import(refac_atom_utils, [output_atom_warning_msg/3, check_unsure_atoms/5, 
 			   stop_atom_process/1, start_atom_process/0]).
 
 -include("../include/wrangler.hrl").
@@ -77,28 +77,28 @@
 		      ast, 
 		      info}).
 %==========================================================================================
--spec(move_fun/6::(filename(),integer(),integer(), string(), [dir()], integer())->
-	     {ok, [filename()]} | {question, string()}).
+%%-spec(move_fun/6::(filename(),integer(),integer(), string(), [dir()], integer())->
+%%	     {ok, [filename()]} | {question, string()}).
 %%==========================================================================================
 move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
     move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, emacs).
 
--spec(move_fun_1/7::(filename(),integer(),integer(), string(),boolean(), [dir()], integer())->
-	     {ok, [filename()]}).
+%%-spec(move_fun_1/7::(filename(),integer(),integer(), string(),boolean(), [dir()], integer())->
+%%	     {ok, [filename()]}).
 move_fun_1(FName, Line, Col, TargetModorFileName, CheckCond, SearchPaths, TabWidth) ->
     move_fun_1(FName, Line, Col, TargetModorFileName, CheckCond, SearchPaths, TabWidth, emacs).
 
 
--spec(move_fun_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
-        ->  {ok, [{filename(), filename(), string()}]} | {question, string()}).
+%%-spec(move_fun_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
+%%        ->  {ok, [{filename(), filename(), string()}]} | {question, string()}).
 
 move_fun_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
     move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, eclipse).
 
 
 %% THIS interface need to be changed; and should inform George of the changes.
--spec(move_fun_1_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
-        ->  {ok, [{filename(), filename(), string()}]}).
+%%-spec(move_fun_1_eclipse/6::(filename(),integer(),integer(), string(),[dir()], integer())
+%%        ->  {ok, [{filename(), filename(), string()}]}).
 
 move_fun_1_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
     move_fun_1(FName, Line, Col, TargetModorFileName, true, SearchPaths, TabWidth, eclipse).
@@ -194,8 +194,8 @@ move_fun_3(CurModInfo, TargetModInfo, MFAs, {UnDefinedMs, UnDefinedRs},
     ModName=CurModInfo#module_info.modname,
     TargetFName = TargetModInfo#module_info.filename,
     TargetModName=TargetModInfo#module_info.modname,
-    check_atoms(FName, AnnAST1, AtomsToCheck, Pid),
-    check_atoms(TargetFName, TargetAnnAST1, AtomsToCheck, Pid),
+    check_unsure_atoms(FName, AnnAST1, AtomsToCheck, f_atom, Pid),
+    check_unsure_atoms(TargetFName, TargetAnnAST1, AtomsToCheck, f_atom, Pid),
     ExportedMFAs = exported_funs(MFAs, CurModInfo#module_info.info),
     Results = case ExportedMFAs/=[] of
 		  true ->
@@ -669,7 +669,7 @@ refactor_in_client_modules(ClientFiles, MFAs, TargetModName, SearchPaths, TabWid
 	  {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
 	  {AnnAST1, Changed} = refactor_in_client_module_1(F, {AnnAST, Info}, MFAs, TargetModName, SearchPaths, TabWidth, Pid),
 	  AtomsToCheck = lists:usort([FunName || {_M, FunName, _A} <- MFAs]),
-	  check_atoms(F, AnnAST1, AtomsToCheck, Pid),
+	  check_unsure_atoms(F, AnnAST1, AtomsToCheck, f_atom, Pid),
 	  if Changed ->
 		 [{{F, F}, AnnAST1}| refactor_in_client_modules(Fs, MFAs, TargetModName, SearchPaths, TabWidth, Pid)];
 	     true -> refactor_in_client_modules(Fs, MFAs, TargetModName, SearchPaths, TabWidth, Pid)

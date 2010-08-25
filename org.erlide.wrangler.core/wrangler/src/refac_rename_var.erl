@@ -55,13 +55,13 @@
 
 -include("../include/wrangler.hrl").
 
--spec rename_var(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {ok, string()}.
+%%-spec rename_var(filename(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {ok, string()}.
 rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
-	     {ok, [{filename(), filename(), string()}]}.
+%%-spec rename_var_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {ok, [{filename(), filename(), string()}]}.
 rename_var_eclipse(FName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
 
@@ -80,7 +80,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
     {ok, {AnnAST1, _Info1}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case interface_api:pos_to_var_name(AnnAST1, {Line, Col}) of
       {ok, {VarName, DefinePos, C}} ->
-	  {VarName, DefinePos, C};
+	    {VarName, DefinePos, C};
       {error, _} ->
 	  throw({error, "You have not selected a variable name, "
 			"or the variable selected does not belong to "
@@ -128,7 +128,7 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 
 
 %% =====================================================================
--spec cond_check(syntaxTree(), [pos()], atom(),atom())-> term().
+%%-spec cond_check(syntaxTree(), [pos()], atom(),atom())-> term().
 cond_check(Form, Pos, _VarName,  NewName) ->
     Env_Bd_Fr_Vars = envs_bounds_frees(Form),
     BdVars = [B || {_, B, _}<-Env_Bd_Fr_Vars],
@@ -189,8 +189,8 @@ pos_to_form_1(Node, Pos) ->
     end.
 
 
--spec rename(syntaxTree(), [{integer(), integer()}], atom()) ->
-	     {syntaxTree(), boolean()}.
+%%-spec rename(syntaxTree(), [{integer(), integer()}], atom()) ->
+%%	     {syntaxTree(), boolean()}.
 rename(Tree, DefinePos, NewName) ->
     ast_traverse_api:stop_tdTP(fun do_rename/2, Tree, {DefinePos, NewName}).
 

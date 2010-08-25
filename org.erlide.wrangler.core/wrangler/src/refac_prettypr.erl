@@ -41,10 +41,10 @@
 	 get_ctxt_hook/1,set_ctxt_hook/2,get_ctxt_user/1,
 	 set_ctxt_user/2,print_ast/2]).
 
--import(prettypr,
+-import(refac_prettypr_0,
 	[text/1,nest/2,above/2,beside/2,sep/1,par/1,par/2,
 	 floating/3,floating/1,break/1,follow/2,follow/3,
-	 empty/0]).
+	 empty/0, format/3, best/3]).
 
 -import(refac_parse,
 	[preop_prec/1,inop_prec/1,func_prec/0,max_prec/0]).
@@ -63,6 +63,7 @@
 	{prec = 0,sub_indent = 2,break_indent = 4,
 	 clause = undefined,hook = ?NOHOOK,paper = ?PAPER,
 	 ribbon = ?RIBBON,user = ?NOUSER,
+	 tokens = [],
 	 format = unknown}).
 
 %% Start of added by HL
@@ -73,93 +74,96 @@ print_ast(FileFmt, AST) ->
     print_ast(FileFmt, AST,[]).
 
 print_ast(FileFmt, AST,Options) ->
-    Ctxt = #ctxt{hook =
-		     proplists:get_value(hook,Options,?NOHOOK),
-		 paper = proplists:get_value(paper,Options,?PAPER),
-		 ribbon = proplists:get_value(ribbon,Options,?RIBBON),
-		 user = proplists:get_value(user,Options),
-		 format = FileFmt},
     Fs = refac_syntax:form_list_elements(AST),
-    Es = seq_pr(Fs,none,reset_prec(Ctxt),fun lay/2),
-    LayoutedEs = [refac_prettypr_0:layout(E, FileFmt)||E<-Es],
-    vertical_concat(lists:zip(LayoutedEs,Fs), FileFmt).
-  
+    vertical_concat(Fs, FileFmt, Options).
+ 
+print_form(F,Ctxt,Fun) ->
+    {Paper,Ribbon} = get_paper_ribbon_width(F),
+    best(Fun(F,Ctxt),Paper,Ribbon).
+ 
 
-seq_pr([H| T],Separator,Ctxt,Fun) ->
-    {Paper,Ribbon} = get_paper_ribbon_width(H),
-    case T of
-      [] -> [prettypr:best(Fun(H,Ctxt),Paper,Ribbon)];
-      _ ->
-	  [maybe_append(Separator,prettypr:best(Fun(H,Ctxt),Paper,Ribbon))
-	   | seq_pr(T,Separator,Ctxt,Fun)]
-    end;
-seq_pr([],_,_,_) -> [].
+vertical_concat(Forms, FileFmt, Options) -> 
+    vertical_concat(Forms, FileFmt, Options,"").
 
-vertical_concat(Es, FileFormat) -> vertical_concat(Es,FileFormat,"").
-
-vertical_concat([], _FileFormat, Acc) -> Acc;
-vertical_concat([{E, Form}| T], FileFormat, Acc) ->
-    SpecialForm = fun (F) ->
-			  case refac_syntax:type(F) of
-			    error_marker -> true;
-			    attribute ->
-				case refac_syntax:atom_value(refac_syntax:attribute_name(F)) of
-				  type -> true;
-				  'spec' -> true;
-				  record -> [_R, FieldTuple] = refac_syntax:attribute_arguments(F),
-					    Fields = refac_syntax:tuple_elements(FieldTuple),
-					    lists:any(fun (Field) -> case refac_syntax:type(Field) of
-								       typed_record_field ->
-									   true;
-								       _ -> false
-								     end
-						      end, Fields);
-				  _ -> false
-				end;
-			    _ -> false
-			  end
-		  end,
+vertical_concat([], _FileFormat, _Options, Acc) -> 
+    Acc;
+vertical_concat([Form|T], FileFormat, Options, Acc) ->
+    UseOriginalCode = form_not_changed(Form),
     Delimitor = case FileFormat of
-		  dos -> "\r\n";
-		  mac -> "\r";
-		  _ -> "\n"
+		    dos -> "\r\n";
+		    mac -> "\r";
+		    _ -> "\n"
 		end,
-    F = refac_util:concat_toks(refac_misc:get_toks(Form)),
-    {ok, EToks, _} = refac_scan:string(E),
-    {ok, FToks, _} = refac_scan:string(F),
-    EStr = [S || S <- refac_util:concat_toks(EToks), S =/= $\s, S =/= $'],
-    FStr = [S || S <- refac_util:concat_toks(FToks), S =/= $\s, S =/= $'],
-    UseOriginalCode = (EStr == FStr) orelse
-	lists:usort(FStr--EStr)=="()" orelse
-	SpecialForm(Form),
-    Acc1 = case Acc of
-	     "" -> Acc;
-	     _ ->
-		   case UseOriginalCode of
-		   true ->
-		       Acc;
-		   false when F =/= "" ->
-		       LeadEmptyLines = lists:takewhile(fun (C) -> (C == $\s) or (C == $\n) or (C == $\r) end, F),
-		       LeadEmptyLines1 = lists:reverse(lists:dropwhile(fun (C) -> C == $\s end, lists:reverse(LeadEmptyLines))),
-		       Acc ++ LeadEmptyLines1;
-		   _ -> Acc ++ Delimitor
-		 end
+    Acc1 = case UseOriginalCode orelse Acc=="" of
+	       true ->
+		   Acc;
+	       false ->
+		   Acc ++ Delimitor ++ Delimitor
 	   end,
     Str = case UseOriginalCode of
-	    true ->
-		refac_util:concat_toks(refac_misc:get_toks(Form));
-	    false ->
-		case T of
-		  [] -> E;
-		  [{_E1, _Form1}| _] -> E ++ Delimitor
-		end
+	      true ->
+		  refac_util:concat_toks(refac_misc:get_toks(Form));
+	      false ->
+		  Ctxt = #ctxt{hook =
+				   proplists:get_value(hook,Options,?NOHOOK),
+			       paper = proplists:get_value(paper,Options,?PAPER),
+			       ribbon = proplists:get_value(ribbon,Options,?RIBBON),
+			       user = proplists:get_value(user,Options),
+			       format = FileFormat,
+			       tokens = refac_misc:get_toks(Form)},
+		  E = print_form(Form,reset_prec(Ctxt),fun lay/2),
+		  refac_prettypr_0:layout(E, FileFormat)
 	  end,
-    case T of
-      [] -> Acc1 ++ Str;
-      _ -> vertical_concat(T, FileFormat, Acc1 ++ Str)
+     vertical_concat(T, FileFormat, Options, Acc1++Str).
+ 
+is_special_form(Form) ->
+    case refac_syntax:type(Form) of
+	error_marker -> true;
+	comment -> true;
+	attribute ->
+	    case refac_syntax:atom_value(refac_syntax:attribute_name(Form)) of
+		type -> true;
+		spec -> true;
+		record -> [_R, FieldTuple] = refac_syntax:attribute_arguments(Form),
+			  Fields = refac_syntax:tuple_elements(FieldTuple),
+			  lists:any(fun (Field) -> case refac_syntax:type(Field) of
+						       typed_record_field ->
+							   true;
+						       _ -> false
+						   end
+				    end, Fields);
+		_ -> false
+	    end;
+	_ -> false
     end.
 
-
+form_not_changed(Form) ->
+    case is_special_form(Form) of 
+	true -> true;   %% These forms are not touched by Wrangler at the 
+                        %% moment, but this might change!
+	false ->
+	    Toks = refac_misc:get_toks(Form),
+	    case Toks of 
+		[] -> false;
+		_ ->
+		    try 
+			Str = refac_util:concat_toks(Toks),
+			{ok, Toks1, _} = refac_scan:string(Str, {1,1}, 8, 'unix'),
+			OriginalForm = refac_epp_dodger:normal_parser(Toks1, []),
+			
+			NewStr = format(Form, []),
+			{ok, Toks2, _} = refac_scan:string(NewStr, {1,1}, 8, 'unix'),
+			NewForm = refac_epp_dodger:normal_parser(Toks2, []),
+			best(OriginalForm) == best(NewForm)
+		    of
+			Res -> Res
+		    catch
+			_E1:_E2 ->
+			    false
+		    end
+	    end
+    end.
+    
 %% Do this still need this function?
 get_paper_ribbon_width(Form) ->
     case refac_syntax:type(Form) of
@@ -305,8 +309,9 @@ set_ctxt_user(Ctxt,X) -> Ctxt#ctxt{user = X}.
 %% @equiv format(Tree, [])
 
 
-format(Node) -> format(Node,[]).
-
+format(Node) -> 
+    format(Node,[]).
+   
 
 %% =====================================================================
 %% @spec format(Tree::syntaxTree(), Options::[term()]) -> string()
@@ -381,7 +386,7 @@ format(Node) -> format(Node,[]).
 format(Node,Options) ->
     W = proplists:get_value(paper,Options,?PAPER),
     L = proplists:get_value(ribbon,Options,?RIBBON),
-    prettypr:format(layout(Node,Options),W,L).
+    format(layout(Node,Options),W,L).
 
 %% =====================================================================
 %% @spec best(Tree::syntaxTree()) -> empty | document()
@@ -410,7 +415,7 @@ best(Node) -> best(Node,[]).
 best(Node,Options) ->
     W = proplists:get_value(paper,Options,?PAPER),
     L = proplists:get_value(ribbon,Options,?RIBBON),
-    prettypr:best(layout(Node,Options),W,L).
+    best(layout(Node,Options),W,L).
 
 %% =====================================================================
 %% @spec layout(Tree::syntaxTree()) -> document()
@@ -560,17 +565,19 @@ lay_2(Node, Ctxt) ->
 	    39 -> text("'" ++ atom_to_list(refac_syntax:atom_value(Node)) ++ "'");
 	    _ -> text(Lit)
 	  end;
-      integer -> text(refac_syntax:integer_literal(Node));
-      float ->
-	  text(tidy_float(refac_syntax:float_literal(Node)));
-      char ->
-	  V = refac_syntax:char_value(Node),
-	  case is_integer(V) and (V > 127) of
-	    true -> {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
-		    [CharStr] = io_lib:fwrite("~.8B", [Num]),
-		    text("$\\" ++ CharStr);
-	    _ -> text(refac_syntax:char_literal(Node))
-	  end;
+	integer -> text(refac_syntax:integer_literal(Node));
+	float ->
+	    text(tidy_float(refac_syntax:float_literal(Node)));
+	char ->
+	    V = refac_syntax:char_value(Node),
+	   case is_integer(V) and (V > 127) of
+	       true -> {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
+		       [CharStr] = io_lib:fwrite("~.8B", [Num]),
+		       text("$\\" ++ CharStr);
+	       _ when is_atom(V)-> 
+                 text(atom_to_list(V));
+               _ -> text(refac_syntax:char_literal(Node))
+	   end;
       string ->  %% done;
 	  Str = refac_syntax:string_literal(Node),
 	  StrVal = "\"" ++ refac_syntax:string_value(Node) ++ "\"",
@@ -615,7 +622,16 @@ lay_2(Node, Ctxt) ->
 	      end,
 	  beside(floating(text("[")), D);
       operator ->
-	  floating(text(refac_syntax:operator_literal(Node)));
+	  Op = refac_syntax:operator_literal(Node),
+	  case lists:member(Op, ["bnot", "not", "div", "rem",
+				 "band", "and", "bor", "bxor", 
+                                 "bsl", "bsr", "or", "xor", 
+				 "andalso","orelse", "catch"]) of
+	      true ->
+		  floating(text(" "++Op++" "));
+	      false ->
+		  floating(text(Op))
+	  end;
       infix_expr ->  %% done;
 	  Left = refac_syntax:infix_expr_left(Node),
 	  Operator = refac_syntax:infix_expr_operator(Node),
@@ -712,7 +728,7 @@ lay_2(Node, Ctxt) ->
 	  D2 = lay(refac_syntax:match_expr_body(Node), set_prec(Ctxt, PrecR)),
 	  D3 = case (EndLn == 0) or (StartLn == 0) of
 		 true ->
-		     follow(beside(D1, floating(text(" = "))), D2, Ctxt#ctxt.break_indent);
+		     follow(beside(D1, floating(text(" ="))), D2, Ctxt#ctxt.break_indent);
 		 false ->
 		     case EndLn == StartLn of
 		       true -> beside(beside(D1, text(" = ")), D2);
@@ -733,11 +749,11 @@ lay_2(Node, Ctxt) ->
 		 none -> none;
 		 G -> lay(G, Ctxt1)
 	       end,
-	  BodyDocs = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
+	  BodyDocs = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
 	  D3 = lay_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
 	  HeadLastLn = case refac_syntax:clause_guard(Node) of
 			 none -> case Pats of
-				   [] -> get_end_line(Node);
+				   [] -> get_start_line(Node);
 				   _ ->  get_end_line(lists:last(Pats))
 				 end;
 			 _ -> get_end_line(refac_syntax:clause_guard(Node))
@@ -851,7 +867,7 @@ lay_2(Node, Ctxt) ->
       block_expr -> %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  Body = refac_syntax:block_expr_body(Node),
-	  Es = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
+	  Es = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
 	  sep([text("begin"), nest(Ctxt1#ctxt.sub_indent, lay_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
       catch_expr ->  %% done;
 	  {Prec, PrecR} = preop_prec('catch'),
@@ -871,7 +887,7 @@ lay_2(Node, Ctxt) ->
 	    P -> floating(break(beside(text(spaces(P)), D)))
 	  end;
       conjunction -> %% done;
-	  Es = seq(refac_syntax:conjunction_body(Node), floating(text(",")), reset_prec(Ctxt), fun lay/2),
+	  Es = seq(refac_syntax:conjunction_body(Node), floating(text(", ")), reset_prec(Ctxt), fun lay/2),
 	  lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:conjunction_body(Node));
       disjunction -> %% done;
 	  %% For clarity, we don't paragraph-format
@@ -965,7 +981,7 @@ lay_2(Node, Ctxt) ->
 		 T ->
 		     D3 = lay(T, Ctxt1),
 		     A = refac_syntax:receive_expr_action(Node),
-		     D4 = lay_elems(fun refac_prettypr_0:sep/1, seq(A, floating(text(",")), Ctxt1, fun lay/2), A),
+		     D4 = lay_elems(fun refac_prettypr_0:sep/1, seq(A, floating(text(", ")), Ctxt1, fun lay/2), A),
 		     sep([D1, follow(floating(text("after")), append_clause_body(D4, D3, Ctxt1, {1, 1}), Ctxt1#ctxt.sub_indent)])
 	       end,
 	  sep([text("receive"), nest(Ctxt1#ctxt.sub_indent, D2), text("end")]);
@@ -984,7 +1000,7 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = reset_prec(Ctxt),
 	  D1 = lay(refac_syntax:record_expr_type(Node), Ctxt1),
 	  Fields = refac_syntax:record_expr_fields(Node),
-	  D2 = lay_elems(fun refac_prettypr_0:par/1, seq(refac_syntax:record_expr_fields(Node), floating(text(",")), Ctxt1, fun lay/2), Fields),
+	  D2 = lay_elems(fun refac_prettypr_0:par/1, seq(refac_syntax:record_expr_fields(Node), floating(text(", ")), Ctxt1, fun lay/2), Fields),
 	  D3 = beside(beside(floating(text("#")), D1), beside(text("{"), beside(D2, floating(text("}"))))),
 	  D4 = case refac_syntax:record_expr_argument(Node) of
 		 none -> D3;
@@ -1035,37 +1051,61 @@ lay_2(Node, Ctxt) ->
 	       end,
 	  D2 = lay(refac_syntax:size_qualifier_argument(Node), Ctxt1),
 	  beside(D1, beside(text(":"), D2));
-      text -> text(refac_syntax:text_string(Node));
       try_expr ->
-	  Ctxt1 = reset_prec(Ctxt),
-	  Body = refac_syntax:try_expr_body(Node),
-	  D1 = lay_elems(fun refac_prettypr_0:sep/1, seq(Body, floating(text(",")), Ctxt1, fun lay/2), Body),
-	  Es0 = [text("end")],
-	  Es1 = case refac_syntax:try_expr_after(Node) of
-		  [] -> Es0;
-		  As ->
-		      D2 = lay_elems(fun refac_prettypr_0:sep/1, seq(As, floating(text(",")), Ctxt1, fun lay/2), As),
-		      [text("after"), nest(Ctxt1#ctxt.sub_indent, D2)| Es0]
-		end,
-	  Es2 = case refac_syntax:try_expr_handlers(Node) of
-		  [] -> Es1;
-		  Hs ->
-		      D3 = lay_clauses(Hs, try_expr, Ctxt1),
-		      [text("catch"), nest(Ctxt1#ctxt.sub_indent, D3)| Es1]
-		end,
-	  Es3 = case refac_syntax:try_expr_clauses(Node) of
-		  [] -> Es2;
+	      Ctxt1 = reset_prec(Ctxt),
+	      Body = refac_syntax:try_expr_body(Node),
+	      D1 = lay_elems(fun refac_prettypr_0:sep/1, seq(Body,floating(text(", ")),Ctxt1,fun lay/2),Body),			 
+	      Es0 = [text("end")],
+	      Es1 = case refac_syntax:try_expr_after(Node) of
+			[] -> Es0;
+			As ->
+			    D2 = lay_elems(fun refac_prettypr_0:sep/1,seq(As,floating(text(", ")),Ctxt1,fun lay/2), As),
+			    [text("after"),nest(Ctxt1#ctxt.sub_indent,D2)| Es0]
+		    end,
+	      Es2 = case refac_syntax:try_expr_handlers(Node) of
+			[] -> Es1;
+			Hs ->
+			    D3 = lay_clauses(Hs,try_expr,Ctxt1),
+			    [text("catch"),nest(Ctxt1#ctxt.sub_indent,D3)| Es1]
+		    end,
+	      {L,C}=refac_syntax:get_pos(hd(Body)),
+	      TryLineNum=get_prev_keyword_line_num(Ctxt1#ctxt.tokens, {L,C}, 'try'),
+	      case refac_syntax:try_expr_clauses(Node) of
+		  [] -> 
+		      case TryLineNum==L andalso TryLineNum/=0 of 
+			  true ->
+			      sep([beside(text("try "),nest(Ctxt1#ctxt.sub_indent, D1))| Es2]);
+			  false ->
+			      sep([text("try"),nest(Ctxt1#ctxt.sub_indent, D1)| Es2])
+	    	      end;
 		  Cs ->
+		      {_, {L0,C0}} = refac_misc:get_range(lists:last(Body)),
+		      OfLineNum = get_post_keyword_line_num(Ctxt1#ctxt.tokens, {L0,C0}, 'of'),
 		      D4 = lay_clauses(Cs, try_expr, Ctxt1),
-		      [text("of"), nest(Ctxt1#ctxt.sub_indent, D4)| Es2]
-		end,
-	  sep([text("try"), nest(Ctxt1#ctxt.sub_indent, D1)| Es3]);
-      warning_marker ->
-	  E = refac_syntax:warning_marker_info(Node),
-	  beside(text("%% WARNING: "), lay_error_info(E, reset_prec(Ctxt)));
-      type -> empty();  %% tempory fix!!
-      typed_record_field -> empty() %% tempory fix!!!
-    end.
+		      Es3 = [nest(Ctxt1#ctxt.sub_indent, D4)| Es2],
+		      case TryLineNum==L andalso TryLineNum/=0 of 
+			  true ->
+			      case OfLineNum==L0 andalso L0/=0 of
+				  true ->
+				      sep([beside(text("try "), beside(nest(Ctxt1#ctxt.sub_indent, D1), text(" of")))| Es3]);
+				  false ->
+				      sep([beside(text("try "),nest(Ctxt1#ctxt.sub_indent, D1)), text("of")| Es3])
+			      end;
+			  false ->
+			      case OfLineNum==L0 andalso L0/=0 of
+				  true ->
+				      sep([text("try"), nest(Ctxt1#ctxt.sub_indent, D1)| Es3]);
+				  false ->
+				      sep([text("try"), nest(Ctxt1#ctxt.sub_indent, D1), text("of")| Es3])
+			      end
+		      end
+	      end;
+	  warning_marker ->
+	      E = refac_syntax:warning_marker_info(Node),
+	      beside(text("%% WARNING: "), lay_error_info(E, reset_prec(Ctxt)));
+	   type -> empty();  %% tempory fix!!
+	   typed_record_field -> empty() %% tempory fix!!!
+      end.
 
 lay_parentheses(D,_Ctxt) ->
     beside(floating(text("(")),beside(D,floating(text(")")))).
@@ -1230,7 +1270,7 @@ lay_error_info({L,M,T} = T0,Ctxt)
     case catch M:format_error(T) of
       S when is_list(S) ->
 	  if L > 0 ->
-		 beside(text(io_lib:format("~w: ",[L])),text(S));
+		 beside(text(io_lib:format("~w: ", [L])),text(S));
 	     true -> text(S)
 	  end;
       _ -> lay_concrete(T0,Ctxt)
@@ -1342,6 +1382,41 @@ lay_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
     end.
                     %%lay_elems_1(Fun, Ts,[[D],H| T],ELn)
 
-nil() -> text(" ").
+nil() -> text("").
 
+get_prev_keyword_line_num(FormToks, StartPos, KeyWord)->
+    Ts1 = lists:takewhile(
+	    fun(T) ->
+		    token_loc(T)=<StartPos
+	    end, FormToks),
+    Ts2=lists:dropwhile(fun(T)->
+				element(1, T)/=KeyWord
+			end, lists:reverse(Ts1)),
+    case Ts2 of 
+	[] ->
+	    0;
+	[T1|_] ->
+	    element(1, token_loc(T1))
+    end.
+
+get_post_keyword_line_num(FormToks, EndPos, KeyWord)->
+    Ts1 = lists:dropwhile(
+	    fun(T) ->
+		    token_loc(T)=<EndPos
+	    end, FormToks),
+    Ts2=lists:dropwhile(fun(T)->
+				element(1, T)/=KeyWord
+			end, Ts1),
+    case Ts2 of 
+	[] ->
+	    0;
+	[T1|_] ->
+	    element(1, token_loc(T1))
+    end.
+	    
+token_loc(T) ->
+    case T of
+      {_, L, _V} -> L;
+      {_, L1} -> L1
+    end.
 

@@ -40,7 +40,7 @@
 -include("../include/wrangler.hrl").
 
 
--spec comment_out/1::([filename()|dir()]) ->ok.
+%%-spec comment_out/1::([filename()|dir()]) ->ok.
 comment_out(Dirs) ->
     FileNames = refac_util:expand_files(Dirs, ".erl"),
     HeaderFiles = refac_util:expand_files(Dirs, ".hrl"),

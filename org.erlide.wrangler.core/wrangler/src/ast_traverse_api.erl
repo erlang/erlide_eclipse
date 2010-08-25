@@ -45,9 +45,9 @@
 %% @see stop_tdTP/3 		
 %% @see refac_syntax_lib:fold/3.
 
--spec(once_tdTU/3::(fun((syntaxTree(), any()) ->
-			       {anyterm(), boolean()}), syntaxTree(), anyterm()) ->
-	     {anyterm(), boolean()}).
+%%-spec(once_tdTU/3::(fun((syntaxTree(), any()) ->
+%%			       {anyterm(), boolean()}), syntaxTree(), anyterm()) ->
+%%	     {anyterm(), boolean()}).
 once_tdTU(Function, Node, Others) ->
     case Function(Node, Others) of
       {R, true} -> {R, true};
@@ -86,9 +86,9 @@ until(F, [H| T], Others) ->
 %%
 %% @see full_buTP/2
 %% @see once_tdTU/3
--spec(stop_tdTP/3::(fun((syntaxTree(), anyterm()) ->
-			       {syntaxTree(), boolean()}), syntaxTree(), anyterm()) ->
-	     {syntaxTree(), boolean()}).
+%%-spec(stop_tdTP/3::(fun((syntaxTree(), anyterm()) ->
+%%			       {syntaxTree(), boolean()}), syntaxTree(), anyterm()) ->
+%%	     {syntaxTree(), boolean()}).
 stop_tdTP(Function, Node, Others) ->
     case Function(Node, Others) of
       {Node1, true} -> {Node1, true};
@@ -105,9 +105,9 @@ stop_tdTP(Function, Node, Others) ->
     end.
 
 
--spec(full_tdTP/3::(fun((syntaxTree(), anyterm()) ->
-			       {syntaxTree(), boolean()}), syntaxTree(), anyterm()) ->
-	     {syntaxTree(), boolean()}).
+%%-spec(full_tdTP/3::(fun((syntaxTree(), anyterm()) ->
+%%			       {syntaxTree(), boolean()}), syntaxTree(), anyterm()) ->
+%%	     {syntaxTree(), boolean()}).
 full_tdTP(Function, Node, Others) ->
     case Function(Node, Others) of
       {Node1, Changed} ->
@@ -132,8 +132,8 @@ full_tdTP(Function, Node, Others) ->
 %% the nodes in the abstract syntax tree are traversed by this function. 
 %% @see stop_tdTP/2
 %% @see once_tdTU/3
--spec(full_buTP/3::(fun((syntaxTree(), any()) -> syntaxTree()), syntaxTree(), anyterm())->
-	     syntaxTree()).       
+%%-spec(full_buTP/3::(fun((syntaxTree(), any()) -> syntaxTree()), syntaxTree(), anyterm())->
+%%	     syntaxTree()).       
 full_buTP(Fun, Tree, Others) ->
     case refac_syntax:subtrees(Tree) of
       [] -> Fun(Tree, Others);
@@ -142,3 +142,26 @@ full_buTP(Fun, Tree, Others) ->
 	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree), Gs1),
 	  Fun(refac_misc:rewrite(Tree, Tree1), Others)
     end.
+
+
+
+%% stop_tdTU(Function, S, Node) ->
+%%     {Res, _} = stop_tdTU_1(Function, S, Node),
+%%     Res.
+
+%% stop_tdTU_1(Function, S, Node) ->
+%%     case Function(Node, S) of
+%%       {R, true} -> {R, true};
+%%       {_R, false} ->
+%% 	  case erl_syntax:subtrees(Node) of
+%% 	    [] -> {[], false};
+%% 	    Gs ->
+%% 		Flattened_Gs = [T || G <- Gs, T <- G],
+%% 		case Flattened_Gs of
+%% 		  [] -> {[], false};
+%% 		  [_H | _T1] -> S1 = [[stop_tdTU_1(Function, [], T) || T <- G] || G <- Gs],
+%% 			      S2 = [S12 || G<-S1, {S12, _B} <- G],
+%% 				{S++lists:append(S2), true}
+%% 		end
+%% 	  end
+%%     end.

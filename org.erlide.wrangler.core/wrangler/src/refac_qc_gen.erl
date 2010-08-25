@@ -45,13 +45,13 @@
 %%  3). Try to generate sensable variable names.
 
 %% =============================================================================================
--spec(test_cases_to_property/5::(filename(), integer(), integer(), [dir()], integer()) -> {'ok', [filename()]} | {error, string()}).
+%%-spec(test_cases_to_property/5::(filename(), integer(), integer(), [dir()], integer()) -> {'ok', [filename()], boolean()} | {error, string()}).
 test_cases_to_property(FileName, Line, Col, SearchPaths, TabWidth) ->
     test_cases_to_property(FileName, Line, Col, SearchPaths, TabWidth, emacs).
 
 
--spec(test_cases_to_property_eclipse/5::(filename(), integer(), integer(),[dir()], integer()) ->
-	     {'ok', [{filename(), filename(),string()}]} |{error, string()}).
+%%-spec(test_cases_to_property_eclipse/5::(filename(), integer(), integer(),[dir()], integer()) ->
+%%	     {'ok', [{filename(), filename(),string()}]} |{error, string()}).
 test_cases_to_property_eclipse(FileName, Line, Col,SearchPaths, TabWidth) ->
     test_cases_to_property(FileName, Line, Col, SearchPaths, TabWidth, eclipse).
 

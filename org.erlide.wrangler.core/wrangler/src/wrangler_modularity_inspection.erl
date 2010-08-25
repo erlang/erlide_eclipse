@@ -57,7 +57,7 @@
 %%  Module graph generation.                                           %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec (gen_module_graph/4::(filename(), string(), [filename()|dir()], boolean()) ->true).
+%%-spec (gen_module_graph/4::(filename(), string(), [filename()|dir()], boolean()) ->true).
 gen_module_graph(OutFile, NotCareMods, SearchPaths, WithLabel) ->
     ?wrangler_io("\nCMD: ~p:gen_module_graph(~p, ~p, ~p, ~p).\n",
 		 [?MODULE, OutFile, NotCareMods, SearchPaths, WithLabel]),
@@ -69,7 +69,7 @@ gen_module_graph(OutFile, NotCareMods, SearchPaths, WithLabel) ->
 %%  Call Graph Generation.                                              %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
--spec(gen_function_callgraph/3::(filename(), filename(),[filename()|dir()]) ->true).
+%%-spec(gen_function_callgraph/3::(filename(), filename(),[filename()|dir()]) ->true).
 gen_function_callgraph(OutFile, FileName, SearchPaths)->
      ?wrangler_io("\nCMD: ~p:gen_function_callgraph(~p, ~p, ~p).\n",
  		 [?MODULE, OutFile, FileName, SearchPaths]),
@@ -726,18 +726,18 @@ format_label([{F,A}|T]) ->
 %%                    Clustering API functions                            %%
 %%                                                                        %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
--spec(partition_exports/4::(File::filename(), DistTreshold::string(), 
-			    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
- 			{ok, [filename()]}).
+%%-spec(partition_exports/4::(File::filename(), DistTreshold::string(), 
+%%			    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
+%% 			{ok, [filename()]}).
 partition_exports(File, DistThreshold, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:partition_exports(~p,~p,~p,~p).\n",
  		 [?MODULE, File, DistThreshold, SearchPaths, TabWidth]),
     DistThreshold1 = get_dist_threshold(DistThreshold),
     partition_exports(File, DistThreshold1, false, SearchPaths, TabWidth, emacs).
 
--spec(partition_exports_eclipse/4::(File::filename(), DistTreshold::float(),
-				    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
-					 {ok, [{filename(), filename(), string()}]}).
+%%-spec(partition_exports_eclipse/4::(File::filename(), DistTreshold::float(),
+%%				    SearchPaths::[filename()|dir()], TabWidth::integer()) ->
+%%					 {ok, [{filename(), filename(), string()}]}).
 partition_exports_eclipse(File, DistThreshold, SearchPaths, TabWidth) ->
     partition_exports(File, DistThreshold, false, SearchPaths, TabWidth, eclipse).
 

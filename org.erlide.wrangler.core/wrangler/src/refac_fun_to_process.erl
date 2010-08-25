@@ -38,19 +38,19 @@
 -include("../include/wrangler.hrl").
 
 
--spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) 
-      -> {ok, [filename()]}).      
+%%-spec(fun_to_process/6::(filename(), integer(), integer(), string(), [dir()], integer()) 
+%%      -> {ok, [filename()]}).      
 fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs).
 
 
--spec(fun_to_process_1/7::(filename(), integer(), integer(), string(), [dir()], integer(), string()) 
-      -> {ok, [filename()]}).      
+%%-spec(fun_to_process_1/7::(filename(), integer(), integer(), string(), [dir()], integer(), string()) 
+%%      -> {ok, [filename()]}).      
 fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, LogMsg) ->
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, emacs, LogMsg).
 
--spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> 
-	     {ok, [{filename(), filename(), string()}]}).
+%%-spec(fun_to_process_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer()) -> 
+%%	     {ok, [{filename(), filename(), string()}]}).
 fun_to_process_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse).
 
@@ -90,8 +90,8 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 			 "or the function definition selected does not parse."})
     end.
 
--spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer())
-      -> {ok, [{filename(), filename(), string()}]}).
+%%-spec(fun_to_process_1_eclipse/6::(filename(), integer(), integer(), string(), [dir()], integer())
+%%      -> {ok, [{filename(), filename(), string()}]}).
 fun_to_process_1_eclipse(FName, Line, Col, ProcessName, SearchPaths, TabWidth) ->
     fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, eclipse, "").
 

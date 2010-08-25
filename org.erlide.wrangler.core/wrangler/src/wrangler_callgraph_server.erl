@@ -49,7 +49,7 @@
 %% API
 %%====================================================================
 
--spec(start_callgraph_server/0::() -> {ok, pid()} | ignore | {error, string()}).
+%%-spec(start_callgraph_server/0::() -> {ok, pid()} | ignore | {error, string()}).
 start_callgraph_server() ->
     gen_server:start_link({local, wrangler_callgraph_server}, ?MODULE, [], []).
 
@@ -64,7 +64,7 @@ start_callgraph_server() ->
 %%                         {stop, Reason}
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
--spec(init/1::(any()) ->{ok, #state{}}).
+%%-spec(init/1::(any()) ->{ok, #state{}}).
 init(_Args) ->
     process_flag(trap_exit, true),
     {ok, #state{}}.
@@ -78,8 +78,8 @@ init(_Args) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
--spec(handle_call/3::({atom(), [dir()]}, any(), #state{}) ->
-	     {reply, #callgraph{}, #state{}}).
+%%-spec(handle_call/3::({atom(), [dir()]}, any(), #state{}) ->
+%%	     {reply, #callgraph{}, #state{}}).
 handle_call({get, SearchPaths}, _From, State) ->
     {Reply, State1} = get_callgraph(SearchPaths, State),
     {reply, Reply, State1};
@@ -93,8 +93,8 @@ handle_call({get_fun_sccs, MFA, SearchPaths}, _From, State) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
--spec(handle_cast/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+%%-spec(handle_cast/2::(any(), #state{}) ->
+%%	      {noreply, #state{}}).
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
@@ -104,8 +104,8 @@ handle_cast(_Msg, State) ->
 %%                                       {stop, Reason, State}
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
--spec(handle_info/2::(any(), #state{}) ->
-	      {noreply, #state{}}).
+%%-spec(handle_info/2::(any(), #state{}) ->
+%%	      {noreply, #state{}}).
 handle_info(_Info, State) ->
     {noreply, State}.
 
@@ -124,13 +124,13 @@ terminate(_Reason, _State) ->
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
 %% Description: Convert process state when code is changed
 %%--------------------------------------------------------------------
--spec(code_change/3::(any(), #state{}, any()) ->
-	      {ok, #state{}}).
+%%-spec(code_change/3::(any(), #state{}, any()) ->
+%%	      {ok, #state{}}).
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 
--spec(get_callgraph/1::([dir()])-> #callgraph{}).
+%%-spec(get_callgraph/1::([dir()])-> #callgraph{}).
 get_callgraph(SearchPaths) ->
     gen_server:call(wrangler_callgraph_server, {get, SearchPaths}, infinity).
 
@@ -157,7 +157,7 @@ get_sccs_including_fun({M, F, A}, SearchPaths, State) ->
    
 
     
--spec(build_scc_callgraph(DirList::[dir()]) -> #callgraph{}).
+%%-spec(build_scc_callgraph(DirList::[dir()]) -> #callgraph{}).
 build_scc_callgraph(DirList) ->
     CallerCalleesWithDef = build_callercallee_callgraph(DirList),
     CallerCallees = lists:map(fun ({{Caller, _CallerDef}, Callee}) ->
@@ -168,16 +168,16 @@ build_scc_callgraph(DirList) ->
     
    
 
--spec(build_callercallee_callgraph/1::([dir()]) -> 
-	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
+%%-spec(build_callercallee_callgraph/1::([dir()]) -> 
+%%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
 build_callercallee_callgraph(DirList) ->
     Files = refac_util:expand_files(DirList, ".erl"),
     lists:flatmap(fun(FName) ->do_build_callgraph(FName, DirList)
 		  end, Files).
     
    
--spec(do_build_callgraph/2::(filename(), [dir()]) -> 
-	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
+%%-spec(do_build_callgraph/2::(filename(), [dir()]) -> 
+%%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
 do_build_callgraph(FName, DirList) ->
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, DirList),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
@@ -194,8 +194,8 @@ do_build_callgraph(FName, DirList) ->
 	 end,
     lists:usort(refac_syntax_lib:fold(F1, ordsets:new(), AnnAST)).
 
--spec(called_funs/1::(syntaxTree()) ->
-	     [{modulename(), functionname(), functionarity()}]).
+%%-spec(called_funs/1::(syntaxTree()) ->
+%%	     [{modulename(), functionname(), functionarity()}]).
 called_funs(Node) ->
     Fun = fun (T, S) ->
 		  case refac_syntax:type(T) of
@@ -272,7 +272,7 @@ get_sorted_funs(ModName, AnnAST) ->
     {Sccs, _E} = refac_callgraph:construct(CallerCallees),
     lists:append(Sccs).
 
--spec(fun_callgraph_to_png/1::([filename()|dir()]) -> ok).
+%%-spec(fun_callgraph_to_png/1::([filename()|dir()]) -> ok).
 fun_callgraph_to_png(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
     lists:foreach(fun(FName)->
@@ -284,7 +284,7 @@ fun_callgraph_to_png(FileNameDirs) ->
 			  os:cmd("dot -Tpng "++DotFileName++" > "++PngFileName)			  
 		  end, Files).
 
--spec(fun_callgraph_to_dot/1::([filename()|dir()]) -> ok).
+%%-spec(fun_callgraph_to_dot/1::([filename()|dir()]) -> ok).
 fun_callgraph_to_dot(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
     lists:foreach(fun(FName)->
@@ -294,7 +294,7 @@ fun_callgraph_to_dot(FileNameDirs) ->
 			  fun_callgraph_to_dot(DotFileName, FName)
 		  end, Files).
 
--spec(fun_callgraph_to_dot/2::(filename(), filename()) -> true).
+%%-spec(fun_callgraph_to_dot/2::(filename(), filename()) -> true).
 fun_callgraph_to_dot(DotFile, FileName) ->
     CallerCalleesWithDef = build_callercallee_callgraph([FileName]),
     CallerCallees = [{{M,F,A}, [{M1,F1,A1}||{M1,F1,A1}<-Callee, M1==M]}

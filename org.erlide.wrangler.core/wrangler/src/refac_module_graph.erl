@@ -39,7 +39,7 @@
 
 -include("../include/wrangler.hrl").
 
--spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
+%%-spec(module_graph/1::([dir()]) -> [{filename(), [filename()]}]).
 module_graph(SearchPaths) ->
     ModCallerCallee = create_caller_callee_graph(SearchPaths),
     reverse_module_graph(ModCallerCallee).
@@ -100,8 +100,8 @@ get_called_mods(File, SearchPaths) ->
     AllCalledMods = ImportedMods0 ++ ImportedMods1 ++ CalledMods ++ PossibleCalledMods,
     lists:usort([M || M <- AllCalledMods, lists:member(M, ModNames)]).
 
--spec(do_collect_called_mods(AnnAST::syntaxTree(), ModNames::[atom()])
-      ->{[modulename()], [modulename()]}).
+%%-spec(do_collect_called_mods(AnnAST::syntaxTree(), ModNames::[atom()])
+%%      ->{[modulename()], [modulename()]}).
 do_collect_called_mods(AnnAST, ModNames) ->
     Fun1 = fun (T, Acc) ->
 		   case refac_syntax:type(T) of
@@ -117,14 +117,7 @@ do_collect_called_mods(AnnAST, ModNames) ->
 		   end
 	   end,
     CalledMods = refac_syntax_lib:fold(Fun1, ordsets:new(), AnnAST),
-    Fun2 = fun (T, Acc) ->
-		   case refac_syntax:type(T) of
-		     function ->
-			 Acc ++ refac_atom_utils:collect_atoms(T, ModNames);
-		     _ -> Acc
-		   end
-	   end,
-    UnSures = refac_syntax_lib:fold(Fun2, [], AnnAST),
+    UnSures = refac_atom_utils:collect_unsure_atoms_in_file(AnnAST, ModNames, m_atom),
     UnSures1 = [Name || {atom, _Pos, Name} <- UnSures,
 			not lists:member(Name, CalledMods)],
     {CalledMods, ordsets:from_list(UnSures1)}.
@@ -193,8 +186,8 @@ analyze_mod_with_called_funs({Mod, Dir}, ModNames, SearchPaths) ->
     ordsets:from_list(group_by_mod_names(Res)).
    
 
--spec(collect_called_modules_with_called_funs(ModName::modulename(),AnnAST::syntaxTree(), ModNames::[atom()])
-      ->[{modulename(), {functionname(), functionarity()}}]).
+%%-spec(collect_called_modules_with_called_funs(ModName::modulename(),AnnAST::syntaxTree(), ModNames::[atom()])
+%%      ->[{modulename(), {functionname(), functionarity()}}]).
 
 collect_called_modules_with_called_funs(ModName, AnnAST, ModNames) ->
     CalledFuns= lists:append([wrangler_callgraph_server:called_funs(F)
@@ -207,7 +200,7 @@ group_by_mod_names(ModFuns) ->
     [{hd(Ms), lists:append(Fs)}||MFs<-ModFuns1, {Ms, Fs} <-[lists:unzip(MFs)]].
    
   
--spec (module_subgraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
+%%-spec (module_subgraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
 module_subgraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     DotFile = filename:dirname(OutFile)++filename:rootname(OutFile)++".dot",
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
@@ -219,7 +212,7 @@ module_subgraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     digraph:delete(MG).
 
 
--spec (module_callergraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
+%%-spec (module_callergraph_to_dot/4::(filename(), [modulename()],[filename()|dir()], boolean()) ->true).
 module_callergraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     DotFile = filename:rootname(OutFile)++".dot",
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
@@ -233,7 +226,7 @@ module_callergraph_to_dot(OutFile, ModNames, SearchPaths, WithLabel) ->
     digraph:delete(MG).
 
 
--spec (module_graph_to_dot/4::(filename(), [modulename()], [filename()|dir()], boolean()) ->true). 			  
+%%-spec (module_graph_to_dot/4::(filename(), [modulename()], [filename()|dir()], boolean()) ->true). 			  
 module_graph_to_dot(OutFile, NotCareMods, SearchPaths, WithLabel) -> 
     DotFile = filename:rootname(OutFile)++".dot",
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),
@@ -252,7 +245,7 @@ module_graph_to_dot(DotFile, ModGraph, WithLabel) ->
     digraph:delete(MG).
 
 
--spec (scc_graph_to_dot/3::(filename(), [filename()|dir()], boolean()) ->true). 			  
+%%-spec (scc_graph_to_dot/3::(filename(), [filename()|dir()], boolean()) ->true). 			  
 scc_graph_to_dot(OutFile, SearchPaths, WithLabel) -> 
     DotFile = filename:rootname(OutFile)++".dot",
     ModCallerCallees = create_caller_callee_graph_with_called_funs(SearchPaths),

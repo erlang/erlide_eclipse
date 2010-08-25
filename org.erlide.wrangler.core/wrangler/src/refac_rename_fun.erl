@@ -58,14 +58,14 @@
 -include("../include/wrangler.hrl").
 
 
--spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {warning, string()} |{ok, [filename()]}).
+%%-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {warning, string()} |{ok, [filename()]}).
 
 rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
 
 rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
@@ -112,7 +112,7 @@ rename_fun_0(FileName, NewName, SearchPaths, TabWidth, Editor,
     Pid = refac_atom_utils:start_atom_process(),
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {AnnAST1, _C} = do_rename_fun(AnnAST, {Mod, Fun, Arity}, {DefinePos, NewName1}),
-    refac_atom_utils:check_atoms(FileName, AnnAST1, [Fun], Pid),
+    refac_atom_utils:check_unsure_atoms(FileName, AnnAST1, [Fun], f_atom, Pid),
     case refac_misc:is_exported({Fun, Arity}, Info) of
       true ->
 	  ?wrangler_io("\nChecking possible client modules in the following search paths: \n~p\n", [SearchPaths]),
@@ -138,14 +138,14 @@ rename_fun_0(FileName, NewName, SearchPaths, TabWidth, Editor,
 	  write_files(Editor, [{{FileName, FileName}, AnnAST1}], Cmd, HasWarningMsg)
     end.
 
--spec(rename_fun_1/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(rename_fun_1/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 
 rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
     
--spec(rename_fun_1_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-	     {error, string()} | {ok, [filename()]}).
+%%-spec(rename_fun_1_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {ok, [filename()]}).
 
 rename_fun_1_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
@@ -314,17 +314,17 @@ rename_fun_in_client_modules(Files, {Mod, Fun, Arity}, NewName, SearchPaths, Tab
     case Files of
       [] -> [];
       [F| Fs] ->
-	  ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
-	  {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
-	  {AnnAST1, Changed} = rename_fun_in_client_module_1({AnnAST, Info}, {Mod, Fun, Arity}, NewName),
-	  refac_atom_utils:check_atoms(F, AnnAST1, [Fun], Pid),
-	  if Changed ->
-		 [{{F, F}, AnnAST1}| rename_fun_in_client_modules(
-				       Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth, Pid)];
-	     true ->
-		 rename_fun_in_client_modules(
-		   Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth, Pid)
-	  end
+	    ?wrangler_io("The current file under refactoring is:\n~p\n", [F]),
+	    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(F, true, SearchPaths, TabWidth),
+	    {AnnAST1, Changed} = rename_fun_in_client_module_1({AnnAST, Info}, {Mod, Fun, Arity}, NewName),
+	    refac_atom_utils:check_unsure_atoms(F, AnnAST1, [Fun], f_atom, Pid),
+	    if Changed ->
+		    [{{F, F}, AnnAST1}| rename_fun_in_client_modules(
+					  Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth, Pid)];
+	       true ->
+		    rename_fun_in_client_modules(
+		      Fs, {Mod, Fun, Arity}, NewName, SearchPaths, TabWidth, Pid)
+	    end
     end.
 
 get_fun_def_info(Node) ->
