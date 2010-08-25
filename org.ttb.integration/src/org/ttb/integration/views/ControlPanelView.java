@@ -391,6 +391,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         functionsTableViewer.setLabelProvider(new TracePatternLabelProvider());
         functionsTableViewer.setContentProvider(new TracePatternContentProvider());
 
+        // input
+        functionsTableViewer.setInput(TtbBackend.getInstance());
+
         // editors
         CellEditor[] editors = new CellEditor[TracePatternColumn.values().length];
         editors[TracePatternColumn.ENABLED.ordinal()] = new CheckboxCellEditor(table);
@@ -418,15 +421,15 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void addPattern(TracePattern tracePattern) {
-        functionsTableViewer.add(tracePattern);
+        functionsTableViewer.refresh();
     }
 
     public void removePattern(TracePattern tracePattern) {
-        functionsTableViewer.remove(tracePattern);
+        functionsTableViewer.refresh();
     }
 
     public void updatePattern(TracePattern tracePattern) {
-        functionsTableViewer.update(tracePattern, null);
+        functionsTableViewer.refresh();
     }
 
     public void startTracing() {

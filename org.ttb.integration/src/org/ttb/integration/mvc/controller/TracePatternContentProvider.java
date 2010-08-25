@@ -6,22 +6,25 @@ import org.ttb.integration.TtbBackend;
 
 /**
  * Content provider for trace patterns table.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class TracePatternContentProvider implements IStructuredContentProvider {
+
+    TtbBackend backend;
 
     public TracePatternContentProvider() {
     }
 
     public Object[] getElements(Object inputElement) {
-        return TtbBackend.getInstance().getTracePatternsArray();
+        return backend.getTracePatternsArray();
     }
 
     public void dispose() {
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        backend = (TtbBackend) newInput;
     }
 }

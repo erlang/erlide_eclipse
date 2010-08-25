@@ -12,6 +12,21 @@ public class MatchSpec {
     private String functionString;
     private OtpErlangObject msObject;
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !o.getClass().equals(MatchSpec.class))
+            return false;
+        return functionString.equals(((MatchSpec) o).functionString);
+    }
+
+    @Override
+    public int hashCode() {
+        if (functionString == null)
+            return 0;
+        else
+            return functionString.hashCode();
+    }
+
     public String getFunctionString() {
         return functionString;
     }

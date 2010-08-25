@@ -20,6 +20,22 @@ public class TracePattern {
         matchSpec.setFunctionString("");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !o.getClass().equals(TracePattern.class))
+            return false;
+        TracePattern tp = (TracePattern) o;
+
+        return arity == tp.arity && moduleName.equals(tp.moduleName) && functionName.equals(tp.functionName) && matchSpec.equals(tp.matchSpec);
+    }
+
+    @Override
+    public int hashCode() {
+        // in set, when two objects have same hash code they are compared using
+        // theirs equals methods
+        return 0;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }

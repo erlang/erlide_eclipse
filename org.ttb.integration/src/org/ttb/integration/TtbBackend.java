@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class TtbBackend {
     private static final String FUN_START = "start";
     private static final String FUN_LOAD = "load";
 
-    private final List<TracePattern> list = new ArrayList<TracePattern>();
+    private final Set<TracePattern> tracePatterns = new LinkedHashSet<TracePattern>();
     private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
     private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
     private ProcessOnList[] processes;
@@ -172,7 +173,7 @@ public class TtbBackend {
                         }
 
                         // setting function trace patterns
-                        for (TracePattern tracePattern : list) {
+                        for (TracePattern tracePattern : tracePatterns) {
                             if (tracePattern.isEnabled()) {
                                 String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
                                 try {
@@ -278,18 +279,19 @@ public class TtbBackend {
     }
 
     public Object[] getTracePatternsArray() {
-        return list.toArray();
+        return tracePatterns.toArray();
     }
 
     public synchronized void addTracePattern(TracePattern pattern) {
-        list.add(pattern);
+        tracePatterns.add(pattern);
+        System.out.println("size: " + tracePatterns.size());
         for (ITraceNodeObserver listener : listeners) {
             listener.addPattern(pattern);
         }
     }
 
     public synchronized void removeTracePattern(TracePattern pattern) {
-        list.remove(pattern);
+        tracePatterns.remove(pattern);
         for (ITraceNodeObserver listener : listeners) {
             listener.removePattern(pattern);
         }
