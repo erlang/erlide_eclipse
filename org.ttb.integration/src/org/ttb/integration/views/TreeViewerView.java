@@ -150,6 +150,9 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     public void updatePattern(TracePattern tracePattern) {
     }
 
+    public void loadPatterns() {
+    }
+
     public void startTracing() {
         loadButton.setEnabled(false);
         clearButton.setEnabled(false);

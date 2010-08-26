@@ -9,10 +9,28 @@ package org.ttb.integration.mvc.model;
  */
 public interface ITraceNodeObserver {
 
+    /**
+     * This method is invoked after adding new trace pattern.
+     * 
+     * @param tracePattern
+     *            new pattern
+     */
     public void addPattern(TracePattern tracePattern);
 
+    /**
+     * This method is invoked after removing trace pattern.
+     * 
+     * @param tracePattern
+     *            removed trace pattern
+     */
     public void removePattern(TracePattern tracePattern);
 
+    /**
+     * This method is invoked after updating trace pattern definition.
+     * 
+     * @param tracePattern
+     *            updated trace pattern
+     */
     public void updatePattern(TracePattern tracePattern);
 
     /**
@@ -39,4 +57,9 @@ public interface ITraceNodeObserver {
      * This method is invoked after finishing loading data from disk.
      */
     public void stopLoading();
+
+    /**
+     * This method is invoked after loading new set of trace patterns.
+     */
+    public void loadPatterns();
 }

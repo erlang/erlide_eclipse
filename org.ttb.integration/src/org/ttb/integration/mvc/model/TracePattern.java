@@ -1,12 +1,16 @@
 package org.ttb.integration.mvc.model;
 
+import java.io.Serializable;
+
 /**
  * Trace pattern.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class TracePattern {
+public class TracePattern implements Serializable {
+
+    private static final long serialVersionUID = 532722456924811842L;
 
     private boolean enabled;
     private boolean local;

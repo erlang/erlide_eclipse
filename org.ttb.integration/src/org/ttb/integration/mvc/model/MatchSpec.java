@@ -1,5 +1,7 @@
 package org.ttb.integration.mvc.model;
 
+import java.io.Serializable;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
@@ -8,7 +10,10 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Piotr Dorobisz
  * 
  */
-public class MatchSpec {
+public class MatchSpec implements Serializable {
+
+    private static final long serialVersionUID = -251703821338799161L;
+
     private String functionString;
     private OtpErlangObject msObject;
 

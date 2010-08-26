@@ -1,6 +1,7 @@
 package org.ttb.integration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -276,6 +277,14 @@ public class TtbBackend {
 
     public synchronized void removeListener(ITraceNodeObserver listener) {
         listeners.remove(listener);
+    }
+
+    public void loadTracePatterns(TracePattern[] patterns) {
+        tracePatterns.clear();
+        tracePatterns.addAll(Arrays.asList(patterns));
+        for (ITraceNodeObserver listener : listeners) {
+            listener.loadPatterns();
+        }
     }
 
     public Object[] getTracePatternsArray() {

@@ -5,25 +5,32 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
@@ -36,6 +43,7 @@ import org.ttb.integration.mvc.controller.ProcessCellModifier;
 import org.ttb.integration.mvc.controller.ProcessContentProvider;
 import org.ttb.integration.mvc.controller.TracePatternCellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
+import org.ttb.integration.mvc.model.ConfigurationManager;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
@@ -44,6 +52,8 @@ import org.ttb.integration.mvc.view.ProcessColumn;
 import org.ttb.integration.mvc.view.ProcessLabelProvider;
 import org.ttb.integration.mvc.view.TracePatternColumn;
 import org.ttb.integration.mvc.view.TracePatternLabelProvider;
+import org.ttb.integration.ui.dialogs.SelectTracingConfigurationDialog;
+import org.ttb.integration.ui.dialogs.TracingConfigurationSaveAsDialog;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -64,6 +74,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private Composite currentProcessControl;
     private ProcessMode currentProcessMode = ProcessMode.ALL;
     private TableViewer processesTableViewer;
+    private String configName;
 
     public ControlPanelView() {
         TtbBackend.getInstance().addListener(this);
@@ -331,7 +342,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         createFunctionsTable(container);
     }
 
-    private void createPatternButtonsPanel(Composite parent) {
+    private void createPatternButtonsPanel(final Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new RowLayout());
 
@@ -359,6 +370,91 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         });
+
+        // Pattern config buttons
+        Button loadConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        Button deleteConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        Button saveConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        Button saveAsConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Label configNameLabel = new Label(container, SWT.NULL);
+        configNameLabel.setLayoutData(new RowData(60, SWT.DEFAULT));
+
+        // "Load patterns" button
+        loadConfigButton.setText("Load patterns...");
+        loadConfigButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ElementListSelectionDialog dialog = new SelectTracingConfigurationDialog(parent.getShell(), new LabelProvider());
+                dialog.open();
+                String result = (String) dialog.getFirstResult();
+                if (result != null) {
+                    configName = result;
+                    configNameLabel.setText(configName);
+                    TtbBackend.getInstance().loadTracePatterns(ConfigurationManager.loadTracePatterns(configName));
+                }
+            }
+        });
+
+        // "Delete patterns" button
+        deleteConfigButton.setText("Delete patterns");
+        deleteConfigButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (configName != null) {
+                    MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                    messageBox.setMessage("Delete \"" + configName + "\"?");
+                    messageBox.setText("Delete configuration");
+                    if (messageBox.open() == SWT.YES) {
+                        ConfigurationManager.removeTracingPatterns(configName);
+                        configName = null;
+                        configNameLabel.setText("");
+                    }
+                }
+            }
+        });
+
+        // "Save patterns" button
+        saveConfigButton.setText("Save patterns");
+        saveConfigButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (configName != null) {
+                    if (!ConfigurationManager.saveTracePatterns(configName)) {
+                        MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_ERROR | SWT.OK);
+                        messageBox.setMessage("Unable to save configuration: " + configName);
+                        messageBox.setText("Error");
+                        messageBox.open();
+                    }
+                }
+            }
+        });
+
+        // "Save patterns as..." button
+        saveAsConfigButton.setText("Save patterns as...");
+        saveAsConfigButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                InputDialog dialog = new TracingConfigurationSaveAsDialog(parent.getShell(), "Save trace pattern configuration",
+                        "Enter name for configuration:", "");
+                if (dialog.open() == Window.OK) {
+                    if (ConfigurationManager.saveTracePatterns(dialog.getValue())) {
+                        configName = dialog.getValue();
+                        configNameLabel.setText(configName);
+                    } else {
+                        MessageBox messageBox = new MessageBox(parent.getShell(), SWT.ICON_ERROR | SWT.OK);
+                        messageBox.setMessage("Unable to save configuration: " + dialog.getValue());
+                        messageBox.setText("Error");
+                        messageBox.open();
+                    }
+                }
+            }
+        });
+
+        // configNameLabel.setParent(container);
     }
 
     private void createFunctionsTable(Composite parent) {
@@ -429,6 +525,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void updatePattern(TracePattern tracePattern) {
+        functionsTableViewer.refresh();
+    }
+
+    public void loadPatterns() {
         functionsTableViewer.refresh();
     }
 
