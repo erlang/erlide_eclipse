@@ -21,13 +21,9 @@ public abstract class DependencyLocation extends CodePathLocation {
 	}
 
 	private final EnumSet<Kind> kind;
-
 	public abstract Collection<SourceLocation> getSources();
-
 	public abstract Collection<IPath> getIncludes();
-
 	public abstract IPath getOutput();
-
 	public abstract Collection<DependencyLocation> getDependencies();
 
 	public DependencyLocation(EnumSet<Kind> kind) {
