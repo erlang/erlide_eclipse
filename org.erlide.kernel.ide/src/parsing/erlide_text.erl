@@ -258,8 +258,6 @@ skip_expr(L) ->
     L.
 
 
-%% TODO: Add description of asd/function_arity
-%%
 skip_paren([], _) ->
     [];
 skip_paren([#token{kind=P} | Rest], P) ->

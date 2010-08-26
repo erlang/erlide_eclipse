@@ -201,7 +201,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 		}
 
 		if ("li".equals(html)) {
-			// FIXME: this hard-coded prefix does not work for RTL languages,
+			// XXX: this hard-coded prefix does not work for RTL languages,
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=91682
 			return LINE_DELIM
 					+ HTMLMessages.getString("HTML2TextReader.listItemPrefix"); //$NON-NLS-1$

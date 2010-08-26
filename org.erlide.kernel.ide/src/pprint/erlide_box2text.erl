@@ -243,7 +243,7 @@ myhv(E, {C, R, {Opts, POpts, Col}}) ->
 	    {Res2, {C2+HS, R2, {Opts, POpts, Col}}}
     end.
 
-%% TODO	
+%% TODO	 fix getWidth
 getWidth(_Content) ->
     10.
 

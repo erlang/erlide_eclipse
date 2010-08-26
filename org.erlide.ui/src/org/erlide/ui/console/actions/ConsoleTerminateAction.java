@@ -22,6 +22,7 @@ import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 
 /**
