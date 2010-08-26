@@ -14,7 +14,7 @@ public class MatchSpec implements Serializable {
 
     private static final long serialVersionUID = -251703821338799161L;
 
-    private String functionString;
+    private String functionString = "";
     private OtpErlangObject msObject;
 
     @Override

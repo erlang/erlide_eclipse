@@ -52,6 +52,10 @@ public class TraceDataHandler {
     private static final int INDEX_PROCESS2 = 3;
     private static final int INDEX_INFO = 3;
 
+    private static final int INDEX_EXCEPTION = 4;
+    private static final int INDEX_EXCEPTION_CLASS = 0;
+    private static final int INDEX_EXCEPTION_VALUE = 1;
+
     private static final int INDEX_TO = 4;
     private static final int INDEX_RETURN_VALUE = 4;
     private static final int INDEX_SPAWN_FUNCTION = 4;
@@ -129,7 +133,7 @@ public class TraceDataHandler {
                 case CALL:
                     return processCallTrace(tuple);
                 case EXCEPTION_FROM:
-                    return null;
+                    return processExceptionFrom(tuple);
                 case EXIT:
                     return processExitTrace(tuple);
                 case GC_END:
@@ -153,7 +157,7 @@ public class TraceDataHandler {
                 case RETURN_FROM:
                     return processReturnTrace("Return from", Images.RETURN_FROM_NODE, tuple, true);
                 case RETURN_TO:
-                    return processReturnTrace("Return from", Images.RETURN_TO_NODE, tuple, false);
+                    return processReturnTrace("Return to", Images.RETURN_TO_NODE, tuple, false);
                 case SEND:
                     return processSendTrace("Sent message", Images.SENT_MESSAGE_NODE, tuple);
                 case SEND_TO_NON_EXISTING_PROCESS:
@@ -240,9 +244,14 @@ public class TraceDataHandler {
             } else {
                 // last element is arity
                 try {
-                    arityValue = ((OtpErlangInt) functionTuple.elementAt(INDEX_FUNCTION_ARGS)).intValue();
+                    if (functionTuple.elementAt(INDEX_FUNCTION_ARGS) instanceof OtpErlangInt) {
+                        arityValue = ((OtpErlangInt) functionTuple.elementAt(INDEX_FUNCTION_ARGS)).intValue();
+                    } else {
+                        arityValue = (int) ((OtpErlangLong) functionTuple.elementAt(INDEX_FUNCTION_ARGS)).longValue();
+                    }
                     argsNode.setLabel("arity: " + arityValue);
                 } catch (OtpErlangRangeException e) {
+                    ErlLogger.error(e);
                 }
             }
 
@@ -303,6 +312,20 @@ public class TraceDataHandler {
 
         ITreeNode node = new TreeNode(createLabel("Spawn"), Activator.getImage(Images.SPAWN_NODE));
         node.addChildren(processNode, processNode2, functionNode);
+        return node;
+    }
+
+    private ITreeNode processExceptionFrom(OtpErlangTuple tuple) {
+        ITreeNode node = processReturnTrace("Exception", Images.EXCEPTION_NODE, tuple, false);
+        OtpErlangTuple exceptionTuple = (OtpErlangTuple) tuple.elementAt(INDEX_EXCEPTION);
+
+        OtpErlangObject exceptionClass = exceptionTuple.elementAt(INDEX_EXCEPTION_CLASS);
+        OtpErlangObject exceptionValue = exceptionTuple.elementAt(INDEX_EXCEPTION_VALUE);
+
+        ITreeNode exceptionClassNode = new TreeNode(exceptionClass.toString(), Activator.getImage(Images.INFO_NODE));
+        exceptionClassNode.addChildren(new TreeNode(exceptionValue.toString()));
+
+        node.addChildren(exceptionClassNode);
         return node;
     }
 

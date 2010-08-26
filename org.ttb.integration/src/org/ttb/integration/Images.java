@@ -17,6 +17,7 @@ public enum Images {
      */
     UNCHECKED("unchecked.gif"), //
     CALL_NODE("treeviewer/callNode.png"), //
+    EXCEPTION_NODE("treeviewer/exceptionNode.png"), //
     EXIT_NODE("treeviewer/exitNode.png"), //
     FUNCTION_NODE("treeviewer/functionNode.png"), //
     GC_END_NODE("treeviewer/gcEndNode.png"), //

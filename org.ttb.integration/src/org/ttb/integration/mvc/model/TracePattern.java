@@ -2,6 +2,8 @@ package org.ttb.integration.mvc.model;
 
 import java.io.Serializable;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+
 /**
  * Trace pattern.
  * 
@@ -19,9 +21,26 @@ public class TracePattern implements Serializable {
     private String functionName = "";
     private MatchSpec matchSpec;
 
+    /**
+     * Creates trace pattern object with empty match spec.
+     */
     public TracePattern() {
-        this.matchSpec = new MatchSpec();
-        matchSpec.setFunctionString("");
+        this(false);
+    }
+
+    /**
+     * Creates trace pattern object. If specified match spec is set to "x"
+     * (shortcut for match spec that matches exceptions and return values).
+     * 
+     * @param setXMatchSpec
+     *            if match spec should be set to "x"
+     */
+    public TracePattern(boolean setXMatchSpec) {
+        matchSpec = new MatchSpec();
+        if (setXMatchSpec) {
+            matchSpec.setFunctionString("x");
+            matchSpec.setMsObject(new OtpErlangAtom("x"));
+        }
     }
 
     @Override

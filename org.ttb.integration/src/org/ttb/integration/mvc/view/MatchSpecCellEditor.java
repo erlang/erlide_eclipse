@@ -53,10 +53,15 @@ public class MatchSpecCellEditor extends DialogCellEditor {
     private class MatchSpecValidator implements IInputValidator {
 
         public String isValid(String newText) {
-            if (newText == null || "".equals(newText)) {
+            if (newText == null || newText.length() == 0) {
                 // no match spec
                 ((MatchSpec) getValue()).setFunctionString("");
                 ((MatchSpec) getValue()).setMsObject(null);
+                return null;
+            } else if ("x".equals(newText)) {
+                // shortcut for matching exceptions and return values
+                ((MatchSpec) getValue()).setFunctionString("x");
+                ((MatchSpec) getValue()).setMsObject(new OtpErlangAtom("x"));
                 return null;
             }
             try {

@@ -353,7 +353,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TtbBackend.getInstance().addTracePattern(new TracePattern());
+                TtbBackend.getInstance().addTracePattern(new TracePattern(true));
             }
         });
 

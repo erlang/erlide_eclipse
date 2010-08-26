@@ -21,7 +21,7 @@ public class CreateTracePatternWithNoArityHandler extends AbstractHandler {
 
             if (firstElement instanceof ErlFunction) {
                 ErlFunction function = (ErlFunction) firstElement;
-                TracePattern tracePattern = new TracePattern();
+                TracePattern tracePattern = new TracePattern(true);
                 tracePattern.setFunctionName(function.getFunctionName());
                 tracePattern.setModuleName(function.getModule().getModuleName());
                 tracePattern.setLocal(true);

@@ -140,10 +140,6 @@ public class TtbBackend {
 
                         if (tracerBackend == null) {
                             tracerBackend = createBackend(NODE_NAME);
-                            if (tracerBackend != null) {
-                                System.out.println("backend created");
-                            } else
-                                System.out.println("backend not created");
                         }
 
                         handler = new TraceEventHandler();
