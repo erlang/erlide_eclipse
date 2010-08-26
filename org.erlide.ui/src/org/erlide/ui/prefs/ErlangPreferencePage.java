@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.swtdesigner.ResourceManager;
@@ -57,6 +59,11 @@ public class ErlangPreferencePage extends PreferencePage implements
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
 		text.setText(PreferenceMessages.ErlangPreferencePage_2);
+
+		final Label textv = new Label(composite, SWT.NONE);
+		textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		textv.setText("    version "
+				+ ErlangPlugin.getDefault().getFeatureVersion());
 
 		final Link erlideorgLink = new Link(composite, SWT.NONE);
 		erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);

@@ -206,7 +206,7 @@ public class ErlangPlugin extends Plugin {
 		ErlLogger.debug("Started CORE");
 	}
 
-	private String getFeatureVersion() {
+	public String getFeatureVersion() {
 		String version = null;
 		try {
 			IBundleGroupProvider[] providers = Platform

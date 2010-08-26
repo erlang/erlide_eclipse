@@ -80,7 +80,7 @@ public class CompilerPreferences {
 		}
 		helper.putBoolean(CompilerPreferencesConstants.WARN_FORMAT_STRINGS,
 				warnFormat);
-		// FIXME
+		// FIXME handle all compiler options
 		// helper.putBoolean(
 		// CompilerPreferencesConstants.WARN_MODULE_NOT_ON_SOURCE_PATH,
 		// doWarnModuleNotOnSourcePath());

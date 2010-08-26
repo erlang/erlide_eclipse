@@ -169,8 +169,6 @@ template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
 %% Local Functions
 %%
 
-%% TODO: Add description of asd/function_arity
-%%
 do_indent_lines([], _, _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, UseTabs, Text, Prefs, N, Acc) ->
@@ -315,8 +313,6 @@ i_expr_list(R0, I0, A0) ->
 
 i_binary_expr_list(R, I) ->
     i_binary_expr_list(R, I, none).
-
-% TODO
 
 i_binary_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),

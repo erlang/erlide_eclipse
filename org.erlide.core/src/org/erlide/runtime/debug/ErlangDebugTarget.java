@@ -136,8 +136,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, OtpErlang.mkTuple(
-				new OtpErlangAtom("parent"), b.getEventPid()));
+		fBackend.send(pid, OtpErlang.mkTuple(new OtpErlangAtom("parent"), b
+				.getEventPid()));
 
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
 				this);
@@ -203,8 +203,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fTerminated = true;
 		fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
 
-		DebugPlugin.getDefault().getBreakpointManager()
-				.removeBreakpointListener(this);
+		DebugPlugin dbgPlugin = DebugPlugin.getDefault();
+		if (dbgPlugin != null) {
+			dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
+		}
 
 		fireTerminateEvent();
 	}
@@ -227,7 +229,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	 * Install breakpoints that are already registered with the breakpoint
 	 * manager.
 	 */
-	private void installDeferredBreakpoints() {
+	public void installDeferredBreakpoints() {
 		final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
 				.getBreakpointManager().getBreakpoints(getModelIdentifier());
 		for (int i = 0; i < breakpoints.length; i++) {
@@ -344,8 +346,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
-		 ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
-		 ")");
+		ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid + ")");
 		final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
 		final String event = a.atomValue();
 		final int what = getMetaWhat(event);
@@ -614,7 +615,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-			ErlLogger.debug("@@@ " + msg);
+			// ErlLogger.debug("@@@ " + msg);
 			// TODO More events from erlide_dbg_mon...
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			final OtpErlangObject el0 = t.elementAt(0);
