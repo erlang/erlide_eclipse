@@ -56,14 +56,8 @@ public final class OldErlangProjectProperties implements
 		project = prj;
 		final IEclipsePreferences root = new ProjectScope(project)
 				.getNode(ErlangPlugin.PLUGIN_ID);
-		root.addPreferenceChangeListener(this);
 		// TODO load() should not be in constructor!
 		load(root);
-	}
-
-	public void dispose() {
-		new ProjectScope(project).getNode(ErlangPlugin.PLUGIN_ID)
-				.removePreferenceChangeListener(this);
 	}
 
 	public OldErlangProjectProperties load(final IEclipsePreferences node) {
