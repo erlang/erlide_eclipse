@@ -339,7 +339,7 @@ public final class BuilderUtils {
 			final List<String> includeDirs) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> incs = prefs.getIncludeDirs();
+		final Collection<String> incs = prefs.getIncludeDirs();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
 		for (final String s : incs) {

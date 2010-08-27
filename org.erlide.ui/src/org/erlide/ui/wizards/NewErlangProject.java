@@ -11,6 +11,7 @@ package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -249,7 +250,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 */
 	private void buildPaths(final IProgressMonitor monitor,
 			final IWorkspaceRoot root, final IProject project,
-			final List<String> list) throws CoreException {
+			final Collection<String> list) throws CoreException {
 		// Some paths are optionals (include): If we do not specify it, we get a
 		// null string and we do not need to create the directory
 		if (list != null) {

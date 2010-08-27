@@ -51,7 +51,7 @@ public class PluginUtils {
 	}
 
 	public static boolean isOnPaths(final IContainer con,
-			final IProject project, final List<String> sourcePaths) {
+			final IProject project, final Collection<String> sourcePaths) {
 		final IPath path = con.getFullPath();
 		for (final String i : sourcePaths) {
 			if (i.equals(".")) {
@@ -94,7 +94,7 @@ public class PluginUtils {
 	}
 
 	public static Set<IPath> getFullPaths(final IProject project,
-			final List<String> sourcePaths) {
+			final Collection<String> sourcePaths) {
 		HashSet<IPath> result = new HashSet<IPath>();
 		for (String i : sourcePaths) {
 			if (i.equals(".")) {

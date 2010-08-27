@@ -121,7 +121,7 @@ public class SearchUtil {
 					.getModel().getErlangProjects();
 			final Set<IResource> result = new HashSet<IResource>();
 			for (final IErlProject i : erlangProjects) {
-				final List<IErlModule> modules = i.getModulesAndHeaders();
+				final Collection<IErlModule> modules = i.getModulesAndHeaders();
 				for (final IErlModule j : modules) {
 					result.add(j.getResource());
 				}

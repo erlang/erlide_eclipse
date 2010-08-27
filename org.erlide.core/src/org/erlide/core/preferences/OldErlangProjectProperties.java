@@ -170,7 +170,7 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public List<String> getIncludeDirs() {
+	public Collection<String> getIncludeDirs() {
 		return Collections.unmodifiableList(includeDirs);
 	}
 
@@ -217,7 +217,7 @@ public final class OldErlangProjectProperties implements
 		return "";
 	}
 
-	public String buildIncludeDirs(final List<String> list) {
+	public String buildIncludeDirs(final Collection<String> list) {
 		final StringBuilder incs = new StringBuilder();
 		for (final String element : list) {
 			final IPath loc = project.getLocation();
