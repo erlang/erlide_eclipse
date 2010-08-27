@@ -45,7 +45,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
 		if (module != null) {
 			IErlProject project = module.getErlProject();
 			OldErlangProjectProperties prefs = project.getProperties();
-			IPath beamPath = new Path(prefs.getOutputDir()).append(
+			IPath beamPath = prefs.getOutputDir().append(
 					module.getModuleName()).addFileExtension("beam");
 			IFile beam = project.getProject().getFile(beamPath);
 

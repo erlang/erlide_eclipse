@@ -11,6 +11,7 @@ package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -157,7 +158,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
 				+ "|");
 		final OldErlangProjectProperties prefs = buildPage.getPrefs();
-		if (prefs.getOutputDir().trim().length() == 0) {
+		if (prefs.getOutputDir().isEmpty()) {
 			reportError(ErlideUIPlugin
 					.getResourceString("wizard.errors.buildpath"));
 			return false;
@@ -208,7 +209,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
 			final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
-			buildPaths(monitor, root, project, new ArrayList<String>() {
+			buildPaths(monitor, root, project, new ArrayList<IPath>() {
 				{
 					add(bprefs.getOutputDir());
 				}
@@ -249,20 +250,16 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	 */
 	private void buildPaths(final IProgressMonitor monitor,
 			final IWorkspaceRoot root, final IProject project,
-			final List<String> list) throws CoreException {
+			final Collection<IPath> list) throws CoreException {
 		// Some paths are optionals (include): If we do not specify it, we get a
 		// null string and we do not need to create the directory
 		if (list != null) {
 			final IPath projectPath = project.getFullPath();
-
-			String pathElement;
-			for (final String element : list) {
-				pathElement = element;
-				final IPath pp = new Path(pathElement);
+			for (IPath pp : list) {
 				// only create in-project paths
-				if (!pp.isAbsolute() && !pathElement.equals(".")
-						&& pathElement.length() != 0) {
-					final IPath path = projectPath.append(pathElement);
+				if (!pp.isAbsolute() && !pp.toString().equals(".")
+						&& pp.isEmpty()) {
+					final IPath path = projectPath.append(pp);
 					final IFolder folder = root.getFolder(path);
 					createFolderHelper(folder, monitor);
 				}

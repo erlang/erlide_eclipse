@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -64,7 +65,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 				final List<String> files = new ArrayList<String>();
 				final OldErlangProjectProperties props = new OldErlangProjectProperties(
 						prj);
-				for (final String dir : props.getSourceDirs()) {
+				for (final IPath dir : props.getSourceDirs()) {
 					final IFolder folder = prj.getFolder(dir);
 					if (folder.isAccessible()) {
 						folder.accept(new IResourceVisitor() {

@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -85,9 +86,9 @@ public class SearchUtil {
 		}
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = prefs.getSourceDirs();
-		for (String path : sourcePaths) {
-			IFolder folder = project.getFolder(new Path(path));
+		final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+		for (IPath path : sourcePaths) {
+			IFolder folder = project.getFolder(path);
 			addFolderToScope(folder, result);
 		}
 	}
@@ -121,7 +122,7 @@ public class SearchUtil {
 					.getModel().getErlangProjects();
 			final Set<IResource> result = new HashSet<IResource>();
 			for (final IErlProject i : erlangProjects) {
-				final List<IErlModule> modules = i.getModulesAndHeaders();
+				final Collection<IErlModule> modules = i.getModulesAndHeaders();
 				for (final IErlModule j : modules) {
 					result.add(j.getResource());
 				}

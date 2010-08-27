@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 
@@ -42,13 +42,13 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 	 *             if this element does not exist or if an exception occurs
 	 *             while accessing its corresponding resource
 	 */
-	IResource[] getNonErlangResources() throws ErlModelException;
+	Collection<IResource> getNonErlangResources() throws ErlModelException;
 
 	/**
 	 * @return all modules in this folder and its sub-folders
 	 * @throws ErlModelException
 	 */
-	List<IErlModule> getModules() throws ErlModelException;
+	Collection<IErlModule> getModules() throws ErlModelException;
 
 	IErlModule getModule(String name) throws ErlModelException;
 

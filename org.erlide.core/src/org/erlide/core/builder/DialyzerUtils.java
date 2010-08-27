@@ -2,6 +2,7 @@ package org.erlide.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 import erlang.ErlideDialyze;
 
@@ -125,9 +127,9 @@ public class DialyzerUtils {
 			try {
 				final Backend backend = ErlangCore.getBackendManager()
 						.getBuildBackend(project);
-				final List<String> files = new ArrayList<String>();
-				final List<String> includeDirs = new ArrayList<String>();
-				final List<String> names = new ArrayList<String>();
+				final List<String> files = Lists.newArrayList();
+				final List<IPath> includeDirs = Lists.newArrayList();
+				final List<String> names = Lists.newArrayList();
 				collectFilesAndIncludeDirs(p, modules, project, files, names,
 						includeDirs, fromSource);
 				monitor.subTask("Dialyzing " + getFileNames(names));
@@ -161,8 +163,8 @@ public class DialyzerUtils {
 
 	public static void collectFilesAndIncludeDirs(final IErlProject ep,
 			final Map<IErlProject, Set<IErlModule>> modules,
-			final IProject project, final List<String> files,
-			final List<String> names, final List<String> includeDirs,
+			final IProject project, final Collection<String> files,
+			final Collection<String> names, final Collection<IPath> includeDirs,
 			final boolean fromSource) throws CoreException {
 		if (fromSource) {
 			for (final IErlModule m : modules.get(ep)) {

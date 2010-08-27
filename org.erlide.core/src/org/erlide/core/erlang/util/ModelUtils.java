@@ -59,8 +59,8 @@ public class ModelUtils {
 				.getPathVariableManager();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		for (final String includeDir : prefs.getIncludeDirs()) {
-			IPath p = new Path(includeDir).append(filePath);
+		for (final IPath includeDir : prefs.getIncludeDirs()) {
+			IPath p = includeDir.append(filePath);
 			p = pvm.resolvePath(p);
 			final File f = new File(p.toOSString());
 			if (f.exists()) {

@@ -17,16 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class SourceLocation extends CodePathLocation {
-	private String directory;
+	private IPath directory;
 	private List<String> includePatterns = new ArrayList<String>();
 	private List<String> excludePatterns = new ArrayList<String>();
 	private String output;
 
-	public SourceLocation(final String directory,
+	public SourceLocation(final IPath directory,
 			final List<String> includePatterns,
 			final List<String> excludePatterns, final String output,
 			final Map<String, String> compilerOptions,
@@ -49,7 +51,7 @@ public final class SourceLocation extends CodePathLocation {
 		load(sn);
 	}
 
-	public String getDirectory() {
+	public IPath getDirectory() {
 		return directory;
 	}
 
@@ -67,7 +69,8 @@ public final class SourceLocation extends CodePathLocation {
 
 	@Override
 	public void load(final IEclipsePreferences root) {
-		directory = root.get(ProjectPreferencesConstants.DIRECTORY, null);
+		directory = new Path(root.get(ProjectPreferencesConstants.DIRECTORY,
+				null));
 		Assert.isLegal(directory != null,
 				"SourceLocation requires a non-null directory");
 	}
@@ -76,7 +79,7 @@ public final class SourceLocation extends CodePathLocation {
 	public void store(final IEclipsePreferences root)
 			throws BackingStoreException {
 		clearAll(root);
-		root.put(ProjectPreferencesConstants.DIRECTORY, directory);
+		root.put(ProjectPreferencesConstants.DIRECTORY, directory.toString());
 
 	}
 
