@@ -82,7 +82,7 @@ public class ErlProject extends Openable implements IErlProject {
 	 * A array with all the non-Erlang resources contained by this
 	 * PackageFragment
 	 */
-	private IResource[] nonErlangResources;
+	private Collection<IResource> nonErlangResources;
 
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
@@ -388,7 +388,7 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	public IResource[] getNonErlangResources() throws ErlModelException {
+	public Collection<IResource> getNonErlangResources() throws ErlModelException {
 
 		return getNonErlangResources(this);
 	}
@@ -667,29 +667,13 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	private IResource[] getNonErlangResources(final ErlProject project) {
+	private Collection<IResource> getNonErlangResources(final ErlProject project) {
 
 		if (nonErlangResources == null) {
-			nonErlangResources = null;
+			nonErlangResources = Lists.newArrayList();
 		}
 		return nonErlangResources;
 	}
-
-	// public IErlModule getModule(final String name) throws ErlModelException {
-	// if (!hasChildren()) {
-	// open(null);
-	// }
-	// for (final IErlElement element : fChildren) {
-	// if (element instanceof IErlModule) {
-	// final IErlModule m = (IErlModule) element;
-	// if (m != null && m.getName().equals(name)) {
-	// return m;
-	// }
-	// }
-	//
-	// }
-	// return null;
-	// }
 
 	public boolean isVisibleInOutline() {
 		return false;

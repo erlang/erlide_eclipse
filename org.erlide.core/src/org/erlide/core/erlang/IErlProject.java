@@ -51,27 +51,6 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 public interface IErlProject extends IErlFolder {
 
 	/**
-	 * Returns an array of non-Erlang resources directly contained in this
-	 * project. It does not transitively answer non-Erlang resources contained
-	 * in folders; these would have to be explicitly iterated over.
-	 * <p>
-	 * Non-Erlang resources includes other files and folders located in the
-	 * project not accounted for by any of it source or binary package fragment
-	 * roots. If the project is a source folder itself, resources excluded from
-	 * the corresponding source classpath entry by one or more exclusion
-	 * patterns are considered non-Erlang resources and will appear in the
-	 * result (possibly in a folder)
-	 * </p>
-	 * 
-	 * @return an array of non-Erlang resources (<code>IFile</code> s and/or
-	 *         <code>IFolder</code>s) directly contained in this project
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its corresponding resource
-	 */
-	IResource[] getNonErlangResources() throws ErlModelException;
-
-	/**
 	 * Returns the default output location for this project as a workspace-
 	 * relative absolute path.
 	 * <p>

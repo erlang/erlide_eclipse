@@ -127,7 +127,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return result;
 	}
 
-	public IResource[] getNonErlangResources() throws ErlModelException {
+	public Collection<IResource> getNonErlangResources() throws ErlModelException {
 		// TODO Auto-generated method stub
 		return null;
 	}
