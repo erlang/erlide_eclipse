@@ -23,6 +23,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  */
 public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
+	private String replicationFunction = "";
 	private int startOffset;
 	private int endOffset;
 	private String codePartString;
@@ -102,6 +103,20 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 	 */
 	public String getCodePartString() {
 		return simplifyCodePartString(codePartString);
+	}
+
+	/**
+	 * @return the replicationfunction
+	 */
+	public String getReplicationFunction() {
+		return replicationFunction;
+	}
+
+	/**
+	 * Sets the replicationfunction
+	 */
+	public void setReplicationFunction(String replicationFunction) {
+		this.replicationFunction = replicationFunction;
 	}
 
 	@Override
