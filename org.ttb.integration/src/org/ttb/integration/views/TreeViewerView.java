@@ -1,20 +1,21 @@
 package org.ttb.integration.views;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -39,8 +40,8 @@ import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private TreeViewer treeViewer;
-    private Button clearButton;
-    private Button loadButton;
+    private Action clearAction;
+    private Action loadAction;
 
     public TreeViewerView() {
         TtbBackend.getInstance().addListener(this);
@@ -61,32 +62,19 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
 
+        // toolbars and menu
+        createActionBars();
+
         // children
-        createButtonPanel(parent);
         createTreeViewerPanel(parent);
     }
 
-    private void createButtonPanel(Composite parent) {
-        final Composite container = new Composite(parent, SWT.NONE);
-        container.setLayout(new RowLayout());
+    private void createActionBars() {
+        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 
-        clearButton = new Button(container, SWT.PUSH | SWT.CENTER);
-        clearButton.setText("Clear");
-        clearButton.addSelectionListener(new SelectionAdapter() {
-
+        loadAction = new Action() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
-                CollectedDataList.getInstance().clear();
-                treeViewer.setInput(CollectedDataList.getInstance());
-            }
-        });
-
-        loadButton = new Button(container, SWT.PUSH | SWT.CENTER);
-        loadButton.setText("Load...");
-        loadButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void run() {
                 // TODO add support for multiple selection
                 FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
                 // dialog.setFilterExtensions(new String[] { "*.*" });
@@ -95,7 +83,22 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                 if (selected != null)
                     TtbBackend.getInstance().loadData(selected);
             }
-        });
+        };
+        loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
+        loadAction.setToolTipText("Load results from file...");
+
+        clearAction = new Action() {
+            @Override
+            public void run() {
+                CollectedDataList.getInstance().clear();
+                treeViewer.setInput(CollectedDataList.getInstance());
+            }
+        };
+        clearAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
+        clearAction.setToolTipText("Clear view");
+
+        manager.add(loadAction);
+        manager.add(clearAction);
     }
 
     private void createTreeViewerPanel(Composite parent) {
@@ -110,6 +113,9 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         // providers
         treeViewer.setContentProvider(new CollectedTracesContentProvider(treeViewer));
         treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
+
+        // input
+        treeViewer.setInput(CollectedDataList.getInstance());
 
         // listener
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -154,37 +160,37 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
-        loadButton.setEnabled(false);
-        clearButton.setEnabled(false);
-        treeViewer.setInput(CollectedDataList.getInstance());
+        loadAction.setEnabled(false);
+        clearAction.setEnabled(false);
+        treeViewer.refresh();
     }
 
     public void stopTracing() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                treeViewer.setInput(CollectedDataList.getInstance());
-                loadButton.setEnabled(true);
-                clearButton.setEnabled(true);
+                treeViewer.refresh();
+                loadAction.setEnabled(true);
+                clearAction.setEnabled(true);
             }
         });
     }
 
     public void receivedTraceData() {
-        // treeViewer.setInput(CollectedDataList.getInstance());
+        // treeViewer.refresh();
     }
 
     public void startLoading() {
-        loadButton.setEnabled(false);
-        clearButton.setEnabled(false);
-        treeViewer.setInput(CollectedDataList.getInstance());
+        loadAction.setEnabled(false);
+        clearAction.setEnabled(false);
+        treeViewer.refresh();
     }
 
     public void stopLoading() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                treeViewer.setInput(CollectedDataList.getInstance());
-                loadButton.setEnabled(true);
-                clearButton.setEnabled(true);
+                treeViewer.refresh();
+                loadAction.setEnabled(true);
+                clearAction.setEnabled(true);
             }
         });
     }

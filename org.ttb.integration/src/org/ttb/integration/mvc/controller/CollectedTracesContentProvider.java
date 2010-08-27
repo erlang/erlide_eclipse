@@ -15,6 +15,7 @@ import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 public class CollectedTracesContentProvider implements /* ILazyTreeContentProvider */ITreeContentProvider {
 
     private final TreeViewer treeViewer;
+    private CollectedDataList dataList;
 
     public CollectedTracesContentProvider(TreeViewer treeViewer) {
         this.treeViewer = treeViewer;
@@ -23,7 +24,8 @@ public class CollectedTracesContentProvider implements /* ILazyTreeContentProvid
     public void dispose() {
     }
 
-    public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        dataList = (CollectedDataList) newInput;
     }
 
     public Object[] getChildren(Object element) {
@@ -31,7 +33,7 @@ public class CollectedTracesContentProvider implements /* ILazyTreeContentProvid
     }
 
     public Object[] getElements(Object element) {
-        return ((CollectedDataList) element).getData().toArray();
+        return dataList.getData().toArray();
     }
 
     public Object getParent(Object element) {

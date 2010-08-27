@@ -27,11 +27,11 @@ public class CollectedDataList {
         return data;
     }
 
-    public void addData(ITreeNode _data) {
+    public synchronized void addData(ITreeNode _data) {
         data.add(_data);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         data.clear();
     }
 

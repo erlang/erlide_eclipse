@@ -64,6 +64,7 @@ public class TtbBackend {
     private ProcessMode processMode;
     private Backend tracerBackend;
     private boolean tracing;
+    private boolean loading;
     private TraceEventHandler handler;
 
     private TtbBackend() {
@@ -83,7 +84,6 @@ public class TtbBackend {
         protected void doHandleMsg(OtpErlangObject msg) throws Exception {
             OtpErlangObject message = getStandardEvent(msg, "trace_event");
             if (message != null) {
-                // System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
                     if (rootNode != null) {
                         rootNode.setEndDate(handler.getLastTraceDate());
@@ -125,6 +125,16 @@ public class TtbBackend {
     }
 
     /**
+     * Checks if trace results are being loaded (i.e. backend receives results).
+     * 
+     * @return <code>true</code> if loading in progress, <code>false</code>
+     *         otherwise
+     */
+    public boolean isLoading() {
+        return loading;
+    }
+
+    /**
      * Starts tracing given nodes.
      * 
      * @param backends
@@ -137,6 +147,7 @@ public class TtbBackend {
             synchronized (this) {
                 if (!tracing) {
                     try {
+                        tracing = true;
 
                         if (tracerBackend == null) {
                             tracerBackend = createBackend(NODE_NAME);
@@ -192,12 +203,12 @@ public class TtbBackend {
                                 }
                             }
                         }
-                        tracing = true;
                         for (ITraceNodeObserver listener : listeners) {
                             listener.startTracing();
                         }
                     } catch (BackendException e) {
                         ErlLogger.error("Could not start tracing tool: " + e.getMessage());
+                        tracing = false;
                     }
                 }
             }
@@ -209,13 +220,15 @@ public class TtbBackend {
      * Stops tracing.
      */
     public void stop() {
-        if (tracing) {
+        if (tracing && !loading) {
             synchronized (this) {
-                if (tracing) {
+                if (tracing && !loading) {
                     try {
+                        loading = true;
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_STOP, "");
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
+                        tracing = false;
                         // TODO what if exception is thrown? - UI is locked
                     } finally {
                     }
@@ -225,15 +238,17 @@ public class TtbBackend {
     }
 
     public void loadData(String path) {
-        if (!tracing) {
+        if (!tracing && !loading) {
             synchronized (this) {
-                if (!tracing) {
+                if (!tracing && !loading) {
                     try {
+                        loading = true;
                         handler = new TraceEventHandler();
                         BackendManager.getDefault().getIdeBackend().getEventDaemon().addHandler(handler);
                         BackendManager.getDefault().getIdeBackend().call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
                         ErlLogger.error("Could not load data: " + e.getMessage());
+                        loading = false;
                         // TODO what if exception is thrown? - UI is locked
                         // forever
                     }
@@ -244,10 +259,11 @@ public class TtbBackend {
 
     private void finishTracing() {
         tracerBackend.getEventDaemon().removeHandler(handler);
-        tracing = false;
         for (ITraceNodeObserver listener : listeners) {
             listener.stopTracing();
         }
+        loading = false;
+        tracing = false;
     }
 
     private void finishLoading() {
@@ -255,6 +271,7 @@ public class TtbBackend {
         for (ITraceNodeObserver listener : listeners) {
             listener.stopLoading();
         }
+        loading = false;
     }
 
     private OtpErlangObject[] createProcessFlagsArray(Set<ProcessFlag> set) {

@@ -5,6 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -30,6 +34,8 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
@@ -69,12 +75,12 @@ import erlang.ErlideProclist;
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     private TableViewer functionsTableViewer;
-    private Button startButton;
     private Combo backendNameCombo;
     private Composite currentProcessControl;
     private ProcessMode currentProcessMode = ProcessMode.ALL;
     private TableViewer processesTableViewer;
     private String configName;
+    private Action startStopAction;
 
     public ControlPanelView() {
         TtbBackend.getInstance().addListener(this);
@@ -95,11 +101,57 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         containerLayout.marginHeight = 0;
         containerLayout.verticalSpacing = 3;
 
+        // toolbars and menu
+        createActionBars();
+
         // children
         createStartStopPanel(parent);
         TabFolder tabFolder = createTabs(parent);
         addProcessesTab(tabFolder);
         addFunctionsTab(tabFolder);
+
+        // initialize UI
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        if (TtbBackend.getInstance().isStarted()) {
+            doAfterStartTracing();
+            if (TtbBackend.getInstance().isLoading()) {
+                // tracing is being finished - data is being sent to eclipse
+                doBeforeStopTracing();
+            }
+        } else {
+            if (TtbBackend.getInstance().isLoading()) {
+                // trace results from file are being loaded
+                doBeforeLoading();
+            } else
+                // no action is being performed
+                doAfterStopTracing();
+        }
+    }
+
+    private void createActionBars() {
+        // toolbar
+        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+
+        startStopAction = new Action() {
+            @Override
+            public void run() {
+                if (!TtbBackend.getInstance().isLoading()) {
+                    if (TtbBackend.getInstance().isStarted()) {
+                        doBeforeStopTracing();
+                        doStopTracing();
+                    } else {
+                        doStartTracing();
+                    }
+                }
+            }
+        };
+
+        startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+        manager.add(startStopAction);
+
     }
 
     private void createStartStopPanel(Composite parent) {
@@ -127,32 +179,78 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 backendNameCombo.setItems(getBackendNames());
             }
         });
-
-        // "Start/Stop" button
-        startButton = new Button(container, SWT.PUSH | SWT.CENTER);
-        // TODO what if tracing is stopped, i.e. viewer hasn't received yet all
-        // data? In this case button should be disabled
-        startButton.setText(TtbBackend.getInstance().isStarted() ? "Stop" : "Start");
-        startButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (TtbBackend.getInstance().isStarted()) {
-                    startButton.setEnabled(false);
-                    TtbBackend.getInstance().stop();
-                } else {
-                    ArrayList<Backend> backends = new ArrayList<Backend>();
-                    backends.add(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
-                    TtbBackend.getInstance().start(backends);
-                }
-            }
-        });
     }
 
     private TabFolder createTabs(Composite parent) {
         TabFolder tabFolder = new TabFolder(parent, SWT.BORDER);
         tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         return tabFolder;
+    }
+
+    /**
+     * Method called when starting tracing.
+     */
+    private void doStartTracing() {
+        ArrayList<Backend> backends = new ArrayList<Backend>();
+        backends.add(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+        TtbBackend.getInstance().start(backends);
+    }
+
+    /**
+     * Method called after starting tracing.
+     */
+    private void doAfterStartTracing() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startStopAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
+                startStopAction.setToolTipText("Stop tracing");
+            }
+        });
+    }
+
+    /**
+     * Method called before stopping tracing.
+     */
+    private void doBeforeStopTracing() {
+        startStopAction.setEnabled(false);
+    }
+
+    /**
+     * Method called when stopping tracing.
+     */
+    private void doStopTracing() {
+        TtbBackend.getInstance().stop();
+    }
+
+    /**
+     * Method called after stopping tracing.
+     */
+    private void doAfterStopTracing() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+                startStopAction.setToolTipText("Start tracing");
+                startStopAction.setEnabled(true);
+            }
+        });
+    }
+
+    /**
+     * Method called before loading trace results.
+     */
+    private void doBeforeLoading() {
+        startStopAction.setEnabled(false);
+    }
+
+    /**
+     * Method called after loading trace results.
+     */
+    private void doAfterLoading() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startStopAction.setEnabled(true);
+            }
+        });
     }
 
     // "Processes" tab methods
@@ -348,7 +446,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // "Add" button
         Button button = new Button(container, SWT.PUSH | SWT.CENTER);
-        button.setText("Add");
+        button.setText("New pattern");
+        button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
         button.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -359,7 +458,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // "Remove" button
         button = new Button(container, SWT.PUSH | SWT.CENTER);
-        button.setText("Remove");
+        button.setText("Remove pattern");
+        button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE));
         button.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -377,10 +477,11 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         Button saveConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
         Button saveAsConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
         final Label configNameLabel = new Label(container, SWT.NULL);
-        configNameLabel.setLayoutData(new RowData(60, SWT.DEFAULT));
+        configNameLabel.setLayoutData(new RowData(120, SWT.DEFAULT));
 
         // "Load patterns" button
-        loadConfigButton.setText("Load patterns...");
+        loadConfigButton.setToolTipText("Load pattern set...");
+        loadConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER));
         loadConfigButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -397,7 +498,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Delete patterns" button
-        deleteConfigButton.setText("Delete patterns");
+        deleteConfigButton.setToolTipText("Delete current pattern set");
+        deleteConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_REMOVE));
         deleteConfigButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -416,7 +518,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Save patterns" button
-        saveConfigButton.setText("Save patterns");
+        saveConfigButton.setToolTipText("Save current pattern set");
+        saveConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         saveConfigButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -433,13 +536,14 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Save patterns as..." button
-        saveAsConfigButton.setText("Save patterns as...");
+        saveAsConfigButton.setToolTipText("Save current pattern set as...");
+        saveAsConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
         saveAsConfigButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 InputDialog dialog = new TracingConfigurationSaveAsDialog(parent.getShell(), "Save trace pattern configuration",
-                        "Enter name for configuration:", "");
+                        "Enter name for configuration:", configName);
                 if (dialog.open() == Window.OK) {
                     if (ConfigurationManager.saveTracePatterns(dialog.getValue())) {
                         configName = dialog.getValue();
@@ -533,30 +637,21 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                startButton.setText("Stop");
-            }
-        });
+        doAfterStartTracing();
     }
 
     public void stopTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                startButton.setText("Start");
-                startButton.setEnabled(true);
-            }
-        });
+        doAfterStopTracing();
     }
 
     public void receivedTraceData() {
     }
 
     public void startLoading() {
-        startButton.setEnabled(false);
+        doBeforeLoading();
     }
 
     public void stopLoading() {
-        startButton.setEnabled(true);
+        doAfterLoading();
     }
 }
