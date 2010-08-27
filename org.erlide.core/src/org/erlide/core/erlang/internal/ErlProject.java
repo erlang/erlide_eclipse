@@ -554,7 +554,7 @@ public class ErlProject extends Openable implements IErlProject {
 	public Collection<IErlModule> getModules() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
-		for (final String src : props.getSourceDirs()) {
+		for (final IPath src : props.getSourceDirs()) {
 			final IFolder folder = fProject.getFolder(src);
 			IResource[] members;
 			try {
@@ -575,10 +575,10 @@ public class ErlProject extends Openable implements IErlProject {
 	public Collection<IErlModule> getModulesAndHeaders() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
-		List<String> folders = new ArrayList<String>();
+		List<IPath> folders = Lists.newArrayList();
 		folders.addAll(props.getSourceDirs());
 		folders.addAll(props.getIncludeDirs());
-		for (final String f : folders) {
+		for (final IPath f : folders) {
 			final IFolder folder = fProject.getFolder(f);
 			IResource[] members;
 			try {

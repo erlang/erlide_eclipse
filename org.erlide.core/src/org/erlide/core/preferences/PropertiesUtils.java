@@ -11,6 +11,7 @@
 package org.erlide.core.preferences;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,9 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
 	public static ErlangProjectProperties convertOld(
@@ -37,7 +41,7 @@ public final class PropertiesUtils {
 		}
 
 		result.addSources(mkSources(old.getSourceDirs()));
-		result.addIncludes(PreferencesUtils.unpackList(PreferencesUtils
+		result.addIncludes(PreferencesUtils.unpackList(PathSerializer
 				.packList(old.getIncludeDirs())));
 		result.setOutput(old.getOutputDir());
 
@@ -65,9 +69,9 @@ public final class PropertiesUtils {
 
 	private static List<SourceLocation> makeSourceLocations(
 			final List<String> externalModules) {
-		final List<SourceLocation> result = new ArrayList<SourceLocation>();
+		final List<SourceLocation> result = Lists.newArrayList();
 
-		final List<String> modules = new ArrayList<String>();
+		final List<String> modules = Lists.newArrayList();
 		for (final String mod : externalModules) {
 			if (mod.endsWith(".erlidex")) {
 				final List<String> mods = PreferencesUtils.readFile(mod);
@@ -77,7 +81,7 @@ public final class PropertiesUtils {
 			}
 		}
 
-		final Map<String, List<String>> grouped = new HashMap<String, List<String>>();
+		final Map<IPath, List<String>> grouped = Maps.newHashMap();
 		for (final String mod : modules) {
 			final int i = mod.lastIndexOf('/');
 			final String path = mod.substring(0, i);
@@ -86,14 +90,14 @@ public final class PropertiesUtils {
 			ErlLogger.debug("FOUND: '" + path + "' '" + file + "'");
 			List<String> pval = grouped.get(path);
 			if (pval == null) {
-				pval = new ArrayList<String>();
+				pval = Lists.newArrayList();
 			}
 			pval.add(file);
-			grouped.put(path.toString(), pval);
+			grouped.put(new Path(path), pval);
 		}
 		ErlLogger.debug(grouped.toString());
 
-		for (final Entry<String, List<String>> loc : grouped.entrySet()) {
+		for (final Entry<IPath, List<String>> loc : grouped.entrySet()) {
 			final SourceLocation location = new SourceLocation(loc.getKey(),
 					loc.getValue(), null, null, null, null);
 			result.add(location);
@@ -102,9 +106,9 @@ public final class PropertiesUtils {
 		return result;
 	}
 
-	private static List<SourceLocation> mkSources(final List<String> list) {
-		final List<SourceLocation> result = new ArrayList<SourceLocation>();
-		for (final String src : list) {
+	private static List<SourceLocation> mkSources(final Collection<IPath> list) {
+		final List<SourceLocation> result = Lists.newArrayList();
+		for (final IPath src : list) {
 			result.add(new SourceLocation(src, null, null, null, null, null));
 		}
 		return result;

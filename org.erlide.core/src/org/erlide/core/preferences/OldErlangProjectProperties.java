@@ -36,11 +36,11 @@ public final class OldErlangProjectProperties implements
 
 	private IProject project;
 
-	private List<String> sourceDirs = PreferencesUtils
+	private Collection<IPath> sourceDirs = PathSerializer
 			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
 	private IPath outputDir = new Path(
 			ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-	private List<String> includeDirs = PreferencesUtils
+	private Collection<IPath> includeDirs = PathSerializer
 			.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
 	private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
@@ -78,11 +78,11 @@ public final class OldErlangProjectProperties implements
 		String sourceDirsStr = node.get(
 				ProjectPreferencesConstants.SOURCE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-		sourceDirs = PreferencesUtils.unpackList(sourceDirsStr);
+		sourceDirs = PathSerializer.unpackList(sourceDirsStr);
 		String includeDirsStr = node.get(
 				ProjectPreferencesConstants.INCLUDE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-		includeDirs = PreferencesUtils.unpackList(includeDirsStr);
+		includeDirs = PathSerializer.unpackList(includeDirsStr);
 		outputDir = new Path(node.get(ProjectPreferencesConstants.OUTPUT_DIR,
 				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR));
 		runtimeVersion = new RuntimeVersion(node.get(
@@ -131,9 +131,9 @@ public final class OldErlangProjectProperties implements
 
 		try {
 			node.put(ProjectPreferencesConstants.SOURCE_DIRS,
-					PreferencesUtils.packList(sourceDirs));
+					PathSerializer.packList(sourceDirs));
 			node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
-					PreferencesUtils.packList(includeDirs));
+					PathSerializer.packList(includeDirs));
 			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir.toString());
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
@@ -164,11 +164,11 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public Collection<String> getIncludeDirs() {
-		return Collections.unmodifiableList(includeDirs);
+	public Collection<IPath> getIncludeDirs() {
+		return Collections.unmodifiableCollection(includeDirs);
 	}
 
-	public void setIncludeDirs(final Collection<String> includeDirs2) {
+	public void setIncludeDirs(final Collection<IPath> includeDirs2) {
 		includeDirs = Lists.newArrayList(includeDirs2);
 	}
 
@@ -195,11 +195,11 @@ public final class OldErlangProjectProperties implements
 		}
 	}
 
-	public List<String> getSourceDirs() {
-		return Collections.unmodifiableList(sourceDirs);
+	public Collection<IPath> getSourceDirs() {
+		return Collections.unmodifiableCollection(sourceDirs);
 	}
 
-	public void setSourceDirs(final Collection<String> sourceDirs2) {
+	public void setSourceDirs(final Collection<IPath> sourceDirs2) {
 		sourceDirs = Lists.newArrayList(sourceDirs2);
 	}
 
@@ -211,18 +211,17 @@ public final class OldErlangProjectProperties implements
 		return "";
 	}
 
-	public String buildIncludeDirs(final Collection<String> list) {
+	public String buildIncludeDirs(final Collection<IPath> list) {
 		final StringBuilder incs = new StringBuilder();
-		for (final String element : list) {
+		for (IPath element : list) {
 			final IPath loc = project.getLocation();
-			IPath inc = new Path(element);
-			ErlLogger.debug("* " + inc);
-			if (!inc.isAbsolute()) {
+			ErlLogger.debug("* " + element);
+			if (!element.isAbsolute()) {
 				ErlLogger.debug("  not abs!");
-				inc = loc.append(inc);
-				ErlLogger.debug("  " + inc);
+				element = loc.append(element);
+				ErlLogger.debug("  " + element);
 			}
-			incs.append(" -I").append(inc.toString());
+			incs.append(" -I").append(element.toString());
 		}
 		return incs.toString();
 	}
@@ -264,12 +263,12 @@ public final class OldErlangProjectProperties implements
 	}
 
 	public boolean hasSourceDir(final IPath fullPath) {
-		final String f = fullPath.removeFirstSegments(1).toString();
-		for (final String s : getSourceDirs()) {
+		final IPath f = fullPath.removeFirstSegments(1);
+		for (final IPath s : getSourceDirs()) {
 			if (s.equals(f)) {
 				return true;
 			}
-			if (fullPath.segmentCount() == 1 && s.equals(".")) {
+			if (fullPath.segmentCount() == 1 && s.toString().equals(".")) {
 				return true;
 			}
 		}

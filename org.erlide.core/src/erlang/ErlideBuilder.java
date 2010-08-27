@@ -1,8 +1,10 @@
 package erlang;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -13,15 +15,20 @@ import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Lists;
 
 public class ErlideBuilder {
 
-	public static RpcFuture compileErl(final Backend backend, final String fn,
-			final String outputdir, final List<String> includedirs,
+	public static RpcFuture compileErl(final Backend backend, final IPath fn,
+			final String outputdir, final Collection<IPath> includedirs,
 			OtpErlangList compilerOptions) {
+		List<String> incs = Lists.newArrayList();
+		for (IPath p : includedirs) {
+			incs.add(p.toString());
+		}
 		try {
-			return backend.async_call("erlide_builder", "compile", "sslsx", fn,
-					outputdir, includedirs, compilerOptions);
+			return backend.async_call("erlide_builder", "compile", "sslsx",
+					fn.toString(), outputdir, incs, compilerOptions);
 		} catch (final Exception e) {
 			ErlLogger.debug(e);
 			return null;
@@ -53,8 +60,8 @@ public class ErlideBuilder {
 				ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
 						.toString());
 				if (b.isDistributed()) {
-					b.call("erlide_builder", "load", "ao", module, b
-							.doLoadOnAllNodes());
+					b.call("erlide_builder", "load", "ao", module,
+							b.doLoadOnAllNodes());
 				} else {
 					ErlideUtil.loadModuleViaInput(b, project, module);
 				}

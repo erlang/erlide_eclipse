@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.preferences.PathSerializer;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
@@ -133,7 +134,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd.widthHint = 371;
 		source.setLayoutData(gd);
-		source.setText(PreferencesUtils.packList(prefs.getSourceDirs()));
+		source.setText(PathSerializer.packList(prefs.getSourceDirs()));
 		source.addListener(SWT.Modify, nameModifyListener);
 		new Label(composite, SWT.NONE);
 
@@ -144,7 +145,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 				.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		include.setLayoutData(gd);
-		include.setText(PreferencesUtils.packList(prefs.getIncludeDirs()));
+		include.setText(PathSerializer.packList(prefs.getIncludeDirs()));
 		include.addListener(SWT.Modify, nameModifyListener);
 		new Label(composite, SWT.NONE);
 
@@ -273,8 +274,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
 		public void handleEvent(final Event e) {
 			prefs.setOutputDir(new Path(output.getText()));
-			prefs.setSourceDirs(PreferencesUtils.unpackList(source.getText()));
-			prefs.setIncludeDirs(PreferencesUtils.unpackList(include.getText()));
+			prefs.setSourceDirs(PathSerializer.unpackList(source.getText()));
+			prefs.setIncludeDirs(PathSerializer.unpackList(include.getText()));
 			final RuntimeVersion rv = new RuntimeVersion(
 					runtimeVersion.getText());
 			prefs.setRuntimeVersion(rv);
