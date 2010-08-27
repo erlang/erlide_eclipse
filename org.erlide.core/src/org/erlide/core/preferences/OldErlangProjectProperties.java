@@ -48,8 +48,6 @@ public final class OldErlangProjectProperties implements
 			ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
 	private String runtimeName = null;
 
-	public static final String CODEPATH_FILENAME = ".codepath"; //$NON-NLS-1$
-
 	public OldErlangProjectProperties() {
 	}
 
@@ -81,12 +79,6 @@ public final class OldErlangProjectProperties implements
 			} catch (final BackingStoreException e) {
 				e.printStackTrace();
 			}
-		}
-
-		final IFile cp = project.getFile(CODEPATH_FILENAME);
-		if (cp.exists()) {
-			final String msg = "Found old configuration file %s for project %s, please remove it.";
-			ErlLogger.warn(msg, CODEPATH_FILENAME, project.getName());
 		}
 
 		String sourceDirsStr = node.get(
