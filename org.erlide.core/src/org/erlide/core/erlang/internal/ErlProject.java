@@ -572,7 +572,7 @@ public class ErlProject extends Openable implements IErlProject {
 		return result;
 	}
 
-	public List<IErlModule> getModulesAndHeaders() throws ErlModelException {
+	public Collection<IErlModule> getModulesAndHeaders() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
 		List<String> folders = new ArrayList<String>();

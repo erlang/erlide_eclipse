@@ -12,7 +12,6 @@
 package org.erlide.core.erlang;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -125,7 +124,7 @@ public interface IErlProject extends IErlFolder {
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
 
-	List<IErlModule> getModulesAndHeaders() throws ErlModelException;
+	Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
 	OldErlangProjectProperties getProperties();
 
