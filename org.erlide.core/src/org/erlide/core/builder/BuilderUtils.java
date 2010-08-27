@@ -190,7 +190,7 @@ public final class BuilderUtils {
 				// handle removed resource
 				MarkerHelper.deleteMarkers(resource);
 
-				IPath beam = new Path(prefs.getOutputDir());
+				IPath beam = prefs.getOutputDir();
 				final IPath module = beam.append(resource.getName())
 						.removeFileExtension();
 				beam = module.addFileExtension("beam").setDevice(null);
@@ -369,7 +369,7 @@ public final class BuilderUtils {
 		for (final String s : prefs.getIncludeDirs()) {
 			interestingPaths.add(s);
 		}
-		interestingPaths.add(prefs.getOutputDir());
+		interestingPaths.add(prefs.getOutputDir().toString());
 
 		final IPath projectPath = project.getFullPath();
 		final IPath fullPath = resource.getFullPath();
@@ -420,10 +420,8 @@ public final class BuilderUtils {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getLocation();
-
-		final String out = prefs.getOutputDir();
-		return projectPath.append(new Path(out)).isPrefixOf(
-				resource.getLocation());
+		final IPath out = prefs.getOutputDir();
+		return projectPath.append(out).isPrefixOf(resource.getLocation());
 	}
 
 	static void addDependents(final IResource resource,
@@ -436,12 +434,12 @@ public final class BuilderUtils {
 				m.getScanner();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
-					if (BuilderUtils.samePath(ifile.getFilename(), resource
-							.getName())) {
+					if (BuilderUtils.samePath(ifile.getFilename(),
+							resource.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
 							// FIXME BuildResource
-							final BuildResource bres = new BuildResource(m
-									.getResource());
+							final BuildResource bres = new BuildResource(
+									m.getResource());
 							result.add(bres);
 						}
 						break;
@@ -558,8 +556,8 @@ public final class BuilderUtils {
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
 						final IResource rifile = BuilderUtils
-								.findResourceByName(project, ifile
-										.getFilename());
+								.findResourceByName(project,
+										ifile.getFilename());
 						if (rifile != null
 								&& rifile.getLocalTimeStamp() > beam
 										.getLocalTimeStamp()) {
@@ -674,7 +672,7 @@ public final class BuilderUtils {
 			throws CoreException {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final String outputDir = prefs.getOutputDir();
+		final IPath outputDir = prefs.getOutputDir();
 		final IResource ebinDir = project.findMember(outputDir);
 		if (ebinDir != null) {
 			ebinDir.refreshLocal(IResource.DEPTH_ONE, null);
@@ -788,7 +786,7 @@ public final class BuilderUtils {
 	private static IPath getBeamForErl(final IResource source) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(source.getProject());
-		IPath p = new Path(prefs.getOutputDir());
+		IPath p = prefs.getOutputDir();
 		p = p.append(source.getName());
 		if (!"erl".equals(p.getFileExtension())) {
 			return null;

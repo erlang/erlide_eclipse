@@ -414,7 +414,7 @@ public class ErlProject extends Openable implements IErlProject {
 
 		final OldErlangProjectProperties props = ErlangCore
 				.getProjectProperties(getProject());
-		return new Path(props.getOutputDir());
+		return props.getOutputDir();
 	}
 
 	/**

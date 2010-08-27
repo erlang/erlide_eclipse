@@ -8,9 +8,9 @@
 %% TODO expand this to separate tests, mossibly in different files
 %% we aim to automate these
 
--define(mmm, navigation).
+-define(mmm, navigation). 
 %-define(mmm, ?MODULE).
-
+ 
 -record(navigation, {aaa, bbb, ccc}).
 %-record(?mmm, {aaa, bbb, ccc}).
 %-record(?MODULE, {aaa, bbb, ccc}).

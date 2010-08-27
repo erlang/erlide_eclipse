@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +38,8 @@ public final class OldErlangProjectProperties implements
 
 	private List<String> sourceDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-	private String outputDir = ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR;
+	private IPath outputDir = new Path(
+			ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
 	private List<String> includeDirs = PreferencesUtils
 			.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 	private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
@@ -83,8 +83,8 @@ public final class OldErlangProjectProperties implements
 				ProjectPreferencesConstants.INCLUDE_DIRS,
 				ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
 		includeDirs = PreferencesUtils.unpackList(includeDirsStr);
-		outputDir = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
-				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+		outputDir = new Path(node.get(ProjectPreferencesConstants.OUTPUT_DIR,
+				ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR));
 		runtimeVersion = new RuntimeVersion(node.get(
 				ProjectPreferencesConstants.RUNTIME_VERSION, null));
 		runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
@@ -130,11 +130,11 @@ public final class OldErlangProjectProperties implements
 		node.removePreferenceChangeListener(this);
 
 		try {
-			node.put(ProjectPreferencesConstants.SOURCE_DIRS, PreferencesUtils
-					.packList(sourceDirs));
-			node.put(ProjectPreferencesConstants.INCLUDE_DIRS, PreferencesUtils
-					.packList(includeDirs));
-			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir);
+			node.put(ProjectPreferencesConstants.SOURCE_DIRS,
+					PreferencesUtils.packList(sourceDirs));
+			node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
+					PreferencesUtils.packList(includeDirs));
+			node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir.toString());
 			node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
 					externalIncludesFile);
 			if (runtimeVersion.isDefined()) {
@@ -172,11 +172,11 @@ public final class OldErlangProjectProperties implements
 		includeDirs = Lists.newArrayList(includeDirs2);
 	}
 
-	public String getOutputDir() {
+	public IPath getOutputDir() {
 		return outputDir;
 	}
 
-	public void setOutputDir(final String dir) {
+	public void setOutputDir(final IPath dir) {
 		if (!outputDir.equals(dir)) {
 			// try {
 			// final Backend b = ErlangCore.getBackendManager()

@@ -39,7 +39,7 @@ public final class PropertiesUtils {
 		result.addSources(mkSources(old.getSourceDirs()));
 		result.addIncludes(PreferencesUtils.unpackList(PreferencesUtils
 				.packList(old.getIncludeDirs())));
-		result.setOutput(new Path(old.getOutputDir()));
+		result.setOutput(old.getOutputDir());
 
 		final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();

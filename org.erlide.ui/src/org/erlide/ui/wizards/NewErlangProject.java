@@ -158,7 +158,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
 				+ "|");
 		final OldErlangProjectProperties prefs = buildPage.getPrefs();
-		if (prefs.getOutputDir().trim().length() == 0) {
+		if (prefs.getOutputDir().isEmpty()) {
 			reportError(ErlideUIPlugin
 					.getResourceString("wizard.errors.buildpath"));
 			return false;
@@ -211,7 +211,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
 			buildPaths(monitor, root, project, new ArrayList<String>() {
 				{
-					add(bprefs.getOutputDir());
+					add(bprefs.getOutputDir().toString());
 				}
 			});
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
