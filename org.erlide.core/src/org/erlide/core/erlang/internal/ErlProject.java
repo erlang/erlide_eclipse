@@ -13,6 +13,7 @@ package org.erlide.core.erlang.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.ICommand;
@@ -43,6 +44,8 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 /**
  * Handle for an Erlang Project.
@@ -424,8 +427,8 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * @see IErlProject#getRequiredProjectNames()
 	 */
-	public String[] getRequiredProjectNames() throws ErlModelException {
-		return new String[0];
+	public Collection<String> getRequiredProjectNames() throws ErlModelException {
+		return Lists.newArrayList();
 
 		// return this.projectPrerequisites(getResolvedClasspath(true, false,
 		// false));
@@ -548,7 +551,7 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	// FIXME
-	public List<IErlModule> getModules() throws ErlModelException {
+	public Collection<IErlModule> getModules() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
 		for (final String src : props.getSourceDirs()) {

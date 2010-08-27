@@ -431,7 +431,7 @@ public final class BuilderUtils {
 			throws ErlModelException {
 		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
 		if (eprj != null) {
-			final List<IErlModule> ms = eprj.getModules();
+			final Collection<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
 				m.getScanner();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();

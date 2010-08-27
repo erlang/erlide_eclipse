@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -113,7 +114,7 @@ public interface IErlProject extends IErlFolder {
 	 *             if this element does not exist or if an exception occurs
 	 *             while accessing its corresponding resource
 	 */
-	String[] getRequiredProjectNames() throws ErlModelException;
+	Collection<String> getRequiredProjectNames() throws ErlModelException;
 
 	/**
 	 * Sets the default output location of this project to the location
@@ -144,8 +145,6 @@ public interface IErlProject extends IErlFolder {
 	 */
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
-
-	List<IErlModule> getModules() throws ErlModelException;
 
 	List<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
