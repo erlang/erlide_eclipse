@@ -26,7 +26,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.swtdesigner.ResourceManager;

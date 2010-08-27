@@ -11,7 +11,6 @@ package org.erlide.core.erlang.util;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
