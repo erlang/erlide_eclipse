@@ -1,4 +1,3 @@
-
 # arguments:
 # WORKSPACE - location of the source code root
 # JAVA_HOME - location of JDK
@@ -33,4 +32,9 @@ LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
  
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${SITE_PRJ_PATH}/_bucky_test
+
+## now run eunit tests
+
+${erlang_R13}/bin/erl -pa ${WORKSPACE}/org.erlide.kernel.builder/ebin -pa ${WORKSPACE}/org.erlide.kernel.debugger/ebin -pa ${WORKSPACE}/org.erlide.kernel.ide/ebin -pa ${WORKSPACE}/org.erlide.kernel.tests/ebin -pa ${WORKSPACE}/org.erlide.kernel.common/ebin -eval 'eunit:test(core_tests, [verbose]),init:stop().' -noshell > ${WORKSPACE}/output/eunit_report.txt
+
 
