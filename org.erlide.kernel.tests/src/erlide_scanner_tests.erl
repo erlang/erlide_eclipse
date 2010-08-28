@@ -19,15 +19,10 @@
 %%
 
 scanner_light_scan_string_test_() ->
-	[?_assertEqual({ok, [#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
-						 #token{kind = '(', line = 0, offset = 1, length = 1},
-						 #token{kind = ')', line = 0, offset = 2, length = 1},
-						 #token{kind = ws, line = 0, offset = 3, length = 1, text = " "},
-						 #token{kind = '->', line = 0, offset = 4, length = 2},
-						 #token{kind = ws, line = 0, offset = 6, length = 1, text = " "},
-						 #token{kind = atom, line = 0, offset = 7, length = 1, value = b},
-						 #token{kind = dot, line = 0, offset = 8, length = 1, text = "."}]},
-				   erlide_scanner:light_scan_string("a() -> b."))].
+	[?_assertEqual({ok, <<3,0,0,0,0,0,0,0,0,1,40,0,0,0,0,0,1,0,0,1,41,0,0,0,0,0,2,0,0,1,1,0,0,0,0,0,3,
+						  0,0,1,0,0,0,0,0,0,4,0,0,2,1,0,0,0,0,0,6,0,0,1,3,0,0,0,0,0,7,0,0,1,7,0,0,0,0,
+						  0,8,0,0,1>>},
+				   erlide_scanner:light_scan_string(<<"a() -> b.">>))].
 
 scanner_test_() ->
 	[?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
@@ -57,13 +52,13 @@ scanner_test_() ->
 %%
 
 test_scan(S) ->
-	erlide_scanner_server:initialScan(testing, "", S, "/tmp", "", false), 
+	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false), 
 	R = erlide_scanner_server:getTokens(testing),
 	erlide_scanner_server:destroy(testing),
 	R.
 
 test_replace(S, Pos, RemoveLength, NewText) ->
-	erlide_scanner_server:initialScan(testing, "", S, "/tmp", "", false), 
+	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false), 
 	R1 = erlide_scanner_server:getTokens(testing),
 	erlide_scanner_server:replaceText(testing, Pos, RemoveLength, NewText),
 	R2 = erlide_scanner_server:getTokens(testing),
