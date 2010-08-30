@@ -76,25 +76,6 @@ public class ErlModelUtils {
 		return getModule(editor.getEditorInput(), adte.getDocumentProvider());
 	}
 
-	// public static IErlProject getErlProject(final ITextEditor editor) {
-	// return getErlProject(editor.getEditorInput());
-	// }
-
-	// public static IErlProject getErlProject(final IEditorInput editorInput) {
-	// if (editorInput instanceof IFileEditorInput) {
-	// final IFileEditorInput input = (IFileEditorInput) editorInput;
-	// final IErlModel model = ErlangCore.getModel();
-	// final String prj = input.getFile().getProject().getName();
-	// try {
-	// model.open(null);
-	// return model.getErlangProject(prj);
-	// } catch (final ErlModelException e) {
-	// return null;
-	// }
-	// }
-	// return null;
-	// }
-
 	public static List<IErlPreprocessorDef> getPreprocessorDefs(
 			final Backend b, final IProject project, final IErlModule module,
 			final IErlElement.Kind kind, final String externalIncludes) {
@@ -510,11 +491,8 @@ public class ErlModelUtils {
 				.getBackendManager().getIdeBackend(), mod, externalModules,
 				ErlangCore.getModel().getPathVars());
 		if (path != null) {
-			final IProject p = ResourceUtil.getExternalFilesProject();
-			if (p != null) {
-				final IFile f = ResourceUtil.openExternal(path);
-				return ModelUtils.getModule(f);
-			}
+			final IFile f = ResourceUtil.openExternal(path);
+			return ModelUtils.getModule(f);
 		}
 		return null;
 	}
