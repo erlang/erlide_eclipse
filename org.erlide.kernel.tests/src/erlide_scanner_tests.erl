@@ -18,11 +18,30 @@
 %% API Functions
 %%
 
+-define(TOK_OTHER, 0).
+-define(TOK_WS, 1).
+-define(TOK_STR, 2).
+-define(TOK_ATOM, 3).
+-define(TOK_VAR, 4).
+-define(TOK_CHAR, 5).
+-define(TOK_MACRO, 6).
+-define(TOK_DOT, 7).
+-define(TOK_INTEGER,8).
+-define(TOK_FLOAT, 9).
+-define(TOK_COMMENT, 10).
+-define(TOK_KEYWORD, 11).
+
 scanner_light_scan_string_test_() ->
-	[?_assertEqual({ok, <<3,0,0,0,0,0,0,0,0,1,40,0,0,0,0,0,1,0,0,1,41,0,0,0,0,0,2,0,0,1,1,0,0,0,0,0,3,
-						  0,0,1,0,0,0,0,0,0,4,0,0,2,1,0,0,0,0,0,6,0,0,1,3,0,0,0,0,0,7,0,0,1,7,0,0,0,0,
-						  0,8,0,0,1>>},
-				   erlide_scanner:light_scan_string(<<"a() -> b.">>))].
+	[?_assertEqual({ok,
+                        <<?TOK_ATOM, 0:24, 0:24, 1:24,
+                          $(, 0:24, 1:24, 1:24,
+                          $), 0:24, 2:24, 1:24,
+                          ?TOK_WS, 0:24, 3:24, 1:24,
+                          ?TOK_OTHER, 0:24, 4:24, 2:24,
+                          ?TOK_WS, 0:24, 6:24, 1:24,
+                          ?TOK_ATOM, 0:24, 7:24, 1:24,
+                          ?TOK_DOT, 0:24, 8:24, 1:24>>},
+                       erlide_scanner:light_scan_string(<<"a() -> b.">>))].
 
 scanner_test_() ->
 	[?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
