@@ -1,5 +1,6 @@
 package org.ttb.integration.views;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -77,6 +78,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             public void run() {
                 // TODO add support for multiple selection
                 FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+                dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
                 // dialog.setFilterExtensions(new String[] { "*.*" });
                 dialog.setText("Load trace data...");
                 String selected = dialog.open();

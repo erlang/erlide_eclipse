@@ -22,8 +22,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * Handler which receives trace data from traced node. It receives data via
- * given {@link OtpMbox}.
+ * Handler which receives trace data from traced node. It receives data via given {@link OtpMbox}.
  * 
  * @author Piotr Dorobisz
  * 
@@ -61,8 +60,10 @@ public class TraceDataHandler {
     private static final int INDEX_SPAWN_FUNCTION = 4;
 
     private Date lastTraceDate;
+    private String lastProcessDescription;
     private final SimpleDateFormat rootDateFormatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
     private final SimpleDateFormat nodeDateFormatter = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yy");
+    private String lastFunctionDescription;
 
     /**
      * Returns date formatter for formating date in root's label.
@@ -103,10 +104,8 @@ public class TraceDataHandler {
     }
 
     /**
-     * Creates root of tree displaying tracing results. Label of created node is
-     * set to display date of last trace data which was passed to this handler
-     * (it is returned by {@link #getLastTraceDate()}). Root's start date is
-     * also set to this date.
+     * Creates root of tree displaying tracing results. Label of created node is set to display date of last trace data which was passed to this handler (it is
+     * returned by {@link #getLastTraceDate()}). Root's start date is also set to this date.
      * 
      * @return tree root
      */
@@ -131,11 +130,11 @@ public class TraceDataHandler {
 
                 switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
                 case CALL:
-                    return processCallTrace(tuple);
+                    return processCallTrace("Call", tuple);
                 case EXCEPTION_FROM:
-                    return processExceptionFrom(tuple);
+                    return processExceptionFrom("Exception", tuple);
                 case EXIT:
-                    return processExitTrace(tuple);
+                    return processExitTrace("Exit", tuple);
                 case GC_END:
                     return processGcTrace("GC end", Images.GC_END_NODE, tuple);
                 case GC_START:
@@ -151,7 +150,7 @@ public class TraceDataHandler {
                 case OUT:
                     return processInOutTrace("Out", Images.OUT_NODE, tuple);
                 case RECEIVE:
-                    return processReceiveTrace(tuple);
+                    return processReceiveTrace("Received", tuple);
                 case REGISTER:
                     return processRegisterTrace("Register", Images.REGISTER_NODE, tuple);
                 case RETURN_FROM:
@@ -159,11 +158,11 @@ public class TraceDataHandler {
                 case RETURN_TO:
                     return processReturnTrace("Return to", Images.RETURN_TO_NODE, tuple, false);
                 case SEND:
-                    return processSendTrace("Sent message", Images.SENT_MESSAGE_NODE, tuple);
+                    return processSendTrace("Sent", Images.SENT_MESSAGE_NODE, tuple);
                 case SEND_TO_NON_EXISTING_PROCESS:
                     return processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
                 case SPAWN:
-                    return processSpawnTrace(tuple);
+                    return processSpawnTrace("Spawn", tuple);
                 case UNLINK:
                     return processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
                 case UNREGISTER:
@@ -195,28 +194,83 @@ public class TraceDataHandler {
     }
 
     private String createLabel(String text) {
-        return text + ": (" + nodeDateFormatter.format(lastTraceDate) + ") ";
+        return "[" + nodeDateFormatter.format(lastTraceDate) + "] " + text;
+    }
+
+    private String pid2Str(OtpErlangPid pid) {
+        return new StringBuilder().append(pid.id()).append(".").append(pid.serial()).append(".").append(pid.creation()).toString();
     }
 
     // functions creating nodes
 
     private ITreeNode createProcessNode(String label, OtpErlangObject erlangObject) {
-        ITreeNode node = null;
-        if (erlangObject instanceof OtpErlangTuple) {
-            OtpErlangTuple processTuple = (OtpErlangTuple) erlangObject;
-            OtpErlangPid pid = (OtpErlangPid) processTuple.elementAt(INDEX_PROCESS_PID);
-            OtpErlangObject info = processTuple.elementAt(INDEX_PROCESS_INFO);
-            OtpErlangObject processNode = processTuple.elementAt(INDEX_PROCESS_NODE);
+        StringBuilder builder = new StringBuilder();
+        ITreeNode functionNode = null;
+        ITreeNode nameNode = null;
+        ITreeNode pidNode = null;
+        ITreeNode processNodeNode = null;
 
-            node = new TreeNode(label + " " + info);
-            TreeNode child = new TreeNode("pid: " + pid);
-            child.setImage(Activator.getImage(Images.INFO_NODE));
-            TreeNode child2 = new TreeNode("node: " + processNode);
-            child2.setImage(Activator.getImage(Images.INFO_NODE));
-            node.addChildren(child, child2);
+        if (erlangObject instanceof OtpErlangTuple) {
+            // tuple: {Pid(), Initial_call()|Registered_name(), Node()} | {Registered_name, Node()}
+            OtpErlangTuple processTuple = (OtpErlangTuple) erlangObject;
+            int index = 0;
+
+            // pid
+            OtpErlangPid pid = null;
+            if (processTuple.arity() == 3) {
+                // {Pid(), Initial_call()|Registered_name(), Node()}
+                pid = (OtpErlangPid) processTuple.elementAt(INDEX_PROCESS_PID);
+                pidNode = new TreeNode("pid: " + pid2Str(pid), Activator.getImage(Images.INFO_NODE));
+            } else {
+                index = 1;// tuple doesn't contain Pid element
+            }
+
+            OtpErlangObject info = processTuple.elementAt(INDEX_PROCESS_INFO - index);
+
+            // process node
+            OtpErlangObject processNode = processTuple.elementAt(INDEX_PROCESS_NODE - index);
+            processNodeNode = new TreeNode("node: " + processNode, Activator.getImage(Images.INFO_NODE));
+
+            if (info instanceof OtpErlangTuple) {
+                // initial call
+                functionNode = createFunctionNode("initial call:", info);
+                functionNode.setImage(Activator.getImage(Images.INFO_NODE));
+                if (pid != null) {
+                    builder.append(pid2Str(pid));
+                } else {
+                    builder.append(lastFunctionDescription);
+                }
+            } else {
+                // registered name
+                nameNode = new TreeNode("name: " + info, Activator.getImage(Images.INFO_NODE));
+                builder.append(info.toString());
+            }
+            builder.append(" (").append(processNode).append(")");
+        } else if (erlangObject instanceof OtpErlangPid) {
+            // Pid
+            OtpErlangPid pid = (OtpErlangPid) erlangObject;
+            pidNode = new TreeNode("pid: " + pid2Str(pid), Activator.getImage(Images.INFO_NODE));
+            processNodeNode = new TreeNode("node: " + pid.node(), Activator.getImage(Images.INFO_NODE));
+            builder.append(pid2Str(pid)).append(" (").append(pid.node()).append(")");
         } else {
-            node = new TreeNode(label + " " + (erlangObject));
+            // Atom (registered name)
+            nameNode = new TreeNode("name: " + erlangObject, Activator.getImage(Images.INFO_NODE));
+            builder.append(erlangObject.toString());
         }
+
+        ITreeNode node = new TreeNode();
+        if (pidNode != null)
+            node.addChildren(pidNode);
+        if (nameNode != null)
+            node.addChildren(nameNode);
+        if (processNodeNode != null)
+            node.addChildren(processNodeNode);
+        if (functionNode != null)
+            node.addChildren(functionNode);
+
+        lastProcessDescription = builder.toString();
+        node.setLabel(label + lastProcessDescription);
+
         return node;
     }
 
@@ -264,28 +318,30 @@ public class TraceDataHandler {
             functionNameNode.setLabel("function: " + functionName);
 
             node.addChildren(moduleNameNode, functionNameNode, argsNode);
-            node.setLabel(label + " " + moduleName + ":" + functionName + "/" + arityValue);
+            lastFunctionDescription = label + moduleName + ":" + functionName + "/" + arityValue;
 
         } else {
-            node.setLabel(label + " unknown");
+            lastFunctionDescription = "unknown";
         }
+        node.setLabel(lastFunctionDescription);
         return node;
     }
 
     private ITreeNode createMessageNode(OtpErlangObject message) {
-        ITreeNode node = new TreeNode("message", Activator.getImage(Images.MESSAGE_NODE));
-
-        TreeNode messageNode = new TreeNode(message.toString(), Activator.getImage(Images.TEXT_NODE));
-        node.addChildren(messageNode);
+        ITreeNode node = new TreeNode(message.toString(), Activator.getImage(Images.MESSAGE_NODE));
         return node;
     }
 
     // functions processing different trace types
 
     private ITreeNode processGcTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
-        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription);
+
+        ITreeNode node = new TreeNode(createLabel(labelBuilder.toString()), Activator.getImage(image));
         node.addChildren(processNode);
 
         OtpErlangList list = (OtpErlangList) tuple.elementAt(INDEX_INFO);
@@ -300,132 +356,172 @@ public class TraceDataHandler {
         return node;
     }
 
-    private ITreeNode processSpawnTrace(OtpErlangTuple tuple) {
-        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+    private ITreeNode processSpawnTrace(String label, OtpErlangTuple tuple) {
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription).append("->");
 
-        ITreeNode processNode2 = createProcessNode("new process:", tuple.elementAt(INDEX_PROCESS2));
+        ITreeNode processNode2 = createProcessNode("new process: ", tuple.elementAt(INDEX_PROCESS2));
         processNode2.setImage(Activator.getImage(Images.NEW_PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription);
 
-        ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_SPAWN_FUNCTION));
+        ITreeNode functionNode = createFunctionNode("function: ", tuple.elementAt(INDEX_SPAWN_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
 
-        ITreeNode node = new TreeNode(createLabel("Spawn"), Activator.getImage(Images.SPAWN_NODE));
+        ITreeNode node = new TreeNode(createLabel(labelBuilder.toString()), Activator.getImage(Images.SPAWN_NODE));
         node.addChildren(processNode, processNode2, functionNode);
         return node;
     }
 
-    private ITreeNode processExceptionFrom(OtpErlangTuple tuple) {
-        ITreeNode node = processReturnTrace("Exception", Images.EXCEPTION_NODE, tuple, false);
-        OtpErlangTuple exceptionTuple = (OtpErlangTuple) tuple.elementAt(INDEX_EXCEPTION);
+    private ITreeNode processExceptionFrom(String label, OtpErlangTuple tuple) {
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
 
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
+        processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+
+        OtpErlangTuple exceptionTuple = (OtpErlangTuple) tuple.elementAt(INDEX_EXCEPTION);
         OtpErlangObject exceptionClass = exceptionTuple.elementAt(INDEX_EXCEPTION_CLASS);
         OtpErlangObject exceptionValue = exceptionTuple.elementAt(INDEX_EXCEPTION_VALUE);
+        labelBuilder.append(exceptionClass.toString());
 
         ITreeNode exceptionClassNode = new TreeNode(exceptionClass.toString(), Activator.getImage(Images.INFO_NODE));
         exceptionClassNode.addChildren(new TreeNode(exceptionValue.toString()));
 
-        node.addChildren(exceptionClassNode);
+        ITreeNode node = processReturnTrace(labelBuilder.toString(), Images.EXCEPTION_NODE, tuple, false);
+        node.addChildren(processNode, exceptionClassNode);
         return node;
     }
 
     private ITreeNode processReturnTrace(String label, Images image, OtpErlangTuple tuple, boolean showRetValue) {
-        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
 
-        ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_FUNCTION));
+        ITreeNode functionNode = createFunctionNode("function: ", tuple.elementAt(INDEX_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
+        labelBuilder.append(lastFunctionDescription);
 
-        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
+        ITreeNode node = new TreeNode();
         node.addChildren(processNode, functionNode);
 
         if (showRetValue) {
             ITreeNode returnValueNode = new TreeNode("return value: " + tuple.elementAt(INDEX_RETURN_VALUE));
             returnValueNode.setImage(Activator.getImage(Images.INFO_NODE));
+            labelBuilder.append("->").append(tuple.elementAt(INDEX_RETURN_VALUE));
             node.addChildren(returnValueNode);
         }
 
+        node.setLabel(createLabel(labelBuilder.toString()));
+        node.setImage(Activator.getImage(image));
         return node;
     }
 
     private ITreeNode processInOutTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
-        processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
 
-        ITreeNode functionNode = createFunctionNode("function:", tuple.elementAt(INDEX_FUNCTION));
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
+        processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription);
+
+        ITreeNode functionNode = createFunctionNode("function: ", tuple.elementAt(INDEX_FUNCTION));
         functionNode.setImage(Activator.getImage(Images.FUNCTION_NODE));
 
-        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
+        ITreeNode node = new TreeNode(createLabel(labelBuilder.toString()), Activator.getImage(image));
         node.addChildren(processNode, functionNode);
         return node;
     }
 
     private ITreeNode processRegisterTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode process = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode process = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
         process.setImage(Activator.getImage(Images.REGISTER_NODE));
+        labelBuilder.append(lastProcessDescription).append("->");
 
         TreeNode regName = new TreeNode("name: " + tuple.elementAt(INDEX_REGNAME).toString(), Activator.getImage(Images.INFO_NODE));
-        ITreeNode node = new TreeNode(createLabel(label), Activator.getImage(image));
+        labelBuilder.append(regName);
+
+        ITreeNode node = new TreeNode(createLabel(labelBuilder.toString()), Activator.getImage(image));
         node.addChildren(process, regName);
         return node;
     }
 
     private ITreeNode processLinkTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode process1Node = createProcessNode("process 1:", tuple.elementAt(INDEX_PROCESS));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode process1Node = createProcessNode("process 1: ", tuple.elementAt(INDEX_PROCESS));
         process1Node.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription).append("->");
 
-        ITreeNode process2Node = createProcessNode("process 2:", tuple.elementAt(INDEX_PROCESS2));
+        ITreeNode process2Node = createProcessNode("process 2: ", tuple.elementAt(INDEX_PROCESS2));
         process2Node.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription);
 
-        TreeNode node = new TreeNode(createLabel(label));
+        TreeNode node = new TreeNode(createLabel(labelBuilder.toString()));
         node.setImage(Activator.getImage(image));
         node.addChildren(process1Node, process2Node);
         return node;
     }
 
-    private ITreeNode processExitTrace(OtpErlangTuple tuple) {
-        ITreeNode processNode = createProcessNode("process:", tuple.elementAt(INDEX_PROCESS));
+    private ITreeNode processExitTrace(String label, OtpErlangTuple tuple) {
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+        labelBuilder.append(lastProcessDescription);
 
-        ITreeNode reasonNode = new TreeNode("reason", Activator.getImage(Images.INFO_NODE));
-        ITreeNode reasonTextNode = new TreeNode(tuple.elementAt(INDEX_REASON).toString());
-        reasonNode.addChildren(reasonTextNode);
+        ITreeNode reasonNode = new TreeNode("reason: " + tuple.elementAt(INDEX_REASON).toString(), Activator.getImage(Images.INFO_NODE));
 
-        TreeNode node = new TreeNode(createLabel("Exit"));
+        TreeNode node = new TreeNode(createLabel(labelBuilder.toString()));
         node.setImage(Activator.getDefault().getImageRegistry().get(Images.EXIT_NODE.toString()));
         node.addChildren(processNode, reasonNode);
         return node;
     }
 
-    private ITreeNode processReceiveTrace(OtpErlangTuple tuple) {
-        ITreeNode processNode = createProcessNode("receiver:", tuple.elementAt(INDEX_PROCESS));
+    private ITreeNode processReceiveTrace(String label, OtpErlangTuple tuple) {
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
+
+        ITreeNode processNode = createProcessNode("receiver: ", tuple.elementAt(INDEX_PROCESS));
         processNode.setImage(Activator.getImage(Images.RECEIVER_NODE));
+        labelBuilder.append(lastProcessDescription);
+
         ITreeNode messageNode = createMessageNode(tuple.elementAt(INDEX_MESSAGE));
 
-        TreeNode node = new TreeNode(createLabel("Received message"));
+        TreeNode node = new TreeNode(createLabel(labelBuilder.toString()));
         node.setImage(Activator.getDefault().getImageRegistry().get(Images.RECEIVED_MESSAGE_NODE.toString()));
         node.addChildren(processNode, messageNode);
         return node;
     }
 
     private ITreeNode processSendTrace(String label, Images image, OtpErlangTuple tuple) {
-        ITreeNode senderNode = createProcessNode("sender:", tuple.elementAt(INDEX_PROCESS));
-        senderNode.setImage(Activator.getImage(Images.SENDER_NODE));
+        StringBuilder labelBuilder = new StringBuilder(label).append(": ");
 
-        ITreeNode receiverNode = createProcessNode("receiver:", tuple.elementAt(INDEX_TO));
+        ITreeNode senderNode = createProcessNode("sender: ", tuple.elementAt(INDEX_PROCESS));
+        senderNode.setImage(Activator.getImage(Images.SENDER_NODE));
+        labelBuilder.append(lastProcessDescription).append("->");
+
+        ITreeNode receiverNode = createProcessNode("receiver: ", tuple.elementAt(INDEX_TO));
         receiverNode.setImage(Activator.getImage(Images.RECEIVER_NODE));
+        labelBuilder.append(lastProcessDescription);
 
         ITreeNode messageNode = createMessageNode(tuple.elementAt(INDEX_MESSAGE));
 
-        TreeNode node = new TreeNode(createLabel(label));
+        TreeNode node = new TreeNode(createLabel(labelBuilder.toString()));
         node.setImage(Activator.getImage(image));
         node.addChildren(senderNode, receiverNode, messageNode);
         return node;
     }
 
-    private ITreeNode processCallTrace(OtpErlangTuple tuple) {
-        ITreeNode node = createFunctionNode(createLabel("Call"), tuple.elementAt(INDEX_FUNCTION));
+    private ITreeNode processCallTrace(String label, OtpErlangTuple tuple) {
+        ITreeNode processNode = createProcessNode("process: ", tuple.elementAt(INDEX_PROCESS));
+        processNode.setImage(Activator.getImage(Images.PROCESS_NODE));
+
+        ITreeNode node = createFunctionNode(createLabel(label + ": "), tuple.elementAt(INDEX_FUNCTION));
         node.setImage(Activator.getImage(Images.CALL_NODE));
+        node.addChildren(processNode);
         return node;
     }
 }
