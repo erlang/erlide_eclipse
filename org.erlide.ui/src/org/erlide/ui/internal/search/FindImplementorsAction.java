@@ -56,8 +56,8 @@ public class FindImplementorsAction extends FindAction {
 	void init() {
 		setText("Workspace");
 		setToolTipText("Find declarations in workspace");
-		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
-		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+		// XXX setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
+		// XXX PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
 	}
 

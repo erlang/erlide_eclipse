@@ -78,9 +78,8 @@ public class ErlideDebug {
 				final OtpErlangTuple t = (OtpErlangTuple) res;
 				final OtpErlangPid meta = (OtpErlangPid) t.elementAt(1);
 				return meta;
-			} else {
-				return null;
-			}
+			} 
+			return null;
 		} catch (final BackendException e) {
 			ErlLogger.warn(e);
 		}

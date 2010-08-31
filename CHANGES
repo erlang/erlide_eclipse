@@ -1,3 +1,32 @@
+List of user visible changes between 0.8.6 and 0.8.7 (20100826)
+
+5299d47 cleaned some TODO/FIXME
+cd46d0f updated testing plugins
+0ab504e display version in pref page
+c532984 Merge branch 'bterl' into pu
+a6ca8a4 removed NPE
+a2bee39 updated CHANGES log
+a3b7153 updated readme
+b91b9b0 wip
+0f73a1d small fixes
+219dd91 updated coverage config
+a3551fa small fixes
+2dffbed no workspace import before tests
+7fec218 enabled rpc test
+977167c separated test from build
+0a77fb1 removed unused code
+cf6f9a2 commented out dummy tests
+39809f4 fixed builds with coverage
+0c4143c wip junit launches
+e1ebe54 added junit to bucky build
+
+List of user visible changes between 0.8.2 and 0.8.6 (20100823)
+
+- now supporting Eclipse 3.5+ and Erlang R12+
+- build process updated 
+b865b6e provides folding for non-resource module editors https://www.assembla.com/spaces/erlide/tickets/591-opening-erl-files-in-non-erlang-projects-fails
+428810f Fix of deadlock (eclipse hangs) with big files in erlang editor
+
 List of user visible changes between 0.8.1 and 0.8.2 (20100609)
 
 354b0b0 Merge branch '532-completion---confused-by-functions-defined-with-tuples' into shade_alpha

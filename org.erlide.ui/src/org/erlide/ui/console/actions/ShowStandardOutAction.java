@@ -16,6 +16,7 @@ import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.ui.console.ConsoleMessages;
 
 /**
  * Toggles preference show the console when output is written to standard output

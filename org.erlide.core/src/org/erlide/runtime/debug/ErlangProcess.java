@@ -314,11 +314,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public String getName() throws DebugException {
-		final int a1 = fPid.id();
-		final int a2 = fPid.serial();
-		// final String node = fPid.node() != null ? "@" + fPid.node() : "";
-		// return "<0." + a1 + "." + a2 + node + ">";
-		return "<0." + a1 + "." + a2 + ">";
+		return toLocalPid(fPid);
 	}
 
 	public static String toLocalPid(final OtpErlangPid pid) {
