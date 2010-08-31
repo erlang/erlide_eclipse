@@ -6,5 +6,6 @@ all_test_() ->
 	[
 	 erlide_util_tests,
 	 erlide_scanner_tests,
-         erlide_parsing_tests
+         erlide_parsing_tests,
+         erlide_indent_tests
 	].
