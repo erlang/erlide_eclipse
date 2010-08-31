@@ -256,7 +256,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			for (IPath pp : list) {
 				// only create in-project paths
 				if (!pp.isAbsolute() && !pp.toString().equals(".")
-						&& pp.isEmpty()) {
+						&& !pp.isEmpty()) {
 					final IPath path = projectPath.append(pp);
 					final IFolder folder = root.getFolder(path);
 					createFolderHelper(folder, monitor);
