@@ -351,9 +351,7 @@ i_binary_expr(R0, I0) ->
 
 i_binary_sub_expr(R0, I0) ->
     case i_sniff(R0) of
-	'(' ->
-	    i_expr(R0, I0, none); % TODO: funkar detta med t.ex. (1+4):8? testa!
-	'<<' ->
+	Kind when Kind=='('; Kind=='<<'; Kind==macro ->
 	    i_expr(R0, I0, none);
 	Kind when Kind==var; Kind==string; Kind==integer; Kind==char ->
 	    R1 = i_comments(R0, I0),
