@@ -22,7 +22,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * Handler which receives trace data from traced node. It receives data via given {@link OtpMbox}.
+ * Handler which receives trace data from traced node. It receives data via
+ * given {@link OtpMbox}.
  * 
  * @author Piotr Dorobisz
  * 
@@ -30,7 +31,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 public class TraceDataHandler {
 
     private static final String ATOM_STOP_TRACING = "stop_tracing";
-    private static final String ATOM_STOP_LOADING = "stop_loading";
 
     // tuple fields
     private static final int INDEX_PROCESS = 1;
@@ -93,19 +93,11 @@ public class TraceDataHandler {
         return false;
     }
 
-    public boolean isLoadingFinished(OtpErlangObject message) {
-        if (message instanceof OtpErlangAtom) {
-            OtpErlangAtom atom = (OtpErlangAtom) message;
-            if (atom.atomValue().equals(ATOM_STOP_LOADING)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
-     * Creates root of tree displaying tracing results. Label of created node is set to display date of last trace data which was passed to this handler (it is
-     * returned by {@link #getLastTraceDate()}). Root's start date is also set to this date.
+     * Creates root of tree displaying tracing results. Label of created node is
+     * set to display date of last trace data which was passed to this handler
+     * (it is returned by {@link #getLastTraceDate()}). Root's start date is
+     * also set to this date.
      * 
      * @return tree root
      */
@@ -211,7 +203,8 @@ public class TraceDataHandler {
         ITreeNode processNodeNode = null;
 
         if (erlangObject instanceof OtpErlangTuple) {
-            // tuple: {Pid(), Initial_call()|Registered_name(), Node()} | {Registered_name, Node()}
+            // tuple: {Pid(), Initial_call()|Registered_name(), Node()} |
+            // {Registered_name, Node()}
             OtpErlangTuple processTuple = (OtpErlangTuple) erlangObject;
             int index = 0;
 

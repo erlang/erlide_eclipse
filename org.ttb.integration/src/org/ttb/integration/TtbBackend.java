@@ -50,6 +50,7 @@ public class TtbBackend {
 
     private static final TtbBackend INSTANCE = new TtbBackend();
     private static final String NODE_NAME = "tracing";
+    private static final String EVENT_NAME = "trace_event";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
     private static final String FUN_TP = "tp";
@@ -82,21 +83,15 @@ public class TtbBackend {
 
         @Override
         protected void doHandleMsg(OtpErlangObject msg) throws Exception {
-            OtpErlangObject message = getStandardEvent(msg, "trace_event");
+            OtpErlangObject message = getStandardEvent(msg, EVENT_NAME);
             if (message != null) {
+                System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
                     if (rootNode != null) {
                         rootNode.setEndDate(handler.getLastTraceDate());
                         rootNode.generateLabel(handler.getRootDateFormatter());
                     }
                     finishTracing();
-                } else if (handler.isLoadingFinished(message)) {
-                    if (rootNode != null) {
-                        rootNode.setEndDate(handler.getLastTraceDate());
-                        rootNode.generateLabel(handler.getRootDateFormatter());
-                    }
-                    finishLoading();
-                    // TODO handle error which may occur during loading
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
@@ -229,6 +224,7 @@ public class TtbBackend {
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
                         tracing = false;
+                        loading = false;
                         // TODO what if exception is thrown? - UI is locked
                     } finally {
                     }
@@ -244,8 +240,13 @@ public class TtbBackend {
                     try {
                         loading = true;
                         handler = new TraceEventHandler();
-                        BackendManager.getDefault().getIdeBackend().getEventDaemon().addHandler(handler);
-                        BackendManager.getDefault().getIdeBackend().call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
+
+                        if (tracerBackend == null) {
+                            tracerBackend = createBackend(NODE_NAME);
+                        }
+
+                        tracerBackend.getEventDaemon().addHandler(handler);
+                        tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
                         ErlLogger.error("Could not load data: " + e.getMessage());
                         loading = false;
@@ -260,18 +261,13 @@ public class TtbBackend {
     private void finishTracing() {
         tracerBackend.getEventDaemon().removeHandler(handler);
         for (ITraceNodeObserver listener : listeners) {
-            listener.stopTracing();
+            if (tracing)
+                listener.stopTracing();
+            else
+                listener.stopLoading();
         }
         loading = false;
         tracing = false;
-    }
-
-    private void finishLoading() {
-        BackendManager.getDefault().getIdeBackend().getEventDaemon().removeHandler(handler);
-        for (ITraceNodeObserver listener : listeners) {
-            listener.stopLoading();
-        }
-        loading = false;
     }
 
     private OtpErlangObject[] createProcessFlagsArray(Set<ProcessFlag> set) {

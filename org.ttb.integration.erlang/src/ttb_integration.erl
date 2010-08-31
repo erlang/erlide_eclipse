@@ -5,25 +5,22 @@
 %%
 %% Exported Functions
 %%
--export([start/2, stop/0, stop_tracing/0, load/1, load_data/1, str2ms/1]).
+-export([start/2, stop/0,  load/1, load_data/1, str2ms/1]).
 
 
 start(Nodes, FileName)->
-	ttbe:tracer(Nodes, [{handler, {create_handler(), initial_state}}, {file,{local, FileName}}]).
+	ttbe:tracer(Nodes, [{file,{local, FileName}}]).
 
 stop() ->
-	spawn(?MODULE, stop_tracing, []).
-
-stop_tracing() ->
-	ttbe:stop([format]),
-	erlide_jrpc:event(trace_event, stop_tracing).
+	{stopped, Dir} = ttbe:stop([return]),
+	spawn(?MODULE, load_data, [Dir]).
 
 load(Path) ->
 	spawn(?MODULE, load_data, [Path]).
 
 load_data(Path) ->
 	case ttbe:format(Path, [{handler, {create_handler(), initial_state}}]) of
-		ok -> erlide_jrpc:event(trace_event, stop_loading);
+		ok -> erlide_jrpc:event(trace_event, stop_tracing);
 		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
 	end.
 
