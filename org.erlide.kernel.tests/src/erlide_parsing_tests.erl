@@ -1,7 +1,7 @@
 %% Author: jakob
 %% Created: 30 aug 2010
 %% Description: TODO: Add description to erlide_parsing_test
--module(erlide_parsing_test).
+-module(erlide_parsing_tests).
 
 %%
 %% Include files
@@ -31,10 +31,20 @@
 parse_directive_test_() ->
     [?_assertEqual(#model{forms = [#attribute{pos = {{0,0,0},51},
                                               name = compile,
+                                              args = u,
                                               extra = "[inline,{hipe,[{regalloc,linear_scan}]}]"}],
                           comments = []},
                    test_parse("-compile([inline,{hipe,[{regalloc,linear_scan}]}])."))].
 
+parse_small_functions_test_() ->
+    [?_assertEqual(#model{forms=[#function{pos = {{0,1,0},14},
+                                           name = f, arity = 0,
+                                           args = [], head = "", clauses = [],
+                                           name_pos = {{0, 0}, 1},
+                                           comment = undefined,
+                                           exported = false}],
+                          comments=[]},
+                   test_parse("f() ->\n    a."))].
 
 %%
 %% Local Functions
