@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -22,18 +22,16 @@ package com.ericsson.otp.erlang;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.DecimalFormat;
 
 /**
  * Provides a stream for encoding Erlang terms to external format, for
  * transmission or storage.
- * 
+ *
  * <p>
  * Note that this class is not synchronized, if you need synchronization you
  * must provide it yourself.
- * 
+ *
  */
 public class OtpOutputStream extends ByteArrayOutputStream {
     /** The default initial size of the stream. * */
@@ -43,9 +41,9 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     public static final int defaultIncrement = 2048;
 
     // static formats, used to encode floats and doubles
-    private static final DecimalFormat eform = new DecimalFormat("e+00;e-00");
-    private static final BigDecimal ten = new BigDecimal(10.0);
-    private static final BigDecimal one = new BigDecimal(1.0);
+    //private static final DecimalFormat eform = new DecimalFormat("e+00;e-00");
+    //private static final BigDecimal ten = new BigDecimal(10.0);
+    //private static final BigDecimal one = new BigDecimal(1.0);
 
     /**
      * Create a stream with the default initial size (2048 bytes).
@@ -73,12 +71,12 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /*
      * Get the contents of the output stream as an input stream instead. This is
      * used internally in {@link OtpCconnection} for tracing outgoing packages.
-     * 
+     *
      * @param offset where in the output stream to read data from when creating
      * the input stream. The offset is necessary because header contents start 5
      * bytes into the header buffer, whereas payload contents start at the
      * beginning
-     * 
+     *
      * @return an input stream containing the same raw data.
      */
     OtpInputStream getOtpInputStream(final int offset) {
@@ -87,7 +85,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Get the current position in the stream.
-     * 
+     *
      * @return the current position in the stream.
      */
     public int getPos() {
@@ -96,10 +94,10 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write one byte to the stream.
-     * 
+     *
      * @param b
      *            the byte to write.
-     * 
+     *
      */
     public void write(final byte b) {
 	if (super.count >= super.buf.length) {
@@ -114,10 +112,10 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an array of bytes to the stream.
-     * 
+     *
      * @param buf
      *            the array of bytes to write.
-     * 
+     *
      */
 
     @Override
@@ -136,10 +134,10 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write the low byte of a value to the stream.
-     * 
+     *
      * @param n
      *            the value to use.
-     * 
+     *
      */
     public void write1(final long n) {
 	write((byte) (n & 0xff));
@@ -147,10 +145,10 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an array of bytes to the stream.
-     * 
+     *
      * @param buf
      *            the array of bytes to write.
-     * 
+     *
      */
     public void writeN(final byte[] bytes) {
 	write(bytes);
@@ -160,7 +158,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Get the current capacity of the stream. As bytes are added the capacity
      * of the stream is increased automatically, however this method returns the
      * current size.
-     * 
+     *
      * @return the size of the internal buffer used by the stream.
      */
     public int length() {
@@ -169,9 +167,9 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Get the number of bytes in the stream.
-     * 
+     *
      * @return the number of bytes in the stream.
-     * 
+     *
      * @deprecated As of Jinterface 1.4, replaced by super.size().
      * @see #size()
      */
@@ -183,7 +181,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write the low two bytes of a value to the stream in big endian order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -194,7 +192,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write the low four bytes of a value to the stream in big endian order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -208,7 +206,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write the low eight (all) bytes of a value to the stream in big endian
      * order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -225,7 +223,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write any number of bytes in little endian format.
-     * 
+     *
      * @param n
      *            the value to use.
      * @param b
@@ -240,7 +238,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write the low two bytes of a value to the stream in little endian order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -251,7 +249,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write the low four bytes of a value to the stream in little endian order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -265,7 +263,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write the low eight bytes of a value to the stream in little endian
      * order.
-     * 
+     *
      * @param n
      *            the value to use.
      */
@@ -284,11 +282,11 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Write the low four bytes of a value to the stream in bif endian order, at
      * the specified position. If the position specified is beyond the end of
      * the stream, this method will have no effect.
-     * 
+     *
      * Normally this method should be used in conjunction with {@link #size()
      * size()}, when is is necessary to insert data into the stream before it is
      * known what the actual value should be. For example:
-     * 
+     *
      * <pre>
      * int pos = s.size();
      *    s.write4BE(0); // make space for length data,
@@ -297,8 +295,8 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      *    // later... when we know the length value
      *    s.poke4BE(pos, length);
      * </pre>
-     * 
-     * 
+     *
+     *
      * @param offset
      *            the position in the stream.
      * @param n
@@ -315,7 +313,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a string to the stream as an Erlang atom.
-     * 
+     *
      * @param atom
      *            the string to write.
      */
@@ -327,7 +325,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an array of bytes to the stream as an Erlang binary.
-     * 
+     *
      * @param bin
      *            the array of bytes to write.
      */
@@ -339,7 +337,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an array of bytes to the stream as an Erlang bitstr.
-     * 
+     *
      * @param bin
      *            the array of bytes to write.
      * @param pad_bits
@@ -358,7 +356,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a boolean value to the stream as the Erlang atom 'true' or 'false'.
-     * 
+     *
      * @param b
      *            the boolean value to write.
      */
@@ -369,7 +367,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write a single byte to the stream as an Erlang integer. The byte is
      * really an IDL 'octet', that is, unsigned.
-     * 
+     *
      * @param b
      *            the byte to use.
      */
@@ -381,7 +379,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Write a character to the stream as an Erlang integer. The character may
      * be a 16 bit character, kind of IDL 'wchar'. It is up to the Erlang side
      * to take care of souch, if they should be used.
-     * 
+     *
      * @param c
      *            the character to use.
      */
@@ -391,7 +389,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a double value to the stream.
-     * 
+     *
      * @param d
      *            the double to use.
      */
@@ -402,7 +400,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a float value to the stream.
-     * 
+     *
      * @param f
      *            the float to use.
      */
@@ -475,7 +473,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a long to the stream.
-     * 
+     *
      * @param l
      *            the long to use.
      */
@@ -486,7 +484,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write a positive long to the stream. The long is interpreted as a two's
      * complement unsigned long even if it is negative.
-     * 
+     *
      * @param ul
      *            the long to use.
      */
@@ -496,7 +494,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an integer to the stream.
-     * 
+     *
      * @param i
      *            the integer to use.
      */
@@ -507,7 +505,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write a positive integer to the stream. The integer is interpreted as a
      * two's complement unsigned integer even if it is negative.
-     * 
+     *
      * @param ui
      *            the integer to use.
      */
@@ -517,7 +515,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a short to the stream.
-     * 
+     *
      * @param s
      *            the short to use.
      */
@@ -528,7 +526,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /**
      * Write a positive short to the stream. The short is interpreted as a two's
      * complement unsigned short even if it is negative.
-     * 
+     *
      * @param s
      *            the short to use.
      */
@@ -540,7 +538,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Write an Erlang list header to the stream. After calling this method, you
      * must write 'arity' elements to the stream followed by nil, or it will not
      * be possible to decode it later.
-     * 
+     *
      * @param arity
      *            the number of elements in the list.
      */
@@ -564,7 +562,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      * Write an Erlang tuple header to the stream. After calling this method,
      * you must write 'arity' elements to the stream or it will not be possible
      * to decode it later.
-     * 
+     *
      * @param arity
      *            the number of elements in the tuple.
      */
@@ -580,21 +578,21 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an Erlang PID to the stream.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 15 bits will be used.
-     * 
+     *
      * @param serial
      *            another arbitrary number. Only the low order 13 bits will be
      *            used.
-     * 
+     *
      * @param creation
      *            yet another arbitrary number. Only the low order 2 bits will
      *            be used.
-     * 
+     *
      */
     public void write_pid(final String node, final int id, final int serial,
 	    final int creation) {
@@ -607,17 +605,17 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an Erlang port to the stream.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 28 bits will be used.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
-     * 
+     *
      */
     public void write_port(final String node, final int id, final int creation) {
 	write1(OtpExternal.portTag);
@@ -628,17 +626,17 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an old style Erlang ref to the stream.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 18 bits will be used.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
-     * 
+     *
      */
     public void write_ref(final String node, final int id, final int creation) {
 	write1(OtpExternal.refTag);
@@ -649,20 +647,20 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a new style (R6 and later) Erlang ref to the stream.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param ids
      *            an array of arbitrary numbers. Only the low order 18 bits of
      *            the first number will be used. If the array contains only one
      *            number, an old style ref will be written instead. At most
      *            three numbers will be read from the array.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
-     * 
+     *
      */
     public void write_ref(final String node, final int[] ids, final int creation) {
 	int arity = ids.length;
@@ -697,7 +695,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write a string to the stream.
-     * 
+     *
      * @param s
      *            the string to write.
      */
@@ -719,7 +717,6 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 		    write_nil(); // it should never ever get here...
 		}
 	    } else { // unicode or longer, must code as list
-		final char[] charbuf = s.toCharArray();
 		final int[] codePoints = OtpErlangString.stringToCodePoints(s);
 		write_list_head(codePoints.length);
 		for (final int codePoint : codePoints) {
@@ -742,7 +739,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an arbitrary Erlang term to the stream in compressed format.
-     * 
+     *
      * @param o
      *            the Erlang tem to write.
      */
@@ -765,7 +762,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /**
      * Write an arbitrary Erlang term to the stream.
-     * 
+     *
      * @param o
      *            the Erlang term to write.
      */
