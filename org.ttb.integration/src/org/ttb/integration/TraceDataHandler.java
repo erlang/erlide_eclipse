@@ -31,6 +31,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 public class TraceDataHandler {
 
     private static final String ATOM_STOP_TRACING = "stop_tracing";
+    private static final Object ATOM_ERROR_LOADING = "error_loading";
 
     // tuple fields
     private static final int INDEX_PROCESS = 1;
@@ -83,6 +84,14 @@ public class TraceDataHandler {
         return lastTraceDate;
     }
 
+    /**
+     * Checks if given message is last one.
+     * 
+     * @param message
+     *            message
+     * @return <code>true</code> if it is last message, <code>false</code>
+     *         otherwise
+     */
     public boolean isTracingFinished(OtpErlangObject message) {
         if (message instanceof OtpErlangAtom) {
             OtpErlangAtom atom = (OtpErlangAtom) message;
@@ -91,6 +100,26 @@ public class TraceDataHandler {
             }
         }
         return false;
+    }
+
+    /**
+     * Reads error reason from message.
+     * 
+     * @param message
+     *            message
+     * @return error reason or <code>null</code> or if it is not an error
+     *         message
+     */
+    public OtpErlangObject getErrorReson(OtpErlangObject message) {
+        if (message instanceof OtpErlangTuple) {
+            OtpErlangTuple tuple = (OtpErlangTuple) message;
+            if (tuple.elementAt(0) instanceof OtpErlangAtom) {
+                OtpErlangAtom atom = (OtpErlangAtom) tuple.elementAt(0);
+                if (atom.atomValue().equals(ATOM_ERROR_LOADING))
+                    return tuple.elementAt(1);
+            }
+        }
+        return null;
     }
 
     /**

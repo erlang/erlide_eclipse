@@ -1,5 +1,7 @@
 package org.ttb.integration.mvc.model;
 
+import org.ttb.integration.TracingStatus;
+
 /**
  * Interface which should be implemented by every class which wants to be
  * notified whenever pattern list changed or trace data has been received.
@@ -40,8 +42,11 @@ public interface ITraceNodeObserver {
 
     /**
      * This method is invoked after stopping tracing.
+     * 
+     * @param status
+     *            status
      */
-    public void stopTracing();
+    public void stopTracing(TracingStatus status);
 
     /**
      * This method is invoked after receiving new trace data.
@@ -55,8 +60,11 @@ public interface ITraceNodeObserver {
 
     /**
      * This method is invoked after finishing loading data from disk.
+     * 
+     * @param status
+     *            status
      */
-    public void stopLoading();
+    public void stopLoading(TracingStatus status);
 
     /**
      * This method is invoked after loading new set of trace patterns.

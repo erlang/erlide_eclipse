@@ -22,6 +22,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
+import org.ttb.integration.TracingStatus;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
 import org.ttb.integration.mvc.model.CollectedDataList;
@@ -167,10 +168,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.refresh();
     }
 
-    public void stopTracing() {
+    public void stopTracing(final TracingStatus status) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                treeViewer.refresh();
+                if (TracingStatus.OK.equals(status))
+                    treeViewer.refresh();
                 loadAction.setEnabled(true);
                 clearAction.setEnabled(true);
             }
@@ -187,10 +189,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.refresh();
     }
 
-    public void stopLoading() {
+    public void stopLoading(final TracingStatus status) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                treeViewer.refresh();
+                if (TracingStatus.OK.equals(status))
+                    treeViewer.refresh();
                 loadAction.setEnabled(true);
                 clearAction.setEnabled(true);
             }

@@ -38,6 +38,7 @@ import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Singleton class used for communication with Erlang nodes for tracing
@@ -67,6 +68,8 @@ public class TtbBackend {
     private boolean tracing;
     private boolean loading;
     private TraceEventHandler handler;
+    private List<String> activatedNodes;
+    private Object errorObject;
 
     private TtbBackend() {
     }
@@ -85,13 +88,17 @@ public class TtbBackend {
         protected void doHandleMsg(OtpErlangObject msg) throws Exception {
             OtpErlangObject message = getStandardEvent(msg, EVENT_NAME);
             if (message != null) {
+                OtpErlangObject errorReason = null;
                 System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
                     if (rootNode != null) {
                         rootNode.setEndDate(handler.getLastTraceDate());
                         rootNode.generateLabel(handler.getRootDateFormatter());
                     }
-                    finishTracing();
+                    finishTracing(TracingStatus.OK);
+                } else if ((errorReason = handler.getErrorReson(message)) != null) {
+                    errorObject = errorReason;
+                    finishTracing(TracingStatus.ERROR);
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
@@ -102,7 +109,11 @@ public class TtbBackend {
                         }
                         rootNode.addChildren(newNode);
                         for (ITraceNodeObserver listener : listeners) {
-                            listener.receivedTraceData();
+                            try {
+                                listener.receivedTraceData();
+                            } catch (Exception e) {
+                                ErlLogger.error(e);
+                            }
                         }
                     }
                 }
@@ -137,17 +148,14 @@ public class TtbBackend {
      * 
      * @return <code>true</code> if successful, <code>false</code> otherwise
      */
-    public boolean start(List<Backend> backends) {
+    public TracingStatus start(List<Backend> backends) {
+        TracingStatus status = TracingStatus.OK;
         if (!tracing) {
             synchronized (this) {
                 if (!tracing) {
                     try {
                         tracing = true;
-
-                        if (tracerBackend == null) {
-                            tracerBackend = createBackend(NODE_NAME);
-                        }
-
+                        createTracingBackend();
                         handler = new TraceEventHandler();
                         tracerBackend.getEventDaemon().addHandler(handler);
 
@@ -158,57 +166,88 @@ public class TtbBackend {
                         }
                         OtpErlangList nodes = new OtpErlangList(erlangObjects.toArray(new OtpErlangObject[erlangObjects.size()]));
 
-                        tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xs", nodes, Constants.OUTPUT_FILE);
+                        OtpErlangObject callResult = tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xs", nodes, Constants.OUTPUT_FILE);
+                        status = processResult(callResult);
 
-                        // setting process flags
-                        if (ProcessMode.BY_PID.equals(processMode)) {
-                            // setting flags only for selected processes
-                            if (processes != null) {
-                                for (ProcessOnList process : processes) {
-                                    if (process.isSelected()) {
-                                        tracerBackend.call(Constants.TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
-                                    }
-                                }
-                            }
-                        } else {
-                            // setting global flags
-                            tracerBackend.call(Constants.TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
-                        }
-
-                        // setting function trace patterns
-                        for (TracePattern tracePattern : tracePatterns) {
-                            if (tracePattern.isEnabled()) {
-                                String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
+                        if (TracingStatus.OK.equals(status)) {
+                            setProcessFlags();
+                            setFunctionTracePatterns();
+                            for (ITraceNodeObserver listener : listeners) {
                                 try {
-                                    OtpErlangObject matchSpec = null;
-                                    if (tracePattern.getMatchSpec().getMsObject() != null) {
-                                        matchSpec = tracePattern.getMatchSpec().getMsObject();
-                                    } else {
-                                        matchSpec = new OtpErlangList();
-                                    }
-                                    if (tracePattern.getArity() < 0) {
-                                        tracerBackend.call(Constants.TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(),
-                                                matchSpec);
-                                    } else {
-                                        tracerBackend.call(Constants.TTB_MODULE, function, "aaxx", tracePattern.getModuleName(),
-                                                tracePattern.getFunctionName(), new OtpErlangInt(tracePattern.getArity()), matchSpec);
-                                    }
-                                } catch (BackendException e) {
-                                    ErlLogger.error("Could not add pattern: " + e.getMessage());
+                                    listener.startTracing();
+                                } catch (Exception e) {
+                                    ErlLogger.error(e);
                                 }
                             }
                         }
-                        for (ITraceNodeObserver listener : listeners) {
-                            listener.startTracing();
-                        }
-                    } catch (BackendException e) {
+                    } catch (Exception e) {
                         ErlLogger.error("Could not start tracing tool: " + e.getMessage());
+                        status = TracingStatus.EXCEPTION_THROWN;
+                        errorObject = e;
                         tracing = false;
                     }
                 }
             }
         }
-        return tracing;
+        return status;
+    }
+
+    private TracingStatus processResult(OtpErlangObject callResult) {
+        OtpErlangTuple tuple = (OtpErlangTuple) callResult;
+        if (((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals("error")) {
+            errorObject = tuple.elementAt(1);
+            return TracingStatus.ERROR;
+        } else {
+            OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
+            activatedNodes = new ArrayList<String>();
+            for (OtpErlangObject nodeName : nodeNames.elements()) {
+                activatedNodes.add(nodeName.toString());
+            }
+            if (activatedNodes.size() == 0)
+                return TracingStatus.NO_ACTIVATED_NODES;
+            else
+                return TracingStatus.OK;
+        }
+    }
+
+    private void setFunctionTracePatterns() {
+        for (TracePattern tracePattern : tracePatterns) {
+            if (tracePattern.isEnabled()) {
+                String function = tracePattern.isLocal() ? FUN_TPL : FUN_TP;
+                try {
+                    OtpErlangObject matchSpec = null;
+                    if (tracePattern.getMatchSpec().getMsObject() != null) {
+                        matchSpec = tracePattern.getMatchSpec().getMsObject();
+                    } else {
+                        matchSpec = new OtpErlangList();
+                    }
+                    if (tracePattern.getArity() < 0) {
+                        tracerBackend.call(Constants.TTB_MODULE, function, "aax", tracePattern.getModuleName(), tracePattern.getFunctionName(), matchSpec);
+                    } else {
+                        tracerBackend.call(Constants.TTB_MODULE, function, "aaxx", tracePattern.getModuleName(), tracePattern.getFunctionName(),
+                                new OtpErlangInt(tracePattern.getArity()), matchSpec);
+                    }
+                } catch (BackendException e) {
+                    ErlLogger.error("Could not add pattern: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void setProcessFlags() throws BackendException {
+        if (ProcessMode.BY_PID.equals(processMode)) {
+            // setting flags only for selected processes
+            if (processes != null) {
+                for (ProcessOnList process : processes) {
+                    if (process.isSelected()) {
+                        tracerBackend.call(Constants.TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
+                    }
+                }
+            }
+        } else {
+            // setting global flags
+            tracerBackend.call(Constants.TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
+        }
     }
 
     /**
@@ -223,10 +262,8 @@ public class TtbBackend {
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_STOP, "");
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
-                        tracing = false;
-                        loading = false;
-                        // TODO what if exception is thrown? - UI is locked
-                    } finally {
+                        errorObject = e;
+                        finishTracing(TracingStatus.EXCEPTION_THROWN);
                     }
                 }
             }
@@ -240,31 +277,42 @@ public class TtbBackend {
                     try {
                         loading = true;
                         handler = new TraceEventHandler();
-
-                        if (tracerBackend == null) {
-                            tracerBackend = createBackend(NODE_NAME);
-                        }
-
+                        createTracingBackend();
                         tracerBackend.getEventDaemon().addHandler(handler);
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
-                        ErlLogger.error("Could not load data: " + e.getMessage());
-                        loading = false;
-                        // TODO what if exception is thrown? - UI is locked
-                        // forever
+                        ErlLogger.error(e);
+                        errorObject = e;
+                        finishTracing(TracingStatus.EXCEPTION_THROWN);
                     }
                 }
             }
         }
     }
 
-    private void finishTracing() {
+    private void createTracingBackend() {
+        if (tracerBackend == null) {
+            tracerBackend = createBackend(NODE_NAME);
+        }
+    }
+
+    /**
+     * Performs actions after loading trace data.
+     * 
+     * @param status
+     *            status
+     */
+    private void finishTracing(TracingStatus status) {
         tracerBackend.getEventDaemon().removeHandler(handler);
         for (ITraceNodeObserver listener : listeners) {
-            if (tracing)
-                listener.stopTracing();
-            else
-                listener.stopLoading();
+            try {
+                if (tracing)
+                    listener.stopTracing(status);
+                else
+                    listener.stopLoading(status);
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
         }
         loading = false;
         tracing = false;
@@ -292,7 +340,11 @@ public class TtbBackend {
         tracePatterns.clear();
         tracePatterns.addAll(Arrays.asList(patterns));
         for (ITraceNodeObserver listener : listeners) {
-            listener.loadPatterns();
+            try {
+                listener.loadPatterns();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
         }
     }
 
@@ -304,7 +356,11 @@ public class TtbBackend {
         if (!tracePatterns.contains(pattern)) {
             tracePatterns.add(pattern);
             for (ITraceNodeObserver listener : listeners) {
-                listener.addPattern(pattern);
+                try {
+                    listener.addPattern(pattern);
+                } catch (Exception e) {
+                    ErlLogger.error(e);
+                }
             }
         }
     }
@@ -312,13 +368,21 @@ public class TtbBackend {
     public synchronized void removeTracePattern(TracePattern pattern) {
         tracePatterns.remove(pattern);
         for (ITraceNodeObserver listener : listeners) {
-            listener.removePattern(pattern);
+            try {
+                listener.removePattern(pattern);
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
         }
     }
 
     public synchronized void updateTracePattern(TracePattern tracePattern) {
         for (ITraceNodeObserver listener : listeners) {
-            listener.updatePattern(tracePattern);
+            try {
+                listener.updatePattern(tracePattern);
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
         }
     }
 
@@ -346,11 +410,25 @@ public class TtbBackend {
         this.processes = processes;
     }
 
+    public List<String> getActivatedNodes() {
+        return activatedNodes;
+    }
+
+    /**
+     * Returns object that describes last error (e.g. thrown exception).
+     * 
+     * @return error details
+     */
+    public Object getErrorObject() {
+        return errorObject;
+    }
+
     private Backend createBackend(String name) {
         final RuntimeInfo info = RuntimeInfo.copy(ErlangCore.getRuntimeInfoManager().getErlideRuntime(), false);
         if (info != null) {
             try {
                 info.setNodeName(name);
+                info.setStartShell(false);
                 EnumSet<BackendOptions> options = EnumSet.of(BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
 
                 ILaunchConfiguration launchConfig = getLaunchConfiguration(info, options);

@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
@@ -38,12 +40,15 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
+import org.ttb.integration.Activator;
 import org.ttb.integration.ProcessFlag;
 import org.ttb.integration.ProcessMode;
+import org.ttb.integration.TracingStatus;
 import org.ttb.integration.TtbBackend;
 import org.ttb.integration.mvc.controller.ProcessCellModifier;
 import org.ttb.integration.mvc.controller.ProcessContentProvider;
@@ -193,7 +198,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private void doStartTracing() {
         ArrayList<Backend> backends = new ArrayList<Backend>();
         backends.add(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
-        TtbBackend.getInstance().start(backends);
+        TracingStatus status = TtbBackend.getInstance().start(backends);
+        handleError(true, status);
     }
 
     /**
@@ -620,6 +626,38 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
+    /**
+     * Handles errors that occurred during starting tracing or loading data.
+     * 
+     * @param start
+     *            <code>true</code> if handling errors during starting,
+     *            <code>false</code> otherwise
+     * @param tracingStatus
+     *            status
+     */
+    private void handleError(boolean start, TracingStatus tracingStatus) {
+        Status status;
+        String message = start ? "Could not start tracing" : "Error while loading data";
+        switch (tracingStatus) {
+        case ERROR:
+            Object errorObject = TtbBackend.getInstance().getErrorObject();
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message + ": " + errorObject, null);
+            StatusManager.getManager().handle(status, StatusManager.SHOW);
+            break;
+        case EXCEPTION_THROWN:
+            Exception e = (Exception) TtbBackend.getInstance().getErrorObject();
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, e);
+            StatusManager.getManager().handle(status, StatusManager.SHOW);
+            break;
+        case NO_ACTIVATED_NODES:
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No nodes were activated for tracing", null);
+            StatusManager.getManager().handle(status, StatusManager.SHOW);
+            break;
+        case OK:
+            break;
+        }
+    }
+
     public void addPattern(TracePattern tracePattern) {
         functionsTableViewer.refresh();
     }
@@ -640,8 +678,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         doAfterStartTracing();
     }
 
-    public void stopTracing() {
+    public void stopTracing(TracingStatus status) {
         doAfterStopTracing();
+        handleError(false, status);
     }
 
     public void receivedTraceData() {
@@ -651,7 +690,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         doBeforeLoading();
     }
 
-    public void stopLoading() {
+    public void stopLoading(TracingStatus status) {
         doAfterLoading();
+        handleError(false, status);
     }
 }
