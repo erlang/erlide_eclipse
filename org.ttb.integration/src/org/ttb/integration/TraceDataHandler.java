@@ -32,6 +32,7 @@ public class TraceDataHandler {
 
     private static final String ATOM_STOP_TRACING = "stop_tracing";
     private static final Object ATOM_ERROR_LOADING = "error_loading";
+    private static final Object ATOM_TRACE_TS = "trace_ts";
 
     // tuple fields
     private static final int INDEX_PROCESS = 1;
@@ -145,49 +146,56 @@ public class TraceDataHandler {
         try {
             if (otpErlangObject instanceof OtpErlangTuple) {
                 OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
-                OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);
 
-                lastTraceDate = readTraceData(tuple);
+                if (((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals(ATOM_TRACE_TS)) {
+                    // normal trace data
 
-                switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
-                case CALL:
-                    return processCallTrace("Call", tuple);
-                case EXCEPTION_FROM:
-                    return processExceptionFrom("Exception", tuple);
-                case EXIT:
-                    return processExitTrace("Exit", tuple);
-                case GC_END:
-                    return processGcTrace("GC end", Images.GC_END_NODE, tuple);
-                case GC_START:
-                    return processGcTrace("GC start", Images.GC_START_NODE, tuple);
-                case GETTING_LINKED:
-                    return processLinkTrace("Getting linked", Images.GETTING_LINKED_NODE, tuple);
-                case GETTING_UNLINKED:
-                    return processLinkTrace("Getting unlinked", Images.GETTING_UNLINKED_NODE, tuple);
-                case IN:
-                    return processInOutTrace("In", Images.IN_NODE, tuple);
-                case LINK:
-                    return processLinkTrace("Link", Images.LINK_NODE, tuple);
-                case OUT:
-                    return processInOutTrace("Out", Images.OUT_NODE, tuple);
-                case RECEIVE:
-                    return processReceiveTrace("Received", tuple);
-                case REGISTER:
-                    return processRegisterTrace("Register", Images.REGISTER_NODE, tuple);
-                case RETURN_FROM:
-                    return processReturnTrace("Return from", Images.RETURN_FROM_NODE, tuple, true);
-                case RETURN_TO:
-                    return processReturnTrace("Return to", Images.RETURN_TO_NODE, tuple, false);
-                case SEND:
-                    return processSendTrace("Sent", Images.SENT_MESSAGE_NODE, tuple);
-                case SEND_TO_NON_EXISTING_PROCESS:
-                    return processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
-                case SPAWN:
-                    return processSpawnTrace("Spawn", tuple);
-                case UNLINK:
-                    return processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
-                case UNREGISTER:
-                    return processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);
+                    OtpErlangAtom traceType = (OtpErlangAtom) tuple.elementAt(INDEX_TRACE_TYPE);
+                    lastTraceDate = readTraceData(tuple);
+
+                    switch (TraceType.valueOf(traceType.atomValue().toUpperCase())) {
+                    case CALL:
+                        return processCallTrace("Call", tuple);
+                    case EXCEPTION_FROM:
+                        return processExceptionFrom("Exception", tuple);
+                    case EXIT:
+                        return processExitTrace("Exit", tuple);
+                    case GC_END:
+                        return processGcTrace("GC end", Images.GC_END_NODE, tuple);
+                    case GC_START:
+                        return processGcTrace("GC start", Images.GC_START_NODE, tuple);
+                    case GETTING_LINKED:
+                        return processLinkTrace("Getting linked", Images.GETTING_LINKED_NODE, tuple);
+                    case GETTING_UNLINKED:
+                        return processLinkTrace("Getting unlinked", Images.GETTING_UNLINKED_NODE, tuple);
+                    case IN:
+                        return processInOutTrace("In", Images.IN_NODE, tuple);
+                    case LINK:
+                        return processLinkTrace("Link", Images.LINK_NODE, tuple);
+                    case OUT:
+                        return processInOutTrace("Out", Images.OUT_NODE, tuple);
+                    case RECEIVE:
+                        return processReceiveTrace("Received", tuple);
+                    case REGISTER:
+                        return processRegisterTrace("Register", Images.REGISTER_NODE, tuple);
+                    case RETURN_FROM:
+                        return processReturnTrace("Return from", Images.RETURN_FROM_NODE, tuple, true);
+                    case RETURN_TO:
+                        return processReturnTrace("Return to", Images.RETURN_TO_NODE, tuple, false);
+                    case SEND:
+                        return processSendTrace("Sent", Images.SENT_MESSAGE_NODE, tuple);
+                    case SEND_TO_NON_EXISTING_PROCESS:
+                        return processSendTrace("Sent to non existing process", Images.WRONG_MESSAGE_NODE, tuple);
+                    case SPAWN:
+                        return processSpawnTrace("Spawn", tuple);
+                    case UNLINK:
+                        return processLinkTrace("Unlink", Images.ULINK_NODE, tuple);
+                    case UNREGISTER:
+                        return processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);
+                    }
+                } else {
+                    // Drop information: {Drop, Long}
+                    return processDropTrace(tuple);
                 }
             }
         } catch (Exception e) {
@@ -223,6 +231,12 @@ public class TraceDataHandler {
     }
 
     // functions creating nodes
+
+    private ITreeNode processDropTrace(OtpErlangTuple tuple) {
+        OtpErlangLong amount = (OtpErlangLong) tuple.elementAt(1);
+        ITreeNode node = new TreeNode("Dropped traces: " + amount.longValue(), Activator.getImage(Images.DROP_NODE));
+        return node;
+    }
 
     private ITreeNode createProcessNode(String label, OtpErlangObject erlangObject) {
         StringBuilder builder = new StringBuilder();

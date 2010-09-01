@@ -23,17 +23,21 @@ load_data(Path) ->
 	case ttbe:format(Path, [{handler, {create_handler(), initial_state}}]) of
 		ok -> erlide_jrpc:event(trace_event, stop_tracing);
 		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
+%% 		A -> erlide_jrpc:event(trace_event, A)
 	end.
 
 create_handler() ->
 	fun(Fd, Trace, _TraceInfo, State) ->
 			case Trace of
-				{trace_ts, Pid, call, {Mod, Fun, Arg}, Time} ->
-					erlide_jrpc:event(trace_event, {trace_ts, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Arg}, calendar:now_to_local_time(Time)});
+				{trace_ts, Pid, call, {Mod, Fun, Args}, Time} ->
+					erlide_jrpc:event(trace_event, {trace_ts, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
 				{trace_ts, Pid, spawn, Pid2, {M, F, Args}, Time} ->
 					erlide_jrpc:event(trace_event, {trace_ts, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
-				_ when is_tuple(Trace) ->
-					T = calendar:now_to_local_time(element(tuple_size(Trace), Trace)),
+				{trace_ts, _, _, _, Time} ->
+					T = calendar:now_to_local_time(Time),
+					erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
+				{trace_ts, _, _, _, _, Time} ->
+					T = calendar:now_to_local_time(Time),
 					erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
 				_ ->
 					erlide_jrpc:event(trace_event, Trace)
