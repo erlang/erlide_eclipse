@@ -9,6 +9,7 @@
 
 
 start(Nodes, FileName)->
+	ttbe:stop(),
 	ttbe:tracer(Nodes, [{file,{local, FileName}}]).
 
 stop() ->

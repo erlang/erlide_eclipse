@@ -197,7 +197,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
      */
     private void doStartTracing() {
         ArrayList<Backend> backends = new ArrayList<Backend>();
-        backends.add(ErlangCore.getBackendManager().getByName(backendNameCombo.getText()));
+        Backend backendName = ErlangCore.getBackendManager().getByName(backendNameCombo.getText());
+        if (backendName != null) {
+            backends.add(backendName);
+        }
         TracingStatus status = TtbBackend.getInstance().start(backends);
         handleError(true, status);
     }

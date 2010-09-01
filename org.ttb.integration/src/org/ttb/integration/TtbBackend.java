@@ -89,7 +89,7 @@ public class TtbBackend {
             OtpErlangObject message = getStandardEvent(msg, EVENT_NAME);
             if (message != null) {
                 OtpErlangObject errorReason = null;
-                System.out.println("message: " + message);
+                // System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
                     if (rootNode != null) {
                         rootNode.setEndDate(handler.getLastTraceDate());
@@ -179,8 +179,11 @@ public class TtbBackend {
                                     ErlLogger.error(e);
                                 }
                             }
+                        } else {
+                            tracing = false;
                         }
                     } catch (Exception e) {
+                        e.printStackTrace();
                         ErlLogger.error("Could not start tracing tool: " + e.getMessage());
                         status = TracingStatus.EXCEPTION_THROWN;
                         errorObject = e;
