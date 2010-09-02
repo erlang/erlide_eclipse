@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.DebugUITools;
@@ -12,6 +13,7 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -32,14 +34,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
@@ -63,6 +68,7 @@ import org.ttb.integration.mvc.view.ProcessColumn;
 import org.ttb.integration.mvc.view.ProcessLabelProvider;
 import org.ttb.integration.mvc.view.TracePatternColumn;
 import org.ttb.integration.mvc.view.TracePatternLabelProvider;
+import org.ttb.integration.ui.dialogs.BusyDialog;
 import org.ttb.integration.ui.dialogs.SelectTracingConfigurationDialog;
 import org.ttb.integration.ui.dialogs.TracingConfigurationSaveAsDialog;
 
@@ -86,6 +92,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private TableViewer processesTableViewer;
     private String configName;
     private Action startStopAction;
+    private BusyDialog busyDialog;
 
     public ControlPanelView() {
         TtbBackend.getInstance().addListener(this);
@@ -156,7 +163,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
         manager.add(startStopAction);
-
     }
 
     private void createStartStopPanel(Composite parent) {
@@ -196,13 +202,23 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
      * Method called when starting tracing.
      */
     private void doStartTracing() {
-        ArrayList<Backend> backends = new ArrayList<Backend>();
-        Backend backendName = ErlangCore.getBackendManager().getByName(backendNameCombo.getText());
-        if (backendName != null) {
-            backends.add(backendName);
+        final String nodeName = backendNameCombo.getText();
+        IWorkbench wb = PlatformUI.getWorkbench();
+        IProgressService ps = wb.getProgressService();
+        try {
+            ps.busyCursorWhile(new IRunnableWithProgress() {
+                public void run(IProgressMonitor pm) {
+                    ArrayList<Backend> backends = new ArrayList<Backend>();
+                    Backend backendName = ErlangCore.getBackendManager().getByName(nodeName);
+                    if (backendName != null) {
+                        backends.add(backendName);
+                    }
+                    TracingStatus status = TtbBackend.getInstance().start(backends);
+                    handleError(true, status);
+                }
+            });
+        } catch (Exception e) {
         }
-        TracingStatus status = TtbBackend.getInstance().start(backends);
-        handleError(true, status);
     }
 
     /**
@@ -228,6 +244,13 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
      * Method called when stopping tracing.
      */
     private void doStopTracing() {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        busyDialog = new BusyDialog(shell, "Loading trace results...");
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                busyDialog.start();
+            }
+        });
         TtbBackend.getInstance().stop();
     }
 
@@ -240,6 +263,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
                 startStopAction.setToolTipText("Start tracing");
                 startStopAction.setEnabled(true);
+                if (busyDialog != null)
+                    busyDialog.finish();
             }
         });
     }
@@ -694,7 +719,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void stopLoading(TracingStatus status) {
-        doAfterLoading();
+        // doAfterLoading();
+        doAfterStopTracing();
         handleError(false, status);
     }
 }

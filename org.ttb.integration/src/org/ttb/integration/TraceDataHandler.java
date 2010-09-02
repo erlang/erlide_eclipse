@@ -194,7 +194,7 @@ public class TraceDataHandler {
                         return processRegisterTrace("Unregister", Images.UNREGISTER_NODE, tuple);
                     }
                 } else {
-                    // Drop information: {Drop, Long}
+                    // Drop information: {drop, Long}
                     return processDropTrace(tuple);
                 }
             }

@@ -16,6 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -32,6 +33,7 @@ import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
 import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
+import org.ttb.integration.ui.dialogs.BusyDialog;
 
 /**
  * Sequence diagram which shows tracing results.
@@ -44,6 +46,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     private TreeViewer treeViewer;
     private Action clearAction;
     private Action loadAction;
+    private BusyDialog busyDialog;
 
     public TreeViewerView() {
         TtbBackend.getInstance().addListener(this);
@@ -82,9 +85,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                 dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
                 // dialog.setFilterExtensions(new String[] { "*.*" });
                 dialog.setText("Load trace data...");
-                String selected = dialog.open();
-                if (selected != null)
+                final String selected = dialog.open();
+                if (selected != null) {
                     TtbBackend.getInstance().loadData(selected);
+                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                    busyDialog = new BusyDialog(shell, "Loading trace results...");
+                    busyDialog.start();
+                }
             }
         };
         loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
@@ -129,6 +136,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
+    /**
+     * Action performed when user double-clicks on tree element
+     * 
+     * @param event
+     */
     private void doDoubleClick(DoubleClickEvent event) {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         ITreeNode treeNode = (ITreeNode) selection.getFirstElement();
@@ -163,9 +175,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
-        loadAction.setEnabled(false);
-        clearAction.setEnabled(false);
-        treeViewer.refresh();
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                loadAction.setEnabled(false);
+                clearAction.setEnabled(false);
+                treeViewer.refresh();
+            }
+        });
     }
 
     public void stopTracing(final TracingStatus status) {
@@ -184,9 +200,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startLoading() {
-        loadAction.setEnabled(false);
-        clearAction.setEnabled(false);
-        treeViewer.refresh();
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                loadAction.setEnabled(false);
+                clearAction.setEnabled(false);
+                treeViewer.refresh();
+            }
+        });
     }
 
     public void stopLoading(final TracingStatus status) {
@@ -196,6 +216,9 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                     treeViewer.refresh();
                 loadAction.setEnabled(true);
                 clearAction.setEnabled(true);
+                busyDialog.finish();
+                if (busyDialog != null)
+                    busyDialog.finish();
             }
         });
     }
