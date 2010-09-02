@@ -39,7 +39,8 @@ public class TracingResultsNode extends TreeNode {
      */
     public void generateLabel(DateFormat formatter) {
         StringBuilder builder = new StringBuilder();
-        String s = builder.append(formatter.format(startDate)).append(" - ").append(formatter.format(endDate)).toString();
+        String s = builder.append(formatter.format(startDate)).append(" - ").append(formatter.format(endDate)).append(": ").append(getChildren().size())
+                .append(" traces").toString();
         setLabel(s);
     }
 
