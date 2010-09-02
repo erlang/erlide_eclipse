@@ -309,10 +309,7 @@ public class TtbBackend {
         tracerBackend.getEventDaemon().removeHandler(handler);
         for (ITraceNodeObserver listener : listeners) {
             try {
-                if (tracing)
-                    listener.stopTracing(status);
-                else
-                    listener.stopLoading(status);
+                listener.finishLoading(status);
             } catch (Exception e) {
                 ErlLogger.error(e);
             }

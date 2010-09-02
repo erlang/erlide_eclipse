@@ -41,14 +41,6 @@ public interface ITraceNodeObserver {
     public void startTracing();
 
     /**
-     * This method is invoked after stopping tracing.
-     * 
-     * @param status
-     *            status
-     */
-    public void stopTracing(TracingStatus status);
-
-    /**
      * This method is invoked after receiving new trace data.
      */
     public void receivedTraceData();
@@ -64,7 +56,7 @@ public interface ITraceNodeObserver {
      * @param status
      *            status
      */
-    public void stopLoading(TracingStatus status);
+    public void finishLoading(TracingStatus status);
 
     /**
      * This method is invoked after loading new set of trace patterns.

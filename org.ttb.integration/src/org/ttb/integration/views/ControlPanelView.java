@@ -139,7 +139,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 doBeforeLoading();
             } else
                 // no action is being performed
-                doAfterStopTracing();
+                doAfterLoading();
         }
     }
 
@@ -257,7 +257,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     /**
      * Method called after stopping tracing.
      */
-    private void doAfterStopTracing() {
+    private void doAfterLoading() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
@@ -274,17 +274,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
      */
     private void doBeforeLoading() {
         startStopAction.setEnabled(false);
-    }
-
-    /**
-     * Method called after loading trace results.
-     */
-    private void doAfterLoading() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                startStopAction.setEnabled(true);
-            }
-        });
     }
 
     // "Processes" tab methods
@@ -706,11 +695,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         doAfterStartTracing();
     }
 
-    public void stopTracing(TracingStatus status) {
-        doAfterStopTracing();
-        handleError(false, status);
-    }
-
     public void receivedTraceData() {
     }
 
@@ -718,9 +702,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         doBeforeLoading();
     }
 
-    public void stopLoading(TracingStatus status) {
-        // doAfterLoading();
-        doAfterStopTracing();
+    public void finishLoading(TracingStatus status) {
+        doAfterLoading();
         handleError(false, status);
     }
 }

@@ -184,17 +184,6 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void stopTracing(final TracingStatus status) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                if (TracingStatus.OK.equals(status))
-                    treeViewer.refresh();
-                loadAction.setEnabled(true);
-                clearAction.setEnabled(true);
-            }
-        });
-    }
-
     public void receivedTraceData() {
         // treeViewer.refresh();
     }
@@ -209,14 +198,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void stopLoading(final TracingStatus status) {
+    public void finishLoading(final TracingStatus status) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 if (TracingStatus.OK.equals(status))
                     treeViewer.refresh();
                 loadAction.setEnabled(true);
                 clearAction.setEnabled(true);
-                busyDialog.finish();
                 if (busyDialog != null)
                     busyDialog.finish();
             }
