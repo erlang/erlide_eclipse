@@ -211,10 +211,22 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		}
 		final OtpErlangList erlStackFrames = (OtpErlangList) el0;
 		final OtpErlangList bs = (OtpErlangList) stackAndBindings.elementAt(1);
+
+		System.out.println(">>> " + getPid() + ":: " + module + " " + line);
+		System.out.println("STACK:");
+		for (OtpErlangObject f : erlStackFrames)
+			System.out.println("   : " + f);
+		System.out.println("BINDS:" + bs);
+
 		setStackFrames(module, line, erlStackFrames, bs);
 		if (savedStackTrace instanceof OtpErlangTuple) {
+			System.out.println("saved: ");
+			for (OtpErlangObject f : ((OtpErlangList) ((OtpErlangTuple) savedStackTrace)
+					.elementAt(1)).elements())
+				System.out.println("   : " + f);
 			addStackTrace((OtpErlangTuple) savedStackTrace);
 		}
+		
 	}
 
 	private void addStackTrace(final OtpErlangTuple savedStackTrace) {
@@ -229,8 +241,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 			final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
 			try {
 				stackFrames.add(new ErlangUninterpretedStackFrame(
-						m.atomValue(), new ErlangFunction( f.atomValue(), a.intValue()), this,
-						getDebugTarget()));
+						m.atomValue(), new ErlangFunction(f.atomValue(), a
+								.intValue()), this, getDebugTarget()));
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
 			}

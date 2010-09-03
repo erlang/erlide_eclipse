@@ -410,6 +410,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					// borde det g�? borde funka enligt dbg_ui_trace_win....
 					// skit ocks�...
 					erlangProcess.getStackAndBindings(module, line);
+
+					try {
+						System.out.println(erlangProcess.getStackFrames());
+					} catch (DebugException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 					if (erlangProcess.isStepping()) {
 						erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
 					} else {
@@ -425,28 +433,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						erlangProcess.setStackFrames(module, line,
 								erlStackFrames, bs);
 					}
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
+					// TODO redundant? we have this in int, status too
 				}
 			} else {
 				if (what == META_EXIT_AT) {
 					erlangProcess.removeStackFrames();
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
+					// TODO redundant? we have this in int, status too
 				}
 			}
 		}
@@ -516,7 +510,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 			} else {
 				if (status.equals("idle")) {
-					erlangProcess.removeStackFrames();
+					//erlangProcess.removeStackFrames();
 				}
 				erlangProcess.setStatus(status);
 				erlangProcess.fireChangeEvent(DebugEvent.STATE
@@ -525,7 +519,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		} else if (event.equals("new_process")) {
 			final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
 			final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-			final ErlangProcess erlangProcess = createErlangProcess(pid);
+			ErlangProcess erlangProcess = getErlangProcess(pid);
+			if (erlangProcess == null) {
+				erlangProcess = createErlangProcess(pid);
+			}
 			final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
 			final String status = statusA.atomValue();
 			erlangProcess.setStatus(status);
