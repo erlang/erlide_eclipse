@@ -242,7 +242,8 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
 	return true;
     }
     
-    protected int doHashCode() {
+    @Override
+	protected int doHashCode() {
 	OtpErlangObject.Hash hash = new OtpErlangObject.Hash(9);
 	final int a = arity();
 	hash.combine(a);

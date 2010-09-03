@@ -170,7 +170,7 @@ public final class BackendManager extends OtpNodeStatus implements
 		notifyBackendChange(b, BackendEvent.ADDED);
 	}
 
-	private ErlideBackend createBackend(final RuntimeInfo info,
+	private ErlideBackend createInternalBackend(final RuntimeInfo info,
 			final Set<BackendOptions> options, Map<String, String> env)
 			throws BackendException {
 		ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
@@ -213,7 +213,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			final EnumSet<BackendOptions> options = EnumSet.of(
 					BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
 					BackendOptions.INTERNAL);
-			b = createBackend(info, options, null);
+			b = createInternalBackend(info, options, null);
 			buildBackends.put(version, b);
 		}
 		b.addProjectPath(project);
@@ -303,7 +303,7 @@ public final class BackendManager extends OtpNodeStatus implements
 			if (!ErlideUtil.isDeveloper()) {
 				options.add(BackendOptions.NO_CONSOLE);
 			}
-			ideBackend = createBackend(info, options, null);
+			ideBackend = createInternalBackend(info, options, null);
 		} else {
 			ErlLogger.error("There is no erlideRuntime defined! "
 					+ "Could not start IDE backend.");

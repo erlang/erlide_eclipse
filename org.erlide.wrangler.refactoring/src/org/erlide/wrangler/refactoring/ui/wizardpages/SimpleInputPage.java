@@ -82,6 +82,7 @@ public class SimpleInputPage extends InputPage {
 
 	}
 
+	@Override
 	protected boolean isInputValid() {
 		if (validator.isValid(inputText.getText())) {
 			((SimpleWranglerRefactoring) getRefactoring())

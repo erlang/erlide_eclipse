@@ -140,7 +140,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			return null;
 		}
 
-		ErlideBackend backend;
+		ErlideBackend backend = null;
 		try {
 			backend = ErlangCore.getBackendManager().createBackend(rt, options,
 					launch, env);
@@ -192,7 +192,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			final EnumSet<BackendOptions> options, final ErlideBackend backend)
 			throws DebugException {
 
-		registerProjects(backend, projects);
+		registerProjectsWithExecutionBackend(backend, projects);
 		if (!backend.isDistributed()) {
 			return;
 		}
@@ -207,33 +207,10 @@ public class ErlangLaunchConfigurationDelegate implements
 			final boolean distributed = (data.debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 			if (distributed) {
 				distributeDebuggerCode(backend);
-				// add other nodes
-				final OtpErlangList nodes = ErlideDebug.nodes(backend);
-				if (nodes != null) {
-					for (int i = 1, n = nodes.arity(); i < n; ++i) {
-						final OtpErlangAtom o = (OtpErlangAtom) nodes
-								.elementAt(i);
-						final OtpErlangAtom a = o;
-						final ErlangDebugNode edn = new ErlangDebugNode(target,
-								a.atomValue());
-						launch.addDebugTarget(edn);
-					}
-				}
+				addNodesAsDebugTargets(backend, launch);
 			}
-			for (final String pm : data.interpretedModules) {
-				final String[] pms = pm.split(":");
-				getDebugHelper().interpret(backend, pms[0], pms[1], distributed, true);
-			}
-			// send started to target
-			DebugPlugin.getDefault().addDebugEventListener(
-					new IDebugEventSetListener() {
-						public void handleDebugEvents(final DebugEvent[] events) {
-							runInitial(data.module, data.function, data.args,
-									backend);
-							DebugPlugin.getDefault().removeDebugEventListener(
-									this);
-						}
-					});
+			interpretModules(data, backend, distributed);
+			registerDebugEventListener(data, backend);
 			target.sendStarted();
 
 		} else {
@@ -241,11 +218,46 @@ public class ErlangLaunchConfigurationDelegate implements
 		}
 	}
 
+	private void interpretModules(final ErlLaunchData data,
+			final ErlideBackend backend, final boolean distributed) {
+		for (final String pm : data.interpretedModules) {
+			final String[] pms = pm.split(":");
+			getDebugHelper().interpret(backend, pms[0], pms[1], distributed, true);
+		}
+	}
+
+	private void addNodesAsDebugTargets(final Backend backend, final ILaunch launch) {
+		final OtpErlangList nodes = ErlideDebug.nodes(backend);
+		if (nodes != null) {
+			for (int i = 1, n = nodes.arity(); i < n; ++i) {
+				final OtpErlangAtom o = (OtpErlangAtom) nodes
+						.elementAt(i);
+				final OtpErlangAtom a = o;
+				final ErlangDebugNode edn = new ErlangDebugNode(target,
+						a.atomValue());
+				launch.addDebugTarget(edn);
+			}
+		}
+	}
+
+	private void registerDebugEventListener(final ErlLaunchData data,
+			final ErlideBackend backend) {
+		DebugPlugin.getDefault().addDebugEventListener(
+				new IDebugEventSetListener() {
+					public void handleDebugEvents(final DebugEvent[] events) {
+						runInitial(data.module, data.function, data.args,
+								backend);
+						DebugPlugin.getDefault().removeDebugEventListener(
+								this);
+					}
+				});
+	}
+
 	protected ErlangDebugHelper getDebugHelper() {
 		return new ErlangDebugHelper();
 	}
 
-	private static void registerProjects(final ErlideBackend backend,
+	private static void registerProjectsWithExecutionBackend(final ErlideBackend backend,
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager()

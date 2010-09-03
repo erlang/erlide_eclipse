@@ -135,6 +135,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return Kind.FOLDER;
 	}
 
+	@Override
 	public IResource getResource() {
 		return getCorrespondingResource();
 	}

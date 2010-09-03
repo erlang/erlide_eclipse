@@ -53,6 +53,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
 	}
 
+	@Override
 	public IRefactoringRpcMessage runAlternative(IErlSelection selection) {
 		IErlMemberSelection sel = (IErlMemberSelection) selection;
 		IErlRange memberRange = sel.getMemberRange();
@@ -67,6 +68,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 	public RefactoringWorkflowController getWorkflowController(Shell shell) {
 		return new RefactoringWorkflowController(shell) {
 
+			@Override
 			public void doRefactoring() {
 				IErlSelection sel = GlobalParameters.getWranglerSelection();
 				IRefactoringRpcMessage message = run(sel);

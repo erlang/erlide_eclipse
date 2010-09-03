@@ -15,6 +15,7 @@ public class CostumworkFlowInputPage extends SimpleInputPage {
 		super(name, description, labelText, inputErrorMsg, validator);
 	}
 
+	@Override
 	protected void controlWorkflow(Shell s) {
 		setCostumRefactoring();
 		workflowController = costumWrokflowRefactoring.getWorkflowController(s);

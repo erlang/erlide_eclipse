@@ -12,7 +12,8 @@ public class RpcScenario extends JUnitScenario {
 
     public RpcScenario() {
         super(new MostUsefulConfiguration() {
-            public ScenarioDefiner forDefiningScenarios() {
+            @Override
+			public ScenarioDefiner forDefiningScenarios() {
                 return new ClasspathScenarioDefiner(new UnderscoredCamelCaseResolver(".scenario"), 
                              new PatternScenarioParser(keywords()));
             }

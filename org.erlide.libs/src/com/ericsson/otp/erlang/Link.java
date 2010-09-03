@@ -46,7 +46,8 @@ class Link {
 		|| this.local.equals(remote) && this.remote.equals(local);
     }
     
-    public int hashCode() {
+    @Override
+	public int hashCode() {
 	if (hashCodeValue == 0) {
 	    OtpErlangObject.Hash hash = new OtpErlangObject.Hash(5);
 	    hash.combine(local.hashCode() + remote.hashCode());

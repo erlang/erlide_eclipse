@@ -205,6 +205,7 @@ public class GeneraliseFunctionRefactoring extends
 
 	}
 
+	@Override
 	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
