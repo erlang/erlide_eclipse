@@ -702,11 +702,11 @@ get_function_comment(F, []) ->
     F;
 get_function_comment(#function{name_pos={{Line, _}, _}}=F, 
                      [#token{last_line=LastLine, value=Value} | _])
-  when LastLine+1=:=Line; LastLine+2=:=Line->
+  when LastLine+1=:=Line; LastLine+2=:=Line; LastLine+3=:=Line->
     F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(#function{name_pos={{Line, _}, _}}=F,
-                     [#token{line=LastLine, last_line=undefined, value=Value} | _])
-  when LastLine+1=:=Line; LastLine+2=:=Line->
+                     [#token{line=LastLine, last_line=u, value=Value} | _])
+  when LastLine+1=:=Line; LastLine+2=:=Line; LastLine+3=:=Line->
     F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
 get_function_comment(F, [_ | Rest]) ->
     get_function_comment(F, Rest).
