@@ -129,7 +129,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 		// module - String
 		// function - ErlangFunction
 		// clause - ClauseHead
-		// occurence - ModuleLineFunctionArityRef
+		// occurrence - ModuleLineFunctionArityRef
 		Kind kind = Kind.ERROR;
 		if (element instanceof String) {
 			kind = Kind.MODULE;
