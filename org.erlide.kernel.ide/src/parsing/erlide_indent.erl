@@ -162,7 +162,7 @@ template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
     Length = length(S1) - From,
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S1, From, Length),
     S2 = do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, ""),
-    S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
+    S3 = string:substr(S2, length(Prefix)+1, length(S2)-1),
     unquote_template_variables(S3).
 
 %%
