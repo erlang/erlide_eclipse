@@ -1425,7 +1425,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			final ITextHover textHover = textViewerExtension2
 					.getCurrentTextHover();
 			if (textHover == null) {
-				// TODO this crashes...
+				// TODO this crashes... why?
 				// fTextOperationAction.run();
 				return;
 			}

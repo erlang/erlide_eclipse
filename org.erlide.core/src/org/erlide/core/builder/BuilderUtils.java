@@ -117,7 +117,6 @@ public final class BuilderUtils {
 				final SearchVisitor searcher = new SearchVisitor(p[0], null);
 				my_project.accept(searcher);
 				if (searcher.fResult != null) {
-					// FIXME BuildResource
 					final BuildResource bres = new BuildResource(
 							searcher.fResult);
 					result.add(bres);
@@ -132,7 +131,6 @@ public final class BuilderUtils {
 			switch (delta.getKind()) {
 			case IResourceDelta.ADDED:
 			case IResourceDelta.CHANGED:
-				// FIXME BuildResource
 				final BuildResource bres = new BuildResource(resource);
 				result.add(bres);
 				monitor.worked(1);
@@ -208,7 +206,6 @@ public final class BuilderUtils {
 						.removeFileExtension().addFileExtension("yrl");
 				final IResource yrl = my_project.findMember(yrlp);
 				if (yrl != null) {
-					// FIXME BuildResource
 					final BuildResource bres = new BuildResource(resource);
 					result.add(bres);
 					monitor.worked(1);
@@ -239,7 +236,6 @@ public final class BuilderUtils {
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())) {
 				try {
-					// FIXME BuildResource
 					if (isInCodePath(resource, my_project)) {
 						final BuildResource bres = new BuildResource(resource);
 						result.add(bres);
@@ -436,7 +432,6 @@ public final class BuilderUtils {
 					if (BuilderUtils.samePath(ifile.getFilename(),
 							resource.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
-							// FIXME BuildResource
 							final BuildResource bres = new BuildResource(
 									m.getResource());
 							result.add(bres);
@@ -481,10 +476,8 @@ public final class BuilderUtils {
 						.stringValue();
 
 				// add marker only for modules belonging to this project!
-
 				final IResource r1 = project.findMember(f1);
 				final IResource r2 = project.findMember(f2);
-				// XXX does the above work? or do we need to get the name only?
 				if (r1 != null || r2 != null) {
 					MarkerHelper.addMarker(project, project,
 							"Code clash between " + f1 + " and " + f2, 0,

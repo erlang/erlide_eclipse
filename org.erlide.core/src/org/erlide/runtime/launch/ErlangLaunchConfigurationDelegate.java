@@ -354,7 +354,6 @@ public class ErlangLaunchConfigurationDelegate implements
 		try {
 			if (module.length() > 0 && function.length() > 0) {
 				if (args.length() > 0) {
-					// TODO issue #84
 					backend.cast(module, function, "s", args);
 				} else {
 					backend.cast(module, function, "");

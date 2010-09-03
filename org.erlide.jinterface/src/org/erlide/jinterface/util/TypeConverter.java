@@ -415,7 +415,7 @@ public final class TypeConverter {
 			final int len = Array.getLength(obj);
 			// Class<?> component = obj.getClass().getComponentType();
 			if (type.kind == 'b') {
-				// TODO
+				// TODO we can convert more things to binaries
 				return new OtpErlangBinary(obj);
 			}
 			if (type.kind == 'l') {

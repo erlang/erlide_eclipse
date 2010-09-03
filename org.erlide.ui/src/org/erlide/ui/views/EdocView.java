@@ -129,7 +129,6 @@ public class EdocView extends AbstractInfoView {
 			fControl = control;
 			fSelectionProvider = selectionProvider;
 
-			// XXX: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 			setEnabled(!useBrowserWidget);
 
 			setText("Select All");
@@ -230,7 +229,6 @@ public class EdocView extends AbstractInfoView {
 						.getSelectionText());
 				return new TextSelection(document, 0, document.getLength());
 			}
-			// XXX: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 			return StructuredSelection.EMPTY;
 		}
 
@@ -347,7 +345,6 @@ public class EdocView extends AbstractInfoView {
 	 */
 	@Override
 	protected IAction getSelectAllAction() {
-		// XXX: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 		if (fIsUsingBrowserWidget) {
 			return null;
 		}
@@ -363,7 +360,6 @@ public class EdocView extends AbstractInfoView {
 	 */
 	@Override
 	protected IAction getCopyToClipboardAction() {
-		// XXX: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
 		if (fIsUsingBrowserWidget) {
 			return null;
 		}

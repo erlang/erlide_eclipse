@@ -145,7 +145,6 @@ public class DialogField {
 			if (fLabelText != null && !"".equals(fLabelText)) { //$NON-NLS-1$
 				fLabel.setText(fLabelText);
 			} else {
-				// XXX: to avoid a 16 pixel wide empty label - revisit
 				fLabel.setText("."); //$NON-NLS-1$
 				fLabel.setVisible(false);
 			}

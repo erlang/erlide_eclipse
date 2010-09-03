@@ -318,7 +318,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 	}
 
 	public static String toLocalPid(final OtpErlangPid pid) {
-		// TODO check it!
 		final int a1 = pid.id();
 		final int a2 = pid.serial();
 		return "<0." + a1 + "." + a2 + ">";

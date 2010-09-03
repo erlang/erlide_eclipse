@@ -44,7 +44,6 @@ public class Signature {
 			for (final Signature s : this.content) {
 				res.append(s.toString()).append(',');
 			}
-			// FIXME remove last char
 			res.deleteCharAt(res.length() - 1);
 			res.append(')');
 		}

@@ -45,7 +45,6 @@ public class ModelUtils {
 	 * @param filePath
 	 *            the path to the include file
 	 * @param externalIncludes
-	 *            TODO
 	 * @return the path to the include file
 	 */
 	public static String findIncludeFile(final IProject project,
@@ -107,7 +106,6 @@ public class ModelUtils {
 	 * @param definedName
 	 * @param type
 	 * @param externalIncludes
-	 *            TODO
 	 * @param modulesDone
 	 * @return
 	 * @throws CoreException
