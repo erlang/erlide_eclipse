@@ -8,7 +8,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.search.ErlangSearchPattern;
+
+import erlang.ErlangSearchPattern;
 
 public class ReferencesInWorkspaceHandler extends AbstractHandler {
 

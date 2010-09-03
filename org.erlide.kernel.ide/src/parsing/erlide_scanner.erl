@@ -167,11 +167,11 @@ do_scan(ScannerName, InitialText) ->
 scan_line({Length, S}) ->
     case erlide_scan:string(S, {0, 0}) of
         {ok, T0, _} ->
-	    T = erlide_scan:filter_ws(T0),
+            T = erlide_scan:filter_ws(T0),
             {Length, convert_tokens(T)};
         {error, _, _} ->
             {Length, [#token{kind=string, line=0, offset=0, length=length(S),
-			     value=S, text="\""++S++"\"", last_line=0}]}
+                             value=S, text="\""++S++"\"", last_line=0}]}
     end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
@@ -247,7 +247,7 @@ get_token_at_aux([], _) ->
     token_not_found;
 get_token_at_aux([T | Rest], Offset) ->
     case T of
-	#token{offset=Ofs, length=Len} when Offset >= Ofs, Offset < Ofs+Len ->
+        #token{offset=Ofs, length=Len} when Offset >= Ofs, Offset < Ofs+Len ->
             T;
         _ ->
             get_token_at_aux(Rest, Offset)
@@ -257,7 +257,7 @@ get_tokens_at_aux(Tokens, Offset, N) ->
     get_tokens_at_aux(Tokens, Offset, 0, N, []).
 
 get_tokens_at_aux([], _, M, _, Acc) ->
-	{M, lists:reverse(Acc)};
+    {M, lists:reverse(Acc)};
 get_tokens_at_aux(_, _, M, N, Acc) when M == N ->
     {M, lists:reverse(Acc)};
 get_tokens_at_aux([T | Rest], Offset, M, N, Acc) ->
@@ -311,16 +311,19 @@ convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
 convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
     T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
+convert_tokens([{'?', {{L, _}, _}}=T1, {'?', {{L, _}, _}}=T2, T3 | Rest],
+               Ofs, NL, Acc) ->
+    convert_tokens(Rest, Ofs, NL, [T3, T2, T1 | Acc]);
 convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
-	   Ofs, NL, Acc) when O1=:=O+1->
+               Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
 convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
-	   Ofs, NL, Acc) when O1=:=O+1->
+               Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
 convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V, _Txt} | Rest],
-	   Ofs, NL, Acc) when O1=:=O+1->
+               Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
 convert_tokens([{K, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
@@ -353,9 +356,9 @@ tokens_to_string(T) ->
     S.
 
 token_to_string(#token{text=Text}) when is_list(Text) ->
-	Text;
+    Text;
 token_to_string(#token{value=Value}) when is_list(Value) ->
-	Value;
+    Value;
 token_to_string(#token{kind=atom, value=Value}) ->
     atom_to_list(Value);
 token_to_string(#token{value=Value}) when Value =/= u ->
@@ -399,23 +402,26 @@ kind_small(float) -> ?TOK_FLOAT;
 kind_small(integer) -> ?TOK_INTEGER;
 kind_small(comment) -> ?TOK_COMMENT;
 kind_small(Kind) when is_atom(Kind) ->
-	case erlide_scan:reserved_word(Kind) of
-		true ->
-			?TOK_KEYWORD;
-		false ->
-			case atom_to_list(Kind) of
-				[I] when I > ?TOK_KEYWORD -> I;
-				_ -> ?TOK_OTHER
-			end
-	end.
+    case erlide_scan:reserved_word(Kind) of
+        true ->
+            ?TOK_KEYWORD;
+        false ->
+            case atom_to_list(Kind) of
+                [I] when I > ?TOK_KEYWORD -> I;
+                _ -> ?TOK_OTHER
+            end
+    end.
 
 fixup_macro(L, O, G) ->
-	?D({macro, L, O, G}),
-	%%     V = [$? | atom_to_list(V0)],
-	<<?TOK_MACRO, L:24, O:24, (G+1):24>>.
+    ?D({macro, L, O, G}),
+    %%     V = [$? | atom_to_list(V0)],
+    <<?TOK_MACRO, L:24, O:24, (G+1):24>>.
 
 fixup_tokens([], Acc) ->
-	erlang:iolist_to_binary(Acc);
+    erlang:iolist_to_binary(Acc);
+fixup_tokens([{'?', {{L, _}, _}}=T1, {'?', {{L, _}, _}}=T2, T3 | Rest], Acc) ->
+    fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []), fixup_tokens([T2], []), 
+                               fixup_tokens([T3], [])]]);
 fixup_tokens([{'?', {{L, O}, _}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
@@ -426,9 +432,8 @@ fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V} | Rest], Acc) when O1
     T = fixup_macro(L, O, G),
     fixup_tokens(Rest, [Acc | T]);
 fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->
-	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
+    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
 fixup_tokens([{Kind, {{L, O}, G}, _A} | Rest], Acc) ->
-	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
+    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
 fixup_tokens([{Kind, {{L, O}, G}, _A, _B} | Rest], Acc) ->
-	fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
-
+    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).

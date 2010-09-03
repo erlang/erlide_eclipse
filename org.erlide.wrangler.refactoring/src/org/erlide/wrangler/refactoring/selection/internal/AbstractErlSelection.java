@@ -1,6 +1,6 @@
 package org.erlide.wrangler.refactoring.selection.internal;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -29,11 +29,12 @@ public abstract class AbstractErlSelection implements IErlSelection {
 		OldErlangProjectProperties prop = actualProject.getProperties();
 		IPath projectLocation = actualProject.getProject().getLocation();
 
-		List<String> sourcDirs = prop.getSourceDirs();
+		Collection<IPath> sourcDirs = prop.getSourceDirs();
 		OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
-		for (int i = 0; i < sourcDirs.size(); ++i) {
-			searchPath[i] = new OtpErlangString(projectLocation.append(
-					sourcDirs.get(i)).toOSString());
+		int i = 0;
+		for (IPath src : sourcDirs) {
+			searchPath[i++] = new OtpErlangString(projectLocation.append(src)
+					.toOSString());
 		}
 		return new OtpErlangList(searchPath);
 	}

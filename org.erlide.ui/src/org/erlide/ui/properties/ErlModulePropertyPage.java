@@ -3,7 +3,6 @@ package org.erlide.ui.properties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +44,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
 		if (module != null) {
 			IErlProject project = module.getErlProject();
 			OldErlangProjectProperties prefs = project.getProperties();
-			IPath beamPath = new Path(prefs.getOutputDir()).append(
+			IPath beamPath = prefs.getOutputDir().append(
 					module.getModuleName()).addFileExtension("beam");
 			IFile beam = project.getProject().getFile(beamPath);
 

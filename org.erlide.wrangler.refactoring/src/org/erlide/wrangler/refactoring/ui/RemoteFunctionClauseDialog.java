@@ -1,6 +1,7 @@
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -52,8 +53,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 		final Tree functionClausesTree;
 
 		Label label = new Label(composite, SWT.WRAP);
-		label
-				.setText("Please select the function clause which against should fold!");
+		label.setText("Please select the function clause which against should fold!");
 		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);
@@ -68,7 +68,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 		treeData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		functionClausesTree.setLayoutData(treeData);
 
-		List<IErlModule> erlmodules;
+		Collection<IErlModule> erlmodules;
 		try {
 			erlmodules = GlobalParameters.getWranglerSelection()
 					.getErlElement().getErlProject().getModules();

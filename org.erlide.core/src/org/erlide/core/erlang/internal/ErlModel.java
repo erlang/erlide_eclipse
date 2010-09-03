@@ -57,6 +57,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 import erlang.FunctionRef;
 
@@ -554,7 +555,7 @@ public class ErlModel extends Openable implements IErlModel {
 			file.createLink(location, IResource.NONE, null);
 		}
 
-		List<String> dirs;
+		Collection<IPath> dirs;
 		dirs = findOtpSourceDirs(new File(location.toString()));
 		props.setSourceDirs(dirs);
 		dirs = findOtpIncludeDirs(new File(location.toString()));
@@ -567,13 +568,13 @@ public class ErlModel extends Openable implements IErlModel {
 		return p;
 	}
 
-	private static List<String> findOtpSourceDirs(final File file) {
-		final List<String> result = new ArrayList<String>();
+	private static Collection<IPath> findOtpSourceDirs(final File file) {
+		final List<IPath> result = Lists.newArrayList();
 		return result;
 	}
 
-	private static List<String> findOtpIncludeDirs(final File file) {
-		final List<String> result = new ArrayList<String>();
+	private static Collection<IPath> findOtpIncludeDirs(final File file) {
+		final List<IPath> result = Lists.newArrayList();
 		return result;
 	}
 

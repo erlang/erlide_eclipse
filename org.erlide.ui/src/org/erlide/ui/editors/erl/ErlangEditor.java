@@ -12,12 +12,17 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -27,11 +32,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ISelectionValidator;
+import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension2;
+import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension;
@@ -46,8 +55,10 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.jface.text.information.InformationPresenter;
+import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
@@ -72,6 +83,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -95,8 +107,10 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -105,8 +119,11 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -131,12 +148,17 @@ import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
 import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup;
 import org.erlide.ui.editors.erl.test.TestAction;
+import org.erlide.ui.internal.search.ErlangSearchElement;
+import org.erlide.ui.internal.search.SearchUtil;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 
-import erlang.ErlideScanner;
+import erlang.ErlangSearchPattern;
+import erlang.ErlideOpen;
+import erlang.ErlideSearchServer;
+import erlang.OpenResult;
 
 /**
  * The actual editor itself
@@ -173,14 +195,68 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
 	ToggleFoldingRunner fFoldingRunner;
 	private CompileAction compileAction;
-	private ScannerListener scannerListener;
+	// private ScannerListener scannerListener;
 	private ClearCacheAction clearCacheAction;
 	private CallHierarchyAction callhierarchy;
 	private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
-	//private final Object lock = new Object();
 	// private final boolean initFinished = false;
 	private SendToConsoleAction sendToConsole;
 	private IErlModule fModule = null;
+
+	/**
+	 * Tells whether the occurrence annotations are sticky i.e. whether they
+	 * stay even if there's no valid erlang element at the current caret
+	 * position. Only valid if {@link #fMarkOccurrenceAnnotations} is
+	 * <code>true</code>.
+	 * 
+	 * @since 3.0
+	 */
+	private boolean fStickyOccurrenceAnnotations;
+	/**
+	 * Holds the current occurrence annotations.
+	 * 
+	 * @since 3.0
+	 */
+	private Annotation[] fOccurrenceAnnotations = null;
+	/**
+	 * Tells whether all occurrences of the element at the current caret
+	 * location are automatically marked in this editor.
+	 * 
+	 * @since 3.0
+	 */
+	private boolean fMarkOccurrenceAnnotations;
+	/**
+	 * The selection used when forcing occurrence marking through code.
+	 * 
+	 * @since 3.0
+	 */
+	private ISelection fForcedMarkOccurrencesSelection;
+	/**
+	 * The document modification stamp at the time when the last occurrence
+	 * marking took place.
+	 * 
+	 * @since 3.1
+	 */
+	private long fMarkOccurrenceModificationStamp = IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP;
+	/**
+	 * The region of the word under the caret used to when computing the current
+	 * occurrence markings.
+	 * 
+	 * @since 3.1
+	 */
+	private IRegion fMarkOccurrenceTargetRegion;
+
+	/**
+	 * The internal shell activation listener for updating occurrences.
+	 * 
+	 * @since 3.0
+	 */
+	private ActivationListener fActivationListener = new ActivationListener();
+	private ISelectionChangedListener fPostSelectionListener;
+	private OccurrencesFinderJob fOccurrencesFinderJob;
+	/** The occurrences finder job canceler */
+	private OccurrencesFinderJobCanceler fOccurrencesFinderJobCanceler;
+	private String stateDirCached;
 
 	/**
 	 * Simple constructor
@@ -234,6 +310,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		}
 
 		disposeModule();
+
+		// cancel possible running computation
+		fMarkOccurrenceAnnotations = false;
+		uninstallOccurrencesFinder();
+
+		if (fActivationListener != null) {
+			PlatformUI.getWorkbench().removeWindowListener(fActivationListener);
+			fActivationListener = null;
+		}
 
 		super.dispose();
 	}
@@ -293,38 +378,38 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
 	}
 
-	private final class ScannerListener implements IDocumentListener {
-		private final IErlModule module;
-		private final String scannerName;
-
-		public ScannerListener() {
-			module = getModule();
-			if (module == null) {
-				scannerName = null;
-				return;
-			}
-			scannerName = ErlangToolkit.createScannerModuleName(module);
-		}
-
-		public void documentAboutToBeChanged(final DocumentEvent event) {
-		}
-
-		public void documentChanged(final DocumentEvent event) {
-			if (module == null) {
-				return;
-			}
-			ErlideScanner.notifyChange(scannerName, event.getOffset(), event
-					.getLength(), event.getText());
-		}
-
-		public void documentOpened() {
-			if (module == null) {
-				return;
-			}
-			ErlideScanner.notifyNew(scannerName);
-		}
-
-	}
+	// private final class ScannerListener implements IDocumentListener {
+	// private final IErlModule module;
+	// private final String scannerName;
+	//
+	// public ScannerListener() {
+	// module = getModule();
+	// if (module == null) {
+	// scannerName = null;
+	// return;
+	// }
+	// scannerName = ErlangToolkit.createScannerModuleName(module);
+	// }
+	//
+	// public void documentAboutToBeChanged(final DocumentEvent event) {
+	// }
+	//
+	// public void documentChanged(final DocumentEvent event) {
+	// if (module == null) {
+	// return;
+	// }
+	// ErlideScanner.notifyChange(scannerName, event.getOffset(), event
+	// .getLength(), event.getText());
+	// }
+	//
+	// public void documentOpened() {
+	// if (module == null) {
+	// return;
+	// }
+	// ErlideScanner.notifyNew(scannerName);
+	// }
+	//
+	// }
 
 	class PreferenceChangeListener implements IPreferenceChangeListener {
 		public void preferenceChange(final PreferenceChangeEvent event) {
@@ -334,6 +419,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 					&& key.split("/")[0]
 							.equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
 				getBracketInserterPrefs();
+			} else if ("markingOccurences".equals(key)) {
+				final boolean newBooleanValue = event.getNewValue().equals(
+						"true");
+				if (newBooleanValue != fMarkOccurrenceAnnotations) {
+					fMarkOccurrenceAnnotations = newBooleanValue;
+					if (!fMarkOccurrenceAnnotations) {
+						uninstallOccurrencesFinder();
+					} else {
+						installOccurrencesFinder(true);
+					}
+				}
 			}
 		}
 	}
@@ -359,7 +455,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		ActionGroup esg;
 		fActionGroups = new CompositeActionGroup(new ActionGroup[] {
 		// oeg= new OpenEditorActionGroup(this),
-				// ovg= new OpenViewActionGroup(this),
+		// ovg= new OpenViewActionGroup(this),
 				esg = new ErlangSearchActionGroup(this) });
 		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
@@ -370,42 +466,44 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
 		setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
 
-		sendToConsole = new SendToConsoleAction(getSite(), ErlangEditorMessages
-				.getBundleForConstructedKeys(), "SendToConsole.", this);
+		sendToConsole = new SendToConsoleAction(getSite(),
+				ErlangEditorMessages.getBundleForConstructedKeys(),
+				"SendToConsole.", this);
 		sendToConsole
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
 		setAction("SendToConsole", sendToConsole);
 		markAsStateDependentAction("sendToConsole", true);
 		markAsSelectionDependentAction("sendToConsole", true);
 
-		final Action act = new ContentAssistAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "ContentAssistProposal.", this);
-		act
-				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		final Action act = new ContentAssistAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
+				"ContentAssistProposal.", this);
+		act.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("ContentAssistProposal", act);
 		markAsStateDependentAction("ContentAssistProposal", true);
 
-		ResourceAction resAction = new TextOperationAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(),
+		ResourceAction resAction = new TextOperationAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
 				"ShowEDoc.", this, ISourceViewer.INFORMATION, true); //$NON-NLS-1$
-		resAction = new InformationDispatchAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(),
+		resAction = new InformationDispatchAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
 				"ShowEDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
 		resAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
 		setAction("ShowEDoc", resAction); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(resAction,
-				IErlangHelpContextIds.SHOW_EDOC_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem()
+				.setHelp(resAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
 
-		indentAction = new IndentAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "Indent.", this); //$NON-NLS-1$
+		indentAction = new IndentAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
+				"Indent.", this); //$NON-NLS-1$
 		indentAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
 		setAction("Indent", indentAction); //$NON-NLS-1$
 		markAsStateDependentAction("Indent", true); //$NON-NLS-1$
 		markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
-				IErlangHelpContextIds.INDENT_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem()
+				.setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
 
 		compileAction = new CompileAction(getSite());
 		compileAction
@@ -413,8 +511,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		setAction("Compile file", compileAction);
 
 		if (ErlideUtil.isTest()) {
-			testAction = new TestAction(ErlangEditorMessages
-					.getBundleForConstructedKeys(), "Test.", this, getModule());
+			testAction = new TestAction(
+					ErlangEditorMessages.getBundleForConstructedKeys(),
+					"Test.", this, getModule());
 			testAction
 					.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
 			setAction("Test", testAction);
@@ -432,8 +531,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		markAsSelectionDependentAction("CallHierarchy", true);
 
 		if (ErlideUtil.isClearCacheAvailable()) {
-			clearCacheAction = new ClearCacheAction(ErlangEditorMessages
-					.getBundleForConstructedKeys(), "ClearCache.", this);
+			clearCacheAction = new ClearCacheAction(
+					ErlangEditorMessages.getBundleForConstructedKeys(),
+					"ClearCache.", this);
 			clearCacheAction
 					.setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
 			setAction("ClearCache", clearCacheAction);
@@ -443,24 +543,30 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 			// IErlangHelpContextIds.INDENT_ACTION);
 		}
 
-		final Action action = new IndentAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "Indent.", this);
+		final Action action = new IndentAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.",
+				this);
 		setAction("IndentOnTab", action);
 		markAsStateDependentAction("IndentOnTab", true);
 		markAsSelectionDependentAction("IndentOnTab", true);
 
-		toggleCommentAction = new ToggleCommentAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "ToggleComment.", this);
+		toggleCommentAction = new ToggleCommentAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
+				"ToggleComment.", this);
 		toggleCommentAction
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
 		setAction("ToggleComment", toggleCommentAction);
 		markAsStateDependentAction("ToggleComment", true);
 		markAsSelectionDependentAction("ToggleComment", true);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(toggleCommentAction,
-				IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
+		PlatformUI
+				.getWorkbench()
+				.getHelpSystem()
+				.setHelp(toggleCommentAction,
+						IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
-		fShowOutline = new ShowOutlineAction(ErlangEditorMessages
-				.getBundleForConstructedKeys(), "ShowOutline.", this);
+		fShowOutline = new ShowOutlineAction(
+				ErlangEditorMessages.getBundleForConstructedKeys(),
+				"ShowOutline.", this);
 		fShowOutline
 				.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
 		setAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, fShowOutline);
@@ -495,7 +601,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		fContextMenuGroup.setContext(null);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(final Class required) {
 		if (IContentOutlinePage.class.equals(required)) {
@@ -719,7 +825,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		if (input != getEditorInput()) {
 			document = provider.getDocument(getEditorInput());
 			if (document != null) {
-				document.removeDocumentListener(scannerListener);
+				// document.removeDocumentListener(scannerListener);
 			}
 			disposeModule();
 			resetReconciler();
@@ -738,9 +844,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		document = provider.getDocument(input);
 		if (document != null) {
-			scannerListener = new ScannerListener();
-			document.addDocumentListener(scannerListener);
-			scannerListener.documentOpened();
+			// scannerListener = new ScannerListener();
+			// document.addDocumentListener(scannerListener);
+			// scannerListener.documentOpened();
 			if (document.getLength() > 0) {
 				// fake a change if the document already has content
 				// scannerListener.documentChanged(new DocumentEvent(document,
@@ -1160,6 +1266,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		fInformationPresenter
 				.setDocumentPartitioning(getSourceViewerConfiguration()
 						.getConfiguredDocumentPartitioning(getSourceViewer()));
+
+		PlatformUI.getWorkbench().addWindowListener(fActivationListener);
+
+		if (isMarkingOccurrences()) {
+			installOccurrencesFinder(false);
+		}
 	}
 
 	/**
@@ -1653,8 +1765,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 	}
 
 	private boolean isFoldingEnabled() {
-		return ErlideUIPlugin.getDefault().getPreferenceStore().getBoolean(
-				PreferenceConstants.EDITOR_FOLDING_ENABLED);
+		return ErlideUIPlugin.getDefault().getPreferenceStore()
+				.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 
 	/**
@@ -1823,14 +1935,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		return listeners;
 	}
 
-	// private Object getLock() {
-	// return lock;
-	// }
-
 	public void expandCollapseFunctionsOrComments(final boolean collapse,
 			final boolean comments) {
 		if (fProjectionModelUpdater instanceof IErlangFoldingStructureProviderExtension) {
-			IErlangFoldingStructureProviderExtension ext = (IErlangFoldingStructureProviderExtension) fProjectionModelUpdater;
+			final IErlangFoldingStructureProviderExtension ext = (IErlangFoldingStructureProviderExtension) fProjectionModelUpdater;
 			if (collapse) {
 				if (comments) {
 					ext.collapseComments();
@@ -1841,6 +1949,519 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 				ext.expandAll();
 			}
 		}
+	}
+
+	/**
+	 * Updates the occurrences annotations based on the current selection.
+	 * 
+	 * @param selection
+	 *            the text selection
+	 * @param astRoot
+	 *            the compilation unit AST
+	 * @since 3.0
+	 */
+	protected void updateOccurrenceAnnotations(final ITextSelection selection,
+			final IErlModule module) {
+
+		if (fOccurrencesFinderJob != null) {
+			fOccurrencesFinderJob.cancel();
+		}
+
+		if (!fMarkOccurrenceAnnotations) {
+			return;
+		}
+
+		if (module == null || selection == null) {
+			return;
+		}
+
+		final IDocument document = getSourceViewer().getDocument();
+		if (document == null) {
+			return;
+		}
+
+		boolean hasChanged = false;
+		final int offset = selection.getOffset();
+		if (document instanceof IDocumentExtension4) {
+			final long currentModificationStamp = ((IDocumentExtension4) document)
+					.getModificationStamp();
+			final IRegion markOccurrenceTargetRegion = fMarkOccurrenceTargetRegion;
+			hasChanged = currentModificationStamp != fMarkOccurrenceModificationStamp;
+			if (markOccurrenceTargetRegion != null && !hasChanged) {
+				if (markOccurrenceTargetRegion.getOffset() <= offset
+						&& offset <= markOccurrenceTargetRegion.getOffset()
+								+ markOccurrenceTargetRegion.getLength()) {
+					return;
+				}
+			}
+			fMarkOccurrenceTargetRegion = ErlangWordFinder.findWord(module,
+					this, offset);
+			fMarkOccurrenceModificationStamp = currentModificationStamp;
+		}
+
+		final String scannerModuleName = ErlangToolkit
+				.createScannerModuleName(module);
+		final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+				.getIdeBackend();
+		OpenResult res;
+		try {
+			res = ErlideOpen.open(ideBackend, scannerModuleName, offset,
+					ErlModelUtils.getImportsAsList(module), "", ErlangCore
+							.getModel().getPathVars());
+		} catch (final BackendException e) {
+			e.printStackTrace();
+			res = null;
+		}
+		List<ErlangRef> refs = null;
+		final ErlangSearchPattern pattern = SearchUtil
+				.getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
+						ErlangSearchPattern.ALL_OCCURRENCES, false);
+		if (pattern != null) {
+			final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
+					.findRefs(ideBackend, pattern, module, getStateDir());
+			refs = getErlangRefs(findRefs);
+		}
+		if (refs == null) {
+			if (!fStickyOccurrenceAnnotations) {
+				removeOccurrenceAnnotations();
+			} else if (hasChanged) {
+				removeOccurrenceAnnotations();
+			}
+			return;
+		}
+
+		fOccurrencesFinderJob = new OccurrencesFinderJob(document, refs,
+				selection);
+		fOccurrencesFinderJob.setPriority(Job.DECORATE);
+		fOccurrencesFinderJob.setSystem(true);
+		fOccurrencesFinderJob.schedule();
+		// fOccurrencesFinderJob.run(new NullProgressMonitor());
+	}
+
+	private List<ErlangRef> getErlangRefs(
+			final List<ModuleLineFunctionArityRef> findRefs) {
+		final List<ErlangRef> result = new ArrayList<ErlangRef>(findRefs.size());
+		for (final ModuleLineFunctionArityRef ref : findRefs) {
+			result.add(new ErlangRef(SearchUtil.searchElementFromRef(ref), ref
+					.getOffset(), ref.getLength(), ref.isDef()));
+		}
+		return result;
+	}
+
+	protected void installOccurrencesFinder(final boolean forceUpdate) {
+		fMarkOccurrenceAnnotations = true;
+
+		fPostSelectionListener = new ISelectionChangedListener() {
+
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final ISelection selection = event.getSelection();
+				updateOccurrenceAnnotations((ITextSelection) selection,
+						getModule());
+			}
+		};
+		final ISelectionProvider selectionProvider = getSelectionProvider();
+		((IPostSelectionProvider) selectionProvider)
+				.addPostSelectionChangedListener(fPostSelectionListener);
+		if (forceUpdate && selectionProvider != null) {
+			fForcedMarkOccurrencesSelection = selectionProvider.getSelection();
+			final IErlModule module = getModule();
+			if (module != null) {
+				updateOccurrenceAnnotations(
+						(ITextSelection) fForcedMarkOccurrencesSelection,
+						module);
+			}
+		}
+
+		if (fOccurrencesFinderJobCanceler == null) {
+			fOccurrencesFinderJobCanceler = new OccurrencesFinderJobCanceler();
+			fOccurrencesFinderJobCanceler.install();
+		}
+	}
+
+	protected void uninstallOccurrencesFinder() {
+		fMarkOccurrenceAnnotations = false;
+
+		if (fOccurrencesFinderJob != null) {
+			fOccurrencesFinderJob.cancel();
+			fOccurrencesFinderJob = null;
+		}
+
+		if (fOccurrencesFinderJobCanceler != null) {
+			fOccurrencesFinderJobCanceler.uninstall();
+			fOccurrencesFinderJobCanceler = null;
+		}
+
+		if (fPostSelectionListener != null) {
+			((IPostSelectionProvider) getSelectionProvider())
+					.removePostSelectionChangedListener(fPostSelectionListener);
+			fPostSelectionListener = null;
+		}
+
+		removeOccurrenceAnnotations();
+	}
+
+	protected boolean isMarkingOccurrences() {
+		final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
+		return prefsNode.getBoolean("markingOccurences", true);
+	}
+
+	private class ErlangRef {
+		final private ErlangSearchElement element;
+		final private int offset, length;
+		final private boolean def;
+
+		public ErlangRef(final ErlangSearchElement element, final int offset,
+				final int length, final boolean def) {
+			super();
+			this.element = element;
+			this.offset = offset;
+			this.length = length;
+			this.def = def;
+		}
+
+		public ErlangSearchElement getElement() {
+			return element;
+		}
+
+		public int getOffset() {
+			return offset;
+		}
+
+		public int getLength() {
+			return length;
+		}
+
+		public IErlElement.Kind getKind() {
+			return element.getKind();
+		}
+
+		public boolean isDef() {
+			return def;
+		}
+
+		public String getDescription() {
+			return element.toString();
+		}
+
+	}
+
+	/**
+	 * Finds and marks occurrence annotations.
+	 * 
+	 * @since 3.0
+	 */
+	class OccurrencesFinderJob extends Job {
+
+		private final IDocument fDocument;
+		private final ISelection fSelection;
+		private final ISelectionValidator fPostSelectionValidator;
+		private boolean fCanceled = false;
+		private final List<ErlangRef> fRefs;
+
+		public OccurrencesFinderJob(final IDocument document,
+				final List<ErlangRef> refs, final ISelection selection) {
+			super("OccurrencesFinderJob");
+			fDocument = document;
+			fSelection = selection;
+			fRefs = refs;
+
+			if (getSelectionProvider() instanceof ISelectionValidator) {
+				fPostSelectionValidator = (ISelectionValidator) getSelectionProvider();
+			} else {
+				fPostSelectionValidator = null;
+			}
+		}
+
+		// cannot use cancel() because it is declared final
+		void doCancel() {
+			fCanceled = true;
+			cancel();
+		}
+
+		private boolean isCanceled(final IProgressMonitor progressMonitor) {
+			return fCanceled
+					|| progressMonitor.isCanceled()
+					|| fPostSelectionValidator != null
+					&& !(fPostSelectionValidator.isValid(fSelection) || fForcedMarkOccurrencesSelection == fSelection)
+					|| LinkedModeModel.hasInstalledModel(fDocument);
+		}
+
+		/*
+		 * @see Job#run(org.eclipse.core.runtime.IProgressMonitor)
+		 */
+		@Override
+		public IStatus run(final IProgressMonitor progressMonitor) {
+			if (isCanceled(progressMonitor)) {
+				return Status.CANCEL_STATUS;
+			}
+
+			final ITextViewer textViewer = getViewer();
+			if (textViewer == null) {
+				return Status.CANCEL_STATUS;
+			}
+
+			final IDocument document = textViewer.getDocument();
+			if (document == null) {
+				return Status.CANCEL_STATUS;
+			}
+
+			final IDocumentProvider documentProvider = getDocumentProvider();
+			if (documentProvider == null) {
+				return Status.CANCEL_STATUS;
+			}
+
+			final IAnnotationModel annotationModel = documentProvider
+					.getAnnotationModel(getEditorInput());
+			if (annotationModel == null) {
+				return Status.CANCEL_STATUS;
+			}
+
+			// Add occurrence annotations
+			final HashMap<Annotation, Position> annotationMap = new HashMap<Annotation, Position>(
+					fRefs.size());
+			for (final ErlangRef ref : fRefs) {
+				if (isCanceled(progressMonitor)) {
+					return Status.CANCEL_STATUS;
+				}
+
+				final Position position = new Position(ref.getOffset(),
+						ref.getLength());
+
+				final String description = ref.getDescription();
+				final String annotationType = ref.isDef() ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$ 
+						: "org.erlide.ui.occurrences";
+
+				annotationMap.put(new Annotation(annotationType, false,
+						description), position);
+			}
+
+			if (isCanceled(progressMonitor)) {
+				return Status.CANCEL_STATUS;
+			}
+
+			synchronized (getLockObject(annotationModel)) {
+				if (annotationModel instanceof IAnnotationModelExtension) {
+					((IAnnotationModelExtension) annotationModel)
+							.replaceAnnotations(fOccurrenceAnnotations,
+									annotationMap);
+				} else {
+					removeOccurrenceAnnotations();
+					for (final Map.Entry<Annotation, Position> mapEntry : annotationMap
+							.entrySet()) {
+						annotationModel.addAnnotation(mapEntry.getKey(),
+								mapEntry.getValue());
+					}
+				}
+				fOccurrenceAnnotations = annotationMap.keySet().toArray(
+						new Annotation[annotationMap.keySet().size()]);
+			}
+
+			return Status.OK_STATUS;
+		}
+	}
+
+	/**
+	 * Cancels the occurrences finder job upon document changes.
+	 * 
+	 * @since 3.0
+	 */
+	class OccurrencesFinderJobCanceler implements IDocumentListener,
+			ITextInputListener {
+
+		public void install() {
+			final ISourceViewer sourceViewer = getSourceViewer();
+			if (sourceViewer == null) {
+				return;
+			}
+
+			final StyledText text = sourceViewer.getTextWidget();
+			if (text == null || text.isDisposed()) {
+				return;
+			}
+
+			sourceViewer.addTextInputListener(this);
+
+			final IDocument document = sourceViewer.getDocument();
+			if (document != null) {
+				document.addDocumentListener(this);
+			}
+		}
+
+		public void uninstall() {
+			final ISourceViewer sourceViewer = getSourceViewer();
+			if (sourceViewer != null) {
+				sourceViewer.removeTextInputListener(this);
+			}
+
+			final IDocumentProvider documentProvider = getDocumentProvider();
+			if (documentProvider != null) {
+				final IDocument document = documentProvider
+						.getDocument(getEditorInput());
+				if (document != null) {
+					document.removeDocumentListener(this);
+				}
+			}
+		}
+
+		/*
+		 * @see
+		 * org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged
+		 * (org.eclipse.jface.text.DocumentEvent)
+		 */
+		public void documentAboutToBeChanged(final DocumentEvent event) {
+			if (fOccurrencesFinderJob != null) {
+				fOccurrencesFinderJob.doCancel();
+			}
+		}
+
+		/*
+		 * @see
+		 * org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse
+		 * .jface.text.DocumentEvent)
+		 */
+		public void documentChanged(final DocumentEvent event) {
+		}
+
+		/*
+		 * @see
+		 * org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged
+		 * (org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+		 */
+		public void inputDocumentAboutToBeChanged(final IDocument oldInput,
+				final IDocument newInput) {
+			if (oldInput == null) {
+				return;
+			}
+
+			oldInput.removeDocumentListener(this);
+		}
+
+		/*
+		 * @see
+		 * org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org
+		 * .eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
+		 */
+		public void inputDocumentChanged(final IDocument oldInput,
+				final IDocument newInput) {
+			if (newInput == null) {
+				return;
+			}
+			newInput.addDocumentListener(this);
+		}
+	}
+
+	/**
+	 * Internal activation listener.
+	 * 
+	 * @since 3.0
+	 */
+	private class ActivationListener implements IWindowListener {
+
+		/*
+		 * @seeorg.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.
+		 * IWorkbenchWindow)
+		 * 
+		 * @since 3.1
+		 */
+		public void windowActivated(final IWorkbenchWindow window) {
+			if (window == getEditorSite().getWorkbenchWindow()
+					&& fMarkOccurrenceAnnotations && isActivePart()) {
+				fForcedMarkOccurrencesSelection = getSelectionProvider()
+						.getSelection();
+				final IErlModule module = getModule();
+				if (module != null) {
+					updateOccurrenceAnnotations(
+							(ITextSelection) fForcedMarkOccurrencesSelection,
+							module);
+				}
+			}
+		}
+
+		/*
+		 * @seeorg.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.
+		 * IWorkbenchWindow)
+		 * 
+		 * @since 3.1
+		 */
+		public void windowDeactivated(final IWorkbenchWindow window) {
+			if (window == getEditorSite().getWorkbenchWindow()
+					&& fMarkOccurrenceAnnotations && isActivePart()) {
+				removeOccurrenceAnnotations();
+			}
+		}
+
+		/*
+		 * @seeorg.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.
+		 * IWorkbenchWindow)
+		 * 
+		 * @since 3.1
+		 */
+		public void windowClosed(final IWorkbenchWindow window) {
+		}
+
+		/*
+		 * @seeorg.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.
+		 * IWorkbenchWindow)
+		 * 
+		 * @since 3.1
+		 */
+		public void windowOpened(final IWorkbenchWindow window) {
+		}
+	}
+
+	/**
+	 * Returns the lock object for the given annotation model.
+	 * 
+	 * @param annotationModel
+	 *            the annotation model
+	 * @return the annotation model's lock object
+	 * @since 3.0
+	 */
+	private Object getLockObject(final IAnnotationModel annotationModel) {
+		if (annotationModel instanceof ISynchronizable) {
+			final Object lock = ((ISynchronizable) annotationModel)
+					.getLockObject();
+			if (lock != null) {
+				return lock;
+			}
+		}
+		return annotationModel;
+	}
+
+	private void removeOccurrenceAnnotations() {
+		fMarkOccurrenceModificationStamp = IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP;
+		fMarkOccurrenceTargetRegion = null;
+
+		final IDocumentProvider documentProvider = getDocumentProvider();
+		if (documentProvider == null) {
+			return;
+		}
+
+		final IAnnotationModel annotationModel = documentProvider
+				.getAnnotationModel(getEditorInput());
+		if (annotationModel == null || fOccurrenceAnnotations == null) {
+			return;
+		}
+
+		synchronized (getLockObject(annotationModel)) {
+			if (annotationModel instanceof IAnnotationModelExtension) {
+				((IAnnotationModelExtension) annotationModel)
+						.replaceAnnotations(fOccurrenceAnnotations, null);
+			} else {
+				for (int i = 0, length = fOccurrenceAnnotations.length; i < length; i++) {
+					annotationModel.removeAnnotation(fOccurrenceAnnotations[i]);
+				}
+			}
+			fOccurrenceAnnotations = null;
+		}
+	}
+
+	private String getStateDir() {
+		if (stateDirCached == null) {
+			stateDirCached = ErlangPlugin.getDefault().getStateLocation()
+					.toString();
+		}
+		return stateDirCached;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -13,6 +14,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+
+import com.google.common.collect.Sets;
 
 /**
  * Project properties.
@@ -22,12 +25,12 @@ public final class ErlangProjectProperties {
 
 	private RuntimeVersion requiredRuntimeVersion;
 
-	private final List<SourceLocation> sources = new ArrayList<SourceLocation>();
-	private List<IPath> includes = new ArrayList<IPath>();
+	private final Set<SourceLocation> sources = Sets.newHashSet();
+	private Set<IPath> includes = Sets.newHashSet();
 	private IPath output;
 	private boolean allowOutputPerSource = false;
-	private final List<DependencyLocation> dependencies = new ArrayList<DependencyLocation>();
-	private final List<CodePathLocation> codePathOrder = new ArrayList<CodePathLocation>();
+	private final Set<DependencyLocation> dependencies = Sets.newHashSet();
+	private final Set<CodePathLocation> codePathOrder = Sets.newHashSet();
 	private final Map<String, String> macros = new HashMap<String, String>();
 
 	public ErlangProjectProperties() {
@@ -106,8 +109,8 @@ public final class ErlangProjectProperties {
 		output = new Path(root.get(ProjectPreferencesConstants.OUTPUT, "ebin"));
 		requiredRuntimeVersion = new RuntimeVersion(root.get(
 				ProjectPreferencesConstants.REQUIRED_BACKEND_VERSION, null));
-		includes = PathSerializer.unpackList(root.get(
-				ProjectPreferencesConstants.INCLUDES, ""));
+		includes = Sets.newHashSet(PathSerializer.unpackList(root.get(
+				ProjectPreferencesConstants.INCLUDES, "")));
 		final Preferences srcNode = root
 				.node(ProjectPreferencesConstants.SOURCES);
 		sources.clear();

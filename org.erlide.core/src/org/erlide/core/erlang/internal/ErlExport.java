@@ -7,9 +7,12 @@ import com.ericsson.otp.erlang.OtpErlangList;
 
 public class ErlExport extends ErlImportExport implements IErlExport {
 
+	private final String functions;
+
 	protected ErlExport(final IErlModule module,
-			final OtpErlangList functionList) {
+			final OtpErlangList functionList, final String functions) {
 		super(module, "export", functionList);
+		this.functions = functions;
 	}
 
 	public Kind getKind() {
@@ -18,7 +21,7 @@ public class ErlExport extends ErlImportExport implements IErlExport {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getName() + ": " + functions;
 	}
 
 }

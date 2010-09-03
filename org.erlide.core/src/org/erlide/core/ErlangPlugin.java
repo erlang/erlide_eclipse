@@ -213,13 +213,23 @@ public class ErlangPlugin extends Plugin {
 					.getBundleGroupProviders();
 			if (providers != null) {
 				for (IBundleGroupProvider provider : providers) {
+					ErlLogger.debug("plugin version: provider = %s", provider
+							.getName());
 					IBundleGroup[] bundleGroups = provider.getBundleGroups();
 					for (IBundleGroup group : bundleGroups) {
+						ErlLogger.debug("plugin version: bundle group = %s %s",
+								group.getIdentifier(), group.getName());
 						if (group.getIdentifier().equals("org.erlide")) {
 							version = group.getVersion();
+							break;
 						}
 					}
+					if (version != null) {
+						break;
+					}
 				}
+			} else {
+				ErlLogger.debug("plugin version: no providers");
 			}
 		} catch (Throwable e) {
 			// ignore

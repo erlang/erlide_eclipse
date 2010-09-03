@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 
@@ -28,26 +28,26 @@ import java.util.Random;
  * Maintains a connection between a Java process and a remote Erlang, Java or C
  * node. The object maintains connection state and allows data to be sent to and
  * received from the peer.
- * 
+ *
  * <p>
  * This abstract class provides the neccesary methods to maintain the actual
  * connection and encode the messages and headers in the proper format according
  * to the Erlang distribution protocol. Subclasses can use these methods to
  * provide a more or less transparent communication channel as desired.
  * </p>
- * 
+ *
  * <p>
  * Note that no receive methods are provided. Subclasses must provide methods
  * for message delivery, and may implement their own receive methods.
  * <p>
- * 
+ *
  * <p>
  * If an exception occurs in any of the methods in this class, the connection
  * will be closed and must be reopened in order to resume communication with the
  * peer. This will be indicated to the subclass by passing the exception to its
  * delivery() method.
  * </p>
- * 
+ *
  * <p>
  * The System property OtpConnection.trace can be used to change the initial
  * trace level setting for all connections. Normally the initial trace level is
@@ -129,10 +129,10 @@ public abstract class AbstractConnection extends Thread {
      * OtpSelf#accept() OtpSelf.accept()} to create a connection based on data
      * received when handshaking with the peer node, when the remote node is the
      * connection intitiator.
-     * 
+     *
      * @exception java.io.IOException if it was not possible to connect to the
      * peer.
-     * 
+     *
      * @exception OtpAuthException if handshake resulted in an authentication
      * error
      */
@@ -172,10 +172,10 @@ public abstract class AbstractConnection extends Thread {
 
     /**
      * Intiate and open a connection to a remote node.
-     * 
+     *
      * @exception java.io.IOException if it was not possible to connect to the
      * peer.
-     * 
+     *
      * @exception OtpAuthException if handshake resulted in an authentication
      * error.
      */
@@ -220,12 +220,12 @@ public abstract class AbstractConnection extends Thread {
 
     /**
      * Send a pre-encoded message to a named process on a remote node.
-     * 
+     *
      * @param dest
      *            the name of the remote process.
      * @param payload
      *            the encoded message to send.
-     * 
+     *
      * @exception java.io.IOException
      *                if the connection is not active or a communication error
      *                occurs.
@@ -264,12 +264,12 @@ public abstract class AbstractConnection extends Thread {
 
     /**
      * Send a pre-encoded message to a process on a remote node.
-     * 
+     *
      * @param dest
      *            the Erlang PID of the remote process.
      * @param msg
      *            the encoded message to send.
-     * 
+     *
      * @exception java.io.IOException
      *                if the connection is not active or a communication error
      *                occurs.
@@ -372,10 +372,10 @@ public abstract class AbstractConnection extends Thread {
      * remote node. If the link is still active when the remote process
      * terminates, an exit signal will be sent to this connection. Use
      * {@link #sendUnlink unlink()} to remove the link.
-     * 
+     *
      * @param dest
      *            the Erlang PID of the remote process.
-     * 
+     *
      * @exception java.io.IOException
      *                if the connection is not active or a communication error
      *                occurs.
@@ -408,10 +408,10 @@ public abstract class AbstractConnection extends Thread {
      * Remove a link between the local node and the specified process on the
      * remote node. This method deactivates links created with {@link #sendLink
      * link()}.
-     * 
+     *
      * @param dest
      *            the Erlang PID of the remote process.
-     * 
+     *
      * @exception java.io.IOException
      *                if the connection is not active or a communication error
      *                occurs.
@@ -448,12 +448,12 @@ public abstract class AbstractConnection extends Thread {
 
     /**
      * Send an exit signal to a remote process.
-     * 
+     *
      * @param dest
      *            the Erlang PID of the remote process.
      * @param reason
      *            an Erlang term describing the exit reason.
-     * 
+     *
      * @exception java.io.IOException
      *                if the connection is not active or a communication error
      *                occurs.
@@ -507,7 +507,7 @@ public abstract class AbstractConnection extends Thread {
 		// don't return until we get a real message
 		// or a failure of some kind (e.g. EXIT)
 		// read length and read buffer must be atomic!
-		tick_loop: do {
+		do {
 		    // read 4 bytes - get length of incoming packet
 		    // socket.getInputStream().read(lbuf);
 		    readSock(socket, lbuf);
@@ -733,7 +733,7 @@ public abstract class AbstractConnection extends Thread {
      * Set the trace level for this connection. Normally tracing is off by
      * default unless System property OtpConnection.trace was set.
      * </p>
-     * 
+     *
      * <p>
      * The following levels are valid: 0 turns off tracing completely, 1 shows
      * ordinary send and receive messages, 2 shows control messages such as link
@@ -741,10 +741,10 @@ public abstract class AbstractConnection extends Thread {
      * communication with Epmd. Each level includes the information shown by the
      * lower ones.
      * </p>
-     * 
+     *
      * @param level
      *            the level to set.
-     * 
+     *
      * @return the previous trace level.
      */
     public int setTraceLevel(int level) {
@@ -764,7 +764,7 @@ public abstract class AbstractConnection extends Thread {
 
     /**
      * Get the trace level for this connection.
-     * 
+     *
      * @return the current trace level.
      */
     public int getTraceLevel() {
@@ -801,7 +801,7 @@ public abstract class AbstractConnection extends Thread {
      * Determine if the connection is still alive. Note that this method only
      * reports the status of the connection, and that it is possible that there
      * are unread messages waiting in the receive queue.
-     * 
+     *
      * @return true if the connection is alive.
      */
     public boolean isConnected() {

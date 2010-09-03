@@ -13,6 +13,7 @@ package org.erlide.core.erlang.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.ICommand;
@@ -43,6 +44,8 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 /**
  * Handle for an Erlang Project.
@@ -79,7 +82,7 @@ public class ErlProject extends Openable implements IErlProject {
 	 * A array with all the non-Erlang resources contained by this
 	 * PackageFragment
 	 */
-	private IResource[] nonErlangResources;
+	private Collection<IResource> nonErlangResources;
 
 	public ErlProject(final IProject project, final ErlElement parent) {
 		super(parent, project.getName());
@@ -385,7 +388,7 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	public IResource[] getNonErlangResources() throws ErlModelException {
+	public Collection<IResource> getNonErlangResources() throws ErlModelException {
 
 		return getNonErlangResources(this);
 	}
@@ -411,7 +414,7 @@ public class ErlProject extends Openable implements IErlProject {
 
 		final OldErlangProjectProperties props = ErlangCore
 				.getProjectProperties(getProject());
-		return new Path(props.getOutputDir());
+		return props.getOutputDir();
 	}
 
 	/**
@@ -424,8 +427,8 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * @see IErlProject#getRequiredProjectNames()
 	 */
-	public String[] getRequiredProjectNames() throws ErlModelException {
-		return new String[0];
+	public Collection<String> getRequiredProjectNames() throws ErlModelException {
+		return Lists.newArrayList();
 
 		// return this.projectPrerequisites(getResolvedClasspath(true, false,
 		// false));
@@ -548,10 +551,10 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	// FIXME
-	public List<IErlModule> getModules() throws ErlModelException {
+	public Collection<IErlModule> getModules() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
-		for (final String src : props.getSourceDirs()) {
+		for (final IPath src : props.getSourceDirs()) {
 			final IFolder folder = fProject.getFolder(src);
 			IResource[] members;
 			try {
@@ -569,13 +572,13 @@ public class ErlProject extends Openable implements IErlProject {
 		return result;
 	}
 
-	public List<IErlModule> getModulesAndHeaders() throws ErlModelException {
+	public Collection<IErlModule> getModulesAndHeaders() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		final OldErlangProjectProperties props = getProperties();
-		List<String> folders = new ArrayList<String>();
+		List<IPath> folders = Lists.newArrayList();
 		folders.addAll(props.getSourceDirs());
 		folders.addAll(props.getIncludeDirs());
-		for (final String f : folders) {
+		for (final IPath f : folders) {
 			final IFolder folder = fProject.getFolder(f);
 			IResource[] members;
 			try {
@@ -664,29 +667,13 @@ public class ErlProject extends Openable implements IErlProject {
 	/**
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
-	private IResource[] getNonErlangResources(final ErlProject project) {
+	private Collection<IResource> getNonErlangResources(final ErlProject project) {
 
 		if (nonErlangResources == null) {
-			nonErlangResources = null;
+			nonErlangResources = Lists.newArrayList();
 		}
 		return nonErlangResources;
 	}
-
-	// public IErlModule getModule(final String name) throws ErlModelException {
-	// if (!hasChildren()) {
-	// open(null);
-	// }
-	// for (final IErlElement element : fChildren) {
-	// if (element instanceof IErlModule) {
-	// final IErlModule m = (IErlModule) element;
-	// if (m != null && m.getName().equals(name)) {
-	// return m;
-	// }
-	// }
-	//
-	// }
-	// return null;
-	// }
 
 	public boolean isVisibleInOutline() {
 		return false;

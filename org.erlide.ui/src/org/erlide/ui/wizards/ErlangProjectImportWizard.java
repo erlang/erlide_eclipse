@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -255,8 +256,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 	 *            reports progress on this object
 	 */
 	protected void createProject(final IProgressMonitor monitor,
-			final Collection<String> includeDirs,
-			final Collection<String> sourceDirs) {
+			final Collection<IPath> includeDirs,
+			final Collection<IPath> sourceDirs) {
 		monitor.beginTask(ErlideUIPlugin
 				.getResourceString("wizards.messages.creatingproject"), 50);
 		try {

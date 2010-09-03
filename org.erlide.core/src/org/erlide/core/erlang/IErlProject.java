@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -48,27 +47,6 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */
 public interface IErlProject extends IErlFolder {
-
-	/**
-	 * Returns an array of non-Erlang resources directly contained in this
-	 * project. It does not transitively answer non-Erlang resources contained
-	 * in folders; these would have to be explicitly iterated over.
-	 * <p>
-	 * Non-Erlang resources includes other files and folders located in the
-	 * project not accounted for by any of it source or binary package fragment
-	 * roots. If the project is a source folder itself, resources excluded from
-	 * the corresponding source classpath entry by one or more exclusion
-	 * patterns are considered non-Erlang resources and will appear in the
-	 * result (possibly in a folder)
-	 * </p>
-	 * 
-	 * @return an array of non-Erlang resources (<code>IFile</code> s and/or
-	 *         <code>IFolder</code>s) directly contained in this project
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its corresponding resource
-	 */
-	IResource[] getNonErlangResources() throws ErlModelException;
 
 	/**
 	 * Returns the default output location for this project as a workspace-
@@ -113,7 +91,7 @@ public interface IErlProject extends IErlFolder {
 	 *             if this element does not exist or if an exception occurs
 	 *             while accessing its corresponding resource
 	 */
-	String[] getRequiredProjectNames() throws ErlModelException;
+	Collection<String> getRequiredProjectNames() throws ErlModelException;
 
 	/**
 	 * Sets the default output location of this project to the location
@@ -145,9 +123,7 @@ public interface IErlProject extends IErlFolder {
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
 
-	List<IErlModule> getModules() throws ErlModelException;
-
-	List<IErlModule> getModulesAndHeaders() throws ErlModelException;
+	Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
 	OldErlangProjectProperties getProperties();
 

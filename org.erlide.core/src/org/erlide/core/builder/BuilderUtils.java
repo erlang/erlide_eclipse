@@ -31,15 +31,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -52,6 +51,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import erlang.ErlideBuilder;
@@ -190,7 +190,7 @@ public final class BuilderUtils {
 				// handle removed resource
 				MarkerHelper.deleteMarkers(resource);
 
-				IPath beam = new Path(prefs.getOutputDir());
+				IPath beam = prefs.getOutputDir();
 				final IPath module = beam.append(resource.getName())
 						.removeFileExtension();
 				beam = module.addFileExtension("beam").setDevice(null);
@@ -313,9 +313,9 @@ public final class BuilderUtils {
 						.equals("true");
 	}
 
-	public static List<String> getAllIncludeDirs(final IProject project) {
-		List<String> includeDirs = getIncludeDirs(project,
-				new ArrayList<String>());
+	public static Collection<IPath> getAllIncludeDirs(final IProject project) {
+		Collection<IPath> includeDirs = getIncludeDirs(project,
+				new ArrayList<IPath>());
 
 		try {
 			final IProject[] referencedProjects = project
@@ -335,22 +335,22 @@ public final class BuilderUtils {
 	 * @param prefs
 	 * @return
 	 */
-	public static List<String> getIncludeDirs(final IProject project,
-			final List<String> includeDirs) {
+	public static Collection<IPath> getIncludeDirs(final IProject project,
+			final Collection<IPath> includeDirs) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> incs = prefs.getIncludeDirs();
+		final Collection<IPath> incs = prefs.getIncludeDirs();
 		final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
 				.getPathVariableManager();
-		for (final String s : incs) {
-			final IPath inc = pvm.resolvePath(new Path(s));
+		for (IPath inc : incs) {
+			inc = pvm.resolvePath(inc);
 			if (inc.isAbsolute()) {
-				includeDirs.add(inc.toString());
+				includeDirs.add(inc);
 			} else {
-				final IFolder folder = project.getFolder(s);
+				final IFolder folder = project.getFolder(inc);
 				if (folder != null) {
 					final IPath location = folder.getLocation();
-					includeDirs.add(location.toString());
+					includeDirs.add(location);
 				}
 			}
 		}
@@ -362,19 +362,19 @@ public final class BuilderUtils {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 
-		final List<String> interestingPaths = new ArrayList<String>();
-		for (final String s : prefs.getSourceDirs()) {
+		final List<IPath> interestingPaths = Lists.newArrayList();
+		for (final IPath s : prefs.getSourceDirs()) {
 			interestingPaths.add(s);
 		}
-		for (final String s : prefs.getIncludeDirs()) {
+		for (final IPath s : prefs.getIncludeDirs()) {
 			interestingPaths.add(s);
 		}
 		interestingPaths.add(prefs.getOutputDir());
 
 		final IPath projectPath = project.getFullPath();
 		final IPath fullPath = resource.getFullPath();
-		for (final String element : interestingPaths) {
-			final IPath sp = projectPath.append(new Path(element));
+		for (IPath sp : interestingPaths) {
+			sp = projectPath.append(sp);
 			if (fullPath.isPrefixOf(sp)) {
 				return true;
 			}
@@ -387,11 +387,11 @@ public final class BuilderUtils {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getFullPath();
-		final List<String> srcs = prefs.getSourceDirs();
+		final Collection<IPath> srcs = prefs.getSourceDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
 				.removeLastSegments(1);
-		for (final String element : srcs) {
-			final IPath sp = projectPath.append(new Path(element));
+		for (final IPath element : srcs) {
+			final IPath sp = projectPath.append(element);
 			if (sp.equals(exceptLastSegment)) {
 				return true;
 			}
@@ -402,11 +402,10 @@ public final class BuilderUtils {
 
 	public static boolean isInIncludedPath(final IResource resource,
 			final IProject my_project) {
-		final List<String> inc = new ArrayList<String>();
+		final List<IPath> inc = Lists.newArrayList();
 		getIncludeDirs(my_project, inc);
 
-		for (final String s : inc) {
-			final IPath p = new Path(s);
+		for (final IPath p : inc) {
 			final IPath resourcePath = resource.getLocation();
 			if (p.isPrefixOf(resourcePath)) {
 				return true;
@@ -420,10 +419,8 @@ public final class BuilderUtils {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final IPath projectPath = project.getLocation();
-
-		final String out = prefs.getOutputDir();
-		return projectPath.append(new Path(out)).isPrefixOf(
-				resource.getLocation());
+		final IPath out = prefs.getOutputDir();
+		return projectPath.append(out).isPrefixOf(resource.getLocation());
 	}
 
 	static void addDependents(final IResource resource,
@@ -431,17 +428,17 @@ public final class BuilderUtils {
 			throws ErlModelException {
 		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
 		if (eprj != null) {
-			final List<IErlModule> ms = eprj.getModules();
+			final Collection<IErlModule> ms = eprj.getModules();
 			for (final IErlModule m : ms) {
 				m.getScanner();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
-					if (BuilderUtils.samePath(ifile.getFilename(), resource
-							.getName())) {
+					if (BuilderUtils.samePath(ifile.getFilename(),
+							resource.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
 							// FIXME BuildResource
-							final BuildResource bres = new BuildResource(m
-									.getResource());
+							final BuildResource bres = new BuildResource(
+									m.getResource());
 							result.add(bres);
 						}
 						break;
@@ -500,11 +497,12 @@ public final class BuilderUtils {
 		try {
 			final OldErlangProjectProperties pp = ErlangCore
 					.getProjectProperties(project);
-			final List<String> sd = pp.getSourceDirs();
+			final Collection<IPath> sd = pp.getSourceDirs();
 			final String[] dirList = new String[sd.size()];
-			for (int i = 0; i < sd.size(); i++) {
-				dirList[i] = project.getLocation().toPortableString() + "/"
-						+ sd.get(i);
+			int j = 0;
+			for (IPath sp : sd) {
+				dirList[j++] = project.getLocation().toPortableString() + "/"
+						+ sp;
 			}
 			final OtpErlangList res = ErlideBuilder.getSourceClashes(backend,
 					dirList);
@@ -558,8 +556,8 @@ public final class BuilderUtils {
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
 						final IResource rifile = BuilderUtils
-								.findResourceByName(project, ifile
-										.getFilename());
+								.findResourceByName(project,
+										ifile.getFilename());
 						if (rifile != null
 								&& rifile.getLocalTimeStamp() > beam
 										.getLocalTimeStamp()) {
@@ -674,7 +672,7 @@ public final class BuilderUtils {
 			throws CoreException {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final String outputDir = prefs.getOutputDir();
+		final IPath outputDir = prefs.getOutputDir();
 		final IResource ebinDir = project.findMember(outputDir);
 		if (ebinDir != null) {
 			ebinDir.refreshLocal(IResource.DEPTH_ONE, null);
@@ -750,7 +748,7 @@ public final class BuilderUtils {
 				.toString();
 		ensureDirExists(outputDir);
 
-		final List<String> includeDirs = getAllIncludeDirs(project);
+		final Collection<IPath> includeDirs = getAllIncludeDirs(project);
 
 		// delete beam file
 		final IPath beamPath = getBeamForErl(res);
@@ -774,8 +772,8 @@ public final class BuilderUtils {
 
 				MarkerHelper.createTaskMarkers(project, res);
 
-				return ErlideBuilder.compileErl(backend, res.getLocation()
-						.toString(), outputDir, includeDirs, compilerOptions);
+				return ErlideBuilder.compileErl(backend, res.getLocation(),
+						outputDir, includeDirs, compilerOptions);
 			} else {
 				return null;
 			}
@@ -788,7 +786,7 @@ public final class BuilderUtils {
 	private static IPath getBeamForErl(final IResource source) {
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(source.getProject());
-		IPath p = new Path(prefs.getOutputDir());
+		IPath p = prefs.getOutputDir();
 		p = p.append(source.getName());
 		if (!"erl".equals(p.getFileExtension())) {
 			return null;

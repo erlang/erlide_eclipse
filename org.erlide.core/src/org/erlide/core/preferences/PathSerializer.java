@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -22,7 +23,7 @@ public final class PathSerializer {
 		return result.toString();
 	}
 
-	public static List<IPath> unpackList(final String string) {
+	public static Collection<IPath> unpackList(final String string) {
 		return unpackList(string, SEP);
 	}
 
