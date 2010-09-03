@@ -136,11 +136,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, OtpErlang.mkTuple(new OtpErlangAtom("parent"), b
-				.getEventPid()));
+		fBackend.send(pid,
+				OtpErlang.mkTuple(new OtpErlangAtom("parent"), b.getEventPid()));
 
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
-				this);
+		DebugPlugin.getDefault().getBreakpointManager()
+				.addBreakpointListener(this);
 	}
 
 	@Override
@@ -360,9 +360,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
 					metaEvent, what);
 			final TraceChangedEventData data = new TraceChangedEventData(
-					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(), p
-							.getPid(),
-					new OtpErlangTuple[] { (OtpErlangTuple) o });
+					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
+					p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
 			traceChangedEvent.setData(data);
 			fireEvent(traceChangedEvent);
 			// ErlLogger.info("Trace: " + s);
@@ -410,14 +409,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 					// borde det g�? borde funka enligt dbg_ui_trace_win....
 					// skit ocks�...
 					erlangProcess.getStackAndBindings(module, line);
-
-					try {
-						System.out.println(erlangProcess.getStackFrames());
-					} catch (DebugException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
 					if (erlangProcess.isStepping()) {
 						erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
 					} else {
@@ -510,7 +501,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 			} else {
 				if (status.equals("idle")) {
-					//erlangProcess.removeStackFrames();
+					// FIXME: this must be cleaned, but the status messages seem
+					// to come out of order...
+					// erlangProcess.removeStackFrames();
 				}
 				erlangProcess.setStatus(status);
 				erlangProcess.fireChangeEvent(DebugEvent.STATE
