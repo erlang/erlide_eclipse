@@ -1,5 +1,7 @@
 package org.erlide.ui.actions;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -118,7 +119,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 					try {
 						String path = (String) result[i];
 						IFile[] cons = ResourcesPlugin.getWorkspace().getRoot()
-								.findFilesForLocation(new Path(path));
+								.findFilesForLocationURI(new URI(path));
 						for (IFile con : cons) {
 							if (con.getProject() != ResourceUtil
 									.getExternalFilesProject()
@@ -131,6 +132,8 @@ public final class OpenModuleHandler extends Action implements IHandler,
 							files.add(file);
 						}
 					} catch (CoreException e) {
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
 					}
 				}
 			}

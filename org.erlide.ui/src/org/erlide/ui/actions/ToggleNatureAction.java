@@ -85,9 +85,6 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-
 			for (int i = 0; i < natures.length; ++i) {
 				if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
 					// Remove the nature
