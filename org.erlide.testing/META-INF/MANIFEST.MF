@@ -6,6 +6,7 @@ Bundle-Version: 0.5.4.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.junit4,
+ org.apache.log4j,
  org.erlide.libs;bundle-version="[1.0.0,2.0.0)",
  org.erlide.core;bundle-version="[0.6.6,1.0.0)",
  org.erlide.jinterface;bundle-version="[0.6.6,1.0.0)",
@@ -158,3 +159,4 @@ Export-Package: freemarker.cache,
  org.objenesis.instantiator.jrockit;uses:="org.objenesis.instantiator",
  org.objenesis.instantiator.sun;uses:="org.objenesis.instantiator",
  org.objenesis.strategy;uses:="org.objenesis.instantiator"
+Eclipse-RegisterBuddy: org.apache.log4j
