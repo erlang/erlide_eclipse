@@ -607,4 +607,16 @@ public class ErlModelUtils {
 		return new String[] { "MODULE", "LINE", "FILE" };
 	}
 
+	public static void openMFA(String module, String function, int arity)
+			throws CoreException {
+		ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
+				arity), null, ErlangCore.getModel().findModule(module), null,
+				true);
+	}
+
+	public static void openMFA(String module, String function)
+			throws CoreException {
+		openMFA(module, function, ErlangFunction.ANY_ARITY);
+	}
+
 }
