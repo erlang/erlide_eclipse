@@ -127,7 +127,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
 	}
 
 	public String getName() throws DebugException {
-		return "n:" + fModule;
+		return "<" + fModule + ">";
 	}
 
 	public IRegisterGroup[] getRegisterGroups() throws DebugException {
