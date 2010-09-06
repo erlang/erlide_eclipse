@@ -23,7 +23,7 @@ public class ProjectManagementTest {
 	private static SWTWorkbenchBot bot;
 
 	@BeforeClass
-	public static void beforeClass() throws Exception {
+	public static void beforeClass() {
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
 		bot.perspectiveByLabel("Erlang").activate();
@@ -74,7 +74,7 @@ public class ProjectManagementTest {
 		return view;
 	}
 
-	private boolean isProjectCreated(final String name) {
+	private static boolean isProjectCreated(final String name) {
 		try {
 			SWTBotView packageExplorer = getNavigator();
 			SWTBotTree tree = packageExplorer.bot().tree();
@@ -85,7 +85,7 @@ public class ProjectManagementTest {
 		}
 	}
 
-	private void waitForShellToDisappear(final String title) {
+	private static void waitForShellToDisappear(final String title) {
 		try {
 			while (bot.shell(title).isActive()) {
 				// wait
@@ -110,7 +110,7 @@ public class ProjectManagementTest {
 			tree.expandNode("MyFirstProject", true);
 			tree.getTreeItem("MyFirstProject").getNode("src").getNode(
 					"a_module.erl").doubleClick();
-			bot.activeEditor().toTextEditor().setText("-module(a_module).\n");
+			//bot.activeEditor().toTextEditor().setText("-module(a_module).\n");
 			bot.activeEditor().save();
 		} catch (WidgetNotFoundException e) {
 			fail("Module 'a_module.erl' has NOT been created " + e.getMessage());
@@ -136,8 +136,8 @@ public class ProjectManagementTest {
 			private SWTBotTree tree;
 
 			@Override
-			public void init(final SWTBot bot) {
-				super.init(bot);
+			public void init(final SWTBot abot) {
+				super.init(abot);
 				SWTBotView packageExplorer = getNavigator();
 				tree = packageExplorer.bot().tree();
 			}
