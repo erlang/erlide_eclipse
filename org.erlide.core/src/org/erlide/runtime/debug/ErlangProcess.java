@@ -28,6 +28,8 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.TermParser;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -198,11 +200,12 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 		final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
 				fBackend, getMeta());
 		if (stackAndBindings == null) {
-			ErlLogger.debug("could not retrieve stack -"
+			ErlLogger.warn("could not retrieve stack -"
 					+ "- are there more than one debug sessions started?");
 			return;
 		}
 		OtpErlangObject savedStackTrace = null;
+		//Bindings b = ErlUtils.match("{ST:t, F:l, }", stackAndBindings);
 		OtpErlangObject el0 = stackAndBindings.elementAt(0);
 		if (el0 instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) el0;
@@ -229,8 +232,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 			final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
 			try {
 				stackFrames.add(new ErlangUninterpretedStackFrame(
-						m.atomValue(), new ErlangFunction( f.atomValue(), a.intValue()), this,
-						getDebugTarget()));
+						m.atomValue(), new ErlangFunction(f.atomValue(), a
+								.intValue()), this, getDebugTarget()));
 			} catch (final OtpErlangRangeException e) {
 				e.printStackTrace();
 			}
