@@ -82,16 +82,21 @@ public class DialyzerUtils {
 			final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
 			final String filename = Util.stringValue(fileLine.elementAt(0));
 			final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-			final String relFilename = filename.substring(projectPathLength);
+			final String relFilename = filename.startsWith(projectPath
+					.toString()) ? filename.substring(projectPathLength)
+					: filename;
 			final IPath relPath = Path.fromPortableString(relFilename);
-			final IResource file = p.findMember(relPath);
+			IResource file = p.findMember(relPath);
+			if (file == null) {
+				file = p;
+			}
 			int line = 1;
 			try {
 				line = lineL.intValue();
 			} catch (final OtpErlangRangeException e) {
 				ErlLogger.error(e);
 			}
-			String s = ErlideDialyze.formatWarning(backend, t);
+			String s = ErlideDialyze.formatWarning(backend, t).trim();
 			final int j = s.indexOf(": ");
 			if (j != -1) {
 				s = s.substring(j + 1);
@@ -163,8 +168,9 @@ public class DialyzerUtils {
 	public static void collectFilesAndIncludeDirs(final IErlProject ep,
 			final Map<IErlProject, Set<IErlModule>> modules,
 			final IProject project, final Collection<String> files,
-			final Collection<String> names, final Collection<IPath> includeDirs,
-			final boolean fromSource) throws CoreException {
+			final Collection<String> names,
+			final Collection<IPath> includeDirs, final boolean fromSource)
+			throws CoreException {
 		if (fromSource) {
 			for (final IErlModule m : modules.get(ep)) {
 				if (ErlideUtil.hasErlExtension(m.getName())) {
