@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit4;bundle-version="4.0.0",
  org.erlide.testing;bundle-version="0.5.4",
  org.eclipse.swtbot.eclipse.core;bundle-version="2.0.0",
+ org.apache.log4j,
  org.eclipse.swtbot.eclipse.finder;bundle-version="2.0.0",
  org.eclipse.swtbot.eclipse.junit4.headless;bundle-version="2.0.0",
  org.eclipse.swtbot.eclipse.spy;bundle-version="2.0.0",
@@ -16,3 +17,4 @@ Require-Bundle: org.junit4;bundle-version="4.0.0",
  org.eclipse.swtbot.junit4_x;bundle-version="2.0.0",
  org.erlide.libs;bundle-version="1.1.3"
 Export-Package: org.erlide.ui
+Eclipse-RegisterBuddy: org.apache.log4j
