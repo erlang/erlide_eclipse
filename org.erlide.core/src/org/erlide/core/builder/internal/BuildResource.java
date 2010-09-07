@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;

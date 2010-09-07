@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.builder.internal.BuildResource;
+import org.erlide.core.builder.internal.BuilderVisitor;
 import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -55,13 +57,13 @@ import erlang.ErlideBuilder;
 
 public final class BuilderUtils {
 
-	static class SearchVisitor implements IResourceVisitor {
+	public static class SearchVisitor implements IResourceVisitor {
 
-		IResource fResult;
+		private IResource fResult;
 		String fName;
 
 		public SearchVisitor(final String name, final IProgressMonitor monitor) {
-			fResult = null;
+			setResult(null);
 			fName = name;
 		}
 
@@ -69,7 +71,7 @@ public final class BuilderUtils {
 			if (fName == null) {
 				return false;
 			}
-			if (fResult != null) {
+			if (getResult() != null) {
 				return false;
 			}
 			final OldErlangProjectProperties prefs = ErlangCore
@@ -80,11 +82,19 @@ public final class BuilderUtils {
 					&& isInCodePath(resource, prefs)) {
 				final String[] p = resource.getName().split("\\.");
 				if (p[0].equals(fName)) {
-					fResult = resource;
+					setResult(resource);
 					return false;
 				}
 			}
 			return true;
+		}
+
+		public void setResult(IResource fResult) {
+			this.fResult = fResult;
+		}
+
+		public IResource getResult() {
+			return fResult;
 		}
 	}
 
@@ -160,7 +170,7 @@ public final class BuilderUtils {
 		return false;
 	}
 
-	static void addDependents(final IResource resource,
+	public static void addDependents(final IResource resource,
 			final IProject my_project, final Set<BuildResource> result)
 			throws ErlModelException {
 		final IErlProject eprj = ErlangCore.getModel().findProject(my_project);

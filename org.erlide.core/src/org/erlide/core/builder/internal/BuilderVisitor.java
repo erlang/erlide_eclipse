@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.builder.internal;
 
 import java.util.Set;
 
@@ -17,33 +17,23 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.builder.BuilderUtils.SearchVisitor;
-import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 
-class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
-	private enum ResourceCategory {
-		NONE, ERL, HRL, YRL, BEAM;
-	}
-
-	private enum FolderCategory {
-		NONE, SOURCE, INCLUDE, OUTPUT;
-	}
+public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
 	private final Set<BuildResource> result;
 	private final IProgressMonitor monitor;
 	private OldErlangProjectProperties prefs = null;
-	private FolderCategory folderCategory = FolderCategory.NONE;
-	private ResourceCategory resourceCategory;
 
 	public BuilderVisitor(final Set<BuildResource> result,
 			final IProgressMonitor monitor) {
 		this.result = result;
 		this.monitor = monitor;
-		System.out.println("-------------------");
 	}
 
 	public boolean visit(final IResourceDelta delta) throws CoreException {
@@ -57,8 +47,6 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
 	private boolean visit(IResource resource, int kind) {
 		final IProject my_project = resource.getProject();
-
-		// return true to continue visiting children.
 		if (resource.getType() == IResource.PROJECT) {
 			prefs = ErlangCore.getProjectProperties(my_project);
 			return true;
@@ -67,77 +55,39 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 			return true;
 		}
 
-		folderCategory = categorizeFolder(resource.getParent());
-		if (folderCategory == FolderCategory.NONE) {
-			return true;
-		}
-		resourceCategory = categorizeResource(resource);
-		return handleFile(kind, resource);
-	}
-
-	private boolean handleFile(int kind, IResource resource) {
-		System.out.println(" ## " + resource + " " + kind + " : "
-				+ folderCategory + "," + resourceCategory);
-
-		try {
-			switch (resourceCategory) {
-			case ERL:
-				handleErlFile(kind, resource);
-				break;
-			case HRL:
-				handleHrlFile(kind, resource);
-				break;
-			case YRL:
-				handleYrlFile(kind, resource);
-				break;
-			case BEAM:
-				handleBeamFile(kind, resource);
-				break;
-			default:
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		return false;
-	}
-
-	private FolderCategory categorizeFolder(IResource resource) {
-		IPath path = resource.getProjectRelativePath();
-		if (prefs.getSourceDirs().contains(path)) {
-			return FolderCategory.SOURCE;
-		}
-		if (prefs.getIncludeDirs().contains(path)) {
-			return FolderCategory.INCLUDE;
-		}
-		if (prefs.getOutputDir().equals(path)) {
-			return FolderCategory.OUTPUT;
-		}
-		return FolderCategory.NONE;
-	}
-
-	private BuilderVisitor.ResourceCategory categorizeResource(
-			IResource resource) {
+		IPath path = resource.getParent().getProjectRelativePath();
 		String ext = resource.getFileExtension();
-		if ("erl".equals(ext)) {
-			return ResourceCategory.ERL;
+		if (prefs.getSourceDirs().contains(path)) {
+			if ("erl".equals(ext)) {
+				handleErlFile(kind, resource);
+				return false;
+			}
+			if ("yrl".equals(ext)) {
+				handleYrlFile(kind, resource);
+				return false;
+			}
 		}
-		if ("hrl".equals(ext)) {
-			return ResourceCategory.HRL;
+		if (prefs.getIncludeDirs().contains(path) && "hrl".equals(ext)) {
+			try {
+				handleHrlFile(kind, resource);
+			} catch (ErlModelException e) {
+				ErlLogger.warn(e);
+			}
+			return false;
 		}
-		if ("beam".equals(ext)) {
-			return ResourceCategory.BEAM;
+		if (prefs.getOutputDir().equals(path) && "beam".equals(ext)) {
+			try {
+				handleBeamFile(kind, resource);
+			} catch (CoreException e) {
+				ErlLogger.warn(e);
+			}
+			return false;
 		}
-		if ("yrl".equals(ext)) {
-			return ResourceCategory.YRL;
-		}
-		return ResourceCategory.NONE;
+		return true;
 	}
 
 	private void handleBeamFile(final int kind, final IResource resource)
 			throws CoreException {
-		if (folderCategory != FolderCategory.OUTPUT) {
-			return;
-		}
 		switch (kind) {
 		case IResourceDelta.ADDED:
 		case IResourceDelta.CHANGED:
@@ -146,8 +96,9 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 			final String[] p = resource.getName().split("\\.");
 			final SearchVisitor searcher = new SearchVisitor(p[0], null);
 			resource.getProject().accept(searcher);
-			if (searcher.fResult != null) {
-				final BuildResource bres = new BuildResource(searcher.fResult);
+			if (searcher.getResult() != null) {
+				final BuildResource bres = new BuildResource(searcher
+						.getResult());
 				result.add(bres);
 				monitor.worked(1);
 			}
@@ -156,9 +107,6 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 	}
 
 	private void handleYrlFile(final int kind, final IResource resource) {
-		if (folderCategory != FolderCategory.SOURCE) {
-			return;
-		}
 		switch (kind) {
 		case IResourceDelta.ADDED:
 		case IResourceDelta.CHANGED:
@@ -186,9 +134,6 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
 	private void handleHrlFile(final int kind, final IResource resource)
 			throws ErlModelException {
-		if (folderCategory != FolderCategory.INCLUDE) {
-			return;
-		}
 		switch (kind) {
 		case IResourceDelta.ADDED:
 		case IResourceDelta.REMOVED:
@@ -201,9 +146,6 @@ class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 	}
 
 	private void handleErlFile(final int kind, final IResource resource) {
-		if (folderCategory != FolderCategory.SOURCE) {
-			return;
-		}
 		switch (kind) {
 		case IResourceDelta.ADDED:
 		case IResourceDelta.CHANGED:
