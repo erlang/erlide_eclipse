@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -57,216 +56,8 @@ import com.google.common.collect.Sets;
 import erlang.ErlideBuilder;
 
 public final class BuilderUtils {
-	private static class ErlangDeltaVisitor implements IResourceDeltaVisitor {
 
-		private final Set<BuildResource> result;
-		private final IProgressMonitor monitor;
-
-		public ErlangDeltaVisitor(final Set<BuildResource> result,
-				final IProgressMonitor monitor) {
-			this.result = result;
-			this.monitor = monitor;
-		}
-
-		public boolean visit(final IResourceDelta delta) throws CoreException {
-			final IResource resource = delta.getResource();
-			final IProject my_project = resource.getProject();
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(my_project);
-
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "erl".equals(resource.getFileExtension())) {
-				handleErlFile(delta, resource, my_project, prefs);
-			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "hrl".equals(resource.getFileExtension())
-					&& isInIncludedPath(resource, my_project)) {
-				handleHrlFile(delta, resource, my_project);
-			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "yrl".equals(resource.getFileExtension())
-					&& isInCodePath(resource, my_project)) {
-				handleYrlFile(delta, resource, my_project);
-			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "beam".equals(resource.getFileExtension())
-					&& isInOutputPath(resource, my_project)) {
-				handleBeamFile(delta, resource, my_project);
-			}
-			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER
-					|| resource.getType() == IResource.PROJECT) {
-				return isInteresting(resource, my_project);
-			}
-			return true;
-		}
-
-		private void handleBeamFile(final IResourceDelta delta,
-				final IResource resource, final IProject my_project)
-				throws CoreException {
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-			case IResourceDelta.CHANGED:
-				break;
-			case IResourceDelta.REMOVED:
-				final String[] p = resource.getName().split("\\.");
-				final SearchVisitor searcher = new SearchVisitor(p[0], null);
-				my_project.accept(searcher);
-				if (searcher.fResult != null) {
-					final BuildResource bres = new BuildResource(
-							searcher.fResult);
-					result.add(bres);
-					monitor.worked(1);
-				}
-				break;
-			}
-		}
-
-		private void handleYrlFile(final IResourceDelta delta,
-				final IResource resource, final IProject my_project) {
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-			case IResourceDelta.CHANGED:
-				final BuildResource bres = new BuildResource(resource);
-				result.add(bres);
-				monitor.worked(1);
-				break;
-
-			case IResourceDelta.REMOVED:
-				MarkerHelper.deleteMarkers(resource);
-
-				IPath erl = resource.getProjectRelativePath()
-						.removeFileExtension();
-				erl = erl.addFileExtension("erl").setDevice(null);
-				final IResource br = my_project.findMember(erl);
-				if (br != null) {
-					try {
-						br.delete(true, null);
-					} catch (final Exception e) {
-						ErlLogger.warn(e);
-					}
-					monitor.worked(1);
-				}
-				break;
-			}
-		}
-
-		private void handleHrlFile(final IResourceDelta delta,
-				final IResource resource, final IProject my_project)
-				throws ErlModelException {
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-			case IResourceDelta.REMOVED:
-			case IResourceDelta.CHANGED:
-				final int n = result.size();
-				addDependents(resource, my_project, result);
-				monitor.worked(result.size() - n);
-				break;
-			}
-		}
-
-		private void handleErlFile(final IResourceDelta delta,
-				final IResource resource, final IProject my_project,
-				final OldErlangProjectProperties prefs) {
-			switch (delta.getKind()) {
-			case IResourceDelta.ADDED:
-			case IResourceDelta.CHANGED:
-				// handle changed resource
-				if (!resource.isDerived()) {
-					if (isInCodePath(resource, my_project)) {
-						final BuildResource bres = new BuildResource(resource);
-						result.add(bres);
-						monitor.worked(1);
-					}
-				}
-				break;
-			case IResourceDelta.REMOVED:
-				// handle removed resource
-				MarkerHelper.deleteMarkers(resource);
-
-				IPath beam = prefs.getOutputDir();
-				final IPath module = beam.append(resource.getName())
-						.removeFileExtension();
-				beam = module.addFileExtension("beam").setDevice(null);
-				final IResource br = my_project.findMember(beam);
-				if (br != null) {
-					try {
-						br.delete(true, null);
-					} catch (final Exception e) {
-						ErlLogger.warn(e);
-					}
-				}
-
-				// was it derived from a yrl?
-				final IPath yrlp = resource.getProjectRelativePath()
-						.removeFileExtension().addFileExtension("yrl");
-				final IResource yrl = my_project.findMember(yrlp);
-				if (yrl != null) {
-					final BuildResource bres = new BuildResource(resource);
-					result.add(bres);
-					monitor.worked(1);
-				}
-
-				break;
-			}
-		}
-	}
-
-	private static class ErlangResourceVisitor implements IResourceVisitor {
-
-		private final Set<BuildResource> result;
-		private final IProgressMonitor monitor;
-
-		public ErlangResourceVisitor(final Set<BuildResource> result,
-				final IProgressMonitor monitor) {
-			this.result = result;
-			this.monitor = monitor;
-		}
-
-		public boolean visit(final IResource resource) throws CoreException {
-			final IProject my_project = resource.getProject();
-			if (resource.isDerived()) {
-				return true;
-			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "erl".equals(resource.getFileExtension())) {
-				try {
-					if (isInCodePath(resource, my_project)) {
-						final BuildResource bres = new BuildResource(resource);
-						result.add(bres);
-						monitor.worked(1);
-					}
-
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
-			if (resource.getType() == IResource.FILE
-					&& resource.getFileExtension() != null
-					&& "yrl".equals(resource.getFileExtension())
-					&& isInCodePath(resource, my_project)) {
-				try {
-					final BuildResource bres = new BuildResource(resource);
-					result.add(bres);
-					monitor.worked(1);
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
-			// return true to continue visiting children.
-			if (resource.getType() == IResource.FOLDER) {
-				return isInteresting(resource, my_project);
-			}
-			return true;
-		}
-	}
-
-	private static class SearchVisitor implements IResourceVisitor {
+	static class SearchVisitor implements IResourceVisitor {
 
 		IResource fResult;
 		String fName;
@@ -286,7 +77,7 @@ public final class BuilderUtils {
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInCodePath(resource, resource.getProject())) {
+					&& isInCodePath(resource)) {
 				final String[] p = resource.getName().split("\\.");
 				if (p[0].equals(fName)) {
 					fResult = resource;
@@ -353,36 +144,10 @@ public final class BuilderUtils {
 		return includeDirs;
 	}
 
-	public static boolean isInteresting(final IResource resource,
-			final IProject project) {
+	public static boolean isInCodePath(final IResource resource) {
 		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-
-		final List<IPath> interestingPaths = Lists.newArrayList();
-		for (final IPath s : prefs.getSourceDirs()) {
-			interestingPaths.add(s);
-		}
-		for (final IPath s : prefs.getIncludeDirs()) {
-			interestingPaths.add(s);
-		}
-		interestingPaths.add(prefs.getOutputDir());
-
-		final IPath projectPath = project.getFullPath();
-		final IPath fullPath = resource.getFullPath();
-		for (IPath sp : interestingPaths) {
-			sp = projectPath.append(sp);
-			if (fullPath.isPrefixOf(sp)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean isInCodePath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getFullPath();
+				.getProjectProperties(resource.getProject());
+		final IPath projectPath = resource.getProject().getFullPath();
 		final Collection<IPath> srcs = prefs.getSourceDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
 				.removeLastSegments(1);
@@ -396,29 +161,6 @@ public final class BuilderUtils {
 		return false;
 	}
 
-	public static boolean isInIncludedPath(final IResource resource,
-			final IProject my_project) {
-		final List<IPath> inc = Lists.newArrayList();
-		getIncludeDirs(my_project, inc);
-
-		for (final IPath p : inc) {
-			final IPath resourcePath = resource.getLocation();
-			if (p.isPrefixOf(resourcePath)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean isInOutputPath(final IResource resource,
-			final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final IPath projectPath = project.getLocation();
-		final IPath out = prefs.getOutputDir();
-		return projectPath.append(out).isPrefixOf(resource.getLocation());
-	}
-
 	static void addDependents(final IResource resource,
 			final IProject my_project, final Set<BuildResource> result)
 			throws ErlModelException {
@@ -429,11 +171,11 @@ public final class BuilderUtils {
 				m.getScanner();
 				final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
 				for (final ErlangIncludeFile ifile : incs) {
-					if (BuilderUtils.samePath(ifile.getFilename(),
-							resource.getName())) {
+					if (BuilderUtils.samePath(ifile.getFilename(), resource
+							.getName())) {
 						if (m.getModuleKind() == ModuleKind.ERL) {
-							final BuildResource bres = new BuildResource(
-									m.getResource());
+							final BuildResource bres = new BuildResource(m
+									.getResource());
 							result.add(bres);
 						}
 						break;
@@ -449,7 +191,7 @@ public final class BuilderUtils {
 			final IProject project, final IProgressMonitor monitor)
 			throws CoreException {
 		final Set<BuildResource> result = Sets.newHashSet();
-		project.accept(new ErlangResourceVisitor(result, monitor));
+		project.accept(new BuilderVisitor(result, monitor));
 		return result;
 	}
 
@@ -459,7 +201,7 @@ public final class BuilderUtils {
 			throws CoreException {
 		final Set<BuildResource> result = Sets.newHashSet();
 		if (delta != null) {
-			delta.accept(new ErlangDeltaVisitor(result, monitor));
+			delta.accept(new BuilderVisitor(result, monitor));
 		}
 		return result;
 	}
@@ -549,8 +291,8 @@ public final class BuilderUtils {
 							.getIncludedFiles();
 					for (final ErlangIncludeFile ifile : incs) {
 						final IResource rifile = BuilderUtils
-								.findResourceByName(project,
-										ifile.getFilename());
+								.findResourceByName(project, ifile
+										.getFilename());
 						if (rifile != null
 								&& rifile.getLocalTimeStamp() > beam
 										.getLocalTimeStamp()) {
@@ -828,7 +570,7 @@ public final class BuilderUtils {
 
 	}
 
-	private static IPath getErlForYrl(final IResource resource) {
+	public static IPath getErlForYrl(final IResource resource) {
 		final IPath path = resource.getProjectRelativePath();
 		if (!"yrl".equals(path.getFileExtension())) {
 			return null;
