@@ -13,7 +13,6 @@ package org.erlide.core.builder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,8 +35,8 @@ import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
@@ -50,7 +49,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import erlang.ErlideBuilder;
@@ -74,10 +72,12 @@ public final class BuilderUtils {
 			if (fResult != null) {
 				return false;
 			}
+			final OldErlangProjectProperties prefs = ErlangCore
+					.getProjectProperties(resource.getProject());
 			if (resource.getType() == IResource.FILE
 					&& resource.getFileExtension() != null
 					&& "erl".equals(resource.getFileExtension())
-					&& isInCodePath(resource)) {
+					&& isInCodePath(resource, prefs)) {
 				final String[] p = resource.getName().split("\\.");
 				if (p[0].equals(fName)) {
 					fResult = resource;
@@ -144,9 +144,8 @@ public final class BuilderUtils {
 		return includeDirs;
 	}
 
-	public static boolean isInCodePath(final IResource resource) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(resource.getProject());
+	static boolean isInCodePath(final IResource resource,
+			OldErlangProjectProperties prefs) {
 		final IPath projectPath = resource.getProject().getFullPath();
 		final Collection<IPath> srcs = prefs.getSourceDirs();
 		final IPath exceptLastSegment = resource.getFullPath()
@@ -312,27 +311,6 @@ public final class BuilderUtils {
 		return shouldCompile;
 	}
 
-	// public static IResource findResourceByName(final IContainer container,
-	// final String fileName) {
-	// try {
-	// for (final IResource r : container.members()) {
-	// if (samePath(r.getName(), fileName)) {
-	// return r;
-	// }
-	// if (r instanceof IContainer) {
-	// final IResource res = findResourceByName((IContainer) r,
-	// fileName);
-	// if (res != null) {
-	// return res;
-	// }
-	// }
-	// }
-	// } catch (final CoreException e) {
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-
 	public static boolean samePath(final String p1, final String p2) {
 		final boolean WINDOWS = java.io.File.separatorChar == '\\';
 		if (WINDOWS) {
@@ -454,7 +432,10 @@ public final class BuilderUtils {
 					br.setDerived(true);
 					final BuildResource bbr = new BuildResource(br);
 					// br.touch() doesn't work...
-					compileErl(project, bbr, backend, compilerOptions);
+					final OldErlangProjectProperties prefs = ErlangCore
+							.getProjectProperties(project);
+					compileErl(project, bbr, prefs.getOutputDir().toString(),
+							backend, compilerOptions);
 				}
 			} catch (final CoreException e) {
 				ErlLogger.warn(e);
@@ -464,11 +445,9 @@ public final class BuilderUtils {
 	}
 
 	public static RpcFuture startCompileErl(final IProject project,
-			final BuildResource bres, final Backend backend,
+			final BuildResource bres, String outputDir0, final Backend backend,
 			final OtpErlangList compilerOptions, final boolean force) {
 		final IPath projectPath = project.getLocation();
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
 		final IResource res = bres.getResource();
 		final String s = res.getFileExtension();
 		if (!"erl".equals(s)) {
@@ -478,9 +457,9 @@ public final class BuilderUtils {
 		MarkerHelper.deleteMarkers(res);
 
 		final String outputDir = bres.getOutput() == null ? projectPath.append(
-				prefs.getOutputDir()).toString() : bres.getOutput().startsWith(
-				"/") ? bres.getOutput() : projectPath.append(bres.getOutput())
-				.toString();
+				outputDir0).toString()
+				: bres.getOutput().startsWith("/") ? bres.getOutput()
+						: projectPath.append(bres.getOutput()).toString();
 		ensureDirExists(outputDir);
 
 		final Collection<IPath> includeDirs = getAllIncludeDirs(project);
@@ -581,9 +560,9 @@ public final class BuilderUtils {
 	}
 
 	public static void compileErl(final IProject project,
-			final BuildResource resource, final Backend b,
+			final BuildResource resource, String outputDir, final Backend b,
 			final OtpErlangList compilerOptions) {
-		final RpcFuture res = startCompileErl(project, resource, b,
+		final RpcFuture res = startCompileErl(project, resource, outputDir, b,
 				compilerOptions, true);
 		if (res == null) {
 			ErlLogger.warn("error compiling erl file: "

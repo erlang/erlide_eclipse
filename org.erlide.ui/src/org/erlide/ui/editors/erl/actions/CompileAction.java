@@ -19,6 +19,7 @@ import org.erlide.core.builder.BuilderUtils;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
@@ -54,9 +55,12 @@ public class CompileAction extends Action {
 			e1.printStackTrace();
 		}
 		OtpErlangList compilerOptions = prefs.export();
+		final OldErlangProjectProperties pprefs = ErlangCore
+				.getProjectProperties(project);
 
 		if ("erl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileErl(project, bres, b, compilerOptions);
+			BuilderUtils.compileErl(project, bres, pprefs.getOutputDir()
+					.toString(), b, compilerOptions);
 		}
 		if ("yrl".equals(resource.getFileExtension())) {
 			BuilderUtils.compileYrl(project, bres, b, compilerOptions);

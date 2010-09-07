@@ -111,12 +111,12 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
 					+ " of " + project.getName());
 		}
+		final OldErlangProjectProperties prefs = ErlangCore
+				.getProjectProperties(project);
 		try {
 			MarkerHelper.deleteMarkers(project);
 			initializeBuilder(monitor);
 
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
 			IPath out = prefs.getOutputDir();
 			IResource outr = project.findMember(out);
 			if (outr != null) {
@@ -158,8 +158,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					IResource resource = bres.getResource();
 					// notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
+						String outputDir = prefs.getOutputDir().toString();
 						RpcFuture f = BuilderUtils.startCompileErl(project,
-								bres, backend, compilerOptions, false);
+								bres, outputDir, backend, compilerOptions,
+								false);
 						if (f != null) {
 							results.put(f, resource);
 						}
