@@ -25,6 +25,7 @@
       <import plugin="org.erlide.core"/>
       <import plugin="org.erlide.jinterface"/>
       <import plugin="org.erlide.ui"/>
+      <import plugin="org.ttb.integration.ttbe" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
