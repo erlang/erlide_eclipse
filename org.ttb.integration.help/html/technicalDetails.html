@@ -1,0 +1,52 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Technical details</title>
+</head>
+<body>
+<h2>Technical details</h2>
+<h3>Ttb</h3>
+This plugin uses an improved version of ttb (Trace Tool Builder,
+<a href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a>
+) for tracing purposes. "Improved" means that this version is currently not included in OTP and
+comes as part of this plugin. This version is called here "ttbe" ("e" stands for "extended").
+<br />
+Ttb is built on top of
+<a href="http://www.erlang.org/doc/man/dbg.html">dbg</a>
+and provides some improvements which makes tracing easier. This plugin provides graphical user
+interface to ttb which makes using it more user friendly.
+
+<h3>Tracing</h3>
+Ttb is started on separate erlang node called "tracing" (
+<code>-sname tracing</code>
+). It allows tracing tool to be independent from node you want to trace. "Tracing" node is
+automatically started by erlide when any tracing action is performed for the first time (tracing
+another node or loading trace data from file).
+<br />
+Traced node is treated as "diskless node", i.e. all data from this node is directly sent to the
+"tracing" node. After finishing tracing all data is writen to the directory named
+<i>ttb_upload_erlide_tracing-Timestamp</i>
+(
+<i>Timestamp</i>
+is in a form of yyyymmdd-hhmmss) into file called
+<i>nodeName@hostName</i>
+.
+
+<br />
+When tracing is finished application reads data from this file using special data handler
+provided to
+<code>ttbe:format/2</code>
+function which, instead of formatting data, sends it directly to trace plugin which interprets it.
+<br />Same action is performed when reading trace results from file. 
+
+
+<h3>Links</h3>
+<ul>
+	<li><a href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a></li>
+	<li><a href="http://www.erlang.org/doc/apps/observer/ttb_ug.html">http://www.erlang.org/doc/apps/observer/ttb_ug.html</a></li>
+	<li><a href="http://www.erlang.org/doc/man/dbg.html">http://www.erlang.org/doc/man/dbg.html</a></li>
+</ul>
+
+</body>
+</html>

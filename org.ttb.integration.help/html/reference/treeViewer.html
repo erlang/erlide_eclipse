@@ -1,0 +1,36 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Tree viewer View</title>
+</head>
+<body>
+<h2>Tree viewer View</h2>
+Using this view you can browse trace results in a form of tree. Each event type is represented by
+different icon. Tree nodes can be unfolded to get more details about particular event. Every tracing
+is represented as different tree. Root of such tree displays dates of first and last event.
+<center><img alt="" src="../../images/treeviewer.png"><br />
+<h6>Tree viewer</h6>
+</center>
+When you double click on module node file containing its definition will be opened in editor. The
+same is with node representing function that was called - file containing its module will be opened
+and cursor will be set at the begining of function's definition.
+
+<h3>Clearing view</h3>
+If you want to remove all data from view click
+<i>Clear view</i>
+:
+<center><img alt="" src="../../images/treeviewer-clearView.png"><br />
+</center>
+
+<h3>Loading data from file</h3>
+After stopping tracing data is saved in file called
+<i>ttb_upload_erlide_tracing-Timestamp/nodeName@hostName</i>
+(<i>Timestamp</i> is in a form of yyyymmdd-hhmmss). You can load it into tree viewer using
+<i>Load results from file...</i>
+button:
+<center><img alt="" src="../../images/treeviewer-loadResults.png"><br />
+</center>
+
+</body>
+</html>

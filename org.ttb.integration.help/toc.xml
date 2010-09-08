@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Erlang trace plugin">
+   <topic href="html/introduction.html" label="Introduction">
+   </topic>
+   <topic href="html/technicalDetails.html" label="Technical details">
+   </topic>
+   <topic href="html/gettingStarted.html" label="Getting started">
+   </topic>
+   <topic label="Reference">
+      <topic href="html/reference/mainPanel.html" label="Main panel">
+      </topic>
+      <topic href="html/reference/processes.html" label="Processes tab">
+      </topic>
+      <topic href="html/reference/functions.html" label="Functions tab">
+      </topic>
+      <topic href="html/reference/treeViewer.html" label="Tree viewer View">
+      </topic>
+   </topic>
+</toc>

@@ -1,0 +1,49 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Introduction</title>
+</head>
+<body>
+<h3>What is tracing?</h3>
+<p><em>"In software engineering, tracing is a specialized use of logging to record
+information about a program's execution. This information is typically used by programmers for
+debugging purposes, and additionally, depending on the type and detail of information contained in a
+trace log, by experienced system administrators or technical support personnel to diagnose common
+problems with software."</em> <br>
+<a href="http://en.wikipedia.org/wiki/Tracing_%28software%29">http://en.wikipedia.org/wiki/Tracing_(software)</a></p>
+
+<h3>Plugin description</h3>
+<p>This plugin uses an improved version of ttb (Trace Tool Builder, <a
+	href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a>) for
+tracing purposes and provides grafical interface to it offering possibility of tracing Erlang
+programs directly from erlide.</p>
+<center><img alt="" src="../images/processesTab.png"><br />
+<h6>Tracing control panel</h6>
+</center>
+
+<p>Tracing is a specific kind of event logging - it logs "low level" information. Because of
+that user quickly gets overwhelmed with logged data and finds it rather difficult to browse it. This
+plugin also profides an user friedly way of browsing trace results - they are displayed in a form of
+a tree where each event is represented by different type of icon. Tree nodes can be unfolded to get
+more details about particular event.</p>
+<center><img alt="" src="../images/treeviewer.png"><br />
+<h6>Browsing traces</h6>
+</center>
+
+<h3>Features</h3>
+<ul>
+	<li>New eclipse perspective and views</li>
+	<li>Setting process flags</li>
+	<li>Selecting node that should be activated for tracing</li>
+	<li>Selecting processes which should be traced</li>
+	<li>Setting trace patterns for functions (also supports match specifications)</li>
+	<li>New positions in outline's context menu for creating trace patterns from selected
+	function</li>
+	<li>Saving and restoring trace patterns configuration</li>
+	<li>Browsing trace results in tree</li>
+	<li>Loading trace results from file</li>
+</ul>
+
+</body>
+</html>
