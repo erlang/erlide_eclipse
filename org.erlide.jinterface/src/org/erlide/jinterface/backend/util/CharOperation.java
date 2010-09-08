@@ -2479,7 +2479,7 @@ public final class CharOperation {
 	 * @throws NullPointerException
 	 *             if array is null
 	 */
-	public static int occurencesOf(final char toBeFound, final char[] array) {
+	public static int occurrencesOf(final char toBeFound, final char[] array) {
 		int count = 0;
 		for (final char element : array) {
 			if (toBeFound == element) {
@@ -2530,7 +2530,7 @@ public final class CharOperation {
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if start is lower than 0
 	 */
-	public static int occurencesOf(final char toBeFound, final char[] array,
+	public static int occurrencesOf(final char toBeFound, final char[] array,
 			final int start) {
 		int count = 0;
 		for (int i = start; i < array.length; i++) {

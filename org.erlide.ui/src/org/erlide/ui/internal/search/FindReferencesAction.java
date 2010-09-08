@@ -14,8 +14,9 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.ui.editors.erl.ErlangEditor;
+
+import erlang.ErlangSearchPattern;
 
 /**
  * Finds references of the selected element in the workspace. The action is

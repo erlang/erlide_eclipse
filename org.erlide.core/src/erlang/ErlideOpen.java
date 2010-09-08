@@ -47,12 +47,12 @@ public class ErlideOpen {
 			final int offset, final List<OtpErlangObject> imports,
 			final String externalModules, final OtpErlangList pathVars)
 			throws BackendException {
-		ErlLogger.debug("open offset " + offset);
+		// ErlLogger.debug("open offset " + offset);
 		Collection<String> extra = getExtraSourcePaths();
 		final OtpErlangObject res = b.call("erlide_open", "open", "aix",
 				scannerName, offset, mkContext(externalModules, null, pathVars,
 						extra, imports));
-		ErlLogger.debug(">>>> " + res);
+		// ErlLogger.debug(">>>> " + res);
 		return new OpenResult(res);
 	}
 

@@ -107,8 +107,12 @@ public class DialyzeAction implements IObjectActionDelegate {
 			final Throwable t = e.getCause();
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
+					String msg = t.getMessage();
+					if (msg == null) {
+						msg = t.toString();
+					}
 					DialyzerMessageDialog.openError(getShell(),
-							"Dialyzer error", t.getMessage());
+							"Dialyzer error", msg);
 				}
 			});
 		} catch (final InterruptedException e) {

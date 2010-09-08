@@ -136,11 +136,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, OtpErlang.mkTuple(new OtpErlangAtom("parent"), b
-				.getEventPid()));
+		fBackend.send(pid,
+				OtpErlang.mkTuple(new OtpErlangAtom("parent"), b.getEventPid()));
 
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
-				this);
+		DebugPlugin.getDefault().getBreakpointManager()
+				.addBreakpointListener(this);
 	}
 
 	@Override
@@ -360,9 +360,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
 					metaEvent, what);
 			final TraceChangedEventData data = new TraceChangedEventData(
-					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(), p
-							.getPid(),
-					new OtpErlangTuple[] { (OtpErlangTuple) o });
+					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
+					p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
 			traceChangedEvent.setData(data);
 			fireEvent(traceChangedEvent);
 			// ErlLogger.info("Trace: " + s);
@@ -425,28 +424,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						erlangProcess.setStackFrames(module, line,
 								erlStackFrames, bs);
 					}
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); 
+					// TODO redundant? we have this in int, status too
 				}
 			} else {
 				if (what == META_EXIT_AT) {
 					erlangProcess.removeStackFrames();
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); 
+					// TODO redundant? we have this in int, status too
 				}
 			}
 		}
@@ -516,7 +501,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 			} else {
 				if (status.equals("idle")) {
-					erlangProcess.removeStackFrames();
+					// FIXME: this must be cleaned, but the status messages seem
+					// to come out of order...
+					// erlangProcess.removeStackFrames();
 				}
 				erlangProcess.setStatus(status);
 				erlangProcess.fireChangeEvent(DebugEvent.STATE
@@ -525,7 +512,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		} else if (event.equals("new_process")) {
 			final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
 			final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-			final ErlangProcess erlangProcess = createErlangProcess(pid);
+			ErlangProcess erlangProcess = getErlangProcess(pid);
+			if (erlangProcess == null) {
+				erlangProcess = createErlangProcess(pid);
+			}
 			final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
 			final String status = statusA.atomValue();
 			erlangProcess.setStatus(status);

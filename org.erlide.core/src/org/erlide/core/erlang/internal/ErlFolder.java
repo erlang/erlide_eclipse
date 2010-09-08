@@ -1,6 +1,7 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -120,14 +121,13 @@ public class ErlFolder extends Openable implements IErlFolder {
 	 * 
 	 * @see org.erlide.core.erlang.IErlFolder#getModules()
 	 */
-	public List<IErlModule> getModules() throws ErlModelException {
+	public Collection<IErlModule> getModules() throws ErlModelException {
 		final List<IErlModule> result = new ArrayList<IErlModule>();
 		addModules(result);
 		return result;
 	}
 
-	public IResource[] getNonErlangResources() throws ErlModelException {
-		// TODO Auto-generated method stub
+	public Collection<IResource> getNonErlangResources() throws ErlModelException {
 		return null;
 	}
 
@@ -135,6 +135,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return Kind.FOLDER;
 	}
 
+	@Override
 	public IResource getResource() {
 		return getCorrespondingResource();
 	}

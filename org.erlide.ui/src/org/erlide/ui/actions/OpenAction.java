@@ -175,7 +175,7 @@ public class OpenAction extends SelectionDispatchAction {
 				try {
 					ErlModelUtils.openElement((IErlElement) i);
 				} catch (final CoreException e) {
-					ErlLogger.error(e); // TODO report error
+					ErlLogger.error(e); 
 				}
 			}
 		}

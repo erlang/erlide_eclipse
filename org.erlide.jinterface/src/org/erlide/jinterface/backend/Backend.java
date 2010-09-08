@@ -22,6 +22,7 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.rpc.RpcUtil;
 import org.erlide.jinterface.util.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -579,7 +580,6 @@ public class Backend extends OtpNodeStatus {
 	}
 
 	public void input(final String string) throws IOException {
-		// XXX
 		System.out.println("INPUT???");
 	}
 

@@ -135,18 +135,6 @@ public class ResourceUtil {
 		return result;
 	}
 
-	// private static IResource recursiveFindNamedResource(String name) {
-	// final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
-	// .getRoot();
-	// try {
-	// return recursiveFindNamedResource(workspaceRoot, name);
-	// } catch (final CoreException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-
 	public static IResource recursiveFindNamedResource(
 			final IContainer container, final String name,
 			final ContainerFilter filter) throws CoreException {

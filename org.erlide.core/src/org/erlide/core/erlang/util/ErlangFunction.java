@@ -13,7 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlangFunction {
 
-	private static final int ANY_ARITY = -1;
+	public static final int ANY_ARITY = -1;
 	public String name;
 	public int arity;
 

@@ -570,6 +570,15 @@
                optional="true">
          </commandParameter>
       </command>
+       <command
+             description="Toggle Mark Occurrences"
+             id="org.erlide.ui.commands.toggleMarkOccurrences"
+             name="Toggle Mark Occurrences">
+          <state
+                class="org.eclipse.ui.handlers.RegistryToggleState:true"
+                id="org.eclipse.ui.commands.toggleState">
+          </state>
+       </command>
 
  </extension>
  <extension
@@ -620,6 +629,22 @@
           </parameter>
        </command>
     </menuContribution>
+    <menuContribution
+           locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+        <toolbar
+              id="org.eclipse.ui.edit.text.actionSet.presentation">
+           <command
+                 commandId="org.erlide.ui.commands.toggleMarkOccurrences"
+                 disabledIcon="icons/full/dtool16/mark_occurrences.gif"
+                 helpContextId="toggle_mark_occurrences_action_context"
+                 icon="icons/full/etool16/mark_occurrences.gif"
+                 id="org.erlide.ui.commands.toggleMarkOccurrences"
+                 label="Toggle Mark Occurences"
+                 style="toggle"
+                 tooltip="%toggleMarkOccurrences.tooltip">
+           </command>
+        </toolbar>
+     </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -729,6 +754,10 @@
           class="org.erlide.ui.editors.erl.handlers.ExpandCollapseAllHandler"
           commandId="org.erlide.ui.commands.folding.expandCollapseAll">
     </handler>
+    <handler
+          class="org.erlide.ui.editors.erl.handlers.ToggleMarkOccurrencesHandler"
+          commandId="org.erlide.ui.commands.toggleMarkOccurrences">
+    </handler>
  </extension>
  <extension
        point="org.eclipse.ui.actionSets">
@@ -775,7 +804,7 @@
                 name="contextMenuActionsGroup">
           </separator>
           <separator
-                name="occurencesActionsGroup">
+                name="occurrencesActionsGroup">
           </separator>
           <separator
                 name="extraSearchGroup">
@@ -1558,6 +1587,13 @@
             markerType="org.erlide.core.dialyzewarningmarker"
             name="org.erlide.ui.dialyzewarningmarkertype">
       </type>
+      <type
+            name="org.erlide.ui.occurrences">
+      </type>
+      <type
+            name="org.erlide.ui.occurrences.definition"
+            super="org.erlide.ui.occurrences">
+      </type>
    </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
@@ -1577,6 +1613,48 @@
             textPreferenceValue="true"
             verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
             verticalRulerPreferenceValue="true">
+      </specification>
+      <specification
+            annotationType="org.erlide.ui.occurrences"
+            colorPreferenceKey="occurrenceIndicationColor"
+            colorPreferenceValue="212,212,212"
+            contributesToHeader="false"
+            highlightPreferenceKey="occurrenceHighlighting"
+            highlightPreferenceValue="true"
+            icon="$nl$/icons/full/obj16/searchm_obj.gif"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
+            label="Occurrences"
+            overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="4"
+            showInNextPrevDropdownToolbarAction="true"
+            showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
+            textPreferenceKey="occurrenceIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="occurrenceTextStyle"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false">
+      </specification>
+      <specification
+            annotationType="org.erlide.ui.occurrences.definition"
+            colorPreferenceKey="definitionOccurrenceIndicationColor"
+            colorPreferenceValue="240,216,168"
+            highlightPreferenceKey="definitionOccurrenceHighlighting"
+            highlightPreferenceValue="true"
+            label="Definition Occurrences"
+            overviewRulerPreferenceKey="definitionOccurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="4"
+            textPreferenceKey="definitionOccurrenceIndication"
+            textPreferenceValue="false"
+            textStylePreferenceKey="matchOccurrenceTextStyle"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="definitionOccurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false">
       </specification>
    </extension>
    <extension

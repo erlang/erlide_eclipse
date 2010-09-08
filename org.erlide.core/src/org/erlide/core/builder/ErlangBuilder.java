@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -116,8 +117,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
 			final OldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
-			String out = prefs.getOutputDir();
-			IResource outr = project.findMember(new Path(out));
+			IPath out = prefs.getOutputDir();
+			IResource outr = project.findMember(out);
 			if (outr != null) {
 				try {
 					outr.setDerived(true);

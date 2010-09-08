@@ -81,7 +81,7 @@ public final class LibraryLocation extends DependencyLocation {
 		final IEclipsePreferences node = (IEclipsePreferences) root
 		.node(ProjectPreferencesConstants.SOURCES);
 		for (final SourceLocation loc : sources) {
-			loc.store((IEclipsePreferences) node.node(loc.getDirectory()));
+			loc.store((IEclipsePreferences) node.node(loc.getDirectory().toString()));
 		}
 		root.put(ProjectPreferencesConstants.INCLUDES, PathSerializer
 				.packList(includes));

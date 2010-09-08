@@ -35,7 +35,6 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -45,6 +44,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
 import org.erlide.ui.util.ErlModelUtils;
 
+import erlang.ErlangSearchPattern;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
@@ -94,7 +94,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		} else if (element instanceof IErlPreprocessorDef) {
 			return true;
 		} else if (element instanceof IErlAttribute) {
-			IErlAttribute a = (IErlAttribute) element;
+			final IErlAttribute a = (IErlAttribute) element;
 			return a.getName().startsWith("include");
 		}
 		return false;
@@ -229,15 +229,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 					.getImportsAsList(module), "", ErlangCore.getModel()
 					.getPathVars());
 			ErlLogger.debug("find " + res);
-
-			// final String title =
-			// "SearchMessages.SearchElementSelectionDialog_title";
-			// final String message =
-			// "SearchMessages.SearchElementSelectionDialog_message";
-
-			ErlangSearchPattern ref;
-			ref = SearchUtil.getSearchPatternFromOpenResultAndLimitTo(module,
-					offset, res, getLimitTo());
+			final ErlangSearchPattern ref = SearchUtil
+					.getSearchPatternFromOpenResultAndLimitTo(module, offset,
+							res, getLimitTo(), true);
 			if (ref != null) {
 				performNewSearch(ref, scope);
 			}
@@ -328,7 +322,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	}
 
 	protected Collection<IResource> getProjectScope() {
-		TextEditor editor = getEditor();
+		final TextEditor editor = getEditor();
 		if (editor != null) {
 			final IEditorInput editorInput = editor.getEditorInput();
 			if (editorInput instanceof IFileEditorInput) {
@@ -338,7 +332,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 				return SearchUtil.getProjectScope(project);
 			}
 		} else {
-			IWorkbenchSite site = getSite();
+			final IWorkbenchSite site = getSite();
 			final ISelection selection = site.getSelectionProvider()
 					.getSelection();
 			if (selection instanceof IStructuredSelection) {
@@ -349,7 +343,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 					return SearchUtil.getProjectScope(e.getResource()
 							.getProject());
 				} else if (element instanceof IResource) {
-					IResource r = (IResource) element;
+					final IResource r = (IResource) element;
 					return SearchUtil.getProjectScope(r.getProject());
 				}
 			}

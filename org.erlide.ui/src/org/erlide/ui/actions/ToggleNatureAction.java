@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 
@@ -85,9 +83,6 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(project);
-
 			for (int i = 0; i < natures.length; ++i) {
 				if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
 					// Remove the nature

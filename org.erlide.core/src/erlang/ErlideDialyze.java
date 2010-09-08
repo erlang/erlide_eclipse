@@ -1,13 +1,16 @@
 package erlang;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
 
@@ -17,13 +20,17 @@ public class ErlideDialyze {
 
 	public static OtpErlangObject dialyze(final Backend backend,
 			final Collection<String> files, final String plt,
-			final Collection<String> includeDirs, final boolean fromSource) {
+			final Collection<IPath> includeDirs, final boolean fromSource) {
+		List<String> incs = Lists.newArrayList();
+		for (IPath p : includeDirs) {
+			incs.add(p.toString());
+		}
 		try {
 			int timeout = files.size() * FILE_TIMEOUT + includeDirs.size()
 					* INCLUDE_TIMEOUT + LONG_TIMEOUT;
 			final OtpErlangObject result = backend.call(timeout,
-					"erlide_dialyze", "dialyze", "lsslso", files, plt,
-					includeDirs, fromSource);
+					"erlide_dialyze", "dialyze", "lsslso", files, plt, incs,
+					fromSource);
 			ErlLogger.debug("result %s", result.toString());
 			return result;
 		} catch (final Exception e) {
@@ -53,9 +60,4 @@ public class ErlideDialyze {
 		}
 		return null;
 	}
-
-	private void warn() {
-
-	}
-
 }

@@ -1,3 +1,14 @@
+List of user visible changes between 0.8.7 and 0.8.8 (20100903)
+
+784eaed 595-indentation---doesn-t-handle-binaries-with-macros-or-expressions
+6349f17 provides folding for non-resource module editors 591-opening-erl-files-in-non-erlang-projects-fails
+2779321 572-scanner-confused-by---v-in-macros
+a8d0804 592-outline---compile-directive-has%C2%A0bad-presentation
+59498dd 572-scanner-confused-by---v-in-macros
+50668cf 512-templates-completion
+2ec73d8 585-mark-occurences--inconsistent-behaviour
+493ff97 519-hover---it-does-not-add-one-line-comments-as-documentation
+
 List of user visible changes between 0.8.6 and 0.8.7 (20100826)
 
 5299d47 cleaned some TODO/FIXME

@@ -198,11 +198,6 @@ public class ErlangLineBreakpoint extends Breakpoint implements
 		return !true; // FIXME
 	}
 
-	// public String getTypeName() {
-	// // TODO Auto-generated method stub
-	// return null;
-	// }
-
 	public void setHitCount(final int hitCount) {
 		fHitCount = hitCount;
 	}
