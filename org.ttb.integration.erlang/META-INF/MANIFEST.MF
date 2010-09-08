@@ -4,3 +4,5 @@ Bundle-Name: Erlang functionality for ttb integration
 Bundle-SymbolicName: org.ttb.integration.erlang;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Erlang Solutions
+Require-Bundle: org.erlide.core,
+ org.ttb.integration.ttbe;bundle-version="1.0.0"

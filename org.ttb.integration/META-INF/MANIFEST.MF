@@ -6,13 +6,12 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.ttb.integration.Activator
 Require-Bundle: org.ttb.integration.erlang,
  org.ttb.integration.ttbe,
- org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.ui,
  org.eclipse.ui.console,
+ org.eclipse.debug.ui,
  org.erlide.core,
  org.erlide.jinterface,
- org.eclipse.debug.core,
- org.eclipse.debug.ui,
  org.erlide.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
