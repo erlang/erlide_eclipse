@@ -176,7 +176,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 					.removeFileExtension().addFileExtension("yrl");
 			final IResource yrl = resource.getProject().findMember(yrlpath);
 			if (yrl != null) {
-				final BuildResource bres2 = new BuildResource(resource);
+				final BuildResource bres2 = new BuildResource(yrl);
 				result.add(bres2);
 				monitor.worked(1);
 			}
