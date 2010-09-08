@@ -41,6 +41,7 @@ public class DialyzerUtils {
 
 	public static final String DIALYZE_WARNING_MARKER = ErlangPlugin.PLUGIN_ID
 			+ ".dialyzewarningmarker";
+	private static final BuilderHelper helper = new BuilderHelper();
 
 	public static class DialyzerErrorException extends Exception {
 
@@ -49,7 +50,7 @@ public class DialyzerUtils {
 		}
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -6872359945128662063L;
 
@@ -188,7 +189,7 @@ public class DialyzerUtils {
 				}
 			}
 		}
-		BuilderUtils.getIncludeDirs(project, includeDirs);
+		helper.getIncludeDirs(project, includeDirs);
 	}
 
 	public static void checkDialyzeError(final OtpErlangObject result)

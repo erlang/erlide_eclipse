@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
-import org.erlide.core.builder.internal.BuildResource;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
@@ -49,6 +48,7 @@ import com.google.common.collect.Sets;
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
 	BuildNotifier notifier;
+	private final BuilderHelper helper = new BuilderHelper();
 
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
@@ -57,7 +57,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			return;
 		}
 
-		if (BuilderUtils.isDebugging()) {
+		if (helper.isDebugging()) {
 			ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis()));
 		}
@@ -91,7 +91,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
-			if (BuilderUtils.isDebugging()) {
+			if (helper.isDebugging()) {
 				ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
 						+ " @ " + new Date(System.currentTimeMillis()));
 			}
@@ -108,9 +108,9 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			return new IProject[0];
 		}
 
-		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
-					+ " of " + project.getName());
+		if (helper.isDebugging()) {
+			ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
+					+ project.getName());
 		}
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
@@ -137,7 +137,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
 					args, project);
 			final int n = resourcesToBuild.size();
-			if (BuilderUtils.isDebugging()) {
+			if (helper.isDebugging()) {
 				ErlLogger.debug("Will compile %d resource(s): %s", Integer
 						.valueOf(n), resourcesToBuild.toString());
 			}
@@ -160,15 +160,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					// notifier.aboutToCompile(resource);
 					if ("erl".equals(resource.getFileExtension())) {
 						String outputDir = prefs.getOutputDir().toString();
-						RpcFuture f = BuilderUtils.startCompileErl(project,
-								bres, outputDir, backend, compilerOptions,
-								false);
+						RpcFuture f = helper.startCompileErl(project, bres,
+								outputDir, backend, compilerOptions, false);
 						if (f != null) {
 							results.put(f, resource);
 						}
 					} else if ("yrl".equals(resource.getFileExtension())) {
-						RpcFuture f = BuilderUtils.startCompileYrl(project,
-								resource, backend, compilerOptions);
+						RpcFuture f = helper.startCompileYrl(project, resource,
+								backend, compilerOptions);
 						if (f != null) {
 							results.put(f, resource);
 						}
@@ -195,7 +194,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 						if (r != null) {
 							IResource resource = result.getValue();
 
-							BuilderUtils.completeCompile(project, resource, r,
+							helper.completeCompile(project, resource, r,
 									backend, compilerOptions);
 							notifier.compiled(resource);
 
@@ -205,16 +204,16 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					waiting.removeAll(done);
 					done.clear();
 				}
-				BuilderUtils.refreshOutputDir(project);
+				helper.refreshOutputDir(project);
 
 				try {
-					BuilderUtils.checkForClashes(backend, project);
+					helper.checkForClashes(backend, project);
 				} catch (final Exception e) {
 				}
 			}
 
 		} catch (final OperationCanceledException e) {
-			if (BuilderUtils.isDebugging()) {
+			if (helper.isDebugging()) {
 				ErlLogger.debug("Build of " + project.getName()
 						+ " was canceled.");
 			}
@@ -255,7 +254,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 		submon.beginTask("retrieving resources to build",
 				IProgressMonitor.UNKNOWN);
 		if (kind == FULL_BUILD) {
-			resourcesToBuild = BuilderUtils.getAffectedResources(args,
+			resourcesToBuild = helper.getAffectedResources(args,
 					currentProject, submon);
 		} else {
 			final IResourceDelta delta = getDelta(currentProject);
@@ -263,10 +262,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 			if (delta.findMember(path) != null) {
 				ErlLogger
 						.info("project configuration changed: doing full rebuild");
-				resourcesToBuild = BuilderUtils.getAffectedResources(args,
+				resourcesToBuild = helper.getAffectedResources(args,
 						currentProject, submon);
 			} else {
-				resourcesToBuild = BuilderUtils.getAffectedResources(args,
+				resourcesToBuild = helper.getAffectedResources(args,
 						delta, submon);
 			}
 		}

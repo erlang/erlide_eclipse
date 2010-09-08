@@ -14,9 +14,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.BuildResource;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerPreferences;
-import org.erlide.core.builder.internal.BuildResource;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -29,6 +29,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 public class CompileAction extends Action {
 
 	private final IWorkbenchSite site;
+	private final BuilderHelper helper = new BuilderHelper();
 
 	public CompileAction(final IWorkbenchSite site) {
 		super("Compile file");
@@ -59,11 +60,11 @@ public class CompileAction extends Action {
 				.getProjectProperties(project);
 
 		if ("erl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileErl(project, bres, pprefs.getOutputDir()
+			helper.compileErl(project, bres, pprefs.getOutputDir()
 					.toString(), b, compilerOptions);
 		}
 		if ("yrl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileYrl(project, bres, b, compilerOptions);
+			helper.compileYrl(project, bres, b, compilerOptions);
 		}
 	}
 

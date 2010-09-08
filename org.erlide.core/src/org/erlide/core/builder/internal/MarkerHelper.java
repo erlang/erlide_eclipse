@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
@@ -40,6 +40,8 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class MarkerHelper {
+
+	private static final BuilderHelper helper = new BuilderHelper();
 
 	private MarkerHelper() {
 	}
@@ -75,7 +77,7 @@ public final class MarkerHelper {
 
 	/**
 	 * Add error markers from a list of error tuples
-	 * 
+	 *
 	 * @param resource
 	 * @param errorList
 	 */
@@ -92,10 +94,10 @@ public final class MarkerHelper {
 				final String fileName = (String) TypeConverter.erlang2java(data
 						.elementAt(1), String.class);
 				IResource res = resource;
-				if (!BuilderUtils.samePath(resource.getLocation().toString(),
+				if (!helper.samePath(resource.getLocation().toString(),
 						fileName)) {
 					final IProject project = resource.getProject();
-					res = BuilderUtils
+					res = helper
 							.findResourceByLocation(project, fileName);
 					if (res == null) {
 						try {
@@ -300,7 +302,7 @@ public final class MarkerHelper {
 		final IErlProject p = ErlangCore.getModel().findProject(project);
 		if (p != null) {
 			try {
-				if (BuilderUtils.isDebugging()) {
+				if (helper.isDebugging()) {
 					ErlLogger.debug("Creating task markers "
 							+ resource.getName());
 				}

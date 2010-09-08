@@ -17,8 +17,9 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.builder.BuilderUtils;
-import org.erlide.core.builder.BuilderUtils.SearchVisitor;
+import org.erlide.core.builder.BuildResource;
+import org.erlide.core.builder.BuilderHelper;
+import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -29,6 +30,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 	private final Set<BuildResource> result;
 	private final IProgressMonitor monitor;
 	private OldErlangProjectProperties prefs = null;
+	private final BuilderHelper helper = new BuilderHelper();
 
 	public BuilderVisitor(final Set<BuildResource> result,
 			final IProgressMonitor monitor) {
@@ -94,7 +96,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 			break;
 		case IResourceDelta.REMOVED:
 			final String[] p = resource.getName().split("\\.");
-			final SearchVisitor searcher = new SearchVisitor(p[0], null);
+			final SearchVisitor searcher = helper.new SearchVisitor(p[0], null);
 			resource.getProject().accept(searcher);
 			if (searcher.getResult() != null) {
 				final BuildResource bres = new BuildResource(searcher
@@ -118,7 +120,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 		case IResourceDelta.REMOVED:
 			MarkerHelper.deleteMarkers(resource);
 
-			IPath erl = BuilderUtils.getErlForYrl(resource);
+			IPath erl = helper.getErlForYrl(resource);
 			final IResource br = resource.getProject().findMember(erl);
 			if (br != null) {
 				try {
@@ -139,7 +141,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 		case IResourceDelta.REMOVED:
 		case IResourceDelta.CHANGED:
 			final int n = result.size();
-			BuilderUtils.addDependents(resource, resource.getProject(), result);
+			helper.addDependents(resource, resource.getProject(), result);
 			monitor.worked(result.size() - n);
 			break;
 		}

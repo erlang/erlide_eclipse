@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.erlang.IProblem;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -34,6 +34,7 @@ public class BuildNotifier {
 	protected int fWorkDone;
 	protected int fTotalWork;
 	protected String previousSubtask;
+	private final BuilderHelper helper = new BuilderHelper();
 
 	public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
 		fMonitor = monitor;
@@ -54,7 +55,7 @@ public class BuildNotifier {
 		final String message = NLS.bind(BuilderMessages.build_compiling, unit
 				.getFullPath());
 		subTask(message);
-		if (BuilderUtils.isDebugging()) {
+		if (helper.isDebugging()) {
 			ErlLogger.debug(">>" + message);
 		}
 	}
@@ -96,7 +97,7 @@ public class BuildNotifier {
 		final String message = NLS.bind(BuilderMessages.build_compiling, unit
 				.getFullPath());
 		subTask(message);
-		if (BuilderUtils.isDebugging()) {
+		if (helper.isDebugging()) {
 			ErlLogger.debug("<<" + message);
 		}
 		updateProgressDelta(progressPerCompilationUnit);
@@ -308,7 +309,7 @@ public class BuildNotifier {
 				if (fMonitor != null) {
 					fMonitor.worked(work - fWorkDone);
 				}
-				if (BuilderUtils.isDebugging()) {
+				if (helper.isDebugging()) {
 					ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
 							.format(this.percentComplete));
 				}

@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
-import org.erlide.core.builder.internal.BuildResource;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
@@ -49,6 +48,7 @@ import com.google.common.collect.Sets;
 public class ErlangBuilder2 extends IncrementalProjectBuilder {
 
 	BuildNotifier notifier;
+	private final BuilderHelper helper = new BuilderHelper();
 
 	@Override
 	protected void clean(final IProgressMonitor monitor) throws CoreException {
@@ -57,7 +57,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 			return;
 		}
 
-		if (BuilderUtils.isDebugging()) {
+		if (helper.isDebugging()) {
 			ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
 					+ " @ " + new Date(System.currentTimeMillis()));
 		}
@@ -91,7 +91,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
-			if (BuilderUtils.isDebugging()) {
+			if (helper.isDebugging()) {
 				ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
 						+ " @ " + new Date(System.currentTimeMillis()));
 			}
@@ -107,8 +107,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 			return new IProject[0];
 		}
 
-		if (BuilderUtils.isDebugging()) {
-			ErlLogger.debug("Starting build " + BuilderUtils.buildKind(kind)
+		if (helper.isDebugging()) {
+			ErlLogger.debug("Starting build " + helper.buildKind(kind)
 					+ " of " + project.getName() + " @ "
 					+ new Date(System.currentTimeMillis()));
 		}
@@ -142,9 +142,9 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 						.getProjectProperties(project);
 				final String outputDir = projectPath.append(
 						prefs.getOutputDir()).toString();
-				BuilderUtils.ensureDirExists(outputDir);
+				helper.ensureDirExists(outputDir);
 
-				Collection<IPath> includeDirs = BuilderUtils
+				Collection<IPath> includeDirs = helper
 						.getAllIncludeDirs(project);
 
 				EventProcessor processor = new EventProcessor(
@@ -166,7 +166,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
-			if (BuilderUtils.isDebugging()) {
+			if (helper.isDebugging()) {
 				ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
 						+ " @ " + new Date(System.currentTimeMillis()));
 			}
@@ -183,20 +183,20 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 		submon.beginTask("retrieving resources to build",
 				IProgressMonitor.UNKNOWN);
 		if (kind == FULL_BUILD) {
-			result = BuilderUtils.getAffectedResources(args, project, submon);
+			result = helper.getAffectedResources(args, project, submon);
 		} else {
 			final IResourceDelta delta = getDelta(project);
 			final Path path = new Path(".settings/org.erlide.core.prefs");
 			if (delta.findMember(path) != null) {
 				ErlLogger
 						.info("project configuration changed: doing full rebuild");
-				result = BuilderUtils.getAffectedResources(args, project,
+				result = helper.getAffectedResources(args, project,
 						submon);
 			} else {
-				result = BuilderUtils.getAffectedResources(args, delta, submon);
+				result = helper.getAffectedResources(args, delta, submon);
 			}
 		}
-		if (BuilderUtils.isDebugging()) {
+		if (helper.isDebugging()) {
 			ErlLogger.debug("Will compile %d resource(s): %s", Integer
 					.valueOf(result.size()), result.toString());
 		}
