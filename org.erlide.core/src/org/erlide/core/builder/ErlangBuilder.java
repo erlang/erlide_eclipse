@@ -236,7 +236,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
     private void initializeBuilder(final IProgressMonitor monitor) {
         IProject currentProject = getProject();
-        notifier = new BuildNotifier(monitor, currentProject);
+        notifier = new BuildNotifier(monitor, currentProject, helper);
         notifier.begin();
     }
 
