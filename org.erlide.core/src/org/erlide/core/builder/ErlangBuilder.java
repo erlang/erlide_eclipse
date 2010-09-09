@@ -223,11 +223,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 					IMarker.SEVERITY_ERROR);
 		} finally {
 			cleanup();
-			if (BuilderUtils.isDebugging()) {
+			//if (BuilderUtils.isDebugging()) {
 				ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
 						+ " took "
 						+ Long.toString(System.currentTimeMillis() - time));
-			}
+			//}
 		}
 		return null;
 	}
