@@ -57,7 +57,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             return;
         }
 
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
                     + " @ " + new Date(System.currentTimeMillis()));
         }
@@ -91,7 +91,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
-            if (helper.isDebugging()) {
+            if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
                         + " @ " + new Date(System.currentTimeMillis()));
             }
@@ -108,7 +108,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             return new IProject[0];
         }
 
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
@@ -137,7 +137,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
                     args, project);
             final int n = resourcesToBuild.size();
-            if (helper.isDebugging()) {
+            if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Will compile %d resource(s): %s", Integer
                         .valueOf(n), resourcesToBuild.toString());
             }
@@ -213,7 +213,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             }
 
         } catch (final OperationCanceledException e) {
-            if (helper.isDebugging()) {
+            if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Build of " + project.getName()
                         + " was canceled.");
             }
@@ -225,11 +225,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
-			//if (BuilderUtils.isDebugging()) {
-                ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
-                        + " took "
-                        + Long.toString(System.currentTimeMillis() - time));
-			//}
+            // if (BuilderHelper.isDebugging()) {
+            ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
+                    + " took "
+                    + Long.toString(System.currentTimeMillis() - time));
+            // }
         }
         return null;
     }
@@ -265,8 +265,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                 resourcesToBuild = helper.getAffectedResources(args,
                         currentProject, submon);
             } else {
-                resourcesToBuild = helper.getAffectedResources(args,
-                        delta, submon);
+                resourcesToBuild = helper.getAffectedResources(args, delta,
+                        submon);
             }
         }
         submon.done();

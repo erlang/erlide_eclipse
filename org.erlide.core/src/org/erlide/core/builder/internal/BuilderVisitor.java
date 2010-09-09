@@ -41,14 +41,14 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
     public boolean visit(final IResourceDelta delta) throws CoreException {
         final IResource resource = delta.getResource();
-        return visit(resource, delta.getKind());
+        return visit(resource, delta.getKind(), false);
     }
 
     public boolean visit(final IResource resource) throws CoreException {
-        return visit(resource, IResourceDelta.CHANGED);
+        return visit(resource, IResourceDelta.ADDED, true);
     }
 
-    private boolean visit(IResource resource, int kind) {
+    private boolean visit(IResource resource, int kind, boolean fullBuild) {
         final IProject my_project = resource.getProject();
         if (resource.getType() == IResource.PROJECT) {
             prefs = ErlangCore.getProjectProperties(my_project);
@@ -72,7 +72,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         }
         if (prefs.getIncludeDirs().contains(path) && "hrl".equals(ext)) {
             try {
-                handleHrlFile(kind, resource);
+                handleHrlFile(kind, resource, fullBuild);
             } catch (ErlModelException e) {
                 ErlLogger.warn(e);
             }
@@ -135,14 +135,16 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         }
     }
 
-    private void handleHrlFile(final int kind, final IResource resource)
-            throws ErlModelException {
+    private void handleHrlFile(final int kind, final IResource resource,
+            boolean fullBuild) throws ErlModelException {
         switch (kind) {
         case IResourceDelta.ADDED:
         case IResourceDelta.REMOVED:
         case IResourceDelta.CHANGED:
             final int n = result.size();
-            helper.addDependents(resource, resource.getProject(), result);
+            if (!fullBuild) {
+                helper.addDependents(resource, resource.getProject(), result);
+            }
             monitor.worked(result.size() - n);
             break;
         }
@@ -152,13 +154,11 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         switch (kind) {
         case IResourceDelta.ADDED:
         case IResourceDelta.CHANGED:
-            // handle changed resource
             final BuildResource bres = new BuildResource(resource);
             result.add(bres);
             monitor.worked(1);
             break;
         case IResourceDelta.REMOVED:
-            // handle removed resource
             MarkerHelper.deleteMarkers(resource);
 
             IPath beam = prefs.getOutputDir();
