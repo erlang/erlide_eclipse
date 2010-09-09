@@ -47,230 +47,230 @@ import com.google.common.collect.Sets;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
-	BuildNotifier notifier;
-	private final BuilderHelper helper = new BuilderHelper();
+    BuildNotifier notifier;
+    private final BuilderHelper helper = new BuilderHelper();
 
-	@Override
-	protected void clean(final IProgressMonitor monitor) throws CoreException {
-		IProject currentProject = getProject();
-		if (currentProject == null || !currentProject.isAccessible()) {
-			return;
-		}
+    @Override
+    protected void clean(final IProgressMonitor monitor) throws CoreException {
+        IProject currentProject = getProject();
+        if (currentProject == null || !currentProject.isAccessible()) {
+            return;
+        }
 
-		if (helper.isDebugging()) {
-			ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
-					+ " @ " + new Date(System.currentTimeMillis()));
-		}
+        if (helper.isDebugging()) {
+            ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
+                    + " @ " + new Date(System.currentTimeMillis()));
+        }
 
-		try {
-			initializeBuilder(monitor);
-			MarkerHelper.removeProblemsAndTasksFor(currentProject);
+        try {
+            initializeBuilder(monitor);
+            MarkerHelper.removeProblemsAndTasksFor(currentProject);
 
-			final OldErlangProjectProperties prefs = ErlangCore
-					.getProjectProperties(currentProject);
-			final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
-			if (bf.exists()) {
-				final IResource[] beams = bf.members();
-				monitor.beginTask("Cleaning Erlang files", beams.length);
-				if (beams.length > 0) {
-					float delta = 1.0f / beams.length;
-					for (final IResource element : beams) {
-						if ("beam".equals(element.getFileExtension())) {
-							element.delete(true, monitor);
-							notifier.updateProgressDelta(delta);
-						}
-					}
-				}
-			}
+            final OldErlangProjectProperties prefs = ErlangCore
+                    .getProjectProperties(currentProject);
+            final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
+            if (bf.exists()) {
+                final IResource[] beams = bf.members();
+                monitor.beginTask("Cleaning Erlang files", beams.length);
+                if (beams.length > 0) {
+                    float delta = 1.0f / beams.length;
+                    for (final IResource element : beams) {
+                        if ("beam".equals(element.getFileExtension())) {
+                            element.delete(true, monitor);
+                            notifier.updateProgressDelta(delta);
+                        }
+                    }
+                }
+            }
 
-		} catch (final Exception e) {
-			ErlLogger.error(e);
-			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
-					.getLocalizedMessage());
-			MarkerHelper.addProblemMarker(currentProject, null, msg, 0,
-					IMarker.SEVERITY_ERROR);
-		} finally {
-			cleanup();
-			if (helper.isDebugging()) {
-				ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
-						+ " @ " + new Date(System.currentTimeMillis()));
-			}
-		}
-	}
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+            String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
+                    .getLocalizedMessage());
+            MarkerHelper.addProblemMarker(currentProject, null, msg, 0,
+                    IMarker.SEVERITY_ERROR);
+        } finally {
+            cleanup();
+            if (helper.isDebugging()) {
+                ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
+                        + " @ " + new Date(System.currentTimeMillis()));
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected IProject[] build(final int kind, final Map args,
-			final IProgressMonitor monitor) throws CoreException {
-		long time = System.currentTimeMillis();
-		IProject project = getProject();
-		if (project == null || !project.isAccessible()) {
-			return new IProject[0];
-		}
+    @SuppressWarnings("unchecked")
+    @Override
+    protected IProject[] build(final int kind, final Map args,
+            final IProgressMonitor monitor) throws CoreException {
+        long time = System.currentTimeMillis();
+        IProject project = getProject();
+        if (project == null || !project.isAccessible()) {
+            return new IProject[0];
+        }
 
-		if (helper.isDebugging()) {
-			ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
-					+ project.getName());
-		}
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		try {
-			MarkerHelper.deleteMarkers(project);
-			initializeBuilder(monitor);
+        if (helper.isDebugging()) {
+            ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
+                    + project.getName());
+        }
+        final OldErlangProjectProperties prefs = ErlangCore
+                .getProjectProperties(project);
+        try {
+            MarkerHelper.deleteMarkers(project);
+            initializeBuilder(monitor);
 
-			IPath out = prefs.getOutputDir();
-			IResource outr = project.findMember(out);
-			if (outr != null) {
-				try {
-					outr.setDerived(true);
-					outr.refreshLocal(IResource.DEPTH_ZERO, null);
-				} catch (CoreException e) {
-					// ignore it
-				}
-			}
+            IPath out = prefs.getOutputDir();
+            IResource outr = project.findMember(out);
+            if (outr != null) {
+                try {
+                    outr.setDerived(true);
+                    outr.refreshLocal(IResource.DEPTH_ZERO, null);
+                } catch (CoreException e) {
+                    // ignore it
+                }
+            }
 
-			OtpErlangList compilerOptions = CompilerPreferences.get(project);
+            OtpErlangList compilerOptions = CompilerPreferences.get(project);
 
-			ErlLogger.debug("******** building %s: %s", getProject().getName(),
-					compilerOptions);
+            ErlLogger.debug("******** building %s: %s", getProject().getName(),
+                    compilerOptions);
 
-			Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
-					args, project);
-			final int n = resourcesToBuild.size();
-			if (helper.isDebugging()) {
-				ErlLogger.debug("Will compile %d resource(s): %s", Integer
-						.valueOf(n), resourcesToBuild.toString());
-			}
-			if (n > 0) {
-				final Backend backend = ErlangCore.getBackendManager()
-						.getBuildBackend(project);
-				if (backend == null) {
-					final String message = "No backend with the required "
-							+ "version could be found. Can't build.";
-					MarkerHelper.addProblemMarker(project, null, message, 0,
-							IMarker.SEVERITY_ERROR);
-					throw new BackendException(message);
-				}
+            Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
+                    args, project);
+            final int n = resourcesToBuild.size();
+            if (helper.isDebugging()) {
+                ErlLogger.debug("Will compile %d resource(s): %s", Integer
+                        .valueOf(n), resourcesToBuild.toString());
+            }
+            if (n > 0) {
+                final Backend backend = ErlangCore.getBackendManager()
+                        .getBuildBackend(project);
+                if (backend == null) {
+                    final String message = "No backend with the required "
+                            + "version could be found. Can't build.";
+                    MarkerHelper.addProblemMarker(project, null, message, 0,
+                            IMarker.SEVERITY_ERROR);
+                    throw new BackendException(message);
+                }
 
-				notifier.setProgressPerCompilationUnit(1.0f / n);
-				Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
-				for (final BuildResource bres : resourcesToBuild) {
-					notifier.checkCancel();
-					IResource resource = bres.getResource();
-					// notifier.aboutToCompile(resource);
-					if ("erl".equals(resource.getFileExtension())) {
-						String outputDir = prefs.getOutputDir().toString();
-						RpcFuture f = helper.startCompileErl(project, bres,
-								outputDir, backend, compilerOptions, false);
-						if (f != null) {
-							results.put(f, resource);
-						}
-					} else if ("yrl".equals(resource.getFileExtension())) {
-						RpcFuture f = helper.startCompileYrl(project, resource,
-								backend, compilerOptions);
-						if (f != null) {
-							results.put(f, resource);
-						}
-					} else {
-						ErlLogger.warn("Don't know how to compile: %s",
-								resource.getName());
-					}
-				}
+                notifier.setProgressPerCompilationUnit(1.0f / n);
+                Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
+                for (final BuildResource bres : resourcesToBuild) {
+                    notifier.checkCancel();
+                    IResource resource = bres.getResource();
+                    // notifier.aboutToCompile(resource);
+                    if ("erl".equals(resource.getFileExtension())) {
+                        String outputDir = prefs.getOutputDir().toString();
+                        RpcFuture f = helper.startCompileErl(project, bres,
+                                outputDir, backend, compilerOptions, false);
+                        if (f != null) {
+                            results.put(f, resource);
+                        }
+                    } else if ("yrl".equals(resource.getFileExtension())) {
+                        RpcFuture f = helper.startCompileYrl(project, resource,
+                                backend, compilerOptions);
+                        if (f != null) {
+                            results.put(f, resource);
+                        }
+                    } else {
+                        ErlLogger.warn("Don't know how to compile: %s",
+                                resource.getName());
+                    }
+                }
 
-				List<Entry<RpcFuture, IResource>> done = new ArrayList<Entry<RpcFuture, IResource>>();
-				List<Entry<RpcFuture, IResource>> waiting = new ArrayList<Entry<RpcFuture, IResource>>(
-						results.entrySet());
+                List<Entry<RpcFuture, IResource>> done = new ArrayList<Entry<RpcFuture, IResource>>();
+                List<Entry<RpcFuture, IResource>> waiting = new ArrayList<Entry<RpcFuture, IResource>>(
+                        results.entrySet());
 
-				// TODO should use some kind of notification!
-				while (waiting.size() > 0) {
-					for (Entry<RpcFuture, IResource> result : waiting) {
-						notifier.checkCancel();
-						OtpErlangObject r;
-						try {
-							r = result.getKey().get(100);
-						} catch (Exception e) {
-							r = null;
-						}
-						if (r != null) {
-							IResource resource = result.getValue();
+                // TODO should use some kind of notification!
+                while (waiting.size() > 0) {
+                    for (Entry<RpcFuture, IResource> result : waiting) {
+                        notifier.checkCancel();
+                        OtpErlangObject r;
+                        try {
+                            r = result.getKey().get(100);
+                        } catch (Exception e) {
+                            r = null;
+                        }
+                        if (r != null) {
+                            IResource resource = result.getValue();
 
-							helper.completeCompile(project, resource, r,
-									backend, compilerOptions);
-							notifier.compiled(resource);
+                            helper.completeCompile(project, resource, r,
+                                    backend, compilerOptions);
+                            notifier.compiled(resource);
 
-							done.add(result);
-						}
-					}
-					waiting.removeAll(done);
-					done.clear();
-				}
-				helper.refreshOutputDir(project);
+                            done.add(result);
+                        }
+                    }
+                    waiting.removeAll(done);
+                    done.clear();
+                }
+                helper.refreshOutputDir(project);
 
-				try {
-					helper.checkForClashes(backend, project);
-				} catch (final Exception e) {
-				}
-			}
+                try {
+                    helper.checkForClashes(backend, project);
+                } catch (final Exception e) {
+                }
+            }
 
-		} catch (final OperationCanceledException e) {
-			if (helper.isDebugging()) {
-				ErlLogger.debug("Build of " + project.getName()
-						+ " was canceled.");
-			}
-		} catch (final Exception e) {
-			ErlLogger.error(e);
-			String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
-					.getLocalizedMessage());
-			MarkerHelper.addProblemMarker(project, null, msg, 0,
-					IMarker.SEVERITY_ERROR);
-		} finally {
-			cleanup();
+        } catch (final OperationCanceledException e) {
+            if (helper.isDebugging()) {
+                ErlLogger.debug("Build of " + project.getName()
+                        + " was canceled.");
+            }
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+            String msg = NLS.bind(BuilderMessages.build_inconsistentProject, e
+                    .getLocalizedMessage());
+            MarkerHelper.addProblemMarker(project, null, msg, 0,
+                    IMarker.SEVERITY_ERROR);
+        } finally {
+            cleanup();
 			//if (BuilderUtils.isDebugging()) {
-				ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
-						+ " took "
-						+ Long.toString(System.currentTimeMillis() - time));
+                ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
+                        + " took "
+                        + Long.toString(System.currentTimeMillis() - time));
 			//}
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
-	private void initializeBuilder(final IProgressMonitor monitor) {
-		IProject currentProject = getProject();
-		notifier = new BuildNotifier(monitor, currentProject);
-		notifier.begin();
-	}
+    private void initializeBuilder(final IProgressMonitor monitor) {
+        IProject currentProject = getProject();
+        notifier = new BuildNotifier(monitor, currentProject);
+        notifier.begin();
+    }
 
-	private void cleanup() {
-		notifier.done();
-		notifier = null;
-	}
+    private void cleanup() {
+        notifier.done();
+        notifier = null;
+    }
 
-	@SuppressWarnings("unchecked")
-	private Set<BuildResource> getResourcesToBuild(final int kind,
-			final Map args, final IProject currentProject) throws CoreException {
-		Set<BuildResource> resourcesToBuild = Sets.newHashSet();
-		IProgressMonitor submon = new NullProgressMonitor();
-		// new SubProgressMonitor(monitor, 10);
-		submon.beginTask("retrieving resources to build",
-				IProgressMonitor.UNKNOWN);
-		if (kind == FULL_BUILD) {
-			resourcesToBuild = helper.getAffectedResources(args,
-					currentProject, submon);
-		} else {
-			final IResourceDelta delta = getDelta(currentProject);
-			final Path path = new Path(".settings/org.erlide.core.prefs");
-			if (delta.findMember(path) != null) {
-				ErlLogger
-						.info("project configuration changed: doing full rebuild");
-				resourcesToBuild = helper.getAffectedResources(args,
-						currentProject, submon);
-			} else {
-				resourcesToBuild = helper.getAffectedResources(args,
-						delta, submon);
-			}
-		}
-		submon.done();
-		return resourcesToBuild;
-	}
+    @SuppressWarnings("unchecked")
+    private Set<BuildResource> getResourcesToBuild(final int kind,
+            final Map args, final IProject currentProject) throws CoreException {
+        Set<BuildResource> resourcesToBuild = Sets.newHashSet();
+        IProgressMonitor submon = new NullProgressMonitor();
+        // new SubProgressMonitor(monitor, 10);
+        submon.beginTask("retrieving resources to build",
+                IProgressMonitor.UNKNOWN);
+        if (kind == FULL_BUILD) {
+            resourcesToBuild = helper.getAffectedResources(args,
+                    currentProject, submon);
+        } else {
+            final IResourceDelta delta = getDelta(currentProject);
+            final Path path = new Path(".settings/org.erlide.core.prefs");
+            if (delta.findMember(path) != null) {
+                ErlLogger
+                        .info("project configuration changed: doing full rebuild");
+                resourcesToBuild = helper.getAffectedResources(args,
+                        currentProject, submon);
+            } else {
+                resourcesToBuild = helper.getAffectedResources(args,
+                        delta, submon);
+            }
+        }
+        submon.done();
+        return resourcesToBuild;
+    }
 
 }
