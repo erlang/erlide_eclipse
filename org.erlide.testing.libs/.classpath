@@ -6,8 +6,7 @@
 	<classpathentry exported="true" kind="lib" path="easymock.jar"/>
 	<classpathentry exported="true" kind="lib" path="freemarker.jar"/>
 	<classpathentry exported="true" kind="lib" path="hamcrest-all-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="jbehave-core-3.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="jbehave-core-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="jbehave-core-3.0.jar" sourcepath="jbehave-core-3.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="mockito-all-1.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

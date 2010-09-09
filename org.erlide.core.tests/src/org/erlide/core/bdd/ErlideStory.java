@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
@@ -12,12 +11,10 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.junit.Test;
 
 public abstract class ErlideStory extends JUnitStory {
@@ -55,5 +52,11 @@ public abstract class ErlideStory extends JUnitStory {
 		return new InstanceStepsFactory(configuration, new RpcSteps())
 				.createCandidateSteps();
 	}
-
+	
+    @Override
+	@Test
+    public void run() throws Throwable {
+        super.run();
+    }
+ 
 }
