@@ -57,7 +57,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
             return;
         }
 
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
                     + " @ " + new Date(System.currentTimeMillis()));
         }
@@ -91,7 +91,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
-            if (helper.isDebugging()) {
+            if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Finished cleaning " + currentProject.getName() //$NON-NLS-1$
                         + " @ " + new Date(System.currentTimeMillis()));
             }
@@ -107,7 +107,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
             return new IProject[0];
         }
 
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("Starting build " + helper.buildKind(kind)
                     + " of " + project.getName() + " @ "
                     + new Date(System.currentTimeMillis()));
@@ -166,7 +166,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
-            if (helper.isDebugging()) {
+            if (BuilderHelper.isDebugging()) {
                 ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
                         + " @ " + new Date(System.currentTimeMillis()));
             }
@@ -196,7 +196,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                 result = helper.getAffectedResources(args, delta, submon);
             }
         }
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("Will compile %d resource(s): %s", Integer
                     .valueOf(result.size()), result.toString());
         }

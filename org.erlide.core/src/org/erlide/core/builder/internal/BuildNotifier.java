@@ -56,7 +56,7 @@ public class BuildNotifier {
         final String message = NLS.bind(BuilderMessages.build_compiling, unit
                 .getFullPath());
         subTask(message);
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug(">>" + message);
         }
     }
@@ -98,7 +98,7 @@ public class BuildNotifier {
         final String message = NLS.bind(BuilderMessages.build_compiling, unit
                 .getFullPath());
         subTask(message);
-        if (helper.isDebugging()) {
+        if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("<<" + message);
         }
         updateProgressDelta(progressPerCompilationUnit);
@@ -310,7 +310,7 @@ public class BuildNotifier {
                 if (fMonitor != null) {
                     fMonitor.worked(work - fWorkDone);
                 }
-                if (helper.isDebugging()) {
+                if (BuilderHelper.isDebugging()) {
                     ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
                             .format(this.percentComplete));
                 }
