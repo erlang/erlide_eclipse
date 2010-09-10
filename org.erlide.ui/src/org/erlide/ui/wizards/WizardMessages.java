@@ -2,7 +2,7 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.osgi.util.NLS;
 
-public class ErlangDataTransferMessages extends NLS {
+public class WizardMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.erlide.ui.wizards.messages";//$NON-NLS-1$
 
 	// ==============================================================================
@@ -135,8 +135,15 @@ public class ErlangDataTransferMessages extends NLS {
 
 	public static String ErlangProjectImport_selectSourceAndIncludeDirectories;
 
+	public static String Question;
+	public static String WizardDataTransfer_exceptionMessage;
+	public static String WizardDataTransfer_overwriteNameAndPathQuestion;
+	public static String WizardDataTransfer_existsQuestion;
+	public static String WizardExportPage_internalErrorTitle;
+	public static String WizardExportPage_options;
+
 	static {
 		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, ErlangDataTransferMessages.class);
+		NLS.initializeMessages(BUNDLE_NAME, WizardMessages.class);
 	}
 }

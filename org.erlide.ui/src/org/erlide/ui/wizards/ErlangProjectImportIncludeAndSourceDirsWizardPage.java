@@ -21,8 +21,8 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 
 	public ErlangProjectImportIncludeAndSourceDirsWizardPage() {
 		super("Select directories for source and include files");
-		setTitle(ErlangDataTransferMessages.ErlangProjectImport_selectSourceAndIncludeDirectories);
-		setDescription(ErlangDataTransferMessages.ErlangProjectImport_selectSourceAndIncludeDirectories);
+		setTitle(WizardMessages.ErlangProjectImport_selectSourceAndIncludeDirectories);
+		setDescription(WizardMessages.ErlangProjectImport_selectSourceAndIncludeDirectories);
 	}
 
 	public void createControl(final Composite parent) {
