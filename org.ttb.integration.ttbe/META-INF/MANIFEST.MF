@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ttbe (ttb extension) source code
+Bundle-Name: Erlang tracing for Erlide (trace tool builder modules)
 Bundle-SymbolicName: org.ttb.integration.ttbe;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Vendor: Erlang Solutions

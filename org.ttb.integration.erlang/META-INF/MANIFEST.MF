@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Erlang functionality for ttb integration
+Bundle-Name: Erlang tracing for Erlide (Erlang helper modules)
 Bundle-SymbolicName: org.ttb.integration.erlang;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Vendor: Erlang Solutions
-Require-Bundle: org.erlide.core,
- org.ttb.integration.ttbe;bundle-version="1.0.0"
+Require-Bundle: org.erlide.core;bundle-version="0.8.4",
+ org.ttb.integration.ttbe;bundle-version="0.1.0"

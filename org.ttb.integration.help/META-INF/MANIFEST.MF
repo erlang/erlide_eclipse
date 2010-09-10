@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Help
+Bundle-Name: Erlang tracing for Erlide (help pages)
 Bundle-SymbolicName: org.ttb.integration.help; singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Vendor: Erlang Solutions
