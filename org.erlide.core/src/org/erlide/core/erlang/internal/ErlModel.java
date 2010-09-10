@@ -524,23 +524,6 @@ public class ErlModel extends Openable implements IErlModel {
 		return null;
 	}
 
-	public IErlModule findModuleExt(String name) {
-		for (final IErlElement e : getChildren()) {
-			if (e instanceof IErlProject) {
-				final IErlProject p = (IErlProject) e;
-				try {
-					final IErlModule m = p.getModuleExt(name);
-					if (m != null) {
-						return m;
-					}
-				} catch (final ErlModelException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
-
 	public IErlProject createOtpProject(final IProject project)
 			throws CoreException {
 		final IPath location = project.getLocation();

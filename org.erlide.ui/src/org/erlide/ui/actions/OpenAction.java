@@ -229,7 +229,7 @@ public class OpenAction extends SelectionDispatchAction {
 					checkAllProjects)) {
 				ErlModelUtils.openExternalFunction(res.getName(),
 						new ErlangFunction(res.getFun(),
-								IErlModel.UNKNOWN_ARITY), res.getPath(),
+								ErlangFunction.ANY_ARITY), res.getPath(),
 						module, project, checkAllProjects);
 			}
 		} else if (res.isInclude()) {
@@ -291,7 +291,7 @@ public class OpenAction extends SelectionDispatchAction {
 							path, module, project, checkAllProjects);
 				} else {
 					ErlModelUtils.openFunctionInEditor(new ErlangFunction(res
-							.getFun(), IErlModel.UNKNOWN_ARITY), editor);
+							.getFun(), ErlangFunction.ANY_ARITY), editor);
 				}
 			}
 		} else if (res.isVariable()) {

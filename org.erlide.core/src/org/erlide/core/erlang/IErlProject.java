@@ -14,6 +14,7 @@ package org.erlide.core.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -27,10 +28,10 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
  * Each Erlang project has a code path, defining which folders contain source
  * code and where required libraries are located. Each Erlang project also has
  * an output location, defining where the builder writes <code>.beam</code>
- * files. A project that references packages in another project can access the
- * packages by including the required project in a code path entry. The Erlang
+ * files. A project that references modules in another project can access the
+ * modules by including the required project in a code path entry. The Erlang
  * model will present the source elements in the required project; when
- * building, the compiler will use the corresponding generated class files from
+ * building, the compiler will use the corresponding generated beam files from
  * the required project's output location(s). The code path format is a sequence
  * of code path entries describing the location and contents of applications.
  * </p>
@@ -47,6 +48,15 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */
 public interface IErlProject extends IErlFolder {
+
+	/**
+	 * Returns the <code>IProject</code> on which this <code>IErlProject</code>
+	 * was created. This is handle-only method.
+	 * 
+	 * @return the <code>IProject</code> on which this <code>IErlProject</code>
+	 *         was created
+	 */
+	IProject getProject();
 
 	/**
 	 * Returns the default output location for this project as a workspace-
@@ -69,29 +79,6 @@ public interface IErlProject extends IErlFolder {
 	 * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
 	 */
 	IPath getOutputLocation() throws ErlModelException;
-
-	/**
-	 * Returns the <code>IProject</code> on which this <code>IErlProject</code>
-	 * was created. This is handle-only method.
-	 * 
-	 * @return the <code>IProject</code> on which this <code>IErlProject</code>
-	 *         was created
-	 */
-	IProject getProject();
-
-	/**
-	 * Returns the names of the projects that are directly required by this
-	 * project. A project is required if it is in its classpath.
-	 * <p>
-	 * The project names are returned in the order they appear on the classpath.
-	 * 
-	 * @return the names of the projects that are directly required by this
-	 *         project in classpath order
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its corresponding resource
-	 */
-	Collection<String> getRequiredProjectNames() throws ErlModelException;
 
 	/**
 	 * Sets the default output location of this project to the location
@@ -122,6 +109,18 @@ public interface IErlProject extends IErlFolder {
 	 */
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
+
+	/**
+	 * Returns the names of the projects that are directly required by this
+	 * project. A project is required if it is in its classpath.
+	 * <p>
+	 * The project names are returned in the order they appear on the classpath.
+	 * 
+	 * @return the names of the projects that are directly required by this
+	 *         project in classpath order
+	 * @throws CoreException 
+	 */
+	Collection<String> getRequiredProjectNames() throws CoreException;
 
 	Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
