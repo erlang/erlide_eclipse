@@ -28,10 +28,10 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
  * Each Erlang project has a code path, defining which folders contain source
  * code and where required libraries are located. Each Erlang project also has
  * an output location, defining where the builder writes <code>.beam</code>
- * files. A project that references packages in another project can access the
- * packages by including the required project in a code path entry. The Erlang
+ * files. A project that references modules in another project can access the
+ * modules by including the required project in a code path entry. The Erlang
  * model will present the source elements in the required project; when
- * building, the compiler will use the corresponding generated class files from
+ * building, the compiler will use the corresponding generated beam files from
  * the required project's output location(s). The code path format is a sequence
  * of code path entries describing the location and contents of applications.
  * </p>

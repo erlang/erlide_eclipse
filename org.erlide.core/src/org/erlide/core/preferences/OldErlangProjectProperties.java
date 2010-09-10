@@ -238,10 +238,6 @@ public final class OldErlangProjectProperties implements
 		externalIncludesFile = file;
 	}
 
-	public IProject getProject() {
-		return project;
-	}
-
 	public void setExternalModulesFile(final String externalModules) {
 		this.externalModulesFile = externalModules;
 	}

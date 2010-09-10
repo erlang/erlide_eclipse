@@ -73,8 +73,8 @@ public class ErlangFunction {
 		if (obj instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) obj;
 			if (f.name.equals(name)) {
-				return f.arity == arity || f.arity == IErlModel.UNKNOWN_ARITY
-						|| arity == IErlModel.UNKNOWN_ARITY;
+				return f.arity == arity || f.arity == ErlangFunction.ANY_ARITY
+						|| arity == ErlangFunction.ANY_ARITY;
 			}
 		}
 		return false;
