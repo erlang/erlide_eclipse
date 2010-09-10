@@ -29,7 +29,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuilderVisitor;
 import org.erlide.core.builder.internal.MarkerHelper;
@@ -133,8 +136,7 @@ public final class BuilderHelper {
                 m.getScanner();
                 final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
                 for (final ErlangIncludeFile ifile : incs) {
-                    if (samePath(ifile.getFilename(), resource
-                            .getName())) {
+                    if (samePath(ifile.getFilename(), resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
                             final BuildResource bres = new BuildResource(m
                                     .getResource());
@@ -266,8 +268,8 @@ public final class BuilderHelper {
             m.getScanner();
             final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
             for (final ErlangIncludeFile ifile : incs) {
-                final IResource rifile = findResourceByName(
-                        project, ifile.getFilename());
+                final IResource rifile = findResourceByName(project, ifile
+                        .getFilename());
                 if (rifile != null
                         && rifile.getLocalTimeStamp() > beam
                                 .getLocalTimeStamp()) {
@@ -454,10 +456,10 @@ public final class BuilderHelper {
                     ErlLogger.debug("compiling %s", res.getName());
                 }
 
-                MarkerHelper.createTaskMarkers(project, res);
-
+                createTaskMarkers(project, res);
                 return ErlideBuilder.compileErl(backend, res.getLocation(),
                         outputDir, includeDirs, compilerOptions);
+
             } else {
                 return null;
             }
@@ -465,6 +467,20 @@ public final class BuilderHelper {
             ErlLogger.warn(e);
             return null;
         }
+    }
+
+    private void createTaskMarkers(final IProject project, final IResource res) {
+        Job job = new Job("tasks") {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                MarkerHelper.createTaskMarkers(project, res);
+                return Status.OK_STATUS;
+            }
+        };
+        job.setSystem(true);
+        job.setPriority(Job.BUILD);
+        job.setRule(res);
+        job.schedule();
     }
 
     private IPath getBeamForErl(final IResource source) {
