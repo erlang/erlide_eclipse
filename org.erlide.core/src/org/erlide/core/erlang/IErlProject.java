@@ -14,6 +14,7 @@ package org.erlide.core.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -49,6 +50,15 @@ import org.erlide.core.preferences.OldErlangProjectProperties;
 public interface IErlProject extends IErlFolder {
 
 	/**
+	 * Returns the <code>IProject</code> on which this <code>IErlProject</code>
+	 * was created. This is handle-only method.
+	 * 
+	 * @return the <code>IProject</code> on which this <code>IErlProject</code>
+	 *         was created
+	 */
+	IProject getProject();
+
+	/**
 	 * Returns the default output location for this project as a workspace-
 	 * relative absolute path.
 	 * <p>
@@ -69,29 +79,6 @@ public interface IErlProject extends IErlFolder {
 	 * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
 	 */
 	IPath getOutputLocation() throws ErlModelException;
-
-	/**
-	 * Returns the <code>IProject</code> on which this <code>IErlProject</code>
-	 * was created. This is handle-only method.
-	 * 
-	 * @return the <code>IProject</code> on which this <code>IErlProject</code>
-	 *         was created
-	 */
-	IProject getProject();
-
-	/**
-	 * Returns the names of the projects that are directly required by this
-	 * project. A project is required if it is in its classpath.
-	 * <p>
-	 * The project names are returned in the order they appear on the classpath.
-	 * 
-	 * @return the names of the projects that are directly required by this
-	 *         project in classpath order
-	 * @throws ErlModelException
-	 *             if this element does not exist or if an exception occurs
-	 *             while accessing its corresponding resource
-	 */
-	Collection<String> getRequiredProjectNames() throws ErlModelException;
 
 	/**
 	 * Sets the default output location of this project to the location
@@ -122,6 +109,18 @@ public interface IErlProject extends IErlFolder {
 	 */
 	void setOutputLocation(IPath path, IProgressMonitor monitor)
 			throws ErlModelException;
+
+	/**
+	 * Returns the names of the projects that are directly required by this
+	 * project. A project is required if it is in its classpath.
+	 * <p>
+	 * The project names are returned in the order they appear on the classpath.
+	 * 
+	 * @return the names of the projects that are directly required by this
+	 *         project in classpath order
+	 * @throws CoreException 
+	 */
+	Collection<String> getRequiredProjectNames() throws CoreException;
 
 	Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 

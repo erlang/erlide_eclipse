@@ -363,7 +363,6 @@ public class ErlProject extends Openable implements IErlProject {
 	 * Returns an array of non-Erlang resources contained in the receiver.
 	 */
 	public Collection<IResource> getNonErlangResources() throws ErlModelException {
-
 		return getNonErlangResources(this);
 	}
 
@@ -371,21 +370,6 @@ public class ErlProject extends Openable implements IErlProject {
 	 * @see IErlProject
 	 */
 	public IPath getOutputLocation() throws ErlModelException {
-		// Do not create marker but log problems while getting output location
-		return this.getOutputLocation(false, true);
-	}
-
-	/**
-	 * @param createMarkers
-	 *            boolean
-	 * @param logProblems
-	 *            boolean
-	 * @return IPath
-	 * @throws ErlModelException
-	 */
-	public IPath getOutputLocation(final boolean createMarkers,
-			final boolean logProblems) throws ErlModelException {
-
 		final OldErlangProjectProperties props = ErlangCore
 				.getProjectProperties(getProject());
 		return props.getOutputDir();
@@ -399,13 +383,15 @@ public class ErlProject extends Openable implements IErlProject {
 	}
 
 	/**
+	 * @throws CoreException 
 	 * @see IErlProject#getRequiredProjectNames()
 	 */
-	public Collection<String> getRequiredProjectNames() throws ErlModelException {
-		return Lists.newArrayList();
-
-		// return this.projectPrerequisites(getResolvedClasspath(true, false,
-		// false));
+	public Collection<String> getRequiredProjectNames() throws CoreException {
+		List<String> result = Lists.newArrayList();
+		for(IProject p: getProject().getReferencedProjects()) {
+			result.add(p.getName());
+		}
+		return result;
 	}
 
 	/**
