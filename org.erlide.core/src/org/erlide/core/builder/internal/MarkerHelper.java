@@ -300,10 +300,6 @@ public final class MarkerHelper {
         final IErlProject p = ErlangCore.getModel().findProject(project);
         if (p != null) {
             try {
-                if (BuilderHelper.isDebugging()) {
-                    ErlLogger.debug("Creating task markers "
-                            + resource.getName());
-                }
                 // getMarkersFor(resource, p);
                 getNoScanMarkersFor(resource, p);
             } catch (final ErlModelException e) {

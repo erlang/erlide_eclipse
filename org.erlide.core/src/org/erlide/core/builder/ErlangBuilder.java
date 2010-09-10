@@ -161,7 +161,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     if ("erl".equals(resource.getFileExtension())) {
                         String outputDir = prefs.getOutputDir().toString();
                         RpcFuture f = helper.startCompileErl(project, bres,
-                                outputDir, backend, compilerOptions, false);
+                                outputDir, backend, compilerOptions,
+                                kind == IncrementalProjectBuilder.FULL_BUILD);
                         if (f != null) {
                             results.put(f, resource);
                         }
