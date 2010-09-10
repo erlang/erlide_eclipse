@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.erlide.core.builder.internal;
 
 import java.io.BufferedReader;
@@ -41,12 +38,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class MarkerHelper {
 
+    private static final String FIXME = "FIXME";
+    private static final String XXX = "XXX";
+    private static final String TODO = "TODO";
+
     private MarkerHelper() {
     }
 
     public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
             + ".problemmarker";
-
     public static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
             + ".taskmarker";
 
@@ -320,9 +320,9 @@ public final class MarkerHelper {
         for (final IErlComment c : cl) {
             final String text = c.getName();
             final int line = c.getLineStart();
-            mkMarker(resource, line, text, "TODO", IMarker.PRIORITY_NORMAL);
-            mkMarker(resource, line, text, "XXX", IMarker.PRIORITY_NORMAL);
-            mkMarker(resource, line, text, "FIXME", IMarker.PRIORITY_HIGH);
+            mkMarker(resource, line, text, TODO, IMarker.PRIORITY_NORMAL);
+            mkMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
+            mkMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
         }
         m.disposeScanner();
     }
@@ -351,11 +351,11 @@ public final class MarkerHelper {
                 }
 
                 for (final Tuple<String, Integer> c : cl) {
-                    mkMarker(resource, c.o2, c.o1, "TODO",
+                    mkMarker(resource, c.o2, c.o1, TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, "XXX",
+                    mkMarker(resource, c.o2, c.o1, XXX,
                             IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, "FIXME",
+                    mkMarker(resource, c.o2, c.o1, FIXME,
                             IMarker.PRIORITY_HIGH);
                 }
             } finally {

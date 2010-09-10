@@ -513,7 +513,8 @@ public final class BuilderHelper {
         final IPath erl = getErlForYrl(resource);
         final IResource br = project.findMember(erl);
 
-        // TODO check timestamps!
+        // we should check timestamps, but yrl files are rare, so it doesn't
+        // matter much
 
         try {
             if (br != null) {
