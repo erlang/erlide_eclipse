@@ -6,19 +6,16 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 
 public class ErlangModuleAnnotationModelEvent extends AnnotationModelEvent {
 
-	public ErlangModuleAnnotationModelEvent(final IAnnotationModel model) {
-		super(model);
-		// TODO Auto-generated constructor stub
-	}
+    public ErlangModuleAnnotationModelEvent(final IAnnotationModel model) {
+        super(model);
+    }
 
-	public boolean includesProblemMarkerAnnotationChanges() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean includesProblemMarkerAnnotationChanges() {
+        return false;
+    }
 
-	public IResource getUnderlyingResource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IResource getUnderlyingResource() {
+        return null;
+    }
 
 }
