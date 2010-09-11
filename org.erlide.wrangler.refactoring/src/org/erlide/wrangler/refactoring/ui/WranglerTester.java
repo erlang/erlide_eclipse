@@ -11,30 +11,45 @@
 package org.erlide.wrangler.refactoring.ui;
 
 import org.eclipse.core.expressions.PropertyTester;
-import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 /**
- * Property tester class for checking if QuickCheck is installed on the system
+ * Property tester class for checking menu visibilty preconditions
  * 
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class QuickCheckTester extends PropertyTester {
+public class WranglerTester extends PropertyTester {
 	/**
 	 * Default constructor
 	 */
-	public QuickCheckTester() {
+	public WranglerTester() {
 	}
 
 	/**
-	 * Test if QC is installed on the system.
+	 * Test if QC, GraphViz is installed on the system.
 	 */
-	public boolean test(final Object receiver, final String property,
-			final Object[] args, final Object expectedValue) {
+
+	public boolean test(Object receiver, String property, Object[] args,
+			Object expectedValue) {
 		if (property.equals("hasQuickCheck")) {
-			return GlobalParameters.hasQuickCheck();
+			return true;// GlobalParameters.hasQuickCheck();
+		} else if ("hasGraphViz".equals(property)) {
+
+			// Bundle[] bs = Platform
+			// .getFragments(Platform
+			// .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
+			//
+			// for (int i = 0; i < bs.length; ++i) {
+			// if (bs[i].getSymbolicName().equals(
+			// "org.erlide.wrangler.refactoring.codeinspection")) {
+			//
+			// return true;
+			// }
+			// }
+
+			return true;
 		}
+
 		return true;
 	}
-
 }
