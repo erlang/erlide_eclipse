@@ -218,6 +218,30 @@
 			contextId="org.erlide.ui.erlangEditorScope" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M2+M3+T">
 		</key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+I C">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+I E">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+S C">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+S E">
+  </key>
 	</extension>
 	<extension point="org.erlide.ui.erlDndAdapter">
 		<client
