@@ -130,10 +130,10 @@ register_pid(FName, Start = {Line1, Col1}, End = {Line2, Col2}, RegName, SearchP
     end.
 
 
--spec (register_pid_1(FName::filename(), StartLine::integer(), StartCol::integer(),EndLine::integer(), EndCol::integer(), 
-		     RegName::string(), RegPids::[{{atom(), atom(), integer()}, syntaxTree()}],
-		     SearchPaths::[dir()], TabWidth::integer(), LogMsg::string())->
-    {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}], string()}).
+%%-spec (register_pid_1(FName::filename(), StartLine::integer(), StartCol::integer(),EndLine::integer(), EndCol::integer(), 
+%%		     RegName::string(), RegPids::[{{atom(), atom(), integer()}, syntaxTree()}],
+%%		     SearchPaths::[dir()], TabWidth::integer(), LogMsg::string())->
+%%    {error, string()} |{ok, [filename()]} | {unknown_pids, [{{atom(),atom(),atom()},syntaxTree()}], string()}).
 register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
@@ -162,8 +162,8 @@ register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, Se
 	  {unknown_pids, RegExprs, LogMsg}
     end.
 
--spec(register_pid_2(FName::filename(), StartLine::integer(), StartCol::integer(), EndLine::integer(),EndCol::integer(), RegName::string(),
-		     SearchPaths::[dir()],TabWidth::integer(), LogMsg::string())-> {error, string()} |{ok, [filename()]}).    
+%%-spec(register_pid_2(FName::filename(), StartLine::integer(), StartCol::integer(), EndLine::integer(),EndCol::integer(), RegName::string(),
+%%		     SearchPaths::[dir()],TabWidth::integer(), LogMsg::string())-> {error, string()} |{ok, [filename()]}).    
 register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths, TabWidth, LogMsg) ->
     {Start, End} = {{StartLine, StartCol}, {EndLine, EndCol}},
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),

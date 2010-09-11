@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
 import org.erlide.jinterface.rpc.RpcResult;
@@ -8,6 +18,12 @@ import org.erlide.wrangler.refactoring.exception.WranglerException;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Abstract class for parsing RpcResult objects
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractRpcMessage implements IRpcMessage {
 	protected RefactoringState refactoringState = RefactoringState.ERROR;
 
@@ -16,14 +32,16 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 	/**
 	 * Parses the Erlang object and stores the result.
 	 * 
-	 * @param object
+	 * @param result
+	 *            input object to be parsed
 	 */
-	public void parse(RpcResult result) {
+	public void parse(final RpcResult result) {
 		try {
 			if (!result.isOk()) {
 				org.erlide.jinterface.util.ErlLogger.error(
 						"Erlide communication error: ", result);
 				setUnsuccessful("Communication error occured, please try again!");
+				ErlLogger.error(result.toString());
 				return;
 			}
 			OtpErlangTuple resultTuple = (OtpErlangTuple) result.getValue();
@@ -50,17 +68,17 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 		return refactoringState;
 	}
 
-	protected void setUnsuccessful(String errorMsg) {
+	protected void setUnsuccessful(final String errorMsg) {
 		this.messageString = errorMsg;
 		this.refactoringState = RefactoringState.ERROR;
 	}
 
-	protected void setWarning(String message) {
+	protected void setWarning(final String message) {
 		this.messageString = message;
 		this.refactoringState = RefactoringState.WARNING;
 	}
 
-	protected void setQuestion(String message) {
+	protected void setQuestion(final String message) {
 		this.messageString = message;
 		this.refactoringState = RefactoringState.QUESTION;
 	}
@@ -70,7 +88,7 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
 		this.refactoringState = RefactoringState.OK;
 	}
 
-	protected void setState(String message, RefactoringState state) {
+	protected void setState(final String message, final RefactoringState state) {
 		this.messageString = message;
 		this.refactoringState = state;
 	}

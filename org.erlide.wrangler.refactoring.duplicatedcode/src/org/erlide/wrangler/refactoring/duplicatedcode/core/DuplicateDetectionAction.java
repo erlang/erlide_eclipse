@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
@@ -23,6 +33,12 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Idenctical code detection refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
 	protected boolean onlyInfile;
@@ -53,12 +69,12 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
 					fpl, minToks, minClones, GlobalParameters.getTabWidth(),
 					suffixPath);
 		} else {
 			functionName = "duplicated_code_eclipse";
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiiis",
+			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
 					sel.getSearchPath(), minToks, minClones, GlobalParameters
 							.getTabWidth(), suffixPath);
 		}
@@ -76,7 +92,14 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 			ErlLogger.debug("Fragment is not loaded?! No C binary is run.");
 			return "";
 		}
-		Bundle fragment = bs[0];
+		Bundle fragment = null;
+		for (int i = 0; i < bs.length; ++i) {
+			if (bs[i].getSymbolicName().equals(
+					"org.erlide.wrangler.refactoring.duplicatedcode")) {
+				fragment = bs[i];
+				break;
+			}
+		}
 		java.net.URL url = FileLocator.find(fragment, new Path(""), null);
 		url = FileLocator.resolve(url);
 		IPath path = new Path(url.getPath());

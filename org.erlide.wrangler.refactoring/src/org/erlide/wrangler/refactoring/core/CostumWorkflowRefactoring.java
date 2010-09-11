@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,13 +34,14 @@ public abstract class CostumWorkflowRefactoring extends
 	 * Runs an RPC like run()
 	 * 
 	 * @param selection
+	 *            erlang selection
 	 * @return parsed refactoring message
 	 */
 	public abstract IRefactoringRpcMessage runAlternative(
 			IErlSelection selection);
 
 	@Override
-	public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		return status;
 	}
@@ -40,6 +51,7 @@ public abstract class CostumWorkflowRefactoring extends
 	 * can be modified.
 	 * 
 	 * @param shell
+	 *            shell
 	 * @return refactoring workflow controller
 	 */
 	public abstract RefactoringWorkflowController getWorkflowController(

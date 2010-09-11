@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
 import java.util.HashMap;
@@ -11,14 +21,28 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * RpcResult parser class for parsing results of a n generalise function
+ * refactoring
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
+	/**
+	 * Generalise function's possible parameters names
+	 * 
+	 * 
+	 * @author Gyorgy Orosz
+	 * @version %I%, %G%
+	 */
 	public enum GenFunReturnParameterName {
 		parName, funName, arity, funDefPos, exp, sideEffect, dupsInFun, logCmd, noOfClauses, dupsInClause;
 	}
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
 		String state = resultTuple.elementAt(0).toString();
@@ -99,6 +123,11 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
 	protected HashMap<GenFunReturnParameterName, OtpErlangObject> parameters = null;
 
+	/**
+	 * Get parameters in a map
+	 * 
+	 * @return parameter name. value pairs
+	 */
 	public HashMap<GenFunReturnParameterName, OtpErlangObject> getParameters() {
 		return parameters;
 	}

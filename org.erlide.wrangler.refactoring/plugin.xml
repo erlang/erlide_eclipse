@@ -214,6 +214,34 @@
 			contextId="org.erlide.ui.erlangEditorScope" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M2+M3+V F">
 		</key>
+		<key commandId="org.erlide.wrangler.refactoring.refactoringmenu"
+			contextId="org.erlide.ui.erlangEditorScope" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M2+M3+T">
+		</key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.detectidentical"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+I C">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.searchidentical"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+I E">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.detectsimilar"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+S C">
+  </key>
+  <key
+        commandId="org.erlide.wrangler.refactoring.duplicated.searchsimilar"
+        contextId="org.erlide.ui.erlangEditorScope"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        sequence="M2+M3+S E">
+  </key>
 	</extension>
 	<extension point="org.erlide.ui.erlDndAdapter">
 		<client
@@ -287,6 +315,15 @@
 		<command id="org.erlide.wrangler.refactoring.renameprocess"
 			name="%renameProcessName" categoryId="org.erlide.wrangler.refactoring">
 		</command>
+		<command categoryId="org.erlide.wrangler.refactoring"
+			id="org.erlide.wrangler.refactoring.partitionexports" name="%partitionExportsName">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.refactoringmenu"
+			name="Refactoring">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspectionstub.about"
+			name="About">
+		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -335,10 +372,8 @@
 				<separator name="org.erlide.wrangler.refactoring.separator2"
 					visible="true">
 				</separator>
-				<menu
-          id="org.erlide.wrangler.refactormenu.quickcheck"
-          label="QuickCheck"
-          mnemonic="C">
+				<menu id="org.erlide.wrangler.refactormenu.quickcheck" label="QuickCheck"
+					mnemonic="C">
 					<command commandId="org.erlide.wrangler.refactoring.introducelet"
 						style="push">
 					</command>
@@ -359,13 +394,15 @@
 					</command>
 					<command commandId="org.erlide.wrangler.refactoring.gen_fsmtorecord"
 						style="push">
-					</command>
-     <visibleWhen>
-        <test
-              property="org.erlide.wrangler.refactoring.hasQuickCheck"
-              value="true">
-        </test>
-     </visibleWhen>
+					</command>-
+					<visibleWhen>
+					<or>
+				        <test
+                  forcePluginActivation="true"
+                  property="org.erlide.wrangler.refactoring.hasQuickcheck">
+				        </test>
+				    </or>
+					</visibleWhen>
 				</menu>
 				<separator name="org.erlide.wrangler.refactoring.separator3"
 					visible="true">
@@ -383,6 +420,9 @@
 					id="org.erlide.wrangler.refactoring.normalizerecordexpression"
 					style="push">
 				</command>
+				<command commandId="org.erlide.wrangler.refactoring.partitionexports"
+					id="org.erlide.wrangler.refactoring.partitionexports" style="push">
+				</command>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -394,6 +434,13 @@
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
 			<menu label="%RefactoringMenu_Label">
+				<visibleWhen>
+					<with variable="activeEditorId">
+						<or>
+							<equals value="org.erlide.ui.editors.erl.ErlangEditor" />
+						</or>
+					</with>
+				</visibleWhen>
 				<command commandId="org.erlide.wrangler.refactoring.renamemodule"
 					id="org.erlide.wrangler.refactoring.renamemodule" style="push">
 					<visibleWhen>
@@ -445,6 +492,19 @@
 						</iterate>
 					</visibleWhen>
 				</command>
+			</menu>
+		</menuContribution>
+		<menuContribution
+			locationURI="menu:org.eclipse.ui.main.menu?after=org.erlide.wrangler.refactormenu">
+			<menu id="org.erlide.wrangler.codeinspectionmenu" label="Code Inspection"
+				mnemonic="I" tooltip="Code inspection functionalities">
+				<command commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about"
+					label="About" mnemonic="A" style="push">
+				</command>
+    <separator
+          name="org.erlide.wrangler.refactoring.separator1"
+          visible="true">
+    </separator>
 			</menu>
 		</menuContribution>
 	</extension>
@@ -512,16 +572,31 @@
 		<handler commandId="org.erlide.wrangler.refactoring.renameprocess"
 			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 		</handler>
+		<handler class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+			commandId="org.erlide.wrangler.refactoring.partitionexports">
+		</handler>
+		<handler class="org.erlide.wrangler.refactoring.ui.AboutHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about">
+		</handler>
 	</extension>
- <extension
-       point="org.eclipse.core.expressions.propertyTesters">
-    <propertyTester
-          class="org.erlide.wrangler.refactoring.ui.QuickCheckTester"
-          id="org.erlide.wrangler.refactoring.quickchecktester"
-          namespace="org.erlide.wrangler.refactoring"
-          properties="hasQuickCheck"
-          type="java.lang.Object">
-    </propertyTester>
- </extension>
+	<extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester class="org.erlide.wrangler.refactoring.ui.WranglerTester"
+			id="org.erlide.wrangler.refactoring.quickchecktester" namespace="org.erlide.wrangler.refactoring"
+			properties="hasQuickCheck" type="java.lang.Boolean">
+		</propertyTester>
+		<propertyTester class="org.erlide.wrangler.refactoring.ui.WranglerTester"
+			id="org.erlide.wrangler.refactoring.graphvizplugintester" namespace="org.erlide.wrangler.refactoring"
+			properties="hasGraphViz" type="java.lang.Boolean">
+		</propertyTester>
+	</extension>
+	<extension point="org.eclipse.ui.views">
+		<category id="org.erlide.wrangler.refactoring.view" name="Wrangler">
+		</category>
+		<view allowMultiple="false" category="org.erlide.wrangler.refactoring.view"
+			class="org.erlide.wrangler.refactoring.ui.warning.WarningView" icon="icons/wrangler.gif"
+			id="org.erlide.wrangler.refactoring.ui.warning.WarningView" name="Refactoring warning messages"
+			restorable="false">
+		</view>
+	</extension>
 
 </plugin>

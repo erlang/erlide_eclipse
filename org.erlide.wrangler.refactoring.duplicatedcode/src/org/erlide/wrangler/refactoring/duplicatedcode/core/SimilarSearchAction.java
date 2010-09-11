@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
@@ -26,7 +36,7 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
 public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
 	private float simScore;
-	boolean onlyInFile;
+	boolean onlyInFile = true;
 
 	@Override
 	protected IResultParser callRefactoring()
@@ -44,10 +54,12 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 		} else {
 			functionName = "simi_expr_search_in_dirs_eclipse";
 		}
-		result = backend.callWithoutParser(TIMEOUT, functionName, "sxxxxi", sel
-				.getFilePath(), sel.getSelectionRange().getStartPos(), sel
-				.getSelectionRange().getEndPos(), new OtpErlangFloat(simScore),
-				sel.getSearchPath(), GlobalParameters.getTabWidth());
+		result = backend.callWithoutParser(
+				WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+				"sxxxxi", sel.getFilePath(), sel.getSelectionRange()
+						.getStartPos(), sel.getSelectionRange().getEndPos(),
+				new OtpErlangFloat(simScore), sel.getSearchPath(),
+				GlobalParameters.getTabWidth());
 
 		if (result.isOk())
 			return new SimilarExpressionSearchParser(result.getValue());

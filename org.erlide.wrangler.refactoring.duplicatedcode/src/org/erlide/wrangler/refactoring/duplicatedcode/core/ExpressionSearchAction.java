@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import org.erlide.jinterface.rpc.RpcResult;
@@ -7,6 +17,12 @@ import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+/**
+ * Expression search refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
 	@Override
@@ -16,7 +32,7 @@ public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 				.getWranglerSelection();
 		WranglerRefactoringBackend backend = WranglerBackendManager
 				.getRefactoringBackend();
-		RpcResult result = backend.callWithoutParser(TIMEOUT,
+		RpcResult result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
 				"expr_search_eclipse", "sxxi", sel.getFilePath(), sel
 						.getSelectionRange().getStartPos(), sel
 						.getSelectionRange().getEndPos(), GlobalParameters

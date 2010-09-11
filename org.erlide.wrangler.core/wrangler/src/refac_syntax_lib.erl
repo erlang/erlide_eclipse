@@ -1,3 +1,4 @@
+
 %% =====================================================================
 %% Support library for abstract Erlang syntax trees.
 %%
@@ -339,11 +340,8 @@ new_variable_name(N, R, _T, F, S) ->
 %% implementation of `sets'.
 
 start_range(S) ->
-    max(sets:size(S) * (?START_RANGE_FACTOR),
-	?MINIMUM_RANGE).
-
-max(X, Y) when X > Y -> X;
-max(_, Y) -> Y.
+    lists:max([sets:size(S) * (?START_RANGE_FACTOR),
+	?MINIMUM_RANGE]).
 
 %% The previous number might or might not be used to compute the
 %% next number to be tried. It is currently not used.
@@ -424,7 +422,6 @@ annotate_bindings(Tree, Env, MDefs) ->
     stop_env_process(Pid),
     Tree1.
     
-
 var_annotate_clause(C, Env, Ms, VI) ->
     Pid=start_env_process(),
     {C1, _, _} = vann_clause(C, Env, Ms, VI, Pid),
@@ -2414,17 +2411,17 @@ adjust_locations(Form, Toks) ->
 			_ -> T
 		      end;
 		  implicit_fun ->
-		      Pos = refac_syntax:get_pos(T),
-		      Name = refac_syntax:implicit_fun_name(T),
-		      case refac_syntax:type(Name) of
-			arity_qualifier ->
+			Pos = refac_syntax:get_pos(T),
+			Name = refac_syntax:implicit_fun_name(T),
+			case refac_syntax:type(Name) of
+			    arity_qualifier ->
 			    Fun = refac_syntax:arity_qualifier_body(Name),
 			    A = refac_syntax:arity_qualifier_argument(Name),
 			    case {refac_syntax:type(Fun), refac_syntax:type(A)} of
 			      {atom, integer} ->
-				  Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= Pos end, Toks),
-				  Fun1 = refac_syntax:atom_value(Fun),
-				  Toks2 = lists:dropwhile(fun (B) ->
+				    Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= Pos end, Toks),
+				    Fun1 = refac_syntax:atom_value(Fun),
+				    Toks2 = lists:dropwhile(fun (B) ->
 								  case B of
 								    {atom, _, Fun1} -> false;
 								    _ -> true

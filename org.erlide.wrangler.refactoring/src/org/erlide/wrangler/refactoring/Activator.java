@@ -1,6 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring;
-
-import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -9,6 +17,8 @@ import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.BundleContext;
+
+import com.ericsson.otp.erlang.OtpErlangList;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -100,14 +110,13 @@ public class Activator extends AbstractUIPlugin {
 		 * "Could not load the ebin files!" )); } catch (Exception e) {
 		 * e.printStackTrace(); } }
 		 */
+
+		res = mb.call_noexception("wrangler_error_logger", "init", "x",
+				new OtpErlangList());
+
+		ErlLogger.debug("Error logger started:" + res);
 	}
 
-	/**
-	 * Returns with the Wrangler integration plugin path
-	 * 
-	 * @return path of the plugin
-	 * @throws IOException
-	 */
 	/*
 	 * public static Path getPluginPath() throws IOException { URL url; Bundle b
 	 * = getDefault().getBundle(); url = FileLocator.find(b, new Path(""),

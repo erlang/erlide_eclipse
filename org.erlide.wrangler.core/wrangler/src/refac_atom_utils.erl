@@ -1,10 +1,39 @@
+%% Copyright (c) 2010, Huiqing Li, Simon Thompson
+%% All rights reserved.
+%%
+%% Redistribution and use in source and binary forms, with or without
+%% modification, are permitted provided that the following conditions are met:
+%%     %% Redistributions of source code must retain the above copyright
+%%       notice, this list of conditions and the following disclaimer.
+%%     %% Redistributions in binary form must reproduce the above copyright
+%%       notice, this list of conditions and the following disclaimer in the
+%%       documentation and/or other materials provided with the distribution.
+%%     %% Neither the name of the copyright holders nor the
+%%       names of its contributors may be used to endorse or promote products
+%%       derived from this software without specific prior written permission.
+%%
+%% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ''AS IS''
+%% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+%% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+%% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+%% BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+%% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+%% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+%% BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+%% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+%% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+%% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+%% =====================================================================
+
 -module(refac_atom_utils).
 
 
--export([start_atom_process/0, stop_atom_process/1, check_atoms/4, collect_atoms/2, has_warning_msg/1, 
-	output_atom_warning_msg/3]).
+-export([start_atom_process/0, stop_atom_process/1, 
+	 check_unsure_atoms/5,collect_unsure_atoms_in_file/3,
+	 has_warning_msg/1, output_atom_warning_msg/3]).
 
 -include("../include/wrangler.hrl").
+
 
 start_atom_process() ->
     spawn_link(fun () -> atom_loop({[], []}) end).
@@ -13,162 +42,68 @@ stop_atom_process(Pid) ->
 
 atom_loop({NotRenamed, Renamed}) ->
     receive
-      {add_not_renamed, Data} ->
-	  atom_loop({[Data| NotRenamed], Renamed});
-      {add_renamed, {FileName, Pos}} ->
-	  case Renamed of
-	    [] -> atom_loop({NotRenamed, [{FileName, [Pos]}]});
-	    [{FileName, Ps}| Others] ->
-		atom_loop({NotRenamed, [{FileName, [Pos| Ps]}| Others]});
-	    _ -> atom_loop({NotRenamed, [{FileName, [Pos]}| Renamed]})
-	  end;
-      {From, get} ->
-	  From ! {self(), {lists:reverse(NotRenamed), lists:reverse(Renamed)}},
-	  atom_loop({NotRenamed, Renamed});
-      stop ->
-	  ok
+	{add_not_renamed, Data} ->
+	    atom_loop({[Data| NotRenamed], Renamed});
+	{add_renamed, {FileName, Pos}} ->
+	    case Renamed of
+		[] -> atom_loop({NotRenamed, [{FileName, [Pos]}]});
+		[{FileName, Ps}| Others] ->
+		    atom_loop({NotRenamed, [{FileName, [Pos| Ps]}| Others]});
+		_ -> atom_loop({NotRenamed, [{FileName, [Pos]}| Renamed]})
+	    end;
+	{From, get} ->
+	    From ! {self(), {lists:reverse(NotRenamed), lists:reverse(Renamed)}},
+	    atom_loop({NotRenamed, Renamed});
+	stop ->
+	    ok
     end.
 
-check_atoms(FileName, Tree, AtomNames, Pid) ->
+check_unsure_atoms(FileName, FileAST, AtomNames, AtomType, Pid) ->
+    UndecidableAtoms = collect_unsure_atoms_in_file(FileAST, AtomNames, AtomType),
+    case UndecidableAtoms of
+	[] -> ok;
+	_ -> Pid ! {add_not_renamed, {FileName, UndecidableAtoms}}
+    end.
+
+collect_unsure_atoms_in_file(FileAST, AtomNames, AtomType) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of
-		  function -> collect_atoms(T, AtomNames);
-		  _ -> []
+		    function ->
+			collect_unsure_atoms(T, AtomNames, AtomType);
+		    _ -> []
 		end
 	end,
-    R = lists:usort(lists:flatten(lists:map(F, refac_syntax:form_list_elements(Tree)))),
-    R1 = [X || {atom, X, _} <- R, X =/= {0, 0}],  %% X=/={0,0} only a temporay fix; should check where {0,0} is introduced.
-    R2 = [X || {_, X, _} <- lists:filter(fun (X) ->
-						 case X of
-						   {atom, _X, _} -> false;
-						   _ -> true
-						 end
-					 end,
-					 R)],
-    UndecidableAtoms = R1 -- R2,
-    case UndecidableAtoms of
-      [] -> ok;
-      _ -> Pid ! {add_not_renamed, {FileName, UndecidableAtoms}}
-    end.
+    R = lists:usort(lists:flatmap(F, refac_syntax:form_list_elements(FileAST))),
+    [Pos || {atom, Pos, _} <- R].
 
-collect_atoms(Tree, AtomNames) ->
-    F = fun (T, S) ->
-		case refac_syntax:type(T) of
-		  function ->
-		      N = refac_syntax:function_name(T),
-		      collect_atoms_1(AtomNames, S, N, function);
-		  application ->
-		      Operator = refac_syntax:application_operator(T),
-		      collect_atoms_1(AtomNames, S, Operator, function);
-	 	  module_qualifier ->
-		      Mod = refac_syntax:module_qualifier_argument(T),
-		      Fun = refac_syntax:module_qualifier_body(T),
-		      S1 = collect_atoms_1(AtomNames, S, Mod, module),
-		      collect_atoms_1(AtomNames, S1, Fun, function);
-		  arity_qualifier ->
-		      Fun = refac_syntax:arity_qualifier_body(T),
-		      case lists:member(refac_syntax:atom_value(Fun), AtomNames) of
-			true -> S ++ [{function, refac_syntax:get_pos(Fun)}];
-			false -> S
-		      end;
-		  infix_expr ->
-		      Op = refac_syntax:infix_expr_operator(T),
-		      Left = refac_syntax:infix_expr_left(T),
-		      case refac_syntax:operator_name(Op) of
-			'!' ->
-			    case refac_syntax:type(Left) of
-			      atom ->
-				  AtomVal = refac_syntax:atom_value(Left),
-				  case lists:member(AtomVal, AtomNames) of
-				    true ->
-					S ++ [{process, refac_syntax:get_pos(Left), AtomVal}];
-				    _ -> S
-				  end;
-			      _ -> S
-			    end;
-			_ -> S
-		      end;
-		  record_expr -> Type = refac_syntax:record_expr_type(T),
-				 collect_atoms_1(AtomNames, S, Type, record);
-		  record_field -> Name = refac_syntax:record_field_name(T),
-				  case refac_syntax:type(Name) of
-				    atom ->
-					AtomVal = refac_syntax:atom_value(Name),
-					case lists:member(AtomVal, AtomNames) of
-					  true ->
-					      S ++ [{record, refac_syntax:get_pos(Name), AtomVal}];
-					  _ -> S
-					end;
-				    _ -> S
-				  end;
-		  record_access -> Type = refac_syntax:record_access_type(T),
-				   Field = refac_syntax:record_access_field(T),
-				   S1 = collect_atoms_1(AtomNames, S, Type, record),
-				   case refac_syntax:type(Field) of
-				     atom ->
-					 AtomVal = refac_syntax:atom_value(Field),
-					 case lists:member(AtomVal, AtomNames) of
-					   true ->
-					       S ++ [{record, refac_syntax:get_pos(Field), AtomVal}];
-					   false ->
-					       S
-					 end;
-				     _ -> S1
-				   end;
+
+collect_unsure_atoms(Tree, AtomNames, AtomType)->
+    F=fun(Node,S) ->
+	      case refac_syntax:type(Node) of
 		  atom ->
-		      AtomVal = refac_syntax:atom_value(T),
+		      AtomVal = refac_syntax:atom_value(Node),
 		      case lists:member(AtomVal, AtomNames) of
-			true ->
-			    Pos = refac_syntax:get_pos(T),
-			    As = refac_syntax:get_ann(T),
-			    case lists:keysearch(type, 1, As) of
-			      {value, {type, {f_atom, [MName, FName, Arity]}}}
-				  when not (is_atom(MName) andalso MName /= '_' andalso
-					      is_atom(FName) andalso FName /= '_' andalso
-						is_integer(Arity)) ->
-				    
-				    S ++ [{atom, Pos, AtomVal}];   %% This should be improved; as we know T is a function atom;
-				{value, _} -> S;
-				_ ->
-				    S ++ [{atom, Pos, AtomVal}]
-			    end;
-			  false -> S
+			  true ->
+			      Pos = refac_syntax:get_pos(Node),
+			      As = refac_syntax:get_ann(Node),
+			      case lists:keysearch(type, 1, As) of
+				  {value, {type,{f_atom, [M, _F, A]}}}
+				    when AtomType==f_name andalso 
+					 (not (is_atom(M) andalso M /= '_' andalso
+					       is_integer(A))) ->
+				      S ++ [{atom, Pos, AtomVal}];			      
+				  {value, {type, _}} ->
+				      S;
+				  _ ->
+				      S ++ [{atom, Pos, AtomVal}]
+			      end;
+			  false ->
+			      S
 		      end;
-		    _ -> S
-		end
-	end,
+		  _ -> S
+	      end
+      end,
     refac_syntax_lib:fold(F, [], Tree).
-
-collect_atoms_1(AtomNames, S, Node, Type) ->
-    F = fun (T, Acc) ->
-		case refac_syntax:type(T) of
-		  atom ->
-		      AtomVal = refac_syntax:atom_value(T),
-		      case lists:member(AtomVal, AtomNames) of
-			true when Type == function ->
-			    Ann = refac_syntax:get_ann(T),
-			    case lists:keysearch(fun_def, 1, Ann) of
-			      {value, {fun_def, {'_', _, _, _, _}}} ->
-				  Acc ++ [{atom, refac_syntax:get_pos(T), AtomVal}];
-			      {value, {fun_def, {_, '_', _, _, _}}} ->
-				  Acc ++ [{atom, refac_syntax:get_pos(T), AtomVal}];
-			      {value, {fun_def, {_, _, '_', _, _}}} ->
-				  Acc ++ [{atom, refac_syntax:get_pos(T), AtomVal}];
-			      {value, _} ->
-				  Acc ++ [{function, refac_syntax:get_pos(T), AtomVal}];
-			      false ->
-				  Acc ++ [{atom, refac_syntax:get_pos(T), AtomVal}]
-			    end;
-			true ->
-			    Acc ++ [{Type, refac_syntax:get_pos(T), AtomVal}];
-			false ->
-			    Acc
-		      end;
-		  _ -> Acc
-		end
-	end,
-    refac_syntax_lib:fold(F, S, Node).
-
 
 has_warning_msg(Pid) ->
     Pid! {self(), get},
@@ -222,3 +157,5 @@ output_renamed_atom_info(FileAndExprs) ->
 	  end,
     Msg = lists:flatmap(Fun, FileAndExprs),
     ?log_warning(Msg).
+
+

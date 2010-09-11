@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import java.io.IOException;
@@ -17,10 +27,18 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 
+/**
+ * Similar code detection refactoring runner
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
-	int minToks;
+	int minLen;
 	int minFreq;
+	int minToks;
+	int maxNewVars;
 	double simScore;
 	boolean onlyInFile;
 
@@ -42,13 +60,17 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiidxi",
-					fpl, minToks, minFreq, simScore, sel.getSearchPath(),
-					GlobalParameters.getTabWidth());
+			result = backend.callWithoutParser(
+					WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+					"xiiiidxi", fpl, minLen, minToks, minFreq, maxNewVars,
+					simScore, sel.getSearchPath(), GlobalParameters
+							.getTabWidth());
 		} else {
-			result = backend.callWithoutParser(TIMEOUT, functionName, "xiidxi",
-					sel.getSearchPath(), minToks, minFreq, simScore, sel
-							.getSearchPath(), GlobalParameters.getTabWidth());
+			result = backend.callWithoutParser(
+					WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+					"xiiiidxi", sel.getSearchPath(), minLen, minToks, minFreq,
+					maxNewVars, simScore, sel.getSearchPath(), GlobalParameters
+							.getTabWidth());
 		}
 
 		if (!result.isOk())
@@ -68,8 +90,10 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
 		simScore = inputd.getSimScore();
 		minFreq = inputd.getMinFreq();
-		minToks = inputd.getMinToks();
+		minLen = inputd.getMinLen();
 		onlyInFile = inputd.onlyinFile();
+		maxNewVars = inputd.getMaxNewVars();
+		minToks = inputd.getMinToks();
 
 		return inputd.isFinished();
 	}

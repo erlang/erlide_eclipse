@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
@@ -8,6 +18,12 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
+/**
+ * Abstract class for representing Erlang member selection
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		implements IErlMemberSelection {
 
@@ -15,6 +31,9 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 
 	protected IDocument document;
 
+	/**
+	 * Default constructor
+	 */
 	public AbstractErlMemberSelection() {
 	}
 
@@ -22,7 +41,13 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		return document;
 	}
 
-	public AbstractErlMemberSelection(ITextEditor editor) {
+	/**
+	 * Constructor
+	 * 
+	 * @param editor
+	 *            the erlang editor which is used to get the current selection
+	 */
+	public AbstractErlMemberSelection(final ITextEditor editor) {
 		ITextSelection selection = (ITextSelection) (editor
 				.getSelectionProvider().getSelection());
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
@@ -31,8 +56,8 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 		store(selection, afile, document);
 	}
 
-	protected void store(ITextSelection selection, IFile afile,
-			IDocument adocument) {
+	protected void store(final ITextSelection selection, final IFile afile,
+			final IDocument adocument) {
 		this.file = afile;
 		textSelection = selection;
 	}
