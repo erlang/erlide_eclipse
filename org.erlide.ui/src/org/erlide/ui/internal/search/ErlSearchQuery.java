@@ -14,10 +14,10 @@ import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.search.ErlangSearchPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
+import erlang.ErlangSearchPattern;
 import erlang.ErlideSearchServer;
 
 public class ErlSearchQuery implements ISearchQuery {

@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
@@ -37,6 +38,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -48,41 +50,18 @@ import org.osgi.framework.Version;
  */
 
 public class ErlangPlugin extends Plugin {
-
-	/**
-	 * The plugin id
-	 */
 	public static final String PLUGIN_ID = "org.erlide.core";
-
-	/**
-	 * The builder id
-	 */
 	public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
-
-	/**
-	 * the nature id
-	 */
 	public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
-
 	private static final boolean TOUCH_ALL_ERLANG_PROJECTS_ON_LAUNCH = false;
 
-	/**
-	 * The shared instance.
-	 */
 	private static ErlangPlugin plugin;
-
-	/**
-	 * Resource bundle.
-	 */
 	private ResourceBundle resourceBundle;
-
+	private PlatformChangeListener platformListener;
+	// this must be here, otherwise ErlideLogger messages look weird
+	@SuppressWarnings("unused")
 	private Logger logger;
 
-	private PlatformChangeListener platformListener;
-
-	/**
-	 * The constructor.
-	 */
 	public ErlangPlugin() {
 		super();
 		plugin = this;
@@ -199,27 +178,41 @@ public class ErlangPlugin extends Plugin {
 
 					public void saving(final ISaveContext context1)
 							throws CoreException {
-						savePluginPreferences();
+						try {
+							(new InstanceScope()).getNode(PLUGIN_ID).flush();
+						} catch (BackingStoreException e) {
+							// ignore
+						}
 					}
 				});
 
 		ErlLogger.debug("Started CORE");
 	}
 
-	private String getFeatureVersion() {
+	public String getFeatureVersion() {
 		String version = null;
 		try {
 			IBundleGroupProvider[] providers = Platform
 					.getBundleGroupProviders();
 			if (providers != null) {
 				for (IBundleGroupProvider provider : providers) {
+					ErlLogger.debug("plugin version: provider = %s", provider
+							.getName());
 					IBundleGroup[] bundleGroups = provider.getBundleGroups();
 					for (IBundleGroup group : bundleGroups) {
+						ErlLogger.debug("plugin version: bundle group = %s %s",
+								group.getIdentifier(), group.getName());
 						if (group.getIdentifier().equals("org.erlide")) {
 							version = group.getVersion();
+							break;
 						}
 					}
+					if (version != null) {
+						break;
+					}
 				}
+			} else {
+				ErlLogger.debug("plugin version: no providers");
 			}
 		} catch (Throwable e) {
 			// ignore

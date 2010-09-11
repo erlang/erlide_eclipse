@@ -52,8 +52,8 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
@@ -71,6 +71,8 @@ import erlang.ErlideDebug;
 public class ErlangLaunchConfigurationDelegate implements
 		ILaunchConfigurationDelegate {
 
+	private ErlangDebugTarget target;
+
 	public void launch(final ILaunchConfiguration config, final String mode,
 			final ILaunch launch, final IProgressMonitor monitor)
 			throws CoreException {
@@ -80,7 +82,6 @@ public class ErlangLaunchConfigurationDelegate implements
 	protected Backend doLaunch(final ILaunchConfiguration config,
 			final String mode, final ILaunch launch, final boolean internal,
 			final Map<String, String> env) throws CoreException {
-
 		final ErlLaunchData data = new ErlLaunchData(config, internal);
 
 		final Set<IProject> projects = new HashSet<IProject>();
@@ -139,7 +140,7 @@ public class ErlangLaunchConfigurationDelegate implements
 			return null;
 		}
 
-		ErlideBackend backend;
+		ErlideBackend backend = null;
 		try {
 			backend = ErlangCore.getBackendManager().createBackend(rt, options,
 					launch, env);
@@ -191,14 +192,14 @@ public class ErlangLaunchConfigurationDelegate implements
 			final EnumSet<BackendOptions> options, final ErlideBackend backend)
 			throws DebugException {
 
-		registerProjects(backend, projects);
+		registerProjectsWithExecutionBackend(backend, projects);
 		if (!backend.isDistributed()) {
 			return;
 		}
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			final ILaunch launch = backend.getLaunch();
 			// add debug target
-			final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+			target = new ErlangDebugTarget(launch,
 					backend, projects, data.debugFlags);
 			// target.getWaiter().doWait();
 			launch.addDebugTarget(target);
@@ -206,33 +207,10 @@ public class ErlangLaunchConfigurationDelegate implements
 			final boolean distributed = (data.debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
 			if (distributed) {
 				distributeDebuggerCode(backend);
-				// add other nodes
-				final OtpErlangList nodes = ErlideDebug.nodes(backend);
-				if (nodes != null) {
-					for (int i = 1, n = nodes.arity(); i < n; ++i) {
-						final OtpErlangAtom o = (OtpErlangAtom) nodes
-								.elementAt(i);
-						final OtpErlangAtom a = o;
-						final ErlangDebugNode edn = new ErlangDebugNode(target,
-								a.atomValue());
-						launch.addDebugTarget(edn);
-					}
-				}
+				addNodesAsDebugTargets(backend, launch);
 			}
-			for (final String pm : data.interpretedModules) {
-				final String[] pms = pm.split(":");
-				getDebugHelper().interpret(backend, pms[0], pms[1], distributed, true);
-			}
-			// send started to target
-			DebugPlugin.getDefault().addDebugEventListener(
-					new IDebugEventSetListener() {
-						public void handleDebugEvents(final DebugEvent[] events) {
-							runInitial(data.module, data.function, data.args,
-									backend);
-							DebugPlugin.getDefault().removeDebugEventListener(
-									this);
-						}
-					});
+			interpretModules(data, backend, distributed);
+			registerDebugEventListener(data, backend);
 			target.sendStarted();
 
 		} else {
@@ -240,11 +218,46 @@ public class ErlangLaunchConfigurationDelegate implements
 		}
 	}
 
+	private void interpretModules(final ErlLaunchData data,
+			final ErlideBackend backend, final boolean distributed) {
+		for (final String pm : data.interpretedModules) {
+			final String[] pms = pm.split(":");
+			getDebugHelper().interpret(backend, pms[0], pms[1], distributed, true);
+		}
+	}
+
+	private void addNodesAsDebugTargets(final Backend backend, final ILaunch launch) {
+		final OtpErlangList nodes = ErlideDebug.nodes(backend);
+		if (nodes != null) {
+			for (int i = 1, n = nodes.arity(); i < n; ++i) {
+				final OtpErlangAtom o = (OtpErlangAtom) nodes
+						.elementAt(i);
+				final OtpErlangAtom a = o;
+				final ErlangDebugNode edn = new ErlangDebugNode(target,
+						a.atomValue());
+				launch.addDebugTarget(edn);
+			}
+		}
+	}
+
+	private void registerDebugEventListener(final ErlLaunchData data,
+			final ErlideBackend backend) {
+		DebugPlugin.getDefault().addDebugEventListener(
+				new IDebugEventSetListener() {
+					public void handleDebugEvents(final DebugEvent[] events) {
+						runInitial(data.module, data.function, data.args,
+								backend);
+						DebugPlugin.getDefault().removeDebugEventListener(
+								this);
+					}
+				});
+	}
+
 	protected ErlangDebugHelper getDebugHelper() {
 		return new ErlangDebugHelper();
 	}
 
-	private static void registerProjects(final ErlideBackend backend,
+	private static void registerProjectsWithExecutionBackend(final ErlideBackend backend,
 			final Collection<IProject> projects) {
 		for (final IProject project : projects) {
 			ErlangCore.getBackendManager()
@@ -353,7 +366,6 @@ public class ErlangLaunchConfigurationDelegate implements
 		try {
 			if (module.length() > 0 && function.length() > 0) {
 				if (args.length() > 0) {
-					// TODO issue #84
 					backend.cast(module, function, "s", args);
 				} else {
 					backend.cast(module, function, "");
@@ -373,5 +385,9 @@ public class ErlangLaunchConfigurationDelegate implements
 			final String mode, final ILaunch launch,
 			final IProgressMonitor monitor) throws CoreException {
 		doLaunch(configuration, mode, launch, true, null);
+	}
+	
+	public ErlangDebugTarget getDebugTarget() {
+		return target;
 	}
 }

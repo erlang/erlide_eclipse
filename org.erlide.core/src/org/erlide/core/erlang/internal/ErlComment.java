@@ -38,12 +38,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
 		return Kind.COMMENT;
 	}
 
-	// @Override
-	// public IResource getUnderlyingResource() throws ErlModelException {
-	// // TODO Auto-generated method stub
-	// return null;
-	// }
-
 	public boolean isVisibleInOutline() {
 		return false;
 	}

@@ -54,9 +54,8 @@ public class ErlideIndent {
 
 	@SuppressWarnings("boxing")
 	public static OtpErlangObject indentLines(final Backend b,
-			final boolean template, final int offset, final int length,
-			final String text, final int tabw, final boolean useTabs,
-			final Map<String, String> prefs, final String prefix)
+			final int offset, final int length, final String text,
+			final int tabw, final boolean useTabs, final Map<String, String> prefs)
 			throws BackendException {
 		final OtpErlangObject o = b.call(20000, "erlide_indent",
 				"indent_lines", "siiiolx", text, offset, length, tabw, useTabs,

@@ -277,7 +277,7 @@
                         <td> Finds all definitions of the selected Erlang element</td>
                     </tr>
                     <tr>
-                        <td>Occurences</td>
+                        <td>Occurrences</td>
                         <td>Finds both references and definitions </td>
                     </tr>
                 </tbody>

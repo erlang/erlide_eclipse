@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -29,7 +28,6 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
@@ -47,7 +45,6 @@ public class ModelUtils {
 	 * @param filePath
 	 *            the path to the include file
 	 * @param externalIncludes
-	 *            TODO
 	 * @return the path to the include file
 	 */
 	public static String findIncludeFile(final IProject project,
@@ -59,8 +56,8 @@ public class ModelUtils {
 				.getPathVariableManager();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		for (final String includeDir : prefs.getIncludeDirs()) {
-			IPath p = new Path(includeDir).append(filePath);
+		for (final IPath includeDir : prefs.getIncludeDirs()) {
+			IPath p = includeDir.append(filePath);
 			p = pvm.resolvePath(p);
 			final File f = new File(p.toOSString());
 			if (f.exists()) {
@@ -109,7 +106,6 @@ public class ModelUtils {
 	 * @param definedName
 	 * @param type
 	 * @param externalIncludes
-	 *            TODO
 	 * @param modulesDone
 	 * @return
 	 * @throws CoreException
@@ -156,7 +152,7 @@ public class ModelUtils {
 									.getIncludePathFilter(project, m
 											.getResource().getParent()));
 				} catch (final Exception e) {
-					ErlLogger.warn(e);
+					//ErlLogger.warn(e);
 				}
 			} else if (re instanceof IFile) {
 				m = ErlModelManager.getDefault().getErlangModel().findModule(

@@ -162,15 +162,13 @@ template_indent_lines(Prefix, S, Tablength, UseTabs, Prefs) ->
     Length = length(S1) - From,
     {First, FirstLineNum, Lines} = erlide_text:get_text_and_lines(S1, From, Length),
     S2 = do_indent_lines(Lines, Tablength, UseTabs, First, get_prefs(Prefs), FirstLineNum, ""),
-    S3 = string:sub_string(S2, length(Prefix)+1, length(S2)-1),
+    S3 = string:substr(S2, length(Prefix)+1, length(S2)-1),
     unquote_template_variables(S3).
 
 %%
 %% Local Functions
 %%
 
-%% TODO: Add description of asd/function_arity
-%%
 do_indent_lines([], _, _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, UseTabs, Text, Prefs, N, Acc) ->
@@ -316,8 +314,6 @@ i_expr_list(R0, I0, A0) ->
 i_binary_expr_list(R, I) ->
     i_binary_expr_list(R, I, none).
 
-% TODO
-
 i_binary_expr_list(R0, I0, A0) ->
     R1 = i_comments(R0, I0),
     ?D(R1),
@@ -355,9 +351,7 @@ i_binary_expr(R0, I0) ->
 
 i_binary_sub_expr(R0, I0) ->
     case i_sniff(R0) of
-	'(' ->
-	    i_expr(R0, I0, none); % TODO: funkar detta med t.ex. (1+4):8? testa!
-	'<<' ->
+	Kind when Kind=='('; Kind=='<<'; Kind==macro ->
 	    i_expr(R0, I0, none);
 	Kind when Kind==var; Kind==string; Kind==integer; Kind==char ->
 	    R1 = i_comments(R0, I0),

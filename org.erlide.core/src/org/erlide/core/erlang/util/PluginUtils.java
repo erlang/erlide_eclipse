@@ -11,7 +11,6 @@ package org.erlide.core.erlang.util;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -51,10 +50,10 @@ public class PluginUtils {
 	}
 
 	public static boolean isOnPaths(final IContainer con,
-			final IProject project, final List<String> sourcePaths) {
+			final IProject project, final Collection<IPath> sourcePaths) {
 		final IPath path = con.getFullPath();
-		for (final String i : sourcePaths) {
-			if (i.equals(".")) {
+		for (final IPath i : sourcePaths) {
+			if (i.toString().equals(".")) {
 				if (project.getFullPath().equals(path)) {
 					return true;
 				}
@@ -94,9 +93,9 @@ public class PluginUtils {
 	}
 
 	public static Set<IPath> getFullPaths(final IProject project,
-			final List<String> sourcePaths) {
+			final Collection<IPath> sourcePaths) {
 		HashSet<IPath> result = new HashSet<IPath>();
-		for (String i : sourcePaths) {
+		for (IPath i : sourcePaths) {
 			if (i.equals(".")) {
 				result.add(project.getFullPath());
 			} else {
@@ -113,9 +112,9 @@ public class PluginUtils {
 		 */
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = prefs.getSourceDirs();
+		final Collection<IPath> sourcePaths = prefs.getSourceDirs();
 		final IPath path = con.getFullPath();
-		for (final String i : sourcePaths) {
+		for (final IPath i : sourcePaths) {
 			if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
 				return true;
 			}

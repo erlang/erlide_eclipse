@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -143,7 +143,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
 						prefs.getOutputDir()).toString();
 				BuilderUtils.ensureDirExists(outputDir);
 
-				List<String> includeDirs = BuilderUtils
+				Collection<IPath> includeDirs = BuilderUtils
 						.getAllIncludeDirs(project);
 
 				EventProcessor processor = new EventProcessor(

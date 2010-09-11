@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.8.2.qualifier
+Bundle-Version: 0.8.4.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -112,6 +112,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang,
    org.eclipse.jface.text.source.projection",
+ org.erlide.ui.editors.erl.handlers,
  org.erlide.ui.editors.erl.hover;x-internal:=true,
  org.erlide.ui.editors.erl.hyperlink;x-internal:=true,
  org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.gunit";
@@ -139,6 +140,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
+ org.erlide.ui.internal.search;x-internal:=true,
  org.erlide.ui.internal.util;x-friends:="org.erlide.gunit",
  org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
  org.erlide.ui.launch;x-friends:="org.erlide.selfhost.plugin";
@@ -325,7 +327,8 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.jface.text,
  org.eclipse.search,
  org.erlide.jinterface,
- org.erlide.core
+ org.erlide.core,
+ org.erlide.libs;bundle-version="1.1.4"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

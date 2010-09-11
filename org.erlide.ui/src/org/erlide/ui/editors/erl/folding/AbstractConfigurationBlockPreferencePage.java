@@ -10,6 +10,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.IPreferenceConfigurationBlock;
 import org.erlide.ui.util.OverlayPreferenceStore;
+import org.osgi.service.prefs.BackingStoreException;
 
 abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
 		implements IWorkbenchPreferencePage {
@@ -80,13 +81,13 @@ abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
 	 */
 	@Override
 	public boolean performOk() {
-
 		fConfigurationBlock.performOk();
-
 		fOverlayStore.propagate();
-
-		ErlideUIPlugin.getDefault().savePluginPreferences();
-
+		try {
+			ErlideUIPlugin.getPrefsNode().flush();
+		} catch (BackingStoreException e) {
+			// ignore
+		}
 		return true;
 	}
 

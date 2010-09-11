@@ -15,8 +15,6 @@ public class ErlangTracingAction implements IWorkbenchWindowActionDelegate {
 	private ErlangTracingDialog fDialog;
 
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void init(final IWorkbenchWindow window) {

@@ -23,7 +23,7 @@ public class EmptyErlangFoldingPreferenceBlock implements
 	// TODO fattar ju inget av detta, varf?r skapar de kontroller h?r??
 	// TODO m?ste dessutom uppdatera alla @see referenser
 	/*
-	 * @seeorg.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
+	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
 	 * createControl(org.eclipse.swt.widgets.Group)
 	 */
 	public Control createControl(final Composite composite) {

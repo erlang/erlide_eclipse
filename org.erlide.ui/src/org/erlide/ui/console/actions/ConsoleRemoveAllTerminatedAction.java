@@ -21,6 +21,7 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
+import org.erlide.ui.console.ConsoleMessages;
 
 /**
  * ConsoleRemoveAllTerminatedAction

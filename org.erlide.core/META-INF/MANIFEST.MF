@@ -2,18 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.8.2.qualifier
+Bundle-Version: 0.8.4.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: erlang,
  org.erlide.core,
- org.erlide.core.builder;x-friends:="org.erlide.ui",
+ org.erlide.core.builder,
  org.erlide.core.builder.internal;x-internal:=true,
  org.erlide.core.erlang,
  org.erlide.core.erlang.internal;x-internal:=true,
  org.erlide.core.erlang.util,
  org.erlide.core.internal;x-internal:=true,
+ org.erlide.core.platform,
  org.erlide.core.preferences,
  org.erlide.core.search;x-friends:="org.erlide.ui";
   uses:="org.eclipse.debug.core.sourcelookup,
@@ -37,7 +38,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.erlide.jinterface,
  org.eclipse.debug.core,
- org.erlide.libs;bundle-version="[1.0.0,2.0.0)"
+ org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .

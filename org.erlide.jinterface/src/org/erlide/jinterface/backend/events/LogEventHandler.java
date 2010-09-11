@@ -22,7 +22,7 @@ public class LogEventHandler extends EventHandler {
 				final OtpErlangObject amsg = b.get("M");
 				ErlLogger.debug("%s: %s", kind, ErlUtils.asString(amsg));
 			} catch (final Exception e) {
-				ErlLogger.error(e);
+				ErlLogger.error("erroneous log msg: %s", log);
 			}
 		}
 

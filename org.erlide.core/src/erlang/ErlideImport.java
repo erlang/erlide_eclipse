@@ -22,7 +22,6 @@ public class ErlideImport {
 	 * Filter import parameters for newly imported erlang project
 	 * 
 	 * @param prefix
-	 *            TODO
 	 * @param importSources
 	 * @param prefix
 	 * 

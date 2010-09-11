@@ -22,8 +22,6 @@ public class BackendManagerPopup implements BackendListener {
 
 	private static final BackendListener fInstance = new BackendManagerPopup();
 
-	private static final int DELAY = 5000;
-
 	private BackendManagerPopup() {
 	}
 

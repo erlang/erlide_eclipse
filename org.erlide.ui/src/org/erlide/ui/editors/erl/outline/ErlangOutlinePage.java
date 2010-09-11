@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
@@ -309,10 +310,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		final IHandlerService handlerService = (IHandlerService) site
 				.getService(IHandlerService.class);
 		handlerService.activateHandler(
-		// TODO fix in 3.5
-				// IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
-				"org.eclipse.ui.navigate.linkWithEditor", new ActionHandler(
-						fToggleLinkingAction));
+				IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
+				new ActionHandler(fToggleLinkingAction));
 	}
 
 	protected void contextMenuAboutToShow(final IMenuManager menu) {
@@ -400,10 +399,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 		final IMenuManager viewMenuManager = actionBars.getMenuManager();
 		fToggleLinkingAction = new ToggleLinkingAction();
 		fToggleLinkingAction
-				.setActionDefinitionId("org.eclipse.ui.navigate.linkWithEditor"
-				// TODO fix in 3.5
-				// IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR
-				);
+				.setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
 		viewMenuManager.add(fToggleLinkingAction);
 	}
 

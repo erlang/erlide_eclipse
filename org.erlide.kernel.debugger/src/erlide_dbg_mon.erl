@@ -488,7 +488,6 @@ cmd(Cmd) ->
 %%
 %%     State#state{backtrace=BackTrace}.
 
-% TODO: Use of save settings
 %% save_settings(SFile, State) ->
 %%     Settings = {erlide_int:auto_attach(),
 %% 		erlide_int:stack_trace(),

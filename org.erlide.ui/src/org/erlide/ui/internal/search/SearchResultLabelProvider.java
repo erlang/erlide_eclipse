@@ -7,10 +7,10 @@ import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
@@ -129,7 +129,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 		// module - String
 		// function - ErlangFunction
 		// clause - ClauseHead
-		// occurence - ModuleLineFunctionArityRef
+		// occurrence - ModuleLineFunctionArityRef
 		Kind kind = Kind.ERROR;
 		if (element instanceof String) {
 			kind = Kind.MODULE;

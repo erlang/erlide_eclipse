@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -42,8 +43,8 @@ import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -317,8 +318,8 @@ public final class ErlideUtil {
 		final IPath folderPath = folder.getFullPath();
 		final OldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
-		final List<String> sourcePaths = prefs.getSourceDirs();
-		for (final String p : sourcePaths) {
+		final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+		for (final IPath p : sourcePaths) {
 			final IPath path = project.getFolder(p).getFullPath();
 			if (folderPath.isPrefixOf(path)) {
 				return true;

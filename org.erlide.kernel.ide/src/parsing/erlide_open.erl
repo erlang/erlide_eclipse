@@ -326,8 +326,8 @@ get_source_from_external_modules(Mod, #open_context{externalModules=ExternalModu
     L = get_external_modules_files(ExternalModules, PathVars),
     %%?D(lists:flatten(io_lib:format(">> ~p~n", [L]))),
     ?D({get_external_modules_files, length(L)}),
-    Extra = get_erl_from_dirs(ExtraSources),
-    ?D({extra, Extra}),
+    _Extra = get_erl_from_dirs(ExtraSources),
+    ?D({extra, _Extra}),
     select_external(L, atom_to_list(Mod)).
 
 select_external([], _) ->

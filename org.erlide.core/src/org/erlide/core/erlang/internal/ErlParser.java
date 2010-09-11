@@ -231,17 +231,17 @@ public final class ErlParser {
 		final OtpErlangObject head = el.elementAt(5);
 		final OtpErlangTuple namePos = (OtpErlangTuple) el.elementAt(7);
 		ErlFunction f = null;
-		OtpErlangObject commentO = el.elementAt(8);
+		final OtpErlangObject commentO = el.elementAt(8);
 		final OtpErlangAtom exportedA = (OtpErlangAtom) el.elementAt(9);
-		boolean exported = "true".equals(exportedA.atomValue());
+		final boolean exported = "true".equals(exportedA.atomValue());
 		try {
 			String comment = Util.stringValue(commentO);
 			if (comment != null) {
 				comment = comment.replaceAll("\n", "<br/>");
 			}
-			f = new ErlFunction((ErlElement) parent, name.atomValue(), arity
-					.intValue(), Util.stringValue(head), comment, exported,
-					parameters);
+			f = new ErlFunction((ErlElement) parent, name.atomValue(),
+					arity.intValue(), Util.stringValue(head), comment,
+					exported, parameters);
 		} catch (final OtpErlangRangeException e) {
 			return f;
 		}
@@ -271,8 +271,8 @@ public final class ErlParser {
 		final OtpErlangList parameters = (OtpErlangList) clause.elementAt(3);
 		final OtpErlangObject head = clause.elementAt(4);
 		final OtpErlangTuple cnamePos = (OtpErlangTuple) clause.elementAt(5);
-		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i, Util
-				.stringValue(head), parameters);
+		final ErlFunctionClause cl = new ErlFunctionClause(f, "#" + i,
+				Util.stringValue(head), parameters);
 		try {
 			setNamePos(cl, cnamePos);
 		} catch (final OtpErlangRangeException e) {
@@ -321,15 +321,16 @@ public final class ErlParser {
 							.elementAt(0);
 					final OtpErlangList functionList = (OtpErlangList) t
 							.elementAt(1);
-					final ErlImport imp = new ErlImport(parent, importModule
-							.atomValue(), functionList);
+					final ErlImport imp = new ErlImport(parent,
+							importModule.atomValue(), functionList);
 					setPos(imp, pos);
 					return imp;
 				}
 			}
 		} else if ("export".equals(nameS)) {
 			final OtpErlangList functionList = (OtpErlangList) val;
-			final ErlExport ex = new ErlExport(parent, functionList);
+			final ErlExport ex = new ErlExport(parent, functionList,
+					Util.stringValue(extra));
 			setPos(ex, pos);
 			return ex;
 		} else if ("record".equals(nameS)) {
@@ -341,8 +342,7 @@ public final class ErlParser {
 					// TODO use above code rather than java string hacking to
 					// find record name!
 					final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-							.stringValue()
-							: null;
+							.stringValue() : null;
 					final OtpErlangList l = (OtpErlangList) recordTuple
 							.elementAt(1);
 					final ErlRecordDef r = new ErlRecordDef(parent, s, l);
@@ -356,8 +356,7 @@ public final class ErlParser {
 				// TODO use above code rather than java string hacking to find
 				// record name!
 				final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-						.stringValue()
-						: null;
+						.stringValue() : null;
 				final ErlRecordDef r = new ErlRecordDef(parent, s);
 				setPos(r, pos);
 				return r;
@@ -421,7 +420,15 @@ public final class ErlParser {
 		// }
 
 		// final ErlAttribute a = new ErlAttribute(parent, nameS, val1, null);
-		final ErlAttribute a = new ErlAttribute(parent, nameS, val, null);
+		OtpErlangObject o = val;
+		if (o instanceof OtpErlangAtom) {
+			final OtpErlangAtom u = (OtpErlangAtom) o;
+			if (u.atomValue().equals("u")) {
+				o = null;
+			}
+		}
+		final ErlAttribute a = new ErlAttribute(parent, nameS, o,
+				Util.stringValue(extra));
 		setPos(a, pos);
 		// a.setParseTree(val);
 		return a;
@@ -470,7 +477,7 @@ public final class ErlParser {
 			final int lastLine, final int ofs, final int len) {
 		e.setSourceRangeOffset(ofs);
 		e.setSourceRangeLength(len - 1);
-		// FIXME: why is the token 1 char too long?
+		// XXX: why is the token 1 char too long?
 		e.setLineStart(line);
 		e.setLineEnd(lastLine);
 	}

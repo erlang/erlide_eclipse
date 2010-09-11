@@ -16,7 +16,7 @@ public class ErlangSourceLookupParticipant extends
 			return null;
 		}
 		final ErlangStackFrame f = (ErlangStackFrame) object;
+		System.out.println("SOURCE for " + f.getName() + ": " + f.getModule());
 		return f.getModule() + ".erl";
 	}
-
 }

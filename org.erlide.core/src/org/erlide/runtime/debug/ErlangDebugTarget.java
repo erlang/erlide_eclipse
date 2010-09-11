@@ -136,11 +136,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
 		ErlLogger.debug("debug started " + pid);
-		fBackend.send(pid, OtpErlang.mkTuple(
-				new OtpErlangAtom("parent"), b.getEventPid()));
+		fBackend.send(pid,
+				OtpErlang.mkTuple(new OtpErlangAtom("parent"), b.getEventPid()));
 
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(
-				this);
+		DebugPlugin.getDefault().getBreakpointManager()
+				.addBreakpointListener(this);
 	}
 
 	@Override
@@ -203,8 +203,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		fTerminated = true;
 		fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
 
-		DebugPlugin.getDefault().getBreakpointManager()
-				.removeBreakpointListener(this);
+		DebugPlugin dbgPlugin = DebugPlugin.getDefault();
+		if (dbgPlugin != null) {
+			dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
+		}
 
 		fireTerminateEvent();
 	}
@@ -227,7 +229,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 	 * Install breakpoints that are already registered with the breakpoint
 	 * manager.
 	 */
-	private void installDeferredBreakpoints() {
+	public void installDeferredBreakpoints() {
 		final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
 				.getBreakpointManager().getBreakpoints(getModelIdentifier());
 		for (int i = 0; i < breakpoints.length; i++) {
@@ -344,8 +346,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 	void handleMetaEvent(final OtpErlangPid metaPid,
 			final OtpErlangTuple metaEvent) {
-		 ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid +
-		 ")");
+		ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid + ")");
 		final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
 		final String event = a.atomValue();
 		final int what = getMetaWhat(event);
@@ -359,9 +360,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 			final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
 					metaEvent, what);
 			final TraceChangedEventData data = new TraceChangedEventData(
-					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(), p
-							.getPid(),
-					new OtpErlangTuple[] { (OtpErlangTuple) o });
+					TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
+					p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
 			traceChangedEvent.setData(data);
 			fireEvent(traceChangedEvent);
 			// ErlLogger.info("Trace: " + s);
@@ -424,28 +424,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 						erlangProcess.setStackFrames(module, line,
 								erlStackFrames, bs);
 					}
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); 
+					// TODO redundant? we have this in int, status too
 				}
 			} else {
 				if (what == META_EXIT_AT) {
 					erlangProcess.removeStackFrames();
-					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); // TODO
-					// redundant?
-					// we
-					// have
-					// this
-					// in
-					// int,
-					// status
-					// too
+					erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE); 
+					// TODO redundant? we have this in int, status too
 				}
 			}
 		}
@@ -515,7 +501,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 				}
 			} else {
 				if (status.equals("idle")) {
-					erlangProcess.removeStackFrames();
+					// FIXME: this must be cleaned, but the status messages seem
+					// to come out of order...
+					// erlangProcess.removeStackFrames();
 				}
 				erlangProcess.setStatus(status);
 				erlangProcess.fireChangeEvent(DebugEvent.STATE
@@ -524,7 +512,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 		} else if (event.equals("new_process")) {
 			final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
 			final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-			final ErlangProcess erlangProcess = createErlangProcess(pid);
+			ErlangProcess erlangProcess = getErlangProcess(pid);
+			if (erlangProcess == null) {
+				erlangProcess = createErlangProcess(pid);
+			}
 			final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
 			final String status = statusA.atomValue();
 			erlangProcess.setStatus(status);
@@ -614,7 +605,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
 		@Override
 		protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-			ErlLogger.debug("@@@ " + msg);
+			// ErlLogger.debug("@@@ " + msg);
 			// TODO More events from erlide_dbg_mon...
 			final OtpErlangTuple t = (OtpErlangTuple) msg;
 			final OtpErlangObject el0 = t.elementAt(0);

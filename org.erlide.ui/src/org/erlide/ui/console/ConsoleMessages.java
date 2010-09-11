@@ -8,13 +8,12 @@
  * Contributors:
  * IBM - Initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.console.actions;
+package org.erlide.ui.console;
 
 import org.eclipse.osgi.util.NLS;
 
 public class ConsoleMessages extends NLS {
-	// FIXME
-	private static final String BUNDLE_NAME = "org.eclipse.debug.internal.ui.views.console.ConsoleMessages";//$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.erlide.ui.console.ConsoleMessages";//$NON-NLS-1$
 
 	public static String ConsoleRemoveAllTerminatedAction_0;
 	public static String ConsoleRemoveAllTerminatedAction_1;

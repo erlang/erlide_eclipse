@@ -1,7 +1,7 @@
 package org.erlide.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +33,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 import erlang.ErlideDialyze;
 
@@ -81,16 +82,21 @@ public class DialyzerUtils {
 			final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
 			final String filename = Util.stringValue(fileLine.elementAt(0));
 			final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-			final String relFilename = filename.substring(projectPathLength);
+			final String relFilename = filename.startsWith(projectPath
+					.toString()) ? filename.substring(projectPathLength)
+					: filename;
 			final IPath relPath = Path.fromPortableString(relFilename);
-			final IResource file = p.findMember(relPath);
+			IResource file = p.findMember(relPath);
+			if (file == null) {
+				file = p;
+			}
 			int line = 1;
 			try {
 				line = lineL.intValue();
 			} catch (final OtpErlangRangeException e) {
 				ErlLogger.error(e);
 			}
-			String s = ErlideDialyze.formatWarning(backend, t);
+			String s = ErlideDialyze.formatWarning(backend, t).trim();
 			final int j = s.indexOf(": ");
 			if (j != -1) {
 				s = s.substring(j + 1);
@@ -125,9 +131,9 @@ public class DialyzerUtils {
 			try {
 				final Backend backend = ErlangCore.getBackendManager()
 						.getBuildBackend(project);
-				final List<String> files = new ArrayList<String>();
-				final List<String> includeDirs = new ArrayList<String>();
-				final List<String> names = new ArrayList<String>();
+				final List<String> files = Lists.newArrayList();
+				final List<IPath> includeDirs = Lists.newArrayList();
+				final List<String> names = Lists.newArrayList();
 				collectFilesAndIncludeDirs(p, modules, project, files, names,
 						includeDirs, fromSource);
 				monitor.subTask("Dialyzing " + getFileNames(names));
@@ -161,9 +167,10 @@ public class DialyzerUtils {
 
 	public static void collectFilesAndIncludeDirs(final IErlProject ep,
 			final Map<IErlProject, Set<IErlModule>> modules,
-			final IProject project, final List<String> files,
-			final List<String> names, final List<String> includeDirs,
-			final boolean fromSource) throws CoreException {
+			final IProject project, final Collection<String> files,
+			final Collection<String> names,
+			final Collection<IPath> includeDirs, final boolean fromSource)
+			throws CoreException {
 		if (fromSource) {
 			for (final IErlModule m : modules.get(ep)) {
 				if (ErlideUtil.hasErlExtension(m.getName())) {

@@ -3,11 +3,15 @@ package org.erlide.ui.wizards;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+
+import com.google.common.collect.Lists;
 
 public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 		WizardPage {
@@ -63,11 +67,19 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 		}
 	}
 
-	public Collection<String> getSourceDirs() {
-		return sourceDirTreeGroup.getChecked();
+	public Collection<IPath> getSourceDirs() {
+		return toPaths(sourceDirTreeGroup.getChecked());
 	}
 
-	public Collection<String> getIncludeDirs() {
-		return includeDirTreeGroup.getChecked();
+	public Collection<IPath> getIncludeDirs() {
+		return toPaths(includeDirTreeGroup.getChecked());
+	}
+
+	private Collection<IPath> toPaths(Collection<String> checked) {
+		List<IPath> result = Lists.newArrayList();
+		for(String s: checked){
+			result.add(new Path(s));
+		}
+		return result;
 	}
 }
