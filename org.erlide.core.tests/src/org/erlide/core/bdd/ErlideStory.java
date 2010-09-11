@@ -24,10 +24,11 @@ public abstract class ErlideStory extends JUnitStory {
 		// are needed
 		StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(
 				".story");
-		Class storyClass = this.getClass();
+		Class<?> storyClass = this.getClass();
 		Properties viewProperties = new Properties();
 		viewProperties.put("decorateNonHtml", "true");
 		URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
+		@SuppressWarnings("unused")
 		StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder()
 				.withCodeLocation(codeLocation).withDefaultFormats()
 				.withViewResources(viewProperties).withFormats(Format.CONSOLE,

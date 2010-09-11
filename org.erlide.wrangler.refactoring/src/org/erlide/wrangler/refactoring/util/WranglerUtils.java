@@ -55,7 +55,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-@SuppressWarnings("restriction")
 public final class WranglerUtils {
 	private WranglerUtils() {
 	}

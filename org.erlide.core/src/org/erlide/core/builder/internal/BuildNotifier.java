@@ -34,9 +34,8 @@ public class BuildNotifier {
     protected int fWorkDone;
     protected int fTotalWork;
     protected String previousSubtask;
-    private final BuilderHelper helper;
 
-    public BuildNotifier(final IProgressMonitor monitor, final IProject project, BuilderHelper helper) {
+    public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
         fMonitor = monitor;
         fCancelling = false;
         fNewErrorCount = 0;
@@ -45,7 +44,6 @@ public class BuildNotifier {
         fFixedWarningCount = 0;
         fWorkDone = 0;
         fTotalWork = 1000000;
-        this.helper = helper;
     }
 
     /**

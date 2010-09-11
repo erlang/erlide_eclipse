@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.util;
 
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.internal.ErlFunction;
 import org.erlide.jinterface.util.ErlLogger;
 

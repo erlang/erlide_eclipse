@@ -211,7 +211,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
     private void initializeBuilder(final IProgressMonitor monitor)
             throws CoreException, BackendException {
         IProject currentProject = getProject();
-        notifier = new BuildNotifier(monitor, currentProject, helper);
+        notifier = new BuildNotifier(monitor, currentProject);
         notifier.begin();
     }
 
