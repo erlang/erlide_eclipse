@@ -133,6 +133,13 @@ public class RefactoringHandler extends AbstractHandler {
 			// run rename module refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renamemodule")) {
+			boolean answer = MessageDialog
+					.openQuestion(PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getShell(), "Warning!",
+							"The requested operation cannot be undone. Would you like to continue?");
+
+			if (!answer)
+				return null;
 
 			pages.add(new CostumworkFlowInputPage("Rename module",
 					"Please type the new module name!", "New module name:",
