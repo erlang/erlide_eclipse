@@ -12,7 +12,8 @@ Bundle-ClassPath: commons-collections-3.2.1.jar,
  hamcrest-all-1.2.jar,
  jbehave-core-3.0-sources.jar,
  jbehave-core-3.0.jar,
- mockito-all-1.6.jar
+ mockito-all-1.6.jar,
+ log4j-1.2.16.jar
 Export-Package: freemarker.cache,
  freemarker.core,
  freemarker.debug,
