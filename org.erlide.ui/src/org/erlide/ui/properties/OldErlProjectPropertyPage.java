@@ -17,11 +17,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.ComboFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.erlide.core.preferences.ProjectPreferencesConstants;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
@@ -29,81 +27,80 @@ import org.erlide.runtime.backend.RuntimeInfoManager;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
-public class OldErlProjectPropertyPage extends FieldEditorOverlayPage implements
-		IWorkbenchPropertyPage, IPropertyChangeListener {
+public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
 
-	/**
-	 * Constructor for ErlProjectPropertyPage.
-	 */
-	public OldErlProjectPropertyPage() {
-		super("Erlang project properties", GRID);
-		setPropertiesOnly();
-	}
+    /**
+     * Constructor for ErlProjectPropertyPage.
+     */
+    public OldErlProjectPropertyPage() {
+        super("Erlang project properties", GRID);
+        setPropertiesOnly();
+    }
 
-	@Override
-	public void propertyChange(final PropertyChangeEvent event) {
-		ErlLogger.debug("*+> " + event);
-	}
+    @Override
+    public void propertyChange(final PropertyChangeEvent event) {
+        ErlLogger.debug("*+> " + event);
+    }
 
-	@Override
-	protected void createFieldEditors() {
-		IProject prj = (IProject) getElement().getAdapter(IProject.class);
+    @Override
+    protected void createFieldEditors() {
+        IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
-		try {
-			prj.getFolder(new Path(".settings")).refreshLocal(
-					IResource.DEPTH_ONE, null);
-		} catch (CoreException e) {
-		}
+        try {
+            prj.getFolder(new Path(".settings")).refreshLocal(
+                    IResource.DEPTH_ONE, null);
+        } catch (CoreException e) {
+        }
 
-		Composite fieldEditorParent = getFieldEditorParent();
-		ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
-				ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-				fieldEditorParent, prj);
-		addField(out);
+        Composite fieldEditorParent = getFieldEditorParent();
+        ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
+                ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
+                fieldEditorParent, prj);
+        addField(out);
 
-		ProjectPathEditor src = new ProjectPathEditor(
-				ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
-				"Select directory:", fieldEditorParent, prj);
-		addField(src);
+        ProjectPathEditor src = new ProjectPathEditor(
+                ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
+                "Select directory:", fieldEditorParent, prj);
+        addField(src);
 
-		ProjectPathEditor inc = new ProjectPathEditor(
-				ProjectPreferencesConstants.INCLUDE_DIRS,
-				"Include directories:", "Select directory:", fieldEditorParent,
-				prj);
-		addField(inc);
+        ProjectPathEditor inc = new ProjectPathEditor(
+                ProjectPreferencesConstants.INCLUDE_DIRS,
+                "Include directories:", "Select directory:", fieldEditorParent,
+                prj);
+        addField(inc);
 
-		// IPreferenceStore ps = getPreferenceStore();
-		// OldErlangProjectProperties props = new
-		// OldErlangProjectProperties(prj);
-		// List<String> tstDirs = props.getTestDirs();
-		// String tstStr = PreferencesUtils.packList(tstDirs);
-		// ps.setValue(ProjectPreferencesConstants.TEST_DIRS, tstStr);
-		//
-		// ProjectPathEditor tst = new ProjectPathEditor(
-		// ProjectPreferencesConstants.TEST_DIRS,
-		// "Test source directories:", "Select directory:",
-		// fieldEditorParent, prj);
-		// tst.setEnabled(false, fieldEditorParent);
-		// addField(tst);
+        // IPreferenceStore ps = getPreferenceStore();
+        // OldErlangProjectProperties props = new
+        // OldErlangProjectProperties(prj);
+        // List<String> tstDirs = props.getTestDirs();
+        // String tstStr = PreferencesUtils.packList(tstDirs);
+        // ps.setValue(ProjectPreferencesConstants.TEST_DIRS, tstStr);
+        //
+        // ProjectPathEditor tst = new ProjectPathEditor(
+        // ProjectPreferencesConstants.TEST_DIRS,
+        // "Test source directories:", "Select directory:",
+        // fieldEditorParent, prj);
+        // tst.setEnabled(false, fieldEditorParent);
+        // addField(tst);
 
-		Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
-				.getRuntimes();
-		String[][] runtimes = new String[rs.size()][2];
-		Iterator<RuntimeInfo> it = rs.iterator();
-		for (int i = 0; i < rs.size(); i++) {
-			runtimes[i][0] = it.next().getVersion().asMinor().toString();
-			runtimes[i][1] = runtimes[i][0];
-		}
-		addField(new ComboFieldEditor(
-				ProjectPreferencesConstants.RUNTIME_VERSION,
-				"Runtime version:", runtimes, fieldEditorParent));
-	}
+        Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
+                .getRuntimes();
+        String[][] runtimes = new String[rs.size()][2];
+        Iterator<RuntimeInfo> it = rs.iterator();
+        for (int i = 0; i < rs.size(); i++) {
+            runtimes[i][0] = it.next().getVersion().asMinor().toString();
+            runtimes[i][1] = runtimes[i][0];
+        }
+        addField(new ComboFieldEditor(
+                ProjectPreferencesConstants.RUNTIME_VERSION,
+                "Runtime version:", runtimes, fieldEditorParent));
+    }
 
-	@Override
-	protected String getPageId() {
-		return "org.erlide.core";
-	}
+    @Override
+    protected String getPageId() {
+        return "org.erlide.core";
+    }
 
-	public void init(IWorkbench workbench) {
-	}
+    public void init(IWorkbench workbench) {
+    }
 }
