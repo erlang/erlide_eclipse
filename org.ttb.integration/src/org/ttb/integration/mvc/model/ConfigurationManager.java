@@ -13,12 +13,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.Activator;
-import org.ttb.integration.TtbBackend;
+import org.ttb.integration.TraceBackend;
 
 /**
- * Class containing helper methods for managing trace patterns configurations.
- * It loads loads and saves data in plugins directory (path to this directory is
- * obtained using {@link Plugin#getStateLocation()}).
+ * Class containing helper methods for managing nodes and trace patterns
+ * configurations. It loads loads and saves data in plugins directory (path to
+ * this directory is obtained using {@link Plugin#getStateLocation()}).
  * 
  * @author Piotr Dorobisz
  * 
@@ -26,21 +26,119 @@ import org.ttb.integration.TtbBackend;
 public final class ConfigurationManager {
 
     private static String TP_DIR = "trace_patterns";
+    private static String NODES_DIR = "nodes";
 
     private ConfigurationManager() {
     }
 
     /**
-     * Loads trace patterns from given configuration
+     * Loads trace patterns configuration.
      * 
      * @param configName
      *            configuration name
-     * @return
+     * @return loaded trace patterns
      */
-    public static TracePattern[] loadTracePatterns(String configName) {
+    public static TracePattern[] loadTPConfig(String configName) {
         ArrayList<TracePattern> patterns = new ArrayList<TracePattern>();
 
-        IPath location = Activator.getDefault().getStateLocation().append(TP_DIR).append(configName);
+        Object[] objects = loadConfiguration(configName, TP_DIR);
+        if (objects != null) {
+            for (Object object : objects) {
+                patterns.add((TracePattern) object);
+            }
+        }
+        return patterns.toArray(new TracePattern[patterns.size()]);
+    }
+
+    /**
+     * Loads nodes configuration.
+     * 
+     * @param configName
+     *            configuration name
+     * @return loaded nodes
+     */
+    public static TracedNode[] loadNodesConfig(String configName) {
+        ArrayList<TracedNode> nodes = new ArrayList<TracedNode>();
+
+        Object[] objects = loadConfiguration(configName, NODES_DIR);
+        if (objects != null) {
+            for (Object object : objects) {
+                nodes.add((TracedNode) object);
+            }
+        }
+        return nodes.toArray(new TracedNode[nodes.size()]);
+    }
+
+    /**
+     * Saves trace patterns configuration under given name. If configuration
+     * with this name does not exist it will be created. Otherwise it will be
+     * overwritten.
+     * 
+     * @param configName
+     * @return <code>true</code> if configuration was saved, <code>false</code>
+     *         otherwise
+     */
+    public static boolean saveTPConfig(String configName) {
+        return saveConfiguration(configName, TP_DIR, TraceBackend.getInstance().getTracePatternsArray());
+    }
+
+    /**
+     * Saves nodes configuration under given name. If configuration with this
+     * name does not exist it will be created. Otherwise it will be overwritten.
+     * 
+     * @param configName
+     * @return <code>true</code> if configuration was saved, <code>false</code>
+     *         otherwise
+     */
+    public static boolean saveNodesConfig(String configName) {
+        return saveConfiguration(configName, NODES_DIR, TraceBackend.getInstance().getTracedNodesArray());
+    }
+
+    /**
+     * Deletes trace pattern configuration.
+     * 
+     * @param configName
+     *            configuration name
+     * @return <code>true</code> if configuration was deleted,
+     *         <code>false</code> otherwise
+     */
+    public static boolean removeTPConfig(String configName) {
+        return removeConfiguration(configName, TP_DIR);
+    }
+
+    /**
+     * Deletes nodes configuration.
+     * 
+     * @param configName
+     *            configuration name
+     * @return <code>true</code> if configuration was deleted,
+     *         <code>false</code> otherwise
+     */
+    public static boolean removeNodesConfig(String configName) {
+        return removeConfiguration(configName, NODES_DIR);
+    }
+
+    /**
+     * Returns list of all available trace patterns configurations.
+     * 
+     * @return list of trace pattern configuration names
+     */
+    public static String[] getTPConfigs() {
+        return getConfigurationsList(TP_DIR);
+    }
+
+    /**
+     * Returns list of all available nodes configurations.
+     * 
+     * @return list of trace pattern configuration names
+     */
+    public static String[] getNodesConfig() {
+        return getConfigurationsList(NODES_DIR);
+    }
+
+    private static Object[] loadConfiguration(String configName, String dirName) {
+
+        IPath location = Activator.getDefault().getStateLocation().append(dirName).append(configName);
         File file = location.toFile();
 
         if (file.exists() && file.isFile()) {
@@ -48,10 +146,8 @@ public final class ConfigurationManager {
             try {
                 FileInputStream inputStream = new FileInputStream(file);
                 objectInputStream = new ObjectInputStream(inputStream);
-                Object[] objects = (Object[]) objectInputStream.readObject();
-                for (Object object : objects) {
-                    patterns.add((TracePattern) object);
-                }
+                return (Object[]) objectInputStream.readObject();
+
             } catch (Exception e) {
                 ErlLogger.error(e);
             } finally {
@@ -64,21 +160,13 @@ public final class ConfigurationManager {
                 }
             }
         }
-        return patterns.toArray(new TracePattern[patterns.size()]);
+        return null;
     }
 
-    /**
-     * Saves trace patterns in configuration with given name. If configuration
-     * with this name does not exist it will be created. Otherwise it will be
-     * overwritten.
-     * 
-     * @param configName
-     * @return
-     */
-    public static boolean saveTracePatterns(String configName) {
+    private static boolean saveConfiguration(String configName, String dirName, Object configuration) {
         ObjectOutputStream objectOutputStream = null;
         try {
-            IPath location = Activator.getDefault().getStateLocation().append(TP_DIR);
+            IPath location = Activator.getDefault().getStateLocation().append(dirName);
             File dir = location.toFile();
 
             if (!dir.exists() && !dir.mkdir()) {
@@ -87,7 +175,7 @@ public final class ConfigurationManager {
 
             FileOutputStream out = new FileOutputStream(location.append(configName).toFile());
             objectOutputStream = new ObjectOutputStream(out);
-            objectOutputStream.writeObject(TtbBackend.getInstance().getTracePatternsArray());
+            objectOutputStream.writeObject(configuration);
             return true;
         } catch (Exception e) {
             ErlLogger.error(e);
@@ -103,15 +191,8 @@ public final class ConfigurationManager {
         return false;
     }
 
-    /**
-     * Deletes trace pattern configuration.
-     * 
-     * @param configName
-     *            configuration name
-     * @return
-     */
-    public static boolean removeTracingPatterns(String configName) {
-        IPath location = Activator.getDefault().getStateLocation().append(TP_DIR).append(configName);
+    private static boolean removeConfiguration(String configName, String dirName) {
+        IPath location = Activator.getDefault().getStateLocation().append(dirName).append(configName);
         File file = location.toFile();
         if (file.exists() && file.isFile()) {
             return file.delete();
@@ -119,15 +200,10 @@ public final class ConfigurationManager {
             return false;
     }
 
-    /**
-     * Returns list of all available trace patterns configurations.
-     * 
-     * @return list of trace pattern configuration names
-     */
-    public static String[] getTracePatternsConfigurations() {
+    private static String[] getConfigurationsList(String dirName) {
         ArrayList<String> configNames = new ArrayList<String>();
 
-        IPath location = Activator.getDefault().getStateLocation().append(TP_DIR);
+        IPath location = Activator.getDefault().getStateLocation().append(dirName);
         File dir = location.toFile();
         if (dir.exists()) {
             for (File file : dir.listFiles()) {

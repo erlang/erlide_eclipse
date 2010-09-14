@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.internal.ErlFunction;
-import org.ttb.integration.TtbBackend;
+import org.ttb.integration.TraceBackend;
 import org.ttb.integration.mvc.model.TracePattern;
 
 public class CreateTracePatternHandler extends AbstractHandler {
@@ -27,7 +27,7 @@ public class CreateTracePatternHandler extends AbstractHandler {
                 tracePattern.setArity(function.getArity());
                 tracePattern.setLocal(true);
                 tracePattern.setEnabled(true);
-                TtbBackend.getInstance().addTracePattern(tracePattern);
+                TraceBackend.getInstance().addTracePattern(tracePattern);
             }
         }
         return null;

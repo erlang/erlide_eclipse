@@ -4,14 +4,14 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.ttb.integration.ProcessFlag;
-import org.ttb.integration.mvc.model.ProcessOnList;
+import org.ttb.integration.mvc.model.TracedProcess;
 import org.ttb.integration.mvc.view.ProcessColumn;
 
 /**
  * Cell modifier for processes table.
- *
+ * 
  * @author Piotr Dorobisz
- *
+ * 
  */
 public class ProcessCellModifier implements ICellModifier {
 
@@ -22,19 +22,21 @@ public class ProcessCellModifier implements ICellModifier {
     }
 
     public boolean canModify(Object element, String property) {
+        // when cell from processes column was clicked
         try {
             ProcessColumn column = ProcessColumn.valueOf(property);
-            // only column with checkboxes can be modified
+            // only column with checkbox can be modified
             if (!ProcessColumn.SELECTED.equals(column))
                 return false;
         } catch (Exception e) {
         }
 
+        // when cell from flag column was clicked
         return true;
     }
 
     public Object getValue(Object element, String property) {
-        ProcessOnList process = (ProcessOnList) element;
+        TracedProcess process = (TracedProcess) element;
 
         try {
             switch (ProcessColumn.valueOf(property)) {
@@ -42,8 +44,6 @@ public class ProcessCellModifier implements ICellModifier {
                 return process.getInitialCall();
             case NAME:
                 return process.getName();
-                // case PID:
-                // return process.getPid().toString();
             case SELECTED:
                 return process.isSelected();
             }
@@ -53,8 +53,9 @@ public class ProcessCellModifier implements ICellModifier {
     }
 
     public void modify(Object element, String property, Object value) {
-        ProcessOnList process = (ProcessOnList) ((TableItem) element).getData();
+        TracedProcess process = (TracedProcess) ((TableItem) element).getData();
 
+        // processes column
         try {
             if (ProcessColumn.SELECTED.equals(ProcessColumn.valueOf(property))) {
                 process.setSelected((Boolean) value);
@@ -63,6 +64,8 @@ public class ProcessCellModifier implements ICellModifier {
             return;
         } catch (Exception e) {
         }
+
+        // flag column
         ProcessFlag flag = ProcessFlag.valueOf(property);
         if ((Boolean) value)
             process.setFlag(flag);

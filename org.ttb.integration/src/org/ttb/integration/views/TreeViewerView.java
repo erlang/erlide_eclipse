@@ -24,11 +24,12 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 import org.ttb.integration.TracingStatus;
-import org.ttb.integration.TtbBackend;
+import org.ttb.integration.TraceBackend;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
@@ -49,12 +50,12 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     private BusyDialog busyDialog;
 
     public TreeViewerView() {
-        TtbBackend.getInstance().addListener(this);
+        TraceBackend.getInstance().addListener(this);
     }
 
     @Override
     public void dispose() {
-        TtbBackend.getInstance().removeListener(this);
+        TraceBackend.getInstance().removeListener(this);
         super.dispose();
     }
 
@@ -87,7 +88,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                 dialog.setText("Load trace data...");
                 final String selected = dialog.open();
                 if (selected != null) {
-                    TtbBackend.getInstance().loadData(selected);
+                    TraceBackend.getInstance().loadData(selected);
                     Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                     busyDialog = new BusyDialog(shell, "Loading trace results...");
                     busyDialog.start();
@@ -209,5 +210,17 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                     busyDialog.finish();
             }
         });
+    }
+
+    public void addNode(TracedNode tracedNode) {
+    }
+
+    public void removeNode(TracedNode tracedNode) {
+    }
+
+    public void updateNode(TracedNode tracedNode) {
+    }
+
+    public void loadNodes() {
     }
 }

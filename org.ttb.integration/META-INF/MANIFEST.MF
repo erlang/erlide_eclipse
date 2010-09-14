@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlang tracing for Erlide (java classes)
 Bundle-SymbolicName: org.ttb.integration;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.ttb.integration.Activator
-Require-Bundle: org.ttb.integration.erlang;bundle-version="0.1.0",
+Require-Bundle: org.ttb.integration.erlang;bundle-version="0.2.0",
  org.ttb.integration.ttbe;bundle-version="0.1.0",
  org.eclipse.core.runtime,
  org.eclipse.ui,

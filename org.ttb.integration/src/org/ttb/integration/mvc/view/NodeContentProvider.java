@@ -1,24 +1,24 @@
-package org.ttb.integration.mvc.controller;
+package org.ttb.integration.mvc.view;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.ttb.integration.TraceBackend;
 
 /**
- * Content provider for trace patterns table.
+ * Content provider for nodes table.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class TracePatternContentProvider implements IStructuredContentProvider {
+public class NodeContentProvider implements IStructuredContentProvider {
 
     TraceBackend backend;
 
-    public TracePatternContentProvider() {
+    public NodeContentProvider() {
     }
 
     public Object[] getElements(Object inputElement) {
-        return backend.getTracePatternsArray();
+        return backend.getTracedNodesArray();
     }
 
     public void dispose() {

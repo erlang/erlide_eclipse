@@ -6,14 +6,15 @@ import org.eclipse.swt.graphics.Image;
 import org.ttb.integration.Activator;
 import org.ttb.integration.Images;
 import org.ttb.integration.ProcessFlag;
-import org.ttb.integration.mvc.model.ProcessOnList;
+import org.ttb.integration.mvc.model.TracedProcess;
 
 public class ProcessLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     public Image getColumnImage(Object element, int columnIndex) {
-        ProcessOnList process = (ProcessOnList) element;
+        TracedProcess process = (TracedProcess) element;
 
         if (ProcessColumn.SELECTED.ordinal() == columnIndex) {
+            // process columns
             if (process.isSelected())
                 return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
             else
@@ -34,16 +35,15 @@ public class ProcessLabelProvider extends LabelProvider implements ITableLabelPr
 
     public String getColumnText(Object element, int columnIndex) {
 
-        ProcessOnList process = (ProcessOnList) element;
+        TracedProcess process = (TracedProcess) element;
         if (columnIndex < ProcessColumn.values().length) {
             switch (ProcessColumn.getByIndex(columnIndex)) {
             case SELECTED:
                 break;
             case NAME:
                 return process.getName();
-                // case PID:
-                // return process.getPid().node() + ": " +
-                // process.getPid().serial();
+            case NODE:
+                return process.getNode();
             case INITIAL_CALL:
                 return process.getInitialCall();
             }

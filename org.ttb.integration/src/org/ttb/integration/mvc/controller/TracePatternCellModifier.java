@@ -2,7 +2,7 @@ package org.ttb.integration.mvc.controller;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
-import org.ttb.integration.TtbBackend;
+import org.ttb.integration.TraceBackend;
 import org.ttb.integration.mvc.model.MatchSpec;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.view.TracePatternColumn;
@@ -74,6 +74,6 @@ public class TracePatternCellModifier implements ICellModifier {
             break;
         default:
         }
-        TtbBackend.getInstance().updateTracePattern(pattern);
+        TraceBackend.getInstance().updateTracePattern(pattern);
     }
 }

@@ -9,22 +9,24 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Process on list of processes.
+ * Traced process.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class ProcessOnList {
+public class TracedProcess {
 
     // fields in tuple describing process
     private static final int PID = 0;
     private static final int NAME = 1;
     private static final int INITIAL_CALL = 2;
+    private static final int NODE_NAME = 3;
 
     private boolean selected;
     private final String name;
     private final OtpErlangPid pid;
     private final String initialCall;
+    private final String node;
     private final Set<ProcessFlag> flags = new HashSet<ProcessFlag>();
 
     /**
@@ -34,10 +36,11 @@ public class ProcessOnList {
      * @param tuple
      *            tuple describing process
      */
-    public ProcessOnList(OtpErlangTuple tuple) {
+    public TracedProcess(OtpErlangTuple tuple) {
         this.name = tuple.elementAt(NAME).toString();
         this.pid = (OtpErlangPid) tuple.elementAt(PID);
         this.initialCall = tuple.elementAt(INITIAL_CALL).toString();
+        this.node = tuple.elementAt(NODE_NAME).toString();
     }
 
     public boolean isSelected() {
@@ -58,6 +61,10 @@ public class ProcessOnList {
 
     public String getInitialCall() {
         return initialCall;
+    }
+
+    public String getNode() {
+        return node;
     }
 
     public void setFlag(ProcessFlag flag) {

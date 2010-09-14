@@ -36,6 +36,35 @@ public interface ITraceNodeObserver {
     public void updatePattern(TracePattern tracePattern);
 
     /**
+     * This method is invoked after adding new node for tracing.
+     * 
+     * @param tracedNode
+     *            new node
+     */
+    public void addNode(TracedNode tracedNode);
+
+    /**
+     * This method is invoked after removing node from tracing.
+     * 
+     * @param tracedNode
+     *            removed node
+     */
+    public void removeNode(TracedNode tracedNode);
+
+    /**
+     * This method is invoked after updating traced node.
+     * 
+     * @param tracedNode
+     *            updated node
+     */
+    public void updateNode(TracedNode tracedNode);
+
+    /**
+     * This method is invoked after loading new set of nodes.
+     */
+    public void loadNodes();
+
+    /**
      * This method is invoked after starting tracing.
      */
     public void startTracing();

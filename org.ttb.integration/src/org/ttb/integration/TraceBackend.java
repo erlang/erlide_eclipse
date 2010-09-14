@@ -28,8 +28,9 @@ import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
-import org.ttb.integration.mvc.model.ProcessOnList;
 import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.model.TracedNode;
+import org.ttb.integration.mvc.model.TracedProcess;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 
@@ -41,15 +42,14 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Singleton class used for communication with Erlang nodes for tracing
- * purposes.
+ * Singleton class used for communication with trace node.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class TtbBackend {
+public class TraceBackend {
 
-    private static final TtbBackend INSTANCE = new TtbBackend();
+    private static final TraceBackend INSTANCE = new TraceBackend();
     private static final String NODE_NAME = "tracing";
     private static final String EVENT_NAME = "trace_event";
     private static final String FUN_STOP = "stop";
@@ -60,9 +60,10 @@ public class TtbBackend {
     private static final String FUN_LOAD = "load";
 
     private final Set<TracePattern> tracePatterns = new LinkedHashSet<TracePattern>();
+    private final Set<TracedNode> tracedNodes = new LinkedHashSet<TracedNode>();
     private final List<ITraceNodeObserver> listeners = new ArrayList<ITraceNodeObserver>();
     private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
-    private ProcessOnList[] processes;
+    private TracedProcess[] processes;
     private ProcessMode processMode;
     private Backend tracerBackend;
     private boolean tracing;
@@ -71,10 +72,10 @@ public class TtbBackend {
     private List<String> activatedNodes;
     private Object errorObject;
 
-    private TtbBackend() {
+    private TraceBackend() {
     }
 
-    public static TtbBackend getInstance() {
+    public static TraceBackend getInstance() {
         return INSTANCE;
     }
 
@@ -143,26 +144,24 @@ public class TtbBackend {
     /**
      * Starts tracing given nodes.
      * 
-     * @param backends
-     *            nodes for tracing
-     * 
      * @return <code>true</code> if successful, <code>false</code> otherwise
      */
-    public TracingStatus start(List<Backend> backends) {
+    public TracingStatus start() {
         TracingStatus status = TracingStatus.OK;
         if (!tracing) {
             synchronized (this) {
                 if (!tracing) {
                     try {
                         tracing = true;
-                        createTracingBackend();
+                        getBackend();
                         handler = new TraceEventHandler();
                         tracerBackend.getEventDaemon().addHandler(handler);
 
                         // list of nodes being traced
                         List<OtpErlangObject> erlangObjects = new ArrayList<OtpErlangObject>();
-                        for (Backend backend : backends) {
-                            erlangObjects.add(new OtpErlangAtom(backend.getPeer()));
+                        for (TracedNode tracedNode : tracedNodes) {
+                            if (tracedNode.isEnabled())
+                                erlangObjects.add(new OtpErlangAtom(tracedNode.getNodeName()));
                         }
                         OtpErlangList nodes = new OtpErlangList(erlangObjects.toArray(new OtpErlangObject[erlangObjects.size()]));
 
@@ -241,7 +240,7 @@ public class TtbBackend {
         if (ProcessMode.BY_PID.equals(processMode)) {
             // setting flags only for selected processes
             if (processes != null) {
-                for (ProcessOnList process : processes) {
+                for (TracedProcess process : processes) {
                     if (process.isSelected()) {
                         tracerBackend.call(Constants.TTB_MODULE, FUN_P, "xx", process.getPid(), createProcessFlagsArray(process.getFlags()));
                     }
@@ -280,7 +279,7 @@ public class TtbBackend {
                     try {
                         loading = true;
                         handler = new TraceEventHandler();
-                        createTracingBackend();
+                        getBackend();
                         tracerBackend.getEventDaemon().addHandler(handler);
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
@@ -293,10 +292,11 @@ public class TtbBackend {
         }
     }
 
-    private void createTracingBackend() {
+    public Backend getBackend() {
         if (tracerBackend == null) {
             tracerBackend = createBackend(NODE_NAME);
         }
+        return tracerBackend;
     }
 
     /**
@@ -386,6 +386,56 @@ public class TtbBackend {
         }
     }
 
+    public void loadTracedNodes(TracedNode[] nodes) {
+        tracedNodes.clear();
+        tracedNodes.addAll(Arrays.asList(nodes));
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.loadNodes();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
+    }
+
+    public Object[] getTracedNodesArray() {
+        return tracedNodes.toArray();
+    }
+
+    public synchronized void addTracedNode(TracedNode tracedNode) {
+        if (!tracedNodes.contains(tracedNode)) {
+            tracedNodes.add(tracedNode);
+            for (ITraceNodeObserver listener : listeners) {
+                try {
+                    listener.addNode(tracedNode);
+                } catch (Exception e) {
+                    ErlLogger.error(e);
+                }
+            }
+        }
+    }
+
+    public synchronized void removeTracedNode(TracedNode tracedNode) {
+        tracedNodes.remove(tracedNode);
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.removeNode(tracedNode);
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
+    }
+
+    public synchronized void updateTracedNode(TracedNode tracedNode) {
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.updateNode(tracedNode);
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
+    }
+
     public void addProcessFlag(ProcessFlag flag) {
         processFlags.add(flag);
     }
@@ -406,8 +456,12 @@ public class TtbBackend {
         this.processMode = processMode;
     }
 
-    public void setProcesses(ProcessOnList[] processes) {
+    public void setProcesses(TracedProcess[] processes) {
         this.processes = processes;
+    }
+
+    public TracedProcess[] getProcesses() {
+        return processes;
     }
 
     public List<String> getActivatedNodes() {

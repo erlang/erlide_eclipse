@@ -1,7 +1,16 @@
 package org.ttb.integration.mvc.view;
 
+/**
+ * Enum describing columns in processes table.
+ * 
+ * @author Piotr Dorobisz
+ * 
+ */
 public enum ProcessColumn {
-    SELECTED("Selected", 60), /* PID("Pid", 60), */INITIAL_CALL("Initial call", 130), NAME("Process name", 150);
+    SELECTED("Selected", 60), //
+    INITIAL_CALL("Initial call", 130), //
+    NAME("Process name", 150), //
+    NODE("Process node", 150);
 
     private final String name;
     private final int width;
