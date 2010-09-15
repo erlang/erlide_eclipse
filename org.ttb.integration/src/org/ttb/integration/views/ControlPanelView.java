@@ -823,6 +823,14 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No nodes were activated for tracing", null);
             StatusManager.getManager().handle(status, StatusManager.SHOW);
             break;
+        case NOT_ALL_NODES_ACTIVATED:
+            StringBuilder builder = new StringBuilder("Following nodes were not activated for tracing:\n");
+            for (String node : TraceBackend.getInstance().getNotActivatedNodes()) {
+                builder.append(node).append("\n");
+            }
+            status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, builder.toString(), null);
+            StatusManager.getManager().handle(status, StatusManager.SHOW);
+            break;
         case OK:
             break;
         }

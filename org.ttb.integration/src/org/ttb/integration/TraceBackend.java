@@ -70,6 +70,7 @@ public class TraceBackend {
     private boolean loading;
     private TraceEventHandler handler;
     private List<String> activatedNodes;
+    private Set<String> notActivatedNodes;
     private Object errorObject;
 
     private TraceBackend() {
@@ -159,16 +160,19 @@ public class TraceBackend {
 
                         // list of nodes being traced
                         List<OtpErlangObject> erlangObjects = new ArrayList<OtpErlangObject>();
+                        notActivatedNodes = new HashSet<String>();
                         for (TracedNode tracedNode : tracedNodes) {
-                            if (tracedNode.isEnabled())
+                            if (tracedNode.isEnabled()) {
                                 erlangObjects.add(new OtpErlangAtom(tracedNode.getNodeName()));
+                                notActivatedNodes.add(tracedNode.getNodeName());
+                            }
                         }
                         OtpErlangList nodes = new OtpErlangList(erlangObjects.toArray(new OtpErlangObject[erlangObjects.size()]));
 
                         OtpErlangObject callResult = tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xs", nodes, Constants.OUTPUT_FILE);
                         status = processResult(callResult);
 
-                        if (TracingStatus.OK.equals(status)) {
+                        if (TracingStatus.OK.equals(status) || TracingStatus.NOT_ALL_NODES_ACTIVATED.equals(status)) {
                             setProcessFlags();
                             setFunctionTracePatterns();
                             for (ITraceNodeObserver listener : listeners) {
@@ -203,10 +207,14 @@ public class TraceBackend {
             OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
             activatedNodes = new ArrayList<String>();
             for (OtpErlangObject nodeName : nodeNames.elements()) {
-                activatedNodes.add(nodeName.toString());
+                String nodeNameString = ((OtpErlangAtom) nodeName).atomValue();
+                activatedNodes.add(nodeNameString);
+                notActivatedNodes.remove(nodeNameString);
             }
             if (activatedNodes.size() == 0)
                 return TracingStatus.NO_ACTIVATED_NODES;
+            else if (notActivatedNodes.size() != 0)
+                return TracingStatus.NOT_ALL_NODES_ACTIVATED;
             else
                 return TracingStatus.OK;
         }
@@ -474,6 +482,10 @@ public class TraceBackend {
 
     public List<String> getActivatedNodes() {
         return activatedNodes;
+    }
+
+    public Set<String> getNotActivatedNodes() {
+        return notActivatedNodes;
     }
 
     /**

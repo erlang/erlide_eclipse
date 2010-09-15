@@ -25,6 +25,11 @@ public enum TracingStatus {
     NO_ACTIVATED_NODES,
 
     /**
+     * some nodes were not activated for tracing
+     */
+    NOT_ALL_NODES_ACTIVATED,
+
+    /**
      * action finished successfully
      */
     OK;
