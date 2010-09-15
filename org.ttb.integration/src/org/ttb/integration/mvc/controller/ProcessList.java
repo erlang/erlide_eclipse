@@ -1,11 +1,14 @@
 package org.ttb.integration.mvc.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.TraceBackend;
-import org.ttb.integration.mvc.model.TracedProcess;
 import org.ttb.integration.mvc.model.TracedNode;
+import org.ttb.integration.mvc.model.TracedProcess;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -33,13 +36,16 @@ public class ProcessList {
     public static TracedProcess[] getProcsOnTracedNodes() {
         try {
             Backend backend = TraceBackend.getInstance().getBackend();
-            Object[] tracedNodes = TraceBackend.getInstance().getTracedNodesArray();
-            OtpErlangAtom[] nodeAtoms = new OtpErlangAtom[tracedNodes.length];
+            List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
 
-            for (int i = 0; i < tracedNodes.length; i++) {
-                nodeAtoms[i] = new OtpErlangAtom(((TracedNode) tracedNodes[i]).getNodeName());
+            for (Object o : TraceBackend.getInstance().getTracedNodesArray()) {
+                TracedNode tracedNode = (TracedNode) o;
+                if (tracedNode.isEnabled()) {
+                    nodeAtoms.add(new OtpErlangAtom(tracedNode.getNodeName()));
+                }
             }
-            OtpErlangList nodesList = new OtpErlangList(nodeAtoms);
+
+            OtpErlangList nodesList = new OtpErlangList(nodeAtoms.toArray(new OtpErlangAtom[nodeAtoms.size()]));
             OtpErlangList procList = (OtpErlangList) backend.call(MODULE_NAME, FUNCTION_NAME, "x", nodesList);
             TracedProcess[] processes = new TracedProcess[procList.arity()];
 
