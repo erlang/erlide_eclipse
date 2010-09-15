@@ -8,9 +8,22 @@
 -export([start/2, stop/0,  load/1, load_data/1, str2ms/1]).
 
 
-start(Nodes, FileName)->
+start(NodesAndCookies, FileName)->
 	ttbe:stop(),
+	Nodes = set_cookies(NodesAndCookies),
 	ttbe:tracer(Nodes, [{file,{local, FileName}}]).
+
+set_cookies(NodesAndCookies) ->
+	F = fun({Node, Cookie}) ->
+				case Cookie of
+					'' ->
+						ok;
+					_ ->
+						erlang:set_cookie(Node, Cookie)
+				end,
+				Node
+		end,
+	lists:map(F, NodesAndCookies).
 
 stop() ->
 	{stopped, Dir} = ttbe:stop([return]),
@@ -23,7 +36,6 @@ load_data(Path) ->
 	case ttbe:format(Path, [{handler, {create_handler(), initial_state}}]) of
 		ok -> erlide_jrpc:event(trace_event, stop_tracing);
 		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
-%% 		A -> erlide_jrpc:event(trace_event, A)
 	end.
 
 create_handler() ->

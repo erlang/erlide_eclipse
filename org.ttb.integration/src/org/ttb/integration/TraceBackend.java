@@ -163,7 +163,10 @@ public class TraceBackend {
                         notActivatedNodes = new HashSet<String>();
                         for (TracedNode tracedNode : tracedNodes) {
                             if (tracedNode.isEnabled()) {
-                                erlangObjects.add(new OtpErlangAtom(tracedNode.getNodeName()));
+                                OtpErlangAtom name = new OtpErlangAtom(tracedNode.getNodeName());
+                                OtpErlangAtom cookie = new OtpErlangAtom(tracedNode.getCookie());
+
+                                erlangObjects.add(new OtpErlangTuple(new OtpErlangObject[] { name, cookie }));
                                 notActivatedNodes.add(tracedNode.getNodeName());
                             }
                         }
