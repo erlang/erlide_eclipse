@@ -36,7 +36,11 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -195,12 +199,12 @@ public class ErlangPlugin extends Plugin {
                     .getBundleGroupProviders();
             if (providers != null) {
                 for (IBundleGroupProvider provider : providers) {
-                    ErlLogger.debug("plugin version: provider = %s", provider
+                    ErlLogger.debug("***: provider = %s", provider
                             .getName());
                     IBundleGroup[] bundleGroups = provider.getBundleGroups();
                     for (IBundleGroup group : bundleGroups) {
-                        ErlLogger.debug("plugin version: bundle group = %s %s",
-                                group.getIdentifier(), group.getName());
+                        ErlLogger.debug("   : bundle group = %s [%s]",
+                                group.getName(), group.getIdentifier());
                         if (group.getIdentifier().equals("org.erlide")) {
                             version = group.getVersion();
                             break;
@@ -211,10 +215,11 @@ public class ErlangPlugin extends Plugin {
                     }
                 }
             } else {
-                ErlLogger.debug("plugin version: no providers");
+                ErlLogger.debug("***: no bundle group providers");
             }
         } catch (Throwable e) {
             // ignore
+            e.printStackTrace();
         }
         Version coreVersion = getBundle().getVersion();
         version = version == null ? "?" : version;
