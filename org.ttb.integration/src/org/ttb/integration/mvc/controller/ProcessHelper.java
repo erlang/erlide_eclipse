@@ -20,12 +20,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Piotr Dorobisz
  * 
  */
-public class ProcessList {
+public class ProcessHelper {
 
     private static final String MODULE_NAME = "proc_list";
     private static final String FUNCTION_NAME = "list_all_processes";
 
-    private ProcessList() {
+    private ProcessHelper() {
     }
 
     /**
@@ -35,7 +35,7 @@ public class ProcessList {
      */
     public static TracedProcess[] getProcsOnTracedNodes() {
         try {
-            Backend backend = TraceBackend.getInstance().getBackend();
+            Backend backend = TraceBackend.getInstance().getBackend(true);
             List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
 
             for (Object o : TraceBackend.getInstance().getTracedNodesArray()) {

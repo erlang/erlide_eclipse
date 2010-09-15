@@ -5,6 +5,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.ttb.integration.Activator;
 import org.ttb.integration.Images;
+import org.ttb.integration.mvc.controller.NodeHelper;
 import org.ttb.integration.mvc.model.TracedNode;
 
 /**
@@ -36,6 +37,8 @@ public class NodeLabelProvider extends LabelProvider implements ITableLabelProvi
             break;
         case NODE_NAME:
             return node.getNodeName();
+        case TYPE:
+            return NodeHelper.isExternal(node.getNodeName()) ? "external" : "erlide";
         }
         return "";
     }

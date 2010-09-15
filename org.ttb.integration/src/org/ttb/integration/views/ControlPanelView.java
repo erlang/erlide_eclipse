@@ -43,6 +43,7 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.Activator;
 import org.ttb.integration.ProcessFlag;
@@ -50,9 +51,10 @@ import org.ttb.integration.ProcessMode;
 import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
 import org.ttb.integration.mvc.controller.NodeCellModifier;
+import org.ttb.integration.mvc.controller.NodeHelper;
 import org.ttb.integration.mvc.controller.ProcessCellModifier;
 import org.ttb.integration.mvc.controller.ProcessContentProvider;
-import org.ttb.integration.mvc.controller.ProcessList;
+import org.ttb.integration.mvc.controller.ProcessHelper;
 import org.ttb.integration.mvc.controller.TracePatternCellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
 import org.ttb.integration.mvc.model.ConfigurationManager;
@@ -396,7 +398,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         try {
             ps.busyCursorWhile(new IRunnableWithProgress() {
                 public void run(IProgressMonitor pm) {
-                    TracedProcess[] processesList = ProcessList.getProcsOnTracedNodes();
+                    TracedProcess[] processesList = ProcessHelper.getProcsOnTracedNodes();
                     TraceBackend.getInstance().setProcesses(processesList);
                 }
             });
@@ -636,6 +638,22 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 TracedNode tracedNode = (TracedNode) ((IStructuredSelection) nodesTableViewer.getSelection()).getFirstElement();
                 if (tracedNode != null) {
                     TraceBackend.getInstance().removeTracedNode(tracedNode);
+                }
+            }
+        });
+
+        // "Add erlide nodes" button
+        button = new Button(container, SWT.PUSH | SWT.CENTER);
+        button.setText("Add erlide nodes");
+        button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+        button.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                for (Backend backend : NodeHelper.getBackends(true)) {
+                    TracedNode node = new TracedNode();
+                    node.setNodeName(backend.getPeer());
+                    TraceBackend.getInstance().addTracedNode(node);
                 }
             }
         });

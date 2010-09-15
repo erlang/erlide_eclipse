@@ -153,7 +153,7 @@ public class TraceBackend {
                 if (!tracing) {
                     try {
                         tracing = true;
-                        getBackend();
+                        getBackend(true);
                         handler = new TraceEventHandler();
                         tracerBackend.getEventDaemon().addHandler(handler);
 
@@ -279,7 +279,7 @@ public class TraceBackend {
                     try {
                         loading = true;
                         handler = new TraceEventHandler();
-                        getBackend();
+                        getBackend(true);
                         tracerBackend.getEventDaemon().addHandler(handler);
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
@@ -292,8 +292,16 @@ public class TraceBackend {
         }
     }
 
-    public Backend getBackend() {
-        if (tracerBackend == null) {
+    /**
+     * Returns backend used for tracing. If this backend does not exist it can
+     * be created.
+     * 
+     * @param create
+     *            if backend should be created when it does not exist
+     * @return backend
+     */
+    public Backend getBackend(boolean create) {
+        if (tracerBackend == null && create) {
             tracerBackend = createBackend(NODE_NAME);
         }
         return tracerBackend;

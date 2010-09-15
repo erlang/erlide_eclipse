@@ -8,7 +8,7 @@ package org.ttb.integration.mvc.view;
  */
 public enum NodeColumn {
 
-    ENABLED("Enabled", 60), NODE_NAME("Name", 150), COOKIE("Cookie", 150);
+    ENABLED("Enabled", 60), NODE_NAME("Name", 150), TYPE("Type", 70), COOKIE("Cookie", 150);
 
     private final String name;
     private final int width;
