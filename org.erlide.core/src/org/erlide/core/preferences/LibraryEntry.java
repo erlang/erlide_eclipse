@@ -16,12 +16,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.core.erlang.IErlProject;
 
 public class LibraryEntry extends PathEntry {
     private List<SourceEntry> sources = new ArrayList<SourceEntry>();
     private List<IPath> includes = new ArrayList<IPath>();
     private final IPath output;
     private List<PathEntry> libraries = new ArrayList<PathEntry>();
+
+    public LibraryEntry(IErlProject project) {
+        // FIXME
+        this(null, null, null, null);
+    }
 
     public LibraryEntry(final List<SourceEntry> sources,
             final List<IPath> includes, final IPath output,

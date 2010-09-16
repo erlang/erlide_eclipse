@@ -15,16 +15,13 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Sets;
 
-/**
- * Project properties.
- *
- */
 public final class ErlangProjectProperties {
 
     private RuntimeVersion requiredRuntimeVersion;
+    private final Set<SourceEntry> codePathEntries = Sets.newHashSet();
 
     private final Set<SourceEntry> sources = Sets.newHashSet();
-    private Set<IPath> includes = Sets.newHashSet();
+    private final Set<IncludeEntry> includes = Sets.newHashSet();
     private IPath output;
     private final Set<PathEntry> dependencies = Sets.newHashSet();
     private final Map<String, String> macros = new HashMap<String, String>();
@@ -36,7 +33,7 @@ public final class ErlangProjectProperties {
         return Collections.unmodifiableCollection(sources);
     }
 
-    public Collection<IPath> getIncludes() {
+    public Collection<IncludeEntry> getIncludes() {
         return Collections.unmodifiableCollection(includes);
     }
 
@@ -78,9 +75,9 @@ public final class ErlangProjectProperties {
         return result;
     }
 
-    public Collection<ProjectEntry> getProjectDependencies() {
+    public Collection<LibraryEntry> getProjectDependencies() {
         return Collections.unmodifiableCollection(filter(dependencies,
-                ProjectEntry.class));
+                LibraryEntry.class));
     }
 
     public Collection<LibraryEntry> getLibraryDependencies() {
