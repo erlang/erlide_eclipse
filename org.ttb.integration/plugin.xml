@@ -116,4 +116,19 @@
             commandId="org.ttb.integration.removetracepatternwithnoarity">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.ttb.integration.preferences.TracingPreferencePage"
+            id="org.ttb.integration.preferences.TracingPreferencePage"
+            name="Tracing">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.ttb.integration.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 </plugin>

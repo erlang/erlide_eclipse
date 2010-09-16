@@ -5,11 +5,12 @@
 %%
 %% Exported Functions
 %%
--export([start/2, stop/0,  load/1, load_data/1, str2ms/1]).
+-export([start/3, stop/0,  load/1, load_data/1, str2ms/1]).
 
 
-start(NodesAndCookies, FileName)->
+start(NodesAndCookies, FileName, NetTicktime)->
 	ttbe:stop(),
+	net_kernel:set_net_ticktime(NetTicktime),
 	Nodes = set_cookies(NodesAndCookies),
 	ttbe:tracer(Nodes, [{file,{local, FileName}}]).
 

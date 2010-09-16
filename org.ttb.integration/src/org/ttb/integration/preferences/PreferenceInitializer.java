@@ -1,0 +1,24 @@
+package org.ttb.integration.preferences;
+
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.ttb.integration.Activator;
+
+/**
+ * Preferences initializer
+ * 
+ * @author Piotr Dorobisz
+ * 
+ */
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+
+    public PreferenceInitializer() {
+    }
+
+    @Override
+    public void initializeDefaultPreferences() {
+        IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+        store.setDefault(PreferenceNames.NODE_NAME, "tracing");
+        store.setDefault(PreferenceNames.TICK_TIME, 60);
+    }
+}

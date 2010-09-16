@@ -33,6 +33,7 @@ import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.model.TracedProcess;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
+import org.ttb.integration.preferences.PreferenceNames;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
@@ -50,7 +51,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class TraceBackend {
 
     private static final TraceBackend INSTANCE = new TraceBackend();
-    private static final String NODE_NAME = "tracing";
     private static final String EVENT_NAME = "trace_event";
     private static final String FUN_STOP = "stop";
     private static final String FUN_P = "p";
@@ -172,7 +172,12 @@ public class TraceBackend {
                         }
                         OtpErlangList nodes = new OtpErlangList(erlangObjects.toArray(new OtpErlangObject[erlangObjects.size()]));
 
-                        OtpErlangObject callResult = tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xs", nodes, Constants.OUTPUT_FILE);
+                        // net tick time
+                        int tickTimeValue = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TICK_TIME);
+                        OtpErlangInt netTickTime = new OtpErlangInt(tickTimeValue);
+
+                        OtpErlangObject callResult = tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xsi", nodes, Constants.OUTPUT_FILE,
+                                netTickTime);
                         status = processResult(callResult);
 
                         if (TracingStatus.OK.equals(status) || TracingStatus.NOT_ALL_NODES_ACTIVATED.equals(status)) {
@@ -313,7 +318,7 @@ public class TraceBackend {
      */
     public Backend getBackend(boolean create) {
         if (tracerBackend == null && create) {
-            tracerBackend = createBackend(NODE_NAME);
+            tracerBackend = createBackend();
         }
         return tracerBackend;
     }
@@ -500,17 +505,19 @@ public class TraceBackend {
         return errorObject;
     }
 
-    private Backend createBackend(String name) {
+    private Backend createBackend() {
         final RuntimeInfo info = RuntimeInfo.copy(ErlangCore.getRuntimeInfoManager().getErlideRuntime(), false);
+        String nodeName = Activator.getDefault().getPreferenceStore().getString(PreferenceNames.NODE_NAME);
+
         if (info != null) {
             try {
-                info.setNodeName(name);
+                info.setNodeName(nodeName);
                 info.setStartShell(false);
                 EnumSet<BackendOptions> options = EnumSet.of(BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
 
                 ILaunchConfiguration launchConfig = getLaunchConfiguration(info, options);
                 launchConfig.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor(), false, false);
-                return BackendManager.getDefault().getByName(name);
+                return BackendManager.getDefault().getByName(nodeName);
             } catch (Exception e) {
                 ErlLogger.error(e);
             }
