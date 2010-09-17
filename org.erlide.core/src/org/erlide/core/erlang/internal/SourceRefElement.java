@@ -214,11 +214,11 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
 		getModel().rename(elements, dests, renamings, force, monitor);
 	}
 
-	protected void setSourceRangeOffset(final int offset) {
+	public void setSourceRangeOffset(final int offset) {
 		fSourceRangeOffset = offset;
 	}
 
-	protected void setSourceRangeLength(final int length) {
+	public void setSourceRangeLength(final int length) {
 		fSourceRangeLength = length;
 	}
 

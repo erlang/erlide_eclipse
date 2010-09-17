@@ -15,6 +15,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferencesHelperTest {
 
+	private static final IScopeContext[] ALL_SCOPE_CONTEXTS = new IScopeContext[] { new InstanceScope(),
+					new ConfigurationScope(), new DefaultScope() };
 	private static final String QUALIFIER = "org.erlide.testing";
 	private static final String KEY = "key";
 
@@ -28,8 +30,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void nextContexts_1() {
-		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
-				new ConfigurationScope(), new DefaultScope() };
+		final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
 		final IScopeContext item = new ConfigurationScope();
 		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
 				item);
@@ -40,8 +41,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void nextContexts_2() {
-		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
-				new ConfigurationScope(), new DefaultScope() };
+		final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
 		final IScopeContext item = new DefaultScope();
 		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
 				item);
@@ -51,8 +51,7 @@ public class PreferencesHelperTest {
 
 	@Test
 	public void nextContexts_3() {
-		final IScopeContext[] list = new IScopeContext[] { new InstanceScope(),
-				new ConfigurationScope(), new DefaultScope() };
+		final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
 		final IScopeContext item = new InstanceScope();
 		final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
 				item);
