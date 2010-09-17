@@ -627,7 +627,7 @@ public class ErlModel extends Openable implements IErlModel {
 				: "default_external_modules";
 		String result = getExternal(project, externalFlag, service, key,
 				"org.erlide.ui");
-		if ("".equals(result)) {
+		if ("".equals(result) && project != null) {
 			result = getExternal(null, externalFlag, service, key,
 					ErlangPlugin.PLUGIN_ID);
 		}
@@ -645,8 +645,7 @@ public class ErlModel extends Openable implements IErlModel {
 		if (project != null) {
 			final OldErlangProjectProperties prefs = project.getProperties();
 			final String projprefs = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? prefs
-					.getExternalIncludesFile()
-					: prefs.getExternalModulesFile();
+					.getExternalIncludesFile() : prefs.getExternalModulesFile();
 			return PreferencesUtils
 					.packArray(new String[] { projprefs, global });
 		}

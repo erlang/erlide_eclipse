@@ -48,21 +48,26 @@ public class ErlideContextAssist {
 
 		private final int kind;
 		private final String name;
-		private final String prefix;
+		private String prefix;
 		private final List<String> fields;
 
 		public RecordCompletion(final OtpErlangTuple r)
 				throws OtpErlangRangeException {
-			OtpErlangLong kindL = (OtpErlangLong) r.elementAt(0);
-			OtpErlangAtom nameA = (OtpErlangAtom) r.elementAt(1);
-			OtpErlangAtom prefixA = (OtpErlangAtom) r.elementAt(2);
-			OtpErlangList fieldL = (OtpErlangList) r.elementAt(3);
+			final OtpErlangLong kindL = (OtpErlangLong) r.elementAt(0);
+			final OtpErlangAtom nameA = (OtpErlangAtom) r.elementAt(1);
+			final OtpErlangAtom prefixA = (OtpErlangAtom) r.elementAt(2);
+			final OtpErlangList fieldL = (OtpErlangList) r.elementAt(3);
 			kind = kindL.intValue();
 			name = nameA.atomValue();
 			prefix = prefixA.atomValue();
+			if ("><".equals(prefix)) {
+				prefix = "'";
+			} else if ("<>".equals(prefix)) {
+				prefix = "";
+			}
 			fields = new ArrayList<String>(fieldL.arity());
-			for (OtpErlangObject object : fieldL) {
-				OtpErlangAtom f = (OtpErlangAtom) object;
+			for (final OtpErlangObject object : fieldL) {
+				final OtpErlangAtom f = (OtpErlangAtom) object;
 				getFields().add(f.atomValue());
 			}
 		}
@@ -101,7 +106,7 @@ public class ErlideContextAssist {
 			}
 		} catch (final BackendException e) {
 			e.printStackTrace();
-		} catch (OtpErlangRangeException e) {
+		} catch (final OtpErlangRangeException e) {
 			e.printStackTrace();
 		}
 		return null;

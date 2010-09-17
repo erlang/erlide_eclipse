@@ -1,4 +1,3 @@
-
 %% ``The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
@@ -88,8 +87,12 @@ string_thing(_) -> "string".
 %% TODO if for syntax: not filtered; otherwise, yes.
 
 string(Cs) ->
-    {ok, Toks, Pos} = string_ws(Cs),
-    {ok, filter_ws(Toks), Pos}.
+    case string_ws(Cs) of
+        {ok, Toks, Pos} ->
+             {ok, filter_ws(Toks), Pos};
+        Error ->
+            Error
+    end.
 
 string_ws(Cs) ->
     string(Cs, {1, 1}).
