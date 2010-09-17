@@ -1,0 +1,3 @@
+This is a complex project that contains all the "strange" configurations
+encountered in real life. Depends on 'sub_prj' and has external dependencies
+in 'external'.
