@@ -101,7 +101,7 @@ public class ErlangPlugin extends Plugin {
         final ResourceBundle bundle = ErlangPlugin.getDefault()
                 .getResourceBundle();
         try {
-            return bundle != null ? bundle.getString(key) : key;
+            return (bundle != null) ? bundle.getString(key) : key;
         } catch (final MissingResourceException e) {
             return key;
         }
@@ -222,7 +222,7 @@ public class ErlangPlugin extends Plugin {
             e.printStackTrace();
         }
         Version coreVersion = getBundle().getVersion();
-        version = version == null ? "?" : version;
+        version = (version == null) ? "?" : version;
         version = version + " (core=" + coreVersion.toString() + ")";
         return version;
     }

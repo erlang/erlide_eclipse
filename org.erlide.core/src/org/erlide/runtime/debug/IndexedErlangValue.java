@@ -69,7 +69,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	}
 
 	public IVariable getVariable(final int offset) throws DebugException {
-		final String name = record != null ? record.getFields().get(offset)
+		final String name = (record != null) ? record.getFields().get(offset)
 				: varName + ":" + offset;
 		return new ErlangVariable(getDebugTarget(), name, true,
 				getElementAt(offset), process, moduleName, -1);
@@ -252,7 +252,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	protected OtpErlangObject getElementAt(final int index) {
 		if (value instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) value;
-			final int ofs = record != null ? 1 : 0;
+			final int ofs = (record != null) ? 1 : 0;
 			return t.elementAt(index + ofs);
 		} else if (value instanceof OtpErlangList) {
 			final OtpErlangList l = (OtpErlangList) value;

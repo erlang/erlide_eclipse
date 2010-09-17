@@ -277,7 +277,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			return EMPTY_COMPLETIONS;
 		}
 		final IErlProject erlProject = module.getProject();
-		final IProject project = erlProject == null ? null
+		final IProject project = (erlProject == null) ? null
 				: (IProject) erlProject.getResource();
 		final IErlModel model = ErlangCore.getModel();
 		IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(b, project,
@@ -461,7 +461,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final List<IErlModule> modules = ErlModelUtils
 				.getModulesWithReferencedProjects(project);
 		final IErlModel model = ErlangCore.getModel();
-		final IErlProject erlProject = module == null ? null : module
+		final IErlProject erlProject = (module == null) ? null : module
 				.getProject();
 		final IErlModule external = ErlModelUtils.getExternalModule(moduleName,
 				model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES));
@@ -628,7 +628,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private String fixVarName(final String var) {
-		final String v = var.charAt(0) == '_' ? var.substring(1) : var;
+		final String v = (var.charAt(0) == '_') ? var.substring(1) : var;
 		final char c = v.charAt(0);
 		return Character.isLowerCase(c) ? Character.toUpperCase(c)
 				+ v.substring(1) : v;
@@ -646,7 +646,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			return false;
 		}
 		final char c = parameter.charAt(0);
-		final char c2 = parameter.length() > 1 ? parameter.charAt(1) : c;
+		final char c2 = (parameter.length() > 1) ? parameter.charAt(1) : c;
 		return c >= 'A' && c <= 'Z' || c == '_'
 				&& (c2 >= 'A' && c <= 'Z' || c2 >= 'a' && c2 <= 'z');
 	}

@@ -167,7 +167,7 @@ public class ErlInformationPresenter implements
 			++i;
 		}
 
-		return (i == length ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
+		return ((i == length) ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
 	}
 
 	/*

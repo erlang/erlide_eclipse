@@ -248,7 +248,7 @@ public final class FastStringBuffer{
      * Appends object.toString(). If null, "null" is appended.
      */
     public FastStringBuffer appendObject(Object object) {
-        return append(object != null ? object.toString() : "null");
+        return append((object != null) ? object.toString() : "null");
     }
 
     /**

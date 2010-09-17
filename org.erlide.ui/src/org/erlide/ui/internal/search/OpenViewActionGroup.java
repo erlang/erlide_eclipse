@@ -199,7 +199,7 @@ public class OpenViewActionGroup extends ActionGroup {
 		// fOpenCallHierarchy.setActionDefinitionId(IJavaEditorActionDefinitionIds.OPEN_CALL_HIERARCHY);
 		// fOpenCallHierarchy.setSpecialSelectionProvider(specialProvider);
 
-		final ISelectionProvider provider = specialProvider != null ? specialProvider
+		final ISelectionProvider provider = (specialProvider != null) ? specialProvider
 				: site.getSelectionProvider();
 
 		fOpenPropertiesDialog = new PropertyDialogAction(site, provider);

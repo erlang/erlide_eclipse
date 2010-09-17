@@ -366,7 +366,7 @@ public final class ErlideUtil {
 		final StringBuffer result = new StringBuffer();
 		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString();
-		dir = dir == null ? "c:/" : dir;
+		dir = (dir == null) ? "c:/" : dir;
 		final File log = new File(dir + "_erlide.log");
 
 		try {

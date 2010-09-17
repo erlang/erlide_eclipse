@@ -185,14 +185,14 @@ public final class ErlParser {
             final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
             final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
             final OtpErlangObject val = atr.elementAt(2);
-            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
+            final OtpErlangObject extra = (el.arity() > 4) ? el.elementAt(4)
                     : null;
             return addAttribute(parent, pos, n, val, extra);
         } else if ("attribute".equals(typeS)) {
             final OtpErlangObject pos = el.elementAt(1);
             final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
             final OtpErlangObject val = el.elementAt(3);
-            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
+            final OtpErlangObject extra = (el.arity() > 4) ? el.elementAt(4)
                     : null;
             return addAttribute(parent, pos, name, val, extra);
         } else if ("function".equals(typeS)) {
@@ -365,7 +365,7 @@ public final class ErlParser {
                 || "opaque".equals(nameS)) {
             final String s = Util.stringValue(extra);
             final int p = s.indexOf('(');
-            final String typeName = p < 0 ? s : s.substring(0, p);
+            final String typeName = (p < 0) ? s : s.substring(0, p);
             final ErlTypespec a = new ErlTypespec((ErlElement) parent,
                     typeName, null, s);
             setPos(a, pos);

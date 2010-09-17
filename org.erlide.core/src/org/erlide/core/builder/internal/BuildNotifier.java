@@ -209,7 +209,7 @@ public class BuildNotifier {
 
     public void subTask(final String message) {
         final String pm = problemsMessage();
-        final String msg = pm.length() == 0 ? message : pm + " " + message; //$NON-NLS-1$
+        final String msg = (pm.length() == 0) ? message : pm + " " + message; //$NON-NLS-1$
 
         if (msg.equals(previousSubtask)) {
             return; // avoid refreshing with same one

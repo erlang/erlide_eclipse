@@ -204,7 +204,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
 		if (bigVal != null) {
 			return bigVal.signum();
 		} else {
-			return val > 0 ? 1 : val < 0 ? -1 : 0;
+			return (val > 0) ? 1 : (val < 0) ? -1 : 0;
 		}
 	}
 

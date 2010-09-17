@@ -40,7 +40,7 @@ public class JRpcUtil {
 			final OtpErlangObject method, final OtpErlangObject[] args) {
 
 		debug("EXEC:: " + target + ":" + method + " " + Arrays.toString(args)
-				+ " >" + (args == null ? 0 : args.length));
+				+ " >" + ((args == null) ? 0 : args.length));
 
 		final MethodDescription description = getDescription(method);
 

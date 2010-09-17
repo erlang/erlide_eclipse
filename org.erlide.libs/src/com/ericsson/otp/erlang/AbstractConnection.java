@@ -163,7 +163,7 @@ public abstract class AbstractConnection extends Thread {
 					"No common protocol found - cannot accept connection");
 		}
 		// highest common version: min(peer.distHigh, self.distHigh)
-		peer.distChoose = peer.distHigh > self.distHigh ? self.distHigh
+		peer.distChoose = (peer.distHigh > self.distHigh) ? self.distHigh
 				: peer.distHigh;
 
 		doAccept();
@@ -199,7 +199,7 @@ public abstract class AbstractConnection extends Thread {
 		}
 
 		// highest common version: min(peer.distHigh, self.distHigh)
-		peer.distChoose = peer.distHigh > self.distHigh ? self.distHigh
+		peer.distChoose = (peer.distHigh > self.distHigh) ? self.distHigh
 				: peer.distHigh;
 
 		doConnect(port);

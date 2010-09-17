@@ -253,7 +253,7 @@ public class Diff {
 	 */
 	@SuppressWarnings("unchecked")
 	protected boolean equals(Object x, Object y) {
-		return comparator == null ? x.equals(y) : comparator.compare(x, y) == 0;
+		return (comparator == null) ? x.equals(y) : comparator.compare(x, y) == 0;
 	}
 
 	/**
@@ -321,7 +321,7 @@ public class Diff {
 					if (k == null) {
 						// nothing
 					} else {
-						Object value = k.intValue() > 0 ? links
+						Object value = (k.intValue() > 0) ? links
 								.get(new Integer(k.intValue() - 1)) : null;
 						links.put(k, new Object[] { value, new Integer(i), j });
 					}
@@ -348,7 +348,7 @@ public class Diff {
 	 */
 	@SuppressWarnings("unchecked")
 	protected static Integer[] toArray(TreeMap map) {
-		int size = map.size() == 0 ? 0 : 1 + ((Integer) map.lastKey())
+		int size = (map.size() == 0) ? 0 : 1 + ((Integer) map.lastKey())
 				.intValue();
 		Integer[] ary = new Integer[size];
 		Iterator it = map.keySet().iterator();

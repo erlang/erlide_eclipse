@@ -196,7 +196,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 .getResourceBundle();
         try {
 
-            final String returnString = bundle != null ? bundle.getString(key)
+            final String returnString = (bundle != null) ? bundle.getString(key)
                     : key;
             return returnString;
         } catch (final MissingResourceException e) {

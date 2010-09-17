@@ -953,7 +953,7 @@ public class DefaultErlangFoldingStructureProvider implements
 		while (it.hasNext()) {
 			final ErlangProjectionAnnotation annotation = it.next();
 			if (tuple.annotation.isComment() == annotation.isComment()) {
-				final Position position = positionMap == null ? fCachedModel
+				final Position position = (positionMap == null) ? fCachedModel
 						.getPosition(annotation) : (Position) positionMap
 						.get(annotation);
 				if (position == null) {

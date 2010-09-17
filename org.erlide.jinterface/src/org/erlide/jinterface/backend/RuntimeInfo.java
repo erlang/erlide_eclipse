@@ -119,7 +119,7 @@ public class RuntimeInfo {
     }
 
     public String getWorkingDir() {
-        return workingDir == null || workingDir.length() == 0 ? "."
+        return (workingDir == null || workingDir.length() == 0) ? "."
                 : workingDir;
     }
 
@@ -167,7 +167,7 @@ public class RuntimeInfo {
 
         final boolean globalLongName = System.getProperty("erlide.longname",
                 "false").equals("true");
-        final String nameTag = useLongName || globalLongName ? "-name"
+        final String nameTag = (useLongName || globalLongName) ? "-name"
                 : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {

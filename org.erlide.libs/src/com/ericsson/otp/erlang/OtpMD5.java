@@ -336,7 +336,7 @@ class OtpMD5 {
 		int[] digest;
 
 		index = (int) (count[0] >>> 3 & 0x3f);
-		padlen = index < 56 ? 56 - index : 120 - index;
+		padlen = (index < 56) ? 56 - index : 120 - index;
 		/* padlen > 0 */
 		padding = new int[padlen];
 		padding[0] = 0x80;

@@ -54,7 +54,7 @@ public final class PreferencesHelper {
 		final byte[] b = service.getByteArray(qualifier, key, null,
 				loadContexts);
 		// there's a bug in PreferenceService.getByteArray, it doesn't decode
-		return b == null ? defaultValue : Base64.decode(b);
+		return (b == null) ? defaultValue : Base64.decode(b);
 	}
 
 	public double getDouble(final String key, final double defaultValue) {

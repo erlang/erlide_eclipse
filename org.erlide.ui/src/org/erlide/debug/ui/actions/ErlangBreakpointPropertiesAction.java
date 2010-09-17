@@ -36,7 +36,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
 						final IWorkbench workbench = PlatformUI.getWorkbench();
 						final IWorkbenchWindow window = workbench
 								.getActiveWorkbenchWindow();
-						return window == null ? null : window.getShell();
+						return (window == null) ? null : window.getShell();
 					}
 				};
 			}

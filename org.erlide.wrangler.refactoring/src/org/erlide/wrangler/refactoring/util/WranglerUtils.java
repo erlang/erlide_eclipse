@@ -75,7 +75,7 @@ public final class WranglerUtils {
 		int lineOffset;
 		try {
 			lineOffset = doc.getLineOffset(line);
-			int ret = ((offset - lineOffset) < 0 ? 0 : offset - lineOffset);
+			int ret = (((offset - lineOffset) < 0) ? 0 : offset - lineOffset);
 			return ret + 1;
 		} catch (BadLocationException e) {
 			e.printStackTrace();

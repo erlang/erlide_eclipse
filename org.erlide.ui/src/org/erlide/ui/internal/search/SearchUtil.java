@@ -249,7 +249,7 @@ public class SearchUtil {
 			final int limitTo, final boolean matchAnyFunctionDefinition) {
 		final ErlangSearchPattern ref = null;
 		String name = res.getName();
-		final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
+		final String unquoted = (name != null) ? ErlideUtil.unquote(name) : null;
 		if (res.isExternalCall()) {
 			if (module != null && offset != -1) {
 				try {
@@ -375,7 +375,7 @@ public class SearchUtil {
 		if (workingSets.length == 0) {
 			return "";
 		}
-		final String s = workingSets.length == 1 ? wsS : wssS;
+		final String s = (workingSets.length == 1) ? wsS : wssS;
 		return workingSetLabels(workingSets, s, "'");
 	}
 
@@ -425,7 +425,7 @@ public class SearchUtil {
 			return "";
 		} else {
 			final StringBuilder sb = new StringBuilder(
-					projectScope.size() == 1 ? "project" : "projects");
+					(projectScope.size() == 1) ? "project" : "projects");
 			sb.append(' ');
 			for (final IResource p : projectScope) {
 				sb.append('\'').append(p.getName()).append("', ");

@@ -428,7 +428,7 @@ public final class BuilderHelper {
 
         MarkerHelper.deleteMarkers(res);
 
-        final String outputDir = bres.getOutput() == null ? projectPath.append(
+        final String outputDir = (bres.getOutput() == null) ? projectPath.append(
                 outputDir0).toString()
                 : bres.getOutput().startsWith("/") ? bres.getOutput()
                         : projectPath.append(bres.getOutput()).toString();

@@ -734,7 +734,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
 		final int anchor = getBracketMatcher().getAnchor();
 		// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-		int targetOffset = ICharacterPairMatcher.RIGHT == anchor ? offset + 1
+		int targetOffset = (ICharacterPairMatcher.RIGHT == anchor) ? offset + 1
 				: offset + length;
 
 		boolean visible = false;
@@ -1628,7 +1628,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 		// See bug 41689
 		// String key= forward ? preference.getIsGoToNextNavigationTargetKey() :
 		// preference.getIsGoToPreviousNavigationTargetKey();
-		final String key = preference == null ? null : preference
+		final String key = (preference == null) ? null : preference
 				.getIsGoToNextNavigationTargetKey();
 		return key != null && preferences.getBoolean(key);
 	}

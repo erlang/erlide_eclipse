@@ -809,7 +809,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 						"Value does not fit in long: " + b);
 			}
 			// Convert the necessary bytes
-			for (v = c < 0 ? -1 : 0; i < b.length; i++) {
+			for (v = (c < 0) ? -1 : 0; i < b.length; i++) {
 				v = v << 8 | b[i] & 0xFF;
 			}
 		}

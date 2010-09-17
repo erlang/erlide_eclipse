@@ -81,7 +81,7 @@ public class ErlBrowserInformationControlInput extends
 	 */
 	@Override
 	public Object getInputElement() {
-		return fElement == null ? (Object) fHtml : fElement;
+		return (fElement == null) ? (Object) fHtml : fElement;
 	}
 
 	/*

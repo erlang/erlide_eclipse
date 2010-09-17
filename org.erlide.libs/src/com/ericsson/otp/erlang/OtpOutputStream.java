@@ -438,7 +438,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 			write1(OtpExternal.largeBigTag);
 			write4BE(n); // length
 		}
-		write1(signum < 0 ? 1 : 0); // sign
+		write1((signum < 0) ? 1 : 0); // sign
 		// Write the array
 		writeN(magnitude);
 	}
@@ -458,8 +458,8 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 			if (v < 0 && unsigned || v < OtpExternal.erlMin
 					|| v > OtpExternal.erlMax) {
 				// some kind of bignum
-				final long abs = unsigned ? v : v < 0 ? -v : v;
-				final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
+				final long abs = unsigned ? v : (v < 0) ? -v : v;
+				final int sign = unsigned ? 0 : (v < 0) ? 1 : 0;
 				int n;
 				long mask;
 				for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = mask << 8 | 0xffL) {

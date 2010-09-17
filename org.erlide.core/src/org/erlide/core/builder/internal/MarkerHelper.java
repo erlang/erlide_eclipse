@@ -282,10 +282,10 @@ public final class MarkerHelper {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             final int severity = problemSeverity;
 
-            final ISourceRange range = erlElement == null ? null : erlElement
+            final ISourceRange range = (erlElement == null) ? null : erlElement
                     .getNameRange();
-            final int start = range == null ? 0 : range.getOffset();
-            final int end = range == null ? 1 : start + range.getLength();
+            final int start = (range == null) ? 0 : range.getOffset();
+            final int end = (range == null) ? 1 : start + range.getLength();
             marker.setAttributes(new String[] { IMarker.MESSAGE,
                     IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
                     new Object[] { message, Integer.valueOf(severity),

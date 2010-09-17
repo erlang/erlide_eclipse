@@ -32,7 +32,7 @@ public class EpmdWatchJob extends Job {
 		assert (aWatcher != null);
 
 		watcher = aWatcher;
-		interval = anInterval < 0 ? defaultInterval : anInterval;
+		interval = (anInterval < 0) ? defaultInterval : anInterval;
 
 		setSystem(true);
 		setPriority(SHORT);

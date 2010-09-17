@@ -1375,7 +1375,7 @@ public class ErlangProjectImportWizardPage extends
 				dialog.open();
 			}
 		});
-		return dialog.getReturnCode() < 0 ? CANCEL : response[dialog
+		return (dialog.getReturnCode() < 0) ? CANCEL : response[dialog
 				.getReturnCode()];
 	}
 

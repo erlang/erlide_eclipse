@@ -67,7 +67,7 @@ public abstract class AbstractInputDialog extends Dialog {
 	 */
 	public void setErrorMessage(final String errorMessage) {
 		if (errorMessageText != null && !errorMessageText.isDisposed()) {
-			errorMessageText.setText(errorMessage == null ? " \n "
+			errorMessageText.setText((errorMessage == null) ? " \n "
 					: errorMessage);
 
 			boolean hasError = errorMessage != null

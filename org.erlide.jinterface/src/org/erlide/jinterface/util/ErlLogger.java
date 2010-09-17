@@ -31,7 +31,7 @@ public class ErlLogger {
 	{
 		// This is not run?!?
 		final String lvl = System.getProperty("erlide.logger.level");
-		minLevel = (lvl == null ? Level.INFO : Level.parse(lvl.toUpperCase()))
+		minLevel = ((lvl == null) ? Level.INFO : Level.parse(lvl.toUpperCase()))
 				.intValue();
 	}
 
@@ -51,7 +51,7 @@ public class ErlLogger {
 			return;
 		}
 		final StackTraceElement el = getCaller();
-		final String str = o.length == 0 ? fmt : String.format(fmt, o);
+		final String str = (o.length == 0) ? fmt : String.format(fmt, o);
 		String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
 				+ str;
 		Logger.getLogger("org.erlide").log(kind, msg);
@@ -74,7 +74,7 @@ public class ErlLogger {
 		if (kind.intValue() < minLevel) {
 			return;
 		}
-		final String str = o.length == 0 ? fmt : String.format(fmt, o);
+		final String str = (o.length == 0) ? fmt : String.format(fmt, o);
 		String msg = "(" + module + ":" + line + ") : " + str;
 		Logger.getLogger("org.erlide").log(kind, msg);
 	}

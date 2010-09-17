@@ -207,7 +207,7 @@ public class OpenAction extends SelectionDispatchAction {
 			throws CoreException, ErlModelException, PartInitException,
 			BadLocationException, OtpErlangRangeException {
 		final IErlModel model = ErlangCore.getModel();
-		final IProject project = erlProject == null ? null : erlProject
+		final IProject project = (erlProject == null) ? null : erlProject
 				.getProject();
 		if (res.isExternalCall()) {
 			boolean checkAllProjects = NavigationPreferencePage
@@ -233,7 +233,7 @@ public class OpenAction extends SelectionDispatchAction {
 						module, project, checkAllProjects);
 			}
 		} else if (res.isInclude()) {
-			final IContainer parent = module == null ? null : module
+			final IContainer parent = (module == null) ? null : module
 					.getResource().getParent();
 			IResource r = ResourceUtil
 					.recursiveFindNamedResourceWithReferences(project, res

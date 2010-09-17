@@ -101,11 +101,11 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 	private String getOccurrencesLabel(final int matchCount) {
 		int limitTo = query.getPattern().getLimitTo();
 		if (limitTo == ErlangSearchPattern.ALL_OCCURRENCES) {
-			return matchCount == 1 ? "occurrence" : "occurrences";
+			return (matchCount == 1) ? "occurrence" : "occurrences";
 		} else if (limitTo == ErlangSearchPattern.REFERENCES) {
-			return matchCount == 1 ? "reference" : "references";
+			return (matchCount == 1) ? "reference" : "references";
 		} else {
-			return matchCount == 1 ? "definition" : "definitions";
+			return (matchCount == 1) ? "definition" : "definitions";
 		}
 	}
 

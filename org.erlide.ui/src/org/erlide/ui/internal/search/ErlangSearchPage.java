@@ -636,9 +636,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 		final ErlangSearchPattern pattern = SearchUtil
 				.getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
 						REFERENCES, true);
-		final String patternString = pattern == null ? "" : pattern
+		final String patternString = (pattern == null) ? "" : pattern
 				.patternString();
-		final int searchFor = pattern == null ? SEARCHFOR_FUNCTION : pattern
+		final int searchFor = (pattern == null) ? SEARCHFOR_FUNCTION : pattern
 				.getSearchFor();
 		final SearchPatternData searchPatternData = new SearchPatternData(
 				patternString, ISearchPageContainer.WORKSPACE_SCOPE,
