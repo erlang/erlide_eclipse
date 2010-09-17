@@ -438,6 +438,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TraceBackend.getInstance().addTracePattern(new TracePattern(true));
+                functionsTableViewer.refresh();
             }
         });
 
@@ -452,6 +453,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 TracePattern tracePattern = (TracePattern) ((IStructuredSelection) functionsTableViewer.getSelection()).getFirstElement();
                 if (tracePattern != null) {
                     TraceBackend.getInstance().removeTracePattern(tracePattern);
+                    functionsTableViewer.refresh();
                 }
             }
         });
@@ -479,6 +481,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     patternsConfigName = result;
                     configNameLabel.setText(patternsConfigName);
                     TraceBackend.getInstance().loadTracePatterns(ConfigurationManager.loadTPConfig(patternsConfigName));
+                    functionsTableViewer.refresh();
                 }
             }
         });
@@ -590,7 +593,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[TracePatternColumn.ARITY.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.MATCH_SPEC.ordinal()] = new MatchSpecCellEditor(table);
         functionsTableViewer.setCellEditors(editors);
-        functionsTableViewer.setCellModifier(new TracePatternCellModifier());
+        functionsTableViewer.setCellModifier(new TracePatternCellModifier(functionsTableViewer));
     }
 
     // "Nodes" tab methods
@@ -624,6 +627,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TraceBackend.getInstance().addTracedNode(new TracedNode());
+                nodesTableViewer.refresh();
             }
         });
 
@@ -638,6 +642,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 TracedNode tracedNode = (TracedNode) ((IStructuredSelection) nodesTableViewer.getSelection()).getFirstElement();
                 if (tracedNode != null) {
                     TraceBackend.getInstance().removeTracedNode(tracedNode);
+                    nodesTableViewer.refresh();
                 }
             }
         });
@@ -655,6 +660,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     node.setNodeName(backend.getPeer());
                     TraceBackend.getInstance().addTracedNode(node);
                 }
+                nodesTableViewer.refresh();
             }
         });
 
@@ -681,6 +687,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     nodesConfigName = result;
                     configNameLabel.setText(nodesConfigName);
                     TraceBackend.getInstance().loadTracedNodes(ConfigurationManager.loadNodesConfig(nodesConfigName));
+                    nodesTableViewer.refresh();
                 }
             }
         });
@@ -789,7 +796,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[NodeColumn.NODE_NAME.ordinal()] = new TextCellEditor(table);
         editors[NodeColumn.COOKIE.ordinal()] = new TextCellEditor(table);
         nodesTableViewer.setCellEditors(editors);
-        nodesTableViewer.setCellModifier(new NodeCellModifier());
+        nodesTableViewer.setCellModifier(new NodeCellModifier(nodesTableViewer));
     }
 
     @Override
@@ -836,51 +843,16 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
-    public void addPattern(TracePattern tracePattern) {
-        functionsTableViewer.refresh();
-    }
-
-    public void removePattern(TracePattern tracePattern) {
-        functionsTableViewer.refresh();
-    }
-
-    public void updatePattern(TracePattern tracePattern) {
-        functionsTableViewer.refresh();
-    }
-
-    public void loadPatterns() {
-        functionsTableViewer.refresh();
-    }
-
-    public void addNode(TracedNode tracedNode) {
-        nodesTableViewer.refresh();
-    }
-
-    public void removeNode(TracedNode tracedNode) {
-        nodesTableViewer.refresh();
-    }
-
-    public void updateNode(TracedNode tracedNode) {
-        nodesTableViewer.refresh();
-    }
-
-    public void loadNodes() {
-        nodesTableViewer.refresh();
-    }
-
     public void startTracing() {
         doAfterStartTracing();
     }
 
-    public void receivedTraceData() {
-    }
-
-    public void startLoading() {
-        doBeforeLoading();
-    }
-
-    public void finishLoading(TracingStatus status) {
+    public void finishLoadingFile(TracingStatus status) {
         doAfterLoading();
         handleError(false, status);
+    }
+
+    public void finishLoadingTraces() {
+        // TODO Auto-generated method stub
     }
 }

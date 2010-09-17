@@ -110,13 +110,6 @@ public class TraceBackend {
                             CollectedDataList.getInstance().addData(rootNode);
                         }
                         rootNode.addChildren(newNode);
-                        for (ITraceNodeObserver listener : listeners) {
-                            try {
-                                listener.receivedTraceData();
-                            } catch (Exception e) {
-                                ErlLogger.error(e);
-                            }
-                        }
                     }
                 }
             }
@@ -333,7 +326,7 @@ public class TraceBackend {
         tracerBackend.getEventDaemon().removeHandler(handler);
         for (ITraceNodeObserver listener : listeners) {
             try {
-                listener.finishLoading(status);
+                listener.finishLoadingFile(status);
             } catch (Exception e) {
                 ErlLogger.error(e);
             }
@@ -363,13 +356,6 @@ public class TraceBackend {
     public void loadTracePatterns(TracePattern[] patterns) {
         tracePatterns.clear();
         tracePatterns.addAll(Arrays.asList(patterns));
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.loadPatterns();
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
     }
 
     public Object[] getTracePatternsArray() {
@@ -377,49 +363,16 @@ public class TraceBackend {
     }
 
     public synchronized void addTracePattern(TracePattern pattern) {
-        if (!tracePatterns.contains(pattern)) {
-            tracePatterns.add(pattern);
-            for (ITraceNodeObserver listener : listeners) {
-                try {
-                    listener.addPattern(pattern);
-                } catch (Exception e) {
-                    ErlLogger.error(e);
-                }
-            }
-        }
+        tracePatterns.add(pattern);
     }
 
     public synchronized void removeTracePattern(TracePattern pattern) {
         tracePatterns.remove(pattern);
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.removePattern(pattern);
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
-    }
-
-    public synchronized void updateTracePattern(TracePattern tracePattern) {
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.updatePattern(tracePattern);
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
     }
 
     public void loadTracedNodes(TracedNode[] nodes) {
         tracedNodes.clear();
         tracedNodes.addAll(Arrays.asList(nodes));
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.loadNodes();
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
     }
 
     public Object[] getTracedNodesArray() {
@@ -427,37 +380,11 @@ public class TraceBackend {
     }
 
     public synchronized void addTracedNode(TracedNode tracedNode) {
-        if (!tracedNodes.contains(tracedNode)) {
-            tracedNodes.add(tracedNode);
-            for (ITraceNodeObserver listener : listeners) {
-                try {
-                    listener.addNode(tracedNode);
-                } catch (Exception e) {
-                    ErlLogger.error(e);
-                }
-            }
-        }
+        tracedNodes.add(tracedNode);
     }
 
     public synchronized void removeTracedNode(TracedNode tracedNode) {
         tracedNodes.remove(tracedNode);
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.removeNode(tracedNode);
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
-    }
-
-    public synchronized void updateTracedNode(TracedNode tracedNode) {
-        for (ITraceNodeObserver listener : listeners) {
-            try {
-                listener.updateNode(tracedNode);
-            } catch (Exception e) {
-                ErlLogger.error(e);
-            }
-        }
     }
 
     public void addProcessFlag(ProcessFlag flag) {

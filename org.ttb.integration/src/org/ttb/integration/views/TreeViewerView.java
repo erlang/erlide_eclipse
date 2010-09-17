@@ -23,13 +23,11 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
-import org.ttb.integration.TracingStatus;
 import org.ttb.integration.TraceBackend;
+import org.ttb.integration.TracingStatus;
 import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
 import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
-import org.ttb.integration.mvc.model.TracePattern;
-import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
@@ -163,43 +161,10 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
-    public void addPattern(TracePattern tracePattern) {
-    }
-
-    public void removePattern(TracePattern tracePattern) {
-    }
-
-    public void updatePattern(TracePattern tracePattern) {
-    }
-
-    public void loadPatterns() {
-    }
-
     public void startTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                loadAction.setEnabled(false);
-                clearAction.setEnabled(false);
-                treeViewer.refresh();
-            }
-        });
     }
 
-    public void receivedTraceData() {
-        // treeViewer.refresh();
-    }
-
-    public void startLoading() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                loadAction.setEnabled(false);
-                clearAction.setEnabled(false);
-                treeViewer.refresh();
-            }
-        });
-    }
-
-    public void finishLoading(final TracingStatus status) {
+    public void finishLoadingFile(final TracingStatus status) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 if (TracingStatus.OK.equals(status))
@@ -212,15 +177,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void addNode(TracedNode tracedNode) {
-    }
-
-    public void removeNode(TracedNode tracedNode) {
-    }
-
-    public void updateNode(TracedNode tracedNode) {
-    }
-
-    public void loadNodes() {
+    public void finishLoadingTraces() {
+        // TODO Auto-generated method stub
     }
 }

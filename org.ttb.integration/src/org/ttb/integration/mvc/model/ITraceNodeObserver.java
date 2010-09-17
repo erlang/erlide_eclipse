@@ -4,7 +4,7 @@ import org.ttb.integration.TracingStatus;
 
 /**
  * Interface which should be implemented by every class which wants to be
- * notified whenever pattern list changed or trace data has been received.
+ * notified about tracing or loading.
  * 
  * @author Piotr Dorobisz
  * 
@@ -12,83 +12,20 @@ import org.ttb.integration.TracingStatus;
 public interface ITraceNodeObserver {
 
     /**
-     * This method is invoked after adding new trace pattern.
-     * 
-     * @param tracePattern
-     *            new pattern
-     */
-    public void addPattern(TracePattern tracePattern);
-
-    /**
-     * This method is invoked after removing trace pattern.
-     * 
-     * @param tracePattern
-     *            removed trace pattern
-     */
-    public void removePattern(TracePattern tracePattern);
-
-    /**
-     * This method is invoked after updating trace pattern definition.
-     * 
-     * @param tracePattern
-     *            updated trace pattern
-     */
-    public void updatePattern(TracePattern tracePattern);
-
-    /**
-     * This method is invoked after adding new node for tracing.
-     * 
-     * @param tracedNode
-     *            new node
-     */
-    public void addNode(TracedNode tracedNode);
-
-    /**
-     * This method is invoked after removing node from tracing.
-     * 
-     * @param tracedNode
-     *            removed node
-     */
-    public void removeNode(TracedNode tracedNode);
-
-    /**
-     * This method is invoked after updating traced node.
-     * 
-     * @param tracedNode
-     *            updated node
-     */
-    public void updateNode(TracedNode tracedNode);
-
-    /**
-     * This method is invoked after loading new set of nodes.
-     */
-    public void loadNodes();
-
-    /**
      * This method is invoked after starting tracing.
      */
     public void startTracing();
 
     /**
-     * This method is invoked after receiving new trace data.
-     */
-    public void receivedTraceData();
-
-    /**
-     * This method is invoked after starting loading data from disk.
-     */
-    public void startLoading();
-
-    /**
-     * This method is invoked after finishing loading data from disk.
+     * This method is invoked after finishing loading file.
      * 
      * @param status
      *            status
      */
-    public void finishLoading(TracingStatus status);
+    public void finishLoadingFile(TracingStatus status);
 
     /**
-     * This method is invoked after loading new set of trace patterns.
+     * This method is invoked after finishing loading traces from file.
      */
-    public void loadPatterns();
+    public void finishLoadingTraces();
 }

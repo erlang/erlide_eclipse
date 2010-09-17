@@ -1,12 +1,30 @@
 package org.ttb.integration.mvc.controller;
 
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
-import org.ttb.integration.TraceBackend;
 import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.view.NodeColumn;
 
+/**
+ * Cell modifier for nodes table.
+ * 
+ * @author Piotr Dorobisz
+ * 
+ */
 public class NodeCellModifier implements ICellModifier {
+
+    private final TableViewer tableViewer;
+
+    /**
+     * Creates cell modifier for trace patterns table.
+     * 
+     * @param tableViewer
+     *            table viewer with which this cell modifier is used
+     */
+    public NodeCellModifier(TableViewer tableViewer) {
+        this.tableViewer = tableViewer;
+    }
 
     public boolean canModify(Object element, String property) {
         return true;
@@ -39,6 +57,6 @@ public class NodeCellModifier implements ICellModifier {
             node.setNodeName((String) value);
             break;
         }
-        TraceBackend.getInstance().updateTracedNode(node);
+        tableViewer.refresh();
     }
 }
