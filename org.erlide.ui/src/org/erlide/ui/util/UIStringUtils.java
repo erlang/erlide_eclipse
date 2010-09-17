@@ -31,7 +31,7 @@ public class UIStringUtils {
         StringBuilder buf = new StringBuilder();
         int firstCharPosition = Integer.MAX_VALUE;
 
-        List<String> splitted = StringUtils.splitInLines(hoverInfo);
+        List<String> splitted = StringUtils.splitLines(hoverInfo);
         for (String line : splitted) {
             if (line.trim().length() > 0) {
                 int found = ErlideSelection.getFirstCharPosition(line);

@@ -20,12 +20,8 @@ public class StringUtils {
 
     public static final Object EMPTY = "";
 
-    public static String join(final String[] cmds) {
-        StringBuilder result = new StringBuilder();
-        for (String cmd : cmds) {
-            result.append(cmd).append(' ');
-        }
-        return result.toString();
+    public static String joinWithSpaces(final String[] cmds) {
+        return join(" ", cmds);
     }
 
     /**
@@ -226,7 +222,7 @@ public class StringUtils {
      *
      * @note the new line characters are also added to the returned string.
      */
-    public static List<String> splitInLines(String string) {
+    public static List<String> splitLines(String string) {
         ArrayList<String> ret = new ArrayList<String>();
         int len = string.length();
 
@@ -490,7 +486,7 @@ public class StringUtils {
      *            the char to be added
      * @return a new array with the passed char appended.
      */
-    public static char[] addChar(char[] c, char toAdd) {
+    public static char[] appendChar(char[] c, char toAdd) {
         char[] c1 = new char[c.length + 1];
 
         System.arraycopy(c, 0, c1, 0, c.length);

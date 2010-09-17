@@ -70,7 +70,7 @@ public class ErlInformationPresenter implements
      */
     private String correctLineDelimiters(String str) {
         StringBuffer buf = new StringBuffer();
-        for (String s : StringUtils.splitInLines(str)) {
+        for (String s : StringUtils.splitLines(str)) {
 
             boolean found = false;
             while (s.endsWith("\r") || s.endsWith("\n")) {

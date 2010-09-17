@@ -54,7 +54,7 @@ public class ManagedLauncher implements IDisposable {
 		String dump = System.getenv("erlide.internal.coredump");
 		if ("true".equals(dump) && !ErlideUtil.isOnWindows()
 				&& ErlideUtil.isEricssonUser()) {
-			final String cmd = StringUtils.join(cmds);
+			final String cmd = StringUtils.joinWithSpaces(cmds);
 			cmds = new String[] { "tcsh", "-c",
 					"limit coredumpsize unlimited ;" + " exec " + cmd + " +d" };
 		}
