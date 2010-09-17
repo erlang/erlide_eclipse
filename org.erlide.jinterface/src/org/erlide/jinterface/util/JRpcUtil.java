@@ -67,9 +67,7 @@ public class JRpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (final Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return OtpErlang.mkTuple(new OtpErlangAtom("error"),
-							new OtpErlangString(String.format("Bad RPC: %s", e
-									.getMessage())));
+					return makeErrorTuple(e);
 				}
 
 			}
@@ -89,9 +87,7 @@ public class JRpcUtil {
 			} catch (final Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
-				return OtpErlang.mkTuple(new OtpErlangAtom("error"),
-						new OtpErlangString(String.format("Bad RPC: %s", e
-								.getMessage())));
+				return makeErrorTuple(e);
 			}
 		} else {
 			log("unknown receiver: " + target);
@@ -99,6 +95,12 @@ public class JRpcUtil {
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown receiver %s", target)));
 		}
+	}
+
+	private static OtpErlangTuple makeErrorTuple(final Exception e) {
+		return OtpErlang.mkTuple(new OtpErlangAtom("error"),
+				new OtpErlangString(String.format("Bad RPC: %s", e
+						.getMessage())));
 	}
 
 	@SuppressWarnings("unchecked")
