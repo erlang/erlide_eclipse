@@ -210,10 +210,13 @@ public class ErlModel extends Openable implements IErlModel {
     /**
      * @see IErlModel
      */
-    @SuppressWarnings("unchecked")
     public Collection<IErlProject> getErlangProjects() throws ErlModelException {
-        final List<IErlProject> list = (ArrayList<IErlProject>) getChildrenOfType(Kind.PROJECT);
-        return list;
+        final Collection<IErlElement> list = getChildrenOfType(Kind.PROJECT);
+        Collection<IErlProject> result = Lists.newArrayList();
+        for (IErlElement e : list) {
+            result.add((IErlProject) e);
+        }
+        return result;
     }
 
     /*

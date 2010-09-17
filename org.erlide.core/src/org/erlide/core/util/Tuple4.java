@@ -64,7 +64,7 @@ public class Tuple4<X, Y, Z, T> implements Serializable {
 		buffer.append(o3);
 		buffer.append(" -- ");
 		buffer.append(o4);
-		buffer.append("]");
+		buffer.append(']');
 		return buffer.toString();
 	}
 }

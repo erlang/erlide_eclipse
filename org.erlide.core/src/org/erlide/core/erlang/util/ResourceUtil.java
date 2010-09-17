@@ -107,7 +107,7 @@ public class ResourceUtil {
 		String line = br.readLine();
 		while (line != null) {
 			sbResult.append(line);
-			sbResult.append("\n");
+			sbResult.append('\n');
 			line = br.readLine();
 		}
 		br.close();

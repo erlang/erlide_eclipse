@@ -134,7 +134,7 @@ public class ErlLogger {
 			}
 			formatter.format(args, text, null);
 			sb.append(text);
-			sb.append(" ");
+			sb.append(' ');
 			final String message = formatMessage(record);
 			sb.append(record.getLevel().toString().charAt(0));
 			sb.append(": ");

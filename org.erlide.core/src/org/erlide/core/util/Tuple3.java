@@ -32,7 +32,7 @@ public class Tuple3<X, Y, Z> implements Serializable {
 		buffer.append(o2);
 		buffer.append(" -- ");
 		buffer.append(o3);
-		buffer.append("]");
+		buffer.append(']');
 		return buffer.toString();
 	}
 

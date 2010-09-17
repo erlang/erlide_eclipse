@@ -156,21 +156,21 @@ public class OpenResult {
 			}
 			b.append(' ').append(name);
 		} else if (isInclude) {
-			b.append("include \"").append(name).append("\"");
+			b.append("include \"").append(name).append('"');
 		} else if (isRecord) {
 			b.append("record ").append(name);
 		} else if (isExternalCall) {
 			b.append("external ");
-			b.append(name).append(":").append(fun).append("/").append(arity);
+			b.append(name).append(':').append(fun).append('/').append(arity);
 		} else if (isLocalCall) {
-			b.append("local ").append(fun).append("/").append(arity);
+			b.append("local ").append(fun).append('/').append(arity);
 		} else if (isVariable) {
 			b.append("variable ").append(name);
 		}
 		if (path != null && path.length() > 0) {
 			b.append(" \"").append(path).append('"');
 		}
-		b.append("}");
+		b.append('}');
 		return b.toString();
 	}
 }

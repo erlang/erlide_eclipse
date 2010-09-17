@@ -157,7 +157,7 @@ class OtpMD5 {
 			}
 			System.out.print(buffer[i]);
 		}
-		System.out.println("}");
+		System.out.println('}');
 	}
 
 	/*

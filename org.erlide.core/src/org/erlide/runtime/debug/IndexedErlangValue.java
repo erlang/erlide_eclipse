@@ -158,12 +158,12 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		final int n = fields.size();
 		if (n > 0) {
 			for (int i = 0; i < n; i++) {
-				b.append(fields.get(i)).append("=").append(
+				b.append(fields.get(i)).append('=').append(
 						t.elementAt(i + 1).toString()).append(", ");
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("}");
+		b.append('}');
 		return b.toString();
 	}
 
@@ -176,7 +176,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("]");
+		b.append(']');
 		return b.toString();
 	}
 
@@ -189,7 +189,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("}");
+		b.append('}');
 		return b.toString();
 	}
 
@@ -226,7 +226,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 					}
 					sb.append(j);
 					if (i < n - 1) {
-						sb.append(",");
+						sb.append(',');
 					}
 				}
 			}

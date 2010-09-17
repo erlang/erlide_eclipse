@@ -76,7 +76,7 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
 				.hasNext();) {
 			final String[] part = buff.toString().split("\\n");
 			if (part[part.length - 1].length() > 60) {
-				buff.append("\n");
+				buff.append('\n');
 			}
 			final Object[] element = iter.next();
 			buff.append(element[0] + "/" + element[1]);

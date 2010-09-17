@@ -172,7 +172,7 @@ public class JRpcUtil {
 		} catch (final NoSuchMethodException e) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
@@ -189,7 +189,7 @@ public class JRpcUtil {
 		} catch (final IllegalArgumentException x) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
 					x.getMessage(), paramstr));
@@ -200,7 +200,7 @@ public class JRpcUtil {
 		} catch (final InstantiationException e) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
 					.getName(), e.getMessage(), paramstr));
@@ -290,14 +290,14 @@ public class JRpcUtil {
 				for (int j = 0; j < interfaces.length; j++) {
 					sb.append("\t\t" + interfaces[j].getName() + "\n");
 				}
-				sb.append("\n");
+				sb.append('\n');
 
 				sb.append("\ttarget methods: \n");
 				final Method[] methods = target.getClass().getMethods();
 				for (int j = 0; j < methods.length; j++) {
 					sb.append("\t\t" + methods[j].getName() + "\n");
 				}
-				sb.append("\n");
+				sb.append('\n');
 
 				if (args != null) {
 					sb.append("\tArgument types: \n");

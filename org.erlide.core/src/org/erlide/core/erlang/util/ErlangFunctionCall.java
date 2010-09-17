@@ -40,7 +40,7 @@ public class ErlangFunctionCall {
 		if (pars.arity() > 0) {
 			sb.delete(sb.length() - 2, Integer.MAX_VALUE);
 		}
-		sb.append(")");
+		sb.append(')');
 		parameters = sb.toString();
 		arity = pars.arity();
 	}

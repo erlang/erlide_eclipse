@@ -646,13 +646,13 @@ public class ErlideSelection {
 	public static int eatFuncCall(IDocument theDoc, int documentOffset)
 			throws BadLocationException {
 		String c = theDoc.get(documentOffset, 1);
-		if (c.equals(")") == false) {
+		if (!(c.equals(")"))) {
 			throw new AssertionError("Expecting ) to eat callable. Received: "
 					+ c);
 		}
 
 		while (documentOffset > 0
-				&& theDoc.get(documentOffset, 1).equals("(") == false) {
+				&& !(theDoc.get(documentOffset, 1).equals("("))) {
 			documentOffset -= 1;
 		}
 
@@ -822,7 +822,7 @@ public class ErlideSelection {
 	 */
 	public static boolean containsOnlyWhitespaces(String string) {
 		for (int i = 0; i < string.length(); i++) {
-			if (Character.isWhitespace(string.charAt(i)) == false) {
+			if (!(Character.isWhitespace(string.charAt(i)))) {
 				return false;
 			}
 		}
@@ -852,7 +852,7 @@ public class ErlideSelection {
 		int i = 0;
 		boolean breaked = false;
 		while (i < src.length()) {
-			if (Character.isWhitespace(src.charAt(i)) == false
+			if (!(Character.isWhitespace(src.charAt(i)))
 					&& src.charAt(i) != '\t') {
 				i++;
 				breaked = true;

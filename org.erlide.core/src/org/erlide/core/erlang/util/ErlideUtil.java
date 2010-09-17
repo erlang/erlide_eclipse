@@ -422,7 +422,7 @@ public final class ErlideUtil {
 		}
 		final StringBuffer buf = new StringBuffer();
 		for (final String s : result) {
-			buf.append(s).append("\n");
+			buf.append(s).append('\n');
 		}
 		return buf.toString();
 	}
