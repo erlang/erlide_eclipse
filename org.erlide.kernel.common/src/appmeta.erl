@@ -33,7 +33,7 @@
                description = "" :: string(),
                id = "" :: string(),
                vsn = "" :: string(),
-               modules = source :: [meta_module()] | 'source',
+               modules = [] :: [meta_module()],
                maxT  = infinity :: integer() | 'infinity',
                registered = [] :: [atom()],
                included_applications = [] :: [meta_app()],
@@ -201,19 +201,6 @@ format(#layout{src=Src, include=Include, ebin=Ebin }) ->
 clean(L) ->
     lists:flatmap(fun(X)-> clean1(X, L) end, L).
 
-clean1({modules, source}, L) ->
-    Ms = case lists:keysearch(layout, 1, L) of
-             {value, {_, LL}} ->
-                 case lists:keysearch(src, 1, LL) of
-                     {value, {_, S}} ->
-                         S;
-                     _ ->
-                         []
-                 end;
-             _ ->
-                 []
-         end,
-    [{modules, get_all_modules(Ms)}];
 clean1({modules, M}, _) ->
     [{modules, lists:flatmap(fun get_name/1, M)}];
 clean1({applications, M}, _) ->
