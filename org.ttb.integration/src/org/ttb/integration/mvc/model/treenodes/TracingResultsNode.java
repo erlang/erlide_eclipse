@@ -12,7 +12,7 @@ import org.ttb.integration.Images;
  * @author Piotr Dorobisz
  * 
  */
-public class TracingResultsNode extends TreeNode {
+public class TracingResultsNode extends TreeNode implements Comparable<TracingResultsNode> {
 
     private Date startDate;
     private Date endDate;
@@ -29,6 +29,33 @@ public class TracingResultsNode extends TreeNode {
 
     public TracingResultsNode(String label, Image image) {
         super(label, image);
+    }
+
+    @Override
+    public int hashCode() {
+        // in set, when two objects have same hash code they are compared using
+        // theirs equals methods
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !o.getClass().equals(TracingResultsNode.class))
+            return false;
+        TracingResultsNode trn = (TracingResultsNode) o;
+        return fileName.equals(trn.fileName);
+    }
+
+    public int compareTo(TracingResultsNode trn) {
+        if (trn == null)
+            throw new NullPointerException();
+
+        if (this.equals(trn))
+            return 0;
+        if (!startDate.equals(trn.startDate))
+            return startDate.compareTo(trn.startDate);
+        else
+            return endDate.compareTo(trn.endDate);
     }
 
     public Date getStartDate() {

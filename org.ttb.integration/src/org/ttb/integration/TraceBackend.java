@@ -27,7 +27,7 @@ import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
-import org.ttb.integration.mvc.model.TraceLists;
+import org.ttb.integration.mvc.model.TraceCollections;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.model.TracedProcess;
@@ -112,11 +112,11 @@ public class TraceBackend {
                         if (!loadingFileInfo) {
                             if (firstTrace) {
                                 firstTrace = false;
-                                TraceLists.getTracesList().clear();
+                                TraceCollections.getTracesList().clear();
                             }
-                            TraceLists.getTracesList().add(newNode);
+                            TraceCollections.getTracesList().add(newNode);
                         } else {
-                            TraceLists.getFilesList().add(newNode);
+                            TraceCollections.getFilesList().add(newNode);
                         }
                     }
                 }
@@ -356,8 +356,8 @@ public class TraceBackend {
      */
     public void clearTraceLists() {
         activeResultSet = null;
-        TraceLists.getFilesList().clear();
-        TraceLists.getTracesList().clear();
+        TraceCollections.getFilesList().clear();
+        TraceCollections.getTracesList().clear();
         for (ITraceNodeObserver listener : listeners) {
             try {
                 listener.clearTraceLists();

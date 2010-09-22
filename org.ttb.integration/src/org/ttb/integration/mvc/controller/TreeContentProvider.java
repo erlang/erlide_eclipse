@@ -1,6 +1,6 @@
 package org.ttb.integration.mvc.controller;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -16,7 +16,7 @@ import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 public class TreeContentProvider implements /* ILazyTreeContentProvider */ITreeContentProvider {
 
     private final TreeViewer treeViewer;
-    private List<ITreeNode> list;
+    private Collection<ITreeNode> list;
     private final boolean hasChildrenValue;
 
     /**
@@ -38,7 +38,7 @@ public class TreeContentProvider implements /* ILazyTreeContentProvider */ITreeC
 
     @SuppressWarnings("unchecked")
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        list = (List<ITreeNode>) newInput;
+        list = (Collection<ITreeNode>) newInput;
     }
 
     public Object[] getChildren(Object element) {

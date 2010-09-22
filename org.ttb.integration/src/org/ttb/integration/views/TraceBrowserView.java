@@ -24,7 +24,7 @@ import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
 import org.ttb.integration.mvc.controller.TreeContentProvider;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
-import org.ttb.integration.mvc.model.TraceLists;
+import org.ttb.integration.mvc.model.TraceCollections;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 import org.ttb.integration.mvc.view.TreeLabelProvider;
@@ -128,7 +128,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
-        treeViewer.setInput(TraceLists.getFilesList());
+        treeViewer.setInput(TraceCollections.getFilesList());
 
         // listener
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {

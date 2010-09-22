@@ -35,7 +35,7 @@ import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
 import org.ttb.integration.mvc.controller.TreeContentProvider;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
-import org.ttb.integration.mvc.model.TraceLists;
+import org.ttb.integration.mvc.model.TraceCollections;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
@@ -97,7 +97,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
-        treeViewer.setInput(TraceLists.getTracesList());
+        treeViewer.setInput(TraceCollections.getTracesList());
 
         // listener
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -226,7 +226,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         TracingResultsNode resultSet = TraceBackend.getInstance().getActiveResultSet();
         if (resultSet != null) {
             index = TraceBackend.getInstance().getStartIndex();
-            int size = TraceLists.getTracesList().size();
+            int size = TraceCollections.getTracesList().size();
             boolean previousEnabled = index > 1;
             boolean nextEnabled = index + size - 1 < resultSet.getSize();
 
