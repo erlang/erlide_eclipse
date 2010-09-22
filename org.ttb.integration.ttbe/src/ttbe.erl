@@ -163,7 +163,8 @@ ensure_opt({PI,Client,Traci}) ->
         {true, _}             -> exit(local_client_required_on_shell_tracing)
     end.
 
-get_logname({local, F}) -> filename:basename(F);
+get_logname({local, F}) -> get_logname(F);
+get_logname({wrap, F}) -> filename:basename(F);
 get_logname({wrap, F, _, _}) -> filename:basename(F);
 get_logname(F) -> filename:basename(F).
 
