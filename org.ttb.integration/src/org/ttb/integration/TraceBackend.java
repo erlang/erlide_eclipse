@@ -26,8 +26,8 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
-import org.ttb.integration.mvc.model.CollectedDataList;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
+import org.ttb.integration.mvc.model.TraceLists;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.model.TracedNode;
 import org.ttb.integration.mvc.model.TracedProcess;
@@ -38,6 +38,7 @@ import org.ttb.integration.preferences.PreferenceNames;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -57,6 +58,7 @@ public class TraceBackend {
     private static final String FUN_TP = "tp";
     private static final String FUN_TPL = "tpl";
     private static final String FUN_START = "start";
+    private static final String FUN_FILE_INFO = "get_file_info";
     private static final String FUN_LOAD = "load";
 
     private final Set<TracePattern> tracePatterns = new LinkedHashSet<TracePattern>();
@@ -68,10 +70,18 @@ public class TraceBackend {
     private Backend tracerBackend;
     private boolean tracing;
     private boolean loading;
+
+    /**
+     * <code>true</code> when loading only information about file that contains
+     * tracing results, <code>false</code> when loading traces from file
+     */
+    private boolean loadingFileInfo;
     private TraceEventHandler handler;
     private List<String> activatedNodes;
     private Set<String> notActivatedNodes;
     private Object errorObject;
+    private long startIndex;
+    private TracingResultsNode activeResultSet;
 
     private TraceBackend() {
     }
@@ -83,7 +93,6 @@ public class TraceBackend {
     private class TraceEventHandler extends EventHandler {
 
         private final TraceDataHandler handler = new TraceDataHandler();
-        private TracingResultsNode rootNode;
         private boolean firstTrace = true;
 
         @Override
@@ -93,23 +102,22 @@ public class TraceBackend {
                 OtpErlangObject errorReason = null;
                 // System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
-                    if (rootNode != null) {
-                        rootNode.setEndDate(handler.getLastTraceDate());
-                        rootNode.generateLabel(handler.getRootDateFormatter());
-                    }
-                    finishTracing(TracingStatus.OK);
+                    finishLoading(TracingStatus.OK);
                 } else if ((errorReason = handler.getErrorReson(message)) != null) {
                     errorObject = errorReason;
-                    finishTracing(TracingStatus.ERROR);
+                    finishLoading(TracingStatus.ERROR);
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
-                        if (firstTrace) {
-                            firstTrace = false;
-                            rootNode = handler.createRoot();
-                            CollectedDataList.getInstance().addData(rootNode);
+                        if (!loadingFileInfo) {
+                            if (firstTrace) {
+                                firstTrace = false;
+                                TraceLists.getTracesList().clear();
+                            }
+                            TraceLists.getTracesList().add(newNode);
+                        } else {
+                            TraceLists.getFilesList().add(newNode);
                         }
-                        rootNode.addChildren(newNode);
                     }
                 }
             }
@@ -148,6 +156,7 @@ public class TraceBackend {
                     try {
                         tracing = true;
                         getBackend(true);
+                        loadingFileInfo = true;
                         handler = new TraceEventHandler();
                         tracerBackend.getEventDaemon().addHandler(handler);
 
@@ -274,29 +283,86 @@ public class TraceBackend {
                     } catch (BackendException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
                         errorObject = e;
-                        finishTracing(TracingStatus.EXCEPTION_THROWN);
+                        finishLoading(TracingStatus.EXCEPTION_THROWN);
                     }
                 }
             }
         }
     }
 
-    public void loadData(String path) {
+    /**
+     * Loads information about given file.
+     * 
+     * @param path
+     *            path
+     */
+    public void loadFile(String path) {
         if (!tracing && !loading) {
             synchronized (this) {
                 if (!tracing && !loading) {
                     try {
                         loading = true;
+                        loadingFileInfo = true;
                         handler = new TraceEventHandler();
                         getBackend(true);
                         tracerBackend.getEventDaemon().addHandler(handler);
-                        tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "s", new OtpErlangString(path));
+                        tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_FILE_INFO, "s", new OtpErlangString(path));
                     } catch (BackendException e) {
                         ErlLogger.error(e);
                         errorObject = e;
-                        finishTracing(TracingStatus.EXCEPTION_THROWN);
+                        finishLoading(TracingStatus.EXCEPTION_THROWN);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Loads traces from given file ({@link #setLoadPath(String)}). Index of
+     * last trace which will be loaded is
+     * <code>max(number_of_traces, endIndex)</code>.
+     * 
+     * @param startIndex
+     *            number of first trace
+     * @param endIndex
+     *            number of last trace
+     */
+    public void loadDataFromFile(long startIndex, long endIndex) {
+        if (!tracing && !loading) {
+            synchronized (this) {
+                if (!tracing && !loading) {
+                    try {
+                        loading = true;
+                        loadingFileInfo = false;
+                        this.startIndex = startIndex;
+                        handler = new TraceEventHandler();
+                        getBackend(true);
+                        tracerBackend.getEventDaemon().addHandler(handler);
+                        OtpErlangLong start = new OtpErlangLong(startIndex);
+                        OtpErlangLong stop = new OtpErlangLong(endIndex);
+                        tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "sii", new OtpErlangString(activeResultSet.getFileName()), start, stop);
+                    } catch (BackendException e) {
+                        ErlLogger.error(e);
+                        errorObject = e;
+                        finishLoading(TracingStatus.EXCEPTION_THROWN);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes from list all files containing tracing results.
+     */
+    public void clearTraceLists() {
+        activeResultSet = null;
+        TraceLists.getFilesList().clear();
+        TraceLists.getTracesList().clear();
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.clearTraceLists();
+            } catch (Exception e) {
+                ErlLogger.error(e);
             }
         }
     }
@@ -317,16 +383,19 @@ public class TraceBackend {
     }
 
     /**
-     * Performs actions after loading trace data.
+     * Performs actions after loading file or trace data.
      * 
      * @param status
      *            status
      */
-    private void finishTracing(TracingStatus status) {
+    private void finishLoading(TracingStatus status) {
         tracerBackend.getEventDaemon().removeHandler(handler);
         for (ITraceNodeObserver listener : listeners) {
             try {
-                listener.finishLoadingFile(status);
+                if (loadingFileInfo)
+                    listener.finishLoadingFile(status);
+                else
+                    listener.finishLoadingTraces(status);
             } catch (Exception e) {
                 ErlLogger.error(e);
             }
@@ -430,6 +499,30 @@ public class TraceBackend {
      */
     public Object getErrorObject() {
         return errorObject;
+    }
+
+    /**
+     * Sets active results set (set from which traces will be loaded).
+     * 
+     * @param results
+     *            results set
+     */
+    public void setActiveResultSet(TracingResultsNode results) {
+        this.activeResultSet = results;
+    }
+
+    public TracingResultsNode getActiveResultSet() {
+        return activeResultSet;
+    }
+
+    /**
+     * Returns index of first trace to be loaded from selected result set (
+     * {@link #setActiveResultSet(TracingResultsNode)}).
+     * 
+     * @return index
+     */
+    public long getStartIndex() {
+        return startIndex;
     }
 
     private Backend createBackend() {

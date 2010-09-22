@@ -92,6 +92,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private Action startStopAction;
     private BusyDialog busyDialog;
 
+    private static final String START_LABEL = "Start tracing";
+    private static final String STOP_LABEL = "Stop tracing";
+
     public ControlPanelView() {
         TraceBackend.getInstance().addListener(this);
     }
@@ -119,26 +122,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         addNodesTab(tabFolder);
         addProcessesTab(tabFolder);
         addFunctionsTab(tabFolder);
-
-        // initialize UI
-        initializeUI();
-    }
-
-    private void initializeUI() {
-        if (TraceBackend.getInstance().isStarted()) {
-            doAfterStartTracing();
-            if (TraceBackend.getInstance().isLoading()) {
-                // tracing is being finished - data is being sent to eclipse
-                doBeforeStopTracing();
-            }
-        } else {
-            if (TraceBackend.getInstance().isLoading()) {
-                // trace results from file are being loaded
-                doBeforeLoading();
-            } else
-                // no action is being performed
-                doAfterLoading();
-        }
     }
 
     private void createActionBars() {
@@ -160,6 +143,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         };
 
         startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+        startStopAction.setToolTipText(START_LABEL);
         manager.add(startStopAction);
     }
 
@@ -192,7 +176,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 startStopAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
-                startStopAction.setToolTipText("Stop tracing");
+                startStopAction.setToolTipText(STOP_LABEL);
             }
         });
     }
@@ -225,19 +209,12 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
-                startStopAction.setToolTipText("Start tracing");
+                startStopAction.setToolTipText(START_LABEL);
                 startStopAction.setEnabled(true);
                 if (busyDialog != null)
                     busyDialog.finish();
             }
         });
-    }
-
-    /**
-     * Method called before loading trace results.
-     */
-    private void doBeforeLoading() {
-        startStopAction.setEnabled(false);
     }
 
     // "Processes" tab methods
@@ -852,7 +829,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         handleError(false, status);
     }
 
-    public void finishLoadingTraces() {
-        // TODO Auto-generated method stub
+    public void finishLoadingTraces(TracingStatus status) {
+    }
+
+    public void clearTraceLists() {
     }
 }

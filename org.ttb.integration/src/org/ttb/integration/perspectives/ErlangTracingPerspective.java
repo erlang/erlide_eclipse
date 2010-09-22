@@ -17,8 +17,10 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
 
     public static final String CONTROL_PANEL_VIEW_ID = "org.ttb.integration.views.ControlPanelView";
     public static final String TREE_VIEWER_VIEW_ID = "org.ttb.integration.views.TreeViewerView";
+    public static final String BROWSER_VIEW_ID = "org.ttb.integration.views.TraceBrowserView";
     private static final String TOP_LEFT = "top left";
     private static final String BOTTOM_LEFT = "bottom left";
+    private static final String CENTER_LEFT = "center left";
     private static final String BOTTOM_CENTER = "bottom center";
     private static final String RIGHT = "right";
 
@@ -38,8 +40,12 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
         IFolderLayout topLeft = pageLayout.createFolder(TOP_LEFT, IPageLayout.LEFT, 0.30f, pageLayout.getEditorArea());
         topLeft.addView(ErlideUIConstants.NAVIGATOR_VIEW_ID);
 
+        // center left
+        IFolderLayout centerLeft = pageLayout.createFolder(CENTER_LEFT, IPageLayout.BOTTOM, 0.20f, TOP_LEFT);
+        centerLeft.addView(BROWSER_VIEW_ID);
+
         // bottom left
-        IFolderLayout bottomLeft = pageLayout.createFolder(BOTTOM_LEFT, IPageLayout.BOTTOM, 0.40f, TOP_LEFT);
+        IFolderLayout bottomLeft = pageLayout.createFolder(BOTTOM_LEFT, IPageLayout.BOTTOM, 0.30f, CENTER_LEFT);
         bottomLeft.addView(TREE_VIEWER_VIEW_ID);
 
         // bottom center

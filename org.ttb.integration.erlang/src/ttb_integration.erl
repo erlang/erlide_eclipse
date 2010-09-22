@@ -5,7 +5,7 @@
 %%
 %% Exported Functions
 %%
--export([start/3, stop/0,  load/1, load_data/1, str2ms/1]).
+-export([start/3, stop/0,  load/3, load_data/3, get_file_info/1, str2ms/1]).
 
 
 start(NodesAndCookies, FileName, NetTicktime)->
@@ -28,34 +28,66 @@ set_cookies(NodesAndCookies) ->
 
 stop() ->
 	{stopped, Dir} = ttbe:stop([return]),
-	spawn(?MODULE, load_data, [Dir]).
+	spawn(?MODULE, get_file_info, [Dir]).
 
-load(Path) ->
-	spawn(?MODULE, load_data, [Path]).
+get_file_info(Path) ->
+	case ttbe:format(Path, [{handler, {create_info_handler(Path), {true, 0, '_', '_'}}}]) of
+		ok -> 
+			erlide_jrpc:event(trace_event, stop_tracing);
+		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
+	end.
 
-load_data(Path) ->
-	case ttbe:format(Path, [{handler, {create_handler(), initial_state}}]) of
+load(Path, Start, Stop) ->
+	spawn(?MODULE, load_data, [Path, Start, Stop]).
+
+load_data(Path, Start, Stop) ->
+	case ttbe:format(Path, [{handler, {create_load_handler(Start, Stop), 1}}]) of
 		ok -> erlide_jrpc:event(trace_event, stop_tracing);
 		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
 	end.
 
-create_handler() ->
+create_load_handler(Start, Stop) ->
 	fun(Fd, Trace, _TraceInfo, State) ->
-			case Trace of
-				{trace_ts, Pid, call, {Mod, Fun, Args}, Time} ->
-					erlide_jrpc:event(trace_event, {trace_ts, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
-				{trace_ts, Pid, spawn, Pid2, {M, F, Args}, Time} ->
-					erlide_jrpc:event(trace_event, {trace_ts, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
-				{trace_ts, _, _, _, Time} ->
-					T = calendar:now_to_local_time(Time),
-					erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
-				{trace_ts, _, _, _, _, Time} ->
-					T = calendar:now_to_local_time(Time),
-					erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
-				_ ->
-					erlide_jrpc:event(trace_event, Trace)
+			if
+				State >= Start, State =< Stop ->
+					case Trace of
+						{trace_ts, Pid, call, {Mod, Fun, Args}, Time} ->
+							erlide_jrpc:event(trace_event, {trace_ts, Pid, call, {Mod, Fun,[avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
+						{trace_ts, Pid, spawn, Pid2, {M, F, Args}, Time} ->
+							erlide_jrpc:event(trace_event, {trace_ts, Pid, spawn, Pid2, {M, F, [avoid_interpreting_as_string] ++ Args}, calendar:now_to_local_time(Time)});
+						{trace_ts, _, _, _, Time} ->
+							T = calendar:now_to_local_time(Time),
+							erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
+						{trace_ts, _, _, _, _, Time} ->
+							T = calendar:now_to_local_time(Time),
+							erlide_jrpc:event(trace_event, setelement(tuple_size(Trace), Trace, T));
+						_ ->
+							erlide_jrpc:event(trace_event, Trace)
+					end;
+				true -> ok
 			end,
-			State
+			State + 1
+	end.
+
+create_info_handler(Path) ->
+	fun(Fd, Trace, _TraceInfo, State) ->
+			{First, Count, Start_date, End_date} = State,
+			case Trace of
+				end_of_trace ->
+					erlide_jrpc:event(trace_event, {file_info, calendar:now_to_local_time(Start_date), calendar:now_to_local_time(End_date), Path, Count}),
+					ok;
+				{trace_ts, _, _, _, Time} ->
+					case First of
+						true -> {false, Count + 1, Time, Time};
+						_ -> {false, Count + 1, Start_date, Time}
+					end;
+				{trace_ts, _, _, _, _, Time} ->
+					case First of
+						true -> {false, Count + 1, Time, Time};
+						_ -> {false, Count + 1, Start_date, Time}
+					end;
+				_ -> {First, Count + 1, Start_date, End_date}
+			end
 	end.
 
 str2fun(S) ->

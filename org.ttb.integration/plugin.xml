@@ -23,6 +23,14 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
+            class="org.ttb.integration.views.TraceBrowserView"
+            icon="icons/treeViewerView.gif"
+            id="org.ttb.integration.views.TraceBrowserView"
+            name="Erlang trace browser">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
             class="org.ttb.integration.views.TreeViewerView"
             icon="icons/treeViewerView.gif"
             id="org.ttb.integration.views.TreeViewerView"

@@ -5,12 +5,12 @@ import org.eclipse.swt.graphics.Image;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 
 /**
- * Label provider for tree view of collected traces.
+ * Label provider for tree.
  * 
  * @author Piotr Dorobisz
  * 
  */
-public class CollectedTracesLabelProvider extends LabelProvider {
+public class TreeLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {

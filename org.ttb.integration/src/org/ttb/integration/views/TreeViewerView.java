@@ -1,51 +1,63 @@
 package org.ttb.integration.views;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
+import org.ttb.integration.Activator;
 import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
-import org.ttb.integration.mvc.controller.CollectedTracesContentProvider;
-import org.ttb.integration.mvc.model.CollectedDataList;
+import org.ttb.integration.mvc.controller.TreeContentProvider;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
+import org.ttb.integration.mvc.model.TraceLists;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;
-import org.ttb.integration.mvc.view.CollectedTracesLabelProvider;
+import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
+import org.ttb.integration.mvc.view.TreeLabelProvider;
+import org.ttb.integration.preferences.PreferenceNames;
 import org.ttb.integration.ui.dialogs.BusyDialog;
 
-/**
- * Sequence diagram which shows tracing results.
- * 
- * @author Piotr Dorobisz
- * 
- */
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private TreeViewer treeViewer;
-    private Action clearAction;
-    private Action loadAction;
+    private Long index;
+    private boolean correctInput = false;
+    private Text traceIndexField;
+
     private BusyDialog busyDialog;
+    private Composite buttonsPanel;
+    private Button previousButton;
+    private Button nextButton;
+    private Button showButton;
+
+    private Label label;
 
     public TreeViewerView() {
         TraceBackend.getInstance().addListener(this);
@@ -66,48 +78,9 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
 
-        // toolbars and menu
-        createActionBars();
-
         // children
         createTreeViewerPanel(parent);
-    }
-
-    private void createActionBars() {
-        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-
-        loadAction = new Action() {
-            @Override
-            public void run() {
-                // TODO add support for multiple selection
-                FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
-                dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
-                // dialog.setFilterExtensions(new String[] { "*.*" });
-                dialog.setText("Load trace data...");
-                final String selected = dialog.open();
-                if (selected != null) {
-                    TraceBackend.getInstance().loadData(selected);
-                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                    busyDialog = new BusyDialog(shell, "Loading trace results...");
-                    busyDialog.start();
-                }
-            }
-        };
-        loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
-        loadAction.setToolTipText("Load results from file...");
-
-        clearAction = new Action() {
-            @Override
-            public void run() {
-                CollectedDataList.getInstance().clear();
-                treeViewer.setInput(CollectedDataList.getInstance());
-            }
-        };
-        clearAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
-        clearAction.setToolTipText("Clear view");
-
-        manager.add(loadAction);
-        manager.add(clearAction);
+        createButtonsPanel(parent);
     }
 
     private void createTreeViewerPanel(Composite parent) {
@@ -120,11 +93,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
-        treeViewer.setContentProvider(new CollectedTracesContentProvider(treeViewer));
-        treeViewer.setLabelProvider(new CollectedTracesLabelProvider());
+        treeViewer.setContentProvider(new TreeContentProvider(treeViewer, true));
+        treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
-        treeViewer.setInput(CollectedDataList.getInstance());
+        treeViewer.setInput(TraceLists.getTracesList());
 
         // listener
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -135,8 +108,150 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
+    private void createButtonsPanel(Composite parent) {
+        buttonsPanel = new Composite(parent, SWT.NONE);
+        buttonsPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        buttonsPanel.setLayout(new RowLayout());
+
+        // "Previous" button
+        previousButton = new Button(buttonsPanel, SWT.PUSH | SWT.CENTER);
+        previousButton.setToolTipText("Show previous trace set");
+        previousButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_BACK));
+        previousButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                busyDialog = new BusyDialog(shell, "Loading trace results...");
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
+                        long startIndex = Math.max(1L, index - limit);
+                        long endIndex = startIndex + limit - 1;
+                        TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
+                        busyDialog.start();
+                    }
+                });
+            }
+        });
+
+        // "Next" button
+        nextButton = new Button(buttonsPanel, SWT.PUSH | SWT.CENTER);
+        nextButton.setToolTipText("Show next trace set");
+        nextButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_FORWARD));
+        nextButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                busyDialog = new BusyDialog(shell, "Loading trace results...");
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
+                        long endIndex = Math.min(index + limit * 2 - 1, TraceBackend.getInstance().getActiveResultSet().getSize());
+                        long startIndex = endIndex - limit + 1;
+                        TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
+                        busyDialog.start();
+                    }
+                });
+            }
+        });
+
+        // "Show" button
+        showButton = new Button(buttonsPanel, SWT.PUSH | SWT.CENTER);
+        showButton.setToolTipText("Show selected trace set");
+        showButton.setImage(DebugUITools.getImage(IDebugUIConstants.IMG_OBJS_LAUNCH_RUN));
+        showButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                doSelection();
+            }
+        });
+
+        // Text field
+        traceIndexField = new Text(buttonsPanel, SWT.SINGLE | SWT.BORDER);
+        traceIndexField.setLayoutData(new RowData(60, SWT.DEFAULT));
+        traceIndexField.addListener(SWT.Modify, new Listener() {
+
+            public void handleEvent(Event event) {
+                try {
+                    correctInput = false;
+                    Long value = new Long(traceIndexField.getText());
+
+                    if (value >= 1 && value <= TraceBackend.getInstance().getActiveResultSet().getSize()) {
+                        index = value;
+                        showButton.setEnabled(true);
+                        correctInput = true;
+                    } else {
+                        showButton.setEnabled(false);
+                    }
+                } catch (Exception e) {
+                    showButton.setEnabled(false);
+                }
+            }
+        });
+        traceIndexField.addKeyListener(new KeyListener() {
+
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.CR && correctInput) {
+                    doSelection();
+                }
+            }
+
+            public void keyPressed(KeyEvent e) {
+            }
+        });
+
+        // label
+        label = new Label(buttonsPanel, SWT.NONE);
+        label.setLayoutData(new RowData(200, SWT.DEFAULT));
+
+        updateButtonsPanel();
+    }
+
+    private void doSelection() {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        busyDialog = new BusyDialog(shell, "Loading trace results...");
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
+                TraceBackend.getInstance().loadDataFromFile(index, index + limit - 1);
+                busyDialog.start();
+            }
+        });
+    }
+
+    private void updateButtonsPanel() {
+        TracingResultsNode resultSet = TraceBackend.getInstance().getActiveResultSet();
+        if (resultSet != null) {
+            index = TraceBackend.getInstance().getStartIndex();
+            int size = TraceLists.getTracesList().size();
+            boolean previousEnabled = index > 1;
+            boolean nextEnabled = index + size - 1 < resultSet.getSize();
+
+            previousButton.setEnabled(previousEnabled);
+            nextButton.setEnabled(nextEnabled);
+            showButton.setEnabled(previousEnabled || nextEnabled);
+            traceIndexField.setEnabled(previousEnabled || nextEnabled);
+            traceIndexField.setText(String.valueOf(index));
+            buttonsPanel.setEnabled(true);
+
+            StringBuilder stringBuilder = new StringBuilder(" (");
+            if (resultSet.getSize() == 0)
+                stringBuilder.append("no traces)");
+            else
+                stringBuilder.append(index).append(" - ").append(index + size - 1).append(" of ").append(resultSet.getSize()).append(" traces)");
+            label.setText(stringBuilder.toString());
+        } else {
+            traceIndexField.setText("");
+            label.setText("");
+            buttonsPanel.setEnabled(false);
+        }
+    }
+
     /**
-     * Action performed when user double-clicks on tree element
+     * Action performed when user double-clicks on tree element.
      * 
      * @param event
      */
@@ -162,6 +277,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void startTracing() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                buttonsPanel.setEnabled(false);
+            }
+        });
     }
 
     public void finishLoadingFile(final TracingStatus status) {
@@ -169,15 +289,31 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             public void run() {
                 if (TracingStatus.OK.equals(status))
                     treeViewer.refresh();
-                loadAction.setEnabled(true);
-                clearAction.setEnabled(true);
                 if (busyDialog != null)
                     busyDialog.finish();
             }
         });
     }
 
-    public void finishLoadingTraces() {
-        // TODO Auto-generated method stub
+    public void finishLoadingTraces(final TracingStatus status) {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                if (TracingStatus.OK.equals(status)) {
+                    updateButtonsPanel();
+                    treeViewer.refresh();
+                }
+                if (busyDialog != null)
+                    busyDialog.finish();
+            }
+        });
+    }
+
+    public void clearTraceLists() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                updateButtonsPanel();
+                treeViewer.refresh();
+            }
+        });
     }
 }

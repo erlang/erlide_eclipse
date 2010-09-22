@@ -1,6 +1,5 @@
 package org.ttb.integration.mvc.model.treenodes;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.swt.graphics.Image;
@@ -17,6 +16,8 @@ public class TracingResultsNode extends TreeNode {
 
     private Date startDate;
     private Date endDate;
+    private String fileName;
+    private long size;
 
     public TracingResultsNode() {
         this(null);
@@ -28,20 +29,6 @@ public class TracingResultsNode extends TreeNode {
 
     public TracingResultsNode(String label, Image image) {
         super(label, image);
-    }
-
-    /**
-     * Creates node's label based on start and end date. It uses given formatter
-     * to convert date into {@link String}.
-     * 
-     * @param formatter
-     *            date formatter
-     */
-    public void generateLabel(DateFormat formatter) {
-        StringBuilder builder = new StringBuilder();
-        String s = builder.append(formatter.format(startDate)).append(" - ").append(formatter.format(endDate)).append(": ").append(getChildren().size())
-                .append(" traces").toString();
-        setLabel(s);
     }
 
     public Date getStartDate() {
@@ -58,5 +45,21 @@ public class TracingResultsNode extends TreeNode {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 }

@@ -26,6 +26,15 @@ public interface ITraceNodeObserver {
 
     /**
      * This method is invoked after finishing loading traces from file.
+     * 
+     * @param status
+     *            status
      */
-    public void finishLoadingTraces();
+    public void finishLoadingTraces(TracingStatus status);
+
+    /**
+     * This method is invoked after removing all items from all lists that
+     * contain information about loaded traces.
+     */
+    public void clearTraceLists();
 }

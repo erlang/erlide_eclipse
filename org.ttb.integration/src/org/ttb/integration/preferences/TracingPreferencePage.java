@@ -23,8 +23,13 @@ public class TracingPreferencePage extends FieldEditorPreferencePage implements 
         StringFieldEditor nodeNameEditor = new StringFieldEditor(PreferenceNames.NODE_NAME, "&Tracing node name:", getFieldEditorParent());
         IntegerFieldEditor netTickTimeEditor = new IntegerFieldEditor(PreferenceNames.TICK_TIME, "&Net tick time (in seconds):", getFieldEditorParent());
         netTickTimeEditor.setValidRange(4, 1000);
+        IntegerFieldEditor tracesLoadLimitEditor = new IntegerFieldEditor(PreferenceNames.TRACES_LOAD_LIMIT, "&Max traces in tree viewer:",
+                getFieldEditorParent());
+        tracesLoadLimitEditor.setValidRange(1, 150);
+
         addField(nodeNameEditor);
         addField(netTickTimeEditor);
+        addField(tracesLoadLimitEditor);
     }
 
     public void initializeDefaultPreferences() {
