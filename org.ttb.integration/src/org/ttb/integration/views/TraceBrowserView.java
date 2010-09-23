@@ -71,6 +71,10 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
         // children
         createTreeViewerPanel(parent);
+
+        // enable or disable buttons depending on whether tracing is started or
+        // not
+        enableActions(!TraceBackend.getInstance().isStarted());
     }
 
     private void createActionBars() {
@@ -106,15 +110,12 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
         manager.add(loadAction);
         manager.add(clearAction);
-
-        // enable or disable buttons depending on whether tracing is started or
-        // not
-        enableButtons(!TraceBackend.getInstance().isStarted());
     }
 
-    private void enableButtons(boolean enabled) {
+    private void enableActions(boolean enabled) {
         loadAction.setEnabled(enabled);
         clearAction.setEnabled(enabled);
+        treeViewer.getTree().setEnabled(enabled);
     }
 
     private void createTreeViewerPanel(Composite parent) {
@@ -171,7 +172,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     public void startTracing() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                enableButtons(false);
+                enableActions(false);
             }
         });
     }
@@ -194,7 +195,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 default:
                     break;
                 }
-                enableButtons(true);
+                enableActions(true);
             }
         });
     }

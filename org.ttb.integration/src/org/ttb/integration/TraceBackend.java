@@ -109,11 +109,8 @@ public class TraceBackend {
                 } else {
                     ITreeNode newNode = handler.getData(message);
                     if (newNode != null) {
+                        firstTrace = false;
                         if (!loadingFileInfo) {
-                            if (firstTrace) {
-                                firstTrace = false;
-                                TraceCollections.getTracesList().clear();
-                            }
                             TraceCollections.getTracesList().add(newNode);
                         } else {
                             TraceCollections.getFilesList().add(newNode);
@@ -340,6 +337,7 @@ public class TraceBackend {
                         tracerBackend.getEventDaemon().addHandler(handler);
                         OtpErlangLong start = new OtpErlangLong(startIndex);
                         OtpErlangLong stop = new OtpErlangLong(endIndex);
+                        TraceCollections.getTracesList().clear();
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "sii", new OtpErlangString(activeResultSet.getFileName()), start, stop);
                     } catch (BackendException e) {
                         ErlLogger.error(e);
