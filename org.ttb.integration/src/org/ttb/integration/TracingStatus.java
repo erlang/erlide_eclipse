@@ -10,6 +10,10 @@ package org.ttb.integration;
 public enum TracingStatus {
 
     /**
+     * action finished successfully but no data was received
+     */
+    EMPTY,
+    /**
      * action finished with error on Erlang side
      */
     ERROR,

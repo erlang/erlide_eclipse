@@ -20,11 +20,9 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * Handler which receives trace data from traced node. It receives data via
- * given {@link OtpMbox}.
+ * Handler which reads trace data.
  * 
  * @author Piotr Dorobisz
  * 
@@ -233,6 +231,10 @@ public class TraceDataHandler {
 
     private ITreeNode processFileInfo(OtpErlangTuple tuple) {
         TracingResultsNode node = null;
+        if (tuple.elementAt(INDEX_INFO_START_DATE) instanceof OtpErlangAtom) {
+            // file contains no trace events
+            return null;
+        }
         try {
             Date from = readDateTuple((OtpErlangTuple) tuple.elementAt(INDEX_INFO_START_DATE));
             Date to = readDateTuple((OtpErlangTuple) tuple.elementAt(INDEX_INFO_END_DATE));

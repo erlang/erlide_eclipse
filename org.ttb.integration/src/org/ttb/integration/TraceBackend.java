@@ -102,7 +102,7 @@ public class TraceBackend {
                 OtpErlangObject errorReason = null;
                 // System.out.println("message: " + message);
                 if (handler.isTracingFinished(message)) {
-                    finishLoading(TracingStatus.OK);
+                    finishLoading(firstTrace ? TracingStatus.EMPTY : TracingStatus.OK);
                 } else if ((errorReason = handler.getErrorReson(message)) != null) {
                     errorObject = errorReason;
                     finishLoading(TracingStatus.ERROR);

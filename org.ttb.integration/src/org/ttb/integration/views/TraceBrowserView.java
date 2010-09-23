@@ -1,6 +1,8 @@
 package org.ttb.integration.views;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
@@ -19,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.ttb.integration.Activator;
 import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
@@ -176,11 +179,22 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     public void finishLoadingFile(final TracingStatus status) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                if (TracingStatus.OK.equals(status))
+                switch (status) {
+                case OK:
                     treeViewer.refresh();
+                    if (busyDialog != null)
+                        busyDialog.finish();
+                    break;
+                case EMPTY:
+                    if (busyDialog != null)
+                        busyDialog.finish();
+                    Status status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Selected files contain no data to display", null);
+                    StatusManager.getManager().handle(status, StatusManager.SHOW);
+                    break;
+                default:
+                    break;
+                }
                 enableButtons(true);
-                if (busyDialog != null)
-                    busyDialog.finish();
             }
         });
     }

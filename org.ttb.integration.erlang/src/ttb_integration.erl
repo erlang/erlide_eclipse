@@ -74,8 +74,12 @@ create_info_handler(Path) ->
 			{First, Count, Start_date, End_date} = State,
 			case Trace of
 				end_of_trace ->
-					erlide_jrpc:event(trace_event, {file_info, calendar:now_to_local_time(Start_date), calendar:now_to_local_time(End_date), Path, Count}),
-					ok;
+					case First of
+						true ->
+							erlide_jrpc:event(trace_event, {file_info, empty});
+						false ->
+							erlide_jrpc:event(trace_event, {file_info, calendar:now_to_local_time(Start_date), calendar:now_to_local_time(End_date), Path, Count})
+					end;
 				{trace_ts, _, _, _, Time} ->
 					case First of
 						true -> {false, Count + 1, Time, Time};
