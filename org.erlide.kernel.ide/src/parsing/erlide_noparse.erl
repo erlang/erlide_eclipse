@@ -556,27 +556,27 @@ get_refs([], _, _, Acc) ->
     lists:reverse(Acc);
 get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest],
 		 Name, Arity, Acc) ->
-    R = make_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
-    get_refs(Rest, Name, Arity, [R | Acc]);
+    Ref = make_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
+    get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind='#', offset=Offset},
           #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest],
 		 Name, Arity, Acc) ->
-    R = make_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
-    get_refs(Rest, Name, Arity, [R | Acc]);
+    Ref = make_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
+    get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
 		  #token{kind=atom, value=T, offset=Offset2, length=Length2},
 		  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
-    R = make_ref(Offset, Length2+Offset2-Offset, 
-				 #type_ref{module=M, type=T}, Name, Arity),
-    get_refs(Rest, Name, Arity, [R | Acc]);
+    Ref = make_ref(Offset, Length2+Offset2-Offset,
+                   #type_ref{module=M, type=T}, Name, Arity),
+    get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=T, offset=Offset, length=Length},
 		  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
-    R = make_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
-    get_refs(Rest, Name, Arity, [R | Acc]);
+    Ref = make_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
+    get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
 		 Name, Arity, Acc) ->
-	R = make_ref(Offset, Length, #var_ref{variable=V}, Name, Arity),
-    get_refs(Rest, Name, Arity, [R | Acc]);
+    Ref = make_ref(Offset, Length, #var_ref{variable=V}, Name, Arity),
+    get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([_ | Rest], Name, Arity, Acc) ->
     get_refs(Rest, Name, Arity, Acc).
 
