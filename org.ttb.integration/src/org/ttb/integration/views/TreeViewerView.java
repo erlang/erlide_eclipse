@@ -171,6 +171,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
         // Text field
         traceIndexField = new Text(buttonsPanel, SWT.SINGLE | SWT.BORDER);
+        traceIndexField.setToolTipText("Select index of first trace event to display");
         traceIndexField.setLayoutData(new RowData(60, SWT.DEFAULT));
         traceIndexField.addListener(SWT.Modify, new Listener() {
 
@@ -181,7 +182,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
                     if (value >= 1 && value <= TraceBackend.getInstance().getActiveResultSet().getSize()) {
                         index = value;
-                        showButton.setEnabled(true);
+                        showButton.setEnabled(nextButton.isEnabled() || previousButton.isEnabled());
                         correctInput = true;
                     } else {
                         showButton.setEnabled(false);
