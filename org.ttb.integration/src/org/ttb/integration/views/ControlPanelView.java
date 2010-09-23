@@ -415,7 +415,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TraceBackend.getInstance().addTracePattern(new TracePattern(true));
-                functionsTableViewer.refresh();
             }
         });
 
@@ -430,7 +429,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 TracePattern tracePattern = (TracePattern) ((IStructuredSelection) functionsTableViewer.getSelection()).getFirstElement();
                 if (tracePattern != null) {
                     TraceBackend.getInstance().removeTracePattern(tracePattern);
-                    functionsTableViewer.refresh();
                 }
             }
         });
@@ -458,7 +456,6 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     patternsConfigName = result;
                     configNameLabel.setText(patternsConfigName);
                     TraceBackend.getInstance().loadTracePatterns(ConfigurationManager.loadTPConfig(patternsConfigName));
-                    functionsTableViewer.refresh();
                 }
             }
         });
@@ -833,5 +830,13 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void clearTraceLists() {
+    }
+
+    public void updateTracePatterns() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                functionsTableViewer.refresh();
+            }
+        });
     }
 }

@@ -37,4 +37,9 @@ public interface ITraceNodeObserver {
      * contain information about loaded traces.
      */
     public void clearTraceLists();
+
+    /**
+     * This method is invoked when list of trace patterns changes.
+     */
+    public void updateTracePatterns();
 }

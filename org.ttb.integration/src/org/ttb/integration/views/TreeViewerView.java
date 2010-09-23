@@ -316,4 +316,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             }
         });
     }
+
+    public void updateTracePatterns() {
+    }
 }

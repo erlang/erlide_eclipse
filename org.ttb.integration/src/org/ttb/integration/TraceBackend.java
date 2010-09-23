@@ -425,6 +425,13 @@ public class TraceBackend {
     public void loadTracePatterns(TracePattern[] patterns) {
         tracePatterns.clear();
         tracePatterns.addAll(Arrays.asList(patterns));
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.updateTracePatterns();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
     }
 
     public Object[] getTracePatternsArray() {
@@ -433,10 +440,24 @@ public class TraceBackend {
 
     public synchronized void addTracePattern(TracePattern pattern) {
         tracePatterns.add(pattern);
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.updateTracePatterns();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
     }
 
     public synchronized void removeTracePattern(TracePattern pattern) {
         tracePatterns.remove(pattern);
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.updateTracePatterns();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
     }
 
     public void loadTracedNodes(TracedNode[] nodes) {

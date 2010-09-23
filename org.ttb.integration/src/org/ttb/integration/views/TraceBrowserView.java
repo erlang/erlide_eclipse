@@ -215,4 +215,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
             }
         });
     }
+
+    public void updateTracePatterns() {
+    }
 }
