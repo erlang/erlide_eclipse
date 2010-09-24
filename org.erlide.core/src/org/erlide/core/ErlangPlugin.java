@@ -199,15 +199,15 @@ public class ErlangPlugin extends Plugin {
                     .getBundleGroupProviders();
             if (providers != null) {
                 for (IBundleGroupProvider provider : providers) {
-                    ErlLogger.debug("***: provider = %s", provider
-                            .getName());
                     IBundleGroup[] bundleGroups = provider.getBundleGroups();
                     for (IBundleGroup group : bundleGroups) {
-                        ErlLogger.debug("   : bundle group = %s [%s]",
-                                group.getName(), group.getIdentifier());
                         if (group.getIdentifier().equals("org.erlide")) {
                             version = group.getVersion();
                             break;
+                        }
+                        if (group.getIdentifier().startsWith("org.erlide")) {
+                            ErlLogger.debug("version: found "
+                                    + group.getIdentifier());
                         }
                     }
                     if (version != null) {

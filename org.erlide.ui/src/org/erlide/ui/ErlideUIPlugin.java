@@ -150,9 +150,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         }
 
         startPeriodicDump();
-
-        ErlangPlugin.getDefault().getFeatureVersion();
-
     }
 
     /**
