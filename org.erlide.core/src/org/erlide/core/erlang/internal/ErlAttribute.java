@@ -15,8 +15,6 @@ import org.erlide.core.erlang.IErlElement;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
- * 
- * 
  * @author Vlad Dumitrescu
  */
 public class ErlAttribute extends ErlMember implements IErlAttribute {
@@ -28,7 +26,7 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
 	 * @param parent
 	 * @param name
 	 */
-	protected ErlAttribute(final IErlElement parent, final String name,
+	public ErlAttribute(final IErlElement parent, final String name,
 			final OtpErlangObject value, final String extra) {
 		super(parent, name);
 		fValue = value;

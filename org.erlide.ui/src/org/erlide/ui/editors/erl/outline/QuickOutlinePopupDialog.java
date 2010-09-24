@@ -261,7 +261,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		// Ensure a selection was made, the first mouse button was
 		// used and the event happened in the tree
 		if (tree.getSelectionCount() < 1 || e.button != 1
-				|| tree.equals(e.getSource()) == false) {
+				|| !(tree.equals(e.getSource()))) {
 			return;
 		}
 		// Selection is made in the selection changed listener
@@ -435,7 +435,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 		 * constrainShellSize in PopupDialog.open will still ensure that the
 		 * shell is entirely visible.
 		 */
-		if (getPersistLocation() == false || getPersistSize() == false
+		if (!(getPersistLocation()) || !(getPersistSize())
 				|| getDialogSettings() == null) {
 			getShell().setLocation(location);
 		}

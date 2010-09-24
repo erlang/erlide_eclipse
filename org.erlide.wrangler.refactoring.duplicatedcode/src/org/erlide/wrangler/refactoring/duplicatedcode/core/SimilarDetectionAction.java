@@ -35,8 +35,10 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
-	int minToks;
+	int minLen;
 	int minFreq;
+	int minToks;
+	int maxNewVars;
 	double simScore;
 	boolean onlyInFile;
 
@@ -58,13 +60,17 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 			fpa[0] = fp;
 			OtpErlangList fpl = new OtpErlangList(fpa);
 
-			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiidxi",
-					fpl, minToks, minFreq, simScore, sel.getSearchPath(),
-					GlobalParameters.getTabWidth());
+			result = backend.callWithoutParser(
+					WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+					"xiiiidxi", fpl, minLen, minToks, minFreq, maxNewVars,
+					simScore, sel.getSearchPath(), GlobalParameters
+							.getTabWidth());
 		} else {
-			result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiidxi",
-					sel.getSearchPath(), minToks, minFreq, simScore, sel
-							.getSearchPath(), GlobalParameters.getTabWidth());
+			result = backend.callWithoutParser(
+					WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+					"xiiiidxi", sel.getSearchPath(), minLen, minToks, minFreq,
+					maxNewVars, simScore, sel.getSearchPath(), GlobalParameters
+							.getTabWidth());
 		}
 
 		if (!result.isOk())
@@ -84,8 +90,10 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
 		simScore = inputd.getSimScore();
 		minFreq = inputd.getMinFreq();
-		minToks = inputd.getMinToks();
+		minLen = inputd.getMinLen();
 		onlyInFile = inputd.onlyinFile();
+		maxNewVars = inputd.getMaxNewVars();
+		minToks = inputd.getMinToks();
 
 		return inputd.isFinished();
 	}

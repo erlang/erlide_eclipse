@@ -246,7 +246,7 @@ public class ErlTextHover implements ITextHover,
 			final IRegion hoverRegion) {
 		final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) getHoverInfo2(
 				textViewer, hoverRegion);
-		return input == null ? "" : input.getHtml();
+		return (input == null) ? "" : input.getHtml();
 	}
 
 	public Object getHoverInfo2(final ITextViewer textViewer,
@@ -285,9 +285,9 @@ public class ErlTextHover implements ITextHover,
 		final BackendManager backendManager = ErlangCore.getBackendManager();
 		final Backend ide = backendManager.getIdeBackend();
 		try {
-			final IProject project = erlProject == null ? null : erlProject
+			final IProject project = (erlProject == null) ? null : erlProject
 					.getProject();
-			final Backend b = erlProject == null ? ide : backendManager
+			final Backend b = (erlProject == null) ? ide : backendManager
 					.getBuildBackend(project);
 
 			final IErlModel model = ErlangCore.getModel();

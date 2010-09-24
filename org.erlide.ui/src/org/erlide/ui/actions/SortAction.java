@@ -63,7 +63,7 @@ public class SortAction extends Action {
 
 		// Determine if the viewer is already sorted
 		fSorted = fStore != null && fStore.getBoolean("erlide.sortedOutline");
-		fSortedHow = fStore != null ? fStore.getInt("erlide.sortedOutlineHow")
+		fSortedHow = (fStore != null) ? fStore.getInt("erlide.sortedOutlineHow")
 				: ErlElementSorter.SORT_ON_NAME;
 		setComparator();
 		// Set the status of this action depending on whether it is sorted or
@@ -115,7 +115,7 @@ public class SortAction extends Action {
 		setComparator();
 		if (fStore != null) {
 			fStore.setValue("erlide.sortedOutline", fSorted);
-			final int how = fViewer.getComparator() == fComparator2 ? ErlElementSorter.SORT_ON_EXPORT
+			final int how = (fViewer.getComparator() == fComparator2) ? ErlElementSorter.SORT_ON_EXPORT
 					: ErlElementSorter.SORT_ON_NAME;
 			fStore.setValue("erlide.sortedOutlineHow", how);
 		}
@@ -124,8 +124,8 @@ public class SortAction extends Action {
 	}
 
 	private void setImage() {
-		final ImageDescriptor desc = fSorted
-				&& fSortedHow == ErlElementSorter.SORT_ON_EXPORT ? ErlideUIPluginImages.DESC_EXPORTED_SORT
+		final ImageDescriptor desc = (fSorted
+				&& fSortedHow == ErlElementSorter.SORT_ON_EXPORT) ? ErlideUIPluginImages.DESC_EXPORTED_SORT
 				: ErlideUIPluginImages.DESC_ALPHAB_SORT;
 		setImageDescriptor(desc);
 	}

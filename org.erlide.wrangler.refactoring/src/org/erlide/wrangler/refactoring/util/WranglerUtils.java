@@ -55,7 +55,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-@SuppressWarnings("restriction")
 public final class WranglerUtils {
 	private WranglerUtils() {
 	}
@@ -76,7 +75,7 @@ public final class WranglerUtils {
 		int lineOffset;
 		try {
 			lineOffset = doc.getLineOffset(line);
-			int ret = ((offset - lineOffset) < 0 ? 0 : offset - lineOffset);
+			int ret = (((offset - lineOffset) < 0) ? 0 : offset - lineOffset);
 			return ret + 1;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -469,7 +468,7 @@ public final class WranglerUtils {
 		for (ChangedFile f : changedFiles) {
 			IFile file;
 			try {
-				file = getFileFromPath(f.getIPath());
+				file = getFileFromPath(f.getNewPath());
 				IErlElement element = model.findElement(file);
 				IErlModule m = (IErlModule) element;
 				m.resourceChanged();

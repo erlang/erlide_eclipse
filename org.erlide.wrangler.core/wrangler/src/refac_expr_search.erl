@@ -55,8 +55,8 @@
 %%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}.
 %% =================================================================================================         
 
--spec(expr_search_in_buffer/5::(filename(), pos(), pos(), [dir()], integer()) -> 
-    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).
+%%-spec(expr_search_in_buffer/5::(filename(), pos(), pos(), [dir()], integer()) -> 
+%%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).
 expr_search_in_buffer(FileName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search_in_buffer(~p, {~p,~p},{~p,~p},~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, TabWidth]),
@@ -86,8 +86,8 @@ expr_search_in_buffer(FileName, Start = {Line, Col}, End = {Line1, Col1}, Search
 %% @spec expr_search_in_dirs(FileName::filename(), Start::Pos, End::Pos,SearchPaths::[dir()], TabWidth::integer())-> 
 %%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}.
 %% =================================================================================================         
--spec(expr_search_in_dirs/5::(filename(), pos(), pos(), [dir()], integer()) -> 
-    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).   
+%%-spec(expr_search_in_dirs/5::(filename(), pos(), pos(), [dir()], integer()) -> 
+%%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).   
 expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, SearchPaths, TabWidth]),
@@ -100,8 +100,8 @@ expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SearchPa
 
 
 
--spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) ->
-   {ok, [{{integer(), integer()}, {integer(), integer()}}]} | {error, string()}).
+%%-spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) ->
+%%   {ok, [{{integer(), integer()}, {integer(), integer()}}]} | {error, string()}).
 expr_search_eclipse(FileName, Start, End, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, [], TabWidth),
     case interface_api:pos_to_expr_list(AnnAST, Start, End) of
@@ -141,7 +141,8 @@ search_one_expr(FileName, Tree, Exp) ->
     SimplifiedExp = simplify_expr(Exp),
     BdStructExp = refac_code_search_utils:var_binding_structure([Exp]),
     F = fun (T, Acc) ->
-		case refac_misc:is_expr(T) of
+		case refac_misc:is_expr(T) orelse 
+		    refac_syntax:type(T)==match_expr of
 		  true -> T1 = simplify_expr(T),
 			  case SimplifiedExp == T1 of
 			    true ->
@@ -217,7 +218,7 @@ do_simplify_expr(Node) ->
 		  refac_syntax:default_literals_vars(Node, '%');
 	      string ->
 		  refac_syntax:default_literals_vars(Node, '%');
-	      atom -> case refac_misc:variable_replaceable(Node) of
+	      atom -> case refac_code_search_utils:generalisable(Node) of
 			true ->
 			    As = refac_syntax:get_ann(Node),
 			    case lists:keysearch(type, 1, As) of

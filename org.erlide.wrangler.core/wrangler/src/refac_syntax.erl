@@ -439,6 +439,7 @@ type(Node) ->
       {'try', _, _, _, _, _} -> try_expr;
       {type, _, _, _} -> type;     
       {tuple, _, _} -> tuple;
+     %% {bc,_, _, _} -> bc;
         _ -> erlang:error({badarg, Node})
     end.
 
@@ -6099,3 +6100,6 @@ default_literals_vars(Node, Value) ->
     end.
 
  
+%%TODO:
+%% Add support for bc (binary comprehension?).
+%% eg. << <<X:1>> || X <- List >>.

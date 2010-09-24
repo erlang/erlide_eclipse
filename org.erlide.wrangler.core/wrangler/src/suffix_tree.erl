@@ -7,8 +7,8 @@
 -export([init/1]).
 
 
--spec(get_clones_by_suffix_tree/7::(dir(), string(),integer(), integer(), string(), integer(), filename()) ->
-					 [{[{integer(),integer()}], integer(), integer()}]).					   
+%%-spec(get_clones_by_suffix_tree/7::(dir(), string(),integer(), integer(), string(), integer(), filename()) ->
+%%					 [{[{integer(),integer()}], integer(), integer()}]).					   
 get_clones_by_suffix_tree(Dir, ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap, SuffixTreeExec) ->
     start_suffix_tree_clone_detector(SuffixTreeExec),
     OutFileName = filename:join(Dir, "wrangler_suffix_tree"),

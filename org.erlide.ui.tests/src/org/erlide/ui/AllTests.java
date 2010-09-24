@@ -14,6 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ProjectManagementTest.class })
+@Suite.SuiteClasses({ ProjectManagementTest.class, ContentAssistTest.class })
 public class AllTests {
 }

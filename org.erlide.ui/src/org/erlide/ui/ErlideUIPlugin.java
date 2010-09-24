@@ -44,6 +44,7 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -66,477 +67,478 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ErlideUIPlugin extends AbstractUIPlugin {
 
-	/**
-	 * The plugin id
-	 */
-	public static final String PLUGIN_ID = "org.erlide.ui";
+    /**
+     * The plugin id
+     */
+    public static final String PLUGIN_ID = "org.erlide.ui";
 
-	/**
-	 * The shared instance.
-	 */
-	private static ErlideUIPlugin plugin;
+    /**
+     * The shared instance.
+     */
+    private static ErlideUIPlugin plugin;
 
-	/**
-	 * Resource bundle.
-	 */
-	private ResourceBundle resourceBundle;
+    /**
+     * Resource bundle.
+     */
+    private ResourceBundle resourceBundle;
 
-	private ImageDescriptorRegistry fImageDescriptorRegistry;
+    private ImageDescriptorRegistry fImageDescriptorRegistry;
 
-	/**
-	 * The extension point registry for the
-	 * <code>org.eclipse.jdt.ui.javaFoldingStructureProvider</code> extension
-	 * point.
-	 * 
-	 * @since 3.0
-	 */
-	private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
+    /**
+     * The extension point registry for the
+     * <code>org.eclipse.jdt.ui.javaFoldingStructureProvider</code> extension
+     * point.
+     *
+     * @since 3.0
+     */
+    private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
 
-	private ProblemMarkerManager fProblemMarkerManager = null;
+    private ProblemMarkerManager fProblemMarkerManager = null;
 
-	private ErlConsoleManager erlConMan;
+    private ErlConsoleManager erlConMan;
 
-	/** Key to store custom templates. */
-	private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
+    /** Key to store custom templates. */
+    private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
 
-	/**
-	 * The constructor.
-	 */
-	public ErlideUIPlugin() {
-		super();
-		plugin = this;
-		try {
-			resourceBundle = ResourceBundle
-					.getBundle("org.erlide.ui.ErlideUIPluginResources");
-		} catch (final MissingResourceException x) {
-			x.printStackTrace();
-			resourceBundle = null;
-		}
-	}
+    /**
+     * The constructor.
+     */
+    public ErlideUIPlugin() {
+        super();
+        plugin = this;
+        try {
+            resourceBundle = ResourceBundle
+                    .getBundle("org.erlide.ui.ErlideUIPluginResources");
+        } catch (final MissingResourceException x) {
+            x.printStackTrace();
+            resourceBundle = null;
+        }
+    }
 
-	/**
-	 * This method is called upon plug-in activation
-	 * 
-	 * @param context
-	 *            The context
-	 * @throws Exception
-	 *             if a problem occurs
-	 */
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		ErlLogger.debug("Starting UI " + Thread.currentThread());
-		super.start(context);
+    /**
+     * This method is called upon plug-in activation
+     *
+     * @param context
+     *            The context
+     * @throws Exception
+     *             if a problem occurs
+     */
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        ErlLogger.debug("Starting UI " + Thread.currentThread());
+        super.start(context);
 
-		// set this classloader to be used with erlang rpc
-		JRpcUtil.loader = getClass().getClassLoader();
+        // set this classloader to be used with erlang rpc
+        JRpcUtil.loader = getClass().getClassLoader();
 
-		new InitializeAfterLoadJob().schedule();
+        if (ErlideUtil.isDeveloper()) {
+            BackendManagerPopup.init();
+        }
 
-		if (ErlideUtil.isDeveloper()) {
-			BackendManagerPopup.init();
-		}
+        ErlLogger.debug("Started UI");
 
-		ErlLogger.debug("Started UI");
+        erlConMan = new ErlConsoleManager();
+        if (ErlideUtil.isDeveloper()) {
+            erlConMan.runtimeAdded(ErlangCore.getBackendManager()
+                    .getIdeBackend());
+        }
 
-		erlConMan = new ErlConsoleManager();
-		if (ErlideUtil.isDeveloper()) {
-			erlConMan.runtimeAdded(ErlangCore.getBackendManager()
-					.getIdeBackend());
-		}
+        startPeriodicDump();
 
-		startPeriodicDump();
-	}
+        ErlangPlugin.getDefault().getFeatureVersion();
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 * 
-	 * @param context
-	 *            the context
-	 * @throws Exception
-	 *             if a problem occurs
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		erlConMan.dispose();
+    }
 
-		super.stop(context);
-		plugin = null;
-	}
+    /**
+     * This method is called when the plug-in is stopped
+     *
+     * @param context
+     *            the context
+     * @throws Exception
+     *             if a problem occurs
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        erlConMan.dispose();
 
-	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return The plugin
-	 */
-	public static ErlideUIPlugin getDefault() {
-		if (plugin == null) {
-			plugin = new ErlideUIPlugin();
-		}
-		return plugin;
-	}
+        super.stop(context);
+        plugin = null;
+    }
 
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 * 
-	 * @param key
-	 *            The resource
-	 * @return The identified string
-	 */
-	public static String getResourceString(final String key) {
-		final ResourceBundle bundle = ErlideUIPlugin.getDefault()
-				.getResourceBundle();
-		try {
+    /**
+     * Returns the shared instance.
+     *
+     * @return The plugin
+     */
+    public static ErlideUIPlugin getDefault() {
+        if (plugin == null) {
+            plugin = new ErlideUIPlugin();
+        }
+        return plugin;
+    }
 
-			final String returnString = bundle != null ? bundle.getString(key)
-					: key;
-			return returnString;
-		} catch (final MissingResourceException e) {
-			return key;
-		}
-	}
+    /**
+     * Returns the string from the plugin's resource bundle, or 'key' if not
+     * found.
+     *
+     * @param key
+     *            The resource
+     * @return The identified string
+     */
+    public static String getResourceString(final String key) {
+        final ResourceBundle bundle = ErlideUIPlugin.getDefault()
+                .getResourceBundle();
+        try {
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 * 
-	 * @return The requested bundle
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
+            final String returnString = (bundle != null) ? bundle.getString(key)
+                    : key;
+            return returnString;
+        } catch (final MissingResourceException e) {
+            return key;
+        }
+    }
 
-	/**
-	 * Returns the standard display to be used. The method first checks, if the
-	 * thread calling this method has an associated display. If so, this display
-	 * is returned. Otherwise the method returns the default display.
-	 * 
-	 * @return the standard display
-	 */
-	public static Display getStandardDisplay() {
-		Display display = Display.getCurrent();
-		if (display == null) {
-			display = Display.getDefault();
-		}
+    /**
+     * Returns the plugin's resource bundle,
+     *
+     * @return The requested bundle
+     */
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
 
-		return display;
-	}
+    /**
+     * Returns the standard display to be used. The method first checks, if the
+     * thread calling this method has an associated display. If so, this display
+     * is returned. Otherwise the method returns the default display.
+     *
+     * @return the standard display
+     */
+    public static Display getStandardDisplay() {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
 
-	/**
-	 * Creates an image and places it in the image registry.
-	 * 
-	 * @param id
-	 *            The image id
-	 * @param baseURL
-	 *            The descriptor url
-	 */
-	protected void createImageDescriptor(final String id, final URL baseURL) {
-		URL url = null;
-		try {
-			url = new URL(baseURL, ErlideUIConstants.ICON_PATH + id);
-		} catch (final MalformedURLException e) {
-			// ignore exception
-		}
+        return display;
+    }
 
-		getImageRegistry().put(id, ImageDescriptor.createFromURL(url));
-	}
+    /**
+     * Creates an image and places it in the image registry.
+     *
+     * @param id
+     *            The image id
+     * @param baseURL
+     *            The descriptor url
+     */
+    protected void createImageDescriptor(final String id, final URL baseURL) {
+        URL url = null;
+        try {
+            url = new URL(baseURL, ErlideUIConstants.ICON_PATH + id);
+        } catch (final MalformedURLException e) {
+            // ignore exception
+        }
 
-	/**
-	 * Returns the image descriptor for the given image PLUGIN_ID. Returns null
-	 * if there is no such image.
-	 * 
-	 * @param id
-	 *            The image id
-	 * 
-	 * @return The image descriptor
-	 */
-	public ImageDescriptor getImageDescriptor(final String id) {
-		final ImageDescriptor returnImageDescriptor = getImageRegistry()
-				.getDescriptor(id);
-		return returnImageDescriptor;
-	}
+        getImageRegistry().put(id, ImageDescriptor.createFromURL(url));
+    }
 
-	/**
-	 * Returns the image for the given image PLUGIN_ID. Returns null if there is
-	 * no such image.
-	 * 
-	 * @param id
-	 *            The image id
-	 * 
-	 * @return The image
-	 */
-	public Image getImage(final String id) {
-		final Image returnImage = getImageRegistry().get(id);
-		return returnImage;
-	}
+    /**
+     * Returns the image descriptor for the given image PLUGIN_ID. Returns null
+     * if there is no such image.
+     *
+     * @param id
+     *            The image id
+     *
+     * @return The image descriptor
+     */
+    public ImageDescriptor getImageDescriptor(final String id) {
+        final ImageDescriptor returnImageDescriptor = getImageRegistry()
+                .getDescriptor(id);
+        return returnImageDescriptor;
+    }
 
-	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
-	 */
-	@Override
-	protected void initializeImageRegistry(final ImageRegistry reg) {
-		super.initializeImageRegistry(reg);
+    /**
+     * Returns the image for the given image PLUGIN_ID. Returns null if there is
+     * no such image.
+     *
+     * @param id
+     *            The image id
+     *
+     * @return The image
+     */
+    public Image getImage(final String id) {
+        final Image returnImage = getImageRegistry().get(id);
+        return returnImage;
+    }
 
-		final URL baseURL = getBundle().getEntry("/");
+    /**
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+     */
+    @Override
+    protected void initializeImageRegistry(final ImageRegistry reg) {
+        super.initializeImageRegistry(reg);
 
-		createImageDescriptor(ErlideUIConstants.IMG_CONSOLE, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
-				baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_FILE_LABEL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABEL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_REFRESH, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_REFRESH, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_IMPORT, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_IMPORT, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_DISABLED_EXPORT, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_EXPORT, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_COLLAPSEALL, baseURL);
-		createImageDescriptor(ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
-				baseURL);
+        final URL baseURL = getBundle().getEntry("/");
 
-		createImageDescriptor(ErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
-	}
+        createImageDescriptor(ErlideUIConstants.IMG_CONSOLE, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
+                baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_FILE_LABEL, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABEL, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_DISABLED_REFRESH, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_REFRESH, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_DISABLED_IMPORT, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_IMPORT, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_DISABLED_EXPORT, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_EXPORT, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_COLLAPSEALL, baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
+                baseURL);
 
-	/**
-	 * @return
-	 */
-	public static IWorkbenchPage getActivePage() {
-		final IWorkbenchWindow w = getActiveWorkbenchWindow();
-		if (w != null) {
-			return w.getActivePage();
-		}
-		return null;
-	}
+        createImageDescriptor(ErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
+    }
 
-	public static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getDefault().getWorkbench().getActiveWorkbenchWindow();
-	}
+    /**
+     * @return
+     */
+    public static IWorkbenchPage getActivePage() {
+        final IWorkbenchWindow w = getActiveWorkbenchWindow();
+        if (w != null) {
+            return w.getActivePage();
+        }
+        return null;
+    }
 
-	/**
-	 * Returns the active workbench shell or <code>null</code> if none
-	 * 
-	 * @return the active workbench shell or <code>null</code> if none
-	 */
-	public static Shell getActiveWorkbenchShell() {
-		final IWorkbenchWindow window = getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getShell();
-		}
-		return null;
-	}
+    public static IWorkbenchWindow getActiveWorkbenchWindow() {
+        return getDefault().getWorkbench().getActiveWorkbenchWindow();
+    }
 
-	public static void log(final Exception e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				ErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
-	}
+    /**
+     * Returns the active workbench shell or <code>null</code> if none
+     *
+     * @return the active workbench shell or <code>null</code> if none
+     */
+    public static Shell getActiveWorkbenchShell() {
+        final IWorkbenchWindow window = getActiveWorkbenchWindow();
+        if (window != null) {
+            return window.getShell();
+        }
+        return null;
+    }
 
-	public static void log(final IStatus status) {
-		getDefault().getLog().log(status);
-	}
+    public static void log(final Exception e) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID,
+                ErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
+    }
 
-	public static void logErrorMessage(final String message) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				ErlangStatusConstants.INTERNAL_ERROR, message, null));
-	}
+    public static void log(final IStatus status) {
+        getDefault().getLog().log(status);
+    }
 
-	public static void logErrorStatus(final String message, final IStatus status) {
-		if (status == null) {
-			logErrorMessage(message);
-			return;
-		}
-		final MultiStatus multi = new MultiStatus(PLUGIN_ID,
-				ErlangStatusConstants.INTERNAL_ERROR, message, null);
-		multi.add(status);
-		log(multi);
-	}
+    public static void logErrorMessage(final String message) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID,
+                ErlangStatusConstants.INTERNAL_ERROR, message, null));
+    }
 
-	public static void log(final Throwable e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID,
-				ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
-				e));
-	}
+    public static void logErrorStatus(final String message, final IStatus status) {
+        if (status == null) {
+            logErrorMessage(message);
+            return;
+        }
+        final MultiStatus multi = new MultiStatus(PLUGIN_ID,
+                ErlangStatusConstants.INTERNAL_ERROR, message, null);
+        multi.add(status);
+        log(multi);
+    }
 
-	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
-		return getDefault().internalGetImageDescriptorRegistry();
-	}
+    public static void log(final Throwable e) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID,
+                ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
+                e));
+    }
 
-	private synchronized ImageDescriptorRegistry internalGetImageDescriptorRegistry() {
-		if (fImageDescriptorRegistry == null) {
-			fImageDescriptorRegistry = new ImageDescriptorRegistry();
-		}
-		return fImageDescriptorRegistry;
-	}
+    public static ImageDescriptorRegistry getImageDescriptorRegistry() {
+        return getDefault().internalGetImageDescriptorRegistry();
+    }
 
-	/**
-	 * Returns the registry of the extensions to the
-	 * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension
-	 * point.
-	 * 
-	 * @return the registry of contributed
-	 *         <code>IErlangFoldingStructureProvider</code>
-	 */
-	public synchronized ErlangFoldingStructureProviderRegistry getFoldingStructureProviderRegistry() {
-		if (fFoldingStructureProviderRegistry == null) {
-			fFoldingStructureProviderRegistry = new ErlangFoldingStructureProviderRegistry();
-		}
-		return fFoldingStructureProviderRegistry;
-	}
+    private synchronized ImageDescriptorRegistry internalGetImageDescriptorRegistry() {
+        if (fImageDescriptorRegistry == null) {
+            fImageDescriptorRegistry = new ImageDescriptorRegistry();
+        }
+        return fImageDescriptorRegistry;
+    }
 
-	public static void debug(final String message) {
-		if (getDefault().isDebugging()) {
-			ErlLogger.debug(message);
-		}
-	}
+    /**
+     * Returns the registry of the extensions to the
+     * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension
+     * point.
+     *
+     * @return the registry of contributed
+     *         <code>IErlangFoldingStructureProvider</code>
+     */
+    public synchronized ErlangFoldingStructureProviderRegistry getFoldingStructureProviderRegistry() {
+        if (fFoldingStructureProviderRegistry == null) {
+            fFoldingStructureProviderRegistry = new ErlangFoldingStructureProviderRegistry();
+        }
+        return fFoldingStructureProviderRegistry;
+    }
 
-	public static void createStandardGroups(final IMenuManager menu) {
-		if (!menu.isEmpty()) {
-			return;
-		}
-		menu.add(new Separator(IContextMenuConstants.GROUP_OPEN));
-		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
-		menu.add(new Separator(IContextMenuConstants.GROUP_SEARCH));
-		menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
-		menu.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
-	}
+    public static void debug(final String message) {
+        if (getDefault().isDebugging()) {
+            ErlLogger.debug(message);
+        }
+    }
 
-	/**
-	 * Returns a section in the Java plugin's dialog settings. If the section
-	 * doesn't exist yet, it is created.
-	 * 
-	 * @param name
-	 *            the name of the section
-	 * @return the section of the given name
-	 * @since 3.2
-	 */
-	public IDialogSettings getDialogSettingsSection(final String name) {
-		final IDialogSettings dialogSettings = getDialogSettings();
-		IDialogSettings section = dialogSettings.getSection(name);
-		if (section == null) {
-			section = dialogSettings.addNewSection(name);
-		}
-		return section;
-	}
+    public static void createStandardGroups(final IMenuManager menu) {
+        if (!menu.isEmpty()) {
+            return;
+        }
+        menu.add(new Separator(IContextMenuConstants.GROUP_OPEN));
+        menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));
+        menu.add(new Separator(IContextMenuConstants.GROUP_SEARCH));
+        menu.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+        menu.add(new Separator(IContextMenuConstants.GROUP_PROPERTIES));
+    }
 
-	public ProblemMarkerManager getProblemMarkerManager() {
-		if (fProblemMarkerManager == null) {
-			fProblemMarkerManager = new ProblemMarkerManager();
-		}
-		return fProblemMarkerManager;
-	}
+    /**
+     * Returns a section in the Java plugin's dialog settings. If the section
+     * doesn't exist yet, it is created.
+     *
+     * @param name
+     *            the name of the section
+     * @return the section of the given name
+     * @since 3.2
+     */
+    public IDialogSettings getDialogSettingsSection(final String name) {
+        final IDialogSettings dialogSettings = getDialogSettings();
+        IDialogSettings section = dialogSettings.getSection(name);
+        if (section == null) {
+            section = dialogSettings.addNewSection(name);
+        }
+        return section;
+    }
 
-	public static IEclipsePreferences getPrefsNode() {
-		final String qualifier = ErlideUIPlugin.PLUGIN_ID;
-		final IScopeContext context = new InstanceScope();
-		final IEclipsePreferences eclipsePreferences = context
-				.getNode(qualifier);
-		return eclipsePreferences;
-	}
+    public ProblemMarkerManager getProblemMarkerManager() {
+        if (fProblemMarkerManager == null) {
+            fProblemMarkerManager = new ProblemMarkerManager();
+        }
+        return fProblemMarkerManager;
+    }
 
-	private final int DUMP_INTERVAL = Integer.parseInt(System.getProperty(
-			"erlide.dump.interval", "300000"));
+    public static IEclipsePreferences getPrefsNode() {
+        final String qualifier = ErlideUIPlugin.PLUGIN_ID;
+        final IScopeContext context = new InstanceScope();
+        final IEclipsePreferences eclipsePreferences = context
+                .getNode(qualifier);
+        return eclipsePreferences;
+    }
 
-	private ErlangConsolePage fErlangConsolePage;
+    private final int DUMP_INTERVAL = Integer.parseInt(System.getProperty(
+            "erlide.dump.interval", "300000"));
 
-	private ContributionContextTypeRegistry fContextTypeRegistry;
-	private ContributionTemplateStore fStore;
+    private ErlangConsolePage fErlangConsolePage;
 
-	private void startPeriodicDump() {
-		final String env = System.getenv("erlide.internal.coredump");
-		if ("true".equals(env)) {
-			final Job job = new Job("Erlang node info dump") {
+    private ContributionContextTypeRegistry fContextTypeRegistry;
+    private ContributionTemplateStore fStore;
 
-				@Override
-				protected IStatus run(final IProgressMonitor monitor) {
-					try {
-						final ErlideBackend ideBackend = ErlangCore
-								.getBackendManager().getIdeBackend();
-						final String info = ErlBackend
-								.getSystemInfo(ideBackend);
-						final String sep = "\n++++++++++++++++++++++\n";
-						ErlLogger.debug(sep + info + sep);
-					} finally {
-						schedule(DUMP_INTERVAL);
-					}
-					return Status.OK_STATUS;
-				}
+    private void startPeriodicDump() {
+        final String env = System.getenv("erlide.internal.coredump");
+        if ("true".equals(env)) {
+            final Job job = new Job("Erlang node info dump") {
 
-			};
-			job.setPriority(Job.SHORT);
-			job.setSystem(true);
-			job.schedule(DUMP_INTERVAL);
-		}
-	}
+                @Override
+                protected IStatus run(final IProgressMonitor monitor) {
+                    try {
+                        final ErlideBackend ideBackend = ErlangCore
+                                .getBackendManager().getIdeBackend();
+                        final String info = ErlBackend
+                                .getSystemInfo(ideBackend);
+                        final String sep = "\n++++++++++++++++++++++\n";
+                        ErlLogger.debug(sep + info + sep);
+                    } finally {
+                        schedule(DUMP_INTERVAL);
+                    }
+                    return Status.OK_STATUS;
+                }
 
-	public ErlangConsolePage getConsolePage() {
-		return fErlangConsolePage;
-	}
+            };
+            job.setPriority(Job.SHORT);
+            job.setSystem(true);
+            job.schedule(DUMP_INTERVAL);
+        }
+    }
 
-	public void setConsolePage(final ErlangConsolePage erlangConsolePage) {
-		fErlangConsolePage = erlangConsolePage;
-	}
+    public ErlangConsolePage getConsolePage() {
+        return fErlangConsolePage;
+    }
 
-	public TemplateStore getTemplateStore() {
-		// this is to avoid recursive call when fContextTypeRegistry is null
-		getContextTypeRegistry();
-		if (fStore == null) {
-			fStore = new ErlideContributionTemplateStore(
-					getContextTypeRegistry(), getPreferenceStore(),
-					CUSTOM_TEMPLATES_KEY);
-			try {
-				fStore.load();
-			} catch (final IOException e) {
-				getLog()
-						.log(
-								new Status(IStatus.ERROR, PLUGIN_ID,
-										IStatus.OK, "", e)); //$NON-NLS-1$ 
-			}
-			ErlangSourceContextTypeModule.getDefault().addElementResolvers();
-		}
-		return fStore;
-	}
+    public void setConsolePage(final ErlangConsolePage erlangConsolePage) {
+        fErlangConsolePage = erlangConsolePage;
+    }
 
-	public ContextTypeRegistry getContextTypeRegistry() {
-		if (fContextTypeRegistry == null) {
-			// create an configure the contexts available in the template editor
-			fContextTypeRegistry = new ContributionContextTypeRegistry();
-			fContextTypeRegistry
-					.addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
-			fContextTypeRegistry
-					.addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
-			fContextTypeRegistry
-					.addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
-		}
-		return fContextTypeRegistry;
-	}
+    public TemplateStore getTemplateStore() {
+        // this is to avoid recursive call when fContextTypeRegistry is null
+        getContextTypeRegistry();
+        if (fStore == null) {
+            fStore = new ErlideContributionTemplateStore(
+                    getContextTypeRegistry(), getPreferenceStore(),
+                    CUSTOM_TEMPLATES_KEY);
+            try {
+                fStore.load();
+            } catch (final IOException e) {
+                getLog()
+                        .log(
+                                new Status(IStatus.ERROR, PLUGIN_ID,
+                                        IStatus.OK, "", e)); //$NON-NLS-1$
+            }
+            ErlangSourceContextTypeModule.getDefault().addElementResolvers();
+        }
+        return fStore;
+    }
 
-	/**
-	 * Utility method with conventions
-	 */
-	public static void errorDialog(final Shell shell, final String title,
-			String message, final Throwable t) {
-		IStatus status;
-		if (t instanceof CoreException) {
-			status = ((CoreException) t).getStatus();
-			// if the 'message' resource string and the IStatus' message are the
-			// same,
-			// don't show both in the dialog
-			if (status != null && message.equals(status.getMessage())) {
-				message = null;
-			}
-		} else {
-			status = new Status(IStatus.ERROR, PLUGIN_ID,
-					IDebugUIConstants.INTERNAL_ERROR,
-					"Error within Debug UI: ", t); //$NON-NLS-1$
-			log(status);
-		}
-		ErrorDialog.openError(shell, title, message, status);
-	}
+    public ContextTypeRegistry getContextTypeRegistry() {
+        if (fContextTypeRegistry == null) {
+            // create an configure the contexts available in the template editor
+            fContextTypeRegistry = new ContributionContextTypeRegistry();
+            fContextTypeRegistry
+                    .addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
+            fContextTypeRegistry
+                    .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+            fContextTypeRegistry
+                    .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+        }
+        return fContextTypeRegistry;
+    }
+
+    /**
+     * Utility method with conventions
+     */
+    public static void errorDialog(final Shell shell, final String title,
+            String message, final Throwable t) {
+        IStatus status;
+        if (t instanceof CoreException) {
+            status = ((CoreException) t).getStatus();
+            // if the 'message' resource string and the IStatus' message are the
+            // same,
+            // don't show both in the dialog
+            if (status != null && message.equals(status.getMessage())) {
+                message = null;
+            }
+        } else {
+            status = new Status(IStatus.ERROR, PLUGIN_ID,
+                    IDebugUIConstants.INTERNAL_ERROR,
+                    "Error within Debug UI: ", t); //$NON-NLS-1$
+            log(status);
+        }
+        ErrorDialog.openError(shell, title, message, status);
+    }
 }

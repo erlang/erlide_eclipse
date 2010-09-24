@@ -24,7 +24,7 @@
 -include("../include/wrangler.hrl").
 
 %% minimal number of tokens.
--define(DEFAULT_CLONE_LEN, 20).
+-define(DEFAULT_CLONE_LEN, 40).
 
 %% Minimal number of class members.
 -define(DEFAULT_CLONE_MEMBER, 2).
@@ -42,9 +42,9 @@
 %% </p>
 %% ====================================================================================
 
--spec(duplicated_code_eclipse/5::([dir()|filename()], integer(),integer(), integer(), filename()) ->
-	[{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
-	  integer(), integer(), string()}]).
+%%-spec(duplicated_code_eclipse/5::([dir()|filename()], integer(),integer(), integer(), filename()) ->
+%%	[{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%	  integer(), integer(), string()}]).
 duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTreeExec) ->
     MinLength = case MinLength1 =< 1 of
 		  true ->
@@ -59,7 +59,7 @@ duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTre
     Cs = duplicated_code_detection(DirFileList, MinClones, MinLength, 10, SuffixTreeExec, TabWidth),
     refac_code_search_utils:remove_sub_clones(Cs).
 
--spec(duplicated_code/5::([dir()|filename()],string(),string(), string(),integer()) ->{ok, string()}).
+%%-spec(duplicated_code/5::([dir()|filename()],string(),string(), string(),integer()) ->{ok, string()}).
 duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     {MinClones, MinLength, MaxPars} = get_parameters(MinLength1, MinClones1, MaxPars1),
     ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
@@ -75,9 +75,9 @@ duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     ?debug("Clones:\n~p\n", [Cs1]),
     {ok, "Duplicated code detection finished."}.
 
--spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
-					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
-					   integer(), integer(), string()}]).
+%%-spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
+%%					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%					   integer(), integer(), string()}]).
 duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth) ->
     FileNames = refac_util:expand_files(DirFileList, ".erl"),
     case FileNames of 
@@ -104,8 +104,8 @@ duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTree
 
 %%=====================================================================================
 %% process the parameters input by the user.
--spec(get_parameters/3::(string(), string(), string()) ->
-			      {integer(), integer(), integer()}).
+%%-spec(get_parameters/3::(string(), string(), string()) ->
+%%			      {integer(), integer(), integer()}).
 get_parameters(MinLengthStr, MinClonesStr, MinParsStr) ->
     MinLength = try
 		    case MinLengthStr == [] orelse list_to_integer(MinLengthStr) =< 1 of
@@ -287,7 +287,8 @@ process_a_file(File, Cs, MinLength, TabWidth) ->
 		     function ->
 			 true;
 		     _ ->
-			 refac_misc:is_expr(Node) andalso refac_syntax:type(Node) /= guard_expression
+			 (refac_misc:is_expr(Node) orelse refac_syntax:type(Node)==match_expr) 
+			       andalso refac_syntax:type(Node) /= guard_expression
 		   end
 	   end,
     Fun1 = fun (Range) ->
@@ -320,7 +321,7 @@ process_a_unit(VarsUsed, FileName, Unit) ->
     {Range, Unit, VarsToExport, BdStruct, num_of_tokens(Unit)}.
 
 
--spec(pos_to_syntax_units(syntaxTree(),pos(),pos(),function(), integer()) ->[syntaxTree()]).
+%%-spec(pos_to_syntax_units(syntaxTree(),pos(),pos(),function(), integer()) ->[syntaxTree()]).
 pos_to_syntax_units(Tree, Start, End, F, MinLength) ->
     Type = refac_syntax:type(Tree),
     Res = pos_to_syntax_units_1(Tree, Start, End, F, Type),
@@ -504,7 +505,7 @@ add_filename_to_token(FileName,T) ->
 
 %% =====================================================================
 %% get the alphabet on which the suffix tree is going to be built.
--spec(alphabet/0::()-> string()).
+%%-spec(alphabet/0::()-> string()).
 alphabet() ->
     lists:concat([Y||{_X, Y}<-alphabet_1()]) ++ "ACFISV&".
 		  
@@ -523,10 +524,10 @@ alphabet_1() ->
 
 %% =====================================================================
 
--spec(get_anti_unifier([{{{filename(), integer(), integer()},{filename(), integer(), integer()}}, 
-			 syntaxTree(), any(), any(), integer()}],integer(), integer()) ->
-	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
-	       integer(), integer(), string()}]).
+%%-spec(get_anti_unifier([{{{filename(), integer(), integer()},{filename(), integer(), integer()}}, 
+%%			 syntaxTree(), any(), any(), integer()}],integer(), integer()) ->
+%%	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%	       integer(), integer(), string()}]).
 get_anti_unifier(C, MaxPars, MinLength) ->
     Freq = length(C),
     Len =  element(5, hd(C)),
@@ -551,32 +552,39 @@ get_anti_unifier_1([]) ->
     throw({error, anti_unification_failed});
 get_anti_unifier_1([{Expr, EVs}]) -> generalise_expr({Expr, EVs}, []);
 get_anti_unifier_1([{Expr, EVs}| Exprs]) ->
-    Res = [expr_anti_unification(Expr, E, ExportedVars)
-	   || {E, ExportedVars} <- Exprs],
-    {Nodes1, EVs1} = lists:unzip(Res),
-    GroupedNodes = group_subst_nodes(Nodes1),
-    Pid = refac_code_search_utils:start_counter_process(),
-    NodeVarPairs = lists:append([lists:zip(Ns, lists:duplicate(length(Ns),
-							       refac_code_search_utils:gen_new_var_name(Pid)))
-				 || Ns <- GroupedNodes]),
-    refac_code_search_utils:stop_counter_process(Pid),
-    generalise_expr({Expr, EVs}, {NodeVarPairs, lists:usort(lists:append(EVs1))}).
-
+    try 
+	Res = [expr_anti_unification(Expr, E, ExportedVars)
+	       || {E, ExportedVars} <- Exprs],
+	{Nodes1, EVs1} = lists:unzip(Res),
+	GroupedNodes = group_subst_nodes(Nodes1),
+	Pid = refac_code_search_utils:start_counter_process(),
+	NodeVarPairs = lists:append([lists:zip(Ns, lists:duplicate(length(Ns),
+								   refac_code_search_utils:gen_new_var_name(Pid)))
+				     || Ns <- GroupedNodes]),
+	refac_code_search_utils:stop_counter_process(Pid),
+	generalise_expr({Expr, EVs}, {NodeVarPairs, lists:usort(lists:append(EVs1))})
+    of
+	Result ->
+	    Result
+    catch
+	_ ->
+	    throw({error, "anti_unification_failed"})
+    end.
 
 expr_anti_unification(Exp1, Exp2, Expr2ExportedVars) ->
     try
       do_expr_anti_unification(Exp1, Exp2)
     of
       SubSt ->
-	  EVs1 = [{refac_syntax:variable_name(E1), get_var_define_pos(E1)}
-		  || {E1, E2} <- SubSt, refac_syntax:type(E2) == variable,
-		     lists:member({refac_syntax:variable_name(E2), get_var_define_pos(E2)}, Expr2ExportedVars)],
-	  SubSt1 = [{E1, E2} || {E1, E2} <- SubSt, refac_syntax:type(E1) /= variable orelse is_macro_name(E1)],
-	  Nodes = group_substs(SubSt1),
-	  {Nodes, EVs1}
+	    EVs1 = [{refac_syntax:variable_name(E1), get_var_define_pos(E1)}
+		    || {E1, E2} <- SubSt, refac_syntax:type(E2) == variable,
+		       lists:member({refac_syntax:variable_name(E2), get_var_define_pos(E2)}, Expr2ExportedVars)],
+	    SubSt1 = [{E1, E2} || {E1, E2} <- SubSt, refac_syntax:type(E1) /= variable orelse is_macro_name(E1)],
+	    Nodes = group_substs(SubSt1),
+	    {Nodes, EVs1}
     catch
       _ ->
-	  {[], []}
+	  throw({error, "anti_unification_failed"})
     end.
 
 group_substs(Subst) ->
@@ -640,7 +648,21 @@ do_expr_anti_unification_1(Exp1, Exp2) ->
 			false ->
 			    [{Exp1, Exp2}]
 		    end;
-		{_, _} ->
+		{binary, binary} ->  %% choose not to generalise over binary fields.
+		    SubTrees1 = erl_syntax:subtrees(Exp1),
+		    SubTrees2 = erl_syntax:subtrees(Exp2),
+		    try do_expr_anti_unification(SubTrees1, SubTrees2) of
+			[] ->
+			    [];
+			_ ->
+			    throw({error, anti_unification_failed})
+		    catch
+			_E1:_E2 ->
+			    throw({error, anti_unification_failed})
+		    end;
+		_ when T1/=T2 ->
+		    throw({error, anti_unification_failed});
+		_ ->
 		    SubTrees1 = erl_syntax:subtrees(Exp1),
 		    SubTrees2 = erl_syntax:subtrees(Exp2),
 		    do_expr_anti_unification(SubTrees1, SubTrees2)
@@ -679,6 +701,7 @@ do_anti_unify_literals(Exp1, Exp2) ->
 	    end
     end.
 
+
 do_anti_unify_atoms(Exp1, Exp2) ->
     case has_the_same_value(Exp1, Exp2) of
       true ->
@@ -698,7 +721,7 @@ do_anti_unify_atoms(Exp1, Exp2) ->
 		end
 	  end;
       _ ->
-	  case refac_misc:variable_replaceable(Exp1) of
+	  case refac_code_search_utils:generalisable(Exp1) of
 	    true ->
 		[{Exp1, Exp2}];
 	    _ ->
@@ -781,8 +804,13 @@ get_var_define_pos(V) ->
 	false -> []
     end.
                
-is_macro_name(Exp) ->
-    {value, {category, macro_name}} == 
-	lists:keysearch(category, 1, refac_syntax:get_ann(Exp)).
 
+is_macro_name(Exp) ->
+    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp)) of
+	{value, {category, {macro_name, _, _}}} ->
+	    true;
+	_ ->
+	    false
+    end.
+ 
 

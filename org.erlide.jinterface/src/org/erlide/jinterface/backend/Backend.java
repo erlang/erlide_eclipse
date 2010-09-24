@@ -248,7 +248,7 @@ public class Backend extends OtpNodeStatus {
 			}
 			final String nodeCookie = fNode.cookie();
 			final int len = nodeCookie.length();
-			final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
+			final String trimmed = (len > 7) ? nodeCookie.substring(0, 7)
 					: nodeCookie;
 			ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed,
 					len, cookie);

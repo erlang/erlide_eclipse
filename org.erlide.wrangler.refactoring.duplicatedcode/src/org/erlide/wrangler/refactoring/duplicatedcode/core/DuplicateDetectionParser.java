@@ -95,6 +95,17 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
 		for (int i = 0; i < elements.length; ++i) {
 			OtpErlangTuple elementPair = (OtpErlangTuple) elements[i];
+
+			String replicationFunction = "";
+			OtpErlangTuple checkable = (OtpErlangTuple) elementPair
+					.elementAt(0);
+			if (checkable.elementAt(0) instanceof OtpErlangTuple) {
+				OtpErlangString repFunStr = (OtpErlangString) elementPair
+						.elementAt(1);
+				replicationFunction = repFunStr.stringValue();
+				elementPair = checkable;
+
+			}
 			OtpErlangTuple firstElement = (OtpErlangTuple) elementPair
 					.elementAt(0);
 			OtpErlangTuple secondElement = (OtpErlangTuple) elementPair
@@ -112,6 +123,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 					file, startLine.intValue(), startCol.intValue(), endLine
 							.intValue(), endCol.intValue() + 1);
 			instance.setSuggestedCode(suggStr);
+			instance.setReplicationFunction(replicationFunction);
 			if (values.containsKey(file)) {
 				values.get(file).add(instance);
 			} else {

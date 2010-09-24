@@ -34,13 +34,17 @@ import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
 	private Button onlyInFileCheckBoxButton;
-	private Text minToksText;
+	private Text minLenText;
 	private Text minFreqText;
+	private Text minToksText;
+	private Text maxNewVarsText;
 
-	private int minToks;
+	private int minLen;
 	private int minFreq;
+	private int minToks;
+	private int maxNewVars;
 	private float simScore;
-	private boolean workOnlyInCurrentFile;
+	private boolean workOnlyInCurrentFile = true;
 
 	private Text simScoreText;
 
@@ -62,8 +66,10 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 		workOnlyInCurrentFile = !onlyInFileCheckBoxButton.getSelection();
 		try {
 			simScore = Float.parseFloat(simScoreText.getText());
-			minToks = Integer.parseInt(minToksText.getText());
+			minLen = Integer.parseInt(minLenText.getText());
 			minFreq = Integer.parseInt(minFreqText.getText());
+			minToks = Integer.parseInt(minToksText.getText());
+			maxNewVars = Integer.parseInt(maxNewVarsText.getText());
 			setErrorMessage(null);
 		} catch (Exception e) {
 			errorMsg = "Please type correct values!";
@@ -76,8 +82,27 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
+		Label minLenlabel = new Label(composite, SWT.WRAP);
+		minLenlabel.setText("Minimum lenght of an expression sequence:");
+		GridData minLenData = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_CENTER);
+		minLenData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+		minLenlabel.setLayoutData(minLenData);
+		minLenlabel.setFont(parent.getFont());
+
+		minLenText = new Text(composite, getInputTextStyle());
+		minLenText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		minLenText.setText("5");
+		minLenText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validateInput();
+			}
+		});
+
 		Label minTokslabel = new Label(composite, SWT.WRAP);
-		minTokslabel.setText("Minimum lenght of an expression sequence:");
+		minTokslabel.setText("Minimum number of tokens a clone should have:");
 		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_CENTER);
@@ -88,7 +113,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 		minToksText = new Text(composite, getInputTextStyle());
 		minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
-		minToksText.setText("5");
+		minToksText.setText("40");
 		minToksText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();
@@ -109,6 +134,26 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		minFreqText.setText("2");
 		minFreqText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validateInput();
+			}
+		});
+
+		Label maxNewVarsLabel = new Label(composite, SWT.WRAP);
+		maxNewVarsLabel
+				.setText("Maximum number of new parameters of the least-general abstraction:");
+		GridData maxNewVarsData = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_CENTER);
+		maxNewVarsData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+		maxNewVarsLabel.setLayoutData(maxNewVarsData);
+		maxNewVarsLabel.setFont(parent.getFont());
+
+		maxNewVarsText = new Text(composite, getInputTextStyle());
+		maxNewVarsText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		maxNewVarsText.setText("4");
+		maxNewVarsText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				validateInput();
 			}
@@ -166,6 +211,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 		setErrorMessage("");
 
 		applyDialogFont(composite);
+		validateInput();
 		return composite;
 	}
 
@@ -192,12 +238,28 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 	}
 
 	/**
-	 * Returns the user typed minimal number of tokens
+	 * Returns the user typed minimal length
+	 * 
+	 * @return minimal length
+	 */
+	public int getMinLen() {
+		return minLen;
+	}
+
+	/**
 	 * 
 	 * @return minimal number of tokens
 	 */
 	public int getMinToks() {
 		return minToks;
+	}
+
+	/**
+	 * 
+	 * @return maximal number of new variables
+	 */
+	public int getMaxNewVars() {
+		return maxNewVars;
 	}
 
 	/**

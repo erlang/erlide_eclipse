@@ -1,4 +1,4 @@
-#Fri Jul 30 09:33:44 CEST 2010
+#Thu Sep 09 12:10:48 CEST 2010
 backend_version=R13B
 compiler/allOptions=debug
 compiler/debug_info=false
@@ -16,5 +16,5 @@ external_includes=
 external_modules=
 include_dirs=include;
 output_dir=ebin
-source_dirs=src;
+source_dirs=src/syntax;src/pprint;src/parsing;src;
 use_pathz=false

@@ -285,17 +285,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	void removeModelChangeListener(IErlModelChangeListener listener);
 
-	int UNKNOWN_ARITY = -1;
-
-	/**
-	 * Locates definitions of functions matching the given signature. Function
-	 * name and module can be regexps.
-	 * 
-	 * @param module
-	 * @param function
-	 * @param arity
-	 * @return
-	 */
 	IErlElement findElement(IResource resource);
 
 	IErlElement findElement(IResource resource, boolean openElements);
@@ -306,17 +295,20 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	IErlModule findModule(String name);
 
-	public IErlElement innermostThat(final IErlElement el,
+    IErlModule findModuleExt(String name);
+
+    public IErlElement innermostThat(final IErlElement el,
 			final IErlangFirstThat firstThat);
 
 	String getExternal(IErlProject erlProject, int externalFlag);
 
 	OtpErlangList getPathVars();
 
+	/**
+	 * Locates definitions of functions matching the given signature. Function
+	 * name and module can be regexps.
+	 */
 	IErlFunction findFunction(FunctionRef r);
 
 	IErlModule getModuleFor(IErlElement elem);
-
-	/** Search a module case_insensitive */
-	IErlModule findModuleExt(String module);
 }

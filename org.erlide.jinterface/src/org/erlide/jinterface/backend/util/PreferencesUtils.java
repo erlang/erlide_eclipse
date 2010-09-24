@@ -60,7 +60,7 @@ public final class PreferencesUtils {
 		for (final String s : list) {
 			result.append(s).append(sep);
 		}
-		String r = result.length() == 0 ? "" : result.substring(0, result
+		String r = (result.length() == 0) ? "" : result.substring(0, result
 				.length()
 				- sep.length());
 		return r;

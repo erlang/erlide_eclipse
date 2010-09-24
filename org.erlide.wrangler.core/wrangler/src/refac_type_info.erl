@@ -37,7 +37,7 @@ get_type_info_using_typer(File) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
--spec get_type_info(#typer_analysis{}) -> #typer_analysis{}.
+%%-spec get_type_info(#typer_analysis{}) -> #typer_analysis{}.
 
 get_type_info(#typer_analysis{callgraph = CallGraph,
 			      trust_plt = TrustPLT,
@@ -54,7 +54,7 @@ get_type_info(#typer_analysis{callgraph = CallGraph,
     end.
 
 
--spec collect(#typer_analysis{}) -> #typer_analysis{}.
+%%-spec collect(#typer_analysis{}) -> #typer_analysis{}.
 collect(Analysis) ->
     NewPlt =dialyzer_plt:merge_plts([Analysis#typer_analysis.trust_plt, 
 				     Analysis#typer_analysis.plt]),

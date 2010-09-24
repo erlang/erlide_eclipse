@@ -67,7 +67,7 @@
 
 -module(refac_epp_dodger).
 
--export([parse_file/2]).
+-export([parse_file/2, normal_parser/2]).
 
 %% The following should be: 1) pseudo-uniquely identifiable, and 2)
 %% cause nice looking error messages when the parser has to give up.
@@ -199,26 +199,26 @@ parse_form(Dev, L0, Parser, Options) ->
     Res = refac_io:scan_erl_form(Dev, "", L0, TabWidth, FileFormat),
     case Res of    
         {ok, Ts, L1} ->
-            case catch {ok, Parser(Ts, Opt)} of
+	    case catch {ok, Parser(Ts, Opt)} of
                 {'EXIT', Term} ->
-                    {error, io_error(L1, {unknown, Term}), L1};
+                    {error, {io_error(L1, {unknown, Term}), {start_pos(Ts, L1),end_pos(Ts,L1)}}, L1};
                 {error, Term} ->
 		    IoErr = io_error(L1, Term),
-		    {error, IoErr, L1};
+		    {error, {IoErr, {start_pos(Ts, L1), end_pos(Ts, L1)}}, L1};
                 {parse_error, _IoErr} when NoFail ->
 		    {ok, refac_syntax:set_pos(
 			   refac_syntax:text(tokens_to_string(Ts)),
 			   start_pos(Ts, L1)),
 		     L1};
                 {parse_error, IoErr} ->
-		    {error, IoErr, L1};
+		    {error, {IoErr, {start_pos(Ts, L1), end_pos(Ts, L1)}}, L1};
 		{parse_error, IoErr, Range} ->
 		    {error, {IoErr, Range}, L1};
                 {ok, F} ->
 		    {ok, F, L1}
             end;
         {error, IoErr, L1} ->
-            {error, IoErr, L1};
+            {error, {IoErr, {L0, L1}}, L1};
         {eof, L1} ->
             {eof, L1}
     end.
@@ -231,6 +231,11 @@ start_pos([T | _Ts], _L) ->
 start_pos([], L) ->
     L.
 
+
+end_pos([], L) ->
+    L;
+end_pos(Ts, _L) ->
+    element(2, lists:last(Ts)).
 %% Exception-throwing wrapper for the standard Erlang parser stage
 
 parse_tokens(Ts) ->
@@ -294,7 +299,7 @@ skip_macro_args([], _Es, _As) ->
 %% Normal parsing - try to preserve all information
 
 normal_parser(Ts, Opt) ->
-    rewrite_form(parse_tokens(scan_form(Ts, Opt))).
+    rewrite_form(parse_tokens(scan_form(Ts, Opt)), element(2, hd(Ts))).
 
 scan_form([{'-', _L}, {atom, La, define} | Ts], Opt) ->
     [{atom, La, ?pp_form}, {'(', La}, {')', La}, {'->', La},
@@ -417,16 +422,22 @@ scan_macros_1(Args, Rest, As, Opt) ->
     %% normal case - continue scanning
     scan_macros(Args ++ Rest, As, Opt).
 
-rewrite_form({function, L, ?pp_form, _,
-              [{clause, _, [], [], [{call, _, A, As}]}]}) ->
-    refac_syntax:set_pos(refac_syntax:attribute(A, rewrite_list(As)), L);
-rewrite_form({function, L, ?pp_form, _, [{clause, _, [], [], [A]}]}) ->
-    refac_syntax:set_pos(refac_syntax:attribute(A), L);
-rewrite_form(T={attribute, _, spec, _}) -> T;
-rewrite_form(T={attribute, _, type, _}) -> 
-     T;
-rewrite_form(T) ->
-    rewrite(T).
+rewrite_form({function, _L, ?pp_form, _,
+              [{clause, _, [], [], [{call, _, A, As}]}]}, L0) ->
+    refac_syntax:set_pos(refac_syntax:attribute(A, rewrite_list(As)), L0);
+rewrite_form({function, _L, ?pp_form, _, [{clause, _, [], [], [A]}]} , L0) ->
+    refac_syntax:set_pos(refac_syntax:attribute(A), L0);
+rewrite_form(T={attribute, _Pos, spec, _}, L0) ->
+    setelement(2, T, L0);
+rewrite_form(T={attribute, _Pos, type, _}, L0) -> 
+    setelement(2, T, L0);
+rewrite_form(T, L0) ->
+    case element(1, T) of
+	attribute ->
+	    rewrite(setelement(2, T, L0));
+	_ ->
+	    rewrite(T)
+    end.
 
 rewrite_list([T | Ts]) ->
     [rewrite(T) | rewrite_list(Ts)];

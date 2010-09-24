@@ -28,6 +28,8 @@ import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
+import com.ericsson.otp.erlang.OtpErlangBoolean;
+
 /**
  * Rename module refactoring integration class
  * 
@@ -65,9 +67,10 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
 		for (ChangedFile f : changedFiles) {
 			if (f.isNameChanged()) {
-				IPath p = f.getIPath();
+				IPath p = f.getPath();
 				String s = f.getNewName();
 				RenameResourceChange rch = new RenameResourceChange(p, s);
+
 				c.add(rch);
 			}
 		}
@@ -90,17 +93,18 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 					renameTestMod = ask("Question", message.getMessageString());
 					message = runAlternative(sel);
 					if (message.getRefactoringState() == RefactoringState.OK) {
+						changedFiles = message.getRefactoringChangeset();
 						status = new RefactoringStatus();
 					} else
 						status = RefactoringStatus
 								.createFatalErrorStatus(message
 										.getMessageString());
 				} else if (message.getRefactoringState() == RefactoringState.WARNING) {
-					// FIXME: ???
 					renameTestMod = !ask("Warning", message.getMessageString());
 					if (!renameTestMod) {
 						message = runAlternative(sel);
 						if (message.getRefactoringState() == RefactoringState.OK) {
+							changedFiles = message.getRefactoringChangeset();
 							status = new RefactoringStatus();
 						} else
 							status = RefactoringStatus
@@ -120,8 +124,18 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 	@Override
 	public IRefactoringRpcMessage runAlternative(final IErlSelection sel) {
 		return WranglerBackendManager.getRefactoringBackend().call(
-				"rename_mod_1_eclipse", "ssxib", sel.getFilePath(), userInput,
+				"rename_mod_1_eclipse", "ssxix", sel.getFilePath(), userInput,
 				sel.getSearchPath(), GlobalParameters.getTabWidth(),
-				renameTestMod);
+				new OtpErlangBoolean(renameTestMod));
+	}
+
+	@Override
+	public void doAfterRefactoring() {
+		// WranglerUtils.openFile(WranglerUtils.getFileFromPath(newPath));
+	}
+
+	@Override
+	public void doBeforeRefactoring() {
+
 	}
 }

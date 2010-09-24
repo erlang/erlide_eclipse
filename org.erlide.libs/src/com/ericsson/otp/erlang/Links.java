@@ -20,104 +20,104 @@ package com.ericsson.otp.erlang;
 
 // package scope
 class Links {
-    Link[] links;
-    int count;
+	Link[] links;
+	int count;
 
-    Links() {
-	this(10);
-    }
-
-    Links(final int initialSize) {
-	links = new Link[initialSize];
-	count = 0;
-    }
-
-    synchronized void addLink(final OtpErlangPid local,
-	    final OtpErlangPid remote) {
-	if (find(local, remote) == -1) {
-	    if (count >= links.length) {
-		final Link[] tmp = new Link[count * 2];
-		System.arraycopy(links, 0, tmp, 0, count);
-		links = tmp;
-	    }
-	    links[count++] = new Link(local, remote);
+	Links() {
+		this(10);
 	}
-    }
 
-    synchronized void removeLink(final OtpErlangPid local,
-	    final OtpErlangPid remote) {
-	int i;
-
-	if ((i = find(local, remote)) != -1) {
-	    count--;
-	    links[i] = links[count];
-	    links[count] = null;
+	Links(final int initialSize) {
+		links = new Link[initialSize];
+		count = 0;
 	}
-    }
 
-    synchronized boolean exists(final OtpErlangPid local,
-	    final OtpErlangPid remote) {
-	return find(local, remote) != -1;
-    }
-
-    synchronized int find(final OtpErlangPid local, final OtpErlangPid remote) {
-	for (int i = 0; i < count; i++) {
-	    if (links[i].equals(local, remote)) {
-		return i;
-	    }
+	synchronized void addLink(final OtpErlangPid local,
+			final OtpErlangPid remote) {
+		if (find(local, remote) == -1) {
+			if (count >= links.length) {
+				final Link[] tmp = new Link[count * 2];
+				System.arraycopy(links, 0, tmp, 0, count);
+				links = tmp;
+			}
+			links[count++] = new Link(local, remote);
+		}
 	}
-	return -1;
-    }
 
-    int count() {
-	return count;
-    }
+	synchronized void removeLink(final OtpErlangPid local,
+			final OtpErlangPid remote) {
+		int i;
 
-    /* all local pids get notified about broken connection */
-    synchronized OtpErlangPid[] localPids() {
-	OtpErlangPid[] ret = null;
-	if (count != 0) {
-	    ret = new OtpErlangPid[count];
-	    for (int i = 0; i < count; i++) {
-		ret[i] = links[i].local();
-	    }
+		if ((i = find(local, remote)) != -1) {
+			count--;
+			links[i] = links[count];
+			links[count] = null;
+		}
 	}
-	return ret;
-    }
 
-    /* all remote pids get notified about failed pid */
-    synchronized OtpErlangPid[] remotePids() {
-	OtpErlangPid[] ret = null;
-	if (count != 0) {
-	    ret = new OtpErlangPid[count];
-	    for (int i = 0; i < count; i++) {
-		ret[i] = links[i].remote();
-	    }
+	synchronized boolean exists(final OtpErlangPid local,
+			final OtpErlangPid remote) {
+		return find(local, remote) != -1;
 	}
-	return ret;
-    }
 
-    /* clears the link table, returns a copy */
-    synchronized Link[] clearLinks() {
-	Link[] ret = null;
-	if (count != 0) {
-	    ret = new Link[count];
-	    for (int i = 0; i < count; i++) {
-		ret[i] = links[i];
-		links[i] = null;
-	    }
-	    count = 0;
+	synchronized int find(final OtpErlangPid local, final OtpErlangPid remote) {
+		for (int i = 0; i < count; i++) {
+			if (links[i].equals(local, remote)) {
+				return i;
+			}
+		}
+		return -1;
 	}
-	return ret;
-    }
 
-    /* returns a copy of the link table */
-    synchronized Link[] links() {
-	Link[] ret = null;
-	if (count != 0) {
-	    ret = new Link[count];
-	    System.arraycopy(links, 0, ret, 0, count);
+	int count() {
+		return count;
 	}
-	return ret;
-    }
+
+	/* all local pids get notified about broken connection */
+	synchronized OtpErlangPid[] localPids() {
+		OtpErlangPid[] ret = null;
+		if (count != 0) {
+			ret = new OtpErlangPid[count];
+			for (int i = 0; i < count; i++) {
+				ret[i] = links[i].local();
+			}
+		}
+		return ret;
+	}
+
+	/* all remote pids get notified about failed pid */
+	synchronized OtpErlangPid[] remotePids() {
+		OtpErlangPid[] ret = null;
+		if (count != 0) {
+			ret = new OtpErlangPid[count];
+			for (int i = 0; i < count; i++) {
+				ret[i] = links[i].remote();
+			}
+		}
+		return ret;
+	}
+
+	/* clears the link table, returns a copy */
+	synchronized Link[] clearLinks() {
+		Link[] ret = null;
+		if (count != 0) {
+			ret = new Link[count];
+			for (int i = 0; i < count; i++) {
+				ret[i] = links[i];
+				links[i] = null;
+			}
+			count = 0;
+		}
+		return ret;
+	}
+
+	/* returns a copy of the link table */
+	synchronized Link[] links() {
+		Link[] ret = null;
+		if (count != 0) {
+			ret = new Link[count];
+			System.arraycopy(links, 0, ret, 0, count);
+		}
+		return ret;
+	}
 }

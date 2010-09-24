@@ -353,7 +353,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 				final IStructuredSelection ss = (IStructuredSelection) s;
 				final List<?> elements = ss.toList();
 				if (!elements.contains(reference)) {
-					s = reference == null ? StructuredSelection.EMPTY
+					s = (reference == null) ? StructuredSelection.EMPTY
 							: new StructuredSelection(reference);
 					getTreeViewer().setSelection(s, true);
 				}

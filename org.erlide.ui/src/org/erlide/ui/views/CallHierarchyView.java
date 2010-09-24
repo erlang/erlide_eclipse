@@ -166,7 +166,7 @@ public class CallHierarchyView extends ViewPart {
 					public void mouseDoubleClick(MouseEvent e) {
 						TreeItem[] sel = tree.getSelection();
 						IErlFunction el = (IErlFunction) sel[0].getData();
-						final boolean activateOnOpen = getSite() != null ? true
+						final boolean activateOnOpen = (getSite() != null) ? true
 								: OpenStrategy.activateOnOpen();
 						try {
 							// TODO we want to find the exact place in the code

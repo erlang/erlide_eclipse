@@ -135,7 +135,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 		final StringBuilder sb = new StringBuilder();
 		sb.append(module);
 		if (lineNumber != -1) {
-			sb.append(":");
+			sb.append(':');
 			sb.append(lineNumber);
 		}
 		if (clauseHead != null && clauseHead.length() > 0) {

@@ -28,7 +28,7 @@
 -module(interface_api).
 
 
--export([pos_to_fun_name/2,pos_to_fun_def/2,pos_to_var_name/2,pos_to_expr/3,
+-export([pos_to_fun_name/2,pos_to_fun_def/2,pos_to_var_name/2,pos_to_var/2,pos_to_expr/3,
 	 pos_to_expr_list/3,pos_to_expr_or_pat_list/3,expr_to_fun/2]).
 
 -include("../include/wrangler.hrl").
@@ -50,8 +50,8 @@
 %% @see pos_to_expr/3
 %% @see pos_to_fun_def/2.
 
--spec (pos_to_fun_name(Node::syntaxTree(), Pos::pos()) ->
-	      {ok, {atom(), atom(), integer(), pos(), pos()}} | {error, string()}).
+%%-spec (pos_to_fun_name(Node::syntaxTree(), Pos::pos()) ->
+%%	      {ok, {atom(), atom(), integer(), pos(), pos()}} | {error, string()}).
 pos_to_fun_name(Node, Pos) ->
     case
       ast_traverse_api:once_tdTU(fun pos_to_fun_name_1/2, Node, Pos)
@@ -81,8 +81,8 @@ pos_to_fun_name_1(Node, Pos = {Ln, Col}) ->
 %% location specified by Pos falls.
 %%               
 %% @see pos_to_fun_name/2.
--spec(pos_to_fun_def(Node::syntaxTree(), Pos::pos()) 
-      -> {ok, syntaxTree()} | {error, string()}).
+%%-spec(pos_to_fun_def(Node::syntaxTree(), Pos::pos()) 
+%%      -> {ok, syntaxTree()} | {error, string()}).
 pos_to_fun_def(Node, Pos) ->
     case
       ast_traverse_api:once_tdTU(fun pos_to_fun_def_1/2, Node, Pos)
@@ -124,9 +124,9 @@ pos_to_fun_def_1(Node, Pos) ->
 
 %%TODO: This function returns more than what the function name indicates, try to refactor it.
 
--type(category()::expression|pattern|macro_name|application_op|operator).
--spec(pos_to_var_name(Node::syntaxTree(), Pos::pos())->
-	     {ok, {atom(), [pos()], category()}} | {error, string()}).
+%%-type(category()::expression|pattern|macro_name|application_op|operator).
+%%-spec(pos_to_var_name(Node::syntaxTree(), Pos::pos())->
+%%	     {ok, {atom(), [pos()], category()}} | {error, string()}).
 pos_to_var_name(Node, UsePos) ->
     case
       ast_traverse_api:once_tdTU(fun pos_to_var_name_1/2, Node, UsePos)
@@ -146,18 +146,55 @@ pos_to_var_name_1(Node, _Pos = {Ln, Col}) ->
 	    true ->
 		case lists:keysearch(def, 1, refac_syntax:get_ann(Node)) of
 		  {value, {def, DefinePos}} ->
-		      lists:keysearch(def, 1, refac_syntax:get_ann(Node)),
-		      {value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
-		      {{refac_syntax:variable_name(Node), DefinePos, C}, true};
-		  false ->
-		      {value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
-		      {{refac_syntax:variable_name(Node), [?DEFAULT_LOC], C}, true}
+			{value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
+			C1 =case C of 
+				{macro_name, _, _} -> macro_name;
+				_ -> C
+			    end,
+			{{refac_syntax:variable_name(Node), DefinePos, C1}, true};
+		    false ->
+			{value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
+			C1 =case C of 
+				{macro_name, _, _} -> macro_name;
+				_ -> C
+			    end,
+			{{refac_syntax:variable_name(Node), [?DEFAULT_LOC], C1}, true}
 		end;
-	    false -> {[], false}
+	      false -> {[], false}
 	  end;
-      _ -> {[], false}
+	_ -> {[], false}
     end.
 
+
+
+-spec(pos_to_var(Node::syntaxTree(), Pos::pos())->
+	     {ok, syntaxTree()} | {error, string()}).
+pos_to_var(Node, Pos) ->
+    case
+	ast_traverse_api:once_tdTU(fun pos_to_var_1/2, Node, Pos)
+    of
+	{_, false} -> {error, "You have not selected a variable, "
+		       "or the function containing the variable does not parse."};
+	{R, true} -> {ok, R}
+    end.
+
+pos_to_var_1(Node, _Pos = {Ln, Col}) ->
+    case refac_syntax:type(Node) of
+	variable ->
+	    {Ln1, Col1} = refac_syntax:get_pos(Node),
+	    case (Ln == Ln1) and (Col1 =< Col) and
+		(Col =< Col1 + length(atom_to_list(refac_syntax:variable_name(Node))) - 1)
+	    of
+		true ->
+		    {value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
+		    case C of 
+			{macro_name, _, _} -> {[], false};
+			_ -> {Node, true}
+		    end;
+		false -> {[], false}
+	    end;
+	_ -> {[], false}
+    end.
 
 %% =====================================================================
 %% @spec pos_to_expr(Tree::syntaxTree(), Start::Pos, End::Pos) ->
@@ -169,7 +206,7 @@ pos_to_var_name_1(Node, _Pos = {Ln, Col}) ->
 %% @see pos_to_fun_name/2
 %% @see pos_to_fun_def/2
 %% @see pos_to_var_name/2
--spec(pos_to_expr(Tree::syntaxTree(), Start::pos(), End::pos()) ->{ok, syntaxTree()} | {error, string()}).
+%%-spec(pos_to_expr(Tree::syntaxTree(), Start::pos(), End::pos()) ->{ok, syntaxTree()} | {error, string()}).
 pos_to_expr(Tree, Start, End) ->
     Es = lists:flatten(pos_to_expr_1(Tree, Start, End)),
     case Es of
@@ -199,60 +236,69 @@ pos_to_expr_1(Tree, Start, End) ->
 
 %% =====================================================================
 %% get the list expressions enclosed by start and end locations.
--spec(pos_to_expr_list(Tree::syntaxTree(), Start::pos(), End::pos()) ->
-	     [syntaxTree()]).
+%%-spec(pos_to_expr_list(Tree::syntaxTree(), Start::pos(), End::pos()) ->
+%%	     [syntaxTree()]).
 pos_to_expr_list(AnnAST, Start, End) ->
-    Es = pos_to_expr_list_1(AnnAST, Start, End, fun refac_misc:is_expr/1),
+    Es = pos_to_expr_list_1(AnnAST, Start, End, fun refac_misc:is_expr_or_match/1),
     get_expr_list(Es).
-pos_to_expr_or_pat_list(AnnAST, Start, End) ->
-    F = fun
-	  (E) -> refac_misc:is_expr(E) orelse refac_misc:is_pattern(E)
-	end,
-    Es = pos_to_expr_list_1(AnnAST, Start, End, F),
-    get_expr_list(Es).
- 
+
 pos_to_expr_list_1(Tree, Start, End, F) ->
     {S, E} = refac_misc:get_start_end_loc(Tree),
     if (S >= Start) and (E =< End) ->
-	   case F(Tree) of
-	     true ->
-		 [Tree];
-	     _ ->
-		 Ts = refac_syntax:subtrees(Tree),
-		 [[lists:append(pos_to_expr_list_1(T, Start, End, F)) || T <- G]
+	    case F(Tree) of
+	       true ->
+		   [Tree];
+	       _ ->
+		   Ts = refac_syntax:subtrees(Tree),
+		   [[lists:append(pos_to_expr_list_1(T, Start, End, F)) || T <- G]
 		  || G <- Ts]
 	   end;
        (S > End) or (E < Start) -> [];
        (S < Start) or (E > End) ->
-	   Ts = refac_syntax:subtrees(Tree),
+	    Ts = refac_syntax:subtrees(Tree),
 	   [[lists:append(pos_to_expr_list_1(T, Start, End, F)) || T <- G]
-	    || G <- Ts];
-       true -> []
+	    || G <- Ts]
     end.
 get_expr_list(Es) ->
-    case [E || E <- Es, lists:flatten(E) /= []] of
-      [] ->
+    case [append(E)|| E <- Es, lists:flatten(E) /= []] of
+	[] ->
 	  [];
-      [H| _T] ->
-	  get_expr_list_1(H)
+      [H|_T] ->
+	    get_expr_list_1(H)
+    end.
+
+append(Es) ->
+    case lists:all(fun(E)->
+			 is_list(E)
+		   end, Es) of
+	true->
+	    lists:append(Es);
+	false ->
+	    [E || E <- Es, not is_list(E)]
     end.
 
 get_expr_list_1(L) ->
-    F = fun (E) -> not is_list(E) orelse E == [] end,
-    case lists:all(F, L) of
+    case lists:any(fun(F)-> not is_list(F) end, L) of
       true ->
-	  [E || E <- L, E /= []];
+	  [E || E <- L, not is_list(E)];
       false ->
 	  get_expr_list(L)
     end.
 
+
+pos_to_expr_or_pat_list(AnnAST, Start, End) ->
+    F = fun
+	  (E) -> refac_misc:is_expr_or_match(E) orelse refac_misc:is_pattern(E)
+	end,
+    Es = pos_to_expr_list_1(AnnAST, Start, End, F),
+    get_expr_list(Es).
 
 %% ===========================================================================
 %% @spec expr_to_fun(Tree::syntaxTree(), Exp::syntaxTree())->
 %%                   {ok, syntaxTree()} | {error, none}
 %%
 %% @doc Return the AST of the function to which Exp (an expression node) belongs.
--spec(expr_to_fun(Tree::syntaxTree(), Exp::syntaxTree())->{ok, syntaxTree()} | {error, none}).
+%%-spec(expr_to_fun(Tree::syntaxTree(), Exp::syntaxTree())->{ok, syntaxTree()} | {error, none}).
 expr_to_fun(Tree, Exp) ->
     Res = expr_to_fun_1(Tree, Exp),
     case Res of

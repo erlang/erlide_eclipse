@@ -35,84 +35,80 @@ import erlang.ErlideDoc;
  * Property page used to set the project's edoc location
  */
 public class EdocConfigurationPropertyPage extends PropertyPage implements
-		IPreferenceChangeListener, IPropertyChangeListener {
+        IPreferenceChangeListener, IPropertyChangeListener {
 
-	public static final String PROP_ID = "org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"; //$NON-NLS-1$
+    public static final String PROP_ID = "org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"; //$NON-NLS-1$
 
-	// private boolean fIsValidElement;
+    // private boolean fIsValidElement;
 
-	// private IPath fContainerPath;
-	@SuppressWarnings("unused")
-	private URL fInitialLocation;
+    // private IPath fContainerPath;
+    @SuppressWarnings("unused")
+    private URL fInitialLocation;
 
-	public EdocConfigurationPropertyPage() {
-	}
+    public EdocConfigurationPropertyPage() {
+    }
 
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		final IPreferenceStore store = ErlideUIPlugin.getDefault()
-				.getPreferenceStore();
-		store.addPropertyChangeListener(this);
-		return store;
-	}
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                .getPreferenceStore();
+        store.addPropertyChangeListener(this);
+        return store;
+    }
 
-	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public void createControl(final Composite parent) {
-		super.createControl(parent);
-		setDescription("Specify the location of the generated edoc (in HTML format).");
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
-				IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
-	}
+    /**
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public void createControl(final Composite parent) {
+        super.createControl(parent);
+        setDescription("Specify the location of the generated edoc (in HTML format).");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
+                IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
+    }
 
-	/*
-	 * @see PreferencePage#createContents(Composite)
-	 */
-	@Override
-	protected Control createContents(final Composite parent) {
-		fInitialLocation = null;
-		final String s = ErlideDoc.getOtpDocLocation(ErlangCore
-				.getBackendManager().getIdeBackend());
-		try {
-			fInitialLocation = new URL("file", null, s);
-		} catch (final MalformedURLException e) {
-			ErlLogger.warn(e);
-		}
+    /*
+     * @see PreferencePage#createContents(Composite)
+     */
+    @Override
+    protected Control createContents(final Composite parent) {
+        fInitialLocation = null;
+        final String s = ErlideDoc.getOtpDocLocation(ErlangCore
+                .getBackendManager().getIdeBackend());
+        try {
+            fInitialLocation = new URL("file", null, s);
+        } catch (final MalformedURLException e) {
+            ErlLogger.warn(e);
+        }
 
-		final Control control = new Composite(parent, SWT.NONE);
-		// final Button button = new Button("test");
-		// final Label label = new Label("Edoc location!!");
+        final Control control = new Composite(parent, SWT.NONE);
+        // final Button button = new Button("test");
+        // final Label label = new Label("Edoc location!!");
 
-		Dialog.applyDialogFont(control);
-		return control;
-	}
+        Dialog.applyDialogFont(control);
+        return control;
+    }
 
-	/*
-	 * @see PreferencePage#performDefaults()
-	 */
-	@Override
-	protected void performDefaults() {
-		super.performDefaults();
-	}
+    /*
+     * @see PreferencePage#performDefaults()
+     */
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
-	@Override
-	public boolean performOk() {
-		return true;
-	}
+    /**
+     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        return true;
+    }
 
-	public void preferenceChange(final PreferenceChangeEvent event) {
-		// TODO Auto-generated method stub
+    public void preferenceChange(final PreferenceChangeEvent event) {
+    }
 
-	}
-
-	public void propertyChange(final PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
-
-	}
+    public void propertyChange(final PropertyChangeEvent event) {
+    }
 
 }

@@ -1,18 +1,14 @@
 -module(refac_code_search_utils).
 
-
--compile(export_all).
-
 -export([var_binding_structure/1,
 	 display_search_results/3, display_clone_result/2,
-	 start_counter_process/0, stop_counter_process/1,
+	 start_counter_process/0, start_counter_process/1,
+	 stop_counter_process/1,
 	 add_new_export_var/2, get_new_export_vars/1,
 	 identifier_name/1, gen_new_var_name/1,
-	 remove_sub_clones/1]).
+	 remove_sub_clones/1, generalisable/1]).
 
 -include("../include/wrangler.hrl").
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 %%                                                                      %%
@@ -22,15 +18,15 @@
 
 %% A refactoring candidate: from non-gen_server to gen_server.
 
--spec start_counter_process() -> pid(). 			   
+%%-spec start_counter_process() -> pid(). 			   
 start_counter_process() ->
     start_counter_process(sets:new()).
 
--spec start_counter_process(set()) -> pid(). 
+%%-spec start_counter_process(set()) -> pid(). 
 start_counter_process(UsedNames) ->
     spawn_link(fun () -> counter_loop({1, UsedNames, []}) end).
 
--spec stop_counter_process(atom() | pid() | port() | {atom(),atom()}) -> 'stop'.
+%%-spec stop_counter_process(atom() | pid() | port() | {atom(),atom()}) -> 'stop'.
 stop_counter_process(Pid) ->
     Pid!stop.
 
@@ -49,20 +45,20 @@ counter_loop({SuffixNum, UsedNames, NewExportVars}) ->
 	  ok
     end.
 
--spec add_new_export_var(atom() | pid() | port() | {atom(),atom()},string()) -> {'add', string()}.
+%%-spec add_new_export_var(atom() | pid() | port() | {atom(),atom()},string()) -> {'add', string()}.
 add_new_export_var(Pid, VarName) ->
     Pid ! {add, VarName}.
 
 
 
--spec get_new_export_vars(atom() | pid() | port() | {atom(),atom()}) -> [string()].
+%%-spec get_new_export_vars(atom() | pid() | port() | {atom(),atom()}) -> [string()].
 get_new_export_vars(Pid) ->
     Pid !{self(), get},
     receive
 	{Pid, Vars} ->
 	     Vars
     end.
--spec gen_new_var_name(atom() | pid() | port() | {atom(),atom()}) -> string(). 
+%%-spec gen_new_var_name(atom() | pid() | port() | {atom(),atom()}) -> string(). 
 gen_new_var_name(Pid) -> 
     Pid ! {self(), next},
     receive
@@ -85,8 +81,8 @@ make_new_name(SuffixNum, UsedNames) ->
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec remove_sub_clones([{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}]
-			  ,integer(), integer()}]) -> any().
+%%-spec remove_sub_clones([{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}]
+%%			  ,integer(), integer()}]) -> any().
 remove_sub_clones(Cs) ->
     Cs1 = lists:sort(fun(C1,C2)
 			-> {element(3, C1), element(2, C1)} >= {element(3, C2), element(2, C2)}
@@ -127,7 +123,7 @@ sub_clone(C1, C2) ->
 %%                                                                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec identifier_name(syntaxTree()) -> atom().
+%%-spec identifier_name(syntaxTree()) -> atom().
 identifier_name(Exp) ->
     case refac_syntax:type(Exp) of
 	atom ->
@@ -143,7 +139,7 @@ identifier_name(Exp) ->
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec(var_binding_structure/1::([syntaxTree()]) -> [{integer(), integer()}]).      
+%%-spec(var_binding_structure/1::([syntaxTree()]) -> [{integer(), integer()}]).      
 var_binding_structure(ASTList) ->
     VarLocs = lists:keysort(2, refac_misc:collect_var_source_def_pos_info(ASTList)),
     case VarLocs of
@@ -172,8 +168,10 @@ var_binding_structure_1(VarLocs) ->
 %%  Display clone detection results                                     %%
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
--spec display_clone_result([{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}],
-			   string()) -> ok.
+%%-spec display_clone_result([{[{{filename(), integer(), integer()},
+%%			       {filename(), integer(), integer()}}], 
+%%			     integer(), integer(), string()}],
+%%			   string()) -> ok.
 display_clone_result(Cs, Str) ->
     case length(Cs) >=1  of 
      	true -> display_clones_by_freq(Cs, Str),
@@ -204,57 +202,32 @@ display_clones(Cs, Str) ->
     ?wrangler_io("\n"++Str++" detection finished with *** ~p *** clone(s) found.\n", [Num]),
     case Num of 
 	0 -> ok;
-	_ -> display_clones_1(Cs)
+	_ -> display_clones_1(Cs,1)
     end.
 
-display_clones_1(Cs) ->
-    lists:foreach(fun(C) -> 
-			  display_a_clone(C)
-		  end, Cs).
-
-display_a_clone(_C={Ranges, _Len, F,Code}) ->
+display_clones_1([],_) ->
+    ?wrangler_io("\n",[]),
+    ok;
+display_clones_1([C|Cs], Num) ->
+    display_a_clone(C, Num),
+    display_clones_1(Cs, Num+1).
+  
+display_a_clone(_C={Ranges, _Len, F,Code},Num) ->
     [R| _Rs] = lists:keysort(1, Ranges),
-    NewStr = compose_clone_info(R, F, Ranges, ""),
+    NewStr = compose_clone_info(R, F, Ranges, "", Num),
     NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
     ?wrangler_io("~s", [NewStr1]).
 
-%% display_clones_1(Cs) ->
-%%     Str = display_clones_1(Cs, ""),
-%%     refac_io:format("~s", [Str]).
 
-%% display_clones_1([], Str) -> Str ++ "\n";
-%% display_clones_1([{Ranges, _Len, F, Code}| Cs], Str) ->
-%%     [R| _Rs] = lists:keysort(1, Ranges),
-%%     NewStr = compose_clone_info(R, F, Ranges, Str),
-%%     NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
-%%     display_clones_1(Cs, NewStr1).
-
-%% io:format("~s",["dddd~p\nddd"])
-compose_clone_info({{File, StartLine, StartCol}, {File, EndLine, EndCol}}, F, Range, Str) ->
-    case F - 1 of
-	1 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned once:\n",
-							 [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
+compose_clone_info(_, F, Range, Str, Num) ->
+    case F of
+	2 -> Str1 =Str ++ "\n\n" ++"Clone "++io_lib:format("~p. ", [Num])++ "This code appears twice:\n",
 	     display_clones_2(Range, Str1);
-	2 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned twice:\n",
-							 [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
-	     display_clones_2(Range, Str1);
-	_ -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned ~p times:\n",
-							 [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol, F - 1]),
+	_ -> Str1 =Str ++ "\n\n" ++"Clone "++io_lib:format("~p. ", [Num])++ 
+		 io_lib:format("This code appears ~p times:\n",[F]),
 	     display_clones_2(Range, Str1)
-    end;
-compose_clone_info({{{File, StartLine, StartCol}, {File, EndLine, EndCol}}, _FunCall}, F, Range, Str) ->
-      case F - 1 of
-	  1 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned once:\n",
-							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
-	       display_clones_2(Range, Str1);
-	  2 -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned twice:\n",
-							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol]),
-	       display_clones_2(Range, Str1);
-	  _ -> Str1 = Str ++ "\n" ++ File ++ io_lib:format(":~p.~p-~p.~p: This code has been cloned ~p times:\n",
-							   [StartLine, lists:max([1, StartCol-1]), EndLine, EndCol, F - 1]),
-	       display_clones_2(Range, Str1)
-      end.
-    
+    end.
+
 display_clones_2([], Str) -> Str ++ "\n";
 display_clones_2([{{File, StartLine, StartCol}, {File, EndLine, EndCol}}|Rs], Str) ->
     Str1 =Str ++ File++io_lib:format(":~p.~p-~p.~p:  \n", [StartLine, lists:max([1,StartCol-1]), EndLine, EndCol]),
@@ -272,9 +245,9 @@ display_clones_2([{{{File, StartLine, StartCol}, {File, EndLine, EndCol}}, FunCa
 %%                                                                      %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--spec display_search_results([{filename(),{{integer(), integer()}, {integer(), integer()}}}],
-			     syntaxTree()|none, string()) ->
-				    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}.
+%%-spec display_search_results([{filename(),{{integer(), integer()}, {integer(), integer()}}}],
+%%			     syntaxTree()|none, string()) ->
+%%				    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}.
 display_search_results(Ranges, AntiUnifier, Type) ->
     case Ranges of
 	[_] -> 
@@ -303,5 +276,33 @@ compose_search_result_info([{FileName, {{StartLine, StartCol}, {EndLine, EndCol}
     Str1 =Str ++ "\n"++FileName++io_lib:format(":~p.~p-~p.~p: ", [StartLine, StartCol, EndLine, EndCol]),
     compose_search_result_info(Ranges, Str1).
 
-
- 
+%% returns true is an AST node can be generalised. 
+%% This is more restrict that what is necessary.
+%% TODO:how about side effect?
+generalisable(Node) ->
+    case lists:keysearch(category, 1, refac_syntax:get_ann(Node)) of
+	{value, {category, record_field}} -> false;
+	{value, {category, record_type}} -> false;
+	{value, {category, guard_expression}} -> false;
+	{value, {category, generator}} -> false;
+	{value, {category, {macro_name, Num, expression}}} when Num/=none -> false;
+	{value, {category, pattern}} ->
+	   %% refac_syntax:is_literal(Node) orelse ;; in theory it is ok.
+		refac_syntax:type(Node) == variable;
+	_ ->
+	  %% While syntactically, expressions of some of the listed types
+	  %% can be replaced by a variable, in practice, generalise a function 
+	  %% over this kind of expression could make the code harder to understand.
+	    T = refac_syntax:type(Node),
+	    not lists:member(T, [match_expr, operator, case_expr, 
+				 if_expr, fun_expr, receive_expr, clause,
+				 query_expr, try_expr, catch_expr, cond_expr,
+				 block_expr]) andalso
+		refac_misc:get_var_exports(Node) == []
+		andalso
+	    %% %% generalise expressions with free variables need to 
+	    %% %% wrap the expression with a fun expression; we try to 
+	    %% %% avoid this case.
+	    (refac_misc:get_free_vars(Node) == [] orelse
+	     T==variable)
+    end.

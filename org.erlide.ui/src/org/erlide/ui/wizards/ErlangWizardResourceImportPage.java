@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.TypeFilteringDialog;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.erlide.ui.util.DialogUtil;
@@ -205,7 +204,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 		optionsGroup.setLayout(layout);
 		optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_HORIZONTAL));
-		optionsGroup.setText(IDEWorkbenchMessages.WizardExportPage_options);
+		optionsGroup.setText(WizardMessages.WizardExportPage_options);
 		optionsGroup.setFont(parent.getFont());
 
 		createOptionsGroupButtons(optionsGroup);
@@ -255,7 +254,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 	 * @see WizardDataTransferPage.getErrorDialogTitle()
 	 */
 	protected String getErrorDialogTitle() {
-		return ErlangDataTransferMessages.WizardImportPage_errorDialogTitle;
+		return WizardMessages.WizardImportPage_errorDialogTitle;
 	}
 
 	/**
@@ -519,7 +518,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 	 * destination.
 	 */
 	protected final String getSourceConflictMessage() {
-		return ErlangDataTransferMessages.WizardImportPage_importOnReceiver;
+		return WizardMessages.WizardImportPage_importOnReceiver;
 	}
 
 	/**

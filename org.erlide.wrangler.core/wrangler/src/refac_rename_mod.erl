@@ -61,29 +61,29 @@
 
 -export([rename_mod/4, rename_mod_1/5, rename_mod_eclipse/4, rename_mod_1_eclipse/5]).
 
--import(refac_atom_utils, [output_atom_warning_msg/3,check_atoms/4,start_atom_process/0,stop_atom_process/1]).
+-import(refac_atom_utils, [output_atom_warning_msg/3,check_unsure_atoms/5,start_atom_process/0,stop_atom_process/1]).
 
 -include("../include/wrangler.hrl").
 
--spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
-	     {error, string()} | {question, string()} |{ok, [filename()], boolean()}).
+%%-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+%%	     {error, string()} | {question, string()} |{ok, [filename()], boolean()}).
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
--spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
-	     {error, string()} | {question, string()} | {warning, string()} |
-		 {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
+%%	     {error, string()} | {question, string()} | {warning, string()} |
+%%		 {ok, [{filename(), filename(), string()}]}).
 rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
 
--spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->
-			    {ok, [filename()], boolean()} |  {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->
+%%			    {ok, [filename()], boolean()} |  {ok, [{filename(), filename(), string()}]}).
 rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, emacs).
 
--spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->
-				    {ok, [{filename(), filename(), string()}]}).
+%%-spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->
+%%				    {ok, [{filename(), filename(), string()}]}).
 rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, eclipse).
 
@@ -157,11 +157,12 @@ pre_cond_test_file_checking(OldModName, NewModName,TestFrameWorkUsed, SearchPath
 	    case filelib:is_file(NewTestFileName) of
 		false ->
 		    {question, "Also rename the test module: " ++ F ++ "?"};
-		true -> {warning, "This module has a test module, but Wrangler cannot rename it"
-			 " because the new test module name is already in use, still continue?"}
+		true -> 
+		    {warning, "This module has a test module, but Wrangler cannot rename it"
+		     " because the new test module name is already in use, still continue?"}
 	    end;
 	_ -> {warning, "There are multiple EUnit test files for this module, "++output_filenames(EUnitTestFiles)++
-	      ", and Wrangler will not rename them, still continue?"}
+		  ", and Wrangler will not rename them, still continue?"}
     end.
 
     
@@ -197,16 +198,15 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, C
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {AnnAST1, _C1} = do_rename_mod_1(AnnAST, {FileName, OldNewModPairs, Pid}),
     OldModNames = element(1, lists:unzip(OldNewModPairs)),
-    check_atoms(FileName, AnnAST1, OldModNames, Pid),
+    check_unsure_atoms(FileName, AnnAST1, OldModNames, m_atom, Pid),
     TestModRes = case length(OldNewModPairs) of
 		   2 -> ?wrangler_io("The current file under refactoring is:\n~p\n", [TestFileName]),
 			{TestAnnAST, _Info} = parse_file_with_type_ann(TestFileName, SearchPaths, TabWidth),
 			{TestAnnAST1, _C2} = do_rename_mod_1(TestAnnAST, {FileName, OldNewModPairs, Pid}),
-			check_atoms(FileName, TestAnnAST1, OldModNames, Pid),
-			[{{TestFileName, NewTestFileName}, TestAnnAST1}];
+			check_unsure_atoms(FileName, TestAnnAST1, OldModNames, m_atom,  Pid),
+			[{{TestFileName, NewTestFileName}, TestAnnAST1}]; 
 		   _ -> []
 		 end,
-    
     ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
     ClientFiles1 = refac_util:get_client_files(FileName, SearchPaths),
     ClientFiles2 = case length(OldNewModPairs) == 2 of
@@ -217,7 +217,7 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, C
 		    2 -> lists:usort(ClientFiles1 ++ ClientFiles2) -- [FileName, TestFileName];
 		    _ -> ClientFiles1
 		  end,
-    Results = rename_mod_in_client_modules(ClientFiles, OldModName, OldNewModPairs, SearchPaths, TabWidth, Pid),
+    Results = rename_mod_in_client_modules(ClientFiles, OldModName, OldNewModPairs, SearchPaths, TabWidth, Pid),  
     case Editor of
       emacs ->
 	  HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
@@ -344,7 +344,7 @@ rename_mod_in_client_modules(Files, OldModName, OldNewModPairs, SearchPaths, Tab
 	    end,
 	    {AnnAST1, Changed} = do_rename_mod_1(AnnAST, {F, OldNewModPairs,Pid}),
 	    OldModNames = element(1, lists:unzip(OldNewModPairs)),
-	    check_atoms(F, AnnAST1, OldModNames, Pid),
+	    check_unsure_atoms(F, AnnAST1, OldModNames, m_atom,Pid),
 	    if Changed ->
 		    [{{F,F}, AnnAST1}|rename_mod_in_client_modules(
 					Fs, OldModName, OldNewModPairs, SearchPaths, TabWidth, Pid)];

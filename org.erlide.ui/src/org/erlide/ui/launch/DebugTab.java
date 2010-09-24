@@ -458,7 +458,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 			interpret = new ArrayList<String>();
 			prjs = "";
 		}
-		final String[] projectNames = prjs.length() == 0 ? new String[] {}
+		final String[] projectNames = (prjs.length() == 0) ? new String[] {}
 				: prjs.split(";");
 		final Set<IProject> projects = new HashSet<IProject>();
 		for (final String s : projectNames) {

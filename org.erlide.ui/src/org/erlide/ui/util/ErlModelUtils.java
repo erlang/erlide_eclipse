@@ -586,7 +586,7 @@ public class ErlModelUtils {
 			final IDocument doc = documentProvider.getDocument(editorInput);
 			try {
 				final IPath p = sei.getStorage().getFullPath();
-				final String path = p == null ? "" : p.toString();
+				final String path = (p == null) ? "" : p.toString();
 				return ErlangCore.getModelManager().getModuleFromFile(
 						editorInput.getName(), doc.get(), path, editorInput);
 			} catch (final CoreException e) {

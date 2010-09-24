@@ -764,7 +764,7 @@ public final class ErlModelManager implements IErlModelManager {
 			System.out
 					.println("FIRING POST_CHANGE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
 			System.out
-					.println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
+					.println((deltaToNotify == null) ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
 		}
 		if (deltaToNotify != null) {
 			// flush now so as to keep listener reactions to post their own
@@ -784,7 +784,7 @@ public final class ErlModelManager implements IErlModelManager {
 			System.out
 					.println("FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
 			System.out
-					.println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
+					.println((deltaToNotify == null) ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
 		}
 		if (deltaToNotify != null) {
 			// flush now so as to keep listener reactions to post their own
@@ -805,7 +805,7 @@ public final class ErlModelManager implements IErlModelManager {
 			System.out
 					.println("FIRING POST_SHIFT event [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
 			System.out
-					.println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
+					.println((deltaToNotify == null) ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
 		}
 		if (deltaToNotify != null) {
 			flush();

@@ -44,14 +44,14 @@
 -define(DEFAULT_SIMI_SCORE, 0.8).
 
 
--spec(sim_code_detection_in_buffer/6::(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
-				       SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}).
+%%-spec(sim_code_detection_in_buffer/6::(FileName::filename(), MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%				       SearchPaths::[dir()], TabWidth::integer()) ->  {ok, string()}).
 sim_code_detection_in_buffer(FileName, MinLen, MinFreq, SimiScore, SearchPaths, TabWidth) ->
     sim_code_detection([FileName],MinLen, MinFreq, SimiScore, SearchPaths, TabWidth).
 
 
--spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
-			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}). 			     
+%%-spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
+%%			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}). 			     
 sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_code_detection(~p,~p,~p,~p,~p,~p).\n",
 		 [?MODULE, DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth]),
@@ -87,9 +87,9 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
     end,
     {ok, "Similar code detection finished."}.
 
--spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(), 
-				     SimScore::float(),  SearchPaths::[dir()], TabWidth::integer()) ->
- 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
+%%-spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(), 
+%%				     SimScore::float(),  SearchPaths::[dir()], TabWidth::integer()) ->
+%% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
 sim_code_detection_eclipse(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
     {MinLen, MinFreq, SimiScore} =  get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1),
     Pid = start_hash_process(),
@@ -113,8 +113,8 @@ sim_code_detection_eclipse(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPat
 	  remove_fun_info(Cs2)
     end.
 
--spec(get_parameters/3::(string(), string(), string())->
-	     {integer(), integer(), integer()}).
+%%-spec(get_parameters/3::(string(), string(), string())->
+%%	     {integer(), integer(), integer()}).
 get_parameters(MinLen1, MinFreq1, SimiScore1) ->
     MinLen = get_parameters_1(MinLen1, ?DEFAULT_LEN, 1),
     MinFreq = get_parameters_1(MinFreq1, ?DEFAULT_FREQ,?DEFAULT_FREQ),
@@ -146,8 +146,8 @@ get_parameters_1(Input, DefaultVal, MinVal) ->
     
 
 
--spec(get_parameters_eclipse/3::(integer(), integer(), float())->
-			      {integer(), integer(), float()}).
+%%-spec(get_parameters_eclipse/3::(integer(), integer(), float())->
+%%			      {integer(), integer(), float()}).
 get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1) ->
     MinLen = case MinLen1 < 1 of
 		 true ->
@@ -194,7 +194,7 @@ generalise_and_hash_ast_1(FName, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
 
 generalise_and_hash_ast_2(Node, {FName, FunName, Arity, ASTTab, Pid}) ->
     F0 = fun (T, _Others) ->
-		 case refac_misc:variable_replaceable(T) of
+		 case refac_code_search_utils:generalisable(T) of
 		   true ->
 		       {refac_syntax:variable('Var'), true};
 		   false -> {T, false}

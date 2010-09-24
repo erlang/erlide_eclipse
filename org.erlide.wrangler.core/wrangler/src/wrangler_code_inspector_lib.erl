@@ -35,9 +35,9 @@
 
 -include("../include/wrangler.hrl").
 %%==========================================================================================
--spec(find_var_instances(FileName::filename(), Line::integer(), Col::integer(), 
-			 SearchPaths::[dir()], TabWidth:: integer()) ->
-	     {ok, [StartEnd::{pos(), pos()}], [VarDefPos::pos()]}).
+%%-spec(find_var_instances(FileName::filename(), Line::integer(), Col::integer(), 
+%%			 SearchPaths::[dir()], TabWidth:: integer()) ->
+%%	     {ok, [StartEnd::{pos(), pos()}], [VarDefPos::pos()]}).
 find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info0}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case interface_api:pos_to_var_name(AnnAST, {Line, Col}) of
@@ -125,8 +125,8 @@ get_enclosed(Cur, Rs) ->
     end.
 
 %%==========================================================================================
--spec(calls_to_fun(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {ok, {[{modulename(), functionname(), functionarity()}]}}).
+%%-spec(calls_to_fun(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {ok, {[{modulename(), functionname(), functionarity()}]}}).
 calls_to_fun(FName, Line, Col, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:caller_funs(~p, ~p, ~p,~p,~p).\n",
 		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
@@ -143,8 +143,8 @@ calls_to_fun(FName, Line, Col, SearchPaths, TabWidth) ->
       {error, _Reason} -> throw({error, "You have not selected a function!"})
     end.
 
--spec(calls_to_fun_1(FileName::filename(), FunctionName::functionname(), Arity::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {ok, {[{modulename(), functionname(), functionarity()}]}}).
+%%-spec(calls_to_fun_1(FileName::filename(), FunctionName::functionname(), Arity::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {ok, {[{modulename(), functionname(), functionarity()}]}}).
 calls_to_fun_1(FName, FunctionName, Arity, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:caller_funs_1(~p, ~p, ~p,~p,~p).\n",
 		 [?MODULE, FName, FunctionName, Arity, SearchPaths, TabWidth]),
@@ -238,8 +238,8 @@ collect_apps(FileName, Node, {M, F, A}) ->
     refac_syntax_lib:fold(Fun, {[], []}, Node).
 
 %%==========================================================================================
--spec(dependencies_of_a_module(FileName::filename(), SearchPaths::[dir()]) -> 
-	     {ok, {[modulename()], [modulename()]}}).
+%%-spec(dependencies_of_a_module(FileName::filename(), SearchPaths::[dir()]) -> 
+%%	     {ok, {[modulename()], [modulename()]}}).
 dependencies_of_a_module(FName, SearchPaths) ->
     ?wrangler_io("\nCMD: ~p:dependencies_of_a_module(~p, ~p).\n",
 		 [?MODULE, FName, SearchPaths]),
@@ -259,8 +259,8 @@ dependencies_of_a_module(FName, SearchPaths) ->
 
 
  %%==========================================================================================
--spec(long_functions(DirFileNames::[filename()|dir()], Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	    {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(long_functions(DirFileNames::[filename()|dir()], Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	    {ok, [{modulename(), functionname(), functionarity()}]}).
 long_functions(DirFileNames, Lines, SearchPaths, TabWidth) ->
      ?wrangler_io("\nCMD: ~p:long_functions(~p, ~p,~p,~p).\n",
 		  [?MODULE, DirFileNames, Lines,SearchPaths, TabWidth]),
@@ -293,8 +293,8 @@ long_functions_2(FName, Lines, SearchPaths, TabWidth) ->
     lists:usort(refac_syntax_lib:fold(Fun, [], AnnAST)).
 
 %%==========================================================================================
--spec(large_modules(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->				  
-	     {ok, [modulename()]}).
+%%-spec(large_modules(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->				  
+%%	     {ok, [modulename()]}).
 large_modules(Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:large_modules(~p,~p,~p).\n",
 		  [?MODULE, Lines, SearchPaths, TabWidth]),
@@ -312,8 +312,8 @@ is_large_module(FName, Lines, TabWidth) ->
 
 
 %%==========================================================================================
--spec(non_tail_recursive_servers(FileOrDirs::[filename()], SearchPaths::[dir()], TabWidth::integer()) -> 
-	     {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(non_tail_recursive_servers(FileOrDirs::[filename()], SearchPaths::[dir()], TabWidth::integer()) -> 
+%%	     {ok, [{modulename(), functionname(), functionarity()}]}).
 non_tail_recursive_servers(FileOrDirs, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:non_tail_recursive_servers(~p, ~p, ~p).\n",
 		 [?MODULE, FileOrDirs, SearchPaths, TabWidth]),
@@ -416,8 +416,8 @@ check_candidate_scc(FunDef, Scc, Line) ->
     lists:any(fun (E) -> E == true end, ExpLists1).
 
 %%==========================================================================================
--spec(not_flush_unknown_messages(FileOrDirss::[filename()|dir()], SearchPaths::[dir()], TabWidth::integer()) -> 
-	     {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(not_flush_unknown_messages(FileOrDirss::[filename()|dir()], SearchPaths::[dir()], TabWidth::integer()) -> 
+%%	     {ok, [{modulename(), functionname(), functionarity()}]}).
 not_flush_unknown_messages(FileOrDirs, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:not_flush_unknown_messages(~p, ~p, ~p).\n",
  		 [?MODULE, FileOrDirs, SearchPaths, TabWidth]),

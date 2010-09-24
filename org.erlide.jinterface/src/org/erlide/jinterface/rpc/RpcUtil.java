@@ -210,7 +210,7 @@ public final class RpcUtil {
 				}
 			}
 			if (res == null) {
-				String msg = env != null ? env : "??";
+				String msg = (env != null) ? env : "??";
 				throw new RpcTimeoutException(msg);
 			}
 			if (!(res instanceof OtpErlangTuple)) {

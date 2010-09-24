@@ -47,7 +47,7 @@ public class SourceRange implements ISourceRange {
 		buffer.append(fOffset);
 		buffer.append(", length="); //$NON-NLS-1$
 		buffer.append(fLength);
-		buffer.append("]"); //$NON-NLS-1$
+		buffer.append(']'); //$NON-NLS-1$
 		return buffer.toString();
 	}
 

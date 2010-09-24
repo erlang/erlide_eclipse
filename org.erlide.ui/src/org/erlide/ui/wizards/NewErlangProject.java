@@ -123,7 +123,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
 				@Override
 				protected void execute(final IProgressMonitor monitor) {
-					createProject(monitor != null ? monitor
+					createProject((monitor != null) ? monitor
 							: new NullProgressMonitor());
 
 					try {

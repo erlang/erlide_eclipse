@@ -440,7 +440,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 		fTextLayout = new TextLayout(fBrowser.getDisplay());
 
 		// Initialize fonts
-		Font font = fSymbolicFontName == null ? JFaceResources.getDialogFont()
+		Font font = (fSymbolicFontName == null) ? JFaceResources.getDialogFont()
 				: JFaceResources.getFont(fSymbolicFontName);
 		fTextLayout.setFont(font);
 		fTextLayout.setWidth(-1);
@@ -502,7 +502,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 		}
 
 		fTextLayout.setText(text);
-		fTextLayout.setWidth(sizeConstraints == null ? SWT.DEFAULT
+		fTextLayout.setWidth((sizeConstraints == null) ? SWT.DEFAULT
 				: sizeConstraints.x - trim.width);
 		Iterator iter = presentation.getAllStyleRangeIterator();
 		while (iter.hasNext()) {
@@ -677,7 +677,7 @@ public class BrowserInformationControl extends AbstractInformationControl
 	 */
 	@Override
 	public String toString() {
-		String style = (getShell().getStyle() & SWT.RESIZE) == 0 ? "fixed" : "resizeable"; //$NON-NLS-1$ //$NON-NLS-2$
+		String style = ((getShell().getStyle() & SWT.RESIZE) == 0) ? "fixed" : "resizeable"; //$NON-NLS-1$ //$NON-NLS-2$
 		return super.toString() + " -  style: " + style; //$NON-NLS-1$
 	}
 

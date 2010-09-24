@@ -61,8 +61,7 @@ parse_erl_form(Epp) ->
     Res = epp_request(Epp, scan_erl_form), 
     case Res of
 	{ok,Toks} ->
-	    Res1 = refac_parse:parse_form(Toks),
-            Res1;
+	   refac_parse:parse_form(Toks);
 	Other ->
 	    Other
     end.

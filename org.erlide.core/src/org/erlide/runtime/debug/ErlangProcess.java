@@ -28,8 +28,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.TermParser;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

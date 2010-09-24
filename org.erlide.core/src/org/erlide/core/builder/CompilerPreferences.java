@@ -227,7 +227,7 @@ public class CompilerPreferences {
 			return warnFormat;
 		} else {
 			final Boolean b = booleanOptions.get(optionKey);
-			return b == null ? false : b;
+			return (b == null) ? false : b;
 		}
 	}
 

@@ -32,6 +32,13 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
+/**
+ * View which handles textual data referencing to an Erlang element, got from
+ * code inspection functions
+ * 
+ * @author Gyorgy Orosz
+ * 
+ */
 public class CodeInspectionResultsView extends ViewPart {
 	public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
 

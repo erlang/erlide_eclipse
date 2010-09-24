@@ -39,15 +39,15 @@
 -include("../include/wrangler.hrl").
 
 %% =============================================================================================
--spec(intro_new_var/6::(filename(), pos(), pos(), string(), [dir()],integer()) ->
- 	     {'ok', [filename()]}).
+%%-spec(intro_new_var/6::(filename(), pos(), pos(), string(), [dir()],integer()) ->
+%% 	     {'ok', [filename()]}).
 intro_new_var(FileName, Start={SLine,SCol}, End={ELine, ECol}, NewVarName, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:intro_new_var(~p, {~p,~p}, {~p,~p}, ~p, ~p,~p).\n",
 		 [?MODULE, FileName, SLine, SCol, ELine, ECol, NewVarName, SearchPaths, TabWidth]),
     intro_new_var(FileName, Start, End, NewVarName, SearchPaths, TabWidth, emacs).
 
--spec(intro_new_var_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
- 	      {ok, [{filename(), filename(), string()}]}).
+%%-spec(intro_new_var_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%% 	      {ok, [{filename(), filename(), string()}]}).
 intro_new_var_eclipse(FileName, Start, End, NewVarName, SearchPaths, TabWidth) ->
     intro_new_var(FileName, Start, End, NewVarName, SearchPaths, TabWidth, eclipse).
 

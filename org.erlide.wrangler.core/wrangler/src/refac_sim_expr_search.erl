@@ -52,8 +52,8 @@
 %% expressions is a sequence of expressions separated by ','.
 %% <p>
 
--spec(sim_expr_search_in_buffer/6::(filename(), pos(), pos(), string(),[dir()],integer())
-      -> {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).    
+%%-spec(sim_expr_search_in_buffer/6::(filename(), pos(), pos(), string(),[dir()],integer())
+%%      -> {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).    
 sim_expr_search_in_buffer(FName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_buffer(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, Line1, Col1, SimiScore0, SearchPaths, TabWidth]),
@@ -63,8 +63,8 @@ sim_expr_search_in_buffer(FName, Start = {Line, Col}, End = {Line1, Col1}, SimiS
     refac_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
 
 
--spec(sim_expr_search_in_dirs/6::(filename(), pos(), pos(), string(),[dir()],integer())
-      ->{ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).     
+%%-spec(sim_expr_search_in_dirs/6::(filename(), pos(), pos(), string(),[dir()],integer())
+%%      ->{ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).     
 sim_expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, SearchPaths, TabWidth]),
@@ -75,15 +75,15 @@ sim_expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, Simi
     refac_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
 
 
--spec(sim_expr_search_in_buffer_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
-      -> {ok, {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
+%%-spec(sim_expr_search_in_buffer_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
+%%      -> {ok, {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
 sim_expr_search_in_buffer_eclipse(FName, Start, End, SimiScore0, SearchPaths, TabWidth) ->
     sim_expr_search_eclipse(FName, Start, End, [FName], SimiScore0, SearchPaths, TabWidth).
 
   
 
--spec(sim_expr_search_in_dirs_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
-    ->{ok,  {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
+%%-spec(sim_expr_search_in_dirs_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
+%%    ->{ok,  {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
 sim_expr_search_in_dirs_eclipse(FileName, Start, End, SimiScore0, SearchPaths, TabWidth) ->
     Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
     sim_expr_search_eclipse(FileName, Start, End, Files, SimiScore0, SearchPaths, TabWidth).
@@ -110,7 +110,6 @@ search_and_gen_anti_unifier(Files, {FName, FunDef, Exprs, SE}, SimiScore, Search
     {Ranges, ExportVars, SubSt} = lists:unzip3(Res),
     ExportVars1 = {element(1, lists:unzip(vars_to_export(FunDef, End, Exprs))),
 		   lists:usort(lists:append(ExportVars))},
-    %% refac_io:format("Subst:\n~p\n",[SubSt]),
     AntiUnifier = anti_unification:generate_anti_unifier(Exprs, SubSt, ExportVars1),
     {[{FName, SE}| Ranges -- [{FName, SE}]], AntiUnifier}.
 
@@ -139,7 +138,7 @@ do_search_similar_expr(FileName, AnnAST, RecordInfo, Exprs, SimiScore) when is_l
 	    Expr = hd(Exprs),
 	    F0 = fun (FunNode, Acc) ->
 			 F = fun (T, Acc1) ->
-				     case refac_misc:is_expr(T) of 
+				     case refac_misc:is_expr_or_match(T) of
 					 true ->
 					     do_search_similar_expr_1(FileName, Expr, T, RecordInfo, SimiScore, FunNode) ++ Acc1;
 					 _ -> Acc1
@@ -261,8 +260,8 @@ get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     case interface_api:pos_to_fun_def(AnnAST, Start) of
       {ok, FunDef} ->
-	  Exprs = interface_api:pos_to_expr_list(FunDef, Start, End),
-	  case Exprs of
+	    Exprs = interface_api:pos_to_expr_list(FunDef, Start, End),
+	    case Exprs of
 	    [] -> throw({error, "You have not selected an expression!"});
 	    _ ->
 		SE = refac_misc:get_start_end_loc(Exprs),
@@ -278,7 +277,7 @@ get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
--spec(normalise_record_expr/5::(filename(), pos(), boolean(), [dir()], integer()) -> {ok, [filename()]}).
+%%-spec(normalise_record_expr/5::(filename(), pos(), boolean(), [dir()], integer()) -> {ok, [filename()]}).
 normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:normalise_record_expr(~p, {~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, ShowDefault, SearchPaths, TabWidth]),
@@ -289,8 +288,8 @@ normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, TabWid
     normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, emacs, Cmd).
    
 
--spec normalise_record_expr_eclipse/5::(filename(), pos(), boolean(), [dir()], integer()) ->
-				       {ok, [{filename(), filename(), string()}]}.
+%%-spec normalise_record_expr_eclipse/5::(filename(), pos(), boolean(), [dir()], integer()) ->
+%%				       {ok, [{filename(), filename(), string()}]}.
 normalise_record_expr_eclipse(FName, Pos, ShowDefault, SearchPaths, TabWidth) ->
     normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, eclipse, "").
      

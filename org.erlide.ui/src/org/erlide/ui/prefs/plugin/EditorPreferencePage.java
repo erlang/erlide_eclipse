@@ -701,7 +701,7 @@ public class EditorPreferencePage extends PreferencePage implements
 			for (int i = 0; i < fNumberFields.size(); i++) {
 				final Text text = (Text) fNumberFields.get(i);
 				final IStatus s = validatePositiveNumber(text.getText());
-				status = s.getSeverity() > status.getSeverity() ? s : status;
+				status = (s.getSeverity() > status.getSeverity()) ? s : status;
 			}
 		}
 		setValid(!status.matches(IStatus.ERROR));

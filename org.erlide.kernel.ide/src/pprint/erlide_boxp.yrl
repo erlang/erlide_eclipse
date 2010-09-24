@@ -12,9 +12,9 @@
 
 Nonterminals
 pprule
-sfopt sfoptlist 
+sfopt sfoptlist
 aopt aoptlist aoptlist1
-xvar 
+xvar
 box boxlist.
 
 
@@ -132,15 +132,15 @@ mkbox({{wd, [], [Box]}, _}) ->
 mkbox({{a, AOpts, SOpts, Boxes}, {_, L, _}}) ->
     A = mkaopt(AOpts),
     B = mkbox(Boxes),
-    case lists:filter(fun({row, _}) -> false; 
-			 ({splicevar, _}) -> false; 
-			 ({boxvar, _}) -> false; 
-			 (_)->true 
+    case lists:filter(fun({row, _}) -> false;
+			 ({splicevar, _}) -> false;
+			 ({boxvar, _}) -> false;
+			 (_)->true
 		      end, B) of
 	[] ->
 	    {table, A, mksopt(SOpts), B};
 	Z ->
-	    return_error(L, msg(["'A' box can only contain 'R' boxes, found ", 
+	    return_error(L, msg(["'A' box can only contain 'R' boxes, found ",
 			     io_lib:format("~p", [Z])]))
     end;
 mkbox({{r, [], Boxes}, _}) ->
@@ -204,7 +204,7 @@ mksopt({{ts, _}=X, _}) ->
     X;
 mksopt({X, {_, L, _}}) ->
     return_error(L, {"bad sopt:", X}).
- 
+
 mkfopt(L) when is_list(L) ->
     [mkfopt(X) || X <- L];
 mkfopt({{fn, N}, _}) when is_atom(N) ->
@@ -237,7 +237,7 @@ msg(L) ->
     lists:flatten(L).
 
 extr_var(L) when is_list(L) ->
-	case lists:filter(fun(X) -> is_atom(X) end, 
+	case lists:filter(fun(X) -> is_atom(X) end,
 			  [extr_var(X) || X<-L]) of
 		[] ->
 			[];
@@ -252,7 +252,7 @@ extr_var({_, _, L}) when is_list(L) ->
 	extr_var(L);
 extr_var(_) ->
 	0.
-	
+
 split({N, Opts, Data}) ->
     S = atom_to_list(N),
     {C,A} = lists:splitwith(fun(X) -> X >$@ end, S),

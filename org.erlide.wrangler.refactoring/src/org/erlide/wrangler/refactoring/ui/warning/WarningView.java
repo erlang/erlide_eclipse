@@ -83,6 +83,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 			return getImage(obj);
 		}
 
+		@Override
 		public Image getImage(Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
@@ -108,6 +109,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
@@ -123,6 +125,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}

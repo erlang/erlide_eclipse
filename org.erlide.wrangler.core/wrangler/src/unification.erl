@@ -31,8 +31,8 @@
 
 -include("../include/wrangler.hrl").
 
--spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
-				{true, [{atom(), syntaxTree()}]} | false).
+%%-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
+%%				{true, [{atom(), syntaxTree()}]} | false).
 expr_unification(Exp1, Exp2) ->
     case expr_unification_1(Exp1, Exp2) of
 	{true, Subst} ->
@@ -44,7 +44,6 @@ expr_unification(Exp1, Exp2) ->
 		    false
 	    end;
 	_ -> 
-	    refac_io:format("\n Not unifiable\n"),
 	    false
     end.
 
@@ -80,90 +79,90 @@ same_type_expr_unification(Exp1, Exp2) ->
     T1 = refac_syntax:type(Exp1),
     case T1 of
       variable ->
-	  Exp1Ann = refac_syntax:get_ann(Exp1),
-	  Exp2Ann = refac_syntax:get_ann(Exp2),
-	  Exp1Name = refac_syntax:variable_name(Exp1),
-	  Exp2Name = refac_syntax:variable_name(Exp2),
-	  case lists:keysearch(category, 1, Exp1Ann) of
-	    {value, {category, macro_name}} ->
-		  case lists:keysearch(category, 1, Exp2Ann) of
-		  {value, {category, macro_name}} ->
-		      case Exp1Name of
-			Exp2Name -> {true, []};
+	    Exp1Ann = refac_syntax:get_ann(Exp1),
+	    Exp2Ann = refac_syntax:get_ann(Exp2),
+	    Exp1Name = refac_syntax:variable_name(Exp1),
+	    Exp2Name = refac_syntax:variable_name(Exp2),
+	    case lists:keysearch(category, 1, Exp1Ann) of
+		{value, {category, macro_name, none, _}} ->
+		    case lists:keysearch(category, 1, Exp2Ann) of
+			{value, {category, {macro_name, none, expression}}} ->
+			    case Exp1Name of
+				Exp2Name -> {true, []};
+				_ -> false
+			    end;
 			_ -> false
-		      end;
-		  _ -> false
-		end;
-	    _ -> {true, [{Exp1Name, rm_comments(Exp2)}]}
-	  end;
-      atom ->
+		    end;
+		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]}
+	    end;
+	atom ->
 	    case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
 		true ->
 		    Ann1=refac_syntax:get_ann(Exp1),
 		    Ann2=refac_syntax:get_ann(Exp2),
 		    case lists:keysearch(fun_def,1,Ann1) of
 			{value, {fun_def, {M,F, A, _, _}}} ->
-			  case lists:keysearch(fun_def,1,Ann2) of
-			      {value, {fun_def, {M1,F1,A1, _,_}}} ->
-				  case {M, F,A}=={M1, F1, A1} of
-				      true-> {true, []};
-				      false ->
-					  false
-				  end;
-			      false->
-				  false
-			  end;
+			    case lists:keysearch(fun_def,1,Ann2) of
+				{value, {fun_def, {M1,F1,A1, _,_}}} ->
+				    case {M, F,A}=={M1, F1, A1} of
+					true-> {true, []};
+					false ->
+					    false
+				    end;
+				false->
+				    false
+			    end;
 			false ->
 			    case lists:keysearch(fun_def,1, Ann2) of
 				{value, _} ->
 				    false;
 				false ->
-				  {true, []}
+				    {true, []}
 			    end
 		    end;
 		_ -> false
 	  end;
-      operator ->
-	  case refac_syntax:operator_name(Exp1) == refac_syntax:operator_name(Exp2) of
+	operator ->
+	    case refac_syntax:operator_name(Exp1) == refac_syntax:operator_name(Exp2) of
+		true -> {true, []};
+		_ -> false
+	    end;
+	char ->
+	    case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of
 	    true -> {true, []};
-	    _ -> false
-	  end;
-      char ->
-	  case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of
-	    true -> {true, []};
-	    _ -> false
-	  end;
-      integer ->
-	  case refac_syntax:integer_value(Exp1) == refac_syntax:integer_value(Exp2) of
-	    true -> {true, []};
-	    _ -> false
-	  end;
-      string ->
-	  case refac_syntax:string_value(Exp1) == refac_syntax:string_value(Exp2) of
-	    true -> {true, []};
-	    _ -> false
-	  end;
+		_ -> false
+	    end;
+	integer ->
+	    case refac_syntax:integer_value(Exp1) == refac_syntax:integer_value(Exp2) of
+		true -> {true, []};
+		_ -> false
+	    end;
+	string ->
+	    case refac_syntax:string_value(Exp1) == refac_syntax:string_value(Exp2) of
+		true -> {true, []};
+		_ -> false
+	    end;
       float ->
-	  case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of
-	    true -> {true, []}
-	  end;
-      underscore -> {true, []};
-      nil -> {true, []};
+	    case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of
+		true -> {true, []}
+	    end;
+	underscore -> {true, []};
+	nil -> {true, []};
       _ ->
-	  SubTrees1 = erl_syntax:subtrees(Exp1),
-	  SubTrees2 = erl_syntax:subtrees(Exp2),
-	  case length(SubTrees1) == length(SubTrees2) of
-	    true ->
-		expr_unification(SubTrees1, SubTrees2);
-	    _ -> false
-	  end
+	    SubTrees1 = erl_syntax:subtrees(Exp1),
+	    SubTrees2 = erl_syntax:subtrees(Exp2),
+	    case length(SubTrees1) == length(SubTrees2) of
+		true ->
+		    expr_unification(SubTrees1, SubTrees2);
+		_ -> false
+	    end
     end.
 
 non_same_type_expr_unification(Exp1, Exp2) ->
     T1 = refac_syntax:type(Exp1),
     case T1 of
       variable ->
-	  case refac_misc:variable_replaceable(Exp2) of
+	    case refac_code_search_utils:generalisable(Exp2) of
 	      false ->
 		  false;
 	      true ->
@@ -175,7 +174,7 @@ non_same_type_expr_unification(Exp1, Exp2) ->
 			      {value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
 				  {true, [{Exp1Name, rm_comments(
 						 refac_syntax:implicit_fun(
-						   Exp2, refac_syntax:integer(A)))}]};
+					 	   Exp2, refac_syntax:integer(A)))}]};
 			      _ -> %% this is the function name part of a M:F. 
 				  {true, [{Exp1Name, rm_comments(Exp2)}]}
 			  end;

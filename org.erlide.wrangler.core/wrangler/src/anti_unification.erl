@@ -56,12 +56,13 @@ do_anti_unification(Expr1, Expr2) ->
     end.
 
 anti_unfication_different_type(Expr1, Expr2) ->
-    case generalisable(Expr1) andalso generalisable(Expr2) of
-      true ->
+    case refac_code_search_utils:generalisable(Expr1) 
+	andalso refac_code_search_utils:generalisable(Expr2) of
+	true ->
 	  [{Expr1, Expr2}];
       false ->
-	  ?debug("Does not anti-unify 4:\n~p\n", [{Expr1, Expr2}]),
-	  throw(not_anti_unifiable)
+	    ?debug("Does not anti-unify 4:\n~p\n", [{Expr1, Expr2}]),
+	    throw(not_anti_unifiable)
     end.
 
 anti_unification_same_type(Expr1, Expr2) ->
@@ -71,30 +72,30 @@ anti_unification_same_type(Expr1, Expr2) ->
 	    true ->
 		case refac_syntax:type(Expr1) of
 		  atom ->
-		      Ann1 = refac_syntax:get_ann(Expr1),
-		      Ann2 = refac_syntax:get_ann(Expr2),
-		      case lists:keysearch(fun_def, 1, Ann1) of
-			{value, {fun_def, {M, F, A, _, _}}} ->
-			    case lists:keysearch(fun_def, 1, Ann2) of
-			      {value, {fun_def, {M1, F1, A1, _, _}}} ->
-				  case {M, F, A} == {M1, F1, A1} of
-				    true -> [];
+			Ann1 = refac_syntax:get_ann(Expr1),
+			Ann2 = refac_syntax:get_ann(Expr2),
+			case lists:keysearch(fun_def, 1, Ann1) of
+			    {value, {fun_def, {M, F, A, _, _}}} ->
+				case lists:keysearch(fun_def, 1, Ann2) of
+				    {value, {fun_def, {M1, F1, A1, _, _}}} ->
+					case {M, F, A} == {M1, F1, A1} of
+					    true -> [];
+					    false ->
+						[{Expr1, Expr2}]
+					end;
 				    false ->
 					[{Expr1, Expr2}]
-				  end;
-			      false ->
-				  [{Expr1, Expr2}]
-			    end;
-			false ->
-			    case lists:keysearch(fun_def, 1, Ann2) of
-			      {value, _} ->
-				  [{Expr1, Expr2}];
-			      false ->
-				  []
-			    end
-		      end;
-		  _ ->
-		      []
+				end;
+			    false ->
+				case lists:keysearch(fun_def, 1, Ann2) of
+				    {value, _} ->
+					[{Expr1, Expr2}];
+				    false ->
+					[]
+				end
+			end;
+		    _ ->
+			[]
 		end;
 	    _ ->
 		case generalisable(Expr1, Expr2) of
@@ -112,19 +113,19 @@ anti_unification_same_type(Expr1, Expr2) ->
 		  false -> throw(non_unificable)
 		end
 	  end;
-      _ ->
-	  case refac_syntax:type(Expr1) of
-	    variable ->
-		case {is_macro_name(Expr1), is_macro_name(Expr2)} of
-		  {true, true} ->
-		      case has_same_name(Expr1, Expr2) of
-			true -> [];
-			false -> throw(not_anti_unifiable)
-		      end;
-		  {false, false} -> [{Expr1, Expr2}];
-		  _ ->
-		      ?debug("Does not anti-unify 5:\n~p\n", [{Expr1, Expr2}]),
-		      throw(not_anti_unifiable)
+	_ ->
+	    case refac_syntax:type(Expr1) of
+		variable ->
+		    case {is_macro_name(Expr1), is_macro_name(Expr2)} of
+			{true, true} ->
+			    case has_same_name(Expr1, Expr2) of
+				true -> [];
+				false -> throw(not_anti_unifiable)
+			    end;
+			{false, false} -> [{Expr1, Expr2}];
+			_ ->
+			    ?debug("Does not anti-unify 5:\n~p\n", [{Expr1, Expr2}]),
+			    throw(not_anti_unifiable)
 		end;
 	    operator -> case refac_syntax:operator_name(Expr1) == refac_syntax:operator_name(Expr2) of
 			  true -> [];
@@ -132,23 +133,31 @@ anti_unification_same_type(Expr1, Expr2) ->
 			      ?debug("Does not anti-unify 6:\n~p\n", [{Expr1, Expr2}]),
 			      throw(not_anti_unifiable)
 			end;
-	    underscore -> [];
-	    macro -> MacroName1 = refac_syntax:macro_name(Expr1),
-		     MacroName2 = refac_syntax:macro_name(Expr2),
-		     case not has_same_name(MacroName1, MacroName2) of
-		       true -> [{Expr1, Expr2}];
-		       false -> anti_unification_same_type_1(Expr1, Expr2)
+	      underscore -> [];
+	      macro -> 
+		  MacroName1 = refac_syntax:macro_name(Expr1),
+		  MacroName2 = refac_syntax:macro_name(Expr2),
+		  case not has_same_name(MacroName1, MacroName2) of
+		      true ->
+			  case  generalisable(Expr1, Expr2) of
+			      true ->
+				  [{Expr1, Expr2}];
+			      false ->
+				  anti_unification_same_type_1(Expr1, Expr2)
+			  end;
+		      _ -> anti_unification_same_type_1(Expr1, Expr2)
 		     end;
-	    _ -> case refac_syntax:is_leaf(Expr1) of
-		   true -> case generalisable(Expr1, Expr2) of
-			     true ->
-				 [{Expr1, Expr2}];
-			     _ ->
-				 ?debug("Does not anti-unify 7:\n~p\n", [{Expr1, Expr2}]),
-				 throw(not_anti_unifiable)
-			   end;
-		   false -> anti_unification_same_type_1(Expr1, Expr2)
-		 end
+	      _ -> 
+		  case refac_syntax:is_leaf(Expr1) of
+		      true -> case generalisable(Expr1, Expr2) of
+				  true ->
+				      [{Expr1, Expr2}];
+				  _ ->
+				      ?debug("Does not anti-unify 7:\n~p\n", [{Expr1, Expr2}]),
+				      throw(not_anti_unifiable)
+			      end;
+		      false -> anti_unification_same_type_1(Expr1, Expr2)
+		  end
 	  end
     end.
 
@@ -428,36 +437,8 @@ has_same_name(Expr1, Expr2) ->
       refac_code_search_utils:identifier_name(Expr2).
 
 generalisable(E1, E2) ->
-    generalisable(E1) andalso generalisable(E2).
-generalisable(Exp) ->
-    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp)) of
-      {value, {category, record_field}} -> false;
-      {value, {category, record_type}} -> false;
-      {value, {category, guard_expression}} -> false;
-      {value, {category, macro_name}} -> false;
-      {value, {category, pattern}} ->
-	  refac_syntax:is_literal(Exp) orelse
-	    refac_syntax:type(Exp) == variable;
-      _ ->
-	  %% While syntactically, expressions of some of the listed types
-	  %% can be replaced by a variable, in practice, generalise a function 
-	  %% over this kind of expression could make the code harder to understand.
-	  T = refac_syntax:type(Exp),
-	  not lists:member(T, [match_expr, operator, generator, case_expr,
-			       if_expr, fun_expr, receive_expr, clause,
-			       query_expr, try_expr, catch_expr, cond_expr,
-			       block_expr])
-	    andalso
-	    refac_misc:get_var_exports(Exp) == []
-	      andalso refac_misc:get_free_vars(Exp) == []
-	      andalso refac_misc:get_free_vars(Exp) == []
-    end.
-
-	
-is_macro_name(Exp) ->
-    {value, {category, macro_name}} == 
-	lists:keysearch(category, 1, refac_syntax:get_ann(Exp)).
-  
+    refac_code_search_utils:generalisable(E1) andalso 
+	refac_code_search_utils:generalisable(E2).
 
 reset_attrs(Node) ->
     ast_traverse_api:full_buTP(fun (T, _Others) ->
@@ -465,3 +446,9 @@ reset_attrs(Node) ->
 				       refac_syntax:remove_comments(T1)
 			       end,
 			       Node, {}).
+is_macro_name(Exp) ->
+    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp)) of
+	 {value, {category, {macro_name,_,_}}} ->
+	    true;
+	_ -> false
+    end.

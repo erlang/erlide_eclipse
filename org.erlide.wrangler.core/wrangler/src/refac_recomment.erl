@@ -478,7 +478,7 @@ build_tree(Node) ->
 	    
 	    %% Include L, while preserving Min =< Max.
 	    tree_node(minpos(L, Min),
-		      max(L, Max),
+		      lists:max([L, Max]),
 		      refac_syntax:type(Node),
 		      refac_syntax:get_attrs(Node),
 		      Subtrees)
@@ -499,7 +499,7 @@ build_list(Ts) ->
 build_list([T | Ts], Min, Max, Ack) ->
     Node = build_tree(T),
     Min1 = minpos(node_min(Node), Min),
-    Max1 = max(node_max(Node), Max),
+    Max1 = lists:max([node_max(Node), Max]),
     build_list(Ts, Min1, Max1, [Node | Ack]);
 build_list([], Min, Max, Ack) ->
     list_node(Min, Max, lists:reverse(Ack)).
@@ -510,7 +510,7 @@ build_list_list(Ls) ->
 build_list_list([L | Ls], Min, Max, Ack) ->
     Node = build_list(L),
     Min1 = minpos(node_min(Node), Min),
-    Max1 = max(node_max(Node), Max),
+    Max1 = lists:max([node_max(Node), Max]),
     build_list_list(Ls, Min1, Max1, [Node | Ack]);
 build_list_list([], Min, Max, Ack) ->
     {lists:reverse(Ack), Min, Max}.
@@ -649,6 +649,7 @@ node_max(#tree{max = Max}) ->
 node_max(#list{max = Max}) ->
     Max.
 
+
 %% node_kill_range(Node) ->
 %%     case Node of
 %% 	#leaf{} ->
@@ -712,11 +713,6 @@ tree_node_attrs(#tree{attrs = Attrs}) ->
 
 %% =====================================================================
 %% General utility functions
-
-%% Just the generic "maximum" function
-
-max(X, Y) when X > Y -> X;
-max(_, Y) -> Y.
 
 %% Return the least positive integer of X and Y, or zero if none of them
 %% are positive. (This is necessary for computing minimum source line

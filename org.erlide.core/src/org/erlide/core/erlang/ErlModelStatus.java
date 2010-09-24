@@ -442,7 +442,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 		final StringBuilder buffer = new StringBuilder();
 		buffer.append("Erlang Model Status ["); //$NON-NLS-1$
 		buffer.append(getMessage());
-		buffer.append("]"); //$NON-NLS-1$
+		buffer.append(']'); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }

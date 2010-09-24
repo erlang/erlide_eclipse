@@ -86,7 +86,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 		final String[] rts = rtl.toArray(new String[] {});
 		final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
 				.getDefaultRuntime();
-		final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
+		final int db = (defaultRuntime == null) ? 0 : Arrays.binarySearch(rts,
 				defaultRuntime.getName());
 
 		runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);

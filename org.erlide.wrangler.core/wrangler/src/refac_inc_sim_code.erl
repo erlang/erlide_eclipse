@@ -30,18 +30,19 @@
 %% 
 -module(refac_inc_sim_code).
 
--export([inc_sim_code_detection/8]).
+-export([inc_sim_code_detection/8, inc_sim_code_detection_in_buffer/8]).
+
+-export([inc_sim_code_detection_eclipse/8]).
 
 -include("../include/wrangler.hrl").
 
 %% default threshold values.
 -define(DefaultSimiScore, 0.8).
 -define(DEFAULT_LEN, 5).
--define(DEFAULT_TOKS, 20).
+-define(DEFAULT_TOKS, 40).
 -define(DEFAULT_FREQ, 2).
 -define(DEFAULT_SIMI_SCORE, 0.8).
 -define(DEFAULT_NEW_VARS, 3).
-
 
 %% record to store the threshold values.
 -record(threshold, 
@@ -52,21 +53,28 @@
 	 simi_score=?DEFAULT_SIMI_SCORE}).
 
 %% Ets tables uses to cache data to avoid re-evaluation.
--define(ASTTab, list_to_atom(filename:join(?WRANGLER_DIR, "plt/ast_tab"))).
--define(FileHashTab, list_to_atom(filename:join(?WRANGLER_DIR, "plt/file_hash_tab"))).
--define(VarTab, list_to_atom(filename:join(?WRANGLER_DIR, "plt/var_tab"))).
--define(ExpHashTab, list_to_atom(filename:join(?WRANGLER_DIR, "plt/exp_hash_tab"))).
--define(ExpSeqFile, list_to_atom(filename:join(?WRANGLER_DIR, "plt/exp_seq_file"))).
--define(CloneTab,  list_to_atom(filename:join(?WRANGLER_DIR, "plt/clone_tab"))).
-
+-define(ASTTab, get_temp_file_path("ast_tab")).
+-define(FileHashTab, get_temp_file_path("file_hash_tab")).
+-define(VarTab, get_temp_file_path("var_tab")).
+-define(ExpHashTab, get_temp_file_path("exp_hash_tab")).
+-define(ExpSeqFile, get_temp_file_path("exp_seq_file")).
+-define(CloneTab,  get_temp_file_path("clone_tab")).
+-define(Threshold, get_temp_file_path("threshold")).
 %% record the store the ets/dets table names.
+
+get_temp_file_path(Tab) ->
+    list_to_atom(case wrangler_ast_server:get_temp_dir() of
+			 none ->
+			     "none";
+			 Dir ->filename:join(Dir, Tab)
+		     end).
 -record(tabs, 
 	{ast_tab,
 	 var_tab, 
 	 file_hash_tab,
 	 exp_hash_tab,
 	 clone_tab,
-	 tmp_ast_tab
+	 tmp_ast_tab	 
 	}).
 
 %% A record representing a clone class.
@@ -77,52 +85,82 @@
  %% 	  au       %% the anti-unification of the clone class.
  %% 	 }).
 
+-spec(inc_sim_code_detection_in_buffer/8::(FileName::filename(), MinLen::float(), MinToks::integer(),
+				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
+				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
+inc_sim_code_detection_in_buffer(FileName, MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1, SearchPaths, TabWidth)->
+    inc_sim_code_detection([FileName], MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1, SearchPaths, TabWidth).
+  
 -spec(inc_sim_code_detection/8::(DirFileList::[filename()|dir()], MinLen::float(), MinToks::integer(),
 				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
 				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
-inc_sim_code_detection(DirFileList, MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:sim_code_detection(~p,~p,~p,~p,~p, ~p,~p,~p).\n",
-		 [?MODULE, DirFileList, MinLen1, MinToks1, MinFreq1, MaxVars1,SimiScore1, SearchPaths, TabWidth]),
-    {MinLen, MinToks, MinFreq, MaxVars, SimiScore} = get_parameters(MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1),
-    Files = refac_util:expand_files(DirFileList, ".erl"),
+
+inc_sim_code_detection(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p, ~p,~p,~p).\n",
+		 [?MODULE,DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth]), 
+    {MinLen,MinToks,MinFreq,MaxVars,SimiScore} = get_parameters(MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1), 
+    Files = refac_util:expand_files(DirFileList,".erl"), 
+    case Files of
+      [] ->
+	    ?wrangler_io("Warning: No files found in the searchpaths specified.",[]);
+	_ -> inc_sim_code_detection_0(Files, MinLen, MinToks, MinFreq, MaxVars, SimiScore, SearchPaths, TabWidth, emacs)
+    end, 
+    {ok,"Clone detection finish."}.
+
+
+-spec(inc_sim_code_detection_eclipse/8::(DirFileList::[filename()|dir()], MinLen::float(), MinToks::integer(),
+				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
+				 SearchPaths::[dir()], TabWidth::integer()) ->
+				       [{[{{{File::filename(), StartLine::integer(), StartCol::integer()},
+					    {File::filename(), StartLine::integer(), StartCol::integer()}}, FunCall::string()}], 
+					 Len::integer(), Freq::integer(), AntiUnifier::string()}]).
+inc_sim_code_detection_eclipse(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p, ~p,~p,~p).\n",
+		 [?MODULE,DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth]), 
+    {MinLen,MinToks,MinFreq,MaxVars,SimiScore} = get_parameters_eclipse(MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1), 
+    Files = refac_util:expand_files(DirFileList,".erl"), 
     case Files of
 	[] ->
-	    ?wrangler_io("Warning: No files found in the searchpaths specified.", []);
-	_ ->
-	    %% dets tables used to cache information.
-	    Tabs=#tabs{ast_tab=from_dets(ast_tab, ?ASTTab),
-		       var_tab=from_dets(var_tab, ?VarTab),
-		       file_hash_tab=from_dets(file_hash_tab, ?FileHashTab),
-		       exp_hash_tab=from_dets(expr_hash_tab, ?ExpHashTab),
-		       clone_tab = from_dets(expr_clone_tab, ?CloneTab),
-		       tmp_ast_tab = ets:new(tmp_ast_tab, [set, public])},
+	    [];
+	_ -> inc_sim_code_detection_0(Files, MinLen, MinToks, MinFreq, MaxVars, 
+				    SimiScore, SearchPaths, TabWidth, eclipse)
+    end.
 
-            %% Threshold parameters.
-	    Threshold=#threshold{min_len=MinLen, 
-				 min_freq=MinFreq, 
-				 min_toks=MinToks, 
-				 max_new_vars=MaxVars,
-				 simi_score=SimiScore},
-            %% Clone detection.
-	    inc_sim_code_detection(Files, Threshold, Tabs, SearchPaths, TabWidth),
-           
-            %% output cache information to dets tables.
-	    to_dets(Tabs#tabs.ast_tab, ?ASTTab),
-	    to_dets(Tabs#tabs.var_tab, ?VarTab),
-	    to_dets(Tabs#tabs.file_hash_tab, ?FileHashTab),
-	    to_dets(Tabs#tabs.exp_hash_tab, ?ExpHashTab),	    
-	    to_dets(Tabs#tabs.clone_tab, ?CloneTab),
-	    ets:delete(Tabs#tabs.tmp_ast_tab)
-    end,
-    {ok, "Clone detection finish."}.
-
+inc_sim_code_detection_0(Files, MinLen, MinToks, MinFreq, MaxVars, 
+			 SimiScore, SearchPaths, TabWidth, Editor) ->
+    %% dets tables used to cache information.
+    Tabs = #tabs{ast_tab = from_dets(ast_tab,?ASTTab), 
+		 var_tab = from_dets(var_tab,?VarTab), 
+		 file_hash_tab = from_dets(file_hash_tab,?FileHashTab), 
+		 exp_hash_tab = from_dets(expr_hash_tab,?ExpHashTab), 
+		 clone_tab = from_dets(expr_clone_tab,?CloneTab), 
+		 tmp_ast_tab = ets:new(tmp_ast_tab,[set,public])}, 
+    
+    %% Threshold parameters.
+    Threshold = #threshold{min_len = MinLen, 
+			   min_freq = MinFreq, 
+			   min_toks = MinToks, 
+			   max_new_vars = MaxVars, 
+			   simi_score = SimiScore}, 
+    %% Clone detection.
+    Cs = inc_sim_code_detection(Files,Threshold,Tabs,SearchPaths,TabWidth, Editor), 
+    
+    %% output cache information to dets tables.
+    to_dets(Tabs#tabs.ast_tab,?ASTTab), 
+    to_dets(Tabs#tabs.var_tab,?VarTab), 
+    to_dets(Tabs#tabs.file_hash_tab,?FileHashTab), 
+    to_dets(Tabs#tabs.exp_hash_tab,?ExpHashTab), 
+    to_dets(Tabs#tabs.clone_tab,?CloneTab), 
+    file:write_file(?Threshold,term_to_binary(Threshold)), 
+    ets:delete(Tabs#tabs.tmp_ast_tab), 
+    Cs.
+ 
 %% incremental clone detection.
-inc_sim_code_detection(Files, Thresholds, Tabs, SearchPaths, TabWidth) ->
-    
-    Time1 = time(),
-    
+inc_sim_code_detection(Files, Thresholds, Tabs, SearchPaths, TabWidth, Editor) ->
+   
+    %%Time1 = time(),
     %% get file status change info.
-    {FilesDeleted, FilesChanged, NewFiles} = get_file_status_info(Files, Tabs),
+    {FilesDeleted, FilesChanged, NewFiles} = get_file_status_info(Files, Tabs,Thresholds),
     
     %% remove information related to files that no longer exist from ets tables.
     remove_old_file_entries(FilesDeleted, Tabs),
@@ -136,7 +174,8 @@ inc_sim_code_detection(Files, Thresholds, Tabs, SearchPaths, TabWidth) ->
     %% Generate clone candidates using suffix tree based clone detection techniques.
     Dir = filename:dirname(hd(Files)),
     Cs = get_clone_candidates(ASTPid, Thresholds, Dir),
-    ?debug("\nInitial candiates finished\n", []),
+    %% Time2 = time(),
+    %%?wrangler_io("\nInitial candiates finished\n", []),
     
     ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
     CloneCheckerPid = start_clone_check_process(),
@@ -145,29 +184,46 @@ inc_sim_code_detection(Files, Thresholds, Tabs, SearchPaths, TabWidth) ->
     Cs2 = examine_clone_candidates(Cs, Thresholds, Tabs, CloneCheckerPid, 1),
     stop_clone_check_process(CloneCheckerPid),
     stop_ast_process(ASTPid),
-    Time2 = time(),
-
-    refac_code_search_utils:display_clone_result(Cs2, "Similar"),
-    refac_io:format("Time used: \n~p\n", [{Time1, Time2}]).
-    
+    Cs3 = combine_clones_by_au(Cs2),
+   %% ?wrangler_io("Time used: \n~p\n", [{Time1, Time2}]).
+    case Editor of 
+	emacs ->
+	    refac_code_search_utils:display_clone_result(Cs3, "Similar");
+	_ -> Cs3
+    end.
+   
 %% Get files that are deleted/changed/newly added since the last 
 %% run of the clone detection.
-get_file_status_info(Files, Tabs) ->
-    Fun =fun(F)->
-		  CheckSum= refac_misc:filehash(F),
-		  case ets:lookup(Tabs#tabs.file_hash_tab, F) of
-		      [{F, CheckSum1}] when CheckSum/=CheckSum1 ->
-			  true;
-		      _ ->false
-		  end
-	  end,
+%% This function 
+get_file_status_info(Files, Tabs, Threshold) ->
     FileHashTab=Tabs#tabs.file_hash_tab,
     %% all the files process during the last run of clone detection.
     OldFiles = lists:append(ets:match(FileHashTab,{'$1', '_'})),
-    DeletedFiles = OldFiles -- Files,
-    NewFiles = Files -- OldFiles, 
-    ChangedFiles = lists:filter(Fun, Files),
-    {DeletedFiles, ChangedFiles, NewFiles}.
+    case file:read_file(?Threshold) of
+	{ok, Binary} ->
+	    LastThreshold = binary_to_term(Binary),
+	    case LastThreshold == Threshold of
+		true ->
+		    Fun =fun(F)->
+				 CheckSum= refac_misc:filehash(F),
+				 case ets:lookup(Tabs#tabs.file_hash_tab, F) of
+				     [{F, CheckSum1}] when CheckSum/=CheckSum1 ->
+					 true;
+				     _ ->false
+				 end
+			 end,
+		    DeletedFiles = OldFiles -- Files,
+		    NewFiles = Files -- OldFiles, 
+		    ChangedFiles = lists:filter(Fun, Files),
+		    {DeletedFiles, ChangedFiles, NewFiles};
+		false ->
+		    OldFiles = lists:append(ets:match(FileHashTab,{'$1', '_'})),
+		    {OldFiles, [], Files}
+	    end;
+	{error, _Reason} ->
+	    OldFiles = lists:append(ets:match(FileHashTab,{'$1', '_'})),
+	    {OldFiles, [], Files}
+    end.
 
 %% Remove data for deleted files.
 remove_old_file_entries(FilesDeleted, Tabs) ->
@@ -194,15 +250,15 @@ generalise_and_hash_file_ast(File, Threshold, Tabs, ASTPid, SearchPaths, TabWidt
     NewCheckSum = refac_misc:filehash(File),
     case ets:lookup(Tabs#tabs.file_hash_tab, File) of
 	[{File, NewCheckSum}] ->
-	    refac_io:format("\nFile not changed:~p\n", [File]),
+	    ?debug("\nFile not changed:~p\n", [File]),
 	    ok;
 	[{File, _NewCheckSum1}] ->
-	    refac_io:format("\n File changed:~p\n", [File]),
+	    ?debug("\n File changed:~p\n", [File]),
 	    ets:insert(Tabs#tabs.file_hash_tab, {File, NewCheckSum}),
 	    generalise_and_hash_file_ast_1(
 	      File, Threshold, Tabs,ASTPid, false,SearchPaths, TabWidth);
 	[] ->
-	    refac_io:format("New file:~p\n",[File]),
+	    ?debug("New file:~p\n",[File]),
 	    ets:insert(Tabs#tabs.file_hash_tab, {File, NewCheckSum}),
 	    generalise_and_hash_file_ast_1(
 	      File, Threshold, Tabs, ASTPid, true,SearchPaths, TabWidth)
@@ -369,46 +425,18 @@ insert_and_hash_expr(ASTTab, HashPid, {M, F, A}, StartLine,
     StartEndLoc = refac_misc:get_start_end_loc(Expr),
     insert_hash(HashPid, {HashVal, {{M, F, A, StartIndex + RelativeIndex},
 				    NoOfToks, {StartEndLoc, StartLine}}}).
-   
+
 %% replace an AST node if the node can be generalised.
 do_generalise(Node) ->
     F0 = fun (T, _Others) ->
-		 case generalisable(T) of
+		 case refac_code_search_utils:generalisable(T) of
 		   true ->
 		       {refac_syntax:variable('Var'), true};
 		   false -> {T, false}
 		 end
 	 end,
     element(1, ast_traverse_api:stop_tdTP(F0, Node, [])).
-
-%% returns true is an AST node can be generalised. 
-generalisable(Node) ->
-    case lists:keysearch(category, 1, refac_syntax:get_ann(Node)) of
-      {value, {category, record_field}} -> false;
-      {value, {category, record_type}} -> false;
-      {value, {category, guard_expression}} -> false;
-      {value, {category, macro_name}} -> false;
-      {value, {category, pattern}} ->
-	  refac_syntax:is_literal(Node) orelse
-	    refac_syntax:type(Node) == variable;
-      _ ->
-	  %% While syntactically, expressions of some of the listed types
-	  %% can be replaced by a variable, in practice, generalise a function 
-	  %% over this kind of expression could make the code harder to understand.
-	  T = refac_syntax:type(Node),
-	  not lists:member(T, [match_expr, operator, generator, case_expr,
-			       if_expr, fun_expr, receive_expr, clause,
-			       query_expr, try_expr, catch_expr, cond_expr,
-			       block_expr]) andalso
-	    refac_misc:get_var_exports(Node) == [] andalso
-	      %% generalise expressions with free variables need to 
-	      %% wrap the expression with a fun expression; we try to 
-	      %% avoid this case.
-	      refac_misc:get_free_vars(Node) == []
-    end.
-                %% Note: side effect is not considered here.
-
-
+   
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                                                    %%
@@ -469,11 +497,11 @@ hash_loop({Index, ExpHashTab, {NewData, OldData}}) ->
 		    hash_loop({Index + 1, ExpHashTab, {[Elem|NewData], OldData}})
 	    end;
 	{quick_hash,{{FileName, FunName, Arity}, StartLine}} ->
-	    %%refac_io:format("OldData:\n~p\n", [OldData]),
+	    %%?debug("OldData:\n~p\n", [OldData]),
 	    OldData1 = lists:dropwhile(fun({{{M,F,A,_}, _,_,_},_}) ->
 					       {M,F,A} /={FileName, FunName, Arity}
 				       end, OldData),
-	    %%refac_io:format("OldData1:\n~p\n", [OldData1]),
+	    %%?debug("OldData1:\n~p\n", [OldData1]),
 	    DataNeeded=lists:takewhile(fun({{{M,F,A,_}, _,_,_},_}) ->
 					       {M,F,A} =={FileName, FunName, Arity}
 						   orelse
@@ -482,7 +510,7 @@ hash_loop({Index, ExpHashTab, {NewData, OldData}}) ->
 	    %% here 'false' means that the entry is from an existing entry.
 	    DataToAdd=[{{{M,F,A, I}, NumOfToks, {StartEndLoc, StartLine},false}, ExprHashIndex}
 		       ||{{{M,F,A, I}, NumOfToks, {StartEndLoc, _}, _},ExprHashIndex}<-DataNeeded],
-	    %%refac_io:format("DataToAdd:\n~p\n", [DataToAdd]),
+	    %%?debug("DataToAdd:\n~p\n", [DataToAdd]),
 	    hash_loop({Index, ExpHashTab, {lists:reverse(DataToAdd)++NewData, OldData}}); 
 	{add_dummy, FName} ->
 	    DummyElem={{{FName, '_', '_', '_'}, 0, {{0,0},0}, false}, '#'},
@@ -523,10 +551,7 @@ clone_check_loop(Cs) ->
 	{add_clone,  Clones} ->
 	    clone_check_loop(Clones++Cs);
 	{get_clones, From, _ASTTab} ->
-	    %% refac_io:format("Num of Cs:\n~p\n", [length(Cs)]),
-	    %% refac_io:format("Cs:\n~p\n", [[element(1,C)||C<-Cs]]),
 	    Cs0=remove_sub_clones(Cs),
-	    %% refac_io:format("Num of Cs0:\n~p\n", [length(Cs0)]),
 	    Cs1=[{AbsRanges, Len, Freq, AntiUnifier}||
 		    {_, {Len, Freq}, AntiUnifier,AbsRanges}<-Cs0],
 	    From ! {self(), Cs1},
@@ -559,12 +584,7 @@ examine_clone_candidates([C| Cs], Thresholds, Tabs, Pid, Num) ->
 output_progress_msg(Num) ->
     case Num rem 10 of
 	1 -> 
-	    case Num of
-		1 ->
-		    ?wrangler_io("\nChecking the first clone candidate...", []);
-		_ ->
-		    ?wrangler_io("\nChecking the ~pth clone candidate...", [Num])
-	    end;
+	    ?wrangler_io("\nChecking clone candidate no. ~p ... ", [Num]);
 	_-> ok
     end.
 	
@@ -720,7 +740,7 @@ subst_sanity_check(Expr1, SubSt) ->
 		  variable ->
 			E1Ann = refac_syntax:get_ann(E1),
 			case lists:keysearch(category, 1, E1Ann) of
-			    {value, {category, macro_name}} ->
+			    {value, {category, {macro_name, _,_}}} ->
 				false;
 			    _ -> has_same_subst(E1, E2, SubSt)
 			end;
@@ -756,7 +776,7 @@ process_au_result(AURes, Thresholds, Tabs) ->
 %% pair of expression sequences do not anti-unify, get those 
 %% pairs of sub sequences that do anti-unify.
 process_one_au_result(OneAURes, Thresholds, Tabs) ->
-    SubAULists=group_au_result(OneAURes),
+    SubAULists=group_au_result(OneAURes, Thresholds),
     ClonePairs =lists:append([get_clone_pairs(SubAUList, Thresholds, Tabs)
 			      ||SubAUList<-SubAULists]),
     ClonePairs1 =[lists:unzip3(CP)||CP<-ClonePairs],
@@ -764,34 +784,40 @@ process_one_au_result(OneAURes, Thresholds, Tabs) ->
 
 %% examine the result of anti-unifying a pair of expression sequences and 
 %% get the sub expression sequences pairs that are anti-unifiable.
-group_au_result([])->
+group_au_result([], _Thresholds)->
     [];
-group_au_result(AURes) ->
+group_au_result(AURes, Thresholds) ->
     %% here 'none' means the two expressions E1 an E2 do not anti-unify.
     {AUResList1,AUResList2} =
 	lists:splitwith(fun({_E1,_E2, S}) ->S/=none end, AURes),
-    case AUResList2 of
-	[] ->
-	    [AUResList1];
-	[_|T] ->
-	    case AUResList1/=[] of
-		true ->
-		    [AUResList1]++group_au_result(T);
-		false ->
-		    group_au_result(T)
-	    end
+    AUResList3 = case AUResList2 of
+		     [] -> [];
+		     [_|T] -> T
+		 end,
+    case clone_pair_above_min_size(AUResList1, Thresholds) of
+	true ->
+	    [AUResList1]++group_au_result(AUResList3, Thresholds);
+	false ->
+	    group_au_result(AUResList3, Thresholds)
     end.
+  
+
+clone_pair_above_min_size(CP, Thresholds) ->
+    length(CP)>=Thresholds#threshold.min_len andalso
+	lists:sum([element(2, E1)||{E1,_E2, _S}<-CP])
+	>=Thresholds#threshold.min_toks.
 
 get_clone_pairs(AURes, Thresholds, Tabs) ->
     get_clone_pairs(AURes, Thresholds, Tabs, {[],[]},[]).
 
 get_clone_pairs([], Thresholds, Tabs, {_, ClonePairAcc}, Acc) ->
-    case length(ClonePairAcc) < Thresholds#threshold.min_len of
-      true -> Acc;
-      _ ->
-	  ClonePairs = decompose_clone_pair_by_simi_score(
-			 lists:reverse(ClonePairAcc), Thresholds, Tabs),
-	  ClonePairs ++ Acc
+    case clone_pair_above_min_size(ClonePairAcc, Thresholds) of
+	true ->
+	    ClonePairs = decompose_clone_pair_by_simi_score(
+			   lists:reverse(ClonePairAcc), Thresholds, Tabs),
+	    ClonePairs ++ Acc;
+	false ->
+	    Acc
     end;
 get_clone_pairs([CurPair = {_E1, _E2, SubSt}| AURes], Thresholds, Tabs,
 		{VarSubAcc, ClonePairAcc}, Acc) ->
@@ -802,7 +828,7 @@ get_clone_pairs([CurPair = {_E1, _E2, SubSt}| AURes], Thresholds, Tabs,
     case var_sub_conflicts(CurVarSubsts, VarSubAcc) of
       true ->
 	    %% conflicting variable substitution.
-	  case length(ClonePairAcc) >= Thresholds#threshold.min_len of
+	  case clone_pair_above_min_size(ClonePairAcc, Thresholds) of
 	      true ->
 		  NewClonePairs = decompose_clone_pair_by_simi_score(
 				    lists:reverse(ClonePairAcc), Thresholds, Tabs),
@@ -827,9 +853,15 @@ get_var_subst(SubSt) ->
     [F({E1,E2})||
 	{E1,E2}<-SubSt, 
 	refac_syntax:type(E1)==variable, 
-	not ({value, {category, macro_name}} == 
-		 lists:keysearch(category, 1, refac_syntax:get_ann(E1)))].
- 
+	not is_macro_name(E1)].
+
+is_macro_name(Exp) ->
+    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp)) of
+	 {value, {category, {macro_name,_,_}}} ->
+	    true;
+	_ -> false
+    end.
+
 var_sub_conflicts(SubSts, ExistingVarSubsts) ->
     lists:any(fun ({DefPos, E}) ->
 		      case lists:keysearch(DefPos, 1, ExistingVarSubsts) of
@@ -852,7 +884,7 @@ decompose_clone_pair_by_simi_score(ClonePair, Thresholds, Tabs) ->
     MaxNewVars = Thresholds#threshold.max_new_vars,
     case Score1 >= SimiScoreThreshold  andalso
 	simi_score(Exprs2, SubExprs2) >= SimiScoreThreshold  andalso
-	num_of_new_vars(Subst) =< MaxNewVars of	
+	sets:size(exprs_to_be_generalised(Subst)) =< MaxNewVars of	
       true ->
 	  [ClonePair];
       false ->
@@ -893,21 +925,20 @@ decompose_clone_pair_by_simi_score_2(ClonePairWithSimiScore, Thresholds, Acc) ->
 
 
 decompose_clone_pair_by_simi_score_3(ClonePairs, Thresholds)->
-    MinLen = Thresholds#threshold.min_len,
     SimiScoreThreshold = Thresholds#threshold.simi_score,
-    case length(ClonePairs)< MinLen of 
+    case not clone_pair_above_min_size(ClonePairs, Thresholds) of 
 	true ->
 	    [];
 	false ->
 	    {Exprs1SubEs1Pairs, Exprs2SubEs2Pairs}
 		=lists:unzip([{{Expr1, SubEs1}, {Expr2, SubEs2}}
-			     ||{{_, Expr1}, {_, Expr2}, {SubEs1, SubEs2}, _}
-				   <-ClonePairs]),
+			      ||{{_, Expr1}, {_, Expr2}, Sub, _}
+				    <-ClonePairs, {SubEs1, SubEs2}<-[lists:unzip(Sub)]]),
 	    {Exprs1, SubEs1} = lists:unzip(Exprs1SubEs1Pairs),
 	    {Exprs2, SubEs2} = lists:unzip(Exprs2SubEs2Pairs),
-	    SimiScore1 = simi_score(Exprs1,SubEs1),
+	    SimiScore1 = simi_score(Exprs1,lists:append(SubEs1)),
 	    case SimiScore1>=SimiScoreThreshold andalso 
-		simi_score(Exprs2, SubEs2)>=SimiScoreThreshold of
+		simi_score(Exprs2, lists:append(SubEs2))>=SimiScoreThreshold of
 		true ->
 		    NewClonePairs=[{ExprKey1, ExprKey2, Sub}
 				   ||{{ExprKey1,_}, {ExprKey2,_}, Sub, _}<-ClonePairs],
@@ -922,18 +953,13 @@ simi_score(Expr, SubExprs) ->
     case no_of_nodes(Expr) of
       0 -> 0;
       ExprSize ->
-	    NonVarExprs = [E || E <- SubExprs, refac_syntax:type(E) =/= variable],
-	    NoOfNewVars = length(NonVarExprs),
-	    Res = 1 - (no_of_nodes(SubExprs) - length(SubExprs)
-		       + NoOfNewVars * (NoOfNewVars + 1) / 2) / ExprSize,
-	    %% Res =1 -((no_of_nodes(SubExprs)-length(SubExprs))/ExprSize),
-	    Res
+	    %% NonVarExprs = [E || E <- SubExprs, refac_syntax:type(E) =/= variable],
+	    %% NoOfNewVars = length(NonVarExprs),
+	    %% Res = 1 - (no_of_nodes(SubExprs) - length(SubExprs)
+	    %% 	       + NoOfNewVars * (NoOfNewVars + 1) / 2) / ExprSize,
+	    1 -((no_of_nodes(SubExprs)-length(SubExprs))/ExprSize)
     end.
    
-num_of_new_vars(SubSt) ->
-    length(lists:usort([{refac_prettypr:format(refac_misc:reset_attrs(E1)),
-			 refac_prettypr:format(refac_misc:reset_attrs(E2))}
-			||{E1,E2}<-SubSt, refac_syntax:type(E1)/=variable])).
 
 no_of_nodes(Nodes) when is_list(Nodes) ->
     lists:sum([no_of_nodes(N)||N<-Nodes]);
@@ -1010,48 +1036,60 @@ get_one_clone_class_1(Range, _ClonePair = {Range1, Range2, Subst}, Tabs) ->
 				      VarsToExport2)],
 	    %% EVs are variables from Exprs1 that need to be exported.
 	    NumOfNewVars = num_of_new_vars(SubSubst),
-	    [{{SubRange2, EVs, SubSubst}, NumOfNewVars}];
+	    [{{SubRange2, EVs, SubSubst},NumOfNewVars}];
       	false ->
 	    []
     end.
 
 group_clone_pairs(ClonePairs, Thresholds) ->
     ClonePairs1=lists:keysort(2,ClonePairs),
-    group_clone_pairs(ClonePairs1,Thresholds, 0,[],[]).
+    group_clone_pairs(ClonePairs1, Thresholds, []).
 
-group_clone_pairs([], _,_, TmpAcc, Acc) ->
-    case TmpAcc of
-	[] -> lists:reverse(Acc);
-	_ -> lists:reverse([TmpAcc|Acc])
-    end;
-group_clone_pairs([_ClonePairs={C,NumOfNewVars}|T], Thresholds, Sum, TmpAcc, Acc) ->
-    MaxNewVars = Thresholds#threshold.max_new_vars,
+group_clone_pairs([], _, Acc) ->
+    lists:reverse(Acc);
+group_clone_pairs(ClonePairs, Thresholds, Acc) ->
     MinFreq= Thresholds#threshold.min_freq -1,
-    NewSum = NumOfNewVars+Sum,
-    case NewSum =< MaxNewVars of 
+    {NewCs, LeftPairs}=group_clone_pairs(ClonePairs,Thresholds, sets:new(),[],[]),
+    NewAcc = case length(NewCs)>=MinFreq of
+		 true->[NewCs|Acc];
+		 false ->
+		     Acc
+	     end,
+    case length(LeftPairs)<MinFreq of 
 	true ->
-	    group_clone_pairs(T, Thresholds, NewSum, [C|TmpAcc], Acc);
+	    NewAcc;
 	false ->
-	    case length(TmpAcc)>=MinFreq of 
+	    group_clone_pairs(LeftPairs, Thresholds, NewAcc)
+    end.
+
+group_clone_pairs([], _, _, Acc, LeftPairs) ->
+    {lists:reverse(Acc), lists:reverse(LeftPairs)};
+group_clone_pairs([CP={C={_R, _EVs, Subst}, NumOfNewVars}|T], Thresholds, ExprsToBeGenAcc, Acc, LeftPairs) ->
+    MaxNewVars = Thresholds#threshold.max_new_vars,
+    ExprsToBeGen=exprs_to_be_generalised(Subst),
+    NewExprsToBeGenAcc =sets:union(ExprsToBeGen, ExprsToBeGenAcc),
+    case sets:size(NewExprsToBeGenAcc)=<MaxNewVars of
+    	true ->
+	    group_clone_pairs(T, Thresholds, NewExprsToBeGenAcc, [C|Acc], LeftPairs);
+	false ->
+	    case NumOfNewVars>MaxNewVars of 
 		true ->
-		    case NumOfNewVars=<MaxNewVars of
-			true ->
-			    group_clone_pairs(T, Thresholds, NumOfNewVars, [C],
-					      [lists:reverse(TmpAcc)|Acc]);
-			false ->
-			    group_clone_pairs(T, Thresholds, NumOfNewVars, [],
-					      [lists:reverse(TmpAcc)|Acc])
-		    end;
+		    group_clone_pairs([], Thresholds, ExprsToBeGenAcc, Acc, LeftPairs);
 		false ->
-		    case NumOfNewVars=<MaxNewVars of 
-			true ->
-			    group_clone_pairs(T, Thresholds, NumOfNewVars, [C], Acc);
-			false ->
-			    group_clone_pairs(T, Thresholds, NumOfNewVars, [], Acc)
-		    end
+		    group_clone_pairs(T, Thresholds, ExprsToBeGenAcc, Acc, [CP|LeftPairs])
 	    end
     end.
-	    
+
+%% This is not accurate, and will be improved!
+exprs_to_be_generalised(SubSt) ->
+    sets:from_list([refac_prettypr:format(refac_misc:reset_attrs(E1))||
+		       {E1,_E2}<-SubSt, refac_syntax:type(E1)/=variable]).
+
+   
+num_of_new_vars(SubSt) ->
+     length(lists:usort([{refac_prettypr:format(refac_misc:reset_attrs(E1)),
+ 			 refac_prettypr:format(refac_misc:reset_attrs(E2))}
+ 			||{E1,E2}<-SubSt, refac_syntax:type(E1)/=variable])).
 
 
     
@@ -1080,13 +1118,13 @@ generate_fun_call_1(Range, AUForm, Tabs) ->
 		SubAUBody = lists:sublist(AUBody, 1, length(AUBody) - 1),
 		Res=unification:expr_unification(SubAUBody, Exprs),
 		case Res of 
-		    false ->
-			refac_io:format("\n not same length\n"),
-			refac_io:format(" Case1:\n"),
-			refac_io:format("\nAUBody:\n"),
-			refac_io:format("~p", [refac_prettypr:format(refac_syntax:block_expr(AUBody))]),
-			refac_io:format("\nExprs:\n"),		   
-			refac_io:format("~p", [refac_prettypr:format(refac_syntax:block_expr(Exprs))]),
+		    false -> 
+			?wrangler_io("\n not same length\n",[]),
+			?wrangler_io(" Case1:\n",[]),
+			?wrangler_io("\nAUBody:\n",[]),
+			?wrangler_io("~s", [refac_prettypr:format(refac_syntax:block_expr(AUBody))]),
+			?wrangler_io("\nExprs:\n",[]),		   
+			?wrangler_io("~s", [refac_prettypr:format(refac_syntax:block_expr(Exprs))]),
 			Res;
 		    _ -> Res
 		end;
@@ -1094,11 +1132,11 @@ generate_fun_call_1(Range, AUForm, Tabs) ->
 		Res=unification:expr_unification(AUBody, Exprs),
 		case Res of
 		    false ->
-			refac_io:format("\nsame length\n"),
-			refac_io:format("\nAUBody:\n"),
-			refac_io:format("~p", [refac_prettypr:format(refac_syntax:block_expr(AUBody))]),
-			refac_io:format("\nExprs:\n"),		   
-			refac_io:format("~p", [refac_prettypr:format(refac_syntax:block_expr(Exprs))]),
+			?wrangler_io("\nsame length\n",[]),
+			?wrangler_io("\nAUBody:\n",[]),
+			?wrangler_io("~s", [refac_prettypr:format(refac_syntax:block_expr(AUBody))]),
+			?wrangler_io("\nExprs:\n",[]),		   
+			?wrangler_io("~s", [refac_prettypr:format(refac_syntax:block_expr(Exprs))]),
 			Res;
 		    _ -> Res
 		end
@@ -1230,8 +1268,8 @@ get_clone_member_start_end_loc(Range)->
 get_clone_class_in_absolute_locs({Ranges, {Len, Freq}, AntiUnifier}) ->
     StartEndLocsWithFunCall = [{get_clone_member_start_end_loc(R),FunCall}|| {R, FunCall} <- Ranges],
     RangesWithoutFunCalls=[R||{R,_}<-Ranges],
-    %% refac_io:format("Ranges:\n~p\n", [Ranges]),
-    %% refac_io:format("RangesWithoutFunCalls:\n~p\n",[RangesWithoutFunCalls]),
+    %% ?debug("Ranges:\n~p\n", [Ranges]),
+    %% ?debug("RangesWithoutFunCalls:\n~p\n",[RangesWithoutFunCalls]),
     {RangesWithoutFunCalls, {Len, Freq}, AntiUnifier,StartEndLocsWithFunCall}.
 
 get_expr_list(ExprKeys=[{{_FName, _FunName, _Arity, _Index}, _Toks, _, _IsNew}|_T], ASTTab)->
@@ -1277,10 +1315,15 @@ search_for_clones(Dir, Data, Thresholds) ->
 			   SubStr <- [lists:sublist(IndexStr, S, E - S + 1)]]),
     Cs2 = refac_code_search_utils:remove_sub_clones([{R, Len, Freq} || {R, {Len, Freq}} <- Cs1]),
     NewData = lists:append([F(Elem) || Elem <- Data]),
-    %%refac_io:format("Cs from suffixtree:\n~p\n",[NewData]),
     get_clones_in_ranges([{R, {Len, Freq}} || {R, Len, Freq} <- Cs2],
 			 NewData, MinLen, MinToks, MinFreq).
    
+%% This is necessary when the min_len is very small, e.g 1.
+remove_duplicates_in_ranges({Ranges, {Len, _Freq}}) ->
+    Ranges1=sets:to_list(sets:from_list(Ranges)),
+    Freq1 = length(Ranges1),
+    {Ranges1, {Len, Freq1}}.
+
 strip_a_clone({Ranges, {Len, F}}, Str, MinLen, MinFreq) ->
     {Str1, Str2} = lists:splitwith(fun(C) ->C==$# orelse C ==$, end, Str),
     {Str21, Str22} = lists:splitwith(fun(C) ->C==$# orelse C ==$, end, lists:reverse(Str2)),
@@ -1348,14 +1391,13 @@ get_clones_in_ranges(Cs, Data, _MinLen, MinToks, MinFreq) ->
 		case Freq >= MinFreq of
 		  true ->
 			NewRanges = [F0(R) || R <- Ranges],
-			{NewRanges, {length(hd(NewRanges)), Freq}};
+			remove_duplicates_in_ranges({NewRanges, {length(hd(NewRanges)), Freq}});
 		    _ -> []
 		end
 	end,
     NewCs=[F(C) || C <- Cs],
-    %% refac_io:format("NewCs1:\n~p\n", [NewCs]),
-    NewCs1=remove_short_clones(NewCs, MinToks,MinFreq),
-    NewCs1.
+    remove_short_clones(NewCs, MinToks,MinFreq).
+    
   
 remove_short_clones(Cs, MinToks, MinFreq) ->
     F= fun({Rs, {Len, _Freq}}) ->
@@ -1380,7 +1422,19 @@ no_of_tokens(Node) ->
     {ok, Toks,_} =refac_scan:string(Str, {1,1}, 8, unix),
     length(Toks).
 
+combine_clones_by_au([]) ->[];
+combine_clones_by_au(Cs=[{_Ranges, _Len, _F, _Code}|_T]) ->
+    Cs1 =refac_misc:group_by(4, Cs),
+    combine_clones_by_au_1(Cs1,[]).
 
+combine_clones_by_au_1([], Acc) ->
+    Acc;
+combine_clones_by_au_1([Cs=[{_Ranges, Len, _Freq, Code}|_]|T], Acc) ->
+    NewRanges=sets:to_list(sets:from_list(lists:append([Rs||{Rs, _, _, _}<-Cs]))),
+    NewFreq = length(NewRanges),
+    combine_clones_by_au_1(T, [{NewRanges, Len, NewFreq, Code}|Acc]).
+    
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%     transform the absolute locations in an AST to          %%
 %%     relative locations                                     %%
@@ -1469,29 +1523,67 @@ same_expr(Expr1, Expr2) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 from_dets(Ets, Dets) when is_atom(Ets) ->
     EtsRef = ets:new(Ets, [set, public]),
-    case dets:open_file(Dets, [{access, read}]) of
-      {ok, D} ->
-	  true = ets:from_dets(EtsRef, D),
-	  ok = dets:close(D),
-	  EtsRef;
-      {error, _Reason} -> 
-	    EtsRef
+    case Dets of 
+	none -> EtsRef;
+	_ ->
+	    case dets:open_file(Dets, [{access, read}]) of
+		{ok, D} ->
+		    true = ets:from_dets(EtsRef, D),
+		    ok = dets:close(D),
+		    EtsRef;
+		{error, _Reason} -> 
+		    EtsRef
+	    end
     end.
 
+to_dets(Ets, none) ->
+    ets:delete(Ets);   
 to_dets(Ets, Dets) ->
-    try file:delete(Dets) 
-    catch 
-	{error, {file_error, _, enoent}} -> ok;
-	{error, Reason} -> throw({error, Reason})
-    end,
-    MinSize = ets:info(Ets, size),
-    Res= dets:open_file(Dets, [{min_no_slots, MinSize}]),
-    {ok, DetsRef} = Res,
-    ok = dets:from_ets(DetsRef, Ets),
-    ok = dets:sync(DetsRef),
-    ok = dets:close(DetsRef),
-    ets:delete(Ets).
+    try file:delete(Dets), 
+	 MinSize = ets:info(Ets, size),
+	 Res= dets:open_file(Dets, [{min_no_slots, MinSize}]),
+	 {ok, DetsRef} = Res,
+	 ok = dets:from_ets(DetsRef, Ets),
+	 ok = dets:sync(DetsRef),
+	 ok = dets:close(DetsRef),
+	 ets:delete(Ets)
+    catch
+	_E1:_E2 ->
+	    ok
+    end.
+	
+	 
 
+-spec(get_parameters_eclipse/5::(MinLen::integer(), MinToks::integer(), MinFreq::integer(), 
+					 MaxNewVars::integer(),SimiScore::float())->
+					      {integer(), integer(), integer(), integer(),float()}).
+get_parameters_eclipse(MinLen1, MinToks1, MinFreq1, MaxNewVars1,SimiScore1) ->
+    MinLen = case MinLen1 < 1 of
+		 true ->
+		     ?DEFAULT_LEN;
+	       _ -> MinLen1
+	     end,
+    MinFreq = case MinFreq1 < ?DEFAULT_FREQ of
+		  true ->
+		      ?DEFAULT_FREQ;
+		  _ -> MinFreq1
+	      end,
+    MinToks = case MinToks1 < 20 of
+		  true ->
+		      ?DEFAULT_TOKS;
+		  _ -> MinToks1
+	      end,
+    MaxNewVars = case MaxNewVars1<0 of 
+		     true ->
+			 ?DEFAULT_NEW_VARS;
+		     _ -> MaxNewVars1
+		 end,			      
+    SimiScore = case SimiScore1 >= 0.1 andalso SimiScore1 =< 1.0
+		of
+		    true -> SimiScore1;
+		    _ -> ?DefaultSimiScore
+		end,
+    {MinLen, MinToks, MinFreq, MaxNewVars, SimiScore}.
 
 
 get_parameters(MinLen1, MinToks1 ,MinFreq1, MaxVars1, SimiScore1) ->

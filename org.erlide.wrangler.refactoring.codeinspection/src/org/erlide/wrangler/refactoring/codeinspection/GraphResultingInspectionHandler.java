@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
@@ -47,8 +48,15 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 		String actionId = event.getCommand().getId();
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 				.getActiveEditor().setFocus();
-		GlobalParameters.setSelection(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getSelection());
+		try {
+			GlobalParameters.setSelection(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getSelection());
+		} catch (WranglerException e1) {
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "Error", e1
+					.getMessage());
+			return null;
+		}
 		try {
 			File tmpFile = File.createTempFile("wrangler_graph_", ".dot");
 			tmpFile.deleteOnExit();

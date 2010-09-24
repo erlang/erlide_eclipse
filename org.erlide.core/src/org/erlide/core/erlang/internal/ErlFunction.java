@@ -83,7 +83,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 	@Override
 	public String toString() {
 		final StringBuilder b = new StringBuilder();
-		b.append(getName()).append("/").append(getArity());
+		b.append(getName()).append('/').append(getArity());
 		if (head != null && head.length() != 0) {
 			b.append("  ").append(head);
 		}

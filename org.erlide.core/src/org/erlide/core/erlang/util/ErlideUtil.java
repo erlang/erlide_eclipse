@@ -366,7 +366,7 @@ public final class ErlideUtil {
 		final StringBuffer result = new StringBuffer();
 		String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
 				.toPortableString();
-		dir = dir == null ? "c:/" : dir;
+		dir = (dir == null) ? "c:/" : dir;
 		final File log = new File(dir + "_erlide.log");
 
 		try {
@@ -422,7 +422,7 @@ public final class ErlideUtil {
 		}
 		final StringBuffer buf = new StringBuffer();
 		for (final String s : result) {
-			buf.append(s).append("\n");
+			buf.append(s).append('\n');
 		}
 		return buf.toString();
 	}
