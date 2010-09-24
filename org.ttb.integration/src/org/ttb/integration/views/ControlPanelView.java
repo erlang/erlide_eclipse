@@ -5,13 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -42,10 +40,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.ttb.integration.Activator;
 import org.ttb.integration.ProcessFlag;
 import org.ttb.integration.ProcessMode;
 import org.ttb.integration.TraceBackend;
@@ -57,7 +53,6 @@ import org.ttb.integration.mvc.controller.ProcessContentProvider;
 import org.ttb.integration.mvc.controller.ProcessHelper;
 import org.ttb.integration.mvc.controller.TracePatternCellModifier;
 import org.ttb.integration.mvc.controller.TracePatternContentProvider;
-import org.ttb.integration.mvc.model.ConfigurationManager;
 import org.ttb.integration.mvc.model.ITraceNodeObserver;
 import org.ttb.integration.mvc.model.TracePattern;
 import org.ttb.integration.mvc.model.TracedNode;
@@ -70,9 +65,11 @@ import org.ttb.integration.mvc.view.ProcessColumn;
 import org.ttb.integration.mvc.view.ProcessLabelProvider;
 import org.ttb.integration.mvc.view.TracePatternColumn;
 import org.ttb.integration.mvc.view.TracePatternLabelProvider;
-import org.ttb.integration.ui.dialogs.BusyDialog;
 import org.ttb.integration.ui.dialogs.ConfigurationSaveAsDialog;
+import org.ttb.integration.ui.dialogs.RunnableWithProgress;
 import org.ttb.integration.ui.dialogs.SelectConfigurationDialog;
+import org.ttb.integration.utils.ConfigurationManager;
+import org.ttb.integration.utils.TracingStatusHandler;
 
 /**
  * Control panel for tracing settings.
@@ -90,7 +87,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     private String patternsConfigName;
     private String nodesConfigName;
     private Action startStopAction;
-    private BusyDialog busyDialog;
+    private RunnableWithProgress task;
+    private TracingStatus status;
 
     private static final String START_LABEL = "Start tracing";
     private static final String STOP_LABEL = "Stop tracing";
@@ -125,15 +123,12 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     }
 
     private void createActionBars() {
-        // toolbar
-        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-
         startStopAction = new Action() {
             @Override
             public void run() {
                 if (!TraceBackend.getInstance().isLoading()) {
                     if (TraceBackend.getInstance().isStarted()) {
-                        doBeforeStopTracing();
+                        startStopAction.setEnabled(false);
                         doStopTracing();
                     } else {
                         doStartTracing();
@@ -141,10 +136,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         };
-
         startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
         startStopAction.setToolTipText(START_LABEL);
-        manager.add(startStopAction);
+        getViewSite().getActionBars().getToolBarManager().add(startStopAction);
     }
 
     private TabFolder createTabs(Composite parent) {
@@ -157,64 +151,45 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
      * Method called when starting tracing.
      */
     private void doStartTracing() {
-        IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
-            ps.busyCursorWhile(new IRunnableWithProgress() {
-                public void run(IProgressMonitor pm) {
-                    TracingStatus status = TraceBackend.getInstance().start();
-                    handleError(true, status);
+            task = new RunnableWithProgress("Starting tracing") {
+
+                @Override
+                public void doAction() {
+                    status = TraceBackend.getInstance().start();
+                    finish();
                 }
-            });
+            };
+            PlatformUI.getWorkbench().getProgressService().busyCursorWhile(task);
+            TracingStatusHandler.handleStatus(status);
         } catch (Exception e) {
+        } finally {
+            task = null;
         }
-    }
-
-    /**
-     * Method called after starting tracing.
-     */
-    private void doAfterStartTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                startStopAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
-                startStopAction.setToolTipText(STOP_LABEL);
-            }
-        });
-    }
-
-    /**
-     * Method called before stopping tracing.
-     */
-    private void doBeforeStopTracing() {
-        startStopAction.setEnabled(false);
     }
 
     /**
      * Method called when stopping tracing.
      */
     private void doStopTracing() {
-        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        busyDialog = new BusyDialog(shell, "Loading trace results...");
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                busyDialog.start();
+        task = new RunnableWithProgress("Loading trace results...") {
+            @Override
+            public void doAction() {
+                TraceBackend.getInstance().stop();
             }
-        });
-        TraceBackend.getInstance().stop();
-    }
-
-    /**
-     * Method called after stopping tracing.
-     */
-    private void doAfterLoading() {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
-                startStopAction.setToolTipText(START_LABEL);
-                startStopAction.setEnabled(true);
-                if (busyDialog != null)
-                    busyDialog.finish();
-            }
-        });
+        };
+        try {
+            Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+            new ProgressMonitorDialog(shell).run(true, false, task);
+            startStopAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
+            startStopAction.setToolTipText(START_LABEL);
+            startStopAction.setEnabled(true);
+            TracingStatusHandler.handleStatus(status);
+        } catch (Exception e) {
+            ErlLogger.error(e);
+        } finally {
+            task = null;
+        }
     }
 
     // "Processes" tab methods
@@ -777,53 +752,20 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
-    /**
-     * Handles errors that occurred during starting tracing or loading data.
-     * 
-     * @param start
-     *            <code>true</code> if handling errors during starting,
-     *            <code>false</code> otherwise
-     * @param tracingStatus
-     *            status
-     */
-    private void handleError(boolean start, TracingStatus tracingStatus) {
-        Status status;
-        String message = start ? "Could not start tracing" : "Error while loading data";
-        switch (tracingStatus) {
-        case ERROR:
-            Object errorObject = TraceBackend.getInstance().getErrorObject();
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message + ": " + errorObject, null);
-            StatusManager.getManager().handle(status, StatusManager.SHOW);
-            break;
-        case EXCEPTION_THROWN:
-            Exception e = (Exception) TraceBackend.getInstance().getErrorObject();
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, e);
-            StatusManager.getManager().handle(status, StatusManager.SHOW);
-            break;
-        case NO_ACTIVATED_NODES:
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No nodes were activated for tracing", null);
-            StatusManager.getManager().handle(status, StatusManager.SHOW);
-            break;
-        case NOT_ALL_NODES_ACTIVATED:
-            StringBuilder builder = new StringBuilder("Following nodes were not activated for tracing:\n");
-            for (String node : TraceBackend.getInstance().getNotActivatedNodes()) {
-                builder.append(node).append("\n");
-            }
-            status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, builder.toString(), null);
-            StatusManager.getManager().handle(status, StatusManager.SHOW);
-            break;
-        case OK:
-            break;
-        }
-    }
-
     public void startTracing() {
-        doAfterStartTracing();
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                startStopAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP));
+                startStopAction.setToolTipText(STOP_LABEL);
+            }
+        });
     }
 
     public void finishLoadingFile(TracingStatus status) {
-        doAfterLoading();
-        handleError(false, status);
+        this.status = status;
+        if (task != null) {
+            task.finish();
+        }
     }
 
     public void finishLoadingTraces(TracingStatus status) {

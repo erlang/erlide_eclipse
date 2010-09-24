@@ -3,6 +3,7 @@ package org.ttb.integration.views;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,7 +43,8 @@ import org.ttb.integration.mvc.model.treenodes.ModuleNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 import org.ttb.integration.mvc.view.TreeLabelProvider;
 import org.ttb.integration.preferences.PreferenceNames;
-import org.ttb.integration.ui.dialogs.BusyDialog;
+import org.ttb.integration.ui.dialogs.RunnableWithProgress;
+import org.ttb.integration.utils.TracingStatusHandler;
 
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
@@ -51,13 +53,14 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     private boolean correctInput = false;
     private Text traceIndexField;
 
-    private BusyDialog busyDialog;
+    private RunnableWithProgress task;
     private Composite buttonsPanel;
     private Button previousButton;
     private Button nextButton;
     private Button showButton;
 
     private Label label;
+    private TracingStatus status;
 
     public TreeViewerView() {
         TraceBackend.getInstance().addListener(this);
@@ -121,17 +124,16 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                busyDialog = new BusyDialog(shell, "Loading trace results...");
-                Display.getDefault().asyncExec(new Runnable() {
-                    public void run() {
+                task = new RunnableWithProgress("Loading trace results...") {
+                    @Override
+                    public void doAction() {
                         int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                         long startIndex = Math.max(1L, index - limit);
                         long endIndex = startIndex + limit - 1;
                         TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
-                        busyDialog.start();
                     }
-                });
+                };
+                executeTask();
             }
         });
 
@@ -143,17 +145,16 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                busyDialog = new BusyDialog(shell, "Loading trace results...");
-                Display.getDefault().asyncExec(new Runnable() {
-                    public void run() {
+                task = new RunnableWithProgress("Loading trace results...") {
+                    @Override
+                    public void doAction() {
                         int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                         long endIndex = Math.min(index + limit * 2 - 1, TraceBackend.getInstance().getActiveResultSet().getSize());
                         long startIndex = endIndex - limit + 1;
                         TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
-                        busyDialog.start();
                     }
-                });
+                };
+                executeTask();
             }
         });
 
@@ -212,15 +213,26 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     }
 
     private void doSelection() {
-        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        busyDialog = new BusyDialog(shell, "Loading trace results...");
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
+        task = new RunnableWithProgress("Loading trace results...") {
+            @Override
+            public void doAction() {
                 int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                 TraceBackend.getInstance().loadDataFromFile(index, index + limit - 1);
-                busyDialog.start();
             }
-        });
+        };
+        executeTask();
+    }
+
+    private void executeTask() {
+        try {
+            Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+            new ProgressMonitorDialog(shell).run(true, false, task);
+            doAfterLoadingTraces();
+        } catch (Exception exception) {
+            ErlLogger.error(exception);
+        } finally {
+            task = null;
+        }
     }
 
     private void updateButtonsPanel() {
@@ -273,6 +285,17 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
+    private void doAfterLoadingTraces() {
+        if (TracingStatus.OK.equals(status)) {
+            updateButtonsPanel();
+            treeViewer.refresh();
+        }
+        if (task != null)
+            // task was executed from this class so this class is responsible
+            // for handling status
+            TracingStatusHandler.handleStatus(status);
+    }
+
     @Override
     public void setFocus() {
     }
@@ -290,23 +313,23 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             public void run() {
                 if (TracingStatus.OK.equals(status))
                     treeViewer.refresh();
-                if (busyDialog != null)
-                    busyDialog.finish();
             }
         });
     }
 
     public void finishLoadingTraces(final TracingStatus status) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                if (TracingStatus.OK.equals(status)) {
-                    updateButtonsPanel();
-                    treeViewer.refresh();
+        this.status = status;
+        if (task != null) {
+            // when loading was initialized from this view
+            task.finish();
+        } else {
+            // when loading was initialized outside this view
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    doAfterLoadingTraces();
                 }
-                if (busyDialog != null)
-                    busyDialog.finish();
-            }
-        });
+            });
+        }
     }
 
     public void clearTraceLists() {

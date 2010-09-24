@@ -1,10 +1,13 @@
-package org.ttb.integration;
+package org.ttb.integration.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.erlide.jinterface.util.ErlLogger;
+import org.ttb.integration.Activator;
+import org.ttb.integration.Images;
+import org.ttb.integration.TraceType;
 import org.ttb.integration.mvc.model.treenodes.FunctionNode;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.ModuleNode;

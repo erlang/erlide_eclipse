@@ -34,6 +34,7 @@ import org.ttb.integration.mvc.model.TracedProcess;
 import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 import org.ttb.integration.preferences.PreferenceNames;
+import org.ttb.integration.utils.TraceDataHandler;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
@@ -334,10 +335,10 @@ public class TraceBackend {
                         this.startIndex = startIndex;
                         handler = new TraceEventHandler();
                         getBackend(true);
+                        TraceCollections.getTracesList().clear();
                         tracerBackend.getEventDaemon().addHandler(handler);
                         OtpErlangLong start = new OtpErlangLong(startIndex);
                         OtpErlangLong stop = new OtpErlangLong(endIndex);
-                        TraceCollections.getTracesList().clear();
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_LOAD, "sii", new OtpErlangString(activeResultSet.getFileName()), start, stop);
                     } catch (BackendException e) {
                         ErlLogger.error(e);

@@ -1,4 +1,4 @@
-package org.ttb.integration.mvc.model;
+package org.ttb.integration.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.Plugin;
 import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.Activator;
 import org.ttb.integration.TraceBackend;
+import org.ttb.integration.mvc.model.TracePattern;
+import org.ttb.integration.mvc.model.TracedNode;
 
 /**
  * Class containing helper methods for managing nodes and trace patterns

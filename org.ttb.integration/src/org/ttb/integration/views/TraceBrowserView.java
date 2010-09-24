@@ -1,12 +1,11 @@
 package org.ttb.integration.views;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -21,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.jinterface.util.ErlLogger;
 import org.ttb.integration.Activator;
 import org.ttb.integration.TraceBackend;
 import org.ttb.integration.TracingStatus;
@@ -32,7 +31,8 @@ import org.ttb.integration.mvc.model.treenodes.ITreeNode;
 import org.ttb.integration.mvc.model.treenodes.TracingResultsNode;
 import org.ttb.integration.mvc.view.TreeLabelProvider;
 import org.ttb.integration.preferences.PreferenceNames;
-import org.ttb.integration.ui.dialogs.BusyDialog;
+import org.ttb.integration.ui.dialogs.RunnableWithProgress;
+import org.ttb.integration.utils.TracingStatusHandler;
 
 /**
  * Sequence diagram which shows tracing results.
@@ -45,7 +45,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     private TreeViewer treeViewer;
     private Action clearAction;
     private Action loadAction;
-    private BusyDialog busyDialog;
+    private RunnableWithProgress task;
+    private TracingStatus status;
 
     public TraceBrowserView() {
         TraceBackend.getInstance().addListener(this);
@@ -72,14 +73,11 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         // children
         createTreeViewerPanel(parent);
 
-        // enable or disable buttons depending on whether tracing is started or
-        // not
+        // enable/disable buttons depending on whether tracing is started or not
         enableActions(!TraceBackend.getInstance().isStarted());
     }
 
     private void createActionBars() {
-        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-
         loadAction = new Action() {
             @Override
             public void run() {
@@ -89,10 +87,21 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 dialog.setText("Load trace data...");
                 final String selected = dialog.open();
                 if (selected != null) {
-                    TraceBackend.getInstance().loadFile(selected);
-                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                    busyDialog = new BusyDialog(shell, "Loading trace results...");
-                    busyDialog.start();
+                    task = new RunnableWithProgress("Load trace data...") {
+                        @Override
+                        public void doAction() {
+                            TraceBackend.getInstance().loadFile(selected);
+                        }
+                    };
+                    try {
+                        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                        new ProgressMonitorDialog(shell).run(true, false, task);
+                        doAfterLoadingFile();
+                    } catch (Exception e) {
+                        ErlLogger.error(e);
+                    } finally {
+                        task = null;
+                    }
                 }
             }
         };
@@ -108,6 +117,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         clearAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
         clearAction.setToolTipText("Clear view");
 
+        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
         manager.add(loadAction);
         manager.add(clearAction);
     }
@@ -149,20 +159,37 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
      * @param event
      */
     private void doSelection(final SelectionChangedEvent event) {
-        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        busyDialog = new BusyDialog(shell, "Loading trace results...");
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                ITreeNode treeNode = (ITreeNode) selection.getFirstElement();
-                if (treeNode != null) {
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        final ITreeNode treeNode = (ITreeNode) selection.getFirstElement();
+        if (treeNode != null) {
+            task = new RunnableWithProgress("Loading trace results...") {
+                @Override
+                public void doAction() {
                     TraceBackend.getInstance().setActiveResultSet((TracingResultsNode) treeNode);
                     int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                     TraceBackend.getInstance().loadDataFromFile(1, limit);
-                    busyDialog.start();
                 }
+            };
+            try {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                new ProgressMonitorDialog(shell).run(true, false, task);
+                doAfterLoadingFile();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            } finally {
+                task = null;
             }
-        });
+        }
+    }
+
+    private void doAfterLoadingFile() {
+        if (TracingStatus.OK.equals(status))
+            treeViewer.refresh();
+        if (task != null)
+            // task was executed from this class so this class is responsible
+            // for handling status
+            TracingStatusHandler.handleStatus(status);
+        enableActions(true);
     }
 
     @Override
@@ -178,35 +205,25 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     }
 
     public void finishLoadingFile(final TracingStatus status) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                switch (status) {
-                case OK:
-                    treeViewer.refresh();
-                    if (busyDialog != null)
-                        busyDialog.finish();
-                    break;
-                case EMPTY:
-                    if (busyDialog != null)
-                        busyDialog.finish();
-                    Status status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Selected files contain no data to display", null);
-                    StatusManager.getManager().handle(status, StatusManager.SHOW);
-                    break;
-                default:
-                    break;
+        this.status = status;
+        if (task != null) {
+            // when loading was initialized from this view
+            task.finish();
+        } else {
+            // when loading was initialized outside this view
+            Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                    doAfterLoadingFile();
                 }
-                enableActions(true);
-            }
-        });
+            });
+        }
     }
 
     public void finishLoadingTraces(TracingStatus status) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                if (busyDialog != null)
-                    busyDialog.finish();
-            }
-        });
+        this.status = status;
+        if (task != null) {
+            task.finish();
+        }
     }
 
     public void clearTraceLists() {
