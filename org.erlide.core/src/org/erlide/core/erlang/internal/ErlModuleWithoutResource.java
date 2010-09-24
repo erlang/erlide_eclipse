@@ -25,8 +25,15 @@ public class ErlModuleWithoutResource extends ErlModule {
 		return path;
 	}
 
-	public void dispose(final Object info) {
+	@Override
+	public void dispose() {
+		super.dispose();
 		ErlangCore.getModelManager().removeModule(this);
+	}
+
+	@Override
+	protected boolean useCaches() {
+		return false;
 	}
 
 }

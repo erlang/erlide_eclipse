@@ -28,9 +28,16 @@
 
 %% check if the text is where to enter record field
 check_record(S) ->
-    case catch erlide_scan:string(S) of
+    case erlide_scan:string(S) of
 	{ok, Tokens, _Pos} ->
 	    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
+        {error, {_, _, {atom, $', ""}}, _} ->
+            case erlide_scan:string(S++"><'") of
+                {ok, Tokens, _Pos} ->
+                    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
+                _ ->
+                    none
+            end;
 	_ ->
 	    none
     end.
@@ -85,7 +92,7 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 
 check_record_tokens(Tokens) ->
     ?D(Tokens),
-    case check_record_tokens(no_record, Tokens, false, '', '', [], '') of
+    case check_record_tokens(no_record, Tokens, false, '', '<>', [], '') of
         L when is_list(L) -> check_record_tokens(L); % Shouldn't happen
         {State, Name, Prefix, Fields} -> {state_to_num(State), Name, Prefix, Fields}
     end.
@@ -123,7 +130,7 @@ check_record_tokens(_State, [#token{kind='}'} | Rest], _W, _R, _B, _Fields, _Pre
     ?D('}'),
     Rest; %% either we've recursed, or we left the record, so this is safe
 check_record_tokens(_State, [#token{kind='#'} | Rest], W, _R, _B, _Fields, PrevR) -> % 1
-    check_record_tokens(record_want_name, Rest, W, '', '', [], PrevR);
+    check_record_tokens(record_want_name, Rest, W, '', '<>', [], PrevR);
 check_record_tokens(record_want_name, [#token{kind=atom, value=V} | Rest], W, R, _B, Fields, _PrevR) -> % 2
     ?D(V),
     check_record_tokens(record_name, Rest, W, V, V, Fields, R);
@@ -135,27 +142,27 @@ check_record_tokens(record_want_name, [#token{kind='?'} | Rest], W, R, _B, _Fiel
     check_record_tokens(record_name, Rest, W, '?', '?', [], R);
 check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, _Fields, PrevR) % 3 
   when Dot=:='.'; Dot=:=dot->
-    check_record_tokens(record_want_dot_field, Rest, W, B, '', [], PrevR);
+    check_record_tokens(record_want_dot_field, Rest, W, B, '<>', [], PrevR);
 check_record_tokens(record_want_dot_field, [#token{kind=atom, value=V} | Rest],
                     W, R, _B, _Fields, PrevR) -> % 4
     check_record_tokens(record_dot_field, Rest, W, R, V, [], PrevR);
 check_record_tokens(record_name, [#token{kind='{'} | Rest], W, _R, B, _Fields, PrevR) -> % 5
     ?D('{'),
     ?D({W, _R, B}),
-    case check_record_tokens(record_want_field, Rest, true, B, '', [], B) of
+    case check_record_tokens(record_want_field, Rest, true, B, '<>', [], B) of
         L when is_list(L) ->
             ?D({L, W}),
-            check_record_tokens(no_record, L, W, PrevR, '', [], PrevR);
+            check_record_tokens(no_record, L, W, PrevR, '<>', [], PrevR);
         T ->
             ?D(T),
             T
     end;
 check_record_tokens(State, [#token{kind='{'} | Rest], W, R, B, _Fields, PrevR) -> % 6
     ?D('{'),
-    case check_record_tokens(no_record, Rest, false, B, '', [], B) of
+    case check_record_tokens(no_record, Rest, false, B, '<>', [], B) of
         L when is_list(L) -> 
             ?D(L),
-            check_record_tokens(State, L, W, R, '', [], PrevR);
+            check_record_tokens(State, L, W, R, '<>', [], PrevR);
         T -> 
             ?D(T),
             T
