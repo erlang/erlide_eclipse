@@ -31,19 +31,22 @@ stop() ->
 	spawn(?MODULE, get_file_info, [Dir]).
 
 get_file_info(Path) ->
-	case ttbe:format(Path, [{handler, {create_info_handler(Path), {true, 0, '_', '_'}}}]) of
-		ok -> 
-			erlide_jrpc:event(trace_event, stop_tracing);
-		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
+	Result = (catch ttbe:format(Path, [{handler, {create_info_handler(Path), {true, 0, '_', '_'}}}])),
+	case Result of
+		ok -> erlide_jrpc:event(trace_event, stop_tracing);
+		{error, Reason} -> erlide_jrpc:event(trace_event, {error_loading, Reason});
+		_ -> erlide_jrpc:event(trace_event, {error_loading, "Can not load data"})
 	end.
 
 load(Path, Start, Stop) ->
 	spawn(?MODULE, load_data, [Path, Start, Stop]).
 
 load_data(Path, Start, Stop) ->
-	case ttbe:format(Path, [{handler, {create_load_handler(Start, Stop), 1}}]) of
+	Result = (catch ttbe:format(Path, [{handler, {create_load_handler(Start, Stop), 1}}])),
+	case Result  of
 		ok -> erlide_jrpc:event(trace_event, stop_tracing);
-		{error, Reason} -> erlide_jrpc:event(trace_event, error_loading)
+		{error, Reason} -> erlide_jrpc:event(trace_event, {error_loading, Reason});
+		_ -> erlide_jrpc:event(trace_event, {error_loading, "Can not load data"})
 	end.
 
 create_load_handler(Start, Stop) ->
