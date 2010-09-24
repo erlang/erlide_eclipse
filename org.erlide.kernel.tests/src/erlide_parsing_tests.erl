@@ -46,6 +46,15 @@ parse_small_functions_test_() ->
                           comments=[]},
                    test_parse("f() ->\n    a."))].
 
+parsing_define_with_record_ref_test_() ->
+    %% http://www.assembla.com/spaces/erlide/tickets/602-parser-can-t-handle-record-definitions-in-defines
+    [?_assertEqual(#model{forms=[#attribute{pos={{0,0,0},18},
+                                            name=define,
+                                            args=xx,
+                                            extra="xx, #x{}"}],
+                          comments=[]},
+                   test_parse("-define(xx, #x{})."))].
+
 %%
 %% Local Functions
 %%
