@@ -51,6 +51,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.ErlModelUtils;
@@ -135,9 +136,13 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			int flags;
 			int pos;
 			String moduleOrRecord = null;
-			final IErlProject project = module.getProject();
-			final Backend b = ErlangCore.getBackendManager().getBuildBackend(
-					project.getProject());
+			final IErlProject erlProject = module.getProject();
+			final IProject project = erlProject != null ? erlProject
+					.getProject() : null;
+			final BackendManager backendManager = ErlangCore
+					.getBackendManager();
+			final Backend b = project != null ? backendManager
+					.getBuildBackend(project) : backendManager.getIdeBackend();
 			final IErlElement element = getElementAt(offset);
 			RecordCompletion rc = null;
 			if (hashMarkPos >= 0) {
@@ -198,7 +203,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 			result = addCompletions(flags, offset, before, moduleOrRecord, pos,
-					fieldsSoFar, project, b);
+					fieldsSoFar, erlProject, project, b);
 			final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
 					doc, offset - before.length(), before.length());
 			result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
@@ -213,8 +218,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	private List<ICompletionProposal> addCompletions(final int flags,
 			final int offset, final String prefix, final String moduleOrRecord,
 			final int pos, final List<String> fieldsSoFar,
-			final IErlProject project, final Backend backend)
-			throws CoreException, OtpErlangRangeException, BadLocationException {
+			final IErlProject erlProject, final IProject project,
+			final Backend backend) throws CoreException,
+			OtpErlangRangeException, BadLocationException {
 		final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 		if ((flags & DECLARED_FUNCTIONS) != 0) {
 			addSorted(
@@ -239,7 +245,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			addSorted(
 					result,
 					getMacroOrRecordCompletions(backend, offset, prefix,
-							IErlElement.Kind.RECORD_DEF));
+							IErlElement.Kind.RECORD_DEF, erlProject, project));
 		}
 		if ((flags & RECORD_FIELDS) != 0) {
 			addSorted(
@@ -251,12 +257,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			addSorted(
 					result,
 					getMacroOrRecordCompletions(backend, offset, prefix,
-							IErlElement.Kind.MACRO_DEF));
+							IErlElement.Kind.MACRO_DEF, erlProject, project));
 		}
 		if ((flags & EXTERNAL_FUNCTIONS) != 0) {
 			addSorted(
 					result,
-					getExternalCallCompletions(backend, project,
+					getExternalCallCompletions(backend, erlProject,
 							moduleOrRecord, offset, prefix,
 							(flags & ARITY_ONLY) != 0));
 		}
@@ -280,8 +286,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		final IProject project = (erlProject == null) ? null
 				: (IProject) erlProject.getResource();
 		final IErlModel model = ErlangCore.getModel();
-		IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(b, project,
-				module, recordName, Kind.RECORD_DEF,
+		final IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(b,
+				project, module, recordName, Kind.RECORD_DEF,
 				model.getExternal(erlProject, ErlangCore.EXTERNAL_INCLUDES));
 		if (pd instanceof IErlRecordDef) {
 			final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -299,7 +305,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
 	private void addIfMatches(final String name, final String prefix,
 			final int offset, final List<ICompletionProposal> result) {
-		int length = prefix.length();
+		final int length = prefix.length();
 		if (name.regionMatches(true, 0, prefix, 0, length)) {
 			result.add(new CompletionProposal(name, offset - length, length,
 					name.length()));
@@ -420,18 +426,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	 * @param offset
 	 * @param prefix
 	 * @param kind
+	 * @param erlProject
+	 *            TODO
+	 * @param project
+	 *            TODO
 	 * @return
 	 * @return
 	 */
 	private List<ICompletionProposal> getMacroOrRecordCompletions(
 			final Backend b, final int offset, final String prefix,
-			final Kind kind) {
+			final Kind kind, final IErlProject erlProject,
+			final IProject project) {
 		if (module == null) {
 			return EMPTY_COMPLETIONS;
 		}
-		final IProject project = (IProject) module.getProject().getResource();
 		final IErlModel model = ErlangCore.getModel();
-		final IErlProject erlProject = module.getProject();
 		final List<IErlPreprocessorDef> defs = ErlModelUtils
 				.getPreprocessorDefs(b, project, module, kind, model
 						.getExternal(erlProject, ErlangCore.EXTERNAL_INCLUDES));
@@ -441,8 +450,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 			addIfMatches(name, prefix, offset, result);
 		}
 		if (kind == Kind.MACRO_DEF) {
-			String[] names = ErlModelUtils.getPredefinedMacroNames();
-			for (String name : names) {
+			final String[] names = ErlModelUtils.getPredefinedMacroNames();
+			for (final String name : names) {
 				addIfMatches(name, prefix, offset, result);
 			}
 		}
@@ -596,7 +605,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	private List<String> getParameterNames(final IErlFunction function) {
-		List<String> parameters = function.getParameters();
+		final List<String> parameters = function.getParameters();
 		final int arity = function.getArity();
 		final List<String> result = new ArrayList<String>(arity);
 		addEmptyParameterNames(arity, result);
@@ -723,15 +732,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			if (module != null) {
 				try {
-					IErlElement element = module.getElementAt(offset);
+					final IErlElement element = module.getElementAt(offset);
 					if (element instanceof ISourceReference) {
-						ISourceReference sr = (ISourceReference) element;
-						int start = sr.getSourceRange().getOffset();
+						final ISourceReference sr = (ISourceReference) element;
+						final int start = sr.getSourceRange().getOffset();
 						if (start <= offset) {
 							return doc.get(start, offset - start);
 						}
 					}
-				} catch (ErlModelException e) {
+				} catch (final ErlModelException e) {
 				}
 			}
 			for (int n = offset - 1; n >= 0; --n) {
