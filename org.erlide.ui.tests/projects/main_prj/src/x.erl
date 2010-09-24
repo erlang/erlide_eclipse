@@ -5,4 +5,6 @@
 -define(myrec, #'REC'{}).
 
 f() ->
-	#'R
+	X=0,
+	X=1.
+
