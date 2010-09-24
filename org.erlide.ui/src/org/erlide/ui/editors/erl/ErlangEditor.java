@@ -1970,6 +1970,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return;
         }
 
+        long time = System.currentTimeMillis();
+        long crt;
+        ErlLogger.debug("###605: start");
+
         boolean hasChanged = false;
         final int offset = selection.getOffset();
         if (document instanceof IDocumentExtension4) {
@@ -1989,15 +1993,26 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             fMarkOccurrenceModificationStamp = currentModificationStamp;
         }
 
+        crt = System.currentTimeMillis();
+        ErlLogger.debug("###605: 1: "+(crt-time));
+        time=crt;
+
         final String scannerModuleName = ErlangToolkit
                 .createScannerModuleName(module);
         final ErlideBackend ideBackend = ErlangCore.getBackendManager()
                 .getIdeBackend();
         List<ErlangRef> refs = null;
         try {
+            crt = System.currentTimeMillis();
+            ErlLogger.debug("###605: 2: "+(crt-time));
+            time=crt;
+
             OpenResult res = ErlideOpen.open(ideBackend, scannerModuleName,
                     offset, ErlModelUtils.getImportsAsList(module), "",
                     ErlangCore.getModel().getPathVars());
+            crt = System.currentTimeMillis();
+            ErlLogger.debug("###605: 3: "+(crt-time));
+            time=crt;
             final ErlangSearchPattern pattern = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,
                             res, ErlangSearchPattern.ALL_OCCURRENCES, false);
@@ -2009,6 +2024,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         } catch (final BackendException e) {
             e.printStackTrace();
         }
+        crt = System.currentTimeMillis();
+        ErlLogger.debug("###605: 4: "+(crt-time));
+        time=crt;
         if (refs == null) {
             if (!fStickyOccurrenceAnnotations) {
                 removeOccurrenceAnnotations();
