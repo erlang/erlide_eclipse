@@ -67,7 +67,7 @@ import erlang.FunctionRef;
  * active <code>IErlProject</code>s in a workspace. A Erlang Model is specific
  * to a workspace. To retrieve a workspace's model, use the
  * <code>#getErlangModel(IWorkspace)</code> method.
- *
+ * 
  * @see IErlModel
  */
 public class ErlModel extends Openable implements IErlModel {
@@ -86,7 +86,7 @@ public class ErlModel extends Openable implements IErlModel {
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created. One should only
      * indirect through ErlModelManager#getErlangModel() to get access to it.
-     *
+     * 
      * @exception Error
      *                if called more than once
      */
@@ -648,8 +648,7 @@ public class ErlModel extends Openable implements IErlModel {
         if (project != null) {
             final OldErlangProjectProperties prefs = project.getProperties();
             final String projprefs = (externalFlag == ErlangCore.EXTERNAL_INCLUDES) ? prefs
-                    .getExternalIncludesFile()
-                    : prefs.getExternalModulesFile();
+                    .getExternalIncludesFile() : prefs.getExternalModulesFile();
             return PreferencesUtils
                     .packArray(new String[] { projprefs, global });
         }
@@ -690,5 +689,18 @@ public class ErlModel extends Openable implements IErlModel {
             elem = elem.getParent();
         }
         return (IErlModule) elem;
+    }
+
+    public IErlModule findModuleExt(String name) {
+        for (final IErlElement e : getChildren()) {
+            if (e instanceof IErlProject) {
+                final IErlProject p = (IErlProject) e;
+                final IErlModule m = p.getModuleExt(name);
+                if (m != null) {
+                    return m;
+                }
+            }
+        }
+        return null;
     }
 }

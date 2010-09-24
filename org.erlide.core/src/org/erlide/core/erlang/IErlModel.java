@@ -295,7 +295,9 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
 	IErlModule findModule(String name);
 
-	public IErlElement innermostThat(final IErlElement el,
+    IErlModule findModuleExt(String name);
+
+    public IErlElement innermostThat(final IErlElement el,
 			final IErlangFirstThat firstThat);
 
 	String getExternal(IErlProject erlProject, int externalFlag);
