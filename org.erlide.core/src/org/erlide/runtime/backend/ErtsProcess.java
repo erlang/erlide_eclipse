@@ -134,8 +134,9 @@ public class ErtsProcess extends RuntimeProcess {
 	}
 
 	public IStreamsProxy getPrivateStreamsProxy() {
-		if (getStreamsProxy() instanceof StreamsProxy) {
-			return getStreamsProxy();
+		final IStreamsProxy proxy = getStreamsProxy();
+        if (proxy instanceof StreamsProxy) {
+			return proxy;
 		}
 		return streamsProxy;
 	}
