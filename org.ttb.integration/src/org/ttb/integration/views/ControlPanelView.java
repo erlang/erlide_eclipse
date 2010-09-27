@@ -384,6 +384,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // "Add" button
         Button button = new Button(container, SWT.PUSH | SWT.CENTER);
         button.setText("New pattern");
+        button.setToolTipText("Add new trace pattern");
         button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -396,6 +397,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // "Remove" button
         button = new Button(container, SWT.PUSH | SWT.CENTER);
         button.setText("Remove pattern");
+        button.setToolTipText("Remove selected trace pattern");
         button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE));
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -570,6 +572,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // "Add" button
         Button button = new Button(container, SWT.PUSH | SWT.CENTER);
         button.setText("New node");
+        button.setToolTipText("Add new node you want to trace");
         button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -583,6 +586,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         // "Remove" button
         button = new Button(container, SWT.PUSH | SWT.CENTER);
         button.setText("Remove node");
+        button.setToolTipText("Remove selected node");
         button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE));
         button.addSelectionListener(new SelectionAdapter() {
 
@@ -598,7 +602,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // "Add erlide nodes" button
         button = new Button(container, SWT.PUSH | SWT.CENTER);
-        button.setText("Add erlide nodes");
+        button.setText("Add existing nodes");
+        button.setToolTipText("Add all Erlang nodes started directly from eclipse");
         button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
         button.addSelectionListener(new SelectionAdapter() {
 

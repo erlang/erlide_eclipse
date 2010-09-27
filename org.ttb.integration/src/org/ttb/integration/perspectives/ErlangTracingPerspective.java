@@ -22,7 +22,8 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
     private static final String BOTTOM_LEFT = "bottom left";
     private static final String CENTER_LEFT = "center left";
     private static final String BOTTOM_CENTER = "bottom center";
-    private static final String RIGHT = "right";
+    private static final String RIGHT_CENTER = "right center";
+    private static final String RIGHT_BOTTOM = "right bottom";
 
     public void createInitialLayout(IPageLayout pageLayout) {
         defineActions(pageLayout);
@@ -51,11 +52,14 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
         // bottom center
         IFolderLayout bottomCenter = pageLayout.createFolder(BOTTOM_CENTER, IPageLayout.BOTTOM, 0.60f, pageLayout.getEditorArea());
         bottomCenter.addView(IPageLayout.ID_PROBLEM_VIEW);
-        bottomCenter.addView(IConsoleConstants.ID_CONSOLE_VIEW);
         bottomCenter.addView(CONTROL_PANEL_VIEW_ID);
 
-        // right
-        IFolderLayout right = pageLayout.createFolder(RIGHT, IPageLayout.RIGHT, 0.75f, pageLayout.getEditorArea());
-        right.addView(IPageLayout.ID_OUTLINE);
+        // right center
+        IFolderLayout rightCenter = pageLayout.createFolder(RIGHT_CENTER, IPageLayout.RIGHT, 0.75f, pageLayout.getEditorArea());
+        rightCenter.addView(IPageLayout.ID_OUTLINE);
+
+        // right bottom
+        IFolderLayout rightBottom = pageLayout.createFolder(RIGHT_BOTTOM, IPageLayout.RIGHT, 0.70f, BOTTOM_CENTER);
+        rightBottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
     }
 }
