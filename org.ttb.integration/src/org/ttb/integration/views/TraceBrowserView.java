@@ -43,7 +43,7 @@ import org.ttb.integration.utils.TracingStatusHandler;
 public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
     private TreeViewer treeViewer;
-    private Action clearAction;
+    private Action removeAllAction;
     private Action loadAction;
     private Action removeAction;
     private RunnableWithProgress task;
@@ -107,7 +107,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
             }
         };
         loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
-        loadAction.setToolTipText("Load results from file...");
+        loadAction.setToolTipText("Load results from disk...");
 
         removeAction = new Action() {
             @Override
@@ -121,25 +121,25 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         removeAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
         removeAction.setToolTipText("Remove selected");
 
-        clearAction = new Action() {
+        removeAllAction = new Action() {
             @Override
             public void run() {
                 TraceBackend.getInstance().clearTraceLists();
             }
         };
-        clearAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
-        clearAction.setToolTipText("Clear view");
+        removeAllAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
+        removeAllAction.setToolTipText("Remove all");
 
         IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
         manager.add(loadAction);
         manager.add(removeAction);
-        manager.add(clearAction);
+        manager.add(removeAllAction);
     }
 
     private void enableActions(boolean enabled) {
         loadAction.setEnabled(enabled);
         removeAction.setEnabled(enabled);
-        clearAction.setEnabled(enabled);
+        removeAllAction.setEnabled(enabled);
         treeViewer.getTree().setEnabled(enabled);
     }
 

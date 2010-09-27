@@ -13,12 +13,12 @@ trace log, by experienced system administrators or technical support personnel t
 problems with software."</em> <br>
 <a href="http://en.wikipedia.org/wiki/Tracing_%28software%29">http://en.wikipedia.org/wiki/Tracing_(software)</a></p>
 
-<h3>Plugin description</h3>
-<p>This plugin uses an improved version of ttb (Trace Tool Builder, <a
+<h3>Feature description</h3>
+<p>This feature uses an improved version of ttb (Trace Tool Builder, <a
 	href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a>) for
 tracing purposes and provides grafical interface to it offering possibility of tracing Erlang
 programs directly from erlide.</p>
-<center><img alt="" src="../images/processesTab.png"><br />
+<center><img alt="" src="../images/nodesTab.png"><br />
 <h6>Tracing control panel</h6>
 </center>
 
@@ -27,6 +27,9 @@ that user quickly gets overwhelmed with logged data and finds it rather difficul
 plugin also profides an user friedly way of browsing trace results - they are displayed in a form of
 a tree where each event is represented by different type of icon. Tree nodes can be unfolded to get
 more details about particular event.</p>
+<center><img alt="" src="../images/traceBrowser.png"><br />
+<h6>Browsing results</h6>
+</center>
 <center><img alt="" src="../images/treeviewer.png"><br />
 <h6>Browsing traces</h6>
 </center>
@@ -35,14 +38,16 @@ more details about particular event.</p>
 <ul>
 	<li>New eclipse perspective and views</li>
 	<li>Setting process flags</li>
-	<li>Selecting node that should be activated for tracing</li>
+	<li>Tracing multiple nodes at the same time (also nodes started outside erlide)</li>
+	<li>Setting net nick time and cookie per node</li>
 	<li>Selecting processes which should be traced</li>
-	<li>Setting trace patterns for functions (also supports match specifications)</li>
+	<li>Setting trace patterns for functions (support for match specifications)</li>
 	<li>New positions in outline's context menu for creating trace patterns from selected
 	function</li>
 	<li>Saving and restoring trace patterns configuration</li>
+	<li>Saving and restoring nodes configuration</li>
 	<li>Browsing trace results in tree</li>
-	<li>Loading trace results from file</li>
+	<li>Loading trace results from disk</li>
 </ul>
 
 </body>
