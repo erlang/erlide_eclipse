@@ -351,15 +351,34 @@ public class TraceBackend {
     }
 
     /**
-     * Removes from list all files containing tracing results.
+     * Removes tracing results from list.
      */
-    public void clearTraceLists() {
+    public synchronized void clearTraceLists() {
         activeResultSet = null;
         TraceCollections.getFilesList().clear();
         TraceCollections.getTracesList().clear();
         for (ITraceNodeObserver listener : listeners) {
             try {
-                listener.clearTraceLists();
+                listener.removeFile();
+            } catch (Exception e) {
+                ErlLogger.error(e);
+            }
+        }
+    }
+
+    /**
+     * Removes selected tracing result from list.
+     * 
+     * @param tracingResult
+     *            tracing result to be removed
+     */
+    public synchronized void removeTracingResult(TracingResultsNode tracingResult) {
+        activeResultSet = null;
+        TraceCollections.getFilesList().remove(tracingResult);
+        TraceCollections.getTracesList().clear();
+        for (ITraceNodeObserver listener : listeners) {
+            try {
+                listener.removeFile();
             } catch (Exception e) {
                 ErlLogger.error(e);
             }

@@ -776,7 +776,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     public void finishLoadingTraces(TracingStatus status) {
     }
 
-    public void clearTraceLists() {
+    public void removeFile() {
     }
 
     public void updateTracePatterns() {

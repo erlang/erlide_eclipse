@@ -45,6 +45,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     private TreeViewer treeViewer;
     private Action clearAction;
     private Action loadAction;
+    private Action removeAction;
     private RunnableWithProgress task;
     private TracingStatus status;
 
@@ -108,6 +109,18 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         loadAction.setToolTipText("Load results from file...");
 
+        removeAction = new Action() {
+            @Override
+            public void run() {
+                TracingResultsNode node = (TracingResultsNode) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+                if (node != null) {
+                    TraceBackend.getInstance().removeTracingResult(node);
+                }
+            }
+        };
+        removeAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
+        removeAction.setToolTipText("Remove selected");
+
         clearAction = new Action() {
             @Override
             public void run() {
@@ -119,11 +132,13 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
         IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
         manager.add(loadAction);
+        manager.add(removeAction);
         manager.add(clearAction);
     }
 
     private void enableActions(boolean enabled) {
         loadAction.setEnabled(enabled);
+        removeAction.setEnabled(enabled);
         clearAction.setEnabled(enabled);
         treeViewer.getTree().setEnabled(enabled);
     }
@@ -134,7 +149,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         container.setLayout(new GridLayout());
 
         // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
-        treeViewer = new TreeViewer(container);
+        treeViewer = new TreeViewer(container, SWT.SINGLE);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
@@ -226,7 +241,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
-    public void clearTraceLists() {
+    public void removeFile() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 treeViewer.refresh();

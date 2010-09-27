@@ -33,10 +33,10 @@ public interface ITraceNodeObserver {
     public void finishLoadingTraces(TracingStatus status);
 
     /**
-     * This method is invoked after removing all items from all lists that
-     * contain information about loaded traces.
+     * This method is invoked after removing file containing tracing results
+     * from list.
      */
-    public void clearTraceLists();
+    public void removeFile();
 
     /**
      * This method is invoked when list of trace patterns changes.

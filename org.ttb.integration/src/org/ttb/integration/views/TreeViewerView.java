@@ -92,7 +92,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         container.setLayout(new GridLayout());
 
         // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
-        treeViewer = new TreeViewer(container);
+        treeViewer = new TreeViewer(container, SWT.SINGLE);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
@@ -332,7 +332,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
-    public void clearTraceLists() {
+    public void removeFile() {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 updateButtonsPanel();
