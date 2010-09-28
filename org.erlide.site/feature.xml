@@ -31,4 +31,9 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide.headless"
          version="0.0.0"/>
 
+   <includes
+         id="org.erlide.tracing"
+         version="0.0.0"
+         optional="true"/>
+
 </feature>
