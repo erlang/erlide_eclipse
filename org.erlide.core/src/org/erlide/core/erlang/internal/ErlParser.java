@@ -477,7 +477,7 @@ public final class ErlParser {
 			final int lastLine, final int ofs, final int len) {
 		e.setSourceRangeOffset(ofs);
 		e.setSourceRangeLength(len - 1);
-		// TODO: why is the token 1 char too long?
+		// XXX: why is the token 1 char too long?
 		e.setLineStart(line);
 		e.setLineEnd(lastLine);
 	}

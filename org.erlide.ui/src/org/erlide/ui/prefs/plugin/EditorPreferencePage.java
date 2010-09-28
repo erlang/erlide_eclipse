@@ -546,7 +546,6 @@ public class EditorPreferencePage extends PreferencePage implements
 	@Override
 	public boolean performOk() {
 		fOverlayStore.propagate();
-		ErlideUIPlugin.getDefault().savePluginPreferences();
 		IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
 		prefsNode.put("erlangReconcilerCount", fOverlayStore
 				.getString("erlangReconcilerCount"));

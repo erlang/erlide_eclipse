@@ -580,7 +580,6 @@ public class Backend extends OtpNodeStatus {
 	}
 
 	public void input(final String string) throws IOException {
-		// XXX
 		System.out.println("INPUT???");
 	}
 

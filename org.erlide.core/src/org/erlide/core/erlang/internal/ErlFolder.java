@@ -128,7 +128,6 @@ public class ErlFolder extends Openable implements IErlFolder {
 	}
 
 	public Collection<IResource> getNonErlangResources() throws ErlModelException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -136,6 +135,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return Kind.FOLDER;
 	}
 
+	@Override
 	public IResource getResource() {
 		return getCorrespondingResource();
 	}

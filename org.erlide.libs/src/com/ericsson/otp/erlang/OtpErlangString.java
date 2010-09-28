@@ -139,7 +139,8 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
 	return false;
     }
 
-    protected int doHashCode() {
+    @Override
+	protected int doHashCode() {
 	return str.hashCode();
     }
 

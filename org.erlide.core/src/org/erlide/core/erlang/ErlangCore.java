@@ -104,7 +104,6 @@ public final class ErlangCore {
 	 */
 	public static void initializeRuntimesList() {
 		if (getRuntimeInfoManager().getDefaultRuntime() != null) {
-			// TODO should we always run his check?
 			return;
 		}
 		final String[] locations = {

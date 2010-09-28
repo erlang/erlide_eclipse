@@ -44,7 +44,6 @@ public interface ICodeAssist {
 	 *                if <code>requestor</code> is <code>null</code>
 	 */
 
-	// TODO fix this one
 	String[] codeComplete(int offset) throws ErlModelException;
 
 	/**

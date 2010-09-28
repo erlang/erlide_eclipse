@@ -182,7 +182,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 			@Override
 			public IStatus runInUIThread(final IProgressMonitor monitor) {
 				if (viewer != null && !viewer.getControl().isDisposed()) {
-					ErlLogger.debug(title);
 					viewer.refresh(file);
 				}
 				return Status.OK_STATUS;

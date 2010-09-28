@@ -305,32 +305,6 @@ public class ErlProject extends Openable implements IErlProject {
 		return ErlideUtil.hasErlangNature(fProject);
 	}
 
-	// /**
-	// * @see IErlProject
-	// */
-	// public IErlElement findElement(final IPath path) throws ErlModelException
-	// {
-	//
-	// if (path == null || path.isAbsolute()) {
-	// throw new ErlModelException(new ErlModelStatus(
-	// IErlModelStatusConstants.INVALID_PATH, path));
-	// }
-	// /*
-	// * TODO: realizate findElement(IPath path) final String extension =
-	// * path.getFileExtension(); if
-	// * (extension.equalsIgnoreCase(EXTENSION_ERL) ||
-	// * extension.equalsIgnoreCase(EXTENSION_BEAM)) { final IPath packagePath =
-	// * path.removeLastSegments(1); final String packageName =
-	// * packagePath.toString().replace( IPath.SEPARATOR, '.'); String
-	// * typeName = path.lastSegment(); typeName = typeName.substring(0,
-	// * typeName.length() - extension.length() - 1); String qualifiedName =
-	// * null; if (packageName.length() > 0) { qualifiedName = packageName +
-	// * "." + typeName; //$NON-NLS-1$ } else { qualifiedName = typeName; } }
-	// * else { // unsupported extension return null; }
-	// */
-	// return null;
-	// }
-
 	/**
 	 * Remove all markers denoting classpath problems
 	 */
