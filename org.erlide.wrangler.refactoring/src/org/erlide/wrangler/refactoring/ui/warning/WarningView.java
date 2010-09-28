@@ -85,8 +85,8 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
 		@Override
 		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJS_WARN_TSK);
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
 		}
 	}
 

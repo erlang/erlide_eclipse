@@ -1,0 +1,35 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Tree viewer View</title>
+</head>
+<body>
+<h2>Tree viewer View</h2>
+Using this view you can browse trace results in a form of tree. Each time there will not be more
+traces displayed than
+<a href="preferences.html#maxTraces">limit</a>
+set in preferences window.
+<br />
+There are 3 buttons for setting which traces will be displayed:
+<ul>
+	<li><i>Show previous trace set</i> - shows previous <i>maxTraces</i> traces
+	<br /><code>startIndex = currentIndex - maxTraces, endIndex = currentIndex - 1</code></li>
+	<li><i>Show next trace set</i> - shows next <i>maxTraces</i> traces<br />
+	<code>startIndex = currentIndex + maxTraces, endIndex = currentIndex + 2 * maxTraces - 1</code></li>
+	<li><i>Show selected trace set</i> - shows <i>maxTraces</i> traces starting from trace with
+	index specified in textbox next to this button<br />
+	<code>startIndex = selectedIndex, endIndex = selectedIndex + maxTraces - 1</code></li>
+</ul>
+Indexes of displayed traces will be from following set: <code>[max(1, startIndex), min(endIndex, amountOfTraces)]</code>.
+<p>Each event type is represented by different icon. Tree nodes can be unfolded to get more details
+about particular event.</p>
+<center><img alt="" src="../../images/treeviewer.png"><br />
+<h6>Tree viewer</h6>
+</center>
+When you double click on node that represents module file containing its definition will be opened in editor. The
+same is with node representing function that was called - file containing its module will be opened
+and cursor will be set at the begining of function's definition.
+
+</body>
+</html>
