@@ -27,34 +27,34 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.ttb.integration.erlang" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.ttb.integration.ttbe" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.tracing.erlang" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.tracing.ttbe" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.core" version="0.8.4" match="greaterOrEqual"/>
       <import plugin="org.erlide.jinterface" version="0.8.4" match="greaterOrEqual"/>
       <import plugin="org.erlide.ui" version="0.8.4" match="greaterOrEqual"/>
    </requires>
 
    <plugin
-         id="org.ttb.integration"
+         id="org.erlide.tracing.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.ttb.integration.erlang"
+         id="org.erlide.tracing.erlang"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.ttb.integration.help"
+         id="org.erlide.tracing.help"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.ttb.integration.ttbe"
+         id="org.erlide.tracing.ttbe"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
