@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlang tracing for Erlide (help pages)
+Bundle-SymbolicName: org.erlide.tracing.help;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Erlang Solutions
