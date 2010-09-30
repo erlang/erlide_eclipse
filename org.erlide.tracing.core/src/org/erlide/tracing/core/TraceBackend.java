@@ -26,7 +26,6 @@ import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
-import org.erlide.tracing.core.mvc.model.ITraceNodeObserver;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 import org.erlide.tracing.core.mvc.model.TracedNode;
@@ -316,9 +315,9 @@ public class TraceBackend {
     }
 
     /**
-     * Loads traces from given file ({@link #setLoadPath(String)}). Index of
-     * last trace which will be loaded is
-     * <code>max(number_of_traces, endIndex)</code>.
+     * Loads traces from active result set (
+     * {@link #setActiveResultSet(TracingResultsNode)}). Index of last trace
+     * which will be loaded is <code>max(number_of_traces, endIndex)</code>.
      * 
      * @param startIndex
      *            number of first trace
