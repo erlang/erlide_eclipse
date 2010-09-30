@@ -32,7 +32,7 @@ public enum ProcessFlag {
      * ordinal it will return <code>null</code>.
      * 
      * @param index
-     * @return
+     * @return enum value
      */
     public static ProcessFlag getByIndex(int index) {
         for (ProcessFlag column : ProcessFlag.values()) {

@@ -25,7 +25,7 @@ public enum ProcessColumn {
      * ordinal it will return <code>null</code>.
      * 
      * @param index
-     * @return
+     * @return enum value
      */
     public static ProcessColumn getByIndex(int index) {
         for (ProcessColumn column : ProcessColumn.values()) {
