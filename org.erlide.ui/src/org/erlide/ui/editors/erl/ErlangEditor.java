@@ -1970,10 +1970,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return;
         }
 
-        long time = System.currentTimeMillis();
-        long crt;
-        ErlLogger.debug("###605: start");
-
         boolean hasChanged = false;
         final int offset = selection.getOffset();
         if (document instanceof IDocumentExtension4) {
@@ -1993,51 +1989,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             fMarkOccurrenceModificationStamp = currentModificationStamp;
         }
 
-        crt = System.currentTimeMillis();
-        ErlLogger.debug("###605: 1: "+(crt-time));
-        time=crt;
-
-        final String scannerModuleName = ErlangToolkit
-                .createScannerModuleName(module);
-        final ErlideBackend ideBackend = ErlangCore.getBackendManager()
-                .getIdeBackend();
-        List<ErlangRef> refs = null;
-        try {
-            crt = System.currentTimeMillis();
-            ErlLogger.debug("###605: 2: "+(crt-time));
-            time=crt;
-
-            OpenResult res = ErlideOpen.open(ideBackend, scannerModuleName,
-                    offset, ErlModelUtils.getImportsAsList(module), "",
-                    ErlangCore.getModel().getPathVars());
-            crt = System.currentTimeMillis();
-            ErlLogger.debug("###605: 3: "+(crt-time));
-            time=crt;
-            final ErlangSearchPattern pattern = SearchUtil
-                    .getSearchPatternFromOpenResultAndLimitTo(module, offset,
-                            res, ErlangSearchPattern.ALL_OCCURRENCES, false);
-            if (pattern != null) {
-                final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
-                        .findRefs(ideBackend, pattern, module, getStateDir());
-                refs = getErlangRefs(findRefs);
-            }
-        } catch (final BackendException e) {
-            e.printStackTrace();
+        if (fOccurrencesFinderJob != null) {
+            fOccurrencesFinderJob.cancel();
         }
-        crt = System.currentTimeMillis();
-        ErlLogger.debug("###605: 4: "+(crt-time));
-        time=crt;
-        if (refs == null) {
-            if (!fStickyOccurrenceAnnotations) {
-                removeOccurrenceAnnotations();
-            } else if (hasChanged) {
-                removeOccurrenceAnnotations();
-            }
-            return;
-        }
-
-        fOccurrencesFinderJob = new OccurrencesFinderJob(document, refs,
-                selection);
+        fOccurrencesFinderJob = new OccurrencesFinderJob(document, module,
+                selection, hasChanged);
         fOccurrencesFinderJob.setPriority(Job.DECORATE);
         fOccurrencesFinderJob.setSystem(true);
         fOccurrencesFinderJob.schedule();
@@ -2159,22 +2115,67 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     class OccurrencesFinderJob extends Job {
 
         private final IDocument fDocument;
-        private final ISelection fSelection;
+        private final ITextSelection fSelection;
         private final ISelectionValidator fPostSelectionValidator;
         private boolean fCanceled = false;
-        private final List<ErlangRef> fRefs;
+        private List<ErlangRef> fRefs;
+        private boolean fHasChanged;
+        private IErlModule module;
 
         public OccurrencesFinderJob(final IDocument document,
-                final List<ErlangRef> refs, final ISelection selection) {
+                IErlModule module, final ITextSelection selection,
+                boolean hasChanged) {
             super("OccurrencesFinderJob");
             fDocument = document;
             fSelection = selection;
-            fRefs = refs;
 
             if (getSelectionProvider() instanceof ISelectionValidator) {
                 fPostSelectionValidator = (ISelectionValidator) getSelectionProvider();
             } else {
                 fPostSelectionValidator = null;
+            }
+            this.module = module;
+            fHasChanged = hasChanged;
+        }
+
+        private void findRefs(IErlModule module,
+                final ITextSelection selection, boolean hasChanged) {
+            final String scannerModuleName = ErlangToolkit
+                    .createScannerModuleName(module);
+            final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+                    .getIdeBackend();
+            fRefs = null;
+
+            if (fCanceled) {
+                return;
+            }
+            try {
+                final int offset = selection.getOffset();
+                OpenResult res = ErlideOpen.open(ideBackend, scannerModuleName,
+                        offset, ErlModelUtils.getImportsAsList(module), "",
+                        ErlangCore.getModel().getPathVars());
+                final ErlangSearchPattern pattern = SearchUtil
+                        .getSearchPatternFromOpenResultAndLimitTo(module,
+                                offset, res,
+                                ErlangSearchPattern.ALL_OCCURRENCES, false);
+                if (fCanceled) {
+                    return;
+                }
+                if (pattern != null) {
+                    final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
+                            .findRefs(ideBackend, pattern, module,
+                                    getStateDir());
+                    fRefs = getErlangRefs(findRefs);
+                }
+            } catch (final BackendException e) {
+                ErlLogger.debug(e);
+            }
+            if (fRefs == null) {
+                if (!fStickyOccurrenceAnnotations) {
+                    removeOccurrenceAnnotations();
+                } else if (hasChanged) {
+                    removeOccurrenceAnnotations();
+                }
             }
         }
 
@@ -2197,6 +2198,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          */
         @Override
         public IStatus run(final IProgressMonitor progressMonitor) {
+            findRefs(this.module, fSelection, fHasChanged);
+            if (fRefs == null) {
+                return Status.CANCEL_STATUS;
+            }
+
             if (isCanceled(progressMonitor)) {
                 return Status.CANCEL_STATUS;
             }
