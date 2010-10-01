@@ -44,7 +44,7 @@ public class DialyzerUtils {
 
     private static BuilderHelper helper;
 
-    public static void setHelper(BuilderHelper h) {
+    public static void setHelper(final BuilderHelper h) {
         helper = h;
     }
 
@@ -159,8 +159,8 @@ public class DialyzerUtils {
         if (names.size() == 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder(100);
-        for (String name : names) {
+        final StringBuilder sb = new StringBuilder(100);
+        for (final String name : names) {
             if (sb.length() > 100) {
                 sb.append("..., ");
                 break;
@@ -177,20 +177,21 @@ public class DialyzerUtils {
             final Collection<String> names,
             final Collection<IPath> includeDirs, final boolean fromSource)
             throws CoreException {
-        if (fromSource) {
-            for (final IErlModule m : modules.get(ep)) {
-                if (ErlideUtil.hasErlExtension(m.getName())) {
-                    IResource resource = m.getResource();
+        final IFolder ebin = project.getFolder(ep.getOutputLocation());
+        for (final IErlModule m : modules.get(ep)) {
+            final String name = m.getName();
+            if (ErlideUtil.hasErlExtension(name)) {
+                if (fromSource) {
+                    final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());
-                }
-            }
-        } else {
-            final IFolder f = project.getFolder(ep.getOutputLocation());
-            final IResource[] members = f.members(false);
-            for (final IResource i : members) {
-                IPath p = i.getLocation();
-                if (p.toFile().exists()) {
-                    files.add(p.toPortableString());
+                } else {
+                    final String beamName = ErlideUtil.withoutExtension(name)
+                            + ".beam";
+                    final IResource beam = ebin.findMember(beamName);
+                    final IPath p = beam.getLocation();
+                    if (p.toFile().exists()) {
+                        files.add(p.toPortableString());
+                    }
                 }
             }
         }

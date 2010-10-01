@@ -203,6 +203,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlProject makeErlangProject(final IProject project) {
         final IErlProject ep = new ErlProject(project, this);
+        ErlLogger.debug("ep " + ep);
         addChild(ep);
         return ep;
     }
@@ -212,8 +213,8 @@ public class ErlModel extends Openable implements IErlModel {
      */
     public Collection<IErlProject> getErlangProjects() throws ErlModelException {
         final Collection<IErlElement> list = getChildrenOfType(Kind.PROJECT);
-        Collection<IErlProject> result = Lists.newArrayList();
-        for (IErlElement e : list) {
+        final Collection<IErlProject> result = Lists.newArrayList();
+        for (final IErlElement e : list) {
             result.add((IErlProject) e);
         }
         return result;
@@ -626,7 +627,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     public String getExternal(final IErlProject project, final int externalFlag) {
         final IPreferencesService service = Platform.getPreferencesService();
-        final String key = (externalFlag == ErlangCore.EXTERNAL_INCLUDES) ? "default_external_includes"
+        final String key = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? "default_external_includes"
                 : "default_external_modules";
         String result = getExternal(project, externalFlag, service, key,
                 "org.erlide.ui");
@@ -647,7 +648,7 @@ public class ErlModel extends Openable implements IErlModel {
         final String global = s;
         if (project != null) {
             final OldErlangProjectProperties prefs = project.getProperties();
-            final String projprefs = (externalFlag == ErlangCore.EXTERNAL_INCLUDES) ? prefs
+            final String projprefs = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? prefs
                     .getExternalIncludesFile() : prefs.getExternalModulesFile();
             return PreferencesUtils
                     .packArray(new String[] { projprefs, global });
@@ -691,7 +692,7 @@ public class ErlModel extends Openable implements IErlModel {
         return (IErlModule) elem;
     }
 
-    public IErlModule findModuleExt(String name) {
+    public IErlModule findModuleExt(final String name) {
         for (final IErlElement e : getChildren()) {
             if (e instanceof IErlProject) {
                 final IErlProject p = (IErlProject) e;
