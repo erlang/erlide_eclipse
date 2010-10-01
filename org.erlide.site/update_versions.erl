@@ -12,6 +12,8 @@
 
 main([]) ->
 	usage();
+main(["info"]) ->
+	main(["HEAD", "info"]);
 main([Base]) ->
 	main([Base, "check"]);
 main([Base, Cmd]) ->
@@ -24,7 +26,7 @@ start(Base, Cmd) ->
 		io:format("Done!~n")
 	catch
 		_:E ->
-			io:format("ERROR: ~s~n   ~p~n", [E, erlang:get_stacktrace()]),
+			io:format("ERROR: ~p~n   ~p~n", [E, erlang:get_stacktrace()]),
 			usage()
 	end.
 
@@ -34,12 +36,19 @@ usage() ->
 	 "    base = branch or tag for the reference build\n"
 	 "    cmd = check    : check which plugins need version updates\n"
 	 "          modify   : modify the plugins versions where needed, do not commit\n"
-	 "          commit   : as above and commit changes\n", [escript:script_name()]).
+	 "          commit   : as above and commit changes\n"
+	 "          info     : print info about current projects and features/plugins\n", 
+	 [escript:script_name()]).
 
 -record(version, {major, minor, micro, q}).
 -record(plugin, {name, version=#version{}, old_version=#version{}, changed=nothing, code_changed=false}).
 -record(feature, {name, version=#version{}, old_version=#version{}, features=[], plugins=[], changed=nothing, children_changed=nothing}).
 
+info(_Base, {Features, _Plugins} ) ->
+	S = summary(Features),
+	io:format("~p~n", [S]),
+	ok.
+	
 check(_Base, {Features, Plugins} ) ->
 	%io:format("FEATURES ~p~nPLUGINS ~p~n", [Features, Plugins]),
 
@@ -318,4 +327,8 @@ update_CHANGES(New, Crt) ->
 	io:format(F, "~s~n", [Lines1]),
 	file:close(F),
 	ok.
-	
+
+
+summary(Features) ->
+	Fs = [{N,F++P} || #feature{name=N,plugins=P,features=F}<-Features],
+	Fs.
