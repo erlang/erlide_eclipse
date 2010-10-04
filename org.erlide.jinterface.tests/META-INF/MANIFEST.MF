@@ -12,3 +12,4 @@ Export-Package: com.ericsson.otp.erlang;x-friends:="org.erlide.testing",
  org.erlide.jinterface;x-friends:="org.erlide.testing",
  org.erlide.jinterface.java;x-friends:="org.erlide.testing",
  org.erlide.runtime.backend;x-friends:="org.erlide.testing"
+Eclipse-ExtensibleAPI: true 

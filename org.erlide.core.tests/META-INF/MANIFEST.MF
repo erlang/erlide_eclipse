@@ -12,3 +12,4 @@ Export-Package: org.erlide.core;x-friends:="org.erlide.testing",
  org.erlide.testing.erlang;x-friends:="org.erlide.testing"
 Require-Bundle: org.junit4,
  org.erlide.testing.libs;bundle-version="0.8.8"
+Eclipse-ExtensibleAPI: true 

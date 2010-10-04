@@ -21,7 +21,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.debug.ui.tracing;x-internal:=true,
  org.erlide.debug.ui.utils;x-internal:=true,
  org.erlide.debug.ui.views;x-internal:=true,
- org.erlide.ui;x-friends:="org.erlide.gunit";
+ org.erlide.ui;x-friends:="org.erlide.tracing.core";
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,
    org.eclipse.ui.navigator,

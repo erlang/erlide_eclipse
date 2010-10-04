@@ -1,0 +1,88 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Functions tab</title>
+</head>
+<body>
+<h2>Functions tab</h2>
+In this tab you can choose which functions you want to trace by creating trace patterns. To enable
+tracing function calls you have to set
+<i><a href="processes.html#callFlag">call</a></i>
+flag for process.
+<center><img alt="" src="../../images/functionsTab.png"><br />
+<h6>Functions panel</h6>
+</center>
+<h3>Adding and deleting patterns</h3>
+To add new pattern simply click
+<i>New pattern</i>
+button (to delete select pattern and click
+<i>Remove pattern</i>
+)
+<p>You can also add or delete trace pattern from <i>Outline view's</i> context menu. To do it
+select function and click <i>Tracing>Add to trace patterns</i> or <i>Tracing>Add to trace
+patterns (no arity)</i>). To delete click <i>Tracing>Add remove from trace patterns</i> or <i>Tracing>Add
+remove from trace patterns (no arity).</i></p>
+<center><img alt="" src="../../images/outlineView.png"><br />
+<h6>Outline view</h6>
+</center>
+
+<h3>Editing trace patterns</h3>
+You can set following parameters:
+<ul>
+	<li><i>Enabled</i> - if selected this pattern will be used, if not it will be omitted</li>
+	<li><i><a name="localParameter">Local</a></i> - if selected local calls to this function will
+	be traced too ("local calls" - inside other function)</li>
+	<li><i>Module name</i> - function's module</li>
+	<li><i>Function name</i> - function's name</li>
+	<li><i>Arity</i> - function's arity. If not set all calls will be traced disregarding function's arity</li>
+	<li><i>Match spec</i> - <a href="#matchSpec">match specification</a> or you can leave it empty
+	if you do not want to set match specification for this function</li>
+</ul>
+<h3><a name="matchSpec">Match specifications (match specs)</a></h3>
+Match specifications are small programs that express a condition to be matched over a set of
+arguments. They deal with the filtering and manipulation of trace events and if they match
+successfully, a trace event is generated and some predefined actions can be executed.
+<br />
+They are defined in a form of "literal funs" what means:
+<ul>
+	<li>they take only one argument representing list of given arguments</li>
+	<li>they return single atom</li>
+	<li>you can use same guard expressions as in other funs
+</ul>
+You can find more about match specs in Erlang documentation:
+<a href="http://www.erlang.org/doc/apps/erts/match_spec.html">http://www.erlang.org/doc/apps/erts/match_spec.html</a>
+.
+
+<h4>Match spec example</h4>
+Match spec that matches all function calls with argument which is an integer between 1 and 10:
+<pre>
+<code>
+		fun([X]) when is_integer(X), X > 1, X < 10 ->
+			true
+		end.
+</code>
+</pre>
+<h4>"x" shortcut</h4>
+The most popular use of match specs is specifying that you what trace exceptions and returns from
+functions. Instead of writing such match spec you can just type "x" (that is why after creating new
+pattern you see "x" in
+<i>Match spec</i>
+column).
+
+<h3>Saving and restoring configuration</h3>
+There are four buttons:
+<ul>
+	<li><i>Load pattern set...</i> - loads previously saved configuration</li>
+	<li><i>Delete current pattern set...</i> - deletes current configuration</li>
+	<li><i>Save current pattern set</i> - saves current configuration</li>
+	<li><i>Save current pattern set as...</i> - saves current configuration under new name</li>
+</ul>
+After loading or saving configuration it's name appears next to
+<i>Save current pattern set as...</i>
+button.
+<center><img alt="" src="../../images/functionsTab-savePattern.png"><br />
+<h6>Saving and restoring configuration</h6>
+</center>
+</body>
+</html>

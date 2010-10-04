@@ -1,0 +1,92 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Technical details</title>
+</head>
+<body>
+<h2>Technical details</h2>
+<h3>Ttb</h3>
+This feature uses an improved version of ttb (Trace Tool Builder,
+<a href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a>
+) for tracing purposes. "Improved" means that this version is currently not included in OTP and
+comes as part of this plugin. This version is called here "ttbe" ("e" stands for "extended").
+<br />
+Ttb is built on top of
+<a href="http://www.erlang.org/doc/man/dbg.html">dbg</a>
+and provides some improvements which makes tracing easier. This feature provides graphical user
+interface to ttb which makes using it more user friendly.
+
+<h3>Tracing</h3>
+Ttb is started on separate erlang node called "tracing" (
+<code>-sname tracing</code>
+, if necessary this name can be changed from
+<a href="reference/preferences.html#nodeName">preferences window</a>
+). It allows tracing tool to be independent from nodes you want to trace. "Tracing" node is
+automatically started by erlide when any tracing action is performed for the first time (tracing
+another node or loading trace data from file).
+<br />
+Traced nodes are treated as "diskless nodes", i.e. all data from them is directly sent to the
+"tracing" node. After finishing tracing all data is writen to the directory named
+<i>ttb_upload_erlide_tracing-Timestamp</i>
+(
+<i>Timestamp</i>
+is in a form of yyyymmdd-hhmmss) into file called
+<i>nodeName@hostName</i>
+(there will be one file with data per node).
+
+<p>When tracing is finished application reads all data from this directory using special data
+handler provided to <code>ttbe:format/2</code> function which, instead of formatting data, sends it
+directly to trace plugin which interprets it. <br />
+Same action is performed when reading trace results from file.</p>
+
+<h3>Connection</h3>
+It is possible to connect to multiple nodes in the same time (also nodes started outside erlide) to
+trace them. However, before starting tracing you should set properly value of
+<i>Net Ticktime</i>
+and cookies.
+
+<h4><a name="netTicktime">Net Ticktime</a></h4>
+It is very important that all nodes (traced nodes and tracing one) have set the same value of
+<a href="http://www.erlang.org/doc/man/net_kernel.html#set_net_ticktime-1">Net Ticktime</a>
+because this value is used for detecting nodes that are not responding.
+<br />
+Once every
+<i>TickTime</i>
+/4 seconds all connected nodes are "ticked". Time in which not responding node is detected is 0.75 *
+<i>TickTime</i>
+&lt T &lt 1.25 *
+<i>TickTime</i>
+.
+<br />
+<i>Net Ticktime</i>
+is set using
+<code>net_kernel:set_net_ticktime/1</code>
+function. It's value can be specified in <a href="reference/preferences.html#netTicktime">preferences window</a>.
+
+
+<h4>Cookies</h4>
+Every two Erlang nodes communicating with each other should have set the same
+<i>magic cookie</i>
+. When you start Erlang node from console you can specify cookie's value using
+<code>-setcookie Cookie</code>
+parameter or later calling
+<code>erlang:set_cookie(node(), Cookie)</code>
+. For more details see
+<a href="http://www.erlang.org/doc/reference_manual/distributed.html">this</a>
+.
+<br />
+Each cookie specified in
+<a href="reference/nodes.html">nodes tab</a>
+is set using
+<code>erlang:set_cookie(Node, Cookie)</code>
+call.
+<h3>Links</h3>
+<ul>
+	<li><a href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a></li>
+	<li><a href="http://www.erlang.org/doc/apps/observer/ttb_ug.html">http://www.erlang.org/doc/apps/observer/ttb_ug.html</a></li>
+	<li><a href="http://www.erlang.org/doc/man/dbg.html">http://www.erlang.org/doc/man/dbg.html</a></li>
+</ul>
+
+</body>
+</html>

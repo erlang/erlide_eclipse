@@ -255,6 +255,9 @@
 		<command id="org.erlide.wrangler.refactoring.unfoldfunctionapplication"
 			name="%unfoldFunctionName" categoryId="org.erlide.wrangler.refactoring">
 		</command>
+		<command id="org.erlide.wrangler.refactoring.introducenewvariable"
+			name="%introduceNewVariable" categoryId="org.erlide.wrangler.refactoring">
+		</command>
 		<command id="org.erlide.wrangler.refactoring.tuplefunctonparameters"
 			name="%tupleFunParamsName" categoryId="org.erlide.wrangler.refactoring">
 		</command>
@@ -331,6 +334,9 @@
 				mnemonic="R">
 				<command commandId="org.erlide.wrangler.refactoring.renamevariable"
 					id="org.erlide.wrangler.refactoring.renamevariable" style="push">
+				</command>
+				<command commandId="org.erlide.wrangler.refactoring.introducenewvariable"
+					id="org.erlide.wrangler.refactoring.introducenewvariable" style="push">
 				</command>
 				<command commandId="org.erlide.wrangler.refactoring.renamefunction"
 					id="org.erlide.wrangler.refactoring.renamefunction" style="push">
@@ -510,6 +516,9 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler commandId="org.erlide.wrangler.refactoring.unfoldfunctionapplication"
+			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
+		</handler>
+		<handler commandId="org.erlide.wrangler.refactoring.introducenewvariable"
 			class="org.erlide.wrangler.refactoring.ui.RefactoringHandler">
 		</handler>
 		<handler commandId="org.erlide.wrangler.refactoring.tuplefunctonparameters"
