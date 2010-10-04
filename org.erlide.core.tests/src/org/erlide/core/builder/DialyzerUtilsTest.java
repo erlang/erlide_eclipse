@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,8 +19,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +34,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -63,16 +70,116 @@ public class DialyzerUtilsTest {
 		dialyzePrepareFromSelection(true);
 	}
 
+	@Test
+	public void dialyzeMarkerOnfile() throws Exception {
+		IErlProject erlProject = null;
+		try {
+			// given
+			// an erlang module in an erlang project
+			final String projectName = "testproject";
+			erlProject = createErlProject(getTmpPath(projectName), projectName);
+			final String moduleName = "test.erl";
+			final IErlModule erlModule = createErlModule(erlProject,
+					moduleName,
+					"-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
+			// when
+			// putting a dialyzer warning on it
+			final int lineNumber = 3;
+			final String message = "test message";
+			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+					erlModule.getResource().getLocation().toPortableString(),
+					lineNumber, message);
+			// then
+			// there should be a marker with proper file name and the proper
+			// line number
+			final IMarker[] markers = erlProject.getProject().findMarkers(
+					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					IResource.DEPTH_INFINITE);
+			assertEquals(1, markers.length);
+			final IMarker marker = markers[0];
+			assertEquals(moduleName, marker.getResource().getName());
+			assertEquals(lineNumber, marker.getAttribute(IMarker.LINE_NUMBER));
+			assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
+		} finally {
+			if (erlProject != null) {
+				deleteErlProject(erlProject);
+			}
+		}
+	}
+
+	@Test
+	public void dialyzeWithExternalInclude() throws Exception {
+		// http://www.assembla.com/spaces/erlide/tickets/608-dialyzer---navigate-to-external-includes-from-markers
+		File externalFile = null;
+		IErlProject erlProject = null;
+		try {
+			// given
+			// an erlang project and an external file not in any project
+			final String projectName = "testproject";
+			erlProject = createErlProject(getTmpPath(projectName), projectName);
+			final String externalFileName = "external.hrl";
+			externalFile = createTmpFile(externalFileName,
+					"f([_ | _]=L ->\n    atom_to_list(L).\n");
+			// when
+			// putting dialyzer warning markers on the external file
+			final String message = "test message";
+			final int lineNumber = 2;
+			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+					externalFile.getAbsolutePath(), lineNumber, message);
+			// then
+			// the marker should have the proper file name and the include file
+			// should appear in External Files
+			final IProject externalFilesProject = ResourceUtil
+					.getExternalFilesProject();
+			final IFile file = externalFilesProject.getFile(new Path(
+					externalFileName));
+			assertNotNull(file);
+			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
+					.getRoot();
+			final IMarker[] markers = root.findMarkers(
+					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					IResource.DEPTH_INFINITE);
+			assertEquals(1, markers.length);
+			final IMarker marker = markers[0];
+			assertEquals(externalFileName, marker.getResource().getName());
+			assertEquals(lineNumber, marker.getAttribute(IMarker.LINE_NUMBER));
+			assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
+		} finally {
+			if (externalFile != null && externalFile.exists()) {
+				externalFile.delete();
+			}
+			if (erlProject != null) {
+				deleteErlProject(erlProject);
+			}
+		}
+	}
+
+	private IPath getTmpPath(final String fileName) {
+		final String tmpdir = System.getProperty("java.io.tmpdir");
+		return new Path(tmpdir).append(fileName);
+	}
+
+	private File createTmpFile(final String fileName, final String contentString)
+			throws IOException, FileNotFoundException {
+		final String pathString = getTmpPath(fileName).toOSString();
+		final File f = new File(pathString);
+		f.createNewFile();
+		final FileOutputStream fileOutputStream = new FileOutputStream(
+				pathString);
+		fileOutputStream.write(contentString.getBytes());
+		fileOutputStream.close();
+		return f;
+	}
+
 	public void dialyzePrepareFromSelection(final boolean sources)
 			throws Exception {
+		// http://www.assembla.com/spaces/erlide/tickets/607-dialyzer---only-dialyze-on-selection
 		IErlProject erlProject = null;
 		try {
 			// given
 			// a project with two erlang modules, one of them selected
 			final String projectName = "testproject";
-			final String tmpdir = System.getProperty("java.io.tmpdir");
-			erlProject = createErlProject(new Path(tmpdir).append(projectName),
-					projectName);
+			erlProject = createErlProject(getTmpPath(projectName), projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = createErlModule(
 					erlProject,

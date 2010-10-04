@@ -24,6 +24,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
@@ -74,28 +75,18 @@ public class DialyzerUtils {
 
     }
 
-    public static void addDialyzeWarningMarkersFromResultList(
+    public static void addDialyzerWarningMarkersFromResultList(
             final IErlProject project, final Backend backend,
             final OtpErlangList result) {
         if (result == null) {
             return;
         }
         final IProject p = project.getProject();
-        final IPath projectPath = p.getLocation();
-        final int projectPathLength = projectPath.toPortableString().length();
         for (final OtpErlangObject i : result) {
             final OtpErlangTuple t = (OtpErlangTuple) i;
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
             final String filename = Util.stringValue(fileLine.elementAt(0));
             final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-            final String relFilename = filename.startsWith(projectPath
-                    .toString()) ? filename.substring(projectPathLength)
-                    : filename;
-            final IPath relPath = Path.fromPortableString(relFilename);
-            IResource file = p.findMember(relPath);
-            if (file == null) {
-                file = p;
-            }
             int line = 1;
             try {
                 line = lineL.intValue();
@@ -107,11 +98,32 @@ public class DialyzerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            addDialyzeWarningMarker(file, s, line, IMarker.SEVERITY_WARNING);
+            addDialyzerWarningMarker(p, filename, line, s);
         }
     }
 
-    public static void addDialyzeWarningMarker(final IResource file,
+    public static void addDialyzerWarningMarker(final IProject p,
+            final String filename, final int line, final String message) {
+        final IPath projectPath = p.getLocation();
+        final String projectPathString = projectPath.toPortableString();
+        IResource file;
+        if (filename.startsWith(projectPathString)) {
+            final String relFilename = filename.substring(projectPathString
+                    .length());
+            final IPath relPath = Path.fromPortableString(relFilename);
+            file = p.findMember(relPath);
+        } else {
+            try {
+                file = ResourceUtil.openExternal(filename);
+            } catch (final CoreException e) {
+                ErlLogger.error(e);
+                file = p;
+            }
+        }
+        addDialyzerWarningMarker(file, message, line, IMarker.SEVERITY_WARNING);
+    }
+
+    public static void addDialyzerWarningMarker(final IResource file,
             final String message, int lineNumber, final int severity) {
         try {
             final IMarker marker = file.createMarker(DIALYZE_WARNING_MARKER);
@@ -146,7 +158,7 @@ public class DialyzerUtils {
                 final OtpErlangObject result = ErlideDialyze.dialyze(backend,
                         files, pltPath, includeDirs, fromSource);
                 checkDialyzeError(result);
-                addDialyzeWarningMarkersFromResultList(p, backend,
+                addDialyzerWarningMarkersFromResultList(p, backend,
                         (OtpErlangList) result);
             } catch (final Exception e) {
                 throw new InvocationTargetException(e);
