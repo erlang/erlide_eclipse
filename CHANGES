@@ -1,13 +1,15 @@
 List of user visible changes between 0.8.8 and 0.9.0 (20100924)
 
+* new feature: tracing (ttb) integration (thanks to Piotr Dorobisz)
 * added unit tests for our code
+3f7525a Updated Wrangler to the latest version (r1573) 
 0fce314 602-parser-can-t-handle-record-definitions-in-defines
 cad4802 added jinterface from R14B
-3f7525a Updated Wrangler to the latest version (r1573) 
 588a82b 562-building-slow
 16d1808 added ErlModelUtils.openMFA to open code in an editor
 ddb35c5 fixed dialyzer exceptions
 bfc3d1a 604-npe-blocks-the-ui
+cfce67a erlide_proclist:initial_call could throw badmatch
 
 List of user visible changes between 0.8.7 and 0.8.8 (20100903)
 
