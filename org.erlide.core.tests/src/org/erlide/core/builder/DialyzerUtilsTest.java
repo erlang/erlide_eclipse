@@ -70,7 +70,8 @@ public class DialyzerUtilsTest {
 			// given
 			// a project with two erlang modules, one of them selected
 			final String projectName = "testproject";
-			erlProject = createErlProject(new Path("/tmp/" + projectName),
+			final String tmpdir = System.getProperty("java.io.tmpdir");
+			erlProject = createErlProject(new Path(tmpdir).append(projectName),
 					projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = createErlModule(
