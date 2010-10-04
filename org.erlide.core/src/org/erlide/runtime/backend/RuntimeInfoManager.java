@@ -185,7 +185,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 			}
 		}
 		final RuntimeInfo rt = getRuntime(root.get("erlide", null));
-		setErlideRuntime(rt == null ? getDefaultRuntime() : rt);
+		setErlideRuntime((rt == null) ? getDefaultRuntime() : rt);
 	}
 
 	protected IEclipsePreferences getRootPreferenceNode() {

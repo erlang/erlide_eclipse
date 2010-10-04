@@ -289,7 +289,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 		final List<IProject> projects = getSelectedProjects();
 		final StringBuilder projectNames = new StringBuilder();
 		for (final IProject p : projects) {
-			projectNames.append(p.getName()).append(";");
+			projectNames.append(p.getName()).append(';');
 		}
 		if (projectNames.length() > 0) {
 			projectNames.setLength(projectNames.length() - 1);

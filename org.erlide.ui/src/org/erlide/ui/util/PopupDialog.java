@@ -41,7 +41,7 @@ public class PopupDialog {
 		// return;
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		final Display display = window == null ? workbench.getDisplay()
+		final Display display = (window == null) ? workbench.getDisplay()
 				: window.getShell().getDisplay();
 		// final Display display = PlatformUI.createDisplay();
 		display.syncExec(new Runnable() {

@@ -143,7 +143,7 @@ public class TableLayoutComposite extends Composite {
 					// int weight = firstTime ? cw.weight :
 					// tableColumns[i].getWidth();
 					final int weight = cw.weight;
-					int pixels = totalWeight == 0 ? 0 : weight * rest
+					int pixels = (totalWeight == 0) ? 0 : weight * rest
 							/ totalWeight;
 					if (pixels < cw.minimumWidth) {
 						pixels = cw.minimumWidth;

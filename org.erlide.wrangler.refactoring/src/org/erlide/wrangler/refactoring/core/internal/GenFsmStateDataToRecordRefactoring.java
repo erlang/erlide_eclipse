@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
@@ -25,7 +35,7 @@ public class GenFsmStateDataToRecordRefactoring extends
 	}
 
 	@Override
-	protected StateDataToRecordRpcMessage runFirst(IErlMemberSelection sel) {
+	protected StateDataToRecordRpcMessage runFirst(final IErlMemberSelection sel) {
 		IRefactoringRpcMessage parser = new StateDataToRecordRpcMessage();
 
 		return (StateDataToRecordRpcMessage) WranglerBackendManager
@@ -35,14 +45,13 @@ public class GenFsmStateDataToRecordRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(IErlSelection sel) {
+	public IRefactoringRpcMessage run(final IErlSelection sel) {
 
-		return (IRefactoringRpcMessage) WranglerBackendManager
-				.getRefactoringBackend().call("gen_fsm_to_record_1_eclipse",
-						"ssxxxxi", sel.getFilePath(), getRecordName(),
-						getFieldsName(), stateFuns,
-						new OtpErlangBoolean(fieldCount > 1),
-						sel.getSearchPath(), GlobalParameters.getTabWidth());
+		return WranglerBackendManager.getRefactoringBackend().call(
+				"gen_fsm_to_record_1_eclipse", "ssxxxxi", sel.getFilePath(),
+				getRecordName(), getFieldsName(), stateFuns,
+				new OtpErlangBoolean(fieldCount > 1), sel.getSearchPath(),
+				GlobalParameters.getTabWidth());
 	}
 
 }

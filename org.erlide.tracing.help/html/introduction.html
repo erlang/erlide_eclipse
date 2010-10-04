@@ -1,0 +1,54 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Introduction</title>
+</head>
+<body>
+<h3>What is tracing?</h3>
+<p><em>"In software engineering, tracing is a specialized use of logging to record
+information about a program's execution. This information is typically used by programmers for
+debugging purposes, and additionally, depending on the type and detail of information contained in a
+trace log, by experienced system administrators or technical support personnel to diagnose common
+problems with software."</em> <br>
+<a href="http://en.wikipedia.org/wiki/Tracing_%28software%29">http://en.wikipedia.org/wiki/Tracing_(software)</a></p>
+
+<h3>Feature description</h3>
+<p>This feature uses an improved version of ttb (Trace Tool Builder, <a
+	href="http://www.erlang.org/doc/man/ttb.html">http://www.erlang.org/doc/man/ttb.html</a>) for
+tracing purposes and provides grafical interface to it offering possibility of tracing Erlang
+programs directly from erlide.</p>
+<center><img alt="" src="../images/nodesTab.png"><br />
+<h6>Tracing control panel</h6>
+</center>
+
+<p>Tracing is a specific kind of event logging - it logs "low level" information. Because of
+that user quickly gets overwhelmed with logged data and finds it rather difficult to browse it. This
+plugin also profides an user friedly way of browsing trace results - they are displayed in a form of
+a tree where each event is represented by different type of icon. Tree nodes can be unfolded to get
+more details about particular event.</p>
+<center><img alt="" src="../images/traceBrowser.png"><br />
+<h6>Browsing results</h6>
+</center>
+<center><img alt="" src="../images/treeviewer.png"><br />
+<h6>Browsing traces</h6>
+</center>
+
+<h3>Features</h3>
+<ul>
+	<li>New eclipse perspective and views</li>
+	<li>Setting process flags</li>
+	<li>Tracing multiple nodes at the same time (also nodes started outside erlide)</li>
+	<li>Setting net nick time and cookie per node</li>
+	<li>Selecting processes which should be traced</li>
+	<li>Setting trace patterns for functions (support for match specifications)</li>
+	<li>New positions in outline's context menu for creating trace patterns from selected
+	function</li>
+	<li>Saving and restoring trace patterns configuration</li>
+	<li>Saving and restoring nodes configuration</li>
+	<li>Browsing trace results in tree</li>
+	<li>Loading trace results from disk</li>
+</ul>
+
+</body>
+</html>

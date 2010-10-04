@@ -34,7 +34,7 @@ public class ErlDirtyRegion {
 	}
 
 	public int getTextLength() {
-		return fText == null ? 0 : fText.length();
+		return (fText == null) ? 0 : fText.length();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class ErlDirtyRegion {
 	public void mergeWith(final ErlDirtyRegion dr) {
 		fOffset = Math.min(fOffset, dr.fOffset);
 		fLength = fLength + dr.fLength;
-		fText = dr.fText == null ? fText : fText == null ? dr.fText : fText
+		fText = (dr.fText == null) ? fText : (fText == null) ? dr.fText : fText
 				+ dr.fText;
 	}
 

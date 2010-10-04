@@ -54,7 +54,7 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 		// initialInsert = true;
 		fModule = ErlModelUtils.getModule(fEditor);
 		ErlLogger.debug("## initial reconcile "
-				+ (fModule != null ? fModule.getName() : ""));
+				+ ((fModule != null) ? fModule.getName() : ""));
 		if (fModule != null) {
 			fModule.initialReconcile();
 		}

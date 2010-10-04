@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.ui;
 
 import java.util.ArrayList;
@@ -13,6 +23,8 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
@@ -33,6 +45,8 @@ import org.erlide.wrangler.refactoring.core.internal.IntroduceMacroRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeForAllRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MergeLetRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.MoveFunctionRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.NormalizeRecordExpression;
+import org.erlide.wrangler.refactoring.core.internal.PartitionExportsRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameFunctionRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameModuleRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.RenameProcessRefactoring;
@@ -40,10 +54,13 @@ import org.erlide.wrangler.refactoring.core.internal.RenameVariableRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.TupleFunctionParametersRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.UnfoldFunctionApplicationRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.GeneraliseFunctionRefactoring.State;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
+import org.erlide.wrangler.refactoring.ui.validator.NormalDoulbeValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
+import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
@@ -58,12 +75,28 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
+/**
+ * Handles refactoring commands
+ * 
+ * @author Gyorgy Orosz
+ * @version %I%, %G%
+ */
 public class RefactoringHandler extends AbstractHandler {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		GlobalParameters.setSelection(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getSelection());
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		try {
+			GlobalParameters.setSelection(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getSelection());
+		} catch (WranglerException e1) {
+
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "Error", e1
+					.getMessage());
+			return null;
+		}
 
 		DefaultWranglerRefactoringWizard wizard = null;
 		WranglerRefactoring refactoring = null;
@@ -100,6 +133,14 @@ public class RefactoringHandler extends AbstractHandler {
 			// run rename module refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renamemodule")) {
+			boolean answer = MessageDialog
+					.openQuestion(PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getShell(), "Warning!",
+							"The requested operation cannot be undone. Would you like to continue?");
+
+			if (!answer)
+				return null;
+
 			pages.add(new CostumworkFlowInputPage("Rename module",
 					"Please type the new module name!", "New module name:",
 					"New module name must be a valid Erlang atom!",
@@ -265,7 +306,7 @@ public class RefactoringHandler extends AbstractHandler {
 				pages
 						.add(new SelectionInputPage(
 								"Merge ?FORALL expressions",
-								"Please select expressions which whould be merged!",
+								"Please select expressions which should be merged!",
 								"Select expressions which should be merged",
 								(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
@@ -290,12 +331,25 @@ public class RefactoringHandler extends AbstractHandler {
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
 				refactoring = new UnfoldFunctionApplicationRefactoring();
+
+			} else if (actionId
+					.equals("org.erlide.wrangler.refactoring.partitionexports")) {
+				refactoring = new PartitionExportsRefactoring();
+				SimpleInputPage page = new SimpleInputPage(
+						"Partition exports",
+						"Please input the the distance treshould between 0.1 and 1.0",
+						"Distance treshold",
+						"The value must be between 0.1 and 1.0",
+						new NormalDoulbeValidator());
+				page.setInput("0.8");
+				pages.add(page);
 			}
 
 			else
 				return null;
 		}
 
+		refactoring.doBeforeRefactoring();
 		// run the given refactoring's wizard
 		wizard = new DefaultWranglerRefactoringWizard(refactoring,
 				RefactoringWizard.DIALOG_BASED_USER_INTERFACE, pages);
@@ -306,13 +360,62 @@ public class RefactoringHandler extends AbstractHandler {
 
 		try {
 			int ret = op.run(shell, refactoring.getName());
-			if (RefactoringStatus.OK == ret)
-				WranglerUtils.notifyErlide(refactoring.getChangedFiles());
+
+			if (RefactoringStatus.OK == ret) {
+				refactoring.doAfterRefactoring();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		checkWarningMessages();
 		return null;
 
+	}
+
+	/**
+	 * Checks whether there is any warning messages, if yes displays a view,
+	 * containg all of them.
+	 */
+	protected void checkWarningMessages() {
+		try {
+			RpcResult res = WranglerBackendManager.getRefactoringBackend()
+					.getLoggedInfo();
+
+			if (res.isOk()) {
+				OtpErlangObject resobj = res.getValue();
+				if (!resobj.equals(new OtpErlangList())) {
+					OtpErlangList reslist = (OtpErlangList) resobj;
+					for (int i = 0; i < reslist.arity(); ++i) {
+						OtpErlangTuple restuple = (OtpErlangTuple) reslist
+								.elementAt(i);
+						OtpErlangString msg = (OtpErlangString) restuple
+								.elementAt(1);
+						String formattedString = formatWarningString(msg
+								.stringValue());
+						WarningViewManager.addWarningMessage(formattedString);
+					}
+				}
+			} else {
+				ErlLogger.error("Wrangler logging error:" + res);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private String formatWarningString(String stringValue) {
+		try {
+			String ret = stringValue.replaceAll("\\s=+\\s", "");
+			ret = ret.replaceAll("WARNING:\\s*", "");
+			ret = ret.replaceAll("((\\n)(\\n))", "\n");
+			ret = ret.replaceAll("\\s+$", "");
+			return ret;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return stringValue;
+		}
 	}
 
 	/**
@@ -324,7 +427,7 @@ public class RefactoringHandler extends AbstractHandler {
 	 * @throws OtpErlangRangeException
 	 */
 	protected WranglerRefactoring runGenFunRefactoring(
-			ArrayList<WranglerPage> pages, Shell activeShell)
+			final ArrayList<WranglerPage> pages, final Shell activeShell)
 			throws OtpErlangRangeException {
 		WranglerRefactoring refactoring = null;
 

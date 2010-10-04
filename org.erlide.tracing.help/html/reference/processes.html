@@ -1,0 +1,54 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Process tab</title>
+</head>
+<body>
+<h2>Processes tab</h2>
+In this tab you can choose which processes and what events you want to trace.
+<center><img alt="" src="../../images/processesTab.png"><br />
+<h6>Processes panel</h6>
+</center>
+<h3>Types of processes</h3>
+You can select one of the following:
+<ul>
+	<li><i>all (existing+new)</i> - all processes will be traced</li>
+	<li><i>new</i> - no currently existing processes are affected; only processes created after
+	starting tracing will be traced</li>
+	<li><i>existing</i> - only currently existing processes will be traced; new processes will not
+	be affected</li>
+	<li><i><a name="selectedProcesses">selected</a></i> - only processes selected from list will
+	be traced (see <a href="#individualFlags">Setting individual process flags</a>)</li>
+</ul>
+
+<h3>Process flags</h3>
+You can select one of the following:
+<ul>
+	<li><i><a name="callFlag">call</a></i> - tracing global function calls (and local if <a href="functions.html#localParameter"><i>local</i></a> is set in trace pattern) according to the active <a
+		href="functions.html">trace patterns</a></li>
+	<li><i>procs</i> - tracing process related events to the process (e.g. spawn, exist, link)</li>
+	<li><i>receive</i> - tracing received messages</li>
+	<li><i>send</i> - tracing sent messages</li>
+	<li><i>set on spawn</i> - all processes created by the traced process inherit the trace flags
+	of the traced process</li>
+	<li><i>set on first spawn</i> - same as <i>set on spawn</i>, but only for the first process
+	spawned by the traced process</li>
+	<li><i>set on link</i> - another process (P2) inherit the trace flags of the traced process
+	whenever the traced process links to P2</li>
+	<li><i>set on first link</i> - same as <i>set on link</i>, but only for the first process
+	spawned by the traced process</li>
+</ul>
+
+<h3><a name="individualFlags">Setting individual process flags</a></h3>
+If you do not want to set global process flags or you just want to trace only selected processes you
+can check
+<i><a href="#selectedProcesses">selected</a></i>
+as type of processes for tracing. A list of all processes running on selected <a href="nodes.html">nodes</a> will be
+displayed. On this list you can select which processes you want to trace and set flags for each
+processes.
+<center><img alt="" src="../../images/processesTab-selectedProcesses.png"><br />
+<h6>Setting individual process flags</h6>
+</center>
+</body>
+</html>

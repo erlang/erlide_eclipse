@@ -1,0 +1,61 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../css/eclipse.css" />
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Nodes tab</title>
+</head>
+<body>
+<h2>Nodes tab</h2>
+In this tab you can choose which nodes you want to trace.
+<center><img alt="" src="../../images/nodesTab.png"><br />
+<h6>Nodes panel</h6>
+</center>
+
+<h3>Adding and deleting patterns</h3>
+There are three buttons:
+<ul>
+	<li><i>New node</i> - adds new entry in table of nodes</li>
+	<li><i>Remove node</i> - removes selected node from the table</li>
+	<li><i>Add existing nodes</i> - adds all nodes started from erlide
+</ul>
+
+<h3>Editing nodes configuration</h3>
+You can set following parameters:
+<ul>
+	<li><i>Enabled</i> - if processes from this node should be traced</li>
+	<li><i>Name</i> - node's name (short name - set using <code>-sname</code> parameter)</li>
+	<li><i>Cookie</i> - magic cookie's value used when conecting to this node</li>
+</ul>
+Column
+<i>Type</i>
+can have one of following values:
+<ul>
+	<li><i>erlide</i> - this node was started from erlide</li>
+	<li><i>external</i> - this node was started outside erlide</li>
+</ul>
+Besides
+<i>name</i>
+and
+<i>cookie</i>
+values there is
+<a href="../technicalDetails.html#netTicktime">net ticktime</a>
+value which is set for all nodes from
+<a href="preferences.html#netTicktime">preferences window</a>
+.
+
+<h3>Saving and restoring configuration</h3>
+There are four buttons:
+<ul>
+	<li><i>Load nodes configuration...</i> - loads previously saved configuration</li>
+	<li><i>Delete current node configuration...</i> - deletes current configuration</li>
+	<li><i>Save current nodes configuration</i> - saves current configuration</li>
+	<li><i>Save current nodes configuration as...</i> - saves current configuration under new name</li>
+</ul>
+After loading or saving configuration it's name appears next to
+<i>Save current nodes configuration as...</i>
+button.
+<center><img alt="" src="../../images/nodesTab-saveConfiguration.png"><br />
+<h6>Saving and restoring configuration</h6>
+</center>
+</body>
+</html>

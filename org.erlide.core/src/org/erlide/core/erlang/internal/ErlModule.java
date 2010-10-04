@@ -82,7 +82,8 @@ public class ErlModule extends Openable implements IErlModule {
 			// is one
 			getScanner();
 		}
-		parsed = ErlParser.parse(this, initialParse, path, updateCaches);
+		parsed = ErlParser.parse(this, initialParse, path, updateCaches
+				&& useCaches());
 		final IErlModel model = getModel();
 		if (model != null) {
 			model.notifyChange(this);
@@ -98,6 +99,10 @@ public class ErlModule extends Openable implements IErlModule {
 		}
 		disposeScanner();
 		return parsed;
+	}
+
+	protected boolean useCaches() {
+		return true;
 	}
 
 	/**
@@ -151,7 +156,7 @@ public class ErlModule extends Openable implements IErlModule {
 							return true;
 						}
 					}
-				} catch (ErlModelException e1) {
+				} catch (final ErlModelException e1) {
 					ErlLogger.error(e1);
 				}
 				return false;
@@ -273,7 +278,7 @@ public class ErlModule extends Openable implements IErlModule {
 			if (fun instanceof IErlFunction) {
 				final IErlFunction f = (IErlFunction) fun;
 				if (f.getName().equals(function.name)
-						&& ((function.arity < 0) || (f.getArity() == function.arity))) {
+						&& (function.arity < 0 || f.getArity() == function.arity)) {
 					return f;
 				}
 			}
@@ -417,7 +422,7 @@ public class ErlModule extends Openable implements IErlModule {
 		if (scanner == null) {
 			return;
 		}
-		ErlScanner s = scanner;
+		final ErlScanner s = scanner;
 		if (s.willDispose()) {
 			scanner = null;
 		}

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+	<extension point="org.eclipse.ui.views">
+		<view allowMultiple="true" category="org.erlide.wrangler.refactoring.view"
+			class="org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView"
+			icon="icons/wrangler.gif" id="org.erlide.wrangler.codeinspection.graphview"
+			name="Graph Viewer" restorable="false">
+		</view>
+		<view allowMultiple="true" category="org.erlide.wrangler.refactoring.view"
+			class="org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView"
+			icon="icons/wrangler.gif"
+			id="org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview"
+			name="Code inspection results view" restorable="false">
+		</view>
+	</extension>
+
+	<!-- Toolbar buttons -->
+	<extension point="org.eclipse.ui.viewActions">
+		<viewContribution targetID="org.erlide.wrangler.codeinspection.graphview"
+			id="org.erlide.wrangler.codeinspection.graphview.pushbutton">
+			<!-- Open button -->
+			<!--
+				<action label="open" icon="icons/Open16.gif" tooltip="Open image"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.open">
+			-->
+			<!--id="org.eclipse.ui.file.open"-->
+			<!--/action-->
+			<!-- Rotation button -->
+			<action label="Rotate" icon="icons/Rotate16.gif" tooltip="Rotate"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.rotate">
+			</action>
+			<!-- Fit button -->
+			<action label="FitWindow" icon="icons/Fit16.gif" tooltip="Fit window"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.fit">
+			</action>
+			<!-- Original button -->
+			<action label="OriginalSize" icon="icons/Original16.gif"
+				tooltip="Original size"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.original">
+			</action>
+			<!-- ZoomIn button -->
+			<action label="ZoomIn" icon="icons/ZoomIn16.gif" tooltip="Zoom in"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.zoomin">
+			</action>
+			<!-- ZoomOut button -->
+			<action label="ZoomOut" icon="icons/ZoomOut16.gif" tooltip="Zoom out"
+				class="org.erlide.wrangler.refactoring.codeinspection.view.PushActionDelegate"
+				toolbarPath="push_group" enablesFor="*" id="toolbar.zoomout">
+			</action>
+		</viewContribution>
+	</extension>
+	<extension point="org.eclipse.ui.commands">
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
+			name="Detect Cyclic module dependecies...">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
+			name="Generate Funcion Callgraph">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
+			name="Generate Module Graph">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
+			name="Improper Inter Module Dependency">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspection.largemodules"
+			name="Large Modules">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspection.dependencies"
+			name="Dependencies Of A Module">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
+			name="Non Tail Recursive Servers">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspection.notflush"
+			name="Not flush unknown messages">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspection.nestedif"
+			name="Nested if expressions">
+		</command>
+		<command id="org.erlide.wrangler.refactoring.codeinspection.nestedcase"
+			name="Nested case expressions">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.nestedreceive"
+			name="Nested receive expressions">
+		</command>
+		<command
+			id="org.erlide.wrangler.refactoring.codeinspection.longfunctions"
+			name="Long functinos">
+		</command>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.GraphResultingInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.largemodules">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.notflush">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.nestedif">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.nestedcase">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.nestedreceive">
+		</handler>
+		<handler
+			class="org.erlide.wrangler.refactoring.codeinspection.SimpleCodeInspectionHandler"
+			commandId="org.erlide.wrangler.refactoring.codeinspection.longfunctions">
+		</handler>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution
+			locationURI="menu:org.eclipse.ui.main.menu?after=org.erlide.wrangler.refactormenu">
+			<menu id="org.erlide.wrangler.codeinspectionmenu" label="Code Inspection"
+				mnemonic="I" tooltip="Code inspection functionalities">
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.dependencies"
+					label="Dependencies Of A Module..." mnemonic="D" style="push">
+				</command>
+				<command commandId="org.erlide.wrangler.refactoring.codeinspection.nestedif"
+					label="Nested If Expressions..." mnemonic="I" style="push">
+				</command>
+				<command commandId="org.erlide.wrangler.refactoring.codeinspection.nestedcase"
+					label="Nested Case Expressions..." mnemonic="C" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.nestedreceive"
+					label="Nested Receive Expressions..." mnemonic="R" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.longfunctions"
+					label="Long Functions..." mnemonic="F" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.largemodules"
+					label="Large Modules..." mnemonic="L" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
+					label="Generate Funcion Callgraph..." mnemonic="F" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
+					label="Generate Module Graph..." mnemonic="M" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
+					label="Cyclic Module Dependency..." mnemonic="C" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
+					label="Improper Inter Module Dependency..." mnemonic="I" style="push">
+				</command>
+				<command
+					commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
+					label="Show Non Tail Recursive Servers..." mnemonic="S" style="push">
+				</command>
+				<command commandId="org.erlide.wrangler.refactoring.codeinspection.notflush"
+					label="Incomplete Receive Patterns..." mnemonic="S" style="push">
+				</command>
+				<visibleWhen>
+					<with variable="activeEditorId">
+						<or>
+							<equals value="org.erlide.ui.editors.erl.ErlangEditor" />
+						</or>
+					</with>
+				</visibleWhen>
+			</menu>
+		</menuContribution>
+	</extension>
+
+</fragment>

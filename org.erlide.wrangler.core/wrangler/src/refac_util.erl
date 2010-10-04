@@ -31,7 +31,7 @@
 %% =====================================================================
 
 -module(refac_util).   
-
+ 
 -export([parse_annotate_file/2,parse_annotate_file/3, parse_annotate_file/4,
 	 parse_annotate_file/5, quick_parse_annotate_file/3,
 	 write_refactored_files/1, write_refactored_files/3,
@@ -42,7 +42,7 @@
 	 get_modules_by_file/1]).
 
 -include("../include/wrangler.hrl").
-
+ 
 %% =====================================================================
 %% @doc Pretty-print the abstract syntax trees to a files, and add the previous 
 %% version to history for undo purpose. <code>Files</code> is a list of three element 
@@ -53,7 +53,7 @@
 
 %% Note: This function should not longer be used.
 
--spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
+%%-spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
 write_refactored_files(Files) ->
     F = fun ({{File1, File2}, AST}) ->
 		FileFormat = file_format(File1),
@@ -175,19 +175,19 @@ write_refactored_files(Results, Editor, Cmd) ->
 %%  For the data structures used by the AST nodes, please refer to <a href="refac_syntax.html"> refac_syntax </a>.
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean())
-                           -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean())
+%%                           -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP) ->
     parse_annotate_file(FName, ByPassPreP, [], ?DEFAULT_TABWIDTH).
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()])
-                           -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()])
+%%                           -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP, SearchPaths) ->
     parse_annotate_file(FName, ByPassPreP, SearchPaths, ?DEFAULT_TABWIDTH).
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], TabWidth::integer())
-      -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], TabWidth::integer())
+%%      -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
     FileFormat = file_format(FName),
     case whereis(wrangler_ast_server) of
@@ -200,8 +200,8 @@ parse_annotate_file(FName, ByPassPreP, SearchPaths, TabWidth) ->
      
 
 
--spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], integer(), atom())
-      -> {ok, {syntaxTree(), moduleInfo()}}).
+%%-spec(parse_annotate_file(FName::filename(), ByPassPreP::boolean(), SearchPaths::[dir()], integer(), atom())
+%%      -> {ok, {syntaxTree(), moduleInfo()}}).
 parse_annotate_file(FName, true, SearchPaths, TabWidth, FileFormat) ->
     case
       refac_epp_dodger:parse_file(FName, [{tab, TabWidth}, {format, FileFormat}])
@@ -273,7 +273,7 @@ quick_parse_annotate_file(FName, SearchPaths, TabWidth) ->
     end.
 
 %% =====================================================================
--spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
+%%-spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
 tokenize(File, WithLayout, TabWidth) ->
     {ok, Bin} = file:read_file(File),
     S = erlang:binary_to_list(Bin),
@@ -303,70 +303,98 @@ merge_module_info(Info1, Info2) ->
 	     {functions, F(functions)}, {rules, F(rules)}],
     [{A,V}||{A, V}<-NewInfo, V=/=[]].
 	     
-  
+
 annotate_bindings(FName, AST, Info, Ms, TabWidth) ->
     Toks = tokenize(FName, true, TabWidth),
-    AnnAST0 = refac_syntax_lib:annotate_bindings(add_tokens(add_range(AST, Toks), Toks), ordsets:new(), Ms),
-    add_category(refac_annotate_ast:add_fun_define_locations(AnnAST0, Info)).
- 
+    AnnAST0 = refac_syntax_lib:annotate_bindings(add_token_and_ranges(AST, Toks), ordsets:new(), Ms),
+    refac_annotate_ast:add_fun_define_locations(AnnAST0, Info).
 
-%% Attach tokens to each form in the AST.
--spec add_tokens(syntaxTree(), [token()]) -> syntaxTree(). 		 
-add_tokens(SyntaxTree, Toks) ->
+  
+%% Attach tokens to each form in the AST, and also add 
+%% range information to each node in the AST.
+%%-spec add_tokens(syntaxTree(), [token()]) -> syntaxTree(). 		 
+add_token_and_ranges(SyntaxTree, Toks) ->
     Fs = refac_syntax:form_list_elements(SyntaxTree),
-    rewrite(SyntaxTree, refac_syntax:form_list(do_add_tokens(Toks, Fs))).
+    NewFs = do_add_token_and_ranges(Toks, Fs),
+    SyntaxTree1= rewrite(SyntaxTree, refac_syntax:form_list(NewFs)),
+    add_range_to_body(SyntaxTree1, NewFs, "", "").
 
-do_add_tokens(Toks, Fs) ->
-    do_add_tokens(Toks, lists:reverse(Fs), []).
+%% do it backwards starting from the last form. 
+%% all the white spaces after a form belong to the next form if
+%% there is one. 
 
-do_add_tokens(_, [], NewFs) ->
+do_add_token_and_ranges(Toks, Fs) ->
+    do_add_token_and_ranges(lists:reverse(Toks), lists:reverse(Fs), []).
+
+do_add_token_and_ranges(_, [], NewFs) ->
     NewFs;
-do_add_tokens(Toks, [F| Fs], NewFs) ->
-    {StartPos, RemFs} =
-	case refac_syntax:type(F) of
-	  error_marker ->
-	      case Fs of
-		[] -> {{1, 1}, []};
-		_ -> Fs1 = lists:dropwhile(fun (F1) ->
-						   lists:member(refac_syntax:type(F1), [comment, error_marker])
-					   end, Fs),
-		     case Fs1 of
-		       [] ->
-			   {{1, 1}, []};
-		       _ -> {_, {Line, _}} = get_range(hd(Fs1)),
-			    {{Line + 1, 1}, Fs1}
-		     end
-	      end;
-	  _ -> case refac_syntax:get_precomments(F) of
-		 [] -> {Start, _End} = get_range(F),
-		       {Start, Fs};
-		 [Com| _Tl] -> {refac_syntax:get_pos(Com), Fs}
-	       end
-	end,
-    {Toks1, Toks2} = lists:splitwith(fun (T) ->
-					     element(2, T) < StartPos
-				     end, Toks),
-    {Toks11, Toks12} = lists:splitwith(fun (T) ->
-					       element(1, T) == whitespace
-				       end, lists:reverse(Toks1)),
-    {FormToks, RemainToks} =
-	case Toks12 of
-	  [] -> {Toks, []};
-	  [H| _T] -> Line1 = element(1, element(2, H)),
-		     {Toks13, Toks14} = lists:splitwith(fun (T) ->
-								element(1, element(2, T)) == Line1
-							end, lists:reverse(Toks11)),
-		     {Toks14 ++ Toks2, lists:reverse(Toks12) ++ Toks13}
-	end,
+do_add_token_and_ranges(Toks, _Forms=[F| Fs], NewFs) ->
+    {FormToks0, RemToks} = get_form_tokens(Toks, F, Fs), 
+    FormToks = lists:reverse(FormToks0),
     F1 = refac_syntax:add_ann({toks, FormToks}, F),
-    do_add_tokens(RemainToks, RemFs, [F1| NewFs]).
+    F2 = add_category(add_range(F1, FormToks)),
+    do_add_token_and_ranges(RemToks, Fs, [F2| NewFs]).
 
+get_form_tokens(Toks, F, Fs) ->
+    case refac_syntax:type(F) of
+	comment ->
+	    get_comment_form_toks(Toks, F, Fs);
+	_ ->
+	    get_non_comment_form_toks(Toks, F, Fs) 
+    end.
 
--spec add_range(syntaxTree(), [token()]) -> syntaxTree(). 
+%% stand-alone comments.
+get_comment_form_toks(Toks, _F, Fs) when Fs==[] ->
+    {Toks,[]};
+get_comment_form_toks(Toks, F, _Fs) ->
+    StartPos =start_pos(F),
+    {Ts1,Ts2} = lists:splitwith(
+		  fun(T) ->
+			  token_loc(T)>=StartPos andalso 
+			   is_whitespace_or_comment(T)
+		  end, Toks),
+    {Ts21, Ts22} = lists:splitwith(fun(T) ->
+					   is_whitespace(T)
+				   end, Ts2),
+    {Ts1++Ts21, Ts22}.
+ 
+get_non_comment_form_toks(Toks, _F, Fs) when Fs==[] ->
+    {Toks, []};
+get_non_comment_form_toks(Toks, F, _Fs) ->
+    StartPos = start_pos(F),
+    {Ts1, Ts2} = lists:splitwith(
+		   fun(T) ->
+			   token_loc(T)>=StartPos
+		   end, Toks),
+    {Ts21, Ts22} = lists:splitwith(
+		     fun(T) ->
+			     element(1, T) /=dot andalso
+				 element(1,T)/=comment
+		     end, Ts2),
+    {Ts1++Ts21, Ts22}.
+
+start_pos(F) ->
+    case refac_syntax:type(F) of 
+	error_marker ->
+	    case F of
+		{error, {_, {{Line, Col}, {_Line1, _Col1}}}} ->
+		    {Line, Col};
+		_ ->
+		    refac_syntax:get_pos(F)
+	    end;
+	_ ->
+	    case refac_syntax:get_precomments(F) of
+		[] ->
+		    refac_syntax:get_pos(F);
+		[Com| _Tl] ->
+		    refac_syntax:get_pos(Com)
+	    end
+    end.
+
+%%-spec add_range(syntaxTree(), [token()]) -> syntaxTree(). 
 add_range(AST, Toks) ->
     ast_traverse_api:full_buTP(fun do_add_range/2, AST, Toks).
 do_add_range(Node, Toks) ->
-    
     {L, C} = case refac_syntax:get_pos(Node) of
 	       {Line, Col} -> {Line, Col};
 	       Line -> {Line, 0}
@@ -432,13 +460,31 @@ do_add_range(Node, Toks) ->
 	  {S1, _E1} = get_range(M),
 	  {_S2, E2} = get_range(F),
 	  refac_syntax:add_ann({range, {S1, E2}}, Node);
-      list ->
-	  LP = refac_misc:ghead("refac_util:do_add_range,list", refac_syntax:list_prefix(Node)),
-	  {{L1, C1}, {L2, C2}} = get_range(LP),
-	  case refac_syntax:list_suffix(Node) of
-	    none -> refac_syntax:add_ann({range, {{L1, C1 - 1}, {L2, C2 + 1}}}, Node);
-	    Tail -> {_S2, {L3, C3}} = get_range(Tail), refac_syntax:add_ann({range, {{L1, C1 - 1}, {L3, C3}}}, Node)
-	  end;
+      list ->  %% temporay fix!
+	    try
+		Es= refac_syntax:list_elements(Node),
+		case Es/=[] of 
+		    true->
+			Fst=refac_misc:ghead("refac_util:do_add_range,list", Es),
+			Last=refac_misc:glast("refac_util:do_add_range,list", Es),
+			{S1, _E1} = get_range(Fst),
+			{_, E2} = get_range(Last),
+			refac_syntax:add_ann({range, {S1, E2}}, Node);
+		    false ->
+			Node
+		end
+	    catch
+		_:_ ->
+		     LP = refac_misc:ghead("refac_util:do_add_range,list", refac_syntax:list_prefix(Node)),
+		     {{L1, C1}, {L2, C2}} = get_range(LP),
+		     case refac_syntax:list_suffix(Node) of
+		     	none -> 
+		    	    refac_syntax:add_ann({range, {{L1, C1 - 1}, {L2, C2 + 1}}}, Node);
+		     	Tail -> 
+			     {_S2, {L3, C3}} = get_range(Tail),
+		     	    refac_syntax:add_ann({range, {{L1, C1 - 1}, {L3, C3}}}, Node)
+		     end
+	    end;
       application ->
 	  O = refac_syntax:application_operator(Node),
 	  Args = refac_syntax:application_arguments(Node),
@@ -527,12 +573,12 @@ do_add_range(Node, Toks) ->
       attribute ->
 	  Name = refac_syntax:attribute_name(Node),
 	  Args = refac_syntax:attribute_arguments(Node),
-	  case Args of
+	  case Args of 
 	    none -> {S1, E1} = get_range(Name),
 		    S11 = extend_forwards(Toks, S1, '-'),
 		    refac_syntax:add_ann({range, {S11, E1}}, Node);
 	    _ -> case length(Args) > 0 of
-		   true -> Arg = refac_misc:glast("refac_util:do_add_range,attribute", Args),
+		     true -> Arg = refac_misc:glast("refac_util:do_add_range,attribute", Args),
 			   {S1, _E1} = get_range(Name),
 			   {_S2, E2} = get_range(Arg),
 			   S11 = extend_forwards(Toks, S1, '-'),
@@ -613,15 +659,16 @@ do_add_range(Node, Toks) ->
 	  Fs = refac_syntax:binary_fields(Node),
 	  case Fs == [] of
 	    true -> refac_syntax:add_ann({range, {{L, C}, {L, C + 3}}}, Node);
-	    _ -> %% this should be changed when the parser is able 
-		%% to include location info for binary type qualifiers.
-		Hd = refac_misc:ghead("do_add_range:binary", Fs),
-		{S1, _E1} = get_range(Hd),
-		S11 = extend_forwards(Toks, S1, "<<"),
-		E21 = extend_backwards(Toks, S1, ">>"),
-		refac_syntax:add_ann({range, {S11, E21}}, Node)
+	    _ ->
+		  Hd = refac_misc:ghead("do_add_range:binary", Fs),
+		  Last= refac_misc:glast("do_add_range:binary", Fs),
+		  {S1, _E1} = get_range(Hd),
+		  {_S2, E2} = get_range(Last),
+		  S11 = extend_forwards(Toks, S1, "<<"),
+		  E21 = extend_backwards(Toks, E2, ">>"),
+		  refac_syntax:add_ann({range, {S11, E21}}, Node)
 	  end;
-      binary_field ->
+	binary_field ->
 	  Body = refac_syntax:binary_field_body(Node),
 	  Types = refac_syntax:binary_field_types(Node),
 	  {S1, E1} = get_range(Body),
@@ -630,7 +677,7 @@ do_add_range(Node, Toks) ->
 		      end,
 	  case E2 > E1  %%Temporal fix; need to change refac_syntax to make the pos info correct.
 	      of
-	    true ->
+	      true ->
 		refac_syntax:add_ann({range, {S1, E2}}, Node);
 	    false ->
 		refac_syntax:add_ann({range, {S1, E1}}, Node)
@@ -805,6 +852,11 @@ token_val(T) ->
     end.
 
 	
+is_whitespace({whitespace, _, _}) ->
+    true;
+is_whitespace(_) ->
+    false.
+
 is_whitespace_or_comment({whitespace, _, _}) ->
     true;
 is_whitespace_or_comment({comment, _, _}) ->
@@ -820,149 +872,113 @@ is_string(_) -> false.
 %% =====================================================================
 % @doc Attach syntax category information to AST nodes.
 %% =====================================================================
-
--spec(add_category(Node::syntaxTree()) -> syntaxTree()).
+%% -type (category():: pattern|expression|guard_expression|record_type|generator
+%%                    record_field| {macro_name, none|int(), pattern|expression}
+%%                    |operator
+%%-spec(add_category(Node::syntaxTree()) -> syntaxTree()).
 add_category(Node) ->
-    case refac_syntax:type(Node) of
-      form_list ->
-	  Es = refac_syntax:form_list_elements(Node),
-	  Es1 = lists:map(fun (E) -> add_category(E) end, Es),
-	  Node1 = rewrite(Node, refac_syntax:form_list(Es1)),
-	  refac_syntax:add_ann({category, form_list}, Node1);
-      attribute -> add_category(Node, attribute);
-      function -> add_category(Node, function);
-      rule -> add_category(Node, rule);
-      error_marker -> add_category(Node, error_marker);
-      warning_marker -> add_category(Node, warning_marker);
-      eof_marker -> add_category(Node, eof_marker);
-      comment -> add_category(Node, comment);
-      %%  macro -> add_category(Node, macro);
-      _ -> add_category(Node, unknown)
-    end.
+    add_category(Node, none).
 
-add_category(Node, C) -> {Node1, _} = ast_traverse_api:stop_tdTP(fun do_add_category/2, Node, C),
-			 Node1.
+add_category(Node, C) ->
+    {Node1, _} =ast_traverse_api:stop_tdTP(fun do_add_category/2, Node, C),
+    Node1.
+
+do_add_category(Node, C) when is_list(Node) ->
+    {[add_category(E, C)||E<-Node], true};
 do_add_category(Node, C) ->
-    if is_list(Node) -> {lists:map(fun (E) -> add_category(E, C) end, Node), true};
-       true ->
-	   case refac_syntax:type(Node) of
-	     clause ->
-		 B = refac_syntax:clause_body(Node),
-		 P = refac_syntax:clause_patterns(Node),
-		 G = refac_syntax:clause_guard(Node),
-		 B1 = add_category(B, expression),
-		 P1 = add_category(P, pattern),
-		 G1 = case G of
-			none -> none;
-			_ -> add_category(G, guard_expression)
-		      end,
-		 Node1 = rewrite(Node, refac_syntax:clause(P1, G1, B1)),
-		 {refac_syntax:add_ann({category, clause}, Node1), true};
-	     match_expr ->
-		 P = refac_syntax:match_expr_pattern(Node),
-		 B = refac_syntax:match_expr_body(Node),
-		 P1 = add_category(P, pattern),
-		 B1 = add_category(B, C),
-		 Node1 = rewrite(Node, refac_syntax:match_expr(P1, B1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     operator -> {refac_syntax:add_ann({category, operator}, Node), true}; %% added to fix bug 13/09/2008.
-	     application ->
-		 Op = refac_syntax:application_operator(Node),
-		 Args = refac_syntax:application_arguments(Node),
-		 Op1 = add_category(Op, application_op),
-		 Args1 = add_category(Args, C),
-		 Node1 = rewrite(Node, refac_syntax:application(Op1, Args1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     arity_qualifier ->
-		 Fun = add_category(refac_syntax:arity_qualifier_body(Node), arity_qualifier),
-		 A = add_category(refac_syntax:arity_qualifier_argument(Node), arity_qualifier),
-		 Node1 = refac_syntax:arity_qualifier(Fun, A),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     macro ->
-		 Name = refac_syntax:macro_name(Node),
-		 Args = refac_syntax:macro_arguments(Node),
-		 Name1 = add_category(Name, macro_name),
-		 Args1 = case Args of
-			   none -> none;
-			   _ -> add_category(Args, expression) %% should 'expression' be 'macro_args'?
-			 end,
-		 Node1 = rewrite(Node, refac_syntax:macro(Name1, Args1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     record_access ->
-		 Argument = refac_syntax:record_access_argument(Node),
-		 Type = refac_syntax:record_access_type(Node),
-		 Field = refac_syntax:record_access_field(Node),
-		 Argument1 = add_category(Argument, C),
-		 Type1 = case Type of
-			   none -> none;
-			   _ -> add_category(Type, record_type)
-			 end,
-		 Field1 = add_category(Field, record_field),
-		 Node1 = rewrite(Node, refac_syntax:record_access(Argument1, Type1, Field1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     record_expr ->
-		 Argument = refac_syntax:record_expr_argument(Node),
-		 Type = refac_syntax:record_expr_type(Node),
-		 Fields = refac_syntax:record_expr_fields(Node),
-		 Argument1 = case Argument of
-			       none -> none;
-			       _ -> add_category(Argument, C)
-			     end,
-		 Type1 = add_category(Type, record_type),
-		 Fields1 = add_category(Fields, C),
-		 Node1 = rewrite(Node, refac_syntax:record_expr(Argument1, Type1, Fields1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     record_index_expr ->
-		 Type = refac_syntax:record_index_expr_type(Node),
-		 Field = refac_syntax:record_index_expr_field(Node),
-		 Type1 = add_category(Type, record_type),
-		 Field1 = add_category(Field, C),
-		 Node1 = rewrite(Node, refac_syntax:record_index_expr(Type1, Field1)),
-		 {refac_syntax:add_ann({category, C}, Node1), true};
-	     record_field ->
-		 Name = refac_syntax:record_field_name(Node),
-		 Name1 = add_category(Name, record_field),
-		 Value = refac_syntax:record_field_value(Node),
-		 Value1 = case Value of
+    case refac_syntax:type(Node) of
+	clause ->
+	    Body = refac_syntax:clause_body(Node),
+	    P = refac_syntax:clause_patterns(Node),
+	    G = refac_syntax:clause_guard(Node),
+	    Body1 = [add_category(B, expression)||B<-Body],
+	    P1 = add_category(P, pattern),
+	    G1 = case G of
+		     none -> none;
+		     _ -> add_category(G, guard_expression)
+		 end,
+	    Node1 =rewrite(Node, refac_syntax:clause(P1, G1, Body1)),
+	    {Node1, true};
+	match_expr ->
+	    P = refac_syntax:match_expr_pattern(Node),
+	    B = refac_syntax:match_expr_body(Node),
+	    P1 = add_category(P, pattern),
+	    B1 = add_category(B, C),
+	    Node1=rewrite(Node, refac_syntax:match_expr(P1, B1)),
+	    case C/=expression of 
+		true ->
+		    {refac_syntax:add_ann({category, C}, Node1), true};
+		false ->
+		    {Node1, true}
+	    end;
+	generator ->
+	    P = refac_syntax:generator_pattern(Node),
+	    B = refac_syntax:generator_body(Node),
+	    P1 = add_category(P, pattern),
+	    B1 = add_category(B, expression),
+	    Node1=rewrite(Node, refac_syntax:generator(P1, B1)),
+	    {refac_syntax:add_ann({category, generator}, Node1), true};
+	macro ->
+	    Name = refac_syntax:macro_name(Node),
+	    Args = refac_syntax:macro_arguments(Node),
+	    NumOfArgs = case Args of
 			    none -> none;
-			    _ -> add_category(Value, C)
-			  end,
-		 Node1 = rewrite(Node, refac_syntax:record_field(Name1, Value1)),
-		 {refac_syntax:add_ann({category, record_field}, Node1), true};
-	     generator ->
-		 P = refac_syntax:generator_pattern(Node),
-		 B = refac_syntax:generator_body(Node),
-		 P1 = add_category(P, pattern),
-		 B1 = add_category(B, expression),
-		 Node1 = rewrite(Node, refac_syntax:generator(P1, B1)),
-		 {refac_syntax:add_ann({category, generator}, Node1), true};
-	     attribute ->
-		 case refac_syntax:atom_value(refac_syntax:attribute_name(Node)) of
-		   define ->
-		       Name = refac_syntax:attribute_name(Node),
-		       Args = refac_syntax:attribute_arguments(Node),
-		       MacroHead = refac_misc:ghead("Refac_util:do_add_category:MacroHead", Args),
-		       MacroBody = tl(Args),
-		       MacroHead1 = case refac_syntax:type(MacroHead) of
-				      application ->
-					  Operator = add_category(refac_syntax:application_operator(MacroHead), macro_name),
-					  Arguments = add_category(refac_syntax:application_arguments(MacroHead), attribute),
-					  rewrite(MacroHead, refac_syntax:application(Operator, Arguments));
-				      _ -> add_category(MacroHead, macro_name)
-				    end,
-		       MacroBody1 = add_category(MacroBody, attribute),
-		       Node1 = rewrite(Node, refac_syntax:attribute(Name, [MacroHead1| MacroBody1])),
-		       {refac_syntax:add_ann({category, attribute}, Node1), true};
-		   _ -> {refac_syntax:add_ann({category, C}, Node), false}
-		 end;
-	     %% TO ADD: other cases such as fields. Refer to the Erlang Specification.
-	     binary_field -> {refac_syntax:add_ann({category, binary_field}, Node), false};
-	     size_qualifier -> {refac_syntax:add_ann({category, size_qualifier}, Node), false};
-	     _ -> {refac_syntax:add_ann({category, C}, Node), false}
-	   end
+			    _ -> length(Args)
+			end,
+	    Name1 = add_category(Name, {macro_name, NumOfArgs, C}),
+	    Args1 = case Args of
+			none -> none;
+			_ -> add_category(Args, C) 
+		    end,
+	    Node1 = rewrite(Node, refac_syntax:macro(Name1, Args1)),
+	    {refac_syntax:add_ann({category, C}, Node1), true};
+	 record_access ->
+	    Argument = refac_syntax:record_access_argument(Node),
+	    Type = refac_syntax:record_access_type(Node),
+	    Field = refac_syntax:record_access_field(Node),
+	    Argument1 = add_category(Argument, C),
+	    Type1 = case Type of
+			none -> none;
+			_ -> add_category(Type, record_type)
+		    end,
+	    Field1 = add_category(Field, record_field),
+	    Node1 = rewrite(Node, refac_syntax:record_access(Argument1, Type1, Field1)),
+	    {refac_syntax:add_ann({category, C}, Node1), true};
+	record_expr ->
+	    Argument = refac_syntax:record_expr_argument(Node),
+	    Type = refac_syntax:record_expr_type(Node),
+	    Fields = refac_syntax:record_expr_fields(Node),
+	    Argument1 = case Argument of
+			    none -> none;
+			    _ -> add_category(Argument, C)
+			end,
+	    Type1 = add_category(Type, record_type),
+	    Fields1 =[refac_syntax:add_ann({category, record_field},rewrite(F, refac_syntax:record_field(
+			add_category(refac_syntax:record_field_name(F), record_field),
+			case refac_syntax:record_field_value(F) of 
+			    none -> 
+				none;
+			    V -> 
+				add_category(V, C)
+			end))) || F<-Fields],
+	    Node1 = rewrite(Node, refac_syntax:record_expr(Argument1, Type1, Fields1)),
+	    {refac_syntax:add_ann({category, C}, Node1), true};
+	record_index_expr ->
+	    Type = refac_syntax:record_index_expr_type(Node),
+	    Field = refac_syntax:record_index_expr_field(Node),
+	    Type1 = add_category(Type, record_type),
+	    Field1 = add_category(Field, record_field),
+	    Node1 = rewrite(Node, refac_syntax:record_index_expr(Type1, Field1)),
+	    {refac_syntax:add_ann({category, C}, Node1), true};
+	operator ->
+	    {refac_syntax:add_ann({category, operator}, Node), true};
+	_ -> case C of
+		 none ->
+		     {Node, false};
+		 _ -> 
+		     {refac_syntax:add_ann({category,C}, Node),false}
+	     end
     end.
-
-
 
 rewrite(Tree, Tree1) ->
     refac_syntax:copy_attrs(Tree, Tree1).
@@ -971,7 +987,7 @@ rewrite(Tree, Tree1) ->
 %% @doc Recursively collect all the files with the given file extension 
 %%  in the specified directoris/files.
 
--spec(expand_files(FileDirs::[filename()|dir()], Ext::string()) -> [filename()]).
+%%-spec(expand_files(FileDirs::[filename()|dir()], Ext::string()) -> [filename()]).
 expand_files(FileDirs, Ext) ->
     expand_files(FileDirs, Ext, []).
 
@@ -1000,7 +1016,7 @@ expand_files([], _Ext, Acc) -> ordsets:from_list(Acc).
 %% @doc Return the list of files (Erlang modules) which make use of the functions 
 %% defined in File.
 
--spec(get_client_files(File::filename(), SearchPaths::[dir()]) -> [filename()]).
+%%-spec(get_client_files(File::filename(), SearchPaths::[dir()]) -> [filename()]).
 get_client_files(File, SearchPaths) ->
     File1 = filename:absname(filename:join(filename:split(File))),
     ClientFiles = wrangler_modulegraph_server:get_client_files(File1, SearchPaths),
@@ -1021,7 +1037,7 @@ get_client_files(File, SearchPaths) ->
 %% element of the tuple being the module name, and the second element 
 %% binding the directory name of the file to which the module belongs.
 
--spec(get_modules_by_file(Files::[filename()]) -> [{atom(), dir()}]).
+%%-spec(get_modules_by_file(Files::[filename()]) -> [{atom(), dir()}]).
 get_modules_by_file(Files) ->
     get_modules_by_file(Files, []).
 
@@ -1032,7 +1048,7 @@ get_modules_by_file([File | Left], Acc) ->
 get_modules_by_file([], Acc) -> lists:reverse(Acc).
 
 
--spec file_format(filename()) ->dos|mac|unix. 		 
+%%-spec file_format(filename()) ->dos|mac|unix. 		 
 file_format(File) ->  
     {ok, Bin} = file:read_file(File),
     S = erlang:binary_to_list(Bin),
@@ -1075,7 +1091,7 @@ scan_line_endings([_C|Cs], Cs1, Acc)->
 scan_line_endings([], Cs1, Acc)->
     lists:reverse([lists:usort(lists:reverse(Cs1))|Acc]).
 
--spec test_framework_used(filename()) ->[atom()]. 			 
+%%-spec test_framework_used(filename()) ->[atom()]. 			 
 test_framework_used(FileName) ->
     case refac_epp_dodger:parse_file(FileName, []) of
       {ok, Forms} ->
@@ -1120,7 +1136,7 @@ test_framework_used(FileName) ->
     end.
    
 
--spec(concat_toks(Toks::[token()]) ->string()).
+%%-spec(concat_toks(Toks::[token()]) ->string()).
 concat_toks(Toks) ->
     concat_toks(Toks, "").
 
@@ -1133,15 +1149,17 @@ concat_toks([T|Ts], Acc) ->
 	 {qatom, _, V} -> S=atom_to_list(V),
 			  concat_toks(Ts, [S|Acc]);
 	 {string, _, V} -> concat_toks(Ts,["\"", V, "\""|Acc]);
+	 {char, _, V} when is_atom(V)->concat_toks(Ts,[atom_to_list(V)|Acc]);
 	 {char, _, V} when is_integer(V) and (V =< 127)-> concat_toks(Ts,[io_lib:write_char(V)|Acc]);
 	 {char, _, V} when is_integer(V) ->
 	     {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
 	     [Str] = io_lib:fwrite("~.8B", [Num]),
 	     S = "$\\"++Str,
-	     concat_toks(Ts, [S|Acc]); 
+	      concat_toks(Ts, [S|Acc]); 
 	 {float, _, V} -> concat_toks(Ts,[io_lib:write(V)|Acc]);
-	 {_, _, V} -> concat_toks(Ts, [V|Acc]);
+     	 {_, _, V} -> concat_toks(Ts, [V|Acc]);
 	 {dot, _} ->concat_toks(Ts, ['.'|Acc]);
-	 {V, _} -> 
+      	 {V, _} -> 
 	     concat_toks(Ts, [V|Acc])
      end.
+

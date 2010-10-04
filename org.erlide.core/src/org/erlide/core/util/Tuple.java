@@ -81,7 +81,7 @@ public class Tuple<X, Y> implements Serializable {
 		buffer.append(o1);
 		buffer.append(" -- ");
 		buffer.append(o2);
-		buffer.append("]");
+		buffer.append(']');
 		return buffer.toString();
 	}
 }

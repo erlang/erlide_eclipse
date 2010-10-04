@@ -66,7 +66,6 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
@@ -96,7 +95,7 @@ public class ErlangProjectImportWizardPage extends
 	// dialog store id constants
 	private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
 	private final static String STORE_OVERWRITE_EXISTING_RESOURCES_ID = "WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID";//$NON-NLS-1$
-	private static final String SELECT_TYPES_TITLE = ErlangDataTransferMessages.DataTransfer_selectTypes;
+	private static final String SELECT_TYPES_TITLE = WizardMessages.DataTransfer_selectTypes;
 
 	// private static final String SELECT_ALL_TITLE =
 	// ErlangDataTransferMessages.DataTransfer_selectAll;
@@ -104,9 +103,9 @@ public class ErlangProjectImportWizardPage extends
 	// private static final String DESELECT_ALL_TITLE =
 	// ErlangDataTransferMessages.DataTransfer_deselectAll;
 
-	private static final String SELECT_SOURCE_TITLE = ErlangDataTransferMessages.FileImport_selectSourceTitle;
-	private static final String SELECT_SOURCE_MESSAGE = ErlangDataTransferMessages.FileImport_selectSource;
-	protected static final String SOURCE_EMPTY_MESSAGE = ErlangDataTransferMessages.FileImport_sourceEmpty;
+	private static final String SELECT_SOURCE_TITLE = WizardMessages.FileImport_selectSourceTitle;
+	private static final String SELECT_SOURCE_MESSAGE = WizardMessages.FileImport_selectSource;
+	protected static final String SOURCE_EMPTY_MESSAGE = WizardMessages.FileImport_sourceEmpty;
 	private String projectName;
 	protected Path projectPath;
 	private Composite sourceContainerGroup;
@@ -129,8 +128,8 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	public ErlangProjectImportWizardPage(final IStructuredSelection selection) {
 		this("alfa beta", selection);//$NON-NLS-1$
-		setTitle(ErlangDataTransferMessages.DataTransfer_fileSystemTitle);
-		setDescription(ErlangDataTransferMessages.FileImport_importFileSystem);
+		setTitle(WizardMessages.DataTransfer_fileSystemTitle);
+		setDescription(WizardMessages.FileImport_importFileSystem);
 	}
 
 	/**
@@ -234,14 +233,14 @@ public class ErlangProjectImportWizardPage extends
 		overwriteExistingResourcesCheckbox = new Button(optionsGroup, SWT.CHECK);
 		overwriteExistingResourcesCheckbox.setFont(optionsGroup.getFont());
 		overwriteExistingResourcesCheckbox
-				.setText(ErlangDataTransferMessages.FileImport_overwriteExisting);
+				.setText(WizardMessages.FileImport_overwriteExisting);
 		overwriteExistingResourcesCheckbox.setEnabled(false);
 
 		// copy projects into workspace
 		copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup, SWT.CHECK);
 		copyProjectsIntoWorkspaceCheckbox.setFont(optionsGroup.getFont());
 		copyProjectsIntoWorkspaceCheckbox
-				.setText(ErlangDataTransferMessages.FileImport_copyProjectIntoWorkspace);
+				.setText(WizardMessages.FileImport_copyProjectIntoWorkspace);
 		copyProjectsIntoWorkspaceCheckbox
 				.addSelectionListener(new SelectionAdapter() {
 					@Override
@@ -376,7 +375,7 @@ public class ErlangProjectImportWizardPage extends
 		// source browse button
 		sourceBrowseButton = new Button(sourceContainerGroup, SWT.PUSH);
 		sourceBrowseButton
-				.setText(ErlangDataTransferMessages.DataTransfer_browse);
+				.setText(WizardMessages.DataTransfer_browse);
 		sourceBrowseButton.addListener(SWT.Selection, this);
 		sourceBrowseButton.setLayoutData(new GridData(
 				GridData.HORIZONTAL_ALIGN_FILL));
@@ -472,7 +471,7 @@ public class ErlangProjectImportWizardPage extends
 			return true;
 		}
 
-		displayErrorDialog(ErlangDataTransferMessages.FileImport_invalidSource);
+		displayErrorDialog(WizardMessages.FileImport_invalidSource);
 		sourceNameField.setFocus();
 		return false;
 	}
@@ -494,7 +493,7 @@ public class ErlangProjectImportWizardPage extends
 		final IStatus status = op.getStatus();
 		if (!status.isOK()) {
 			ErrorDialog.openError(getContainer().getShell(),
-					ErlangDataTransferMessages.FileImport_importProblems, null, // no
+					WizardMessages.FileImport_importProblems, null, // no
 					// special
 					// message
 					status);
@@ -553,8 +552,8 @@ public class ErlangProjectImportWizardPage extends
 		}
 
 		MessageDialog.openInformation(getContainer().getShell(),
-				ErlangDataTransferMessages.DataTransfer_information,
-				ErlangDataTransferMessages.FileImport_noneSelected);
+				WizardMessages.DataTransfer_information,
+				WizardMessages.FileImport_noneSelected);
 
 		return false;
 	}
@@ -607,7 +606,7 @@ public class ErlangProjectImportWizardPage extends
 		try {
 			monitor
 					.beginTask(
-							ErlangDataTransferMessages.WizardProjectsImportPage_CreateProjectsTask,
+							WizardMessages.WizardProjectsImportPage_CreateProjectsTask,
 							1000);
 			project.setDescription(description, new SubProgressMonitor(monitor,
 					300));
@@ -785,7 +784,7 @@ public class ErlangProjectImportWizardPage extends
 	 * field
 	 */
 	protected String getSourceLabel() {
-		return ErlangDataTransferMessages.FileImport_fromDirectory;
+		return WizardMessages.FileImport_fromDirectory;
 	}
 
 	/**
@@ -1175,7 +1174,7 @@ public class ErlangProjectImportWizardPage extends
 		final List<?> resourcesToExport = selectionGroup
 				.getAllWhiteCheckedItems();
 		if (resourcesToExport.size() == 0) {
-			setErrorMessage(ErlangDataTransferMessages.FileImport_noneSelected);
+			setErrorMessage(WizardMessages.FileImport_noneSelected);
 			return false;
 		}
 
@@ -1317,7 +1316,7 @@ public class ErlangProjectImportWizardPage extends
 		// Some system exceptions have no message
 		if (message == null) {
 			message = NLS.bind(
-					IDEWorkbenchMessages.WizardDataTransfer_exceptionMessage,
+					WizardMessages.WizardDataTransfer_exceptionMessage,
 					exception);
 		}
 		displayErrorDialog(message);
@@ -1328,7 +1327,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	@Override
 	protected String getErrorDialogTitle() {
-		return IDEWorkbenchMessages.WizardExportPage_internalErrorTitle;
+		return WizardMessages.WizardExportPage_internalErrorTitle;
 	}
 
 	/**
@@ -1349,18 +1348,18 @@ public class ErlangProjectImportWizardPage extends
 		// and there are at least 2 segments.
 		if (path.getFileExtension() == null || path.segmentCount() < 2) {
 			messageString = NLS.bind(
-					IDEWorkbenchMessages.WizardDataTransfer_existsQuestion,
+					WizardMessages.WizardDataTransfer_existsQuestion,
 					pathString);
 		} else {
 			messageString = NLS
 					.bind(
-							IDEWorkbenchMessages.WizardDataTransfer_overwriteNameAndPathQuestion,
+							WizardMessages.WizardDataTransfer_overwriteNameAndPathQuestion,
 							path.lastSegment(), path.removeLastSegments(1)
 									.toOSString());
 		}
 
 		final MessageDialog dialog = new MessageDialog(getContainer()
-				.getShell(), IDEWorkbenchMessages.Question, null,
+				.getShell(), WizardMessages.Question, null,
 				messageString, MessageDialog.QUESTION, new String[] {
 						IDialogConstants.YES_LABEL,
 						IDialogConstants.YES_TO_ALL_LABEL,
@@ -1376,7 +1375,7 @@ public class ErlangProjectImportWizardPage extends
 				dialog.open();
 			}
 		});
-		return dialog.getReturnCode() < 0 ? CANCEL : response[dialog
+		return (dialog.getReturnCode() < 0) ? CANCEL : response[dialog
 				.getReturnCode()];
 	}
 
@@ -1390,7 +1389,7 @@ public class ErlangProjectImportWizardPage extends
 	 */
 	protected boolean queryYesNoQuestion(final String message) {
 		final MessageDialog dialog = new MessageDialog(getContainer()
-				.getShell(), IDEWorkbenchMessages.Question, null, message,
+				.getShell(), WizardMessages.Question, null, message,
 				MessageDialog.NONE, new String[] { IDialogConstants.YES_LABEL,
 						IDialogConstants.NO_LABEL }, 0) {
 		};

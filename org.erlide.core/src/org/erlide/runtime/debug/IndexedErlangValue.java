@@ -69,7 +69,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	}
 
 	public IVariable getVariable(final int offset) throws DebugException {
-		final String name = record != null ? record.getFields().get(offset)
+		final String name = (record != null) ? record.getFields().get(offset)
 				: varName + ":" + offset;
 		return new ErlangVariable(getDebugTarget(), name, true,
 				getElementAt(offset), process, moduleName, -1);
@@ -158,12 +158,12 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 		final int n = fields.size();
 		if (n > 0) {
 			for (int i = 0; i < n; i++) {
-				b.append(fields.get(i)).append("=").append(
+				b.append(fields.get(i)).append('=').append(
 						t.elementAt(i + 1).toString()).append(", ");
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("}");
+		b.append('}');
 		return b.toString();
 	}
 
@@ -176,7 +176,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("]");
+		b.append(']');
 		return b.toString();
 	}
 
@@ -189,7 +189,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 			}
 			b.setLength(b.length() - 2);
 		}
-		b.append("}");
+		b.append('}');
 		return b.toString();
 	}
 
@@ -226,7 +226,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 					}
 					sb.append(j);
 					if (i < n - 1) {
-						sb.append(",");
+						sb.append(',');
 					}
 				}
 			}
@@ -252,7 +252,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
 	protected OtpErlangObject getElementAt(final int index) {
 		if (value instanceof OtpErlangTuple) {
 			final OtpErlangTuple t = (OtpErlangTuple) value;
-			final int ofs = record != null ? 1 : 0;
+			final int ofs = (record != null) ? 1 : 0;
 			return t.elementAt(index + ofs);
 		} else if (value instanceof OtpErlangList) {
 			final OtpErlangList l = (OtpErlangList) value;

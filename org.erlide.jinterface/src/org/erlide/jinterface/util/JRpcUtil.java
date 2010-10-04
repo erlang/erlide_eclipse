@@ -40,7 +40,7 @@ public class JRpcUtil {
 			final OtpErlangObject method, final OtpErlangObject[] args) {
 
 		debug("EXEC:: " + target + ":" + method + " " + Arrays.toString(args)
-				+ " >" + (args == null ? 0 : args.length));
+				+ " >" + ((args == null) ? 0 : args.length));
 
 		final MethodDescription description = getDescription(method);
 
@@ -67,9 +67,7 @@ public class JRpcUtil {
 					return callMethod(rcvr, description, parms);
 				} catch (final Exception e) {
 					log("bad RPC 1: " + e.getMessage());
-					return OtpErlang.mkTuple(new OtpErlangAtom("error"),
-							new OtpErlangString(String.format("Bad RPC: %s", e
-									.getMessage())));
+					return makeErrorTuple(e);
 				}
 
 			}
@@ -89,9 +87,7 @@ public class JRpcUtil {
 			} catch (final Exception e) {
 				log("bad RPC 2: " + e.getClass() + " " + e.getMessage());
 				e.printStackTrace();
-				return OtpErlang.mkTuple(new OtpErlangAtom("error"),
-						new OtpErlangString(String.format("Bad RPC: %s", e
-								.getMessage())));
+				return makeErrorTuple(e);
 			}
 		} else {
 			log("unknown receiver: " + target);
@@ -99,6 +95,12 @@ public class JRpcUtil {
 					new OtpErlangString(String.format(
 							"Bad RPC: unknown receiver %s", target)));
 		}
+	}
+
+	private static OtpErlangTuple makeErrorTuple(final Exception e) {
+		return OtpErlang.mkTuple(new OtpErlangAtom("error"),
+				new OtpErlangString(String.format("Bad RPC: %s", e
+						.getMessage())));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -170,7 +172,7 @@ public class JRpcUtil {
 		} catch (final NoSuchMethodException e) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			return OtpErlang.mkTuple(new OtpErlangAtom("error"),
 					new OtpErlangString(String.format(
@@ -187,7 +189,7 @@ public class JRpcUtil {
 		} catch (final IllegalArgumentException x) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			log(String.format("invocation of %s failed: %s -- %s", method.name,
 					x.getMessage(), paramstr));
@@ -198,7 +200,7 @@ public class JRpcUtil {
 		} catch (final InstantiationException e) {
 			final StringBuilder paramstr = new StringBuilder();
 			for (final Class<?> param : params) {
-				paramstr.append(param.getName()).append(",");
+				paramstr.append(param.getName()).append(',');
 			}
 			log(String.format("instantiation of %s failed: %s -- %s", cls
 					.getName(), e.getMessage(), paramstr));
@@ -288,14 +290,14 @@ public class JRpcUtil {
 				for (int j = 0; j < interfaces.length; j++) {
 					sb.append("\t\t" + interfaces[j].getName() + "\n");
 				}
-				sb.append("\n");
+				sb.append('\n');
 
 				sb.append("\ttarget methods: \n");
 				final Method[] methods = target.getClass().getMethods();
 				for (int j = 0; j < methods.length; j++) {
 					sb.append("\t\t" + methods[j].getName() + "\n");
 				}
-				sb.append("\n");
+				sb.append('\n');
 
 				if (args != null) {
 					sb.append("\tArgument types: \n");

@@ -47,7 +47,7 @@ public class ErlDirtyRegionQueue {
 	 */
 	private ErlDirtyRegion getLastDirtyRegion() {
 		final int size = fDirtyRegions.size();
-		return size == 0 ? null : fDirtyRegions.get(size - 1);
+		return (size == 0) ? null : fDirtyRegions.get(size - 1);
 	}
 
 	/**

@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
@@ -12,12 +11,10 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.junit.Test;
 
 public abstract class ErlideStory extends JUnitStory {
@@ -27,10 +24,11 @@ public abstract class ErlideStory extends JUnitStory {
 		// are needed
 		StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(
 				".story");
-		Class storyClass = this.getClass();
+		Class<?> storyClass = this.getClass();
 		Properties viewProperties = new Properties();
 		viewProperties.put("decorateNonHtml", "true");
 		URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
+		@SuppressWarnings("unused")
 		StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder()
 				.withCodeLocation(codeLocation).withDefaultFormats()
 				.withViewResources(viewProperties).withFormats(Format.CONSOLE,
@@ -55,5 +53,11 @@ public abstract class ErlideStory extends JUnitStory {
 		return new InstanceStepsFactory(configuration, new RpcSteps())
 				.createCandidateSteps();
 	}
-
+	
+    @Override
+	@Test
+    public void run() throws Throwable {
+        super.run();
+    }
+ 
 }

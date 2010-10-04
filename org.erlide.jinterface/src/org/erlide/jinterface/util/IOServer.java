@@ -183,7 +183,7 @@ public class IOServer implements Runnable {
 								return error;
 							}
 						}
-						return val == null ? error : val;
+						return (val == null) ? error : val;
 					}
 				} else if ("setopts".equals(tag)) {
 					b = ErlUtils.match("{setopts, Opts:lx}", request);

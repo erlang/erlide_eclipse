@@ -31,7 +31,15 @@ init(_EventSinkPid) ->
 %% original author: Luke Gorrie
 
 process_list() ->
-	[{Pid, name(Pid), initial_call(Pid), reductions(Pid), messages(Pid)} || Pid <- processes()].
+	[info(Pid) || Pid <- processes()].
+
+info(Pid) ->
+    {Pid, 
+     name(Pid), 
+     initial_call(Pid), 
+     reductions(Pid), 
+     messages(Pid)
+    }.
 
 name(Pid) ->
 	case process_info(Pid, registered_name) of
@@ -42,8 +50,12 @@ name(Pid) ->
 	end.
 
 initial_call(Pid) ->
-	{initial_call, {M, F, A}} = process_info(Pid, initial_call),
-	lists:flatten(io_lib:format("~s:~s/~p", [M, F, A])).
+    case process_info(Pid, initial_call) of
+        {initial_call, {M, F, A}} ->
+            lists:flatten(io_lib:format("~s:~s/~p", [M, F, A]));
+        Other ->
+            lists:flatten(io_lib:format("~p", [Other]))
+    end.
 
 reductions(Pid) ->
 	{reductions, NrReds} = process_info(Pid, reductions),

@@ -70,7 +70,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 
 			final int eventOffset = event.getOffset();
 			final int eventOldLength = event.getLength();
-			final int eventNewLength = event.getText() == null ? 0 : event
+			final int eventNewLength = (event.getText() == null) ? 0 : event
 					.getText().length();
 			final int deltaLength = eventNewLength - eventOldLength;
 

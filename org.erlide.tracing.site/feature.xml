@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.erlide.tracing.update"
+      label="Erlang tracing for Erlide (update site)"
+      version="0.1.0.qualifier">
+
+   <description>
+      This feature is used by Buckminster to create a p2 update siteThis feature is used by Buckminster to create a p2 update site.
+   </description>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0 
+is available from http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <includes
+         id="org.erlide.tracing"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.erlide" version="0.8.0" match="greaterOrEqual"/>
+   </requires>
+
+</feature>

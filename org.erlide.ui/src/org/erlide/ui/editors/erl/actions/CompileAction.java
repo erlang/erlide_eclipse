@@ -15,10 +15,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.builder.BuildResource;
-import org.erlide.core.builder.BuilderUtils;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
@@ -27,43 +28,47 @@ import com.ericsson.otp.erlang.OtpErlangList;
 
 public class CompileAction extends Action {
 
-	private final IWorkbenchSite site;
+    private final IWorkbenchSite site;
+    private final BuilderHelper helper = new BuilderHelper();
 
-	public CompileAction(final IWorkbenchSite site) {
-		super("Compile file");
-		this.site = site;
-	}
+    public CompileAction(final IWorkbenchSite site) {
+        super("Compile file");
+        this.site = site;
+    }
 
-	@Override
-	public void run() {
-		final ErlangEditor editor = (ErlangEditor) getSite().getPage()
-				.getActiveEditor();
-		final IErlModule module = editor.getModule();
-		if (module == null) {
-			return;
-		}
-		final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+    @Override
+    public void run() {
+        final ErlangEditor editor = (ErlangEditor) getSite().getPage()
+                .getActiveEditor();
+        final IErlModule module = editor.getModule();
+        if (module == null) {
+            return;
+        }
+        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
 
-		final IResource resource = module.getResource();
-		final IProject project = resource.getProject();
-		BuildResource bres = new BuildResource(resource);
-		CompilerPreferences prefs = new CompilerPreferences(project);
-		try {
-			prefs.load();
-		} catch (BackingStoreException e1) {
-			e1.printStackTrace();
-		}
-		OtpErlangList compilerOptions = prefs.export();
+        final IResource resource = module.getResource();
+        final IProject project = resource.getProject();
+        BuildResource bres = new BuildResource(resource);
+        CompilerPreferences prefs = new CompilerPreferences(project);
+        try {
+            prefs.load();
+        } catch (BackingStoreException e1) {
+            e1.printStackTrace();
+        }
+        OtpErlangList compilerOptions = prefs.export();
+        final OldErlangProjectProperties pprefs = ErlangCore
+                .getProjectProperties(project);
 
-		if ("erl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileErl(project, bres, b, compilerOptions);
-		}
-		if ("yrl".equals(resource.getFileExtension())) {
-			BuilderUtils.compileYrl(project, bres, b, compilerOptions);
-		}
-	}
+        if ("erl".equals(resource.getFileExtension())) {
+            helper.compileErl(project, bres, pprefs.getOutputDir()
+                    .toString(), b, compilerOptions);
+        }
+        if ("yrl".equals(resource.getFileExtension())) {
+            helper.compileYrl(project, bres, b, compilerOptions);
+        }
+    }
 
-	public IWorkbenchSite getSite() {
-		return site;
-	}
+    public IWorkbenchSite getSite() {
+        return site;
+    }
 }

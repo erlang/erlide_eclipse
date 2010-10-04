@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 György Orosz.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     György Orosz - initial API and implementation
+ ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
 import org.erlide.wrangler.refactoring.exception.WranglerException;
@@ -20,7 +30,7 @@ public class StateDataToRecordRpcMessage extends AbstractRefactoringRpcMessage {
 	protected OtpErlangObject stateFuns;
 
 	@Override
-	protected void parseRefactoringMessage(OtpErlangTuple resultTuple)
+	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
 			throws WranglerException {
 
 		OtpErlangObject wranglerResult = resultTuple.elementAt(1);

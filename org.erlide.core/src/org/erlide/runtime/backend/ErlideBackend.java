@@ -42,228 +42,229 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  */
 public final class ErlideBackend extends Backend implements IDisposable,
-		IStreamListener, ILaunchesListener2 {
+        IStreamListener, ILaunchesListener2 {
 
-	private final CodeManager codeManager;
-	private IStreamsProxy proxy;
+    private final CodeManager codeManager;
+    private IStreamsProxy proxy;
 
-	private ILaunch launch;
-	private boolean managed = false;
+    private ILaunch launch;
+    private boolean managed = false;
 
-	public ErlideBackend(final RuntimeInfo info) throws BackendException {
-		super(info);
-		codeManager = new CodeManager(this);
-	}
+    public ErlideBackend(final RuntimeInfo info) throws BackendException {
+        super(info);
+        codeManager = new CodeManager(this);
+    }
 
-	@Override
-	public void dispose() {
-		try {
-			if (launch != null) {
-				launch.terminate();
-			}
-		} catch (final DebugException e) {
-			e.printStackTrace();
-		}
-		dispose(false);
-	}
+    @Override
+    public void dispose() {
+        try {
+            if (launch != null) {
+                launch.terminate();
+            }
+        } catch (final DebugException e) {
+            e.printStackTrace();
+        }
+        dispose(false);
+    }
 
-	@Override
-	public void dispose(final boolean restart) {
-		ErlLogger.debug("disposing backend " + getName());
-		super.dispose(restart);
-	}
+    @Override
+    public void dispose(final boolean restart) {
+        ErlLogger.debug("disposing backend " + getName());
+        super.dispose(restart);
+    }
 
-	@Override
-	public synchronized void restart() {
-		super.restart();
-		codeManager.reRegisterBundles();
-		// initErlang();
-		// fixme eventdaemon
-	}
+    @Override
+    public synchronized void restart() {
+        super.restart();
+        codeManager.reRegisterBundles();
+        // initErlang();
+        // fixme eventdaemon
+    }
 
-	public void removePath(final String path) {
-		codeManager.removePath(path);
-	}
+    public void removePath(final String path) {
+        codeManager.removePath(path);
+    }
 
-	public void addPath(final boolean usePathZ, final String path) {
-		codeManager.addPath(usePathZ, path);
-	}
+    public void addPath(final boolean usePathZ, final String path) {
+        codeManager.addPath(usePathZ, path);
+    }
 
-	@Override
-	public void initErlang(final boolean monitor, final boolean watch) {
-		super.initErlang(monitor, watch);
-		ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
-	}
+    @Override
+    public void initErlang(final boolean monitor, final boolean watch) {
+        super.initErlang(monitor, watch);
+        ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
+    }
 
-	public void register(final CodeBundle bundle) {
-		codeManager.register(bundle);
-	}
+    public void register(final CodeBundle bundle) {
+        codeManager.register(bundle);
+    }
 
-	public void unregister(final Bundle b) {
-		codeManager.unregister(b);
-	}
+    public void unregister(final Bundle b) {
+        codeManager.unregister(b);
+    }
 
-	public void setTrapExit(final boolean contains) {
-	}
+    public void setTrapExit(final boolean contains) {
+    }
 
-	public void streamAppended(final String text, final IStreamMonitor monitor) {
-		if (monitor == proxy.getOutputStreamMonitor()) {
-			// System.out.println(getName() + " OUT " + text);
-		} else if (monitor == proxy.getErrorStreamMonitor()) {
-			// System.out.println(getName() + " ERR " + text);
-		} else {
-			// System.out.println("???" + text);
-		}
-	}
+    public void streamAppended(final String text, final IStreamMonitor monitor) {
+        if (monitor == proxy.getOutputStreamMonitor()) {
+            // System.out.println(getName() + " OUT " + text);
+        } else if (monitor == proxy.getErrorStreamMonitor()) {
+            // System.out.println(getName() + " ERR " + text);
+        } else {
+            // System.out.println("???" + text);
+        }
+    }
 
-	public ILaunch getLaunch() {
-		return launch;
-	}
+    public ILaunch getLaunch() {
+        return launch;
+    }
 
-	public void setLaunch(final ILaunch launch2) {
-		launch = launch2;
-	}
+    public void setLaunch(final ILaunch launch2) {
+        launch = launch2;
+    }
 
-	@Override
-	public BackendShell getShell(final String id) {
-		final BackendShell shell = super.getShell(id);
-		if (proxy != null) {
-			final IStreamMonitor errorStreamMonitor = proxy
-					.getErrorStreamMonitor();
-			errorStreamMonitor.addListener(new IStreamListener() {
-				public void streamAppended(final String text,
-						final IStreamMonitor monitor) {
-					shell.add(text, IoRequestKind.STDERR);
-				}
-			});
-			final IStreamMonitor outputStreamMonitor = proxy
-					.getOutputStreamMonitor();
-			outputStreamMonitor.addListener(new IStreamListener() {
-				public void streamAppended(final String text,
-						final IStreamMonitor monitor) {
-					shell.add(text, IoRequestKind.STDOUT);
-				}
-			});
-		}
-		return shell;
-	}
+    @Override
+    public BackendShell getShell(final String id) {
+        final BackendShell shell = super.getShell(id);
+        if (proxy != null) {
+            final IStreamMonitor errorStreamMonitor = proxy
+                    .getErrorStreamMonitor();
+            errorStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
+                    shell.add(text, IoRequestKind.STDERR);
+                }
+            });
+            final IStreamMonitor outputStreamMonitor = proxy
+                    .getOutputStreamMonitor();
+            outputStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
+                    shell.add(text, IoRequestKind.STDOUT);
+                }
+            });
+        }
+        return shell;
+    }
 
-	@Override
-	public boolean isDistributed() {
-		return !getInfo().getNodeName().equals("");
-	}
+    @Override
+    public boolean isDistributed() {
+        return !getInfo().getNodeName().equals("");
+    }
 
-	@Override
-	public void input(final String s) throws IOException {
-		if (!isStopped()) {
-			if (proxy != null) {
-				proxy.write(s);
-			} else {
-				ErlLogger
-						.warn("Could not load module on backend %s, stream proxy is null",
-								getInfo());
-			}
-		}
-	}
+    @Override
+    public void input(final String s) throws IOException {
+        if (!isStopped()) {
+            if (proxy != null) {
+                proxy.write(s);
+            } else {
+                ErlLogger
+                        .warn(
+                                "Could not load module on backend %s, stream proxy is null",
+                                getInfo());
+            }
+        }
+    }
 
-	public void launchesTerminated(final ILaunch[] launches) {
-		for (final ILaunch aLaunch : launches) {
-			if (aLaunch == launch) {
-				stop();
-			}
-		}
-	}
+    public void launchesTerminated(final ILaunch[] launches) {
+        for (final ILaunch aLaunch : launches) {
+            if (aLaunch == launch) {
+                stop();
+            }
+        }
+    }
 
-	public void launchesAdded(final ILaunch[] launches) {
-	}
+    public void launchesAdded(final ILaunch[] launches) {
+    }
 
-	public void launchesChanged(final ILaunch[] launches) {
-	}
+    public void launchesChanged(final ILaunch[] launches) {
+    }
 
-	public void launchesRemoved(final ILaunch[] launches) {
-	}
+    public void launchesRemoved(final ILaunch[] launches) {
+    }
 
-	public void setStreamsProxy(final IStreamsProxy streamsProxy) {
-		proxy = streamsProxy;
-		if (proxy != null) {
-			final IStreamMonitor errorStreamMonitor = proxy
-					.getErrorStreamMonitor();
-			errorStreamMonitor.addListener(this);
-			final IStreamMonitor outputStreamMonitor = proxy
-					.getOutputStreamMonitor();
-			outputStreamMonitor.addListener(this);
-		}
-	}
+    public void setStreamsProxy(final IStreamsProxy streamsProxy) {
+        proxy = streamsProxy;
+        if (proxy != null) {
+            final IStreamMonitor errorStreamMonitor = proxy
+                    .getErrorStreamMonitor();
+            errorStreamMonitor.addListener(this);
+            final IStreamMonitor outputStreamMonitor = proxy
+                    .getOutputStreamMonitor();
+            outputStreamMonitor.addListener(this);
+        }
+    }
 
-	public void addProjectPath(final IProject project) {
-		final OldErlangProjectProperties prefs = ErlangCore
-				.getProjectProperties(project);
-		final String outDir = project.getLocation()
-				.append(prefs.getOutputDir()).toOSString();
-		if (outDir.length() > 0) {
-			ErlLogger.debug("backend %s: add path %s", getName(), outDir);
-			if (isDistributed()) {
-				final boolean accessible = ErlideUtil
-						.isAccessible(this, outDir);
-				if (accessible) {
-					addPath(false/* prefs.getUsePathZ() */, outDir);
-				} else {
-					loadBeamsFromDir(outDir);
-				}
-			} else {
-				final File f = new File(outDir);
-				for (final File file : f.listFiles()) {
-					String name = file.getName();
-					if (!name.endsWith(".beam"))
-						continue;
-					name = name.substring(0, name.length() - 5);
-					try {
-						ErlideUtil.loadModuleViaInput(this, project, name);
-					} catch (final ErlModelException e) {
-						e.printStackTrace();
-					} catch (final IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
+    public void addProjectPath(final IProject project) {
+        final OldErlangProjectProperties prefs = ErlangCore
+                .getProjectProperties(project);
+        final String outDir = project.getLocation()
+                .append(prefs.getOutputDir()).toOSString();
+        if (outDir.length() > 0) {
+            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
+            if (isDistributed()) {
+                final boolean accessible = ErlideUtil
+                        .isAccessible(this, outDir);
+                if (accessible) {
+                    addPath(false/* prefs.getUsePathZ() */, outDir);
+                } else {
+                    loadBeamsFromDir(outDir);
+                }
+            } else {
+                final File f = new File(outDir);
+                for (final File file : f.listFiles()) {
+                    String name = file.getName();
+                    if (!name.endsWith(".beam"))
+                        continue;
+                    name = name.substring(0, name.length() - 5);
+                    try {
+                        ErlideUtil.loadModuleViaInput(this, project, name);
+                    } catch (final ErlModelException e) {
+                        e.printStackTrace();
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
-	private void loadBeamsFromDir(final String outDir) {
-		final File dir = new File(outDir);
-		if (dir.isDirectory()) {
-			for (final File f : dir.listFiles()) {
-				final Path path = new Path(f.getPath());
-				if (path.getFileExtension() != null
-						&& "beam".compareTo(path.getFileExtension()) == 0) {
-					final String m = path.removeFileExtension().lastSegment();
-					try {
-						boolean ok = false;
-						final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
-								path);
-						if (bin != null) {
-							ok = ErlBackend.loadBeam(this, m, bin);
-						}
-						if (!ok) {
-							ErlLogger.error("Could not load %s", m);
-						}
-					} catch (final Exception ex) {
-						ErlLogger.warn(ex);
-					}
-				}
-			}
-		}
-	}
+    private void loadBeamsFromDir(final String outDir) {
+        final File dir = new File(outDir);
+        if (dir.isDirectory()) {
+            for (final File f : dir.listFiles()) {
+                final Path path = new Path(f.getPath());
+                if (path.getFileExtension() != null
+                        && "beam".compareTo(path.getFileExtension()) == 0) {
+                    final String m = path.removeFileExtension().lastSegment();
+                    try {
+                        boolean ok = false;
+                        final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
+                                path);
+                        if (bin != null) {
+                            ok = ErlBackend.loadBeam(this, m, bin);
+                        }
+                        if (!ok) {
+                            ErlLogger.error("Could not load %s", m);
+                        }
+                    } catch (final Exception ex) {
+                        ErlLogger.warn(ex);
+                    }
+                }
+            }
+        }
+    }
 
-	public boolean isManaged() {
-		return managed;
-	}
+    public boolean isManaged() {
+        return managed;
+    }
 
-	public void setManaged(boolean b) {
-		managed = b;
-	}
+    public void setManaged(boolean b) {
+        managed = b;
+    }
 
-	public boolean doLoadOnAllNodes() {
-		return getInfo().loadOnAllNodes();
-	}
+    public boolean doLoadOnAllNodes() {
+        return getInfo().loadOnAllNodes();
+    }
 }

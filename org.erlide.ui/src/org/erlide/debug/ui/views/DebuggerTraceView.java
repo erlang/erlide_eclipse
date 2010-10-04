@@ -381,7 +381,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final Object o = getSelectedInTree();
-				final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
+				final String msg = (o == null) ? "" : o.toString(); //$NON-NLS-1$
 				getViewSite().getActionBars().getStatusLineManager()
 						.setMessage(msg);
 

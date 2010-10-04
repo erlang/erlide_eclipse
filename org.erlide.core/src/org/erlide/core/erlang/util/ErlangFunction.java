@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.util;
 
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.internal.ErlFunction;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -73,8 +72,8 @@ public class ErlangFunction {
 		if (obj instanceof ErlangFunction) {
 			final ErlangFunction f = (ErlangFunction) obj;
 			if (f.name.equals(name)) {
-				return f.arity == arity || f.arity == IErlModel.UNKNOWN_ARITY
-						|| arity == IErlModel.UNKNOWN_ARITY;
+				return f.arity == arity || f.arity == ErlangFunction.ANY_ARITY
+						|| arity == ErlangFunction.ANY_ARITY;
 			}
 		}
 		return false;

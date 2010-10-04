@@ -267,7 +267,7 @@ public class BalloonWindow {
 				selectionControls.add(titleLabel);
 			}
 			final String titleText = shell.getText();
-			titleLabel.setText(titleText == null ? "" : titleText);
+			titleLabel.setText((titleText == null) ? "" : titleText);
 			titleLabel.pack();
 			titleSize = titleLabel.getSize();
 

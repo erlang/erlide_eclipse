@@ -26,12 +26,16 @@
 
 -module(side_effect_api).
 
--export([has_side_effect/3, build_local_side_effect_tab/2, build_lib_side_effect_tab/1]).
+-export([has_side_effect/1, has_side_effect/3, build_local_side_effect_tab/2, build_lib_side_effect_tab/1]).
 
 -include("../include/wrangler.hrl").
 
 
 %%=================================================================
+
+has_side_effect(Node) ->
+    has_side_effect("unknown", Node, []).
+    
 %% @doc Return true if the abstract syntax tree represented by Node has side effect, 
 %%      otherwise return false. As to parameters, File represents filename of the
 %%      code to which Node belongs,  Node is the abstract syntax tree representaion of 
@@ -39,7 +43,7 @@
 %%      search for related local Erlang source files.
 %% @spec has_side_effect(File::filename(), Node::syntaxTree(), SearchPaths::[dir()])-> true|false|unknown
 
--spec(has_side_effect(File::filename(), Node::syntaxTree(), SearchPaths::[dir()])-> true|false|unknown).
+%%-spec(has_side_effect(File::filename(), Node::syntaxTree(), SearchPaths::[dir()])-> true|false|unknown).
 has_side_effect(_File, Node, _SearchPaths) ->
     LibSideEffectFile = list_to_atom(filename:join(?WRANGLER_DIR, "plt/side_effect_plt")),
     LibPlt = from_dets(lib_side_effect_plt, LibSideEffectFile),
@@ -78,7 +82,7 @@ has_side_effect(_File, Node, _SearchPaths) ->
 %% put the result to the dets file: local_side_effect_tab. 
 %%
 %% @see build_lib_side_effect_tab/2.
--spec(build_local_side_effect_tab(File::filename(), SearchPaths::[dir()]) -> true).
+%%-spec(build_local_side_effect_tab(File::filename(), SearchPaths::[dir()]) -> true).
 build_local_side_effect_tab(File, SearchPaths) ->
     ValidSearchPaths = lists:all(fun (X) -> filelib:is_dir(X) end, SearchPaths),
     case ValidSearchPaths of
@@ -112,7 +116,7 @@ build_local_side_effect_tab(File, SearchPaths) ->
 %% put the result to the dets file: plt/side_effect_plt. 
 %%
 %% @see build_local_side_effect_tab/2.
--spec(build_lib_side_effect_tab([dir()]) -> true).
+%%-spec(build_lib_side_effect_tab([dir()]) -> true).
 build_lib_side_effect_tab(SearchPaths) ->
     Plt = ets:new(side_effect_table, [set, public]),
     #callgraph{callercallee = _CallerCallee, scc_order = Sccs, external_calls = _E} =
@@ -239,7 +243,7 @@ lookup(Plt, {M, F, A}) ->
 %% =====================================================================
 %% @spec bifs_side_effect_table()->[{{atom(), atom(), integer()}, boolean()}]
 %% @doc The side effect table of BIFs.
--spec(bifs_side_effect_table()->[{{atom(), atom(), integer()}, boolean()}]).
+%%-spec(bifs_side_effect_table()->[{{atom(), atom(), integer()}, boolean()}]).
 bifs_side_effect_table() ->
     [{{erlang, abs, 1}, false}, {{erlang, append_element, 2}, false}, {{erlang, atom_to_list, 1}, false},
      {{erlang, binary_to_list, 1}, false}, {{erlang, binary_to_list, 3}, false}, {{erlang, binary_to_term, 1}, false},

@@ -73,7 +73,7 @@ public class ExceptionUtils {
 	// java.lang.reflect.Method, $Proxy]
 	private static String getSkippedPackagesMessage(
 			Set<String> skippedPackages, int skippedLines) {
-		return INDENT + skippedLines + " line" + (skippedLines == 1 ? "" : "s")
+		return INDENT + skippedLines + " line" + ((skippedLines == 1) ? "" : "s")
 				+ " skipped for " + skippedPackages;
 	}
 

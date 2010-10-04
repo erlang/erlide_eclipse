@@ -80,14 +80,14 @@ public class ErlideOpen {
 		// order must match definition of #open_context !
 		// TODO use a proplist instead?
 		result.add(tag);
-		result.add(externalModules != null ? new OtpErlangString(
+		result.add((externalModules != null) ? new OtpErlangString(
 				externalModules) : UNDEFINED);
-		result.add(externalIncludes != null ? new OtpErlangString(
+		result.add((externalIncludes != null) ? new OtpErlangString(
 				externalIncludes) : UNDEFINED);
-		result.add(pathVars != null ? pathVars : UNDEFINED);
-		result.add(extraSourcePaths != null ? OtpErlang
+		result.add((pathVars != null) ? pathVars : UNDEFINED);
+		result.add((extraSourcePaths != null) ? OtpErlang
 				.mkStringList(extraSourcePaths) : UNDEFINED);
-		result.add(imports != null ? OtpErlang.mkList(imports) : UNDEFINED);
+		result.add((imports != null) ? OtpErlang.mkList(imports) : UNDEFINED);
 		return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
 	}
 

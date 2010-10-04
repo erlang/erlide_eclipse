@@ -46,13 +46,13 @@
 
 %% =============================================================================================
 
--spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-	       {ok, [filename()]}).
+%%-spec(new_macro/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%	       {ok, [filename()]}).
 new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, emacs).
 
--spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
-				 {ok, [{filename(), filename(), string()}]}).
+%%-spec(new_macro_eclipse/6::(filename(), pos(), pos(), string(), [dir()], integer()) ->
+%%				 {ok, [{filename(), filename(), string()}]}).
 new_macro_eclipse(FileName, Start, End, NewMacroName, SearchPaths, TabWidth) ->
     new_macro(FileName, Start, End, NewMacroName, SearchPaths, TabWidth, eclipse).
 
@@ -146,8 +146,8 @@ mk_macro_app(MName, Args) ->
 
  
 
--spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
-				       syntaxTree()).
+%%-spec(replace_expr_with_macro/3::(syntaxTree(), {[syntaxTree()], pos(), pos()}, syntaxTree()) ->
+%%				       syntaxTree()).
 replace_expr_with_macro(Form, {ExpList, SLoc, ELoc}, MApp) ->
     case length(ExpList) == 1 of
       true ->

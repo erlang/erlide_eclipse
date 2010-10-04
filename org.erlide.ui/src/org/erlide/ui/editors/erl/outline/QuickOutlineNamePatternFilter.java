@@ -20,74 +20,74 @@ import org.erlide.ui.util.StringMatcher;
 
 /**
  * QuickOutlineNamePatternFilter
- * 
+ *
  */
 public class QuickOutlineNamePatternFilter extends ViewerFilter {
 
-	private StringMatcher fStringMatcher;
+    private StringMatcher fStringMatcher;
 
-	/**
-	 * 
-	 */
-	public QuickOutlineNamePatternFilter() {
-		fStringMatcher = null;
-	}
+    /**
+     *
+     */
+    public QuickOutlineNamePatternFilter() {
+        fStringMatcher = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers
-	 * .Viewer, java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public boolean select(final Viewer viewer, final Object parentElement,
-			final Object element) {
-		// Element passes the filter if the string matcher is undefined or the
-		// viewer is not a tree viewer
-		if ((fStringMatcher == null)
-				|| ((viewer instanceof TreeViewer) == false)) {
-			return true;
-		}
-		final TreeViewer treeViewer = (TreeViewer) viewer;
-		// Match the pattern against the label of the given element
-		final String matchName = ((ILabelProvider) treeViewer
-				.getLabelProvider()).getText(element);
-		// Element passes the filter if it matches the pattern
-		if ((matchName != null) && fStringMatcher.match(matchName)) {
-			return true;
-		}
-		// Determine whether the element has children that pass the filter
-		return hasUnfilteredChild(treeViewer, element);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers
+     * .Viewer, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public boolean select(final Viewer viewer, final Object parentElement,
+            final Object element) {
+        // Element passes the filter if the string matcher is undefined or the
+        // viewer is not a tree viewer
+        if ((fStringMatcher == null)
+                || (!((viewer instanceof TreeViewer)))) {
+            return true;
+        }
+        final TreeViewer treeViewer = (TreeViewer) viewer;
+        // Match the pattern against the label of the given element
+        final String matchName = ((ILabelProvider) treeViewer
+                .getLabelProvider()).getText(element);
+        // Element passes the filter if it matches the pattern
+        if ((matchName != null) && fStringMatcher.match(matchName)) {
+            return true;
+        }
+        // Determine whether the element has children that pass the filter
+        return hasUnfilteredChild(treeViewer, element);
+    }
 
-	/**
-	 * @param viewer
-	 * @param element
-	 * @return
-	 */
-	private boolean hasUnfilteredChild(final TreeViewer viewer,
-			final Object element) {
-		// No point calling hasChildren() because the operation is the same cost
-		// as getting the children
-		// If the element has a child that passes the filter, then we want to
-		// keep the parent around - even if it does not pass the filter itself
-		final Object[] children = ((ITreeContentProvider) viewer
-				.getContentProvider()).getChildren(element);
-		for (int i = 0; i < children.length; i++) {
-			if (select(viewer, element, children[i])) {
-				return true;
-			}
-		}
-		// Element does not pass the filter
-		return false;
-	}
+    /**
+     * @param viewer
+     * @param element
+     * @return
+     */
+    private boolean hasUnfilteredChild(final TreeViewer viewer,
+            final Object element) {
+        // No point calling hasChildren() because the operation is the same cost
+        // as getting the children
+        // If the element has a child that passes the filter, then we want to
+        // keep the parent around - even if it does not pass the filter itself
+        final Object[] children = ((ITreeContentProvider) viewer
+                .getContentProvider()).getChildren(element);
+        for (int i = 0; i < children.length; i++) {
+            if (select(viewer, element, children[i])) {
+                return true;
+            }
+        }
+        // Element does not pass the filter
+        return false;
+    }
 
-	/**
-	 * @param stringMatcher
-	 */
-	public void setStringMatcher(final StringMatcher stringMatcher) {
-		fStringMatcher = stringMatcher;
-	}
+    /**
+     * @param stringMatcher
+     */
+    public void setStringMatcher(final StringMatcher stringMatcher) {
+        fStringMatcher = stringMatcher;
+    }
 
 }

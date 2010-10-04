@@ -108,7 +108,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
 		// select the first element in the list
 		final Object[] elements = treeContentProvider.getElements(root);
-		final Object primary = elements.length > 0 ? elements[0] : null;
+		final Object primary = (elements.length > 0) ? elements[0] : null;
 		if (primary != null) {
 			treeViewer.setSelection(new StructuredSelection(primary));
 		}

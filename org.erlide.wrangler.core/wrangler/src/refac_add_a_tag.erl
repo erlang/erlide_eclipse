@@ -48,7 +48,7 @@
 %%TODO: THIS MODULE IS IN NEED OF UPDATED.
 
 %% =============================================================================================
--spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).      
+%%-spec(add_a_tag/6::(filename(), integer(), integer(), string(), [dir()], integer()) ->{ok, [filename()]} | {error, string()}).      
 add_a_tag(FileName, Line, Col, Tag, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:add_a_tag(~p, ~p, ~p, ~p,~p, ~p).\n", [?MODULE, FileName, Line, Col, Tag, SearchPaths, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":add_a_tag(" ++ "\"" ++

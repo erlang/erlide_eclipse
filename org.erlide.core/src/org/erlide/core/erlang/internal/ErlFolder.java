@@ -112,7 +112,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 		return getModule(this, name, false);
 	}
 
-	public IErlModule getModuleExt(final String name) throws ErlModelException {
+	public IErlModule getModuleExt(final String name) {
 		return getModule(this, name, true);
 	}
 
