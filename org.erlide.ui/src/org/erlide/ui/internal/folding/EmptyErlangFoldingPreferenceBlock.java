@@ -1,6 +1,5 @@
 package org.erlide.ui.internal.folding;
 
-// TODO import org.eclipse.jdt.internal.ui.text.folding.FoldingMessages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,11 +20,6 @@ public class EmptyErlangFoldingPreferenceBlock implements
 		IErlangFoldingPreferenceBlock {
 
 	// TODO fattar ju inget av detta, varf?r skapar de kontroller h?r??
-	// TODO m?ste dessutom uppdatera alla @see referenser
-	/*
-	 * @see org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
-	 * createControl(org.eclipse.swt.widgets.Group)
-	 */
 	public Control createControl(final Composite composite) {
 		final Composite inner = new Composite(composite, SWT.NONE);
 		inner.setLayout(new GridLayout(3, false));
@@ -50,35 +44,15 @@ public class EmptyErlangFoldingPreferenceBlock implements
 		return inner;
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
-	 * initialize()
-	 */
 	public void initialize() {
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
-	 * performOk()
-	 */
 	public void performOk() {
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
-	 * performDefaults()
-	 */
 	public void performDefaults() {
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferenceBlock#
-	 * dispose()
-	 */
 	public void dispose() {
 	}
 
