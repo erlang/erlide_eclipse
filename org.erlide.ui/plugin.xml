@@ -1580,6 +1580,11 @@
             name="Body"
             type="body">
       </resolver>
+      <contextType
+            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeLayout"
+            id="org.erlide.ui.erlangsource.template.context.layout"
+            name="Layout">
+      </contextType>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
