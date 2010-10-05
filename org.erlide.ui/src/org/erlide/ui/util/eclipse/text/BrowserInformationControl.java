@@ -480,7 +480,6 @@ public class BrowserInformationControl extends AbstractInformationControl
 	/*
 	 * @see IInformationControl#computeSizeHint()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Point computeSizeHint() {
 		Point sizeConstraints = getSizeConstraints();
@@ -504,7 +503,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 		fTextLayout.setText(text);
 		fTextLayout.setWidth((sizeConstraints == null) ? SWT.DEFAULT
 				: sizeConstraints.x - trim.width);
-		Iterator iter = presentation.getAllStyleRangeIterator();
+		@SuppressWarnings("rawtypes")
+        Iterator iter = presentation.getAllStyleRangeIterator();
 		while (iter.hasNext()) {
 			StyleRange sr = (StyleRange) iter.next();
 			if (sr.fontStyle == SWT.BOLD) {

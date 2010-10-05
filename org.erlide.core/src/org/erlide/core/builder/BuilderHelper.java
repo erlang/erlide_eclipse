@@ -150,8 +150,7 @@ public final class BuilderHelper {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Set<BuildResource> getAffectedResources(final Map args,
+    public Set<BuildResource> getAffectedResources(@SuppressWarnings("rawtypes") final Map args,
             final IProject project, final IProgressMonitor monitor)
             throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
@@ -159,8 +158,7 @@ public final class BuilderHelper {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-    public Set<BuildResource> getAffectedResources(final Map args,
+    public Set<BuildResource> getAffectedResources(@SuppressWarnings("rawtypes") final Map args,
             final IResourceDelta delta, final IProgressMonitor monitor)
             throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();

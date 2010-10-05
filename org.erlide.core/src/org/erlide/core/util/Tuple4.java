@@ -25,14 +25,14 @@ public class Tuple4<X, Y, Z, T> implements Serializable {
 		this.o4 = o4;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Tuple4)) {
 			return false;
 		}
 
-		Tuple4 t2 = (Tuple4) obj;
+		@SuppressWarnings("rawtypes")
+        Tuple4 t2 = (Tuple4) obj;
 		if (!o1.equals(t2.o1)) {
 			return false;
 		}

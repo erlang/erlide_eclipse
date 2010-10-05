@@ -103,7 +103,6 @@ public class CodeManager {
 		return ErlBackend.loadBeam(backend, moduleName, bin);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void loadPluginCode(final CodeBundle p) {
 
 		final Bundle b = p.getBundle();
@@ -123,7 +122,8 @@ public class CodeManager {
 					&& c.getName().equals(b.getSymbolicName())) {
 				final String dir_path = el.getAttribute("path");
 				final String ver = backend.getCurrentVersion();
-				Enumeration e = null;
+				@SuppressWarnings("rawtypes")
+                Enumeration e = null;
 				if (dir_path != null) {
 					e = b.getEntryPaths(dir_path + "/" + ver);
 					if (e == null || !e.hasMoreElements()) {
@@ -233,14 +233,14 @@ public class CodeManager {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void unloadPluginCode(final CodeBundle p) {
 		// TODO Do we have to also check any fragments?
 		// see FindSupport.findInFragments
 
 		final Bundle b = p.getBundle();
 		final String ver = backend.getCurrentVersion();
-		Enumeration e = b.getEntryPaths("/ebin/" + ver);
+		@SuppressWarnings("rawtypes")
+        Enumeration e = b.getEntryPaths("/ebin/" + ver);
 		if (e == null) {
 			return;
 		}

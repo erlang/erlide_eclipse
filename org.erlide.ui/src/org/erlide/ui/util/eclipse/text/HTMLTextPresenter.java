@@ -53,7 +53,6 @@ public class HTMLTextPresenter implements
 		return new HTML2TextReader(new StringReader(hoverInfo), presentation);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void adaptTextPresentation(final TextPresentation presentation,
 			final int offset, final int insertLength) {
 
@@ -61,7 +60,8 @@ public class HTMLTextPresenter implements
 		int yoursEnd = offset + insertLength - 1;
 		yoursEnd = Math.max(yoursStart, yoursEnd);
 
-		Iterator e = presentation.getAllStyleRangeIterator();
+		@SuppressWarnings("rawtypes")
+        Iterator e = presentation.getAllStyleRangeIterator();
 		while (e.hasNext()) {
 
 			StyleRange range = (StyleRange) e.next();

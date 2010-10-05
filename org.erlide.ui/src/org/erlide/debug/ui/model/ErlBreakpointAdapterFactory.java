@@ -14,9 +14,8 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
-	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
+			@SuppressWarnings("rawtypes") final Class adapterType) {
 		if (adaptableObject instanceof ErlangEditor) {
 			final ErlangEditor editorPart = (ErlangEditor) adaptableObject;
 			final IResource resource = (IResource) editorPart.getEditorInput()
@@ -36,8 +35,8 @@ public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 	 * 
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
+	@SuppressWarnings("rawtypes")
+    public Class[] getAdapterList() {
 		return new Class[] { IToggleBreakpointsTarget.class };
 	}
 

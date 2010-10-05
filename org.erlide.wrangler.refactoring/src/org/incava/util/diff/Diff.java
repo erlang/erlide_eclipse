@@ -39,7 +39,7 @@ public class Diff {
 	/**
 	 * The list of differences, as <code>Difference</code> instances.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	protected List diffs = new ArrayList();
 
 	/**
@@ -50,21 +50,22 @@ public class Diff {
 	/**
 	 * The comparator used, if any.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Comparator comparator;
 
 	/**
 	 * The thresholds.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private TreeMap thresh;
 
 	/**
 	 * Constructs the Diff object for the two arrays, using the given
 	 * comparator.
 	 */
-	@SuppressWarnings( { "unchecked" })
-	public Diff(Object[] a, Object[] b, Comparator comp) {
+	@SuppressWarnings({})
+	public Diff(Object[] a, Object[] b,
+			@SuppressWarnings("rawtypes") Comparator comp) {
 		this.a = a;
 		this.b = b;
 		this.comparator = comp;
@@ -84,7 +85,7 @@ public class Diff {
 	 * Constructs the Diff object for the two collections, using the given
 	 * comparator.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public Diff(Collection a, Collection b, Comparator comp) {
 		this(a.toArray(), b.toArray(), comp);
 	}
@@ -94,7 +95,7 @@ public class Diff {
 	 * comparison mechanism between the objects, such as <code>equals</code> and
 	 * <code>compareTo</code>.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Diff(Collection a, Collection b) {
 		this(a, b, null);
 	}
@@ -102,7 +103,7 @@ public class Diff {
 	/**
 	 * Runs diff and returns the results.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List diff() {
 		traverseSequences();
 
@@ -253,13 +254,14 @@ public class Diff {
 	 */
 	@SuppressWarnings("unchecked")
 	protected boolean equals(Object x, Object y) {
-		return (comparator == null) ? x.equals(y) : comparator.compare(x, y) == 0;
+		return (comparator == null) ? x.equals(y)
+				: comparator.compare(x, y) == 0;
 	}
 
 	/**
 	 * Returns an array of the longest common subsequences.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Integer[] getLongestCommonSubsequences() {
 		int aStart = 0;
 		int aEnd = a.length - 1;
@@ -346,11 +348,11 @@ public class Diff {
 	/**
 	 * Converts the map (indexed by java.lang.Integers) into an array.
 	 */
-	@SuppressWarnings("unchecked")
-	protected static Integer[] toArray(TreeMap map) {
+	protected static Integer[] toArray(@SuppressWarnings("rawtypes") TreeMap map) {
 		int size = (map.size() == 0) ? 0 : 1 + ((Integer) map.lastKey())
 				.intValue();
 		Integer[] ary = new Integer[size];
+		@SuppressWarnings("rawtypes")
 		Iterator it = map.keySet().iterator();
 
 		while (it.hasNext()) {

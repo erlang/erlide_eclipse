@@ -26,14 +26,14 @@ public class Tuple<X, Y> implements Serializable {
 		this.o2 = other.o2;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Tuple)) {
 			return false;
 		}
 
-		Tuple t2 = (Tuple) obj;
+		@SuppressWarnings("rawtypes")
+        Tuple t2 = (Tuple) obj;
 		if (o1 == t2.o1 && o2 == t2.o2) { // all the same
 			return true;
 		}

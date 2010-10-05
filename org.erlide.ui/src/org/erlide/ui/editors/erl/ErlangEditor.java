@@ -591,9 +591,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fContextMenuGroup.setContext(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Object getAdapter(final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();

@@ -52,7 +52,6 @@ public class Tuple3<X, Y, Z> implements Serializable {
 	/**
 	 * Auto-generated code to deal with nulls.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -64,7 +63,8 @@ public class Tuple3<X, Y, Z> implements Serializable {
 		if (!(obj instanceof Tuple3)) {
 			return false;
 		}
-		final Tuple3 other = (Tuple3) obj;
+		@SuppressWarnings("rawtypes")
+        final Tuple3 other = (Tuple3) obj;
 		if (o1 == null) {
 			if (other.o1 != null) {
 				return false;

@@ -29,13 +29,12 @@ public class ErtsProcess extends RuntimeProcess {
 	public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 	public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
 
-	@SuppressWarnings( { "unused", "unchecked" })
+	@SuppressWarnings( { "unused", "rawtypes" })
 	private final Map fAttributes = new HashMap();
 	private IStreamsProxy streamsProxy;
 
-	@SuppressWarnings("unchecked")
 	public ErtsProcess(final ILaunch launch, final Process process,
-			final String name, final Map attributes) {
+			final String name, @SuppressWarnings("rawtypes") final Map attributes) {
 		super(launch, process, name, attributes);
 		// ErlLogger.debug("# create ErtsNode: " + name + " " + attributes);
 	}

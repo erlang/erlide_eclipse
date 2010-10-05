@@ -49,8 +49,7 @@ public class DummyProcess implements IProcess {
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
 		ErlLogger.debug("--> adapt as " + adapter.getName());
 		return null;
 	}

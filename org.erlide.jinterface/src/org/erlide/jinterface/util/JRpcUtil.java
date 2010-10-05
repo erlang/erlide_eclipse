@@ -262,7 +262,8 @@ public class JRpcUtil {
 					.hasNext();) {
 				boolean callable = true;
 				final Method m = itr.next();
-				final Class[] argFormalTypes = m.getParameterTypes();
+				@SuppressWarnings("rawtypes")
+                final Class[] argFormalTypes = m.getParameterTypes();
 				for (int i = 0; i < argFormalTypes.length; i++) {
 					if (!argFormalTypes[i].isAssignableFrom(args[i].getClass())) {
 						callable = false;
@@ -286,7 +287,8 @@ public class JRpcUtil {
 						+ " \n");
 
 				sb.append("\ttarget implements : \n");
-				final Class[] interfaces = target.getClass().getInterfaces();
+				@SuppressWarnings("rawtypes")
+                final Class[] interfaces = target.getClass().getInterfaces();
 				for (int j = 0; j < interfaces.length; j++) {
 					sb.append("\t\t" + interfaces[j].getName() + "\n");
 				}
