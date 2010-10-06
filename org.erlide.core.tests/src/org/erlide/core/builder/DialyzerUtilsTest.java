@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -30,8 +29,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
@@ -83,6 +80,10 @@ public class DialyzerUtilsTest {
 			final IErlModule erlModule = createErlModule(erlProject,
 					moduleName,
 					"-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
+			IMarker[] markers = erlProject.getProject().findMarkers(
+					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					IResource.DEPTH_INFINITE);
+			assertEquals(0, markers.length);
 			// when
 			// putting a dialyzer warning on it
 			final int lineNumber = 3;
@@ -93,7 +94,7 @@ public class DialyzerUtilsTest {
 			// then
 			// there should be a marker with proper file name and the proper
 			// line number
-			final IMarker[] markers = erlProject.getProject().findMarkers(
+			markers = erlProject.getProject().findMarkers(
 					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
 					IResource.DEPTH_INFINITE);
 			assertEquals(1, markers.length);
@@ -141,7 +142,7 @@ public class DialyzerUtilsTest {
 					.findMarkers(DialyzerUtils.DIALYZE_WARNING_MARKER, true,
 							IResource.DEPTH_INFINITE);
 			assertTrue(markers.length > 0);
-			for (IMarker marker : markers) {
+			for (final IMarker marker : markers) {
 				// for some reason, when running on Hudson, we get two identical
 				// markers...
 				assertEquals(externalFileName, marker.getResource().getName());
@@ -268,27 +269,18 @@ public class DialyzerUtilsTest {
 		}
 	}
 
-	private IErlProject createErlProject(IPath filePath, final String name)
+	private IErlProject createErlProject(final IPath path, final String name)
 			throws CoreException {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject project2 = root.getProject(name);
 		try {
 			project2.delete(true, null);
 		} catch (final CoreException x) {
+			// ignore
 		}
-		final IProject project = root.getProject(name);
-		IProjectDescription description = ResourcesPlugin.getWorkspace()
-				.newProjectDescription(project.getName());
-		long stamp = System.currentTimeMillis();
-		filePath = filePath.append("_" + stamp);
-		if (!Platform.getLocation().equals(filePath)) {
-			description.setLocation(filePath);
-		}
-		project.create(description, null);
-		project.open(null);
-		description = project.getDescription();
-		description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-		project.setDescription(description, null);
+		final IErlProject erlProject = ErlangCore.getModel().newProject(name,
+				path.toPortableString());
+		final IProject project = erlProject.getProject();
 		final OldErlangProjectProperties prefs = new OldErlangProjectProperties(
 				project);
 		final List<IPath> srcDirs = new ArrayList<IPath>();
@@ -303,8 +295,6 @@ public class DialyzerUtilsTest {
 		ebinDirs.add(new Path("ebin"));
 		buildPaths(root, project, ebinDirs);
 		prefs.setOutputDir(ebinDirs.get(0));
-		final IErlProject erlProject = (IErlProject) ErlangCore
-				.getModelManager().create(project, null);
 		return erlProject;
 	}
 
