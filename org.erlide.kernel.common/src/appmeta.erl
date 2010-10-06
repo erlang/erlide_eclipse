@@ -13,6 +13,8 @@
 
 -include("appmeta.hrl").
 
+%%FIXME inlined #meta in #appmeta, code probably broken now
+
 -spec read(string()) -> #appmeta{}.
 read(Path) ->
     {ok, [Term]} = file:consult(Path),
@@ -28,15 +30,15 @@ write(Term, Path) ->
     Text = io_lib:format("~p~n", [format(Term)]),
     file:write_file(Path, Text).
 
--spec meta_to_app(#meta{}) -> {application, string(), list()}.
-meta_to_app(#appmeta{name=Name, meta=Meta}) ->
-    {application, Name, remove_defaults(clean(format(Meta)), format(#meta{}))}.
+-spec meta_to_app(#appmeta{}) -> {application, string(), list()}.
+meta_to_app(#appmeta{name=Name}=Meta) ->
+    {application, Name, remove_defaults(clean(format(Meta)), format(#appmeta{}))}.
 
--spec app_to_meta({application, string(), list()}) -> #meta{}.
+-spec app_to_meta({application, string(), list()}) -> #appmeta{}.
 app_to_meta({application, Name, Meta}) ->
     {appmeta, Name, meta(Meta)}.
 
--spec merge_app_to_meta({application, string(), list()}, #meta{}) -> #meta{}.
+-spec merge_app_to_meta({application, string(), list()}, #appmeta{}) -> #appmeta{}.
 merge_app_to_meta(App, Meta) ->
     lists:foldl(App, fun meta/2, Meta).
 
@@ -46,39 +48,39 @@ check_app_meta(App, Meta) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 meta(Term) ->
-    parse(Term, fun meta/2, #meta{}).
+    parse(Term, fun meta/2, #appmeta{}).
 
 parse(Term, Fun, Init) when is_list(Term) ->
     lists:foldl(Fun, Init, Term).
 
 meta({description, Description}, Meta) ->
-    Meta#meta{description=Description};
+    Meta#appmeta{description=Description};
 meta({id, Id}, Meta) ->
-    Meta#meta{id=Id};
+    Meta#appmeta{id=Id};
 meta({vsn, Vsn}, Meta) ->
-    Meta#meta{vsn=Vsn};
+    Meta#appmeta{vsn=Vsn};
 meta({modules, Modules}, Meta) ->
-    Meta#meta{modules=Modules};
+    Meta#appmeta{modules=Modules};
 meta({maxT, MaxT}, Meta) ->
-    Meta#meta{maxT=MaxT};
+    Meta#appmeta{maxT=MaxT};
 meta({registered, Registered}, Meta) ->
-    Meta#meta{registered=Registered};
+    Meta#appmeta{registered=Registered};
 meta({included_applications, Included_applications}, Meta) ->
-    Meta#meta{included_applications=Included_applications};
+    Meta#appmeta{included_applications=Included_applications};
 meta({applications, Applications}, Meta) ->
-    Meta#meta{applications=Applications};
+    Meta#appmeta{applications=Applications};
 meta({env, Env}, Meta) ->
-    Meta#meta{env=Env};
+    Meta#appmeta{env=Env};
 meta({mod, Mod}, Meta) ->
-    Meta#meta{mod=Mod};
+    Meta#appmeta{mod=Mod};
 meta({start_phases, Start_phases}, Meta) ->
-    Meta#meta{start_phases=Start_phases};
+    Meta#appmeta{start_phases=Start_phases};
 meta({otp_version, Otp_version}, Meta) ->
-    Meta#meta{otp_version=Otp_version};
+    Meta#appmeta{otp_version=Otp_version};
 meta({layout, Layout}, Meta) ->
-    Meta#meta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#appmeta{layout=parse(Layout, fun layout/2, #layout{})};
 meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#meta{compiler_options=Compiler_options};
+    Meta#appmeta{compiler_options=Compiler_options};
 meta(_, Meta) ->
     Meta.
 
@@ -102,34 +104,34 @@ check(K, V, V0) ->
     [{mismatch, K, V, V0}].
 
 
-check_meta({description, Description}, #meta{description=Description0}) ->
+check_meta({description, Description}, #appmeta{description=Description0}) ->
     check(description, Description, Description0);
 check_meta({id, Id}, Meta) ->
-    Meta#meta{id=Id};
+    Meta#appmeta{id=Id};
 check_meta({vsn, Vsn}, Meta) ->
-    Meta#meta{vsn=Vsn};
+    Meta#appmeta{vsn=Vsn};
 check_meta({modules, Modules}, Meta) ->
-    Meta#meta{modules=Modules};
+    Meta#appmeta{modules=Modules};
 check_meta({maxT, MaxT}, Meta) ->
-    Meta#meta{maxT=MaxT};
+    Meta#appmeta{maxT=MaxT};
 check_meta({registered, Registered}, Meta) ->
-    Meta#meta{registered=Registered};
+    Meta#appmeta{registered=Registered};
 check_meta({included_applications, Included_applications}, Meta) ->
-    Meta#meta{included_applications=Included_applications};
+    Meta#appmeta{included_applications=Included_applications};
 check_meta({applications, Applications}, Meta) ->
-    Meta#meta{applications=Applications};
+    Meta#appmeta{applications=Applications};
 check_meta({env, Env}, Meta) ->
-    Meta#meta{env=Env};
+    Meta#appmeta{env=Env};
 check_meta({mod, Mod}, Meta) ->
-    Meta#meta{mod=Mod};
+    Meta#appmeta{mod=Mod};
 check_meta({start_phases, Start_phases}, Meta) ->
-    Meta#meta{start_phases=Start_phases};
+    Meta#appmeta{start_phases=Start_phases};
 check_meta({otp_version, Otp_version}, Meta) ->
-    Meta#meta{otp_version=Otp_version};
+    Meta#appmeta{otp_version=Otp_version};
 check_meta({layout, Layout}, Meta) ->
-    Meta#meta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#appmeta{layout=parse(Layout, fun layout/2, #layout{})};
 check_meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#meta{compiler_options=Compiler_options};
+    Meta#appmeta{compiler_options=Compiler_options};
 check_meta(_, Meta) ->
     Meta.
 
@@ -144,22 +146,20 @@ layout(_, Layout) ->
 
 format({application, Name, Meta}) ->
     {application, Name, format(Meta)};
-format(#appmeta{name=Name, meta=Meta}) ->
-    {appmeta, Name, format(Meta)};
-format(#meta{description=Description, id=Id, vsn=Vsn,
-             modules=Modules, maxT=MaxT, registered=Registered,
-             included_applications=Included_applications,
-             applications=Applications, env=Env,
-             mod=Mod, start_phases=Start_phases,
-             otp_version=Otp_version, layout=Layout,
-             compiler_options=Compiler_options}) ->
-    [{description,Description}, {id,Id}, { vsn,Vsn},
-     {modules,Modules}, {maxT,MaxT}, {registered,Registered},
-     {included_applications,Included_applications},
-     {applications,Applications}, {env,Env},
-     {mod,Mod}, {start_phases,Start_phases},
-     {otp_version,Otp_version}, {layout,format(Layout)},
-     {compiler_options,Compiler_options}];
+format(#appmeta{name=Name, description=Description, id=Id, vsn=Vsn,
+                modules=Modules, maxT=MaxT, registered=Registered,
+                included_applications=Included_applications,
+                applications=Applications, env=Env,
+                mod=Mod, start_phases=Start_phases,
+                otp_version=Otp_version, layout=Layout,
+                compiler_options=Compiler_options}) ->
+    {appmeta, Name, [{description,Description}, {id,Id}, { vsn,Vsn},
+                     {modules,Modules}, {maxT,MaxT}, {registered,Registered},
+                     {included_applications,Included_applications},
+                     {applications,Applications}, {env,Env},
+                     {mod,Mod}, {start_phases,Start_phases},
+                     {otp_version,Otp_version}, {layout,format(Layout)},
+                     {compiler_options,Compiler_options}]};
 format(#layout{src=Src, include=Include, ebin=Ebin }) ->
     [{src, Src}, {include, Include}, {ebin, Ebin}].
 
@@ -202,8 +202,6 @@ remove_defaults(L, Ref)->
                   end
           end,
     lists:flatmap(Fun, L).
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
