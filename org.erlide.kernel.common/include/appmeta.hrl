@@ -6,7 +6,8 @@
                  src = ["src"] :: [meta_path()],
                  include = ["include"] :: [meta_path()],
                  ebin = "ebin" :: meta_path(),
-                 doc = ["doc"] :: [meta_path()]
+                 doc = ["doc"] :: [meta_path()],
+                 priv = "priv" :: meta_path()
                 }).
 -type meta_module() :: module() |
                        {module(), options()}.
