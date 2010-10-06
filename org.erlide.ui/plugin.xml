@@ -733,6 +733,12 @@
             sequence="M1+M2+M3+K">
       </key>
       <key
+            commandId="org.erlide.ui.actions.clearCache"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+R">
+      </key>
+      <key
             commandId="org.erlide.ui.actions.callhierarchy"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
