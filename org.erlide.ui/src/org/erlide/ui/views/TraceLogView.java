@@ -94,8 +94,7 @@ public class TraceLogView extends ViewPart {
 			return getName();
 		}
 
-		@SuppressWarnings("unchecked")
-		public Object getAdapter(final Class key) {
+		public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
 			return null;
 		}
 	}

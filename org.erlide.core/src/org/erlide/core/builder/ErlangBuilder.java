@@ -98,9 +98,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    protected IProject[] build(final int kind, final Map args,
+    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes") final Map args,
             final IProgressMonitor monitor) throws CoreException {
         long time = System.currentTimeMillis();
         IProject project = getProject();
@@ -246,9 +245,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         notifier = null;
     }
 
-    @SuppressWarnings("unchecked")
     private Set<BuildResource> getResourcesToBuild(final int kind,
-            final Map args, final IProject currentProject) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args, final IProject currentProject) throws CoreException {
         Set<BuildResource> resourcesToBuild = Sets.newHashSet();
         IProgressMonitor submon = new NullProgressMonitor();
         // new SubProgressMonitor(monitor, 10);

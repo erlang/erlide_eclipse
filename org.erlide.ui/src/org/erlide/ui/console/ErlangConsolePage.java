@@ -464,8 +464,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class required) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
 		if (IFindReplaceTarget.class.equals(required)) {
 			return consoleOutputViewer.getFindReplaceTarget();
 		}

@@ -26,9 +26,6 @@
                     {atom(), meta_path()} |
                     {atom, #layout{}}.
 
-%% TODO remove 'source'??? Then we need to update this whenever a module is
-%% added/removed... Code is much simpler...
-
 -record(meta, {
                description = "" :: string(),
                id = "" :: string(),

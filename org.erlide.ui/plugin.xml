@@ -733,6 +733,12 @@
             sequence="M1+M2+M3+K">
       </key>
       <key
+            commandId="org.erlide.ui.actions.clearCache"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+R">
+      </key>
+      <key
             commandId="org.erlide.ui.actions.callhierarchy"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -1580,6 +1586,11 @@
             name="Body"
             type="body">
       </resolver>
+      <contextType
+            class="org.erlide.ui.wizards.templates.ErlangSourceContextTypeLayout"
+            id="org.erlide.ui.erlangsource.template.context.layout"
+            name="Layout">
+      </contextType>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">

@@ -263,7 +263,7 @@ public class Backend extends OtpNodeStatus {
 				tries--;
 			}
 			if (available) {
-				available &= waitForCodeServer();
+				available = waitForCodeServer();
 			}
 
 			if (available) {

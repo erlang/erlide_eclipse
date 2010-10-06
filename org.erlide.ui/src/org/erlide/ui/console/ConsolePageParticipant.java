@@ -181,8 +181,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class required) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
 		if (IShowInSource.class.equals(required)) {
 			return this;
 		}
