@@ -64,10 +64,10 @@ public final class OldErlangProjectProperties implements
         }
 
         if ("true".equals(System.getProperty("erlide.newprops"))) {
-            final ErlangProjectProperties npp = new ErlangProjectProperties();
             try {
-                npp.load((IEclipsePreferences) node.node("test"));
-                npp.store((IEclipsePreferences) node.node("new_test"));
+                ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
+                ErlProjectInfo npp = builder.load((IEclipsePreferences) node.node("test"));
+                builder.store(npp, (IEclipsePreferences) node.node("new_test"));
             } catch (final BackingStoreException e) {
                 e.printStackTrace();
             }
@@ -116,10 +116,11 @@ public final class OldErlangProjectProperties implements
         }
 
         if ("true".equals(System.getProperty("erlide.newprops"))) {
-            final ErlangProjectProperties npp = PropertiesUtils
+            final ErlProjectInfo npp = PropertiesUtils
                     .convertOld(this);
             try {
-                npp.store((IEclipsePreferences) node.node("test"));
+                ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
+                builder.store(npp, (IEclipsePreferences) node.node("test"));
             } catch (final BackingStoreException e) {
                 e.printStackTrace();
             }

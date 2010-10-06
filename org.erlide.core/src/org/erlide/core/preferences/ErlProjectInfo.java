@@ -9,13 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.jinterface.backend.RuntimeVersion;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Sets;
 
-public final class ErlangProjectProperties {
+public final class ErlProjectInfo {
 
     private RuntimeVersion requiredRuntimeVersion;
     private final Set<SourceEntry> codePathEntries = Sets.newHashSet();
@@ -26,7 +24,7 @@ public final class ErlangProjectProperties {
     private final Set<PathEntry> dependencies = Sets.newHashSet();
     private final Map<String, String> macros = new HashMap<String, String>();
 
-    public ErlangProjectProperties() {
+    public ErlProjectInfo() {
     }
 
     public Collection<SourceEntry> getSources() {
@@ -91,16 +89,6 @@ public final class ErlangProjectProperties {
 
     public Map<String, String> getMacros() {
         return macros;
-    }
-
-    public void load(final IEclipsePreferences root)
-            throws BackingStoreException {
-        // TODO implement!
-    }
-
-    public void store(final IEclipsePreferences root)
-            throws BackingStoreException {
-        // TODO implement!
     }
 
     public void setRequiredRuntimeVersion(RuntimeVersion runtimeVersion) {

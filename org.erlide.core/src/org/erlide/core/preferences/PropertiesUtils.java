@@ -27,9 +27,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlangProjectProperties convertOld(
+    public static ErlProjectInfo convertOld(
             final OldErlangProjectProperties old) {
-        ErlangProjectProperties result = new ErlangProjectProperties();
+        ErlProjectInfo result = new ErlProjectInfo();
         result.setRequiredRuntimeVersion(old.getRuntimeVersion());
         if (!result.getRequiredRuntimeVersion().isDefined()) {
             final RuntimeInfo runtimeInfo = old.getRuntimeInfo();
