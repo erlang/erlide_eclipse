@@ -1,6 +1,7 @@
 package org.erlide.core.preferences;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -55,20 +56,20 @@ public final class ErlProjectLayout {
         priv = mkPath(p);
     }
 
-    public List<IPath> getSources() {
-        return sources;
+    public Collection<IPath> getSources() {
+        return Collections.unmodifiableCollection(sources);
     }
 
-    public List<IPath> getIncludes() {
-        return includes;
+    public Collection<IPath> getIncludes() {
+        return Collections.unmodifiableCollection(includes);
     }
 
     public IPath getOutput() {
         return output;
     }
 
-    public List<IPath> getDocs() {
-        return docs;
+    public Collection<IPath> getDocs() {
+        return Collections.unmodifiableCollection(docs);
     }
 
     public IPath getPriv() {
@@ -90,8 +91,7 @@ public final class ErlProjectLayout {
     }
 
     public ErlProjectLayout addSource(IPath path) {
-        List<IPath> sources1 = Lists.newArrayList(sources);
-        sources1.add(path);
+        List<IPath> sources1 = addToListIfNotExisting(sources, path);
         ErlProjectLayout result = new ErlProjectLayout(sources1, includes,
                 output, docs, priv);
         return result;
@@ -102,10 +102,9 @@ public final class ErlProjectLayout {
     }
 
     public ErlProjectLayout addInclude(IPath path) {
-        List<IPath> includes1 = Lists.newArrayList(includes);
-        includes1.add(path);
-        ErlProjectLayout result = new ErlProjectLayout(sources, includes1,
-                output, docs, priv);
+        List<IPath> list = addToListIfNotExisting(includes, path);
+        ErlProjectLayout result = new ErlProjectLayout(sources, list, output,
+                docs, priv);
         return result;
     }
 
@@ -124,10 +123,18 @@ public final class ErlProjectLayout {
     }
 
     public ErlProjectLayout addDoc(IPath path) {
-        List<IPath> docs1 = Lists.newArrayList(includes);
-        docs1.add(path);
+        List<IPath> list = addToListIfNotExisting(docs, path);
         ErlProjectLayout result = new ErlProjectLayout(sources, includes,
-                output, docs1, priv);
+                output, list, priv);
+        return result;
+    }
+
+    private List<IPath> addToListIfNotExisting(Collection<IPath> list,
+            IPath path) {
+        List<IPath> result = Lists.newArrayList(list);
+        if (!result.contains(path)) {
+            result.add(path);
+        }
         return result;
     }
 
@@ -186,6 +193,45 @@ public final class ErlProjectLayout {
                                     .toString()));
         }
         return new OtpErlangString(path.toString());
+    }
+
+    public ErlProjectLayout removeSource(String string) {
+        return removeSource(new Path(string));
+    }
+
+    public ErlProjectLayout removeSource(Path path) {
+        List<IPath> list = removeFromList(sources, path);
+        ErlProjectLayout result = new ErlProjectLayout(list, includes, output,
+                docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout removeInclude(String string) {
+        return removeInclude(new Path(string));
+    }
+
+    public ErlProjectLayout removeInclude(Path path) {
+        List<IPath> list = removeFromList(includes, path);
+        ErlProjectLayout result = new ErlProjectLayout(sources, list, output,
+                docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout removeDoc(String string) {
+        return removeDoc(new Path(string));
+    }
+
+    public ErlProjectLayout removeDoc(Path path) {
+        List<IPath> list = removeFromList(docs, path);
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes,
+                output, list, priv);
+        return result;
+    }
+
+    private List<IPath> removeFromList(List<IPath> list, Path path) {
+        List<IPath> result = Lists.newArrayList(list);
+        result.remove(path);
+        return result;
     }
 
 }

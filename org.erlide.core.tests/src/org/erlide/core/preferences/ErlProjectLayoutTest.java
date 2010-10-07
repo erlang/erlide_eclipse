@@ -54,39 +54,34 @@ public class ErlProjectLayoutTest {
 	public void shouldAddSourceDir() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.addSource("hello");
-		Collection<IPath> expected = Lists
-				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getSources());
-		expected.add(new Path("hello"));
+		Collection<IPath> result = info.getSources();
+		hasListItemNamedHello(info, result);
+	}
+
+	private void hasListItemNamedHello(ErlProjectLayout info,
+			Collection<IPath> result) {
 		MatcherAssert.assertThat("not same object", info,
 				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
-		MatcherAssert.assertThat("source dirs content", info.getSources(),
-				Matchers.equalTo(expected));
+		MatcherAssert.assertThat("source dirs size", result.size(),
+				Matchers.equalTo(2));
+		MatcherAssert.assertThat("source dirs content", result,
+				Matchers.hasItem(new Path("hello")));
 	}
 
 	@Test
 	public void shouldAddIncludeDir() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.addInclude("hello");
-		Collection<IPath> expected = Lists
-				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getIncludes());
-		expected.add(new Path("hello"));
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
-		MatcherAssert.assertThat("source dirs content", info.getIncludes(),
-				Matchers.equalTo(expected));
+		Collection<IPath> result = info.getIncludes();
+		hasListItemNamedHello(info, result);
 	}
 
 	@Test
 	public void shouldAddDocDir() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.addDoc("hello");
-		Collection<IPath> expected = Lists
-				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getIncludes());
-		expected.add(new Path("hello"));
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
-		MatcherAssert.assertThat("source dirs content", info.getDocs(),
-				Matchers.equalTo(expected));
+		Collection<IPath> result = info.getDocs();
+		hasListItemNamedHello(info, result);
 	}
 
 	@Test
@@ -107,6 +102,38 @@ public class ErlProjectLayoutTest {
 		MatcherAssert.assertThat("not same object", info,
 				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 		MatcherAssert.assertThat(info.getPriv(), Matchers.equalTo(expected));
+	}
+
+	@Test
+	public void shouldRemoveSourceDir() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.removeSource("src");
+		Collection<IPath> result = info.getSources();
+		hasListNoItemNamed(info, result, "src");
+	}
+
+	private void hasListNoItemNamed(ErlProjectLayout info,
+			Collection<IPath> result, String string) {
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+		MatcherAssert.assertThat("source dirs content", result,
+				Matchers.not(Matchers.hasItem(new Path(string))));
+	}
+
+	@Test
+	public void shouldRemoveIncludeDir() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.removeInclude("include");
+		Collection<IPath> result = info.getIncludes();
+		hasListNoItemNamed(info, result, "include");
+	}
+
+	@Test
+	public void shouldRemoveDocDir() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.removeDoc("doc");
+		Collection<IPath> result = info.getDocs();
+		hasListNoItemNamed(info, result, "doc");
 	}
 
 }
