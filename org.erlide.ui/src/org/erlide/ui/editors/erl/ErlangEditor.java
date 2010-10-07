@@ -162,8 +162,8 @@ import erlang.OpenResult;
 
 /**
  * The actual editor itself
- *
- *
+ * 
+ * 
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
 public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
@@ -208,47 +208,47 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * stay even if there's no valid erlang element at the current caret
      * position. Only valid if {@link #fMarkOccurrenceAnnotations} is
      * <code>true</code>.
-     *
+     * 
      * @since 3.0
      */
     private boolean fStickyOccurrenceAnnotations;
     /**
      * Holds the current occurrence annotations.
-     *
+     * 
      * @since 3.0
      */
     private Annotation[] fOccurrenceAnnotations = null;
     /**
      * Tells whether all occurrences of the element at the current caret
      * location are automatically marked in this editor.
-     *
+     * 
      * @since 3.0
      */
     private boolean fMarkOccurrenceAnnotations;
     /**
      * The selection used when forcing occurrence marking through code.
-     *
+     * 
      * @since 3.0
      */
     private ISelection fForcedMarkOccurrencesSelection;
     /**
      * The document modification stamp at the time when the last occurrence
      * marking took place.
-     *
+     * 
      * @since 3.1
      */
     private long fMarkOccurrenceModificationStamp = IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP;
     /**
      * The region of the word under the caret used to when computing the current
      * occurrence markings.
-     *
+     * 
      * @since 3.1
      */
     private IRegion fMarkOccurrenceTargetRegion;
 
     /**
      * The internal shell activation listener for updating occurrences.
-     *
+     * 
      * @since 3.0
      */
     private ActivationListener fActivationListener = new ActivationListener();
@@ -260,7 +260,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Simple constructor
-     *
+     * 
      */
     public ErlangEditor() {
         super();
@@ -283,7 +283,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Simple disposer
-     *
+     * 
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
     @Override
@@ -435,7 +435,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     /**
-     *
+     * 
      * @return
      */
     protected final boolean isActiveEditor() {
@@ -455,7 +455,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         ActionGroup esg;
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
-                // ovg= new OpenViewActionGroup(this),
+        // ovg= new OpenViewActionGroup(this),
                 esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
@@ -466,42 +466,44 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
         setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
 
-        sendToConsole = new SendToConsoleAction(getSite(), ErlangEditorMessages
-                .getBundleForConstructedKeys(), "SendToConsole.", this);
+        sendToConsole = new SendToConsoleAction(getSite(),
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "SendToConsole.", this);
         sendToConsole
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
         setAction("SendToConsole", sendToConsole);
         markAsStateDependentAction("sendToConsole", true);
         markAsSelectionDependentAction("sendToConsole", true);
 
-        final Action act = new ContentAssistAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(), "ContentAssistProposal.", this);
-        act
-                .setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+        final Action act = new ContentAssistAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "ContentAssistProposal.", this);
+        act.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
         setAction("ContentAssistProposal", act);
         markAsStateDependentAction("ContentAssistProposal", true);
 
-        ResourceAction resAction = new TextOperationAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(),
+        ResourceAction resAction = new TextOperationAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
                 "ShowEDoc.", this, ISourceViewer.INFORMATION, true); //$NON-NLS-1$
-        resAction = new InformationDispatchAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(),
+        resAction = new InformationDispatchAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
                 "ShowEDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
         resAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
         setAction("ShowEDoc", resAction); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(resAction,
-                IErlangHelpContextIds.SHOW_EDOC_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(resAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
 
-        indentAction = new IndentAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(), "Indent.", this); //$NON-NLS-1$
+        indentAction = new IndentAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "Indent.", this); //$NON-NLS-1$
         indentAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
         setAction("Indent", indentAction); //$NON-NLS-1$
         markAsStateDependentAction("Indent", true); //$NON-NLS-1$
         markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
-                IErlangHelpContextIds.INDENT_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
 
         compileAction = new CompileAction(getSite());
         compileAction
@@ -509,8 +511,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         setAction("Compile file", compileAction);
 
         if (ErlideUtil.isTest()) {
-            testAction = new TestAction(ErlangEditorMessages
-                    .getBundleForConstructedKeys(), "Test.", this, getModule());
+            testAction = new TestAction(
+                    ErlangEditorMessages.getBundleForConstructedKeys(),
+                    "Test.", this, getModule());
             testAction
                     .setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
             setAction("Test", testAction);
@@ -528,8 +531,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsSelectionDependentAction("CallHierarchy", true);
 
         if (ErlideUtil.isClearCacheAvailable()) {
-            clearCacheAction = new ClearCacheAction(ErlangEditorMessages
-                    .getBundleForConstructedKeys(), "ClearCache.", this);
+            clearCacheAction = new ClearCacheAction(
+                    ErlangEditorMessages.getBundleForConstructedKeys(),
+                    "ClearCache.", this);
             clearCacheAction
                     .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
             setAction("ClearCache", clearCacheAction);
@@ -539,24 +543,30 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             // IErlangHelpContextIds.INDENT_ACTION);
         }
 
-        final Action action = new IndentAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(), "Indent.", this);
+        final Action action = new IndentAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.",
+                this);
         setAction("IndentOnTab", action);
         markAsStateDependentAction("IndentOnTab", true);
         markAsSelectionDependentAction("IndentOnTab", true);
 
-        toggleCommentAction = new ToggleCommentAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(), "ToggleComment.", this);
+        toggleCommentAction = new ToggleCommentAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "ToggleComment.", this);
         toggleCommentAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", toggleCommentAction);
         markAsStateDependentAction("ToggleComment", true);
         markAsSelectionDependentAction("ToggleComment", true);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(toggleCommentAction,
-                IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
+        PlatformUI
+                .getWorkbench()
+                .getHelpSystem()
+                .setHelp(toggleCommentAction,
+                        IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
-        fShowOutline = new ShowOutlineAction(ErlangEditorMessages
-                .getBundleForConstructedKeys(), "ShowOutline.", this);
+        fShowOutline = new ShowOutlineAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "ShowOutline.", this);
         fShowOutline
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
         setAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, fShowOutline);
@@ -723,7 +733,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         final int anchor = getBracketMatcher().getAnchor();
         // http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-        int targetOffset = (ICharacterPairMatcher.RIGHT == anchor) ? offset + 1
+        int targetOffset = ICharacterPairMatcher.RIGHT == anchor ? offset + 1
                 : offset + length;
 
         boolean visible = false;
@@ -758,7 +768,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * <p>
      * The selection offset is model based.
      * </p>
-     *
+     * 
      * @param sourceViewer
      *            the source viewer
      * @return a region denoting the current signed selection, for a resulting
@@ -780,7 +790,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Sets the given message as error message to this editor's status line.
-     *
+     * 
      * @param msg
      *            message to be set
      */
@@ -794,7 +804,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Sets the given message as message to this editor's status line.
-     *
+     * 
      * @param msg
      *            message to be set
      * @since 3.0
@@ -890,7 +900,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * reconciled in advance. If it is <code>false</code> this method only
      * returns a result if the editor's input element does not need to be
      * reconciled.
-     *
+     * 
      * @param offset
      *            the offset included by the retrieved element
      * @param reconcile
@@ -929,7 +939,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * provider. If the selection provider is a post selection provider,
          * post selection changed events are the preferred choice, otherwise
          * normal selection changed events are requested.
-         *
+         * 
          * @param selectionProvider
          */
         public void install(final ISelectionProvider selectionProvider) {
@@ -948,7 +958,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         /**
          * Removes this selection changed listener from the given selection
          * provider.
-         *
+         * 
          * @param selectionProvider
          *            the selection provider
          */
@@ -988,7 +998,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * Called from
      * org.erlide.ui.editors.erl.outline.ErlangOutlinePage.createControl
      * (...).new OpenAndLinkWithEditorHelper() {...}.linkToEditor(ISelection)
-     *
+     * 
      * @param selection
      */
     public void doSelectionChanged(final ISelection selection) {
@@ -1030,7 +1040,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Creates the outline page used with this editor.
-     *
+     * 
      * @return the created Erlang outline page
      */
     protected ErlangOutlinePage createOutlinePage() {
@@ -1061,7 +1071,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     /**
      * Synchronizes the outliner selection with the given element position in
      * the editor.
-     *
+     * 
      * @param element
      *            the java element to select
      */
@@ -1072,7 +1082,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     /**
      * Synchronizes the outliner selection with the given element position in
      * the editor.
-     *
+     * 
      * @param element
      *            the java element to select
      * @param checkIfOutlinePageActive
@@ -1310,7 +1320,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         /**
          * Creates a dispatch action.
-         *
+         * 
          * @param resourceBundle
          *            the resource bundle
          * @param prefix
@@ -1337,7 +1347,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
             /**
              * Information provider used to present the information.
-             *
+             * 
              * @since 3.0
              */
             class InformationProvider implements IInformationProvider,
@@ -1376,7 +1386,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                  * @see
                  * org.eclipse.jface.text.information.IInformationProviderExtension2
                  * #getInformationPresenterControlCreator()
-                 *
+                 * 
                  * @since 3.0
                  */
                 public IInformationControlCreator getInformationPresenterControlCreator() {
@@ -1496,7 +1506,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * Returns the annotation closest to the given range respecting the given
      * direction. If an annotation is found, the annotations current position is
      * copied into the provided annotation position.
-     *
+     * 
      * @param offset
      *            the region offset
      * @param length
@@ -1602,7 +1612,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     /**
      * Returns whether the given annotation is configured as a target for the
      * "Go to Next/Previous Annotation" actions
-     *
+     * 
      * @param annotation
      *            the annotation
      * @return <code>true</code> if this is a target, <code>false</code>
@@ -1617,7 +1627,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         // See bug 41689
         // String key= forward ? preference.getIsGoToNextNavigationTargetKey() :
         // preference.getIsGoToPreviousNavigationTargetKey();
-        final String key = (preference == null) ? null : preference
+        final String key = preference == null ? null : preference
                 .getIsGoToNextNavigationTargetKey();
         return key != null && preferences.getBoolean(key);
     }
@@ -1754,8 +1764,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private boolean isFoldingEnabled() {
-        return ErlideUIPlugin.getDefault().getPreferenceStore().getBoolean(
-                PreferenceConstants.EDITOR_FOLDING_ENABLED);
+        return ErlideUIPlugin.getDefault().getPreferenceStore()
+                .getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
     }
 
     /**
@@ -1767,7 +1777,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * The access to the fFoldingRunner field is not thread-safe, it is assumed
      * that <code>runWhenNextVisible</code> is only called from the UI thread.
      * </p>
-     *
+     * 
      * @since 3.1
      */
     final class ToggleFoldingRunner implements IPartListener2 {
@@ -1942,7 +1952,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Updates the occurrences annotations based on the current selection.
-     *
+     * 
      * @param selection
      *            the text selection
      * @param astRoot
@@ -2066,9 +2076,16 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return prefsNode.getBoolean("markingOccurences", true);
     }
 
+    /**
+     * Private class used by mark occurrences
+     * 
+     * @author jakob
+     * 
+     */
     private class ErlangRef {
         final private ErlangSearchElement element;
-        final private int offset, length;
+        final private int offset;
+        final private int length;
         final private boolean def;
 
         public ErlangRef(final ErlangSearchElement element, final int offset,
@@ -2080,9 +2097,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             this.def = def;
         }
 
-        public ErlangSearchElement getElement() {
-            return element;
-        }
+        // public ErlangSearchElement getElement() {
+        // return element;
+        // }
 
         public int getOffset() {
             return offset;
@@ -2092,9 +2109,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return length;
         }
 
-        public IErlElement.Kind getKind() {
-            return element.getKind();
-        }
+        // public IErlElement.Kind getKind() {
+        // return element.getKind();
+        // }
 
         public boolean isDef() {
             return def;
@@ -2108,7 +2125,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Finds and marks occurrence annotations.
-     *
+     * 
      * @since 3.0
      */
     class OccurrencesFinderJob extends Job {
@@ -2118,12 +2135,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         private final ISelectionValidator fPostSelectionValidator;
         private boolean fCanceled = false;
         private List<ErlangRef> fRefs;
-        private boolean fHasChanged;
-        private IErlModule module;
+        private final boolean fHasChanged;
+        private final IErlModule module;
 
         public OccurrencesFinderJob(final IDocument document,
-                IErlModule module, final ITextSelection selection,
-                boolean hasChanged) {
+                final IErlModule module, final ITextSelection selection,
+                final boolean hasChanged) {
             super("OccurrencesFinderJob");
             fDocument = document;
             fSelection = selection;
@@ -2137,8 +2154,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             fHasChanged = hasChanged;
         }
 
-        private void findRefs(IErlModule module,
-                final ITextSelection selection, boolean hasChanged) {
+        private void findRefs(final IErlModule module,
+                final ITextSelection selection, final boolean hasChanged) {
             final String scannerModuleName = ErlangToolkit
                     .createScannerModuleName(module);
             final ErlideBackend ideBackend = ErlangCore.getBackendManager()
@@ -2150,9 +2167,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             }
             try {
                 final int offset = selection.getOffset();
-                OpenResult res = ErlideOpen.open(ideBackend, scannerModuleName,
-                        offset, ErlModelUtils.getImportsAsList(module), "",
-                        ErlangCore.getModel().getPathVars());
+                final OpenResult res = ErlideOpen.open(ideBackend,
+                        scannerModuleName, offset, ErlModelUtils
+                                .getImportsAsList(module), "", ErlangCore
+                                .getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(module,
                                 offset, res,
@@ -2197,7 +2215,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          */
         @Override
         public IStatus run(final IProgressMonitor progressMonitor) {
-            findRefs(this.module, fSelection, fHasChanged);
+            findRefs(module, fSelection, fHasChanged);
             if (fRefs == null) {
                 return Status.CANCEL_STATUS;
             }
@@ -2235,8 +2253,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     return Status.CANCEL_STATUS;
                 }
 
-                final Position position = new Position(ref.getOffset(), ref
-                        .getLength());
+                final Position position = new Position(ref.getOffset(),
+                        ref.getLength());
 
                 final String description = ref.getDescription();
                 final String annotationType = ref.isDef() ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$
@@ -2273,7 +2291,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Cancels the occurrences finder job upon document changes.
-     *
+     * 
      * @since 3.0
      */
     class OccurrencesFinderJobCanceler implements IDocumentListener,
@@ -2363,7 +2381,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Internal activation listener.
-     *
+     * 
      * @since 3.0
      */
     private class ActivationListener implements IWindowListener {
@@ -2371,7 +2389,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         /*
          * @seeorg.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.
          * IWorkbenchWindow)
-         *
+         * 
          * @since 3.1
          */
         public void windowActivated(final IWorkbenchWindow window) {
@@ -2391,7 +2409,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         /*
          * @seeorg.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.
          * IWorkbenchWindow)
-         *
+         * 
          * @since 3.1
          */
         public void windowDeactivated(final IWorkbenchWindow window) {
@@ -2404,7 +2422,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         /*
          * @seeorg.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.
          * IWorkbenchWindow)
-         *
+         * 
          * @since 3.1
          */
         public void windowClosed(final IWorkbenchWindow window) {
@@ -2413,7 +2431,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         /*
          * @seeorg.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.
          * IWorkbenchWindow)
-         *
+         * 
          * @since 3.1
          */
         public void windowOpened(final IWorkbenchWindow window) {
@@ -2422,7 +2440,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     /**
      * Returns the lock object for the given annotation model.
-     *
+     * 
      * @param annotationModel
      *            the annotation model
      * @return the annotation model's lock object

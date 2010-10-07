@@ -27,110 +27,109 @@ import org.erlide.ui.util.TypedElementSelectionValidator;
 import org.erlide.ui.util.TypedViewerFilter;
 
 public class ProjectPathEditor extends PathEditor {
-	private final IProject project;
-	private String fOutputLocation;
-	private final String dirChooserLabelText;
+    private final IProject project;
+    private String fOutputLocation;
+    private final String dirChooserLabelText;
 
-	public ProjectPathEditor(final String name, final String labelText,
-			final String dirChooserLabelText, final Composite parent,
-			IProject project) {
-		super(name, labelText, dirChooserLabelText, parent);
-		this.dirChooserLabelText = dirChooserLabelText;
-		this.project = project;
-	}
+    public ProjectPathEditor(final String name, final String labelText,
+            final String dirChooserLabelText, final Composite parent,
+            final IProject project) {
+        super(name, labelText, dirChooserLabelText, parent);
+        this.dirChooserLabelText = dirChooserLabelText;
+        this.project = project;
+    }
 
-	@Override
-	protected String getNewInputObject() {
-		IContainer container = chooseLocation();
-		if (container != null) {
-			return container.getProjectRelativePath().toString();
-		}
-		return null;
-	}
+    @Override
+    protected String getNewInputObject() {
+        final IContainer container = chooseLocation();
+        if (container != null) {
+            return container.getProjectRelativePath().toString();
+        }
+        return null;
+    }
 
-	private IContainer chooseLocation() {
-		IWorkspaceRoot root = project.getWorkspace().getRoot();
-		final Class<?>[] acceptedClasses = new Class[] { IProject.class,
-				IFolder.class };
-		IProject[] allProjects = root.getProjects();
-		List<IProject> rejectedElements = new ArrayList<IProject>(
-				allProjects.length);
-		for (int i = 0; i < allProjects.length; i++) {
-			if (!allProjects[i].equals(project)) {
-				rejectedElements.add(allProjects[i]);
-			}
-		}
-		ViewerFilter filter = new TypedViewerFilter(acceptedClasses,
-				rejectedElements.toArray());
+    private IContainer chooseLocation() {
+        final IWorkspaceRoot root = project.getWorkspace().getRoot();
+        final Class<?>[] acceptedClasses = new Class[] { IProject.class,
+                IFolder.class };
+        final IProject[] allProjects = root.getProjects();
+        final List<IProject> rejectedElements = new ArrayList<IProject>(
+                allProjects.length);
+        for (int i = 0; i < allProjects.length; i++) {
+            if (!allProjects[i].equals(project)) {
+                rejectedElements.add(allProjects[i]);
+            }
+        }
+        final ViewerFilter filter = new TypedViewerFilter(acceptedClasses,
+                rejectedElements.toArray());
 
-		ILabelProvider lp = new WorkbenchLabelProvider();
-		ITreeContentProvider cp = new WorkbenchContentProvider();
+        final ILabelProvider lp = new WorkbenchLabelProvider();
+        final ITreeContentProvider cp = new WorkbenchContentProvider();
 
-		IResource initSelection = null;
-		if (fOutputLocation != null) {
-			initSelection = root.findMember(fOutputLocation);
-		}
+        IResource initSelection = null;
+        if (fOutputLocation != null) {
+            initSelection = root.findMember(fOutputLocation);
+        }
 
-		FolderSelectionDialog dialog = new FolderSelectionDialog(getShell(),
-				lp, cp);
-		dialog.setTitle(dirChooserLabelText);
+        final FolderSelectionDialog dialog = new FolderSelectionDialog(
+                getShell(), lp, cp);
+        dialog.setTitle(dirChooserLabelText);
 
-		ISelectionStatusValidator validator = new ISelectionStatusValidator() {
-			ISelectionStatusValidator validator = new TypedElementSelectionValidator(
-					acceptedClasses, false);
+        final ISelectionStatusValidator validator = new ISelectionStatusValidator() {
+            ISelectionStatusValidator validator = new TypedElementSelectionValidator(
+                    acceptedClasses, false);
 
-			public IStatus validate(Object[] selection) {
-				IStatus typedStatus = validator.validate(selection);
-				if (!typedStatus.isOK()) {
-					return typedStatus;
-				}
-				if (selection[0] instanceof IFolder) {
-					IFolder folder = (IFolder) selection[0];
-					// try {
-					// IStatus result = ClasspathModifier
-					// .checkSetOutputLocationPrecondition(
-					// fEntryToEdit, folder.getFullPath(),
-					// fAllowInvalidClasspath, fCPJavaProject);
-					// if (result.getSeverity() == IStatus.ERROR) {
-					// return result;
-					// }
-					// } catch (CoreException e) {
-					// JavaPlugin.log(e);
-					// }
-					return new StatusInfo();
-				} else {
-					return new StatusInfo(IStatus.ERROR, "");
-				}
-			}
-		};
-		dialog.setValidator(validator);
-		dialog.setMessage(getLabelText());
-		dialog.addFilter(filter);
-		dialog.setInput(root);
-		dialog.setInitialSelection(initSelection);
-		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+            public IStatus validate(final Object[] selection) {
+                final IStatus typedStatus = validator.validate(selection);
+                if (!typedStatus.isOK()) {
+                    return typedStatus;
+                }
+                if (selection[0] instanceof IFolder) {
+                    // try {
+                    // IStatus result = ClasspathModifier
+                    // .checkSetOutputLocationPrecondition(
+                    // fEntryToEdit, folder.getFullPath(),
+                    // fAllowInvalidClasspath, fCPJavaProject);
+                    // if (result.getSeverity() == IStatus.ERROR) {
+                    // return result;
+                    // }
+                    // } catch (CoreException e) {
+                    // JavaPlugin.log(e);
+                    // }
+                    return new StatusInfo();
+                } else {
+                    return new StatusInfo(IStatus.ERROR, "");
+                }
+            }
+        };
+        dialog.setValidator(validator);
+        dialog.setMessage(getLabelText());
+        dialog.addFilter(filter);
+        dialog.setInput(root);
+        dialog.setInitialSelection(initSelection);
+        dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
 
-		if (dialog.open() == Window.OK) {
-			return (IContainer) dialog.getFirstResult();
-		}
-		return null;
-	}
+        if (dialog.open() == Window.OK) {
+            return (IContainer) dialog.getFirstResult();
+        }
+        return null;
+    }
 
-	@Override
-	protected String createList(String[] items) {
-		return PreferencesUtils.packArray(items);
-	}
+    @Override
+    protected String createList(final String[] items) {
+        return PreferencesUtils.packArray(items);
+    }
 
-	@Override
-	protected String[] parseString(String stringList) {
-		return PreferencesUtils.unpackArray(stringList);
-	}
+    @Override
+    protected String[] parseString(final String stringList) {
+        return PreferencesUtils.unpackArray(stringList);
+    }
 
-	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
-		super.doFillIntoGrid(parent, numColumns);
-		org.eclipse.swt.widgets.List list = getListControl(parent);
-		GridData gd = (GridData) list.getLayoutData();
-		gd.heightHint = 100;
-	}
+    @Override
+    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
+        super.doFillIntoGrid(parent, numColumns);
+        final org.eclipse.swt.widgets.List list = getListControl(parent);
+        final GridData gd = (GridData) list.getLayoutData();
+        gd.heightHint = 100;
+    }
 }
