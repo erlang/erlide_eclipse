@@ -1,6 +1,5 @@
 package org.erlide.core.preferences;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import junit.framework.Assert;
@@ -35,6 +34,15 @@ public class ErlProjectLayoutTest {
 	}
 
 	@Test
+	public void checkOtpLayout() throws ParserException {
+		OtpErlangObject expected = ErlUtils
+				.parse("{layout,[\"src\"],[\"include\"],"
+						+ "\"ebin\",[\"doc\"],\"priv\"}");
+		MatcherAssert.assertThat(ErlProjectLayout.OTP_LAYOUT.asTerm(),
+				Matchers.equalTo(expected));
+	}
+
+	@Test
 	public void shouldConvertfromTermAndBack() throws OtpErlangException,
 			ParserException {
 		ErlProjectLayout layout = new ErlProjectLayout(input);
@@ -49,6 +57,8 @@ public class ErlProjectLayoutTest {
 		Collection<IPath> expected = Lists
 				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getSources());
 		expected.add(new Path("hello"));
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 		MatcherAssert.assertThat("source dirs content", info.getSources(),
 				Matchers.equalTo(expected));
 	}
@@ -60,8 +70,20 @@ public class ErlProjectLayoutTest {
 		Collection<IPath> expected = Lists
 				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getIncludes());
 		expected.add(new Path("hello"));
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 		MatcherAssert.assertThat("source dirs content", info.getIncludes(),
 				Matchers.equalTo(expected));
+	}
+
+	@Test
+	public void shouldSetOutput() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.setOutput("hello");
+		IPath expected = new Path("hello");
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+		MatcherAssert.assertThat(info.getOutput(), Matchers.equalTo(expected));
 	}
 
 }

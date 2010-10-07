@@ -34,8 +34,8 @@ public final class ErlProjectLayout {
             IPath output, List<IPath> docs, IPath priv) {
         this.sources = sources;
         this.includes = includes;
-        this.docs = docs;
         this.output = output;
+        this.docs = docs;
         this.priv = priv;
     }
 
@@ -53,6 +53,70 @@ public final class ErlProjectLayout {
         output = mkPath(e);
         docs = mkList(d);
         priv = mkPath(p);
+    }
+
+    public List<IPath> getSources() {
+        return sources;
+    }
+
+    public List<IPath> getIncludes() {
+        return includes;
+    }
+
+    public IPath getOutput() {
+        return output;
+    }
+
+    public List<IPath> getDocs() {
+        return docs;
+    }
+
+    public IPath getPriv() {
+        return priv;
+    }
+
+    public OtpErlangObject asTerm() {
+        OtpErlangObject s = listAsTerm(sources);
+        OtpErlangObject i = listAsTerm(includes);
+        OtpErlangObject o = pathAsTerm(output);
+        OtpErlangObject d = listAsTerm(docs);
+        OtpErlangObject p = pathAsTerm(priv);
+
+        return OtpErlang.mkTuple(new OtpErlangAtom("layout"), s, i, o, d, p);
+    }
+
+    public ErlProjectLayout addSource(String string) {
+        return addSource(new Path(string));
+    }
+
+    public ErlProjectLayout addSource(IPath path) {
+        List<IPath> sources1 = Lists.newArrayList(sources);
+        sources1.add(path);
+        ErlProjectLayout result = new ErlProjectLayout(sources1, includes,
+                output, docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout addInclude(String string) {
+        return addInclude(new Path(string));
+    }
+
+    public ErlProjectLayout addInclude(IPath path) {
+        List<IPath> includes1 = Lists.newArrayList(includes);
+        includes1.add(path);
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes1,
+                output, docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout setOutput(String string) {
+        return setOutput(new Path(string));
+    }
+
+    public ErlProjectLayout setOutput(Path path) {
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes,
+                path, docs, priv);
+        return result;
     }
 
     private List<IPath> mkList(Collection<OtpErlangObject> s)
@@ -83,16 +147,6 @@ public final class ErlProjectLayout {
         return null;
     }
 
-    public OtpErlangObject asTerm() {
-        OtpErlangObject s = listAsTerm(sources);
-        OtpErlangObject i = listAsTerm(includes);
-        OtpErlangObject o = pathAsTerm(output);
-        OtpErlangObject d = listAsTerm(docs);
-        OtpErlangObject p = pathAsTerm(priv);
-
-        return OtpErlang.mkTuple(new OtpErlangAtom("layout"), s, i, o, d, p);
-    }
-
     private OtpErlangObject listAsTerm(List<IPath> list) {
         List<OtpErlangObject> result = Lists.newArrayList();
         for (IPath p : list) {
@@ -112,48 +166,5 @@ public final class ErlProjectLayout {
         return new OtpErlangString(path.toString());
     }
 
-    public ErlProjectLayout addSource(String string) {
-        return addSource(new Path(string));
-    }
-
-    public ErlProjectLayout addSource(IPath path) {
-        List<IPath> sources1 = Lists.newArrayList(sources);
-        sources1.add(path);
-        ErlProjectLayout result = new ErlProjectLayout(sources1, includes,
-                output, docs, priv);
-        return result;
-    }
-
-    public ErlProjectLayout addInclude(String string) {
-        return addInclude(new Path(string));
-    }
-
-    public ErlProjectLayout addInclude(IPath path) {
-        List<IPath> includes1 = Lists.newArrayList(includes);
-        includes1.add(path);
-        ErlProjectLayout result = new ErlProjectLayout(sources, includes1,
-                output, docs, priv);
-        return result;
-    }
-
-    public List<IPath> getSources() {
-        return sources;
-    }
-
-    public List<IPath> getIncludes() {
-        return includes;
-    }
-
-    public IPath getOutput() {
-        return output;
-    }
-
-    public List<IPath> getDocs() {
-        return docs;
-    }
-
-    public IPath getPriv() {
-        return priv;
-    }
 
 }
