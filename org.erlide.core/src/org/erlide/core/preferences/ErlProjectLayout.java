@@ -1,6 +1,5 @@
 package org.erlide.core.preferences;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,11 +19,11 @@ import com.google.common.collect.Lists;
 
 public final class ErlProjectLayout {
 
-    public final List<IPath> sources;
-    public final List<IPath> includes;
-    public final IPath output;
-    public final List<IPath> docs;
-    public final IPath priv;
+    private final List<IPath> sources;
+    private final List<IPath> includes;
+    private final IPath output;
+    private final List<IPath> docs;
+    private final IPath priv;
 
     public final static ErlProjectLayout OTP_LAYOUT = new ErlProjectLayout(
             Lists.newArrayList((IPath) new Path("src")),
@@ -124,4 +123,37 @@ public final class ErlProjectLayout {
                 output, docs, priv);
         return result;
     }
+
+    public ErlProjectLayout addInclude(String string) {
+        return addInclude(new Path(string));
+    }
+
+    public ErlProjectLayout addInclude(IPath path) {
+        List<IPath> includes1 = Lists.newArrayList(includes);
+        includes1.add(path);
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes1,
+                output, docs, priv);
+        return result;
+    }
+
+    public List<IPath> getSources() {
+        return sources;
+    }
+
+    public List<IPath> getIncludes() {
+        return includes;
+    }
+
+    public IPath getOutput() {
+        return output;
+    }
+
+    public List<IPath> getDocs() {
+        return docs;
+    }
+
+    public IPath getPriv() {
+        return priv;
+    }
+
 }

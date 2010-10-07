@@ -46,10 +46,21 @@ public class ErlProjectLayoutTest {
 	public void shouldAddSourceDir() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.addSource("hello");
-		Collection<IPath> expected = new ArrayList<IPath>();
-		expected.add(new Path("src"));
+		Collection<IPath> expected = Lists
+				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getSources());
 		expected.add(new Path("hello"));
-		MatcherAssert.assertThat("source dirs content", info.sources,
+		MatcherAssert.assertThat("source dirs content", info.getSources(),
+				Matchers.equalTo(expected));
+	}
+
+	@Test
+	public void shouldAddIncludeDir() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.addInclude("hello");
+		Collection<IPath> expected = Lists
+				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getIncludes());
+		expected.add(new Path("hello"));
+		MatcherAssert.assertThat("source dirs content", info.getIncludes(),
 				Matchers.equalTo(expected));
 	}
 
