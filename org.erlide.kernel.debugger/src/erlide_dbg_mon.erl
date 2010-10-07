@@ -21,7 +21,7 @@
 -export([start/2, stop/0, interpret/3, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
--export([tracing/2, drop_to_frame/2]).
+-export([tracing/2, drop_to_frame/2, all_modules_on_stack/1]).
 
 -define(BACKTRACE, all).
 
@@ -272,6 +272,9 @@ gui_cmd({bindings, MetaPid}, State) ->
 gui_cmd({all_stack_frames, MetaPid}, State) ->
     Res = erlide_dbg_icmd:get(MetaPid, all_stack_frames, noargs),
     {Res, State};
+gui_cmd({all_modules_on_stack, MetaPid}, State) ->
+    Res = erlide_dbg_icmd:get(MetaPid, all_modules_on_stack, noargs),
+    {Res, State};
 gui_cmd({step_into, MetaPid}, State) ->
     Res = erlide_dbg_icmd:step(MetaPid),
     {Res, State};
@@ -418,6 +421,9 @@ tracing(Bool, MetaPid) ->
 
 all_stack_frames(MetaPid) ->
     cmd(all_stack_frames, MetaPid).
+
+all_modules_on_stack(MetaPid) ->
+    cmd(all_modules_on_stack, MetaPid).
 
 line_breakpoint(Module, Line, Action) ->
     cmd(break, {Module, Line, Action}).

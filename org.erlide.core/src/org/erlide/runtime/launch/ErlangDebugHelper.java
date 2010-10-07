@@ -16,37 +16,42 @@ import erlang.ErlideDebug;
 
 public class ErlangDebugHelper {
 
-	public void interpret(final Backend backend, final String project,
-			final String module, final boolean distributed,
-			final boolean interpret) {
-		try {
-			IFile beam = findModuleBeam(project, module);
-			if (beam!=null && beam.exists()) {
-				final String de = interpret ? "" : "de";
-				ErlLogger.debug(de + "interpret " + beam.getLocation());
-				ErlideDebug.interpret(backend, beam.getLocation().toString(),
-						distributed, interpret);
-			} else {
-				ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
-						+ module);
-			}
-		} catch (final ErlModelException e) {
-			ErlLogger.warn(e);
-		}
-	}
+    public static void interpret(final Backend backend,
+            final String projectName, final String moduleName,
+            final boolean distributed, final boolean interpret) {
+        try {
+            final IFile beam = findModuleBeam(projectName, moduleName);
+            if (beam != null && beam.exists()) {
+                final String de = interpret ? "" : "de";
+                ErlLogger.debug(de + "interpret " + beam.getLocation());
+                boolean b = ErlideDebug.interpret(backend, beam.getLocation()
+                        .toString(), distributed, interpret);
+                b = !b;
+            } else {
+                ErlLogger.debug("IGNORED MISSING interpret " + projectName
+                        + ":" + moduleName);
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.warn(e);
+        }
+    }
 
-	protected IFile findModuleBeam(String project, String module)
-			throws ErlModelException {
-		final IErlProject eprj = ErlangCore.getModel()
-				.getErlangProject(project);
-		final IProject iprj = eprj.getProject();
-		final IFolder r = iprj.getFolder(eprj.getOutputLocation());
-		try {
-			r.refreshLocal(IResource.DEPTH_ONE, null);
-		} catch (CoreException e) {
-		}
-		final String beam = ErlideUtil.withoutExtension(module) + ".beam";
-		return r.getFile(beam);
-	}
+    protected static IFile findModuleBeam(final String project,
+            final String module) throws ErlModelException {
+        final IErlProject eprj = ErlangCore.getModel()
+                .getErlangProject(project);
+        final IProject iprj = eprj.getProject();
+        final IFolder r = iprj.getFolder(eprj.getOutputLocation());
+        try {
+            r.refreshLocal(IResource.DEPTH_ONE, null);
+        } catch (final CoreException e) {
+        }
+        final String beam = ErlideUtil.withoutExtension(module) + ".beam";
+        return r.getFile(beam);
+    }
+
+    private ErlangDebugHelper() {
+        // static
+    }
 
 }

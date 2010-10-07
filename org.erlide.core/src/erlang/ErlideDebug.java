@@ -1,5 +1,6 @@
 package erlang;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
@@ -60,7 +61,7 @@ public class ErlideDebug {
      * Sent upon attach of process (should we move this to erlang, erlide_debug?
      * maybe we should have an erlang process subscribing, and even filtering
      * events to us)
-     *
+     * 
      * @param backend
      *            backend
      * @param pid
@@ -150,7 +151,7 @@ public class ErlideDebug {
     public static void addDeleteLineBreakpoint(final Backend backend,
             final String module, final int line, final int action) {
         try {
-            final String a = (action == ErlDebugConstants.REQUEST_INSTALL) ? "add"
+            final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
                     : "delete";
             backend.call("erlide_debug", "line_breakpoint", "sia", module,
                     line, a);
@@ -230,6 +231,28 @@ public class ErlideDebug {
             }
         } catch (final BackendException e) {
             ErlLogger.warn(e);
+        }
+        return null;
+    }
+
+    public static List<String> getAllModulesOnStack(final Backend backend,
+            final OtpErlangPid meta) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_debug",
+                    "all_modules_on_stack", "x", meta);
+            if (res instanceof OtpErlangList) {
+                final OtpErlangList modules = (OtpErlangList) res;
+                final List<String> result = new ArrayList<String>(
+                        modules.arity());
+                for (final OtpErlangObject module : modules) {
+                    final OtpErlangAtom moduleA = (OtpErlangAtom) module;
+                    result.add(moduleA.atomValue());
+                }
+                return result;
+            }
+        } catch (final BackendException e) {
+            ErlLogger.warn(e);
+            e.printStackTrace();
         }
         return null;
     }

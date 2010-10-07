@@ -1688,4 +1688,12 @@
          </context>
       </target>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerUpdaters">
+      <updater
+            class="org.erlide.debug.ui.utils.BreakpointMarkerUpdater"
+            id="org.erlide.ui.erlangLineBreakpointUpdater"
+            markerType="org.erlide.core.erlang.lineBreakpoint.marker">
+      </updater>
+   </extension>
 </plugin>

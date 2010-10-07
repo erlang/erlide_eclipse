@@ -47,6 +47,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
@@ -66,8 +67,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- *
- *
+ * 
+ * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ErlideUIPlugin extends AbstractUIPlugin {
@@ -93,7 +94,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * The extension point registry for the
      * <code>org.eclipse.jdt.ui.javaFoldingStructureProvider</code> extension
      * point.
-     *
+     * 
      * @since 3.0
      */
     private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
@@ -122,7 +123,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * This method is called upon plug-in activation
-     *
+     * 
      * @param context
      *            The context
      * @throws Exception
@@ -149,11 +150,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         }
 
         startPeriodicDump();
+        erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
+        ErlangCore.getBackendManager().addBackendListener(
+                erlangDebuggerBackendListener);
     }
 
     /**
      * This method is called when the plug-in is stopped
-     *
+     * 
      * @param context
      *            the context
      * @throws Exception
@@ -162,14 +166,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         erlConMan.dispose();
-
         super.stop(context);
+        ErlangCore.getBackendManager().removeBackendListener(
+                erlangDebuggerBackendListener);
         plugin = null;
     }
 
     /**
      * Returns the shared instance.
-     *
+     * 
      * @return The plugin
      */
     public static ErlideUIPlugin getDefault() {
@@ -182,7 +187,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the string from the plugin's resource bundle, or 'key' if not
      * found.
-     *
+     * 
      * @param key
      *            The resource
      * @return The identified string
@@ -192,7 +197,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 .getResourceBundle();
         try {
 
-            final String returnString = (bundle != null) ? bundle.getString(key)
+            final String returnString = bundle != null ? bundle.getString(key)
                     : key;
             return returnString;
         } catch (final MissingResourceException e) {
@@ -202,7 +207,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the plugin's resource bundle,
-     *
+     * 
      * @return The requested bundle
      */
     public ResourceBundle getResourceBundle() {
@@ -213,7 +218,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Returns the standard display to be used. The method first checks, if the
      * thread calling this method has an associated display. If so, this display
      * is returned. Otherwise the method returns the default display.
-     *
+     * 
      * @return the standard display
      */
     public static Display getStandardDisplay() {
@@ -227,7 +232,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Creates an image and places it in the image registry.
-     *
+     * 
      * @param id
      *            The image id
      * @param baseURL
@@ -247,10 +252,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image descriptor for the given image PLUGIN_ID. Returns null
      * if there is no such image.
-     *
+     * 
      * @param id
      *            The image id
-     *
+     * 
      * @return The image descriptor
      */
     public ImageDescriptor getImageDescriptor(final String id) {
@@ -262,10 +267,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image for the given image PLUGIN_ID. Returns null if there is
      * no such image.
-     *
+     * 
      * @param id
      *            The image id
-     *
+     * 
      * @return The image
      */
     public Image getImage(final String id) {
@@ -320,7 +325,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the active workbench shell or <code>null</code> if none
-     *
+     * 
      * @return the active workbench shell or <code>null</code> if none
      */
     public static Shell getActiveWorkbenchShell() {
@@ -377,7 +382,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Returns the registry of the extensions to the
      * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension
      * point.
-     *
+     * 
      * @return the registry of contributed
      *         <code>IErlangFoldingStructureProvider</code>
      */
@@ -408,7 +413,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns a section in the Java plugin's dialog settings. If the section
      * doesn't exist yet, it is created.
-     *
+     * 
      * @param name
      *            the name of the section
      * @return the section of the given name
@@ -445,6 +450,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     private ContributionContextTypeRegistry fContextTypeRegistry;
     private ContributionTemplateStore fStore;
+
+    private ErlangDebuggerBackendListener erlangDebuggerBackendListener;
 
     private void startPeriodicDump() {
         final String env = System.getenv("erlide.internal.coredump");
@@ -491,10 +498,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             try {
                 fStore.load();
             } catch (final IOException e) {
-                getLog()
-                        .log(
-                                new Status(IStatus.ERROR, PLUGIN_ID,
-                                        IStatus.OK, "", e)); //$NON-NLS-1$
+                getLog().log(
+                        new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
             }
             ErlangSourceContextTypeModule.getDefault().addElementResolvers();
         }
