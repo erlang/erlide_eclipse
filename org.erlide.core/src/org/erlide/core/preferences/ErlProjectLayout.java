@@ -1,10 +1,9 @@
 package org.erlide.core.preferences;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.util.Bindings;
@@ -14,7 +13,6 @@ import org.erlide.jinterface.util.ParserException;
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -28,7 +26,10 @@ public final class ErlProjectLayout {
     public final List<IPath> docs;
     public final IPath priv;
 
-    public final static ErlProjectLayout OTP_LAYOUT = new ErlProjectLayout();
+    public final static ErlProjectLayout OTP_LAYOUT = new ErlProjectLayout(
+            Lists.newArrayList((IPath) new Path("src")),
+            Lists.newArrayList((IPath) new Path("include")), new Path("ebin"),
+            Lists.newArrayList((IPath) new Path("doc")), new Path("priv"));
 
     public ErlProjectLayout(List<IPath> sources, List<IPath> includes,
             IPath output, List<IPath> docs, IPath priv) {
@@ -37,12 +38,6 @@ public final class ErlProjectLayout {
         this.docs = docs;
         this.output = output;
         this.priv = priv;
-    }
-
-    private ErlProjectLayout() {
-        this(Lists.newArrayList((IPath) new Path("src")), Lists
-                .newArrayList((IPath) new Path("include")), new Path("ebin"),
-                Lists.newArrayList((IPath) new Path("doc")), new Path("priv"));
     }
 
     public ErlProjectLayout(OtpErlangObject layout) throws ParserException,
@@ -116,5 +111,17 @@ public final class ErlProjectLayout {
                                     .toString()));
         }
         return new OtpErlangString(path.toString());
+    }
+
+    public ErlProjectLayout addSource(String string) {
+        return addSource(new Path(string));
+    }
+
+    public ErlProjectLayout addSource(IPath path) {
+        List<IPath> sources1 = Lists.newArrayList(sources);
+        sources1.add(path);
+        ErlProjectLayout result = new ErlProjectLayout(sources1, includes,
+                output, docs, priv);
+        return result;
     }
 }
