@@ -10,6 +10,7 @@
 
 package org.erlide.core.preferences;
 
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -66,8 +67,11 @@ public final class OldErlangProjectProperties implements
         if ("true".equals(System.getProperty("erlide.newprops"))) {
             try {
                 ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-                ErlProjectInfo npp = builder.load((IEclipsePreferences) node.node("test"));
-                builder.store(npp, (IEclipsePreferences) node.node("new_test"));
+                ErlProjectInfo npp = builder
+                        .loadFromPreferences((IEclipsePreferences) node
+                                .node("test"));
+                builder.storeToPreferences(npp,
+                        (IEclipsePreferences) node.node("new_test"));
             } catch (final BackingStoreException e) {
                 e.printStackTrace();
             }
@@ -116,12 +120,14 @@ public final class OldErlangProjectProperties implements
         }
 
         if ("true".equals(System.getProperty("erlide.newprops"))) {
-            final ErlProjectInfo npp = PropertiesUtils
-                    .convertOld(this);
             try {
+                final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
                 ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-                builder.store(npp, (IEclipsePreferences) node.node("test"));
+                builder.storeToPreferences(npp,
+                        (IEclipsePreferences) node.node("test"));
             } catch (final BackingStoreException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
         }
@@ -133,7 +139,8 @@ public final class OldErlangProjectProperties implements
                     PathSerializer.packList(sourceDirs));
             node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
                     PathSerializer.packList(includeDirs));
-            node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir.toString());
+            node.put(ProjectPreferencesConstants.OUTPUT_DIR,
+                    outputDir.toString());
             node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                     externalIncludesFile);
             if (runtimeVersion.isDefined()) {
@@ -276,7 +283,7 @@ public final class OldErlangProjectProperties implements
 
     public void preferenceChange(final PreferenceChangeEvent event) {
 
-        System.out.println("PROP CHANGE DETECTED IN OLDPREFS "+event);
+        System.out.println("PROP CHANGE DETECTED IN OLDPREFS " + event);
 
         final IEclipsePreferences root = new ProjectScope(project)
                 .getNode(ErlangPlugin.PLUGIN_ID);

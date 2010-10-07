@@ -18,7 +18,12 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public final class ErlProjectLayout {
+/*
+ * Note: in paths, first segment in all caps is taken as a path variable when 
+ * converting to Erlang term
+ */
+
+public class ErlProjectLayout {
 
     private final List<IPath> sources;
     private final List<IPath> includes;
@@ -86,14 +91,34 @@ public final class ErlProjectLayout {
         return OtpErlang.mkTuple(new OtpErlangAtom("layout"), s, i, o, d, p);
     }
 
+    public ErlProjectLayout setSources(Collection<IPath> list) {
+        List<IPath> list1 = Lists.newArrayList(list);
+        ErlProjectLayout result = new ErlProjectLayout(list1, includes, output,
+                docs, priv);
+        return result;
+    }
+
     public ErlProjectLayout addSource(String string) {
         return addSource(new Path(string));
     }
 
     public ErlProjectLayout addSource(IPath path) {
         List<IPath> sources1 = addToListIfNotExisting(sources, path);
-        ErlProjectLayout result = new ErlProjectLayout(sources1, includes,
-                output, docs, priv);
+        return setSources(sources1);
+    }
+
+    public ErlProjectLayout addSources(Collection<IPath> paths) {
+        List<IPath> sources1 = Lists.newArrayList();
+        for (IPath p : paths) {
+            sources1.add(p);
+        }
+        return setSources(sources1);
+    }
+
+    public ErlProjectLayout setIncludes(Collection<IPath> list) {
+        List<IPath> list1 = Lists.newArrayList(list);
+        ErlProjectLayout result = new ErlProjectLayout(sources, list1, output,
+                docs, priv);
         return result;
     }
 
@@ -103,9 +128,7 @@ public final class ErlProjectLayout {
 
     public ErlProjectLayout addInclude(IPath path) {
         List<IPath> list = addToListIfNotExisting(includes, path);
-        ErlProjectLayout result = new ErlProjectLayout(sources, list, output,
-                docs, priv);
-        return result;
+        return setIncludes(list);
     }
 
     public ErlProjectLayout setOutput(String string) {
@@ -115,6 +138,13 @@ public final class ErlProjectLayout {
     public ErlProjectLayout setOutput(Path path) {
         ErlProjectLayout result = new ErlProjectLayout(sources, includes, path,
                 docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout setDocs(Collection<IPath> list) {
+        List<IPath> list1 = Lists.newArrayList(list);
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes,
+                output, list1, priv);
         return result;
     }
 
@@ -185,8 +215,8 @@ public final class ErlProjectLayout {
     }
 
     private OtpErlangObject pathAsTerm(IPath path) {
-        char first = path.segment(0).charAt(0);
-        if (first >= 'A' && first <= 'Z') {
+        String first = path.segment(0);
+        if (first.equals(first.toUpperCase())) {
             return OtpErlang
                     .mkTuple(new OtpErlangAtom(path.segment(0)),
                             new OtpErlangString(path.removeFirstSegments(1)

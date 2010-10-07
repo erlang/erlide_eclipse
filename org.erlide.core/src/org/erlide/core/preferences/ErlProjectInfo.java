@@ -3,62 +3,37 @@ package org.erlide.core.preferences;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.erlide.jinterface.backend.RuntimeVersion;
 
 import com.google.common.collect.Sets;
 
-public final class ErlProjectInfo {
+public class ErlProjectInfo {
 
-    private RuntimeVersion requiredRuntimeVersion;
+    private final RuntimeVersion requiredRuntimeVersion;
+    private final ErlProjectLayout layout;
+
     private final Set<SourceEntry> codePathEntries = Sets.newHashSet();
 
-    private final Set<SourceEntry> sources = Sets.newHashSet();
-    private final Set<IncludeEntry> includes = Sets.newHashSet();
-    private IPath output;
     private final Set<PathEntry> dependencies = Sets.newHashSet();
-    private final Map<String, String> macros = new HashMap<String, String>();
 
     public ErlProjectInfo() {
+        this(ErlProjectLayout.OTP_LAYOUT);
     }
 
-    public Collection<SourceEntry> getSources() {
-        return Collections.unmodifiableCollection(sources);
+    public ErlProjectInfo(ErlProjectLayout layout) {
+        this(new RuntimeVersion("R14B"), layout);
     }
 
-    public Collection<IncludeEntry> getIncludes() {
-        return Collections.unmodifiableCollection(includes);
-    }
-
-    public IPath getOutput() {
-        return output;
-    }
-
-    public void setOutput(IPath output) {
-        this.output = output;
+    public ErlProjectInfo(RuntimeVersion version, ErlProjectLayout layout) {
+        this.requiredRuntimeVersion = version;
+        this.layout = layout;
     }
 
     public Collection<PathEntry> getDependencies() {
         return Collections.unmodifiableCollection(dependencies);
-    }
-
-    public void addDependencies(Collection<PathEntry> locations) {
-        for (PathEntry loc : locations) {
-            if (!dependencies.contains(loc)) {
-                dependencies.add(loc);
-            }
-        }
-    }
-
-    public void removeDependencies(Collection<PathEntry> locations) {
-        for (PathEntry loc : locations) {
-            dependencies.remove(loc);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -87,21 +62,31 @@ public final class ErlProjectInfo {
         return requiredRuntimeVersion;
     }
 
-    public Map<String, String> getMacros() {
-        return macros;
+    public ErlProjectLayout getLayout() {
+        return layout;
     }
 
-    public void setRequiredRuntimeVersion(RuntimeVersion runtimeVersion) {
-        requiredRuntimeVersion = runtimeVersion;
+    public ErlProjectInfo addDependencies(Collection<PathEntry> locations) {
+        Collection<PathEntry> dependencies = getDependencies();
+        for (PathEntry loc : locations) {
+            if (!dependencies.contains(loc)) {
+                dependencies.add(loc);
+            }
+        }
+        return new ErlProjectInfo(/* dependencies */);
     }
 
-    public void addSources(Collection<SourceEntry> mkSources) {
-        // TODO Auto-generated method stub
-
+    public ErlProjectInfo removeDependencies(Collection<PathEntry> locations) {
+        Collection<PathEntry> dependencies = getDependencies();
+        for (PathEntry loc : locations) {
+            dependencies.remove(loc);
+        }
+        return new ErlProjectInfo(/* dependencies */);
     }
 
-    public void addIncludes(Collection<String> includesList) {
-        // TODO Auto-generated method stub
-
+    public ErlProjectInfo setRequiredRuntimeVersion(
+            RuntimeVersion runtimeVersion) {
+        return new ErlProjectInfo(/* runtimeVersion */);
     }
+
 }

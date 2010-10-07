@@ -1,6 +1,7 @@
 package org.erlide.core.preferences;
 
 import java.util.Collection;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -51,37 +52,29 @@ public class ErlProjectLayoutTest {
 	}
 
 	@Test
-	public void shouldAddSourceDir() {
+	public void shouldSetSources() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
-		info = info.addSource("hello");
+		List<IPath> srcs = Lists.newArrayList();
+		srcs.add(new Path("hello"));
+		info = info.setSources(srcs);
 		Collection<IPath> result = info.getSources();
-		hasListItemNamedHello(info, result);
-	}
 
-	private void hasListItemNamedHello(ErlProjectLayout info,
-			Collection<IPath> result) {
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
-		MatcherAssert.assertThat("source dirs size", result.size(),
-				Matchers.equalTo(2));
-		MatcherAssert.assertThat("source dirs content", result,
-				Matchers.hasItem(new Path("hello")));
+		assertNotSameAs(info);
+		assertListLength(result, 1);
+		assertHasListItemNamed(result, "hello");
 	}
 
 	@Test
-	public void shouldAddIncludeDir() {
+	public void shouldSetIncludes() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
-		info = info.addInclude("hello");
+		List<IPath> srcs = Lists.newArrayList();
+		srcs.add(new Path("hello"));
+		info = info.setIncludes(srcs);
 		Collection<IPath> result = info.getIncludes();
-		hasListItemNamedHello(info, result);
-	}
 
-	@Test
-	public void shouldAddDocDir() {
-		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
-		info = info.addDoc("hello");
-		Collection<IPath> result = info.getDocs();
-		hasListItemNamedHello(info, result);
+		assertNotSameAs(info);
+		assertListLength(result, 1);
+		assertHasListItemNamed(result, "hello");
 	}
 
 	@Test
@@ -89,9 +82,22 @@ public class ErlProjectLayoutTest {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.setOutput("hello");
 		IPath expected = new Path("hello");
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+
+		assertNotSameAs(info);
 		MatcherAssert.assertThat(info.getOutput(), Matchers.equalTo(expected));
+	}
+
+	@Test
+	public void shouldSetDocs() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		List<IPath> srcs = Lists.newArrayList();
+		srcs.add(new Path("hello"));
+		info = info.setDocs(srcs);
+		Collection<IPath> result = info.getDocs();
+
+		assertNotSameAs(info);
+		assertListLength(result, 1);
+		assertHasListItemNamed(result, "hello");
 	}
 
 	@Test
@@ -99,29 +105,79 @@ public class ErlProjectLayoutTest {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.setPriv("hello");
 		IPath expected = new Path("hello");
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+
+		assertNotSameAs(info);
 		MatcherAssert.assertThat(info.getPriv(), Matchers.equalTo(expected));
 	}
 
 	@Test
-	public void shouldRemoveSourceDir() {
+	public void shouldAddSource() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.addSource("hello");
+		Collection<IPath> result = info.getSources();
+
+		assertNotSameAs(info);
+		assertListLength(result, 2);
+		assertHasListItemNamed(result, "hello");
+		assertHasListItemNamed(result, "src");
+	}
+
+	@Test
+	public void shouldAddSources() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		List<IPath> list = Lists.newArrayList();
+		list.add(new Path("hello"));
+		list.add(new Path("world"));
+		info = info.addSources(list);
+		Collection<IPath> result = info.getSources();
+
+		assertNotSameAs(info);
+		assertListLength(result, 2);
+		assertHasListItemNamed(result, "hello");
+		assertHasListItemNamed(result, "world");
+	}
+
+	@Test
+	public void shouldAddInclude() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.addInclude("hello");
+		Collection<IPath> result = info.getIncludes();
+
+		assertNotSameAs(info);
+		assertListLength(result, 2);
+		assertHasListItemNamed(result, "hello");
+	}
+
+	@Test
+	public void shouldAddDoc() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.addDoc("hello");
+		Collection<IPath> result = info.getDocs();
+
+		assertNotSameAs(info);
+		assertListLength(result, 2);
+		assertHasListItemNamed(result, "hello");
+	}
+
+	@Test
+	public void shouldRemoveSource() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.removeSource("src");
 		Collection<IPath> result = info.getSources();
+
+		assertNotSameAs(info);
+		assertListLength(result, 0);
 		hasListNoItemNamed(info, result, "src");
 	}
 
 	private void hasListNoItemNamed(ErlProjectLayout info,
 			Collection<IPath> result, String string) {
-		MatcherAssert.assertThat("not same object", info,
-				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
-		MatcherAssert.assertThat("source dirs content", result,
+		MatcherAssert.assertThat("list has item", result,
 				Matchers.not(Matchers.hasItem(new Path(string))));
 	}
 
 	@Test
-	public void shouldRemoveIncludeDir() {
+	public void shouldRemoveInclude() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.removeInclude("include");
 		Collection<IPath> result = info.getIncludes();
@@ -129,11 +185,26 @@ public class ErlProjectLayoutTest {
 	}
 
 	@Test
-	public void shouldRemoveDocDir() {
+	public void shouldRemoveDoc() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.removeDoc("doc");
 		Collection<IPath> result = info.getDocs();
 		hasListNoItemNamed(info, result, "doc");
+	}
+
+	private void assertListLength(Collection<IPath> result, int length) {
+		MatcherAssert.assertThat("source dirs size", result.size(),
+				Matchers.equalTo(length));
+	}
+
+	private void assertHasListItemNamed(Collection<IPath> result, String name) {
+		MatcherAssert.assertThat("source dirs content", result,
+				Matchers.hasItem(new Path(name)));
+	}
+
+	private void assertNotSameAs(ErlProjectLayout info) {
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 	}
 
 }

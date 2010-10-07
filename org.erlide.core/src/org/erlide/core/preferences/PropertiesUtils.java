@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.preferences;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,33 +29,36 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlProjectInfo convertOld(
-            final OldErlangProjectProperties old) {
+    public static ErlProjectInfo convertOld(final OldErlangProjectProperties old)
+            throws URISyntaxException {
         ErlProjectInfo result = new ErlProjectInfo();
-        result.setRequiredRuntimeVersion(old.getRuntimeVersion());
+        result = result.setRequiredRuntimeVersion(old.getRuntimeVersion());
         if (!result.getRequiredRuntimeVersion().isDefined()) {
             final RuntimeInfo runtimeInfo = old.getRuntimeInfo();
             if (runtimeInfo != null) {
-                result.setRequiredRuntimeVersion(runtimeInfo.getVersion());
+                result = result.setRequiredRuntimeVersion(runtimeInfo
+                        .getVersion());
             }
         }
 
-        result.addSources(mkSources(old.getSourceDirs()));
-        result.addIncludes(PreferencesUtils.unpackList(PathSerializer
-                .packList(old.getIncludeDirs())));
-        result.setOutput(old.getOutputDir());
+        // result =
+        // result.getLayout().addSources(mkSources(old.getSourceDirs()));
+        // result =
+        // result.addIncludes(PreferencesUtils.unpackList(PathSerializer
+        // .packList(old.getIncludeDirs())));
+        // result = result.setOutput(old.getOutputDir());
 
         final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
 
         final String exmodf = old.getExternalModulesFile();
-        IPath ff = pvman.resolvePath(new Path(exmodf));
+        URI ff = pvman.resolveURI(new URI(exmodf));
         final List<String> externalModules = PreferencesUtils.readFile(ff
                 .toString());
         final List<SourceEntry> sloc = makeSourceLocations(externalModules);
 
         final String exincf = old.getExternalModulesFile();
-        ff = pvman.resolvePath(new Path(exincf));
+        ff = pvman.resolveURI(new URI(exincf));
         // List<String> exinc = PreferencesUtils.readFile(ff.toString());
         final List<IPath> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
@@ -61,7 +66,7 @@ public final class PropertiesUtils {
                 null);
         ArrayList<PathEntry> locs = new ArrayList<PathEntry>();
         locs.add(loc);
-        result.addDependencies(locs);
+        result = result.addDependencies(locs);
         return result;
     }
 

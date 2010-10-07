@@ -4,18 +4,18 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlProjectInfoBuilder {
-    
+
     public ErlProjectInfoBuilder() {
     }
-    
-    public ErlProjectInfo load(final IEclipsePreferences root)
-            throws BackingStoreException {
+
+    public ErlProjectInfo loadFromPreferences(
+            final IEclipsePreferences root) throws BackingStoreException {
         // TODO implement!
         return null;
     }
 
-    public void store(ErlProjectInfo info, final IEclipsePreferences root)
-            throws BackingStoreException {
+    public void storeToPreferences(ErlProjectInfo info,
+            final IEclipsePreferences root) throws BackingStoreException {
         // TODO implement!
     }
 
