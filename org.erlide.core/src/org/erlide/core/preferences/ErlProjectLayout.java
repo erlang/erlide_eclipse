@@ -114,8 +114,30 @@ public final class ErlProjectLayout {
     }
 
     public ErlProjectLayout setOutput(Path path) {
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes, path,
+                docs, priv);
+        return result;
+    }
+
+    public ErlProjectLayout addDoc(String string) {
+        return addDoc(new Path(string));
+    }
+
+    public ErlProjectLayout addDoc(IPath path) {
+        List<IPath> docs1 = Lists.newArrayList(includes);
+        docs1.add(path);
         ErlProjectLayout result = new ErlProjectLayout(sources, includes,
-                path, docs, priv);
+                output, docs1, priv);
+        return result;
+    }
+
+    public ErlProjectLayout setPriv(String string) {
+        return setPriv(new Path(string));
+    }
+
+    public ErlProjectLayout setPriv(Path path) {
+        ErlProjectLayout result = new ErlProjectLayout(sources, includes,
+                output, docs, path);
         return result;
     }
 
@@ -165,6 +187,5 @@ public final class ErlProjectLayout {
         }
         return new OtpErlangString(path.toString());
     }
-
 
 }

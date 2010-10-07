@@ -77,6 +77,19 @@ public class ErlProjectLayoutTest {
 	}
 
 	@Test
+	public void shouldAddDocDir() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.addDoc("hello");
+		Collection<IPath> expected = Lists
+				.newArrayList(ErlProjectLayout.OTP_LAYOUT.getIncludes());
+		expected.add(new Path("hello"));
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+		MatcherAssert.assertThat("source dirs content", info.getDocs(),
+				Matchers.equalTo(expected));
+	}
+
+	@Test
 	public void shouldSetOutput() {
 		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
 		info = info.setOutput("hello");
@@ -84,6 +97,16 @@ public class ErlProjectLayoutTest {
 		MatcherAssert.assertThat("not same object", info,
 				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 		MatcherAssert.assertThat(info.getOutput(), Matchers.equalTo(expected));
+	}
+
+	@Test
+	public void shouldSetPriv() {
+		ErlProjectLayout info = ErlProjectLayout.OTP_LAYOUT;
+		info = info.setPriv("hello");
+		IPath expected = new Path("hello");
+		MatcherAssert.assertThat("not same object", info,
+				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
+		MatcherAssert.assertThat(info.getPriv(), Matchers.equalTo(expected));
 	}
 
 }
