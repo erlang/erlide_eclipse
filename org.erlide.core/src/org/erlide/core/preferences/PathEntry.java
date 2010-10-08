@@ -14,14 +14,34 @@ import org.eclipse.core.runtime.IPath;
 
 public abstract class PathEntry {
 
-    protected IPath path;
+    protected final IPath path;
+    private final String name;
+    private final ErlProjectLayout layout;
 
-    public PathEntry(IPath path) {
+    public PathEntry(String name) {
+        this(name, null);
+    }
+
+    public PathEntry(String name, IPath path) {
+        this(name, path, null);
+    }
+
+    public PathEntry(String name, IPath path, ErlProjectLayout layout) {
+        this.name = name;
         this.path = path;
+        this.layout = layout;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public IPath getPath() {
         return path;
+    }
+
+    public ErlProjectLayout getLayout() {
+        return layout;
     }
 
     public boolean isRunTime() {

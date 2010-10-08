@@ -15,7 +15,7 @@ public class ErlProjectInfo {
     private final RuntimeVersion requiredRuntimeVersion;
     private final ErlProjectLayout layout;
 
-    private final Set<SourceEntry> codePathEntries = Sets.newHashSet();
+    private final Set<PathEntry> codePathEntries = Sets.newHashSet();
 
     private final Set<PathEntry> dependencies = Sets.newHashSet();
 
@@ -46,16 +46,6 @@ public class ErlProjectInfo {
             }
         }
         return result;
-    }
-
-    public Collection<LibraryEntry> getProjectDependencies() {
-        return Collections.unmodifiableCollection(filter(dependencies,
-                LibraryEntry.class));
-    }
-
-    public Collection<LibraryEntry> getLibraryDependencies() {
-        return Collections.unmodifiableCollection(filter(dependencies,
-                LibraryEntry.class));
     }
 
     public RuntimeVersion getRequiredRuntimeVersion() {

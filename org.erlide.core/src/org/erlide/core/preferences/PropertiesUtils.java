@@ -12,7 +12,6 @@ package org.erlide.core.preferences;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,24 +54,26 @@ public final class PropertiesUtils {
         URI ff = pvman.resolveURI(new URI(exmodf));
         final List<String> externalModules = PreferencesUtils.readFile(ff
                 .toString());
-        final List<SourceEntry> sloc = makeSourceLocations(externalModules);
+        final List<PathEntry> sloc = makeSourceLocations(externalModules);
 
         final String exincf = old.getExternalModulesFile();
         ff = pvman.resolveURI(new URI(exincf));
         // List<String> exinc = PreferencesUtils.readFile(ff.toString());
         final List<IPath> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
 
-        final LibraryEntry loc = new LibraryEntry(sloc, externalIncludes, null,
-                null);
-        ArrayList<PathEntry> locs = new ArrayList<PathEntry>();
-        locs.add(loc);
-        result = result.addDependencies(locs);
+        // final PathEntry loc = new PathEntry(sloc, externalIncludes, null,
+        // null);
+        // ArrayList<PathEntry> locs = new ArrayList<PathEntry>();
+        // locs.add(loc);
+        // result = result.addDependencies(locs);
         return result;
     }
 
-    private static List<SourceEntry> makeSourceLocations(
+    private static List<PathEntry> makeSourceLocations(
             final List<String> externalModules) {
-        final List<SourceEntry> result = Lists.newArrayList();
+        //FIXME!!!
+        
+        final List<PathEntry> result = Lists.newArrayList();
 
         final List<String> modules = Lists.newArrayList();
         for (final String mod : externalModules) {
@@ -109,8 +110,8 @@ public final class PropertiesUtils {
         return result;
     }
 
-    private static List<SourceEntry> mkSources(final Collection<IPath> list) {
-        final List<SourceEntry> result = Lists.newArrayList();
+    private static List<PathEntry> mkSources(final Collection<IPath> list) {
+        final List<PathEntry> result = Lists.newArrayList();
         // for (final IPath src : list) {
         // result.add(new SourceEntry(src, null, null, null, null, null));
         // }
