@@ -456,8 +456,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private void doPatternModified() {
 		if (fInitialData != null
 				&& getPattern().equals(fInitialData.getPattern())) {
-			;
-			;
 		}
 	}
 
