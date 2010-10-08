@@ -1308,13 +1308,6 @@
             name="Call Hierarchy"
             restorable="true">
       </view>
-      <view
-            allowMultiple="false"
-            class="org.erlide.ui.internal.MonitorView"
-            id="org.erlide.ui.internal.monitorLogView"
-            name="Backend monitor"
-            restorable="true">
-      </view>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
