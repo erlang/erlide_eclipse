@@ -12,6 +12,7 @@ package org.erlide.core.preferences;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,18 @@ public final class PropertiesUtils {
         // for (final IPath src : list) {
         // result.add(new SourceEntry(src, null, null, null, null, null));
         // }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <U, T extends U> Collection<T> filter(
+            final Collection<U> dependencies2, final Class<T> class1) {
+        final List<T> result = new ArrayList<T>();
+        for (final U oo : dependencies2) {
+            if (oo.getClass().equals(class1)) {
+                result.add((T) oo);
+            }
+        }
         return result;
     }
 
