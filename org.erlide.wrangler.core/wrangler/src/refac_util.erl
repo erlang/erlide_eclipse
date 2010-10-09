@@ -275,15 +275,22 @@ quick_parse_annotate_file(FName, SearchPaths, TabWidth) ->
 %% =====================================================================
 %%-spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
 tokenize(File, WithLayout, TabWidth) ->
-    {ok, Bin} = file:read_file(File),
-    S = erlang:binary_to_list(Bin),
-    case WithLayout of 
-	true -> 
-	    {ok, Ts, _} = refac_scan_with_layout:string(S, {1,1}, TabWidth, file_format(File)),
-	    Ts;
-	_ -> {ok, Ts, _} = refac_scan:string(S, {1,1}, TabWidth,file_format(File)),
-	     Ts
+    case file:read_file(File) of
+	{ok, Bin} ->
+	    S = erlang:binary_to_list(Bin),
+	    case WithLayout of 
+		true -> 
+		    {ok, Ts, _} = refac_scan_with_layout:string(S, {1,1}, TabWidth, file_format(File)),
+		    Ts;
+		_ -> {ok, Ts, _} = refac_scan:string(S, {1,1}, TabWidth,file_format(File)),
+		     Ts
+	    end;
+	{error, Reason} ->
+	    Msg = io_lib:format("Wrangler could not read file ~s: ~w \n", 
+				[filename:dirname(File), Reason]),
+	    throw({error, Msg})
     end.
+
 
 merge_module_info(Info1, Info2) ->
     Info = lists:usort(Info1 ++ Info2),
@@ -994,20 +1001,26 @@ expand_files(FileDirs, Ext) ->
 expand_files([FileOrDir | Left], Ext, Acc) ->
     case filelib:is_dir(FileOrDir) of
       true ->
-	  {ok, List} = file:list_dir(FileOrDir),
-	  NewFiles = [filename:join(FileOrDir, X)
-		      || X <- List, filelib:is_file(filename:join(FileOrDir, X)), filename:extension(X) == Ext],
-	  NewDirs = [filename:join(FileOrDir, X) || X <- List, filelib:is_dir(filename:join(FileOrDir, X))],
-	  expand_files(NewDirs ++ Left, Ext, NewFiles ++ Acc);
-      false ->
-	  case filelib:is_regular(FileOrDir) of
-	    true ->
-		case filename:extension(FileOrDir) == Ext of
-		  true -> expand_files(Left, Ext, [FileOrDir | Acc]);
-		  false -> expand_files(Left, Ext, Acc)
-		end;
-	    _ -> expand_files(Left, Ext, Acc)
-	  end
+	    case file:list_dir(FileOrDir) of 
+		{ok, List} ->
+		    NewFiles = [filename:join(FileOrDir, X)
+				|| X <- List, filelib:is_file(filename:join(FileOrDir, X)), filename:extension(X) == Ext],
+		    NewDirs = [filename:join(FileOrDir, X) || X <- List, filelib:is_dir(filename:join(FileOrDir, X))],
+		    expand_files(NewDirs ++ Left, Ext, NewFiles ++ Acc);
+		{error, Reason} ->
+		     Msg = io_lib:format("Wrangler could not read directory ~s: ~w \n", 
+				[filename:dirname(FileOrDir), Reason]),
+		    throw({error, Msg})
+	    end;
+	false ->
+	    case filelib:is_regular(FileOrDir) of
+		true ->
+		    case filename:extension(FileOrDir) == Ext of
+			true -> expand_files(Left, Ext, [FileOrDir | Acc]);
+			false -> expand_files(Left, Ext, Acc)
+		    end;
+		_ -> expand_files(Left, Ext, Acc)
+	    end
     end;
 expand_files([], _Ext, Acc) -> ordsets:from_list(Acc).
 
@@ -1049,25 +1062,31 @@ get_modules_by_file([], Acc) -> lists:reverse(Acc).
 
 
 %%-spec file_format(filename()) ->dos|mac|unix. 		 
-file_format(File) ->  
-    {ok, Bin} = file:read_file(File),
-    S = erlang:binary_to_list(Bin),
-    LEs = scan_line_endings(S),
-    case LEs of 
-	[] -> unix;    %% default fileformat;
-	_ ->  case lists:all(fun(E) -> E=="\r\n" end, LEs) of 
-		  true -> dos;
-		  _ -> case lists:all(fun(E) -> E=="\r" end, LEs)  of
-			   true ->
-			       mac;
-			   _ -> case lists:all(fun(E)-> E=="\n" end, LEs) of
-				    true -> unix;
-				    _ -> throw({error, File ++ " uses a mixture of line endings,"
-						" please normalise it to one of the standard file "
-						"formats (i.e. unix/dos/mac) before performing any refactorings."})
-				end
-		       end
-	      end
+file_format(File) -> 
+    case file:read_file(File) of 
+	{ok, Bin} ->
+	    S = erlang:binary_to_list(Bin),
+	    LEs = scan_line_endings(S),
+	    case LEs of 
+		[] -> unix;    %% default fileformat;
+		_ ->  case lists:all(fun(E) -> E=="\r\n" end, LEs) of 
+			  true -> dos;
+			  _ -> case lists:all(fun(E) -> E=="\r" end, LEs)  of
+				   true ->
+				       mac;
+				   _ -> case lists:all(fun(E)-> E=="\n" end, LEs) of
+					    true -> unix;
+					    _ -> throw({error, File ++ " uses a mixture of line endings,"
+							" please normalise it to one of the standard file "
+							"formats (i.e. unix/dos/mac) before performing any refactorings."})
+					end
+			       end
+		      end
+	    end;
+	{error, Reason} ->
+	    Msg = io_lib:format("Wrangler could not read file ~s: ~w \n", 
+				[filename:dirname(File), Reason]),
+	    throw({error, Msg})
     end.
 
 scan_line_endings(Cs)->

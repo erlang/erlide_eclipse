@@ -260,7 +260,8 @@ transform_a_form_to_be_moved(Form, Args) ->
 do_transform_fun(Node, {FileName, MFAs = [{ModName, _, _}| _T], TargetModName,
 			InScopeFunsInTargetMod, SearchPaths, TabWidth, Pid}) ->
     case refac_syntax:type(Node) of
-	application -> transform_application_node(Node, MFAs, TargetModName, InScopeFunsInTargetMod);
+	application -> transform_application_node(FileName, Node, MFAs, TargetModName, 
+						  InScopeFunsInTargetMod, SearchPaths, TabWidth);
 	implicit_fun -> transform_implicit_fun_node(Node, MFAs, ModName, TargetModName);
 	tuple -> do_rename_fun_in_tuples(Node, {FileName, SearchPaths, MFAs, TargetModName, Pid, TabWidth});
 	_ -> {Node, false}
@@ -321,27 +322,33 @@ transform_arity_qualifier_node(Node, MFAs, ModName, Name) ->
       _ -> {Node, false}
     end.
 
-transform_application_node(Node, MFAs, TargetModName, InScopeFunsInTargetMod) ->
+transform_application_node(FileName, Node, MFAs, TargetModName, 
+			   InScopeFunsInTargetMod, SearchPaths, TabWidth) ->
     Op = refac_syntax:application_operator(Node),
     Args = refac_syntax:application_arguments(Node),
     case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
       {value, {fun_def, {M, F, A, _, _}}} ->
 	  case refac_syntax:type(Op) of
 	    atom ->
-		  case lists:member({M, F, A}, InScopeFunsInTargetMod) orelse
-		      erl_internal:bif(M, F, A) orelse lists:member({M, F, A}, MFAs)
-		  of
-		      true ->
-		      {Node, false};
-		  _ when M =/= '_' ->
-		      Op1 = copy_pos_attrs(Op, refac_syntax:module_qualifier(refac_syntax:atom(M), Op)),
-		      {copy_pos_attrs(Node, refac_syntax:application(Op1, Args)), true};
-		  _ ->
-		      {Line, Col} = refac_syntax:get_pos(Op),
-		      Str = "Wrangler could not infer where the function " ++ atom_to_list(F) ++ "/" ++ integer_to_list(A) ++
-			      ", used at location {" ++ integer_to_list(Line) ++ "," ++ integer_to_list(Col) ++ "} in the current module, is defined.",
-		      throw({error, Str})
-		end;
+		  case lists:keysearch({M, F, A}, 1, refac_misc:apply_style_funs()) of 
+		      {value, _} ->
+			  transform_apply_style_calls(FileName, Node, MFAs, TargetModName, SearchPaths, TabWidth);
+		      false ->
+			  case lists:member({M, F, A}, InScopeFunsInTargetMod) orelse
+			      erl_internal:bif(M, F, A) orelse lists:member({M, F, A}, MFAs)
+			  of
+			      true ->
+				  {Node, false};
+			      _ when M =/= '_' ->
+				  Op1 = copy_pos_attrs(Op, refac_syntax:module_qualifier(refac_syntax:atom(M), Op)),
+				  {copy_pos_attrs(Node, refac_syntax:application(Op1, Args)), true};
+			      _ ->
+				  {Line, Col} = refac_syntax:get_pos(Op),
+				  Str = "Wrangler could not infer where the function " ++ atom_to_list(F) ++ "/" ++ integer_to_list(A) ++
+				      ", used at location {" ++ integer_to_list(Line) ++ "," ++ integer_to_list(Col) ++ "} in the current module, is defined.",
+				  throw({error, Str})
+			  end
+		  end;
 	    _ ->
 		case M == TargetModName of
 		  true ->
@@ -1308,7 +1315,13 @@ get_target_file_name(CurrentFName, TargetModorFileName) ->
 
 create_new_file(TargetFName, TargetModName) ->
     S = "-module("++atom_to_list(TargetModName)++").",
-    file:write_file(TargetFName, list_to_binary(S)).
+    case file:write_file(TargetFName, list_to_binary(S)) of 
+	ok -> ok;
+	{error, Reason} ->
+	    Msg = io_lib:format("Wrangler could not write to file ~s: ~w \n",
+				[TargetFName, Reason]),
+	    throw({error, Msg})
+    end.
 
 defines(Form, MFAs) ->
     case refac_syntax:type(Form) of

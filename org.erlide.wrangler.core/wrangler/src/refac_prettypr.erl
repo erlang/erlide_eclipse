@@ -167,8 +167,8 @@ form_not_changed(Form) ->
 %% Do this still need this function?
 get_paper_ribbon_width(Form) ->
     case refac_syntax:type(Form) of
-      attribute -> {?PAPER, ?RIBBON};
-      _ ->
+	attribute -> {?PAPER, ?RIBBON};
+	_ ->
 	  Fun = fun (T, Acc) ->
 			{S, E} = refac_misc:get_start_end_loc(T),
 			[S, E] ++ Acc
@@ -573,7 +573,7 @@ lay_2(Node, Ctxt) ->
 	   case is_integer(V) and (V > 127) of
 	       true -> {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
 		       [CharStr] = io_lib:fwrite("~.8B", [Num]),
-		       text("$\\" ++ CharStr);
+		       text("$\\" ++ CharStr);   %% "
 	       _ when is_atom(V)-> 
                  text(atom_to_list(V));
                _ -> text(refac_syntax:char_literal(Node))
@@ -592,14 +592,17 @@ lay_2(Node, Ctxt) ->
 	  end;
       nil -> text("[]");
       tuple -> %% done;
-	  Es = seq(refac_syntax:tuple_elements(Node), floating(text(",")), reset_prec(Ctxt), fun lay/2),
+          Es0=refac_syntax:tuple_elements(Node),
+	  Sep = get_separator(Es0, Ctxt#ctxt.tokens, ", "),
+	  Es = seq(Es0, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
 	  beside(floating(text("{")),
 		 beside(lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:tuple_elements(Node)), floating(text("}"))));
       list ->   %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  Node1 = refac_syntax:compact_list(Node),
 	  PrefixElems = refac_syntax:list_prefix(Node1),
-	  D0 = seq(PrefixElems, floating(text(",")), Ctxt1, fun lay/2),
+	  Sep = get_separator(PrefixElems, Ctxt#ctxt.tokens, ", "),
+	  D0 = seq(PrefixElems, floating(text(Sep)), Ctxt1, fun lay/2),
 	  D1 = lay_elems(fun refac_prettypr_0:par/1, D0, PrefixElems),
 	  D = case refac_syntax:list_suffix(Node1) of
 		none -> beside(D1, floating(text("]")));
@@ -630,7 +633,8 @@ lay_2(Node, Ctxt) ->
 	      true ->
 		  floating(text(" "++Op++" "));
 	      false ->
-		  floating(text(Op))
+		  Op1 = get_operator_text(Node, Ctxt#ctxt.tokens, Op),
+		  floating(text(Op1))
 	  end;
       infix_expr ->  %% done;
 	  Left = refac_syntax:infix_expr_left(Node),
@@ -698,7 +702,9 @@ lay_2(Node, Ctxt) ->
       application ->  %% done.
 	  {PrecL, Prec} = func_prec(),
 	  D = lay(refac_syntax:application_operator(Node), set_prec(Ctxt, PrecL)),
-	  As = seq(refac_syntax:application_arguments(Node), floating(text(",")), reset_prec(Ctxt), fun lay/2),
+	  Args = refac_syntax:application_arguments(Node),			   
+	  Sep = get_separator(Args, Ctxt#ctxt.tokens, ", "),
+	  As = seq(Args, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
 	  Op = refac_syntax:application_operator(Node),
 	  Args = refac_syntax:application_arguments(Node),
 	  D1 = case Args of
@@ -743,13 +749,14 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = (reset_prec(Ctxt))#ctxt{clause = undefined},
 	  Pats = refac_syntax:clause_patterns(Node),
 	  Body = refac_syntax:clause_body(Node),
-	  PatDocs = seq(Pats, floating(text(",")), Ctxt1, fun lay/2),
+	  Sep = get_separator(Pats, Ctxt#ctxt.tokens, ", "),
+	  PatDocs = seq(Pats, floating(text(Sep)), Ctxt1, fun lay/2),
 	  D1 = lay_elems(fun refac_prettypr_0:par/1, PatDocs, Pats),
 	  D2 = case refac_syntax:clause_guard(Node) of
 		 none -> none;
 		 G -> lay(G, Ctxt1)
 	       end,
-	  BodyDocs = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
+	  BodyDocs = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
 	  D3 = lay_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
 	  HeadLastLn = case refac_syntax:clause_guard(Node) of
 			 none -> case Pats of
@@ -785,20 +792,20 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = reset_prec(Ctxt),
 	  D1 = lay(refac_syntax:case_expr_argument(Node), Ctxt1),
 	  D2 = lay_clauses(refac_syntax:case_expr_clauses(Node), case_expr, Ctxt1),
-	  sep([par([follow(text("case"), D1, Ctxt1#ctxt.sub_indent), text("of")], Ctxt1#ctxt.break_indent),
-	       nest(Ctxt1#ctxt.sub_indent, D2), text("end")]);
+	  sep([par([follow(text("case"), D1, Ctxt1#ctxt.break_indent), text("of")], Ctxt1#ctxt.break_indent),
+	       nest(Ctxt1#ctxt.break_indent, D2), text("end")]);
       if_expr ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D = lay_clauses(refac_syntax:if_expr_clauses(Node), if_expr, Ctxt1),
-	  sep([follow(text("if"), D, Ctxt1#ctxt.sub_indent), text("end")]);
+	  sep([follow(text("if"), D, Ctxt1#ctxt.break_indent), text("end")]);
       cond_expr ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D = lay_clauses(refac_syntax:cond_expr_clauses(Node), cond_expr, Ctxt1),
-	  sep([text("cond"), nest(Ctxt1#ctxt.sub_indent, D), text("end")]);
+	  sep([text("cond"), nest(Ctxt1#ctxt.break_indent, D), text("end")]);
       fun_expr ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D = lay_clauses(refac_syntax:fun_expr_clauses(Node), fun_expr, Ctxt1),
-	  sep([follow(text("fun"), D, Ctxt1#ctxt.sub_indent), text("end")]);
+	  sep([follow(text("fun"), D, Ctxt1#ctxt.break_indent), text("end")]);
       module_qualifier ->  %% done;
 	  {PrecL, _Prec, PrecR} = inop_prec(':'),
 	  D1 = lay(refac_syntax:module_qualifier_argument(Node), set_prec(Ctxt, PrecL)),
@@ -825,14 +832,16 @@ lay_2(Node, Ctxt) ->
 	  D = case refac_syntax:attribute_arguments(Node) of
 		none -> lay(N, Ctxt1);
 		Args ->
-		    As = seq(Args, floating(text(",")), Ctxt1, fun lay/2),
+		    Sep = get_separator(Args, Ctxt#ctxt.tokens, ", "),
+		    As = seq(Args, floating(text(Sep)), Ctxt1, fun lay/2),
 		    beside(lay(N, Ctxt1), beside(text("("), beside(lay_elems(fun refac_prettypr_0:par/1, As, Args), floating(text(")")))))
 	      end,
 	  beside(floating(text("-")), beside(D, floating(text("."))));
       binary ->   %% done
 	  Ctxt1 = reset_prec(Ctxt),
 	  Fields = refac_syntax:binary_fields(Node),
-	  Es = seq(Fields, floating(text(",")), Ctxt1, fun lay/2),
+	  Sep = get_separator(Fields, Ctxt#ctxt.tokens, ", "),
+	  Es = seq(Fields, floating(text(Sep)), Ctxt1, fun lay/2),
 	  beside(floating(text("<<")), beside(lay_elems(fun refac_prettypr_0:par/1, Es, Fields), floating(text(">>"))));
       binary_field ->
 	  Ctxt1 = reset_prec(Ctxt),
@@ -868,11 +877,11 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = reset_prec(Ctxt),
 	  Body = refac_syntax:block_expr_body(Node),
 	  Es = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
-	  sep([text("begin"), nest(Ctxt1#ctxt.sub_indent, lay_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
+	  sep([text("begin"), nest(Ctxt1#ctxt.break_indent, lay_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
       catch_expr ->  %% done;
 	  {Prec, PrecR} = preop_prec('catch'),
 	  D = lay(refac_syntax:catch_expr_body(Node), set_prec(Ctxt, PrecR)),
-	  D1 = follow(text("catch"), D, Ctxt#ctxt.sub_indent),
+	  D1 = follow(text("catch"), D, Ctxt#ctxt.break_indent),
 	  maybe_parentheses(D1, Prec, Ctxt);
       class_qualifier ->  %% done;
 	  Ctxt1 = set_prec(Ctxt, max_prec()),
@@ -887,7 +896,9 @@ lay_2(Node, Ctxt) ->
 	    P -> floating(break(beside(text(spaces(P)), D)))
 	  end;
       conjunction -> %% done;
-	  Es = seq(refac_syntax:conjunction_body(Node), floating(text(", ")), reset_prec(Ctxt), fun lay/2),
+	  Body = refac_syntax:conjunction_body(Node),
+	  Sep = get_separator(Body, Ctxt#ctxt.tokens, ", "),
+	  Es = seq(Body, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
 	  lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:conjunction_body(Node));
       disjunction -> %% done;
 	  %% For clarity, we don't paragraph-format
@@ -915,7 +926,7 @@ lay_2(Node, Ctxt) ->
 		case D2StartLn - D1EndLn of
 		  0 -> beside(D1, beside(text(" <- "), D2));
 		  1 -> above(D1, nest(Ctxt#ctxt.break_indent, beside(text("<- "), D2)));
-		  _ -> par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.break_indent)
+		  _ -> par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.sub_indent)
 		end
 	  end;
       implicit_fun -> %%done;
@@ -924,7 +935,9 @@ lay_2(Node, Ctxt) ->
       list_comp ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D1 = lay(refac_syntax:list_comp_template(Node), Ctxt1),
-	  Es = seq(refac_syntax:list_comp_body(Node), floating(text(",")), Ctxt1, fun lay/2),
+	  Es0 =refac_syntax:list_comp_body(Node),
+	  Sep = get_separator(Es0, Ctxt#ctxt.tokens, ", "),
+	  Es = seq(Es0, floating(text(Sep)), Ctxt1, fun lay/2),
 	  D2 = lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:list_comp_body(Node)),
 	  D1EndLn = get_end_line(refac_syntax:list_comp_template(Node)),
 	  D2StartLn = get_start_line(hd(refac_syntax:list_comp_body(Node))),
@@ -943,7 +956,8 @@ lay_2(Node, Ctxt) ->
 		[H| _] ->
 		    EndLn = get_end_line(N),
 		    StartLn = get_start_line(H),
-		    As = seq(Args, floating(text(",")), reset_prec(Ctxt), fun lay/2),
+		    Sep = get_separator(Args, Ctxt#ctxt.tokens, ", "),
+		    As = seq(Args, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
 		    case StartLn > EndLn of
 		      true ->
 			  above(beside(lay(N, Ctxt1), text("(")),
@@ -972,7 +986,7 @@ lay_2(Node, Ctxt) ->
       query_expr ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D = lay(refac_syntax:query_expr_body(Node), Ctxt1),
-	  sep([text("query"), nest(Ctxt1#ctxt.sub_indent, D), text("end")]);
+	  sep([text("query"), nest(Ctxt1#ctxt.break_indent, D), text("end")]);
       receive_expr ->  %% done;
 	  Ctxt1 = reset_prec(Ctxt),
 	  D1 = lay_clauses(refac_syntax:receive_expr_clauses(Node), receive_expr, Ctxt1),
@@ -982,9 +996,9 @@ lay_2(Node, Ctxt) ->
 		     D3 = lay(T, Ctxt1),
 		     A = refac_syntax:receive_expr_action(Node),
 		     D4 = lay_elems(fun refac_prettypr_0:sep/1, seq(A, floating(text(", ")), Ctxt1, fun lay/2), A),
-		     sep([D1, follow(floating(text("after")), append_clause_body(D4, D3, Ctxt1, {1, 1}), Ctxt1#ctxt.sub_indent)])
+		     sep([D1, follow(floating(text("after")), append_clause_body(D4, D3, Ctxt1, {1, 1}), Ctxt1#ctxt.break_indent)])
 	       end,
-	  sep([text("receive"), nest(Ctxt1#ctxt.sub_indent, D2), text("end")]);
+	  sep([text("receive"), nest(Ctxt1#ctxt.break_indent, D2), text("end")]);
       record_access ->
 	  {PrecL, Prec, PrecR} = inop_prec('#'),
 	  D1 = lay(refac_syntax:record_access_argument(Node), set_prec(Ctxt, PrecL)),
@@ -1000,7 +1014,8 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = reset_prec(Ctxt),
 	  D1 = lay(refac_syntax:record_expr_type(Node), Ctxt1),
 	  Fields = refac_syntax:record_expr_fields(Node),
-	  D2 = lay_elems(fun refac_prettypr_0:par/1, seq(refac_syntax:record_expr_fields(Node), floating(text(", ")), Ctxt1, fun lay/2), Fields),
+	  Sep = get_separator(Fields, Ctxt#ctxt.tokens, ", "),
+	  D2 = lay_elems(fun refac_prettypr_0:par/1, seq(refac_syntax:record_expr_fields(Node), floating(text(Sep)), Ctxt1, fun lay/2), Fields),
 	  D3 = beside(beside(floating(text("#")), D1), beside(text("{"), beside(D2, floating(text("}"))))),
 	  D4 = case refac_syntax:record_expr_argument(Node) of
 		 none -> D3;
@@ -1060,13 +1075,13 @@ lay_2(Node, Ctxt) ->
 			[] -> Es0;
 			As ->
 			    D2 = lay_elems(fun refac_prettypr_0:sep/1,seq(As,floating(text(", ")),Ctxt1,fun lay/2), As),
-			    [text("after"),nest(Ctxt1#ctxt.sub_indent,D2)| Es0]
+			    [text("after"),nest(Ctxt1#ctxt.break_indent,D2)| Es0]
 		    end,
 	      Es2 = case refac_syntax:try_expr_handlers(Node) of
 			[] -> Es1;
 			Hs ->
 			    D3 = lay_clauses(Hs,try_expr,Ctxt1),
-			    [text("catch"),nest(Ctxt1#ctxt.sub_indent,D3)| Es1]
+			    [text("catch"),nest(Ctxt1#ctxt.break_indent,D3)| Es1]
 		    end,
 	      {L,C}=refac_syntax:get_pos(hd(Body)),
 	      TryLineNum=get_prev_keyword_line_num(Ctxt1#ctxt.tokens, {L,C}, 'try'),
@@ -1074,29 +1089,29 @@ lay_2(Node, Ctxt) ->
 		  [] -> 
 		      case TryLineNum==L andalso TryLineNum/=0 of 
 			  true ->
-			      sep([beside(text("try "),nest(Ctxt1#ctxt.sub_indent, D1))| Es2]);
+			      sep([beside(text("try "),nest(Ctxt1#ctxt.break_indent, D1))| Es2]);
 			  false ->
-			      sep([text("try"),nest(Ctxt1#ctxt.sub_indent, D1)| Es2])
+			      sep([text("try"),nest(Ctxt1#ctxt.break_indent, D1)| Es2])
 	    	      end;
 		  Cs ->
 		      {_, {L0,C0}} = refac_misc:get_range(lists:last(Body)),
 		      OfLineNum = get_post_keyword_line_num(Ctxt1#ctxt.tokens, {L0,C0}, 'of'),
 		      D4 = lay_clauses(Cs, try_expr, Ctxt1),
-		      Es3 = [nest(Ctxt1#ctxt.sub_indent, D4)| Es2],
+		      Es3 = [nest(Ctxt1#ctxt.break_indent, D4)| Es2],
 		      case TryLineNum==L andalso TryLineNum/=0 of 
 			  true ->
 			      case OfLineNum==L0 andalso L0/=0 of
 				  true ->
-				      sep([beside(text("try "), beside(nest(Ctxt1#ctxt.sub_indent, D1), text(" of")))| Es3]);
+				      sep([beside(text("try "), beside(nest(Ctxt1#ctxt.break_indent, D1), text(" of")))| Es3]);
 				  false ->
-				      sep([beside(text("try "),nest(Ctxt1#ctxt.sub_indent, D1)), text("of")| Es3])
+				      sep([beside(text("try "),nest(Ctxt1#ctxt.break_indent, D1)), text("of")| Es3])
 			      end;
 			  false ->
 			      case OfLineNum==L0 andalso L0/=0 of
 				  true ->
-				      sep([text("try"), nest(Ctxt1#ctxt.sub_indent, D1)| Es3]);
+				      sep([text("try"), nest(Ctxt1#ctxt.break_indent, D1)| Es3]);
 				  false ->
-				      sep([text("try"), nest(Ctxt1#ctxt.sub_indent, D1), text("of")| Es3])
+				      sep([text("try"), nest(Ctxt1#ctxt.break_indent, D1), text("of")| Es3])
 			      end
 		      end
 	      end;
@@ -1420,3 +1435,90 @@ token_loc(T) ->
       {_, L1} -> L1
     end.
 
+get_separator(_NodeList, [], Default) ->
+    Default;
+get_separator([],_, Default) ->
+    Default;
+get_separator(NodeList, Toks, Default) when is_list(NodeList) -> 
+    NodeToks = get_node_toks(Toks,NodeList),
+    NodeListToks = lists:append([get_node_toks(Toks, Elem)||
+				    Elem<-NodeList]),
+    SepToks = NodeToks -- NodeListToks,
+    case SepToks of 
+	[] ->
+	    Default;
+	_ ->
+	    {OnlyComma, CommaWithSpace} =get_comma_tokens(SepToks),     
+	    case length(OnlyComma) >length(CommaWithSpace) of 
+		true ->
+		    ",";
+		false ->
+		    ", "
+	    end
+    end;
+get_separator(_Node, _Toks, Default) ->
+    Default.
+
+	    
+get_node_toks(Toks, Node) ->
+    {Start, End} =refac_misc:get_start_end_loc(Node),
+    Toks1 = lists:dropwhile(
+	      fun(T) ->
+		      token_loc(T)<Start
+	      end, Toks),
+    lists:takewhile(fun(T)->
+			    token_loc(T)=<End
+		    end, Toks1).
+
+get_comma_tokens(Toks) ->   
+    get_comma_tokens(Toks, {[],[]}).
+get_comma_tokens([], {OnlyComma, CommaWithSpace}) ->
+    {OnlyComma, CommaWithSpace};
+get_comma_tokens([T|Ts], {OnlyComma, CommaWithSpace}) ->
+    case T of
+	{',', _} ->
+	    case Ts  of 
+		[T1={whitespace, _, _}|Ts1] ->
+		    get_comma_tokens(Ts1, {OnlyComma, [{T, T1}|CommaWithSpace]});
+		_ ->
+		    get_comma_tokens(Ts, {[T|OnlyComma], CommaWithSpace})
+	    end;
+	_ ->
+	    get_comma_tokens(Ts,  {OnlyComma, CommaWithSpace})
+    end.
+get_operator_text(Node, Toks, Default) ->
+    case Toks of
+	[] ->
+	    Default;
+	_ ->
+	    {Start, End} =refac_misc:get_start_end_loc(Node),
+	    case Start =={0,0} orelse End=={0,0} of 
+		true -> Default;
+		_ ->
+		    Toks1 = 
+			lists:takewhile(
+			  fun(T) ->
+				  token_loc(T)<Start
+			  end, Toks),
+		    Toks2 =lists:dropwhile(
+			     fun(T) ->
+				     token_loc(T)=<End
+			     end, Toks),
+		    Pre=case lists:reverse(Toks1) of
+			    [{whitespace, _,_}|_] ->
+				" ";
+			    _ ->
+				""
+			end,
+		    Post = case Toks2 of
+			       [{whitespace, _,_}|_] ->
+				   " ";
+			       _ ->
+				   ""
+			   end,   
+		    Pre ++ Default++Post
+	    end
+    end.
+		
+	    
+    

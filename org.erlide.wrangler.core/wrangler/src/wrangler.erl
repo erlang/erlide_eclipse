@@ -387,7 +387,7 @@ duplicated_code_eclipse(DirFileList, MinLength, MinClones, TabWidth, SuffixTreeE
     try_refactoring(refac_duplicated_code, duplicated_code_eclipse, [DirFileList, MinLength, MinClones, TabWidth, SuffixTreeExec]).
 
 %%@private
--spec(sim_code_detection_eclipse/8::(DirFileList::[filename()|dir()], MinLen::float(), MinToks::integer(),
+-spec(sim_code_detection_eclipse/8::(DirFileList::[filename()|dir()], MinLen::integer(), MinToks::integer(),
 					 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
 					 SearchPaths::[dir()], TabWidth::integer()) ->
 					      [{[{{{File::filename(), StartLine::integer(), StartCol::integer()},
