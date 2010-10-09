@@ -335,14 +335,18 @@
 				<command commandId="org.erlide.wrangler.refactoring.renamevariable"
 					id="org.erlide.wrangler.refactoring.renamevariable" style="push">
 				</command>
-				<command commandId="org.erlide.wrangler.refactoring.introducenewvariable"
-					id="org.erlide.wrangler.refactoring.introducenewvariable" style="push">
-				</command>
 				<command commandId="org.erlide.wrangler.refactoring.renamefunction"
 					id="org.erlide.wrangler.refactoring.renamefunction" style="push">
 				</command>
 				<command commandId="org.erlide.wrangler.refactoring.renamemodule"
 					id="org.erlide.wrangler.refactoring.renamemodule" style="push">
+				</command>
+    <separator
+          name="org.erlide.wrangler.refactoring.separator_rename"
+          visible="true">
+    </separator>
+				<command commandId="org.erlide.wrangler.refactoring.introducenewvariable"
+					id="org.erlide.wrangler.refactoring.introducenewvariable" style="push">
 				</command>
 				<command commandId="org.erlide.wrangler.refactoring.generalise"
 					id="org.erlide.wrangler.refactoring.generalise" style="push">
