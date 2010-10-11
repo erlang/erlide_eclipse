@@ -333,13 +333,13 @@ scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
         scan(Cs, [], Toks, Pos, State, [{{illegal,var},Pos}|Errors])
     end.
 
-scan_macro(Cs, Name, Toks, Pos, State, Errors) ->
-    case catch list_to_atom(Name) of
-    A when is_atom(A) ->
-        scan(Cs, [], [{macro,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,macro},Pos}|Errors])
-    end.
+%% scan_macro(Cs, Name, Toks, Pos, State, Errors) ->
+%%     case catch list_to_atom(Name) of
+%%     A when is_atom(A) ->
+%%         scan(Cs, [], [{macro,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
+%%     _ ->
+%%         scan(Cs, [], Toks, Pos, State, [{{illegal,macro},Pos}|Errors])
+%%     end.
 
 %% Scan for a name - unqouted atom or variable, after the first character.
 %%
@@ -347,18 +347,18 @@ scan_macro(Cs, Name, Toks, Pos, State, Errors) ->
 %% Returns the scanned name on the stack, unreversed.
 %%
 sub_scan_name([C|Cs]=Css, Stack, Toks, Pos, State, Errors) ->
-    case name_char(C) of
-    true ->
-        sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
-    false ->
-        [Fun|Name] = reverse(Stack),
-        Fun(Css, Name, Toks, Pos, State, Errors)
-    end;
+	case name_char(C) of
+		true ->
+			sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
+		false ->
+			[Fun|Name] = reverse(Stack),
+			Fun(Css, Name, Toks, Pos, State, Errors)
+	end;
 sub_scan_name([], Stack, Toks, Pos, State, Errors) ->
-    more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
+	more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
 sub_scan_name(Eof, Stack, Toks, Pos, State, Errors) ->
-    [Fun|Name] = reverse(Stack),
-    Fun(Eof, Name, Toks, Pos, State, Errors).
+	[Fun|Name] = reverse(Stack),
+	Fun(Eof, Name, Toks, Pos, State, Errors).
 
 name_char(C) when C >= $a, C =< $z -> true;
 name_char(C) when C >= $ß, C =< $ÿ, C =/= $÷ -> true;
