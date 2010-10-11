@@ -1,15 +1,16 @@
 package org.erlide.core.preferences;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collection;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +21,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
 public class ErlProjectLayoutTest {
-	String src = "{layout," + "[\"s1/a/b\", \"s2\"],"
-			+ "[\"i1/y\", {'V1', \"i2/x\"}]," + "\"eb/in\"," + "[\"d1/fg\"],"
-			+ "\"pv\"" + "}";
+	String src = "{layout,[\"s1/a/b\", \"s2\"],"
+			+ "[\"i1/y\", {'V1', \"i2/x\"}],\"eb/in\",[\"d1/fg\"],\"pv\"}";
 	OtpErlangObject input;
 
 	@Before
@@ -39,16 +39,14 @@ public class ErlProjectLayoutTest {
 		OtpErlangObject expected = ErlUtils
 				.parse("{layout,[\"src\"],[\"include\"],"
 						+ "\"ebin\",[\"doc\"],\"priv\"}");
-		MatcherAssert.assertThat(ErlProjectLayout.OTP_LAYOUT.asTerm(),
-				Matchers.equalTo(expected));
+		assertThat(ErlProjectLayout.OTP_LAYOUT.asTerm(), equalTo(expected));
 	}
 
 	@Test
 	public void shouldConvertfromTermAndBack() throws OtpErlangException,
 			ParserException {
 		ErlProjectLayout layout = new ErlProjectLayout(input);
-		Assert.assertEquals("convert from term and back", input,
-				layout.asTerm());
+		assertEquals("convert from term and back", input, layout.asTerm());
 	}
 
 	@Test
@@ -84,7 +82,7 @@ public class ErlProjectLayoutTest {
 		IPath expected = new Path("hello");
 
 		assertNotSameAs(info);
-		MatcherAssert.assertThat(info.getOutput(), Matchers.equalTo(expected));
+		assertThat(info.getOutput(), Matchers.equalTo(expected));
 	}
 
 	@Test
@@ -107,7 +105,7 @@ public class ErlProjectLayoutTest {
 		IPath expected = new Path("hello");
 
 		assertNotSameAs(info);
-		MatcherAssert.assertThat(info.getPriv(), Matchers.equalTo(expected));
+		assertThat(info.getPriv(), Matchers.equalTo(expected));
 	}
 
 	@Test
@@ -172,7 +170,7 @@ public class ErlProjectLayoutTest {
 
 	private void hasListNoItemNamed(ErlProjectLayout info,
 			Collection<IPath> result, String string) {
-		MatcherAssert.assertThat("list has item", result,
+		assertThat("list has item", result,
 				Matchers.not(Matchers.hasItem(new Path(string))));
 	}
 
@@ -193,17 +191,16 @@ public class ErlProjectLayoutTest {
 	}
 
 	private void assertListLength(Collection<IPath> result, int length) {
-		MatcherAssert.assertThat("source dirs size", result.size(),
-				Matchers.equalTo(length));
+		assertThat("source dirs size", result.size(), Matchers.equalTo(length));
 	}
 
 	private void assertHasListItemNamed(Collection<IPath> result, String name) {
-		MatcherAssert.assertThat("source dirs content", result,
+		assertThat("source dirs content", result,
 				Matchers.hasItem(new Path(name)));
 	}
 
 	private void assertNotSameAs(ErlProjectLayout info) {
-		MatcherAssert.assertThat("not same object", info,
+		assertThat("not same object", info,
 				Matchers.not(Matchers.equalTo(ErlProjectLayout.OTP_LAYOUT)));
 	}
 
