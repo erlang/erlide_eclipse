@@ -23,7 +23,6 @@ public class ProjectManagementTest extends ErlangSWTBotTest {
     @BeforeClass
     public static void beforeClass() {
         bot = new SWTWorkbenchBot();
-        bot.viewByTitle("Welcome").close();
         bot.perspectiveByLabel("Erlang").activate();
         bot.menu("Project", 1).menu("Build Automatically").click();
     }
