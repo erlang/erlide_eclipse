@@ -637,7 +637,7 @@ public class ErlModel extends Openable implements IErlModel {
                 : "default_external_modules";
         String result = getExternal(project, externalFlag, service, key,
                 "org.erlide.ui");
-        if ("".equals(result)) {
+        if ("".equals(result) && project != null) {
             result = getExternal(null, externalFlag, service, key,
                     ErlangPlugin.PLUGIN_ID);
         }

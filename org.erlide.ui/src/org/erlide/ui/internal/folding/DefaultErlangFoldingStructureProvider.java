@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -113,7 +114,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /**
      * Filter for annotations.
-     *
+     * 
      * @since 3.2
      */
     private static interface Filter {
@@ -184,7 +185,7 @@ public class DefaultErlangFoldingStructureProvider implements
      * Projection position that will return two foldable regions: one folding
      * away the region from after the '/**' to the beginning of the content, the
      * other from after the first content line until after the comment.
-     *
+     * 
      * @since 3.1
      */
     private static final class CommentPosition extends Position implements
@@ -250,7 +251,7 @@ public class DefaultErlangFoldingStructureProvider implements
         /**
          * Finds the offset of the first identifier part within
          * <code>content</code>. Returns 0 if none is found.
-         *
+         * 
          * @param content
          *            the content to search
          * @return the first index of a unicode identifier part, or zero if none
@@ -316,7 +317,7 @@ public class DefaultErlangFoldingStructureProvider implements
      * Projection position that will return two foldable regions: one folding
      * away the lines before the one containing the simple name of the erlang
      * element, one folding away any lines after the caption.
-     *
+     * 
      * @since 3.1
      */
     private static final class ErlangElementPosition extends Position implements
@@ -481,14 +482,14 @@ public class DefaultErlangFoldingStructureProvider implements
     /* filters */
     /**
      * Member filter, matches nested members (but not top-level types).
-     *
+     * 
      * @since 3.2
      */
     private final Filter fCollapseFunctionsFilter = new FunctionsFilter(false);
 
     /**
      * Comment filter, matches comments.
-     *
+     * 
      * @since 3.2
      */
     private final Filter fCollapseCommentsFilter = new CommentsFilter(false);
@@ -586,9 +587,12 @@ public class DefaultErlangFoldingStructureProvider implements
         }
 
         initializePreferences();
-        final IErlModule m = ErlModelUtils.getModule(fEditor.getEditorInput(),
-                fEditor.getDocumentProvider());
-        fModule = m;
+        try {
+            fModule = ErlModelUtils.getModule(fEditor.getEditorInput(),
+                    fEditor.getDocumentProvider());
+        } catch (final CoreException e) {
+            fModule = null;
+        }
     }
 
     private void initializePreferences() {
@@ -699,7 +703,7 @@ public class DefaultErlangFoldingStructureProvider implements
      * than one range may be returned if the element has a leading comment which
      * gets folded separately. If there are no foldable regions,
      * <code>null</code> is returned.
-     *
+     * 
      * @param element
      *            the erlang element that can be folded
      * @return the regions to be folded, or <code>null</code> if there are none
@@ -936,7 +940,7 @@ public class DefaultErlangFoldingStructureProvider implements
      * If a match is found, the annotation gets removed from
      * <code>annotations</code>.
      * </p>
-     *
+     * 
      * @param tuple
      *            the tuple for which we want to find a match
      * @param annotations
@@ -953,9 +957,8 @@ public class DefaultErlangFoldingStructureProvider implements
         while (it.hasNext()) {
             final ErlangProjectionAnnotation annotation = it.next();
             if (tuple.annotation.isComment() == annotation.isComment()) {
-                final Position position = (positionMap == null) ? fCachedModel
-                        .getPosition(annotation) : positionMap
-                        .get(annotation);
+                final Position position = positionMap == null ? fCachedModel
+                        .getPosition(annotation) : positionMap.get(annotation);
                 if (position == null) {
                     continue;
                 }
@@ -1003,7 +1006,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
      * #collapseFunctions()
@@ -1014,7 +1017,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
      * #collapseComments()
@@ -1025,7 +1028,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
      * #expandAll()
@@ -1058,7 +1061,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /**
      * Collapses all annotations matched by the passed filter.
-     *
+     * 
      * @param filter
      *            the filter to use to select which annotations to collapse
      * @param expand
@@ -1102,7 +1105,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide
      * .core.erlang.IErlElement)

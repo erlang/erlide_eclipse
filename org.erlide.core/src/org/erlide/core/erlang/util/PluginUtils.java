@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -185,11 +184,11 @@ public class PluginUtils {
 
     public static IPath resolvePVMPath(final IPathVariableManager pvm,
             final IPath path) {
-        return URIUtil.toPath(pvm.resolveURI(URIUtil.toURI(path)));
+        return pvm.resolvePath(path);
     }
 
     public static IPath getPVMValue(final IPathVariableManager pvm,
             final String name) {
-        return URIUtil.toPath(pvm.getURIValue(name));
+        return pvm.getValue(name);
     }
 }

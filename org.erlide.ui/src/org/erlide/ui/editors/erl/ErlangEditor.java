@@ -888,8 +888,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     public IErlModule getModule() {
         if (fModule == null) {
-            fModule = ErlModelUtils.getModule(getEditorInput(),
-                    getDocumentProvider());
+            try {
+                fModule = ErlModelUtils.getModule(getEditorInput(),
+                        getDocumentProvider());
+            } catch (final CoreException e) {
+            }
         }
         return fModule;
     }

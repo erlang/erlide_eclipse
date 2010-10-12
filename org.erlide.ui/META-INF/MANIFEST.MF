@@ -136,7 +136,6 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang",
- org.erlide.ui.information;uses:="org.eclipse.jface.text,org.eclipse.swt.graphics,org.eclipse.swt.widgets",
  org.erlide.ui.internal;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
@@ -331,5 +330,4 @@ Require-Bundle: org.eclipse.compare,
  org.erlide.libs;bundle-version="1.1.4"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.eclipse.core.filesystem
 

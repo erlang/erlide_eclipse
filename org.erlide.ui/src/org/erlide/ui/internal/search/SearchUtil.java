@@ -34,15 +34,11 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlMacroDef;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.search.FunctionPattern;
@@ -52,7 +48,6 @@ import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
 import org.erlide.core.search.VariablePattern;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
@@ -92,8 +87,8 @@ public class SearchUtil {
         final OldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final Collection<IPath> sourcePaths = prefs.getSourceDirs();
-        for (IPath path : sourcePaths) {
-            IFolder folder = project.getFolder(path);
+        for (final IPath path : sourcePaths) {
+            final IFolder folder = project.getFolder(path);
             addFolderToScope(folder, result);
         }
     }
@@ -176,36 +171,6 @@ public class SearchUtil {
                 (ISearchQuery) query);
     }
 
-    public static ErlangSearchPattern getSearchPatternFromErlElementAndLimitTo(
-            final IErlElement element, final int limitTo) {
-        if (element instanceof IErlFunction) {
-            final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = ErlideUtil
-                    .withoutExtension(function.getModule().getName());
-            return new FunctionPattern(withoutExtension, function
-                    .getFunctionName(), function.getArity(), limitTo, true);
-        } else if (element instanceof IErlMacroDef) {
-            final IErlMacroDef m = (IErlMacroDef) element;
-            final String unquoted = ErlideUtil.unquote(m.getDefinedName());
-            return new MacroPattern(unquoted, limitTo);
-        } else if (element instanceof IErlRecordDef) {
-            final IErlRecordDef r = (IErlRecordDef) element;
-            final String unquoted = ErlideUtil.unquote(r.getDefinedName());
-            return new RecordPattern(unquoted, limitTo);
-        } else if (element instanceof IErlFunctionClause) {
-            final IErlFunctionClause clause = (IErlFunctionClause) element;
-            return getSearchPatternFromErlElementAndLimitTo(clause.getParent(),
-                    limitTo);
-        } else if (element instanceof IErlAttribute) {
-            final IErlAttribute a = (IErlAttribute) element;
-            if (a.getName().startsWith("include")) {
-                final String s = Util.stringValue(a.getValue());
-                return new IncludePattern(s, limitTo);
-            }
-        }
-        return null;
-    }
-
     public static boolean isLineDelimiterChar(final char ch) {
         return ch == '\n' || ch == '\r';
     }
@@ -217,8 +182,8 @@ public class SearchUtil {
 
     public static ErlangSearchElement searchElementFromRef(
             final ModuleLineFunctionArityRef ref) {
-        return new ErlangSearchElement(ref.getModuleName(), ref.getName(), ref
-                .getArity(), ref.getClauseHead(), ref.isSubClause(),
+        return new ErlangSearchElement(ref.getModuleName(), ref.getName(),
+                ref.getArity(), ref.getClauseHead(), ref.isSubClause(),
                 refToKind(ref));
     }
 
@@ -251,8 +216,7 @@ public class SearchUtil {
         }
         final ErlangSearchPattern ref = null;
         String name = res.getName();
-        final String unquoted = (name != null) ? ErlideUtil.unquote(name)
-                : null;
+        final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
         if (res.isExternalCall()) {
             if (module != null && offset != -1) {
                 try {
@@ -269,7 +233,7 @@ public class SearchUtil {
             name = unquoted;
             do {
                 oldName = name;
-                name = ErlModelUtils.checkMacroValue(name, module);
+                name = ErlModelUtils.resolveMacroValue(name, module);
             } while (!name.equals(oldName));
             return new FunctionPattern(name, res.getFun(), res.getArity(),
                     limitTo, matchAnyFunctionDefinition);
@@ -307,8 +271,8 @@ public class SearchUtil {
                         final IErlElement e = module.getElementAt(offset);
                         if (e instanceof IErlFunctionClause) {
                             final IErlFunctionClause c = (IErlFunctionClause) e;
-                            return new VariablePattern(c.getFunctionName(), c
-                                    .getArity(), c.getHead(), res.getName(),
+                            return new VariablePattern(c.getFunctionName(),
+                                    c.getArity(), c.getHead(), res.getName(),
                                     limitTo);
                         }
                     } catch (final ErlModelException e1) {
@@ -378,7 +342,7 @@ public class SearchUtil {
         if (workingSets.length == 0) {
             return "";
         }
-        final String s = (workingSets.length == 1) ? wsS : wssS;
+        final String s = workingSets.length == 1 ? wsS : wssS;
         return workingSetLabels(workingSets, s, "'");
     }
 
@@ -386,8 +350,8 @@ public class SearchUtil {
             final String s, final String surround) {
         final StringBuilder sb = new StringBuilder(s);
         for (final IWorkingSet ws : workingSets) {
-            sb.append(surround).append(ws.getLabel()).append(surround).append(
-                    ", ");
+            sb.append(surround).append(ws.getLabel()).append(surround)
+                    .append(", ");
         }
         return sb.substring(0, sb.length() - 2);
     }
@@ -428,7 +392,7 @@ public class SearchUtil {
             return "";
         } else {
             final StringBuilder sb = new StringBuilder(
-                    (projectScope.size() == 1) ? "project" : "projects");
+                    projectScope.size() == 1 ? "project" : "projects");
             sb.append(' ');
             for (final IResource p : projectScope) {
                 sb.append('\'').append(p.getName()).append("', ");
@@ -490,8 +454,8 @@ public class SearchUtil {
                 final Set<IWorkingSet> workingSets = new HashSet<IWorkingSet>(2);
                 for (int j = 0; j < lruWorkingSetNames.length; j++) {
                     final IWorkingSet workingSet = PlatformUI.getWorkbench()
-                            .getWorkingSetManager().getWorkingSet(
-                                    lruWorkingSetNames[j]);
+                            .getWorkingSetManager()
+                            .getWorkingSet(lruWorkingSetNames[j]);
                     if (workingSet != null) {
                         workingSets.add(workingSet);
                     }
@@ -515,8 +479,8 @@ public class SearchUtil {
             return null;
         }
         final IWorkingSetSelectionDialog dialog = PlatformUI.getWorkbench()
-                .getWorkingSetManager().createWorkingSetSelectionDialog(shell,
-                        true);
+                .getWorkingSetManager()
+                .createWorkingSetSelectionDialog(shell, true);
         if (dialog.open() != Window.OK) {
             throw new InterruptedException();
         }
