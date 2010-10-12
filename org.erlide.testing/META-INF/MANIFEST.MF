@@ -14,5 +14,4 @@ Require-Bundle: org.junit4,
  org.erlide.testing.libs;bundle-version="0.8.8"
 Bundle-ClassPath: erlide-testing.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.erlide.testing
 Eclipse-RegisterBuddy: org.apache.log4j
