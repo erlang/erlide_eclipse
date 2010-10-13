@@ -500,7 +500,7 @@
 				</command>
 			</menu>
 		</menuContribution>
-		<menuContribution
+		<!--menuContribution
 			locationURI="menu:org.eclipse.ui.main.menu?after=org.erlide.wrangler.refactormenu">
 			<menu id="org.erlide.wrangler.codeinspectionmenu" label="Code Inspection"
 				mnemonic="I" tooltip="Code inspection functionalities">
@@ -512,7 +512,7 @@
           visible="true">
     </separator>
 			</menu>
-		</menuContribution>
+		</menuContribution-->
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler commandId="org.erlide.wrangler.refactoring.unfoldfunctionapplication"
