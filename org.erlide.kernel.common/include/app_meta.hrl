@@ -15,7 +15,7 @@
                     {atom(), meta_path()} |
                     {atom, #layout{}}.
 
--record(appmeta, {
+-record(app_meta, {
                name :: atom(),
                description = "" :: string(),
                id = "" :: string(),

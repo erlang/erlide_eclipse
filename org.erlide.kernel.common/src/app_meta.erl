@@ -1,4 +1,4 @@
--module(appmeta).
+-module(app_meta).
 
 -export([
          read/1,
@@ -11,11 +11,11 @@
 
 -export([test/0]).
 
--include("appmeta.hrl").
+-include("app_meta.hrl").
 
-%%FIXME inlined #meta in #appmeta, code probably broken now
+%%FIXME inlined #meta in #app_meta, code probably broken now
 
--spec read(string()) -> #appmeta{}.
+-spec read(string()) -> #app_meta{}.
 read(Path) ->
     {ok, [Term]} = file:consult(Path),
     case Term of
@@ -30,15 +30,15 @@ write(Term, Path) ->
     Text = io_lib:format("~p~n", [format(Term)]),
     file:write_file(Path, Text).
 
--spec meta_to_app(#appmeta{}) -> {application, string(), list()}.
-meta_to_app(#appmeta{name=Name}=Meta) ->
-    {application, Name, remove_defaults(clean(format(Meta)), format(#appmeta{}))}.
+-spec meta_to_app(#app_meta{}) -> {application, string(), list()}.
+meta_to_app(#app_meta{name=Name}=Meta) ->
+    {application, Name, remove_defaults(clean(format(Meta)), format(#app_meta{}))}.
 
--spec app_to_meta({application, string(), list()}) -> #appmeta{}.
+-spec app_to_meta({application, string(), list()}) -> #app_meta{}.
 app_to_meta({application, Name, Meta}) ->
-    {appmeta, Name, meta(Meta)}.
+    {app_meta, Name, meta(Meta)}.
 
--spec merge_app_to_meta({application, string(), list()}, #appmeta{}) -> #appmeta{}.
+-spec merge_app_to_meta({application, string(), list()}, #app_meta{}) -> #app_meta{}.
 merge_app_to_meta(App, Meta) ->
     lists:foldl(App, fun meta/2, Meta).
 
@@ -48,39 +48,39 @@ check_app_meta(App, Meta) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 meta(Term) ->
-    parse(Term, fun meta/2, #appmeta{}).
+    parse(Term, fun meta/2, #app_meta{}).
 
 parse(Term, Fun, Init) when is_list(Term) ->
     lists:foldl(Fun, Init, Term).
 
 meta({description, Description}, Meta) ->
-    Meta#appmeta{description=Description};
+    Meta#app_meta{description=Description};
 meta({id, Id}, Meta) ->
-    Meta#appmeta{id=Id};
+    Meta#app_meta{id=Id};
 meta({vsn, Vsn}, Meta) ->
-    Meta#appmeta{vsn=Vsn};
+    Meta#app_meta{vsn=Vsn};
 meta({modules, Modules}, Meta) ->
-    Meta#appmeta{modules=Modules};
+    Meta#app_meta{modules=Modules};
 meta({maxT, MaxT}, Meta) ->
-    Meta#appmeta{maxT=MaxT};
+    Meta#app_meta{maxT=MaxT};
 meta({registered, Registered}, Meta) ->
-    Meta#appmeta{registered=Registered};
+    Meta#app_meta{registered=Registered};
 meta({included_applications, Included_applications}, Meta) ->
-    Meta#appmeta{included_applications=Included_applications};
+    Meta#app_meta{included_applications=Included_applications};
 meta({applications, Applications}, Meta) ->
-    Meta#appmeta{applications=Applications};
+    Meta#app_meta{applications=Applications};
 meta({env, Env}, Meta) ->
-    Meta#appmeta{env=Env};
+    Meta#app_meta{env=Env};
 meta({mod, Mod}, Meta) ->
-    Meta#appmeta{mod=Mod};
+    Meta#app_meta{mod=Mod};
 meta({start_phases, Start_phases}, Meta) ->
-    Meta#appmeta{start_phases=Start_phases};
+    Meta#app_meta{start_phases=Start_phases};
 meta({otp_version, Otp_version}, Meta) ->
-    Meta#appmeta{otp_version=Otp_version};
+    Meta#app_meta{otp_version=Otp_version};
 meta({layout, Layout}, Meta) ->
-    Meta#appmeta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#app_meta{layout=parse(Layout, fun layout/2, #layout{})};
 meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#appmeta{compiler_options=Compiler_options};
+    Meta#app_meta{compiler_options=Compiler_options};
 meta(_, Meta) ->
     Meta.
 
@@ -104,34 +104,34 @@ check(K, V, V0) ->
     [{mismatch, K, V, V0}].
 
 
-check_meta({description, Description}, #appmeta{description=Description0}) ->
+check_meta({description, Description}, #app_meta{description=Description0}) ->
     check(description, Description, Description0);
 check_meta({id, Id}, Meta) ->
-    Meta#appmeta{id=Id};
+    Meta#app_meta{id=Id};
 check_meta({vsn, Vsn}, Meta) ->
-    Meta#appmeta{vsn=Vsn};
+    Meta#app_meta{vsn=Vsn};
 check_meta({modules, Modules}, Meta) ->
-    Meta#appmeta{modules=Modules};
+    Meta#app_meta{modules=Modules};
 check_meta({maxT, MaxT}, Meta) ->
-    Meta#appmeta{maxT=MaxT};
+    Meta#app_meta{maxT=MaxT};
 check_meta({registered, Registered}, Meta) ->
-    Meta#appmeta{registered=Registered};
+    Meta#app_meta{registered=Registered};
 check_meta({included_applications, Included_applications}, Meta) ->
-    Meta#appmeta{included_applications=Included_applications};
+    Meta#app_meta{included_applications=Included_applications};
 check_meta({applications, Applications}, Meta) ->
-    Meta#appmeta{applications=Applications};
+    Meta#app_meta{applications=Applications};
 check_meta({env, Env}, Meta) ->
-    Meta#appmeta{env=Env};
+    Meta#app_meta{env=Env};
 check_meta({mod, Mod}, Meta) ->
-    Meta#appmeta{mod=Mod};
+    Meta#app_meta{mod=Mod};
 check_meta({start_phases, Start_phases}, Meta) ->
-    Meta#appmeta{start_phases=Start_phases};
+    Meta#app_meta{start_phases=Start_phases};
 check_meta({otp_version, Otp_version}, Meta) ->
-    Meta#appmeta{otp_version=Otp_version};
+    Meta#app_meta{otp_version=Otp_version};
 check_meta({layout, Layout}, Meta) ->
-    Meta#appmeta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#app_meta{layout=parse(Layout, fun layout/2, #layout{})};
 check_meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#appmeta{compiler_options=Compiler_options};
+    Meta#app_meta{compiler_options=Compiler_options};
 check_meta(_, Meta) ->
     Meta.
 
@@ -146,14 +146,14 @@ layout(_, Layout) ->
 
 format({application, Name, Meta}) ->
     {application, Name, format(Meta)};
-format(#appmeta{name=Name, description=Description, id=Id, vsn=Vsn,
+format(#app_meta{name=Name, description=Description, id=Id, vsn=Vsn,
                 modules=Modules, maxT=MaxT, registered=Registered,
                 included_applications=Included_applications,
                 applications=Applications, env=Env,
                 mod=Mod, start_phases=Start_phases,
                 otp_version=Otp_version, layout=Layout,
                 compiler_options=Compiler_options}) ->
-    {appmeta, Name, [{description,Description}, {id,Id}, { vsn,Vsn},
+    {app_meta, Name, [{description,Description}, {id,Id}, { vsn,Vsn},
                      {modules,Modules}, {maxT,MaxT}, {registered,Registered},
                      {included_applications,Included_applications},
                      {applications,Applications}, {env,Env},
@@ -209,4 +209,4 @@ test() ->
     X = read(".meta"),
     {_, Name, Options} =X,
     New = meta(Options),
-    {format(New), meta_to_app({appmeta, Name, New})}.
+    {format(New), meta_to_app({app_meta, Name, New})}.
