@@ -401,8 +401,8 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public void notifyChange(final IErlElement element) {
-        ErlLogger.debug("^> notifying change of " + element.getName());
         if (System.getProperty("erlide.model.notify") != null) {
+            ErlLogger.debug("^> notifying change of " + element.getName());
             ErlLogger.debug("   caller = " + getStack());
         }
         for (int i = 0; i < fListeners.size(); i++) {
