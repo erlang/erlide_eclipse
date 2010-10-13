@@ -24,8 +24,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
     }
 
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return otpHome.toString();
     }
 
     private int versionFromName(final String name) {
