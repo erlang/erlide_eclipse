@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.1.7
+Bundle-Version: 1.2.0
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  commons-net-1.4.1.jar,
- google-collect-1.0.jar,
  hamcrest-all-1.2.jar,
- lambdaj-2.3.1-with-dependencies.jar
+ lambdaj-2.3.1-with-dependencies.jar,
+ guava-r07.jar
 Export-Package: ch.lambdaj,
  ch.lambdaj.collection,
  ch.lambdaj.function.aggregate,
