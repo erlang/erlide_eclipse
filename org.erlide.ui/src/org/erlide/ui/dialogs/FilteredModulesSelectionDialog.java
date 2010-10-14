@@ -643,6 +643,7 @@ public class FilteredModulesSelectionDialog extends
 
             if (ResourceUtil.hasErlangExtension(resource)
                     && !resource.isLinked()
+                    && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
                 final IContainer container = resource.getParent();
                 if (validPaths.contains(container.getFullPath())
