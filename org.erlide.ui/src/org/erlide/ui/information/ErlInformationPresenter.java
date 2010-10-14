@@ -28,7 +28,7 @@ import org.erlide.ui.util.UIStringUtils;
 
 /**
  * Based on HTMLTextPresenter
- *
+ * 
  * @author Fabio
  */
 public class ErlInformationPresenter implements
@@ -184,7 +184,7 @@ public class ErlInformationPresenter implements
     /*
      * @see IHoverInformationPresenterExtension#updatePresentation(Drawable
      * drawable, String, TextPresentation, int, int)
-     *
+     * 
      * @since 3.2
      */
     public String updatePresentation(Drawable drawable, String hoverInfo,
@@ -248,21 +248,17 @@ public class ErlInformationPresenter implements
             if (line != null) {
                 append(buffer, LINE_DELIM, lineFormatted ? presentation : null);
             }
-
             return trim(buffer, presentation);
 
         } catch (IOException e) {
-
             // ignore TODO do something else?
             return null;
-
         } finally {
             gc.dispose();
         }
     }
 
     private String trim(StringBuffer buffer, TextPresentation presentation) {
-
         int length = buffer.length();
 
         int end = length - 1;

@@ -299,7 +299,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
 
     // private ErlangDebugTarget debugTarget;
     public DebuggerTraceView() {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
