@@ -18,8 +18,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ResourceUtil;
@@ -31,6 +33,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DialyzerUtilsTest {
+
+	enum SEL {
+		MODULE, SRC, PROJECT
+	};
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -49,13 +55,33 @@ public class DialyzerUtilsTest {
 	}
 
 	@Test
-	public void dialyzePrepareSelectionBeamsTest() throws Exception {
-		dialyzePrepareFromSelection(false);
+	public void dialyzePrepareSelectionModuleBeamsTest() throws Exception {
+		dialyzePrepareFromSelection(false, SEL.MODULE);
 	}
 
 	@Test
-	public void dialyzePrepareSelectionSourcesTest() throws Exception {
-		dialyzePrepareFromSelection(true);
+	public void dialyzePrepareSelectionModuleSourcesTest() throws Exception {
+		dialyzePrepareFromSelection(true, SEL.MODULE);
+	}
+
+	@Test
+	public void dialyzePrepareSelectionSrcFolderBeamsTest() throws Exception {
+		dialyzePrepareFromSelection(false, SEL.SRC);
+	}
+
+	@Test
+	public void dialyzePrepareSelectionSrcFolderSourcesTest() throws Exception {
+		dialyzePrepareFromSelection(true, SEL.SRC);
+	}
+
+	@Test
+	public void dialyzePrepareSelectionProjectBeamsTest() throws Exception {
+		dialyzePrepareFromSelection(false, SEL.PROJECT);
+	}
+
+	@Test
+	public void dialyzePrepareSelectionProjectSourcesTest() throws Exception {
+		dialyzePrepareFromSelection(true, SEL.PROJECT);
 	}
 
 	@Test
@@ -65,8 +91,7 @@ public class DialyzerUtilsTest {
 			// given
 			// an erlang module in an erlang project
 			final String projectName = "testproject";
-			erlProject = ErlideTestUtils.createErlProject(
-					ErlideTestUtils.getTmpPath(projectName), projectName);
+			erlProject = createTmpErlProject(projectName);
 			final String moduleName = "test.erl";
 			final IErlModule erlModule = ErlideTestUtils
 					.createErlModule(erlProject, moduleName,
@@ -109,8 +134,7 @@ public class DialyzerUtilsTest {
 			// given
 			// an erlang project and an external file not in any project
 			final String projectName = "testproject";
-			erlProject = ErlideTestUtils.createErlProject(
-					ErlideTestUtils.getTmpPath(projectName), projectName);
+			erlProject = createTmpErlProject(projectName);
 			final String externalFileName = "external.hrl";
 			externalFile = ErlideTestUtils.createTmpFile(externalFileName,
 					"f([_ | _]=L ->\n    atom_to_list(L).\n");
@@ -152,16 +176,15 @@ public class DialyzerUtilsTest {
 		}
 	}
 
-	public void dialyzePrepareFromSelection(final boolean sources)
-			throws Exception {
+	public void dialyzePrepareFromSelection(final boolean sources,
+			final SEL select) throws Exception {
 		// http://www.assembla.com/spaces/erlide/tickets/607-dialyzer---only-dialyze-on-selection
 		IErlProject erlProject = null;
 		try {
 			// given
 			// a project with two erlang modules, one of them selected
 			final String projectName = "testproject";
-			erlProject = ErlideTestUtils.createErlProject(
-					ErlideTestUtils.getTmpPath(projectName), projectName);
+			erlProject = createTmpErlProject(projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = ErlideTestUtils
 					.createErlModule(
@@ -178,10 +201,11 @@ public class DialyzerUtilsTest {
 			ErlideTestUtils.invokeBuilderOn(erlProject);
 			// when
 			// collecting files to dialyze
-			final Set<IErlModule> selectedModules = new HashSet<IErlModule>();
-			selectedModules.add(a);
 			final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
-			modules.put(erlProject, selectedModules);
+			final IResource selectedResource = selectResource(select,
+					erlProject, a);
+			DialyzerUtils.addModulesFromResource(ErlangCore.getModel(),
+					selectedResource, modules);
 			final List<String> names = new ArrayList<String>();
 			final List<IPath> includeDirs = new ArrayList<IPath>();
 			final List<String> files = new ArrayList<String>();
@@ -191,13 +215,28 @@ public class DialyzerUtilsTest {
 							sources);
 			// then
 			// only selected files (or corresponding beam) should be collected
-			assertEquals(1, files.size());
-			final IPath p = new Path(files.get(0));
-			final String f = p.lastSegment();
-			if (sources) {
-				assertEquals("a.erl", f);
+			if (select == SEL.MODULE) {
+				assertEquals(1, files.size());
+				final IPath p = new Path(files.get(0));
+				final String f = p.lastSegment();
+				if (sources) {
+					assertEquals("a.erl", f);
+				} else {
+					assertEquals("a.beam", f);
+				}
 			} else {
-				assertEquals("a.beam", f);
+				assertEquals(2, files.size());
+				final Set<String> fSet = new HashSet<String>(2);
+				for (final String i : files) {
+					fSet.add(new Path(i).lastSegment());
+				}
+				if (sources) {
+					assertTrue(fSet.contains("a.erl"));
+					assertTrue(fSet.contains("b.erl"));
+				} else {
+					assertTrue(fSet.contains("a.beam"));
+					assertTrue(fSet.contains("b.beam"));
+				}
 			}
 
 		} finally {
@@ -205,5 +244,72 @@ public class DialyzerUtilsTest {
 				ErlideTestUtils.deleteErlProject(erlProject);
 			}
 		}
+	}
+
+	private IResource selectResource(final SEL select,
+			final IErlProject erlProject, final IErlModule a) {
+		switch (select) {
+		case MODULE:
+			return a.getResource();
+		case PROJECT:
+			return erlProject.getResource();
+		default:
+		case SRC:
+			return erlProject.getProject().getFolder("src");
+		}
+	}
+
+	@Test
+	public void dialyzeBinaryOnProjectWithErrorFile() throws Exception {
+		// http://www.assembla.com/spaces/erlide/tickets/616-dialyzer-Ð-crash-on-binary-analysis-and-files-with-errors
+		IErlProject erlProject = null;
+		try {
+			// given
+			// a project with two erlang modules, one of them with an erlang
+			// error, preventing it from generating a beam-file
+			final String projectName = "testproject";
+			erlProject = createTmpErlProject(projectName);
+			assertNotNull(erlProject);
+			final IErlModule a = ErlideTestUtils
+					.createErlModule(
+							erlProject,
+							"a.erl",
+							"-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
+			assertNotNull(a);
+			final IErlModule b = ErlideTestUtils
+					.createErlModule(
+							erlProject,
+							"b.erl",
+							"-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
+			assertNotNull(b);
+			ErlideTestUtils.invokeBuilderOn(erlProject);
+			// when
+			// collecting files to dialyze
+			final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
+			DialyzerUtils.addModulesFromResource(ErlangCore.getModel(),
+					erlProject.getResource(), modules);
+			final List<String> names = new ArrayList<String>();
+			final List<IPath> includeDirs = new ArrayList<IPath>();
+			final List<String> files = new ArrayList<String>();
+			DialyzerUtils.collectFilesAndIncludeDirs(erlProject, modules,
+					erlProject.getProject(), files, names, includeDirs, false);
+			// then
+			// it should only take the existing beam files
+			assertEquals(1, files.size());
+			final IPath p = new Path(files.get(0));
+			final String f = p.lastSegment();
+			assertEquals("a.beam", f);
+
+		} finally {
+			if (erlProject != null) {
+				ErlideTestUtils.deleteErlProject(erlProject);
+			}
+		}
+	}
+
+	private IErlProject createTmpErlProject(final String projectName)
+			throws CoreException {
+		return ErlideTestUtils.createErlProject(
+				ErlideTestUtils.getTmpPath(projectName), projectName);
 	}
 }
