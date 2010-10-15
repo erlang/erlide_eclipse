@@ -14,10 +14,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -34,7 +30,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.launch.DebugTab;
@@ -44,7 +39,7 @@ import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
 
 /**
  * TODO review this, it looks weird and unused...
- *
+ * 
  * Property page used to set the project's edoc location
  */
 public class ErlTracingPropertyPage extends PropertyPage implements
@@ -65,14 +60,6 @@ public class ErlTracingPropertyPage extends PropertyPage implements
     public ErlTracingPropertyPage() {
     }
 
-    private IEclipsePreferences getNode() {
-        final IAdaptable prj = getElement();
-        final IProject project = (IProject) prj.getAdapter(IProject.class);
-        final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        return node;
-    }
-
     /**
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
@@ -80,8 +67,11 @@ public class ErlTracingPropertyPage extends PropertyPage implements
     public void createControl(final Composite parent) {
         super.createControl(parent);
         setDescription("Specify the location of the generated edoc (in HTML format).");
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
-                IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
+        PlatformUI
+                .getWorkbench()
+                .getHelpSystem()
+                .setHelp(getControl(),
+                        IErlangHelpContextIds.EDOC_CONFIGURATION_PROPERTY_PAGE);
     }
 
     /*

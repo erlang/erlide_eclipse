@@ -65,7 +65,7 @@ public class FunctionGroup implements SelectionListener {
     ErlangFileWizardPage fWizPage;
 
     FunctionGroup(final Composite parent, final ErlangFileWizardPage wizPage) {
-        Group root = new Group(parent, SWT.NULL);
+        final Group root = new Group(parent, SWT.NULL);
         fWizPage = wizPage;
         root.setText("Functions ");
         GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false);
@@ -207,7 +207,7 @@ public class FunctionGroup implements SelectionListener {
      */
     void addFunction(final String name, final int arity, final int type,
             final boolean exported) {
-        final TableItem item = (fEditingItem != null) ? fEditingItem
+        final TableItem item = fEditingItem != null ? fEditingItem
                 : new TableItem(fTable, SWT.NULL, 0);
         item.setChecked(exported);
         item.setText(0, name + getPostfix(type));
@@ -363,7 +363,7 @@ public class FunctionGroup implements SelectionListener {
     private void removeEdit() {
         if (fEditingItem != null) {
             final String[] parts = fEditingItem.getText(0).split("<");
-            StringBuilder functionName = new StringBuilder(parts[0]);
+            final StringBuilder functionName = new StringBuilder(parts[0]);
             for (int i = 1; i < parts.length - 2; i++) {
                 functionName.append('<').append(parts[i]);
             }

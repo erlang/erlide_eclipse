@@ -14,10 +14,10 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangSearchPattern;
 
@@ -51,7 +51,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     public void removeMatches(final Match[] matches) {
         for (final Match match : matches) {
             final Object element = match.getElement();
-            int matchCount = getMatchCount(element);
+            final int matchCount = getMatchCount(element);
             if (matchCount == 1) {
                 removeElement(element);
             } else if (matchCount == countMatches(element, matches)) {
@@ -67,7 +67,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
     private int countMatches(final Object element, final Match[] matches) {
         int result = 0;
-        for (Match match : matches) {
+        for (final Match match : matches) {
             if (match.getElement().equals(element)) {
                 result++;
             }
@@ -98,13 +98,13 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     }
 
     private String getOccurrencesLabel(final int matchCount) {
-        int limitTo = query.getPattern().getLimitTo();
+        final int limitTo = query.getPattern().getLimitTo();
         if (limitTo == ErlangSearchPattern.ALL_OCCURRENCES) {
-            return (matchCount == 1) ? "occurrence" : "occurrences";
+            return matchCount == 1 ? "occurrence" : "occurrences";
         } else if (limitTo == ErlangSearchPattern.REFERENCES) {
-            return (matchCount == 1) ? "reference" : "references";
+            return matchCount == 1 ? "reference" : "references";
         } else {
-            return (matchCount == 1) ? "definition" : "definitions";
+            return matchCount == 1 ? "definition" : "definitions";
         }
     }
 
@@ -142,10 +142,12 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
                 .getElement();
         final IFile file = ResourceUtil
                 .getFileFromLocation(ese.getModuleName());
-        if (editor instanceof ITextEditor) {
-            final ITextEditor textEditor = (ITextEditor) editor;
-            return ErlModelUtils.getModule(textEditor).getResource()
-                    .equals(file);
+        if (editor instanceof ErlangEditor) {
+            final ErlangEditor erlangEditor = (ErlangEditor) editor;
+            final IErlModule module = erlangEditor.getModule();
+            if (module != null) {
+                return module.getResource().equals(file);
+            }
         }
         return false;
     }

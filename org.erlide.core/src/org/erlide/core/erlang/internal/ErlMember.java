@@ -4,6 +4,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.core.erlang.SourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**

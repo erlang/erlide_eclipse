@@ -261,13 +261,32 @@ public class FilteredModulesSelectionDialog extends
         return null;
     }
 
-    private boolean isLostFound(IPath projectRelativePath) {
-        for (String s : projectRelativePath.segments()) {
+    private boolean isLostFound(final IPath projectRelativePath) {
+        for (final String s : projectRelativePath.segments()) {
             if ("lost+found".equals(s)) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public Object[] getResult() {
+        final Object[] result = super.getResult();
+
+        if (result == null) {
+            return null;
+        }
+
+        final List<Object> resultToReturn = new ArrayList<Object>();
+
+        for (int i = 0; i < result.length; i++) {
+            // if (result[i] instanceof IResource) {
+            resultToReturn.add(result[i]);
+            // }
+        }
+
+        return resultToReturn.toArray();
     }
 
     @Override
@@ -327,13 +346,13 @@ public class FilteredModulesSelectionDialog extends
         if (fComparator == null) {
             final Collator collator = Collator.getInstance();
             if (collator instanceof RuleBasedCollator) {
-                RuleBasedCollator rbc = (RuleBasedCollator) collator;
-                String rules = rbc.getRules();
-                String newRules = rules.replaceFirst("<\'.\'<", "<")
+                final RuleBasedCollator rbc = (RuleBasedCollator) collator;
+                final String rules = rbc.getRules();
+                final String newRules = rules.replaceFirst("<\'.\'<", "<")
                         .replaceFirst("<\'_\'<", "<\'.\'<\'_\'<");
                 try {
                     fCollator = new RuleBasedCollator(newRules);
-                } catch (ParseException e) {
+                } catch (final ParseException e) {
                     e.printStackTrace();
                     fCollator = collator;
                 }
@@ -582,7 +601,7 @@ public class FilteredModulesSelectionDialog extends
 
             final IResource resource = proxy.requestResource();
 
-            IProject project = resource.getProject();
+            final IProject project = resource.getProject();
             if (projects.remove(project) || projects.remove(resource)) {
                 progressMonitor.worked(1);
                 addPaths(project);
@@ -623,7 +642,8 @@ public class FilteredModulesSelectionDialog extends
 
                                 String path;
                                 final IPath p = new Path(pref);
-                                final IPath v = pvm.resolvePath(p);
+                                final IPath v = PluginUtils.resolvePVMPath(pvm,
+                                        p);
                                 if (v.isAbsolute()) {
                                     path = v.toString();
                                 } else {
@@ -645,7 +665,6 @@ public class FilteredModulesSelectionDialog extends
                     && !resource.isLinked()
                     && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
-                final IContainer container = resource.getParent();
                 if (validPaths.contains(container.getFullPath())
                         || !extraLocations.isEmpty()
                         && extraLocations.contains(container.getLocation()

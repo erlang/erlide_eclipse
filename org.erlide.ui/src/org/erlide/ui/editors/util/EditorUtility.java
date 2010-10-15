@@ -38,6 +38,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -51,302 +52,311 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class EditorUtility {
 
-	public static boolean isEditorInput(final Object element,
-			final IEditorPart editor) {
-		if (editor != null) {
-			try {
-				return editor.getEditorInput().equals(getEditorInput(element));
-			} catch (final ErlModelException e) {
-				ErlLogger.warn(e);
-			}
-		}
-		return false;
-	}
+    public static boolean isEditorInput(final Object element,
+            final IEditorPart editor) {
+        if (editor != null) {
+            try {
+                return editor.getEditorInput().equals(getEditorInput(element));
+            } catch (final ErlModelException e) {
+                ErlLogger.warn(e);
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Tests if a CU is currently shown in an editor
-	 * 
-	 * @return the IEditorPart if shown, null if element is not open in an
-	 *         editor
-	 */
-	public static IEditorPart isOpenInEditor(final Object inputElement) {
-		IEditorInput input = null;
+    /**
+     * Tests if a CU is currently shown in an editor
+     * 
+     * @return the IEditorPart if shown, null if element is not open in an
+     *         editor
+     */
+    public static IEditorPart isOpenInEditor(final Object inputElement) {
+        IEditorInput input = null;
 
-		try {
-			input = getEditorInput(inputElement);
-		} catch (final ErlModelException e) {
-			ErlLogger.warn(e);
-		}
+        try {
+            input = getEditorInput(inputElement);
+        } catch (final ErlModelException e) {
+            ErlLogger.warn(e);
+        }
 
-		if (input != null) {
-			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
-			if (p != null) {
-				return p.findEditor(input);
-			}
-		}
+        if (input != null) {
+            final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
+            if (p != null) {
+                return p.findEditor(input);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Opens an Erlang editor for an element such as <code>IErlElement</code>,
-	 * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
-	 * default.
-	 * 
-	 * @return the IEditorPart or null if wrong element type or opening failed
-	 */
-	public static IEditorPart openInEditor(final Object inputElement)
-			throws ErlModelException, PartInitException {
-		return openInEditor(inputElement, true);
-	}
+    /**
+     * Opens an Erlang editor for an element such as <code>IErlElement</code>,
+     * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
+     * default.
+     * 
+     * @return the IEditorPart or null if wrong element type or opening failed
+     */
+    public static IEditorPart openInEditor(final Object inputElement)
+            throws ErlModelException, PartInitException {
+        return openInEditor(inputElement, true);
+    }
 
-	/**
-	 * Opens an Erlang editor for an element (IErlElement, IFile, IStorage...)
-	 * 
-	 * @return the IEditorPart or null if wrong element type or opening failed
-	 */
-	public static IEditorPart openInEditor(final Object inputElement,
-			final boolean activate) throws ErlModelException, PartInitException {
+    /**
+     * Opens an Erlang editor for an element (IErlElement, IFile, IStorage...)
+     * 
+     * @return the IEditorPart or null if wrong element type or opening failed
+     */
+    public static IEditorPart openInEditor(final Object inputElement,
+            final boolean activate) throws ErlModelException, PartInitException {
 
-		if (inputElement instanceof IFile) {
-			return openInEditor((IFile) inputElement, activate);
-		}
+        if (inputElement instanceof IFile) {
+            return openInEditor((IFile) inputElement, activate);
+        }
 
-		final IEditorInput input = getEditorInput(inputElement);
-		if (input != null) {
-			return openInEditor(input, getEditorID(input, inputElement),
-					activate);
-		}
+        final IEditorInput input = getEditorInput(inputElement);
+        if (input != null) {
+            return openInEditor(input, getEditorID(input, inputElement),
+                    activate);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Selects a Erlang Element in an editor
-	 */
-	public static boolean revealInEditor(final IEditorPart part,
-			final IErlElement element) {
-		if (element != null && part instanceof ErlangEditor) {
-			((ErlangEditor) part).setSelection(element);
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Selects a Erlang Element in an editor
+     */
+    public static boolean revealInEditor(final IEditorPart part,
+            final IErlElement element) {
+        if (element != null && part instanceof ErlangEditor) {
+            ((ErlangEditor) part).setSelection(element);
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Selects and reveals the given region in the given editor part.
-	 */
-	public static void revealInEditor(final IEditorPart part,
-			final IRegion region) {
-		if (part != null && region != null) {
-			revealInEditor(part, region.getOffset(), region.getLength());
-		}
-	}
+    /**
+     * Selects and reveals the given region in the given editor part.
+     */
+    public static void revealInEditor(final IEditorPart part,
+            final IRegion region) {
+        if (part != null && region != null) {
+            revealInEditor(part, region.getOffset(), region.getLength());
+        }
+    }
 
-	/**
-	 * Selects and reveals the given offset and length in the given editor part.
-	 */
-	public static void revealInEditor(final IEditorPart editor,
-			final int offset, final int length) {
-		if (editor instanceof ITextEditor) {
-			((ITextEditor) editor).selectAndReveal(offset, length);
-			return;
-		}
+    public static void revealInEditor(final IEditorPart part,
+            final ISourceRange sourceRange) {
+        if (part != null && sourceRange != null) {
+            final int offset = sourceRange.getOffset();
+            final int length = sourceRange.getLength();
+            revealInEditor(part, offset, length);
+        }
+    }
 
-		// Support for non-text editor - try IGotoMarker interface
-		if (editor instanceof IGotoMarker) {
-			final IEditorInput input = editor.getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				final IGotoMarker gotoMarkerTarget = (IGotoMarker) editor;
-				final WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+    /**
+     * Selects and reveals the given offset and length in the given editor part.
+     */
+    public static void revealInEditor(final IEditorPart editor,
+            final int offset, final int length) {
+        if (editor instanceof ITextEditor) {
+            ((ITextEditor) editor).selectAndReveal(offset, length);
+            return;
+        }
 
-					@Override
-					protected void execute(final IProgressMonitor monitor)
-							throws CoreException {
-						IMarker marker = null;
-						try {
-							marker = ((IFileEditorInput) input).getFile()
-									.createMarker(IMarker.TEXT);
-							marker.setAttribute(IMarker.CHAR_START, offset);
-							marker.setAttribute(IMarker.CHAR_END, offset
-									+ length);
+        // Support for non-text editor - try IGotoMarker interface
+        if (editor instanceof IGotoMarker) {
+            final IEditorInput input = editor.getEditorInput();
+            if (input instanceof IFileEditorInput) {
+                final IGotoMarker gotoMarkerTarget = (IGotoMarker) editor;
+                final WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
-							gotoMarkerTarget.gotoMarker(marker);
+                    @Override
+                    protected void execute(final IProgressMonitor monitor)
+                            throws CoreException {
+                        IMarker marker = null;
+                        try {
+                            marker = ((IFileEditorInput) input).getFile()
+                                    .createMarker(IMarker.TEXT);
+                            marker.setAttribute(IMarker.CHAR_START, offset);
+                            marker.setAttribute(IMarker.CHAR_END, offset
+                                    + length);
 
-						} finally {
-							if (marker != null) {
-								marker.delete();
-							}
-						}
-					}
-				};
+                            gotoMarkerTarget.gotoMarker(marker);
 
-				try {
-					op.run(null);
-				} catch (final InvocationTargetException ex) {
-					// reveal failed
-				} catch (final InterruptedException e) {
-					Assert.isTrue(false, "this operation can not be canceled"); //$NON-NLS-1$
-				}
-			}
-			return;
-		}
+                        } finally {
+                            if (marker != null) {
+                                marker.delete();
+                            }
+                        }
+                    }
+                };
 
-		/*
-		 * Workaround: send out a text selection XXX: Needs to be improved, see
-		 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=32214
-		 */
-		if (editor != null
-				&& editor.getEditorSite().getSelectionProvider() != null) {
-			final IEditorSite site = editor.getEditorSite();
-			if (site == null) {
-				return;
-			}
+                try {
+                    op.run(null);
+                } catch (final InvocationTargetException ex) {
+                    // reveal failed
+                } catch (final InterruptedException e) {
+                    Assert.isTrue(false, "this operation can not be canceled"); //$NON-NLS-1$
+                }
+            }
+            return;
+        }
 
-			final ISelectionProvider provider = editor.getEditorSite()
-					.getSelectionProvider();
-			if (provider == null) {
-				return;
-			}
+        /*
+         * Workaround: send out a text selection XXX: Needs to be improved, see
+         * https://bugs.eclipse.org/bugs/show_bug.cgi?id=32214
+         */
+        if (editor != null
+                && editor.getEditorSite().getSelectionProvider() != null) {
+            final IEditorSite site = editor.getEditorSite();
+            if (site == null) {
+                return;
+            }
 
-			provider.setSelection(new TextSelection(offset, length));
-		}
-	}
+            final ISelectionProvider provider = editor.getEditorSite()
+                    .getSelectionProvider();
+            if (provider == null) {
+                return;
+            }
 
-	private static IEditorPart openInEditor(final IFile file,
-			final boolean activate) throws PartInitException {
-		if (file != null) {
-			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
-			if (p != null) {
-				final IEditorPart editorPart = IDE
-						.openEditor(p, file, activate);
-				return editorPart;
-			}
-		}
-		return null;
-	}
+            provider.setSelection(new TextSelection(offset, length));
+        }
+    }
 
-	private static IEditorPart openInEditor(final IEditorInput input,
-			final String editorID, final boolean activate)
-			throws PartInitException {
-		if (input != null) {
-			final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
-			if (p != null) {
-				final IEditorPart editorPart = p.openEditor(input, editorID,
-						activate);
-				return editorPart;
-			}
-		}
-		return null;
-	}
+    private static IEditorPart openInEditor(final IFile file,
+            final boolean activate) throws PartInitException {
+        if (file != null) {
+            final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
+            if (p != null) {
+                final IEditorPart editorPart = IDE
+                        .openEditor(p, file, activate);
+                return editorPart;
+            }
+        }
+        return null;
+    }
 
-	public static String getEditorID(final IEditorInput input,
-			final Object inputObject) {
-		IEditorDescriptor editorDescriptor;
-		try {
-			if (input instanceof IFileEditorInput) {
-				editorDescriptor = IDE
-						.getEditorDescriptor(((IFileEditorInput) input)
-								.getFile());
-			} else {
-				editorDescriptor = IDE.getEditorDescriptor(input.getName());
-			}
-		} catch (final PartInitException e) {
-			return null;
-		}
+    private static IEditorPart openInEditor(final IEditorInput input,
+            final String editorID, final boolean activate)
+            throws PartInitException {
+        if (input != null) {
+            final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
+            if (p != null) {
+                final IEditorPart editorPart = p.openEditor(input, editorID,
+                        activate);
+                return editorPart;
+            }
+        }
+        return null;
+    }
 
-		if (editorDescriptor != null) {
-			return editorDescriptor.getId();
-		}
+    public static String getEditorID(final IEditorInput input,
+            final Object inputObject) {
+        IEditorDescriptor editorDescriptor;
+        try {
+            if (input instanceof IFileEditorInput) {
+                editorDescriptor = IDE
+                        .getEditorDescriptor(((IFileEditorInput) input)
+                                .getFile());
+            } else {
+                editorDescriptor = IDE.getEditorDescriptor(input.getName());
+            }
+        } catch (final PartInitException e) {
+            return null;
+        }
 
-		return null;
-	}
+        if (editorDescriptor != null) {
+            return editorDescriptor.getId();
+        }
 
-	private static IEditorInput getEditorInput(final IErlElement element)
-			throws ErlModelException {
-		final IResource resource = element.getResource();
-		if (resource instanceof IFile) {
-			return new FileEditorInput((IFile) resource);
-		}
-		return null;
-	}
+        return null;
+    }
 
-	public static IEditorInput getEditorInput(final Object input)
-			throws ErlModelException {
-		if (input instanceof IErlElement) {
-			return getEditorInput((IErlElement) input);
-		}
+    private static IEditorInput getEditorInput(final IErlElement element)
+            throws ErlModelException {
+        final IResource resource = element.getResource();
+        if (resource instanceof IFile) {
+            return new FileEditorInput((IFile) resource);
+        }
+        return null;
+    }
 
-		if (input instanceof IFile) {
-			return new FileEditorInput((IFile) input);
-		}
+    public static IEditorInput getEditorInput(final Object input)
+            throws ErlModelException {
+        if (input instanceof IErlElement) {
+            return getEditorInput((IErlElement) input);
+        }
 
-		// if (input instanceof IStorage)
-		// return new JarEntryEditorInput((IStorage)input);
+        if (input instanceof IFile) {
+            return new FileEditorInput((IFile) input);
+        }
 
-		return null;
-	}
+        // if (input instanceof IStorage)
+        // return new JarEntryEditorInput((IStorage)input);
 
-	/**
-	 * Opens the editor on the given element and subsequently selects it.
-	 */
-	public static void openElementInEditor(final Object element,
-			final boolean activate) throws ErlModelException, PartInitException {
-		final IEditorPart part = EditorUtility.openInEditor(element, activate);
-		if (element instanceof IErlElement) {
-			EditorUtility.revealInEditor(part, (IErlElement) element);
-		}
-	}
+        return null;
+    }
 
-	/**
-	 * If the current active editor edits a erlang element return it, else
-	 * return null
-	 */
-	public static IErlElement getActiveEditorErlangInput() {
-		final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
-		if (page != null) {
-			final IEditorPart part = page.getActiveEditor();
-			if (part != null) {
-				final IEditorInput editorInput = part.getEditorInput();
-				if (editorInput != null) {
-					return (IErlElement) editorInput
-							.getAdapter(IErlElement.class);
-					// return JavaUI.getEditorInputJavaElement(editorInput);
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Opens the editor on the given element and subsequently selects it.
+     */
+    public static void openElementInEditor(final Object element,
+            final boolean activate) throws ErlModelException, PartInitException {
+        final IEditorPart part = EditorUtility.openInEditor(element, activate);
+        if (element instanceof IErlElement) {
+            EditorUtility.revealInEditor(part, (IErlElement) element);
+        }
+    }
 
-	/**
-	 * Maps the localized modifier name to a code in the same manner as
-	 * #findModifier.
-	 * 
-	 * @param modifierName
-	 *            the modifier name
-	 * @return the SWT modifier bit, or <code>0</code> if no match was found
-	 * @since 2.1.1
-	 */
-	public static int findLocalizedModifier(final String modifierName) {
-		if (modifierName == null) {
-			return 0;
-		}
+    /**
+     * If the current active editor edits a erlang element return it, else
+     * return null
+     */
+    public static IErlElement getActiveEditorErlangInput() {
+        final IWorkbenchPage page = ErlideUIPlugin.getActivePage();
+        if (page != null) {
+            final IEditorPart part = page.getActiveEditor();
+            if (part != null) {
+                final IEditorInput editorInput = part.getEditorInput();
+                if (editorInput != null) {
+                    return (IErlElement) editorInput
+                            .getAdapter(IErlElement.class);
+                    // return JavaUI.getEditorInputJavaElement(editorInput);
+                }
+            }
+        }
+        return null;
+    }
 
-		if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.CTRL))) {
-			return SWT.CTRL;
-		}
-		if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.SHIFT))) {
-			return SWT.SHIFT;
-		}
-		if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.ALT))) {
-			return SWT.ALT;
-		}
-		if (modifierName.equalsIgnoreCase(Action
-				.findModifierString(SWT.COMMAND))) {
-			return SWT.COMMAND;
-		}
+    /**
+     * Maps the localized modifier name to a code in the same manner as
+     * #findModifier.
+     * 
+     * @param modifierName
+     *            the modifier name
+     * @return the SWT modifier bit, or <code>0</code> if no match was found
+     * @since 2.1.1
+     */
+    public static int findLocalizedModifier(final String modifierName) {
+        if (modifierName == null) {
+            return 0;
+        }
 
-		return 0;
-	}
+        if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.CTRL))) {
+            return SWT.CTRL;
+        }
+        if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.SHIFT))) {
+            return SWT.SHIFT;
+        }
+        if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.ALT))) {
+            return SWT.ALT;
+        }
+        if (modifierName.equalsIgnoreCase(Action
+                .findModifierString(SWT.COMMAND))) {
+            return SWT.COMMAND;
+        }
+
+        return 0;
+    }
 
 }

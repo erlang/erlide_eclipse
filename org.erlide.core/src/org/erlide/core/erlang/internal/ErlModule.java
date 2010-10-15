@@ -37,6 +37,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;

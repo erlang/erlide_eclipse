@@ -1,10 +1,18 @@
 package erlang;
 
+import org.erlide.core.erlang.IErlAttribute;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlMacroDef;
+import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
+import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -192,5 +200,36 @@ public abstract class ErlangSearchPattern {
 	public abstract int getSearchFor();
 
 	public abstract String labelString();
+
+    public static ErlangSearchPattern getSearchPatternFromErlElementAndLimitTo(
+            final IErlElement element, final int limitTo) {
+        if (element instanceof IErlFunction) {
+            final IErlFunction function = (IErlFunction) element;
+            final String withoutExtension = ErlideUtil
+                    .withoutExtension(function.getModule().getName());
+            return new FunctionPattern(withoutExtension,
+                    function.getFunctionName(), function.getArity(), limitTo,
+                    true);
+        } else if (element instanceof IErlMacroDef) {
+            final IErlMacroDef m = (IErlMacroDef) element;
+            final String unquoted = ErlideUtil.unquote(m.getDefinedName());
+            return new MacroPattern(unquoted, limitTo);
+        } else if (element instanceof IErlRecordDef) {
+            final IErlRecordDef r = (IErlRecordDef) element;
+            final String unquoted = ErlideUtil.unquote(r.getDefinedName());
+            return new RecordPattern(unquoted, limitTo);
+        } else if (element instanceof IErlFunctionClause) {
+            final IErlFunctionClause clause = (IErlFunctionClause) element;
+            return getSearchPatternFromErlElementAndLimitTo(clause.getParent(),
+                    limitTo);
+        } else if (element instanceof IErlAttribute) {
+            final IErlAttribute a = (IErlAttribute) element;
+            if (a.getName().startsWith("include")) {
+                final String s = Util.stringValue(a.getValue());
+                return new IncludePattern(s, limitTo);
+            }
+        }
+        return null;
+    }
 
 }

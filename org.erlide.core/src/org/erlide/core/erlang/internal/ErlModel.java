@@ -49,6 +49,7 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -636,7 +637,7 @@ public class ErlModel extends Openable implements IErlModel {
                 : "default_external_modules";
         String result = getExternal(project, externalFlag, service, key,
                 "org.erlide.ui");
-        if ("".equals(result)) {
+        if ("".equals(result) && project != null) {
             result = getExternal(null, externalFlag, service, key,
                     ErlangPlugin.PLUGIN_ID);
         }
@@ -671,7 +672,8 @@ public class ErlModel extends Openable implements IErlModel {
             final OtpErlangObject[] objects = new OtpErlangObject[names.length];
             for (int i = 0; i < names.length; i++) {
                 final String name = names[i];
-                final String value = pvm.getValue(name).toOSString();
+                final String value = PluginUtils.getPVMValue(pvm, name)
+                        .toOSString();
                 objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                         new OtpErlangString(name), new OtpErlangString(value) });
             }

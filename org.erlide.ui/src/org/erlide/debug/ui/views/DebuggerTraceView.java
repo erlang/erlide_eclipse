@@ -10,7 +10,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -380,7 +379,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final Object o = getSelectedInTree();
-                final String msg = (o == null) ? "" : o.toString(); //$NON-NLS-1$
+                final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
                 getViewSite().getActionBars().getStatusLineManager()
                         .setMessage(msg);
 
@@ -554,7 +553,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
     //
     // }
 
-    @SuppressWarnings("restriction")
     protected void gotoModuleLine(final String module, final int line) {
         final IWorkbenchWindow dwindow = ErlideUIPlugin
                 .getActiveWorkbenchWindow();
@@ -580,12 +578,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
                 try {
                     part = page.openEditor(input, editorId);
                 } catch (final PartInitException e) {
-                    ErlideUIPlugin
-                            .errorDialog(
-                                    dwindow.getShell(),
-                                    ActionMessages.OpenBreakpointMarkerAction_Go_to_Breakpoint_1,
-                                    ActionMessages.OpenBreakpointMarkerAction_Exceptions_occurred_attempting_to_open_the_editor_for_the_breakpoint_resource_2,
-                                    e); //
+                    ErlideUIPlugin.errorDialog(dwindow.getShell(),
+                            "Go to File", "Exception occurred", e); //
                 }
             }
         }
@@ -621,12 +615,11 @@ public class DebuggerTraceView extends AbstractDebugView implements
             treeColumn.setResizable(true);
             treeColumn.setMoveable(true);
             treeColumn.addSelectionListener(new SelectionListener() {
+
                 public void widgetDefaultSelected(final SelectionEvent e) {
-                    // TODO Auto-generated method stub
                 }
 
                 public void widgetSelected(final SelectionEvent e) {
-                    // TODO Auto-generated method stub
                 }
             });
 

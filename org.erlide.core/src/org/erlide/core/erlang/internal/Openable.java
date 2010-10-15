@@ -12,12 +12,10 @@ package org.erlide.core.erlang.internal;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatus;
@@ -71,6 +69,10 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * Returns true if successful, or false if an error is encountered while
      * determining the structure of this element.
      * 
+     * <<<<<<< HEAD =======
+     * 
+     * @param dirtyRegion
+     *            TODO >>>>>>> cleanup
      */
     protected abstract boolean buildStructure(IProgressMonitor pm)
             throws ErlModelException;
@@ -212,21 +214,22 @@ public abstract class Openable extends ErlElement implements IOpenable {
         }
     }
 
-    private IResource findFile(final IContainer topfolder, final String string) {
-        final IResource result = topfolder.findMember(string);
-        if (result != null) {
-            return result;
-        }
-
-        findResult = null;
-        final IResourceVisitor v = new ErlangResourceVisitor(string);
-        try {
-            topfolder.accept(v);
-        } catch (final CoreException e) {
-            ErlLogger.warn(e);
-        }
-        return findResult;
-    }
+    // private IResource findFile(final IContainer topfolder, final String
+    // string) {
+    // final IResource result = topfolder.findMember(string);
+    // if (result != null) {
+    // return result;
+    // }
+    //
+    // findResult = null;
+    // final IResourceVisitor v = new ErlangResourceVisitor(string);
+    // try {
+    // topfolder.accept(v);
+    // } catch (final CoreException e) {
+    // ErlLogger.warn(e);
+    // }
+    // return findResult;
+    // }
 
     /**
      * Returns true if this element may have an associated source buffer,

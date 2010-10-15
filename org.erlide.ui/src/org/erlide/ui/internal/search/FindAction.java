@@ -276,7 +276,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 	protected void performNewSearch(final IErlElement element,
 			final Collection<IResource> scope) {
-		final ErlangSearchPattern pattern = SearchUtil
+		final ErlangSearchPattern pattern = ErlangSearchPattern
 				.getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
 		SearchUtil.runQuery(pattern, scope, getScopeDescription(), getShell());
 	}
