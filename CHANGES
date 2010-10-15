@@ -1,3 +1,11 @@
+List of user visible changes between 0.9.0 and 0.9.1 (20101015)
+
+* added several unit tests for our code
+* general cleanup of the code
+7383038 616-dialyzer-–-crash-on-binary-analysis-and-files-with-errors
+148d8e3 fixed #614 open-module--dialog-shows-too-many-files
+9af3ff7 disabled the wrangler "code inspection" menu, it isnt included in the release anyway
+
 List of user visible changes between 0.8.8 and 0.9.0 (20101004)
 
 * new feature: tracing (ttb) integration (thanks to Piotr Dorobisz)
