@@ -1,0 +1,10 @@
+setpref targetPlatformPath=#{TARGET}
+
+installJRE --location #{JAVA_HOME} --name erlide_jre
+importpreferences -F #{WORKSPACE}/#{SITE_PRJ}/_erl.epf -S instance
+
+import #{WORKSPACE}/#{SITE_PRJ}/site.cquery
+build -c -t 
+perform --properties #{SITE_PRJ}/_buckminster.properties #{SITE_PRJ}#site.p2
+
+

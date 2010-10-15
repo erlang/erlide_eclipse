@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Build from the &lt;b&gt;pu&lt;/b&gt; branch. Publish to &lt;i&gt;update_nightly&lt;/i&gt;.&#xd;
+</description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>30</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.git.GitSCM">
+    <configVersion>1</configVersion>
+    <remoteRepositories>
+      <org.spearce.jgit.transport.RemoteConfig>
+        <string>origin</string>
+        <int>5</int>
+        <string>fetch</string>
+        <string>+refs/heads/*:refs/remotes/origin/*</string>
+        <string>receivepack</string>
+        <string>git-upload-pack</string>
+        <string>uploadpack</string>
+        <string>git-upload-pack</string>
+        <string>url</string>
+        <string>git://github.com/erlide/erlide.git</string>
+        <string>tagopt</string>
+        <string></string>
+      </org.spearce.jgit.transport.RemoteConfig>
+    </remoteRepositories>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>pu</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <localBranch></localBranch>
+    <mergeOptions/>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <clean>true</clean>
+    <wipeOutWorkspace>false</wipeOutWorkspace>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir></relativeTargetDir>
+    <excludedRegions></excludedRegions>
+    <excludedUsers></excludedUsers>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <authToken>do_a_remote_build_for_me_please</authToken>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>*/4 * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>rm -rf ${WORKSPACE}/buckminster.output
+rm -rf ${WORKSPACE}/buckminster.temp
+
+bash -ex org.erlide.site/build ${WORKSPACE} ${JAVA_HOME} ${erlang_R12} ${erlang_R13} ${BUCKMINSTER} ${TARGET}
+bash -ex org.erlide.site/test ${WORKSPACE} ${JAVA_HOME} ${erlang_R12} ${erlang_R13} ${BUCKMINSTER} ${TARGET}
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.tasks.TasksPublisher>
+      <threshold></threshold>
+      <newThreshold></newThreshold>
+      <failureThreshold></failureThreshold>
+      <newFailureThreshold></newFailureThreshold>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <pluginName>[TASKS] </pluginName>
+      <thresholdLimit>low</thresholdLimit>
+      <defaultEncoding></defaultEncoding>
+      <useDeltaValues>false</useDeltaValues>
+      <canRunOnFailed>false</canRunOnFailed>
+      <high>FIXME</high>
+      <normal>TODO</normal>
+      <low>XXX</low>
+      <ignoreCase>false</ignoreCase>
+      <pattern>**/*.java, **/*.erl</pattern>
+      <excludePattern></excludePattern>
+    </hudson.plugins.tasks.TasksPublisher>
+    <hudson.plugins.warnings.WarningsPublisher>
+      <threshold></threshold>
+      <newThreshold></newThreshold>
+      <failureThreshold></failureThreshold>
+      <newFailureThreshold></newFailureThreshold>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <pluginName>[WARNINGS] </pluginName>
+      <thresholdLimit>low</thresholdLimit>
+      <defaultEncoding></defaultEncoding>
+      <useDeltaValues>false</useDeltaValues>
+      <canRunOnFailed>false</canRunOnFailed>
+      <pattern></pattern>
+      <parserNames>
+        <string>Buckminster Compiler</string>
+      </parserNames>
+      <ignoreConsole>false</ignoreConsole>
+    </hudson.plugins.warnings.WarningsPublisher>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>buckminster.output/org.erlide.site_*/**/*</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>output/junit_result_*.xml,output/TEST-*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.emma.EmmaPublisher>
+      <includes>output/coverage_report_*.xml</includes>
+      <healthReports>
+        <minClass>0</minClass>
+        <maxClass>100</maxClass>
+        <minMethod>0</minMethod>
+        <maxMethod>70</maxMethod>
+        <minBlock>0</minBlock>
+        <maxBlock>80</maxBlock>
+        <minLine>0</minLine>
+        <maxLine>80</maxLine>
+      </healthReports>
+    </hudson.plugins.emma.EmmaPublisher>
+    <hudson.tasks.Mailer>
+      <recipients>hudson@erlide.org</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+    <hudson.plugins.statusmonitor.MonitorPublisher/>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger>
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>BRANCH=pu
+SOURCE_JOB=${JOB_NAME}
+SOURCE_ID=${BUILD_ID}
+DESTINATION=update_nightly</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <projects>publish_site</projects>
+          <condition>SUCCESS</condition>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.setenv.SetEnvBuildWrapper>
+      <localVarText>JAVA_HOME=/home/vlad/erlide/jdk1.5.0_22
+erlang_R12=/home/vlad/erlide/otp_src_R12B5
+erlang_R13=/home/vlad/erlide/otp_src_R13B04
+BUCKMINSTER=/home/vlad/erlide/buckminster
+TARGET=/home/vlad/erlide/eclipse_target/eclipse
+ERLIDE=/home/vlad/erlide
+</localVarText>
+    </hudson.plugins.setenv.SetEnvBuildWrapper>
+  </buildWrappers>
+</project>
