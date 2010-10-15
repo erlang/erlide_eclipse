@@ -200,9 +200,8 @@ public class DialyzerUtils {
                     final String beamName = ErlideUtil.withoutExtension(name)
                             + ".beam";
                     final IResource beam = ebin.findMember(beamName);
-                    final IPath p = beam.getLocation();
-                    if (p.toFile().exists()) {
-                        files.add(p.toPortableString());
+                    if (beam != null) {
+                        files.add(beam.getLocation().toPortableString());
                     }
                 }
             }
