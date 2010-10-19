@@ -271,25 +271,6 @@ public class FilteredModulesSelectionDialog extends
     }
 
     @Override
-    public Object[] getResult() {
-        final Object[] result = super.getResult();
-
-        if (result == null) {
-            return null;
-        }
-
-        final List<Object> resultToReturn = new ArrayList<Object>();
-
-        for (int i = 0; i < result.length; i++) {
-            // if (result[i] instanceof IResource) {
-            resultToReturn.add(result[i]);
-            // }
-        }
-
-        return resultToReturn.toArray();
-    }
-
-    @Override
     public int open() {
         if (getInitialPattern() == null) {
             final IWorkbenchWindow window = PlatformUI.getWorkbench()
@@ -665,9 +646,10 @@ public class FilteredModulesSelectionDialog extends
                     && !resource.isLinked()
                     && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
-                if (validPaths.contains(container.getFullPath())
+                final IContainer my_container = resource.getParent();
+                if (validPaths.contains(my_container.getFullPath())
                         || !extraLocations.isEmpty()
-                        && extraLocations.contains(container.getLocation()
+                        && extraLocations.contains(my_container.getLocation()
                                 .toString())) {
                     proxyContentProvider.add(resource, resourceFilter);
                 }
