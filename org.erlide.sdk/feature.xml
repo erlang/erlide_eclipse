@@ -34,10 +34,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide"
          version="0.0.0"/>
 
-   <includes
-         id="org.erlide.selfhost"
-         version="0.0.0"/>
-
    <plugin
          id="org.erlide.core.tests"
          download-size="0"
