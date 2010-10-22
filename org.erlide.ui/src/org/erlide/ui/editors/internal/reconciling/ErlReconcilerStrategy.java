@@ -19,71 +19,69 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
-		IReconcilingStrategyExtension {
+        IReconcilingStrategyExtension {
 
-	private IErlModule fModule;
-	private final ErlangEditor fEditor;
-	// private IDocument fDoc;
-	private IProgressMonitor mon;
+    private IErlModule fModule;
+    private final ErlangEditor fEditor;
+    // private IDocument fDoc;
+    private IProgressMonitor mon;
 
-	// private boolean initialInsert;
+    // private boolean initialInsert;
 
-	public ErlReconcilerStrategy(final ErlangEditor editor) {
-		fEditor = editor;
-	}
+    public ErlReconcilerStrategy(final ErlangEditor editor) {
+        fEditor = editor;
+    }
 
-	public void setDocument(final IDocument document) {
-		if (fEditor == null) {
-			return;
-		}
-		// fDoc = document;
-	}
+    public void setDocument(final IDocument document) {
+        if (fEditor == null) {
+            return;
+        }
+        // fDoc = document;
+    }
 
-	public void reconcile(final DirtyRegion dirtyRegion, final IRegion subRegion) {
-		ErlLogger.error("reconcile called");
-	}
+    public void reconcile(final DirtyRegion dirtyRegion, final IRegion subRegion) {
+        ErlLogger.error("reconcile called");
+    }
 
-	public void reconcile(final IRegion partition) {
-		ErlLogger.error("reconcile called");
-	}
+    public void reconcile(final IRegion partition) {
+        ErlLogger.error("reconcile called");
+    }
 
-	public void initialReconcile() {
-		// initialInsert = true;
-		fModule = ErlModelUtils.getModule(fEditor);
-		ErlLogger.debug("## initial reconcile "
-				+ ((fModule != null) ? fModule.getName() : ""));
-		if (fModule != null) {
-			fModule.initialReconcile();
-		}
-		// notify(new OtpErlangAtom("initialReconcile"));
-	}
+    public void initialReconcile() {
+        fModule = fEditor.getModule();
+        ErlLogger.debug("## initial reconcile "
+                + (fModule != null ? fModule.getName() : ""));
+        if (fModule != null) {
+            fModule.initialReconcile();
+        }
+        // notify(new OtpErlangAtom("initialReconcile"));
+    }
 
-	public void setProgressMonitor(final IProgressMonitor monitor) {
-		mon = monitor;
-	}
+    public void setProgressMonitor(final IProgressMonitor monitor) {
+        mon = monitor;
+    }
 
-	public void uninstall() {
-		if (fModule != null) {
-			fModule.finalReconcile();
-		}
-	}
+    public void uninstall() {
+        if (fModule != null) {
+            fModule.finalReconcile();
+        }
+    }
 
-	public void chunkReconciled() {
-		if (fModule != null) {
-			fModule.postReconcile(mon);
-		}
-	}
+    public void chunkReconciled() {
+        if (fModule != null) {
+            fModule.postReconcile(mon);
+        }
+    }
 
-	public void reconcile(final ErlDirtyRegion r) {
-		if (fModule != null) {
-			ErlLogger.debug("## reconcile " + fModule.getName());
-			fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(),
-					mon);
-		}
+    public void reconcile(final ErlDirtyRegion r) {
+        if (fModule != null) {
+            ErlLogger.debug("## reconcile " + fModule.getName());
+            fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(),
+                    mon);
+        }
 
-	}
+    }
 
 }

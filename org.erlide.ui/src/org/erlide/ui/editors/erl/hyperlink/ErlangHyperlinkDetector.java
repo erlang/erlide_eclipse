@@ -13,102 +13,101 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
-import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 
-	public ErlangHyperlinkDetector() {
-	}
+    public ErlangHyperlinkDetector() {
+    }
 
-	public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
-			final IRegion region, final boolean canShowMultipleHyperlinks) {
-		if (region == null) {
-			return null;
-		}
-		final IDocument document = textViewer.getDocument();
-		if (document == null) {
-			return null;
-		}
-		return detectHyperlinks(document, region.getOffset());
-	}
+    public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
+            final IRegion region, final boolean canShowMultipleHyperlinks) {
+        if (region == null) {
+            return null;
+        }
+        final IDocument document = textViewer.getDocument();
+        if (document == null) {
+            return null;
+        }
+        return detectHyperlinks(document, region.getOffset());
+    }
 
-	private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
-		ErlangEditor editor = (ErlangEditor) getAdapter(ErlangEditor.class);
-		final IErlModule module = ErlModelUtils.getModule(editor);
-		if (module == null) {
-			return null;
-		}
-		final ErlToken token = module.getScannerTokenAt(offset);
-		if (token == null) {
-			return null;
-		}
-		final int tokenKind = token.getKind();
-		if (tokenKind != ErlToken.KIND_ATOM
-				&& tokenKind != ErlToken.KIND_STRING
-				&& tokenKind != ErlToken.KIND_MACRO
-				&& tokenKind != ErlToken.KIND_VAR) {
-			return null;
-		}
-		try {
-			final ITypedRegion partition = doc.getPartition(offset);
-			final ErlRegion region = new ErlRegion(token.getOffset(), token
-					.getLength(), partition.getType());
-			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(region.getType())) {
-				return null;
-			}
-			return new IHyperlink[] { new ErlangHyperlink(editor, region) };
-		} catch (final BadLocationException e) {
-			return null;
-		}
-	}
+    private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
+        final ErlangEditor editor = (ErlangEditor) getAdapter(ErlangEditor.class);
+        final IErlModule module = editor.getModule();
+        if (module == null) {
+            return null;
+        }
+        final ErlToken token = module.getScannerTokenAt(offset);
+        if (token == null) {
+            return null;
+        }
+        final int tokenKind = token.getKind();
+        if (tokenKind != ErlToken.KIND_ATOM
+                && tokenKind != ErlToken.KIND_STRING
+                && tokenKind != ErlToken.KIND_MACRO
+                && tokenKind != ErlToken.KIND_VAR) {
+            return null;
+        }
+        try {
+            final ITypedRegion partition = doc.getPartition(offset);
+            final ErlRegion region = new ErlRegion(token.getOffset(),
+                    token.getLength(), partition.getType());
+            if (!IDocument.DEFAULT_CONTENT_TYPE.equals(region.getType())) {
+                return null;
+            }
+            return new IHyperlink[] { new ErlangHyperlink(editor, region) };
+        } catch (final BadLocationException e) {
+            return null;
+        }
+    }
 
-	static class ErlRegion extends Region {
-		String type;
+    static class ErlRegion extends Region {
+        String type;
 
-		public ErlRegion(final int offset, final int length, final String type) {
-			super(offset, length);
-			this.type = type;
-		}
+        public ErlRegion(final int offset, final int length, final String type) {
+            super(offset, length);
+            this.type = type;
+        }
 
-		public String getType() {
-			return type;
-		}
+        public String getType() {
+            return type;
+        }
 
-		public void setType(final String string) {
-			type = string;
-		}
+        public void setType(final String string) {
+            type = string;
+        }
 
-	}
+    }
 
-	private static class ErlangHyperlink implements IHyperlink {
-		private final ErlangEditor editor;
-		private final ErlRegion region;
+    private static class ErlangHyperlink implements IHyperlink {
+        private final ErlangEditor editor;
+        private final ErlRegion region;
 
-		public ErlangHyperlink(final ErlangEditor editor,
-				final ErlRegion partion) {
-			this.editor = editor;
-			region = partion;
-		}
+        public ErlangHyperlink(final ErlangEditor editor,
+                final ErlRegion partion) {
+            this.editor = editor;
+            region = partion;
+        }
 
-		public String getTypeLabel() {
-			return null;
-		}
+        public String getTypeLabel() {
+            return null;
+        }
 
-		public String getHyperlinkText() {
-			return null;
-		}
+        public String getHyperlinkText() {
+            return null;
+        }
 
-		public void open() {
-			final OpenAction action = (OpenAction) editor
-					.getAction(IErlangEditorActionDefinitionIds.OPEN);
-			if (action != null) {
-				action.run();
-			}
-		}
+        public void open() {
+            final OpenAction action = (OpenAction) editor
+                    .getAction(IErlangEditorActionDefinitionIds.OPEN);
+            if (action != null) {
+                action.run();
+            }
+        }
 
-		public IRegion getHyperlinkRegion() {
-			return region;
-		}
-	}
+        public IRegion getHyperlinkRegion() {
+            return region;
+        }
+    }
 
 }

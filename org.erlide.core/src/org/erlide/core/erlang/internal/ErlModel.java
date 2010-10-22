@@ -49,6 +49,7 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -401,8 +402,8 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public void notifyChange(final IErlElement element) {
-        ErlLogger.debug("^> notifying change of " + element.getName());
         if (System.getProperty("erlide.model.notify") != null) {
+            ErlLogger.debug("^> notifying change of " + element.getName());
             ErlLogger.debug("   caller = " + getStack());
         }
         for (int i = 0; i < fListeners.size(); i++) {
@@ -532,8 +533,7 @@ public class ErlModel extends Openable implements IErlModel {
             throws CoreException {
         final IPath location = project.getLocation();
 
-        final IErlProject p = ErlangCore.getModel().getErlangProject(
-                project.getName());
+        final IErlProject p = getErlangProject(project.getName());
 
         final OldErlangProjectProperties props = p.getProperties();
 
@@ -565,22 +565,28 @@ public class ErlModel extends Openable implements IErlModel {
         return result;
     }
 
-    public static final IProject newProject(final String name, final String path)
-            throws CoreException {
+    public final IErlProject newProject(final String name, final String path)
+            throws ErlModelException {
         final IWorkspace ws = ResourcesPlugin.getWorkspace();
         final IProject project = ws.getRoot().getProject(name);
-        if (!project.exists()) {
-            project.create(null);
-            project.open(null);
-            final IProjectDescription description = project.getDescription();
-            description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-            description.setName(name);
-            project.setDescription(description, null);
+        try {
+            if (!project.exists()) {
+                project.create(null);
+                project.open(null);
+                final IProjectDescription description = project
+                        .getDescription();
+                description
+                        .setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+                description.setName(name);
+                project.setDescription(description, null);
+            }
+            if (!project.isOpen()) {
+                project.open(null);
+            }
+            return makeErlangProject(project);
+        } catch (final CoreException e) {
+            throw new ErlModelException(e);
         }
-        if (!project.isOpen()) {
-            project.open(null);
-        }
-        return project;
     }
 
     public final void accept(final IErlElement element,
@@ -631,7 +637,7 @@ public class ErlModel extends Openable implements IErlModel {
                 : "default_external_modules";
         String result = getExternal(project, externalFlag, service, key,
                 "org.erlide.ui");
-        if ("".equals(result)) {
+        if ("".equals(result) && project != null) {
             result = getExternal(null, externalFlag, service, key,
                     ErlangPlugin.PLUGIN_ID);
         }
@@ -666,7 +672,8 @@ public class ErlModel extends Openable implements IErlModel {
             final OtpErlangObject[] objects = new OtpErlangObject[names.length];
             for (int i = 0; i < names.length; i++) {
                 final String name = names[i];
-                final String value = pvm.getValue(name).toOSString();
+                final String value = PluginUtils.getPVMValue(pvm, name)
+                        .toOSString();
                 objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                         new OtpErlangString(name), new OtpErlangString(value) });
             }

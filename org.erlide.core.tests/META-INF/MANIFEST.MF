@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide core Tests Fragment
 Bundle-SymbolicName: org.erlide.core.tests;singleton:=true
-Bundle-Version: 0.6.5.qualifier
+Bundle-Version: 0.6.6.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.core;bundle-version="0.6.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.erlide.core;x-friends:="org.erlide.testing",
+Export-Package: org.erlide.core;x-internal:=true,
  org.erlide.core.bdd,
- org.erlide.core.preferences;x-friends:="org.erlide.testing",
- org.erlide.testing.erlang;x-friends:="org.erlide.testing"
-Require-Bundle: org.junit4,
- org.erlide.testing.libs;bundle-version="0.8.8"
+ org.erlide.core.preferences;x-internal:=true,
+ org.erlide.testing.erlang;x-internal:=true
+Require-Bundle: org.erlide.testing;bundle-version="0.8.8",
+ org.erlide.testing.libs;bundle-version="0.8.8",
+ org.junit4
 Eclipse-ExtensibleAPI: true 

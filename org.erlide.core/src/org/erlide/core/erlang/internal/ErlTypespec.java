@@ -20,44 +20,38 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ErlTypespec extends ErlMember implements IErlTypespec {
 
-	private final OtpErlangObject fValue;
-	private final String fExtra;
+    private final OtpErlangObject fValue;
+    private final String fExtra;
 
-	/**
-	 * @param parent
-	 * @param name
-	 */
-	protected ErlTypespec(final ErlElement parent, final String name,
-			final OtpErlangObject value, final String extra) {
-		super(parent, name);
-		fValue = value;
-		fExtra = extra;
-	}
+    /**
+     * @param parent
+     * @param name
+     */
+    protected ErlTypespec(final ErlElement parent, final String name,
+            final OtpErlangObject value, final String extra) {
+        super(parent, name);
+        fValue = value;
+        fExtra = extra;
+    }
 
-	/**
-	 * @see org.erlide.core.erlang.IErlElement#getKind()
-	 */
-	public Kind getKind() {
-		return Kind.TYPESPEC;
-	}
+    /**
+     * @see org.erlide.core.erlang.IErlElement#getKind()
+     */
+    public Kind getKind() {
+        return Kind.TYPESPEC;
+    }
 
-	public OtpErlangObject getValue() {
-		return fValue;
-	}
+    public OtpErlangObject getValue() {
+        return fValue;
+    }
 
-	// @Override
-	// public OtpErlangObject getParseTree() {
-	// // TODO Auto-generated method stub
-	// return null;
-	// }
-
-	@Override
-	public String toString() {
-		if (fValue != null) {
-			return getName() + ": " + fValue.toString(); // pp(fValue);
-		} else if (fExtra != null) {
-			return fExtra;
-		}
-		return "";
-	}
+    @Override
+    public String toString() {
+        if (fValue != null) {
+            return getName() + ": " + fValue.toString(); // pp(fValue);
+        } else if (fExtra != null) {
+            return fExtra;
+        }
+        return "";
+    }
 }

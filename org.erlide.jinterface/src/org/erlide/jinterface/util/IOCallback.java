@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
+import java.util.Collection;
+
 import org.erlide.jinterface.util.IOServer.Encoding;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -20,8 +22,8 @@ public interface IOCallback {
 	OtpErlangObject putChars(OtpErlangPid from, Encoding encoding,
 			OtpErlangObject chars);
 
-	OtpErlangObject putChars(OtpErlangPid from, Encoding latin1, String module,
-			String function, OtpErlangObject[] args);
+    OtpErlangObject putChars(OtpErlangPid from, Encoding latin1, String module,
+            String function, Collection<OtpErlangObject> args);
 
 	OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject);
 
@@ -29,10 +31,10 @@ public interface IOCallback {
 			long n);
 
 	OtpErlangObject getUntil(Encoding valueOf, OtpErlangObject otpErlangObject,
-			String m, String f, OtpErlangObject[] a);
+			String m, String f, Collection<OtpErlangObject> a);
 
 	OtpErlangObject getOpts();
 
-	OtpErlangObject setOpts(OtpErlangObject[] opts);
+	OtpErlangObject setOpts(Collection<OtpErlangObject> opts);
 
 }

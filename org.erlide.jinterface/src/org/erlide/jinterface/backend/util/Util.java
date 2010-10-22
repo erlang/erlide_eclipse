@@ -130,8 +130,8 @@ public final class Util {
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final char[] messageWithNoDoubleQuotes = CharOperation.replace(message
-                .toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
+        final char[] messageWithNoDoubleQuotes = CharOperation.replace(
+                message.toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
@@ -174,8 +174,7 @@ public final class Util {
                                     start - end);
                         }
                     } catch (final ArrayIndexOutOfBoundsException e) {
-                        output
-                                .append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
+                        output.append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
                     }
                     start++;
                 } else {
@@ -252,7 +251,7 @@ public final class Util {
     /**
      * Compares two strings lexicographically. The comparison is based on the
      * Unicode value of each character in the strings.
-     *
+     * 
      * @return the value <code>0</code> if the str1 is equal to str2; a value
      *         less than <code>0</code> if str1 is lexicographically less than
      *         str2; and a value greater than <code>0</code> if str1 is
@@ -275,7 +274,7 @@ public final class Util {
 
     /**
      * Concatenate two strings with a char in between.
-     *
+     * 
      * @see #concat(String, String)
      */
     public static String concat(String s1, final char c, String s2) {
@@ -318,7 +317,7 @@ public final class Util {
 
     /**
      * Concatenate three strings.
-     *
+     * 
      * @see #concat(String, String)
      */
     public static String concat(String s1, String s2, String s3) {
@@ -538,7 +537,7 @@ public final class Util {
 
     /**
      * Finds the first line separator used by the given text.
-     *
+     * 
      * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
      *                </code>, or <code>null</code> if none found
      */
@@ -691,7 +690,7 @@ public final class Util {
      * <li>its prefix must be a valid identifier
      * </ul>
      * </p>
-     *
+     * 
      * @param name
      *            the name of a compilation unit
      * @return a boolean
@@ -1030,7 +1029,7 @@ public final class Util {
      * <p>
      * This method blocks until all the bytes are read, the end of the stream is
      * detected, or an exception is thrown.
-     *
+     * 
      * @param in
      *            a data input stream.
      * @return a Unicode string.
@@ -1322,13 +1321,13 @@ public final class Util {
      * value is the number of bytes actually written out, not the length of the
      * string. Following the length, each character of the string is output, in
      * sequence, using the UTF-8 encoding for the character.
-     *
+     * 
      * @param str
      *            a string to be written.
      * @return the number of bytes written to the stream.
      * @exception IOException
      *                if an I/O error occurs.
-     *
+     * 
      */
     public static int writeUTF(final OutputStream out, final char[] str)
             throws IOException {
@@ -1395,7 +1394,7 @@ public final class Util {
 
     /**
      * Returns the contents of the given file as a byte array.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the file.
      */
@@ -1418,7 +1417,7 @@ public final class Util {
     /**
      * Returns the contents of the given file as a char array. When encoding is
      * null, then the platform default one is used
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the file.
      */
@@ -1444,10 +1443,10 @@ public final class Util {
      * NIO support to get input stream as byte array. Not used as with JDK 1.4.2
      * this support is slower than standard IO one... Keep it as comment for
      * future in case of next JDK versions improve performance in this area...
-     *
+     * 
      * public static byte[] getInputStreamAsByteArray(FileInputStream stream,
      * int length) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * byte[] contents = new byte[size]; ByteBuffer buffer =
@@ -1458,7 +1457,7 @@ public final class Util {
      * specified (ie. if length != -1), only length bytes are returned.
      * Otherwise all bytes in the stream are returned. Note this doesn't close
      * the stream.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the stream.
      */
@@ -1520,7 +1519,7 @@ public final class Util {
      * future in case of next JDK versions improve performance in this area...
      * public static char[] getInputStreamAsCharArray(FileInputStream stream,
      * int length, String encoding) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * Charset charset = encoding==null?systemCharset:Charset.forName(encoding);
@@ -1536,7 +1535,7 @@ public final class Util {
      * length is specified (ie. if length != -1), only length chars are
      * returned. Otherwise all chars in the stream are returned. Note this
      * doesn't close the stream.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the stream.
      */
@@ -1655,7 +1654,7 @@ public final class Util {
 
     /**
      * Converts a boolean value into Boolean.
-     *
+     * 
      * @param bool
      *            The boolean to convert
      * @return The corresponding Boolean object (TRUE or FALSE).
@@ -1669,7 +1668,7 @@ public final class Util {
 
     /**
      * Get the string value of an Erlang string, empty if empty list
-     *
+     * 
      * @param o
      *            Erlang string or list
      * @return string value
@@ -1706,7 +1705,7 @@ public final class Util {
 
     /**
      * Return true if it's the atom ok or a tuple {ok, ...}
-     *
+     * 
      * @param o
      *            atom or tuple
      * @return true if ok
@@ -1724,7 +1723,7 @@ public final class Util {
 
     /**
      * return true if it's the atom error or a tuple {error, ...}
-     *
+     * 
      * @param o
      *            atom or tuple
      * @return true if error
@@ -1773,6 +1772,10 @@ public final class Util {
         } else {
             sb.append(o.toString());
         }
+    }
+
+    public static String normalizeSpaces(String string) {
+        return string.replaceAll("[\t\n\r ]+", " ");
     }
 
 }

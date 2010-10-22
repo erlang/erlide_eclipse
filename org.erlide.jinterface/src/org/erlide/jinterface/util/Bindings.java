@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.SignatureException;
+import com.google.common.collect.Lists;
 
 public final class Bindings {
 
@@ -76,11 +78,11 @@ public final class Bindings {
 		throw new OtpErlangException("value is not a string");
 	}
 
-	public OtpErlangObject[] getList(final String name)
+	public Collection<OtpErlangObject> getList(final String name)
 			throws OtpErlangException {
 		final OtpErlangObject r = get(name);
 		if (r instanceof OtpErlangList) {
-			return ((OtpErlangList) r).elements();
+			return Lists.newArrayList(((OtpErlangList) r).elements());
 		}
 		throw new OtpErlangException("value is not a list");
 	}

@@ -455,7 +455,7 @@ public final class ErlModelManager implements IErlModelManager {
 	/**
 	 * @see org.erlide.core.erlang.IErlModelManager#getErlangModel()
 	 */
-	public final ErlModel getErlangModel() {
+	public final IErlModel getErlangModel() {
 		return erlangModel;
 	}
 

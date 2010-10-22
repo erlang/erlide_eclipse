@@ -115,7 +115,7 @@ public final class ErlParser {
 
     /**
      * create an IErlComment from a token record
-     *
+     * 
      * @param IErlModule
      *            module containing comment
      * @param OtpErlangTuple
@@ -159,7 +159,7 @@ public final class ErlParser {
 
     /**
      * create an IErlMember from a tuple from noparse
-     *
+     * 
      * @param el
      *            the tuple, either function or attribute
      * @return
@@ -262,8 +262,8 @@ public final class ErlParser {
      * @param clause
      *            -record(clause, {pos, name, args, head, code, name_pos}).
      * @return ErlFunctionClause
-     *
-     *
+     * 
+     * 
      */
     private static ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
             final int i, final OtpErlangTuple clause) {
@@ -290,16 +290,6 @@ public final class ErlParser {
         f.setNameRange(ofs, len);
     }
 
-    /**
-     * @param parent
-     * @param pos
-     * @param name
-     * @param val
-     * @param extra
-     *            TODO
-     * @param el
-     * @return
-     */
     private static IErlMember addAttribute(final IErlModule parent,
             final OtpErlangObject pos, final OtpErlangAtom name,
             final OtpErlangObject val, final OtpErlangObject extra) {

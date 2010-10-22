@@ -9,29 +9,27 @@ import org.erlide.runtime.debug.ErlangProcess;
 
 public class ToggleDebugTracingAction implements IWorkbenchWindowActionDelegate {
 
-	private ISelection fSelection;
+    private ISelection fSelection;
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+    public void dispose() {
+    }
 
-	}
+    public void init(final IWorkbenchWindow window) {
+    }
 
-	public void init(final IWorkbenchWindow window) {
-	}
+    public void run(final IAction action) {
+        final IStructuredSelection ss = (IStructuredSelection) fSelection;
+        for (final Object o : ss.toArray()) {
+            if (o instanceof ErlangProcess) {
+                final ErlangProcess p = (ErlangProcess) o;
+                p.setTracing(!p.getTracing());
+            }
+        }
+    }
 
-	public void run(final IAction action) {
-		final IStructuredSelection ss = (IStructuredSelection) fSelection;
-		for (final Object o : ss.toArray()) {
-			if (o instanceof ErlangProcess) {
-				final ErlangProcess p = (ErlangProcess) o;
-				p.setTracing(!p.getTracing());
-			}
-		}
-	}
-
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-		fSelection = selection;
-	}
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+        fSelection = selection;
+    }
 
 }

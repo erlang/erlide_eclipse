@@ -44,5 +44,5 @@ public class ErlStructureDiffViewerCreator implements IViewerCreator {
 			}
 			return null;
 		}
-	};
+	}
 }

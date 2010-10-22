@@ -19,41 +19,41 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ErlAttribute extends ErlMember implements IErlAttribute {
 
-	private final OtpErlangObject fValue;
-	private final String fExtra;
+    private final OtpErlangObject fValue;
+    private final String fExtra;
 
-	/**
-	 * @param parent
-	 * @param name
-	 */
-	public ErlAttribute(final IErlElement parent, final String name,
-			final OtpErlangObject value, final String extra) {
-		super(parent, name);
-		fValue = value;
-		fExtra = extra;
-	}
+    /**
+     * @param parent
+     * @param name
+     */
+    public ErlAttribute(final IErlElement parent, final String name,
+            final OtpErlangObject value, final String extra) {
+        super(parent, name);
+        fValue = value;
+        fExtra = extra;
+    }
 
-	/**
-	 * @see org.erlide.core.erlang.IErlElement#getKind()
-	 */
-	public Kind getKind() {
-		return Kind.ATTRIBUTE;
-	}
+    /**
+     * @see org.erlide.core.erlang.IErlElement#getKind()
+     */
+    public Kind getKind() {
+        return Kind.ATTRIBUTE;
+    }
 
-	public OtpErlangObject getValue() {
-		return fValue;
-	}
+    public OtpErlangObject getValue() {
+        return fValue;
+    }
 
-	@Override
-	public String toString() {
-		String sval;
-		if (fValue != null) {
-			sval = ": " + fValue.toString(); // pp(fValue);
-		} else if (fExtra != null) {
-			sval = ": " + fExtra;
-		} else {
-			sval = "";
-		}
-		return getName() + sval;
-	}
+    @Override
+    public String toString() {
+        String sval;
+        if (fValue != null) {
+            sval = ": " + fValue.toString(); // pp(fValue);
+        } else if (fExtra != null) {
+            sval = ": " + fExtra;
+        } else {
+            sval = "";
+        }
+        return getName() + sval;
+    }
 }

@@ -20,6 +20,7 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceManipulation;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.core.erlang.SourceRange;
 import org.erlide.jinterface.backend.util.Util;
 
 /**
