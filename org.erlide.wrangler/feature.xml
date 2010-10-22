@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.wrangler"
       label="Wrangler Feature"
-      version="0.10.0.qualifier"
+      version="0.10.1.qualifier"
       provider-name="UKC">
 
    <description url="http://www.example.com/description">

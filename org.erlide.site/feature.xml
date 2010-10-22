@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.site"
       label="Erlang IDE Update Site"
-      version="1.0.0.qualifier"
+      version="1.0.0"
       provider-name="erlide.org">
 
    <description>

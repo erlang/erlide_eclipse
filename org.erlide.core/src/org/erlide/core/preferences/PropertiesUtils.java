@@ -72,8 +72,8 @@ public final class PropertiesUtils {
 
     private static List<PathEntry> makeSourceLocations(
             final List<String> externalModules) {
-        //FIXME!!!
-        
+        // FIXME!!!
+
         final List<PathEntry> result = Lists.newArrayList();
 
         final List<String> modules = Lists.newArrayList();
@@ -93,7 +93,7 @@ public final class PropertiesUtils {
             final String file = mod.substring(i + 1);
 
             ErlLogger.debug("FOUND: '" + path + "' '" + file + "'");
-            List<String> pval = grouped.get(path);
+            List<String> pval = grouped.get(new Path(path));
             if (pval == null) {
                 pval = Lists.newArrayList();
             }
