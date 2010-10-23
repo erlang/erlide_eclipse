@@ -1,0 +1,59 @@
+
+SOURCE_JOB=$1
+SOURCE_ID=$2
+BASE_SITE=$3
+DESTINATION=$4
+USER=$5
+
+if [ "$SOURCE_ID" == "lastStable" ]; then
+	SOURCE_ID=`ls -l ${WORKSPACE}/../../${SOURCE_JOB}/lastStable | awk '{print $11}' | sed 's#builds/##'`
+fi
+
+IN=${WORKSPACE}/../../${SOURCE_JOB}/builds/${SOURCE_ID}/archive/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
+OUT=${ERLIDE}/update_sites/${SOURCE_JOB}_${SOURCE_ID}
+
+rm -rf ${OUT}/*
+mkdir -p $OUT
+
+#if BASE_SITE, copy it to OUT
+if [ -n "$BASE_SITE" ]; then
+	#if [ ! -d "$BASE_SITE" ]; then
+	#	bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} http://erlide.org/update.backup ${BASE_SITE}
+	#fi
+	cp -r ${ERLIDE}/$BASE_SITE/* $OUT
+fi
+
+# mirror job output to OUT
+bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
+if [ $? != 0 ]; then 
+	exit $?
+fi
+
+# if DEST=path, copy OUT to DEST
+if [ -d "${DESTINATION}" ]; then
+	# rm -rf ${DESTINATION}/*  # TODO option to clean?
+	cp -r ${OUT}/* ${DESTINATION}
+
+# else if DEST=name, scp OUT to sourceforge
+elif [ -n "${DESTINATION}" ]; then
+	bash -ex ${WORKSPACE}/org.erlide.site/upload ${OUT} ${DESTINATION} ${USER}
+
+# else do nothing
+
+fi
+
+if [ $? != 0 ]; then 
+	exit $?
+fi
+
+#FIXME: this is hardcoded...
+#if BASE_SITE, copy it to OUT
+if [ -n "$BASE_SITE" ]; then
+	cd ${ERLIDE}/update_sites
+	BASE=`echo $BASE_SITE | sed 's#update_sites/##'`
+	rm $BASE
+	ln -s $OUT $BASE
+fi
+
+
+
