@@ -47,7 +47,8 @@
 -include("../include/wrangler.hrl").
 
 -spec (inline_var/5::(filename(), integer(), integer(),[dir()], integer()) ->
-			  {ok, string()} | {ok,[{pos(), pos()}], string()}).
+			   {ok, string()}|
+			   {ok,[{pos(), pos()}], string()}).
 inline_var(FName, Line, Col, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:inline_var(~p, ~p, ~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
@@ -83,7 +84,12 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
 			    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [C]),
 			    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd1);
 			_ ->
-			    {ok, Cands}
+			    case Editor of 
+				emacs ->
+				    {ok, Cands, Cmd1};
+				_ ->
+				    {ok, Cands}
+			    end
 		    end
 	    end;
 	_ ->
@@ -285,15 +291,15 @@ inline(AnnAST, Form, MatchExpr, VarNode, Ps) ->
 do_inline_in_form(Form, MatchExpr, VarNode, Ps) ->
     MatchExprBody = refac_syntax:match_expr_body(MatchExpr),
     AllUseInstances = collect_all_uses(Form, VarNode),
-    Form1 =case lists:usort(AllUseInstances)==lists:usort(Ps) of 
-	       true ->
-		   remove_match_expr(Form, MatchExpr);
-	       false ->
-		   Form
-	   end,
-    {Form2, _} = ast_traverse_api:stop_tdTP(fun do_inline/2, Form1, {MatchExprBody, Ps}),
-    Form2.
-
+    case lists:usort(AllUseInstances)==lists:usort(Ps) of 
+	true ->
+	    %% IMPORTANT: order matters here!!!
+	    {Form2, _} = ast_traverse_api:stop_tdTP(fun do_inline/2, Form, {MatchExprBody, Ps}),
+	    remove_match_expr(Form2, MatchExpr);
+	false ->
+	    Form
+    end.
+   
 remove_match_expr(Form, MatchExpr) ->
     {NewForm, _} = ast_traverse_api:stop_tdTP(
 		     fun do_remove_match_expr/2, Form, MatchExpr),

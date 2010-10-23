@@ -159,9 +159,9 @@ get_file_name(ModName, SearchPaths) ->
 		  
     end.
 
-%%-spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
-%%			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
-%%			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+-spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
+			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
+			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
@@ -169,12 +169,11 @@ fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWid
     FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
     {ok, [{FileName, FileName, FileContent}]}.
 
-
 fold_expression_1_eclipse_1(AnnAST, _Body, []) ->
     AnnAST;
-fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}| Tail]) ->
+fold_expression_1_eclipse_1(AnnAST, Body, [Cand| Tail]) ->
     {AnnAST1, _} = ast_traverse_api:stop_tdTP(fun do_replace_expr_with_fun_call/2,
-					      AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
+					      AnnAST, {Body, Cand}),
     fold_expression_1_eclipse_1(AnnAST1, Body, Tail).
 
 

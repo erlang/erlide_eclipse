@@ -61,29 +61,79 @@
 
 -export([rename_mod/4, rename_mod_1/5, rename_mod_eclipse/4, rename_mod_1_eclipse/5]).
 
+%% Command line interface.
+-export([rename_mod/3]).
+
 -import(refac_atom_utils, [output_atom_warning_msg/3,check_unsure_atoms/5,start_atom_process/0,stop_atom_process/1]).
 
 -include("../include/wrangler.hrl").
 
-%%-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
-%%	     {error, string()} | {question, string()} |{ok, [filename()], boolean()}).
+-spec(rename_mod/3::(modulename()|filename(), modulename(), [dir()]) -> 
+			  {error, string()} | {ok, [filename()]}).
+rename_mod(OldModOrFileName, NewModName, SearchPaths) ->
+    case filelib:is_file(OldModOrFileName) of 
+	true ->
+	    rename_mod_command_line(OldModOrFileName, NewModName, SearchPaths, 8);
+	false ->
+	    case is_atom(OldModOrFileName) of 
+		true ->
+		    case modname_to_filename(OldModOrFileName, SearchPaths) of 
+			{ok, FileName} ->
+			    rename_mod_command_line(FileName, atom_to_list(NewModName), SearchPaths, 8);
+			{error, Msg} ->
+			    {error, Msg}
+		    end;
+		false ->
+		    {error, "Invalid parameters!"}
+	    end
+    end.
+
+rename_mod_command_line(OldFileName,  NewModName, SearchPaths, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p).\n",
+		 [?MODULE, OldFileName, NewModName, SearchPaths]),
+    refac_io:format("NewModName:\n~p\n", [NewModName]),
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(OldFileName, true, SearchPaths, TabWidth),
+    rename_mod_command_line_precond_check(OldFileName,NewModName, Info, SearchPaths),
+    {value, {module, OldModName}} = lists:keysearch(module,1, Info),
+    do_rename_mod(OldFileName, [{OldModName, NewModName}], AnnAST, 
+		  SearchPaths, command, TabWidth, "").
+
+rename_mod_command_line_precond_check(OldFileName,NewModName, Info, SearchPaths) ->
+    case refac_misc:is_fun_name(NewModName) of
+	true ->
+	    case lists:keysearch(module, 1, Info) of
+		{value, {module, OldModName}} ->
+		    case is_tuple(OldModName) of
+			true -> 
+			    {error, "Renaming of parameterised module is not supported yet."};
+			false -> 
+			    pre_cond_check(OldFileName, OldModName, NewModName, [], SearchPaths)
+			end;
+		false -> ok
+	    end;
+	false -> {error, "Invalid new module name!"}
+    end.
+
+
+-spec(rename_mod/4::(filename(), string(), [dir()], integer()) -> 
+	     {error, string()} | {question, string()} |{ok, [filename()], boolean()}).
 rename_mod(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, emacs).
 
-%%-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {question, string()} | {warning, string()} |
-%%		 {ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_eclipse/4::(filename(), string(), [dir()], integer()) ->
+	     {error, string()} | {question, string()} | {warning, string()} |
+		 {ok, [{filename(), filename(), string()}]}).
 rename_mod_eclipse(FileName, NewName, SearchPaths, TabWidth) ->
     rename_mod(FileName, NewName, SearchPaths, TabWidth, eclipse).
 
 
-%%-spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->
-%%			    {ok, [filename()], boolean()} |  {ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_1/5::(filename(), string(), [dir()], integer(),boolean()) ->
+			    {ok, [filename()], boolean()} |  {ok, [{filename(), filename(), string()}]}).
 rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, emacs).
 
-%%-spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->
-%%				    {ok, [{filename(), filename(), string()}]}).
+-spec(rename_mod_1_eclipse/5::(filename(), string(), [dir()], integer(),boolean()) ->
+				    {ok, [{filename(), filename(), string()}]}).
 rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
     rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, eclipse).
 
@@ -234,14 +284,15 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, C
 			   2 -> [FileName, TestFileName| ChangedClientFiles];
 			   1 -> [FileName| ChangedClientFiles]
 			 end,
-	  ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
-	  {ok, ChangedFiles, HasWarningMsg};
-      eclipse ->
-	  Results1 = [{{FileName, NewFileName}, AnnAST1}| TestModRes ++ Results],
-	  Res = lists:map(fun ({{FName, NewFName}, AST}) -> {FName, NewFName,
-							     refac_prettypr:print_ast(refac_util:file_format(FName), AST)}
-			  end, Results1),
-	  {ok, Res}
+	    RenamedFiles=[{FileName, NewFileName}]++[{F1, F2}||{{F1,F2}, _}<-TestModRes],
+	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
+	    {ok, ChangedFiles, RenamedFiles, HasWarningMsg};
+	eclipse ->
+	    Results1 = [{{FileName, NewFileName}, AnnAST1}| TestModRes ++ Results],
+	    Res = lists:map(fun ({{FName, NewFName}, AST}) -> {FName, NewFName,
+							       refac_prettypr:print_ast(refac_util:file_format(FName), AST)}
+			    end, Results1),
+	    {ok, Res}
     end.
   
  
@@ -513,10 +564,34 @@ output_filenames([], Acc) ->
 output_filenames([F|T], Acc) ->
     output_filenames(T, Acc++", "++F).
 
-	
-    
-		 
-		 
+modname_to_filename(ModName, Dirs)->
+    Files = refac_util:expand_files(Dirs, ".erl"),
+    Fs=[F || F<-Files,
+	     list_to_atom(filename:basename(F, ".erl"))==ModName],
+    case Fs of 
+	[] ->
+	    {error, "Could not find file whose module name is "
+	     ++atom_to_list(ModName)};
+	[FileName] ->
+	    {ok, FileName};
+	_ -> {error, "Multiple files found:" ++ 
+		  format_file_names(Fs)++"\n"}
+    end.
+			   
+
+format_file_names([]) -> "[]";
+format_file_names(Fs) ->
+    "[" ++ format_file_names_1(Fs).
+  
+format_file_names_1([F|T]) ->
+    case T of 
+	[] ->
+	    io_lib:format("~p]", [F])++
+		format_file_names_1(T);
+	_ ->
+	    io_lib:format("~p,", [F])++
+		format_file_names_1(T)
+    end.	 
 			     
 			    
     

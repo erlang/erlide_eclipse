@@ -99,9 +99,13 @@
 	 arity_qualifier_body/1, atom/1, atom_literal/1,
 	 atom_name/1, atom_value/1, attribute/1, attribute/2,
 	 attribute_arguments/1, attribute_name/1, binary/1,
+	 binary_comp/2,	 binary_comp_template/1, binary_comp_body/1,
 	 binary_field/1, binary_field/2, binary_field/3,
 	 binary_field_body/1, binary_field_size/1,
-	 binary_field_types/1, binary_fields/1, block_expr/1,
+	 binary_field_types/1, binary_fields/1,
+	 binary_generator/2, binary_generator_body/1,
+	 binary_generator_pattern/1,
+	 block_expr/1,
 	 block_expr_body/1, case_expr/2, case_expr_argument/1,
 	 case_expr_clauses/1, catch_expr/1, catch_expr_body/1,
 	 char/1, char_literal/1, char_value/1, class_qualifier/2,
@@ -202,7 +206,8 @@
 %%
 %%	type(Com) = comment
 
--record(com, {pre = [], post = []}).
+-record(com, {pre  = [] :: [syntaxTree()],
+	      post = [] :: [syntaxTree()]}).
 
 %% `attr' records store node attributes as an aggregate.
 %%
@@ -215,7 +220,11 @@
 %% where `Pos' `Ann' and `Comments' are the corresponding values of a
 %% `tree' or `wrapper' record.
 
--record(attr, {pos = {0,0}, ann = [], com = none}).
+-record(attr, {pos = 0    :: term(),
+	       ann = []   :: [term()],
+	       com = none :: 'none' | #com{}}).
+
+%%-type syntaxTreeAttributes() :: #attr{}.
 
 %% `tree' records represent new-form syntax tree nodes.
 %%
@@ -227,7 +236,9 @@
 %%
 %%	is_tree(Tree) = true
 
--record(tree, {type, attr = #attr{}, data}).
+-record(tree, {type           :: atom(),
+	       attr = #attr{} :: #attr{},
+	       data           :: term()}).
 
 %% `wrapper' records are used for attaching new-form node information to
 %% `erl_parse' trees.
@@ -240,7 +251,13 @@
 %%
 %%	is_tree(Wrapper) = false
 
--record(wrapper, {type, attr = #attr{}, tree}).
+-record(wrapper, {type           :: atom(),
+		  attr = #attr{} :: #attr{},
+		  tree           :: term()}).
+
+%% =====================================================================
+
+-type syntaxTree() :: #tree{} | #wrapper{} | tuple(). % XXX: refine
 
 %% =====================================================================
 %%
@@ -419,8 +436,10 @@ type(Node) ->
       {clause, _, _, _, _} -> clause;
       {cons, _, _, _} -> list;
       {function, _, _, _, _} -> function;
+      {b_generate, _, _, _} -> binary_generator;
       {generate, _, _, _} -> generator;
       {lc, _, _, _} -> list_comp;
+      {bc, _, _, _} -> binary_comp;	
       {match, _, _, _} -> match_expr;
       {op, _, _, _, _} -> infix_expr;
       {op, _, _, _} -> prefix_expr;
@@ -3632,7 +3651,7 @@ typed_record_field(RecordField, Type) ->
     tree(typed_record_field,
 	 #typed_record_field{recordfield=RecordField, type=Type}).
 
-     
+      
 typed_record_field_name(Node) ->
     Field = (data(Node))#typed_record_field.recordfield,
     (data(Field))#record_field.name.
@@ -4142,6 +4161,83 @@ list_comp_body(Node) ->
       Node1 -> (data(Node1))#list_comp.body
     end.
 
+
+%% =====================================================================
+%% @spec binary_comp(Template::syntaxTree(), Body::[syntaxTree()]) ->
+%%           syntaxTree()
+%%
+%% @doc Creates an abstract binary comprehension. If <code>Body</code> is
+%% <code>[E1, ..., En]</code>, the result represents
+%% "<code>&lt;&lt;<em>Template</em> || <em>E1</em>, ..., <em>En</em>&gt;&gt;</code>".
+%%
+%% @see binary_comp_template/1
+%% @see binary_comp_body/1
+%% @see generator/2
+
+-record(binary_comp, {template :: syntaxTree(), body :: [syntaxTree()]}).
+
+%% type(Node) = binary_comp
+%% data(Node) = #binary_comp{template :: Template, body :: Body}
+%%
+%%	Template = Node = syntaxTree()
+%%	Body = [syntaxTree()]
+%%
+%% `erl_parse' representation:
+%%
+%% {bc, Pos, Template, Body}
+%%
+%%	Template = erl_parse()
+%%	Body = [erl_parse()] \ []
+
+%%-spec binary_comp(syntaxTree(), [syntaxTree()]) -> syntaxTree().
+
+binary_comp(Template, Body) ->
+    tree(binary_comp, #binary_comp{template = Template, body = Body}).
+
+revert_binary_comp(Node) ->
+    Pos = get_pos(Node),
+    Template = binary_comp_template(Node),
+    Body = binary_comp_body(Node),
+    {bc, Pos, Template, Body}.
+
+
+%% =====================================================================
+%% @spec binary_comp_template(syntaxTree()) -> syntaxTree()
+%%
+%% @doc Returns the template subtree of a <code>binary_comp</code> node.
+%%
+%% @see binary_comp/2
+
+%%-spec binary_comp_template(syntaxTree()) -> syntaxTree().
+
+binary_comp_template(Node) ->
+    case unwrap(Node) of
+	{bc, _, Template, _} ->
+	    Template;
+	Node1 ->
+	    (data(Node1))#binary_comp.template
+    end.
+
+
+%% =====================================================================
+%% @spec binary_comp_body(syntaxTree()) -> [syntaxTree()]
+%%
+%% @doc Returns the list of body subtrees of a <code>binary_comp</code>
+%% node.
+%%
+%% @see binary_comp/2
+
+%% -spec binary_comp_body(syntaxTree()) -> [syntaxTree()].
+
+binary_comp_body(Node) ->
+    case unwrap(Node) of
+	{bc, _, _, Body} ->
+	    Body;
+	Node1 ->
+	    (data(Node1))#binary_comp.body
+    end.
+
+
 %% =====================================================================
 %% @spec query_expr(Body::syntaxTree()) -> syntaxTree()
 %%
@@ -4345,6 +4441,80 @@ generator_body(Node) ->
       {generate, _, _, Body} -> Body;
       Node1 -> (data(Node1))#generator.body
     end.
+
+
+%% =====================================================================
+%% @spec binary_generator(Pattern::syntaxTree(), Body::syntaxTree()) ->
+%%           syntaxTree()
+%%
+%% @doc Creates an abstract binary_generator. The result represents
+%% "<code><em>Pattern</em> &lt;- <em>Body</em></code>".
+%%
+%% @see binary_generator_pattern/1
+%% @see binary_generator_body/1
+%% @see list_comp/2
+%% @see binary_comp/2
+
+-record(binary_generator, {pattern :: syntaxTree(), body :: syntaxTree()}).
+
+%% type(Node) = binary_generator
+%% data(Node) = #binary_generator{pattern :: Pattern, body :: Body}
+%%
+%%	Pattern = Argument = syntaxTree()
+%%
+%% `erl_parse' representation:
+%%
+%% {b_generate, Pos, Pattern, Body}
+%%
+%%	Pattern = Body = erl_parse()
+
+-spec binary_generator(syntaxTree(), syntaxTree()) -> syntaxTree().
+
+binary_generator(Pattern, Body) ->
+    tree(binary_generator, #binary_generator{pattern = Pattern, body = Body}).
+
+revert_binary_generator(Node) ->
+    Pos = get_pos(Node),
+    Pattern = binary_generator_pattern(Node),
+    Body = binary_generator_body(Node),
+    {b_generate, Pos, Pattern, Body}.
+
+
+%% =====================================================================
+%% @spec binary_generator_pattern(syntaxTree()) -> syntaxTree()
+%%
+%% @doc Returns the pattern subtree of a <code>generator</code> node.
+%%
+%% @see binary_generator/2
+
+-spec binary_generator_pattern(syntaxTree()) -> syntaxTree().
+
+binary_generator_pattern(Node) ->
+    case unwrap(Node) of
+	{b_generate, _, Pattern, _} ->
+	    Pattern;
+	Node1 ->
+	    (data(Node1))#binary_generator.pattern
+    end.
+
+
+%% =====================================================================
+%% @spec binary_generator_body(syntaxTree()) -> syntaxTree()
+%%
+%% @doc Returns the body subtree of a <code>generator</code> node.
+%%
+%% @see binary_generator/2
+
+-spec binary_generator_body(syntaxTree()) -> syntaxTree().
+
+binary_generator_body(Node) ->
+    case unwrap(Node) of
+	{b_generate, _, _, Body} ->
+	    Body;
+	Node1 ->
+	    (data(Node1))#binary_generator.body
+    end.
+
 
 %% =====================================================================
 %% @spec block_expr(Body::[syntaxTree()]) -> syntaxTree()
@@ -5327,50 +5497,95 @@ revert(Node) ->
 
 revert_root(Node) ->
     case type(Node) of
-      application -> revert_application(Node);
-      atom -> revert_atom(Node);
-      attribute -> revert_attribute(Node);
-      binary -> revert_binary(Node);
-      binary_field -> revert_binary_field(Node);
-      block_expr -> revert_block_expr(Node);
-      case_expr -> revert_case_expr(Node);
-      catch_expr -> revert_catch_expr(Node);
-      char -> revert_char(Node);
-      clause -> revert_clause(Node);
-      cond_expr -> revert_cond_expr(Node);
-      eof_marker -> revert_eof_marker(Node);
-      error_marker -> revert_error_marker(Node);
-      float -> revert_float(Node);
-      fun_expr -> revert_fun_expr(Node);
-      function -> revert_function(Node);
-      generator -> revert_generator(Node);
-      if_expr -> revert_if_expr(Node);
-      implicit_fun -> revert_implicit_fun(Node);
-      infix_expr -> revert_infix_expr(Node);
-      integer -> revert_integer(Node);
-      list -> revert_list(Node);
-      list_comp -> revert_list_comp(Node);
-      match_expr -> revert_match_expr(Node);
-      module_qualifier -> revert_module_qualifier(Node);
-      nil -> revert_nil(Node);
-      parentheses -> revert_parentheses(Node);
-      prefix_expr -> revert_prefix_expr(Node);
-      qualified_name -> revert_qualified_name(Node);
-      query_expr -> revert_query_expr(Node);
-      receive_expr -> revert_receive_expr(Node);
-      record_access -> revert_record_access(Node);
-      record_expr -> revert_record_expr(Node);
-      record_index_expr -> revert_record_index_expr(Node);
-      rule -> revert_rule(Node);
-      string -> revert_string(Node);
-      try_expr -> revert_try_expr(Node);
-      tuple -> revert_tuple(Node);
-      underscore -> revert_underscore(Node);
-      variable -> revert_variable(Node);
-      warning_marker -> revert_warning_marker(Node);
-      _ ->
-	  %% Non-revertible new-form node
-	  Node
+	application -> 
+	    revert_application(Node);
+	atom -> 
+	    revert_atom(Node);
+	attribute ->
+	    revert_attribute(Node);
+	binary -> 
+	    revert_binary(Node);
+	binary_comp ->
+	    revert_binary_comp(Node);
+	binary_field -> 
+	    revert_binary_field(Node);
+	binary_generator ->
+	    revert_binary_generator(Node);
+	block_expr -> 
+	    revert_block_expr(Node);
+	case_expr -> 
+	    revert_case_expr(Node);
+	catch_expr -> 
+		revert_catch_expr(Node);
+	char ->
+		revert_char(Node);
+	     clause -> 
+		revert_clause(Node);
+	     cond_expr ->
+		revert_cond_expr(Node);
+	     eof_marker ->
+		revert_eof_marker(Node);
+	     error_marker ->
+		revert_error_marker(Node);
+	     float -> 
+		revert_float(Node);
+	     fun_expr -> 
+		revert_fun_expr(Node);
+	     function ->
+		revert_function(Node);
+	     generator -> 
+		revert_generator(Node);
+	     if_expr -> 
+		revert_if_expr(Node);
+	     implicit_fun -> 
+		revert_implicit_fun(Node);
+	     infix_expr -> 
+		revert_infix_expr(Node);
+	     integer -> 
+		revert_integer(Node);
+	     list -> 
+		revert_list(Node);
+	     list_comp -> 
+		revert_list_comp(Node);
+	     match_expr -> 
+		revert_match_expr(Node);
+	     module_qualifier -> 
+		revert_module_qualifier(Node);
+	     nil -> 
+		revert_nil(Node);
+	     parentheses -> 
+		revert_parentheses(Node);
+	     prefix_expr -> 
+		revert_prefix_expr(Node);
+	     qualified_name -> 
+		revert_qualified_name(Node);
+	     query_expr -> 
+		revert_query_expr(Node);
+	     receive_expr ->
+		revert_receive_expr(Node);
+	     record_access ->
+		revert_record_access(Node);
+	     record_expr -> 
+		revert_record_expr(Node);
+	     record_index_expr -> 
+		revert_record_index_expr(Node);
+	     rule -> 
+		revert_rule(Node);
+	     string -> 
+		revert_string(Node);
+	     try_expr ->
+		revert_try_expr(Node);
+	     tuple -> 
+		revert_tuple(Node);
+	     underscore ->
+		revert_underscore(Node);
+	     variable -> 
+		revert_variable(Node);
+	     warning_marker -> 
+		revert_warning_marker(Node);
+	     _ ->
+		%% Non-revertible new-form node
+		Node
     end.
 
 %% =====================================================================
@@ -5496,11 +5711,16 @@ subtrees(T) ->
 			[[attribute_name(T)], As]
 		    end;
 	    binary -> [binary_fields(T)];
+	    binary_comp ->
+		    [[binary_comp_template(T)], binary_comp_body(T)];
 	    binary_field ->
 		case binary_field_types(T) of
 		  [] -> [[binary_field_body(T)]];
 		  Ts -> [[binary_field_body(T)], Ts]
 		end;
+	    binary_generator ->
+		    [[binary_generator_pattern(T)], 
+                     [binary_generator_body(T)]];
 	    block_expr -> [block_expr_body(T)];
 	    case_expr ->
 		[[case_expr_argument(T)], case_expr_clauses(T)];
@@ -5637,9 +5857,11 @@ make_tree(arity_qualifier, [[N], [A]]) ->
 make_tree(attribute, [[N]]) -> attribute(N);
 make_tree(attribute, [[N], A]) -> attribute(N, A);
 make_tree(binary, [Fs]) -> binary(Fs);
+make_tree(binary_comp, [[T], B]) -> binary_comp(T, B);
 make_tree(binary_field, [[B]]) -> binary_field(B);
 make_tree(binary_field, [[B], Ts]) ->
     binary_field(B, Ts);
+make_tree(binary_generator, [[P], [E]]) -> binary_generator(P, E);
 make_tree(block_expr, [B]) -> block_expr(B);
 make_tree(case_expr, [[A], C]) -> case_expr(A, C);
 make_tree(catch_expr, [[B]]) -> catch_expr(B);

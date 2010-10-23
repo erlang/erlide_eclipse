@@ -76,17 +76,23 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp",  %% .erl.swp or .swp.erl?
 			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{filename:join([FileName]),
-				    filename:join([NewFileName]), false},filename:join([SwpFileName])};
-			    {error,Reason} -> Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
-								  [filename:dirname(FileName), Reason]),
-					      throw({error, Msg})
+			    ok -> NoOfChangedFuns= refac_prettypr:no_of_changed_funs(AST), 
+				  {{{filename:join([FileName]),
+				    filename:join([NewFileName]), false},
+				    filename:join([SwpFileName])}, NoOfChangedFuns};
+			    {error,Reason} -> 
+				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
+						    [filename:dirname(FileName), Reason]),
+				throw({error, Msg})
 			end;			
 		    {{FileName,NewFileName, IsNew}, AST} ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp", 
 			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{filename:join([FileName]),filename:join([NewFileName]), IsNew},filename:join([SwpFileName])};
+			    ok ->  
+				NoOfChangedFuns= refac_prettypr:no_of_changed_funs(AST), 
+				{{{filename:join([FileName]),filename:join([NewFileName]), IsNew},
+				 filename:join([SwpFileName])}, NoOfChangedFuns};
 			    {error, Reason}  -> 
 				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
 						    [filename:dirname(FileName), Reason]),
@@ -94,7 +100,8 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			end
 		end
 	end,
-    FilePairs = lists:map(F, Files),
+    {FilePairs, ListOfNoOfChangedFuns} = lists:unzip(lists:map(F, Files)),
+    TotalNoOfChangedFuns=lists:sum(ListOfNoOfChangedFuns),
     case lists:any(fun(R) -> R == error end, FilePairs) of 
 	true -> lists:foreach(fun(P) ->
 				      case P of 
@@ -103,7 +110,12 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 				      end
 			      end, FilePairs),
 		throw({error, "Wrangler failed to output the refactoring result."});
-	_ -> wrangler_preview_server:add_files({FilePairs, LogMsg})
+	_ ->
+	    LogMsgAboutChanges= io_lib:format(" Num of files affected: ~p; "
+					      "Num of functions/attributes affected: ~p.\n",
+					      [length(FilePairs), TotalNoOfChangedFuns]),
+	    NewLogMsg = LogMsg++ lists:flatten(LogMsgAboutChanges),
+	    wrangler_preview_server:add_files({FilePairs, NewLogMsg})
     end.
 
 
@@ -119,13 +131,13 @@ write_refactored_files(FileName, AnnAST, Editor, Cmd) ->
 
 write_refactored_files(Results, Editor, Cmd) ->
     case Editor of
-      emacs ->
-	  refac_util:write_refactored_files_for_preview(Results, Cmd),
-	  ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-	  ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
-		       [ChangedFiles]),
+	emacs ->
+	    refac_util:write_refactored_files_for_preview(Results, Cmd),
+	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
+	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+			 [ChangedFiles]),
 	  {ok, ChangedFiles};
-      eclipse ->
+	eclipse ->
 	  Res = lists:map(fun ({{OldFName, NewFName}, AST}) ->
 				  {OldFName, NewFName,
 				   refac_prettypr:print_ast(refac_util:file_format(OldFName), AST)}
@@ -472,11 +484,9 @@ do_add_range(Node, Toks) ->
 		Es= refac_syntax:list_elements(Node),
 		case Es/=[] of 
 		    true->
-			Fst=refac_misc:ghead("refac_util:do_add_range,list", Es),
 			Last=refac_misc:glast("refac_util:do_add_range,list", Es),
-			{S1, _E1} = get_range(Fst),
 			{_, E2} = get_range(Last),
-			refac_syntax:add_ann({range, {S1, E2}}, Node);
+			refac_syntax:add_ann({range, {{L,C}, E2}}, Node);
 		    false ->
 			Node
 		end
@@ -601,6 +611,12 @@ do_add_range(Node, Toks) ->
 	  {S1, _E1} = get_range(P),
 	  {_S2, E2} = get_range(B),
 	  refac_syntax:add_ann({range, {S1, E2}}, Node);
+      binary_generator ->
+	  P = refac_syntax:binary_generator_pattern(Node),
+	  B = refac_syntax:binary_generator_body(Node),
+	  {S1, _E1} = get_range(P),
+	  {_S2, E2} = get_range(B),
+	  refac_syntax:add_ann({range, {S1, E2}}, Node);   
       tuple ->
 	  Es = refac_syntax:tuple_elements(Node),
 	  case length(Es) of
@@ -613,11 +629,16 @@ do_add_range(Node, Toks) ->
       list_comp ->
 	  T = refac_syntax:list_comp_template(Node),
 	  B = refac_misc:glast("refac_util:do_add_range,list_comp", refac_syntax:list_comp_body(Node)),
-	  {S1, _E1} = get_range(T),
 	  {_S2, E2} = get_range(B),
-	  S11 = extend_forwards(Toks, S1, '['),
 	  E21 = extend_backwards(Toks, E2, ']'),
-	  refac_syntax:add_ann({range, {S11, E21}}, Node);
+	  refac_syntax:add_ann({range, {{L,C}, E21}}, Node);
+      binary_comp ->
+	  T = refac_syntax:binary_comp_template(Node),
+	  B = refac_misc:glast("refac_util:do_add_range,binary_comp", 
+			       refac_syntax:binary_comp_body(Node)),
+	 {_S2, E2} = get_range(B),
+	  E21 = extend_backwards(Toks, E2, '>>'),
+	  refac_syntax:add_ann({range, {{L,C}, E21}}, Node);    
       block_expr ->
 	  Es = refac_syntax:block_expr_body(Node),
 	  add_range_to_list_node(Node, Toks, Es, "refac_util:do_add_range, block_expr",
@@ -924,6 +945,13 @@ do_add_category(Node, C) ->
 	    P1 = add_category(P, pattern),
 	    B1 = add_category(B, expression),
 	    Node1=rewrite(Node, refac_syntax:generator(P1, B1)),
+	    {refac_syntax:add_ann({category, generator}, Node1), true};
+	binary_generator ->
+	    P = refac_syntax:binary_generator_pattern(Node),
+	    B = refac_syntax:binary_generator_body(Node),
+	    P1 = add_category(P, pattern),
+	    B1 = add_category(B, expression),
+	    Node1=rewrite(Node, refac_syntax:binary_generator(P1, B1)),
 	    {refac_syntax:add_ann({category, generator}, Node1), true};
 	macro ->
 	    Name = refac_syntax:macro_name(Node),

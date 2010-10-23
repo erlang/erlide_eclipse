@@ -2,13 +2,39 @@
 
 -include("../include/wrangler.hrl").
 
--export([get_clones_by_suffix_tree/7]).
+-export([get_clones_by_suffix_tree/7, get_clones_by_suffix_tree_inc/6]).
 
 -export([init/1]).
 
 
-%%-spec(get_clones_by_suffix_tree/7::(dir(), string(),integer(), integer(), string(), integer(), filename()) ->
-%%					 [{[{integer(),integer()}], integer(), integer()}]).					   
+-spec(get_clones_by_suffix_tree_inc/6::(dir(), string(),integer(), integer(), integer(), filename()) ->
+					 [{[{integer(),integer()}], integer(), integer()}]).					   
+get_clones_by_suffix_tree_inc(Dir, ProcessedToks, MinLength, MinClones, AllowOverLap, SuffixTreeExec) ->
+    start_suffix_tree_clone_detector(SuffixTreeExec),
+    OutFileName = filename:join(Dir, "wrangler_suffix_tree"),
+    case file:write_file(OutFileName, ProcessedToks) of
+      ok ->
+	  case catch call_port({get, MinLength, MinClones, AllowOverLap, OutFileName}) of
+	    {ok, _Res} ->
+		?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
+		stop_suffix_tree_clone_detector(),
+		{ok, Res} = file:consult(OutFileName),
+		file:delete(OutFileName),
+		case Res of
+		  [] -> [];
+		  [Cs] -> Cs
+		end;
+	      E -> 
+		  file:delete(OutFileName)
+		  throw({error, lists:flatten(io_lib:format("Clone detection failed for reason:~p.", [E]))})
+	  end;
+	{error, Reason} -> 
+	    throw({error, lists:flatten(io_lib:format("Clone detection failed for reason:~p.", [Reason]))})   
+    end.
+
+
+-spec(get_clones_by_suffix_tree/7::(dir(), string(),integer(), integer(), string(), integer(), filename()) ->
+					 [{[{integer(),integer()}], integer(), integer()}]).					   
 get_clones_by_suffix_tree(Dir, ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap, SuffixTreeExec) ->
     start_suffix_tree_clone_detector(SuffixTreeExec),
     OutFileName = filename:join(Dir, "wrangler_suffix_tree"),
@@ -24,14 +50,13 @@ get_clones_by_suffix_tree(Dir, ProcessedToks, MinLength, MinClones, Alphabet, Al
 		  [] -> [];
 		  [Cs] -> Cs
 		end;
-	    _E -> ?debug("Reason:\n~p\n", [_E]),
+	      _E -> ?debug("Reason:\n~p\n", [_E]),
 		  stop_suffix_tree_clone_detector(),
-		  file:delete(OutFileName),
+		  file:delete(OutFileName), 
 		  get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
 	  end;
       _ -> get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
     end.
-
 
 start_suffix_tree_clone_detector(SuffixTreeExec) ->
     process_flag(trap_exit, true),

@@ -26,15 +26,24 @@
 %% =====================================================================
 -module(unification).
 
--export([expr_unification/2]).
+-export([expr_unification/2, expr_unification_extended/2]).
 
 
 -include("../include/wrangler.hrl").
 
+
+%%TODO: should expr_unification(Exp1, Exp2) == expr_unification(Exp2, Exp1)?
+
 %%-spec(expr_unification/2::(syntaxTree(), syntaxTree()) ->
 %%				{true, [{atom(), syntaxTree()}]} | false).
+
 expr_unification(Exp1, Exp2) ->
-    case expr_unification_1(Exp1, Exp2) of
+    expr_unification(Exp1, Exp2, syntax).
+expr_unification_extended(Exp1, Exp2) ->
+    expr_unification(Exp1, Exp2, semantics).
+
+expr_unification(Exp1, Exp2, Type) ->
+    case expr_unification_1(Exp1, Exp2, Type) of
 	{true, Subst} ->
 	    Subst1 = lists:usort([{E1, refac_prettypr:format(E2)} || {E1, E2} <- Subst]),
 	    Subst2 = lists:usort([E1 || {E1, _E2} <- Subst1]),
@@ -48,12 +57,12 @@ expr_unification(Exp1, Exp2) ->
     end.
 
 %% This algorithm should be extended to work with exprs from different modules.
-expr_unification_1(Exp1, Exp2) ->
+expr_unification_1(Exp1, Exp2, Type) ->
     case {is_list(Exp1), is_list(Exp2)} of
       {true, true} ->   %% both are list of expressions
 	    case length(Exp1) == length(Exp2) of
 	    true ->
-		    Res = [expr_unification(E1, E2) || {E1, E2} <- lists:zip(Exp1, Exp2)],
+		    Res = [expr_unification(E1, E2, Type) || {E1, E2} <- lists:zip(Exp1, Exp2)],
 		    Unifiable = not lists:member(false, [false || false <- Res]),
 		    case Unifiable of
 			true ->
@@ -66,8 +75,8 @@ expr_unification_1(Exp1, Exp2) ->
 	    T1 = refac_syntax:type(Exp1),
 	    T2 = refac_syntax:type(Exp2),
 	    case T1 == T2 of
-		true -> same_type_expr_unification(Exp1, Exp2);
-		_ -> non_same_type_expr_unification(Exp1, Exp2)
+		true -> same_type_expr_unification(Exp1, Exp2, Type);
+		_ -> non_same_type_expr_unification(Exp1, Exp2, Type)
 	    end;
 	{true, false} -> %% Exp1 is a list, but Exp2 is not.
 	    false;
@@ -75,7 +84,7 @@ expr_unification_1(Exp1, Exp2) ->
 	    false      %% an actual parameter cannot be a list of expressions.
     end.
 
-same_type_expr_unification(Exp1, Exp2) ->
+same_type_expr_unification(Exp1, Exp2, Type) ->
     T1 = refac_syntax:type(Exp1),
     case T1 of
       variable ->
@@ -142,23 +151,41 @@ same_type_expr_unification(Exp1, Exp2) ->
 		true -> {true, []};
 		_ -> false
 	    end;
-      float ->
+	float ->
 	    case refac_syntax:float_value(Exp1) == refac_syntax:float_value(Exp2) of
 		true -> {true, []}
 	    end;
 	underscore -> {true, []};
 	nil -> {true, []};
-      _ ->
+	application when Type==semantics->
+	    Op = refac_syntax:application_operator(Exp1),
+	    Args = refac_syntax:application_arguments(Exp1),
+	    case refac_syntax:type(Op)==variable andalso Args==[] andalso
+		refac_misc:get_free_vars(Exp2) == [] of 
+		true ->
+		    OpName = refac_syntax:variable_name(Op),
+		    {true, [{OpName, refac_syntax:fun_expr([refac_syntax:clause([], none, [Exp2])])}]};
+		_ ->
+		    SubTrees1 = erl_syntax:subtrees(Exp1),
+		    SubTrees2 = erl_syntax:subtrees(Exp2),
+		    case length(SubTrees1) == length(SubTrees2) of
+			true ->
+			    expr_unification(SubTrees1, SubTrees2, Type);
+			_ -> false
+		    end
+	    end;
+	_ ->
 	    SubTrees1 = erl_syntax:subtrees(Exp1),
 	    SubTrees2 = erl_syntax:subtrees(Exp2),
 	    case length(SubTrees1) == length(SubTrees2) of
 		true ->
-		    expr_unification(SubTrees1, SubTrees2);
+		    expr_unification(SubTrees1, SubTrees2,Type);
 		_ -> false
 	    end
     end.
 
-non_same_type_expr_unification(Exp1, Exp2) ->
+   
+non_same_type_expr_unification(Exp1, Exp2,_Type) ->
     T1 = refac_syntax:type(Exp1),
     case T1 of
       variable ->

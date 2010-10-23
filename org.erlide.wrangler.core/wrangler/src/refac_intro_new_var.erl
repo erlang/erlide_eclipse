@@ -175,13 +175,9 @@ do_insert_and_replace(Node, Expr, NewVarName) ->
 		  {Start, End} = refac_misc:get_start_end_loc(ExprStatement),
 		  case Start =< ExprPos andalso ExprPos =< End of
 		    true ->
-			case ExprStatement of
-			  Expr -> [MatchExpr];
-			  _ ->
-			      {ExprStatement1, _}= replace_expr_with_var(Expr, NewVarName,
-									 ExprStatement),
-			      [MatchExpr, ExprStatement1]
-			end;
+			  {ExprStatement1, _}= replace_expr_with_var(Expr, NewVarName,
+								     ExprStatement),
+			  [MatchExpr, ExprStatement1];
 		    false ->
 			[ExprStatement]
 		  end
