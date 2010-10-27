@@ -55,6 +55,17 @@ parsing_define_with_record_ref_test_() ->
                           comments=[]},
                    test_parse("-define(xx, #x{})."))].
 
+parsing_function_with_macro_test_() ->
+    %% http://www.assembla.com/spaces/erlide/tickets/571-functions-defined-with-macros-confuses-the-model
+    [?_assertEqual(#model{forms=[#function{pos = {{0, 0, 0},12},
+					   name = '?f', arity = 0,
+					   args = [], head = "", clauses = [],
+					   name_pos = {{0, 0}, 2},
+					   comment = undefined,
+					   exported = false}],
+			  comments = []},
+		   test_parse("?f() -> ok."))].
+
 %%
 %% Local Functions
 %%
