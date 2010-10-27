@@ -28,225 +28,229 @@ import org.erlide.jinterface.backend.util.Util;
  */
 abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
-	protected int fSourceRangeOffset;
-	protected int fSourceRangeLength;
-	protected int lineStart, lineEnd;
+    protected int fSourceRangeOffset;
+    protected int fSourceRangeLength;
+    protected int lineStart, lineEnd;
 
-	protected SourceRefElement(final IErlElement parent, final String name) {
-		super(parent, name);
-	}
+    protected SourceRefElement(final IErlElement parent, final String name) {
+        super(parent, name);
+    }
 
-	/**
-	 * This element is being closed. Do any necessary cleanup.
-	 */
-	@Override
-	protected void closing(final Object info) throws ErlModelException {
-		// Do any necessary cleanup
-	}
+    /**
+     * This element is being closed. Do any necessary cleanup.
+     */
+    @Override
+    protected void closing(final Object info) throws ErlModelException {
+        // Do any necessary cleanup
+    }
 
-	/**
-	 * Returns a new element info for this element.
-	 */
-	protected Object createElementInfo() {
-		return null; // not used for source ref elements
-	}
+    /**
+     * Returns a new element info for this element.
+     */
+    protected Object createElementInfo() {
+        return null; // not used for source ref elements
+    }
 
-	/**
-	 * @see ISourceManipulation
-	 */
-	public void copy(final IErlElement container, final IErlElement sibling,
-			final String rename, final boolean force,
-			final IProgressMonitor monitor) throws ErlModelException {
-		if (container == null) {
-			throw new IllegalArgumentException(Util
-					.bind("operation.nullContainer")); //$NON-NLS-1$
-		}
-		final IErlElement[] elements = new IErlElement[] { this };
-		final IErlElement[] containers = new IErlElement[] { container };
-		IErlElement[] siblings = null;
-		if (sibling != null) {
-			siblings = new IErlElement[] { sibling };
-		}
-		String[] renamings = null;
-		if (rename != null) {
-			renamings = new String[] { rename };
-		}
-		getModel().copy(elements, containers, siblings, renamings, force,
-				monitor);
-	}
+    /**
+     * @see ISourceManipulation
+     */
+    public void copy(final IErlElement container, final IErlElement sibling,
+            final String rename, final boolean force,
+            final IProgressMonitor monitor) throws ErlModelException {
+        if (container == null) {
+            throw new IllegalArgumentException(
+                    Util.bind("operation.nullContainer")); //$NON-NLS-1$
+        }
+        final IErlElement[] elements = new IErlElement[] { this };
+        final IErlElement[] containers = new IErlElement[] { container };
+        IErlElement[] siblings = null;
+        if (sibling != null) {
+            siblings = new IErlElement[] { sibling };
+        }
+        String[] renamings = null;
+        if (rename != null) {
+            renamings = new String[] { rename };
+        }
+        getModel().copy(elements, containers, siblings, renamings, force,
+                monitor);
+    }
 
-	/**
-	 * @see ISourceManipulation
-	 */
-	public void delete(final boolean force, final IProgressMonitor monitor)
-			throws ErlModelException {
-		final IErlElement[] elements = new IErlElement[] { this };
-		getModel().delete(elements, force, monitor);
-	}
+    /**
+     * @see ISourceManipulation
+     */
+    public void delete(final boolean force, final IProgressMonitor monitor)
+            throws ErlModelException {
+        final IErlElement[] elements = new IErlElement[] { this };
+        getModel().delete(elements, force, monitor);
+    }
 
-	/*
-	 * @see ErlElement#generateInfos
-	 */
-	protected void open(final IProgressMonitor pm) throws ErlModelException {
-		final Openable openableParent = (Openable) getOpenableParent();
-		if (openableParent == null) {
-			return;
-		}
+    /*
+     * @see ErlElement#generateInfos
+     */
+    protected void open(final IProgressMonitor pm) throws ErlModelException {
+        final Openable openableParent = (Openable) getOpenableParent();
+        if (openableParent == null) {
+            return;
+        }
 
-		final ErlElement openableParentInfo = (ErlElement) ErlangCore
-				.getModelManager().getInfo(openableParent);
-		if (openableParentInfo == null) {
-			openableParent.open(pm);
-		}
-	}
+        final ErlElement openableParentInfo = (ErlElement) ErlangCore
+                .getModelManager().getInfo(openableParent);
+        if (openableParentInfo == null) {
+            openableParent.open(pm);
+        }
+    }
 
-	/**
-	 * Elements within compilation units and class files have no corresponding
-	 * resource.
-	 * 
-	 * @see IErlElement
-	 */
-	@Override
-	public IResource getCorrespondingResource() throws ErlModelException {
-		if (!exists()) {
-			throw newNotPresentException();
-		}
-		return null;
-	}
+    /**
+     * Elements within compilation units and class files have no corresponding
+     * resource.
+     * 
+     * @see IErlElement
+     */
+    @Override
+    public IResource getCorrespondingResource() throws ErlModelException {
+        if (!exists()) {
+            throw newNotPresentException();
+        }
+        return null;
+    }
 
-	/**
-	 * Return the first instance of IOpenable in the hierarchy of this type
-	 * (going up the hierarchy from this type);
-	 */
-	@Override
-	public IOpenable getOpenableParent() {
-		IErlElement current = getParent();
-		while (current != null) {
-			if (current instanceof IOpenable) {
-				return (IOpenable) current;
-			}
-			current = current.getParent();
-		}
-		return null;
-	}
+    /**
+     * Return the first instance of IOpenable in the hierarchy of this type
+     * (going up the hierarchy from this type);
+     */
+    @Override
+    public IOpenable getOpenableParent() {
+        IErlElement current = getParent();
+        while (current != null) {
+            if (current instanceof IOpenable) {
+                return (IOpenable) current;
+            }
+            current = current.getParent();
+        }
+        return null;
+    }
 
-	/**
-	 * @see ISourceReference
-	 */
-	// public String getSource() throws ErlModelException {
-	// // final IOpenable openable = getOpenableParent();
-	// // final IBuffer buffer = openable.getBuffer();
-	// // if (buffer == null) {
-	// // return null;
-	// // }
-	// // final ISourceRange range = getSourceRange();
-	// // final int offset = range.getOffset();
-	// // final int length = range.getLength();
-	// // if (offset == -1 || length == 0) {
-	// // return null;
-	// // }
-	// // try {
-	// // return buffer.getText(offset, length);
-	// // } catch (final RuntimeException e) {
-	// // return null;
-	// // }
-	// return "";
-	// }
-	/**
-	 * @see ISourceReference
-	 */
-	public ISourceRange getSourceRange() throws ErlModelException {
-		return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
-	}
+    /**
+     * @see ISourceReference
+     */
+    // public String getSource() throws ErlModelException {
+    // // final IOpenable openable = getOpenableParent();
+    // // final IBuffer buffer = openable.getBuffer();
+    // // if (buffer == null) {
+    // // return null;
+    // // }
+    // // final ISourceRange range = getSourceRange();
+    // // final int offset = range.getOffset();
+    // // final int length = range.getLength();
+    // // if (offset == -1 || length == 0) {
+    // // return null;
+    // // }
+    // // try {
+    // // return buffer.getText(offset, length);
+    // // } catch (final RuntimeException e) {
+    // // return null;
+    // // }
+    // return "";
+    // }
+    /**
+     * @see ISourceReference
+     */
+    public ISourceRange getSourceRange() throws ErlModelException {
+        return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
+    }
 
-	// /**
-	// * @see IErlElement
-	// */
-	// public IResource getUnderlyingResource() throws ErlModelException {
-	// if (!exists()) {
-	// throw newNotPresentException();
-	// }
-	// return getParent().getUnderlyingResource();
-	// }
+    // /**
+    // * @see IErlElement
+    // */
+    // public IResource getUnderlyingResource() throws ErlModelException {
+    // if (!exists()) {
+    // throw newNotPresentException();
+    // }
+    // return getParent().getUnderlyingResource();
+    // }
 
-	/**
-	 * @see IParent
-	 */
-	@Override
-	public boolean hasChildren() {
-		return getChildren().size() > 0;
-	}
+    /**
+     * @see IParent
+     */
+    @Override
+    public boolean hasChildren() {
+        try {
+            return getChildren().size() > 0;
+        } catch (final ErlModelException e) {
+        }
+        return false;
+    }
 
-	/**
-	 * @see ISourceManipulation
-	 */
-	public void move(final IErlElement container, final IErlElement sibling,
-			final String rename, final boolean force,
-			final IProgressMonitor monitor) throws ErlModelException {
-		if (container == null) {
-			throw new IllegalArgumentException(Util
-					.bind("operation.nullContainer")); //$NON-NLS-1$
-		}
-		final IErlElement[] elements = new IErlElement[] { this };
-		final IErlElement[] containers = new IErlElement[] { container };
-		IErlElement[] siblings = null;
-		if (sibling != null) {
-			siblings = new IErlElement[] { sibling };
-		}
-		String[] renamings = null;
-		if (rename != null) {
-			renamings = new String[] { rename };
-		}
-		getModel().move(elements, containers, siblings, renamings, force,
-				monitor);
-	}
+    /**
+     * @see ISourceManipulation
+     */
+    public void move(final IErlElement container, final IErlElement sibling,
+            final String rename, final boolean force,
+            final IProgressMonitor monitor) throws ErlModelException {
+        if (container == null) {
+            throw new IllegalArgumentException(
+                    Util.bind("operation.nullContainer")); //$NON-NLS-1$
+        }
+        final IErlElement[] elements = new IErlElement[] { this };
+        final IErlElement[] containers = new IErlElement[] { container };
+        IErlElement[] siblings = null;
+        if (sibling != null) {
+            siblings = new IErlElement[] { sibling };
+        }
+        String[] renamings = null;
+        if (rename != null) {
+            renamings = new String[] { rename };
+        }
+        getModel().move(elements, containers, siblings, renamings, force,
+                monitor);
+    }
 
-	/**
-	 * @see ISourceManipulation
-	 */
-	public void rename(final String newName, final boolean force,
-			final IProgressMonitor monitor) throws ErlModelException {
-		if (newName == null) {
-			throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
-		}
-		final IErlElement[] elements = new IErlElement[] { this };
-		final IErlElement[] dests = new IErlElement[] { getParent() };
-		final String[] renamings = new String[] { newName };
-		getModel().rename(elements, dests, renamings, force, monitor);
-	}
+    /**
+     * @see ISourceManipulation
+     */
+    public void rename(final String newName, final boolean force,
+            final IProgressMonitor monitor) throws ErlModelException {
+        if (newName == null) {
+            throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
+        }
+        final IErlElement[] elements = new IErlElement[] { this };
+        final IErlElement[] dests = new IErlElement[] { getParent() };
+        final String[] renamings = new String[] { newName };
+        getModel().rename(elements, dests, renamings, force, monitor);
+    }
 
-	public void setSourceRangeOffset(final int offset) {
-		fSourceRangeOffset = offset;
-	}
+    public void setSourceRangeOffset(final int offset) {
+        fSourceRangeOffset = offset;
+    }
 
-	public void setSourceRangeLength(final int length) {
-		fSourceRangeLength = length;
-	}
+    public void setSourceRangeLength(final int length) {
+        fSourceRangeLength = length;
+    }
 
-	protected void setLineStart(final int lineStart) {
-		this.lineStart = lineStart;
-	}
+    protected void setLineStart(final int lineStart) {
+        this.lineStart = lineStart;
+    }
 
-	public int getLineStart() {
-		return lineStart;
-	}
+    public int getLineStart() {
+        return lineStart;
+    }
 
-	protected void setLineEnd(final int lineEnd) {
-		this.lineEnd = lineEnd;
-	}
+    protected void setLineEnd(final int lineEnd) {
+        this.lineEnd = lineEnd;
+    }
 
-	public int getLineEnd() {
-		return lineEnd;
-	}
+    public int getLineEnd() {
+        return lineEnd;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!super.equals(o) || !(o instanceof SourceRefElement)) {
-			return false;
-		}
-		final SourceRefElement r = (SourceRefElement) o;
-		return fSourceRangeOffset == r.fSourceRangeOffset
-				&& fSourceRangeLength == r.fSourceRangeLength;
-	}
+    @Override
+    public boolean equals(final Object o) {
+        if (!super.equals(o) || !(o instanceof SourceRefElement)) {
+            return false;
+        }
+        final SourceRefElement r = (SourceRefElement) o;
+        return fSourceRangeOffset == r.fSourceRangeOffset
+                && fSourceRangeLength == r.fSourceRangeLength;
+    }
 
 }

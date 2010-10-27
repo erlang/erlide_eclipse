@@ -36,6 +36,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
@@ -49,7 +50,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Handle for an Erlang Project.
- *
+ * 
  * <p>
  * A Erlang Project internally maintains a devpath that corresponds to the
  * project's classpath. The classpath may include source folders from the
@@ -59,11 +60,11 @@ import com.google.common.collect.Lists;
  * other projects, and thus uses the devpath rather than the classpath (which is
  * really a compilation path). The devpath mimics the classpath, except has
  * source folder entries in place of output locations in external projects.
- *
+ * 
  * <p>
  * Each ErlProject has a NameLookup facility that locates elements on by name,
  * based on the devpath.
- *
+ * 
  * @see IErlProject
  */
 public class ErlProject extends Openable implements IErlProject {
@@ -121,7 +122,13 @@ public class ErlProject extends Openable implements IErlProject {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
-                    elems.length);
+                    elems.length + 1);
+            final IErlModel model = ErlangCore.getModel();
+            final String externalIncludes = model.getExternalIncludes(this);
+            final String externalModules = model.getExternalModules(this);
+            if (externalIncludes.length() != 0 || externalModules.length() != 0) {
+                children.add(getExternalChild(externalIncludes, externalModules));
+            }
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -147,6 +154,12 @@ public class ErlProject extends Openable implements IErlProject {
             return false;
         }
         return true;
+    }
+
+    private IErlElement getExternalChild(final String externalIncludes,
+            final String externalModules) {
+        return new ErlExternalReferenceEntryList(this, "Externals", externalIncludes,
+                externalModules);
     }
 
     /**
@@ -281,7 +294,7 @@ public class ErlProject extends Openable implements IErlProject {
      * given handle. Two handles represent the same project if they are
      * identical or if they represent a project with the same underlying
      * resource and occurrence counts.
-     *
+     * 
      * @see ErlElement#equals(Object)
      */
     @Override
@@ -362,7 +375,8 @@ public class ErlProject extends Openable implements IErlProject {
     /**
      * Returns an array of non-Erlang resources contained in the receiver.
      */
-    public Collection<IResource> getNonErlangResources() throws ErlModelException {
+    public Collection<IResource> getNonErlangResources()
+            throws ErlModelException {
         return getNonErlangResources(this);
     }
 
@@ -385,9 +399,9 @@ public class ErlProject extends Openable implements IErlProject {
      * @see IErlProject#getRequiredProjectNames()
      */
     public Collection<String> getRequiredProjectNames() throws CoreException {
-        List<String> result = Lists.newArrayList();
-        IProject[] prjs = getProject().getReferencedProjects();
-        for(IProject p: prjs){
+        final List<String> result = Lists.newArrayList();
+        final IProject[] prjs = getProject().getReferencedProjects();
+        for (final IProject p : prjs) {
             result.add(p.getName());
         }
         return result;
@@ -449,7 +463,7 @@ public class ErlProject extends Openable implements IErlProject {
     /**
      * Answers an PLUGIN_ID which is used to distinguish project/entries during
      * package fragment root computations
-     *
+     * 
      * @return String
      */
     public String rootID() {
@@ -500,7 +514,7 @@ public class ErlProject extends Openable implements IErlProject {
     /**
      * Sets the underlying kernel project of this Erlang project, and fills in
      * its parent and name. Called by IProject.getNature().
-     *
+     * 
      * @see IProjectNature#setProject(IProject)
      */
     public void setProject(final IProject project) {
@@ -531,10 +545,11 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    public Collection<IErlModule> getModulesAndHeaders() throws ErlModelException {
+    public Collection<IErlModule> getModulesAndHeaders()
+            throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         final OldErlangProjectProperties props = getProperties();
-        List<IPath> folders = Lists.newArrayList();
+        final List<IPath> folders = Lists.newArrayList();
         folders.addAll(props.getSourceDirs());
         folders.addAll(props.getIncludeDirs());
         for (final IPath f : folders) {
@@ -559,7 +574,7 @@ public class ErlProject extends Openable implements IErlProject {
      * Returns a canonicalized path from the given external path. Note that the
      * return path contains the same number of segments and it contains a device
      * only if the given path contained one.
-     *
+     * 
      * @param externalPath
      *            IPath
      * @see java.io.File for the definition of a canonicalized path
@@ -586,8 +601,8 @@ public class ErlProject extends Openable implements IErlProject {
 
         IPath canonicalPath = null;
         try {
-            canonicalPath = new Path(new File(externalPath.toOSString())
-                    .getCanonicalPath());
+            canonicalPath = new Path(
+                    new File(externalPath.toOSString()).getCanonicalPath());
         } catch (final IOException e) {
             // default to original path
             return externalPath;

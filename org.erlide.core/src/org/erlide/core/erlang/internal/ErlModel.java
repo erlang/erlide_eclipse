@@ -469,18 +469,21 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof IErlProject) {
-                final IErlProject p = (IErlProject) e;
-                try {
-                    final IErlModule m = p.getModule(name);
-                    if (m != null) {
-                        return m;
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlProject) {
+                    final IErlProject p = (IErlProject) e;
+                    try {
+                        final IErlModule m = p.getModule(name);
+                        if (m != null) {
+                            return m;
+                        }
+                    } catch (final ErlModelException e1) {
+                        e1.printStackTrace();
                     }
-                } catch (final ErlModelException e1) {
-                    e1.printStackTrace();
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -661,14 +664,17 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModuleExt(final String name) {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof IErlProject) {
-                final IErlProject p = (IErlProject) e;
-                final IErlModule m = p.getModuleExt(name);
-                if (m != null) {
-                    return m;
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlProject) {
+                    final IErlProject p = (IErlProject) e;
+                    final IErlModule m = p.getModuleExt(name);
+                    if (m != null) {
+                        return m;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }

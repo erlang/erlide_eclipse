@@ -373,7 +373,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     protected void addModules(final List<IErlModule> modules) {
-        for (final IErlElement e : getChildren()) {
+        for (final IErlElement e : fChildren) {
             if (e instanceof IErlModule) {
                 modules.add((IErlModule) e);
             } else if (e instanceof ErlFolder) {
