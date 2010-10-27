@@ -292,8 +292,7 @@ public class ErlTextHover implements ITextHover,
             final IErlModel model = ErlangCore.getModel();
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,
                     ErlangToolkit.createScannerModuleName(module), fImports,
-                    model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES),
-                    model.getPathVars());
+                    model.getExternalModules(erlProject), model.getPathVars());
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {
@@ -391,8 +390,8 @@ public class ErlTextHover implements ITextHover,
                         final IErlElement.Kind kindToFind = openKind
                                 .equals("record") ? IErlElement.Kind.RECORD_DEF
                                 : IErlElement.Kind.MACRO_DEF;
-                        final String externalIncludes = model.getExternal(
-                                erlProject, ErlangCore.EXTERNAL_INCLUDES);
+                        final String externalIncludes = model
+                                .getExternalIncludes(erlProject);
                         IErlPreprocessorDef pd = ErlModelUtils
                                 .findPreprocessorDef(ide, project, module,
                                         definedName, kindToFind,

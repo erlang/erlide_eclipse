@@ -596,14 +596,12 @@ public class FilteredModulesSelectionDialog extends
                 // navigate even "external" lists
                 final IErlModel model = ErlangCore.getModel();
                 if (project != null) {
-                    final String extMods = model.getExternal(
-                            model.findProject(project),
-                            ErlangCore.EXTERNAL_MODULES);
+                    final String extMods = model.getExternalModules(model
+                            .findProject(project));
                     final List<String> files = new ArrayList<String>();
                     files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = model.getExternal(
-                            model.findProject(project),
-                            ErlangCore.EXTERNAL_INCLUDES);
+                    final String extIncs = model.getExternalIncludes(model
+                            .findProject(project));
                     files.addAll(PreferencesUtils.unpackList(extIncs));
 
                     final IPathVariableManager pvm = ResourcesPlugin
