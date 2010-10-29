@@ -1,4 +1,4 @@
-package org.erlide.eunit.core.views;
+package org.erlide.eunit.ui.views;
 
 import java.util.ArrayList;
 

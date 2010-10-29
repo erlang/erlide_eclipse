@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="EUnit Views"
+            id="org.erlide.eunit.core">
+      </category>
+      <view
+            name="Test Results"
+            icon="icons/sample.gif"
+            category="org.erlide.eunit.core"
+            class="org.erlide.eunit.ui.views.TestResultView"
+            id="org.erlide.eunit.core.views.TestResultView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.erlide.eunit.core.perspectives.EUnitPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.erlide.eunit.core.views.TestResultView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.erlide.eunit.ui.perspectives.EUnitPerspective"
+            icon="icons/releng_gears.gif"
+            id="org.erlide.eunit.core.perspectives.EUnitPerspective"
+            name="EUnit">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.erlide.eunit.ui.launch.EUnitTabGroup"
+            id="org.erlide.eunit.ui.launchConfigurationTabGroupEUnit"
+            type="org.erlide.eunit.core.launchConfigurationEUnit">
+      </launchConfigurationTabGroup>
+   </extension>
+
+</plugin>
