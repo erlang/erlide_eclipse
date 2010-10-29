@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="EUnit Views"
+            id="org.erlide.eunit.core">
+      </category>
+      <view
+            name="Test Results"
+            icon="icons/sample.gif"
+            category="org.erlide.eunit.core"
+            class="org.erlide.eunit.core.views.TestResultView"
+            id="org.erlide.eunit.core.views.TestResultView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.erlide.eunit.core.perspectives.EUnitPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.erlide.eunit.core.views.TestResultView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.erlide.eunit.core.perspectives.EUnitPerspective"
+            icon="icons/releng_gears.gif"
+            id="org.erlide.eunit.core.perspectives.EUnitPerspective"
+            name="EUnit">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.debug.core.model.LaunchConfigurationDelegate"
+            id="org.erlide.eunit.core.launchConfigurationEUnit"
+            modes="run, debug"
+            name="EUnit"
+            public="true"
+            sourceLocatorId="org.eclipse.ant.ui.debug.sourceLookupDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+
+</plugin>
