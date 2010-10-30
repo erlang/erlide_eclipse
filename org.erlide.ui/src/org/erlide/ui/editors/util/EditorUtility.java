@@ -44,6 +44,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -104,10 +105,6 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement)
             throws ErlModelException, PartInitException {
-        final IEditorPart editorPart = isOpenInEditor(inputElement);
-        if (editorPart != null) {
-            return editorPart;
-        }
         return openInEditor(inputElement, true);
     }
 
@@ -282,11 +279,14 @@ public class EditorUtility {
         return null;
     }
 
-    private static IEditorInput getEditorInput(final IErlElement element)
+    private static IEditorInput getEditorInput(IErlElement element)
             throws ErlModelException {
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
             return new FileEditorInput((IFile) resource);
+        }
+        if (!(element instanceof IErlModule)) {
+            element = element.getParent();
         }
         if (element.getFilePath() != null) {
             final IPath path = new Path(element.getFilePath());
