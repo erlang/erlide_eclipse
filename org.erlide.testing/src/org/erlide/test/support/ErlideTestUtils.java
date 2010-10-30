@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 
 public class ErlideTestUtils {
@@ -63,7 +64,7 @@ public class ErlideTestUtils {
 		final IErlProject erlProject = ErlangCore.getModel().newProject(name,
 				path.toPortableString());
 		final IProject project = erlProject.getProject();
-		final OldErlangProjectProperties prefs = new OldErlangProjectProperties(
+		final IOldErlangProjectProperties prefs = new OldErlangProjectProperties(
 				project);
 		final List<IPath> srcDirs = new ArrayList<IPath>();
 		srcDirs.add(new Path("src"));

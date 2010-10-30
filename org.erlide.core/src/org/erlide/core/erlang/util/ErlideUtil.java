@@ -43,9 +43,9 @@ import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -316,7 +316,7 @@ public final class ErlideUtil {
 			final IFolder folder) {
 		final IProject project = folder.getProject();
 		final IPath folderPath = folder.getFullPath();
-		final OldErlangProjectProperties prefs = ErlangCore
+		final IOldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final Collection<IPath> sourcePaths = prefs.getSourceDirs();
 		for (final IPath p : sourcePaths) {

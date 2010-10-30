@@ -39,11 +39,11 @@ import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -91,7 +91,7 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final Collection<IPath> incs = prefs.getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
@@ -112,7 +112,7 @@ public final class BuilderHelper {
     }
 
     boolean isInCodePath(final IResource resource,
-            final OldErlangProjectProperties prefs) {
+            final IOldErlangProjectProperties prefs) {
         final IPath projectPath = resource.getProject().getFullPath();
         final Collection<IPath> srcs = prefs.getSourceDirs();
         final IPath exceptLastSegment = resource.getFullPath()
@@ -194,7 +194,7 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final OldErlangProjectProperties pp = ErlangCore
+            final IOldErlangProjectProperties pp = ErlangCore
                     .getProjectProperties(project);
             final Collection<IPath> sd = pp.getSourceDirs();
             final String[] dirList = new String[sd.size()];
@@ -354,7 +354,7 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final IPath outputDir = prefs.getOutputDir();
         final IResource ebinDir = project.findMember(outputDir);
@@ -406,7 +406,7 @@ public final class BuilderHelper {
                     br.setDerived(true);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final OldErlangProjectProperties prefs = ErlangCore
+                    final IOldErlangProjectProperties prefs = ErlangCore
                             .getProjectProperties(project);
                     compileErl(project, bbr, prefs.getOutputDir().toString(),
                             backend, compilerOptions);
@@ -486,7 +486,7 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(source.getProject());
         IPath p = prefs.getOutputDir();
         p = p.append(source.getName());
@@ -601,7 +601,7 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final OldErlangProjectProperties prefs = ErlangCore
+            final IOldErlangProjectProperties prefs = ErlangCore
                     .getProjectProperties(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null

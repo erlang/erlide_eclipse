@@ -23,10 +23,12 @@ import org.osgi.service.prefs.BackingStoreException;
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "org.erlide.core.builder.DialyzerBuilder";
-    private static final BuilderHelper helper = new BuilderHelper();
+
+    // private static final BuilderHelper helper = new BuilderHelper();
 
     @Override
-    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes") final Map args,
+    protected IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
             final IProgressMonitor monitor) throws CoreException {
         final DialyzerPreferences prefs = new DialyzerPreferences();
         try {

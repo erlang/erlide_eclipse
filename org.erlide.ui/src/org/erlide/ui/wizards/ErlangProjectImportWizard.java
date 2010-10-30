@@ -47,8 +47,8 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -291,7 +291,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
 			// buildPaths(monitor, root, project);
 			// buildPaths(monitor, root, project);
 
-			final OldErlangProjectProperties prefs = ErlangCore
+			final IOldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 
 			// String[] directories = findErlDirectories();

@@ -25,8 +25,8 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 
 import com.google.common.collect.Lists;
@@ -54,7 +54,7 @@ public class ModelUtils {
         }
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         for (final IPath includeDir : prefs.getIncludeDirs()) {
             IPath path = includeDir.append(filePath);

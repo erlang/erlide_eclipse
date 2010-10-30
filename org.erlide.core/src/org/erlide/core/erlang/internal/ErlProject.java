@@ -40,6 +40,7 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.Util;
@@ -512,7 +513,7 @@ public class ErlProject extends Openable implements IErlProject {
     // FIXME
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final OldErlangProjectProperties props = getProperties();
+        final IOldErlangProjectProperties props = getProperties();
         for (final IPath src : props.getSourceDirs()) {
             final IFolder folder = fProject.getFolder(src);
             IResource[] members;
@@ -533,7 +534,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     public Collection<IErlModule> getModulesAndHeaders() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final OldErlangProjectProperties props = getProperties();
+        final IOldErlangProjectProperties props = getProperties();
         List<IPath> folders = Lists.newArrayList();
         folders.addAll(props.getSourceDirs());
         folders.addAll(props.getIncludeDirs());
@@ -662,7 +663,7 @@ public class ErlProject extends Openable implements IErlProject {
         return true;
     }
 
-    public OldErlangProjectProperties getProperties() {
+    public IOldErlangProjectProperties getProperties() {
         return new OldErlangProjectProperties(fProject);
     }
 }

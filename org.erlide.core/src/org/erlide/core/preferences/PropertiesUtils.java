@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -29,7 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlProjectInfo convertOld(final OldErlangProjectProperties old)
+    public static ErlProjectInfo convertOld(final IOldErlangProjectProperties old)
             throws URISyntaxException {
         ErlProjectInfo result = new ErlProjectInfo();
         result = result.setRequiredRuntimeVersion(old.getRuntimeVersion());

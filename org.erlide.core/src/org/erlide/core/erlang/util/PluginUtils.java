@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideOpen;
@@ -71,7 +71,7 @@ public class PluginUtils {
      */
     public static boolean isOnSourcePath(final IContainer container) {
         final IProject project = container.getProject();
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         return isOnPaths(container, project, prefs.getSourceDirs());
     }
@@ -85,7 +85,7 @@ public class PluginUtils {
      */
     public static boolean isOnIncludePath(final IContainer container) {
         final IProject project = container.getProject();
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         return isOnPaths(container, project, prefs.getIncludeDirs());
     }
@@ -108,7 +108,7 @@ public class PluginUtils {
         /*
          * Get the project settings so that we can find the source nodes
          */
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final Collection<IPath> sourcePaths = prefs.getSourceDirs();
         final IPath path = con.getFullPath();

@@ -38,9 +38,9 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -189,7 +189,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
 	public Backend getBuildBackend(final IProject project)
 			throws BackendException {
-		final OldErlangProjectProperties prefs = ErlangCore
+		final IOldErlangProjectProperties prefs = ErlangCore
 				.getProjectProperties(project);
 		final RuntimeInfo info = prefs.getRuntimeInfo();
 		if (info == null) {

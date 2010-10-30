@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -79,7 +78,7 @@ public final class ErlangCore {
         return BackendManager.getDefault();
     }
 
-    public static OldErlangProjectProperties getProjectProperties(
+    public static IOldErlangProjectProperties getProjectProperties(
             final IProject project) {
         return getModelManager().getErlangModel()
                 .getErlangProject(project.getName()).getProperties();
