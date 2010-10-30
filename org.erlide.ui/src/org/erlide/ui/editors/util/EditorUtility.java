@@ -98,6 +98,10 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement)
             throws ErlModelException, PartInitException {
+        final IEditorPart editorPart = isOpenInEditor(inputElement);
+        if (editorPart != null) {
+            return editorPart;
+        }
         return openInEditor(inputElement, true);
     }
 
