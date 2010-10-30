@@ -16,6 +16,8 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
+    ErlangFileContentProvider erlangFileContentProvider = new ErlangFileContentProvider();
+
     public ErlangExternalsContentProvider() {
         super();
         // TODO Auto-generated constructor stub
@@ -28,8 +30,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     }
 
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        erlangFileContentProvider.dispose();
     }
 
     public void inputChanged(final Viewer viewer, final Object oldInput,
@@ -43,6 +44,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
                 parentElement = ErlangCore.getModel().findProject(project);
+            }
+            if (parentElement instanceof IErlModule) {
+                return erlangFileContentProvider.getChildren(parentElement);
             }
             if (parentElement instanceof IParent) {
                 if (parentElement instanceof IOpenable) {
@@ -81,12 +85,15 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IProject project = (IProject) element;
             element = ErlangCore.getModel().findProject(project);
         }
+        if (element instanceof IErlModule) {
+            return erlangFileContentProvider.hasChildren(element);
+        }
         if (element instanceof IParent) {
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
+                // FIXME should this really be necessary?
                 try {
-                    openable.open(null);// FIXME should this really be
-                                        // necessary?
+                    openable.open(null);
                 } catch (final ErlModelException e) {
                 }
             }

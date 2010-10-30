@@ -311,8 +311,8 @@ public class ErlStructureCreator extends StructureCreator {
             }
         }
         if (module == null) {
-            module = ErlangCore.getModelManager().getModuleFromText(fName, s,
-                    null);
+            module = ErlangCore.getModelManager()
+                    .getModuleFromText(fName, s, s);
         }
         ErlNode root = null;
         try {

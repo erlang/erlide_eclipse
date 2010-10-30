@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IParent;
@@ -39,7 +40,9 @@ public class ErlExternalReferenceEntryList extends Openable implements
         final List<IErlElement> result = new ArrayList<IErlElement>(
                 entries.size());
         for (final String entry : entries) {
-            result.add(new ErlExternalReferenceEntry(this, entry));
+            final String name = new Path(entry).lastSegment().replaceAll(
+                    "\\.erlidex", "");
+            result.add(new ErlExternalReferenceEntry(this, name, entry));
         }
         setChildren(result);
         return true;
@@ -59,6 +62,11 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     public String getFilePath() {
         return null;
+    }
+
+    @Override
+    public String getLabelString() {
+        return getName();
     }
 
 }

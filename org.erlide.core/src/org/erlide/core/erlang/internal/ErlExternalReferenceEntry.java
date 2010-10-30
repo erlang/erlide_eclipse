@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ModelUtils;
@@ -22,8 +23,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlElement,
     private final String entry;
 
     protected ErlExternalReferenceEntry(final IErlElement parent,
-            final String entry) {
-        super(parent, entry);
+            final String name, final String entry) {
+        super(parent, name);
         this.entry = entry;
     }
 
@@ -48,8 +49,10 @@ public class ErlExternalReferenceEntry extends Openable implements IErlElement,
             } catch (final IOException e) {
                 initialText = "";
             }
-            children.add(new ErlExternalReferencedModule(this, new Path(path)
-                    .lastSegment(), initialText, path));
+            final String name = new Path(path).lastSegment();
+            final IErlModule module = ErlangCore.getModelManager()
+                    .getModuleFromFile(this, name, initialText, path, path);
+            children.add(module);
         }
         setChildren(children);
         return true;
@@ -57,14 +60,17 @@ public class ErlExternalReferenceEntry extends Openable implements IErlElement,
 
     @Override
     protected void closing(final Object info) throws ErlModelException {
-        final boolean hej = false;
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public String getFilePath() {
         return null;
+    }
+
+    @Override
+    public String getLabelString() {
+        return super.getName();
     }
 
 }

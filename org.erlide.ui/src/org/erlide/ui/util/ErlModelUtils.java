@@ -579,14 +579,14 @@ public class ErlModelUtils {
             final IPath p = sei.getStorage().getFullPath();
             final String path = p == null ? "" : p.toString();
             return ErlangCore.getModelManager().getModuleFromFile(
-                    editorInput.getName(), doc.get(), path, editorInput);
+                    editorInput.getName(), doc.get(), path, path);
         }
         if (editorInput instanceof IURIEditorInput) {
             final IURIEditorInput ue = (IURIEditorInput) editorInput;
             final String path = ue.getURI().getPath();
             final IDocument doc = documentProvider.getDocument(editorInput);
             return ErlangCore.getModelManager().getModuleFromFile(
-                    editorInput.getName(), doc.get(), path, editorInput);
+                    editorInput.getName(), doc.get(), path, path);
         }
         return null;
     }

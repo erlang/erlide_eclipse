@@ -222,8 +222,11 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findInclude(final IErlModule module,
             final IErlProject erlProject, final OpenResult res,
             final IErlModel model, final IProject project) throws CoreException {
-        final IContainer parent = module == null ? null : module.getResource()
-                .getParent();
+        IContainer parent = null;
+        if (module != null) {
+            final IResource resource = module.getResource();
+            parent = resource.getParent();
+        }
         IResource r = ResourceUtil.recursiveFindNamedResourceWithReferences(
                 project, res.getName(),
                 PluginUtils.getIncludePathFilter(project, parent));
@@ -231,7 +234,8 @@ public class OpenAction extends SelectionDispatchAction {
             final String includeFile = ModelUtils.findIncludeFile(project,
                     res.getName(), model.getExternalIncludes(erlProject));
             if (includeFile != null) {
-                r = ResourceUtil.openExternal(includeFile);
+                r = ResourceUtil.openExternal(erlProject.getProject(),
+                        includeFile);
             }
         }
         if (r instanceof IFile) {

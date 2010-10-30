@@ -1,4 +1,4 @@
-package org.erlide.ui.navigator;
+package org.erlide.ui.editors.erl;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -8,6 +8,7 @@ import org.eclipse.ui.navigator.IDescriptionProvider;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
+import org.erlide.ui.navigator.NavigatorProblemsDecorator;
 
 public class ErlangFileLabelProvider extends LabelProvider implements
         IDescriptionProvider {

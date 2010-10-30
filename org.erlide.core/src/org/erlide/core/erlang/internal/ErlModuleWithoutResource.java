@@ -29,4 +29,9 @@ public class ErlModuleWithoutResource extends ErlModule {
         return false;
     }
 
+    @Override
+    public String getLabelString() {
+        return getName();
+    }
+
 }

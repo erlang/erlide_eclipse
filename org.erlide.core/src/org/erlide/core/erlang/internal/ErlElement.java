@@ -755,7 +755,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
-    public String toLabelString() {
+    public String getLabelString() {
         return Util.normalizeSpaces(toString());
     }
 
