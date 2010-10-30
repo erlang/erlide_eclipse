@@ -237,4 +237,18 @@ public class ModelUtils {
         return result;
     }
 
+    public static List<String> getExternalModules(final Backend b,
+            final String prefix, final IErlModel model,
+            final String externalModules) {
+        return ErlideOpen.getExternalModules(b, prefix, externalModules,
+                model.getPathVars());
+    }
+
+    public static List<String> getExternalModules(final Backend b,
+            final String prefix, final IErlProject erlProject) {
+        final IErlModel model = ErlangCore.getModel();
+        final String externalModules = model.getExternalModules(erlProject);
+        return getExternalModules(b, prefix, model, externalModules);
+    }
+
 }
