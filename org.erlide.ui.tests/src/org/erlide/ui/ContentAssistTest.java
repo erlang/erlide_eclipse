@@ -295,7 +295,7 @@ public class ContentAssistTest {
 		// http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
 		final int offset = initialText.length();
 		IDocument document = new StringDocument(initialText);
-		module = ErlangCore.getModelManager().getModuleFromText("test1",
+		module = ErlangCore.getModelManager().getModuleFromText(null, "test1",
 				initialText, "test1");
 		final MockSourceViewer sourceViewer = new MockSourceViewer(document,
 				offset);

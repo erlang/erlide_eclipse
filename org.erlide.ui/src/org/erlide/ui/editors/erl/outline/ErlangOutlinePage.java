@@ -13,7 +13,6 @@ package org.erlide.ui.editors.erl.outline;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
@@ -45,7 +44,6 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
@@ -84,7 +82,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     private CompositeActionGroup fActionGroups;
     private TreeViewer fOutlineViewer;
     private MemberFilterActionGroup fMemberFilterActionGroup;
-    private final IDocumentProvider fDocumentProvider;
     private SortAction fSortAction;
     private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
     private ToggleLinkingAction fToggleLinkingAction;
@@ -198,10 +195,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      * @param editor
      * 
      */
-    public ErlangOutlinePage(final IDocumentProvider documentProvider,
-            final ErlangEditor editor) {
+    public ErlangOutlinePage(final ErlangEditor editor) {
         // myDocProvider = documentProvider;
-        fDocumentProvider = documentProvider;
         fEditor = editor;
         ErlangCore.getModel().addModelChangeListener(this);
     }
@@ -214,10 +209,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public void setInput(final IEditorInput editorInput) {
         // ErlLogger.log("> outline set input "+editorInput);
         fModule = null;
-        try {
-            fModule = ErlModelUtils.getModule(editorInput, fDocumentProvider);
-        } catch (final CoreException e1) {
-        }
+        fModule = ErlModelUtils.getModule(editorInput);
         try {
             if (fModule != null) {
                 fModule.open(null);

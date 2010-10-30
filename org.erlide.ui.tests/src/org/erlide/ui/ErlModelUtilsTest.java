@@ -97,19 +97,19 @@ public class ErlModelUtilsTest {
 		// when
 		// looking for it
 		// within project
-		final IErlElement element1 = ErlModelUtils.findExternalType("b",
-				"concat_thing", moduleB.getResource().getLocation()
+		final IErlElement element1 = ErlModelUtils.findExternalType(moduleB,
+				"b", "concat_thing", moduleB.getResource().getLocation()
 						.toPortableString(), projects[0].getProject(), false);
 		// in other project but path given
-		final IErlElement element2 = ErlModelUtils.findExternalType("b",
-				"concat_thing", moduleB.getResource().getLocation()
+		final IErlElement element2 = ErlModelUtils.findExternalType(moduleB,
+				"b", "concat_thing", moduleB.getResource().getLocation()
 						.toPortableString(), projects[1].getProject(), false);
 		// in other project no path given, search all projects true
-		final IErlElement element3 = ErlModelUtils.findExternalType("b",
-				"concat_thing", null, projects[1].getProject(), true);
+		final IErlElement element3 = ErlModelUtils.findExternalType(moduleB,
+				"b", "concat_thing", null, projects[1].getProject(), true);
 		// in other project no path given, search all projects false, -> null
-		final IErlElement element4 = ErlModelUtils.findExternalType("b",
-				"concat_thing", null, projects[1].getProject(), false);
+		final IErlElement element4 = ErlModelUtils.findExternalType(moduleB,
+				"b", "concat_thing", null, projects[1].getProject(), false);
 		// then
 		// it should be returned if found
 		assertTrue(element1 instanceof IErlTypespec);

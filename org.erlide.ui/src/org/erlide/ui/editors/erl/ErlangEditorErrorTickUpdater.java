@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.navigator.ErlangFileLabelProvider;
 import org.erlide.ui.util.IProblemChangedListener;
 
 /**

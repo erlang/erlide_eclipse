@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -97,21 +97,21 @@ public class DialyzerUtilsTest {
 					.createErlModule(erlProject, moduleName,
 							"-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
 			IMarker[] markers = erlProject.getProject().findMarkers(
-					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					MarkerUtils.DIALYZE_WARNING_MARKER, true,
 					IResource.DEPTH_INFINITE);
 			assertEquals(0, markers.length);
 			// when
 			// putting a dialyzer warning on it
 			final int lineNumber = 3;
 			final String message = "test message";
-			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+			MarkerUtils.addDialyzerWarningMarker(erlProject.getProject(),
 					erlModule.getResource().getLocation().toPortableString(),
 					lineNumber, message);
 			// then
 			// there should be a marker with proper file name and the proper
 			// line number
 			markers = erlProject.getProject().findMarkers(
-					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					MarkerUtils.DIALYZE_WARNING_MARKER, true,
 					IResource.DEPTH_INFINITE);
 			assertEquals(1, markers.length);
 			final IMarker marker = markers[0];
@@ -142,12 +142,12 @@ public class DialyzerUtilsTest {
 			// putting dialyzer warning markers on the external file
 			final String message = "test message";
 			final int lineNumber = 2;
-			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+			MarkerUtils.addDialyzerWarningMarker(erlProject.getProject(),
 					externalFile.getAbsolutePath(), lineNumber, message);
 			// then
 			// the marker should have the proper file name and the include file
 			// should appear in External Files
-			final IProject externalFilesProject = ResourceUtil
+			final IProject externalFilesProject = ModelUtils
 					.getExternalFilesProject();
 			final IFile file = externalFilesProject.getFile(new Path(
 					externalFileName));
@@ -155,7 +155,7 @@ public class DialyzerUtilsTest {
 			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
 					.getRoot();
 			final IMarker[] markers = root.getProject("External_Files")
-					.findMarkers(DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					.findMarkers(MarkerUtils.DIALYZE_WARNING_MARKER, true,
 							IResource.DEPTH_INFINITE);
 			assertTrue(markers.length > 0);
 			for (final IMarker marker : markers) {

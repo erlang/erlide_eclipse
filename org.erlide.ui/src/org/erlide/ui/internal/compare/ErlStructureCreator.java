@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -188,7 +189,7 @@ public class ErlStructureCreator extends StructureCreator {
         }
         if (element instanceof IParent) {
             final IParent p = (IParent) element;
-            final List<? extends IErlElement> children = p.getChildren();
+            final Collection<IErlElement> children = p.getChildren();
             for (final IErlElement child : children) {
                 recursiveMakeErlNodes(child, n, doc);
             }
@@ -311,8 +312,8 @@ public class ErlStructureCreator extends StructureCreator {
             }
         }
         if (module == null) {
-            module = ErlangCore.getModelManager().getModuleFromText(fName, s,
-                    null);
+            module = ErlangCore.getModelManager().getModuleFromText(null,
+                    fName, s, s);
         }
         ErlNode root = null;
         try {

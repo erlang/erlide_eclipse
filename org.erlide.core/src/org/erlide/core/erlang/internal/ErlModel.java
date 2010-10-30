@@ -35,13 +35,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
-import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlangFirstThat;
@@ -100,14 +98,13 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     protected boolean buildStructure(final IProgressMonitor pm) {
-        final IErlModelManager modelManager = ErlangCore.getModelManager();
         // determine my children
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
         for (final IProject project : projects) {
             if (ErlideUtil.hasErlangNature(project)) {
                 if (getErlangProject(project.getName()) == null) {
-                    addChild(modelManager.create(project, this));
+                    addChild(makeErlangProject(project));
                 }
             }
         }
@@ -208,7 +205,7 @@ public class ErlModel extends Openable implements IErlModel {
      * @see IErlModel
      */
     public Collection<IErlProject> getErlangProjects() throws ErlModelException {
-        final Collection<IErlElement> list = getChildrenOfType(Kind.PROJECT);
+        final Collection<IErlElement> list = getChildrenOfKind(Kind.PROJECT);
         final Collection<IErlProject> result = Lists.newArrayList();
         for (final IErlElement e : list) {
             result.add((IErlProject) e);
@@ -465,6 +462,9 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlProject findProject(final IProject project) {
         final IErlElement e = findElement(project);
+        if (e == null) {
+            return null;
+        }
         return (IErlProject) e;
     }
 

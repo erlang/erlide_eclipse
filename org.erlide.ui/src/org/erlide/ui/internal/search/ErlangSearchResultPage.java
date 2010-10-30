@@ -1,7 +1,6 @@
 package org.erlide.ui.internal.search;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -33,6 +32,7 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -209,12 +209,8 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
             final int offset, final int length) throws PartInitException {
         IMarker marker = null;
         try {
-            marker = file.createMarker(NewSearchUI.SEARCH_MARKER);
-            final HashMap<String, Integer> attributes = new HashMap<String, Integer>(
-                    4);
-            attributes.put(IMarker.CHAR_START, Integer.valueOf(offset));
-            attributes.put(IMarker.CHAR_END, Integer.valueOf(offset + length));
-            marker.setAttributes(attributes);
+            marker = MarkerUtils.createSearchResultMarker(file,
+                    NewSearchUI.SEARCH_MARKER, offset, length);
             IDE.gotoMarker(editor, marker);
         } catch (final CoreException e) {
             throw new PartInitException(
