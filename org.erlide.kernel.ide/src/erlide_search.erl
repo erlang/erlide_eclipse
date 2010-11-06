@@ -61,11 +61,11 @@ add_dirs([BeamDir | Rest]) ->
 			Error
 	end.
 
-add_dir(BeamDir) ->
-	start(),
-    R = xref:add_directory(?XREF, BeamDir),
-    ?D(R),
-    R.
+%% add_dir(BeamDir) ->
+%% 	start(),
+%%     R = xref:add_directory(?XREF, BeamDir),
+%%     ?D(R),
+%%     R.
 
 update() ->
     start(),

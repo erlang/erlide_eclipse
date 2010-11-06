@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
+import java.util.Collection;
+
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -110,7 +112,7 @@ public class IOServer implements Runnable {
 					if (b != null) {
 						final String m = b.getAtom("M");
 						final String f = b.getAtom("F");
-						final OtpErlangObject[] a = b.getList("A");
+						final Collection<OtpErlangObject> a = b.getList("A");
 						return callback
 								.putChars(from, Encoding.latin1, m, f, a);
 					}
@@ -121,7 +123,7 @@ public class IOServer implements Runnable {
 						final String enc = b.getAtom("Enc");
 						final String m = b.getAtom("M");
 						final String f = b.getAtom("F");
-						final OtpErlangObject[] a = b.getList("A");
+						final Collection<OtpErlangObject> a = b.getList("A");
 						return callback.putChars(from, Encoding.valueOf(enc),
 								m, f, a);
 					}
@@ -157,7 +159,7 @@ public class IOServer implements Runnable {
 					if (b != null) {
 						final String m = b.getAtom("M");
 						final String f = b.getAtom("F");
-						final OtpErlangObject[] a = b.getList("A");
+						final Collection<OtpErlangObject> a = b.getList("A");
 						return callback.getUntil(Encoding.latin1, b
 								.get("Prompt"), m, f, a);
 					}
@@ -168,14 +170,14 @@ public class IOServer implements Runnable {
 						final String enc = b.getAtom("Enc");
 						final String m = b.getAtom("M");
 						final String f = b.getAtom("F");
-						final OtpErlangObject[] a = b.getList("A");
+						final Collection<OtpErlangObject> a = b.getList("A");
 						return callback.getUntil(Encoding.valueOf(enc), b
 								.get("Prompt"), m, f, a);
 					}
 				} else if ("requests".equals(tag)) {
 					b = ErlUtils.match("{requests, Reqs:lx}", request);
 					if (b != null) {
-						final OtpErlangObject[] reqs = b.getList("Reqs");
+						final Collection<OtpErlangObject> reqs = b.getList("Reqs");
 						OtpErlangObject val = null;
 						for (final OtpErlangObject r : reqs) {
 							val = processRequest(from, r);
@@ -188,7 +190,7 @@ public class IOServer implements Runnable {
 				} else if ("setopts".equals(tag)) {
 					b = ErlUtils.match("{setopts, Opts:lx}", request);
 					if (b != null) {
-						final OtpErlangObject[] opts = b.getList("Opts");
+						final Collection<OtpErlangObject> opts = b.getList("Opts");
 						return callback.setOpts(opts);
 					}
 				} else if ("get_geometry".equals(tag)) {

@@ -54,7 +54,7 @@ public class GeneraliseFunctionRefactoring extends
 	 */
 	public enum State {
 		ok, error, multi_instance, unknown_side_effect, more_than_one_clause;
-	};
+	}
 
 	private final State state;
 	private String errorMessage;

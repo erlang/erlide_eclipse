@@ -27,7 +27,7 @@ public class ReferencesInWorkspaceHandler extends AbstractHandler {
 					.getFirstElement();
 			if (firstElement instanceof IErlElement) {
 				IErlElement element = (IErlElement) firstElement;
-				final ErlangSearchPattern pattern = SearchUtil
+				final ErlangSearchPattern pattern = ErlangSearchPattern
 						.getSearchPatternFromErlElementAndLimitTo(element,
 								ErlangSearchPattern.REFERENCES);
 				SearchUtil.runQuery(pattern, SearchUtil.getWorkspaceScope(),

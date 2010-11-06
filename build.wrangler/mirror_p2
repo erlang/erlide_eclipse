@@ -1,0 +1,23 @@
+# adds contents of $remote_site to $new_site
+
+#ECLIPSE=/proj/uz/erlide/eclipse352/eclipse
+#remote_site=http://erlide.org/update
+#new_site=${WORKSPACE}/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
+
+JAVA_HOME=$1
+ECLIPSE=$2
+remote_site=$3
+new_site=$4
+
+LAUNCHER=`find $ECLIPSE/plugins/ -name "org.eclipse.equinox.launcher_*.jar" | head -n 1`
+
+$JAVA_HOME/bin/java -jar $LAUNCHER -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -source $remote_site -destination $new_site -verbose 
+if [ $? != 0 ]; then 
+	exit $?
+fi
+ 
+$JAVA_HOME/bin/java -jar $LAUNCHER -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -source $remote_site -destination $new_site -verbose 
+if [ $? != 0 ]; then 
+	exit $?
+fi
+

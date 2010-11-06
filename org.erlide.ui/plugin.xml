@@ -1044,6 +1044,9 @@
             <contentExtension
                   pattern="org.erlide.ui.navigator.linkHelper">
             </contentExtension>
+            <contentExtension
+                  pattern="org.erlide.ui.navigator.erlangExternals">
+            </contentExtension>
          </includes>
       </viewerContentBinding>
       <viewerActionBinding
@@ -1167,6 +1170,32 @@
                </instanceof>
             </possibleDropTargets>
          </dropAssistant>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.erlide.ui.navigator.ErlangExternalsContentProvider"
+            icon="icons/full/obj16/erlang_editor.gif"
+            id="org.erlide.ui.navigator.erlangExternals"
+            labelProvider="org.erlide.ui.editors.erl.outline.ErlangLabelProvider"
+            name="Erlang Externals"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlElement">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlElement">
+               </instanceof>
+            </or>
+         </possibleChildren>
       </navigatorContent>
    </extension>
    <extension
@@ -1306,13 +1335,6 @@
             class="org.erlide.ui.views.CallHierarchyView"
             id="org.erlide.ui.callhierarchy"
             name="Call Hierarchy"
-            restorable="true">
-      </view>
-      <view
-            allowMultiple="false"
-            class="org.erlide.ui.internal.MonitorView"
-            id="org.erlide.ui.internal.monitorLogView"
-            name="Backend monitor"
             restorable="true">
       </view>
    </extension>

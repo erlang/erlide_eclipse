@@ -546,7 +546,6 @@ public class EditorPreferencePage extends PreferencePage implements
         try {
             prefsNode.flush();
         } catch (final BackingStoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return true;

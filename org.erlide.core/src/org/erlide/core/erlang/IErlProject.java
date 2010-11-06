@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
@@ -124,6 +123,6 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
-    OldErlangProjectProperties getProperties();
+    IOldErlangProjectProperties getProperties();
 
 }

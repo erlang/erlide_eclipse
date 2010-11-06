@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -71,9 +71,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.dialogs,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
- org.erlide.ui.editors.erl;
-  x-friends:="org.erlide.gunit,
-   org.erlide.wrangler.refactoring";
+ org.erlide.ui.editors.erl;x-friends:="org.erlide.wrangler.refactoring";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
@@ -115,7 +113,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.editors.erl.handlers,
  org.erlide.ui.editors.erl.hover;x-internal:=true,
  org.erlide.ui.editors.erl.hyperlink;x-internal:=true,
- org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.gunit";
+ org.erlide.ui.editors.erl.outline;x-internal:=true;
   uses:="org.eclipse.jface.text,
    org.eclipse.jface.action,
    org.erlide.ui.editors.erl,
@@ -136,14 +134,13 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.graphics,
    org.eclipse.swt.widgets,
    org.erlide.core.erlang",
- org.erlide.ui.information;uses:="org.eclipse.jface.text,org.eclipse.swt.graphics,org.eclipse.swt.widgets",
  org.erlide.ui.internal;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
  org.erlide.ui.internal.search;x-internal:=true,
- org.erlide.ui.internal.util;x-friends:="org.erlide.gunit",
+ org.erlide.ui.internal.util;x-internal:=true,
  org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
- org.erlide.ui.launch;x-friends:="org.erlide.selfhost.plugin";
+ org.erlide.ui.launch;x-friends:="org.erlide.selfhost";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,
    org.eclipse.ui,
@@ -314,7 +311,9 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs"
 Require-Bundle: org.eclipse.compare,
+ org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
+ org.eclipse.debug.ui,
  org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
@@ -323,7 +322,6 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.views,
  org.eclipse.ui.navigator,
- org.eclipse.debug.ui,
  org.eclipse.jface.text,
  org.eclipse.search,
  org.erlide.jinterface,

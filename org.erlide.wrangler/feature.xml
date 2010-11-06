@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.wrangler"
       label="Wrangler Feature"
-      version="0.10.0.qualifier"
+      version="0.10.1.qualifier"
       provider-name="UKC">
 
    <description url="http://www.example.com/description">
@@ -52,5 +52,11 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"
          fragment="true"
          unpack="false"/>
+
+   <plugin
+         id="org.erlide.wrangler.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

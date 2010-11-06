@@ -1,0 +1,82 @@
+SOURCE=$1
+DESTINATION=$2
+USER=$3
+
+q=
+
+TMP=${DESTINATION}.tmp
+
+# maybe upload to a temp location and then rename it? feels safer...
+
+expect - << END
+	# exp_internal 1 # uncomment for debugging
+		
+	spawn sftp ${USER}@frs.sourceforge.net
+	expect "*sftp>"
+	send "cd frs \r"
+	expect "*sftp>"
+	send "rm ${TMP}/features/* \r"
+	send "rm ${TMP}/plugins/* \r"
+	send "rm ${TMP}/* \r"
+	expect "*sftp>"
+
+	send "mkdir ${TMP} \r"
+	expect "*sftp>"
+	send "mkdir ${TMP}/features \r"
+	expect "*sftp>"
+	send "mkdir ${TMP}/plugins \r"
+	expect "*sftp>"
+	send "bye\r"
+	wait
+END
+
+if [ $? != 0 ]; then 
+	exit $?
+fi
+
+scp $q -C ${SOURCE}/artifacts.* ${USER}@frs.sourceforge.net:frs/${TMP}
+if [ $? != 0 ]; then 
+	exit $?
+fi
+scp $q -C ${SOURCE}/content.* ${USER}@frs.sourceforge.net:frs/${TMP}
+if [ $? != 0 ]; then 
+	exit $?
+fi
+scp $q -C -r ${SOURCE}/features ${USER}@frs.sourceforge.net:frs/${TMP}
+if [ $? != 0 ]; then 
+	exit $?
+fi
+scp $q -C -r ${SOURCE}/plugins ${USER}@frs.sourceforge.net:frs/${TMP}
+if [ $? != 0 ]; then 
+	exit $?
+fi
+
+# if all is ok
+
+expect - << END
+	# exp_internal 1 # uncomment for debugging
+		
+	spawn sftp ${USER}@frs.sourceforge.net
+	expect "*sftp>"
+	send "cd frs \r"
+	expect "*sftp>"
+	send "ls \r"
+	expect "*sftp>"
+	send "rm ${DESTINATION}/features/* \r"
+	send "rmdir ${DESTINATION}/features \r"
+	send "rm ${DESTINATION}/plugins/* \r"
+	send "rmdir ${DESTINATION}/plugins \r"
+	send "rm ${DESTINATION}/* \r"
+	send "rmdir ${DESTINATION} \r"
+	expect "*sftp>"
+	send "rename ${TMP} ${DESTINATION} \r"
+	expect "*sftp>"
+	send "bye\r"
+	wait
+END
+if [ $? != 0 ]; then 
+	exit $?
+fi
+
+
+

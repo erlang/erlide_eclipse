@@ -456,8 +456,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	private void doPatternModified() {
 		if (fInitialData != null
 				&& getPattern().equals(fInitialData.getPattern())) {
-			;
-			;
 		}
 	}
 
@@ -647,7 +645,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-		final ErlangSearchPattern pattern = SearchUtil
+		final ErlangSearchPattern pattern = ErlangSearchPattern
 				.getSearchPatternFromErlElementAndLimitTo(e, getLimitTo());
 		if (pattern == null) {
 			return null;

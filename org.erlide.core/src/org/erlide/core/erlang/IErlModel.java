@@ -153,23 +153,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     Collection<IErlProject> getErlangProjects() throws ErlModelException;
 
     /**
-     * Returns an array of non-Erlang resources (that is, non-Erlang projects)
-     * in the workspace.
-     * <p>
-     * Non-Erlang projects include all projects that are closed (even if they
-     * have the Erlang nature).
-     * </p>
-     * 
-     * @return an array of non-Erlang projects (<code>IProject</code>s)
-     *         contained in the workspace.
-     * @throws ErlModelException
-     *             if this element does not exist or if an exception occurs
-     *             while accessing its corresponding resource
-     * 
-     */
-    IProject[] getNonErlangResources() throws ErlModelException;
-
-    /**
      * Returns the workspace associated with this Erlang model.
      * 
      * @return the workspace associated with this Erlang model
@@ -300,7 +283,9 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     public IErlElement innermostThat(final IErlElement el,
             final IErlangFirstThat firstThat);
 
-    String getExternal(IErlProject erlProject, int externalFlag);
+    String getExternalModules(IErlProject erlProject);
+
+    String getExternalIncludes(IErlProject erlProject);
 
     OtpErlangList getPathVars();
 

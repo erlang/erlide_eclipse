@@ -13,133 +13,126 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
 public class ErlangDebugNode extends ErlangDebugElement implements
-		IDebugTarget, IErlangDebugNode {
+        IDebugTarget, IErlangDebugNode {
 
-	private final String fNodeName;
-	private final List<ErlangProcess> fShownProcesses;
-	private final ErlangDebugTarget fErlangDebugTarget;
+    private final String fNodeName;
+    private final List<ErlangProcess> fShownProcesses;
+    private final ErlangDebugTarget fErlangDebugTarget;
 
-	public ErlangDebugNode(final ErlangDebugTarget target, final String nodeName) {
-		super(null);
-		fNodeName = nodeName;
-		fShownProcesses = new ArrayList<ErlangProcess>();
-		fErlangDebugTarget = target;
-	}
+    public ErlangDebugNode(final ErlangDebugTarget target, final String nodeName) {
+        super(null);
+        fNodeName = nodeName;
+        fShownProcesses = new ArrayList<ErlangProcess>();
+        fErlangDebugTarget = target;
+    }
 
-	public String getName() throws DebugException {
-		return fNodeName;
-	}
+    public String getName() throws DebugException {
+        return fNodeName;
+    }
 
-	public IProcess getProcess() {
-		return null;
-	}
+    public IProcess getProcess() {
+        return null;
+    }
 
-	public IThread[] getThreads() throws DebugException {
-		if (isTerminated()) {
-			return ErlangDebugTarget.NO_PROCS;
-		}
-		return fShownProcesses.toArray(new IThread[fShownProcesses.size()]);
-	}
+    public IThread[] getThreads() throws DebugException {
+        if (isTerminated()) {
+            return ErlangDebugTarget.NO_PROCS;
+        }
+        return fShownProcesses.toArray(new IThread[fShownProcesses.size()]);
+    }
 
-	public boolean hasThreads() throws DebugException {
-		return true;
-	}
+    public boolean hasThreads() throws DebugException {
+        return true;
+    }
 
-	public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
-		return fErlangDebugTarget.supportsBreakpoint(breakpoint);
-	}
+    public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
+        return fErlangDebugTarget.supportsBreakpoint(breakpoint);
+    }
 
-	public boolean canTerminate() {
-		return true;
-	}
+    public boolean canTerminate() {
+        return true;
+    }
 
-	public boolean isTerminated() {
-		return false;
-	}
+    public boolean isTerminated() {
+        return false;
+    }
 
-	public void terminate() throws DebugException {
-		fErlangDebugTarget.terminate();
-	}
+    public void terminate() throws DebugException {
+        fErlangDebugTarget.terminate();
+    }
 
-	public boolean canResume() {
-		return false;
-	}
+    public boolean canResume() {
+        return false;
+    }
 
-	public boolean canSuspend() {
-		return false;
-	}
+    public boolean canSuspend() {
+        return false;
+    }
 
-	public boolean isSuspended() {
-		return false;
-	}
+    public boolean isSuspended() {
+        return false;
+    }
 
-	public void resume() throws DebugException {
-		// TODO Auto-generated method stub
+    public void resume() throws DebugException {
+    }
 
-	}
+    public void suspend() throws DebugException {
+    }
 
-	public void suspend() throws DebugException {
-		// TODO Auto-generated method stub
+    public void breakpointAdded(final IBreakpoint breakpoint) {
+        fErlangDebugTarget.breakpointAdded(breakpoint);
+    }
 
-	}
+    public void breakpointChanged(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
+        fErlangDebugTarget.breakpointChanged(breakpoint, delta);
+    }
 
-	public void breakpointAdded(final IBreakpoint breakpoint) {
-		fErlangDebugTarget.breakpointAdded(breakpoint);
-	}
+    public void breakpointRemoved(final IBreakpoint breakpoint,
+            final IMarkerDelta delta) {
+        fErlangDebugTarget.breakpointRemoved(breakpoint, delta);
+    }
 
-	public void breakpointChanged(final IBreakpoint breakpoint,
-			final IMarkerDelta delta) {
-		fErlangDebugTarget.breakpointChanged(breakpoint, delta);
-	}
+    public boolean canDisconnect() {
+        return false;
+    }
 
-	public void breakpointRemoved(final IBreakpoint breakpoint,
-			final IMarkerDelta delta) {
-		fErlangDebugTarget.breakpointRemoved(breakpoint, delta);
-	}
+    public void disconnect() throws DebugException {
+    }
 
-	public boolean canDisconnect() {
-		return false;
-	}
+    public boolean isDisconnected() {
+        return false;
+    }
 
-	public void disconnect() throws DebugException {
-		// TODO Auto-generated method stub
+    public IMemoryBlock getMemoryBlock(final long startAddress,
+            final long length) throws DebugException {
+        return fErlangDebugTarget.getMemoryBlock(startAddress, length);
+    }
 
-	}
+    public boolean supportsStorageRetrieval() {
+        return fErlangDebugTarget.supportsStorageRetrieval();
+    }
 
-	public boolean isDisconnected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void addErlangProcess(final ErlangProcess ep) {
+        fShownProcesses.add(ep);
+    }
 
-	public IMemoryBlock getMemoryBlock(final long startAddress,
-			final long length) throws DebugException {
-		return fErlangDebugTarget.getMemoryBlock(startAddress, length);
-	}
+    public void removeErlangProcess(final ErlangProcess p) {
+        fShownProcesses.remove(p);
+    }
 
-	public boolean supportsStorageRetrieval() {
-		return fErlangDebugTarget.supportsStorageRetrieval();
-	}
+    @Override
+    public ErlangDebugTarget getErlangDebugTarget() {
+        return fErlangDebugTarget;
+    }
 
-	public void addErlangProcess(final ErlangProcess ep) {
-		fShownProcesses.add(ep);
-	}
+    @Override
+    public ILaunch getLaunch() {
+        return fErlangDebugTarget.getLaunch();
+    }
 
-	public void removeErlangProcess(final ErlangProcess p) {
-		fShownProcesses.remove(p);
-	}
-
-	@Override
-	public ErlangDebugTarget getErlangDebugTarget() {
-		return fErlangDebugTarget;
-	}
-
-	@Override
-	public ILaunch getLaunch() {
-		return fErlangDebugTarget.getLaunch();
-	}
-
-	@Override
-	public IDebugTarget getDebugTarget() {
-		return this;
-	}
+    @Override
+    public IDebugTarget getDebugTarget() {
+        return this;
+    }
 }

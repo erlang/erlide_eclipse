@@ -130,8 +130,8 @@ public final class Util {
         }
         // for compatibility with MessageFormat which eliminates double quotes
         // in original message
-        final char[] messageWithNoDoubleQuotes = CharOperation.replace(message
-                .toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
+        final char[] messageWithNoDoubleQuotes = CharOperation.replace(
+                message.toCharArray(), DOUBLE_QUOTES, SINGLE_QUOTE);
 
         if (bindings == null) {
             return new String(messageWithNoDoubleQuotes);
@@ -174,8 +174,7 @@ public final class Util {
                                     start - end);
                         }
                     } catch (final ArrayIndexOutOfBoundsException e) {
-                        output
-                                .append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
+                        output.append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
                     }
                     start++;
                 } else {
@@ -252,7 +251,7 @@ public final class Util {
     /**
      * Compares two strings lexicographically. The comparison is based on the
      * Unicode value of each character in the strings.
-     *
+     * 
      * @return the value <code>0</code> if the str1 is equal to str2; a value
      *         less than <code>0</code> if str1 is lexicographically less than
      *         str2; and a value greater than <code>0</code> if str1 is
@@ -275,7 +274,7 @@ public final class Util {
 
     /**
      * Concatenate two strings with a char in between.
-     *
+     * 
      * @see #concat(String, String)
      */
     public static String concat(String s1, final char c, String s2) {
@@ -318,7 +317,7 @@ public final class Util {
 
     /**
      * Concatenate three strings.
-     *
+     * 
      * @see #concat(String, String)
      */
     public static String concat(String s1, String s2, String s3) {
@@ -538,7 +537,7 @@ public final class Util {
 
     /**
      * Finds the first line separator used by the given text.
-     *
+     * 
      * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
      *                </code>, or <code>null</code> if none found
      */
@@ -549,12 +548,12 @@ public final class Util {
             char nextChar = text[0];
             for (int i = 0; i < length; i++) {
                 final char currentChar = nextChar;
-                nextChar = (i < length - 1) ? text[i + 1] : ' ';
+                nextChar = i < length - 1 ? text[i + 1] : ' ';
                 if (currentChar == '\n') {
                     return "\n"; //$NON-NLS-1$
                 }
                 if (currentChar == '\r') {
-                    return (nextChar == '\n') ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
+                    return nextChar == '\n' ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
             }
@@ -691,7 +690,7 @@ public final class Util {
      * <li>its prefix must be a valid identifier
      * </ul>
      * </p>
-     *
+     * 
      * @param name
      *            the name of a compilation unit
      * @return a boolean
@@ -840,7 +839,7 @@ public final class Util {
             int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final Comparable mid = sortedCollection[(left + right) >>> 1];
+        final Comparable mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) < 0) {
                 left++;
@@ -867,7 +866,7 @@ public final class Util {
     private static void quickSort(final int[] list, int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final int mid = list[(left + right) >>> 1];
+        final int mid = list[left + right >>> 1];
         do {
             while (list[left] < mid) {
                 left++;
@@ -898,7 +897,7 @@ public final class Util {
             int right, final Comparer comparer) {
         final int original_left = left;
         final int original_right = right;
-        final Object mid = sortedCollection[(left + right) >>> 1];
+        final Object mid = sortedCollection[left + right >>> 1];
         do {
             while (comparer.compare(sortedCollection[left], mid) < 0) {
                 left++;
@@ -963,7 +962,7 @@ public final class Util {
             int right) {
         final int original_left = left;
         final int original_right = right;
-        final String mid = sortedCollection[(left + right) >>> 1];
+        final String mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) < 0) {
                 left++;
@@ -994,7 +993,7 @@ public final class Util {
             int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final String mid = sortedCollection[(left + right) >>> 1];
+        final String mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) > 0) {
                 left++;
@@ -1030,7 +1029,7 @@ public final class Util {
      * <p>
      * This method blocks until all the bytes are read, the end of the stream is
      * detected, or an exception is thrown.
-     *
+     * 
      * @param in
      *            a data input stream.
      * @return a Unicode string.
@@ -1249,7 +1248,7 @@ public final class Util {
         int start = 0;
         for (int i = 0; i < segCount; ++i) {
             final int dot = s.indexOf('.', start);
-            final int end = (dot == -1) ? s.length() : dot;
+            final int end = dot == -1 ? s.length() : dot;
             segs[i] = new char[end - start];
             s.getChars(start, end, segs[i], 0);
             start = end + 1;
@@ -1306,7 +1305,7 @@ public final class Util {
             final int end = log.indexOf('\n', start);
             printStream.print(Thread.currentThread());
             printStream.print(" "); //$NON-NLS-1$
-            printStream.print(log.substring(start, (end == -1) ? log.length()
+            printStream.print(log.substring(start, end == -1 ? log.length()
                     : end + 1));
             start = end + 1;
         } while (start != 0);
@@ -1322,13 +1321,13 @@ public final class Util {
      * value is the number of bytes actually written out, not the length of the
      * string. Following the length, each character of the string is output, in
      * sequence, using the UTF-8 encoding for the character.
-     *
+     * 
      * @param str
      *            a string to be written.
      * @return the number of bytes written to the stream.
      * @exception IOException
      *                if an I/O error occurs.
-     *
+     * 
      */
     public static int writeUTF(final OutputStream out, final char[] str)
             throws IOException {
@@ -1395,7 +1394,7 @@ public final class Util {
 
     /**
      * Returns the contents of the given file as a byte array.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the file.
      */
@@ -1418,7 +1417,7 @@ public final class Util {
     /**
      * Returns the contents of the given file as a char array. When encoding is
      * null, then the platform default one is used
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the file.
      */
@@ -1440,14 +1439,30 @@ public final class Util {
         }
     }
 
+    public static char[] getFileCharContent(final String path,
+            final String encoding) throws IOException {
+        InputStream stream = null;
+        try {
+            stream = new BufferedInputStream(new FileInputStream(path));
+            return getInputStreamAsCharArray(stream, -1, encoding);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (final IOException e) {
+                }
+            }
+        }
+    }
+
     /*
      * NIO support to get input stream as byte array. Not used as with JDK 1.4.2
      * this support is slower than standard IO one... Keep it as comment for
      * future in case of next JDK versions improve performance in this area...
-     *
+     * 
      * public static byte[] getInputStreamAsByteArray(FileInputStream stream,
      * int length) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * byte[] contents = new byte[size]; ByteBuffer buffer =
@@ -1458,7 +1473,7 @@ public final class Util {
      * specified (ie. if length != -1), only length bytes are returned.
      * Otherwise all bytes in the stream are returned. Note this doesn't close
      * the stream.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the stream.
      */
@@ -1520,7 +1535,7 @@ public final class Util {
      * future in case of next JDK versions improve performance in this area...
      * public static char[] getInputStreamAsCharArray(FileInputStream stream,
      * int length, String encoding) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * Charset charset = encoding==null?systemCharset:Charset.forName(encoding);
@@ -1536,14 +1551,14 @@ public final class Util {
      * length is specified (ie. if length != -1), only length chars are
      * returned. Otherwise all chars in the stream are returned. Note this
      * doesn't close the stream.
-     *
+     * 
      * @throws IOException
      *             if a problem occured reading the stream.
      */
     public static char[] getInputStreamAsCharArray(final InputStream stream,
             final int length, final String encoding) throws IOException {
         InputStreamReader reader = null;
-        reader = (encoding == null) ? new InputStreamReader(stream)
+        reader = encoding == null ? new InputStreamReader(stream)
                 : new InputStreamReader(stream, encoding);
         char[] contents;
         if (length == -1) {
@@ -1655,7 +1670,7 @@ public final class Util {
 
     /**
      * Converts a boolean value into Boolean.
-     *
+     * 
      * @param bool
      *            The boolean to convert
      * @return The corresponding Boolean object (TRUE or FALSE).
@@ -1669,7 +1684,7 @@ public final class Util {
 
     /**
      * Get the string value of an Erlang string, empty if empty list
-     *
+     * 
      * @param o
      *            Erlang string or list
      * @return string value
@@ -1706,7 +1721,7 @@ public final class Util {
 
     /**
      * Return true if it's the atom ok or a tuple {ok, ...}
-     *
+     * 
      * @param o
      *            atom or tuple
      * @return true if ok
@@ -1724,7 +1739,7 @@ public final class Util {
 
     /**
      * return true if it's the atom error or a tuple {error, ...}
-     *
+     * 
      * @param o
      *            atom or tuple
      * @return true if error
@@ -1773,6 +1788,10 @@ public final class Util {
         } else {
             sb.append(o.toString());
         }
+    }
+
+    public static String normalizeSpaces(final String string) {
+        return string.replaceAll("[\t\n\r ]+", " ");
     }
 
 }

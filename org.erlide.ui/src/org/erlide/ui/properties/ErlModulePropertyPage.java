@@ -13,7 +13,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.TypeConverter;
 
@@ -43,7 +43,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
 		String value = "There is no module information about this file.";
 		if (module != null) {
 			IErlProject project = module.getErlProject();
-			OldErlangProjectProperties prefs = project.getProperties();
+			IOldErlangProjectProperties prefs = project.getProperties();
 			IPath beamPath = prefs.getOutputDir().append(
 					module.getModuleName()).addFileExtension("beam");
 			IFile beam = project.getProject().getFile(beamPath);

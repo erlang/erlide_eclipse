@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -63,9 +62,6 @@ public final class ErlangCore {
      */
     public static final String ATT_HANDLE_ID = "org.erlide.core.erlang.internal.ErlModelManager.handleId"; //$NON-NLS-1$
 
-    public static final int EXTERNAL_MODULES = 1;
-    public static final int EXTERNAL_INCLUDES = 2;
-
     public static final IErlModelManager getModelManager() {
         return ErlModelManager.getDefault();
     }
@@ -82,10 +78,10 @@ public final class ErlangCore {
         return BackendManager.getDefault();
     }
 
-    public static OldErlangProjectProperties getProjectProperties(
+    public static IOldErlangProjectProperties getProjectProperties(
             final IProject project) {
-        return getModelManager().getErlangModel().getErlangProject(
-                project.getName()).getProperties();
+        return getModelManager().getErlangModel()
+                .getErlangProject(project.getName()).getProperties();
     }
 
     /**
@@ -100,7 +96,7 @@ public final class ErlangCore {
      * <li>Look for existing Erlang runtimes in a few obvious places and install
      * them, choosing a suitable one as default.</li>
      * </ul>
-     *
+     * 
      */
     public static void initializeRuntimesList() {
         if (getRuntimeInfoManager().getDefaultRuntime() != null) {
@@ -174,12 +170,12 @@ public final class ErlangCore {
      * values. These options allow to configure the behaviour of the underlying
      * components. The client may safely use the result as a template that they
      * can modify and then pass to <code>setOptions</code>.
-     *
+     * 
      * Helper constants have been defined on ErlangCore for each of the option
      * PLUGIN_ID and their possible constant values.
-     *
+     * 
      * Note: more options might be added in further releases.
-     *
+     * 
      * <pre>
      * RECOGNIZED OPTIONS:
      * COMPILER / Generating Source Debug Attribute
@@ -339,7 +335,7 @@ public final class ErlangCore {
      *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
      *     - default:           &quot;ignore&quot;
      * </pre>
-     *
+     * 
      * @return a mutable table containing the default settings of all known
      *         options (key type: <code>String</code>; value type:
      *         <code>String</code>)
@@ -370,7 +366,7 @@ public final class ErlangCore {
 
     /**
      * Returns the workspace root default charset encoding.
-     *
+     * 
      * @return the name of the default charset encoding for workspace root.
      * @see IContainer#getDefaultCharset()
      * @see ResourcesPlugin#getEncoding()
@@ -393,7 +389,7 @@ public final class ErlangCore {
     /**
      * Configures the given marker attribute map for the given Erlang element.
      * Used for markers, which denote a Erlang element rather than a resource.
-     *
+     * 
      * @param attributes
      *            the mutable marker attribute map (key type:
      *            <code>String</code>, value type: <code>String</code>)
@@ -412,7 +408,7 @@ public final class ErlangCore {
     /**
      * Configures the given marker for the given Erlang element. Used for
      * markers, which denote a Erlang element rather than a resource.
-     *
+     * 
      * @param marker
      *            the marker to be configured
      * @param element
@@ -448,7 +444,7 @@ public final class ErlangCore {
      * If this method is called in the dynamic scope of another such call, this
      * method simply runs the action.
      * </p>
-     *
+     * 
      * @param action
      *            the action to perform
      * @param monitor
@@ -486,7 +482,7 @@ public final class ErlangCore {
      * can be run simultaneously with workspace changes in other threads. See
      * <code>IWorkspace.run(...)</code> for more details.
      * </p>
-     *
+     * 
      * @param action
      *            the action to perform
      * @param rule

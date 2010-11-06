@@ -45,11 +45,12 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlangFirstThat;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -71,11 +72,6 @@ import erlang.FunctionRef;
  * @see IErlModel
  */
 public class ErlModel extends Openable implements IErlModel {
-
-    /**
-     * A array with all the non-erlang projects contained by this model
-     */
-    private IProject[] nonErlangProjects;
 
     private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
             5);
@@ -361,48 +357,9 @@ public class ErlModel extends Openable implements IErlModel {
         return null;
     }
 
-    /**
-     * Compute the non-java resources contained in this java project.
-     */
-    private IProject[] computeNonErlangResources() {
-        final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-                .getProjects();
-        final int length = projects.length;
-        IProject[] resources = null;
-        int index = 0;
-        for (int i = 0; i < length; i++) {
-            final IProject project = projects[i];
-            if (!ErlideUtil.hasErlangNature(project)) {
-                if (resources == null) {
-                    resources = new IProject[length];
-                }
-                resources[index++] = project;
-            }
-        }
-        if (index == 0) {
-            return NO_NON_ERLANG_RESOURCES;
-        }
-        if (index < length) {
-            System.arraycopy(resources, 0, resources = new IProject[index], 0,
-                    index);
-        }
-        return resources;
-    }
-
-    /**
-     * Returns an array of non-java resources contained in the receiver.
-     */
-    public IProject[] getNonErlangResources() throws ErlModelException {
-
-        if (nonErlangProjects == null) {
-            nonErlangProjects = computeNonErlangResources();
-        }
-        return nonErlangProjects;
-    }
-
     public void notifyChange(final IErlElement element) {
-        ErlLogger.debug("^> notifying change of " + element.getName());
         if (System.getProperty("erlide.model.notify") != null) {
+            ErlLogger.debug("^> notifying change of " + element.getName());
             ErlLogger.debug("   caller = " + getStack());
         }
         for (int i = 0; i < fListeners.size(); i++) {
@@ -512,18 +469,21 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof IErlProject) {
-                final IErlProject p = (IErlProject) e;
-                try {
-                    final IErlModule m = p.getModule(name);
-                    if (m != null) {
-                        return m;
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlProject) {
+                    final IErlProject p = (IErlProject) e;
+                    try {
+                        final IErlModule m = p.getModule(name);
+                        if (m != null) {
+                            return m;
+                        }
+                    } catch (final ErlModelException e1) {
+                        e1.printStackTrace();
                     }
-                } catch (final ErlModelException e1) {
-                    e1.printStackTrace();
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -534,7 +494,7 @@ public class ErlModel extends Openable implements IErlModel {
 
         final IErlProject p = getErlangProject(project.getName());
 
-        final OldErlangProjectProperties props = p.getProperties();
+        final IOldErlangProjectProperties props = p.getProperties();
 
         final IFile file = project.getFile(".");
         if (!file.isLinked()) {
@@ -630,21 +590,26 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
-    public String getExternal(final IErlProject project, final int externalFlag) {
+    public enum External {
+        EXTERNAL_MODULES, EXTERNAL_INCLUDES
+    }
+
+    private String getExternal(final IErlProject project,
+            final External external) {
         final IPreferencesService service = Platform.getPreferencesService();
-        final String key = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? "default_external_includes"
+        final String key = external == External.EXTERNAL_INCLUDES ? "default_external_includes"
                 : "default_external_modules";
-        String result = getExternal(project, externalFlag, service, key,
+        String result = getExternal(project, external, service, key,
                 "org.erlide.ui");
-        if ("".equals(result)) {
-            result = getExternal(null, externalFlag, service, key,
+        if ("".equals(result) && project != null) {
+            result = getExternal(null, external, service, key,
                     ErlangPlugin.PLUGIN_ID);
         }
         return result;
     }
 
     private String getExternal(final IErlProject project,
-            final int externalFlag, final IPreferencesService service,
+            final External external, final IPreferencesService service,
             final String key, final String pluginId) {
         final String s = service.getString(pluginId, key, "", null);
         if (s.length() > 0) {
@@ -652,8 +617,8 @@ public class ErlModel extends Openable implements IErlModel {
         }
         final String global = s;
         if (project != null) {
-            final OldErlangProjectProperties prefs = project.getProperties();
-            final String projprefs = externalFlag == ErlangCore.EXTERNAL_INCLUDES ? prefs
+            final IOldErlangProjectProperties prefs = project.getProperties();
+            final String projprefs = external == External.EXTERNAL_INCLUDES ? prefs
                     .getExternalIncludesFile() : prefs.getExternalModulesFile();
             return PreferencesUtils
                     .packArray(new String[] { projprefs, global });
@@ -671,7 +636,8 @@ public class ErlModel extends Openable implements IErlModel {
             final OtpErlangObject[] objects = new OtpErlangObject[names.length];
             for (int i = 0; i < names.length; i++) {
                 final String name = names[i];
-                final String value = pvm.getValue(name).toOSString();
+                final String value = PluginUtils.getPVMValue(pvm, name)
+                        .toOSString();
                 objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                         new OtpErlangString(name), new OtpErlangString(value) });
             }
@@ -698,15 +664,26 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModuleExt(final String name) {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof IErlProject) {
-                final IErlProject p = (IErlProject) e;
-                final IErlModule m = p.getModuleExt(name);
-                if (m != null) {
-                    return m;
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlProject) {
+                    final IErlProject p = (IErlProject) e;
+                    final IErlModule m = p.getModuleExt(name);
+                    if (m != null) {
+                        return m;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
+    }
+
+    public String getExternalModules(final IErlProject erlProject) {
+        return getExternal(erlProject, External.EXTERNAL_MODULES);
+    }
+
+    public String getExternalIncludes(final IErlProject erlProject) {
+        return getExternal(erlProject, External.EXTERNAL_INCLUDES);
     }
 }

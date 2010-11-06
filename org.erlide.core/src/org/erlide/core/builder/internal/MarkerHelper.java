@@ -75,7 +75,7 @@ public final class MarkerHelper {
 
     /**
      * Add error markers from a list of error tuples
-     *
+     * 
      * @param resource
      * @param errorList
      */
@@ -89,26 +89,21 @@ public final class MarkerHelper {
                 if (msg.length() > 1000) {
                     msg = msg.substring(0, 1000) + "......";
                 }
-                final String fileName = (String) TypeConverter.erlang2java(data
-                        .elementAt(1), String.class);
+                final String fileName = (String) TypeConverter.erlang2java(
+                        data.elementAt(1), String.class);
                 IResource res = resource;
                 if (!BuilderHelper.samePath(resource.getLocation().toString(),
                         fileName)) {
                     final IProject project = resource.getProject();
-                    res = BuilderHelper
-                            .findResourceByLocation(project, fileName);
+                    res = BuilderHelper.findResourceByLocation(project,
+                            fileName);
                     if (res == null) {
                         try {
                             final IErlModel model = ErlangCore.getModel();
                             final String includeFile = ModelUtils
-                                    .findIncludeFile(
-                                            project,
-                                            fileName,
-                                            model
-                                                    .getExternal(
-                                                            model
-                                                                    .findProject(project),
-                                                            ErlangCore.EXTERNAL_INCLUDES));
+                                    .findIncludeFile(project, fileName, model
+                                            .getExternalIncludes(model
+                                                    .findProject(project)));
                             if (includeFile != null) {
                                 res = ResourceUtil.openExternal(includeFile);
                             }
@@ -282,12 +277,13 @@ public final class MarkerHelper {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             final int severity = problemSeverity;
 
-            final ISourceRange range = (erlElement == null) ? null : erlElement
+            final ISourceRange range = erlElement == null ? null : erlElement
                     .getNameRange();
-            final int start = (range == null) ? 0 : range.getOffset();
-            final int end = (range == null) ? 1 : start + range.getLength();
-            marker.setAttributes(new String[] { IMarker.MESSAGE,
-                    IMarker.SEVERITY, IMarker.CHAR_START, IMarker.CHAR_END },
+            final int start = range == null ? 0 : range.getOffset();
+            final int end = range == null ? 1 : start + range.getLength();
+            marker.setAttributes(
+                    new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
+                            IMarker.CHAR_START, IMarker.CHAR_END },
                     new Object[] { message, Integer.valueOf(severity),
                             Integer.valueOf(start), Integer.valueOf(end) });
         } catch (final CoreException e) {
@@ -353,10 +349,8 @@ public final class MarkerHelper {
                 for (final Tuple<String, Integer> c : cl) {
                     mkMarker(resource, c.o2, c.o1, TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, XXX,
-                            IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, FIXME,
-                            IMarker.PRIORITY_HIGH);
+                    mkMarker(resource, c.o2, c.o1, XXX, IMarker.PRIORITY_NORMAL);
+                    mkMarker(resource, c.o2, c.o1, FIXME, IMarker.PRIORITY_HIGH);
                 }
             } finally {
                 reader.close();

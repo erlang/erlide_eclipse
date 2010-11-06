@@ -52,305 +52,303 @@ import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlStructureCreator extends StructureCreator {
 
-	private static final String NAME = "Erlang Structure Compare";
+    private static final String NAME = "Erlang Structure Compare";
 
-	// private final IErlProject fProject;
+    // private final IErlProject fProject;
 
-	private final String fName;
+    private final String fName;
 
-	public ErlStructureCreator() {
-		// this(ErlangCore.getModelManager().createEmptyProject(),
-		// "comptemp.erl");
-		this("comptemp.erl");
-	}
+    public ErlStructureCreator() {
+        // this(ErlangCore.getModelManager().createEmptyProject(),
+        // "comptemp.erl");
+        this("comptemp.erl");
+    }
 
-	/**
-	 * @param name
-	 */
-	public ErlStructureCreator(final String name) {
-		super();
-		// fProject = project;
-		fName = name;
-	}
+    /**
+     * @param name
+     */
+    public ErlStructureCreator(final String name) {
+        super();
+        // fProject = project;
+        fName = name;
+    }
 
-	/**
-	 * @see IStructureCreator#getTitle
-	 */
-	public String getName() {
-		return ErlideUIPlugin.getResourceString(NAME);
-	}
+    /**
+     * @see IStructureCreator#getTitle
+     */
+    public String getName() {
+        return ErlideUIPlugin.getResourceString(NAME);
+    }
 
-	/**
-	 * A root node for the structure. It is similar to {@link StructureRootNode}
-	 * but needed to be a subclass of {@link JavaNode} because of the code used
-	 * to build the structure.
-	 */
-	private final class RootErlNode extends ErlNode implements IDisposable {
+    /**
+     * A root node for the structure. It is similar to {@link StructureRootNode}
+     * but needed to be a subclass of {@link JavaNode} because of the code used
+     * to build the structure.
+     */
+    private final class RootErlNode extends ErlNode implements IDisposable {
+        private Object fInput;
 
-		private final Object fInput;
+        private RootErlNode(final IDocument document, final Object input) {
+            super(document);
+            fInput = input;
+        }
 
-		private RootErlNode(final IDocument document, final Object input) {
-			super(document);
-			fInput = input;
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#nodeChanged
+         * (org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
+         */
+        @Override
+        protected void nodeChanged(final DocumentRangeNode node) {
+            save(this, fInput);
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#nodeChanged
-		 * (org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
-		 */
-		@Override
-		protected void nodeChanged(final DocumentRangeNode node) {
-			save(this, fInput);
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly
+         * ()
+         */
+        @Override
+        public boolean isReadOnly() {
+            if (fInput instanceof IEditableContentExtension) {
+                final IEditableContentExtension ext = (IEditableContentExtension) fInput;
+                return ext.isReadOnly();
+            }
+            return super.isReadOnly();
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly
-		 * ()
-		 */
-		@Override
-		public boolean isReadOnly() {
-			if (fInput instanceof IEditableContentExtension) {
-				final IEditableContentExtension ext = (IEditableContentExtension) fInput;
-				return ext.isReadOnly();
-			}
-			return super.isReadOnly();
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit
+         * (org.eclipse.swt.widgets.Shell)
+         */
+        @Override
+        public IStatus validateEdit(final Shell shell) {
+            if (fInput instanceof IEditableContentExtension) {
+                final IEditableContentExtension ext = (IEditableContentExtension) fInput;
+                return ext.validateEdit(shell);
+            }
+            return super.validateEdit(shell);
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit
-		 * (org.eclipse.swt.widgets.Shell)
-		 */
-		@Override
-		public IStatus validateEdit(final Shell shell) {
-			if (fInput instanceof IEditableContentExtension) {
-				final IEditableContentExtension ext = (IEditableContentExtension) fInput;
-				return ext.validateEdit(shell);
-			}
-			return super.validateEdit(shell);
-		}
+        public void dispose() {
+            fInput = null;
+        }
+    }
 
-		public void dispose() {
-			// TODO Auto-generated method stub
+    /**
+     * @see IStructureCreator#getStructure
+     */
+    @Override
+    public IStructureComparator getStructure(final Object input) {
+        String contents = null;
+        char[] buffer = null;
+        IDocument doc = CompareUI.getDocument(input);
+        if (doc == null) {
+            if (input instanceof IStreamContentAccessor) {
+                final IStreamContentAccessor sca = (IStreamContentAccessor) input;
+                try {
+                    contents = ErlangCompareUtilities.readString(sca);
+                } catch (final CoreException ex) {
+                    // return null indicates the error.
+                    return null;
+                }
+            }
 
-		}
-	}
+            if (contents != null) {
+                final int n = contents.length();
+                buffer = new char[n];
+                contents.getChars(0, n, buffer, 0);
 
-	/**
-	 * @see IStructureCreator#getStructure
-	 */
-	@Override
-	public IStructureComparator getStructure(final Object input) {
-		String contents = null;
-		char[] buffer = null;
-		IDocument doc = CompareUI.getDocument(input);
-		if (doc == null) {
-			if (input instanceof IStreamContentAccessor) {
-				final IStreamContentAccessor sca = (IStreamContentAccessor) input;
-				try {
-					contents = ErlangCompareUtilities.readString(sca);
-				} catch (final CoreException ex) {
-					// return null indicates the error.
-					return null;
-				}
-			}
+                doc = new Document(contents);
+                setupDocument(doc);
+            }
+        }
 
-			if (contents != null) {
-				final int n = contents.length();
-				buffer = new char[n];
-				contents.getChars(0, n, buffer, 0);
+        try {
+            return createStructureComparator(input, doc, null, null);
+        } catch (final CoreException e) {
+            ErlLogger.error(e); // TODO report error
+        }
+        return null;
+    }
 
-				doc = new Document(contents);
-				setupDocument(doc);
-			}
-		}
+    private ErlNode recursiveMakeErlNodes(final IErlElement element,
+            final ErlNode parent, final IDocument doc) throws ErlModelException {
+        final ErlNode n = ErlNode.createErlNode(parent, element, doc);
+        if (element instanceof IOpenable) {
+            final IOpenable o = (IOpenable) element;
+            o.open(null);
+        }
+        if (element instanceof IParent) {
+            final IParent p = (IParent) element;
+            final List<? extends IErlElement> children = p.getChildren();
+            for (final IErlElement child : children) {
+                recursiveMakeErlNodes(child, n, doc);
+            }
+        }
+        return n;
+    }
 
-		try {
-			return createStructureComparator(input, doc, null, null);
-		} catch (final CoreException e) {
-			ErlLogger.error(e); // TODO report error
-		}
-		return null;
-	}
+    /**
+     * @see IStructureCreator#canSave
+     */
+    public boolean canSave() {
+        return true;
+    }
 
-	private ErlNode recursiveMakeErlNodes(final IErlElement element,
-			final ErlNode parent, final IDocument doc) throws ErlModelException {
-		final ErlNode n = ErlNode.createErlNode(parent, element, doc);
-		if (element instanceof IOpenable) {
-			final IOpenable o = (IOpenable) element;
-			o.open(null);
-		}
-		if (element instanceof IParent) {
-			final IParent p = (IParent) element;
-			final List<? extends IErlElement> children = p.getChildren();
-			for (final IErlElement child : children) {
-				recursiveMakeErlNodes(child, n, doc);
-			}
-		}
-		return n;
-	}
+    /**
+     * @see IStructureCreator#canRewriteTree
+     */
+    public boolean canRewriteTree() {
+        return false;
+    }
 
-	/**
-	 * @see IStructureCreator#canSave
-	 */
-	public boolean canSave() {
-		return true;
-	}
+    /**
+     * @see IStructureCreator#rewriteTree
+     */
+    public void rewriteTree(final Differencer differencer,
+            final IDiffContainer root) {
+    }
 
-	/**
-	 * @see IStructureCreator#canRewriteTree
-	 */
-	public boolean canRewriteTree() {
-		return false;
-	}
+    /**
+     * @see IStructureCreator#save
+     */
+    @Override
+    public void save(final IStructureComparator structure, final Object input) {
+        if (input instanceof IEditableContent && structure instanceof ErlNode) {
+            final IDocument doc = ((ErlNode) structure).getDocument();
+            final IEditableContent bca = (IEditableContent) input;
+            final String c = doc.get();
+            bca.setContent(c.getBytes());
+        }
+    }
 
-	/**
-	 * @see IStructureCreator#rewriteTree
-	 */
-	public void rewriteTree(final Differencer differencer,
-			final IDiffContainer root) {
-	}
+    /**
+     * @see IStructureCreator#getContents
+     */
+    public String getContents(final Object node, final boolean ignoreWhitespace) {
+        if (node instanceof IStreamContentAccessor) {
+            final IStreamContentAccessor sca = (IStreamContentAccessor) node;
+            try {
+                return readString(sca.getContents());
+            } catch (final CoreException ex) {
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * @see IStructureCreator#save
-	 */
-	@Override
-	public void save(final IStructureComparator structure, final Object input) {
-		if (input instanceof IEditableContent && structure instanceof ErlNode) {
-			final IDocument doc = ((ErlNode) structure).getDocument();
-			final IEditableContent bca = (IEditableContent) input;
-			final String c = doc.get();
-			bca.setContent(c.getBytes());
-		}
-	}
+    /**
+     * Returns null if an error occurred.
+     */
+    private static String readString(final InputStream is) {
+        if (is == null) {
+            return null;
+        }
+        BufferedReader reader = null;
+        try {
+            final StringBuilder buffer = new StringBuilder();
+            final char[] part = new char[2048];
+            int read = 0;
+            reader = new BufferedReader(new InputStreamReader(is));
 
-	/**
-	 * @see IStructureCreator#getContents
-	 */
-	public String getContents(final Object node, final boolean ignoreWhitespace) {
-		if (node instanceof IStreamContentAccessor) {
-			final IStreamContentAccessor sca = (IStreamContentAccessor) node;
-			try {
-				return readString(sca.getContents());
-			} catch (final CoreException ex) {
-			}
-		}
-		return null;
-	}
+            while ((read = reader.read(part)) != -1) {
+                buffer.append(part, 0, read);
+            }
 
-	/**
-	 * Returns null if an error occurred.
-	 */
-	private static String readString(final InputStream is) {
-		if (is == null) {
-			return null;
-		}
-		BufferedReader reader = null;
-		try {
-			final StringBuilder buffer = new StringBuilder();
-			final char[] part = new char[2048];
-			int read = 0;
-			reader = new BufferedReader(new InputStreamReader(is));
+            return buffer.toString();
 
-			while ((read = reader.read(part)) != -1) {
-				buffer.append(part, 0, read);
-			}
+        } catch (final IOException ex) {
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException ex) {
+                }
+            }
+        }
+        return null;
+    }
 
-			return buffer.toString();
+    @Override
+    protected IStructureComparator createStructureComparator(
+            final Object element, IDocument document,
+            final ISharedDocumentAdapter sharedDocumentAdapter,
+            final IProgressMonitor monitor) throws CoreException {
+        IErlModule module = null;
+        String s = "";
+        if (element instanceof ResourceNode) {
+            final ResourceNode rn = (ResourceNode) element;
+            final IResource r = rn.getResource();
+            if (r instanceof IFile) {
+                final IFile f = (IFile) r;
+                final IErlElement e = ErlangCore.getModel().findElement(r);
+                if (e instanceof IErlModule) {
+                    module = (IErlModule) e;
+                }
+                if (document == null) {
+                    try {
+                        s = readString(f.getContents());
+                        document = new Document(s);
+                    } catch (final CoreException e1) {
+                    }
+                }
+            }
+        } else if (document == null
+                && element instanceof IStreamContentAccessor) {
+            try {
+                final InputStream contents = ((IStreamContentAccessor) element)
+                        .getContents();
+                s = readString(contents);
+                document = new Document(s);
+            } catch (final CoreException ex) {
+            }
+        }
+        if (module == null) {
+            module = ErlangCore.getModelManager().getModuleFromText(fName, s,
+                    null);
+        }
+        ErlNode root = null;
+        try {
+            module.open(null);
+            root = new RootErlNode(document, element);
+            recursiveMakeErlNodes(module, root, document);
+        } catch (final ErlModelException e) {
+            ErlLogger.warn(e);
+        }
 
-		} catch (final IOException ex) {
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (final IOException ex) {
-				}
-			}
-		}
-		return null;
-	}
+        return root;
+    }
 
-	@Override
-	protected IStructureComparator createStructureComparator(
-			final Object element, IDocument document,
-			final ISharedDocumentAdapter sharedDocumentAdapter,
-			final IProgressMonitor monitor) throws CoreException {
-		IErlModule module = null;
-		String s = "";
-		if (element instanceof ResourceNode) {
-			final ResourceNode rn = (ResourceNode) element;
-			final IResource r = rn.getResource();
-			if (r instanceof IFile) {
-				final IFile f = (IFile) r;
-				final IErlElement e = ErlangCore.getModel().findElement(r);
-				if (e instanceof IErlModule) {
-					module = (IErlModule) e;
-				}
-				if (document == null) {
-					try {
-						s = readString(f.getContents());
-						document = new Document(s);
-					} catch (final CoreException e1) {
-					}
-				}
-			}
-		} else if (document == null
-				&& element instanceof IStreamContentAccessor) {
-			try {
-				final InputStream contents = ((IStreamContentAccessor) element)
-						.getContents();
-				s = readString(contents);
-				document = new Document(s);
-			} catch (final CoreException ex) {
-			}
-		}
-		if (module == null) {
-			module = ErlangCore.getModelManager().getModuleFromText(fName, s,
-					null);
-		}
-		ErlNode root = null;
-		try {
-			module.open(null);
-			root = new RootErlNode(document, element);
-			recursiveMakeErlNodes(module, root, document);
-		} catch (final ErlModelException e) {
-			ErlLogger.warn(e);
-		}
-
-		return root;
-	}
-
-	@Override
-	protected String[] getPath(final Object element, final Object input) {
-		if (element instanceof IErlElement) {
-			IErlElement e = (IErlElement) element;
-			// build a path starting at the given element and walk
-			// up the parent chain until we reach a module
-			final List<String> args = new ArrayList<String>();
-			while (e != null) {
-				// each path component has a name that uses the same
-				// conventions as a JavaNode name
-				final String name = ErlangCompareUtilities.getErlElementID(e);
-				if (name == null) {
-					return null;
-				}
-				args.add(name);
-				if (e instanceof IErlModule) {
-					break;
-				}
-				e = e.getParent();
-			}
-			Collections.reverse(args);
-			return args.toArray(new String[args.size()]);
-		}
-		return null;
-	}
+    @Override
+    protected String[] getPath(final Object element, final Object input) {
+        if (element instanceof IErlElement) {
+            IErlElement e = (IErlElement) element;
+            // build a path starting at the given element and walk
+            // up the parent chain until we reach a module
+            final List<String> args = new ArrayList<String>();
+            while (e != null) {
+                // each path component has a name that uses the same
+                // conventions as a JavaNode name
+                final String name = ErlangCompareUtilities.getErlElementID(e);
+                if (name == null) {
+                    return null;
+                }
+                args.add(name);
+                if (e instanceof IErlModule) {
+                    break;
+                }
+                e = e.getParent();
+            }
+            Collections.reverse(args);
+            return args.toArray(new String[args.size()]);
+        }
+        return null;
+    }
 }
