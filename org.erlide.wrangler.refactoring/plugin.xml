@@ -508,13 +508,13 @@
 			locationURI="menu:org.eclipse.ui.main.menu?after=org.erlide.wrangler.refactormenu">
 			<menu id="org.erlide.wrangler.codeinspectionmenu" label="Code Inspection"
 				mnemonic="I" tooltip="Code inspection functionalities">
-				<command commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about"
+				<!--<command commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about"
 					label="About" mnemonic="A" style="push">
 				</command>
     <separator
           name="org.erlide.wrangler.refactoring.separator1"
           visible="true">
-    </separator>
+    </separator>-->
 			</menu>
 		</menuContribution>
 	</extension>
