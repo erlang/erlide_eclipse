@@ -196,8 +196,9 @@ public final class WranglerUtils {
 		}
 	}
 
-	static private boolean isErlangFile(final IFile file) {
-		return "erl".equals(file.getFileExtension());
+	static public boolean isErlangFile(final IFile file) {
+		return "erl".equals(file.getFileExtension())
+				|| "hrl".equals(file.getFileExtension());
 	}
 
 	/**

@@ -21,7 +21,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
@@ -98,6 +101,9 @@ public class RefactoringHandler extends AbstractHandler {
 					e1.getMessage());
 			return null;
 		}
+
+		if (!checkForDirtyEditors())
+			return null;
 
 		DefaultWranglerRefactoringWizard wizard = null;
 		WranglerRefactoring refactoring = null;
@@ -375,6 +381,34 @@ public class RefactoringHandler extends AbstractHandler {
 
 		checkWarningMessages();
 		return null;
+
+	}
+
+	private boolean checkForDirtyEditors() {
+		IEditorPart[] dirtyEditors = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
+		if (dirtyEditors.length > 0) {
+			Boolean answer = MessageDialog
+					.openQuestion(
+							PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getShell(),
+							"Unsaved changes",
+							"For running Wrangler refactorings, all Erlang files need to be saved. Would you like to continue with saving files?");
+			if (answer) {
+				for (IEditorPart ed : dirtyEditors) {
+					if (ed instanceof ITextEditor) {
+						ITextEditor ted = (ITextEditor) ed;
+						IFileEditorInput fei = (IFileEditorInput) ted
+								.getEditorInput();
+						if (WranglerUtils.isErlangFile(fei.getFile()))
+							ed.doSave(null);
+
+					}
+				}
+				return true;
+			}
+		}
+		return false;
 
 	}
 
