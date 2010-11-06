@@ -42,7 +42,8 @@ public abstract class AbstractErlSelection implements IErlSelection {
 		IProject project = file.getProject();
 		IErlModel model = ErlangCore.getModel();
 		IErlProject actualProject = model.getErlangProject(project.getName());
-		OldErlangProjectProperties prop = actualProject.getProperties();
+		OldErlangProjectProperties prop = (OldErlangProjectProperties) actualProject
+				.getProperties();
 		IPath projectLocation = actualProject.getProject().getLocation();
 
 		Collection<IPath> sourcDirs = prop.getSourceDirs();
