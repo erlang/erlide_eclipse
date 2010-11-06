@@ -77,12 +77,12 @@ fun_to_process(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor) ->
 	  AnnAST2 = do_fun_to_process(AnnAST, Info, DefinePos, FunName, Arity, ProcessName1),
 	  case Editor of
 	    emacs ->
-		refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST2}], Cmd),
+		refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST2}], TabWidth, Cmd),
 		?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 			     [FName]),
 		{ok, [FName]};
 	    eclipse ->
-		Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST2),
+		Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST2, TabWidth),
 		Res = [{FName, FName, Content}],
 		{ok, Res}
 	  end;
@@ -106,10 +106,10 @@ fun_to_process_1(FName, Line, Col, ProcessName, SearchPaths, TabWidth, Editor, L
     case Editor of
       emacs ->
 	  Res = [{{FName, FName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, LogMsg),
+	  refac_util:write_refactored_files_for_preview(Res, TabWidth, LogMsg),
 	  {ok, [FName]};
       eclipse ->
-	  Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST1),
+	  Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST1, TabWidth),
 	  Res = [{FName, FName, Content}],
 	  {ok, Res}
     end.

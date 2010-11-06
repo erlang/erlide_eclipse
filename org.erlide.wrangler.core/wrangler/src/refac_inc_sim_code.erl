@@ -34,7 +34,7 @@
 
 -export([inc_sim_code_detection_eclipse/8]).
 
--export([inc_sim_code_detection_command_line/8]).
+-export([inc_sim_code_detection_command/8]).
 
 %%-define(debug, true).
 
@@ -51,7 +51,7 @@
 -define(DEFAULT_FREQ, 2).
 -define(DEFAULT_SIMI_SCORE, 0.8).
 -define(DEFAULT_NEW_VARS, 3).
--define(MIN_TOKS, 20).
+-define(MIN_TOKS, 10).
 
 %% record to store the threshold values.
 -record(threshold, 
@@ -94,15 +94,14 @@ get_temp_file_path(Tab) ->
  %% 	 }).
 
 -spec(inc_sim_code_detection_in_buffer/8::(FileName::filename(), MinLen::float(), MinToks::integer(),
-				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
-				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
+ 				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
+ 				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
 inc_sim_code_detection_in_buffer(FileName, MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1, SearchPaths, TabWidth)->
     inc_sim_code_detection([FileName], MinLen1, MinToks1, MinFreq1, MaxVars1, SimiScore1, SearchPaths, TabWidth).
   
 -spec(inc_sim_code_detection/8::(DirFileList::[filename()|dir()], MinLen::float(), MinToks::integer(),
-				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
-				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
-
+ 				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
+ 				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
 inc_sim_code_detection(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth) ->
     ?wrangler_io("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p, ~p,~p,~p).\n",
 		 [?MODULE,DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth]), 
@@ -122,19 +121,18 @@ inc_sim_code_detection(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1
     {ok, lists:flatten(LogMsg)++CloneReport}.
 
 
--spec(inc_sim_code_detection_command_line/8::(DirFileList::[filename()|dir()], MinLen::float(), MinToks::integer(),
-				 MinFreq::integer(),  MaxVars:: integer(),SimiScore::float(), 
-				 SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
-inc_sim_code_detection_command_line(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p, ~p,~p,~p).\n",
-		 [?MODULE,DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth]), 
+-spec(inc_sim_code_detection_command/8::(DirFileList::[filename()|dir()], MinLen::integer(), MinToks::integer(),
+					      MinFreq::integer(),  MaxVars::integer(),SimiScore::float(), 
+					      SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
+inc_sim_code_detection_command(DirFileList,MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1,SearchPaths,TabWidth) ->
     {MinLen,MinToks,MinFreq,MaxVars,SimiScore} = get_parameters_eclipse(MinLen1,MinToks1,MinFreq1,MaxVars1,SimiScore1), 
     Files = refac_util:expand_files(DirFileList,".erl"), 
     case Files of
 	[] ->
 	    ?wrangler_io("Warning: No files found in the searchpaths specified.",[]);
-	_-> inc_sim_code_detection_0(Files, MinLen, MinToks, MinFreq, MaxVars, 
-				     SimiScore, SearchPaths, TabWidth, command_line)
+	_-> Cs=inc_sim_code_detection_0(Files, MinLen, MinToks, MinFreq, MaxVars, 
+					SimiScore, SearchPaths, TabWidth, command),
+	    refac_code_search_utils:display_clone_result(lists:reverse(Cs), "Similar")
     end, 
     {ok, "Similar code detection finished."}.
 
@@ -1653,7 +1651,6 @@ to_dets(Ets, Dets) ->
 -spec(get_parameters_eclipse/5::(MinLen::integer(), MinToks::integer(), MinFreq::integer(), 
 					 MaxNewVars::integer(),SimiScore::float())->
 					      {integer(), integer(), integer(), integer(),float()}).
-
 get_parameters_eclipse(MinLen1,MinToks1,MinFreq1,MaxNewVars1,SimiScore1) ->
     MinLen = case MinLen1<1 of
 	       true ->

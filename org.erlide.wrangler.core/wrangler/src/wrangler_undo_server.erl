@@ -33,7 +33,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_undo_server/0, undo/0, files_to_change/0, add_to_history/1]).
+-export([start_undo_server/0, undo/0, undo_emacs/0, files_to_change/0, add_to_history/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -52,21 +52,24 @@ start_undo_server() ->
     process_flag(trap_exit, true),
     gen_server:start_link({local, refactor_undo}, ?MODULE, [], []).
 
--spec(undo/0::() ->
- 	     {ok, [filename()], string(), filename()}).
+%%-spec(undo_emacs/0::() ->
+%%		 {ok, [filename()], string(), filename()}|{error, string()}).
+undo_emacs() ->
+    gen_server:call(refactor_undo, undo_emacs).
+   
+%%-spec(undo/0::() ->{ok, [filename()]}|{error, string()}).
 undo() ->
     gen_server:call(refactor_undo, undo).
    
 
 %%This is added to make Wrangler work with clearcase.
--spec(files_to_change/0::() ->
-	     {ok, [filename()]}).
+%%-spec(files_to_change/0::() ->
+%%	     {ok, [filename()]}).
 files_to_change() ->
     gen_server:call(refactor_undo, files_to_change).
    
 
--spec(add_to_history/1::([{filename(), filename(), binary()}]) -> ok).
-	     
+%%-spec(add_to_history/1::({filename(), filename(), binary()}) -> ok).
 add_to_history({Files, LogMsg, CurFile})->
     gen_server:cast(refactor_undo, {add, {Files, LogMsg, CurFile}}).
 %%====================================================================
@@ -92,7 +95,7 @@ init([]) ->
 %%                                      {stop, Reason, State}
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
-handle_call(undo, _From, State=#state{history=History}) ->
+handle_call(undo_emacs, _From, State=#state{history=History}) ->
     case History of 
 	[] ->
 	    {reply, {error, "No more history to undo!"}, State};
@@ -101,6 +104,21 @@ handle_call(undo, _From, State=#state{history=History}) ->
 	    Modified = lists:map(fun({{OldFileName, NewFileName,_}, _Con})->
 					 [OldFileName, NewFileName] end,Files),
 	    {reply,{ok, Modified, LogMsg, CurFile}, #state{history=T}}
+    end;
+handle_call(undo, _From, State=#state{history=History}) ->
+    case History of 
+	[] ->
+	    {reply, {error, "No more history to undo!"}, State};
+	[{Files, _LogMsg, _CurFile}|T] -> 
+	    ok = undo_files(Files),
+	    Modified = lists:flatmap(fun({{OldFileName, NewFileName,_}, _Con})->
+					 case OldFileName == NewFileName of 
+					     true -> [OldFileName];
+					     false ->
+						 [OldFileName, NewFileName]
+					 end
+				 end,Files),
+	    {reply,{ok, Modified}, #state{history=T}}
     end;
 handle_call(files_to_change, _From, State=#state{history=History}) ->
     case History of 

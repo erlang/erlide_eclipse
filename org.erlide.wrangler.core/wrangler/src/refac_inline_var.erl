@@ -46,17 +46,17 @@
 
 -include("../include/wrangler.hrl").
 
--spec (inline_var/5::(filename(), integer(), integer(),[dir()], integer()) ->
-			   {ok, string()}|
-			   {ok,[{pos(), pos()}], string()}).
+%%-spec (inline_var/5::(filename(), integer(), integer(),[dir()], integer()) ->
+%%			   {ok, string()}|
+%%			   {ok,[{pos(), pos()}], string()}).
 inline_var(FName, Line, Col, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:inline_var(~p, ~p, ~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
     inline_var(FName, Line, Col, SearchPaths, TabWidth, emacs).
 
--spec (inline_var_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) ->
-				   {ok, [{filename(), filename(), string()}]} |
-				   {ok, [{pos(), pos()}]}).
+%%-spec (inline_var_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) ->
+%%				   {ok, [{filename(), filename(), string()}]} |
+%%				   {ok, [{pos(), pos()}]}).
 inline_var_eclipse(FName, Line, Col, SearchPaths, TabWidth) ->
     inline_var(FName, Line, Col, SearchPaths, TabWidth, eclipse).
 
@@ -74,7 +74,7 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
 	    case is_use_instance(VarNode) of 
 		true ->
 		    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [refac_misc:get_range(VarNode)]),
-		    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd1);
+		    refac_util:write_refactored_files([{{FName,FName},AnnAST1}], Editor, TabWidth,Cmd1);
 		false ->
 		    Cands = search_for_unfold_candidates(Form, MatchExpr, VarNode),
 		    case Cands of
@@ -82,7 +82,7 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
 			    throw({error, "No unfoldable use instances of this variable were found."});
 			[C] ->
 			    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [C]),
-			    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd1);
+			    refac_util:write_refactored_files([{{FName,FName},AnnAST1}],Editor, TabWidth, Cmd1);
 			_ ->
 			    case Editor of 
 				emacs ->
@@ -99,15 +99,15 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
     end.
 
 
--spec (inline_var_1/7::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer(), string()) ->
-				     {ok, [{filename(), filename(), string()}]}).
+%%-spec (inline_var_1/7::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer(), string()) ->
+%%				     {ok, [{filename(), filename(), string()}]}).
 inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd) ->
     ?wrangler_io("\nCMD: ~p:inline_var_1(~p, ~p, ~p, ~p, ~p, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Candidates, SearchPaths, TabWidth, ""]),
     inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd, emacs).
 
--spec (inline_var_eclipse_1/6::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer()) ->
-				     {ok, [{filename(), filename(), string()}]}).				   
+%%-spec (inline_var_eclipse_1/6::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer()) ->
+%%				     {ok, [{filename(), filename(), string()}]}).				   
 inline_var_eclipse_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth) ->
     inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, "", eclipse).
 
@@ -117,7 +117,7 @@ inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd, Editor
     {ok, VarNode} =interface_api:pos_to_var(Form, {Line, Col}),
     {ok, MatchExpr} = get_var_define_match_expr(Form, VarNode),
     AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, Candidates),
-    refac_util:write_refactored_files(FileName, AnnAST1, Editor, Cmd).
+    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}], Editor, TabWidth, Cmd).
 
 %% inline_var_1(FileName, Line, Cols, Cands, SearchPaths, TabWidth, Cmd)
 is_use_instance(VarNode) ->

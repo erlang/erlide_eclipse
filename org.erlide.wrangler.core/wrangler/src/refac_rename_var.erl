@@ -114,16 +114,16 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 			       "existing binding structure of variables."});
 	     _ -> ok
 	   end,
-	   {AnnAST2, _Changed} = rename(AnnAST1, DefinePos, NewName1),
-	   refac_util:write_refactored_files(FName, AnnAST2, Editor, Cmd1);
+	    {AnnAST2, _Changed} = rename(AnnAST1, DefinePos, NewName1),
+	    refac_util:write_refactored_files([{{FName,FName}, AnnAST2}], Editor, TabWidth, Cmd1);
        true ->
-	   case Editor of
-	     emacs ->
-		 {ok, []};
-	     _ ->
-		 Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST1),
-		 {ok, [{FName, FName, Content}]}
-	   end
+	    case Editor of
+		emacs ->
+		    {ok, []};
+		_ ->
+		    Content = refac_prettypr:print_ast(refac_util:file_format(FName), AnnAST1, TabWidth),
+		    {ok, [{FName, FName, Content}]}
+	    end
     end.
 
 

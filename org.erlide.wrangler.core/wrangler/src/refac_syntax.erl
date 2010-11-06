@@ -206,8 +206,11 @@
 %%
 %%	type(Com) = comment
 
--record(com, {pre  = [] :: [syntaxTree()],
-	      post = [] :: [syntaxTree()]}).
+%% -record(com, {pre  = [] :: [syntaxTree()],
+%% 	      post = [] :: [syntaxTree()]}).
+
+-record(com, {pre  = [],
+	      post = []}).
 
 %% `attr' records store node attributes as an aggregate.
 %%
@@ -220,9 +223,13 @@
 %% where `Pos' `Ann' and `Comments' are the corresponding values of a
 %% `tree' or `wrapper' record.
 
--record(attr, {pos = 0    :: term(),
-	       ann = []   :: [term()],
-	       com = none :: 'none' | #com{}}).
+%% -record(attr, {pos = {0,0}    :: term(),
+%% 	       ann = []   :: [term()],
+%% 	       com = none :: 'none' | #com{}}).
+
+-record(attr, {pos = {0,0},
+	       ann = [],
+	       com = none}).
 
 %%-type syntaxTreeAttributes() :: #attr{}.
 
@@ -236,9 +243,13 @@
 %%
 %%	is_tree(Tree) = true
 
--record(tree, {type           :: atom(),
-	       attr = #attr{} :: #attr{},
-	       data           :: term()}).
+%% -record(tree, {type           :: atom(),
+%% 	       attr = #attr{} :: #attr{},
+%% 	       data           :: term()}).
+
+-record(tree, {type  ,
+	       attr = #attr{},
+	       data          }).
 
 %% `wrapper' records are used for attaching new-form node information to
 %% `erl_parse' trees.
@@ -251,13 +262,17 @@
 %%
 %%	is_tree(Wrapper) = false
 
--record(wrapper, {type           :: atom(),
-		  attr = #attr{} :: #attr{},
-		  tree           :: term()}).
+%% -record(wrapper, {type           :: atom(),
+%% 		  attr = #attr{} :: #attr{},
+%% 		  tree           :: term()}).
+
+-record(wrapper, {type      ,
+		  attr = #attr{} ,
+		  tree           }).
 
 %% =====================================================================
 
--type syntaxTree() :: #tree{} | #wrapper{} | tuple(). % XXX: refine
+%%-type syntaxTree() :: #tree{} | #wrapper{} | tuple(). % XXX: refine
 
 %% =====================================================================
 %%
@@ -2363,8 +2378,8 @@ binary_field_size(Node) ->
 %%	Body = Size = syntaxTree()
 
 size_qualifier(Body, Size) ->
-    tree(size_qualifier,
-	 #size_qualifier{body = Body, size = Size}).
+    copy_pos(Body, tree(size_qualifier,
+	 #size_qualifier{body = Body, size = Size})).
 
 %% =====================================================================
 %% @spec size_qualifier_body(syntaxTree()) -> syntaxTree()
@@ -3276,7 +3291,7 @@ clause_body(Node) ->
 %% type(Node) = disjunction
 %% data(Node) = [syntaxTree()]
 
-disjunction(Tests) -> tree(disjunction, Tests).
+disjunction(Tests) -> copy_pos(hd(Tests),tree(disjunction, Tests)).
 
 %% =====================================================================
 %% @spec disjunction_body(syntaxTree()) -> [syntaxTree()]
@@ -3301,7 +3316,7 @@ disjunction_body(Node) -> data(Node).
 %% type(Node) = conjunction
 %% data(Node) = [syntaxTree()]
 
-conjunction(Tests) -> tree(conjunction, Tests).
+conjunction(Tests) -> copy_pos(hd(Tests), tree(conjunction, Tests)).
 
 %% =====================================================================
 %% @spec conjunction_body(syntaxTree()) -> [syntaxTree()]
@@ -4174,7 +4189,7 @@ list_comp_body(Node) ->
 %% @see binary_comp_body/1
 %% @see generator/2
 
--record(binary_comp, {template :: syntaxTree(), body :: [syntaxTree()]}).
+-record(binary_comp, {template, body}).
 
 %% type(Node) = binary_comp
 %% data(Node) = #binary_comp{template :: Template, body :: Body}
@@ -4455,7 +4470,7 @@ generator_body(Node) ->
 %% @see list_comp/2
 %% @see binary_comp/2
 
--record(binary_generator, {pattern :: syntaxTree(), body :: syntaxTree()}).
+-record(binary_generator, {pattern, body}).
 
 %% type(Node) = binary_generator
 %% data(Node) = #binary_generator{pattern :: Pattern, body :: Body}
@@ -4468,7 +4483,7 @@ generator_body(Node) ->
 %%
 %%	Pattern = Body = erl_parse()
 
--spec binary_generator(syntaxTree(), syntaxTree()) -> syntaxTree().
+%%-spec binary_generator(syntaxTree(), syntaxTree()) -> syntaxTree().
 
 binary_generator(Pattern, Body) ->
     tree(binary_generator, #binary_generator{pattern = Pattern, body = Body}).
@@ -4487,7 +4502,7 @@ revert_binary_generator(Node) ->
 %%
 %% @see binary_generator/2
 
--spec binary_generator_pattern(syntaxTree()) -> syntaxTree().
+%%-spec binary_generator_pattern(syntaxTree()) -> syntaxTree().
 
 binary_generator_pattern(Node) ->
     case unwrap(Node) of
@@ -4505,7 +4520,7 @@ binary_generator_pattern(Node) ->
 %%
 %% @see binary_generator/2
 
--spec binary_generator_body(syntaxTree()) -> syntaxTree().
+%%-spec binary_generator_body(syntaxTree()) -> syntaxTree().
 
 binary_generator_body(Node) ->
     case unwrap(Node) of

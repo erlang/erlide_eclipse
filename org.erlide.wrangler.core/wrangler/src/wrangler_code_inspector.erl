@@ -108,9 +108,9 @@
 %%@spec find_var_instances(FileName::filename(), {Line::integer(), Col::integer()}, 
 %%			 TabWidth:: integer()) ->
 %%	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}
--spec(find_var_instances(FileName::filename(), {Line::integer(), Col::integer()}, 
-			 TabWidth:: integer()) ->
-	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
+%%-spec(find_var_instances(FileName::filename(), {Line::integer(), Col::integer()}, 
+%%			 TabWidth:: integer()) ->
+%%	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}).
 find_var_instances(FileName, {Line, Col},TabWidth) ->
    try_inspector(wrangler_code_inspector_lib, find_var_instances, 
 		  [FileName, Line, Col, [], TabWidth]).
@@ -119,9 +119,9 @@ find_var_instances(FileName, {Line, Col},TabWidth) ->
 %% This function return all the places where the variable selected occurs. With 
 %% Emacs, these places are hightlighted, but defining and use occurrances hightlighted
 %% in different color.
--spec(find_var_instances(FileName::filename(), Line::integer(), Col::integer(), 
-			 SearchPaths::[dir()], TabWidth:: integer()) ->
-	     {error, string()} | {ok, [StartEnd::{pos(), pos()}], [VarDefPos::pos()]}).
+%%-spec(find_var_instances(FileName::filename(), Line::integer(), Col::integer(), 
+%%			 SearchPaths::[dir()], TabWidth:: integer()) ->
+%%	     {error, string()} | {ok, [StartEnd::{pos(), pos()}], [VarDefPos::pos()]}).
 find_var_instances(FileName, Line, Col, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, find_var_instances, 
 		  [FileName, Line, Col, SearchPaths, TabWidth]).
@@ -135,18 +135,18 @@ find_var_instances(FileName, Line, Col, SearchPaths, TabWidth) ->
 %%@spec nested_exprs(FileOrDirNames::[filename()|dir()], NestLevel::integer(), 
 %%		   ExprType::'if'|'case'|'receive') 
 %%      ->{error, string()} | ok
--spec(nested_exprs(FileOrDirNames::[filename()|dir()], NestLevel::integer(), 
-		   ExprType::'if'|'case'|'receive') 
-      ->{error, string()} | ok).
+%%-spec(nested_exprs(FileOrDirNames::[filename()|dir()], NestLevel::integer(), 
+%%		   ExprType::'if'|'case'|'receive') 
+%%      ->{error, string()} | ok).
 nested_exprs(FileOrDirNames, NestLevel, ExprType) ->
     try_inspector(wrangler_code_inspector, nested_exprs_1,
 		  [FileOrDirNames, NestLevel, ExprType, FileOrDirNames, ?DEFAULT_TABWIDTH]).
 
 %% @private  interface function for emacs.
--spec(nested_exprs_in_file(FileName::filename(), NestLevel::string(), 
-			   ExprType::'if'|'case'|'receive',
-			   SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_exprs_in_file(FileName::filename(), NestLevel::string(), 
+%%			   ExprType::'if'|'case'|'receive',
+%%			   SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_exprs_in_file(FileName, NestLevel, ExprType, SearchPaths, TabWidth) ->
     try
 	list_to_integer(NestLevel)
@@ -160,9 +160,9 @@ nested_exprs_in_file(FileName, NestLevel, ExprType, SearchPaths, TabWidth) ->
     end.
 
 %% @private interface function for emacs.
--spec(nested_exprs_in_dirs(NestLevel::string(), ExprType::'if'|'case'|'receive',
-			      SearchPaths::[dir()],TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(nested_exprs_in_dirs(NestLevel::string(), ExprType::'if'|'case'|'receive',
+%%			      SearchPaths::[dir()],TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 nested_exprs_in_dirs(NestLevel, ExprType, SearchPaths, TabWidth) ->
     try list_to_integer(NestLevel)  of
       NestLevel1 when NestLevel1 >= 0 ->
@@ -181,10 +181,10 @@ nested_exprs_1(Files, NestLevel, ExprType, SearchPaths, TabWidth) ->
 	
 
 %% @private  interface function for eclipse.
--spec(nested_exprs_in_file_eclipse(FileName::filename(), NestLevel::integer(), 
-				   ExpType::'if'|'case'|'receive',
-				   SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(nested_exprs_in_file_eclipse(FileName::filename(), NestLevel::integer(), 
+%%				   ExpType::'if'|'case'|'receive',
+%%				   SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
 %% The value of 'NestLevel' is inputted by user.
 nested_exprs_in_file_eclipse(FileName, NestLevel, ExprType, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, nested_exprs,
@@ -192,9 +192,9 @@ nested_exprs_in_file_eclipse(FileName, NestLevel, ExprType, SearchPaths, TabWidt
 
 
 %% @private interface function for eclipse.
--spec(nested_exprs_in_dirs_eclipse(NestLevel::integer(), ExprType::'if'|'case'|'receive',
-				      SearchPaths::[dir()],TabWidth::integer()) ->
-	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(nested_exprs_in_dirs_eclipse(NestLevel::integer(), ExprType::'if'|'case'|'receive',
+%%				      SearchPaths::[dir()],TabWidth::integer()) ->
+%%	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
 %% The value of 'NestLevel' is inputted by user.
 nested_exprs_in_dirs_eclipse(NestLevel, ExprType, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, nested_exprs,
@@ -206,15 +206,15 @@ nested_exprs_in_dirs_eclipse(NestLevel, ExprType, SearchPaths, TabWidth) ->
 %%	     {error, string()} | ok
 %% @end
 %% Command line API.
--spec(long_functions(FileOrDirNames::[filename()|dir()], Lines::integer()) ->
-	     {error, string()} | ok).
+%%-spec(long_functions(FileOrDirNames::[filename()|dir()], Lines::integer()) ->
+%%	     {error, string()} | ok).
 long_functions(FileOrDirNames, Lines) ->
     try_inspector(wrangler_code_inspector, long_functions_1, 
 		  [FileOrDirNames, Lines, FileOrDirNames,?DEFAULT_TABWIDTH]).
 
 %% @private interface function for emacs.
--spec(long_functions_in_file(FileName::filename(), Lines::string(), SearchPaths::[dir()], 
-			     TabWidth::integer()) -> {error, string()} | ok).
+%%-spec(long_functions_in_file(FileName::filename(), Lines::string(), SearchPaths::[dir()], 
+%%			     TabWidth::integer()) -> {error, string()} | ok).
 long_functions_in_file(FileName, Lines, SearchPaths, TabWidth) ->
     try
 	list_to_integer(Lines)
@@ -230,8 +230,8 @@ long_functions_in_file(FileName, Lines, SearchPaths, TabWidth) ->
 
 
 %% @private interface function for emacs.
--spec(long_functions_in_dirs(Lines::string(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(long_functions_in_dirs(Lines::string(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 long_functions_in_dirs(Lines, SearchPaths, TabWidth) ->
     try
 	list_to_integer(Lines)
@@ -252,17 +252,17 @@ long_functions_1(Files, Lines, SearchPaths, TabWidth) ->
 	
     
 %% @private interface function for Eclipse.
--spec(long_functions_in_file_eclipse(FileName::filename(), Lines::integer(), SearchPaths::[dir()], 
-			     TabWidth::integer()) -> 
-	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(long_functions_in_file_eclipse(FileName::filename(), Lines::integer(), SearchPaths::[dir()], 
+%%			     TabWidth::integer()) -> 
+%%	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
 %% The value of 'Lines' is inputted by user.
 long_functions_in_file_eclipse(FileName, Lines, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, long_functions,
 		  [[FileName], Lines, SearchPaths, TabWidth]).
 
 %% @private interface function for Eclipse.
--spec(long_functions_in_dirs_eclipse(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(long_functions_in_dirs_eclipse(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | {ok, [{modulename(), functionname(), functionarity()}]}).
 %% The value of 'Lines' is inputted by user.
 long_functions_in_dirs_eclipse(Lines, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib,
@@ -275,16 +275,16 @@ long_functions_in_dirs_eclipse(Lines, SearchPaths, TabWidth) ->
 %%	     {error, string()} | ok
 %% @end
 %% Command line API.
--spec(large_modules(SearchPaths::[dir()],Lines::integer()) ->				  
-	     {error, string()} | ok).
+%%-spec(large_modules(SearchPaths::[dir()],Lines::integer()) ->				  
+%%	     {error, string()} | ok).
 large_modules(SearchPaths, Lines) ->
     try_inspector(wrangler_code_inspector, large_modules_1,
 		  [Lines, SearchPaths, ?DEFAULT_TABWIDTH]).
 
 
 %%@private interface function for emacs.
--spec(large_modules(Lines::string(), SearchPaths::[dir()], TabWidth::integer()) ->				  
-	     {error, string()} | ok).
+%%-spec(large_modules(Lines::string(), SearchPaths::[dir()], TabWidth::integer()) ->				  
+%%	     {error, string()} | ok).
 large_modules(Lines, SearchPaths, TabWidth) ->
     try
       list_to_integer(Lines)
@@ -307,8 +307,8 @@ large_modules_1(Lines,SearchPaths, TabWidth) ->
 
 %%@private interface function for Eclipse.
 %% The value of 'Lines' is inputted by user.
--spec(large_modules_eclipse(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->				  
-	     {error, string()} | {ok, [modulename()]}).
+%%-spec(large_modules_eclipse(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->				  
+%%	     {error, string()} | {ok, [modulename()]}).
 large_modules_eclipse(Lines, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, large_modules, [Lines, SearchPaths, TabWidth]).
 
@@ -320,8 +320,8 @@ large_modules_eclipse(Lines, SearchPaths, TabWidth) ->
 %%	     {error, string()} | ok
 %%@end
 %% Command line API. 
--spec(calls_to_fun(FileName::filename(), FunctionName::functionname(), Arity::integer(), SearchPaths::[dir()]) ->
-	     {error, string()} | ok).
+%%-spec(calls_to_fun(FileName::filename(), FunctionName::functionname(), Arity::integer(), SearchPaths::[dir()]) ->
+%%	     {error, string()} | ok).
 calls_to_fun(FileName, FunctionName, Arity, SearchPaths) ->
     case try_inspector(wrangler_code_inspector_lib, calls_to_fun_1, 
 		  [FileName, FunctionName, Arity, SearchPaths, ?DEFAULT_TABWIDTH]) of
@@ -334,8 +334,8 @@ calls_to_fun(FileName, FunctionName, Arity, SearchPaths) ->
      
 
 %% @private  interface function for emacs. 
--spec(calls_to_fun(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | ok).
+%%-spec(calls_to_fun(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | ok).
 calls_to_fun(FileName, Line, Col, SearchPaths, TabWidth) ->
     case try_inspector(wrangler_code_inspector_lib, calls_to_fun,
 		       [FileName, Line, Col, SearchPaths, TabWidth]) of
@@ -346,8 +346,8 @@ calls_to_fun(FileName, Line, Col, SearchPaths, TabWidth) ->
     end.
 
 %% @private  Interface function for Eclipse. 
--spec(calls_to_fun_eclipse(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
-	     {error, string()} | {ok, {[{filename(), functionname(), functionarity()}]}}).
+%%-spec(calls_to_fun_eclipse(FileName::filename(), Line::integer(), Col::integer(), SearchPaths::[dir()], TabWidth::integer()) ->
+%%	     {error, string()} | {ok, {[{filename(), functionname(), functionarity()}]}}).
 calls_to_fun_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, calls_to_fun,
 		  [FileName, Line, Col, SearchPaths, TabWidth]).
@@ -359,8 +359,8 @@ calls_to_fun_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
 %%@spec dependencies_of_a_module (modulename()|filename(), [filename()|dir()]) -> ok
 %%@end
 %% Command line API and interface function for emacs.
--spec(dependencies_of_a_module(ModOrFileName::modulename()|filename(), 
-			       SearchPahts::[filename()|dir()]) -> {error, string()}|ok).
+%%-spec(dependencies_of_a_module(ModOrFileName::modulename()|filename(), 
+%%			       SearchPahts::[filename()|dir()]) -> {error, string()}|ok).
 dependencies_of_a_module(ModOrFileName, SearchPaths) ->
     try_inspector(wrangler_code_inspector, dependencies_of_a_module_1, [ModOrFileName, SearchPaths]).
 
@@ -371,8 +371,8 @@ dependencies_of_a_module_1(ModOrFileName, SearchPaths) ->
 
     
 %% @private  Interface function for eclipse. 
--spec(dependencies_of_a_module_eclipse(FileName::filename(), SearchPaths::[dir()]) -> 
-	     {error, string} |{ok, {[modulename()], [modulename()]}}).
+%%-spec(dependencies_of_a_module_eclipse(FileName::filename(), SearchPaths::[dir()]) -> 
+%%	     {error, string} |{ok, {[modulename()], [modulename()]}}).
 dependencies_of_a_module_eclipse(FileName, SearchPaths) ->
     try_inspector(wrangler_code_inspector_lib, dependencies_of_a_module, [FileName, SearchPaths]).
 
@@ -416,7 +416,7 @@ dependencies_of_a_module_eclipse(FileName, SearchPaths) ->
 %%@spec non_tail_recursive_servers(FileOrDirNames::[filename()|dir()])-> ok
 %%@end
 %% command line API.
--spec(non_tail_recursive_servers(FileOrDirNames::[filename()|dir()])-> ok).
+%%-spec(non_tail_recursive_servers(FileOrDirNames::[filename()|dir()])-> ok).
 non_tail_recursive_servers(FileOrDirNames) ->
     try_inspector(wrangler_code_inspector, non_tail_recursive_servers_1,
 		  [refac_util:expand_files(FileOrDirNames, ".erl"), 
@@ -424,13 +424,13 @@ non_tail_recursive_servers(FileOrDirNames) ->
  
 
 %%@private interface function for emacs.
--spec(non_tail_recursive_servers_in_file(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(non_tail_recursive_servers_in_file(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_file(FileName, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector, non_tail_recursive_servers_1,
 		  [[FileName], SearchPaths, TabWidth]).
 
 %%@private interface function for emacs.
--spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(non_tail_recursive_servers_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 non_tail_recursive_servers_in_dirs(SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector, non_tail_recursive_servers_1,
 		  [SearchPaths, SearchPaths, TabWidth]).
@@ -441,15 +441,15 @@ non_tail_recursive_servers_1(Files, SearchPaths, TabWidth) ->
     non_tail_format_results(Funs).
  
 %%@private Interface function for eclipse.
--spec(non_tail_recursive_servers_in_file_eclipse(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> 
-	     {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(non_tail_recursive_servers_in_file_eclipse(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> 
+%%	     {ok, [{modulename(), functionname(), functionarity()}]}).
 non_tail_recursive_servers_in_file_eclipse(FileName, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, non_tail_recursive_servers,
 		  [[FileName], SearchPaths, TabWidth]).
    
 %%@private Interface function for eclipse.
--spec(non_tail_recursive_servers_in_dirs_eclipse(SearchPaths::[dir()], TabWidth::integer()) -> 
-	     {ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(non_tail_recursive_servers_in_dirs_eclipse(SearchPaths::[dir()], TabWidth::integer()) -> 
+%%	     {ok, [{modulename(), functionname(), functionarity()}]}).
 non_tail_recursive_servers_in_dirs_eclipse(SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib,
 		  non_tail_recursive_servers,[SearchPaths, SearchPaths, TabWidth]).
@@ -481,19 +481,19 @@ non_tail_recursive_servers_in_dirs_eclipse(SearchPaths, TabWidth) ->
 %%@spec not_flush_unknown_messages(FileOrDirNames::[filename()|dir()]) -> ok   
 %%@end
 %%command line API.
--spec(not_flush_unknown_messages(FileOrDirNames::[filename()|dir()]) -> ok).    
+%%-spec(not_flush_unknown_messages(FileOrDirNames::[filename()|dir()]) -> ok).    
 not_flush_unknown_messages(FileOrDirNames) ->
     try_inspector(wrangler_code_inspector, non_flush_unknown_messages_1,
 		  [FileOrDirNames, FileOrDirNames, ?DEFAULT_TABWIDTH]).
 
 %%@private interface function for emacs.
--spec(not_flush_unknown_messages_in_file(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).    
+%%-spec(not_flush_unknown_messages_in_file(FileName::filename(), SearchPaths::[dir()], TabWidth::integer()) -> ok).    
 not_flush_unknown_messages_in_file(FileName, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector, non_flush_unknown_messages_1, 
 		  [[FileName], SearchPaths, TabWidth]).
     
 %%@private Interface function for emacs.
--spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
+%%-spec(not_flush_unknown_messages_in_dirs(SearchPaths::[dir()], TabWidth::integer()) -> ok).
 not_flush_unknown_messages_in_dirs(SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector, non_flush_unknown_messages_1,
 		  [SearchPaths, SearchPaths, TabWidth]).
@@ -504,15 +504,15 @@ non_flush_unknown_messages_1(Files, SearchPaths, TabWidth) ->
     non_flush_format_result(Funs).
 
 %%@private Interface function for eclipse.
--spec(not_flush_unknown_messages_in_file_eclipse(FileName::filename(), SearchPaths::[dir()], TabWidth::integer())
-      -> {error, string()}|{ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(not_flush_unknown_messages_in_file_eclipse(FileName::filename(), SearchPaths::[dir()], TabWidth::integer())
+%%      -> {error, string()}|{ok, [{modulename(), functionname(), functionarity()}]}).
 not_flush_unknown_messages_in_file_eclipse(FileName, SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, not_flush_unknown_messages,
 		  [[FileName], SearchPaths, TabWidth]).
   
 %%@private Interface function for eclipse.
--spec(not_flush_unknown_messages_in_dirs_eclipse(SearchPaths::[dir()], TabWidth::integer()) 
-      ->{error, string()}|{ok, [{modulename(), functionname(), functionarity()}]}).
+%%-spec(not_flush_unknown_messages_in_dirs_eclipse(SearchPaths::[dir()], TabWidth::integer()) 
+%%      ->{error, string()}|{ok, [{modulename(), functionname(), functionarity()}]}).
 not_flush_unknown_messages_in_dirs_eclipse(SearchPaths, TabWidth) ->
     try_inspector(wrangler_code_inspector_lib, not_flush_unknown_messages,
 		  [SearchPaths, SearchPaths, TabWidth]).
@@ -523,7 +523,7 @@ not_flush_unknown_messages_in_dirs_eclipse(SearchPaths, TabWidth) ->
 %% @spec gen_function_callgraph (filename(), filename(),[filename()|dir()]) ->true
 %% @end
 %% command line API; also interface function for emacs and eclipse.
--spec(gen_function_callgraph/3::(filename(), filename(),[filename()|dir()]) ->true).
+%%-spec(gen_function_callgraph/3::(filename(), filename(),[filename()|dir()]) ->true).
 gen_function_callgraph(OutputDotFileName, FileName, SearchPaths)->
     try_inspector(wrangler_modularity_inspection, gen_function_callgraph, 
 		  [OutputDotFileName, FileName, SearchPaths]).
@@ -534,7 +534,7 @@ gen_function_callgraph(OutputDotFileName, FileName, SearchPaths)->
 %% @end
 %% command line API, and interface function for emacs and eclipse.
 %% 'OutputDotFileName' is a user selected .dot file name.
--spec (gen_module_graph/3::(filename(), [filename()|dir()], boolean()) ->true).
+%%-spec (gen_module_graph/3::(filename(), [filename()|dir()], boolean()) ->true).
 gen_module_graph(OutputDotFileName, SearchPaths, WithLabel) ->
     try_inspector(wrangler_modularity_inspection, gen_module_graph, 
 		  [OutputDotFileName, [], SearchPaths, WithLabel]).
@@ -546,7 +546,7 @@ gen_module_graph(OutputDotFileName, SearchPaths, WithLabel) ->
 %% @end 
 %% command line API and interface function for emacs and eclipse.
 %% 'OutputDotFileName' is a user selected .dot file name.
--spec(cyclic_dependent_modules/3::(filename(),[filename()|dir()], boolean()) ->true).
+%%-spec(cyclic_dependent_modules/3::(filename(),[filename()|dir()], boolean()) ->true).
 cyclic_dependent_modules(OutputDotFileName, SearchPaths, WithLabel)->
     try_inspector(wrangler_modularity_inspection, cyclic_dependent_modules,
 		  [OutputDotFileName, SearchPaths, WithLabel]).
@@ -559,7 +559,7 @@ cyclic_dependent_modules(OutputDotFileName, SearchPaths, WithLabel)->
 %% @end 
 %% command line API; Interface function for emacs and eclipse.
 %% 'OutputDotFileName' is a user selected .dot file name.
--spec(improper_inter_module_calls/2::(filename(), [filename()|dir()]) ->true).
+%%-spec(improper_inter_module_calls/2::(filename(), [filename()|dir()]) ->true).
 improper_inter_module_calls(OutputDotFileName, SearchPaths)->
     try_inspector(wrangler_modularity_inspection, improper_inter_module_calls, 
 		  [OutputDotFileName, SearchPaths]).

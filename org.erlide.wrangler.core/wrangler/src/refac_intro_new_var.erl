@@ -80,18 +80,18 @@ intro_new_var(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewVarName0, S
 	    Fun = none
     end,
     ok=cond_check(Fun, Exp, NewVarName),
-    intro_new_var_1(FileName, AnnAST,Fun, Exp, NewVarName, Editor, Cmd).
+    intro_new_var_1(FileName, AnnAST,Fun, Exp, NewVarName, Editor, TabWidth, Cmd).
 
-intro_new_var_1(FileName, AnnAST, Fun, Expr, NewVarName, Editor, Cmd) ->
+intro_new_var_1(FileName, AnnAST, Fun, Expr, NewVarName, Editor, TabWidth, Cmd) ->
     AnnAST1 = do_intro_new_var(AnnAST, Fun, Expr, NewVarName),
     case Editor of
       emacs ->
 	  Res = [{{FileName, FileName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, Cmd),
+	  refac_util:write_refactored_files_for_preview(Res, TabWidth, Cmd),
 	  {ok, [FileName]};
       eclipse ->
 	  FileFormat =  refac_util:file_format(FileName),
-	  FileContent = refac_prettypr:print_ast(FileFormat, AnnAST1),
+	  FileContent = refac_prettypr:print_ast(FileFormat, AnnAST1, TabWidth),
 	  {ok, [{FileName, FileName, FileContent}]}
     end.
 

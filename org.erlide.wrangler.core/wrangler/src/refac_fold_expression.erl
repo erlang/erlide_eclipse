@@ -159,14 +159,14 @@ get_file_name(ModName, SearchPaths) ->
 		  
     end.
 
--spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
-			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
-			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
+%%-spec(fold_expr_1_eclipse/5::(filename(), syntaxTree(), 
+%%			      [{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}], 
+%%			      [dir()], integer()) -> {ok, [{filename(), filename(), string()}]}).
 fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
     AnnAST1 = fold_expression_1_eclipse_1(AnnAST, Body, RangeNewExpList),
-    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1,TabWidth),
     {ok, [{FileName, FileName, FileContent}]}.
 
 fold_expression_1_eclipse_1(AnnAST, _Body, []) ->
@@ -181,7 +181,7 @@ fold_expression_1_eclipse_1(AnnAST, Body, [Cand| Tail]) ->
 do_fold_expression(FileName, CandidatesToFold, SearchPaths, TabWidth, LogMsg) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     AnnAST1= fold_expression_1_1(AnnAST,  CandidatesToFold),
-    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], LogMsg),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], TabWidth, LogMsg),
     {ok, [FileName]}.
 
 fold_expression_1_1(AnnAST, []) ->

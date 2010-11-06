@@ -34,15 +34,15 @@
  
 -export([parse_annotate_file/2,parse_annotate_file/3, parse_annotate_file/4,
 	 parse_annotate_file/5, quick_parse_annotate_file/3,
-	 write_refactored_files/1, write_refactored_files/3,
-	 write_refactored_files/4,
-	 write_refactored_files_for_preview/2, expand_files/2,
+	 write_refactored_files/4, write_refactored_files/5,
+	 write_refactored_files_for_preview/3, expand_files/2,
 	 get_client_files/2, file_format/1, tokenize/3,
 	 concat_toks/1, test_framework_used/1,
 	 get_modules_by_file/1]).
 
 -include("../include/wrangler.hrl").
- 
+
+-include_lib("kernel/include/file.hrl"). 
 %% =====================================================================
 %% @doc Pretty-print the abstract syntax trees to a files, and add the previous 
 %% version to history for undo purpose. <code>Files</code> is a list of three element 
@@ -51,48 +51,68 @@
 %% should be the same as the first element, and the third element in the tuple is the 
 %% AST represention of the file.
 
-%% Note: This function should not longer be used.
-
-%%-spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
-write_refactored_files(Files) ->
-    F = fun ({{File1, File2}, AST}) ->
-		FileFormat = file_format(File1),
-		if File1 /= File2 ->
-		       file:delete(File1);
-		   true -> ok
-		end,
-		file:write_file(File2, list_to_binary(refac_prettypr:print_ast(FileFormat, AST)))
-	end,
-    Res =lists:map(F, Files),
-    case lists:all(fun(R) -> R == ok end, Res) of 
-	true -> ok;
-	_ -> throw({error, "Wrangler failed to rewrite the refactored files."})
+write_refactored_files(Results, HasWarningMsg, Editor, TabWidth, Cmd) ->
+    case Editor of
+	emacs ->
+	    write_refactored_files_emacs(Results, HasWarningMsg, TabWidth, Cmd);
+	eclipse ->
+	    write_refactored_files_eclipse(Results, TabWidth);
+	command ->
+	    write_refactored_files_command_line(Results, TabWidth)
     end.
 
-write_refactored_files_for_preview(Files, LogMsg) ->
+write_refactored_files(Results, Editor, TabWidth, Cmd) ->
+    case Editor of
+	emacs ->
+	    write_refactored_files_emacs(Results, TabWidth, Cmd);
+	eclipse ->
+	    write_refactored_files_eclipse(Results, TabWidth);
+	command ->
+	    write_refactored_files_command_line(Results, TabWidth)
+    end.
+
+write_refactored_files_emacs(Results, TabWidth, Cmd) ->
+    write_refactored_files_for_preview(Results,TabWidth,Cmd),
+    ChangedFiles = lists:map(fun ({FileInfo,_AST}) -> 
+				     element(1, FileInfo)
+			     end,Results),
+    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+		 [ChangedFiles]),
+    {ok,ChangedFiles}.
+
+write_refactored_files_emacs(Results, HasWarningMsg, TabWidth, Cmd) ->
+    write_refactored_files_for_preview(Results,TabWidth,Cmd),
+    ChangedFiles = lists:map(fun ({FileInfo,_AST}) -> 
+				     element(1, FileInfo)
+			     end,Results),
+    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+		 [ChangedFiles]),
+    {ok,ChangedFiles, HasWarningMsg}.
+
+write_refactored_files_for_preview(Files, TabWidth, LogMsg) ->
     F = fun(FileAST) ->
 		case FileAST of 
 		    {{FileName,NewFileName}, AST} ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp",  %% .erl.swp or .swp.erl?
-			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> NoOfChangedFuns= refac_prettypr:no_of_changed_funs(AST), 
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth))) of 
+			    ok -> NoOfChangedFunsToks= refac_prettypr:no_of_changed_funs_toks(AST), 
 				  {{{filename:join([FileName]),
 				    filename:join([NewFileName]), false},
-				    filename:join([SwpFileName])}, NoOfChangedFuns};
+				    filename:join([SwpFileName])}, NoOfChangedFunsToks};
 			    {error,Reason} -> 
-				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
-						    [filename:dirname(FileName), Reason]),
+				Msg = io_lib:format("Wrangler could not write to file ~s: ~w \n",
+						    [FileName, Reason]),
 				throw({error, Msg})
 			end;			
 		    {{FileName,NewFileName, IsNew}, AST} ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp", 
-			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth))) of 
 			    ok ->  
-				NoOfChangedFuns= refac_prettypr:no_of_changed_funs(AST), 
+				NoOfChangedFunsToks= refac_prettypr:no_of_changed_funs_toks(AST), 
 				{{{filename:join([FileName]),filename:join([NewFileName]), IsNew},
-				 filename:join([SwpFileName])}, NoOfChangedFuns};
+				  filename:join([SwpFileName])}, NoOfChangedFunsToks};
 			    {error, Reason}  -> 
 				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
 						    [filename:dirname(FileName), Reason]),
@@ -100,8 +120,8 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			end
 		end
 	end,
-    {FilePairs, ListOfNoOfChangedFuns} = lists:unzip(lists:map(F, Files)),
-    TotalNoOfChangedFuns=lists:sum(ListOfNoOfChangedFuns),
+    {FilePairs, ListOfNoOfChangedFunsToks} = lists:unzip(lists:map(F, Files)),
+    {FinalChangedFuns, FinalToksRemoved, FinalToksAdded} =lists:unzip3(ListOfNoOfChangedFunsToks),
     case lists:any(fun(R) -> R == error end, FilePairs) of 
 	true -> lists:foreach(fun(P) ->
 				      case P of 
@@ -111,40 +131,109 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			      end, FilePairs),
 		throw({error, "Wrangler failed to output the refactoring result."});
 	_ ->
-	    LogMsgAboutChanges= io_lib:format(" Num of files affected: ~p; "
-					      "Num of functions/attributes affected: ~p.\n",
-					      [length(FilePairs), TotalNoOfChangedFuns]),
+	    LogMsgAboutChanges= io_lib:format(" Num of files affected: ~p, "
+					      "Num of functions/attributes affected: ~p, "
+					      "Num of tokens removed: ~p, "
+					      "Num of tokens added: ~p.\n",
+					      [length(FilePairs), lists:sum(FinalChangedFuns),
+					       lists:sum(FinalToksRemoved), lists:sum(FinalToksAdded)]),
 	    NewLogMsg = LogMsg++ lists:flatten(LogMsgAboutChanges),
 	    wrangler_preview_server:add_files({FilePairs, NewLogMsg})
     end.
 
+write_refactored_files_eclipse(Results, TabWidth) ->
+    Res = lists:map(fun ({{OldFName,NewFName},AST}) ->
+			    FileFormat = file_format(OldFName),
+			    {OldFName,NewFName,
+			     refac_prettypr:print_ast(FileFormat,AST,TabWidth)}
+		    end,Results),
+    {ok,Res}.
 
-write_refactored_files(FileName, AnnAST, Editor, Cmd) ->
-    case Editor of
-      emacs ->
-	  refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST}], Cmd),
-	  {ok, [FileName]};
-      eclipse ->
-	  Content = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST),
-	  {ok, [{FileName, FileName, Content}]}
+write_refactored_files_command_line(Results, TabWidth) ->
+    FilesToWrite = [FileTuple || {FileTuple, _} <- Results],
+    lists:foreach(fun (FileTuple) ->
+			  check_access(FileTuple)
+		  end, FilesToWrite),
+    backup_files(Results),
+    F = fun ({FileInfo, AST}) ->
+		%% for most refactorings,OldFileName==NewFileName.
+		OldFileName = element(1, FileInfo),
+		NewFileName = element(2, FileInfo),
+		FileFormat = file_format(OldFileName),
+		Bin = list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth)),
+		case file:write_file(OldFileName, Bin) of
+		    ok when OldFileName==NewFileName ->
+			OldFileName;
+		    ok ->
+			case file:rename(OldFileName, NewFileName) of
+			    ok -> OldFileName;
+			    {error, Reason} ->
+				Msg = io_lib:format("Wrangler could not rename file ~s: ~w \n",
+						    [OldFileName, Reason]),
+				throw({error, lists:flatten(Msg)})
+			end;
+		    {error, Reason} ->
+			Msg = io_lib:format("Wrangler could not write to file ~s: ~w \n",
+					    [NewFileName, Reason]),
+			throw({error, lists:flatten(Msg)})
+		end
+	end,
+    {ok, lists:map(F, Results)}.
+
+backup_files(Results) ->
+    F0 = fun ({FileInfo,_AST}) ->
+		 case FileInfo of
+		     {FileName,NewFileName} ->
+			 {ok,Bin} = file:read_file(FileName),
+			 {{filename:join([FileName]),
+			   filename:join([NewFileName]),false},Bin};
+		     {FileName,NewFileName,IsNew} ->
+			 {ok,Bin} = file:read_file(FileName),
+			 {{filename:join([FileName]),
+			   filename:join([NewFileName]),IsNew},Bin}
+		 end
+	 end,
+    FilesToBackup = lists:map(F0,Results),
+    wrangler_undo_server:add_to_history({FilesToBackup,"",
+					 element(1,hd(FilesToBackup))}).
+
+check_access({OldFileName, NewFileName}) ->
+    case OldFileName==NewFileName of 
+	true ->
+	    case writable(OldFileName) of
+		true -> ok;
+		false ->
+		    Msg = lists:flatten(io_lib:format("File ~s is not writeable\n", [OldFileName])),
+		    throw({error, lists:flatten(Msg)})
+	    end;
+	false ->
+	    Dir=filename:dirname(NewFileName),
+	    case writable(Dir) of
+		true ->
+		    ok;
+		false ->
+		    Msg = lists:flatten(io_lib:format("Dirctory ~s is not writeable\n", [Dir])),
+		    throw({error, lists:flatten(Msg)})
+	    end
+    end;
+
+check_access({OldFileName, NewFileName, IsNew}) ->
+    case IsNew of 
+	true->
+	    check_access({'_', NewFileName});
+	false ->
+	    check_access({OldFileName, NewFileName})
     end.
 
-write_refactored_files(Results, Editor, Cmd) ->
-    case Editor of
-	emacs ->
-	    refac_util:write_refactored_files_for_preview(Results, Cmd),
-	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
-			 [ChangedFiles]),
-	  {ok, ChangedFiles};
-	eclipse ->
-	  Res = lists:map(fun ({{OldFName, NewFName}, AST}) ->
-				  {OldFName, NewFName,
-				   refac_prettypr:print_ast(refac_util:file_format(OldFName), AST)}
-			  end, Results),
-	  {ok, Res}
+writable(FileName) ->
+    case file:read_file_info(FileName) of
+	{ok, #file_info{access=write}} ->
+	    true;
+	{ok, #file_info{access=read_write}} ->
+	    true;
+	_ ->
+	    false
     end.
-
 
 %% =====================================================================
 %% @doc Parse an Erlang file, and annotate the abstract syntax tree with static semantic 
@@ -627,13 +716,13 @@ do_add_range(Node, Toks) ->
 				       '{', '}')
 	  end;
       list_comp ->
-	  T = refac_syntax:list_comp_template(Node),
+	  %%T = refac_syntax:list_comp_template(Node),
 	  B = refac_misc:glast("refac_util:do_add_range,list_comp", refac_syntax:list_comp_body(Node)),
 	  {_S2, E2} = get_range(B),
 	  E21 = extend_backwards(Toks, E2, ']'),
 	  refac_syntax:add_ann({range, {{L,C}, E21}}, Node);
       binary_comp ->
-	  T = refac_syntax:binary_comp_template(Node),
+	  %%T = refac_syntax:binary_comp_template(Node),
 	  B = refac_misc:glast("refac_util:do_add_range,binary_comp", 
 			       refac_syntax:binary_comp_body(Node)),
 	 {_S2, E2} = get_range(B),
@@ -818,7 +907,8 @@ do_add_range(Node, Toks) ->
       type ->   %% This is not correct, and need to be fixed!!
 	  refac_syntax:add_ann({range, {{L, C}, {L, C}}}, Node);
       _ ->
-	  ?wrangler_io("Unhandled syntax category:\n~p\n", [refac_syntax:type(Node)]),
+	 %% refac_io:format("Node;\n~p\n",[Node]),
+	 %% ?wrangler_io("Unhandled syntax category:\n~p\n", [refac_syntax:type(Node)]),
 	  Node
     end.
 

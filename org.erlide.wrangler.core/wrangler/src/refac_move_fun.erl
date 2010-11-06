@@ -60,9 +60,11 @@
 
 -module(refac_move_fun).
 
--export([move_fun/6, move_fun_1/7, move_fun_eclipse/6, move_fun_1_eclipse/6]).
+-export([move_fun/6, move_fun_1/7, move_fun_eclipse/6, move_fun_1_eclipse/6,
+	 move_fun_command/5]).
 
 -export([analyze_file/3]).
+
 -import(refac_atom_utils, [output_atom_warning_msg/3, check_unsure_atoms/5, 
 			   stop_atom_process/1, start_atom_process/0]).
 
@@ -79,7 +81,6 @@
 %==========================================================================================
 %%-spec(move_fun/6::(filename(),integer(),integer(), string(), [dir()], integer())->
 %%	     {ok, [filename()]} | {question, string()}).
-%%==========================================================================================
 move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
     move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, emacs).
 
@@ -103,7 +104,33 @@ move_fun_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) -
 move_fun_1_eclipse(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth) ->
     move_fun_1(FName, Line, Col, TargetModorFileName, true, SearchPaths, TabWidth, eclipse).
 
+%%-spec(move_fun_command/5::(modulename()|filename(), atom(), integer(), modulename()|filename(),[dir()])->
+%%				 {error, string()} | {ok, [filename()]}).
+move_fun_command(ModorFileName, FunName, Arity, TargetModorFileName, SearchPaths) ->
+    case get_file_name(ModorFileName, SearchPaths) of 
+	{ok, OriginalFileName} ->
+	    case get_file_name(TargetModorFileName, SearchPaths) of 
+		{ok, TargetFileName} ->
+		    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(OriginalFileName, true, SearchPaths, 8),
+		    ModName=get_module_name(Info),
+		    case refac_misc:funname_to_defpos(AnnAST, {ModName, FunName, Arity}) of
+			{ok, Pos} ->
+			    case Pos of 
+				{Line, Col} ->
+				    move_fun_1(OriginalFileName, Line, Col, TargetFileName, true, SearchPaths, 8, command);
+				_ -> {error, "Wrangler could not infer the location of the function in the program."}
+			    end;
+			{error, Reason} ->
+			    throw({error, Reason})
+		    end;
+		{error, Reason} ->
+		    throw({error, Reason})
+	    end;
+	{error, Reason} ->
+	    throw({error, Reason})
+    end.
 
+ 
 move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:move_fun(~p, ~p, ~p, ~p, ~p, ~p).\n",
 		 [?MODULE, FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth]),
@@ -207,7 +234,15 @@ move_fun_3(CurModInfo, TargetModInfo, MFAs, {UnDefinedMs, UnDefinedRs},
 	      end,
     output_atom_warning_msg(Pid, not_renamed_warn_msg(AtomsToCheck), renamed_warn_msg(ModName)),
     stop_atom_process(Pid),
-    output_refactor_results(FName, TargetFName, Editor, Cmd, NewTargetFile, AnnAST1, TargetAnnAST1, Results).
+    FinalResults = case Editor of 
+			emacs ->
+			    [{{FName, FName}, AnnAST1},
+			     {{TargetFName, TargetFName, NewTargetFile}, TargetAnnAST1}| Results];
+			_ ->
+			    [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}| Results]
+		    end,
+    refac_util:write_refactored_files(FinalResults, Editor, TabWidth, Cmd).
+ 
 
 do_transformation(CurModInfo, TargetModInfo, MFAs, {UnDefinedMs, UnDefinedRs},
 		  FunsToExportInCurMod, FunsToExportInTargetMod, Pid,
@@ -625,34 +660,35 @@ do_add_change_module_qualifier(Node, {FileName, MFAs=[{ModName,_,_}|_], TargetMo
 				end;
 			_ -> {Node, false}
 		    end;
-	    module_qualifier ->
-		Mod = refac_syntax:module_qualifier_argument(Name),
-		Body = refac_syntax:module_qualifier_body(Name),
-		case refac_syntax:type(Mod) of
-		  atom ->
-		      case refac_syntax:atom_value(Mod) of
-			  ModName ->
-			    B = refac_syntax:arity_qualifier_body(Body),
-			    A = refac_syntax:arity_qualifier_argument(Body),
-			    case {refac_syntax:type(B), refac_syntax:type(A)} of
-			      {atom, integer} ->
-				    B1 = refac_syntax:atom_value(B),
-				    A1 = refac_syntax:integer_value(A),
-				    case lists:member({ModName, B1, A1}, MFAs) of
-					true ->
-					    {copy_pos_attrs(
-					       Node,refac_syntax:implicit_fun(
-						      copy_pos_attrs(
-							Name,refac_syntax:module_qualifier(
-							       copy_pos_attrs(Mod,refac_syntax:atom(TargetModName)), Body)))), true};
-				    _ -> {Node, false}
-				  end;
-			      _ -> {Node, false}
+		module_qualifier ->
+		    Mod = refac_syntax:module_qualifier_argument(Name),
+		    Body = refac_syntax:module_qualifier_body(Name),
+		    case refac_syntax:type(Mod) of
+			atom ->
+			    case refac_syntax:atom_value(Mod) of
+				ModName ->
+				    B = refac_syntax:arity_qualifier_body(Body),
+				    A = refac_syntax:arity_qualifier_argument(Body),
+				    case {refac_syntax:type(B), refac_syntax:type(A)} of
+					{atom, integer} ->
+					    B1 = refac_syntax:atom_value(B),
+					    A1 = refac_syntax:integer_value(A),
+					    case lists:member({ModName, B1, A1}, MFAs) of
+						true ->
+						    {copy_pos_attrs(
+						       Node,refac_syntax:implicit_fun(
+							      copy_pos_attrs(
+								Name,refac_syntax:module_qualifier(
+								       copy_pos_attrs(Mod,refac_syntax:atom(TargetModName)), Body)))), true};
+						_ -> {Node, false}
+					    end;
+					_ -> {Node, false}
+				    end;
+				_ -> {Node, false}
 			    end;
-			_ -> {Node, false}
-		      end
-		end
-	  end;
+			_ -> {Node, false} 
+		    end
+	    end;
 	tuple -> do_rename_fun_in_tuples(Node, {FileName, SearchPaths, MFAs, TargetModName, Pid, TabWidth});
 	_ -> {Node, false}
     end.
@@ -1371,22 +1407,6 @@ get_fun_mfa(Form) ->
 	_ -> throw({error, "error in function refac_move_fun:get_fun_mfa/1"})
     end.
 	
-output_refactor_results(FName, TargetFName, Editor, Cmd, NewTargetFile, AnnAST1, TargetAnnAST1, Results) ->
-    case Editor of
-	emacs ->
-	    refac_util:write_refactored_files_for_preview([{{FName, FName}, AnnAST1},
-							   {{TargetFName, TargetFName, NewTargetFile}, TargetAnnAST1}| Results], Cmd),
-	    ChangedClientFiles = [F ||{{F, _F}, _AST} <- Results],
-	    ChangedFiles = [FName, TargetFName| ChangedClientFiles],
-	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
-	    {ok, ChangedFiles};
-      eclipse ->
-	    Results1 = [{{FName, FName}, AnnAST1}, {{TargetFName, TargetFName}, TargetAnnAST1}| Results],
-	    Res = [{FName1, NewFName1, refac_prettypr:print_ast(refac_util:file_format(FName1), AST)} ||			    
-		      {{FName1, NewFName1}, AST}<-Results1],
-	    {ok, Res}
-    end.
-
 pos_to_export(AnnAST, Pos) ->
     Forms = refac_syntax:form_list_elements(AnnAST),
     Fs=[F||F<-Forms,
@@ -1455,4 +1475,12 @@ get_module_name(ModInfo) ->
     case lists:keysearch(module, 1, ModInfo) of
       {value, {module, ModName}} -> ModName;
       false -> throw({error, "Wrangler could not infer the current module name."})
+    end.
+
+get_file_name(ModorFileName, SearchPaths) ->
+    case filelib:is_file(ModorFileName) of 
+	true ->
+	    {ok, ModorFileName};
+	false ->
+	    refac_misc:modname_to_filename(ModorFileName, SearchPaths)
     end.

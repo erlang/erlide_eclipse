@@ -44,9 +44,9 @@
 %% </p>
 %% ====================================================================================
 
--spec(duplicated_code_eclipse/5::([dir()|filename()], integer(),integer(), integer(), filename()) ->
-	[{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
-	  integer(), integer(), string()}]).
+%%-spec(duplicated_code_eclipse/5::([dir()|filename()], integer(),integer(), integer(), filename()) ->
+%%	[{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%	  integer(), integer(), string()}]).
 duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTreeExec) ->
     MinLength = case MinLength1 =< 1 of
 		  true ->
@@ -61,7 +61,7 @@ duplicated_code_eclipse(DirFileList, MinLength1, MinClones1, TabWidth, SuffixTre
     Cs = duplicated_code_detection(DirFileList, MinClones, MinLength, 10, SuffixTreeExec, TabWidth),
     refac_code_search_utils:remove_sub_clones(Cs).
 
--spec(duplicated_code/5::([dir()|filename()],string(),string(), string(),integer()) ->{ok, string()}).
+%%-spec(duplicated_code/5::([dir()|filename()],string(),string(), string(),integer()) ->{ok, string()}).
 duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     {MinClones, MinLength, MaxPars} = get_parameters(MinLength1, MinClones1, MaxPars1),
     ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
@@ -80,11 +80,11 @@ duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     {ok, lists:flatten(LogMsg)}.
 
 
--spec(duplicated_code_command_line/5::([dir()|filename()],string(),string(), string(),integer()) ->{ok, string()}).
+%%-spec(duplicated_code_command_line/5::([dir()|filename()],integer(),integer(), integer(),integer()) ->{ok, string()}).
 duplicated_code_command_line(DirFileList, MinLength1, MinClones1, MaxPars, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
 		 [?MODULE, DirFileList, MinLength1, MinClones1, MaxPars, TabWidth]),
-    MinLength = case MinLength1 =< 1 of
+    MinLength = case MinLength1 =< 10 of
 		    true ->
 			?DEFAULT_CLONE_LEN;
 		    _ -> MinLength1
@@ -99,9 +99,9 @@ duplicated_code_command_line(DirFileList, MinLength1, MinClones1, MaxPars, TabWi
     refac_code_search_utils:display_clone_result(Cs1, "Duplicated"),
     {ok, "Duplicated code detection finished."}.
 
--spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
-					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
-					   integer(), integer(), string()}]).
+%%-spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
+%%					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%					   integer(), integer(), string()}]).
 duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth) ->
     FileNames = refac_util:expand_files(DirFileList, ".erl"),
     case FileNames of 
@@ -128,8 +128,8 @@ duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTree
 
 %%=====================================================================================
 %% process the parameters input by the user.
--spec(get_parameters/3::(string(), string(), string()) ->
-			      {integer(), integer(), integer()}).
+%%-spec(get_parameters/3::(string(), string(), string()) ->
+%%			      {integer(), integer(), integer()}).
 get_parameters(MinLengthStr, MinClonesStr, MinParsStr) ->
     MinLength = try
 		    case MinLengthStr == [] orelse list_to_integer(MinLengthStr) =< 1 of
@@ -160,8 +160,8 @@ get_parameters_1(MinClonesStr, DefaultVal) ->
 %% =====================================================================
 %% tokenize a collection of concatenated Erlang files.
 
--spec(tokenize/2::([filename()], integer()) ->
-		{[token()], string()}).
+%% -spec(tokenize/2::([filename()], integer()) ->
+%% 		{[token()], string()}).
 tokenize(FileList, TabWidth) ->
     Toks = lists:flatmap(fun(F) -> 
 				 Toks= refac_util:tokenize(F, false, TabWidth),

@@ -2,35 +2,35 @@
 
 -include("../include/wrangler.hrl").
 
--export([get_clones_by_suffix_tree/7, get_clones_by_suffix_tree_inc/6]).
+-export([get_clones_by_suffix_tree/7,  get_clones_by_suffix_tree_inc/6]).
 
 -export([init/1]).
 
 
+%% Note: preferly there should be no white spaces in the Filepath of the SuffixTreeExec.
+%% Trie to install Wrangler in a path like C:/Program Files (x86)/Wrangler, but the port process
+%% dies automatically before call_port is called.
 -spec(get_clones_by_suffix_tree_inc/6::(dir(), string(),integer(), integer(), integer(), filename()) ->
-					 [{[{integer(),integer()}], integer(), integer()}]).					   
+					 {ok, string()}).					   
 get_clones_by_suffix_tree_inc(Dir, ProcessedToks, MinLength, MinClones, AllowOverLap, SuffixTreeExec) ->
     start_suffix_tree_clone_detector(SuffixTreeExec),
     OutFileName = filename:join(Dir, "wrangler_suffix_tree"),
     case file:write_file(OutFileName, ProcessedToks) of
-      ok ->
-	  case catch call_port({get, MinLength, MinClones, AllowOverLap, OutFileName}) of
-	    {ok, _Res} ->
-		?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
-		stop_suffix_tree_clone_detector(),
-		{ok, Res} = file:consult(OutFileName),
-		file:delete(OutFileName),
-		case Res of
-		  [] -> [];
-		  [Cs] -> Cs
-		end;
-	      E -> 
-		  file:delete(OutFileName)
-		  throw({error, lists:flatten(io_lib:format("Clone detection failed for reason:~p.", [E]))})
-	  end;
+	ok -> 
+	    case catch call_port({get, MinLength, MinClones, AllowOverLap, OutFileName}) of
+		{ok, _Res} ->
+		    ?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
+		    stop_suffix_tree_clone_detector(),
+		    {ok, OutFileName};
+		E->
+		    stop_suffix_tree_clone_detector(),
+		    file:delete(OutFileName),
+		    throw({error, lists:flatten(io_lib:format("Clone detection failed for reason:~p.", [E]))})
+	    end;
 	{error, Reason} -> 
 	    throw({error, lists:flatten(io_lib:format("Clone detection failed for reason:~p.", [Reason]))})   
     end.
+
 
 
 -spec(get_clones_by_suffix_tree/7::(dir(), string(),integer(), integer(), string(), integer(), filename()) ->
@@ -39,28 +39,29 @@ get_clones_by_suffix_tree(Dir, ProcessedToks, MinLength, MinClones, Alphabet, Al
     start_suffix_tree_clone_detector(SuffixTreeExec),
     OutFileName = filename:join(Dir, "wrangler_suffix_tree"),
     case file:write_file(OutFileName, ProcessedToks) of
-      ok ->
-	  case catch call_port({get, MinLength, MinClones, AllowOverLap, OutFileName}) of
-	    {ok, _Res} ->
-		?debug("Initial clones are calculated using C suffixtree implementation.\n", []),
-		stop_suffix_tree_clone_detector(),
-		{ok, Res} = file:consult(OutFileName),
-		file:delete(OutFileName),
-		case Res of
-		  [] -> [];
-		  [Cs] -> Cs
-		end;
-	      _E -> ?debug("Reason:\n~p\n", [_E]),
-		  stop_suffix_tree_clone_detector(),
-		  file:delete(OutFileName), 
-		  get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
-	  end;
-      _ -> get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
+	ok -> 
+	    case catch call_port({get, MinLength, MinClones, AllowOverLap, OutFileName}) of
+	    	{ok, _Res} ->
+		    refac_io:format("Initial clones are calculated using C suffixtree implementation.\n", []),
+		    {ok, Res} = file:consult(OutFileName),
+		    stop_suffix_tree_clone_detector(),
+		    file:delete(OutFileName),
+		    case Res of
+		     	[] -> []; 
+			[Cs] -> Cs
+		     end;
+		_E -> stop_suffix_tree_clone_detector(),
+		     file:delete(OutFileName),
+		     get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
+	    end;
+	_ -> get_clones_by_erlang_suffix_tree(ProcessedToks, MinLength, MinClones, Alphabet, AllowOverLap)
     end.
+
 
 start_suffix_tree_clone_detector(SuffixTreeExec) ->
     process_flag(trap_exit, true),
     spawn_link(?MODULE, init, [SuffixTreeExec]).
+
 
 stop_suffix_tree_clone_detector() ->
     case catch (?MODULE) ! stop of _ -> ok end.
@@ -85,13 +86,11 @@ init(ExtPrg) ->
     register(?MODULE, self()),
     process_flag(trap_exit, true),
     Port = open_port({spawn, ExtPrg}, [{packet, 2}, binary, exit_status]),
-    ?debug("Port:~p\n", [Port]),
     loop(Port).
 
 loop(Port) ->
     receive
-    {call, Caller, Msg} ->
-	    ?debug("Calling port with ~p~n", [Msg]),
+	{call, Caller, Msg} ->
 	    erlang:port_command(Port, term_to_binary(Msg)),
 	    receive
 		{Port, {data, Data}} ->
@@ -107,8 +106,8 @@ loop(Port) ->
 		    exit(Reason)
 	    end,
 	    loop(Port);
-    stop ->
-        erlang:port_close(Port)
+	stop ->
+	    erlang:port_close(Port)
     end.
 
  
@@ -207,4 +206,3 @@ collect_clones(MinLength, MinFreq, {branch, {Range, {Len, F}}, Others}) ->
 			  end, C, Bs)
     end.
     
-

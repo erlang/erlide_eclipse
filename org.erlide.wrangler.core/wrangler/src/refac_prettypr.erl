@@ -592,6 +592,7 @@ lay_2(Node, Ctxt) ->
 	integer -> text(refac_syntax:integer_literal(Node));
 	float ->
 	    text(tidy_float(refac_syntax:float_literal(Node)));
+	text -> text(refac_syntax:text_string(Node));
 	char ->
 	    V = refac_syntax:char_value(Node),
 	   case is_integer(V) and (V > 127) of
@@ -779,7 +780,7 @@ lay_2(Node, Ctxt) ->
 	  	 G -> lay(G, Ctxt1)
 	       end,
 	  BodyDocs = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
-	  D3 = lay_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
+	  D3 = lay_body_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
 	  HeadLastLn = case refac_syntax:clause_guard(Node) of
 	  		 none -> case Pats of
 	  			   [] -> get_start_line(Node);
@@ -903,7 +904,7 @@ lay_2(Node, Ctxt) ->
 	  Ctxt1 = reset_prec(Ctxt),
 	  Body = refac_syntax:block_expr_body(Node),
 	  Es = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
-	  sep([text("begin"), nest(Ctxt1#ctxt.break_indent, lay_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
+	  sep([text("begin"), nest(Ctxt1#ctxt.break_indent, lay_body_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
       catch_expr ->  %% done;
 	  {Prec, PrecR} = preop_prec('catch'),
 	  D = lay(refac_syntax:catch_expr_body(Node), set_prec(Ctxt, PrecR)),
@@ -1120,7 +1121,7 @@ lay_2(Node, Ctxt) ->
       try_expr ->
 	      Ctxt1 = reset_prec(Ctxt),
 	      Body = refac_syntax:try_expr_body(Node),
-	      D1 = lay_elems(fun refac_prettypr_0:sep/1, seq(Body,floating(text(", ")),Ctxt1,fun lay/2),Body),			 
+	      D1 = lay_body_elems(fun refac_prettypr_0:sep/1, seq(Body,floating(text(", ")),Ctxt1,fun lay/2),Body),			 
 	      Es0 = [text("end")],
 	      Es1 = case refac_syntax:try_expr_after(Node) of
 			[] -> Es0;
@@ -1277,7 +1278,7 @@ split_string_2([X| Xs],N,L,As) ->
 lay_clauses(Cs,Type,Ctxt) ->   %%done.
     CsDocs = seq(Cs,floating(text(";")),
 		 Ctxt#ctxt{clause = Type},fun lay/2),
-    lay_elems(fun vertical/1, CsDocs, Cs).
+    lay_body_elems(fun vertical/1, CsDocs, Cs).
 
 %% Note that for the clause-making functions, the guard argument
 %% can be `none', which has different interpretations in different
@@ -1474,7 +1475,8 @@ lay_elems_1(Fun, [{D, {_SLn, ELn}}| Ts], [], _LastLn) ->
     lay_elems_1(Fun, Ts, [[D]], ELn);
 lay_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
     case SLn == 0 orelse LastLn == 0 orelse SLn < LastLn of
-	true -> lay_elems_1(Fun, Ts, [[D], H| T], ELn);
+	true ->
+	    lay_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
 	false ->
 	    case SLn - LastLn of
 		0 -> lay_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
@@ -1482,6 +1484,35 @@ lay_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
 		lay_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
 		_ ->
 		lay_elems_1(Fun, Ts, [[above(horizontal(H), above(text(""), D))]| T], ELn)
+	    end
+    end.
+
+
+lay_body_elems(_Fun, _ElemDocs,[]) -> null;
+lay_body_elems(Fun, ElemDocs,Elems) ->
+    ARanges = lists:map(fun (A) ->
+				{get_start_line(A), get_end_line(A)}
+			end,
+			Elems),
+    lay_body_elems_1(Fun, lists:zip(ElemDocs,ARanges),[],0).
+
+lay_body_elems_1(Fun, [], Acc, _LastLine) ->
+    Docs = lists:map(fun (Ds) -> horizontal(Ds) end, Acc),
+    Fun(lists:reverse(Docs));
+lay_body_elems_1(Fun, [{D, {_SLn, ELn}}| Ts], [], _LastLn) ->
+    lay_body_elems_1(Fun, Ts, [[D]], ELn);
+lay_body_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
+    case SLn == 0 orelse LastLn == 0 orelse SLn < LastLn of
+	true -> 
+	    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
+	false ->
+	    case SLn - LastLn of
+		0 -> 
+		    lay_body_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
+		1 ->
+		    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
+		_ ->
+		    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), above(text(""), D))]| T], ELn)
 	    end
     end.
   

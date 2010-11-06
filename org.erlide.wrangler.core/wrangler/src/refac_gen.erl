@@ -198,9 +198,9 @@ generalise(FileName, Start = {Line, Col}, End = {Line1, Col1}, ParName, SearchPa
 		      {multiple_instances,
 		       {ParName1, FunName, FunArity, FunDefPos, Exp1, SideEffect, DupsInFun, Cmd}};
 		  _ ->
-		      {AnnAST1, _} = gen_fun(FileName, ModName, AnnAST, ParName1, FunName,
-					     FunArity, FunDefPos, Info, Exp, SideEffect, [], SearchPaths, TabWidth),
-		      refac_util:write_refactored_files(FileName, AnnAST1, Editor, Cmd)
+			{AnnAST1, _} = gen_fun(FileName, ModName, AnnAST, ParName1, FunName,
+					       FunArity, FunDefPos, Info, Exp, SideEffect, [], SearchPaths, TabWidth),
+			refac_util:write_refactored_files([{{FileName,FileName}, AnnAST1}], Editor, TabWidth, Cmd)
 		end
 	  end
     end.
@@ -237,7 +237,7 @@ gen_fun_1(SideEffect, FileName, ParName, FunName, Arity, DefPos, Exp0, SearchPat
     {AnnAST2, _} = ast_traverse_api:stop_tdTP(fun do_gen_fun/2, AnnAST1,
 					      {FileName, ParName, FunName, Arity, DefPos, Info,
 					       Exp, ActualPar, SideEffect, Dups, SearchPaths, TabWidth}),
-    refac_util:write_refactored_files(FileName, AnnAST2, Editor, LogCmd).
+    refac_util:write_refactored_files([{{FileName,FileName}, AnnAST2}], Editor, TabWidth, LogCmd).
 
 
 %%-spec(gen_fun_clause_eclipse/10::(FileName::filename(), ParName::atom(), FunName::atom(), Arity::integer(), DefPos::pos(), 
@@ -285,7 +285,7 @@ gen_fun_clause_1(FileName, ParName, FunName, _Arity, DefPos, Exp0, SearchPaths, 
 		end
 	end,
     AnnAST1 = refac_syntax:form_list([T || Form <- Forms, T <- F(Form)]),
-    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, LogCmd).
+    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, TabWidth, LogCmd).
  
 
 make_actual_parameter(ModName, Exp, SideEffect) ->

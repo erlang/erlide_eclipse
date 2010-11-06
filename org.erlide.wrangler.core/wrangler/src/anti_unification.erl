@@ -272,7 +272,7 @@ no_of_nodes(Node) ->
 %%			     {[atom()], [atom()]}) -> syntaxTree().
 
 generate_anti_unifier(Exprs, Subst, ExportVars) ->
-    {AU, _} = generate_anti_unifier_and_num_of_new_vars(Exprs, Subst, ExportVars),
+    {AU, {_,_}} = generate_anti_unifier_and_num_of_new_vars(Exprs, Subst, ExportVars),
     AU.
 
 generate_anti_unifier_and_num_of_new_vars(Exprs, Subst, ExportVars) ->
@@ -293,8 +293,9 @@ generate_anti_unifier_and_num_of_new_vars(Exprs, Subst, ExportVars) ->
     NewVarPars = refac_misc:remove_duplicates(Pars -- FVPars),
     Pars1 = [refac_syntax:variable(V) || V <- FVPars] ++ 
 	[refac_syntax:variable(V) || V <- NewVarPars],
-    C = refac_syntax:clause(refac_misc:remove_duplicates(Pars1), none, NewExprs1),
-    {refac_syntax:function(FunName, [C]), length(NewVarPars)}.
+    FinalPars = refac_misc:remove_duplicates(Pars1),
+    C = refac_syntax:clause(FinalPars, none, NewExprs1),
+    {refac_syntax:function(FunName, [C]), {length(FinalPars), length(NewVarPars)}}.
 
 generalise_expr_1(Exprs, Subst, ExportVars) when is_list(Exprs) ->
     BlockExpr = refac_syntax:block_expr(Exprs),

@@ -129,13 +129,13 @@ tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index, Num, SearchPaths, Tab
 	    tuple_pars_in_client_modules(ClientFiles, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth)
 	  of
 	    Results ->
-		refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results], Editor, Cmd)
+		refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results], Editor, TabWidth, Cmd)
 	  catch
 	    throw:Err ->
 		Err
 	  end;
       false ->
-	  refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, Cmd)
+	  refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, TabWidth,Cmd)
     end.
 
 

@@ -115,7 +115,7 @@ handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
      				  case file:rename(F1, F2) of 
      				      ok -> ok;
      				      Err2 ->
-					  refac_io:format("Rename failed.\n"),
+					  %% refac_io:format("Rename failed.\n"),
     					  throw(Err2)
      				  end
      			  end
