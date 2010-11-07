@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -42,7 +42,7 @@ public abstract class AbstractErlSelection implements IErlSelection {
 		IProject project = file.getProject();
 		IErlModel model = ErlangCore.getModel();
 		IErlProject actualProject = model.getErlangProject(project.getName());
-		OldErlangProjectProperties prop = actualProject.getProperties();
+		IOldErlangProjectProperties prop = actualProject.getProperties();
 		IPath projectLocation = actualProject.getProject().getLocation();
 
 		Collection<IPath> sourcDirs = prop.getSourceDirs();
