@@ -31,61 +31,61 @@ import org.erlide.ui.ErlideUIPlugin;
 import com.swtdesigner.ResourceManager;
 
 public class ErlangPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	@Override
-	protected Control createContents(final Composite parent) {
-		noDefaultAndApplyButton();
-		final Composite panel = new Composite(parent, SWT.NONE);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		panel.setLayout(layout);
+    @Override
+    protected Control createContents(final Composite parent) {
+        noDefaultAndApplyButton();
+        final Composite panel = new Composite(parent, SWT.NONE);
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        panel.setLayout(layout);
 
-		final Label img = new Label(panel, SWT.NONE);
-		final GridData gd_img = new GridData(79, SWT.DEFAULT);
-		img.setLayoutData(gd_img);
-		img.setImage(ResourceManager.getPluginImage(
-				ErlideUIPlugin.getDefault(), "icons/full/obj16/erlang058.gif"));
+        final Label img = new Label(panel, SWT.NONE);
+        final GridData gd_img = new GridData(79, SWT.DEFAULT);
+        img.setLayoutData(gd_img);
+        img.setImage(ResourceManager.getPluginImage(
+                ErlideUIPlugin.getDefault(), "icons/full/obj16/erlang058.gif"));
 
-		final Group composite = new Group(panel, SWT.NONE);
-		final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
-				false);
-		gd_composite.widthHint = 356;
-		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout());
+        final Group composite = new Group(panel, SWT.NONE);
+        final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
+                false);
+        gd_composite.widthHint = 356;
+        composite.setLayoutData(gd_composite);
+        composite.setLayout(new GridLayout());
 
-		final Label text = new Label(composite, SWT.NONE);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
-		text.setText(PreferenceMessages.ErlangPreferencePage_2);
+        final Label text = new Label(composite, SWT.NONE);
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
+        text.setText(PreferenceMessages.ErlangPreferencePage_2);
 
-		final Label textv = new Label(composite, SWT.NONE);
-		textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		textv.setText("    version "
-				+ ErlangPlugin.getDefault().getFeatureVersion());
+        final Label textv = new Label(composite, SWT.NONE);
+        textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        textv.setText("    version "
+                + ErlangPlugin.getDefault().getFeatureVersion());
 
-		final Link erlideorgLink = new Link(composite, SWT.NONE);
-		erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);
+        final Link erlideorgLink = new Link(composite, SWT.NONE);
+        erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);
 
-		final Link updateLink = new Link(composite, SWT.NONE);
-		updateLink.setText(PreferenceMessages.ErlangPreferencePage_4);
-		new Label(panel, SWT.NONE);
+        final Link updateLink = new Link(composite, SWT.NONE);
+        updateLink.setText(PreferenceMessages.ErlangPreferencePage_4);
+        new Label(panel, SWT.NONE);
 
-		final Button reportButton = new Button(panel, SWT.NONE);
-		reportButton.setLayoutData(new GridData());
-		reportButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				PreferencesUtil.createPreferenceDialogOn(getShell(),
-						"org.erlide.ui.reporting", null, null);
-			}
-		});
-		reportButton.setText("Report problems");
+        final Button reportButton = new Button(panel, SWT.NONE);
+        reportButton.setLayoutData(new GridData());
+        reportButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                PreferencesUtil.createPreferenceDialogOn(getShell(),
+                        "org.erlide.ui.reporting", null, null);
+            }
+        });
+        reportButton.setText("Report problems");
 
-		return panel;
-	}
+        return panel;
+    }
 
-	public void init(final IWorkbench workbench) {
-	}
+    public void init(final IWorkbench workbench) {
+    }
 
 }

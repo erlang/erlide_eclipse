@@ -70,552 +70,549 @@ import org.erlide.ui.util.PixelConverter;
 
 /**
  * The color preferences.
- *
+ * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ColoringPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
-
-	private static final String COMPILER_TASK_TAGS = ErlangCoreOptions.COMPILER_TASK_TAGS;
-
-	public static final String COLORS_QUALIFIER = ErlideUIPlugin.PLUGIN_ID
-			+ "/editor/colors/";
-
-	final String fErlangCategory = PreferencesMessages.ErlEditorPreferencePage_coloring_category_erlang;
-
-	// final String fEdocCategory =
-	// PreferencesMessages.ErlEditorPreferencePage_coloring_category_edoc;
-
-	ColorSelector fSyntaxForegroundColorEditor;
-	Label fColorEditorLabel;
-	Button fEnableCheckbox;
-	Button fBoldCheckBox;
-	Button fItalicCheckBox;
-	Button fStrikethroughCheckBox;
-	Button fUnderlineCheckBox;
-
-	private TreeViewer fListViewer;
-	private IColorManager fColorManager;
-	SourceViewer fPreviewViewer;
-
-	Map<TokenHighlight, HighlightStyle> fColors;
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(final IWorkbench workbench) {
-		fColorManager = new ColorManager();
-
-		loadColors();
-	}
-
-	static class ColorListLabelProvider extends LabelProvider {
-
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof String) {
-				return (String) element;
-			}
-			final String name = ((TokenHighlight) element).getName();
-			final char c = Character.toUpperCase(name.charAt(0));
-			return c + name.substring(1);
-		}
-	}
-
-	class ColorListContentProvider implements ITreeContentProvider {
-
-		public Object[] getElements(final Object inputElement) {
-			return new String[] { fErlangCategory
-			// , fEdocCategory
-			};
-		}
-
-		public void dispose() {
-		}
-
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-		}
-
-		public Object[] getChildren(final Object parentElement) {
-			if (parentElement instanceof String) {
-				final String entry = (String) parentElement;
-				if (fErlangCategory.equals(entry)) {
-					return fColors.keySet().toArray();
-				}
-				// if (fEdocCategory.equals(entry)) {
-				// return fListModel.subList(0, 4).toArray();
-				// }
-			}
-			return new Object[0];
-		}
-
-		public Object getParent(final Object element) {
-			if (element instanceof String) {
-				return null;
-			}
-			// final int index = fListModel.indexOf(element);
-			// if (index < 4) {
-			// return fEdocCategory;
-			// }
-			return fErlangCategory;
-		}
-
-		public boolean hasChildren(final Object element) {
-			return element instanceof String;
-		}
-	}
-
-	@Override
-	public void performDefaults() {
-		super.performDefaults();
-
-		loadColors();
-
-		handleSyntaxColorListSelection();
-		fPreviewViewer.invalidateTextPresentation();
-	}
-
-	private void loadColors() {
-		fColors = new HashMap<TokenHighlight, HighlightStyle>();
-		for (final TokenHighlight th : TokenHighlight.values()) {
-			final HighlightStyle data = new HighlightStyle();
-			data.load(COLORS_QUALIFIER + th.getName(), th.getDefaultData());
-			fColors.put(th, data);
-		}
-	}
-
-	@Override
-	public boolean performOk() {
-		for (final TokenHighlight th : fColors.keySet()) {
-			final IEclipsePreferences node = new InstanceScope()
-					.getNode(COLORS_QUALIFIER + th.getName());
-			final HighlightStyle data = fColors.get(th);
-
-			// TODO only if different than default!
-			data.store(node);
-		}
-		return super.performOk();
-	}
-
-	@Override
-	public void dispose() {
-		fColorManager.dispose();
-
-		super.dispose();
-	}
-
-	void handleSyntaxColorListSelection() {
-		final TokenHighlight item = getHighlight();
-		if (item == null) {
-			fEnableCheckbox.setEnabled(false);
-			fSyntaxForegroundColorEditor.getButton().setEnabled(false);
-			fColorEditorLabel.setEnabled(false);
-			fBoldCheckBox.setEnabled(false);
-			fItalicCheckBox.setEnabled(false);
-			fStrikethroughCheckBox.setEnabled(false);
-			fUnderlineCheckBox.setEnabled(false);
-			return;
-		}
-		final HighlightStyle style = fColors.get(item);
-		fSyntaxForegroundColorEditor.setColorValue(style.getColor());
-		fBoldCheckBox.setSelection(style.hasStyle(SWT.BOLD));
-		fItalicCheckBox.setSelection(style.hasStyle(SWT.ITALIC));
-		fStrikethroughCheckBox.setSelection(style
-				.hasStyle(TextAttribute.STRIKETHROUGH));
-		fUnderlineCheckBox
-				.setSelection(style.hasStyle(TextAttribute.UNDERLINE));
-
-		// if (item instanceof SemanticHighlightingColorListItem) {
-		// fEnableCheckbox.setEnabled(true);
-		// final boolean enable = getPreferenceStore().getBoolean(
-		// ((SemanticHighlightingColorListItem) item).getEnableKey());
-		// fEnableCheckbox.setSelection(enable);
-		// fSyntaxForegroundColorEditor.getButton().setEnabled(enable);
-		// fColorEditorLabel.setEnabled(enable);
-		// fBoldCheckBox.setEnabled(enable);
-		// fItalicCheckBox.setEnabled(enable);
-		// fStrikethroughCheckBox.setEnabled(enable);
-		// fUnderlineCheckBox.setEnabled(enable);
-		// } else {
-		fSyntaxForegroundColorEditor.getButton().setEnabled(true);
-		fColorEditorLabel.setEnabled(true);
-		fBoldCheckBox.setEnabled(true);
-		fItalicCheckBox.setEnabled(true);
-		fStrikethroughCheckBox.setEnabled(true);
-		fUnderlineCheckBox.setEnabled(true);
-		fEnableCheckbox.setEnabled(false);
-		fEnableCheckbox.setSelection(true);
-		// }
-	}
-
-	private Control createSyntaxPage(final Composite parent) {
-		final Composite colorComposite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		colorComposite.setLayout(layout);
-
-		final Link link = new Link(colorComposite, SWT.NONE);
-		link
-				.setText(PreferencesMessages.ErlEditorColoringConfigurationBlock_link);
-		link.addSelectionListener(new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				PreferencesUtil.createPreferenceDialogOn(parent.getShell(),
-						e.text, null, null);
-			}
-		});
-
-		final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true,
-				false);
-		gridData.widthHint = 150; // only expand further if anyone else
-		// requires it
-		gridData.horizontalSpan = 2;
-		link.setLayoutData(gridData);
-
-		addFiller(colorComposite, 1);
-
-		Label label;
-		label = new Label(colorComposite, SWT.LEFT);
-		label
-				.setText(PreferencesMessages.ErlEditorPreferencePage_coloring_element);
-		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		final Composite editorComposite = new Composite(colorComposite,
-				SWT.NONE);
-		layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		editorComposite.setLayout(layout);
-		GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-		editorComposite.setLayoutData(gd);
-
-		fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
-		fListViewer.setLabelProvider(new ColorListLabelProvider());
-		fListViewer.setContentProvider(new ColorListContentProvider());
-		fListViewer.setInput(fColors);
-		fListViewer.setSelection(new StructuredSelection(fErlangCategory));
-		fListViewer.setSorter(new ViewerSorter() {
-
-			@Override
-			public int category(final Object element) {
-				// don't sort the top level categories
-				if (fErlangCategory.equals(element)) {
-					return 0;
-				}
-				// if (fEdocCategory.equals(element)) {
-				// return 1;
-				// }
-				// to sort semantic settings after partition based ones:
-				// if (element instanceof SemanticHighlightingColorListItem)
-				// return 1;
-				return 0;
-			}
-		});
-		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
-		gd.heightHint = convertHeightInCharsToPixels(9);
-		int maxWidth = 0;
-		for (final TokenHighlight item : fColors.keySet()) {
-			maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
-					.getName().length()));
-		}
-		final ScrollBar vBar = ((Scrollable) fListViewer.getControl())
-				.getVerticalBar();
-		if (vBar != null) {
-			maxWidth += vBar.getSize().x * 3; // scrollbars and tree
-		}
-		// indentation guess
-		gd.widthHint = maxWidth;
-
-		fListViewer.getControl().setLayoutData(gd);
-		fListViewer.expandAll();
-
-		final Composite stylesComposite = new Composite(editorComposite,
-				SWT.NONE);
-		layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.numColumns = 2;
-		stylesComposite.setLayout(layout);
-		stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		fEnableCheckbox = new Button(stylesComposite, SWT.CHECK);
-		fEnableCheckbox
-				.setText(PreferencesMessages.ErlEditorPreferencePage_enable);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment = GridData.BEGINNING;
-		gd.horizontalSpan = 2;
-		fEnableCheckbox.setLayoutData(gd);
-
-		fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
-		fColorEditorLabel
-				.setText(PreferencesMessages.ErlEditorPreferencePage_color);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = 20;
-		fColorEditorLabel.setLayoutData(gd);
-
-		fSyntaxForegroundColorEditor = new ColorSelector(stylesComposite);
-		final Button foregroundColorButton = fSyntaxForegroundColorEditor
-				.getButton();
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		foregroundColorButton.setLayoutData(gd);
-
-		fBoldCheckBox = new Button(stylesComposite, SWT.CHECK);
-		fBoldCheckBox.setText(PreferencesMessages.ErlEditorPreferencePage_bold);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = 20;
-		gd.horizontalSpan = 2;
-		fBoldCheckBox.setLayoutData(gd);
-
-		fItalicCheckBox = new Button(stylesComposite, SWT.CHECK);
-		fItalicCheckBox
-				.setText(PreferencesMessages.ErlEditorPreferencePage_italic);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = 20;
-		gd.horizontalSpan = 2;
-		fItalicCheckBox.setLayoutData(gd);
-
-		fStrikethroughCheckBox = new Button(stylesComposite, SWT.CHECK);
-		fStrikethroughCheckBox
-				.setText(PreferencesMessages.ErlEditorPreferencePage_strikeout);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = 20;
-		gd.horizontalSpan = 2;
-		fStrikethroughCheckBox.setLayoutData(gd);
-
-		fUnderlineCheckBox = new Button(stylesComposite, SWT.CHECK);
-		fUnderlineCheckBox
-				.setText(PreferencesMessages.ErlEditorPreferencePage_underline);
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalIndent = 20;
-		gd.horizontalSpan = 2;
-		fUnderlineCheckBox.setLayoutData(gd);
-
-		label = new Label(colorComposite, SWT.LEFT);
-		label.setText(PreferencesMessages.ErlEditorPreferencePage_preview);
-		final GridData gd_label = new GridData(SWT.FILL, SWT.FILL, true, false);
-		label.setLayoutData(gd_label);
-
-		final String content = loadPreviewContentFromFile(getClass(),
-				"ColorSettingPreviewCode.txt"); //$NON-NLS-1$
-		fPreviewViewer = createErlangPreviewer(parent, fColorManager, fColors,
-				content);
-		final Control previewer = fPreviewViewer.getControl();
-		gd = new GridData(GridData.FILL_BOTH);
-		gd.widthHint = convertWidthInCharsToPixels(20);
-		gd.heightHint = convertHeightInCharsToPixels(5);
-		previewer.setLayoutData(gd);
-
-		fListViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					public void selectionChanged(
-							final SelectionChangedEvent event) {
-						handleSyntaxColorListSelection();
-					}
-				});
-
-		foregroundColorButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
-				final HighlightStyle data = fColors.get(item);
-				data.setColor(fSyntaxForegroundColorEditor.getColorValue());
-				fPreviewViewer.invalidateTextPresentation();
-			}
-		});
-
-		fBoldCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
-				final HighlightStyle data = fColors.get(item);
-				data.setStyle(SWT.BOLD, fBoldCheckBox.getSelection());
-				fPreviewViewer.invalidateTextPresentation();
-			}
-		});
-
-		fItalicCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
-				final HighlightStyle data = fColors.get(item);
-				data.setStyle(SWT.ITALIC, fItalicCheckBox.getSelection());
-				fPreviewViewer.invalidateTextPresentation();
-			}
-		});
-		fStrikethroughCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
-				final HighlightStyle data = fColors.get(item);
-				data.setStyle(TextAttribute.STRIKETHROUGH,
-						fStrikethroughCheckBox.getSelection());
-				fPreviewViewer.invalidateTextPresentation();
-			}
-		});
-
-		fUnderlineCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				final TokenHighlight item = getHighlight();
-				final HighlightStyle data = fColors.get(item);
-				data.setStyle(TextAttribute.UNDERLINE, fUnderlineCheckBox
-						.getSelection());
-				fPreviewViewer.invalidateTextPresentation();
-			}
-		});
-
-		fEnableCheckbox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(final SelectionEvent e) {
-				fEnableCheckbox.setSelection(true);
-				// final TokenHighlight item = getHighlight();
-				// if (item instanceof SemanticHighlightingColorListItem) {
-				// final boolean enable = fEnableCheckbox.getSelection();
-				// getPreferenceStore().setValue(
-				// ((SemanticHighlightingColorListItem) item)
-				// .getEnableKey(), enable);
-				// fEnableCheckbox.setSelection(enable);
-				// fSyntaxForegroundColorEditor.getButton().setEnabled(enable);
-				// fColorEditorLabel.setEnabled(enable);
-				// fBoldCheckBox.setEnabled(enable);
-				// fItalicCheckBox.setEnabled(enable);
-				// fStrikethroughCheckBox.setEnabled(enable);
-				// fUnderlineCheckBox.setEnabled(enable);
-				// }
-			}
-		});
-
-		colorComposite.layout(false);
-
-		return colorComposite;
-	}
-
-	private void addFiller(final Composite composite, final int horizontalSpan) {
-		final PixelConverter pixelConverter = new PixelConverter(composite);
-		final Label filler = new Label(composite, SWT.LEFT);
-		final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan = horizontalSpan;
-		gd.heightHint = pixelConverter.convertHeightInCharsToPixels(1) / 2;
-		filler.setLayoutData(gd);
-	}
-
-	public static SourceViewer createErlangPreviewer(final Composite parent,
-			IColorManager colorManager,
-			Map<TokenHighlight, HighlightStyle> colors, final String content) {
-		// TODO we should move this method, to a utility class (or maybe create
-		// an ErlangPreviewSourceViewer class)
-		if (colorManager == null) {
-			colorManager = new ColorManager();
-		}
-		if (colors == null) {
-			colors = new HashMap<TokenHighlight, HighlightStyle>();
-			for (final TokenHighlight th : TokenHighlight.values()) {
-				colors.put(th, th.getDefaultData());
-			}
-		}
-
-		final IPreferenceStore generalTextStore = EditorsUI
-				.getPreferenceStore();
-		final IPreferenceStore store = new ChainedPreferenceStore(
-				new IPreferenceStore[] {
-						createTemporaryCorePreferenceStore(),
-						generalTextStore });
-		final SourceViewer v = new ProjectionViewer(parent, null, null, false,
-				SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		final SyntaxColorPreviewEditorConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
-				store, colorManager, colors);
-		v.configure(configuration);
-
-		final Font font = JFaceResources
-				.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
-		v.getTextWidget().setFont(font);
-		new ErlangSourceViewerUpdater(v, configuration, store);
-		v.setEditable(false);
-
-		final IDocument document = new Document(content);
-		v.setDocument(document);
-
-		return v;
-	}
-
-	private static IPreferenceStore createTemporaryCorePreferenceStore() {
-		final IPreferenceStore result = new PreferenceStore();
-		result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
-		return result;
-	}
-
-	public static String loadPreviewContentFromFile(final Class<?> clazz,
-			final String filename) {
-		String line;
-		final String separator = System.getProperty("line.separator"); //$NON-NLS-1$
-		final StringBuilder buffer = new StringBuilder(512);
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(clazz
-					.getResourceAsStream(filename)));
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-				buffer.append(separator);
-			}
-		} catch (final IOException io) {
-			ErlangPlugin.log(io);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (final IOException e) {
-				}
-			}
-		}
-		return buffer.toString();
-	}
-
-	/**
-	 * Returns the current highlighting color list item.
-	 *
-	 * @return the current highlighting color list item
-	 *
-	 */
-	TokenHighlight getHighlight() {
-		if (fListViewer == null) {
-			return null;
-		}
-		final IStructuredSelection selection = (IStructuredSelection) fListViewer
-				.getSelection();
-		final Object element = selection.getFirstElement();
-		if (element instanceof String) {
-			return null;
-		}
-		return (TokenHighlight) element;
-	}
-
-	@Override
-	protected Control createContents(final Composite parent) {
-		initializeDialogUnits(parent);
-		return createSyntaxPage(parent);
-	}
+        IWorkbenchPreferencePage {
+
+    private static final String COMPILER_TASK_TAGS = ErlangCoreOptions.COMPILER_TASK_TAGS;
+
+    public static final String COLORS_QUALIFIER = ErlideUIPlugin.PLUGIN_ID
+            + "/editor/colors/";
+
+    final String fErlangCategory = PreferencesMessages.ErlEditorPreferencePage_coloring_category_erlang;
+
+    // final String fEdocCategory =
+    // PreferencesMessages.ErlEditorPreferencePage_coloring_category_edoc;
+
+    ColorSelector fSyntaxForegroundColorEditor;
+    Label fColorEditorLabel;
+    Button fEnableCheckbox;
+    Button fBoldCheckBox;
+    Button fItalicCheckBox;
+    Button fStrikethroughCheckBox;
+    Button fUnderlineCheckBox;
+
+    private TreeViewer fListViewer;
+    private IColorManager fColorManager;
+    SourceViewer fPreviewViewer;
+
+    Map<TokenHighlight, HighlightStyle> fColors;
+
+    /**
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(final IWorkbench workbench) {
+        fColorManager = new ColorManager();
+
+        loadColors();
+    }
+
+    static class ColorListLabelProvider extends LabelProvider {
+
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof String) {
+                return (String) element;
+            }
+            final String name = ((TokenHighlight) element).getName();
+            final char c = Character.toUpperCase(name.charAt(0));
+            return c + name.substring(1);
+        }
+    }
+
+    class ColorListContentProvider implements ITreeContentProvider {
+
+        public Object[] getElements(final Object inputElement) {
+            return new String[] { fErlangCategory
+            // , fEdocCategory
+            };
+        }
+
+        public void dispose() {
+        }
+
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
+        }
+
+        public Object[] getChildren(final Object parentElement) {
+            if (parentElement instanceof String) {
+                final String entry = (String) parentElement;
+                if (fErlangCategory.equals(entry)) {
+                    return fColors.keySet().toArray();
+                }
+                // if (fEdocCategory.equals(entry)) {
+                // return fListModel.subList(0, 4).toArray();
+                // }
+            }
+            return new Object[0];
+        }
+
+        public Object getParent(final Object element) {
+            if (element instanceof String) {
+                return null;
+            }
+            // final int index = fListModel.indexOf(element);
+            // if (index < 4) {
+            // return fEdocCategory;
+            // }
+            return fErlangCategory;
+        }
+
+        public boolean hasChildren(final Object element) {
+            return element instanceof String;
+        }
+    }
+
+    @Override
+    public void performDefaults() {
+        super.performDefaults();
+
+        loadColors();
+
+        handleSyntaxColorListSelection();
+        fPreviewViewer.invalidateTextPresentation();
+    }
+
+    private void loadColors() {
+        fColors = new HashMap<TokenHighlight, HighlightStyle>();
+        for (final TokenHighlight th : TokenHighlight.values()) {
+            final HighlightStyle data = new HighlightStyle();
+            data.load(COLORS_QUALIFIER + th.getName(), th.getDefaultData());
+            fColors.put(th, data);
+        }
+    }
+
+    @Override
+    public boolean performOk() {
+        for (final TokenHighlight th : fColors.keySet()) {
+            final IEclipsePreferences node = new InstanceScope()
+                    .getNode(COLORS_QUALIFIER + th.getName());
+            final HighlightStyle data = fColors.get(th);
+
+            // TODO only if different than default!
+            data.store(node);
+        }
+        return super.performOk();
+    }
+
+    @Override
+    public void dispose() {
+        fColorManager.dispose();
+
+        super.dispose();
+    }
+
+    void handleSyntaxColorListSelection() {
+        final TokenHighlight item = getHighlight();
+        if (item == null) {
+            fEnableCheckbox.setEnabled(false);
+            fSyntaxForegroundColorEditor.getButton().setEnabled(false);
+            fColorEditorLabel.setEnabled(false);
+            fBoldCheckBox.setEnabled(false);
+            fItalicCheckBox.setEnabled(false);
+            fStrikethroughCheckBox.setEnabled(false);
+            fUnderlineCheckBox.setEnabled(false);
+            return;
+        }
+        final HighlightStyle style = fColors.get(item);
+        fSyntaxForegroundColorEditor.setColorValue(style.getColor());
+        fBoldCheckBox.setSelection(style.hasStyle(SWT.BOLD));
+        fItalicCheckBox.setSelection(style.hasStyle(SWT.ITALIC));
+        fStrikethroughCheckBox.setSelection(style
+                .hasStyle(TextAttribute.STRIKETHROUGH));
+        fUnderlineCheckBox
+                .setSelection(style.hasStyle(TextAttribute.UNDERLINE));
+
+        // if (item instanceof SemanticHighlightingColorListItem) {
+        // fEnableCheckbox.setEnabled(true);
+        // final boolean enable = getPreferenceStore().getBoolean(
+        // ((SemanticHighlightingColorListItem) item).getEnableKey());
+        // fEnableCheckbox.setSelection(enable);
+        // fSyntaxForegroundColorEditor.getButton().setEnabled(enable);
+        // fColorEditorLabel.setEnabled(enable);
+        // fBoldCheckBox.setEnabled(enable);
+        // fItalicCheckBox.setEnabled(enable);
+        // fStrikethroughCheckBox.setEnabled(enable);
+        // fUnderlineCheckBox.setEnabled(enable);
+        // } else {
+        fSyntaxForegroundColorEditor.getButton().setEnabled(true);
+        fColorEditorLabel.setEnabled(true);
+        fBoldCheckBox.setEnabled(true);
+        fItalicCheckBox.setEnabled(true);
+        fStrikethroughCheckBox.setEnabled(true);
+        fUnderlineCheckBox.setEnabled(true);
+        fEnableCheckbox.setEnabled(false);
+        fEnableCheckbox.setSelection(true);
+        // }
+    }
+
+    private Control createSyntaxPage(final Composite parent) {
+        final Composite colorComposite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        colorComposite.setLayout(layout);
+
+        final Link link = new Link(colorComposite, SWT.NONE);
+        link.setText(PreferencesMessages.ErlEditorColoringConfigurationBlock_link);
+        link.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                PreferencesUtil.createPreferenceDialogOn(parent.getShell(),
+                        e.text, null, null);
+            }
+        });
+
+        final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true,
+                false);
+        gridData.widthHint = 150; // only expand further if anyone else
+        // requires it
+        gridData.horizontalSpan = 2;
+        link.setLayoutData(gridData);
+
+        addFiller(colorComposite, 1);
+
+        Label label;
+        label = new Label(colorComposite, SWT.LEFT);
+        label.setText(PreferencesMessages.ErlEditorPreferencePage_coloring_element);
+        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        final Composite editorComposite = new Composite(colorComposite,
+                SWT.NONE);
+        layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        editorComposite.setLayout(layout);
+        GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+        editorComposite.setLayoutData(gd);
+
+        fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
+        fListViewer.setLabelProvider(new ColorListLabelProvider());
+        fListViewer.setContentProvider(new ColorListContentProvider());
+        fListViewer.setInput(fColors);
+        fListViewer.setSelection(new StructuredSelection(fErlangCategory));
+        fListViewer.setSorter(new ViewerSorter() {
+
+            @Override
+            public int category(final Object element) {
+                // don't sort the top level categories
+                if (fErlangCategory.equals(element)) {
+                    return 0;
+                }
+                // if (fEdocCategory.equals(element)) {
+                // return 1;
+                // }
+                // to sort semantic settings after partition based ones:
+                // if (element instanceof SemanticHighlightingColorListItem)
+                // return 1;
+                return 0;
+            }
+        });
+        gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
+        gd.heightHint = convertHeightInCharsToPixels(9);
+        int maxWidth = 0;
+        for (final TokenHighlight item : fColors.keySet()) {
+            maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
+                    .getName().length()));
+        }
+        final ScrollBar vBar = ((Scrollable) fListViewer.getControl())
+                .getVerticalBar();
+        if (vBar != null) {
+            maxWidth += vBar.getSize().x * 3; // scrollbars and tree
+        }
+        // indentation guess
+        gd.widthHint = maxWidth;
+
+        fListViewer.getControl().setLayoutData(gd);
+        fListViewer.expandAll();
+
+        final Composite stylesComposite = new Composite(editorComposite,
+                SWT.NONE);
+        layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.numColumns = 2;
+        stylesComposite.setLayout(layout);
+        stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        fEnableCheckbox = new Button(stylesComposite, SWT.CHECK);
+        fEnableCheckbox
+                .setText(PreferencesMessages.ErlEditorPreferencePage_enable);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalAlignment = GridData.BEGINNING;
+        gd.horizontalSpan = 2;
+        fEnableCheckbox.setLayoutData(gd);
+
+        fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
+        fColorEditorLabel
+                .setText(PreferencesMessages.ErlEditorPreferencePage_color);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        fColorEditorLabel.setLayoutData(gd);
+
+        fSyntaxForegroundColorEditor = new ColorSelector(stylesComposite);
+        final Button foregroundColorButton = fSyntaxForegroundColorEditor
+                .getButton();
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        foregroundColorButton.setLayoutData(gd);
+
+        fBoldCheckBox = new Button(stylesComposite, SWT.CHECK);
+        fBoldCheckBox.setText(PreferencesMessages.ErlEditorPreferencePage_bold);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
+        fBoldCheckBox.setLayoutData(gd);
+
+        fItalicCheckBox = new Button(stylesComposite, SWT.CHECK);
+        fItalicCheckBox
+                .setText(PreferencesMessages.ErlEditorPreferencePage_italic);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
+        fItalicCheckBox.setLayoutData(gd);
+
+        fStrikethroughCheckBox = new Button(stylesComposite, SWT.CHECK);
+        fStrikethroughCheckBox
+                .setText(PreferencesMessages.ErlEditorPreferencePage_strikeout);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
+        fStrikethroughCheckBox.setLayoutData(gd);
+
+        fUnderlineCheckBox = new Button(stylesComposite, SWT.CHECK);
+        fUnderlineCheckBox
+                .setText(PreferencesMessages.ErlEditorPreferencePage_underline);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
+        fUnderlineCheckBox.setLayoutData(gd);
+
+        label = new Label(colorComposite, SWT.LEFT);
+        label.setText(PreferencesMessages.ErlEditorPreferencePage_preview);
+        final GridData gd_label = new GridData(SWT.FILL, SWT.FILL, true, false);
+        label.setLayoutData(gd_label);
+
+        final String content = loadPreviewContentFromFile(getClass(),
+                "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        fPreviewViewer = createErlangPreviewer(parent, fColorManager, fColors,
+                content);
+        final Control previewer = fPreviewViewer.getControl();
+        gd = new GridData(GridData.FILL_BOTH);
+        gd.widthHint = convertWidthInCharsToPixels(20);
+        gd.heightHint = convertHeightInCharsToPixels(5);
+        previewer.setLayoutData(gd);
+
+        fListViewer
+                .addSelectionChangedListener(new ISelectionChangedListener() {
+
+                    public void selectionChanged(
+                            final SelectionChangedEvent event) {
+                        handleSyntaxColorListSelection();
+                    }
+                });
+
+        foregroundColorButton.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                final TokenHighlight item = getHighlight();
+                final HighlightStyle data = fColors.get(item);
+                data.setColor(fSyntaxForegroundColorEditor.getColorValue());
+                fPreviewViewer.invalidateTextPresentation();
+            }
+        });
+
+        fBoldCheckBox.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                final TokenHighlight item = getHighlight();
+                final HighlightStyle data = fColors.get(item);
+                data.setStyle(SWT.BOLD, fBoldCheckBox.getSelection());
+                fPreviewViewer.invalidateTextPresentation();
+            }
+        });
+
+        fItalicCheckBox.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                final TokenHighlight item = getHighlight();
+                final HighlightStyle data = fColors.get(item);
+                data.setStyle(SWT.ITALIC, fItalicCheckBox.getSelection());
+                fPreviewViewer.invalidateTextPresentation();
+            }
+        });
+        fStrikethroughCheckBox.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                final TokenHighlight item = getHighlight();
+                final HighlightStyle data = fColors.get(item);
+                data.setStyle(TextAttribute.STRIKETHROUGH,
+                        fStrikethroughCheckBox.getSelection());
+                fPreviewViewer.invalidateTextPresentation();
+            }
+        });
+
+        fUnderlineCheckBox.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                final TokenHighlight item = getHighlight();
+                final HighlightStyle data = fColors.get(item);
+                data.setStyle(TextAttribute.UNDERLINE,
+                        fUnderlineCheckBox.getSelection());
+                fPreviewViewer.invalidateTextPresentation();
+            }
+        });
+
+        fEnableCheckbox.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                // do nothing
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                fEnableCheckbox.setSelection(true);
+                // final TokenHighlight item = getHighlight();
+                // if (item instanceof SemanticHighlightingColorListItem) {
+                // final boolean enable = fEnableCheckbox.getSelection();
+                // getPreferenceStore().setValue(
+                // ((SemanticHighlightingColorListItem) item)
+                // .getEnableKey(), enable);
+                // fEnableCheckbox.setSelection(enable);
+                // fSyntaxForegroundColorEditor.getButton().setEnabled(enable);
+                // fColorEditorLabel.setEnabled(enable);
+                // fBoldCheckBox.setEnabled(enable);
+                // fItalicCheckBox.setEnabled(enable);
+                // fStrikethroughCheckBox.setEnabled(enable);
+                // fUnderlineCheckBox.setEnabled(enable);
+                // }
+            }
+        });
+
+        colorComposite.layout(false);
+
+        return colorComposite;
+    }
+
+    private void addFiller(final Composite composite, final int horizontalSpan) {
+        final PixelConverter pixelConverter = new PixelConverter(composite);
+        final Label filler = new Label(composite, SWT.LEFT);
+        final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.horizontalSpan = horizontalSpan;
+        gd.heightHint = pixelConverter.convertHeightInCharsToPixels(1) / 2;
+        filler.setLayoutData(gd);
+    }
+
+    public static SourceViewer createErlangPreviewer(final Composite parent,
+            IColorManager colorManager,
+            Map<TokenHighlight, HighlightStyle> colors, final String content) {
+        // TODO we should move this method, to a utility class (or maybe create
+        // an ErlangPreviewSourceViewer class)
+        if (colorManager == null) {
+            colorManager = new ColorManager();
+        }
+        if (colors == null) {
+            colors = new HashMap<TokenHighlight, HighlightStyle>();
+            for (final TokenHighlight th : TokenHighlight.values()) {
+                colors.put(th, th.getDefaultData());
+            }
+        }
+
+        final IPreferenceStore generalTextStore = EditorsUI
+                .getPreferenceStore();
+        final IPreferenceStore store = new ChainedPreferenceStore(
+                new IPreferenceStore[] { createTemporaryCorePreferenceStore(),
+                        generalTextStore });
+        final SourceViewer v = new ProjectionViewer(parent, null, null, false,
+                SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+        final SyntaxColorPreviewEditorConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
+                store, colorManager, colors);
+        v.configure(configuration);
+
+        final Font font = JFaceResources
+                .getFont(PreferenceConstants.EDITOR_TEXT_FONT);
+        v.getTextWidget().setFont(font);
+        new ErlangSourceViewerUpdater(v, configuration, store);
+        v.setEditable(false);
+
+        final IDocument document = new Document(content);
+        v.setDocument(document);
+
+        return v;
+    }
+
+    private static IPreferenceStore createTemporaryCorePreferenceStore() {
+        final IPreferenceStore result = new PreferenceStore();
+        result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
+        return result;
+    }
+
+    public static String loadPreviewContentFromFile(final Class<?> clazz,
+            final String filename) {
+        String line;
+        final String separator = System.getProperty("line.separator"); //$NON-NLS-1$
+        final StringBuilder buffer = new StringBuilder(512);
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(
+                    clazz.getResourceAsStream(filename)));
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+                buffer.append(separator);
+            }
+        } catch (final IOException io) {
+            ErlangPlugin.log(io);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                }
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * Returns the current highlighting color list item.
+     * 
+     * @return the current highlighting color list item
+     * 
+     */
+    TokenHighlight getHighlight() {
+        if (fListViewer == null) {
+            return null;
+        }
+        final IStructuredSelection selection = (IStructuredSelection) fListViewer
+                .getSelection();
+        final Object element = selection.getFirstElement();
+        if (element instanceof String) {
+            return null;
+        }
+        return (TokenHighlight) element;
+    }
+
+    @Override
+    protected Control createContents(final Composite parent) {
+        initializeDialogUnits(parent);
+        return createSyntaxPage(parent);
+    }
 
 }
