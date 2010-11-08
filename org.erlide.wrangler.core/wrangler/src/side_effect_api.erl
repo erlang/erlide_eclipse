@@ -47,18 +47,21 @@ has_side_effect(Node) ->
 has_side_effect(_File, Node, _SearchPaths) ->
     LibSideEffectFile = list_to_atom(filename:join(?WRANGLER_DIR, "plt/side_effect_plt")),
     LibPlt = from_dets(lib_side_effect_plt, LibSideEffectFile),
-    Res = check_side_effect(Node, LibPlt, none),
-    case Res of
-      true -> dets:close(LibSideEffectFile),
-	      ets:delete(LibPlt),
-	      true;
-      false -> dets:close(LibSideEffectFile),
-	       ets:delete(LibPlt),
-	       false;
-      unknown ->
-	  dets:close(LibSideEffectFile),
-	  ets:delete(LibPlt),
-	  unknown
+    try  check_side_effect(Node, LibPlt, none) of
+	 true -> 
+	    dets:close(LibSideEffectFile),
+	    ets:delete(LibPlt),
+	    true;
+	 false -> dets:close(LibSideEffectFile),
+		  ets:delete(LibPlt),
+		  false;
+	 unknown ->
+	    dets:close(LibSideEffectFile),
+	    ets:delete(LibPlt),
+	    unknown
+    catch
+	_E1:_E2 ->
+	    unknown
     end.
 
  %% The following is too slow for a large project.
@@ -161,7 +164,6 @@ side_effect_scc([{{_M, _F, _A}, Def}], Side_Effect_Tab, OtherTab) ->
     check_side_effect(Def, Side_Effect_Tab, OtherTab).
 
 
-
 check_side_effect(Node, LibPlt, LocalPlt) ->
     LookUp = fun (MFA) ->
 		     case lookup(LibPlt, MFA) of
@@ -176,58 +178,63 @@ check_side_effect(Node, LibPlt, LocalPlt) ->
 			   end
 		     end
 	     end,
-    case refac_syntax:type(Node) of
-      receive_expr -> true;
-      infix_expr -> Op = refac_syntax:operator_literal(refac_syntax:infix_expr_operator(Node)),
-		    Op == "!";
-      fun_expr -> false;
-      implicit_fun -> false;
-      application ->
-	  Operator = refac_syntax:application_operator(Node),
-	  Arity = length(refac_syntax:application_arguments(Node)),
-	  case refac_syntax:type(Operator) of
-	    atom ->
-		Op = refac_syntax:atom_value(Operator),
-		{value, {fun_def, {M, _N, _A, _P1, _P}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(Operator)),
-		LookUp({M, Op, Arity});
-	    module_qualifier ->
-		Mod = refac_syntax:module_qualifier_argument(Operator),
-		Body = refac_syntax:module_qualifier_body(Operator),
-		case {refac_syntax:type(Mod), refac_syntax:type(Body)} of
-		  {atom, atom} ->
-		      M = refac_syntax:atom_value(Mod),
-		      Op = refac_syntax:atom_value(Body),
-		      LookUp({M, Op, Arity});
-		  _ -> unknown
-		end;
-	    _ -> unknown
-	  end;
-      arity_qualifier ->
-	  Fun = refac_syntax:arity_qualifier_body(Node),
-	  A = refac_syntax:arity_qualifier_argument(Node),
-	  case {refac_syntax:type(Fun), refac_syntax:type(A)} of
-	    {atom, integer} ->
-		FunName = refac_syntax:atom_value(Fun),
-		Arity = refac_syntax:integer_value(A),
-		{value, {fun_def, {M, _N, _A, _P1, _P}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(FunName)),
-		LookUp({M, FunName, Arity});
-	    _ -> unknown
-	  end;
-      atom -> false;
-      _ ->
-	  case refac_syntax:subtrees(Node) of
-	    [] -> false;
-	    Ts ->
-		Res = lists:flatten([[check_side_effect(T, LibPlt, LocalPlt) || T <- G] || G <- Ts]),
-		case lists:member(true, Res) of
-		  true -> true;
-		  false ->
-		      case lists:member(unknown, Res) of
-			true -> unknown;
+    case refac_syntax:is_literal(Node) of 
+	true -> 
+	    false;
+	_ ->
+	    case refac_syntax:type(Node) of
+		receive_expr -> true;
+		infix_expr -> Op = refac_syntax:operator_literal(refac_syntax:infix_expr_operator(Node)),
+			      Op == "!";
+		fun_expr -> false;
+		implicit_fun -> false;
+		application ->
+		    Operator = refac_syntax:application_operator(Node),
+		    Arity = length(refac_syntax:application_arguments(Node)),
+		    case refac_syntax:type(Operator) of
+			atom ->
+			    Op = refac_syntax:atom_value(Operator),
+			    {value, {fun_def, {M, _N, _A, _P1, _P}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(Operator)),
+			    LookUp({M, Op, Arity});
+			module_qualifier ->
+			    Mod = refac_syntax:module_qualifier_argument(Operator),
+			    Body = refac_syntax:module_qualifier_body(Operator),
+			    case {refac_syntax:type(Mod), refac_syntax:type(Body)} of
+				{atom, atom} ->
+				    M = refac_syntax:atom_value(Mod),
+				    Op = refac_syntax:atom_value(Body),
+				    LookUp({M, Op, Arity});
+				_ -> unknown
+			    end;
+			_ -> unknown
+		    end;
+		arity_qualifier ->
+		    Fun = refac_syntax:arity_qualifier_body(Node),
+		    A = refac_syntax:arity_qualifier_argument(Node),
+		    case {refac_syntax:type(Fun), refac_syntax:type(A)} of
+			{atom, integer} ->
+			    FunName = refac_syntax:atom_value(Fun),
+			    Arity = refac_syntax:integer_value(A),
+			    {value, {fun_def, {M, _N, _A, _P1, _P}}} = lists:keysearch(fun_def, 1, refac_syntax:get_ann(FunName)),
+			    LookUp({M, FunName, Arity});
+			_ -> unknown
+		    end;
+		atom -> false;
+		_ ->
+		    case refac_syntax:subtrees(Node) of
+			[] -> false;
+			Ts ->
+			    Res = lists:flatten([[check_side_effect(T, LibPlt, LocalPlt) || T <- G] || G <- Ts]),
+			    case lists:member(true, Res) of
+				true -> true;
+				false ->
+				    case lists:member(unknown, Res) of
+					true -> unknown;
 			_ -> false
-		      end
-		end
-	  end
+				    end
+			    end
+		    end
+	    end
     end.
 
 normalise_file_name(Filename) ->

@@ -71,7 +71,7 @@ new_let(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewPatName, SearchPa
 		?debug("Expr:\n~p\n", [Expr]),
 		case side_cond_analysis(FunDef, Expr, NewPatName) of
 		  {ok, {ParentExpr, LetMacro}} ->
-		      new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd);
+			new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd, TabWidth);
 		  {question, Msg, ParentExpr} ->
 		      case Editor of
 			emacs ->
@@ -91,25 +91,25 @@ new_let_1(FileName, NewPatName, Expr, ParentExpr, SearchPaths, TabWidth, Cmd) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Expr1 = list_to_term(Expr),
     ParentExpr1 = list_to_term(ParentExpr),
-    new_let_2(FileName, AnnAST, NewPatName, Expr1, ParentExpr1, none, emacs, Cmd).
+    new_let_2(FileName, AnnAST, NewPatName, Expr1, ParentExpr1, none, emacs, Cmd, TabWidth).
 
 
 %%-spec(new_let_1_eclipse/6::(filename(), string(), syntaxTree(), syntaxTree(), [dir()], integer()) ->	
 %%			 {'ok', [{filename(), filename(),string()}]}).		
 new_let_1_eclipse(FileName, NewPatName, Expr, ParentExpr, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, none, eclipse, "").
+    new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, none, eclipse, "", TabWidth).
 
 
-new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd) ->
+new_let_2(FileName, AnnAST, NewPatName, Expr, ParentExpr, LetMacro, Editor, Cmd, TabWidth) ->
     AnnAST1 = do_intro_new_let(AnnAST, Expr, list_to_atom(NewPatName), ParentExpr, LetMacro),
     case Editor of
       emacs ->
 	  Res = [{{FileName, FileName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, Cmd),
+	  refac_util:write_refactored_files_for_preview(Res, TabWidth,Cmd),
 	  {ok, [FileName]};
       eclipse ->
-	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1, TabWidth),
 	  {ok, [{FileName, FileName, FileContent}]}
     end.
 
@@ -461,13 +461,13 @@ merge(FileName, MacroName, SearchPaths, TabWidth, Editor) ->
 %%-spec(merge_let_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
 %%		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
 merge_let_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
-    merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, emacs).
+    merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, emacs, TabWidth).
 
 
 %%-spec(merge_forall_1/5::(FileName::filename(), Candidates::[{{integer(), integer(), integer(), integer()}, string()}],
 %%		      SearchPaths::[dir()], TabWidth::integer(), Cmd::string()) -> {ok, [filename()]}).
 merge_forall_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
-    merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, emacs).
+    merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, emacs, TabWidth).
 
 
 
@@ -477,7 +477,7 @@ merge_forall_1(FileName, Candidates, SearchPaths, TabWidth, Cmd) ->
 merge_let_1_eclipse(FileName, Candidates, SearchPaths, TabWidth) ->
     Candidates1 = [{{StartLine, StartCol, EndLine, EndCol}, NewLetApp}||
 		      {{{StartLine, StartCol}, {EndLine, EndCol}}, NewLetApp}<-Candidates],
-    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse).
+    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse, TabWidth).
 
 
 %%-spec(merge_forall_1_eclipse/4::(FileName::filename(), Candidates::[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}],
@@ -486,10 +486,10 @@ merge_let_1_eclipse(FileName, Candidates, SearchPaths, TabWidth) ->
 merge_forall_1_eclipse(FileName, Candidates, SearchPaths, TabWidth) ->
     Candidates1 = [{{StartLine, StartCol, EndLine, EndCol}, NewLetApp}||
 		      {{{StartLine, StartCol}, {EndLine, EndCol}}, NewLetApp}<-Candidates],
-    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse).
+    merge_1(FileName, Candidates1, SearchPaths, TabWidth, "", eclipse,TabWidth).
 
 
-merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, Editor) ->
+merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, Editor, TabWidth) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Candidates1 = case Editor of 
 		      emacs -> [{SE, list_to_term(NewLetApp)} || {SE, NewLetApp}<-Candidates];
@@ -499,10 +499,10 @@ merge_1(FileName, Candidates, SearchPaths, TabWidth, Cmd, Editor) ->
     case Editor of
 	emacs ->
 	    Res = [{{FileName, FileName}, AnnAST1}],
-	    refac_util:write_refactored_files_for_preview(Res, Cmd),
+	    refac_util:write_refactored_files_for_preview(Res, TabWidth, Cmd),
 	    {ok, [FileName]};
 	eclipse ->
-	    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+	    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1, TabWidth),
 	    {ok, [{FileName, FileName, FileContent}]}
     end.
 

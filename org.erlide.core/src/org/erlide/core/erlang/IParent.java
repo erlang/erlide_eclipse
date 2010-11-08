@@ -13,6 +13,7 @@ package org.erlide.core.erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.erlang.IErlElement.Kind;
 
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.
@@ -22,35 +23,39 @@ import org.eclipse.core.resources.IResource;
  */
 public interface IParent {
 
-	/**
-	 * Returns the immediate children of this element. Unless otherwise
-	 * specified by the implementing element, the children are in no particular
-	 * order.
-	 * 
-	 * @exception ErlModelException
-	 *                if this element does not exist or if an exception occurs
-	 *                while accessing its corresponding resource
-	 * @return the immediate children of this element
-	 */
-	List<IErlElement> getChildren() throws ErlModelException;
+    /**
+     * Returns the immediate children of this element. Unless otherwise
+     * specified by the implementing element, the children are in no particular
+     * order.
+     * 
+     * @exception ErlModelException
+     *                if this element does not exist or if an exception occurs
+     *                while accessing its corresponding resource
+     * @return the immediate children of this element
+     */
+    List<IErlElement> getChildren() throws ErlModelException;
 
-	/**
-	 * Returns whether this element has one or more immediate children. This is
-	 * a convenience method, and may be more efficient than testing whether
-	 * <code>getChildren</code> is an empty array.
-	 * 
-	 * @exception ErlModelException
-	 *                if this element does not exist or if an exception occurs
-	 *                while accessing its corresponding resource
-	 * @return true if the immediate children of this element, false otherwise
-	 */
-	boolean hasChildren();
+    /**
+     * Returns whether this element has one or more immediate children. This is
+     * a convenience method, and may be more efficient than testing whether
+     * <code>getChildren</code> is an empty array.
+     * 
+     * @exception ErlModelException
+     *                if this element does not exist or if an exception occurs
+     *                while accessing its corresponding resource
+     * @return true if the immediate children of this element, false otherwise
+     */
+    boolean hasChildren();
 
-	void addChild(IErlElement child);
+    List<IErlElement> getChildrenOfKind(Kind kind) throws ErlModelException;
 
-	void removeChild(IErlElement e);
+    boolean hasChildrenOfKind(Kind kind);
 
-	IErlElement getChildNamed(String s);
+    void addChild(IErlElement child);
 
-	IErlElement getChildWithResource(IResource rsrc);
+    void removeChild(IErlElement e);
+
+    IErlElement getChildNamed(String s);
+
+    IErlElement getChildWithResource(IResource rsrc);
 }

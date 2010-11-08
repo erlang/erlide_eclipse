@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.sdk"
       label="erlide SDK"
-      version="0.9.1.qualifier"
+      version="0.9.2.qualifier"
       provider-name="erlide.org">
 
    <description>
@@ -66,6 +66,12 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.kernel.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.testing.libs"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

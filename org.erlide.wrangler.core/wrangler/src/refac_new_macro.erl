@@ -68,7 +68,7 @@ new_macro(FileName, Start = {SLine, SCol}, End = {ELine, ECol}, NewMacroName, Se
     case pre_cond_check(FileName, AnnAST, NewMacroName, Start, End, SearchPaths, TabWidth) of
       {ok, AnnAST, Sel, NeedBracket} ->
 	  AnnAST1 = do_intro_new_macro(AnnAST, NewMacroName, Sel, NeedBracket),
-	  return_refac_result(FileName, AnnAST1, Editor, Cmd);
+	  return_refac_result(FileName, AnnAST1, Editor, Cmd, TabWidth);
       {error, Reason} -> throw({error, Reason})
     end.
 
@@ -159,7 +159,7 @@ replace_expr_with_macro(Form, {ExpList, SLoc, ELoc}, MApp) ->
 replace_single_expr_with_macro_app(Tree, {MApp, SLoc, ELoc}) ->
     case refac_misc:get_start_end_loc(Tree) of
       {SLoc, ELoc} ->
-	  {MApp, true};
+	  {refac_misc:rewrite(Tree, MApp), true};
       _ -> {Tree, false}
     end.
 
@@ -283,13 +283,13 @@ collect_names_to_avoid_1(F) ->
     
 
 
-return_refac_result(FileName, AnnAST, Editor, Cmd) ->
+return_refac_result(FileName, AnnAST, Editor, Cmd, TabWidth) ->
     case Editor of
       emacs ->
-	  refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST}], Cmd),
+	  refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST}], TabWidth, Cmd),
 	  {ok, [FileName]};
       eclipse ->
-	  Src = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST),
+	  Src = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST, TabWidth),
 	  Res = [{FileName, FileName, Src}],
 	  {ok, Res}
     end.

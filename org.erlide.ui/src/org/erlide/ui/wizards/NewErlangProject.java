@@ -39,6 +39,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
@@ -155,7 +156,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 	private boolean validateFinish() {
 		ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
 				+ "|");
-		final OldErlangProjectProperties prefs = buildPage.getPrefs();
+		final IOldErlangProjectProperties prefs = buildPage.getPrefs();
 		if (prefs.getOutputDir().isEmpty()) {
 			reportError(ErlideUIPlugin
 					.getResourceString("wizard.errors.buildpath"));
@@ -215,7 +216,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 			buildPaths(monitor, root, project, bprefs.getSourceDirs());
 			buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-			final OldErlangProjectProperties prefs = ErlangCore
+			final IOldErlangProjectProperties prefs = ErlangCore
 					.getProjectProperties(project);
 			prefs.copyFrom(bprefs);
 			final IEclipsePreferences node = new ProjectScope(project)

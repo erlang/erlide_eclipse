@@ -35,12 +35,12 @@ import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
@@ -84,7 +84,7 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final Collection<IPath> sourcePaths = prefs.getSourceDirs();
         for (final IPath path : sourcePaths) {

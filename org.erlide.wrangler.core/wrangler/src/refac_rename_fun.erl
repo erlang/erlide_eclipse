@@ -55,6 +55,8 @@
 
 -export([rename_fun/6, rename_fun_1/6,  rename_fun_eclipse/6, rename_fun_1_eclipse/6]).
 
+-export([rename_fun_command/5]).
+
 -include("../include/wrangler.hrl").
 
 
@@ -65,77 +67,157 @@ rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, emacs).
 
 %%-spec(rename_fun_eclipse/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
-%%	     {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
-
+%%				  {error, string()} | {warning, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_fun_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, eclipse).
+
+%%-spec(rename_fun_command/5::(modulename()|filename(), atom(), integer(), atom(),[dir()])->
+%%				       {error, string()} | {ok, [filename()]}).
+rename_fun_command(ModOrFileName, OldFunName, Arity, NewFunName,SearchPaths) ->
+    OldFunNameStr=case is_atom(OldFunName) of 
+		      true ->atom_to_list(OldFunName);
+		      false -> throw({error, "Original function name should be an atom."})
+		  end,
+    NewFunNameStr=case is_atom(NewFunName) of 
+		      true ->atom_to_list(NewFunName);
+		      false->throw({error, "New function name should be an atom."})
+		  end,
+    case is_integer(Arity) of 
+	true -> ok;
+	false-> throw({error, "Arity should be an integer."})
+    end,
+    case OldFunNameStr==NewFunNameStr of 
+	true ->
+	    throw({error, "New function name is the same as old function name!"});
+	false -> ok
+    end,
+    case refac_misc:is_fun_name(NewFunNameStr) of
+	true -> ok;
+	false -> throw({error, "Invalid new function name!"})
+    end,
+    case filelib:is_file(ModOrFileName) of 
+	true ->
+	    rename_fun_command_1(ModOrFileName,OldFunNameStr, Arity, 
+				      NewFunNameStr, SearchPaths, 8);
+	false ->
+	    case is_atom(ModOrFileName) of 
+		true ->
+		    case refac_misc:modname_to_filename(ModOrFileName, SearchPaths) of 
+			{ok, FileName} ->
+			    rename_fun_command_1(FileName,OldFunNameStr, Arity, 
+						      NewFunNameStr, SearchPaths, 8);
+			{error, Msg} ->
+			    {error, lists:flatten(Msg)}
+		    end;
+		false ->
+		    {error, "Invalid parameters!"}
+	    end
+    end.
+
+rename_fun_command_1(FileName, OldFunName, Arity, NewFunName, SearchPaths, TabWidth) ->
+    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    OldFunNameAtom = list_to_atom(OldFunName),
+    NewFunNameAtom = list_to_atom(NewFunName),
+    {ok, ModName} = get_module_name(Info),
+    case refac_misc:funname_to_defpos(AnnAST, {ModName, OldFunNameAtom, Arity}) of
+	{ok, DefPos} ->
+	    case pre_cond_check_command(Info, NewFunNameAtom, ModName, OldFunNameAtom, Arity) of
+		ok ->
+		    rename_fun_0(FileName, {AnnAST, Info}, {ModName, OldFunNameAtom, Arity}, {DefPos, NewFunNameAtom},
+				 SearchPaths, TabWidth, command, "");
+		Others -> Others
+	    end;
+	{error, Reason} ->
+	    throw({error, Reason})
+    end.
+
+pre_cond_check_command(Info, NewFunNameAtom, ModName, OldFunNameAtom, Arity) ->
+    DefinedFuns = [{F, A} || {M, F, A} <- refac_misc:inscope_funs(Info), M==ModName],
+    InscopeFuns = [{F, A} || {_M, F, A} <- refac_misc:inscope_funs(Info)],
+    case not (lists:member({OldFunNameAtom, Arity}, DefinedFuns)) of
+	true ->
+	    {error, "The function specified does not exist!"};
+	false ->
+	    case lists:member({NewFunNameAtom, Arity}, InscopeFuns) orelse
+		erl_internal:bif(erlang, NewFunNameAtom, Arity)
+	    of
+		true ->
+		    {error, lists:flatten(atom_to_list(NewFunNameAtom) ++ "/" ++
+			 integer_to_list(Arity) ++ " is already in scope, "
+		     "or is an auto-imported builtin function.")};
+		false ->
+		    ok
+	    end
+    end.
 
 rename_fun(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_fun( ~p, ~p, ~p, ~p,~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, NewName, SearchPaths, TabWidth]),
-    Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_fun(" ++ "\"" ++
-	     FileName ++ "\", " ++ integer_to_list(Line) ++
+    Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_fun(" ++ "\"" ++ 
+	     FileName ++ "\", " ++ integer_to_list(Line) ++ 
 	       ", " ++ integer_to_list(Col) ++ ", " ++ "\"" ++ NewName ++ "\","
-		 ++ "[" ++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+	++ "[" ++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     case refac_misc:is_fun_name(NewName) of
-      true -> ok;
-      false -> throw({error, "Invalid new function name!"})
+	true -> ok;
+	false -> throw({error, "Invalid new function name!"})
     end,
     {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    NewName1 = list_to_atom(NewName),
+    NewNameAtom = list_to_atom(NewName),
     {ok, ModName} = get_module_name(Info),
     case interface_api:pos_to_fun_name(AnnAST, {Line, Col}) of
-      {ok, {Mod, Fun, Arity, _, DefinePos}} ->
-	  case {ModName, NewName1} =/= {Mod, Fun} of
-	    true ->
-		case pre_cond_check(FileName, Info, NewName1, Mod, Fun, Arity) of
-		  ok ->
-		      rename_fun_0(FileName, NewName, SearchPaths, TabWidth,
-				   Editor, AnnAST, Info, NewName1,
-				   Mod, Fun, Arity, DefinePos, Cmd1);
-		  Others -> Others
-		end;
-	    _ ->
-		case Editor of
-		  emacs -> {ok, []};
-		  eclipse ->
-		      FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST),
-		      {ok, [{FileName, FileName, FileContent}]}
-		end
-	  end;
-      {error, Reason} ->
-	  {error, Reason}
+	{ok, {Mod, Fun, Arity, _, DefinePos}} ->
+	    case {ModName, NewNameAtom} =/= {Mod, Fun} of
+		true ->
+		    case pre_cond_check(FileName, Info, NewNameAtom, Mod, Fun, Arity) of
+			ok ->
+			    rename_fun_0(FileName, {AnnAST, Info}, {Mod, Fun, Arity}, {DefinePos, NewNameAtom},
+					 SearchPaths, TabWidth, Editor, Cmd1);
+			Others -> Others
+		    end;
+		_ ->
+		    case Editor of
+			emacs -> {ok, [], false};
+			eclipse ->
+			    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST, TabWidth),
+			    {ok, [{FileName, FileName, FileContent}]}
+		    end
+	    end;
+	{error, Reason} ->
+	    {error, Reason}
     end.
 
-rename_fun_0(FileName, NewName, SearchPaths, TabWidth, Editor,
-	     AnnAST, Info, NewName1, Mod, Fun, Arity, DefinePos, Cmd) ->
+rename_fun_0(FileName, {AnnAST, Info}, {Mod, OldFunNameAtom, Arity}, {DefinePos, NewNameAtom},
+	     SearchPaths, TabWidth, Editor, Cmd) ->
+    NewNameStr = atom_to_list(NewNameAtom),
     Pid = refac_atom_utils:start_atom_process(),
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
-    {AnnAST1, _C} = do_rename_fun(AnnAST, {Mod, Fun, Arity}, {DefinePos, NewName1}),
-    refac_atom_utils:check_unsure_atoms(FileName, AnnAST1, [Fun], f_atom, Pid),
-    case refac_misc:is_exported({Fun, Arity}, Info) of
-      true ->
-	  ?wrangler_io("\nChecking possible client modules in the following search paths: \n~p\n", [SearchPaths]),
-	  ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
-	  try
-	    rename_fun_in_client_modules(ClientFiles, {Mod, Fun, Arity},
-					 NewName, SearchPaths, TabWidth, Pid)
-	  of
-	    Results ->
-		HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
-		refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(Fun), renamed_warn_msg(Fun)),
-		refac_atom_utils:stop_atom_process(Pid),
-		write_files(Editor, [{{FileName, FileName}, AnnAST1}| Results], Cmd, HasWarningMsg)
-	  catch
-	    throw:Err ->
-		refac_atom_utils:stop_atom_process(Pid),
-		Err
-	  end;
-      false ->
-	  HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
-	  refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(Fun), renamed_warn_msg(Fun)),
-	  refac_atom_utils:stop_atom_process(Pid),
-	  write_files(Editor, [{{FileName, FileName}, AnnAST1}], Cmd, HasWarningMsg)
+    {AnnAST1, _C} = do_rename_fun(AnnAST, {Mod, OldFunNameAtom, Arity}, {DefinePos, NewNameStr}),
+    refac_atom_utils:check_unsure_atoms(FileName, AnnAST1, [OldFunNameAtom], f_atom, Pid),
+    case refac_misc:is_exported({OldFunNameAtom, Arity}, Info) of
+	true ->
+	    ?wrangler_io("\nChecking possible client modules in the following search paths: \n~p\n", [SearchPaths]),
+	    ClientFiles = refac_util:get_client_files(FileName, SearchPaths),
+	    try
+		rename_fun_in_client_modules(ClientFiles, {Mod, OldFunNameAtom, Arity},
+					     NewNameAtom, SearchPaths, TabWidth, Pid)
+	    of
+		Results ->
+		    HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
+		    refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(OldFunNameAtom), renamed_warn_msg(OldFunNameAtom)),
+		    refac_atom_utils:stop_atom_process(Pid),
+		    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results],
+						      HasWarningMsg, Editor, TabWidth, Cmd)
+	    catch
+		throw:Err ->
+		    refac_atom_utils:stop_atom_process(Pid),
+		    Err
+	    end;
+	false ->
+	    HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
+	    refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(OldFunNameAtom), renamed_warn_msg(OldFunNameAtom)),
+	    refac_atom_utils:stop_atom_process(Pid),
+	    refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}],
+					      HasWarningMsg, Editor, TabWidth, Cmd)
     end.
 
 %%-spec(rename_fun_1/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
@@ -172,7 +254,8 @@ rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 		HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
 		refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(Fun), renamed_warn_msg(Fun)),
 		refac_atom_utils:stop_atom_process(Pid),
-		write_files(Editor, [{{FileName, FileName}, AnnAST1}| Results], Cmd, HasWarningMsg)
+		refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results], 
+						  HasWarningMsg,Editor,TabWidth, Cmd)
 	  catch
 	    throw:Err -> Err
 	  end;
@@ -180,49 +263,38 @@ rename_fun_1(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 	  HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
 	  refac_atom_utils:output_atom_warning_msg(Pid, not_renamed_warn_msg(Fun), renamed_warn_msg(Fun)),
 	  refac_atom_utils:stop_atom_process(Pid),
-	  write_files(emacs, [{{FileName, FileName}, AnnAST1}], Cmd, HasWarningMsg)
+	  refac_util:write_refactored_files([{{FileName, FileName}, AnnAST1}],
+					    HasWarningMsg, Editor, TabWidth, Cmd)
     end.
 
-write_files(Editor, Results, Cmd, HasWarningMsg) ->
-    case Editor of
-      emacs ->
-	    refac_util:write_refactored_files_for_preview(Results, Cmd),
-	    ChangedFiles = [F || {{F, _F}, _AST} <- Results],
-	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
-			 [ChangedFiles]),
-	    {ok, ChangedFiles, HasWarningMsg};
-	eclipse ->
-	    Res = [{FName, NewFName, refac_prettypr:print_ast(refac_util:file_format(FName), AST)}
-		   || {{FName, NewFName}, AST} <- Results],
-	    {ok, Res}
-    end.
+
 pre_cond_check(FileName, Info, NewFunName, OldFunDefMod, OldFunName, Arity) ->
     {ok, ModName} = get_module_name(Info),
     Inscope_Funs = [{F, A} || {_M, F, A} <- refac_misc:inscope_funs(Info)],
     if OldFunDefMod == ModName ->
-	   case lists:member({NewFunName, Arity}, Inscope_Funs) orelse
-	       erl_internal:bif(erlang, NewFunName, Arity)
-	       of
-	     true ->
-		 {error, atom_to_list(NewFunName) ++ "/" ++
-			   integer_to_list(Arity) ++ " is already in scope, "
-						     "or is an auto-imported builtin function."};
-	     _ ->
-		 case refac_misc:is_callback_fun(Info, OldFunName, Arity) of
-		   true ->
-		       {warning, "The function to be renamed is a callback function, continue?"};
-		   _ -> TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-			case TestFrameWorkUsed of
-			  [] -> ok;
-			  _ ->
-			      catch test_framework_aware_name_checking(
-				      TestFrameWorkUsed, OldFunName, Arity, NewFunName)
-			end
-		 end
-	   end;
+	    case lists:member({NewFunName, Arity}, Inscope_Funs) orelse
+		erl_internal:bif(erlang, NewFunName, Arity)
+	    of
+		true ->
+		    {error, atom_to_list(NewFunName) ++ "/" ++
+			 integer_to_list(Arity) ++ " is already in scope, "
+		     "or is an auto-imported builtin function."};
+		_ ->
+		    case refac_misc:is_callback_fun(Info, OldFunName, Arity) of
+			true ->
+			    {warning, "The function to be renamed is a callback function, continue?"};
+			_ -> TestFrameWorkUsed = refac_util:test_framework_used(FileName),
+			     case TestFrameWorkUsed of
+				 [] -> ok;
+				 _ ->
+				     catch test_framework_aware_name_checking(
+					     TestFrameWorkUsed, OldFunName, Arity, NewFunName)
+			     end
+		    end
+	    end;
        true ->
-	   {error, "This function is not defined in this module; "
-		   "a function can only be renamed from the module where it is defined."}
+	    {error, "This function is not defined in this module; "
+	     "a function can only be renamed from the module where it is defined."}
     end.
 
 do_rename_fun(Tree, {ModName, OldName, Arity}, {DefinePos, NewName}) ->

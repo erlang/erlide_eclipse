@@ -27,12 +27,11 @@ public class ErlideScanner {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
         try {
-            final OtpErlangObject res = ErlangCore
+            ErlangCore
                     .getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "initialScan", "assso", module,
                             moduleFileName, initialText, stateDir, updateCaches);
-            // ErlLogger.debug("initialScan " + module + " " + res);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }

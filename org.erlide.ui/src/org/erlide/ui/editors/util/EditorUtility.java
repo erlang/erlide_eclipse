@@ -13,12 +13,17 @@ package org.erlide.ui.editors.util;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
@@ -32,12 +37,14 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -272,11 +279,24 @@ public class EditorUtility {
         return null;
     }
 
-    private static IEditorInput getEditorInput(final IErlElement element)
+    private static IEditorInput getEditorInput(IErlElement element)
             throws ErlModelException {
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
             return new FileEditorInput((IFile) resource);
+        }
+        if (!(element instanceof IErlModule)) {
+            element = element.getParent();
+        }
+        if (element.getFilePath() != null) {
+            final IPath path = new Path(element.getFilePath());
+            IFileStore fileStore = EFS.getLocalFileSystem().getStore(
+                    path.removeLastSegments(1));
+            fileStore = fileStore.getChild(path.lastSegment());
+            final IFileInfo fetchInfo = fileStore.fetchInfo();
+            if (!fetchInfo.isDirectory() && fetchInfo.exists()) {
+                return new FileStoreEditorInput(fileStore);
+            }
         }
         return null;
     }

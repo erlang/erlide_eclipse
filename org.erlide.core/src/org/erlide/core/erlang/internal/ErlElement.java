@@ -365,6 +365,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return true;
     }
 
+    public boolean hasChildrenOfKind(final Kind kind) {
+        for (final IErlElement child : fChildren) {
+            if (child.getKind() == kind) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the hash code for this Erlang element. By default, the hash code
      * for an element is a combination of its name and parent's hash code.
@@ -555,8 +564,19 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         }
     }
 
-    public List<IErlElement> getChildren() {
+    public List<IErlElement> getChildren() throws ErlModelException {
         return fChildren;
+    }
+
+    public List<IErlElement> getChildrenOfKind(final Kind kind)
+            throws ErlModelException {
+        final List<IErlElement> result = new ArrayList<IErlElement>();
+        for (final IErlElement element : getChildren()) {
+            if (element.getKind() == kind) {
+                result.add(element);
+            }
+        }
+        return result;
     }
 
     public IErlElement getChildNamed(final String name) {
@@ -737,5 +757,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     public String toLabelString() {
         return Util.normalizeSpaces(toString());
+    }
+
+    public String getFilePath() {
+        return null;
     }
 }

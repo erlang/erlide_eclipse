@@ -167,8 +167,8 @@ pos_to_var_name_1(Node, _Pos = {Ln, Col}) ->
 
 
 
--spec(pos_to_var(Node::syntaxTree(), Pos::pos())->
-	     {ok, syntaxTree()} | {error, string()}).
+%%-spec(pos_to_var(Node::syntaxTree(), Pos::pos())->
+%%	     {ok, syntaxTree()} | {error, string()}).
 pos_to_var(Node, Pos) ->
     case
 	ast_traverse_api:once_tdTU(fun pos_to_var_1/2, Node, Pos)

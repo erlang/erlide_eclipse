@@ -49,6 +49,7 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -286,10 +287,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         final IErlModel model = ErlangCore.getModel();
         IErlPreprocessorDef pd;
         try {
-            pd = ErlModelUtils
-                    .findPreprocessorDef(b, project, module, recordName,
-                            Kind.RECORD_DEF, model.getExternal(erlProject,
-                                    ErlangCore.EXTERNAL_INCLUDES));
+            pd = ErlModelUtils.findPreprocessorDef(b, project, module,
+                    recordName, Kind.RECORD_DEF,
+                    model.getExternalIncludes(erlProject));
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         } catch (final BackendException e) {
@@ -339,9 +339,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
             }
             final IErlModel model = ErlangCore.getModel();
             // add external modules
-            final List<String> mods = ErlModelUtils.getExternalModules(b,
-                    prefix,
-                    model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES));
+            final List<String> mods = ModelUtils.getExternalModules(b,
+                    prefix, erlProject);
             for (final String m : mods) {
                 final String name = ErlideUtil.basenameWithoutExtension(m);
                 if (!allErlangFiles.contains(name)) {
@@ -441,9 +440,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
             final List<IErlPreprocessorDef> defs = ErlModelUtils
-                    .getPreprocessorDefs(b, project, module, kind, model
-                            .getExternal(erlProject,
-                                    ErlangCore.EXTERNAL_INCLUDES));
+                    .getPreprocessorDefs(b, project, module, kind,
+                            model.getExternalIncludes(erlProject));
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);
@@ -479,7 +477,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
         final IErlModule external = ErlModelUtils.getExternalModule(moduleName,
-                model.getExternal(erlProject, ErlangCore.EXTERNAL_MODULES));
+                model.getExternalModules(erlProject));
         if (external != null) {
             modules.add(external);
         }

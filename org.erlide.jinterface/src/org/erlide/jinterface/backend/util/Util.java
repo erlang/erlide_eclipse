@@ -548,12 +548,12 @@ public final class Util {
             char nextChar = text[0];
             for (int i = 0; i < length; i++) {
                 final char currentChar = nextChar;
-                nextChar = (i < length - 1) ? text[i + 1] : ' ';
+                nextChar = i < length - 1 ? text[i + 1] : ' ';
                 if (currentChar == '\n') {
                     return "\n"; //$NON-NLS-1$
                 }
                 if (currentChar == '\r') {
-                    return (nextChar == '\n') ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
+                    return nextChar == '\n' ? "\r\n" : "\r"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
             }
@@ -839,7 +839,7 @@ public final class Util {
             int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final Comparable mid = sortedCollection[(left + right) >>> 1];
+        final Comparable mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) < 0) {
                 left++;
@@ -866,7 +866,7 @@ public final class Util {
     private static void quickSort(final int[] list, int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final int mid = list[(left + right) >>> 1];
+        final int mid = list[left + right >>> 1];
         do {
             while (list[left] < mid) {
                 left++;
@@ -897,7 +897,7 @@ public final class Util {
             int right, final Comparer comparer) {
         final int original_left = left;
         final int original_right = right;
-        final Object mid = sortedCollection[(left + right) >>> 1];
+        final Object mid = sortedCollection[left + right >>> 1];
         do {
             while (comparer.compare(sortedCollection[left], mid) < 0) {
                 left++;
@@ -962,7 +962,7 @@ public final class Util {
             int right) {
         final int original_left = left;
         final int original_right = right;
-        final String mid = sortedCollection[(left + right) >>> 1];
+        final String mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) < 0) {
                 left++;
@@ -993,7 +993,7 @@ public final class Util {
             int left, int right) {
         final int original_left = left;
         final int original_right = right;
-        final String mid = sortedCollection[(left + right) >>> 1];
+        final String mid = sortedCollection[left + right >>> 1];
         do {
             while (sortedCollection[left].compareTo(mid) > 0) {
                 left++;
@@ -1248,7 +1248,7 @@ public final class Util {
         int start = 0;
         for (int i = 0; i < segCount; ++i) {
             final int dot = s.indexOf('.', start);
-            final int end = (dot == -1) ? s.length() : dot;
+            final int end = dot == -1 ? s.length() : dot;
             segs[i] = new char[end - start];
             s.getChars(start, end, segs[i], 0);
             start = end + 1;
@@ -1305,7 +1305,7 @@ public final class Util {
             final int end = log.indexOf('\n', start);
             printStream.print(Thread.currentThread());
             printStream.print(" "); //$NON-NLS-1$
-            printStream.print(log.substring(start, (end == -1) ? log.length()
+            printStream.print(log.substring(start, end == -1 ? log.length()
                     : end + 1));
             start = end + 1;
         } while (start != 0);
@@ -1439,6 +1439,22 @@ public final class Util {
         }
     }
 
+    public static char[] getFileCharContent(final String path,
+            final String encoding) throws IOException {
+        InputStream stream = null;
+        try {
+            stream = new BufferedInputStream(new FileInputStream(path));
+            return getInputStreamAsCharArray(stream, -1, encoding);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (final IOException e) {
+                }
+            }
+        }
+    }
+
     /*
      * NIO support to get input stream as byte array. Not used as with JDK 1.4.2
      * this support is slower than standard IO one... Keep it as comment for
@@ -1542,7 +1558,7 @@ public final class Util {
     public static char[] getInputStreamAsCharArray(final InputStream stream,
             final int length, final String encoding) throws IOException {
         InputStreamReader reader = null;
-        reader = (encoding == null) ? new InputStreamReader(stream)
+        reader = encoding == null ? new InputStreamReader(stream)
                 : new InputStreamReader(stream, encoding);
         char[] contents;
         if (length == -1) {
@@ -1774,7 +1790,7 @@ public final class Util {
         }
     }
 
-    public static String normalizeSpaces(String string) {
+    public static String normalizeSpaces(final String string) {
         return string.replaceAll("[\t\n\r ]+", " ");
     }
 

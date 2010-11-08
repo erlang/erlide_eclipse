@@ -107,7 +107,7 @@ fold_against_macro_1_eclipse(FileName, CandidatesToFold, MacroDef, SearchPaths, 
     CandidatesToFold1 =[{StartLine, StartCol, EndLine, EndCol, MacroApp, MacroDef} ||
 			   {{{StartLine, StartCol}, {EndLine, EndCol}}, MacroApp} <- CandidatesToFold],
     AnnAST1 = fold_against_macro_1_1_eclipse(AnnAST, CandidatesToFold1),
-    Src = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+    Src = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1, TabWidth),
     Res = [{FileName, FileName, Src}],
     {ok, Res}.
  
@@ -127,7 +127,7 @@ fold_against_macro_1_1_eclipse(AnnAST, [{StartLine, StartCol, EndLine, EndCol,Ma
 fold_against_macro_1(FileName, CandidatesToFold, SearchPaths, TabWidth, Cmd) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     AnnAST1 = fold_against_macro_1_1(AnnAST, CandidatesToFold),
-    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], Cmd),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], TabWidth, Cmd),
     {ok, [FileName]}.
    
 fold_against_macro_1_1(AnnAST, []) ->

@@ -23,8 +23,8 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendShell;
@@ -197,7 +197,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
     }
 
     public void addProjectPath(final IProject project) {
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         final String outDir = project.getLocation()
                 .append(prefs.getOutputDir()).toOSString();

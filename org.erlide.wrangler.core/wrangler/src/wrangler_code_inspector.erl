@@ -93,7 +93,7 @@
 
 -include("../include/wrangler.hrl").
 
-%% @type filename()=string().
+%%@type filename()=string().
 %% @type modulename()=atom().
 %% @type functionname()=atom().
 %% @type functionarity()=integer().
@@ -104,7 +104,7 @@
 
 
 %%==========================================================================================
-%% @doc Find all the instances of a variable, including both defining and use instances.
+%%@doc Find all the instances of a variable, including both defining and use instances.
 %%@spec find_var_instances(FileName::filename(), {Line::integer(), Col::integer()}, 
 %%			 TabWidth:: integer()) ->
 %%	     {error, string()} | {ok, [{pos(), pos()}], [pos()]}

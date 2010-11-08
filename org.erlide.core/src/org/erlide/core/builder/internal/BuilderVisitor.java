@@ -22,14 +22,14 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
     private final Set<BuildResource> result;
     private final IProgressMonitor monitor;
-    private OldErlangProjectProperties prefs = null;
+    private IOldErlangProjectProperties prefs = null;
     private final BuilderHelper helper;
 
     public BuilderVisitor(final Set<BuildResource> result,

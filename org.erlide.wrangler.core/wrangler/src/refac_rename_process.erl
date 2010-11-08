@@ -67,7 +67,7 @@ rename_process(FileName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 			ok ->
 			    Results = do_rename_process(FileName, AnnAST, ProcessName, NewProcessName, SearchPaths, TabWidth),
 			    check_atoms(FileName, ProcessName, SearchPaths, TabWidth),
-			    refac_util:write_refactored_files(Results, Editor, Cmd);
+			    refac_util:write_refactored_files(Results, Editor, TabWidth, Cmd);
 			undecidables ->
 			    case Editor of
 			      emacs -> {undecidables, atom_to_list(ProcessName), Cmd};
@@ -98,7 +98,7 @@ rename_process_1(FileName, OldProcessName1, NewProcessName1, SearchPaths, TabWid
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Results = do_rename_process(FileName, AnnAST, OldProcessName, NewProcessName, SearchPaths, TabWidth),
     check_atoms(FileName, OldProcessName, SearchPaths, TabWidth),
-    refac_util:write_refactored_files(Results, Editor, Cmd).
+    refac_util:write_refactored_files(Results, Editor, TabWidth, Cmd).
 
 
 pos_to_process_name(Node, Pos) ->
@@ -140,7 +140,7 @@ pre_cond_check(NewProcessName, SearchPaths) ->
 		 end
     end.
 
-collect_process_names(DirList) ->
+collect_process_names(DirList) -> 
     Files = refac_util:expand_files(DirList, ".erl"),
     F = fun(File, FileAcc) ->
 		{ok, {AnnAST, Info}} = refac_util:parse_annotate_file(File, true, DirList),

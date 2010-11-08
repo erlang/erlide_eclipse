@@ -61,8 +61,10 @@ atom_loop({NotRenamed, Renamed}) ->
 check_unsure_atoms(FileName, FileAST, AtomNames, AtomType, Pid) ->
     UndecidableAtoms = collect_unsure_atoms_in_file(FileAST, AtomNames, AtomType),
     case UndecidableAtoms of
-	[] -> ok;
-	_ -> Pid ! {add_not_renamed, {FileName, UndecidableAtoms}}
+	[] -> 
+	    ok;
+	_ ->
+	    Pid ! {add_not_renamed, {FileName, UndecidableAtoms}}
     end.
 
 collect_unsure_atoms_in_file(FileAST, AtomNames, AtomType) ->
@@ -85,17 +87,21 @@ collect_unsure_atoms(Tree, AtomNames, AtomType)->
 		      case lists:member(AtomVal, AtomNames) of
 			  true ->
 			      Pos = refac_syntax:get_pos(Node),
-			      As = refac_syntax:get_ann(Node),
-			      case lists:keysearch(type, 1, As) of
-				  {value, {type,{f_atom, [M, _F, A]}}}
-				    when AtomType==f_name andalso 
-					 (not (is_atom(M) andalso M /= '_' andalso
-					       is_integer(A))) ->
-				      S ++ [{atom, Pos, AtomVal}];			      
-				  {value, {type, _}} ->
-				      S;
-				  _ ->
-				      S ++ [{atom, Pos, AtomVal}]
+			      case Pos ==0 orelse Pos=={0,0} of 
+				  true -> S;
+				  false ->
+				      As = refac_syntax:get_ann(Node),
+				      case lists:keysearch(type, 1, As) of
+					  {value, {type,{f_atom, [M, _F, A]}}}
+					    when AtomType==f_name andalso 
+						 (not (is_atom(M) andalso M /= '_' andalso
+						       is_integer(A))) ->
+					      S ++ [{atom, Pos, AtomVal}];			      
+					  {value, {type, _}} ->
+					      S;
+					  _ ->
+					      S ++ [{atom, Pos, AtomVal}]
+				      end
 			      end;
 			  false ->
 			      S
@@ -149,8 +155,8 @@ output_not_renamed_atom_info(FileAndPositions) ->
 output_renamed_atom_info(FileAndExprs) ->
     Fun = fun ({FileName, Exprs}) ->
 		  Fun0 = fun (Expr) ->
-				 {Line, _Col} = refac_syntax:get_pos(Expr),
-				 FileName ++ io_lib:format(":~p: ", [Line])
+				 Pos = refac_syntax:get_pos(Expr),
+				 FileName ++ io_lib:format(":~p: ", [Pos])
 				   ++ refac_prettypr:format(Expr) ++ "\n"
 			 end,
 		  lists:flatmap(Fun0, Exprs)

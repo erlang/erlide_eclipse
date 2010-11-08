@@ -166,15 +166,14 @@ fold_expr_1_eclipse(FileName, FunClauseDef, RangeNewExpList, SearchPaths, TabWid
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Body = refac_syntax:clause_body(FunClauseDef),
     AnnAST1 = fold_expression_1_eclipse_1(AnnAST, Body, RangeNewExpList),
-    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1,TabWidth),
     {ok, [{FileName, FileName, FileContent}]}.
-
 
 fold_expression_1_eclipse_1(AnnAST, _Body, []) ->
     AnnAST;
-fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}| Tail]) ->
+fold_expression_1_eclipse_1(AnnAST, Body, [Cand| Tail]) ->
     {AnnAST1, _} = ast_traverse_api:stop_tdTP(fun do_replace_expr_with_fun_call/2,
-					      AnnAST, {Body, {{StartLoc, EndLoc}, Exp}}),
+					      AnnAST, {Body, Cand}),
     fold_expression_1_eclipse_1(AnnAST1, Body, Tail).
 
 
@@ -182,7 +181,7 @@ fold_expression_1_eclipse_1(AnnAST, Body, [{{StartLoc, EndLoc}, Exp}| Tail]) ->
 do_fold_expression(FileName, CandidatesToFold, SearchPaths, TabWidth, LogMsg) ->
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     AnnAST1= fold_expression_1_1(AnnAST,  CandidatesToFold),
-    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], LogMsg),
+    refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], TabWidth, LogMsg),
     {ok, [FileName]}.
 
 fold_expression_1_1(AnnAST, []) ->

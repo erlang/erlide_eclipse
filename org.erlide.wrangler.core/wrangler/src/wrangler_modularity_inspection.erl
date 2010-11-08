@@ -741,8 +741,6 @@ partition_exports(File, DistThreshold, SearchPaths, TabWidth) ->
 partition_exports_eclipse(File, DistThreshold, SearchPaths, TabWidth) ->
     partition_exports(File, DistThreshold, false, SearchPaths, TabWidth, eclipse).
 
-
-
 partition_exports(File, DistThreshold, WithInOutDegree, SearchPaths, TabWidth, Editor) ->
     Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":partition_exports(" ++ "\"" ++
 	File ++ "\", " ++ float_to_list(DistThreshold) ++
@@ -780,7 +778,7 @@ partition_exports(File, DistThreshold, WithInOutDegree, SearchPaths, TabWidth, E
     digraph:delete(MG),
     digraph:delete(CG),
     AnnAST1=rewrite_export_list(File, NewCs),
-    refac_util:write_refactored_files(File, AnnAST1, Editor, Cmd1).
+    refac_util:write_refactored_files([{{File,File}, AnnAST1}], Editor, TabWidth, Cmd1).
     
     
    

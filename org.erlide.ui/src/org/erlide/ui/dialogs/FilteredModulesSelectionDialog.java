@@ -71,9 +71,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
@@ -596,14 +596,12 @@ public class FilteredModulesSelectionDialog extends
                 // navigate even "external" lists
                 final IErlModel model = ErlangCore.getModel();
                 if (project != null) {
-                    final String extMods = model.getExternal(
-                            model.findProject(project),
-                            ErlangCore.EXTERNAL_MODULES);
+                    final String extMods = model.getExternalModules(model
+                            .findProject(project));
                     final List<String> files = new ArrayList<String>();
                     files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = model.getExternal(
-                            model.findProject(project),
-                            ErlangCore.EXTERNAL_INCLUDES);
+                    final String extIncs = model.getExternalIncludes(model
+                            .findProject(project));
                     files.addAll(PreferencesUtils.unpackList(extIncs));
 
                     final IPathVariableManager pvm = ResourcesPlugin
@@ -663,7 +661,7 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final OldErlangProjectProperties prefs = ErlangCore
+            final IOldErlangProjectProperties prefs = ErlangCore
                     .getProjectProperties(project);
             validPaths.addAll(PluginUtils.getFullPaths(project,
                     prefs.getIncludeDirs()));

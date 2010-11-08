@@ -35,7 +35,7 @@ import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -66,7 +66,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             initializeBuilder(monitor);
             MarkerHelper.removeProblemsAndTasksFor(currentProject);
 
-            final OldErlangProjectProperties prefs = ErlangCore
+            final IOldErlangProjectProperties prefs = ErlangCore
                     .getProjectProperties(currentProject);
             final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
             if (bf.exists()) {
@@ -111,7 +111,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
-        final OldErlangProjectProperties prefs = ErlangCore
+        final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
         try {
             MarkerHelper.deleteMarkers(project);

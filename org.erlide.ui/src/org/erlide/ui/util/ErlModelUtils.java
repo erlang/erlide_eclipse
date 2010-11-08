@@ -171,11 +171,15 @@ public class ErlModelUtils {
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
         for (final ErlangIncludeFile element : includes) {
-            IResource re = ResourceUtil
-                    .recursiveFindNamedResourceWithReferences(project, element
-                            .getFilenameLastPart(), PluginUtils
-                            .getIncludePathFilter(project, module.getResource()
-                                    .getParent()));
+            final IResource resource = module.getResource();
+            IResource re = null;
+            if (resource != null) {
+                re = ResourceUtil.recursiveFindNamedResourceWithReferences(
+                        project,
+                        element.getFilenameLastPart(),
+                        PluginUtils.getIncludePathFilter(project,
+                                resource.getParent()));
+            }
             if (re == null) {
                 re = createExternalInclude(b, project, externalIncludes,
                         element);
@@ -559,15 +563,6 @@ public class ErlModelUtils {
         }
         return result;
     }
-
-    public static List<String> getExternalModules(final Backend b,
-            final String prefix, final String externalModules) {
-        return ErlideOpen.getExternalModules(b, prefix, externalModules,
-                ErlangCore.getModel().getPathVars());
-    }
-
-    // FIXME: move this to a separate class, that somehow listens to something
-    // so that the map is not filled with old disposed stuff
 
     public static IErlModule getModule(final IEditorInput editorInput,
             final IDocumentProvider documentProvider) throws CoreException {
