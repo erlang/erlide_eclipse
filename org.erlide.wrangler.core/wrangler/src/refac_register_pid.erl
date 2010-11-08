@@ -102,7 +102,7 @@ register_pid(FName, Start = {Line1, Col1}, End = {Line2, Col2}, RegName, SearchP
 				  {ok, Results} ->
 				      case Editor of
 					emacs ->
-					    refac_util:write_refactored_files_for_preview(Results, Cmd),
+					    refac_util:write_refactored_files_for_preview(Results, TabWidth, Cmd),
 					    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 					    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 							 [ChangedFiles]),
@@ -110,7 +110,7 @@ register_pid(FName, Start = {Line1, Col1}, End = {Line2, Col2}, RegName, SearchP
 					eclipse ->
 					    Res = lists:map(fun ({{OldFName, NewFName}, AST}) ->
 								    {OldFName, NewFName,
-								     refac_prettypr:print_ast(refac_util:file_format(OldFName), AST)}
+								     refac_prettypr:print_ast(refac_util:file_format(OldFName), AST, TabWidth)}
 							    end, Results),
 					    {ok, Res}
 				      end;
@@ -145,7 +145,7 @@ register_pid_1(FName, StartLine, StartCol, EndLine, EndCol, RegName, RegPids, Se
       ok -> case do_register(FName, AnnAST, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of
 	      {ok, Results} ->
 		  ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-		  refac_util:write_refactored_files_for_preview(Results, LogMsg),
+		  refac_util:write_refactored_files_for_preview(Results, TabWidth, LogMsg),
 		  ?wrangler_io("The following files have been changed by this refactoring:\n~p\n",
 			       [ChangedFiles]),
 		  {ok, ChangedFiles};
@@ -172,7 +172,7 @@ register_pid_2(FName, StartLine, StartCol, EndLine, EndCol, RegName, SearchPaths
     RegName1 = list_to_atom(RegName),
     case do_register(FName,AnnAST, MatchExpr, Pid, RegName1, SearchPaths, TabWidth) of 
 	{ok, Results} ->
-	    refac_util:write_refactored_files_for_preview(Results, LogMsg),
+	    refac_util:write_refactored_files_for_preview(Results, TabWidth, LogMsg),
 	    ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
 		      [ChangedFiles]),

@@ -44,10 +44,10 @@
 -module(refac_prettypr_0).
 -export([above/2, beside/2, best/3, break/1, empty/0, floating/1,
 	 floating/3, follow/2, follow/3, format/1, format/2, format/3,
-	 nest/2, par/1, par/2, sep/1, text/1, null_text/1, text_par/1,
-	 text_par/2]).
+	 nest/2, par/1, par/2, sep/1, text/1, text/2, null_text/1, text_par/1,
+	 text_par/2, text_par/3]).
 
--export([layout/2]). %% added by Huiqing Li
+-export([layout/2, layout/3]). %% added by Huiqing Li
 
 -record(text, {s}).
 -record(nest, {n, d}).
@@ -107,8 +107,12 @@
 %% @see null_text/1
 %% @see text_par/2
 
+
 text(S) ->
-    mktext(string(S)).   % convert to internal representation
+    text(S, 8).
+
+text(S, TabWidth) ->
+    mktext(string(S, TabWidth)).   % convert to internal representation
 
 %% This function is used internally only, and expects a string on
 %% the internal representation:
@@ -143,8 +147,9 @@ null_text(S) ->
 %% @spec text_par(Text::string()) -> document()
 %% @equiv text_par(Text, 0)
 
+
 text_par(S) ->
-    text_par(S, 0).
+    text_par(S, 0,8).
 
 
 %% =====================================================================
@@ -177,28 +182,41 @@ text_par(S) ->
 %% @see text/1
 %% @see par/2
 
-text_par(S, 0) ->
-    par(words(S));
-text_par(S, N) when N > 0 ->
-    nest(N, par(words(S), -N));
-text_par(S, N) when N < 0 ->
-    par(words(S), -N).
 
-words(S) ->
-    words(S, [], []).
+text_par(S,0) ->
+    text_par(S,0,8);
+text_par(S,N) when N>0 ->
+    text_par(S,N,8);
+text_par(S,N) when N<0 ->
+    text_par(S,N,8).
 
-words([$\s | Cs], As, Ws) -> words_1(Cs, As, Ws);
-words([$\t | Cs], As, Ws) -> words_1(Cs, As, Ws);
-words([$\n | Cs], As, Ws) -> words_1(Cs, As, Ws);
-words([C | Cs], As, Ws) -> words(Cs, [C | As], Ws);
-words([], [], Ws) -> lists:reverse(Ws);
-words([], As, Ws) -> words_1([], As, Ws).
+text_par(S, 0, TabWidth) ->
+    par(words(S, TabWidth));
+text_par(S, N, TabWidth) when N > 0 ->
+    nest(N, par(words(S, TabWidth),  -N));
+text_par(S, N, TabWidth) when N < 0 ->
+    par(words(S, TabWidth),  -N).
 
-words_1(Cs, [], Ws) ->
-    words(Cs, [], Ws);
-words_1(Cs, As, Ws) ->
-    words(Cs, [], [text(lists:reverse(As)) | Ws]).
+words(S, TabWidth) ->
+    words(S, [], [], TabWidth).
 
+words([$\s| Cs], As, Ws,TabWidth) -> 
+    words_1(Cs, As, Ws, TabWidth);
+words([$\t| Cs], As, Ws,TabWidth) -> 
+    words_1(Cs, As, Ws, TabWidth);
+words([$\n| Cs], As, Ws, TabWidth) -> 
+    words_1(Cs, As, Ws, TabWidth);
+words([C| Cs], As, Ws,  TabWidth) -> 
+    words(Cs, [C| As], Ws, TabWidth);
+words([], [], Ws,  _TabWidth) -> 
+    lists:reverse(Ws);
+words([], As, Ws, TabWidth) -> 
+    words_1([], As, Ws, TabWidth).
+
+words_1(Cs, [], Ws, TabWidth) ->
+    words(Cs, [], Ws,  TabWidth);
+words_1(Cs, As, Ws, TabWidth) ->
+    words(Cs, [], [text(lists:reverse(As), TabWidth)| Ws], TabWidth).
 
 %% =====================================================================
 %% @spec empty() -> document()
@@ -450,8 +468,9 @@ format(D) ->
 %% @spec format(D::document(), PaperWidth::integer()) -> string()
 %% @equiv format(D, PaperWidth, 65)
 
+
 format(D, W) ->
-    format(D, W, 65).
+    format(D, W, 65, 8).
 
 
 %% =====================================================================
@@ -473,13 +492,16 @@ format(D, W) ->
 %%
 %% @see best/3
 
-format(D, W, R) ->
+
+format(D,W,R) ->
+    format(D,W,R,8).
+
+format(D, W, R, TabWidth) ->
     case best(D, W, R) of
 	empty ->
 	    throw(no_layout);
-	L -> layout(L, unix)
+	L -> layout(L, unix, TabWidth)
     end.
-
 
 %% =====================================================================
 %% Representation:
@@ -513,30 +535,40 @@ format(D, W, R) ->
 %% The function `layout/1' performs the final transformation to a single
 %% flat string from the restricted document form.
 
-layout(L, FileFormat) ->
-    lists:reverse(layout(0, L, FileFormat,  [])).
 
-layout(N, #above{d1 = #text{s = S}, d2 = L}, D,  Cs) ->
-    case D of 
+layout(L,FileFormat) ->
+    layout(L,FileFormat, 8).
+
+layout(L, FileFormat, TabWidth) ->
+    lists:reverse(layout(0, L, FileFormat, [], TabWidth)).
+
+layout(N, #above{d1 = #text{s = S}, d2 = L}, D, Cs,  TabWidth) ->
+    case D of
 	dos ->
-	    layout(N, L, D, [$\n, $\r | flatrev(string_chars(S), indent(N, Cs))]);
+	    layout(N, L, D, [$\n, $\r| flatrev(string_chars(S), 
+					       indent(N, Cs, TabWidth))],
+		   TabWidth);
 	mac ->
-	    layout(N, L, D, [$\r | flatrev(string_chars(S), indent(N, Cs))]);
-	_->
-	    layout(N, L, D, [$\n | flatrev(string_chars(S), indent(N, Cs))])
+	    layout(N, L, D, [$\r| flatrev(string_chars(S), 
+					  indent(N, Cs, TabWidth))],
+		   TabWidth);
+	_ ->
+	    layout(N, L, D, [$\n| flatrev(string_chars(S), 
+					  indent(N, Cs, TabWidth))],
+		   TabWidth)
     end;
-layout(N, #nest{n = N1, d = L}, D, Cs) ->
-    layout(N + N1, L, D, Cs);
-layout(N, #text{s = S}, _D, Cs) ->
-    flatrev(string_chars(S), indent(N, Cs));
-layout(_N, null, _D, Cs) ->
+layout(N, #nest{n = N1, d = L}, D, Cs,  TabWidth) ->
+    layout(N + N1, L, D, Cs,  TabWidth);
+layout(N, #text{s = S}, _D, Cs,  TabWidth) ->
+    flatrev(string_chars(S), indent(N, Cs, TabWidth));
+layout(_N, null, _D, Cs, _TabWidth) ->
     Cs.
 
-indent(N, Cs) when N >= 8 ->
-    indent(N - 8, [$\t | Cs]);
-indent(N, Cs) when N > 0 ->
-    indent(N - 1, [$\s | Cs]);
-indent(_N, Cs) ->
+indent(N, Cs,  TabWidth) when N >= TabWidth ->
+    indent(N - TabWidth, [$\t| Cs],  TabWidth);
+indent(N, Cs,  TabWidth) when N > 0 ->
+    indent(N - 1, [$\s| Cs],  TabWidth);
+indent(_N, Cs, _TabWidth) ->
     Cs.
 
 flatrev(Cs, As) ->
@@ -1158,6 +1190,7 @@ rewrite(null, C) ->
 
 %% Both `null' and `empty' are already in use, so what do you do?
 
+
 nil() ->
     text("").
 
@@ -1212,8 +1245,9 @@ foldr1(F, [H | T]) ->
 %% Null strings are strings whose "official width" is zero, typically
 %% used for markup that is not supposed to affect the indentation.
 
-string(S) ->
-    [strwidth(S) | S].
+
+string(S, TabWidth) ->
+    [strwidth(S, TabWidth)| S].
 
 null_string(S) ->
     [0 | S].
@@ -1243,14 +1277,15 @@ is_empty_string([_ | _]) ->
 %% not really nice to give to a prettyprinter, and this seems to be the
 %% best interpretation.
 
-strwidth(S) ->
-    strwidth(S, 0).
 
-strwidth([$\t | Cs], N) ->
-    strwidth(Cs, N - (N rem 8) + 8);
-strwidth([_ | Cs], N) ->
-    strwidth(Cs, N + 1);
-strwidth([], N) ->
+strwidth(S, TabWidth) ->
+    strwidth(S, 0, TabWidth).
+
+strwidth([$\t| Cs], N, TabWidth) ->
+    strwidth(Cs, N - (N rem TabWidth) + TabWidth, TabWidth);
+strwidth([_| Cs], N,  TabWidth) ->
+    strwidth(Cs, N + 1, TabWidth);
+strwidth([], N,_TabWidth) ->
     N.
 
 %% =====================================================================

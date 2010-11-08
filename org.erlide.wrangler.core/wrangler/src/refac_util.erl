@@ -34,15 +34,15 @@
  
 -export([parse_annotate_file/2,parse_annotate_file/3, parse_annotate_file/4,
 	 parse_annotate_file/5, quick_parse_annotate_file/3,
-	 write_refactored_files/1, write_refactored_files/3,
-	 write_refactored_files/4,
-	 write_refactored_files_for_preview/2, expand_files/2,
+	 write_refactored_files/4, write_refactored_files/5,
+	 write_refactored_files_for_preview/3, expand_files/2,
 	 get_client_files/2, file_format/1, tokenize/3,
 	 concat_toks/1, test_framework_used/1,
 	 get_modules_by_file/1]).
 
 -include("../include/wrangler.hrl").
- 
+
+-include_lib("kernel/include/file.hrl"). 
 %% =====================================================================
 %% @doc Pretty-print the abstract syntax trees to a files, and add the previous 
 %% version to history for undo purpose. <code>Files</code> is a list of three element 
@@ -51,42 +51,68 @@
 %% should be the same as the first element, and the third element in the tuple is the 
 %% AST represention of the file.
 
-%% Note: This function should not longer be used.
-
-%%-spec(write_refactored_files([{{filename(),filename()},syntaxTree()}]) -> 'ok').
-write_refactored_files(Files) ->
-    F = fun ({{File1, File2}, AST}) ->
-		FileFormat = file_format(File1),
-		if File1 /= File2 ->
-		       file:delete(File1);
-		   true -> ok
-		end,
-		file:write_file(File2, list_to_binary(refac_prettypr:print_ast(FileFormat, AST)))
-	end,
-    Res =lists:map(F, Files),
-    case lists:all(fun(R) -> R == ok end, Res) of 
-	true -> ok;
-	_ -> throw({error, "Wrangler failed to rewrite the refactored files."})
+write_refactored_files(Results, HasWarningMsg, Editor, TabWidth, Cmd) ->
+    case Editor of
+	emacs ->
+	    write_refactored_files_emacs(Results, HasWarningMsg, TabWidth, Cmd);
+	eclipse ->
+	    write_refactored_files_eclipse(Results, TabWidth);
+	command ->
+	    write_refactored_files_command_line(Results, TabWidth)
     end.
 
-write_refactored_files_for_preview(Files, LogMsg) ->
+write_refactored_files(Results, Editor, TabWidth, Cmd) ->
+    case Editor of
+	emacs ->
+	    write_refactored_files_emacs(Results, TabWidth, Cmd);
+	eclipse ->
+	    write_refactored_files_eclipse(Results, TabWidth);
+	command ->
+	    write_refactored_files_command_line(Results, TabWidth)
+    end.
+
+write_refactored_files_emacs(Results, TabWidth, Cmd) ->
+    write_refactored_files_for_preview(Results,TabWidth,Cmd),
+    ChangedFiles = lists:map(fun ({FileInfo,_AST}) -> 
+				     element(1, FileInfo)
+			     end,Results),
+    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+		 [ChangedFiles]),
+    {ok,ChangedFiles}.
+
+write_refactored_files_emacs(Results, HasWarningMsg, TabWidth, Cmd) ->
+    write_refactored_files_for_preview(Results,TabWidth,Cmd),
+    ChangedFiles = lists:map(fun ({FileInfo,_AST}) -> 
+				     element(1, FileInfo)
+			     end,Results),
+    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
+		 [ChangedFiles]),
+    {ok,ChangedFiles, HasWarningMsg}.
+
+write_refactored_files_for_preview(Files, TabWidth, LogMsg) ->
     F = fun(FileAST) ->
 		case FileAST of 
 		    {{FileName,NewFileName}, AST} ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp",  %% .erl.swp or .swp.erl?
-			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{filename:join([FileName]),
-				    filename:join([NewFileName]), false},filename:join([SwpFileName])};
-			    {error,Reason} -> Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
-								  [filename:dirname(FileName), Reason]),
-					      throw({error, Msg})
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth))) of 
+			    ok -> NoOfChangedFunsToks= refac_prettypr:no_of_changed_funs_toks(AST), 
+				  {{{filename:join([FileName]),
+				    filename:join([NewFileName]), false},
+				    filename:join([SwpFileName])}, NoOfChangedFunsToks};
+			    {error,Reason} -> 
+				Msg = io_lib:format("Wrangler could not write to file ~s: ~w \n",
+						    [FileName, Reason]),
+				throw({error, Msg})
 			end;			
 		    {{FileName,NewFileName, IsNew}, AST} ->
 			FileFormat = file_format(FileName),
 			SwpFileName = filename:rootname(FileName, ".erl") ++ ".erl.swp", 
-			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST))) of 
-			    ok -> {{filename:join([FileName]),filename:join([NewFileName]), IsNew},filename:join([SwpFileName])};
+			case file:write_file(SwpFileName, list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth))) of 
+			    ok ->  
+				NoOfChangedFunsToks= refac_prettypr:no_of_changed_funs_toks(AST), 
+				{{{filename:join([FileName]),filename:join([NewFileName]), IsNew},
+				  filename:join([SwpFileName])}, NoOfChangedFunsToks};
 			    {error, Reason}  -> 
 				Msg = io_lib:format("Wrangler could not write to directory ~s: ~w \n",
 						    [filename:dirname(FileName), Reason]),
@@ -94,7 +120,8 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 			end
 		end
 	end,
-    FilePairs = lists:map(F, Files),
+    {FilePairs, ListOfNoOfChangedFunsToks} = lists:unzip(lists:map(F, Files)),
+    {FinalChangedFuns, FinalToksRemoved, FinalToksAdded} =lists:unzip3(ListOfNoOfChangedFunsToks),
     case lists:any(fun(R) -> R == error end, FilePairs) of 
 	true -> lists:foreach(fun(P) ->
 				      case P of 
@@ -103,36 +130,110 @@ write_refactored_files_for_preview(Files, LogMsg) ->
 				      end
 			      end, FilePairs),
 		throw({error, "Wrangler failed to output the refactoring result."});
-	_ -> wrangler_preview_server:add_files({FilePairs, LogMsg})
+	_ ->
+	    LogMsgAboutChanges= io_lib:format(" Num of files affected: ~p, "
+					      "Num of functions/attributes affected: ~p, "
+					      "Num of tokens removed: ~p, "
+					      "Num of tokens added: ~p.\n",
+					      [length(FilePairs), lists:sum(FinalChangedFuns),
+					       lists:sum(FinalToksRemoved), lists:sum(FinalToksAdded)]),
+	    NewLogMsg = LogMsg++ lists:flatten(LogMsgAboutChanges),
+	    wrangler_preview_server:add_files({FilePairs, NewLogMsg})
     end.
 
+write_refactored_files_eclipse(Results, TabWidth) ->
+    Res = lists:map(fun ({{OldFName,NewFName},AST}) ->
+			    FileFormat = file_format(OldFName),
+			    {OldFName,NewFName,
+			     refac_prettypr:print_ast(FileFormat,AST,TabWidth)}
+		    end,Results),
+    {ok,Res}.
 
-write_refactored_files(FileName, AnnAST, Editor, Cmd) ->
-    case Editor of
-      emacs ->
-	  refac_util:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST}], Cmd),
-	  {ok, [FileName]};
-      eclipse ->
-	  Content = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST),
-	  {ok, [{FileName, FileName, Content}]}
+write_refactored_files_command_line(Results, TabWidth) ->
+    FilesToWrite = [FileTuple || {FileTuple, _} <- Results],
+    lists:foreach(fun (FileTuple) ->
+			  check_access(FileTuple)
+		  end, FilesToWrite),
+    backup_files(Results),
+    F = fun ({FileInfo, AST}) ->
+		%% for most refactorings,OldFileName==NewFileName.
+		OldFileName = element(1, FileInfo),
+		NewFileName = element(2, FileInfo),
+		FileFormat = file_format(OldFileName),
+		Bin = list_to_binary(refac_prettypr:print_ast(FileFormat, AST, TabWidth)),
+		case file:write_file(OldFileName, Bin) of
+		    ok when OldFileName==NewFileName ->
+			OldFileName;
+		    ok ->
+			case file:rename(OldFileName, NewFileName) of
+			    ok -> OldFileName;
+			    {error, Reason} ->
+				Msg = io_lib:format("Wrangler could not rename file ~s: ~w \n",
+						    [OldFileName, Reason]),
+				throw({error, lists:flatten(Msg)})
+			end;
+		    {error, Reason} ->
+			Msg = io_lib:format("Wrangler could not write to file ~s: ~w \n",
+					    [NewFileName, Reason]),
+			throw({error, lists:flatten(Msg)})
+		end
+	end,
+    {ok, lists:map(F, Results)}.
+
+backup_files(Results) ->
+    F0 = fun ({FileInfo,_AST}) ->
+		 case FileInfo of
+		     {FileName,NewFileName} ->
+			 {ok,Bin} = file:read_file(FileName),
+			 {{filename:join([FileName]),
+			   filename:join([NewFileName]),false},Bin};
+		     {FileName,NewFileName,IsNew} ->
+			 {ok,Bin} = file:read_file(FileName),
+			 {{filename:join([FileName]),
+			   filename:join([NewFileName]),IsNew},Bin}
+		 end
+	 end,
+    FilesToBackup = lists:map(F0,Results),
+    wrangler_undo_server:add_to_history({FilesToBackup,"",
+					 element(1,hd(FilesToBackup))}).
+
+check_access({OldFileName, NewFileName}) ->
+    case OldFileName==NewFileName of 
+	true ->
+	    case writable(OldFileName) of
+		true -> ok;
+		false ->
+		    Msg = lists:flatten(io_lib:format("File ~s is not writeable\n", [OldFileName])),
+		    throw({error, lists:flatten(Msg)})
+	    end;
+	false ->
+	    Dir=filename:dirname(NewFileName),
+	    case writable(Dir) of
+		true ->
+		    ok;
+		false ->
+		    Msg = lists:flatten(io_lib:format("Dirctory ~s is not writeable\n", [Dir])),
+		    throw({error, lists:flatten(Msg)})
+	    end
+    end;
+
+check_access({OldFileName, NewFileName, IsNew}) ->
+    case IsNew of 
+	true->
+	    check_access({'_', NewFileName});
+	false ->
+	    check_access({OldFileName, NewFileName})
     end.
 
-write_refactored_files(Results, Editor, Cmd) ->
-    case Editor of
-      emacs ->
-	  refac_util:write_refactored_files_for_preview(Results, Cmd),
-	  ChangedFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
-	  ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n",
-		       [ChangedFiles]),
-	  {ok, ChangedFiles};
-      eclipse ->
-	  Res = lists:map(fun ({{OldFName, NewFName}, AST}) ->
-				  {OldFName, NewFName,
-				   refac_prettypr:print_ast(refac_util:file_format(OldFName), AST)}
-			  end, Results),
-	  {ok, Res}
+writable(FileName) ->
+    case file:read_file_info(FileName) of
+	{ok, #file_info{access=write}} ->
+	    true;
+	{ok, #file_info{access=read_write}} ->
+	    true;
+	_ ->
+	    false
     end.
-
 
 %% =====================================================================
 %% @doc Parse an Erlang file, and annotate the abstract syntax tree with static semantic 
@@ -275,15 +376,22 @@ quick_parse_annotate_file(FName, SearchPaths, TabWidth) ->
 %% =====================================================================
 %%-spec(tokenize(File::filename(), WithLayout::boolean(), TabWidth::integer()) -> [token()]).
 tokenize(File, WithLayout, TabWidth) ->
-    {ok, Bin} = file:read_file(File),
-    S = erlang:binary_to_list(Bin),
-    case WithLayout of 
-	true -> 
-	    {ok, Ts, _} = refac_scan_with_layout:string(S, {1,1}, TabWidth, file_format(File)),
-	    Ts;
-	_ -> {ok, Ts, _} = refac_scan:string(S, {1,1}, TabWidth,file_format(File)),
-	     Ts
+    case file:read_file(File) of
+	{ok, Bin} ->
+	    S = erlang:binary_to_list(Bin),
+	    case WithLayout of 
+		true -> 
+		    {ok, Ts, _} = refac_scan_with_layout:string(S, {1,1}, TabWidth, file_format(File)),
+		    Ts;
+		_ -> {ok, Ts, _} = refac_scan:string(S, {1,1}, TabWidth,file_format(File)),
+		     Ts
+	    end;
+	{error, Reason} ->
+	    Msg = io_lib:format("Wrangler could not read file ~s: ~w \n", 
+				[filename:dirname(File), Reason]),
+	    throw({error, Msg})
     end.
+
 
 merge_module_info(Info1, Info2) ->
     Info = lists:usort(Info1 ++ Info2),
@@ -465,11 +573,9 @@ do_add_range(Node, Toks) ->
 		Es= refac_syntax:list_elements(Node),
 		case Es/=[] of 
 		    true->
-			Fst=refac_misc:ghead("refac_util:do_add_range,list", Es),
 			Last=refac_misc:glast("refac_util:do_add_range,list", Es),
-			{S1, _E1} = get_range(Fst),
 			{_, E2} = get_range(Last),
-			refac_syntax:add_ann({range, {S1, E2}}, Node);
+			refac_syntax:add_ann({range, {{L,C}, E2}}, Node);
 		    false ->
 			Node
 		end
@@ -594,6 +700,12 @@ do_add_range(Node, Toks) ->
 	  {S1, _E1} = get_range(P),
 	  {_S2, E2} = get_range(B),
 	  refac_syntax:add_ann({range, {S1, E2}}, Node);
+      binary_generator ->
+	  P = refac_syntax:binary_generator_pattern(Node),
+	  B = refac_syntax:binary_generator_body(Node),
+	  {S1, _E1} = get_range(P),
+	  {_S2, E2} = get_range(B),
+	  refac_syntax:add_ann({range, {S1, E2}}, Node);   
       tuple ->
 	  Es = refac_syntax:tuple_elements(Node),
 	  case length(Es) of
@@ -604,13 +716,18 @@ do_add_range(Node, Toks) ->
 				       '{', '}')
 	  end;
       list_comp ->
-	  T = refac_syntax:list_comp_template(Node),
+	  %%T = refac_syntax:list_comp_template(Node),
 	  B = refac_misc:glast("refac_util:do_add_range,list_comp", refac_syntax:list_comp_body(Node)),
-	  {S1, _E1} = get_range(T),
 	  {_S2, E2} = get_range(B),
-	  S11 = extend_forwards(Toks, S1, '['),
 	  E21 = extend_backwards(Toks, E2, ']'),
-	  refac_syntax:add_ann({range, {S11, E21}}, Node);
+	  refac_syntax:add_ann({range, {{L,C}, E21}}, Node);
+      binary_comp ->
+	  %%T = refac_syntax:binary_comp_template(Node),
+	  B = refac_misc:glast("refac_util:do_add_range,binary_comp", 
+			       refac_syntax:binary_comp_body(Node)),
+	 {_S2, E2} = get_range(B),
+	  E21 = extend_backwards(Toks, E2, '>>'),
+	  refac_syntax:add_ann({range, {{L,C}, E21}}, Node);    
       block_expr ->
 	  Es = refac_syntax:block_expr_body(Node),
 	  add_range_to_list_node(Node, Toks, Es, "refac_util:do_add_range, block_expr",
@@ -790,7 +907,8 @@ do_add_range(Node, Toks) ->
       type ->   %% This is not correct, and need to be fixed!!
 	  refac_syntax:add_ann({range, {{L, C}, {L, C}}}, Node);
       _ ->
-	  ?wrangler_io("Unhandled syntax category:\n~p\n", [refac_syntax:type(Node)]),
+	 %% refac_io:format("Node;\n~p\n",[Node]),
+	 %% ?wrangler_io("Unhandled syntax category:\n~p\n", [refac_syntax:type(Node)]),
 	  Node
     end.
 
@@ -918,6 +1036,13 @@ do_add_category(Node, C) ->
 	    B1 = add_category(B, expression),
 	    Node1=rewrite(Node, refac_syntax:generator(P1, B1)),
 	    {refac_syntax:add_ann({category, generator}, Node1), true};
+	binary_generator ->
+	    P = refac_syntax:binary_generator_pattern(Node),
+	    B = refac_syntax:binary_generator_body(Node),
+	    P1 = add_category(P, pattern),
+	    B1 = add_category(B, expression),
+	    Node1=rewrite(Node, refac_syntax:binary_generator(P1, B1)),
+	    {refac_syntax:add_ann({category, generator}, Node1), true};
 	macro ->
 	    Name = refac_syntax:macro_name(Node),
 	    Args = refac_syntax:macro_arguments(Node),
@@ -994,20 +1119,26 @@ expand_files(FileDirs, Ext) ->
 expand_files([FileOrDir | Left], Ext, Acc) ->
     case filelib:is_dir(FileOrDir) of
       true ->
-	  {ok, List} = file:list_dir(FileOrDir),
-	  NewFiles = [filename:join(FileOrDir, X)
-		      || X <- List, filelib:is_file(filename:join(FileOrDir, X)), filename:extension(X) == Ext],
-	  NewDirs = [filename:join(FileOrDir, X) || X <- List, filelib:is_dir(filename:join(FileOrDir, X))],
-	  expand_files(NewDirs ++ Left, Ext, NewFiles ++ Acc);
-      false ->
-	  case filelib:is_regular(FileOrDir) of
-	    true ->
-		case filename:extension(FileOrDir) == Ext of
-		  true -> expand_files(Left, Ext, [FileOrDir | Acc]);
-		  false -> expand_files(Left, Ext, Acc)
-		end;
-	    _ -> expand_files(Left, Ext, Acc)
-	  end
+	    case file:list_dir(FileOrDir) of 
+		{ok, List} ->
+		    NewFiles = [filename:join(FileOrDir, X)
+				|| X <- List, filelib:is_file(filename:join(FileOrDir, X)), filename:extension(X) == Ext],
+		    NewDirs = [filename:join(FileOrDir, X) || X <- List, filelib:is_dir(filename:join(FileOrDir, X))],
+		    expand_files(NewDirs ++ Left, Ext, NewFiles ++ Acc);
+		{error, Reason} ->
+		     Msg = io_lib:format("Wrangler could not read directory ~s: ~w \n", 
+				[filename:dirname(FileOrDir), Reason]),
+		    throw({error, Msg})
+	    end;
+	false ->
+	    case filelib:is_regular(FileOrDir) of
+		true ->
+		    case filename:extension(FileOrDir) == Ext of
+			true -> expand_files(Left, Ext, [FileOrDir | Acc]);
+			false -> expand_files(Left, Ext, Acc)
+		    end;
+		_ -> expand_files(Left, Ext, Acc)
+	    end
     end;
 expand_files([], _Ext, Acc) -> ordsets:from_list(Acc).
 
@@ -1049,25 +1180,31 @@ get_modules_by_file([], Acc) -> lists:reverse(Acc).
 
 
 %%-spec file_format(filename()) ->dos|mac|unix. 		 
-file_format(File) ->  
-    {ok, Bin} = file:read_file(File),
-    S = erlang:binary_to_list(Bin),
-    LEs = scan_line_endings(S),
-    case LEs of 
-	[] -> unix;    %% default fileformat;
-	_ ->  case lists:all(fun(E) -> E=="\r\n" end, LEs) of 
-		  true -> dos;
-		  _ -> case lists:all(fun(E) -> E=="\r" end, LEs)  of
-			   true ->
-			       mac;
-			   _ -> case lists:all(fun(E)-> E=="\n" end, LEs) of
-				    true -> unix;
-				    _ -> throw({error, File ++ " uses a mixture of line endings,"
-						" please normalise it to one of the standard file "
-						"formats (i.e. unix/dos/mac) before performing any refactorings."})
-				end
-		       end
-	      end
+file_format(File) -> 
+    case file:read_file(File) of 
+	{ok, Bin} ->
+	    S = erlang:binary_to_list(Bin),
+	    LEs = scan_line_endings(S),
+	    case LEs of 
+		[] -> unix;    %% default fileformat;
+		_ ->  case lists:all(fun(E) -> E=="\r\n" end, LEs) of 
+			  true -> dos;
+			  _ -> case lists:all(fun(E) -> E=="\r" end, LEs)  of
+				   true ->
+				       mac;
+				   _ -> case lists:all(fun(E)-> E=="\n" end, LEs) of
+					    true -> unix;
+					    _ -> throw({error, File ++ " uses a mixture of line endings,"
+							" please normalise it to one of the standard file "
+							"formats (i.e. unix/dos/mac) before performing any refactorings."})
+					end
+			       end
+		      end
+	    end;
+	{error, Reason} ->
+	    Msg = io_lib:format("Wrangler could not read file ~s: ~w \n", 
+				[filename:dirname(File), Reason]),
+	    throw({error, Msg})
     end.
 
 scan_line_endings(Cs)->

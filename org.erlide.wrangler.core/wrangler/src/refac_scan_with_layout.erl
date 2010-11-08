@@ -34,16 +34,16 @@
 %% 173 - 176	{ - ~		punctuation
 %% 177		DEL		control
 %% 200 - 237			control
-%% 240 - 277	NBSP - ï¿½	punctuation
-%% 300 - 326	ï¿½ - ï¿½		uppercase
-%% 327		ï¿½		punctuation
-%% 330 - 336	ï¿½ - ï¿½		uppercase
-%% 337 - 366	ï¿½ - ï¿½		lowercase
-%% 367		ï¿½		punctuation
-%% 370 - 377	ï¿½ - ï¿½		lowercase
+%% 240 - 277	NBSP - ¿	punctuation
+%% 300 - 326	À - Ö		uppercase
+%% 327		×		punctuation
+%% 330 - 336	Ø - Þ		uppercase
+%% 337 - 366	ß - ö		lowercase
+%% 367		÷		punctuation
+%% 370 - 377	ø - ÿ		lowercase
 %%
 %% Many punctuation characters region have special meaning.  Must
-%% watch using ï¿½ \327, bvery close to x \170
+%% watch using × \327, bvery close to x \170
 
 -module(refac_scan_with_layout).
 

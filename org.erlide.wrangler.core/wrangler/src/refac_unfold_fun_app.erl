@@ -85,7 +85,7 @@ unfold_fun_app(FName, Pos = {Line, Col}, SearchPaths, TabWidth, Editor) ->
 	  {FunClause1, MatchExprs1} = auto_rename_vars({FunClause, MatchExprs}, {Clause, App}, SubstLocs),
 	  UsedRecords = refac_misc:collect_used_records(FunClause),
 	  fun_inline_1(FName, AnnAST, Pos, {FunClause1, Subst1, MatchExprs1},
-		       {Clause, App}, UsedRecords, Editor, Cmd);
+		       {Clause, App}, UsedRecords, Editor, TabWidth, Cmd);
       {error, _} -> throw({error, "You have not selected a function application, "
 				  "or the function containing the function application selected does not parse."})
     end.
@@ -336,7 +336,7 @@ is_non_reducible_term(T) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fun_inline_1(FName, AnnAST, Pos, {FunClauseToInline, Subst, MatchExprsToAdd}, {Clause, App},
-	     UsedRecords, Editor, Cmd) ->
+	     UsedRecords, Editor, TabWidth, Cmd) ->
     B = refac_syntax:clause_body(FunClauseToInline),
     {SubstedBody1, _} = lists:unzip([ast_traverse_api:stop_tdTP(fun do_subst/2, E, Subst) || E <- B]),
     SubstedBody = MatchExprsToAdd ++ SubstedBody1,
@@ -345,7 +345,7 @@ fun_inline_1(FName, AnnAST, Pos, {FunClauseToInline, Subst, MatchExprsToAdd}, {C
     Fs0 = Fs -- RecordDefs,
     Fs1 = lists:append([do_inline(F, Pos, Clause, App, SubstedBody, RecordDefs) || F <- Fs0]),
     AnnAST1 = refac_misc:rewrite(AnnAST, refac_syntax:form_list(Fs1)),
-    refac_util:write_refactored_files(FName, AnnAST1, Editor, Cmd).
+    refac_util:write_refactored_files([{{FName,FName}, AnnAST1}], Editor, TabWidth, Cmd).
   
 
 

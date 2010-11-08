@@ -19,7 +19,9 @@
 
 -module(refac_duplicated_code).
 
--export([duplicated_code/5, duplicated_code_eclipse/5]).
+-export([duplicated_code/5, 
+	 duplicated_code_eclipse/5,
+	 duplicated_code_command_line/5]).
 
 -include("../include/wrangler.hrl").
 
@@ -64,6 +66,8 @@ duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     {MinClones, MinLength, MaxPars} = get_parameters(MinLength1, MinClones1, MaxPars1),
     ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
 		 [?MODULE, DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth]),
+    Cmd =io_lib:format("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
+		 [?MODULE, DirFileList, MinLength, MinClones, MaxPars, TabWidth]),
     ?debug("current time:~p\n", [time()]),
     SuffixTreeExec = filename:join(?WRANGLER_DIR, "bin/suffixtree"),
     Cs = duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth),
@@ -71,8 +75,28 @@ duplicated_code(DirFileList, MinLength1, MinClones1, MaxPars1, TabWidth) ->
     Cs1 = refac_code_search_utils:remove_sub_clones(Cs),
     ?debug("current time:~p\n", [time()]),
     refac_code_search_utils:display_clone_result(Cs1, "Duplicated"),
-    ?debug("No of Clones found:\n~p\n", [length(Cs1)]),
-    ?debug("Clones:\n~p\n", [Cs1]),
+    NumOfClones = length(Cs1),
+    LogMsg = Cmd ++ " Num of clones detected: "++ integer_to_list(NumOfClones) ++ "\n",
+    {ok, lists:flatten(LogMsg)}.
+
+
+%%-spec(duplicated_code_command_line/5::([dir()|filename()],integer(),integer(), integer(),integer()) ->{ok, string()}).
+duplicated_code_command_line(DirFileList, MinLength1, MinClones1, MaxPars, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:duplicated_code(~p,~p,~p,~p,~p).\n",
+		 [?MODULE, DirFileList, MinLength1, MinClones1, MaxPars, TabWidth]),
+    MinLength = case MinLength1 =< 10 of
+		    true ->
+			?DEFAULT_CLONE_LEN;
+		    _ -> MinLength1
+		end,
+    MinClones = case MinClones1 < ?DEFAULT_CLONE_MEMBER of
+		    true -> ?DEFAULT_CLONE_MEMBER;
+		    _ -> MinClones1
+		end,
+    SuffixTreeExec = filename:join(?WRANGLER_DIR, "bin/suffixtree"),
+    Cs = duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth),
+    Cs1 = refac_code_search_utils:remove_sub_clones(Cs),
+    refac_code_search_utils:display_clone_result(Cs1, "Duplicated"),
     {ok, "Duplicated code detection finished."}.
 
 %%-spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
@@ -137,8 +161,7 @@ get_parameters_1(MinClonesStr, DefaultVal) ->
 %% tokenize a collection of concatenated Erlang files.
 
 %% -spec(tokenize/2::([filename()], integer()) ->
-%% 			{[token()], string()})
-
+%% 		{[token()], string()}).
 tokenize(FileList, TabWidth) ->
     Toks = lists:flatmap(fun(F) -> 
 				 Toks= refac_util:tokenize(F, false, TabWidth),

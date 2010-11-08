@@ -64,7 +64,7 @@ fun_extraction_1(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName,
     {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, [], TabWidth),
     ExpList = interface_api:pos_to_expr_list(AnnAST, Start, End),
     {ok, Fun} = interface_api:expr_to_fun(AnnAST, hd(ExpList)),
-    fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, Cmd).
+    fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, TabWidth,Cmd).
 
 
 fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, TabWidth, Editor) ->
@@ -88,9 +88,9 @@ fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, T
     end,
     {ok, Fun} = interface_api:expr_to_fun(AnnAST, hd(ExpList)),
     ok = side_cond_analysis(FileName, Info, Fun, ExpList, list_to_atom(NewFunName)),
-    fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, Cmd).
+    fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, TabWidth, Cmd).
 
-fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor,Cmd) ->
+fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor,TabWidth,Cmd) ->
     FunName = refac_syntax:atom_value(refac_syntax:function_name(Fun)),
     FunArity = refac_syntax:function_arity(Fun),
     FunPos = refac_syntax:get_pos(Fun),
@@ -100,10 +100,10 @@ fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor,Cmd) ->
     case Editor of
       emacs ->
 	  Res = [{{FileName, FileName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, Cmd),
+	  refac_util:write_refactored_files_for_preview(Res, TabWidth, Cmd),
 	  {ok, [FileName]};
       eclipse ->
-	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1),
+	  FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1,TabWidth),
 	  {ok, [{FileName, FileName, FileContent}]}
     end.
 
@@ -208,7 +208,14 @@ check_expr_category_1(Exp) ->
 	{value, {category, {macro_name, _Num, _}}} ->
 	    throw({error, "Function abstraction over a macro name in a"
 		   "macro application is not supported."});
-	_ -> true
+	_ ->
+	    case refac_syntax:type(Exp) of 
+		binary_field ->
+		    throw({error, "Function abstraction over a binary field is "
+			   "not supported."});
+		_ ->
+		    true
+	    end
     end.
 
 is_macro_arg(Fun, Exp) ->

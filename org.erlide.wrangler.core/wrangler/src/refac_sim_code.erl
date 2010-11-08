@@ -56,37 +56,42 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
     ?wrangler_io("\nCMD: ~p:sim_code_detection(~p,~p,~p,~p,~p,~p).\n",
 		 [?MODULE, DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth]),
     {MinLen, MinFreq, SimiScore} =  get_parameters(MinLen1, MinFreq1, SimiScore1),
+    Cmd = io_lib:format("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p,~p).",
+			[?MODULE,DirFileList,MinLen,MinFreq,SimiScore,SearchPaths,TabWidth]),
     Pid = start_hash_process(),
     ASTTab = ets:new(ast_tab, [set, public]),
     VarTab = ets:new(var_tab, [set, public]),
     RangeTab = ets:new(range_tab, [set, public]),
     Files = refac_util:expand_files(DirFileList, ".erl"),
-    case Files of
-	[] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []);
-	_ ->
-	    _Time1 = now(),
-  	    ?wrangler_io("Searching for initial clone candidates...\n", []),
-	    %% ?debug("current time:~p\n", [time()]),
-	    generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
-	    %%?debug("\ngeneralise and hash ast done.\n",[]),
-	    Dir = filename:dirname(hd(Files)),
-	    Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
-	    stop_hash_process(Pid),
-	    %% ?debug("\nInitial candiates finished\n",[]),
-	    ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
-	    CloneCheckPid = start_clone_check_process(),
-	    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
-	    _Time2 = now(),
-	    %% ?debug("current time:~p\n", [time()]),
-	    %% ?debug("total time used:~p\n", [timer:now_diff(_Time2,_Time1)/1000000]),
-	    stop_clone_check_process(CloneCheckPid),
-	    ets:delete(ASTTab),
-	    ets:delete(VarTab),
-	    ets:delete(RangeTab),
-	    refac_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar")
-    end,
-    {ok, "Similar code detection finished."}.
+    FinalCs=case Files of
+		[] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []),
+		      [];
+		_ ->
+		    _Time1 = now(),
+		    ?wrangler_io("Searching for initial clone candidates...\n", []),
+		    %% ?debug("current time:~p\n", [time()]),
+		    generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
+		    %%?debug("\ngeneralise and hash ast done.\n",[]),
+		    Dir = filename:dirname(hd(Files)),
+		    Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
+		    stop_hash_process(Pid),
+		    %% ?debug("\nInitial candiates finished\n",[]),
+		    ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
+		    CloneCheckPid = start_clone_check_process(),
+		    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
+		    _Time2 = now(),
+		    stop_clone_check_process(CloneCheckPid),
+		    ets:delete(ASTTab),
+		    ets:delete(VarTab),
+		    ets:delete(RangeTab),
+		    refac_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar"),
+		    Cs2
+	    end,
+    CloneReport = gen_clone_report(FinalCs),
+    LogMsg = Cmd ++ " \nNum of clones detected: "++ integer_to_list(length(FinalCs)) ++ ".\n",
+    {ok, lists:flatten(LogMsg++CloneReport)}.
 
+    
 %%-spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(), 
 %%				     SimScore::float(),  SearchPaths::[dir()], TabWidth::integer()) ->
 %% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
@@ -400,8 +405,17 @@ get_var_define_pos(V) ->
 
 get_generalised_form(ASTTab, RangeTab, {Ranges, {Len, Freq}, {Range, SubSt, ExportVars}}) ->
     Exprs1 = get_expr_list(Range, ASTTab, RangeTab),
-    AntiUnifier = anti_unification:generate_anti_unifier(Exprs1, SubSt, ExportVars),
-    {Ranges, {Len, Freq}, refac_prettypr:format(AntiUnifier)}.
+    {AntiUnifier,{NumOfPars, NumOfNewVars}} = anti_unification:generate_anti_unifier_and_num_of_new_vars(Exprs1, SubSt, ExportVars),
+    Files = [element(1, element(1,R)) ||R<-Ranges],
+    case length(lists:usort(Files)) ==1 of 
+	true ->
+	    AUStr =refac_prettypr:format(AntiUnifier),
+	    {Ranges, {Len, Freq}, {AUStr, {NumOfPars, NumOfNewVars}}};
+	false ->
+	    NewAntiUnifier=post_process_anti_unifier(AntiUnifier),
+	    AUStr = refac_prettypr:format(NewAntiUnifier),
+	    {Ranges, {Len, Freq}, {AUStr, {NumOfPars, NumOfNewVars}}}
+    end.
    
 
 get_expr_list({{FName, FunName, Arity}, StartLoc, EndLoc}, ASTTab, RangeTab) ->
@@ -669,3 +683,42 @@ pmap_gather([]) ->
 
 pmap_f(Parent, F, I) ->
     Parent ! {self(), catch F(I)}.
+
+gen_clone_report(Cs) ->
+     gen_clone_report(Cs, 1, "").
+gen_clone_report([], _Num, Str) ->
+     lists:reverse(Str);
+gen_clone_report([_C={_Ranges, {Len, F}, {Code, {Pars,NewVars}}}|Cs], Num, Str) ->
+    Str1 =io_lib:format("Clone ~p: number of duplications: ~p, number of expressions: ~p, "
+			"number of parameters in AU: ~p, number of NewVars in AU: ~p, AU:\n",
+			[Num,F,Len, Pars, NewVars])++Code++"\n",
+    gen_clone_report(Cs, Num+1, lists:reverse(lists:flatten(Str1))++Str).
+
+
+post_process_anti_unifier(FunAST) ->
+    {FunAST1, _} = ast_traverse_api:stop_tdTP(fun do_post_process_anti_unifier/2, FunAST, none),
+    FunAST1. 
+
+do_post_process_anti_unifier(Node, _Others) ->
+    case refac_syntax:type(Node) of
+	application ->
+	    Operator = refac_syntax:application_operator(Node),
+	    Arguments =refac_syntax:application_arguments(Node),
+	    case refac_syntax:type(Operator) of
+		atom ->
+		    As = refac_syntax:get_ann(Operator),
+		    {value, {fun_def, {M, _F, _A, _, _}}} = lists:keysearch(fun_def,1,As),
+		    case M== erlang orelse M=='_' of 
+			true ->
+			    {Node, false};
+			false ->
+			    Mod = refac_syntax:atom(M),
+			    Operator1 = refac_misc:rewrite(Operator, refac_syntax:module_qualifier(Mod, Operator)),
+			    Node1 = refac_misc:rewrite(Node, refac_syntax:application(Operator1, Arguments)),
+			    {Node1, false}
+		    end;
+		_ -> 
+		    {Node, false}
+	    end;
+	_ -> {Node, false}
+    end.

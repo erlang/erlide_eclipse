@@ -212,12 +212,17 @@ display_clones_1([C|Cs], Num) ->
     display_a_clone(C, Num),
     display_clones_1(Cs, Num+1).
   
+
+display_a_clone(_C={Ranges, _Len, F,{Code, _}},Num) ->
+    [R| _Rs] = lists:keysort(1, Ranges),
+    NewStr = compose_clone_info(R, F, Ranges, "", Num),
+    NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
+    ?wrangler_io("~s", [NewStr1]);
 display_a_clone(_C={Ranges, _Len, F,Code},Num) ->
     [R| _Rs] = lists:keysort(1, Ranges),
     NewStr = compose_clone_info(R, F, Ranges, "", Num),
     NewStr1 = NewStr ++ "The cloned expression/function after generalisation:\n\n" ++ Code,
     ?wrangler_io("~s", [NewStr1]).
-
 
 compose_clone_info(_, F, Range, Str, Num) ->
     case F of

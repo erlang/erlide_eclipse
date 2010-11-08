@@ -100,13 +100,31 @@ handle_call(commit, _From, #state{files=[], logmsg=_LogMsg}) ->
 handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
     OldFiles = lists:map(fun ({{F1, F2, IsNew}, _Swp}) -> {F1, F2, IsNew} end, Files),
     FilesToBackup = lists:map(fun ({F1, F2, IsNew}) ->
-				      {ok, Bin} = file:read_file(F1), {{F1, F2, IsNew}, Bin}
-			      end, OldFiles),
+     				      {ok, Bin} = file:read_file(F1), {{F1, F2, IsNew}, Bin}
+     			      end, OldFiles),
     wrangler_undo_server:add_to_history({FilesToBackup, LogMsg, element(1, hd(OldFiles))}),
-    lists:foreach(fun ({{_F1, F2, _IsNew}, Swp}) -> file:copy(Swp, F2) end, Files),
+    lists:foreach(fun ({{F1, F2, _IsNew}, Swp}) ->
+     			  case file:copy(Swp, F1) of 
+     			      {ok,_} -> ok;
+     			      Err1 ->
+				  throw(Err1)
+     			  end,
+     			  case F1==F2 of 
+     			      true -> ok;
+     			      false ->
+     				  case file:rename(F1, F2) of 
+     				      ok -> ok;
+     				      Err2 ->
+					  %% refac_io:format("Rename failed.\n"),
+    					  throw(Err2)
+     				  end
+     			  end
+     		  end,Files),
     Files1 = lists:map(fun ({{F1, F2, IsNew}, Swp}) -> [F1, F2, Swp, IsNew] end, Files),
     {reply, {ok, Files1, LogMsg}, #state{files=[], logmsg=""}}.
     
+
+
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
 %%                                      {noreply, State, Timeout} |

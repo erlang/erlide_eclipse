@@ -43,7 +43,7 @@
 	 get_env_vars/1,get_var_exports/1,get_bound_vars/1,get_free_vars/1,
 	 is_expr/1,is_expr_or_match/1, is_pattern/1, is_exported/2, inscope_funs/1,update_ann/2,
 	 delete_from_ann/2, callback_funs/1, is_callback_fun/3, rewrite/2,
-	 get_range/1, max/2, min/2]).
+	 get_range/1, max/2, min/2, modname_to_filename/2, funname_to_defpos/2]).
 
 -include("../include/wrangler.hrl").
 
@@ -676,3 +676,48 @@ max(_,Y) -> Y.
 min(X,Y) when X>Y ->
      Y;
 min(X,_) -> X.
+
+
+modname_to_filename(ModName, Dirs)->
+    Files = refac_util:expand_files(Dirs, ".erl"),
+    Fs=[F || F<-Files,
+	     list_to_atom(filename:basename(F, ".erl"))==ModName],
+    case Fs of 
+	[] ->
+	    {error, "No file with module name '" ++ atom_to_list(ModName)++"' has been found."};
+	[FileName] ->
+	    {ok, FileName};
+	_ -> {error, "Multiple files found: " ++ 
+		  format_file_names(Fs)++"\n"}
+    end.
+			   
+
+format_file_names([]) -> "[]";
+format_file_names(Fs) ->
+    "[" ++ format_file_names_1(Fs).
+  
+format_file_names_1([F|T]) ->
+    case T of 
+	[] ->
+	    io_lib:format("~s]", [F]);
+	_ ->
+	    io_lib:format("~s,", [F])++
+		format_file_names_1(T)
+    end.	 
+
+funname_to_defpos(AnnAST, {M, F, A}) ->
+    Forms=refac_syntax:form_list_elements(AnnAST),
+    DefPs=lists:usort(lists:append([case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Form)) of
+			   {value, {fun_def, {M, F, A, _, DefPos}}} ->
+			       [DefPos];
+			   _ -> []
+		       end||Form<-Forms, refac_syntax:type(Form)==function])),
+    case length(DefPs) of 
+	1 ->
+	    {ok, hd(DefPs)};
+	0 ->
+	    {error, lists:flatten(io_lib:format("Function ~p/~p is not defined in module ~p", [F, A, M]))};
+	_ ->
+	    {error, lists:flatten(io_lib:format("Function ~p/~p is defined more than once in module ~p", [F, A, M]))}
+    end.
+		 
