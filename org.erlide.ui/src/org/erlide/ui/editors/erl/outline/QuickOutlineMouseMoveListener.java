@@ -25,50 +25,50 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class QuickOutlineMouseMoveListener implements MouseMoveListener {
 
-	private TreeItem fLastItem;
+    private TreeItem fLastItem;
 
-	private final TreeViewer fTreeViewer;
+    private final TreeViewer fTreeViewer;
 
-	/**
+    /**
 	 *
 	 */
-	public QuickOutlineMouseMoveListener(final TreeViewer treeViewer) {
-		fLastItem = null;
-		fTreeViewer = treeViewer;
-	}
+    public QuickOutlineMouseMoveListener(final TreeViewer treeViewer) {
+        fLastItem = null;
+        fTreeViewer = treeViewer;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events
-	 * .MouseEvent)
-	 */
-	public void mouseMove(final MouseEvent e) {
-		final Tree tree = fTreeViewer.getTree();
-		if (tree.equals(e.getSource())) {
-			final Object o = tree.getItem(new Point(e.x, e.y));
-			if (!o.equals(fLastItem)) {
-				fLastItem = (TreeItem) o;
-				tree.setSelection(new TreeItem[] { fLastItem });
-			} else if (e.y < tree.getItemHeight() / 4) {
-				// Scroll up
-				final Point p = tree.toDisplay(e.x, e.y);
-				final Item item = fTreeViewer.scrollUp(p.x, p.y);
-				if (item instanceof TreeItem) {
-					fLastItem = (TreeItem) item;
-					tree.setSelection(new TreeItem[] { fLastItem });
-				}
-			} else if (e.y > tree.getBounds().height - tree.getItemHeight() / 4) {
-				// Scroll down
-				final Point p = tree.toDisplay(e.x, e.y);
-				final Item item = fTreeViewer.scrollDown(p.x, p.y);
-				if (item instanceof TreeItem) {
-					fLastItem = (TreeItem) item;
-					tree.setSelection(new TreeItem[] { fLastItem });
-				}
-			}
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events
+     * .MouseEvent)
+     */
+    public void mouseMove(final MouseEvent e) {
+        final Tree tree = fTreeViewer.getTree();
+        if (tree.equals(e.getSource())) {
+            final Object o = tree.getItem(new Point(e.x, e.y));
+            if (o != null && !o.equals(fLastItem)) {
+                fLastItem = (TreeItem) o;
+                tree.setSelection(new TreeItem[] { fLastItem });
+            } else if (e.y < tree.getItemHeight() / 4) {
+                // Scroll up
+                final Point p = tree.toDisplay(e.x, e.y);
+                final Item item = fTreeViewer.scrollUp(p.x, p.y);
+                if (item instanceof TreeItem) {
+                    fLastItem = (TreeItem) item;
+                    tree.setSelection(new TreeItem[] { fLastItem });
+                }
+            } else if (e.y > tree.getBounds().height - tree.getItemHeight() / 4) {
+                // Scroll down
+                final Point p = tree.toDisplay(e.x, e.y);
+                final Item item = fTreeViewer.scrollDown(p.x, p.y);
+                if (item instanceof TreeItem) {
+                    fLastItem = (TreeItem) item;
+                    tree.setSelection(new TreeItem[] { fLastItem });
+                }
+            }
+        }
+    }
 
 }
