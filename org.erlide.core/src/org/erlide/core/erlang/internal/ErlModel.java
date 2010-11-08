@@ -205,7 +205,7 @@ public class ErlModel extends Openable implements IErlModel {
      * @see IErlModel
      */
     public Collection<IErlProject> getErlangProjects() throws ErlModelException {
-        final Collection<IErlElement> list = getChildrenOfType(Kind.PROJECT);
+        final Collection<IErlElement> list = getChildrenOfKind(Kind.PROJECT);
         final Collection<IErlProject> result = Lists.newArrayList();
         for (final IErlElement e : list) {
             result.add((IErlProject) e);

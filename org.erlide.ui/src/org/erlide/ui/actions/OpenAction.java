@@ -227,20 +227,19 @@ public class OpenAction extends SelectionDispatchAction {
             final IResource resource = module.getResource();
             parent = resource.getParent();
         }
-        IResource r = ResourceUtil.recursiveFindNamedResourceWithReferences(
-                project, res.getName(),
-                PluginUtils.getIncludePathFilter(project, parent));
-        if (r == null) {
-            final String includeFile = ModelUtils.findIncludeFile(project,
-                    res.getName(), model.getExternalIncludes(erlProject));
-            if (includeFile != null) {
-                r = ResourceUtil.openExternal(erlProject.getProject(),
-                        includeFile);
-            }
-        }
+        final IResource r = ResourceUtil
+                .recursiveFindNamedResourceWithReferences(project,
+                        res.getName(),
+                        PluginUtils.getIncludePathFilter(project, parent));
         if (r instanceof IFile) {
             final IFile file = (IFile) r;
             return model.findModule(file);
+        } else {
+            final String includeFile = ModelUtils.findIncludeFile(project,
+                    res.getName(), model.getExternalIncludes(erlProject));
+            if (includeFile != null) {
+                return ModelUtils.openExternal(project, includeFile);
+            }
         }
         return null;
     }
@@ -288,8 +287,8 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
         if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
-            return ErlModelUtils.findExternalType(res.getName(), res.getFun(),
-                    res.getPath(), project, checkAllProjects);
+            return ErlModelUtils.findExternalType(module, res.getName(),
+                    res.getFun(), res.getPath(), project, checkAllProjects);
         }
         final IErlFunction function = ErlModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,

@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -26,7 +25,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -122,18 +121,18 @@ public final class OpenModuleHandler extends Action implements IHandler,
                                 .getRoot()
                                 .findFilesForLocationURI(new URI(path));
                         for (final IFile con : cons) {
-                            if (con.getProject() != ResourceUtil
+                            if (con.getProject() != ModelUtils
                                     .getExternalFilesProject()
                                     || cons.length == 1) {
                                 files.add(con);
                             }
                         }
                         if (files.size() == 0) {
-                            final IFile file = ResourceUtil.openExternal(null,
-                                    path);
-                            files.add(file);
+                            // final IFile file = ModelUtils.openExternal(null,
+                            // path);
+                            // files.add(file);
                         }
-                    } catch (final CoreException e) {
+                        // } catch (final CoreException e) {
                     } catch (final URISyntaxException e) {
                         e.printStackTrace();
                     }

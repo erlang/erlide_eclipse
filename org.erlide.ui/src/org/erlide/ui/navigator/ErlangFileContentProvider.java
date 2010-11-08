@@ -1,6 +1,6 @@
 package org.erlide.ui.navigator;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -26,6 +26,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -68,8 +69,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             }
             if (parentElement instanceof IParent) {
                 final IParent parent = (IParent) parentElement;
-                final List<IErlElement> children = parent.getChildren();
-                return children.toArray(new IErlElement[children.size()]);
+                final Collection<IErlElement> children = parent.getChildren();
+                return children.toArray();
             }
         } catch (final ErlModelException e) {
             ErlLogger.warn(e);
@@ -88,10 +89,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         if (element instanceof IErlElement) {
             final IErlElement elt = (IErlElement) element;
             final IErlElement parent = elt.getParent();
-            if (parent instanceof IErlModule) {
-                final IErlModule mod = (IErlModule) parent;
+            if (parent instanceof IErlModule || parent instanceof IErlProject) {
                 try {
-                    return mod.getCorrespondingResource();
+                    return parent.getCorrespondingResource();
                 } catch (final ErlModelException e) {
                     ErlLogger.warn(e);
                 }

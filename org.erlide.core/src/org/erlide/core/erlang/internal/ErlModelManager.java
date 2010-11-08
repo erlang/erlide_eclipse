@@ -257,7 +257,7 @@ public final class ErlModelManager implements IErlModelManager {
             }
             final String name = file.getName();
             final IErlModule module = new ErlModule(parent, name, initialText,
-                    file);
+                    file, null);
             if (parent != null && parent instanceof IParent) {
                 ((IParent) parent).addChild(module);
             }
@@ -922,9 +922,9 @@ public final class ErlModelManager implements IErlModelManager {
             final String key) {
         IErlModule m = moduleMap.get(key);
         if (m == null) {
-            IErlElement parent2 = parent == null ? getErlangModel()
+            final IErlElement parent2 = parent == null ? getErlangModel()
                     : parent;
-            m = new ErlModuleWithoutResource(parent2, name, initialText, path);
+            m = new ErlModule(parent2, name, initialText, null, path);
             if (key != null) {
                 moduleMap.put(key, m);
                 mapModule.put(m, key);

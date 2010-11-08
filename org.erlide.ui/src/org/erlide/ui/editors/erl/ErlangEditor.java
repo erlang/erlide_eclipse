@@ -361,9 +361,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     public void disposeModule() {
-        final IErlModule module = getModule();
-        if (module != null) {
-            module.dispose();
+        if (fModule != null) {
+            fModule.dispose();
             fModule = null;
         }
     }
@@ -888,11 +887,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     public IErlModule getModule() {
         if (fModule == null) {
-            try {
-                fModule = ErlModelUtils.getModule(getEditorInput(),
-                        getDocumentProvider());
-            } catch (final CoreException e) {
-            }
+            fModule = ErlModelUtils.getModule(getEditorInput());
         }
         return fModule;
     }
@@ -1047,8 +1042,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * @return the created Erlang outline page
      */
     protected ErlangOutlinePage createOutlinePage() {
-        final ErlangOutlinePage page = new ErlangOutlinePage(
-                getDocumentProvider(), this);
+        final ErlangOutlinePage page = new ErlangOutlinePage(this);
         page.setInput(getEditorInput());
         return page;
     }

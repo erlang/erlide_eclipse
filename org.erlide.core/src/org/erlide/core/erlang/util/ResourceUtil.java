@@ -10,30 +10,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.util.Assert;
-import org.erlide.jinterface.util.ErlLogger;
+
 
 /**
  * <p>
@@ -181,72 +178,6 @@ public class ResourceUtil {
 
     private static IErlProject getErlProject(final IProject project) {
         return ErlangCore.getModel().findProject(project);
-    }
-
-    public static IProject getExternalFilesProject() {
-        final String prjName = "External_Files";
-        final IWorkspace ws = ResourcesPlugin.getWorkspace();
-        final IProject project = ws.getRoot().getProject(prjName);
-        if (!project.exists()) {
-            try {
-                project.create(null);
-                project.open(null);
-                final IProjectDescription description = project
-                        .getDescription();
-                description
-                        .setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-                project.setDescription(description, null);
-            } catch (final CoreException e) {
-                e.printStackTrace();
-            }
-        }
-        if (!project.isOpen()) {
-            try {
-                project.open(null);
-            } catch (final CoreException e) {
-                e.printStackTrace();
-            }
-        }
-        return project;
-    }
-
-    static public IFile openExternal(final IProject project, final String path)
-            throws CoreException {
-        final IErlProject erlProject = ErlangCore.getModel().findProject(
-                project);
-        if (erlProject != null) {
-            final List<IErlElement> children = erlProject
-                    .getChildrenOfKind(Kind.EXTERNAL);
-
-        }
-        return openInExternalFilesProject(path);
-    }
-
-    static public IFile openInExternalFilesProject(final String path)
-            throws CoreException {
-        if (path == null) {
-            return null;
-        }
-        final IProject project = getExternalFilesProject();
-        final IPath location = new Path(path);
-        final IFile file = project.getFile(location.lastSegment());
-        final IStatus status = ResourcesPlugin.getWorkspace()
-                .validateLinkLocation(file, location);
-        if (status.getSeverity() != IStatus.OK
-                && status.getSeverity() != IStatus.INFO) {
-            if (status.getSeverity() != IStatus.WARNING
-                    || status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
-                ErlLogger.warn("Can't open %s:: %s", path, status.toString());
-                return null;
-            }
-        }
-        if (!file.isLinked()) {
-            file.createLink(location, IResource.NONE, null);
-        }
-        final IErlProject p = ErlangCore.getModel().getErlangProject(
-                project.getName());
-        p.open(null);
-        return file;
     }
 
     public static IFile getFileFromLocation(final String location) {
