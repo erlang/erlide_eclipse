@@ -36,7 +36,7 @@ public class DialyzerUtilsTest {
 
 	enum SEL {
 		MODULE, SRC, PROJECT
-	};
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

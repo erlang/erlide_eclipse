@@ -106,8 +106,9 @@ public class SearchResultLabelProvider extends LabelProvider implements
             return "record_definition: " + ese.getName();
         case MACRO_DEF:
             return "macro_definition: " + ese.getName();
+        default:
+            return ese.getName();
         }
-        return ese.getName();
     }
 
     private StyledString getMatchCountText(final Object element) {
