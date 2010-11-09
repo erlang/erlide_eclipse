@@ -1,4 +1,4 @@
-package org.erlide.ui;
+package org.erlide.ui.integration;
 
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
 import static org.junit.Assert.fail;
