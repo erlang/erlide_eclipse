@@ -10,11 +10,12 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
@@ -24,7 +25,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.eunit.runtime.launch.IErlTestAttributes;
 import org.erlide.eunit.runtime.launch.TestType;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.util.SWTUtil;
 
 /**
  * Main panel of EUnit run configuration
@@ -215,8 +215,11 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 		
 		projectMBr = browserWithLabel(comp, "Project:",
 				dialogProject);
+		projectMBr.addModifyListener(basicModifyListener);		
+		
 		moduleBr = browserWithLabel(comp, "Module:",
 				dialogModule);
+		moduleBr.addModifyListener(basicModifyListener);
 		
 	}
 	
@@ -229,7 +232,7 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
         fileBr = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, dialogFile);
         fileBr.setFiledLength(600);
         fileBr.getTextGridData().horizontalSpan = 2;
-		
+        fileBr.addModifyListener(basicModifyListener);		
 	}
 	
 	private void createApplicationGroup(final Composite comp){
@@ -245,8 +248,11 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 		
 		projectAppBr = browserWithLabel(comp, "Project:",
 				dialogProject);
+		projectAppBr.addModifyListener(basicModifyListener);
+		
 		appBr = browserWithLabel(comp, "Module:",
 				dialogApp);
+		appBr.addModifyListener(basicModifyListener);
 		
 	}
 	
@@ -267,5 +273,12 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 		
 	    return browser;
 	}
+	
+	private final ModifyListener basicModifyListener = new ModifyListener() {
+        @SuppressWarnings("synthetic-access")
+        public void modifyText(final ModifyEvent evt) {
+            updateLaunchConfigurationDialog();
+        }
+    };
 
 }

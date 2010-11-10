@@ -17,7 +17,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  * @author Aleksandra Lipiec
  *
  */
-public class ItemBrowser{
+public class ItemBrowser 
+{
 	
 	private Text text;
 	private Button button;
@@ -27,6 +28,8 @@ public class ItemBrowser{
 		
 		GridData gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
 		gd.widthHint = 500;
+		
+		dialog = dial;
 		
 		text = new Text(comp, style);               
         text.setLayoutData(gd);

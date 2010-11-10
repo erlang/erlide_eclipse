@@ -14,5 +14,6 @@ public interface IErlTestAttributes {
 	public final String APPLICATION = prefix + ".application";
 	
 	public final String COVER = prefix + ".cover";
+
 	
 }

@@ -8,4 +8,6 @@ safe_erlide.log
 .metadata
 .escabaseline
 */.settings
+External_Files
+org.erlide.eunit.erlang.bak
 
