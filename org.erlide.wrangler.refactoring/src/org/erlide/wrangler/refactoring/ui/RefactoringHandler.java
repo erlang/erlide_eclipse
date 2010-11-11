@@ -408,7 +408,7 @@ public class RefactoringHandler extends AbstractHandler {
 				return true;
 			}
 		}
-		return false;
+		return true;
 
 	}
 
