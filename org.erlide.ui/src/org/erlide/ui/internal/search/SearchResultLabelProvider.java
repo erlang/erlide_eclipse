@@ -62,7 +62,12 @@ public class SearchResultLabelProvider extends LabelProvider implements
             location = "";
         }
         final IFile file = ResourceUtil.getFileFromLocation(location);
-        final String s = file.getFullPath().toPortableString();
+        final String s;
+        if (file != null) {
+            s = file.getFullPath().toPortableString();
+        } else {
+            s = location;
+        }
         return new StyledString(s, StyledString.QUALIFIER_STYLER);
     }
 
@@ -82,7 +87,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
 
     private static String searchElementFunctionToString(
             final ErlangSearchElement ese) {
-        String a = ese.getArguments();
+        final String a = ese.getArguments();
         if (ese.isSubClause()) {
             return ese.getName() + a;
         } else {

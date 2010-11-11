@@ -348,12 +348,21 @@ public final class MarkerUtils {
 
     }
 
-    public static IMarker createSearchResultMarker(final IFile file,
+    public static IMarker createSearchResultMarker(final IErlModule module,
             final String type, final int offset, final int length)
             throws CoreException {
-        final IMarker marker = file.createMarker(type);
+        boolean setPath = false;
+        IResource resource = module.getCorrespondingResource();
+        if (resource == null) {
+            resource = ResourcesPlugin.getWorkspace().getRoot();
+            setPath = true;
+        }
+        final IMarker marker = resource.createMarker(type);
         marker.setAttribute(IMarker.CHAR_START, offset);
         marker.setAttribute(IMarker.CHAR_END, offset + length);
+        if (setPath) {
+            marker.setAttribute(PATH_ATTRIBUTE, module.getFilePath());
+        }
         return marker;
     }
 
