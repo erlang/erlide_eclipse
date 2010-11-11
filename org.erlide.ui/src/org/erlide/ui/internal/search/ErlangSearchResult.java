@@ -92,7 +92,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     public String getLabel() {
         final int matchCount = getMatchCount();
         final String occurrences = getOccurrencesLabel(matchCount);
-        final String scope = query.getScopeDecsription();
+        final String scope = query.getScopeDescription();
         return query.getLabel() + " - " + matchCount + " " + occurrences
                 + " in " + scope + ".";
     }
@@ -146,7 +146,11 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
             final ErlangEditor erlangEditor = (ErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
-                return module.getResource().equals(file);
+                if (file != null) {
+                    return file.equals(module.getResource());
+                } else {
+                    return ese.getModuleName().equals(module.getFilePath());
+                }
             }
         }
         return false;
