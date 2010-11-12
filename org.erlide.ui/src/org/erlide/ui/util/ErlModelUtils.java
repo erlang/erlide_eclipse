@@ -548,6 +548,8 @@ public class ErlModelUtils {
         return result;
     }
 
+    fortfarande funkar det inte med link-helpern (final modulen skapas fel) när man ctrl-klickar på e:test i a_628.erl...
+    
     public static IErlModule getModule(final IEditorInput editorInput) {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
@@ -590,6 +592,14 @@ public class ErlModelUtils {
     public static void openMFA(final String module, final String function)
             throws CoreException {
         openMFA(module, function, ErlangFunction.ANY_ARITY);
+    }
+
+    public static void openModule(final String moduleName) throws CoreException {
+        final IErlModule module = findExternalModule(moduleName, null, null,
+                true);
+        if (module != null) {
+            EditorUtility.openInEditor(module);
+        }
     }
 
     public static ISourceRange findVariable(final Backend backend,

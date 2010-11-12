@@ -294,6 +294,12 @@ public final class ErlideUtil {
         return nameToModuleKind(name) == ModuleKind.ERL;
     }
 
+    public static boolean hasErlideExternalExtension(final String name) {
+        final IPath path = new Path(name);
+        final String fileExtension = path.getFileExtension();
+        return fileExtension != null && fileExtension.equals(".erlidex");
+    }
+
     /**
      * Returns true if the given project is accessible and it has a Erlang
      * nature, otherwise false.

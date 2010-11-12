@@ -15,7 +15,7 @@
          get_external_module/2,
 	 get_external_module_tree/1,
          get_external_include/2,
-	 get_external_1/2
+	 get_external_1/3
         ]).
 
 %% TODO (JC) there are some code duplication in external modules (and includes) handling
@@ -308,8 +308,8 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_1(FileName, PathVars) ->
-    FileNames = case filename:extension(FileName) == ".erlidex" of
+get_external_1(FileName, PathVars, IsRoot) ->
+    FileNames = case IsRoot orelse filename:extension(FileName) == ".erlidex" of
 		    true ->
 			case file:read_file(FileName) of
 			    {ok, B} ->

@@ -129,10 +129,11 @@ public class ErlideOpen {
     }
 
     public static List<String> getExternal1(final Backend b,
-            final String externalModules, final OtpErlangList pathVars) {
+            final String externalModules, final OtpErlangList pathVars,
+            final boolean isRoot) {
         try {
             final OtpErlangObject res = b.call("erlide_open", "get_external_1",
-                    "sx", externalModules, pathVars);
+                    "sxo", externalModules, pathVars, isRoot);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
