@@ -48,7 +48,8 @@ public class EUnitLaunchConfigurationDelegate extends
 		System.out.println("LAUNCHING!!!!");
 		try {
 			
-			EUnitBackend eunitBackend = new EUnitBackend(lData, eunitData);
+			EUnitBackend eunitBackend = EUnitBackend.getInstance();
+			eunitBackend.initialize(lData, eunitData);
 			System.out.println("Backend created");
 			backend = eunitBackend.getBackend();
 			eunitBackend.start();

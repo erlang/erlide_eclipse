@@ -1,17 +1,43 @@
 package org.erlide.eunit.ui.views;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
+import org.erlide.eunit.core.CoverResults;
+import org.erlide.eunit.core.EUnitBackend;
+import org.erlide.eunit.core.IEUnitObserver;
 
 
 /**
@@ -32,7 +58,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * <p>
  */
 
-public class TestResultView extends ViewPart {
+public class CoverStatsView extends ViewPart implements IEUnitObserver{
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -44,6 +70,17 @@ public class TestResultView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	
+	private EUnitBackend backend;
+	
+	
+	/**
+	 * The constructor.
+	 */
+	public CoverStatsView(){
+		backend = EUnitBackend.getInstance();
+		backend.addListener(this);
+	}
 
 	/*
 	 * The content provider class is responsible for
@@ -139,7 +176,7 @@ public class TestResultView extends ViewPart {
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject to1 = new TreeObject("Leaf 1");
+	/*		TreeObject to1 = new TreeObject("Leaf 1");
 			TreeObject to2 = new TreeObject("Leaf 2");
 			TreeObject to3 = new TreeObject("Leaf 3");
 			TreeParent p1 = new TreeParent("Parent 1");
@@ -156,7 +193,7 @@ public class TestResultView extends ViewPart {
 			root.addChild(p2);
 			
 			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(root);
+			invisibleRoot.addChild(root);*/
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -174,11 +211,8 @@ public class TestResultView extends ViewPart {
 	class NameSorter extends ViewerSorter {
 	}
 
-	/**
-	 * The constructor.
-	 */
-	public TestResultView() {
-	}
+	
+	
 
 	/**
 	 * This is a callback that will allow us
@@ -191,6 +225,8 @@ public class TestResultView extends ViewPart {
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
+		
+		createTableTree();
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.erlide.eunit.core.viewer");
@@ -199,13 +235,33 @@ public class TestResultView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
+	
+	private void createTableTree() {
+		
+		Tree tree = viewer.getTree();
+		
+		tree.setHeaderVisible(true);
+		TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
+		column1.setText("Name");
+		column1.setWidth(540);
+		TreeColumn column2 = new TreeColumn(tree, SWT.RIGHT);
+		column2.setText("Lines");
+		column2.setWidth(150);
+		TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
+		column3.setText("Total");
+		column3.setWidth(150);
+		TreeColumn column4 = new TreeColumn(tree, SWT.RIGHT);
+		column4.setText("%");
+		column4.setWidth(150);
+		
+	}
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				TestResultView.this.fillContextMenu(manager);
+				CoverStatsView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -280,7 +336,7 @@ public class TestResultView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Test Results",
+			"Cover statistics",
 			message);
 	}
 
@@ -290,4 +346,39 @@ public class TestResultView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+
+	public void finishCovering() {
+		System.out.println("Updating viewer");
+		Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                updateTable();
+            }
+        });
+	}
+	
+	private void updateTable(){
+		
+		System.out.println("updating....");
+		
+		int totalNum = backend.getHandler().getTotal();
+		Map<String, CoverResults> results = backend.getHandler().getResults();
+		
+		Tree tree = viewer.getTree();
+		tree.clearAll(true);
+		
+		TreeItem total = new TreeItem(tree, SWT.NONE);
+		total.setText(new String[] {"total", "", "", Integer.toString(totalNum)});
+		
+		for(String res : results.keySet()){
+			TreeItem subItem = new TreeItem(total, SWT.NONE);
+			String linesNum = Integer.toString(results.get(res).linesTotal);
+			String linesCov = Integer.toString(results.get(res).linesCovered);
+			String percent = Double.toString(results.get(res).percent);
+			
+			System.out.format("%s, %s, %s, %s\n", res, linesNum, linesCov, percent);
+			
+			total.setText(new String[] {res, linesNum, linesCov, percent});
+		}
+	}
+	
 }

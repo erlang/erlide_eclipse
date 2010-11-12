@@ -9,10 +9,10 @@
             id="org.erlide.eunit.core">
       </category>
       <view
-            name="Test Results"
+            name="Cover Statistics"
             icon="icons/sample.gif"
             category="org.erlide.eunit.core"
-            class="org.erlide.eunit.ui.views.TestResultView"
+            class="org.erlide.eunit.ui.views.CoverStatsView"
             id="org.erlide.eunit.core.views.TestResultView">
       </view>
    </extension>

@@ -2,6 +2,8 @@ package org.erlide.eunit.core;
 
 import java.io.File;
 import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -13,24 +15,23 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.eunit.runtime.launch.EUnitLaunchData;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
+import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlLaunchData;
 
 
 
 public class EUnitBackend {
+	
+	public static EUnitBackend instance;
 	
 	public static final String NODE_NAME = "cover_node1"; //
 	
@@ -42,13 +43,25 @@ public class EUnitBackend {
 	private EUnitLaunchData eunitData;
 	private String type;
 	private String nodeName;
+	private List<IEUnitObserver> listeners = new LinkedList<IEUnitObserver>();
+
+	public static EUnitBackend getInstance(){
+		if(instance == null)
+			instance = new EUnitBackend();
+		return instance;
+	}
 	
+	private EUnitBackend() {
+			
+	}
 	
-	public EUnitBackend(ErlLaunchData data, EUnitLaunchData eunitData) throws RuntimeException, BackendException {
+	public void initialize(ErlLaunchData data, EUnitLaunchData eunitData) 
+			throws RuntimeException, BackendException {
 		
 		final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
-        if (rt0 == null) {
+       
+		if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);
             throw new RuntimeException();
         }
@@ -70,13 +83,14 @@ public class EUnitBackend {
 		
 		this.backend = createBackend();
 		
-		
 	}
+	
+
 	
 	
 	public void start() {
 		
-		handler = new EUnitEventHandler();
+		handler = new EUnitEventHandler(this);
 		backend.getEventDaemon().addHandler(handler);
 		
 		String path;
@@ -108,8 +122,20 @@ public class EUnitBackend {
 	
 	}
 	
+	public EUnitEventHandler getHandler() {
+		return handler;
+	}
+	
 	public Backend getBackend(){
 		return backend;
+	}
+	
+	public void addListener(IEUnitObserver listener) {
+		listeners.add(listener);
+	}
+	
+	public List<IEUnitObserver> getListeners(){
+		return listeners;
 	}
 	
 	private Backend createBackend() throws BackendException{
