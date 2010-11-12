@@ -592,6 +592,14 @@ public class ErlModelUtils {
         openMFA(module, function, ErlangFunction.ANY_ARITY);
     }
 
+    public static void openModule(final String moduleName) throws CoreException {
+        final IErlModule module = findExternalModule(moduleName, null, null,
+                true);
+        if (module != null) {
+            EditorUtility.openInEditor(module);
+        }
+    }
+
     public static ISourceRange findVariable(final Backend backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws ErlModelException,
