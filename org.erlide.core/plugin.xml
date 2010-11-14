@@ -102,12 +102,6 @@
       <persistent value="true"/>
    </extension>
    <extension
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
-            id="org.erlide.core.backend.ertsprocessfactory"/>
-   </extension>
-   <extension
          id="org.erlide.core.erlang.lineBreakpoint.marker"
          name="Erlang Line Breakpoint Marker"
          point="org.eclipse.core.resources.markers">
