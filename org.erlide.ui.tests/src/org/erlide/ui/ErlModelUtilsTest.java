@@ -1,17 +1,23 @@
 package org.erlide.ui;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.text.ErlangToolkit;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.util.ErlModelUtils;
 import org.junit.After;
@@ -25,6 +31,9 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+
+import erlang.ErlideOpen;
+import erlang.OpenResult;
 
 public class ErlModelUtilsTest {
 
@@ -134,6 +143,45 @@ public class ErlModelUtilsTest {
 		// then
 		// it should be found
 		assertTrue(element1 instanceof IErlFunction);
+	}
+
+	@Test
+	public void findFunctionInExternalFilesTest() throws Exception {
+		// given
+		// a module with calls to the lists module
+		final IErlProject project = projects[0];
+		final IErlModule moduleE = ErlideTestUtils
+				.createErlModule(
+						project,
+						"e.erl",
+						"-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+		moduleE.open(null);
+		// when
+		// looking for lists:reverse/2 and lists:reverse/1
+		final Backend backend = ErlangCore.getBackendManager().getIdeBackend();
+		final IErlModel model = ErlangCore.getModel();
+		final OpenResult res = ErlideOpen.open(backend,
+				ErlangToolkit.createScannerModuleName(moduleE), 49,
+				ErlModelUtils.getImportsAsList(moduleE),
+				model.getExternalModules(project), model.getPathVars());
+		final IErlElement function = ErlModelUtils.findExternalFunction(
+				res.getName(), res.getFunction(), res.getPath(),
+				project.getProject(), false, moduleE);
+		final OpenResult res2 = ErlideOpen.open(backend,
+				ErlangToolkit.createScannerModuleName(moduleE), 81,
+				ErlModelUtils.getImportsAsList(moduleE),
+				model.getExternalModules(project), model.getPathVars());
+		final IErlElement module = ErlModelUtils.findExternalFunction(
+				res2.getName(), res2.getFunction(), res2.getPath(),
+				project.getProject(), false, moduleE);
+		// then
+		// the function should be returned and the module, in External Files
+		assertNotNull(function);
+		assertTrue(function instanceof IErlFunction);
+		assertNotNull(module);
+		assertEquals(function.getParent(), module);
+		assertEquals(function.getParent().getParent().getResource(),
+				ResourceUtil.getExternalFilesProject());
 	}
 
 	private OtpErlangTuple makeTuple2(final String functionName, final int arity) {
