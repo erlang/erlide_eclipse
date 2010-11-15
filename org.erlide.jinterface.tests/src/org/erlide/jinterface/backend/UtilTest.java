@@ -1,4 +1,4 @@
-package org.erlide.runtime.backend;
+package org.erlide.jinterface.backend;
 
 import static org.junit.Assert.assertEquals;
 
