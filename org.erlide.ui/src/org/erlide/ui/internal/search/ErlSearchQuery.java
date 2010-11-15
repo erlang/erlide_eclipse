@@ -21,72 +21,73 @@ import erlang.ErlangSearchPattern;
 import erlang.ErlideSearchServer;
 
 public class ErlSearchQuery implements ISearchQuery {
-	private final ErlangSearchPattern pattern;
-	private final Collection<IResource> scope;
-	private ErlangSearchResult fSearchResult;
-	private List<ModuleLineFunctionArityRef> fResult;
+    private final ErlangSearchPattern pattern;
+    private final Collection<IResource> scope;
+    private ErlangSearchResult fSearchResult;
+    private List<ModuleLineFunctionArityRef> fResult;
 
-	private String stateDirCached = null;
-	private final String scopeDecsription;
+    private String stateDirCached = null;
+    private final String scopeDecsription;
 
-	public ErlSearchQuery(final ErlangSearchPattern pattern,
-			final Collection<IResource> scope, final String scopeDecsription) {
-		this.pattern = pattern;
-		this.scope = scope;
-		this.scopeDecsription = scopeDecsription;
-	}
+    public ErlSearchQuery(final ErlangSearchPattern pattern,
+            final Collection<IResource> scope, final String scopeDecsription) {
+        this.pattern = pattern;
+        this.scope = scope;
+        this.scopeDecsription = scopeDecsription;
+    }
 
-	public boolean canRerun() {
-		return true;
-	}
+    public boolean canRerun() {
+        return true;
+    }
 
-	public boolean canRunInBackground() {
-		return false;
-	}
+    public boolean canRunInBackground() {
+        return false;
+    }
 
-	public String getLabel() {
-		return pattern.labelString();
-	}
+    public String getLabel() {
+        return pattern.labelString();
+    }
 
-	public ISearchResult getSearchResult() {
-		if (fSearchResult == null) {
-			fSearchResult = new ErlangSearchResult(this);
-		}
-		return fSearchResult;
-	}
+    public ISearchResult getSearchResult() {
+        if (fSearchResult == null) {
+            fSearchResult = new ErlangSearchResult(this);
+        }
+        return fSearchResult;
+    }
 
-	public IStatus run(final IProgressMonitor monitor)
-			throws OperationCanceledException {
-		final ErlideBackend backend = ErlangCore.getBackendManager()
-				.getIdeBackend();
-		fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
-				getStateDir());
-		final List<Match> l = new ArrayList<Match>(fResult.size());
-		final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
-				fResult.size());
-		for (final ModuleLineFunctionArityRef ref : fResult) {
-			final Match m = SearchUtil.createMatch(ref);
-			l.add(m);
-			result.add((ErlangSearchElement) m.getElement());
-		}
-		fSearchResult.setResult(result);
-		fSearchResult.addMatches(l.toArray(new Match[l.size()]));
-		return Status.OK_STATUS;
-	}
+    public IStatus run(final IProgressMonitor monitor)
+            throws OperationCanceledException {
+        final ErlideBackend backend = ErlangCore.getBackendManager()
+                .getIdeBackend();
+        fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
+                getStateDir());
+        final List<Match> l = new ArrayList<Match>(fResult.size());
+        final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
+                fResult.size());
+        for (final ModuleLineFunctionArityRef ref : fResult) {
+            final Match m = SearchUtil.createMatch(ref);
+            l.add(m);
+            result.add((ErlangSearchElement) m.getElement());
+        }
+        getSearchResult();
+        fSearchResult.setResult(result);
+        fSearchResult.addMatches(l.toArray(new Match[l.size()]));
+        return Status.OK_STATUS;
+    }
 
-	private String getStateDir() {
-		if (stateDirCached == null) {
-			stateDirCached = ErlangPlugin.getDefault().getStateLocation()
-					.toString();
-		}
-		return stateDirCached;
-	}
+    private String getStateDir() {
+        if (stateDirCached == null) {
+            stateDirCached = ErlangPlugin.getDefault().getStateLocation()
+                    .toString();
+        }
+        return stateDirCached;
+    }
 
-	public ErlangSearchPattern getPattern() {
-		return pattern;
-	}
+    public ErlangSearchPattern getPattern() {
+        return pattern;
+    }
 
-	public String getScopeDecsription() {
-		return scopeDecsription;
-	}
+    public String getScopeDecsription() {
+        return scopeDecsription;
+    }
 }

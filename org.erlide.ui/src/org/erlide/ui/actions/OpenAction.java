@@ -287,11 +287,11 @@ public class OpenAction extends SelectionDispatchAction {
             return ErlModelUtils.findExternalType(res.getName(), res.getFun(),
                     res.getPath(), project, checkAllProjects);
         }
-        final IErlFunction function = ErlModelUtils.findExternalFunction(
+        final IErlElement result = ErlModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 checkAllProjects, module);
-        if (function != null) {
-            return function;
+        if (result instanceof IErlFunction) {
+            return result;
         }
         return ErlModelUtils.findExternalFunction(res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),

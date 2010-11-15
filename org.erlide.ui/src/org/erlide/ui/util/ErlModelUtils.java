@@ -383,7 +383,7 @@ public class ErlModelUtils {
         return false;
     }
 
-    public static IErlFunction findExternalFunction(String moduleName,
+    public static IErlElement findExternalFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
             final IProject project, final boolean checkAllProjects,
             final IErlModule module) {
@@ -395,8 +395,13 @@ public class ErlModelUtils {
                 final IFile file = (IFile) r;
                 final IErlModule module2 = ErlangCore.getModel().findModule(
                         file);
-                module.open(null);
-                return ModelUtils.findFunction(module2, erlangFunction);
+                module2.open(null);
+                final IErlFunction function = ModelUtils.findFunction(module2,
+                        erlangFunction);
+                if (function != null) {
+                    return function;
+                }
+                return module2;
             }
         } catch (final ErlModelException e) {
         } catch (final CoreException e) {
@@ -428,7 +433,12 @@ public class ErlModelUtils {
                 final IErlModule module = ErlangCore.getModel()
                         .findModule(file);
                 module.open(null);
-                return ModelUtils.findTypespec(module, typeName);
+                final IErlTypespec typespec = ModelUtils.findTypespec(module,
+                        typeName);
+                if (typespec != null) {
+                    return typespec;
+                }
+                return module;
             }
         } catch (final CoreException e) {
         }
