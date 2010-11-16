@@ -79,9 +79,7 @@ find_refs(Pattern, Modules, StateDir)
     find_refs([Pattern], Modules, StateDir);
 find_refs(Pattern, Modules, StateDir) 
   when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
-    ?D(Pattern),
     R = server_cmd(find_refs, {Pattern, Modules, StateDir}),
-    ?D(R),
     R.
 
 remove_module(ScannerName) ->
@@ -125,7 +123,7 @@ server_cmd(Command, Args) ->
         end
     catch
         _:Exception ->
-              {error, Exception}
+              {error, Exception, erlang:get_stacktrace()}
     end.
 
 
@@ -162,10 +160,10 @@ cmd(Cmd, From, Args, State) ->
         end
     catch
         exit:Error ->
-            reply(Cmd, From, {exit, Error}),
+            reply(Cmd, From, {exit, Error, erlang:get_stacktrace()}),
             State;
         error:Error ->
-            reply(Cmd, From, {error, Error}),
+            reply(Cmd, From, {error, Error, erlang:get_stacktrace()}),
             State
     end.
 
@@ -260,7 +258,8 @@ get_module_refs(ScannerName, ModulePath, StateDir, Modules) ->
     end.
 
 read_module_refs(ScannerName, ModulePath, StateDir) ->
-    erlide_noparse:read_module_refs(ScannerName, ModulePath, StateDir).
+    R = erlide_noparse:read_module_refs(ScannerName, ModulePath, StateDir),
+    R.
 
 do_add_module_refs(ScannerName, Refs, #state{modules=Modules0} = State) ->
     ?D(ScannerName),

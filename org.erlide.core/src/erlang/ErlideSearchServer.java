@@ -1,6 +1,5 @@
 package erlang;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class ErlideSearchServer {
 
@@ -30,8 +30,9 @@ public class ErlideSearchServer {
         int i = 0;
         for (final IResource r : scope) {
             result[i] = new OtpErlangTuple(new OtpErlangObject[] {
-                    new OtpErlangAtom(ErlangToolkit
-                            .createScannerModuleNameFromResource(r)),
+                    new OtpErlangAtom(
+                            ErlangToolkit
+                                    .createScannerModuleNameFromResource(r)),
                     new OtpErlangString(r.getLocation().toPortableString()) });
             i++;
         }
@@ -41,14 +42,16 @@ public class ErlideSearchServer {
     public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
             final ErlangSearchPattern ref, final Collection<IResource> scope,
             final String stateDir) {
-        final List<ModuleLineFunctionArityRef> result = new ArrayList<ModuleLineFunctionArityRef>();
+        final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
+        ErlLogger.debug("findRefs ref %s scope %s", ref.patternString(), scope);
         try {
             // ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
             // getModulesFromScope(scope));
-            final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
-                    "erlide_search_server", "find_refs", "xxs", ref
-                            .getSearchObject(), getModulesFromScope(scope),
-                    stateDir);
+            final OtpErlangObject r = b
+                    .call(SEARCH_LONG_TIMEOUT, "erlide_search_server",
+                            "find_refs", "xxs", ref.getSearchObject(),
+                            getModulesFromScope(scope), stateDir);
+            ErlLogger.debug("r %s", r);
             if (Util.isOk(r)) {
                 addSearchResult(result, r);
             }
@@ -61,9 +64,9 @@ public class ErlideSearchServer {
     public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
             final ErlangSearchPattern ref, final IErlModule module,
             final String stateDir) {
-        final List<IResource> l = new ArrayList<IResource>(1);
+        final List<IResource> l = Lists.newArrayListWithCapacity(1);
         // TODO JC what if this module is resource-less?
-        IResource r = module.getResource();
+        final IResource r = module.getResource();
         if (r != null) {
             l.add(r);
         }
