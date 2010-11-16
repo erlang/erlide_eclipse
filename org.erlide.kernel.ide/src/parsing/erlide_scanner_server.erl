@@ -132,7 +132,7 @@ server_cmd(ScannerName, Command, Args) ->
 				Result
 		end
 	catch _:Exception ->
-			  {error, Exception}
+			  {error, Exception, erlang:get_stacktrace()}
 	end.
 
 %% spawn_server() ->
@@ -195,7 +195,7 @@ cmd(Cmd, From, Args, Module) ->
             reply(Cmd, From, {exit, Error}),
             Module;
         error:Error ->
-            reply(Cmd, From, {error, Error}),
+            reply(Cmd, From, {error, Error, erlang:get_stacktrace()}),
             Module
     end.
 

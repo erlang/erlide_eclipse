@@ -14,8 +14,6 @@
 %% called from Erlang
 -export([read_module_refs/3]).
 
-%% -compile(export_all).
-
 %%
 %% Include files
 %%
@@ -44,7 +42,7 @@
 initial_parse(ScannerName, ModuleFileName, StateDir, UpdateCaches,
               UpdateSearchServer) ->
     try
-        ?D({StateDir, ModuleFileName}),
+%%         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
@@ -83,13 +81,15 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             ?D(byte_size(Binary)),
             binary_to_term(Binary);
         _ ->
+            ?D(ModulePath),
             {ok, InitialTextBin} = file:read_file(ModulePath),
+            ?D(byte_size(InitialTextBin)),
             InitialText = binary_to_list(InitialTextBin),
             _D = erlide_scanner_server:initialScan(
                    ScannerName, ModulePath, InitialText, StateDir, true),
             ?D(_D),
             initial_parse(ScannerName, ModulePath, StateDir, true, false),
-            ?D(parsed),
+            ?D(RefsFileName),
             {ok, Binary} = file:read_file(RefsFileName),
             ?D(byte_size(Binary)),
             binary_to_term(Binary)
@@ -108,36 +108,36 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
 %% -record(module, {name, erlide_path, model}).
 
 do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
-    Toks = erlide_scanner_server:getTokens(ScannerName), 
+    Toks = erlide_scanner_server:getTokens(ScannerName),
     do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer).
 
 do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
-    ?D({do_parse, ScannerName, length(Toks)}),
+%%     ?D({do_parse, ScannerName, length(Toks)}),
     {UncommentToks, Comments} = extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
     %?D({UncommentToks}),
     Functions = split_after_dots(UncommentToks, [], []),
-    ?D(length(Functions)),
+%%     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
-    ?D(AutoImports),
+%%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
-    ?D(length(Collected)),
+%%     ?D(length(Collected)),
     CommentedCollected = get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model),
-    ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
+%%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
-    ?D(erts_debug:flat_size(FixedModel)),
+%%     ?D(erts_debug:flat_size(FixedModel)),
     %% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
     ?D(StateDir),
     case StateDir of
         "" -> ok;
         _ ->
-            ?D({RefsFileName, Refs}),
+            ?D({RefsFileName, length(Refs)}),
             file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
-    ?D(FixedModel),
+%%     ?D(FixedModel),
     FixedModel.
 
 update_search_server(true, ScannerName, Refs) ->

@@ -612,7 +612,7 @@ public class ErlModelUtils {
                 true);
     }
 
-    public static void openMFA(final String module, final String function)
+    public static void openMF(final String module, final String function)
             throws CoreException {
         openMFA(module, function, ErlangFunction.ANY_ARITY);
     }
