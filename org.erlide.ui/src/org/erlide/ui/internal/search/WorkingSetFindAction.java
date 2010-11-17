@@ -18,6 +18,8 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
+import erlang.ErlangSearchPattern.LimitTo;
+
 /**
  * Wraps a <code>JavaElementSearchActions</code> to find its results in the
  * specified working set.
@@ -33,70 +35,70 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class WorkingSetFindAction extends FindAction {
 
-	private FindAction fAction;
+    private FindAction fAction;
 
-	/**
-	 * Note: This constructor is for internal use only. Clients should not call
-	 * this constructor.
-	 */
-	public WorkingSetFindAction(final IWorkbenchSite site,
-			final FindAction action, final String workingSetName) {
-		super(site);
-		init(action, workingSetName);
-	}
+    /**
+     * Note: This constructor is for internal use only. Clients should not call
+     * this constructor.
+     */
+    public WorkingSetFindAction(final IWorkbenchSite site,
+            final FindAction action, final String workingSetName) {
+        super(site);
+        init(action, workingSetName);
+    }
 
-	/**
-	 * Note: This constructor is for internal use only. Clients should not call
-	 * this constructor.
-	 */
-	public WorkingSetFindAction(final ErlangEditor editor,
-			final FindAction action, final String workingSetName) {
-		super(editor);
-		init(action, workingSetName);
-	}
+    /**
+     * Note: This constructor is for internal use only. Clients should not call
+     * this constructor.
+     */
+    public WorkingSetFindAction(final ErlangEditor editor,
+            final FindAction action, final String workingSetName) {
+        super(editor);
+        init(action, workingSetName);
+    }
 
-	@Override
-	void init() {
-		// ignore: do our own init in 'init(FindAction, String)'
-	}
+    @Override
+    void init() {
+        // ignore: do our own init in 'init(FindAction, String)'
+    }
 
-	private void init(final FindAction action, final String workingSetName) {
-		Assert.isNotNull(action);
-		fAction = action;
-		setText(workingSetName);
-		setImageDescriptor(action.getImageDescriptor());
-		setToolTipText(action.getToolTipText());
-		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-		// IJavaHelpContextIds.WORKING_SET_FIND_ACTION);
-	}
+    private void init(final FindAction action, final String workingSetName) {
+        Assert.isNotNull(action);
+        fAction = action;
+        setText(workingSetName);
+        setImageDescriptor(action.getImageDescriptor());
+        setToolTipText(action.getToolTipText());
+        // FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+        // IJavaHelpContextIds.WORKING_SET_FIND_ACTION);
+    }
 
-	@Override
-	public void run(final IErlElement element) {
-		fAction.run(element);
-	}
+    @Override
+    public void run(final IErlElement element) {
+        fAction.run(element);
+    }
 
-	@Override
-	boolean canOperateOn(final IErlElement element) {
-		return fAction.canOperateOn(element);
-	}
+    @Override
+    boolean canOperateOn(final IErlElement element) {
+        return fAction.canOperateOn(element);
+    }
 
-	@Override
-	int getLimitTo() {
-		return fAction.getLimitTo();
-	}
+    @Override
+    LimitTo getLimitTo() {
+        return fAction.getLimitTo();
+    }
 
-	@Override
-	String getOperationUnavailableMessage() {
-		return fAction.getOperationUnavailableMessage();
-	}
+    @Override
+    String getOperationUnavailableMessage() {
+        return fAction.getOperationUnavailableMessage();
+    }
 
-	@Override
-	protected Collection<IResource> getScope() {
-		return fAction.getScope();
-	}
+    @Override
+    protected Collection<IResource> getScope() {
+        return fAction.getScope();
+    }
 
-	@Override
-	protected String getScopeDescription() {
-		return "working set '" + getText() + "'";
-	}
+    @Override
+    protected String getScopeDescription() {
+        return "working set '" + getText() + "'";
+    }
 }

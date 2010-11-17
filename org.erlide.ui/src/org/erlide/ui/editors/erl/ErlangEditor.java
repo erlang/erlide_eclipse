@@ -156,6 +156,7 @@ import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 
 import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlideOpen;
 import erlang.ErlideSearchServer;
 import erlang.OpenResult;
@@ -2176,8 +2177,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                                 .getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(module,
-                                offset, res,
-                                ErlangSearchPattern.ALL_OCCURRENCES, false);
+                                offset, res, LimitTo.ALL_OCCURRENCES, false);
                 if (fCanceled) {
                     return;
                 }

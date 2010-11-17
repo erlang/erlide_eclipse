@@ -35,11 +35,11 @@ import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
@@ -54,6 +54,8 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
+import erlang.ErlangSearchPattern.SearchFor;
 import erlang.OpenResult;
 
 public class SearchUtil {
@@ -210,7 +212,7 @@ public class SearchUtil {
 
     public static ErlangSearchPattern getSearchPatternFromOpenResultAndLimitTo(
             final IErlModule module, final int offset, final OpenResult res,
-            final int limitTo, final boolean matchAnyFunctionDefinition) {
+            final LimitTo limitTo, final boolean matchAnyFunctionDefinition) {
         if (res == null) {
             return null;
         }
@@ -284,7 +286,8 @@ public class SearchUtil {
     }
 
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
-            final int searchFor, final String pattern, final int limitTo) {
+            final SearchFor searchFor, final String pattern,
+            final LimitTo limitTo) {
         String moduleName = "", name = pattern;
         int arity = 0;
         int p = pattern.indexOf(':');

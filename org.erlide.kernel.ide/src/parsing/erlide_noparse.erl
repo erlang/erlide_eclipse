@@ -9,7 +9,7 @@
 %%
 
 %% called from Java
--export([initial_parse/5, reparse/1]).
+-export([initial_parse/5, reparse/1, remove_cache_files/2]).
 
 %% called from Erlang
 -export([read_module_refs/3]).
@@ -94,6 +94,15 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             ?D(byte_size(Binary)),
             binary_to_term(Binary)
     end.
+
+remove_cache_files(ScannerName, StateDir) ->
+    BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
+    ScannerCacheFileName = BaseName ++ ".scan",
+    file:delete(ScannerCacheFileName),
+    RefsFileName = BaseName ++ ".refs",
+    file:delete(RefsFileName),
+    CacheFileName = BaseName ++ ".noparse",
+    file:delete(CacheFileName).
 
 %%
 %% Internal functions

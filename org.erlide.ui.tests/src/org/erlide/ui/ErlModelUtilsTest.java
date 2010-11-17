@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
@@ -32,44 +34,53 @@ public class ErlModelUtilsTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		ErlideTestUtils.initProjects();
 		// We set up projects here, it's quite costly
 		final String name1 = "testproject1";
-		final IErlProject erlProject1 = ErlideTestUtils.createErlProject(
+		final IErlProject erlProject1 = ErlideTestUtils.createProject(
 				ErlideTestUtils.getTmpPath(name1), name1);
 		final String name2 = "testproject2";
-		final IErlProject erlProject2 = ErlideTestUtils.createErlProject(
+		final IErlProject erlProject2 = ErlideTestUtils.createProject(
 				ErlideTestUtils.getTmpPath(name2), name2);
 		projects = new IErlProject[] { erlProject1, erlProject2 };
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		for (final IErlProject project : projects) {
-			ErlideTestUtils.deleteErlProject(project);
-		}
+		ErlideTestUtils.deleteProjects();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		ErlideTestUtils.initModules();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		ErlideTestUtils.deleteModules();
 	}
 
 	@Test
 	public void getImportsAsListTest() throws Exception {
 		// given
-		// an erlang module with imports
-		final IErlModule module = ErlideTestUtils.createErlModule(projects[0],
+		// an Erlang module with imports
+		final IErlModule moduleA = ErlideTestUtils.createModule(projects[0],
 				"a.erl", "-module(a).\n-import(lists, [reverse/1, foldl/3].\n");
-		module.open(null);
+		moduleA.open(null);
 		// when
 		// fetching imports as list of OtpErlangTuple
+		final List<IErlElement> children = moduleA.getChildren();
+		final Collection<IErlImport> imports2 = moduleA.getImports();
 		final List<OtpErlangObject> imports = ErlModelUtils
-				.getImportsAsList(module);
+				.getImportsAsList(moduleA);
 		// then
 		// they should be returned
+		if (children.size() != 2) {
+			System.out.println(moduleA);
+			System.out.println(children);
+		}
+		assertEquals(2, children.size());
+		assertEquals(1, imports2.size());
 		assertEquals(1, imports.size());
 		final OtpErlangAtom listAtom = new OtpErlangAtom("lists");
 		assertEquals(
@@ -83,9 +94,9 @@ public class ErlModelUtilsTest {
 	@Test
 	public void findExternalTypeTest() throws Exception {
 		// given
-		// an erlang module with typedef
+		// an Erlang module with typedef
 		final IErlModule moduleB = ErlideTestUtils
-				.createErlModule(
+				.createModule(
 						projects[0],
 						"b.erl",
 						"-module(b).\n-type concat_thing() :: atom() | integer() | float() | string().\n");
@@ -123,7 +134,7 @@ public class ErlModelUtilsTest {
 		// given
 		// a module with functions and functions
 		final IErlModule moduleD = ErlideTestUtils
-				.createErlModule(projects[0], "d.erl",
+				.createModule(projects[0], "d.erl",
 						"-module(d).\n-export([f/0]).\nf() ->\n    ok.\ng() ->\n    ?MODULE:f().\n");
 		moduleD.open(null);
 		// when

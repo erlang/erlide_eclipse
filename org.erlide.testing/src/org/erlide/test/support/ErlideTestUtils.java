@@ -20,12 +20,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 
+import com.google.common.collect.Lists;
+
 public class ErlideTestUtils {
+
+	private static List<IErlModule> modules;
+	private static List<IErlProject> projects;
 
 	private static void buildPaths(final IWorkspaceRoot root,
 			final IProject project, final Collection<IPath> list)
@@ -41,7 +47,11 @@ public class ErlideTestUtils {
 		}
 	}
 
-	public static IErlModule createErlModule(final IErlProject erlProject,
+	public static void initModules() {
+		modules = Lists.newArrayList();
+	}
+
+	public static IErlModule createModule(final IErlProject erlProject,
 			final String moduleName, final String moduleContents)
 			throws CoreException {
 		final IProject project = erlProject.getProject();
@@ -49,11 +59,21 @@ public class ErlideTestUtils {
 		final IFile file = folder.getFile(moduleName);
 		file.create(new ByteArrayInputStream(moduleContents.getBytes()), true,
 				null);
-		return ErlangCore.getModel().findModule(file);
+		final IErlModule module = ErlangCore.getModel().findModule(file);
+		modules.add(module);
+		return module;
 	}
 
-	public static IErlProject createErlProject(final IPath path,
-			final String name) throws CoreException {
+	public static void deleteModule(final IErlModule module)
+			throws CoreException {
+		final IFile file = (IFile) module.getResource();
+		file.delete(true, null);
+		final IErlProject project = module.getProject();
+		modules.remove(module);
+	}
+
+	public static IErlProject createProject(final IPath path, final String name)
+			throws CoreException {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject project2 = root.getProject(name);
 		try {
@@ -78,6 +98,7 @@ public class ErlideTestUtils {
 		ebinDirs.add(new Path("ebin"));
 		buildPaths(root, project, ebinDirs);
 		prefs.setOutputDir(ebinDirs.get(0));
+		projects.add(erlProject);
 		return erlProject;
 	}
 
@@ -90,6 +111,11 @@ public class ErlideTestUtils {
 			}
 			folder.create(false, true, null);
 		}
+	}
+
+	public static IPath getTmpPath(final String fileName) {
+		final String tmpdir = System.getProperty("java.io.tmpdir");
+		return new Path(tmpdir).append(fileName);
 	}
 
 	public static File createTmpFile(final String fileName,
@@ -105,21 +131,44 @@ public class ErlideTestUtils {
 		return f;
 	}
 
-	public static void deleteErlProject(final IErlProject erlProject)
+	public static void deleteProject(final IErlProject erlProject)
 			throws CoreException {
 		final IProject project = erlProject.getProject();
 		project.delete(true, null);
-	}
-
-	public static IPath getTmpPath(final String fileName) {
-		final String tmpdir = System.getProperty("java.io.tmpdir");
-		return new Path(tmpdir).append(fileName);
+		final List<IErlModule> list = Lists.newArrayList(modules);
+		for (final IErlModule module : list) {
+			if (module.getProject() == erlProject) {
+				deleteModule(module);
+			}
+		}
+		projects.remove(project);
+		final IErlModel model = ErlangCore.getModel();
+		model.resourceChanged();
+		model.open(null);
 	}
 
 	public static void invokeBuilderOn(final IErlProject erlProject)
 			throws CoreException {
 		final IProject project = erlProject.getProject();
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+	}
+
+	public static void deleteModules() throws CoreException {
+		final List<IErlModule> list = Lists.newArrayList(modules);
+		for (final IErlModule module : list) {
+			deleteModule(module);
+		}
+	}
+
+	public static void deleteProjects() throws CoreException {
+		final List<IErlProject> list = Lists.newArrayList(projects);
+		for (final IErlProject project : list) {
+			deleteProject(project);
+		}
+	}
+
+	public static void initProjects() {
+		projects = Lists.newArrayList();
 	}
 
 }
