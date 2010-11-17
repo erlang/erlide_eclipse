@@ -133,6 +133,7 @@ public class DialyzeAction implements IObjectActionDelegate {
         final Set<IFile> files = collectFiles();
         final ISchedulingRule rule = createRule(files);
         job.setRule(rule);
+        job.setUser(true);
         job.schedule();
     }
 
