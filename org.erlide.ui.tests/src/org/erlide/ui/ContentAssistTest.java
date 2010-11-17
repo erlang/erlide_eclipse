@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
@@ -276,25 +276,26 @@ public class ContentAssistTest {
 	}
 
 	@Test
-	public void recordCompletionLetters() throws Exception {
+	public void recordCompletionLettersTest() throws Exception {
 		final String initialText = "-record(aa, {a, b}).\n-record(ab, {a, b}).\n-record(bb, {a, b}).\nf() ->\n#";
 		completionTest(initialText, 3, "a", 2, "aa");
 	}
 
 	@Test
-	public void recordCompletionSingleQuote() throws Exception {
+	public void recordCompletionSingleQuoteTest() throws Exception {
 		final String initialText = "-record('AA', {a, b}).\n-record('BB', {a, b}).\n-record(ab, {a, b}).\nf() ->\n#";
 		completionTest(initialText, 3, "'", 2, "'AA'");
 	}
 
 	private void completionTest(final String initialText,
 			final int nTotalExpectedCompletions, final String completionChar,
-			final int nExpectedCompletions, final String expectedFirstCompletion) {
+			final int nExpectedCompletions, final String expectedFirstCompletion)
+			throws ErlModelException {
 		// http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
 		final int offset = initialText.length();
 		IDocument document = new StringDocument(initialText);
-		final IErlModule module = ErlangCore.getModelManager()
-				.getModuleFromText("test1", initialText, "test1");
+		final IErlModule module = ErlideTestUtils
+				.createModuleFromText(initialText);
 		final MockSourceViewer sourceViewer = new MockSourceViewer(document,
 				offset);
 		final IContentAssistProcessor p = new ErlContentAssistProcessor(

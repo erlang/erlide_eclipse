@@ -67,8 +67,11 @@ public class ErlideTestUtils {
 	public static void deleteModule(final IErlModule module)
 			throws CoreException {
 		final IFile file = (IFile) module.getResource();
-		file.delete(true, null);
-		final IErlProject project = module.getProject();
+		if (file != null) {
+			file.delete(true, null);
+		} else {
+			ErlangCore.getModelManager().removeModule(module);
+		}
 		modules.remove(module);
 	}
 
@@ -169,6 +172,13 @@ public class ErlideTestUtils {
 
 	public static void initProjects() {
 		projects = Lists.newArrayList();
+	}
+
+	public static IErlModule createModuleFromText(final String initialText) {
+		final IErlModule module = ErlangCore.getModelManager()
+				.getModuleFromText("test1", initialText, "test1");
+		modules.add(module);
+		return module;
 	}
 
 }
