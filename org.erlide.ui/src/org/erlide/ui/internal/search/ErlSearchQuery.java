@@ -1,6 +1,5 @@
 package org.erlide.ui.internal.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +15,8 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
+
+import com.google.common.collect.Lists;
 
 import erlang.ErlangSearchPattern;
 import erlang.ErlideSearchServer;
@@ -61,9 +62,9 @@ public class ErlSearchQuery implements ISearchQuery {
                 .getIdeBackend();
         fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
                 getStateDir());
-        final List<Match> l = new ArrayList<Match>(fResult.size());
-        final List<ErlangSearchElement> result = new ArrayList<ErlangSearchElement>(
-                fResult.size());
+        final List<Match> l = Lists.newArrayListWithCapacity(fResult.size());
+        final List<ErlangSearchElement> result = Lists
+                .newArrayListWithCapacity(fResult.size());
         for (final ModuleLineFunctionArityRef ref : fResult) {
             final Match m = SearchUtil.createMatch(ref);
             l.add(m);

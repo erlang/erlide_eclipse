@@ -94,7 +94,7 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			final String moduleName = "test.erl";
 			final IErlModule erlModule = ErlideTestUtils
-					.createErlModule(erlProject, moduleName,
+					.createModule(erlProject, moduleName,
 							"-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
 			IMarker[] markers = erlProject.getProject().findMarkers(
 					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
@@ -120,7 +120,7 @@ public class DialyzerUtilsTest {
 			assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -171,7 +171,7 @@ public class DialyzerUtilsTest {
 				externalFile.delete();
 			}
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -187,13 +187,13 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"a.erl",
 							"-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
 			assertNotNull(a);
 			final IErlModule b = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"b.erl",
 							"-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
@@ -241,7 +241,7 @@ public class DialyzerUtilsTest {
 
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -271,13 +271,13 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"a.erl",
 							"-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
 			assertNotNull(a);
 			final IErlModule b = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"b.erl",
 							"-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
@@ -302,14 +302,14 @@ public class DialyzerUtilsTest {
 
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
 
 	private IErlProject createTmpErlProject(final String projectName)
 			throws CoreException {
-		return ErlideTestUtils.createErlProject(
+		return ErlideTestUtils.createProject(
 				ErlideTestUtils.getTmpPath(projectName), projectName);
 	}
 }

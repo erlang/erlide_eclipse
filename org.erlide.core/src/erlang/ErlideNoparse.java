@@ -6,8 +6,10 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideNoparse {
@@ -68,5 +70,19 @@ public class ErlideNoparse {
             ErlLogger.warn(e);
         }
         return null;
+    }
+
+    public static void removeCacheFiles(final Backend backend,
+            final String scannerModuleName, final String stateDir) {
+        try {
+            final OtpErlangObject res = backend.call(20000, ERLIDE_NOPARSE,
+                    "remove_cache_files", "as", scannerModuleName, stateDir);
+            if (!Util.isOk(res)) {
+                ErlLogger.error("remove_cache_files %s %s", scannerModuleName,
+                        res.toString());
+            }
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+        }
     }
 }
