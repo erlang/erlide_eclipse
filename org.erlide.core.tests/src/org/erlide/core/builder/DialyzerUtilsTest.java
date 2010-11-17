@@ -259,6 +259,48 @@ public class DialyzerUtilsTest {
 		}
 	}
 
+	// @Test
+	// public void dialyzeModuleWithExternalInclude() throws Exception {
+	// IErlProject erlProject = null;
+	// try {
+	// // given
+	// // a project with an erlang module, inluding an external file
+	// final String projectName = "testproject";
+	// erlProject = createTmpErlProject(projectName);
+	// ErlideTestUtils.getTmpPath("testexternals");
+	// assertNotNull(erlProject);
+	// final IErlModule include = ErlideTestUtils.createErlModule(
+	// erlProject, "i.hrl", "-record(a, {b, c}).\n");
+	// final IErlModule f = ErlideTestUtils
+	// .createErlModule(
+	// erlProject,
+	// "f.erl",
+	// "-module(a).\n-export([t/0]).\n-include(\"i.hrl\").\nt() ->\n    p(#a{b=b, c=c}).\n");
+	// assertNotNull(f);
+	// ErlideTestUtils.invokeBuilderOn(erlProject);
+	// // when
+	// // dialyzing it
+	// final Map<IErlProject, Set<IErlModule>> modules = new
+	// HashMap<IErlProject, Set<IErlModule>>();
+	// DialyzerUtils.addModulesFromResource(ErlangCore.getModel(),
+	// erlProject.getResource(), modules);
+	// final List<String> names = new ArrayList<String>();
+	// final List<IPath> includeDirs = new ArrayList<IPath>();
+	// final List<String> files = new ArrayList<String>();
+	// DialyzerUtils.collectFilesAndIncludeDirs(erlProject, modules,
+	// erlProject.getProject(), files, names, includeDirs, false);
+	// // then
+	// // it should find the include file
+	// assertEquals(1, files.size());
+	// assertEquals("a.beam", new Path(files.get(0)).lastSegment());
+	//
+	// } finally {
+	// if (erlProject != null) {
+	// ErlideTestUtils.deleteErlProject(erlProject);
+	// }
+	// }
+	// }
+
 	@Test
 	public void dialyzeBinaryOnProjectWithErrorFile() throws Exception {
 		// http://www.assembla.com/spaces/erlide/tickets/616-dialyzer-Ð-crash-on-binary-analysis-and-files-with-errors
