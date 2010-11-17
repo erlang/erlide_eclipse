@@ -232,6 +232,7 @@ public class DialyzerUtils {
         final IErlElement e = model.findElement(resource, true);
         if (e instanceof IErlFolder) {
             final IErlFolder f = (IErlFolder) e;
+            f.open(null);
             final IErlProject p = f.getErlProject();
             Set<IErlModule> ms = modules.get(p);
             if (ms == null) {
