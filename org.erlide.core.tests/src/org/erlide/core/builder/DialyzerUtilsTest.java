@@ -40,18 +40,22 @@ public class DialyzerUtilsTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		ErlideTestUtils.initProjects();
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		ErlideTestUtils.deleteProjects();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		ErlideTestUtils.initModules();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		ErlideTestUtils.deleteModules();
 	}
 
 	@Test
