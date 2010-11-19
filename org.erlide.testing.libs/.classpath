@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="quickcheck-0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="quickcheck-src-generator-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="mockito-all-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.1.jar"/>
