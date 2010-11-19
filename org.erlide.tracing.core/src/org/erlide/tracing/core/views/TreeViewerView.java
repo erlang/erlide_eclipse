@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.ITraceNodeObserver;
@@ -300,15 +299,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 		try {
 			if (treeNode instanceof FunctionNode) {
 				final FunctionNode functionNode = (FunctionNode) treeNode;
-				final ErlangFunction erlangFunction = new ErlangFunction(
-						functionNode.getFunctionName(), functionNode.getArity());
-				ErlModelUtils.openExternalFunction(
-						functionNode.getModuleName(), erlangFunction, null,
-						null, null, true);
+				ErlModelUtils
+						.openMFA(functionNode.getModuleName(),
+								functionNode.getFunctionName(),
+								functionNode.getArity());
 			} else if (treeNode instanceof ModuleNode) {
 				final ModuleNode moduleNode = (ModuleNode) treeNode;
-				ErlModelUtils.openExternalType(moduleNode.getModuleName(),
-						moduleNode.getModuleName(), null, null, true);
+				ErlModelUtils.openModule(moduleNode.getModuleName());
 			}
 		} catch (final CoreException e) {
 			ErlLogger.error(e);

@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -333,12 +332,12 @@ public class ErlTextHover implements ITextHover,
                                     && t.elementAt(4) instanceof OtpErlangString) {
                                 final OtpErlangString s4 = (OtpErlangString) t
                                         .elementAt(4);
-                                final String path = Util.stringValue(s4);
-                                try {
-                                    r = ErlModelUtils.findExternalModule(mod,
-                                            path, project, true);
-                                } catch (final CoreException e2) {
-                                }
+                                // XXX final String path = Util.stringValue(s4);
+                                // try {
+                                // r = ErlModelUtils.findExternalModule(mod,
+                                // path, project, true);
+                                // } catch (final CoreException e2) {
+                                // }
                             } else {
                                 final String modFileName = mod + ".erl";
                                 if (project != null) {

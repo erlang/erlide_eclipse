@@ -36,6 +36,8 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.google.common.collect.Lists;
+
 /**
  * Root of Erlang element handle hierarchy.
  * 
@@ -196,24 +198,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             element = element.getParent();
         }
         return null;
-    }
-
-    /**
-     * Returns a collection of (immediate) children of this node of the
-     * specified type.
-     * 
-     * @param type
-     *            - one of the constants defined by IErlElement
-     */
-    public Collection<IErlElement> getChildrenOfType(final Kind type)
-            throws ErlModelException {
-        final List<IErlElement> list = new ArrayList<IErlElement>();
-        for (final IErlElement i : getChildren()) {
-            if (i.getKind() == type) {
-                list.add(i);
-            }
-        }
-        return list;
     }
 
     /**
@@ -568,10 +552,17 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return fChildren;
     }
 
-    public List<IErlElement> getChildrenOfKind(final Kind kind)
+    /**
+     * Returns a collection of (immediate) children of this node of the
+     * specified type.
+     * 
+     * @param type
+     *            - one of the constants defined by IErlElement
+     */
+    public Collection<IErlElement> getChildrenOfKind(final Kind kind)
             throws ErlModelException {
-        final List<IErlElement> result = new ArrayList<IErlElement>();
-        for (final IErlElement element : getChildren()) {
+        final List<IErlElement> result = Lists.newArrayList();
+        for (final IErlElement element : fChildren) {
             if (element.getKind() == kind) {
                 result.add(element);
             }
@@ -636,77 +627,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         setStructureKnown(false);
     }
 
-    // protected String pp(final OtpErlangObject e) {
-    // if (e == null) {
-    // return "";
-    // }
-    // if (e instanceof OtpErlangList) {
-    // // final OtpErlangList ll = (OtpErlangList) e;
-    // // String r = "";
-    // // for (int i = 0; i < ll.arity(); i++) {
-    // // final OtpErlangObject x = ll.elementAt(i);
-    // // r = r + pp(x) + ", ";
-    // // }
-    // // final String rr = r.length() > 2 ? r.substring(0, r.length() - 2)
-    // // : "";
-    // final String rr = pp_1((OtpErlangList) e);
-    // return "(" + rr + ")";
-    // } else if (e instanceof OtpErlangTuple) {
-    // try {
-    // final Backend b = ErlangCore.getBackendManager()
-    // .getIdeBackend();
-    // return ErlBackend.prettyPrint(b, e);
-    // } catch (final Exception e1) {
-    // return "?";
-    // }
-    // } else {
-    // return e.toString();
-    // }
-    // }
-    //
-    // protected String pp_1(final OtpErlangList e) {
-    // if (e == null) {
-    // return "";
-    // }
-    // String r = "";
-    // for (int i = 0; i < e.arity(); i++) {
-    // // final OtpErlangList x = (OtpErlangList) e.elementAt(i);
-    // final OtpErlangTuple x = (OtpErlangTuple) e.elementAt(i);
-    // r = r + pp_2(x);
-    // }
-    // return r;
-    // // final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) :
-    // // "";
-    // // return rr;
-    // }
-    //
-    // protected String pp_2(final OtpErlangTuple x2) {
-    // // if (x2 == null) {
-    // // return "";
-    // // }
-    // // String r = "";
-    // // for (int i = 0; i < x2.arity(); i++) {
-    // // final OtpErlangObject x = x2.elementAt(i);
-    // // r = r + pp(x) + ", ";
-    // // }
-    // // final String rr = r.length() > 2 ? r.substring(0, r.length() - 2) :
-    // // "";
-    // // return rr;
-    // final OtpErlangObject o = x2.elementAt(5);
-    // String result;
-    // if (o instanceof OtpErlangAtom) {
-    // final OtpErlangAtom a = (OtpErlangAtom) o;
-    // result = a.atomValue();
-    // } else {
-    // result = o.toString();
-    // }
-    // if (result.equals("undefined")) {
-    // final OtpErlangAtom a = (OtpErlangAtom) x2.elementAt(1);
-    // result = a.atomValue();
-    // }
-    // return result;
-    // }
-
     public static IErlElement getChildNamed(final IParent parent,
             final String name) {
         try {
@@ -755,7 +675,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
-    public String toLabelString() {
+    public String getLabelString() {
         return Util.normalizeSpaces(toString());
     }
 

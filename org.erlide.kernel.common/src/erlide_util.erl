@@ -16,6 +16,7 @@
 %%
 -export([check_and_renew_cached/5, check_and_renew_cached/6, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
 -export([pack/1, unpack/1, join/2]).
+-export([reverse2/1]).
 -export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
 -export([get_auto_imported/1, add_auto_imported/1]).
 
@@ -53,6 +54,9 @@ same_date_and_version({{Date, {H, M, S1}}, V}, {{Date, {H, M, S2}}, V}) ->
     S1 div 2 =:= S2 div 2;
 same_date_and_version(_, _) ->
     false.
+
+reverse2(L) when is_list(L) ->
+    lists:reverse([lists:reverse(A) || A <- L]).
 
 renew_cached(SourceFileName, CacheFileName, Version, Term) ->
     SourceModDate = case file:read_file_info(SourceFileName) of
@@ -198,3 +202,4 @@ read_cache(CacheFileName) ->
     ?D(CacheFileName),
     <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     binary_to_term(BinTerm).
+
