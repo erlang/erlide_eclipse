@@ -102,7 +102,6 @@ public class DialyzeAction implements IObjectActionDelegate {
     }
 
     private final Map<IErlProject, Set<IErlModule>> modules;
-    private Shell shell;
     private final DialyzerPreferences prefs;
 
     public DialyzeAction() {
@@ -112,17 +111,11 @@ public class DialyzeAction implements IObjectActionDelegate {
 
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
-        shell = targetPart.getSite().getShell();
     }
 
     public ISchedulingRule createRule(final Collection<IFile> files) {
         ISchedulingRule combinedRule = null;
-        // final IResourceRuleFactory ruleFactory =
-        // ResourcesPlugin.getWorkspace()
-        // .getRuleFactory();
         for (final IFile file : files) {
-            // final ISchedulingRule rule = ruleFactory.createRule(file);
-            // combinedRule = MultiRule.combine(rule, combinedRule);
             combinedRule = MultiRule.combine(file, combinedRule);
         }
         return combinedRule;
@@ -147,10 +140,6 @@ public class DialyzeAction implements IObjectActionDelegate {
             }
         }
         return result;
-    }
-
-    private Shell getShell() {
-        return shell;
     }
 
     public void selectionChanged(final IAction action,
