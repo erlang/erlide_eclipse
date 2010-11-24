@@ -1717,4 +1717,10 @@
          </context>
       </target>
    </extension>
+   <extension
+         point="org.erlide.core.messageReporter">
+      <messageReporter
+            class="org.erlide.ui.MessageReporter">
+      </messageReporter>
+   </extension>
 </plugin>
