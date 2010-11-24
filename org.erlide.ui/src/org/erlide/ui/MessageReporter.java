@@ -12,10 +12,10 @@ public class MessageReporter extends org.erlide.core.util.MessageReporter {
             final ReporterPosition style) {
         switch (style) {
         case CENTER:
-            PopupDialog.showDialog("erlide error", message, 1000);
+            PopupDialog.showDialog("erlide error", message, 3000);
             break;
         case CORNER:
-            PopupDialog.showBalloon("erlide error", message, 1000);
+            PopupDialog.showBalloon("erlide error", message, 3000);
             break;
         default:
             break;
