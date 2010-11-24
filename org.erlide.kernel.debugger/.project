@@ -21,10 +21,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.erlide.core.builder.DialyzerBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.erlide.core.erlnature</nature>
+		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
-
 </projectDescription>
