@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 
 public abstract class MessageReporter {
     public enum ReporterPosition {
-        CENTER, CORNER
+        CENTER, CORNER, MODAL
     }
 
     public void displayMessage(final String message) {

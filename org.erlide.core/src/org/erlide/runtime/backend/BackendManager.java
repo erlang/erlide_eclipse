@@ -42,6 +42,7 @@ import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.util.MessageReporter;
+import org.erlide.core.util.MessageReporter.ReporterPosition;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -277,7 +278,7 @@ public final class BackendManager extends OtpNodeStatus implements
                     } catch (final BackendException e) {
                         final String msg = "Could not start IDE backend: "
                                 + e.getMessage();
-                        MessageReporter.show(msg);
+                        MessageReporter.show(msg, ReporterPosition.MODAL);
                         ErlLogger.error(msg);
                     }
                 }
@@ -312,7 +313,7 @@ public final class BackendManager extends OtpNodeStatus implements
         } else {
             final String msg = "There is no erlideRuntime defined! "
                     + "Could not start IDE backend.";
-            MessageReporter.show(msg);
+            MessageReporter.show(msg, ReporterPosition.MODAL);
             ErlLogger.error(msg);
         }
     }
