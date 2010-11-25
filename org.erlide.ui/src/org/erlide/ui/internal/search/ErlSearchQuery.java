@@ -57,8 +57,10 @@ public class ErlSearchQuery implements ISearchQuery {
                 pathToModuleMap.put(path, module);
             }
         }
-        for (final IErlModule i : externalScope) {
-            pathToModuleMap.put(i.getFilePath(), i);
+        if (externalScope != null) {
+            for (final IErlModule i : externalScope) {
+                pathToModuleMap.put(i.getFilePath(), i);
+            }
         }
     }
 
@@ -95,6 +97,7 @@ public class ErlSearchQuery implements ISearchQuery {
             l.add(m);
             result.add((ErlangSearchElement) m.getElement());
         }
+        fSearchResult = (ErlangSearchResult) getSearchResult();
         fSearchResult.setResult(result);
         fSearchResult.addMatches(l.toArray(new Match[l.size()]));
         return Status.OK_STATUS;
