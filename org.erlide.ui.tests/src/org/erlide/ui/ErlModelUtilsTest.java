@@ -138,7 +138,7 @@ public class ErlModelUtilsTest {
 	}
 
 	@Test
-	public void findExternalFunctionMODULETest() throws Exception {
+	public void findExternalFunctionModuleTest() throws Exception {
 		// given
 		// a module with functions and functions
 		final IErlModule moduleD = ErlideTestUtils

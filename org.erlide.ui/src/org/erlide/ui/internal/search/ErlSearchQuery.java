@@ -1,5 +1,6 @@
 package org.erlide.ui.internal.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,8 @@ public class ErlSearchQuery implements ISearchQuery {
             final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
-        this.externalScope = externalScope;
+        this.externalScope = externalScope == null ? new ArrayList<IErlModule>()
+                : externalScope;
         this.scopeDescription = scopeDescription;
         pathToModuleMap = new HashMap<String, IErlModule>();
         setupPathToModuleMap();
@@ -57,10 +59,8 @@ public class ErlSearchQuery implements ISearchQuery {
                 pathToModuleMap.put(path, module);
             }
         }
-        if (externalScope != null) {
-            for (final IErlModule i : externalScope) {
-                pathToModuleMap.put(i.getFilePath(), i);
-            }
+        for (final IErlModule i : externalScope) {
+            pathToModuleMap.put(i.getFilePath(), i);
         }
     }
 
