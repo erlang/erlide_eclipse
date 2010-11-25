@@ -9,12 +9,10 @@
 %%
 
 %% called from Java
--export([initial_parse/5, reparse/1]).
+-export([initial_parse/5, reparse/1, remove_cache_files/2]).
 
 %% called from Erlang
 -export([read_module_refs/3]).
-
-%% -compile(export_all).
 
 %%
 %% Include files
@@ -27,6 +25,7 @@
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
+-include("erlide_noparse.hrl").
 -include("erlide_scanner.hrl").
 -include("erlide_search_server.hrl").
 
@@ -44,7 +43,7 @@
 initial_parse(ScannerName, ModuleFileName, StateDir, UpdateCaches,
               UpdateSearchServer) ->
     try
-        ?D({StateDir, ModuleFileName}),
+%%         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
@@ -83,61 +82,64 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             ?D(byte_size(Binary)),
             binary_to_term(Binary);
         _ ->
+            ?D(ModulePath),
             {ok, InitialTextBin} = file:read_file(ModulePath),
+            ?D(byte_size(InitialTextBin)),
             InitialText = binary_to_list(InitialTextBin),
             _D = erlide_scanner_server:initialScan(
                    ScannerName, ModulePath, InitialText, StateDir, true),
             ?D(_D),
             initial_parse(ScannerName, ModulePath, StateDir, true, false),
-            ?D(parsed),
+            ?D(RefsFileName),
             {ok, Binary} = file:read_file(RefsFileName),
             ?D(byte_size(Binary)),
             binary_to_term(Binary)
     end.
 
+remove_cache_files(ScannerName, StateDir) ->
+    BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
+    ScannerCacheFileName = BaseName ++ ".scan",
+    file:delete(ScannerCacheFileName),
+    RefsFileName = BaseName ++ ".refs",
+    file:delete(RefsFileName),
+    CacheFileName = BaseName ++ ".noparse",
+    file:delete(CacheFileName).
+
 %%
 %% Internal functions
 %%
 
--record(model, {forms, comments}).
-
--record(function, {pos, name, arity, args, head, clauses, name_pos, comment, exported}).
--record(clause, {pos, name, args, head, name_pos}).
--record(attribute, {pos, name, args, extra}).
--record(other, {pos, name, tokens}).
-%% -record(module, {name, erlide_path, model}).
-
 do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
-    Toks = erlide_scanner_server:getTokens(ScannerName), 
+    Toks = erlide_scanner_server:getTokens(ScannerName),
     do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer).
 
 do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     ?D({do_parse, ScannerName, length(Toks)}),
-    {UncommentToks, Comments} = extract_comments(Toks),
+    {UncommentToks, Comments} = erlide_np_util:extract_comments(Toks),
     %?D({length(UncommentToks), length(Comments)}),
     %?D({UncommentToks}),
-    Functions = split_after_dots(UncommentToks, [], []),
+    Functions = erlide_np_util:split_after_dots(UncommentToks),
     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
-    ?D(AutoImports),
+%%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
     ?D(length(Collected)),
-    CommentedCollected = get_function_comments(Collected, Comments),
+    CommentedCollected = erlide_np_util:get_function_comments(Collected, Comments),
     Model = #model{forms=CommentedCollected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model),
-    ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
+%%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
-    ?D(erts_debug:flat_size(FixedModel)),
+%%     ?D(erts_debug:flat_size(FixedModel)),
     %% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
     ?D(StateDir),
     case StateDir of
         "" -> ok;
         _ ->
-            ?D({RefsFileName, Refs}),
+            ?D({RefsFileName, length(Refs)}),
             file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
-    ?D(FixedModel),
+%%     ?D(FixedModel),
     FixedModel.
 
 update_search_server(true, ScannerName, Refs) ->
@@ -247,7 +249,7 @@ cac(attribute, Attribute, _Exports, _Imports) ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
             PosLength = LastOffset - Offset + LastLength,
-            Between = get_between_outer_pars(Attribute, '(', ')'),
+            Between = erlide_np_util:get_between_outer_pars(Attribute, '(', ')'),
             Extra = to_string(Between),
             {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
             ?D({AttrArgs, Between}),
@@ -284,7 +286,7 @@ get_attribute_args(export, Between, _Args) ->
 get_attribute_args(record, Between, _Args) ->
     [RecordToken | _] = Between,
     RecordName = RecordToken#token.value,
-    Tokens = get_between_outer_pars(Between, '{', '}'),
+    Tokens = erlide_np_util:get_between_outer_pars(Between, '{', '}'),
     R = {RecordName, field_list_from_tokens(Tokens)},
     {R, [], []};
 get_attribute_args(_, _Between, Args) ->
@@ -303,7 +305,7 @@ check_class(_X) ->
     other.
 
 get_first_of_kind(Kind, Tokens) ->
-    case skip_to(Tokens, Kind) of
+    case erlide_np_util:skip_to(Tokens, Kind) of
         [#token{kind=Kind, value=Value} | _] ->
             Value;
         _ ->
@@ -319,7 +321,7 @@ fun_arity_from_tokens(_) ->
     [].
 
 field_list_from_tokens([#token{kind=atom, value=Field} | Rest]) ->
-    [Field | field_list_from_tokens(skip_to(Rest, ','))];
+    [Field | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
 field_list_from_tokens([_ | Rest]) ->
     field_list_from_tokens(Rest);
 field_list_from_tokens(_) ->
@@ -344,35 +346,12 @@ get_head(T) ->
     end.
 
 get_args(T) ->
-    case get_between_outer_pars(T, '(', ')') of
+    case erlide_np_util:get_between_outer_pars(T, '(', ')') of
         "" ->
             "";
         P ->
             "("++to_string(P)++")"
     end.
-
-get_between_outer_pars(T, L, R) ->
-    case skip_to(T, L) of
-        [] ->
-            [];
-        [_ | S] ->
-            {RL, _Rest} = gbop(S, L, R),
-            lists:reverse(tl(lists:reverse(RL)))
-    end.
-
-gbop([], _L, _R) ->
-    {[], []};
-gbop([eof | _], _L, _R) ->
-    {[], []};
-gbop([#token{kind=R}=T | Rest], _L, R) ->
-    {[T], Rest};
-gbop([#token{kind=L}=T | Rest], L, R) ->
-    {R1, Rest1} = gbop(Rest, L, R),
-    {R2, Rest2} = gbop(Rest1, L, R),
-    {[T] ++ R1 ++ R2, Rest2};
-gbop([T | Rest], L, R) ->
-    {LR, Rest1} = gbop(Rest, L, R),
-    {[T] ++ LR, Rest1}.
 
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
@@ -402,27 +381,6 @@ get_upto([#token{kind=Delim} | _], Delim, Acc) ->
 get_upto([T | Rest], Delim, Acc) ->
     get_upto(Rest, Delim, [T | Acc]).
 
-skip_to([], _Delim) ->
-    [];
-skip_to([#token{kind=Delim} | _] = L, Delim) ->
-    L;
-skip_to([_ | Rest], Delim) ->
-    skip_to(Rest, Delim).
-
-reverse2(L) ->
-    lists:reverse([lists:reverse(A) || A <- L]).
-
-split_after_dots([], Acc, []) ->
-    reverse2(Acc);
-split_after_dots([], Acc, FunAcc) ->
-    split_after_dots([], [FunAcc | Acc], []);
-split_after_dots([#token{kind = eof} | _], Acc, FunAcc) ->
-    split_after_dots([], Acc, FunAcc);
-split_after_dots([T = #token{kind = dot} | TRest], Acc, FunAcc) ->
-    split_after_dots(TRest, [[T | FunAcc] | Acc], []);
-split_after_dots([T | TRest], Acc, FunAcc) ->
-    split_after_dots(TRest, Acc, [T | FunAcc]).
-
 check_clause([#token{kind = ';'} | Rest]) ->
     check_class(Rest) == function;
 check_clause(_) ->
@@ -432,7 +390,7 @@ split_clauses(F) ->
     split_clauses(F, [], []).
 
 split_clauses([], Acc, []) ->
-    reverse2(Acc);
+    erlide_util:reverse2(Acc);
 split_clauses([], Acc, ClAcc) ->
     split_clauses([], [ClAcc | Acc], []);
 split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
@@ -462,7 +420,7 @@ fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Lengt
      ExternalRefs}.
 
 get_function_args(Tokens) ->
-    P = get_between_outer_pars(Tokens, '(', ')'),
+    P = erlide_np_util:get_between_outer_pars(Tokens, '(', ')'),
     L = erlide_text:split_comma_list(P),
     [to_string(A) || A <- L].
 
@@ -638,47 +596,4 @@ unquote(L) ->
 
 unquote_first([$" | Rest]) ->
     Rest.
-
-%% @spec (Tokens::tokens()) -> {tokens(), tokens()}
-%% @type tokens() = [#token]
-%%
-%% @doc extract comments from tokens, and concatenate multiline comments to one token
-
-extract_comments(Tokens) ->
-    extract_comments(Tokens, -1, [], []).
-
-extract_comments([], _, TAcc, CAcc) ->
-    {lists:reverse(TAcc), lists:reverse(CAcc)};
-extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
-                         value=VNext}
-                  | Rest], NNext, TAcc,
-				 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
-    NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext,
-                         last_line=NNext},
-    extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
-extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
-    extract_comments(Rest, N+1, TAcc, [C | CAcc]);
-extract_comments([T | Rest], _, TAcc, CAcc) ->
-    extract_comments(Rest, -1, [T | TAcc], CAcc).
-
-get_function_comments(Forms, Comments) ->
-    lists:map(fun(#function{} = F) ->
-		      get_function_comment(F, Comments);
-		 (Other) ->
-		      Other
-	      end, Forms).
-
-get_function_comment(F, []) ->
-    F;
-get_function_comment(#function{name_pos={{Line, _}, _}}=F, 
-                     [#token{last_line=LastLine, value=Value} | _])
-  when LastLine+1=:=Line; LastLine+2=:=Line; LastLine+3=:=Line->
-    F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
-get_function_comment(#function{name_pos={{Line, _}, _}}=F,
-                     [#token{line=LastLine, last_line=u, value=Value} | _])
-  when LastLine+1=:=Line; LastLine+2=:=Line; LastLine+3=:=Line->
-    F#function{comment=erlide_text:strip_percents_and_spaces(Value)};
-get_function_comment(F, [_ | Rest]) ->
-    get_function_comment(F, Rest).
-
 

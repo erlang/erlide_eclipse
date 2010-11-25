@@ -160,7 +160,7 @@ public class ErlProject extends Openable implements IErlProject {
     private IErlElement getExternalChild(final String externalIncludes,
             final String externalModules) {
         return new ErlExternalReferenceEntryList(this, "Externals",
-                externalIncludes, externalModules);
+                "externals", externalIncludes, externalModules);
     }
 
     /**

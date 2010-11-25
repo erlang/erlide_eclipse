@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
@@ -34,6 +35,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.IErlangFirstThat;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
@@ -52,14 +54,15 @@ public class ErlModule extends Openable implements IErlModule {
     private final List<IErlComment> comments = new ArrayList<IErlComment>(0);
     private String initialText;
     private ErlScanner scanner = null;
-    private final IFile fFile;
+    private IFile fFile;
     private boolean parsed = false;
     private boolean updateCaches = true;
 
     private final ModuleKind moduleKind;
+    protected final String path;
 
     protected ErlModule(final IErlElement parent, final String name,
-            final String initialText, final IFile file) {
+            final String initialText, final IFile file, final String path) {
         super(parent, name);
         fFile = file;
         moduleKind = ErlideUtil.nameToModuleKind(name);
@@ -68,6 +71,7 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parent.getName() + "/" + getName()
                     + " " + moduleKind);
         }
+        this.path = path;
     }
 
     @Override
@@ -103,7 +107,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     protected boolean useCaches() {
-        return true;
+        return fFile != null;
     }
 
     /**
@@ -112,38 +116,15 @@ public class ErlModule extends Openable implements IErlModule {
      */
     @Override
     public String getFilePath() {
+        if (path != null) {
+            return path;
+        }
         final IPath location = fFile.getLocation();
         if (location == null) {
             return null;
         }
         return location.toString();
     }
-
-    // public IErlElement getElementAt(final int position)
-    // throws ErlModelException {
-    // for (final IErlElement child : fChildren) {
-    // if (child instanceof IErlFunction) {
-    // final IErlFunction f = (IErlFunction) child;
-    // final List<IErlFunctionClause> clauses = f.getClauses();
-    // if (clauses.size() <= 1
-    // && f.getSourceRange().hasPosition(position)) {
-    // return f;
-    // }
-    // for (final IErlFunctionClause c : clauses) {
-    // if (c.getSourceRange().hasPosition(position)) {
-    // return c;
-    // }
-    // }
-    // } else {
-    // final ISourceReference ch = (ISourceReference) child;
-    // final ISourceRange r = ch.getSourceRange();
-    // if (r != null && r.hasPosition(position)) {
-    // return child;
-    // }
-    // }
-    // }
-    // return null;
-    // }
 
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
@@ -282,6 +263,18 @@ public class ErlModule extends Openable implements IErlModule {
                 if (f.getName().equals(function.name)
                         && (function.arity < 0 || f.getArity() == function.arity)) {
                     return f;
+                }
+            }
+        }
+        return null;
+    }
+
+    public IErlTypespec findTypespec(final String typeName) {
+        for (final IErlElement child : fChildren) {
+            if (child instanceof IErlTypespec) {
+                final IErlTypespec typespec = (IErlTypespec) child;
+                if (typespec.getName().equals(typeName)) {
+                    return typespec;
                 }
             }
         }
@@ -455,6 +448,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     public void dispose() {
         disposeScanner();
+        ErlangCore.getModelManager().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {
@@ -522,5 +516,14 @@ public class ErlModule extends Openable implements IErlModule {
             return scanner.getTokenAt(offset);
         }
         return null;
+    }
+
+    public void setResource(final IFile file) {
+        fFile = file;
+    }
+
+    @Override
+    public String getLabelString() {
+        return getName();
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
@@ -19,7 +20,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
 
 public class ErlangSearchResult extends AbstractTextSearchResult implements
         IEditorMatchAdapter, IFileMatchAdapter {
@@ -92,20 +93,23 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     public String getLabel() {
         final int matchCount = getMatchCount();
         final String occurrences = getOccurrencesLabel(matchCount);
-        final String scope = query.getScopeDecsription();
+        final String scope = query.getScopeDescription();
         return query.getLabel() + " - " + matchCount + " " + occurrences
                 + " in " + scope + ".";
     }
 
     private String getOccurrencesLabel(final int matchCount) {
-        final int limitTo = query.getPattern().getLimitTo();
-        if (limitTo == ErlangSearchPattern.ALL_OCCURRENCES) {
+        final LimitTo limitTo = query.getPattern().getLimitTo();
+        switch (limitTo) {
+        case ALL_OCCURRENCES:
             return matchCount == 1 ? "occurrence" : "occurrences";
-        } else if (limitTo == ErlangSearchPattern.REFERENCES) {
-            return matchCount == 1 ? "reference" : "references";
-        } else {
+        case DEFINITIONS:
             return matchCount == 1 ? "definition" : "definitions";
+        case REFERENCES:
+            return matchCount == 1 ? "reference" : "references";
         }
+        Assert.isTrue(false, "shouldNeverHappen"); //$NON-NLS-1$
+        return null;
     }
 
     public ISearchQuery getQuery() {
@@ -146,7 +150,11 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
             final ErlangEditor erlangEditor = (ErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
-                return module.getResource().equals(file);
+                if (file != null) {
+                    return file.equals(module.getResource());
+                } else {
+                    return ese.getModuleName().equals(module.getFilePath());
+                }
             }
         }
         return false;

@@ -1,4 +1,4 @@
-package org.erlide.core.builder.internal;
+package org.erlide.core.builder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,9 +12,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
@@ -24,8 +28,9 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.util.Tuple;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TypeConverter;
@@ -36,13 +41,19 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public final class MarkerHelper {
+import erlang.ErlideDialyze;
+
+public final class MarkerUtils {
 
     private static final String FIXME = "FIXME";
     private static final String XXX = "XXX";
     private static final String TODO = "TODO";
+    // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
+    public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
+    public static final String DIALYZE_WARNING_MARKER = ErlangPlugin.PLUGIN_ID
+            + ".dialyzewarningmarker";
 
-    private MarkerHelper() {
+    private MarkerUtils() {
     }
 
     public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
@@ -50,10 +61,11 @@ public final class MarkerHelper {
     public static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
             + ".taskmarker";
 
-    public static void addMarker(final IResource file,
+    public static void addMarker(final IResource file, final String path,
             final IResource compiledFile, final String errorDesc,
             final int lineNumber, final int severity, final String errorVar) {
-        addProblemMarker(file, compiledFile, errorDesc, lineNumber, severity);
+        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber,
+                severity);
     }
 
     public static void addTaskMarker(final IResource file,
@@ -105,7 +117,9 @@ public final class MarkerHelper {
                                             .getExternalIncludes(model
                                                     .findProject(project)));
                             if (includeFile != null) {
-                                res = ResourceUtil.openExternal(includeFile);
+                                final IWorkspaceRoot workspaceRoot = ResourcesPlugin
+                                        .getWorkspace().getRoot();
+                                res = workspaceRoot;
                             }
                         } catch (final Exception e) {
                             ErlLogger.warn(e);
@@ -137,11 +151,11 @@ public final class MarkerHelper {
                 }
 
                 if (res != null) {
-                    addMarker(res, resource, msg, line, sev, "");
+                    addMarker(res, fileName, resource, msg, line, sev, "");
                 } else {
-                    addMarker(resource.getProject(), null, "can't find "
+                    addMarker(resource.getProject(), null, null, "can't find "
                             + fileName, 0, IMarker.SEVERITY_ERROR, "");
-                    addMarker(resource, null, "?? " + msg, line, sev, "");
+                    addMarker(resource, null, null, "?? " + msg, line, sev, "");
                 }
             } catch (final Exception e) {
                 ErlLogger.warn(e);
@@ -150,13 +164,16 @@ public final class MarkerHelper {
         }
     }
 
-    public static void addProblemMarker(final IResource file,
-            final IResource compiledFile, final String message, int lineNumber,
-            final int severity) {
+    public static void addProblemMarker(final IResource resource,
+            final String path, final IResource compiledFile,
+            final String message, int lineNumber, final int severity) {
         try {
-            final IMarker marker = file.createMarker(PROBLEM_MARKER);
+            final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
+            if (path != null) {
+                marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
+            }
             if (compiledFile != null) {
                 marker.setAttribute(IMarker.SOURCE_ID, compiledFile
                         .getFullPath().toString());
@@ -289,6 +306,118 @@ public final class MarkerHelper {
         } catch (final CoreException e) {
             throw e;
         }
+    }
+
+    public static void addDialyzerWarningMarkersFromResultList(
+            final IErlProject project, final Backend backend,
+            final OtpErlangList result) {
+        if (result == null) {
+            return;
+        }
+        final IProject p = project.getProject();
+        for (final OtpErlangObject i : result) {
+            final OtpErlangTuple t = (OtpErlangTuple) i;
+            final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
+            final String filename = Util.stringValue(fileLine.elementAt(0));
+            final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
+            int line = 1;
+            try {
+                line = lineL.intValue();
+            } catch (final OtpErlangRangeException e) {
+                ErlLogger.error(e);
+            }
+            String s = ErlideDialyze.formatWarning(backend, t).trim();
+            final int j = s.indexOf(": ");
+            if (j != -1) {
+                s = s.substring(j + 1);
+            }
+            addDialyzerWarningMarker(p, filename, line, s);
+        }
+    }
+
+    public static void removeDialyzerWarningMarkers(final IProject project) {
+        try {
+            final IMarker[] markers = project.findMarkers(
+                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+            for (final IMarker m : markers) {
+                m.delete();
+            }
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+
+    }
+
+    public static IMarker createSearchResultMarker(final IErlModule module,
+            final String type, final int offset, final int length)
+            throws CoreException {
+        boolean setPath = false;
+        IResource resource = module.getCorrespondingResource();
+        if (resource == null) {
+            resource = ResourcesPlugin.getWorkspace().getRoot();
+            setPath = true;
+        }
+        final IMarker marker = resource.createMarker(type);
+        marker.setAttribute(IMarker.CHAR_START, offset);
+        marker.setAttribute(IMarker.CHAR_END, offset + length);
+        if (setPath) {
+            marker.setAttribute(PATH_ATTRIBUTE, module.getFilePath());
+        }
+        return marker;
+    }
+
+    public static IMarker createErlangLineBreakpointMarker(
+            final IResource resource, final int lineNumber,
+            final String modelIdentifier) throws CoreException {
+        final IMarker marker = resource
+                .createMarker("org.erlide.core.erlang.lineBreakpoint.marker");
+        marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
+        marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+        marker.setAttribute(IBreakpoint.ID, modelIdentifier);
+        marker.setAttribute(IMarker.MESSAGE,
+                "Line Breakpoint: " + resource.getName() + " [line: "
+                        + lineNumber + "]");
+        return marker;
+    }
+
+    public static void addDialyzerWarningMarker(final IResource file,
+            final String path, final String message, int lineNumber,
+            final int severity) {
+        try {
+            final IMarker marker;
+            if (file != null) {
+                marker = file.createMarker(DIALYZE_WARNING_MARKER);
+            } else {
+                final IWorkspaceRoot workspaceRoot = ResourcesPlugin
+                        .getWorkspace().getRoot();
+                marker = workspaceRoot.createMarker(DIALYZE_WARNING_MARKER);
+                marker.setAttribute(PATH_ATTRIBUTE, path);
+            }
+            marker.setAttribute(IMarker.MESSAGE, message);
+            marker.setAttribute(IMarker.SEVERITY, severity);
+            if (lineNumber == -1) {
+                lineNumber = 1;
+            }
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+        } catch (final CoreException e) {
+        }
+    }
+
+    public static void addDialyzerWarningMarker(final IProject project,
+            final String filename, final int line, final String message) {
+        final IPath projectPath = project.getLocation();
+        final String projectPathString = projectPath.toPortableString();
+        IResource file;
+        if (filename.startsWith(projectPathString)) {
+            final String relFilename = filename.substring(projectPathString
+                    .length());
+            final IPath relPath = Path.fromPortableString(relFilename);
+            file = project.findMember(relPath);
+        } else {
+            file = null;
+        }
+        MarkerUtils.addDialyzerWarningMarker(file, filename, message, line,
+                IMarker.SEVERITY_WARNING);
     }
 
     public static void createTaskMarkers(final IProject project,

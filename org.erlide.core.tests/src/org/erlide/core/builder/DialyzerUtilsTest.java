@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,22 +36,26 @@ public class DialyzerUtilsTest {
 
 	enum SEL {
 		MODULE, SRC, PROJECT
-	};
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		ErlideTestUtils.initProjects();
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		ErlideTestUtils.deleteProjects();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		ErlideTestUtils.initModules();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		ErlideTestUtils.deleteModules();
 	}
 
 	@Test
@@ -94,24 +98,24 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			final String moduleName = "test.erl";
 			final IErlModule erlModule = ErlideTestUtils
-					.createErlModule(erlProject, moduleName,
+					.createModule(erlProject, moduleName,
 							"-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
 			IMarker[] markers = erlProject.getProject().findMarkers(
-					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					MarkerUtils.DIALYZE_WARNING_MARKER, true,
 					IResource.DEPTH_INFINITE);
 			assertEquals(0, markers.length);
 			// when
 			// putting a dialyzer warning on it
 			final int lineNumber = 3;
 			final String message = "test message";
-			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+			MarkerUtils.addDialyzerWarningMarker(erlProject.getProject(),
 					erlModule.getResource().getLocation().toPortableString(),
 					lineNumber, message);
 			// then
 			// there should be a marker with proper file name and the proper
 			// line number
 			markers = erlProject.getProject().findMarkers(
-					DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					MarkerUtils.DIALYZE_WARNING_MARKER, true,
 					IResource.DEPTH_INFINITE);
 			assertEquals(1, markers.length);
 			final IMarker marker = markers[0];
@@ -120,7 +124,7 @@ public class DialyzerUtilsTest {
 			assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -142,12 +146,12 @@ public class DialyzerUtilsTest {
 			// putting dialyzer warning markers on the external file
 			final String message = "test message";
 			final int lineNumber = 2;
-			DialyzerUtils.addDialyzerWarningMarker(erlProject.getProject(),
+			MarkerUtils.addDialyzerWarningMarker(erlProject.getProject(),
 					externalFile.getAbsolutePath(), lineNumber, message);
 			// then
 			// the marker should have the proper file name and the include file
 			// should appear in External Files
-			final IProject externalFilesProject = ResourceUtil
+			final IProject externalFilesProject = ModelUtils
 					.getExternalFilesProject();
 			final IFile file = externalFilesProject.getFile(new Path(
 					externalFileName));
@@ -155,7 +159,7 @@ public class DialyzerUtilsTest {
 			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
 					.getRoot();
 			final IMarker[] markers = root.getProject("External_Files")
-					.findMarkers(DialyzerUtils.DIALYZE_WARNING_MARKER, true,
+					.findMarkers(MarkerUtils.DIALYZE_WARNING_MARKER, true,
 							IResource.DEPTH_INFINITE);
 			assertTrue(markers.length > 0);
 			for (final IMarker marker : markers) {
@@ -171,7 +175,7 @@ public class DialyzerUtilsTest {
 				externalFile.delete();
 			}
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -187,13 +191,13 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"a.erl",
 							"-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
 			assertNotNull(a);
 			final IErlModule b = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"b.erl",
 							"-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
@@ -241,7 +245,7 @@ public class DialyzerUtilsTest {
 
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
@@ -259,6 +263,48 @@ public class DialyzerUtilsTest {
 		}
 	}
 
+	// @Test
+	// public void dialyzeModuleWithExternalInclude() throws Exception {
+	// IErlProject erlProject = null;
+	// try {
+	// // given
+	// // a project with an erlang module, inluding an external file
+	// final String projectName = "testproject";
+	// erlProject = createTmpErlProject(projectName);
+	// ErlideTestUtils.getTmpPath("testexternals");
+	// assertNotNull(erlProject);
+	// final IErlModule include = ErlideTestUtils.createErlModule(
+	// erlProject, "i.hrl", "-record(a, {b, c}).\n");
+	// final IErlModule f = ErlideTestUtils
+	// .createErlModule(
+	// erlProject,
+	// "f.erl",
+	// "-module(a).\n-export([t/0]).\n-include(\"i.hrl\").\nt() ->\n    p(#a{b=b, c=c}).\n");
+	// assertNotNull(f);
+	// ErlideTestUtils.invokeBuilderOn(erlProject);
+	// // when
+	// // dialyzing it
+	// final Map<IErlProject, Set<IErlModule>> modules = new
+	// HashMap<IErlProject, Set<IErlModule>>();
+	// DialyzerUtils.addModulesFromResource(ErlangCore.getModel(),
+	// erlProject.getResource(), modules);
+	// final List<String> names = new ArrayList<String>();
+	// final List<IPath> includeDirs = new ArrayList<IPath>();
+	// final List<String> files = new ArrayList<String>();
+	// DialyzerUtils.collectFilesAndIncludeDirs(erlProject, modules,
+	// erlProject.getProject(), files, names, includeDirs, false);
+	// // then
+	// // it should find the include file
+	// assertEquals(1, files.size());
+	// assertEquals("a.beam", new Path(files.get(0)).lastSegment());
+	//
+	// } finally {
+	// if (erlProject != null) {
+	// ErlideTestUtils.deleteErlProject(erlProject);
+	// }
+	// }
+	// }
+
 	@Test
 	public void dialyzeBinaryOnProjectWithErrorFile() throws Exception {
 		// http://www.assembla.com/spaces/erlide/tickets/616-dialyzer-Ð-crash-on-binary-analysis-and-files-with-errors
@@ -271,13 +317,13 @@ public class DialyzerUtilsTest {
 			erlProject = createTmpErlProject(projectName);
 			assertNotNull(erlProject);
 			final IErlModule a = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"a.erl",
 							"-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
 			assertNotNull(a);
 			final IErlModule b = ErlideTestUtils
-					.createErlModule(
+					.createModule(
 							erlProject,
 							"b.erl",
 							"-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
@@ -302,14 +348,14 @@ public class DialyzerUtilsTest {
 
 		} finally {
 			if (erlProject != null) {
-				ErlideTestUtils.deleteErlProject(erlProject);
+				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
 	}
 
 	private IErlProject createTmpErlProject(final String projectName)
 			throws CoreException {
-		return ErlideTestUtils.createErlProject(
+		return ErlideTestUtils.createProject(
 				ErlideTestUtils.getTmpPath(projectName), projectName);
 	}
 }

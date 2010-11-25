@@ -222,21 +222,24 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findInclude(final IErlModule module,
             final IErlProject erlProject, final OpenResult res,
             final IErlModel model, final IProject project) throws CoreException {
-        final IContainer parent = module == null ? null : module.getResource()
-                .getParent();
-        IResource r = ResourceUtil.recursiveFindNamedResourceWithReferences(
-                project, res.getName(),
-                PluginUtils.getIncludePathFilter(project, parent));
-        if (r == null) {
-            final String includeFile = ModelUtils.findIncludeFile(project,
-                    res.getName(), model.getExternalIncludes(erlProject));
-            if (includeFile != null) {
-                r = ResourceUtil.openExternal(includeFile);
-            }
+        IContainer parent = null;
+        if (module != null) {
+            final IResource resource = module.getResource();
+            parent = resource.getParent();
         }
+        final IResource r = ResourceUtil
+                .recursiveFindNamedResourceWithReferences(project,
+                        res.getName(),
+                        PluginUtils.getIncludePathFilter(project, parent));
         if (r instanceof IFile) {
             final IFile file = (IFile) r;
             return model.findModule(file);
+        } else {
+            final String includeFile = ModelUtils.findIncludeFile(project,
+                    res.getName(), model.getExternalIncludes(erlProject));
+            if (includeFile != null) {
+                return ModelUtils.openExternal(project, includeFile);
+            }
         }
         return null;
     }
@@ -284,14 +287,14 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
         if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
-            return ErlModelUtils.findExternalType(res.getName(), res.getFun(),
-                    res.getPath(), project, checkAllProjects);
+            return ErlModelUtils.findExternalType(module, res.getName(),
+                    res.getFun(), res.getPath(), project, checkAllProjects);
         }
-        final IErlFunction function = ErlModelUtils.findExternalFunction(
+        final IErlElement result = ErlModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 checkAllProjects, module);
-        if (function != null) {
-            return function;
+        if (result instanceof IErlFunction) {
+            return result;
         }
         return ErlModelUtils.findExternalFunction(res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),

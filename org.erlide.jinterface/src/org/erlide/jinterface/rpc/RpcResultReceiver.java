@@ -30,39 +30,39 @@ import com.ericsson.otp.erlang.OtpMbox;
  */
 public class RpcResultReceiver implements Runnable {
 
-	private final RpcResultCallback callback;
-	private final OtpMbox mbox;
+    private final RpcResultCallback callback;
+    private final OtpMbox mbox;
 
-	public RpcResultReceiver(final OtpMbox box, final RpcResultCallback callback) {
-		this.callback = callback;
-		mbox = box;
-		new Thread(this, "rpc");
-	}
+    public RpcResultReceiver(final OtpMbox box, final RpcResultCallback callback) {
+        this.callback = callback;
+        mbox = box;
+        new Thread(this, "rpc").start();
+    }
 
-	public void run() {
-		boolean done = false;
-		do {
-			OtpErlangObject msg;
-			try {
-				msg = mbox.receive(3000);
-				if (msg != null) {
-					if (msg instanceof OtpErlangTuple) {
-						final OtpErlangTuple tuple = (OtpErlangTuple) msg;
-						final String tag = ((OtpErlangAtom) tuple.elementAt(0))
-						.atomValue();
-						if ("start".equals(tag)) {
-							callback.start(tuple.elementAt(1));
-						} else if ("stop".equals(tag)) {
-							done = true;
-							callback.stop(tuple.elementAt(1));
-						} else if ("progress".equals(tag)) {
-							callback.progress(tuple.elementAt(1));
-						}
-					}
-				}
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		} while (!done || Thread.interrupted());
-	}
+    public void run() {
+        boolean done = false;
+        do {
+            OtpErlangObject msg;
+            try {
+                msg = mbox.receive(3000);
+                if (msg != null) {
+                    if (msg instanceof OtpErlangTuple) {
+                        final OtpErlangTuple tuple = (OtpErlangTuple) msg;
+                        final String tag = ((OtpErlangAtom) tuple.elementAt(0))
+                                .atomValue();
+                        if ("start".equals(tag)) {
+                            callback.start(tuple.elementAt(1));
+                        } else if ("stop".equals(tag)) {
+                            done = true;
+                            callback.stop(tuple.elementAt(1));
+                        } else if ("progress".equals(tag)) {
+                            callback.progress(tuple.elementAt(1));
+                        }
+                    }
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        } while (!done || Thread.interrupted());
+    }
 }

@@ -13,7 +13,9 @@
          get_include_lib/1,
          get_external_modules/2,
          get_external_module/2,
-         get_external_include/2
+	 get_external_module_tree/1,
+         get_external_include/2,
+	 get_external_1/3
         ]).
 
 %% TODO (JC) there are some code duplication in external modules (and includes) handling
@@ -22,7 +24,7 @@
 %% Include files
 %%
 
-%%-define(DEBUG, 1).
+%% -define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
@@ -64,7 +66,6 @@ open_info(S, #open_context{}=Context) when is_list(S); is_binary(S) ->
     try
         TokensWComments = erlide_scanner:scan_string(S),
         ?D({open_info, S, TokensWComments}),
-        ?D({TokensWComments, BeforeReversed}),
         try_open(0, TokensWComments, [], Context),
         error
     catch
@@ -115,6 +116,9 @@ get_external_modules(Prefix, #open_context{externalModules=ExternalModulesFiles,
     ExternalModules = get_external_modules_files(ExternalModulesFiles, PathVars),
     {ok, [XM || XM <- ExternalModules, has_prefix(Prefix, XM)]}.
 
+get_external_module_tree(#open_context{externalModules=ExternalModulesFiles, pathVars=PathVars}) ->
+    {ok, get_external_module_tree(ExternalModulesFiles, PathVars)}.
+
 get_external_module(Name, #open_context{externalModules=ExternalModulesFiles, pathVars=PathVars}) ->
     ExternalModules = get_external_modules_files(ExternalModulesFiles, PathVars),
     case [XM || XM <- ExternalModules, has_name(Name, XM)] of
@@ -123,6 +127,12 @@ get_external_module(Name, #open_context{externalModules=ExternalModulesFiles, pa
         _ ->
             not_found
     end.
+
+get_external_module_tree(PackedFileNames, PathVars) ->
+    Fun = fun(Parent, FileName, Acc) -> [{Parent, FileName} | Acc] end,
+    FileNames = erlide_util:unpack(PackedFileNames),
+    R = fold_externals(Fun, [], FileNames, PathVars),
+    R.
 
 consider_local([]) ->
     true;
@@ -275,7 +285,11 @@ get_source_from_module(Mod, Context) ->
     end.
 
 get_external_modules_files(PackedFileNames, PathVars) ->
-    {_, R} = get_external_modules_files(erlide_util:unpack(PackedFileNames), PathVars, true, [], []),
+    ?D(PackedFileNames),
+    Fun = fun(_Parent, FileNames, Acc) -> FileNames ++ Acc end,
+    FileNames = erlide_util:unpack(PackedFileNames),
+    R = fold_externals(Fun, [], FileNames, PathVars), 
+    ?D(R),
     R.
 
 replace_path_var(FileName, PathVars) ->
@@ -294,30 +308,55 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_modules_files(Filenames, PathVars, Top, Done, Acc) ->
-    Fun = fun(Filename0, {Done0, Acc0}) ->
-                  Filename = replace_path_var(Filename0, PathVars),
-                  case lists:member(Filename, Done0) of
-                      true ->
-                          {Done0, Acc0};
-                      false ->
-                          Done1 = [Filename | Done0],
-                          case Top orelse filename:extension(Filename) == ".erlidex" of
-                              true ->
-                                  case file:read_file(Filename) of
-                                      {ok, B} ->
-                                          get_external_modules_files(
-                                            erlide_util:split_lines(B),
-                                            PathVars, false, Done1, Acc0);
-                                      _ ->
-                                          {Done1, Acc0}
-                                  end;
-                              false ->
-                                  {Done1, [Filename | Acc0]}
-                          end
-                  end
-          end,
-    lists:foldl(Fun, {Done, Acc}, Filenames).
+get_external_1(FileName, PathVars, IsRoot) ->
+    FileNames = case IsRoot orelse filename:extension(FileName) == ".erlidex" of
+		    true ->
+			case file:read_file(FileName) of
+			    {ok, B} ->
+				erlide_util:split_lines(B);
+			    _ ->
+				[FileName]
+			end;
+		    false ->
+			[FileName]
+		end,
+    R = [replace_path_var(F, PathVars) || F <- FileNames],
+    {ok, R}.
+
+fold_externals(Fun, Acc, Filenames, PathVars) ->
+    {_Done, Result} = fold_externals(Fun, Acc, top, Filenames, PathVars, []),
+    Result.
+
+fold_externals(Fun, Acc, CurFile, Filenames, PathVars, Done) ->
+    LocalFun = fun(Filename0, {Done0, Acc0}) ->
+		       ?D(Filename0),
+		       Filename = replace_path_var(Filename0, PathVars),
+		       ?D(Filename),
+		       case lists:member(Filename, Done0) of
+			   true ->
+			       ?D(Acc0),
+			       {Done0, Acc0};
+			   false ->
+			       Done1 = [Filename | Done0],
+			       ?D(Done1),
+			       case CurFile=:=top 
+				   orelse filename:extension(Filename) == ".erlidex" of
+				   true ->
+				       case file:read_file(Filename) of
+					   {ok, B} ->
+					       ?D({recu, Filename}),
+					       fold_externals(Fun, Acc0, Filename,
+							      erlide_util:split_lines(B),
+							      PathVars, Done1);
+					   _ ->
+					       {Done1, Acc0}
+				       end;
+				   false ->
+				       {Done1, Fun(CurFile, Filenames, Acc0)}
+			       end
+		       end
+	       end,
+    lists:foldl(LocalFun, {Done, Acc}, Filenames).
 
 get_source_from_external_modules(Mod, #open_context{externalModules=ExternalModules,
                                                     pathVars=PathVars,

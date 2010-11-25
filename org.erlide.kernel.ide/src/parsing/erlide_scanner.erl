@@ -311,9 +311,11 @@ convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
 convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
     T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
     convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, _}, _}}=T1, {'?', {{L, _}, _}}=T2, T3 | Rest],
+convert_tokens([{'?', {{L, O1}, G1}}, {'?', {{L, O2}, G2}} | Rest],
                Ofs, NL, Acc) ->
-    convert_tokens(Rest, Ofs, NL, [T3, T2, T1 | Acc]);
+    C1 = #token{kind=$?, line=L+NL, offset= O1+Ofs, length=G1, text="?"},
+    C2 = #token{kind=$?, line=L+NL, offset= O2+Ofs, length=G2, text="?"},
+    convert_tokens(Rest, Ofs, NL, [C2, C1 | Acc]);
 convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
                Ofs, NL, Acc) when O1=:=O+1->
     T = make_macro(L, NL, O, G, V),

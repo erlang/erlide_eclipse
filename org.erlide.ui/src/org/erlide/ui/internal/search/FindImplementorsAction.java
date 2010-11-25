@@ -14,9 +14,10 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
 
 /**
  * Finds references of the selected element in the workspace. The action is
@@ -30,66 +31,71 @@ import erlang.ErlangSearchPattern;
  */
 public class FindImplementorsAction extends FindAction {
 
-	/**
-	 * Creates a new <code>FindReferencesAction</code>. The action requires that
-	 * the selection provided by the site's selection provider is of type
-	 * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
-	 * 
-	 * @param site
-	 *            the site providing context information for this action
-	 */
-	public FindImplementorsAction(final IWorkbenchSite site) {
-		super(site);
-	}
+    /**
+     * Creates a new <code>FindReferencesAction</code>. The action requires that
+     * the selection provided by the site's selection provider is of type
+     * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
+     * 
+     * @param site
+     *            the site providing context information for this action
+     */
+    public FindImplementorsAction(final IWorkbenchSite site) {
+        super(site);
+    }
 
-	/**
-	 * Note: This constructor is for internal use only. Clients should not call
-	 * this constructor.
-	 * 
-	 * @param editor
-	 *            the Java editor
-	 */
-	public FindImplementorsAction(final ErlangEditor editor) {
-		super(editor);
-	}
+    /**
+     * Note: This constructor is for internal use only. Clients should not call
+     * this constructor.
+     * 
+     * @param editor
+     *            the Java editor
+     */
+    public FindImplementorsAction(final ErlangEditor editor) {
+        super(editor);
+    }
 
-	@Override
-	void init() {
-		setText("Workspace");
-		setToolTipText("Find declarations in workspace");
-		// XXX setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
-		// XXX PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-		// IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
-	}
+    @Override
+    void init() {
+        setText("Workspace");
+        setToolTipText("Find declarations in workspace");
+        // XXX setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
+        // XXX PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+        // IJavaHelpContextIds.FIND_REFERENCES_IN_WORKSPACE_ACTION);
+    }
 
-	@Override
-	int getLimitTo() {
-		return ErlangSearchPattern.DEFINITIONS;
-	}
+    @Override
+    LimitTo getLimitTo() {
+        return LimitTo.DEFINITIONS;
+    }
 
-	@Override
-	protected Collection<IResource> getScope() {
-		return SearchUtil.getWorkspaceScope();
-	}
+    @Override
+    protected Collection<IResource> getScope() {
+        return SearchUtil.getWorkspaceScope();
+    }
 
-	@Override
-	protected String getScopeDescription() {
-		return SearchUtil.getWorkspaceScopeDescription();
-	}
-	// QuerySpecification createQuery(IErlElement element)
-	// throws JavaModelException, InterruptedException {
-	// JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-	// final boolean isInsideJRE = factory.isInsideJRE(element);
-	//
-	// IJavaSearchScope scope = factory.createWorkspaceScope(isInsideJRE);
-	// final String description = factory
-	// .getWorkspaceScopeDescription(isInsideJRE);
-	// return new ElementQuerySpecification(element, getLimitTo(), scope,
-	// description);
-	// }
-	//
-	// public void run(IErlElement element) {
-	// SearchUtil.warnIfBinaryConstant(element, getShell());
-	// super.run(element);
-	// }
+    @Override
+    protected Collection<IErlModule> getExternalScope() {
+        return SearchUtil.getWorkspaceExternalScope();
+    }
+
+    @Override
+    protected String getScopeDescription() {
+        return SearchUtil.getWorkspaceScopeDescription();
+    }
+    // QuerySpecification createQuery(IErlElement element)
+    // throws JavaModelException, InterruptedException {
+    // JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
+    // final boolean isInsideJRE = factory.isInsideJRE(element);
+    //
+    // IJavaSearchScope scope = factory.createWorkspaceScope(isInsideJRE);
+    // final String description = factory
+    // .getWorkspaceScopeDescription(isInsideJRE);
+    // return new ElementQuerySpecification(element, getLimitTo(), scope,
+    // description);
+    // }
+    //
+    // public void run(IErlElement element) {
+    // SearchUtil.warnIfBinaryConstant(element, getShell());
+    // super.run(element);
+    // }
 }

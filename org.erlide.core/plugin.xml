@@ -4,6 +4,7 @@
    <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
    <extension-point id="javaRpcStubs" name="javaRpcStubs" schema="schema/javaRpcStubs.exsd"/>
    <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
+   <extension-point id="messageReporter" name="messageReporter" schema="schema/messageReporter.exsd"/>
 
      <extension
          id="erlnature"
@@ -99,12 +100,6 @@
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
-            id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
    <extension
          id="org.erlide.core.erlang.lineBreakpoint.marker"

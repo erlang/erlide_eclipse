@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuilderMessages;
-import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
@@ -51,7 +50,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
                 final String msg = NLS.bind(
                         BuilderMessages.build_dialyzerProblem, e
                                 .getTargetException().getLocalizedMessage());
-                MarkerHelper.addProblemMarker(project, null, msg, 0,
+                MarkerUtils.addProblemMarker(project, null, null, msg, 0,
                         IMarker.SEVERITY_ERROR);
             }
         }
@@ -64,7 +63,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (project == null || !project.isAccessible()) {
             return;
         }
-        DialyzerUtils.removeDialyzerWarningMarkers(project);
+        MarkerUtils.removeDialyzerWarningMarkers(project);
     }
 
 }

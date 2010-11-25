@@ -6,48 +6,48 @@ import erlang.ErlangSearchPattern;
 
 public class TypeRefPattern extends ErlangSearchPattern {
 
-	private final String module;
+    private final String module;
 
-	@Override
-	public String toString() {
-		return "TypeRefPattern [module=" + module + ", name=" + name
-				+ ", limitTo=" + limitTo + "]";
-	}
+    @Override
+    public String toString() {
+        return "TypeRefPattern [module=" + module + ", name=" + name
+                + ", limitTo=" + limitTo + "]";
+    }
 
-	private final String name;
+    private final String name;
 
-	public TypeRefPattern(final String module, final String name,
-			final int limitTo) {
-		super(limitTo);
-		this.module = module;
-		this.name = name;
-	}
+    public TypeRefPattern(final String module, final String name,
+            final LimitTo limitTo) {
+        super(limitTo);
+        this.module = module;
+        this.name = name;
+    }
 
-	@Override
-	public OtpErlangObject getSearchObject() {
-		return makeSSPatternObject(TYPE_DEF_ATOM, TYPE_REF_ATOM,
-				(module == null) ? "_" : module, name);
-	}
+    @Override
+    public OtpErlangObject getSearchObject() {
+        return makeSSPatternObject(TYPE_DEF_ATOM, TYPE_REF_ATOM,
+                module == null ? "_" : module, name);
+    }
 
-	@Override
-	public String patternString() {
-		if (module != null && module.length() != 0) {
-			return module + ":" + name;
-		}
-		return name;
-	}
+    @Override
+    public String patternString() {
+        if (module != null && module.length() != 0) {
+            return module + ":" + name;
+        }
+        return name;
+    }
 
-	@Override
-	public int getSearchFor() {
-		return SEARCHFOR_TYPE;
-	}
+    @Override
+    public SearchFor getSearchFor() {
+        return SearchFor.TYPE;
+    }
 
-	@Override
-	public String labelString() {
-		if (module != null && module.length() != 0) {
-			return module + ":" + name;
-		}
-		return name;
-	}
+    @Override
+    public String labelString() {
+        if (module != null && module.length() != 0) {
+            return module + ":" + name;
+        }
+        return name;
+    }
 
 }

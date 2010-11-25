@@ -237,7 +237,10 @@ public interface IErlElement extends IAdaptable {
     void accept(IErlElementVisitor visitor, int flags, IErlElement.Kind leafKind)
             throws ErlModelException;
 
-    String toLabelString();
+    // TODO StyledString? but this needs jface-stuff, which we don't want in a
+    // non-ui class, probably we should get rid of this one and put everything
+    // in the label provider...
+    String getLabelString();
 
     public abstract String getFilePath();
 

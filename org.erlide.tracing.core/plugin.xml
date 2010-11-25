@@ -85,22 +85,22 @@
             name="%tracingCategory">
       </category>
       <command
-            category="org.erlide.tracing.core.tracing"
+            categoryId="org.erlide.tracing.core.tracing"
             id="org.erlide.tracing.core.createtracepattern"
             name="%createTracePattern">
       </command>
       <command
-            category="org.erlide.tracing.core.tracing"
+            categoryId="org.erlide.tracing.core.tracing"
             id="org.erlide.tracing.core.createtracepatternwithnoarity"
             name="%createTracePatternWithNoArity">
       </command>
       <command
-            category="org.erlide.tracing.core.tracing"
+            categoryId="org.erlide.tracing.core.tracing"
             id="org.erlide.tracing.core.removetracepattern"
             name="%removeTracePattern">
       </command>
       <command
-            category="org.erlide.tracing.core.tracing"
+            categoryId="org.erlide.tracing.core.tracing"
             id="org.erlide.tracing.core.removetracepatternwithnoarity"
             name="%removeTracePatternWithNoArity">
       </command>

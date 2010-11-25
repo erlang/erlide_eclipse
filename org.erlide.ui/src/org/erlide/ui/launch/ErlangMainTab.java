@@ -56,6 +56,9 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
     private Text funcText;
     private Text argsText;
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     public void createControl(final Composite parent) {
         final Composite comp = new Composite(parent, SWT.NONE);
         setControl(comp);
@@ -129,7 +132,9 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
                 false, 3, 1);
         infoLabel.setLayoutData(gd_infoLabel);
         infoLabel
-                .setText("The arguments will be sent as one single argument, a string.");
+                .setText("Start function takes no arguments or a single string.\n"
+                        + "It's similar to using '-s mod fun args' on the command line.\n"
+                        + "Use it for system initialization/startup.");
     }
 
     private Text textWithLabel(final Group startGroup, final String labelText,

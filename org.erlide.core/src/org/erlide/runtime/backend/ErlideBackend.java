@@ -90,7 +90,8 @@ public final class ErlideBackend extends Backend implements IDisposable,
     }
 
     @Override
-    public void initErlang(final boolean monitor, final boolean watch) {
+    public synchronized void initErlang(final boolean monitor,
+            final boolean watch) {
         super.initErlang(monitor, watch);
         ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
     }
@@ -160,8 +161,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                 proxy.write(s);
             } else {
                 ErlLogger
-                        .warn(
-                                "Could not load module on backend %s, stream proxy is null",
+                        .warn("Could not load module on backend %s, stream proxy is null",
                                 getInfo());
             }
         }
@@ -215,8 +215,9 @@ public final class ErlideBackend extends Backend implements IDisposable,
                 final File f = new File(outDir);
                 for (final File file : f.listFiles()) {
                     String name = file.getName();
-                    if (!name.endsWith(".beam"))
+                    if (!name.endsWith(".beam")) {
                         continue;
+                    }
                     name = name.substring(0, name.length() - 5);
                     try {
                         ErlideUtil.loadModuleViaInput(this, project, name);

@@ -1118,9 +1118,6 @@
                         value="erl">
                   </test>
                </and>
-               <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
-               </instanceof>
                <and>
                   <instanceof
                         value="org.eclipse.core.resources.IResource">
@@ -1141,6 +1138,9 @@
                         value="yrl">
                   </test>
                </and>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlElement">
+               </instanceof>
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
@@ -1196,6 +1196,23 @@
                </instanceof>
             </or>
          </possibleChildren>
+               <actionProvider
+               class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
+               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
+         </actionProvider>
+         <commonSorter
+               class="org.erlide.ui.navigator.ErlElementPositionSorter"
+               id="org.erlide.ui.navigator.ErlElementPositionSorterId">
+         </commonSorter>
+         <dropAssistant
+               class="org.erlide.ui.navigator.dnd.ErlCommonDropAdapterAssistant"
+               id="org.erlide.ui.ErlDropAssistant">
+            <possibleDropTargets>
+               <instanceof
+                     value="java.lang.Object">
+               </instanceof>
+            </possibleDropTargets>
+         </dropAssistant>
       </navigatorContent>
    </extension>
    <extension
@@ -1208,12 +1225,22 @@
                <adapt
                      type="org.eclipse.core.resources.IFile">
                </adapt>
+               <instanceof
+                     value="org.erlide.core.erlang.IErlModule">
+               </instanceof>
             </or>
          </selectionEnablement>
          <editorInputEnablement>
-            <instanceof
-                  value="org.eclipse.ui.IFileEditorInput">
-            </instanceof>
+            <or>
+               <instanceof
+                     value="org.eclipse.ui.IFileEditorInput">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.ui.ide.FileStoreEditorInput">
+               </instanceof>
+               <instanceof
+                     value="org.erlide.ui.editors.util.ErlangExternalEditorInput">
+               </instanceof></or>
          </editorInputEnablement>
       </linkHelper>
    </extension>
@@ -1716,5 +1743,18 @@
                type="org.erlide.ui.editors.erl.ErlangEditor">
          </context>
       </target>
+   </extension>
+   <extension
+         point="org.erlide.core.messageReporter">
+      <messageReporter
+            class="org.erlide.ui.MessageReporter">
+      </messageReporter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.erlide.ui.editors.util.ErlangExternalEditorInputFactory"
+            id="org.erlide.ui.ErlangExternalEditorInputFactory">
+      </factory>
    </extension>
 </plugin>

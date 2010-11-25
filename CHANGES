@@ -1,3 +1,13 @@
+List of user visible changes between 0.9.2 and 0.9.3 (20101125)
+
+2069b48 629-navigator--use-external-references-instead-of--external_files-
+4ddd6c3 633-searching--use-external-references-instead-of--external_files-
+20803f2 show visible message when ide backend can't be created
+76e29af fixed #626: if default or erlide runtimes are deleted, set another one
+8f39523 617-dialyzer--remove-dialog
+7097722 Merge branch '646-let-erlide-plugins-use-local-beams' into pu
+80be272 638-searching--can-t-handle-the--eunit--project
+
 List of user visible changes between 0.9.1 and 0.9.2 (20101108)
 
 bad8d94 merged wrangler r1627

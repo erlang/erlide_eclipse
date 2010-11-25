@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -35,11 +37,14 @@ import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.erlang.IErlElementVisitor;
+import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
@@ -53,10 +58,18 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
+import com.google.common.collect.Lists;
+
 import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
+import erlang.ErlangSearchPattern.SearchFor;
 import erlang.OpenResult;
 
 public class SearchUtil {
+
+    static final int SEARCH_IN_SOURCES = 1;
+    static final int SEARCH_IN_EXTERNALS = 2;
+    // static final int SEARCH_IN_OTP_RUNTIME = 4;
 
     private static final int ARI_TYPESPEC = -2;
     private static final int ARI_ATTRIBUTE = -3;
@@ -117,10 +130,10 @@ public class SearchUtil {
     }
 
     static public Collection<IResource> getWorkspaceScope() {
+        final Set<IResource> result = new HashSet<IResource>();
         try {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
-            final Set<IResource> result = new HashSet<IResource>();
             for (final IErlProject i : erlangProjects) {
                 final Collection<IErlModule> modules = i.getModulesAndHeaders();
                 for (final IErlModule j : modules) {
@@ -128,11 +141,52 @@ public class SearchUtil {
                 }
                 // addProjectEbin(i, result);
             }
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e); // TODO report this
+        }
+        return result;
+    }
+
+    public static Collection<IErlModule> getWorkspaceExternalScope() {
+        try {
+            final Collection<IErlProject> erlangProjects = ErlangCore
+                    .getModel().getErlangProjects();
+            final List<IErlModule> result = Lists.newArrayList();
+            final Set<String> externalModulePaths = new HashSet<String>();
+            for (final IErlProject project : erlangProjects) {
+                addExternalModules(project, result, externalModulePaths);
+            }
             return result;
         } catch (final ErlModelException e) {
             ErlLogger.error(e); // TODO report this
         }
         return null;
+    }
+
+    private static void addExternalModules(final IParent element,
+            final List<IErlModule> result, final Set<String> externalModulePaths)
+            throws ErlModelException {
+        final Collection<IErlElement> externals = element
+                .getChildrenOfKind(Kind.EXTERNAL);
+        for (final IErlElement external : externals) {
+            external.accept(new IErlElementVisitor() {
+
+                public boolean visit(final IErlElement element)
+                        throws ErlModelException {
+                    if (element instanceof IErlExternal) {
+                        final IErlExternal external = (IErlExternal) element;
+                        external.open(null);
+                    }
+                    if (element instanceof IErlModule) {
+                        final IErlModule module = (IErlModule) element;
+                        if (externalModulePaths.add(module.getFilePath())) {
+                            result.add(module);
+                        }
+                    }
+                    return true;
+                }
+            }, 0, Kind.MODULE);
+        }
     }
 
     public static Collection<IResource> getProjectsScope(
@@ -142,6 +196,27 @@ public class SearchUtil {
         for (final String i : projectNames) {
             final IProject project = root.getProject(i);
             addProjectToScope(project, result);
+        }
+        return result;
+    }
+
+    public static Collection<IErlModule> getProjectsExternalScope(
+            final String[] projectNames) {
+        final List<IErlModule> result = Lists.newArrayList();
+        final Set<String> externalModulePaths = new HashSet<String>();
+        try {
+            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
+                    .getRoot();
+            for (final String i : projectNames) {
+                final IProject project = root.getProject(i);
+                if (ErlideUtil.hasErlangNature(project)) {
+                    final IErlProject erlProject = ErlangCore.getModel()
+                            .getErlangProject(i);
+                    addExternalModules(erlProject, result, externalModulePaths);
+                }
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e); // TODO report this
         }
         return result;
     }
@@ -161,6 +236,26 @@ public class SearchUtil {
         return result;
     }
 
+    public static Collection<IErlModule> getSelectionExternalScope(
+            final ISelection selection) {
+        final List<IErlModule> result = Lists.newArrayList();
+        final Set<String> externalModulePaths = new HashSet<String>();
+        try {
+            if (selection instanceof IStructuredSelection) {
+                final IStructuredSelection ss = (IStructuredSelection) selection;
+                for (final Object i : ss.toArray()) {
+                    if (i instanceof IParent) {
+                        final IParent parent = (IParent) i;
+                        addExternalModules(parent, result, externalModulePaths);
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e); // TODO report this
+        }
+        return result;
+    }
+
     public static void runQueryInBackground(final Object query) {
         NewSearchUI.runQueryInBackground((ISearchQuery) query);
     }
@@ -175,16 +270,25 @@ public class SearchUtil {
         return ch == '\n' || ch == '\r';
     }
 
-    public static Match createMatch(final ModuleLineFunctionArityRef ref) {
-        final ErlangSearchElement ese = searchElementFromRef(ref);
+    public static Match createMatch(final ModuleLineFunctionArityRef ref,
+            final Map<String, IErlModule> pathToModuleMap) {
+        final ErlangSearchElement ese = createSearchElementFromRef(ref,
+                pathToModuleMap);
         return new Match(ese, ref.getOffset(), ref.getLength());
     }
 
-    public static ErlangSearchElement searchElementFromRef(
-            final ModuleLineFunctionArityRef ref) {
-        return new ErlangSearchElement(ref.getModuleName(), ref.getName(),
-                ref.getArity(), ref.getClauseHead(), ref.isSubClause(),
-                refToKind(ref));
+    public static ErlangSearchElement createSearchElementFromRef(
+            final ModuleLineFunctionArityRef ref,
+            final Map<String, IErlModule> pathToModuleMap) {
+        final IErlModule module = pathToModuleMap.get(ref.getModulePath());
+        return createSearchElement(ref, module);
+    }
+
+    public static ErlangSearchElement createSearchElement(
+            final ModuleLineFunctionArityRef ref, final IErlModule module) {
+        return new ErlangSearchElement(module, ref.getModulePath(),
+                ref.getName(), ref.getArity(), ref.getClauseHead(),
+                ref.isSubClause(), refToKind(ref));
     }
 
     public static Kind refToKind(final ModuleLineFunctionArityRef ref) {
@@ -210,7 +314,7 @@ public class SearchUtil {
 
     public static ErlangSearchPattern getSearchPatternFromOpenResultAndLimitTo(
             final IErlModule module, final int offset, final OpenResult res,
-            final int limitTo, final boolean matchAnyFunctionDefinition) {
+            final LimitTo limitTo, final boolean matchAnyFunctionDefinition) {
         if (res == null) {
             return null;
         }
@@ -284,7 +388,8 @@ public class SearchUtil {
     }
 
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
-            final int searchFor, final String pattern, final int limitTo) {
+            final SearchFor searchFor, final String pattern,
+            final LimitTo limitTo) {
         String moduleName = "", name = pattern;
         int arity = 0;
         int p = pattern.indexOf(':');
@@ -302,10 +407,11 @@ public class SearchUtil {
     }
 
     public static void runQuery(final ErlangSearchPattern ref,
-            final Collection<IResource> scope, final String scopeDescription,
-            final Shell shell) {
+            final Collection<IResource> scope,
+            final Collection<IErlModule> externalScope,
+            final String scopeDescription, final Shell shell) {
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
-                scopeDescription);
+                externalScope, scopeDescription);
         if (query.canRunInBackground()) {
             /*
              * This indirection with Object as parameter is needed to prevent
@@ -368,6 +474,43 @@ public class SearchUtil {
                 final IResource r = (IResource) a.getAdapter(IResource.class);
                 addResourceToScope(result, r);
             }
+        }
+        return result;
+    }
+
+    public static Collection<IErlModule> getWorkingSetsExternalScope(
+            final IWorkingSet[] workingSets) {
+        final List<IErlModule> result = Lists.newArrayList();
+        final Set<String> externalModulePaths = new HashSet<String>();
+        try {
+            if (workingSets == null) {
+                return result;
+            }
+            for (final IWorkingSet ws : workingSets) {
+                final IAdaptable[] elements = ws.getElements();
+                for (final IAdaptable a : elements) {
+                    IParent parent = null;
+                    Object o = a.getAdapter(IErlElement.class);
+                    if (o instanceof IParent) {
+                        parent = (IParent) o;
+                    } else {
+                        o = a.getAdapter(IResource.class);
+                        if (o != null) {
+                            final IResource resource = (IResource) o;
+                            final IErlElement element = ErlangCore.getModel()
+                                    .findElement(resource);
+                            if (element instanceof IParent) {
+                                parent = (IParent) element;
+                            }
+                        }
+                    }
+                    if (parent != null) {
+                        addExternalModules(parent, result, externalModulePaths);
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e); // TODO report this
         }
         return result;
     }
