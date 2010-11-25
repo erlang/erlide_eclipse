@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: commons-collections-3.2.1.jar,
  commons-io-1.4.jar,
