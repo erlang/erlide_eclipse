@@ -6,15 +6,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
-import org.erlide.core.erlang.util.BackendUtils;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
-
-import com.ericsson.otp.erlang.OtpErlangList;
 
 public class ErlExternalReferenceEntryList extends Openable implements
         IErlExternal {
@@ -34,13 +29,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
         final List<String> includes = PreferencesUtils
                 .unpackList(externalIncludes);
         entries.addAll(includes);
-        final Backend backend = BackendUtils
-                .getBuildOrIdeBackend(getErlProject().getProject());
-        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-        for (final String entry : entries) {
-            ErlExternalReferenceEntry.getEntryChildren(parent, entry, true,
-                    backend, pathVars);
-        }
     }
 
     public Kind getKind() {
@@ -56,7 +44,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         for (final String entry : entries) {
             final String name = new Path(entry).lastSegment().replaceAll(
                     "\\.erlidex", "");
-            result.add(new ErlExternalReferenceEntry(this, name, entry));
+            result.add(new ErlExternalReferenceEntry(this, name, entry, true));
         }
         setChildren(result);
         return true;

@@ -22,11 +22,13 @@ import erlang.ErlideOpen;
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 
     private final String entry;
+    private final boolean isRoot;
 
     protected ErlExternalReferenceEntry(final IErlElement parent,
-            final String name, final String entry) {
+            final String name, final String entry, final boolean isRoot) {
         super(parent, name);
         this.entry = entry;
+        this.isRoot = isRoot;
     }
 
     public Kind getKind() {
@@ -39,8 +41,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         final Backend backend = BackendUtils
                 .getBuildOrIdeBackend(getErlProject().getProject());
         final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-        final List<IErlElement> children = getEntryChildren(this, entry, false,
-                backend, pathVars);
+        final List<IErlElement> children = getEntryChildren(this, entry,
+                isRoot, backend, pathVars);
         setChildren(children);
         return true;
     }
@@ -67,7 +69,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                                 path);
                 children.add(module);
             } else if (ErlideUtil.hasErlideExternalExtension(path)) {
-                children.add(new ErlExternalReferenceEntry(parent, name, path));
+                children.add(new ErlExternalReferenceEntry(parent, name, path,
+                        false));
             }
         }
         return children;

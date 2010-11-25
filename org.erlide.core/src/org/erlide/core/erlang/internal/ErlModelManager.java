@@ -261,7 +261,6 @@ public final class ErlModelManager implements IErlModelManager {
             if (parent != null && parent instanceof IParent) {
                 ((IParent) parent).addChild(module);
             }
-            // elements.put(key, module);
             return module;
         }
         return null;
