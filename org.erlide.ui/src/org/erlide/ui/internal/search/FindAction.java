@@ -211,6 +211,12 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     protected void performNewSearch(final ITextSelection selection,
             final Collection<IResource> scope) {
+        performNewSearch(selection, getScope(), getExternalScope());
+    }
+
+    protected void performNewSearch(final ITextSelection selection,
+            final Collection<IResource> scope,
+            final Collection<IErlModule> externalScope) {
         // if (!ActionUtil.isProcessable(fEditor)) {
         // return;
         // }
@@ -234,7 +240,7 @@ public abstract class FindAction extends SelectionDispatchAction {
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,
                             res, getLimitTo(), true);
             if (ref != null) {
-                performNewSearch(ref, scope);
+                performNewSearch(ref, scope, externalScope);
             }
         } catch (final BackendException e) {
             final String title = "SearchMessages.Search_Error_search_title";
@@ -246,6 +252,8 @@ public abstract class FindAction extends SelectionDispatchAction {
     abstract LimitTo getLimitTo();
 
     abstract protected Collection<IResource> getScope();
+
+    abstract protected Collection<IErlModule> getExternalScope();
 
     abstract protected String getScopeDescription();
 
@@ -272,20 +280,23 @@ public abstract class FindAction extends SelectionDispatchAction {
      *            The erlang element to be found.
      */
     public void run(final IErlElement element) {
-        performNewSearch(element, getScope());
+        performNewSearch(element, getScope(), getExternalScope());
     }
 
     protected void performNewSearch(final IErlElement element,
-            final Collection<IResource> scope) {
+            final Collection<IResource> scope,
+            final Collection<IErlModule> externalScope) {
         final ErlangSearchPattern pattern = ErlangSearchPattern
                 .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
-        SearchUtil.runQuery(pattern, scope, getScopeDescription(), getShell());
+        SearchUtil.runQuery(pattern, scope, externalScope,
+                getScopeDescription(), getShell());
     }
 
     private void performNewSearch(final ErlangSearchPattern ref,
-            final Collection<IResource> scope) {
+            final Collection<IResource> scope,
+            final Collection<IErlModule> externalScope) {
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
-                getScopeDescription());
+                externalScope, getScopeDescription());
         if (query.canRunInBackground()) {
             /*
              * This indirection with Object as parameter is needed to prevent
@@ -366,4 +377,17 @@ public abstract class FindAction extends SelectionDispatchAction {
         }
     }
 
+    protected Collection<IErlModule> getWorkingSetsExternalScope(
+            final IWorkingSet[] workingSets) throws InterruptedException {
+        IWorkingSet[] ws = workingSets;
+        if (ws == null) {
+            ws = SearchUtil.queryWorkingSets();
+        }
+        if (ws != null) {
+            SearchUtil.updateLRUWorkingSets(ws);
+            return SearchUtil.getWorkingSetsExternalScope(ws);
+        } else {
+            return SearchUtil.getWorkspaceExternalScope();
+        }
+    }
 }

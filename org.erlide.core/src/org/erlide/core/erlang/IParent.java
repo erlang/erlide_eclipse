@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.erlang.IErlElement.Kind;
@@ -33,7 +33,7 @@ public interface IParent {
      *                while accessing its corresponding resource
      * @return the immediate children of this element
      */
-    List<IErlElement> getChildren() throws ErlModelException;
+    Collection<IErlElement> getChildren() throws ErlModelException;
 
     /**
      * Returns whether this element has one or more immediate children. This is
@@ -47,7 +47,8 @@ public interface IParent {
      */
     boolean hasChildren();
 
-    List<IErlElement> getChildrenOfKind(Kind kind) throws ErlModelException;
+    Collection<IErlElement> getChildrenOfKind(Kind kind)
+            throws ErlModelException;
 
     boolean hasChildrenOfKind(Kind kind);
 

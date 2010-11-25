@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlFolder;
@@ -53,11 +52,7 @@ import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
-import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
-
-import erlang.ErlideNoparse;
 
 /**
  * The <code>ErlModelManager</code> manages instances of <code>IErlModel</code>.
@@ -73,7 +68,7 @@ public final class ErlModelManager implements IErlModelManager {
     /**
      * Unique handle onto the ErlModel
      */
-    private final ErlModel erlangModel = new ErlModel();
+    private ErlModel erlangModel = null;
 
     private final HashSet<String> optionNames = new HashSet<String>(20);
 
@@ -173,16 +168,6 @@ public final class ErlModelManager implements IErlModelManager {
         if (e != null) {
             final IParent p = (IParent) e.getParent();
             p.removeChild(e);
-            if (e instanceof IErlModule) {
-                final String stateDir = ErlangPlugin.getDefault()
-                        .getStateLocation().toString();
-                final ErlideBackend backend = ErlangCore.getBackendManager()
-                        .getIdeBackend();
-                ErlideNoparse
-                        .removeCacheFiles(backend, ErlangToolkit
-                                .createScannerModuleNameFromResource(rsrc),
-                                stateDir);
-            }
         }
         // TODO should we make Erlidemodelevents and fire them?
     }
@@ -272,11 +257,10 @@ public final class ErlModelManager implements IErlModelManager {
             }
             final String name = file.getName();
             final IErlModule module = new ErlModule(parent, name, initialText,
-                    file);
+                    file, null);
             if (parent != null && parent instanceof IParent) {
                 ((IParent) parent).addChild(module);
             }
-            // elements.put(key, module);
             return module;
         }
         return null;
@@ -471,6 +455,10 @@ public final class ErlModelManager implements IErlModelManager {
      * @see org.erlide.core.erlang.IErlModelManager#getErlangModel()
      */
     public final IErlModel getErlangModel() {
+        if (erlangModel == null) {
+            erlangModel = new ErlModel();
+            erlangModel.buildStructure(null);
+        }
         return erlangModel;
     }
 
@@ -928,12 +916,14 @@ public final class ErlModelManager implements IErlModelManager {
     private static Map<Object, IErlModule> moduleMap = new HashMap<Object, IErlModule>();
     private static Map<IErlModule, Object> mapModule = new HashMap<IErlModule, Object>();
 
-    public IErlModule getModuleFromFile(final String name,
-            final String initialText, final String path, final Object key) {
+    public IErlModule getModuleFromFile(final IErlElement parent,
+            final String name, final String initialText, final String path,
+            final String key) {
         IErlModule m = moduleMap.get(key);
         if (m == null) {
-            final IErlModel model = getErlangModel();
-            m = new ErlModuleWithoutResource(model, name, initialText, path);
+            final IErlElement parent2 = parent == null ? getErlangModel()
+                    : parent;
+            m = new ErlModule(parent2, name, initialText, null, path);
             if (key != null) {
                 moduleMap.put(key, m);
                 mapModule.put(m, key);
@@ -950,9 +940,9 @@ public final class ErlModelManager implements IErlModelManager {
         }
     }
 
-    public IErlModule getModuleFromText(final String name,
-            final String initialText, final Object key) {
-        return getModuleFromFile(name, initialText, "", key);
+    public IErlModule getModuleFromText(final IErlElement parent,
+            final String name, final String initialText, final String key) {
+        return getModuleFromFile(parent, name, initialText, "", key);
     }
 
 }

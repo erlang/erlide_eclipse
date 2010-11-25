@@ -35,13 +35,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuilderVisitor;
-import org.erlide.core.builder.internal.MarkerHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.backend.Backend;
@@ -185,7 +184,7 @@ public final class BuilderHelper {
                 final IResource r1 = project.findMember(f1);
                 final IResource r2 = project.findMember(f2);
                 if (r1 != null || r2 != null) {
-                    MarkerHelper.addMarker(project, project,
+                    MarkerUtils.addMarker(project, null, project,
                             "Code clash between " + f1 + " and " + f2, 0,
                             IMarker.SEVERITY_WARNING, "");
                 }
@@ -211,7 +210,7 @@ public final class BuilderHelper {
                         .stringValue();
                 final String f2 = ((OtpErlangString) t.elementAt(1))
                         .stringValue();
-                MarkerHelper.addMarker(project, project,
+                MarkerUtils.addMarker(project, null, project,
                         "Duplicated module name in " + f1 + " and " + f2, 0,
                         IMarker.SEVERITY_ERROR, "");
             }
@@ -367,7 +366,7 @@ public final class BuilderHelper {
             final OtpErlangObject r, final Backend backend,
             final OtpErlangList compilerOptions) {
         if (r == null) {
-            MarkerHelper.addProblemMarker(source, null,
+            MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);
             return;
         }
@@ -386,7 +385,7 @@ public final class BuilderHelper {
         // process compilation messages
         if (t.elementAt(1) instanceof OtpErlangList) {
             final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-            MarkerHelper.addErrorMarkers(source, l);
+            MarkerUtils.addErrorMarkers(source, l);
         } else {
             ErlLogger.warn("bad result from builder: %s", t);
         }
@@ -428,7 +427,7 @@ public final class BuilderHelper {
             ErlLogger.warn("trying to compile " + res.getName() + "?!?!");
         }
 
-        MarkerHelper.deleteMarkers(res);
+        MarkerUtils.deleteMarkers(res);
 
         final String outputDir = bres.getOutput() == null ? projectPath.append(
                 outputDir0).toString()
@@ -475,7 +474,7 @@ public final class BuilderHelper {
         final Job job = new Job("tasks") {
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
-                MarkerHelper.createTaskMarkers(project, res);
+                MarkerUtils.createTaskMarkers(project, res);
                 return Status.OK_STATUS;
             }
         };
@@ -505,7 +504,7 @@ public final class BuilderHelper {
         // final OldErlangProjectProperties prefs = new
         // OldErlangProjectProperties(project);
 
-        MarkerHelper.deleteMarkers(resource);
+        MarkerUtils.deleteMarkers(resource);
         // try {
         // resource.deleteMarkers(PROBLEM_MARKER, true,
         // IResource.DEPTH_INFINITE);

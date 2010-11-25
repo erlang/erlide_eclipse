@@ -1,10 +1,8 @@
 package org.erlide.ui.internal.search;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
@@ -33,8 +31,9 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.util.ResourceUtil;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
@@ -187,17 +186,15 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         final Object element = match.getElement();
         if (element instanceof ErlangSearchElement) {
             final ErlangSearchElement ese = (ErlangSearchElement) element;
-            final IFile file = ResourceUtil.getFileFromLocation(ese
-                    .getModuleName());
+            final IErlModule module = ese.getModule();
             try {
-                final IEditorPart editor = EditorUtility.openInEditor(file,
-                        activate);
+                final IEditorPart editor = EditorUtility.openInEditor(module);
                 if (offset != 0) {
                     if (editor instanceof ErlangEditor) {
                         final ErlangEditor ee = (ErlangEditor) editor;
                         ee.selectAndReveal(offset, length);
                     } else if (editor != null) {
-                        showWithMarker(editor, file, offset, length);
+                        showWithMarker(editor, module, offset, length);
                     }
                 }
             } catch (final ErlModelException e) {
@@ -205,16 +202,13 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         }
     }
 
-    private void showWithMarker(final IEditorPart editor, final IFile file,
-            final int offset, final int length) throws PartInitException {
+    private void showWithMarker(final IEditorPart editor,
+            final IErlModule module, final int offset, final int length)
+            throws PartInitException {
         IMarker marker = null;
         try {
-            marker = file.createMarker(NewSearchUI.SEARCH_MARKER);
-            final HashMap<String, Integer> attributes = new HashMap<String, Integer>(
-                    4);
-            attributes.put(IMarker.CHAR_START, Integer.valueOf(offset));
-            attributes.put(IMarker.CHAR_END, Integer.valueOf(offset + length));
-            marker.setAttributes(attributes);
+            marker = MarkerUtils.createSearchResultMarker(module,
+                    NewSearchUI.SEARCH_MARKER, offset, length);
             IDE.gotoMarker(editor, marker);
         } catch (final CoreException e) {
             throw new PartInitException(

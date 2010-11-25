@@ -15,6 +15,7 @@ package org.erlide.core.erlang;
 import java.util.Collection;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
@@ -34,99 +35,104 @@ import org.erlide.core.erlang.util.ErlangIncludeFile;
  */
 public interface IErlModule extends IErlElement, IParent, IOpenable {
 
-	public enum ModuleKind {
-		BAD, HRL, ERL, YRL
-	}
+    public enum ModuleKind {
+        BAD, HRL, ERL, YRL
+    }
 
-	/**
-	 * Returns the smallest element within this module that includes the given
-	 * source position (that is, a clause, attribute, etc.), or
-	 * <code>null</code> if there is no element other than the compilation unit
-	 * itself at the given position, or if the given position is not within the
-	 * source range of this compilation unit.
-	 * 
-	 * @param position
-	 *            a source position inside the compilation unit
-	 * @return the innermost Erlang element enclosing a given source position or
-	 *         <code>null</code> if none (excluding the compilation unit).
-	 * @throws ErlModelException
-	 *             if the compilation unit does not exist or if an exception
-	 *             occurs while accessing its corresponding resource
-	 */
-	IErlElement getElementAt(int position) throws ErlModelException;
+    /**
+     * Returns the smallest element within this module that includes the given
+     * source position (that is, a clause, attribute, etc.), or
+     * <code>null</code> if there is no element other than the compilation unit
+     * itself at the given position, or if the given position is not within the
+     * source range of this compilation unit.
+     * 
+     * @param position
+     *            a source position inside the compilation unit
+     * @return the innermost Erlang element enclosing a given source position or
+     *         <code>null</code> if none (excluding the compilation unit).
+     * @throws ErlModelException
+     *             if the compilation unit does not exist or if an exception
+     *             occurs while accessing its corresponding resource
+     */
+    IErlElement getElementAt(int position) throws ErlModelException;
 
-	IErlElement getElementAtLine(int lineNumber);
+    IErlElement getElementAtLine(int lineNumber);
 
-	/**
-	 * Is this module a real one, or a header file?
-	 * 
-	 * @return true if .erl, false if .hrl
-	 */
-	ModuleKind getModuleKind();
+    /**
+     * Is this module a real one, or a header file?
+     * 
+     * @return true if .erl, false if .hrl
+     */
+    ModuleKind getModuleKind();
 
-	IErlProject getProject();
+    IErlProject getProject();
 
-	Collection<IErlComment> getComments();
+    Collection<IErlComment> getComments();
 
-	long getTimestamp();
+    long getTimestamp();
 
-	void removeChildren();
+    void removeChildren();
 
-	IErlImport findImport(ErlangFunction function);
+    IErlImport findImport(ErlangFunction function);
 
-	Collection<IErlImport> getImports();
+    Collection<IErlImport> getImports();
 
-	IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type);
+    IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type);
 
-	public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind type);
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind type);
 
-	Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
+    Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
 
-	void getScanner();
+    void getScanner();
 
-	void disposeScanner();
+    void disposeScanner();
 
-	void initialReconcile();
+    void initialReconcile();
 
-	void reconcileText(int offset, int removeLength, String newText,
-			IProgressMonitor mon);
+    void reconcileText(int offset, int removeLength, String newText,
+            IProgressMonitor mon);
 
-	void postReconcile(IProgressMonitor mon);
+    void postReconcile(IProgressMonitor mon);
 
-	void finalReconcile();
+    void finalReconcile();
 
-	// void reenableScanner();
+    // void reenableScanner();
 
-	// void disposeParser();
+    // void disposeParser();
 
-	void dispose();
+    void dispose();
 
-	/**
-	 * Returns a collection of modules that include this one.
-	 **/
-	Set<IErlModule> getDirectDependents() throws ErlModelException;
+    /**
+     * Returns a collection of modules that include this one.
+     **/
+    Set<IErlModule> getDirectDependents() throws ErlModelException;
 
-	/**
-	 * Returns the transitive closure of modules that include this one.
-	 **/
-	Set<IErlModule> getAllDependents() throws ErlModelException;
+    /**
+     * Returns the transitive closure of modules that include this one.
+     **/
+    Set<IErlModule> getAllDependents() throws ErlModelException;
 
-	/**
-	 * Resets parser so that the next parse will be a full parse, possibly
-	 * updating the parser cache
-	 * 
-	 * @param newText
-	 */
-	void resetAndCacheScannerAndParser(String newText);
+    /**
+     * Resets parser so that the next parse will be a full parse, possibly
+     * updating the parser cache
+     * 
+     * @param newText
+     */
+    void resetAndCacheScannerAndParser(String newText);
 
-	/**
-	 * Get the module name without extension
-	 * 
-	 * @return name as string
-	 */
-	String getModuleName();
+    /**
+     * Get the module name without extension
+     * 
+     * @return name as string
+     */
+    String getModuleName();
 
-	IErlFunction findFunction(ErlangFunction erlangFunction);
+    IErlFunction findFunction(ErlangFunction erlangFunction);
 
-	ErlToken getScannerTokenAt(int offset);
+    IErlTypespec findTypespec(String typeName);
+
+    ErlToken getScannerTokenAt(int offset);
+
+    void setResource(IFile file);
+
 }

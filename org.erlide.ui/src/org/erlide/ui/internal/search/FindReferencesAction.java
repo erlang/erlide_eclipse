@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangSearchPattern.LimitTo;
@@ -77,20 +78,8 @@ public class FindReferencesAction extends FindAction {
         return SearchUtil.getWorkspaceScopeDescription();
     }
 
-    // QuerySpecification createQuery(IErlElement element)
-    // throws JavaModelException, InterruptedException {
-    // JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-    // final boolean isInsideJRE = factory.isInsideJRE(element);
-    //
-    // IJavaSearchScope scope = factory.createWorkspaceScope(isInsideJRE);
-    // final String description = factory
-    // .getWorkspaceScopeDescription(isInsideJRE);
-    // return new ElementQuerySpecification(element, getLimitTo(), scope,
-    // description);
-    // }
-    //
-    // public void run(IErlElement element) {
-    // SearchUtil.warnIfBinaryConstant(element, getShell());
-    // super.run(element);
-    // }
+    @Override
+    protected Collection<IErlModule> getExternalScope() {
+        return SearchUtil.getWorkspaceExternalScope();
+    }
 }

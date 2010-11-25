@@ -176,7 +176,8 @@ public class ErlideTestUtils {
 
 	public static IErlModule createModuleFromText(final String initialText) {
 		final IErlModule module = ErlangCore.getModelManager()
-				.getModuleFromText("test1", initialText, "test1");
+				.getModuleFromText(ErlangCore.getModel(), "test1", initialText,
+						"test1");
 		modules.add(module);
 		return module;
 	}

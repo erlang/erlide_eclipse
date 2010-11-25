@@ -91,7 +91,7 @@ public class SearchTest {
 				SearchFor.FUNCTION, "a", "f", 0, limitTo);
 		final List<IResource> scope = Lists.newArrayList(moduleA.getResource(),
 				moduleB.getResource());
-		final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
+		final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
 		query.run(null);
 		// then
 		// it should be found in module b

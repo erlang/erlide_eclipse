@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.ErlModelException;
@@ -35,8 +36,8 @@ public class ParsingTests {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		module = ErlangCore.getModelManager().getModuleFromText("testing", "",
-				null);
+		module = ErlangCore.getModelManager().getModuleFromText(null,
+				"testing", "", null);
 	}
 
 	/**
@@ -64,7 +65,7 @@ public class ParsingTests {
 				"compile", null, sourceContent, 0, 50);
 		final List<IErlElement> expected = new ArrayList<IErlElement>(1);
 		expected.add(attribute);
-		final List<IErlElement> actual = module.getChildren();
+		final Collection<IErlElement> actual = module.getChildren();
 		assertEquals(expected, actual);
 		assertEquals(expected.toString(), actual.toString());
 	}

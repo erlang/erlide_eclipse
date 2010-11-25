@@ -32,6 +32,7 @@ public class ReferencesInWorkspaceHandler extends AbstractHandler {
                         .getSearchPatternFromErlElementAndLimitTo(element,
                                 LimitTo.REFERENCES);
                 SearchUtil.runQuery(pattern, SearchUtil.getWorkspaceScope(),
+                        SearchUtil.getWorkspaceExternalScope(),
                         SearchUtil.getWorkspaceScopeDescription(), shell);
             }
         }

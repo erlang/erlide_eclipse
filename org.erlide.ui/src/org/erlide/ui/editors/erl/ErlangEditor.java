@@ -362,9 +362,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     public void disposeModule() {
-        final IErlModule module = getModule();
-        if (module != null) {
-            module.dispose();
+        if (fModule != null) {
+            fModule.dispose();
             fModule = null;
         }
     }
@@ -889,11 +888,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     public IErlModule getModule() {
         if (fModule == null) {
-            try {
-                fModule = ErlModelUtils.getModule(getEditorInput(),
-                        getDocumentProvider());
-            } catch (final CoreException e) {
-            }
+            fModule = ErlModelUtils.getModule(getEditorInput());
         }
         return fModule;
     }
@@ -1048,8 +1043,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * @return the created Erlang outline page
      */
     protected ErlangOutlinePage createOutlinePage() {
-        final ErlangOutlinePage page = new ErlangOutlinePage(
-                getDocumentProvider(), this);
+        final ErlangOutlinePage page = new ErlangOutlinePage(this);
         page.setInput(getEditorInput());
         return page;
     }
@@ -2013,12 +2007,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         // fOccurrencesFinderJob.run(new NullProgressMonitor());
     }
 
-    private List<ErlangRef> getErlangRefs(
+    private List<ErlangRef> getErlangRefs(final IErlModule module,
             final List<ModuleLineFunctionArityRef> findRefs) {
         final List<ErlangRef> result = new ArrayList<ErlangRef>(findRefs.size());
         for (final ModuleLineFunctionArityRef ref : findRefs) {
-            result.add(new ErlangRef(SearchUtil.searchElementFromRef(ref), ref
-                    .getOffset(), ref.getLength(), ref.isDef()));
+            result.add(new ErlangRef(SearchUtil
+                    .createSearchElement(ref, module), ref.getOffset(), ref
+                    .getLength(), ref.isDef()));
         }
         return result;
     }
@@ -2185,7 +2180,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
                             .findRefs(ideBackend, pattern, module,
                                     getStateDir());
-                    fRefs = getErlangRefs(findRefs);
+                    fRefs = getErlangRefs(module, findRefs);
                 }
             } catch (final BackendException e) {
                 ErlLogger.debug(e);

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -119,7 +120,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             break;
 
         case IResourceDelta.REMOVED:
-            MarkerHelper.deleteMarkers(resource);
+            MarkerUtils.deleteMarkers(resource);
 
             IPath erl = helper.getErlForYrl(resource);
             final IResource br = resource.getProject().findMember(erl);
@@ -159,7 +160,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             monitor.worked(1);
             break;
         case IResourceDelta.REMOVED:
-            MarkerHelper.deleteMarkers(resource);
+            MarkerUtils.deleteMarkers(resource);
 
             IPath beam = prefs.getOutputDir();
             final IPath module = beam.append(resource.getName())
