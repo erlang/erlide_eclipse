@@ -31,5 +31,7 @@ public interface IStatsTreeObject extends IAdaptable {
 	
 	public int getPrecentage();
 	public void setPercentage(int count);
+	
+	public String[] getStringRepr();
 
 }

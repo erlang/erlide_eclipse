@@ -15,6 +15,17 @@
             class="org.erlide.eunit.ui.views.CoverStatsView"
             id="org.erlide.eunit.core.views.TestResultView">
       </view>
+      <category
+            id="org.erlide.eunit.ui"
+            name="Test Category">
+      </category>
+      <view
+            category="org.erlide.eunit.ui"
+            class="org.erlide.eunit.ui.views.TestTableView"
+            icon="icons/sample.gif"
+            id="org.erlide.eunit.ui.views.TestTableView"
+            name="Test Table View">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -27,9 +38,21 @@
                id="org.erlide.eunit.core.views.TestResultView">
          </view>
       </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="org.erlide.eunit.ui.views.TestTableView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
       <contexts
             file="contexts.xml">
       </contexts>

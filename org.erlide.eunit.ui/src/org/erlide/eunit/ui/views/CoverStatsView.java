@@ -243,7 +243,7 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 		System.out.println("Updating viewer");
 		Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                updateTable();
+                updateTable(); //TODO: change this
             }
         });
 	}

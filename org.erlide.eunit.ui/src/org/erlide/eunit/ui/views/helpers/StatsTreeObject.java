@@ -44,7 +44,7 @@ public class StatsTreeObject implements IStatsTreeObject{
 	}
 	
 	public String toString() {
-		return String.format("%s %d %d %d\n", label, all, covered, percentage);
+		return label;
 	}
 	
 	public Object getAdapter(Class key) {
@@ -55,7 +55,6 @@ public class StatsTreeObject implements IStatsTreeObject{
 		this.parent = parent;
 	}
 	
-	@Override
 	public IStatsTreeObject getParent() {
 		return parent;
 	}
@@ -106,9 +105,13 @@ public class StatsTreeObject implements IStatsTreeObject{
 		percentage = count;
 	}
 
-	@Override
 	public void removeAllChildren() {
 		children.clear();
+	}
+
+	public String[] getStringRepr() {
+		return new String[] {label, Integer.toString(all),
+				Integer.toString(covered), Integer.toString(percentage)};
 	}
 
 	
