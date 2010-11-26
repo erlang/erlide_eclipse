@@ -4,8 +4,8 @@ import org.junit.Test;
 
 public class ErlRpcTest {
 
-	@Test
-	public void dummy() {
+    @Test
+    public void dummy() {
 
-	}
+    }
 }

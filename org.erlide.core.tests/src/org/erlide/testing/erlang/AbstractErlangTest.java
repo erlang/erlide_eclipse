@@ -21,38 +21,38 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public abstract class AbstractErlangTest {
 
-	protected static final OtpErlangObject[] NO_ARGS = new OtpErlangObject[] {};
+    protected static final OtpErlangObject[] NO_ARGS = new OtpErlangObject[] {};
 
-	private Backend fBackend;
+    private Backend fBackend;
 
-	@Before
-	public void setUp() throws Exception {
-		fBackend = ErlangCore.getBackendManager().getIdeBackend();
-	}
+    @Before
+    public void setUp() throws Exception {
+        fBackend = ErlangCore.getBackendManager().getIdeBackend();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		fBackend = null;
-	}
+    @After
+    public void tearDown() throws Exception {
+        fBackend = null;
+    }
 
-	protected Backend getBackend() {
-		return fBackend;
-	}
+    protected Backend getBackend() {
+        return fBackend;
+    }
 
-	public OtpErlangObject runErlangTest(final String m, final String f,
-			final OtpErlangObject... args) {
-		final Backend backend = getBackend();
-		if (backend == null) {
-			fail("Backend is null");
-			return null;
-		}
-		try {
-			return backend.call(m, f, null, (Object[]) args);
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail("RPC failed: " + e.getMessage());
-		}
-		return null;
-	}
+    public OtpErlangObject runErlangTest(final String m, final String f,
+            final OtpErlangObject... args) {
+        final Backend backend = getBackend();
+        if (backend == null) {
+            fail("Backend is null");
+            return null;
+        }
+        try {
+            return backend.call(m, f, null, (Object[]) args);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            fail("RPC failed: " + e.getMessage());
+        }
+        return null;
+    }
 
 }
