@@ -15,9 +15,9 @@ package org.erlide.ui.dialogfields;
  */
 public interface IDialogFieldListener {
 
-	/**
-	 * The dialog field has changed.
-	 */
-	void dialogFieldChanged(DialogField field);
+    /**
+     * The dialog field has changed.
+     */
+    void dialogFieldChanged(DialogField field);
 
 }

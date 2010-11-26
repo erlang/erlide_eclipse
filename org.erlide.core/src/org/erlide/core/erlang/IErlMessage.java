@@ -12,14 +12,14 @@ package org.erlide.core.erlang;
 
 public interface IErlMessage extends IErlMember {
 
-	String getMessage();
+    String getMessage();
 
-	String getData();
+    String getData();
 
-	enum MessageKind {
-		INFO, WARNING, ERROR
-	}
+    enum MessageKind {
+        INFO, WARNING, ERROR
+    }
 
-	MessageKind getMessageKind();
+    MessageKind getMessageKind();
 
 }

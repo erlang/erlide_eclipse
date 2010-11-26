@@ -48,174 +48,174 @@ import java.net.UnknownHostException;
  * 
  */
 public class OtpSelf extends OtpLocalNode {
-	private final ServerSocket sock;
-	private final OtpErlangPid pid;
+    private final ServerSocket sock;
+    private final OtpErlangPid pid;
 
-	/**
-	 * <p>
-	 * Create a self node using the default cookie. The default cookie is found
-	 * by reading the first line of the .erlang.cookie file in the user's home
-	 * directory. The home directory is obtained from the System property
-	 * "user.home".
-	 * </p>
-	 * 
-	 * <p>
-	 * If the file does not exist, an empty string is used. This method makes no
-	 * attempt to create the file.
-	 * </p>
-	 * 
-	 * @param node
-	 *            the name of this node.
-	 * 
-	 */
-	public OtpSelf(final String node) throws IOException {
-		this(node, defaultCookie, 0);
-	}
+    /**
+     * <p>
+     * Create a self node using the default cookie. The default cookie is found
+     * by reading the first line of the .erlang.cookie file in the user's home
+     * directory. The home directory is obtained from the System property
+     * "user.home".
+     * </p>
+     * 
+     * <p>
+     * If the file does not exist, an empty string is used. This method makes no
+     * attempt to create the file.
+     * </p>
+     * 
+     * @param node
+     *            the name of this node.
+     * 
+     */
+    public OtpSelf(final String node) throws IOException {
+        this(node, defaultCookie, 0);
+    }
 
-	/**
-	 * Create a self node.
-	 * 
-	 * @param node
-	 *            the name of this node.
-	 * 
-	 * @param cookie
-	 *            the authorization cookie that will be used by this node when
-	 *            it communicates with other nodes.
-	 */
-	public OtpSelf(final String node, final String cookie) throws IOException {
-		this(node, cookie, 0);
-	}
+    /**
+     * Create a self node.
+     * 
+     * @param node
+     *            the name of this node.
+     * 
+     * @param cookie
+     *            the authorization cookie that will be used by this node when
+     *            it communicates with other nodes.
+     */
+    public OtpSelf(final String node, final String cookie) throws IOException {
+        this(node, cookie, 0);
+    }
 
-	public OtpSelf(final String node, final String cookie, final int port)
-			throws IOException {
-		super(node, cookie);
+    public OtpSelf(final String node, final String cookie, final int port)
+            throws IOException {
+        super(node, cookie);
 
-		sock = new ServerSocket(port);
+        sock = new ServerSocket(port);
 
-		if (port != 0) {
-			this.port = port;
-		} else {
-			this.port = sock.getLocalPort();
-		}
+        if (port != 0) {
+            this.port = port;
+        } else {
+            this.port = sock.getLocalPort();
+        }
 
-		pid = createPid();
-	}
+        pid = createPid();
+    }
 
-	/**
-	 * Get the Erlang PID that will be used as the sender id in all "anonymous"
-	 * messages sent by this node. Anonymous messages are those sent via send
-	 * methods in {@link OtpConnection OtpConnection} that do not specify a
-	 * sender.
-	 * 
-	 * @return the Erlang PID that will be used as the sender id in all
-	 *         anonymous messages sent by this node.
-	 */
-	public OtpErlangPid pid() {
-		return pid;
-	}
+    /**
+     * Get the Erlang PID that will be used as the sender id in all "anonymous"
+     * messages sent by this node. Anonymous messages are those sent via send
+     * methods in {@link OtpConnection OtpConnection} that do not specify a
+     * sender.
+     * 
+     * @return the Erlang PID that will be used as the sender id in all
+     *         anonymous messages sent by this node.
+     */
+    public OtpErlangPid pid() {
+        return pid;
+    }
 
-	/**
-	 * Make public the information needed by remote nodes that may wish to
-	 * connect to this one. This method establishes a connection to the Erlang
-	 * port mapper (Epmd) and registers the server node's name and port so that
-	 * remote nodes are able to connect.
-	 * 
-	 * <p>
-	 * This method will fail if an Epmd process is not running on the localhost.
-	 * See the Erlang documentation for information about starting Epmd.
-	 * 
-	 * <p>
-	 * Note that once this method has been called, the node is expected to be
-	 * available to accept incoming connections. For that reason you should make
-	 * sure that you call {@link #accept()} shortly after calling
-	 * {@link #publishPort()}. When you no longer intend to accept connections
-	 * you should call {@link #unPublishPort()}.
-	 * 
-	 * @return true if the operation was successful, false if the node was
-	 *         already registered.
-	 * 
-	 * @exception java.io.IOException
-	 *                if the port mapper could not be contacted.
-	 */
-	public boolean publishPort() throws IOException {
-		if (getEpmd() != null) {
-			return false; // already published
-		}
+    /**
+     * Make public the information needed by remote nodes that may wish to
+     * connect to this one. This method establishes a connection to the Erlang
+     * port mapper (Epmd) and registers the server node's name and port so that
+     * remote nodes are able to connect.
+     * 
+     * <p>
+     * This method will fail if an Epmd process is not running on the localhost.
+     * See the Erlang documentation for information about starting Epmd.
+     * 
+     * <p>
+     * Note that once this method has been called, the node is expected to be
+     * available to accept incoming connections. For that reason you should make
+     * sure that you call {@link #accept()} shortly after calling
+     * {@link #publishPort()}. When you no longer intend to accept connections
+     * you should call {@link #unPublishPort()}.
+     * 
+     * @return true if the operation was successful, false if the node was
+     *         already registered.
+     * 
+     * @exception java.io.IOException
+     *                if the port mapper could not be contacted.
+     */
+    public boolean publishPort() throws IOException {
+        if (getEpmd() != null) {
+            return false; // already published
+        }
 
-		OtpEpmd.publishPort(this);
-		return getEpmd() != null;
-	}
+        OtpEpmd.publishPort(this);
+        return getEpmd() != null;
+    }
 
-	/**
-	 * Unregister the server node's name and port number from the Erlang port
-	 * mapper, thus preventing any new connections from remote nodes.
-	 */
-	public void unPublishPort() {
-		// unregister with epmd
-		OtpEpmd.unPublishPort(this);
+    /**
+     * Unregister the server node's name and port number from the Erlang port
+     * mapper, thus preventing any new connections from remote nodes.
+     */
+    public void unPublishPort() {
+        // unregister with epmd
+        OtpEpmd.unPublishPort(this);
 
-		// close the local descriptor (if we have one)
-		try {
-			if (super.epmd != null) {
-				super.epmd.close();
-			}
-		} catch (final IOException e) {/* ignore close errors */
-		}
-		super.epmd = null;
-	}
+        // close the local descriptor (if we have one)
+        try {
+            if (super.epmd != null) {
+                super.epmd.close();
+            }
+        } catch (final IOException e) {/* ignore close errors */
+        }
+        super.epmd = null;
+    }
 
-	/**
-	 * Accept an incoming connection from a remote node. A call to this method
-	 * will block until an incoming connection is at least attempted.
-	 * 
-	 * @return a connection to a remote node.
-	 * 
-	 * @exception java.io.IOException
-	 *                if a remote node attempted to connect but no common
-	 *                protocol was found.
-	 * 
-	 * @exception OtpAuthException
-	 *                if a remote node attempted to connect, but was not
-	 *                authorized to connect.
-	 */
-	public OtpConnection accept() throws IOException, OtpAuthException {
-		Socket newsock = null;
+    /**
+     * Accept an incoming connection from a remote node. A call to this method
+     * will block until an incoming connection is at least attempted.
+     * 
+     * @return a connection to a remote node.
+     * 
+     * @exception java.io.IOException
+     *                if a remote node attempted to connect but no common
+     *                protocol was found.
+     * 
+     * @exception OtpAuthException
+     *                if a remote node attempted to connect, but was not
+     *                authorized to connect.
+     */
+    public OtpConnection accept() throws IOException, OtpAuthException {
+        Socket newsock = null;
 
-		while (true) {
-			try {
-				newsock = sock.accept();
-				return new OtpConnection(this, newsock);
-			} catch (final IOException e) {
-				try {
-					if (newsock != null) {
-						newsock.close();
-					}
-				} catch (final IOException f) {/* ignore close errors */
-				}
-				throw e;
-			}
-		}
-	}
+        while (true) {
+            try {
+                newsock = sock.accept();
+                return new OtpConnection(this, newsock);
+            } catch (final IOException e) {
+                try {
+                    if (newsock != null) {
+                        newsock.close();
+                    }
+                } catch (final IOException f) {/* ignore close errors */
+                }
+                throw e;
+            }
+        }
+    }
 
-	/**
-	 * Open a connection to a remote node.
-	 * 
-	 * @param other
-	 *            the remote node to which you wish to connect.
-	 * 
-	 * @return a connection to the remote node.
-	 * 
-	 * @exception java.net.UnknownHostException
-	 *                if the remote host could not be found.
-	 * 
-	 * @exception java.io.IOException
-	 *                if it was not possible to connect to the remote node.
-	 * 
-	 * @exception OtpAuthException
-	 *                if the connection was refused by the remote node.
-	 */
-	public OtpConnection connect(final OtpPeer other) throws IOException,
-			UnknownHostException, OtpAuthException {
-		return new OtpConnection(this, other);
-	}
+    /**
+     * Open a connection to a remote node.
+     * 
+     * @param other
+     *            the remote node to which you wish to connect.
+     * 
+     * @return a connection to the remote node.
+     * 
+     * @exception java.net.UnknownHostException
+     *                if the remote host could not be found.
+     * 
+     * @exception java.io.IOException
+     *                if it was not possible to connect to the remote node.
+     * 
+     * @exception OtpAuthException
+     *                if the connection was refused by the remote node.
+     */
+    public OtpConnection connect(final OtpPeer other) throws IOException,
+            UnknownHostException, OtpAuthException {
+        return new OtpConnection(this, other);
+    }
 }

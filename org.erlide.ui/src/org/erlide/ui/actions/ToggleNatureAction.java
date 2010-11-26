@@ -24,87 +24,87 @@ import org.erlide.core.ErlangPlugin;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 
-	private ISelection fSelection;
+    private ISelection fSelection;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(final IAction action) {
-		if (fSelection instanceof IStructuredSelection) {
-			for (final Iterator<?> it = ((IStructuredSelection) fSelection)
-					.iterator(); it.hasNext();) {
-				final Object element = it.next();
-				IProject project = null;
-				if (element instanceof IProject) {
-					project = (IProject) element;
-				} else if (element instanceof IAdaptable) {
-					project = (IProject) ((IAdaptable) element)
-							.getAdapter(IProject.class);
-				}
-				if (project != null) {
-					toggleNature(project);
-				}
-			}
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
+    public void run(final IAction action) {
+        if (fSelection instanceof IStructuredSelection) {
+            for (final Iterator<?> it = ((IStructuredSelection) fSelection)
+                    .iterator(); it.hasNext();) {
+                final Object element = it.next();
+                IProject project = null;
+                if (element instanceof IProject) {
+                    project = (IProject) element;
+                } else if (element instanceof IAdaptable) {
+                    project = (IProject) ((IAdaptable) element)
+                            .getAdapter(IProject.class);
+                }
+                if (project != null) {
+                    toggleNature(project);
+                }
+            }
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
-	 * .IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-		fSelection = selection;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
+     * .IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+        fSelection = selection;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
-	 * action.IAction, org.eclipse.ui.IWorkbenchPart)
-	 */
-	public void setActivePart(final IAction action,
-			final IWorkbenchPart targetPart) {
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
+     * action.IAction, org.eclipse.ui.IWorkbenchPart)
+     */
+    public void setActivePart(final IAction action,
+            final IWorkbenchPart targetPart) {
+    }
 
-	/**
-	 * Toggles sample nature on a project
-	 * 
-	 * @param project
-	 *            to have sample nature added or removed
-	 */
-	private void toggleNature(final IProject project) {
-		try {
-			final IProjectDescription description = project.getDescription();
-			final String[] natures = description.getNatureIds();
-			for (int i = 0; i < natures.length; ++i) {
-				if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
-					// Remove the nature
-					final String[] newNatures = new String[natures.length - 1];
-					System.arraycopy(natures, 0, newNatures, 0, i);
-					System.arraycopy(natures, i + 1, newNatures, i,
-							natures.length - i - 1);
-					description.setNatureIds(newNatures);
-					project.setDescription(description, null);
+    /**
+     * Toggles sample nature on a project
+     * 
+     * @param project
+     *            to have sample nature added or removed
+     */
+    private void toggleNature(final IProject project) {
+        try {
+            final IProjectDescription description = project.getDescription();
+            final String[] natures = description.getNatureIds();
+            for (int i = 0; i < natures.length; ++i) {
+                if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
+                    // Remove the nature
+                    final String[] newNatures = new String[natures.length - 1];
+                    System.arraycopy(natures, 0, newNatures, 0, i);
+                    System.arraycopy(natures, i + 1, newNatures, i,
+                            natures.length - i - 1);
+                    description.setNatureIds(newNatures);
+                    project.setDescription(description, null);
 
-					return;
-				}
-			}
+                    return;
+                }
+            }
 
-			// Add the nature, it will be put first
-			final String[] newNatures = new String[natures.length + 1];
-			System.arraycopy(natures, 0, newNatures, 1, natures.length);
-			newNatures[0] = ErlangPlugin.NATURE_ID;
-			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
+            // Add the nature, it will be put first
+            final String[] newNatures = new String[natures.length + 1];
+            System.arraycopy(natures, 0, newNatures, 1, natures.length);
+            newNatures[0] = ErlangPlugin.NATURE_ID;
+            description.setNatureIds(newNatures);
+            project.setDescription(description, null);
 
-		} catch (final CoreException e) {
-		}
-	}
+        } catch (final CoreException e) {
+        }
+    }
 }

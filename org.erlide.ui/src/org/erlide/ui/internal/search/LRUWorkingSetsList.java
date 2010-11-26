@@ -25,78 +25,78 @@ import org.eclipse.ui.PlatformUI;
 
 public class LRUWorkingSetsList {
 
-	public static class WorkingSetsComparator implements
-			Comparator<IWorkingSet[]> {
-		private static final Collator collator = Collator.getInstance();
+    public static class WorkingSetsComparator implements
+            Comparator<IWorkingSet[]> {
+        private static final Collator collator = Collator.getInstance();
 
-		public int compare(final IWorkingSet[] o1, final IWorkingSet[] o2) {
-			String s1 = (o1.length > 0) ? o1[0].getLabel() : null;
-			String s2 = (o2.length > 0) ? o2[0].getLabel() : null;
-			return collator.compare(s1, s2);
-		}
+        public int compare(final IWorkingSet[] o1, final IWorkingSet[] o2) {
+            final String s1 = o1.length > 0 ? o1[0].getLabel() : null;
+            final String s2 = o2.length > 0 ? o2[0].getLabel() : null;
+            return collator.compare(s1, s2);
+        }
 
-	}
+    }
 
-	private final ArrayList<IWorkingSet[]> fLRUList;
-	private final int fSize;
-	private final WorkingSetsComparator fComparator = new WorkingSetsComparator();
+    private final ArrayList<IWorkingSet[]> fLRUList;
+    private final int fSize;
+    private final WorkingSetsComparator fComparator = new WorkingSetsComparator();
 
-	public LRUWorkingSetsList(final int size) {
-		fSize = size;
-		fLRUList = new ArrayList<IWorkingSet[]>(size);
-	}
+    public LRUWorkingSetsList(final int size) {
+        fSize = size;
+        fLRUList = new ArrayList<IWorkingSet[]>(size);
+    }
 
-	public void add(final IWorkingSet[] workingSets) {
-		removeDeletedWorkingSets();
-		IWorkingSet[] existingWorkingSets = find(fLRUList, workingSets);
-		if (existingWorkingSets != null) {
-			fLRUList.remove(existingWorkingSets);
-		} else if (fLRUList.size() == fSize) {
-			fLRUList.remove(fSize - 1);
-		}
-		fLRUList.add(0, workingSets);
+    public void add(final IWorkingSet[] workingSets) {
+        removeDeletedWorkingSets();
+        final IWorkingSet[] existingWorkingSets = find(fLRUList, workingSets);
+        if (existingWorkingSets != null) {
+            fLRUList.remove(existingWorkingSets);
+        } else if (fLRUList.size() == fSize) {
+            fLRUList.remove(fSize - 1);
+        }
+        fLRUList.add(0, workingSets);
 
-	}
+    }
 
-	public Collection<IWorkingSet[]> getSorted() {
-		ArrayList<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(
-				fLRUList);
-		Collections.sort(sortedList, fComparator);
-		return sortedList;
-	}
+    public Collection<IWorkingSet[]> getSorted() {
+        final ArrayList<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(
+                fLRUList);
+        Collections.sort(sortedList, fComparator);
+        return sortedList;
+    }
 
-	public Collection<IWorkingSet[]> get() {
-		return new ArrayList<IWorkingSet[]>(fLRUList);
-	}
+    public Collection<IWorkingSet[]> get() {
+        return new ArrayList<IWorkingSet[]>(fLRUList);
+    }
 
-	private void removeDeletedWorkingSets() {
-		Iterator<IWorkingSet[]> iter = new ArrayList<IWorkingSet[]>(fLRUList)
-				.iterator();
-		while (iter.hasNext()) {
-			IWorkingSet[] workingSets = iter.next();
-			for (int i = 0; i < workingSets.length; i++) {
-				if (PlatformUI.getWorkbench().getWorkingSetManager()
-						.getWorkingSet(workingSets[i].getName()) == null) {
-					fLRUList.remove(workingSets);
-					break;
-				}
-			}
-		}
-	}
+    private void removeDeletedWorkingSets() {
+        final Iterator<IWorkingSet[]> iter = new ArrayList<IWorkingSet[]>(
+                fLRUList).iterator();
+        while (iter.hasNext()) {
+            final IWorkingSet[] workingSets = iter.next();
+            for (int i = 0; i < workingSets.length; i++) {
+                if (PlatformUI.getWorkbench().getWorkingSetManager()
+                        .getWorkingSet(workingSets[i].getName()) == null) {
+                    fLRUList.remove(workingSets);
+                    break;
+                }
+            }
+        }
+    }
 
-	private IWorkingSet[] find(final ArrayList<IWorkingSet[]> list,
-			final IWorkingSet[] workingSets) {
-		Set<IWorkingSet> workingSetList = new HashSet<IWorkingSet>(Arrays
-				.asList(workingSets));
-		Iterator<IWorkingSet[]> iter = list.iterator();
-		while (iter.hasNext()) {
-			IWorkingSet[] lruWorkingSets = iter.next();
-			Set<IWorkingSet> lruWorkingSetList = new HashSet<IWorkingSet>(
-					Arrays.asList(lruWorkingSets));
-			if (lruWorkingSetList.equals(workingSetList)) {
-				return lruWorkingSets;
-			}
-		}
-		return null;
-	}
+    private IWorkingSet[] find(final ArrayList<IWorkingSet[]> list,
+            final IWorkingSet[] workingSets) {
+        final Set<IWorkingSet> workingSetList = new HashSet<IWorkingSet>(
+                Arrays.asList(workingSets));
+        final Iterator<IWorkingSet[]> iter = list.iterator();
+        while (iter.hasNext()) {
+            final IWorkingSet[] lruWorkingSets = iter.next();
+            final Set<IWorkingSet> lruWorkingSetList = new HashSet<IWorkingSet>(
+                    Arrays.asList(lruWorkingSets));
+            if (lruWorkingSetList.equals(workingSetList)) {
+                return lruWorkingSets;
+            }
+        }
+        return null;
+    }
 }

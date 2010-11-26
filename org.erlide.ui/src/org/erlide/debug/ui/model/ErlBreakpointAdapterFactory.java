@@ -14,30 +14,30 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
-	public Object getAdapter(final Object adaptableObject,
-			@SuppressWarnings("rawtypes") final Class adapterType) {
-		if (adaptableObject instanceof ErlangEditor) {
-			final ErlangEditor editorPart = (ErlangEditor) adaptableObject;
-			final IResource resource = (IResource) editorPart.getEditorInput()
-					.getAdapter(IResource.class);
-			if (resource != null) {
-				final String extension = resource.getFileExtension();
-				if (extension != null && "erl".equals(extension)) {
-					return new ErlLineBreakpointAdapter();
-				}
-			}
-		}
-		return null;
-	}
+    public Object getAdapter(final Object adaptableObject,
+            @SuppressWarnings("rawtypes") final Class adapterType) {
+        if (adaptableObject instanceof ErlangEditor) {
+            final ErlangEditor editorPart = (ErlangEditor) adaptableObject;
+            final IResource resource = (IResource) editorPart.getEditorInput()
+                    .getAdapter(IResource.class);
+            if (resource != null) {
+                final String extension = resource.getFileExtension();
+                if (extension != null && "erl".equals(extension)) {
+                    return new ErlLineBreakpointAdapter();
+                }
+            }
+        }
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
-	 */
-	@SuppressWarnings("rawtypes")
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+     */
+    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
-		return new Class[] { IToggleBreakpointsTarget.class };
-	}
+        return new Class[] { IToggleBreakpointsTarget.class };
+    }
 
 }

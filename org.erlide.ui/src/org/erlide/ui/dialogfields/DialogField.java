@@ -28,214 +28,214 @@ import org.eclipse.swt.widgets.Label;
  */
 public class DialogField {
 
-	private Label fLabel;
+    private Label fLabel;
 
-	protected String fLabelText;
+    protected String fLabelText;
 
-	private IDialogFieldListener fDialogFieldListener;
+    private IDialogFieldListener fDialogFieldListener;
 
-	private boolean fEnabled;
+    private boolean fEnabled;
 
-	public DialogField() {
-		fEnabled = true;
-		fLabel = null;
-		fLabelText = ""; //$NON-NLS-1$
-	}
+    public DialogField() {
+        fEnabled = true;
+        fLabel = null;
+        fLabelText = ""; //$NON-NLS-1$
+    }
 
-	/**
-	 * Sets the label of the dialog field.
-	 */
-	public void setLabelText(final String labeltext) {
-		fLabelText = labeltext;
-		if (isOkToUse(fLabel)) {
-			fLabel.setText(labeltext);
-		}
-	}
+    /**
+     * Sets the label of the dialog field.
+     */
+    public void setLabelText(final String labeltext) {
+        fLabelText = labeltext;
+        if (isOkToUse(fLabel)) {
+            fLabel.setText(labeltext);
+        }
+    }
 
-	// ------ change listener
+    // ------ change listener
 
-	/**
-	 * Defines the listener for this dialog field.
-	 */
-	public final void setDialogFieldListener(final IDialogFieldListener listener) {
-		fDialogFieldListener = listener;
-	}
+    /**
+     * Defines the listener for this dialog field.
+     */
+    public final void setDialogFieldListener(final IDialogFieldListener listener) {
+        fDialogFieldListener = listener;
+    }
 
-	/**
-	 * Programatical invocation of a dialog field change.
-	 */
-	public void dialogFieldChanged() {
-		if (fDialogFieldListener != null) {
-			fDialogFieldListener.dialogFieldChanged(this);
-		}
-	}
+    /**
+     * Programatical invocation of a dialog field change.
+     */
+    public void dialogFieldChanged() {
+        if (fDialogFieldListener != null) {
+            fDialogFieldListener.dialogFieldChanged(this);
+        }
+    }
 
-	// ------- focus management
+    // ------- focus management
 
-	/**
-	 * Tries to set the focus to the dialog field. Returns <code>true</code> if
-	 * the dialog field can take focus. To be reimplemented by dialog field
-	 * implementors.
-	 */
-	public boolean setFocus() {
-		return false;
-	}
+    /**
+     * Tries to set the focus to the dialog field. Returns <code>true</code> if
+     * the dialog field can take focus. To be reimplemented by dialog field
+     * implementors.
+     */
+    public boolean setFocus() {
+        return false;
+    }
 
-	/**
-	 * Posts <code>setFocus</code> to the display event queue.
-	 */
-	public void postSetFocusOnDialogField(final Display display) {
-		if (display != null) {
-			display.asyncExec(new Runnable() {
+    /**
+     * Posts <code>setFocus</code> to the display event queue.
+     */
+    public void postSetFocusOnDialogField(final Display display) {
+        if (display != null) {
+            display.asyncExec(new Runnable() {
 
-				public void run() {
-					setFocus();
-				}
-			});
-		}
-	}
+                public void run() {
+                    setFocus();
+                }
+            });
+        }
+    }
 
-	// ------- layout helpers
+    // ------- layout helpers
 
-	/**
-	 * Creates all controls of the dialog field and fills it to a composite. The
-	 * composite is assumed to have <code>MGridLayout</code> as layout. The
-	 * dialog field will adjust its controls' spans to the number of columns
-	 * given. To be reimplemented by dialog field implementors.
-	 */
-	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
-		assertEnoughColumns(nColumns);
+    /**
+     * Creates all controls of the dialog field and fills it to a composite. The
+     * composite is assumed to have <code>MGridLayout</code> as layout. The
+     * dialog field will adjust its controls' spans to the number of columns
+     * given. To be reimplemented by dialog field implementors.
+     */
+    public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
+        assertEnoughColumns(nColumns);
 
-		final Label label = getLabelControl(parent);
-		label.setLayoutData(gridDataForLabel(nColumns));
+        final Label label = getLabelControl(parent);
+        label.setLayoutData(gridDataForLabel(nColumns));
 
-		return new Control[] { label };
-	}
+        return new Control[] { label };
+    }
 
-	/**
-	 * Returns the number of columns of the dialog field. To be reimplemented by
-	 * dialog field implementors.
-	 */
-	public int getNumberOfControls() {
-		return 1;
-	}
+    /**
+     * Returns the number of columns of the dialog field. To be reimplemented by
+     * dialog field implementors.
+     */
+    public int getNumberOfControls() {
+        return 1;
+    }
 
-	protected static GridData gridDataForLabel(final int span) {
-		final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan = span;
-		return gd;
-	}
+    protected static GridData gridDataForLabel(final int span) {
+        final GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.horizontalSpan = span;
+        return gd;
+    }
 
-	// ------- ui creation
+    // ------- ui creation
 
-	/**
-	 * Creates or returns the created label widget.
-	 * 
-	 * @param parent
-	 *            The parent composite or <code>null</code> if the widget has
-	 *            already been created.
-	 */
-	public Label getLabelControl(final Composite parent) {
-		if (fLabel == null) {
-			assertCompositeNotNull(parent);
+    /**
+     * Creates or returns the created label widget.
+     * 
+     * @param parent
+     *            The parent composite or <code>null</code> if the widget has
+     *            already been created.
+     */
+    public Label getLabelControl(final Composite parent) {
+        if (fLabel == null) {
+            assertCompositeNotNull(parent);
 
-			fLabel = new Label(parent, SWT.LEFT | SWT.WRAP);
-			fLabel.setFont(parent.getFont());
-			fLabel.setEnabled(fEnabled);
-			if (fLabelText != null && !"".equals(fLabelText)) { //$NON-NLS-1$
-				fLabel.setText(fLabelText);
-			} else {
-				fLabel.setText("."); //$NON-NLS-1$
-				fLabel.setVisible(false);
-			}
-		}
-		return fLabel;
-	}
+            fLabel = new Label(parent, SWT.LEFT | SWT.WRAP);
+            fLabel.setFont(parent.getFont());
+            fLabel.setEnabled(fEnabled);
+            if (fLabelText != null && !"".equals(fLabelText)) { //$NON-NLS-1$
+                fLabel.setText(fLabelText);
+            } else {
+                fLabel.setText("."); //$NON-NLS-1$
+                fLabel.setVisible(false);
+            }
+        }
+        return fLabel;
+    }
 
-	/**
-	 * Creates a spacer control.
-	 * 
-	 * @param parent
-	 *            The parent composite
-	 */
-	public static Control createEmptySpace(final Composite parent) {
-		return createEmptySpace(parent, 1);
-	}
+    /**
+     * Creates a spacer control.
+     * 
+     * @param parent
+     *            The parent composite
+     */
+    public static Control createEmptySpace(final Composite parent) {
+        return createEmptySpace(parent, 1);
+    }
 
-	/**
-	 * Creates a spacer control with the given span. The composite is assumed to
-	 * have <code>MGridLayout</code> as layout.
-	 * 
-	 * @param parent
-	 *            The parent composite
-	 */
-	public static Control createEmptySpace(final Composite parent,
-			final int span) {
-		final Label label = new Label(parent, SWT.LEFT);
-		final GridData gd = new GridData();
-		gd.horizontalAlignment = GridData.BEGINNING;
-		gd.grabExcessHorizontalSpace = false;
-		gd.horizontalSpan = span;
-		gd.horizontalIndent = 0;
-		gd.widthHint = 0;
-		gd.heightHint = 0;
-		label.setLayoutData(gd);
-		return label;
-	}
+    /**
+     * Creates a spacer control with the given span. The composite is assumed to
+     * have <code>MGridLayout</code> as layout.
+     * 
+     * @param parent
+     *            The parent composite
+     */
+    public static Control createEmptySpace(final Composite parent,
+            final int span) {
+        final Label label = new Label(parent, SWT.LEFT);
+        final GridData gd = new GridData();
+        gd.horizontalAlignment = GridData.BEGINNING;
+        gd.grabExcessHorizontalSpace = false;
+        gd.horizontalSpan = span;
+        gd.horizontalIndent = 0;
+        gd.widthHint = 0;
+        gd.heightHint = 0;
+        label.setLayoutData(gd);
+        return label;
+    }
 
-	/**
-	 * Tests is the control is not <code>null</code> and not disposed.
-	 */
-	protected final boolean isOkToUse(final Control control) {
-		return (control != null) && (Display.getCurrent() != null)
-				&& !control.isDisposed();
-	}
+    /**
+     * Tests is the control is not <code>null</code> and not disposed.
+     */
+    protected final boolean isOkToUse(final Control control) {
+        return control != null && Display.getCurrent() != null
+                && !control.isDisposed();
+    }
 
-	// --------- enable / disable management
+    // --------- enable / disable management
 
-	/**
-	 * Sets the enable state of the dialog field.
-	 */
-	public final void setEnabled(final boolean enabled) {
-		if (enabled != fEnabled) {
-			fEnabled = enabled;
-			updateEnableState();
-		}
-	}
+    /**
+     * Sets the enable state of the dialog field.
+     */
+    public final void setEnabled(final boolean enabled) {
+        if (enabled != fEnabled) {
+            fEnabled = enabled;
+            updateEnableState();
+        }
+    }
 
-	/**
-	 * Called when the enable state changed. To be extended by dialog field
-	 * implementors.
-	 */
-	protected void updateEnableState() {
-		if (fLabel != null) {
-			fLabel.setEnabled(fEnabled);
-		}
-	}
+    /**
+     * Called when the enable state changed. To be extended by dialog field
+     * implementors.
+     */
+    protected void updateEnableState() {
+        if (fLabel != null) {
+            fLabel.setEnabled(fEnabled);
+        }
+    }
 
-	/**
-	 * Brings the UI in sync with the model. Only needed when model was changed
-	 * in different thread whil UI was lready created.
-	 */
-	public void refresh() {
-		updateEnableState();
-	}
+    /**
+     * Brings the UI in sync with the model. Only needed when model was changed
+     * in different thread whil UI was lready created.
+     */
+    public void refresh() {
+        updateEnableState();
+    }
 
-	/**
-	 * Gets the enable state of the dialog field.
-	 */
-	public final boolean isEnabled() {
-		return fEnabled;
-	}
+    /**
+     * Gets the enable state of the dialog field.
+     */
+    public final boolean isEnabled() {
+        return fEnabled;
+    }
 
-	protected final void assertCompositeNotNull(final Composite comp) {
-		Assert.isNotNull(comp,
-				"uncreated control requested with composite null"); //$NON-NLS-1$
-	}
+    protected final void assertCompositeNotNull(final Composite comp) {
+        Assert.isNotNull(comp,
+                "uncreated control requested with composite null"); //$NON-NLS-1$
+    }
 
-	protected final void assertEnoughColumns(final int nColumns) {
-		Assert.isTrue(nColumns >= getNumberOfControls(),
-				"given number of columns is too small"); //$NON-NLS-1$
-	}
+    protected final void assertEnoughColumns(final int nColumns) {
+        Assert.isTrue(nColumns >= getNumberOfControls(),
+                "given number of columns is too small"); //$NON-NLS-1$
+    }
 
 }

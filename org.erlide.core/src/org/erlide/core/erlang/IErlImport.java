@@ -10,6 +10,6 @@ import org.erlide.jinterface.util.IConvertible;
  * 
  */
 public interface IErlImport extends IErlImportExport, IErlMember, IParent,
-		IConvertible {
-	public String getImportModule();
+        IConvertible {
+    public String getImportModule();
 }

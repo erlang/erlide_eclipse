@@ -24,40 +24,40 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang integral types.
  */
 public class OtpErlangShort extends OtpErlangLong implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = 7162345156603088099L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = 7162345156603088099L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param s
-	 *            the short value to use.
-	 */
-	public OtpErlangShort(final short s) {
-		super(s);
-	}
+    /**
+     * Create an Erlang integer from the given value.
+     * 
+     * @param s
+     *            the short value to use.
+     */
+    public OtpErlangShort(final short s) {
+        super(s);
+    }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is too large to be represented as a short.
-	 */
-	public OtpErlangShort(final OtpInputStream buf)
-			throws OtpErlangRangeException, OtpErlangDecodeException {
-		super(buf);
+    /**
+     * Create an Erlang integer from a stream containing an integer encoded in
+     * Erlang external format.
+     * 
+     * @param buf
+     *            the stream containing the encoded value.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
+     * 
+     * @exception OtpErlangRangeException
+     *                if the value is too large to be represented as a short.
+     */
+    public OtpErlangShort(final OtpInputStream buf)
+            throws OtpErlangRangeException, OtpErlangDecodeException {
+        super(buf);
 
-		@SuppressWarnings("unused")
-		final short j = shortValue();
-	}
+        @SuppressWarnings("unused")
+        final short j = shortValue();
+    }
 
 }

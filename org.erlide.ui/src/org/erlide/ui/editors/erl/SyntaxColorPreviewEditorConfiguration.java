@@ -24,52 +24,52 @@ import org.erlide.ui.util.IColorManager;
 
 public class SyntaxColorPreviewEditorConfiguration extends EditorConfiguration {
 
-	private final Map<TokenHighlight, HighlightStyle> styles;
+    private final Map<TokenHighlight, HighlightStyle> styles;
 
-	public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
-			final IColorManager lcolorManager,
-			final Map<TokenHighlight, HighlightStyle> styles) {
-		super(store, null, lcolorManager);
-		this.styles = styles;
-	}
+    public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
+            final IColorManager lcolorManager,
+            final Map<TokenHighlight, HighlightStyle> styles) {
+        super(store, null, lcolorManager);
+        this.styles = styles;
+    }
 
-	/**
-	 * The double click strategy
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
-	 *      java.lang.String)
-	 */
-	@Override
-	public ITextDoubleClickStrategy getDoubleClickStrategy(
-			final ISourceViewer sourceViewer, final String contentType) {
-		return null;
-	}
+    /**
+     * The double click strategy
+     * 
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
+     *      java.lang.String)
+     */
+    @Override
+    public ITextDoubleClickStrategy getDoubleClickStrategy(
+            final ISourceViewer sourceViewer, final String contentType) {
+        return null;
+    }
 
-	/**
-	 * 
-	 * @param sourceViewer
-	 * @param contentType
-	 * @return
-	 */
-	public IAutoEditStrategy getAutoEditStrategy(
-			final ISourceViewer sourceViewer, final String contentType) {
-		return null;
-	}
+    /**
+     * 
+     * @param sourceViewer
+     * @param contentType
+     * @return
+     */
+    public IAutoEditStrategy getAutoEditStrategy(
+            final ISourceViewer sourceViewer, final String contentType) {
+        return null;
+    }
 
-	@Override
-	public ITextHover getTextHover(final ISourceViewer sourceViewer,
-			final String contentType) {
-		return null;
-	}
+    @Override
+    public ITextHover getTextHover(final ISourceViewer sourceViewer,
+            final String contentType) {
+        return null;
+    }
 
-	@Override
-	protected ErlHighlightScanner getHighlightScanner(
-			final ISourceViewer sourceViewer) {
-		if (fHighlightScanner == null) {
-			fHighlightScanner = new SyntaxColorPreviewHighlightScanner(
-					colorManager, sourceViewer, styles);
-		}
-		return fHighlightScanner;
-	}
+    @Override
+    protected ErlHighlightScanner getHighlightScanner(
+            final ISourceViewer sourceViewer) {
+        if (fHighlightScanner == null) {
+            fHighlightScanner = new SyntaxColorPreviewHighlightScanner(
+                    colorManager, sourceViewer, styles);
+        }
+        return fHighlightScanner;
+    }
 
 }

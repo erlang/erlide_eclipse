@@ -27,93 +27,93 @@ import com.google.common.collect.Lists;
 
 public final class Bindings {
 
-	private final Map<String, OtpErlangObject> bindings;
+    private final Map<String, OtpErlangObject> bindings;
 
-	public Bindings() {
-		this.bindings = new HashMap<String, OtpErlangObject>();
-	}
+    public Bindings() {
+        bindings = new HashMap<String, OtpErlangObject>();
+    }
 
-	public Bindings(final Bindings other) {
-		this();
-		merge(other);
-	}
+    public Bindings(final Bindings other) {
+        this();
+        merge(other);
+    }
 
-	public void merge(final Bindings other) {
-		this.bindings.putAll(other.bindings);
-	}
+    public void merge(final Bindings other) {
+        bindings.putAll(other.bindings);
+    }
 
-	public OtpErlangObject get(final String name) {
-		return this.bindings.get(name);
-	}
+    public OtpErlangObject get(final String name) {
+        return bindings.get(name);
+    }
 
-	public int getInt(final String name) throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangLong) {
-			return ((OtpErlangLong) r).intValue();
-		}
-		throw new OtpErlangException("value is not an integer");
-	}
+    public int getInt(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangLong) {
+            return ((OtpErlangLong) r).intValue();
+        }
+        throw new OtpErlangException("value is not an integer");
+    }
 
-	public long getLong(final String name) throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangLong) {
-			return ((OtpErlangLong) r).longValue();
-		}
-		throw new OtpErlangException("value is not an integer");
-	}
+    public long getLong(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangLong) {
+            return ((OtpErlangLong) r).longValue();
+        }
+        throw new OtpErlangException("value is not an integer");
+    }
 
-	public String getAtom(final String name) throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangAtom) {
-			return ((OtpErlangAtom) r).atomValue();
-		}
-		throw new OtpErlangException("value is not an atom");
-	}
+    public String getAtom(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangAtom) {
+            return ((OtpErlangAtom) r).atomValue();
+        }
+        throw new OtpErlangException("value is not an atom");
+    }
 
-	public String getString(final String name) throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangString) {
-			return ((OtpErlangString) r).stringValue();
-		}
-		throw new OtpErlangException("value is not a string");
-	}
+    public String getString(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangString) {
+            return ((OtpErlangString) r).stringValue();
+        }
+        throw new OtpErlangException("value is not a string");
+    }
 
-	public Collection<OtpErlangObject> getList(final String name)
-			throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangList) {
-			return Lists.newArrayList(((OtpErlangList) r).elements());
-		}
-		throw new OtpErlangException("value is not a list");
-	}
+    public Collection<OtpErlangObject> getList(final String name)
+            throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangList) {
+            return Lists.newArrayList(((OtpErlangList) r).elements());
+        }
+        throw new OtpErlangException("value is not a list");
+    }
 
-	public OtpErlangObject[] getTuple(final String name)
-			throws OtpErlangException {
-		final OtpErlangObject r = get(name);
-		if (r instanceof OtpErlangTuple) {
-			return ((OtpErlangTuple) r).elements();
-		}
-		throw new OtpErlangException("value is not a tuple");
-	}
+    public OtpErlangObject[] getTuple(final String name)
+            throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangTuple) {
+            return ((OtpErlangTuple) r).elements();
+        }
+        throw new OtpErlangException("value is not a tuple");
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T getAs(final String name, final Class<T> cls)
-			throws SignatureException {
-		final OtpErlangObject v = get(name);
-		return (T) TypeConverter.erlang2java(v, cls);
-	}
+    @SuppressWarnings("unchecked")
+    public <T> T getAs(final String name, final Class<T> cls)
+            throws SignatureException {
+        final OtpErlangObject v = get(name);
+        return (T) TypeConverter.erlang2java(v, cls);
+    }
 
-	public void put(final String name, final OtpErlangObject value) {
-		this.bindings.put(name, value);
-	}
+    public void put(final String name, final OtpErlangObject value) {
+        bindings.put(name, value);
+    }
 
-	public Map<String, OtpErlangObject> getAll() {
-		return Collections.unmodifiableMap(this.bindings);
-	}
+    public Map<String, OtpErlangObject> getAll() {
+        return Collections.unmodifiableMap(bindings);
+    }
 
-	@Override
-	public String toString() {
-		return bindings.toString();
-	}
+    @Override
+    public String toString() {
+        return bindings.toString();
+    }
 
 }

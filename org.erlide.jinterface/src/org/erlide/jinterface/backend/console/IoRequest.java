@@ -22,100 +22,100 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class IoRequest {
 
-	public static final Pattern RE_PROMPT = Pattern
-			.compile("\\([^)]+\\)[0-9]+> |[0-9]+> ");
-	public static final Pattern RE_HEADER = Pattern
-			.compile("Eshell V[0-9]+\\.[0-9]+\\.[0-9]+");
+    public static final Pattern RE_PROMPT = Pattern
+            .compile("\\([^)]+\\)[0-9]+> |[0-9]+> ");
+    public static final Pattern RE_HEADER = Pattern
+            .compile("Eshell V[0-9]+\\.[0-9]+\\.[0-9]+");
 
-	public enum IoRequestKind {
-		HEADER, PROMPT, INPUT, OUTPUT, STDOUT, STDERR;
-	}
+    public enum IoRequestKind {
+        HEADER, PROMPT, INPUT, OUTPUT, STDOUT, STDERR;
+    }
 
-	private OtpErlangPid leader;
-	private OtpErlangPid sender;
-	private String message;
-	private int start;
-	private final IoRequestKind kind;
+    private OtpErlangPid leader;
+    private OtpErlangPid sender;
+    private String message;
+    private int start;
+    private final IoRequestKind kind;
 
-	public IoRequest(final OtpErlangTuple obj) {
-		try {
-			final OtpErlangObject o = obj.elementAt(0);
-			if (o instanceof OtpErlangString) {
-				message = ((OtpErlangString) o).stringValue();
-			} else if (o instanceof OtpErlangList) {
-				final OtpErlangList l = (OtpErlangList) o;
-				if (l.arity() == 0) {
-					message = "";
-				} else {
-					try {
-						message = l.stringValue();
-					} catch (Exception e) {
-						message = o.toString();
-					}
-				}
-			} else {
-				message = o.toString();
-			}
+    public IoRequest(final OtpErlangTuple obj) {
+        try {
+            final OtpErlangObject o = obj.elementAt(0);
+            if (o instanceof OtpErlangString) {
+                message = ((OtpErlangString) o).stringValue();
+            } else if (o instanceof OtpErlangList) {
+                final OtpErlangList l = (OtpErlangList) o;
+                if (l.arity() == 0) {
+                    message = "";
+                } else {
+                    try {
+                        message = l.stringValue();
+                    } catch (final Exception e) {
+                        message = o.toString();
+                    }
+                }
+            } else {
+                message = o.toString();
+            }
 
-			leader = (OtpErlangPid) obj.elementAt(1);
-			final OtpErlangObject s = obj.elementAt(2);
-			if (s instanceof OtpErlangPid) {
-				sender = (OtpErlangPid) s;
-			} else {
-				sender = new OtpErlangPid("s", 0, 0, 0);
-			}
-		} catch (final Exception e) {
-			message = null;
-		}
-		if (RE_PROMPT.matcher(message).matches()) {
-			kind = IoRequestKind.PROMPT;
-		} else if (RE_HEADER.matcher(message).matches()) {
-			kind = IoRequestKind.HEADER;
-		} else {
-			kind = IoRequestKind.OUTPUT;
-		}
-	}
+            leader = (OtpErlangPid) obj.elementAt(1);
+            final OtpErlangObject s = obj.elementAt(2);
+            if (s instanceof OtpErlangPid) {
+                sender = (OtpErlangPid) s;
+            } else {
+                sender = new OtpErlangPid("s", 0, 0, 0);
+            }
+        } catch (final Exception e) {
+            message = null;
+        }
+        if (RE_PROMPT.matcher(message).matches()) {
+            kind = IoRequestKind.PROMPT;
+        } else if (RE_HEADER.matcher(message).matches()) {
+            kind = IoRequestKind.HEADER;
+        } else {
+            kind = IoRequestKind.OUTPUT;
+        }
+    }
 
-	public IoRequest(final String msg, IoRequestKind kind) {
-		Assert.isTrue(kind != IoRequestKind.OUTPUT);
-		Assert.isTrue(kind != IoRequestKind.PROMPT);
-		message = msg;
-		leader = new OtpErlangPid("s", 0, 0, 0);
-		sender = new OtpErlangPid("s", 0, 0, 0);
-		this.kind = kind;
-	}
+    public IoRequest(final String msg, final IoRequestKind kind) {
+        Assert.isTrue(kind != IoRequestKind.OUTPUT);
+        Assert.isTrue(kind != IoRequestKind.PROMPT);
+        message = msg;
+        leader = new OtpErlangPid("s", 0, 0, 0);
+        sender = new OtpErlangPid("s", 0, 0, 0);
+        this.kind = kind;
+    }
 
-	@Override
-	public String toString() {
-		return "{" + kind.toString() + ":: '" + message + "', " + start + "/"
-				+ message.length() + ", " + leader + ", " + sender + "}";
-	}
+    @Override
+    public String toString() {
+        return "{" + kind.toString() + ":: '" + message + "', " + start + "/"
+                + message.length() + ", " + leader + ", " + sender + "}";
+    }
 
-	public OtpErlangPid getLeader() {
-		return leader;
-	}
+    public OtpErlangPid getLeader() {
+        return leader;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public OtpErlangPid getSender() {
-		return sender;
-	}
+    public OtpErlangPid getSender() {
+        return sender;
+    }
 
-	public int getStart() {
-		return start;
-	}
+    public int getStart() {
+        return start;
+    }
 
-	public int getLength() {
-		return message.length();
-	}
+    public int getLength() {
+        return message.length();
+    }
 
-	public IoRequestKind getKind() {
-		return kind;
-	}
+    public IoRequestKind getKind() {
+        return kind;
+    }
 
-	public void setStart(int pos) {
-		start = pos;
-	}
+    public void setStart(final int pos) {
+        start = pos;
+    }
 }

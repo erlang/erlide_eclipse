@@ -4,13 +4,13 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface EventHandler {
 
-	/**
-	 * Handle events from erlang. Return true to terminate. Should be stateless.
-	 * 
-	 * @param msg
-	 *            The term sent from erlang, can't be null
-	 * 
-	 */
-	boolean handleEvent(OtpErlangObject msg);
+    /**
+     * Handle events from erlang. Return true to terminate. Should be stateless.
+     * 
+     * @param msg
+     *            The term sent from erlang, can't be null
+     * 
+     */
+    boolean handleEvent(OtpErlangObject msg);
 
 }

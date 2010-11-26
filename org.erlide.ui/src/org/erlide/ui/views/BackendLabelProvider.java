@@ -17,20 +17,20 @@ import org.erlide.jinterface.backend.RuntimeInfo;
 
 public class BackendLabelProvider extends LabelProvider {
 
-	@Override
-	public Image getImage(final Object element) {
-		return null;
-	}
+    @Override
+    public Image getImage(final Object element) {
+        return null;
+    }
 
-	@Override
-	public String getText(final Object element) {
-		final Backend b = (Backend) element;
-		final RuntimeInfo info = b.getInfo();
-		final String s = info.getName();
-		// if (s == null) {
-		// return "<default>";
-		// }
-		return s + ": " + info.getNodeName();
-	}
+    @Override
+    public String getText(final Object element) {
+        final Backend b = (Backend) element;
+        final RuntimeInfo info = b.getInfo();
+        final String s = info.getName();
+        // if (s == null) {
+        // return "<default>";
+        // }
+        return s + ": " + info.getNodeName();
+    }
 
 }

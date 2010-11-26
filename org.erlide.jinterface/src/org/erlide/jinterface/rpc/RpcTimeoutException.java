@@ -11,18 +11,18 @@
 package org.erlide.jinterface.rpc;
 
 public class RpcTimeoutException extends RpcException {
-	private static final long serialVersionUID = 1229604283654671393L;
+    private static final long serialVersionUID = 1229604283654671393L;
 
-	public RpcTimeoutException(final Exception e) {
-		super(e);
-	}
+    public RpcTimeoutException(final Exception e) {
+        super(e);
+    }
 
-	public RpcTimeoutException() {
-		super("timeout");
-	}
+    public RpcTimeoutException() {
+        super("timeout");
+    }
 
-	public RpcTimeoutException(String msg) {
-		super("timeout in " + msg);
-	}
+    public RpcTimeoutException(final String msg) {
+        super("timeout in " + msg);
+    }
 
 }

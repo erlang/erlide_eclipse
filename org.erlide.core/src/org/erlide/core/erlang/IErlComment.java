@@ -9,16 +9,16 @@ package org.erlide.core.erlang;
  */
 public interface IErlComment extends IErlMember {
 
-	String getHoverHelp();
+    String getHoverHelp();
 
-	boolean isHeader();
+    boolean isHeader();
 
-	boolean isEdoc();
+    boolean isEdoc();
 
-	/**
-	 * The number of %s preceding the comment. Useful for correct indentation
-	 * 
-	 * @return the number of %s preceding the comment
-	 */
-	// int getLevel();
+    /**
+     * The number of %s preceding the comment. Useful for correct indentation
+     * 
+     * @return the number of %s preceding the comment
+     */
+    // int getLevel();
 }

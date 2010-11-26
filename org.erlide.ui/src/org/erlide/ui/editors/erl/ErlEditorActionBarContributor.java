@@ -25,92 +25,90 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.erlide.ui.editors.erl.actions.GotoAnnotationAction;
 
 public class ErlEditorActionBarContributor extends
-		BasicTextEditorActionContributor {
+        BasicTextEditorActionContributor {
 
-	public ErlEditorActionBarContributor() {
-		super();
+    public ErlEditorActionBarContributor() {
+        super();
 
-		// contentAssistProposal = new RetargetTextEditorAction(ErlideUIMessages
-		// .getResourceBundle(), "ContentAssistProposal.");
-		// ErlLogger.debug("AC 1");
+        // contentAssistProposal = new RetargetTextEditorAction(ErlideUIMessages
+        // .getResourceBundle(), "ContentAssistProposal.");
+        // ErlLogger.debug("AC 1");
 
-		fPreviousAnnotation = new GotoAnnotationAction(
-				"PreviousAnnotation.", false); //$NON-NLS-1$
-		fNextAnnotation = new GotoAnnotationAction("NextAnnotation.", true); //$NON-NLS-1$
-	}
+        fPreviousAnnotation = new GotoAnnotationAction(
+                "PreviousAnnotation.", false); //$NON-NLS-1$
+        fNextAnnotation = new GotoAnnotationAction("NextAnnotation.", true); //$NON-NLS-1$
+    }
 
-	// protected RetargetTextEditorAction contentAssistProposal;
-	private final GotoAnnotationAction fPreviousAnnotation;
+    // protected RetargetTextEditorAction contentAssistProposal;
+    private final GotoAnnotationAction fPreviousAnnotation;
 
-	private final GotoAnnotationAction fNextAnnotation;
+    private final GotoAnnotationAction fNextAnnotation;
 
-	@Override
-	public void contributeToMenu(final IMenuManager menuManager) {
-		final IMenuManager navigateMenu = menuManager
-				.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
-		if (navigateMenu != null) {
-			// navigateMenu.add(new Separator());
-			// navigateMenu.add(fQuickOutline);
-		}
-	}
+    @Override
+    public void contributeToMenu(final IMenuManager menuManager) {
+        final IMenuManager navigateMenu = menuManager
+                .findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
+        if (navigateMenu != null) {
+            // navigateMenu.add(new Separator());
+            // navigateMenu.add(fQuickOutline);
+        }
+    }
 
-	@Override
-	public void setActiveEditor(final IEditorPart part) {
-		super.setActiveEditor(part);
+    @Override
+    public void setActiveEditor(final IEditorPart part) {
+        super.setActiveEditor(part);
 
-		ITextEditor editor = null;
-		if (part instanceof ITextEditor) {
-			editor = (ITextEditor) part;
-		}
+        ITextEditor editor = null;
+        if (part instanceof ITextEditor) {
+            editor = (ITextEditor) part;
+        }
 
-		if (part instanceof ErlangEditor) {
-			final ErlangEditor erlangEditor = (ErlangEditor) part;
-			erlangEditor.getActionGroup().fillActionBars(getActionBars());
-		}
-		// contentAssistProposal.setAction(getAction(editor,
-		// "ContentAssistProposal"));
+        if (part instanceof ErlangEditor) {
+            final ErlangEditor erlangEditor = (ErlangEditor) part;
+            erlangEditor.getActionGroup().fillActionBars(getActionBars());
+        }
+        // contentAssistProposal.setAction(getAction(editor,
+        // "ContentAssistProposal"));
 
-		// IActionBars bars = getActionBars();
-		// bars.setGlobalActionHandler(ErlangActionIds.COMMENT,
-		// getAction(editor,
-		// "Comment"));
-		// bars.setGlobalActionHandler(ErlangActionIds.UNCOMMENT,
-		// getAction(editor,
-		// "Uncomment"));
+        // IActionBars bars = getActionBars();
+        // bars.setGlobalActionHandler(ErlangActionIds.COMMENT,
+        // getAction(editor,
+        // "Comment"));
+        // bars.setGlobalActionHandler(ErlangActionIds.UNCOMMENT,
+        // getAction(editor,
+        // "Uncomment"));
 
-		final IActionBars actionBars = getActionBars();
-		final IStatusLineManager manager = actionBars.getStatusLineManager();
-		manager.setMessage(null);
-		manager.setErrorMessage(null);
+        final IActionBars actionBars = getActionBars();
+        final IStatusLineManager manager = actionBars.getStatusLineManager();
+        manager.setMessage(null);
+        manager.setErrorMessage(null);
 
-		fPreviousAnnotation.setEditor(editor);
-		fNextAnnotation.setEditor(editor);
+        fPreviousAnnotation.setEditor(editor);
+        fNextAnnotation.setEditor(editor);
 
-		final IAction showOutline = getAction(editor,
-				IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
-		actionBars.setGlobalActionHandler(
-				IErlangEditorActionDefinitionIds.SHOW_OUTLINE, showOutline);
+        final IAction showOutline = getAction(editor,
+                IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
+        actionBars.setGlobalActionHandler(
+                IErlangEditorActionDefinitionIds.SHOW_OUTLINE, showOutline);
 
-	}
+    }
 
-	/*
-	 * @see IEditorActionBarContributor#init(IActionBars, IWorkbenchPage)
-	 */
-	@Override
-	public void init(final IActionBars bars, final IWorkbenchPage page) {
-		super.init(bars, page);
-		// register actions that have a dynamic editor.
-		bars.setGlobalActionHandler(
-				ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION,
-				fNextAnnotation);
-		bars.setGlobalActionHandler(
-				ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION,
-				fPreviousAnnotation);
-		bars
-				.setGlobalActionHandler(ActionFactory.NEXT.getId(),
-						fNextAnnotation);
-		bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(),
-				fPreviousAnnotation);
-	}
+    /*
+     * @see IEditorActionBarContributor#init(IActionBars, IWorkbenchPage)
+     */
+    @Override
+    public void init(final IActionBars bars, final IWorkbenchPage page) {
+        super.init(bars, page);
+        // register actions that have a dynamic editor.
+        bars.setGlobalActionHandler(
+                ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION,
+                fNextAnnotation);
+        bars.setGlobalActionHandler(
+                ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION,
+                fPreviousAnnotation);
+        bars.setGlobalActionHandler(ActionFactory.NEXT.getId(), fNextAnnotation);
+        bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(),
+                fPreviousAnnotation);
+    }
 
 }

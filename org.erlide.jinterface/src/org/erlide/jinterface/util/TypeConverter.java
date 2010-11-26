@@ -41,7 +41,7 @@ import com.ericsson.otp.erlang.SignatureException;
 /**
  * Helps converting Java values to Erlang terms, and back. The type information
  * is provided through a string signature, as below.
- *
+ * 
  * <dl>
  * <dt>x</dt>
  * <dd>Uses simple conversion, complex types are expected to be OtpErlangObjecs
@@ -70,7 +70,7 @@ import com.ericsson.otp.erlang.SignatureException;
  * <dd>tuple, the number is the arity and the types of the elements follow in
  * order. Only arities between 0 and 9 are supported.</dd>
  * </dl>
- *
+ * 
  */
 public final class TypeConverter {
 
@@ -300,7 +300,7 @@ public final class TypeConverter {
 
     /**
      * Converts Java objects to Erlang terms.<br/>
-     *
+     * 
      * @param obj
      *            the object to be converted
      * @param type
@@ -485,7 +485,7 @@ public final class TypeConverter {
     /**
      * Old style java->erlang conversion, used when "x" is given as an argument.
      * TODO Could be polished a little.
-     *
+     * 
      * @param obj
      * @return
      */

@@ -21,52 +21,52 @@ import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.ui.ErlideUIPlugin;
 
 public abstract class AsyncCaller<T> implements Runnable {
-	long interval;
+    long interval;
 
-	public AsyncCaller() {
-		this(100);
-	}
+    public AsyncCaller() {
+        this(100);
+    }
 
-	public AsyncCaller(long interval) {
-		this.interval = interval;
-	}
+    public AsyncCaller(final long interval) {
+        this.interval = interval;
+    }
 
-	protected abstract T prepare();
+    protected abstract T prepare();
 
-	protected abstract RpcFuture call() throws BackendException;
+    protected abstract RpcFuture call() throws BackendException;
 
-	protected abstract void handleResult(T context, RpcFuture result);
+    protected abstract void handleResult(T context, RpcFuture result);
 
-	public void run() {
-		final T context = prepare();
-		try {
-			final RpcFuture result = call();
-			if (result == null) {
-				return;
-			}
-			Job job = new UIJob("async call updater") {
-				@Override
-				public IStatus runInUIThread(IProgressMonitor monitor) {
-					try {
-						if (result.get(1) == null) {
-							schedule(interval);
-						}
-					} catch (RpcException e) {
-						e.printStackTrace();
-					}
-					handleResult(context, result);
-					if (monitor.isCanceled()) {
-						return Status.CANCEL_STATUS;
-					}
-					return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID,
-							"done");
-				}
-			};
-			job.schedule(interval);
-		} catch (BackendException e) {
-			e.printStackTrace();
-		}
+    public void run() {
+        final T context = prepare();
+        try {
+            final RpcFuture result = call();
+            if (result == null) {
+                return;
+            }
+            final Job job = new UIJob("async call updater") {
+                @Override
+                public IStatus runInUIThread(final IProgressMonitor monitor) {
+                    try {
+                        if (result.get(1) == null) {
+                            schedule(interval);
+                        }
+                    } catch (final RpcException e) {
+                        e.printStackTrace();
+                    }
+                    handleResult(context, result);
+                    if (monitor.isCanceled()) {
+                        return Status.CANCEL_STATUS;
+                    }
+                    return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID,
+                            "done");
+                }
+            };
+            job.schedule(interval);
+        } catch (final BackendException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 }

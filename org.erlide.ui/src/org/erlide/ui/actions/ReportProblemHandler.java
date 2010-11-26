@@ -19,11 +19,11 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 public class ReportProblemHandler extends AbstractHandler implements IHandler {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		PreferenceDialog dlg = PreferencesUtil.createPreferenceDialogOn(null,
-				"org.erlide.ui.reporting", null, null);
-		dlg.open();
-		return null;
-	}
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
+        final PreferenceDialog dlg = PreferencesUtil.createPreferenceDialogOn(
+                null, "org.erlide.ui.reporting", null, null);
+        dlg.open();
+        return null;
+    }
 
 }

@@ -12,14 +12,14 @@ package com.ericsson.otp.erlang;
 
 public class SignatureException extends Exception {
 
-	private static final long serialVersionUID = -5143914414424005061L;
+    private static final long serialVersionUID = -5143914414424005061L;
 
-	public SignatureException(final Exception e) {
-		super(e);
-	}
+    public SignatureException(final Exception e) {
+        super(e);
+    }
 
-	public SignatureException(final String string) {
-		super(string);
-	}
+    public SignatureException(final String string) {
+        super(string);
+    }
 
 }

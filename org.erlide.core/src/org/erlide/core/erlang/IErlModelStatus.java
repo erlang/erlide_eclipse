@@ -39,51 +39,51 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface IErlModelStatus extends IStatus {
 
-	/**
-	 * Returns any Erlang elements associated with the failure (see
-	 * specification of the status code), or an empty array if no elements are
-	 * related to this particular status code.
-	 * 
-	 * @return the list of Erlang element culprits
-	 * @see ErlModelStatusConstants
-	 */
-	IErlElement[] getElements();
+    /**
+     * Returns any Erlang elements associated with the failure (see
+     * specification of the status code), or an empty array if no elements are
+     * related to this particular status code.
+     * 
+     * @return the list of Erlang element culprits
+     * @see ErlModelStatusConstants
+     */
+    IErlElement[] getElements();
 
-	/**
-	 * Returns the path associated with the failure (see specification of the
-	 * status code), or <code>null</code> if the failure is not one of
-	 * <code>DEVICE_PATH</code>, <code>INVALID_PATH</code>,
-	 * <code>PATH_OUTSIDE_PROJECT</code>, or <code>RELATIVE_PATH</code>.
-	 * 
-	 * @return the path that caused the failure, or <code>null</code> if none
-	 * @see ErlModelStatusConstants#DEVICE_PATH
-	 * @see ErlModelStatusConstants#INVALID_PATH
-	 * @see ErlModelStatusConstants#PATH_OUTSIDE_PROJECT
-	 * @see ErlModelStatusConstants#RELATIVE_PATH
-	 */
-	IPath getPath();
+    /**
+     * Returns the path associated with the failure (see specification of the
+     * status code), or <code>null</code> if the failure is not one of
+     * <code>DEVICE_PATH</code>, <code>INVALID_PATH</code>,
+     * <code>PATH_OUTSIDE_PROJECT</code>, or <code>RELATIVE_PATH</code>.
+     * 
+     * @return the path that caused the failure, or <code>null</code> if none
+     * @see ErlModelStatusConstants#DEVICE_PATH
+     * @see ErlModelStatusConstants#INVALID_PATH
+     * @see ErlModelStatusConstants#PATH_OUTSIDE_PROJECT
+     * @see ErlModelStatusConstants#RELATIVE_PATH
+     */
+    IPath getPath();
 
-	/**
-	 * Returns the string associated with the failure (see specification of the
-	 * status code), or <code>null</code> if no string is related to this
-	 * particular status code.
-	 * 
-	 * @return the string culprit, or <code>null</code> if none
-	 * @see ErlModelStatusConstants
-	 * @deprecated Use IStatus#getMessage instead
-	 */
-	@Deprecated
-	String getString();
+    /**
+     * Returns the string associated with the failure (see specification of the
+     * status code), or <code>null</code> if no string is related to this
+     * particular status code.
+     * 
+     * @return the string culprit, or <code>null</code> if none
+     * @see ErlModelStatusConstants
+     * @deprecated Use IStatus#getMessage instead
+     */
+    @Deprecated
+    String getString();
 
-	/**
-	 * Returns whether this status indicates that a Erlang model element does
-	 * not exist. This convenience method is equivalent to
-	 * <code>getCode() == IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
-	 * .
-	 * 
-	 * @return <code>true</code> if the status code indicates that a Erlang
-	 *         model element does not exist
-	 * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
-	 */
-	boolean isDoesNotExist();
+    /**
+     * Returns whether this status indicates that a Erlang model element does
+     * not exist. This convenience method is equivalent to
+     * <code>getCode() == IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
+     * .
+     * 
+     * @return <code>true</code> if the status code indicates that a Erlang
+     *         model element does not exist
+     * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
+     */
+    boolean isDoesNotExist();
 }

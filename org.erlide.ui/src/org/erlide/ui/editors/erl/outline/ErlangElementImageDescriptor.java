@@ -31,161 +31,161 @@ import org.erlide.ui.ErlideUIPluginImages;
  */
 public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
-	/** Flag to render the 'exported' adornment. */
-	public static final int EXPORTED = 0x001;
+    /** Flag to render the 'exported' adornment. */
+    public static final int EXPORTED = 0x001;
 
-	public static final int ERROR = 0x100;
+    public static final int ERROR = 0x100;
 
-	public static final int WARNING = 0x200;
+    public static final int WARNING = 0x200;
 
-	private final ImageDescriptor fBaseImage;
+    private final ImageDescriptor fBaseImage;
 
-	private int fFlags;
+    private int fFlags;
 
-	private Point fSize;
+    private Point fSize;
 
-	/**
-	 * Creates a new ErlangElementImageDescriptor.
-	 * 
-	 * @param baseImage
-	 *            an image descriptor used as the base image
-	 * @param flags
-	 *            flags indicating which adornments are to be rendered. See
-	 *            <code>setAdornments</code> for valid values.
-	 * @param size
-	 *            the size of the resulting image
-	 * @see #setAdornments(int)
-	 */
-	public ErlangElementImageDescriptor(final ImageDescriptor baseImage,
-			final int flags, final Point size) {
-		fBaseImage = baseImage;
-		Assert.isNotNull(fBaseImage);
-		fFlags = flags;
-		Assert.isTrue(fFlags >= 0);
-		fSize = size;
-		Assert.isNotNull(fSize);
-	}
+    /**
+     * Creates a new ErlangElementImageDescriptor.
+     * 
+     * @param baseImage
+     *            an image descriptor used as the base image
+     * @param flags
+     *            flags indicating which adornments are to be rendered. See
+     *            <code>setAdornments</code> for valid values.
+     * @param size
+     *            the size of the resulting image
+     * @see #setAdornments(int)
+     */
+    public ErlangElementImageDescriptor(final ImageDescriptor baseImage,
+            final int flags, final Point size) {
+        fBaseImage = baseImage;
+        Assert.isNotNull(fBaseImage);
+        fFlags = flags;
+        Assert.isTrue(fFlags >= 0);
+        fSize = size;
+        Assert.isNotNull(fSize);
+    }
 
-	/**
-	 * Sets the descriptors adornments. Valid values are: <code>EXPORTED</code>,
-	 * or any combination of those.
-	 * 
-	 * @param adornments
-	 *            the image descriptors adornments
-	 */
-	public void setAdornments(final int adornments) {
-		Assert.isTrue(adornments >= 0);
-		fFlags = adornments;
-	}
+    /**
+     * Sets the descriptors adornments. Valid values are: <code>EXPORTED</code>,
+     * or any combination of those.
+     * 
+     * @param adornments
+     *            the image descriptors adornments
+     */
+    public void setAdornments(final int adornments) {
+        Assert.isTrue(adornments >= 0);
+        fFlags = adornments;
+    }
 
-	/**
-	 * Returns the current adornments.
-	 * 
-	 * @return the current adornments
-	 */
-	public int getAdornments() {
-		return fFlags;
-	}
+    /**
+     * Returns the current adornments.
+     * 
+     * @return the current adornments
+     */
+    public int getAdornments() {
+        return fFlags;
+    }
 
-	/**
-	 * Sets the size of the image created by calling <code>createImage()</code>.
-	 * 
-	 * @param size
-	 *            the size of the image returned from calling
-	 *            <code>createImage()</code>
-	 * @see ImageDescriptor#createImage()
-	 */
-	public void setImageSize(final Point size) {
-		Assert.isNotNull(size);
-		Assert.isTrue(size.x >= 0 && size.y >= 0);
-		fSize = size;
-	}
+    /**
+     * Sets the size of the image created by calling <code>createImage()</code>.
+     * 
+     * @param size
+     *            the size of the image returned from calling
+     *            <code>createImage()</code>
+     * @see ImageDescriptor#createImage()
+     */
+    public void setImageSize(final Point size) {
+        Assert.isNotNull(size);
+        Assert.isTrue(size.x >= 0 && size.y >= 0);
+        fSize = size;
+    }
 
-	/**
-	 * Returns the size of the image created by calling
-	 * <code>createImage()</code>.
-	 * 
-	 * @return the size of the image created by calling
-	 *         <code>createImage()</code>
-	 * @see ImageDescriptor#createImage()
-	 */
-	public Point getImageSize() {
-		return new Point(fSize.x, fSize.y);
-	}
+    /**
+     * Returns the size of the image created by calling
+     * <code>createImage()</code>.
+     * 
+     * @return the size of the image created by calling
+     *         <code>createImage()</code>
+     * @see ImageDescriptor#createImage()
+     */
+    public Point getImageSize() {
+        return new Point(fSize.x, fSize.y);
+    }
 
-	/*
-	 * (non-Javadoc) Method declared in CompositeImageDescriptor
-	 */
-	@Override
-	protected Point getSize() {
-		return fSize;
-	}
+    /*
+     * (non-Javadoc) Method declared in CompositeImageDescriptor
+     */
+    @Override
+    protected Point getSize() {
+        return fSize;
+    }
 
-	/*
-	 * (non-Javadoc) Method declared on Object.
-	 */
-	@Override
-	public boolean equals(final Object object) {
-		if (object == null || !this.getClass().equals(object.getClass())) {
-			return false;
-		}
+    /*
+     * (non-Javadoc) Method declared on Object.
+     */
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null || !this.getClass().equals(object.getClass())) {
+            return false;
+        }
 
-		final ErlangElementImageDescriptor other = (ErlangElementImageDescriptor) object;
-		return fBaseImage.equals(other.fBaseImage) && fFlags == other.fFlags
-				&& fSize.equals(other.fSize);
-	}
+        final ErlangElementImageDescriptor other = (ErlangElementImageDescriptor) object;
+        return fBaseImage.equals(other.fBaseImage) && fFlags == other.fFlags
+                && fSize.equals(other.fSize);
+    }
 
-	/*
-	 * (non-Javadoc) Method declared on Object.
-	 */
-	@Override
-	public int hashCode() {
-		return fBaseImage.hashCode() | fFlags | fSize.hashCode();
-	}
+    /*
+     * (non-Javadoc) Method declared on Object.
+     */
+    @Override
+    public int hashCode() {
+        return fBaseImage.hashCode() | fFlags | fSize.hashCode();
+    }
 
-	/*
-	 * (non-Javadoc) Method declared in CompositeImageDescriptor
-	 */
-	@Override
-	protected void drawCompositeImage(final int width, final int height) {
-		final ImageData bg = getImageData(fBaseImage);
+    /*
+     * (non-Javadoc) Method declared in CompositeImageDescriptor
+     */
+    @Override
+    protected void drawCompositeImage(final int width, final int height) {
+        final ImageData bg = getImageData(fBaseImage);
 
-		drawImage(bg, 0, 0);
+        drawImage(bg, 0, 0);
 
-		drawTopRight();
-		drawBottomRight();
-		drawBottomLeft();
-	}
+        drawTopRight();
+        drawBottomRight();
+        drawBottomLeft();
+    }
 
-	private ImageData getImageData(final ImageDescriptor descriptor) {
-		ImageData data = descriptor.getImageData();
-		if (data == null) {
-			data = DEFAULT_IMAGE_DATA;
-			ErlideUIPlugin
-					.logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
-		}
-		return data;
-	}
+    private ImageData getImageData(final ImageDescriptor descriptor) {
+        ImageData data = descriptor.getImageData();
+        if (data == null) {
+            data = DEFAULT_IMAGE_DATA;
+            ErlideUIPlugin
+                    .logErrorMessage("Image data not available: " + descriptor.toString()); //$NON-NLS-1$
+        }
+        return data;
+    }
 
-	private void drawTopRight() {
-	}
+    private void drawTopRight() {
+    }
 
-	private void drawBottomRight() {
-	}
+    private void drawBottomRight() {
+    }
 
-	private void drawBottomLeft() {
-		final Point size = getSize();
-		int x = 0;
-		if ((fFlags & ERROR) != 0) {
-			final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_ERROR);
-			drawImage(data, x, size.y - data.height);
-			x += data.width;
-		}
-		if ((fFlags & WARNING) != 0) {
-			final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_WARNING);
-			drawImage(data, x, size.y - data.height);
-			x += data.width;
-		}
+    private void drawBottomLeft() {
+        final Point size = getSize();
+        int x = 0;
+        if ((fFlags & ERROR) != 0) {
+            final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_ERROR);
+            drawImage(data, x, size.y - data.height);
+            x += data.width;
+        }
+        if ((fFlags & WARNING) != 0) {
+            final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_WARNING);
+            drawImage(data, x, size.y - data.height);
+            x += data.width;
+        }
 
-	}
+    }
 }

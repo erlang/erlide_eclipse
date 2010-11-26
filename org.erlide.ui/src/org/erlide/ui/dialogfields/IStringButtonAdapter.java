@@ -15,6 +15,6 @@ package org.erlide.ui.dialogfields;
  */
 public interface IStringButtonAdapter {
 
-	void changeControlPressed(DialogField field);
+    void changeControlPressed(DialogField field);
 
 }

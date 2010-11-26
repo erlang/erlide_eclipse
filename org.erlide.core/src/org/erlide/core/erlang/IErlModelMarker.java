@@ -21,80 +21,80 @@ import org.erlide.core.ErlangPlugin;
  */
 public interface IErlModelMarker {
 
-	/**
-	 * Erlang model problem marker type (value
-	 * <code>"org.erlide.core.erlang.problem"</code>). This can be used to
-	 * recognize those markers in the workspace that flag problems detected by
-	 * the Erlang tooling during compilation.
-	 */
-	String ERLANG_MODEL_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID + ".problem"; //$NON-NLS-1$
+    /**
+     * Erlang model problem marker type (value
+     * <code>"org.erlide.core.erlang.problem"</code>). This can be used to
+     * recognize those markers in the workspace that flag problems detected by
+     * the Erlang tooling during compilation.
+     */
+    String ERLANG_MODEL_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID + ".problem"; //$NON-NLS-1$
 
-	/**
-	 * Erlang model transient problem marker type (value
-	 * <code>"org.erlide.core.erlang.transient_problem"</code>). This can be
-	 * used to recognize those markers in the workspace that flag transient
-	 * problems detected by the Erlang tooling (such as a problem detected by
-	 * the outliner, or a problem detected during a code completion)
-	 */
-	String TRANSIENT_PROBLEM = ErlangPlugin.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
+    /**
+     * Erlang model transient problem marker type (value
+     * <code>"org.erlide.core.erlang.transient_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag transient
+     * problems detected by the Erlang tooling (such as a problem detected by
+     * the outliner, or a problem detected during a code completion)
+     */
+    String TRANSIENT_PROBLEM = ErlangPlugin.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
 
-	/**
-	 * Erlang model task marker type (value
-	 * <code>"org.erlide.core.erlang.task"</code>). This can be used to
-	 * recognize task markers in the workspace that correspond to tasks
-	 * specified in Erlang source comments and detected during compilation (for
-	 * example, 'TO-DO: ...'). Tasks are identified by a task tag, which can be
-	 * customized through <code>ErlangCore</code> option
-	 * <code>"org.erlide.core.erlang.compiler.taskTag"</code>.
-	 * 
-	 * 
-	 */
-	String TASK_MARKER = ErlangPlugin.PLUGIN_ID + ".task"; //$NON-NLS-1$
+    /**
+     * Erlang model task marker type (value
+     * <code>"org.erlide.core.erlang.task"</code>). This can be used to
+     * recognize task markers in the workspace that correspond to tasks
+     * specified in Erlang source comments and detected during compilation (for
+     * example, 'TO-DO: ...'). Tasks are identified by a task tag, which can be
+     * customized through <code>ErlangCore</code> option
+     * <code>"org.erlide.core.erlang.compiler.taskTag"</code>.
+     * 
+     * 
+     */
+    String TASK_MARKER = ErlangPlugin.PLUGIN_ID + ".task"; //$NON-NLS-1$
 
-	/**
-	 * Id marker attribute (value <code>"arguments"</code>). Arguments are
-	 * concatenated into one String, prefixed with an argument count (followed
-	 * with colon separator) and separated with '#' characters. For example: {
-	 * "foo", "bar" } is encoded as "2:foo#bar", { } is encoded as "0: "
-	 * 
-	 * 
-	 */
-	String ARGUMENTS = "arguments"; //$NON-NLS-1$
+    /**
+     * Id marker attribute (value <code>"arguments"</code>). Arguments are
+     * concatenated into one String, prefixed with an argument count (followed
+     * with colon separator) and separated with '#' characters. For example: {
+     * "foo", "bar" } is encoded as "2:foo#bar", { } is encoded as "0: "
+     * 
+     * 
+     */
+    String ARGUMENTS = "arguments"; //$NON-NLS-1$
 
-	/**
-	 * Id marker attribute (value <code>"id"</code>).
-	 */
-	String ID = "id"; //$NON-NLS-1$
+    /**
+     * Id marker attribute (value <code>"id"</code>).
+     */
+    String ID = "id"; //$NON-NLS-1$
 
-	/**
-	 * Flags marker attribute (value <code>"flags"</code>). Reserved for future
-	 * use.
-	 */
-	String FLAGS = "flags"; //$NON-NLS-1$
+    /**
+     * Flags marker attribute (value <code>"flags"</code>). Reserved for future
+     * use.
+     */
+    String FLAGS = "flags"; //$NON-NLS-1$
 
-	/**
-	 * Build path problem marker type (value
-	 * <code>"org.erlide.core.erlang.buildpath_problem"</code>). This can be
-	 * used to recognize those markers in the workspace that flag problems
-	 * detected by the Erlang tooling during classpath setting.
-	 */
-	String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
-			+ ".buildpath_problem"; //$NON-NLS-1$
+    /**
+     * Build path problem marker type (value
+     * <code>"org.erlide.core.erlang.buildpath_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag problems
+     * detected by the Erlang tooling during classpath setting.
+     */
+    String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+            + ".buildpath_problem"; //$NON-NLS-1$
 
-	/**
-	 * Path entry problem marker type (value
-	 * <code>"org.erlide.core.erlang.pathentry_problem"</code>). This can be
-	 * used to recognize those markers in the workspace that flag problems
-	 * detected by the Erlang tooling during classpath setting.
-	 */
-	String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
-			+ ".pathentry_problem"; //$NON-NLS-1$
+    /**
+     * Path entry problem marker type (value
+     * <code>"org.erlide.core.erlang.pathentry_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag problems
+     * detected by the Erlang tooling during classpath setting.
+     */
+    String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+            + ".pathentry_problem"; //$NON-NLS-1$
 
-	/**
-	 * PathEntry file format marker attribute (value
-	 * <code>"PathEntryFileFormat"</code>). Used only on pathentry store problem
-	 * markers. The value of this attribute is either "true" or "false".
-	 * 
-	 */
-	public static final String PATHENTRY_FILE_FORMAT = "pathEntryFileFormat"; //$NON-NLS-1$
+    /**
+     * PathEntry file format marker attribute (value
+     * <code>"PathEntryFileFormat"</code>). Used only on pathentry store problem
+     * markers. The value of this attribute is either "true" or "false".
+     * 
+     */
+    public static final String PATHENTRY_FILE_FORMAT = "pathEntryFileFormat"; //$NON-NLS-1$
 }

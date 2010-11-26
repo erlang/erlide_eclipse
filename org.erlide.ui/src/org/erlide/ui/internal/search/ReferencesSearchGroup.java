@@ -41,197 +41,195 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class ReferencesSearchGroup extends ActionGroup {
 
-	private static final String MENU_TEXT = "References";
+    private static final String MENU_TEXT = "References";
 
-	private final IWorkbenchSite fSite;
-	private ErlangEditor fEditor;
-	private IActionBars fActionBars;
+    private final IWorkbenchSite fSite;
+    private ErlangEditor fEditor;
+    private IActionBars fActionBars;
 
-	private final String fGroupId;
+    private final String fGroupId;
 
-	private FindReferencesAction fFindReferencesAction;
-	private FindReferencesInProjectAction fFindReferencesInProjectAction;
+    private FindReferencesAction fFindReferencesAction;
+    private FindReferencesInProjectAction fFindReferencesInProjectAction;
 
-	private FindAction fFindReferencesInWorkingSetAction;
+    private FindAction fFindReferencesInWorkingSetAction;
 
-	/**
-	 * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
-	 * the selection provided by the site's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>
-	 * .
-	 * 
-	 * @param site
-	 *            the view part that owns this action group
-	 */
-	public ReferencesSearchGroup(final IWorkbenchSite site) {
-		fSite = site;
-		fGroupId = IContextMenuConstants.GROUP_SEARCH;
+    /**
+     * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
+     * the selection provided by the site's selection provider is of type <code>
+     * org.eclipse.jface.viewers.IStructuredSelection</code> .
+     * 
+     * @param site
+     *            the view part that owns this action group
+     */
+    public ReferencesSearchGroup(final IWorkbenchSite site) {
+        fSite = site;
+        fGroupId = IContextMenuConstants.GROUP_SEARCH;
 
-		fFindReferencesAction = new FindReferencesAction(site);
-		fFindReferencesAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.workspace");
+        fFindReferencesAction = new FindReferencesAction(site);
+        fFindReferencesAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.workspace");
 
-		fFindReferencesInProjectAction = new FindReferencesInProjectAction(site);
-		fFindReferencesInProjectAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.project");
+        fFindReferencesInProjectAction = new FindReferencesInProjectAction(site);
+        fFindReferencesInProjectAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.project");
 
-		fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
-				site);
-		fFindReferencesInWorkingSetAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.workset");
+        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
+                site);
+        fFindReferencesInWorkingSetAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
 
-		// register the actions as selection listeners
-		final ISelectionProvider provider = fSite.getSelectionProvider();
-		final ISelection selection = provider.getSelection();
-		registerAction(fFindReferencesAction, provider, selection);
-		registerAction(fFindReferencesInProjectAction, provider, selection);
-		registerAction(fFindReferencesInWorkingSetAction, provider, selection);
-	}
+        // register the actions as selection listeners
+        final ISelectionProvider provider = fSite.getSelectionProvider();
+        final ISelection selection = provider.getSelection();
+        registerAction(fFindReferencesAction, provider, selection);
+        registerAction(fFindReferencesInProjectAction, provider, selection);
+        registerAction(fFindReferencesInWorkingSetAction, provider, selection);
+    }
 
-	/**
-	 * Note: This constructor is for internal use only. Clients should not call
-	 * this constructor.
-	 * 
-	 * @param editor
-	 *            the Java editor
-	 */
-	public ReferencesSearchGroup(final ErlangEditor editor) {
-		Assert.isNotNull(editor);
-		fEditor = editor;
-		fSite = fEditor.getSite();
-		fGroupId = ITextEditorActionConstants.GROUP_FIND;
+    /**
+     * Note: This constructor is for internal use only. Clients should not call
+     * this constructor.
+     * 
+     * @param editor
+     *            the Java editor
+     */
+    public ReferencesSearchGroup(final ErlangEditor editor) {
+        Assert.isNotNull(editor);
+        fEditor = editor;
+        fSite = fEditor.getSite();
+        fGroupId = ITextEditorActionConstants.GROUP_FIND;
 
-		fFindReferencesAction = new FindReferencesAction(editor);
-		fFindReferencesAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.workspace");
-		fEditor.setAction("SearchReferencesInWorkspace", fFindReferencesAction); //$NON-NLS-1$
+        fFindReferencesAction = new FindReferencesAction(editor);
+        fFindReferencesAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.workspace");
+        fEditor.setAction("SearchReferencesInWorkspace", fFindReferencesAction); //$NON-NLS-1$
 
-		fFindReferencesInProjectAction = new FindReferencesInProjectAction(
-				fEditor);
-		fFindReferencesInProjectAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.project");
-		fEditor.setAction(
-				"SearchReferencesInProject", fFindReferencesInProjectAction); //$NON-NLS-1$
+        fFindReferencesInProjectAction = new FindReferencesInProjectAction(
+                fEditor);
+        fFindReferencesInProjectAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.project");
+        fEditor.setAction(
+                "SearchReferencesInProject", fFindReferencesInProjectAction); //$NON-NLS-1$
 
-		fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
-				fEditor);
-		fFindReferencesInWorkingSetAction
-				.setActionDefinitionId("org.erlide.ui.search.references.in.workset");
-		fEditor
-				.setAction(
-						"SearchReferencesInWorkingSet", fFindReferencesInWorkingSetAction); //$NON-NLS-1$
-	}
+        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
+                fEditor);
+        fFindReferencesInWorkingSetAction
+                .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
+        fEditor.setAction(
+                "SearchReferencesInWorkingSet", fFindReferencesInWorkingSetAction); //$NON-NLS-1$
+    }
 
-	private void registerAction(final SelectionDispatchAction action,
-			final ISelectionProvider provider, final ISelection selection) {
-		action.update(selection);
-		provider.addSelectionChangedListener(action);
-	}
+    private void registerAction(final SelectionDispatchAction action,
+            final ISelectionProvider provider, final ISelection selection) {
+        action.update(selection);
+        provider.addSelectionChangedListener(action);
+    }
 
-	/**
-	 * Note: this method is for internal use only. Clients should not call this
-	 * method.
-	 * 
-	 * @return the menu label
-	 */
-	protected String getName() {
-		return MENU_TEXT;
-	}
+    /**
+     * Note: this method is for internal use only. Clients should not call this
+     * method.
+     * 
+     * @return the menu label
+     */
+    protected String getName() {
+        return MENU_TEXT;
+    }
 
-	/*
-	 * (non-Javadoc) Method declared in ActionGroup
-	 */
-	@Override
-	public void fillActionBars(final IActionBars actionBars) {
-		Assert.isNotNull(actionBars);
-		super.fillActionBars(actionBars);
-		fActionBars = actionBars;
-		updateGlobalActionHandlers();
-	}
+    /*
+     * (non-Javadoc) Method declared in ActionGroup
+     */
+    @Override
+    public void fillActionBars(final IActionBars actionBars) {
+        Assert.isNotNull(actionBars);
+        super.fillActionBars(actionBars);
+        fActionBars = actionBars;
+        updateGlobalActionHandlers();
+    }
 
-	private void addAction(final IAction action, final IMenuManager manager) {
-		if (action.isEnabled()) {
-			manager.add(action);
-		}
-	}
+    private void addAction(final IAction action, final IMenuManager manager) {
+        if (action.isEnabled()) {
+            manager.add(action);
+        }
+    }
 
-	private void addWorkingSetAction(final IWorkingSet[] workingSets,
-			final IMenuManager manager) {
-		FindAction action;
-		if (fEditor != null) {
-			action = new WorkingSetFindAction(fEditor,
-					new FindReferencesInWorkingSetAction(fEditor, workingSets),
-					SearchUtil.toString(workingSets));
-		} else {
-			action = new WorkingSetFindAction(fSite,
-					new FindReferencesInWorkingSetAction(fSite, workingSets),
-					SearchUtil.toString(workingSets));
-		}
-		ActionContext context = getContext();
-		if (context != null) {
-			action.update(context.getSelection());
-		}
-		addAction(action, manager);
-	}
+    private void addWorkingSetAction(final IWorkingSet[] workingSets,
+            final IMenuManager manager) {
+        FindAction action;
+        if (fEditor != null) {
+            action = new WorkingSetFindAction(fEditor,
+                    new FindReferencesInWorkingSetAction(fEditor, workingSets),
+                    SearchUtil.toString(workingSets));
+        } else {
+            action = new WorkingSetFindAction(fSite,
+                    new FindReferencesInWorkingSetAction(fSite, workingSets),
+                    SearchUtil.toString(workingSets));
+        }
+        final ActionContext context = getContext();
+        if (context != null) {
+            action.update(context.getSelection());
+        }
+        addAction(action, manager);
+    }
 
-	/*
-	 * (non-Javadoc) Method declared on ActionGroup.
-	 */
-	@Override
-	public void fillContextMenu(final IMenuManager manager) {
-		final MenuManager erlangSearchMM = new MenuManager(getName(),
-				IContextMenuConstants.GROUP_SEARCH);
-		addAction(fFindReferencesAction, erlangSearchMM);
-		addAction(fFindReferencesInProjectAction, erlangSearchMM);
+    /*
+     * (non-Javadoc) Method declared on ActionGroup.
+     */
+    @Override
+    public void fillContextMenu(final IMenuManager manager) {
+        final MenuManager erlangSearchMM = new MenuManager(getName(),
+                IContextMenuConstants.GROUP_SEARCH);
+        addAction(fFindReferencesAction, erlangSearchMM);
+        addAction(fFindReferencesInProjectAction, erlangSearchMM);
 
-		erlangSearchMM.add(new Separator());
+        erlangSearchMM.add(new Separator());
 
-		for (IWorkingSet[] i : SearchUtil.getLRUWorkingSets().getSorted()) {
-			addWorkingSetAction(i, erlangSearchMM);
-		}
-		addAction(fFindReferencesInWorkingSetAction, erlangSearchMM);
+        for (final IWorkingSet[] i : SearchUtil.getLRUWorkingSets().getSorted()) {
+            addWorkingSetAction(i, erlangSearchMM);
+        }
+        addAction(fFindReferencesInWorkingSetAction, erlangSearchMM);
 
-		if (!erlangSearchMM.isEmpty()) {
-			manager.appendToGroup(fGroupId, erlangSearchMM);
-		}
-	}
+        if (!erlangSearchMM.isEmpty()) {
+            manager.appendToGroup(fGroupId, erlangSearchMM);
+        }
+    }
 
-	/*
-	 * Overrides method declared in ActionGroup
-	 */
-	@Override
-	public void dispose() {
-		final ISelectionProvider provider = fSite.getSelectionProvider();
-		if (provider != null) {
-			disposeAction(fFindReferencesAction, provider);
-			disposeAction(fFindReferencesInProjectAction, provider);
-			disposeAction(fFindReferencesInWorkingSetAction, provider);
-		}
-		fFindReferencesAction = null;
-		fFindReferencesInProjectAction = null;
-		fFindReferencesInWorkingSetAction = null;
-		updateGlobalActionHandlers();
-		super.dispose();
-	}
+    /*
+     * Overrides method declared in ActionGroup
+     */
+    @Override
+    public void dispose() {
+        final ISelectionProvider provider = fSite.getSelectionProvider();
+        if (provider != null) {
+            disposeAction(fFindReferencesAction, provider);
+            disposeAction(fFindReferencesInProjectAction, provider);
+            disposeAction(fFindReferencesInWorkingSetAction, provider);
+        }
+        fFindReferencesAction = null;
+        fFindReferencesInProjectAction = null;
+        fFindReferencesInWorkingSetAction = null;
+        updateGlobalActionHandlers();
+        super.dispose();
+    }
 
-	private void updateGlobalActionHandlers() {
-		if (fActionBars != null) {
-			fActionBars.setGlobalActionHandler(
-					ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
-					fFindReferencesAction);
-			fActionBars.setGlobalActionHandler(
-					ErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
-					fFindReferencesInProjectAction);
-			fActionBars.setGlobalActionHandler(
-					ErlideUIConstants.FIND_REFERENCES_IN_WORKING_SET,
-					fFindReferencesInWorkingSetAction);
-		}
-	}
+    private void updateGlobalActionHandlers() {
+        if (fActionBars != null) {
+            fActionBars.setGlobalActionHandler(
+                    ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
+                    fFindReferencesAction);
+            fActionBars.setGlobalActionHandler(
+                    ErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
+                    fFindReferencesInProjectAction);
+            fActionBars.setGlobalActionHandler(
+                    ErlideUIConstants.FIND_REFERENCES_IN_WORKING_SET,
+                    fFindReferencesInWorkingSetAction);
+        }
+    }
 
-	private void disposeAction(final ISelectionChangedListener action,
-			final ISelectionProvider provider) {
-		if (action != null) {
-			provider.removeSelectionChangedListener(action);
-		}
-	}
+    private void disposeAction(final ISelectionChangedListener action,
+            final ISelectionProvider provider) {
+        if (action != null) {
+            provider.removeSelectionChangedListener(action);
+        }
+    }
 }

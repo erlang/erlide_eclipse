@@ -23,61 +23,61 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
 
-	final String head;
-	final List<String> parameters;
+    final String head;
+    final List<String> parameters;
 
-	protected ErlFunctionClause(final IErlElement parent, final String name,
-			final String head, final OtpErlangList parameters) {
-		super(parent, name);
-		this.head = head;
-		this.parameters = getParameters(parameters);
-	}
+    protected ErlFunctionClause(final IErlElement parent, final String name,
+            final String head, final OtpErlangList parameters) {
+        super(parent, name);
+        this.head = head;
+        this.parameters = getParameters(parameters);
+    }
 
-	public static ArrayList<String> getParameters(final OtpErlangList parameters) {
-		ArrayList<String> pars = new ArrayList<String>(parameters.arity());
-		for (OtpErlangObject i : parameters) {
-			pars.add(Util.stringValue(i));
-		}
-		return pars;
-	}
+    public static ArrayList<String> getParameters(final OtpErlangList parameters) {
+        final ArrayList<String> pars = new ArrayList<String>(parameters.arity());
+        for (final OtpErlangObject i : parameters) {
+            pars.add(Util.stringValue(i));
+        }
+        return pars;
+    }
 
-	public String getHead() {
-		return head;
-	}
+    public String getHead() {
+        return head;
+    }
 
-	public Kind getKind() {
-		return Kind.CLAUSE;
-	}
+    public Kind getKind() {
+        return Kind.CLAUSE;
+    }
 
-	/**
-	 * @param arguments
-	 *            the arguments to set
-	 */
-	// public void setArguments(final String arguments) {
-	// this.arguments = arguments;
-	// }
-	/**
-	 * @param guards
-	 *            the guards to set
-	 */
-	// public void setGuards(final OtpErlangList guards) {
-	// this.guards = guards;
-	// }
-	@Override
-	public String toString() {
-		return head;
-	}
+    /**
+     * @param arguments
+     *            the arguments to set
+     */
+    // public void setArguments(final String arguments) {
+    // this.arguments = arguments;
+    // }
+    /**
+     * @param guards
+     *            the guards to set
+     */
+    // public void setGuards(final OtpErlangList guards) {
+    // this.guards = guards;
+    // }
+    @Override
+    public String toString() {
+        return head;
+    }
 
-	public String getFunctionName() {
-		return getParent().getName();
-	}
+    public String getFunctionName() {
+        return getParent().getName();
+    }
 
-	public int getArity() {
-		final IErlFunction f = (IErlFunction) getParent();
-		return f.getArity();
-	}
+    public int getArity() {
+        final IErlFunction f = (IErlFunction) getParent();
+        return f.getArity();
+    }
 
-	public List<String> getParameters() {
-		return parameters;
-	}
+    public List<String> getParameters() {
+        return parameters;
+    }
 }

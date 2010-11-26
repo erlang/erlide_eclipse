@@ -19,42 +19,42 @@ import org.eclipse.jface.text.DefaultInformationControl;
  */
 public abstract class BrowserInformationControlInput extends BrowserInput {
 
-	/**
-	 * Returns the leading image width.
-	 * 
-	 * @return the size of the leading image, by default <code>0</code> is
-	 *         returned
-	 * @since 3.4
-	 */
-	public int getLeadingImageWidth() {
-		return 0;
-	}
+    /**
+     * Returns the leading image width.
+     * 
+     * @return the size of the leading image, by default <code>0</code> is
+     *         returned
+     * @since 3.4
+     */
+    public int getLeadingImageWidth() {
+        return 0;
+    }
 
-	/**
-	 * Creates the next browser input with the given input as previous one.
-	 * 
-	 * @param previous
-	 *            the previous input or <code>null</code> if none
-	 */
-	public BrowserInformationControlInput(
-			BrowserInformationControlInput previous) {
-		super(previous);
-	}
+    /**
+     * Creates the next browser input with the given input as previous one.
+     * 
+     * @param previous
+     *            the previous input or <code>null</code> if none
+     */
+    public BrowserInformationControlInput(
+            final BrowserInformationControlInput previous) {
+        super(previous);
+    }
 
-	/**
-	 * @return the HTML contents
-	 */
-	public abstract String getHtml();
+    /**
+     * @return the HTML contents
+     */
+    public abstract String getHtml();
 
-	/**
-	 * Returns the HTML from {@link #getHtml()}. This is a fallback mode for
-	 * platforms where the {@link BrowserInformationControl} is not available
-	 * and this input is passed to a {@link DefaultInformationControl}.
-	 * 
-	 * @return {@link #getHtml()}
-	 */
-	@Override
-	public String toString() {
-		return getHtml();
-	}
+    /**
+     * Returns the HTML from {@link #getHtml()}. This is a fallback mode for
+     * platforms where the {@link BrowserInformationControl} is not available
+     * and this input is passed to a {@link DefaultInformationControl}.
+     * 
+     * @return {@link #getHtml()}
+     */
+    @Override
+    public String toString() {
+        return getHtml();
+    }
 }

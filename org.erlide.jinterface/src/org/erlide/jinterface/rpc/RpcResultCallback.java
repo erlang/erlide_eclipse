@@ -18,12 +18,12 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * 
  */
 public class RpcResultCallback {
-	public void start(final OtpErlangObject msg) {
-	}
+    public void start(final OtpErlangObject msg) {
+    }
 
-	public void stop(final OtpErlangObject msg) {
-	}
+    public void stop(final OtpErlangObject msg) {
+    }
 
-	public void progress(final OtpErlangObject msg) {
-	}
+    public void progress(final OtpErlangObject msg) {
+    }
 }

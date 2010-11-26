@@ -18,18 +18,18 @@ import org.erlide.ui.util.SFProjectSupport;
 
 public class BugReportAction implements IWorkbenchWindowActionDelegate {
 
-	public void dispose() {
-	}
+    public void dispose() {
+    }
 
-	public void init(final IWorkbenchWindow window) {
-	}
+    public void init(final IWorkbenchWindow window) {
+    }
 
-	public void run(final IAction action) {
-		SFProjectSupport.openBugsReport();
-	}
+    public void run(final IAction action) {
+        SFProjectSupport.openBugsReport();
+    }
 
-	public void selectionChanged(final IAction action,
-			final ISelection selection) {
-	}
+    public void selectionChanged(final IAction action,
+            final ISelection selection) {
+    }
 
 }

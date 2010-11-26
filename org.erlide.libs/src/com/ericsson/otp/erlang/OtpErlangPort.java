@@ -24,145 +24,145 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang ports.
  */
 public class OtpErlangPort extends OtpErlangObject implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = 4037115468007644704L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = 4037115468007644704L;
 
-	private final String node;
-	private final int id;
-	private final int creation;
+    private final String node;
+    private final int id;
+    private final int creation;
 
-	/*
-	 * Create a unique Erlang port belonging to the local node. Since it isn't
-	 * meaninful to do so, this constructor is private...
-	 * 
-	 * @param self the local node.
-	 * 
-	 * @deprecated use OtpLocalNode:createPort() instead
-	 */
-	@SuppressWarnings("unused")
-	private OtpErlangPort(final OtpSelf self) {
-		final OtpErlangPort p = self.createPort();
+    /*
+     * Create a unique Erlang port belonging to the local node. Since it isn't
+     * meaninful to do so, this constructor is private...
+     * 
+     * @param self the local node.
+     * 
+     * @deprecated use OtpLocalNode:createPort() instead
+     */
+    @SuppressWarnings("unused")
+    private OtpErlangPort(final OtpSelf self) {
+        final OtpErlangPort p = self.createPort();
 
-		id = p.id;
-		creation = p.creation;
-		node = p.node;
-	}
+        id = p.id;
+        creation = p.creation;
+        node = p.node;
+    }
 
-	/**
-	 * Create an Erlang port from a stream containing a port encoded in Erlang
-	 * external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded port.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang port.
-	 */
-	public OtpErlangPort(final OtpInputStream buf)
-			throws OtpErlangDecodeException {
-		final OtpErlangPort p = buf.read_port();
+    /**
+     * Create an Erlang port from a stream containing a port encoded in Erlang
+     * external format.
+     * 
+     * @param buf
+     *            the stream containing the encoded port.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang port.
+     */
+    public OtpErlangPort(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
+        final OtpErlangPort p = buf.read_port();
 
-		node = p.node();
-		id = p.id();
-		creation = p.creation();
-	}
+        node = p.node();
+        id = p.id();
+        creation = p.creation();
+    }
 
-	/**
-	 * Create an Erlang port from its components.
-	 * 
-	 * @param node
-	 *            the nodename.
-	 * 
-	 * @param id
-	 *            an arbitrary number. Only the low order 28 bits will be used.
-	 * 
-	 * @param creation
-	 *            another arbitrary number. Only the low order 2 bits will be
-	 *            used.
-	 */
-	public OtpErlangPort(final String node, final int id, final int creation) {
-		this.node = node;
-		this.id = id & 0xfffffff; // 28 bits
-		this.creation = creation & 0x03; // 2 bits
-	}
+    /**
+     * Create an Erlang port from its components.
+     * 
+     * @param node
+     *            the nodename.
+     * 
+     * @param id
+     *            an arbitrary number. Only the low order 28 bits will be used.
+     * 
+     * @param creation
+     *            another arbitrary number. Only the low order 2 bits will be
+     *            used.
+     */
+    public OtpErlangPort(final String node, final int id, final int creation) {
+        this.node = node;
+        this.id = id & 0xfffffff; // 28 bits
+        this.creation = creation & 0x03; // 2 bits
+    }
 
-	/**
-	 * Get the id number from the port.
-	 * 
-	 * @return the id number from the port.
-	 */
-	public int id() {
-		return id;
-	}
+    /**
+     * Get the id number from the port.
+     * 
+     * @return the id number from the port.
+     */
+    public int id() {
+        return id;
+    }
 
-	/**
-	 * Get the creation number from the port.
-	 * 
-	 * @return the creation number from the port.
-	 */
-	public int creation() {
-		return creation;
-	}
+    /**
+     * Get the creation number from the port.
+     * 
+     * @return the creation number from the port.
+     */
+    public int creation() {
+        return creation;
+    }
 
-	/**
-	 * Get the node name from the port.
-	 * 
-	 * @return the node name from the port.
-	 */
-	public String node() {
-		return node;
-	}
+    /**
+     * Get the node name from the port.
+     * 
+     * @return the node name from the port.
+     */
+    public String node() {
+        return node;
+    }
 
-	/**
-	 * Get the string representation of the port. Erlang ports are printed as
-	 * #Port&lt;node.id&gt;.
-	 * 
-	 * @return the string representation of the port.
-	 */
-	@Override
-	public String toString() {
-		return "#Port<" + node + "." + id + ">";
-	}
+    /**
+     * Get the string representation of the port. Erlang ports are printed as
+     * #Port&lt;node.id&gt;.
+     * 
+     * @return the string representation of the port.
+     */
+    @Override
+    public String toString() {
+        return "#Port<" + node + "." + id + ">";
+    }
 
-	/**
-	 * Convert this port to the equivalent Erlang external representation.
-	 * 
-	 * @param buf
-	 *            an output stream to which the encoded port should be written.
-	 */
-	@Override
-	public void encode(final OtpOutputStream buf) {
-		buf.write_port(node, id, creation);
-	}
+    /**
+     * Convert this port to the equivalent Erlang external representation.
+     * 
+     * @param buf
+     *            an output stream to which the encoded port should be written.
+     */
+    @Override
+    public void encode(final OtpOutputStream buf) {
+        buf.write_port(node, id, creation);
+    }
 
-	/**
-	 * Determine if two ports are equal. Ports are equal if their components are
-	 * equal.
-	 * 
-	 * @param o
-	 *            the other port to compare to.
-	 * 
-	 * @return true if the ports are equal, false otherwise.
-	 */
-	@Override
-	public boolean equals(final Object o) {
-		if (!(o instanceof OtpErlangPort)) {
-			return false;
-		}
+    /**
+     * Determine if two ports are equal. Ports are equal if their components are
+     * equal.
+     * 
+     * @param o
+     *            the other port to compare to.
+     * 
+     * @return true if the ports are equal, false otherwise.
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof OtpErlangPort)) {
+            return false;
+        }
 
-		final OtpErlangPort port = (OtpErlangPort) o;
+        final OtpErlangPort port = (OtpErlangPort) o;
 
-		return creation == port.creation && id == port.id
-				&& node.compareTo(port.node) == 0;
-	}
+        return creation == port.creation && id == port.id
+                && node.compareTo(port.node) == 0;
+    }
 
-	@Override
-	protected int doHashCode() {
-		OtpErlangObject.Hash hash = new OtpErlangObject.Hash(6);
-		hash.combine(creation);
-		hash.combine(id, node.hashCode());
-		return hash.valueOf();
-	}
+    @Override
+    protected int doHashCode() {
+        final OtpErlangObject.Hash hash = new OtpErlangObject.Hash(6);
+        hash.combine(creation);
+        hash.combine(id, node.hashCode());
+        return hash.valueOf();
+    }
 }

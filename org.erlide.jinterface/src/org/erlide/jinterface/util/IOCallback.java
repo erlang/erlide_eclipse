@@ -19,22 +19,22 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IOCallback {
 
-	OtpErlangObject putChars(OtpErlangPid from, Encoding encoding,
-			OtpErlangObject chars);
+    OtpErlangObject putChars(OtpErlangPid from, Encoding encoding,
+            OtpErlangObject chars);
 
     OtpErlangObject putChars(OtpErlangPid from, Encoding latin1, String module,
             String function, Collection<OtpErlangObject> args);
 
-	OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject);
+    OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject);
 
-	OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject,
-			long n);
+    OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject,
+            long n);
 
-	OtpErlangObject getUntil(Encoding valueOf, OtpErlangObject otpErlangObject,
-			String m, String f, Collection<OtpErlangObject> a);
+    OtpErlangObject getUntil(Encoding valueOf, OtpErlangObject otpErlangObject,
+            String m, String f, Collection<OtpErlangObject> a);
 
-	OtpErlangObject getOpts();
+    OtpErlangObject getOpts();
 
-	OtpErlangObject setOpts(Collection<OtpErlangObject> opts);
+    OtpErlangObject setOpts(Collection<OtpErlangObject> opts);
 
 }

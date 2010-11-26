@@ -14,20 +14,20 @@ import org.eclipse.jface.text.DocumentEvent;
 
 public interface IErlReconcileListener {
 
-	/**
-	 * The manipulation described by the document event will be performed.
-	 * 
-	 * @param event
-	 *            the document event describing the document change
-	 */
-	void modelAboutToBeReconciled(DocumentEvent event);
+    /**
+     * The manipulation described by the document event will be performed.
+     * 
+     * @param event
+     *            the document event describing the document change
+     */
+    void modelAboutToBeReconciled(DocumentEvent event);
 
-	/**
-	 * The manipulation described by the document event has been performed.
-	 * 
-	 * @param event
-	 *            the document event describing the document change
-	 */
-	void modelReconciled(DocumentEvent event);
+    /**
+     * The manipulation described by the document event has been performed.
+     * 
+     * @param event
+     *            the document event describing the document change
+     */
+    void modelReconciled(DocumentEvent event);
 
 }

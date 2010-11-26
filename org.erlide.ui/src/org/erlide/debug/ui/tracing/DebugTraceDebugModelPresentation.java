@@ -12,66 +12,66 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.erlide.runtime.debug.ErlangStackFrame;
 
 public class DebugTraceDebugModelPresentation extends LabelProvider implements
-		IDebugModelPresentation {
+        IDebugModelPresentation {
 
-	public static final String ID = "org.erlide.debug.trace.model";
+    public static final String ID = "org.erlide.debug.trace.model";
 
-	public void computeDetail(final IValue value,
-			final IValueDetailListener listener) {
-		String detail = "";
-		try {
-			detail = value.getValueString();
-		} catch (final DebugException e) {
-		}
-		listener.detailComputed(value, detail);
-	}
+    public void computeDetail(final IValue value,
+            final IValueDetailListener listener) {
+        String detail = "";
+        try {
+            detail = value.getValueString();
+        } catch (final DebugException e) {
+        }
+        listener.detailComputed(value, detail);
+    }
 
-	public void setAttribute(final String attribute, final Object value) {
-		// TODO Auto-generated method stub
+    public void setAttribute(final String attribute, final Object value) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public String getEditorId(final IEditorInput input, final Object element) {
-		if (element instanceof IFile || element instanceof ILineBreakpoint) {
-			return "org.erlide.ui.editors.erl.ErlangEditor";
-		}
-		return null;
-	}
+    public String getEditorId(final IEditorInput input, final Object element) {
+        if (element instanceof IFile || element instanceof ILineBreakpoint) {
+            return "org.erlide.ui.editors.erl.ErlangEditor";
+        }
+        return null;
+    }
 
-	public IEditorInput getEditorInput(final Object element) {
+    public IEditorInput getEditorInput(final Object element) {
 
-		if (element instanceof IFile) {
-			return new FileEditorInput((IFile) element);
-		}
-		if (element instanceof ILineBreakpoint) {
-			return new FileEditorInput((IFile) ((ILineBreakpoint) element)
-					.getMarker().getResource());
-		}
-		return null;
-	}
+        if (element instanceof IFile) {
+            return new FileEditorInput((IFile) element);
+        }
+        if (element instanceof ILineBreakpoint) {
+            return new FileEditorInput((IFile) ((ILineBreakpoint) element)
+                    .getMarker().getResource());
+        }
+        return null;
+    }
 
-	@Override
-	public String getText(final Object element) {
-		if (element instanceof DebugTraceTarget) {
-			return getTargetText((DebugTraceTarget) element);
-		} else if (element instanceof DebugTraceProcess) {
-			return getDebugTraceProcessText((DebugTraceProcess) element);
-		} else if (element instanceof ErlangStackFrame) {
-			return getErlangStackFrameText((ErlangStackFrame) element);
-		}
-		return null;
-	}
+    @Override
+    public String getText(final Object element) {
+        if (element instanceof DebugTraceTarget) {
+            return getTargetText((DebugTraceTarget) element);
+        } else if (element instanceof DebugTraceProcess) {
+            return getDebugTraceProcessText((DebugTraceProcess) element);
+        } else if (element instanceof ErlangStackFrame) {
+            return getErlangStackFrameText((ErlangStackFrame) element);
+        }
+        return null;
+    }
 
-	private String getErlangStackFrameText(final ErlangStackFrame element) {
-		return element.toString();
-	}
+    private String getErlangStackFrameText(final ErlangStackFrame element) {
+        return element.toString();
+    }
 
-	private String getDebugTraceProcessText(final DebugTraceProcess element) {
-		return element.toString();
-	}
+    private String getDebugTraceProcessText(final DebugTraceProcess element) {
+        return element.toString();
+    }
 
-	private String getTargetText(final DebugTraceTarget element) {
-		return element.toString();
-	}
+    private String getTargetText(final DebugTraceTarget element) {
+        return element.toString();
+    }
 
 }

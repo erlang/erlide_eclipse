@@ -65,7 +65,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 options.put("dir", new OtpErlangString(dest.getLocation()
                         .toString()));
                 final List<String> files = new ArrayList<String>();
-                IErlProject eprj = ErlangCore.getModel().findProject(prj);
+                final IErlProject eprj = ErlangCore.getModel().findProject(prj);
                 final IOldErlangProjectProperties props = eprj.getProperties();
                 for (final IPath dir : props.getSourceDirs()) {
                     final IFolder folder = prj.getFolder(dir);
@@ -99,12 +99,12 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 
     public void init(final IWorkbench workbench,
             final IStructuredSelection aSelection) {
-        this.selection = aSelection;
+        selection = aSelection;
 
         final List<?> selectedResources = IDE
                 .computeSelectedResources(aSelection);
         if (!selectedResources.isEmpty()) {
-            this.selection = new StructuredSelection(selectedResources);
+            selection = new StructuredSelection(selectedResources);
         }
         setWindowTitle("eDoc Export Wizard"); // NON-NLS-1
         setNeedsProgressMonitor(true);

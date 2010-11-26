@@ -7,11 +7,11 @@ import org.erlide.ui.actions.OpenEditorActionGroup;
 
 public class NewErlSearchActionGroup extends CompositeActionGroup {
 
-	public NewErlSearchActionGroup(final IViewPart part) {
-		OpenViewActionGroup openViewActionGroup;
-		setGroups(new ActionGroup[] { new OpenEditorActionGroup(part),
-				openViewActionGroup = new OpenViewActionGroup(part) });
-		openViewActionGroup.containsShowInMenu(false);
-	}
+    public NewErlSearchActionGroup(final IViewPart part) {
+        OpenViewActionGroup openViewActionGroup;
+        setGroups(new ActionGroup[] { new OpenEditorActionGroup(part),
+                openViewActionGroup = new OpenViewActionGroup(part) });
+        openViewActionGroup.containsShowInMenu(false);
+    }
 
 }

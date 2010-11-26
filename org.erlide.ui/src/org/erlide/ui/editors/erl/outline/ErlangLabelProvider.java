@@ -166,7 +166,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     public String getText(final Object element) {
         String label;
         if (element instanceof IErlElement) {
-            IErlElement el = (IErlElement) element;
+            final IErlElement el = (IErlElement) element;
             label = el.getLabelString();
         } else {
             label = element.toString();

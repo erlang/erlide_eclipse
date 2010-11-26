@@ -17,6 +17,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public interface IErlAttribute extends IErlMember {
 
-	public OtpErlangObject getValue();
+    public OtpErlangObject getValue();
 
 }

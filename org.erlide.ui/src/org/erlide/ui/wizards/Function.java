@@ -12,17 +12,17 @@ package org.erlide.ui.wizards;
 
 public class Function {
 
-	public int arity;
+    public int arity;
 
-	public String name;
+    public String name;
 
-	public boolean isState;
+    public boolean isState;
 
-	public boolean isExported;
+    public boolean isExported;
 
-	@Override
-	public String toString() {
-		return "<Function name=" + name + " arity=" + arity + " isExported="
-				+ isState + " isState=" + isState + ">";
-	}
+    @Override
+    public String toString() {
+        return "<Function name=" + name + " arity=" + arity + " isExported="
+                + isState + " isState=" + isState + ">";
+    }
 }

@@ -19,13 +19,13 @@ import org.eclipse.jface.viewers.ISelection;
  */
 public interface ISelectionConverter {
 
-	/**
-	 * Converts the given selection into another selection.
-	 * 
-	 * @param selection
-	 *            the original selection
-	 * 
-	 * @return the converted selection
-	 */
-	ISelection convert(ISelection selection);
+    /**
+     * Converts the given selection into another selection.
+     * 
+     * @param selection
+     *            the original selection
+     * 
+     * @return the converted selection
+     */
+    ISelection convert(ISelection selection);
 }

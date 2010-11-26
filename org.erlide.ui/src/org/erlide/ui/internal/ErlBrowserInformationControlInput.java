@@ -16,7 +16,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 
 /**
  * Browser input for Javadoc hover.
- *
+ * 
  * @since 3.4
  */
 public class ErlBrowserInformationControlInput extends
@@ -28,7 +28,7 @@ public class ErlBrowserInformationControlInput extends
 
     /**
      * Creates a new browser information control input.
-     *
+     * 
      * @param previous
      *            previous input, or <code>null</code> if none available
      * @param element
@@ -51,7 +51,7 @@ public class ErlBrowserInformationControlInput extends
     /*
      * @see org.eclipse.jface.internal.text.html.BrowserInformationControlInput#
      * getLeadingImageWidth()
-     *
+     * 
      * @since 3.4
      */
     @Override
@@ -81,7 +81,7 @@ public class ErlBrowserInformationControlInput extends
      */
     @Override
     public Object getInputElement() {
-        return (fElement == null) ? fHtml : fElement;
+        return fElement == null ? fHtml : fElement;
     }
 
     /*

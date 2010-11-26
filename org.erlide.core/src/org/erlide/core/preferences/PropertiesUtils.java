@@ -30,8 +30,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlProjectInfo convertOld(final IOldErlangProjectProperties old)
-            throws URISyntaxException {
+    public static ErlProjectInfo convertOld(
+            final IOldErlangProjectProperties old) throws URISyntaxException {
         ErlProjectInfo result = new ErlProjectInfo();
         result = result.setRequiredRuntimeVersion(old.getRuntimeVersion());
         if (!result.getRequiredRuntimeVersion().isDefined()) {

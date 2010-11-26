@@ -24,39 +24,39 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang integral types.
  */
 public class OtpErlangByte extends OtpErlangLong implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = 5778019796466613446L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = 5778019796466613446L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param b
-	 *            the byte value to use.
-	 */
-	public OtpErlangByte(final byte b) {
-		super(b);
-	}
+    /**
+     * Create an Erlang integer from the given value.
+     * 
+     * @param b
+     *            the byte value to use.
+     */
+    public OtpErlangByte(final byte b) {
+        super(b);
+    }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is too large to be represented as a byte.
-	 */
-	public OtpErlangByte(final OtpInputStream buf)
-			throws OtpErlangRangeException, OtpErlangDecodeException {
-		super(buf);
+    /**
+     * Create an Erlang integer from a stream containing an integer encoded in
+     * Erlang external format.
+     * 
+     * @param buf
+     *            the stream containing the encoded value.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
+     * 
+     * @exception OtpErlangRangeException
+     *                if the value is too large to be represented as a byte.
+     */
+    public OtpErlangByte(final OtpInputStream buf)
+            throws OtpErlangRangeException, OtpErlangDecodeException {
+        super(buf);
 
-		@SuppressWarnings("unused")
-		final byte i = byteValue();
-	}
+        @SuppressWarnings("unused")
+        final byte i = byteValue();
+    }
 }

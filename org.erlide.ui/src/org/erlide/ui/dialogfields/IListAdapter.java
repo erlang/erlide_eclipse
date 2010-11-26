@@ -16,19 +16,19 @@ package org.erlide.ui.dialogfields;
  */
 public interface IListAdapter<Element> {
 
-	/**
-	 * A button from the button bar has been pressed.
-	 */
-	void customButtonPressed(ListDialogField<Element> field, int index);
+    /**
+     * A button from the button bar has been pressed.
+     */
+    void customButtonPressed(ListDialogField<Element> field, int index);
 
-	/**
-	 * The selection of the list has changed.
-	 */
-	void selectionChanged(ListDialogField<Element> field);
+    /**
+     * The selection of the list has changed.
+     */
+    void selectionChanged(ListDialogField<Element> field);
 
-	/**
-	 * En entry in the list has been double clicked
-	 */
-	void doubleClicked(ListDialogField<Element> field);
+    /**
+     * En entry in the list has been double clicked
+     */
+    void doubleClicked(ListDialogField<Element> field);
 
 }

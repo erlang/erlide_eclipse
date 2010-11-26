@@ -28,63 +28,63 @@ import org.erlide.ui.actions.SelectionDispatchAction;
  */
 public class SimpleSelectionProvider implements ISelectionProvider {
 
-	private final ListenerList fSelectionChangedListeners;
-	private ISelection fSelection;
+    private final ListenerList fSelectionChangedListeners;
+    private ISelection fSelection;
 
-	/**
-	 * Create a new SimpleSelectionProvider
-	 */
-	public SimpleSelectionProvider() {
-		fSelectionChangedListeners = new ListenerList();
-	}
+    /**
+     * Create a new SimpleSelectionProvider
+     */
+    public SimpleSelectionProvider() {
+        fSelectionChangedListeners = new ListenerList();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-	 */
-	public ISelection getSelection() {
-		return fSelection;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    public ISelection getSelection() {
+        return fSelection;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-	 * .jface.viewers.ISelection)
-	 */
-	public void setSelection(final ISelection selection) {
-		fSelection = selection;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+     * .jface.viewers.ISelection)
+     */
+    public void setSelection(final ISelection selection) {
+        fSelection = selection;
 
-		final Object[] listeners = fSelectionChangedListeners.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			((ISelectionChangedListener) listeners[i])
-					.selectionChanged(new SelectionChangedEvent(this, selection));
-		}
-	}
+        final Object[] listeners = fSelectionChangedListeners.getListeners();
+        for (int i = 0; i < listeners.length; i++) {
+            ((ISelectionChangedListener) listeners[i])
+                    .selectionChanged(new SelectionChangedEvent(this, selection));
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
-	public void removeSelectionChangedListener(
-			final ISelectionChangedListener listener) {
-		fSelectionChangedListeners.remove(listener);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
+     * (org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
+    public void removeSelectionChangedListener(
+            final ISelectionChangedListener listener) {
+        fSelectionChangedListeners.remove(listener);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-	 * (org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
-	public void addSelectionChangedListener(
-			final ISelectionChangedListener listener) {
-		fSelectionChangedListeners.add(listener);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+     * (org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
+    public void addSelectionChangedListener(
+            final ISelectionChangedListener listener) {
+        fSelectionChangedListeners.add(listener);
+    }
 }

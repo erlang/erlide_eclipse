@@ -34,30 +34,30 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
  */
 public class PreferencesInitializer extends AbstractPreferenceInitializer {
 
-	@Override
-	public void initializeDefaultPreferences() {
-		final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER;
-		for (final TokenHighlight ht : TokenHighlight.values()) {
-			final IEclipsePreferences node = new DefaultScope()
-					.getNode(qualifier + ht.getName());
-			ht.getDefaultData().store(node);
-		}
+    @Override
+    public void initializeDefaultPreferences() {
+        final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER;
+        for (final TokenHighlight ht : TokenHighlight.values()) {
+            final IEclipsePreferences node = new DefaultScope()
+                    .getNode(qualifier + ht.getName());
+            ht.getDefaultData().store(node);
+        }
 
-		final IPreferenceStore store = ErlideUIPlugin.getDefault()
-				.getPreferenceStore();
+        final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                .getPreferenceStore();
 
-		store.setDefault(PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
+        store.setDefault(PRINT_MARGIN, DEFAULT_PRINT_MARGIN);
 
-		store.setDefault(EDITOR_MATCHING_BRACKETS, true);
-		PreferenceConverter.setDefault(store, EDITOR_MATCHING_BRACKETS_COLOR,
-				new RGB(190, 140, 190));
+        store.setDefault(EDITOR_MATCHING_BRACKETS, true);
+        PreferenceConverter.setDefault(store, EDITOR_MATCHING_BRACKETS_COLOR,
+                new RGB(190, 140, 190));
 
-		// folding
-		store.setDefault(EDITOR_FOLDING_ENABLED, true);
-		store.setDefault(EDITOR_FOLDING_PROVIDER,
-				"org.erlide.ui.editors.defaultFoldingProvider");
-		store.setDefault(EDITOR_FOLDING_HEADER_COMMENTS, true);
-		store.setDefault(EDITOR_FOLDING_COMMENTS, false);
-		store.setDefault(EDITOR_FOLDING_CLAUSES, false);
-	}
+        // folding
+        store.setDefault(EDITOR_FOLDING_ENABLED, true);
+        store.setDefault(EDITOR_FOLDING_PROVIDER,
+                "org.erlide.ui.editors.defaultFoldingProvider");
+        store.setDefault(EDITOR_FOLDING_HEADER_COMMENTS, true);
+        store.setDefault(EDITOR_FOLDING_COMMENTS, false);
+        store.setDefault(EDITOR_FOLDING_CLAUSES, false);
+    }
 }

@@ -14,26 +14,26 @@ import org.eclipse.swt.program.Program;
 
 public class SFProjectSupport {
 
-	public static final String FEATURES_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489194";
+    public static final String FEATURES_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489194";
 
-	public static final String SUPPORT_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489192";
+    public static final String SUPPORT_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489192";
 
-	public static final String BUGS_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489191";
+    public static final String BUGS_URL = "http://sourceforge.net/tracker/?func=add&group_id=58889&atid=489191";
 
-	public static final String HOME_URL = "http://erlide.sourceforge.net";
+    public static final String HOME_URL = "http://erlide.sourceforge.net";
 
-	public static void openBugsReport() {
-		Program.launch(BUGS_URL);
+    public static void openBugsReport() {
+        Program.launch(BUGS_URL);
 
-	}
+    }
 
-	public static void openSupportRequest() {
-		Program.launch(SUPPORT_URL);
+    public static void openSupportRequest() {
+        Program.launch(SUPPORT_URL);
 
-	}
+    }
 
-	public static void openFeatureRequest() {
-		Program.launch(FEATURES_URL);
+    public static void openFeatureRequest() {
+        Program.launch(FEATURES_URL);
 
-	}
+    }
 }

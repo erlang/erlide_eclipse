@@ -9,13 +9,13 @@ package org.erlide.core.erlang;
  */
 public interface IErlPreprocessorDef extends IErlMember, IParent {
 
-	/**
-	 * @return the defined name of the macro or record
-	 */
-	public String getDefinedName();
+    /**
+     * @return the defined name of the macro or record
+     */
+    public String getDefinedName();
 
-	/**
-	 * @return the macro or record body as string
-	 */
-	public String getExtra();
+    /**
+     * @return the macro or record body as string
+     */
+    public String getExtra();
 }

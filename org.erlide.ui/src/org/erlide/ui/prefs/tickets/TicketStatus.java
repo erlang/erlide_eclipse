@@ -11,11 +11,11 @@
 package org.erlide.ui.prefs.tickets;
 
 public class TicketStatus {
-	public TicketStatus(final boolean ok2, final int id2) {
-		ok = ok2;
-		id = id2;
-	}
+    public TicketStatus(final boolean ok2, final int id2) {
+        ok = ok2;
+        id = id2;
+    }
 
-	public boolean ok;
-	public int id;
+    public boolean ok;
+    public int id;
 }

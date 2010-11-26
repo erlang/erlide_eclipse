@@ -12,15 +12,15 @@ public class ExpandCollapseAllHandler extends AbstractHandler implements
         IHandler {
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
+        final IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
         if (!(activeEditor instanceof ErlangEditor)) {
             return null;
         }
-        ErlangEditor editor = (ErlangEditor) activeEditor;
-        boolean collapse = event.getParameter(
+        final ErlangEditor editor = (ErlangEditor) activeEditor;
+        final boolean collapse = event.getParameter(
                 "org.erlide.ui.commands.expandCollapseParameter").equals(
                 "collapse");
-        boolean comments = event.getParameter(
+        final boolean comments = event.getParameter(
                 "org.erlide.ui.commands.foldWhatParameter").equals("comments");
         editor.expandCollapseFunctionsOrComments(collapse, comments);
         return null;

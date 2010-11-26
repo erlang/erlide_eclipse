@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IPath;
 
 public interface SourcePathProvider {
 
-	/*
-	 * TODO specify if the paths are resolved or not
-	 */
-	Collection<IPath> getSourcePaths();
-	
+    /*
+     * TODO specify if the paths are resolved or not
+     */
+    Collection<IPath> getSourcePaths();
+
 }

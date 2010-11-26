@@ -24,46 +24,46 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang integral types.
  */
 public class OtpErlangUShort extends OtpErlangLong implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = 300370950578307246L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = 300370950578307246L;
 
-	/**
-	 * Create an Erlang integer from the given value.
-	 * 
-	 * @param s
-	 *            the non-negative short value to use.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is negative.
-	 */
-	public OtpErlangUShort(final short s) throws OtpErlangRangeException {
-		super(s);
+    /**
+     * Create an Erlang integer from the given value.
+     * 
+     * @param s
+     *            the non-negative short value to use.
+     * 
+     * @exception OtpErlangRangeException
+     *                if the value is negative.
+     */
+    public OtpErlangUShort(final short s) throws OtpErlangRangeException {
+        super(s);
 
-		@SuppressWarnings("unused")
-		final short j = uShortValue();
-	}
+        @SuppressWarnings("unused")
+        final short j = uShortValue();
+    }
 
-	/**
-	 * Create an Erlang integer from a stream containing an integer encoded in
-	 * Erlang external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang integer.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value is too large to be represented as a short, or
-	 *                the value is negative.
-	 */
-	public OtpErlangUShort(final OtpInputStream buf)
-			throws OtpErlangRangeException, OtpErlangDecodeException {
-		super(buf);
+    /**
+     * Create an Erlang integer from a stream containing an integer encoded in
+     * Erlang external format.
+     * 
+     * @param buf
+     *            the stream containing the encoded value.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang integer.
+     * 
+     * @exception OtpErlangRangeException
+     *                if the value is too large to be represented as a short, or
+     *                the value is negative.
+     */
+    public OtpErlangUShort(final OtpInputStream buf)
+            throws OtpErlangRangeException, OtpErlangDecodeException {
+        super(buf);
 
-		@SuppressWarnings("unused")
-		final short j = uShortValue();
-	}
+        @SuppressWarnings("unused")
+        final short j = uShortValue();
+    }
 }

@@ -17,48 +17,48 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcResult {
 
-	private OtpErlangObject fValue;
+    private OtpErlangObject fValue;
 
-	private boolean fOk = true;
+    private boolean fOk = true;
 
-	private RpcResult(final boolean ok) {
-		fOk = ok;
-		fValue = new OtpErlangAtom("undefined");
-	}
+    private RpcResult(final boolean ok) {
+        fOk = ok;
+        fValue = new OtpErlangAtom("undefined");
+    }
 
-	public RpcResult(final OtpErlangObject res) {
-		if ((res instanceof OtpErlangTuple)
-				&& (((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom)
-				&& ("badrpc".equals(((OtpErlangAtom) (((OtpErlangTuple) res)
-						.elementAt(0))).atomValue()) || "EXIT"
-						.equals(((OtpErlangAtom) (((OtpErlangTuple) res)
-								.elementAt(0))).atomValue()))) {
-			fOk = false;
-			fValue = ((OtpErlangTuple) res).elementAt(1);
-		} else {
-			fOk = true;
-			fValue = res;
-		}
+    public RpcResult(final OtpErlangObject res) {
+        if (res instanceof OtpErlangTuple
+                && ((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom
+                && ("badrpc".equals(((OtpErlangAtom) ((OtpErlangTuple) res)
+                        .elementAt(0)).atomValue()) || "EXIT"
+                        .equals(((OtpErlangAtom) ((OtpErlangTuple) res)
+                                .elementAt(0)).atomValue()))) {
+            fOk = false;
+            fValue = ((OtpErlangTuple) res).elementAt(1);
+        } else {
+            fOk = true;
+            fValue = res;
+        }
 
-	}
+    }
 
-	public boolean isOk() {
-		return fOk;
-	}
+    public boolean isOk() {
+        return fOk;
+    }
 
-	public OtpErlangObject getValue() {
-		return fValue;
-	}
+    public OtpErlangObject getValue() {
+        return fValue;
+    }
 
-	@Override
-	public String toString() {
-		return "RPC:" + fOk + "=" + fValue.toString();
-	}
+    @Override
+    public String toString() {
+        return "RPC:" + fOk + "=" + fValue.toString();
+    }
 
-	public static RpcResult error(final String msg) {
-		final RpcResult r = new RpcResult(false);
-		r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
-				new OtpErlangAtom(msg));
-		return r;
-	}
+    public static RpcResult error(final String msg) {
+        final RpcResult r = new RpcResult(false);
+        r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
+                new OtpErlangAtom(msg));
+        return r;
+    }
 }

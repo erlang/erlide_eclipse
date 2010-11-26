@@ -14,16 +14,16 @@ import org.eclipse.osgi.util.NLS;
 
 public class ErlideUIMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.erlide.ui.ErlideUIMessages";//$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.ui.ErlideUIMessages";//$NON-NLS-1$
 
-	public static String QuickOutlinePopupDialog_infoTextPressEscToExit;
-	public static String PDEMultiPageContentOutline_SortingAction_tooltip;
+    public static String QuickOutlinePopupDialog_infoTextPressEscToExit;
+    public static String PDEMultiPageContentOutline_SortingAction_tooltip;
 
-	public static String ExceptionHandler_seeErrorLogMessage;
+    public static String ExceptionHandler_seeErrorLogMessage;
 
-	static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, ErlideUIMessages.class);
-	}
+    static {
+        // load message values from bundle file
+        NLS.initializeMessages(BUNDLE_NAME, ErlideUIMessages.class);
+    }
 
 }

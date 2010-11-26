@@ -47,96 +47,96 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IWorkingCopy extends IErlModule {
 
-	/**
-	 * Commits the contents of this working copy to its original element and
-	 * underlying resource, bringing the Erlang model up-to-date with the
-	 * current contents of the working copy.
-	 * 
-	 * <p>
-	 * It is possible that the contents of the original resource have changed
-	 * since this working copy was created, in which case there is an update
-	 * conflict. The value of the <code>force</code> parameter effects the
-	 * resolution of such a conflict:
-	 * <ul>
-	 * <li> <code>true</code> - in this case the contents of this working copy
-	 * are applied to the underlying resource even though this working copy was
-	 * created before a subsequent change in the resource</li>
-	 * <li> <code>false</code> - in this case a <code>ErlModelException</code> is
-	 * thrown</li>
-	 * </ul>
-	 */
-	void commit(boolean force, IProgressMonitor monitor)
-			throws ErlModelException;
+    /**
+     * Commits the contents of this working copy to its original element and
+     * underlying resource, bringing the Erlang model up-to-date with the
+     * current contents of the working copy.
+     * 
+     * <p>
+     * It is possible that the contents of the original resource have changed
+     * since this working copy was created, in which case there is an update
+     * conflict. The value of the <code>force</code> parameter effects the
+     * resolution of such a conflict:
+     * <ul>
+     * <li> <code>true</code> - in this case the contents of this working copy
+     * are applied to the underlying resource even though this working copy was
+     * created before a subsequent change in the resource</li>
+     * <li> <code>false</code> - in this case a <code>ErlModelException</code> is
+     * thrown</li>
+     * </ul>
+     */
+    void commit(boolean force, IProgressMonitor monitor)
+            throws ErlModelException;
 
-	/**
-	 * Destroys this working copy, closing its buffer and discarding its
-	 * structure. Subsequent attempts to access non-handle information for this
-	 * working copy will result in <code>CModelException</code>s. Has no effect
-	 * if this element is not a working copy.
-	 * <p>
-	 * If this working copy is shared, it is destroyed only when the number of
-	 * calls to <code>destroy()</code> is the same as the number of calls to
-	 * <code>
-	 * getSharedWorkingCopy(IProgressMonitor, IBufferFactory)</code>. A REMOVED
-	 * CElementDelta is then reported on this working copy.
-	 */
-	void destroy();
+    /**
+     * Destroys this working copy, closing its buffer and discarding its
+     * structure. Subsequent attempts to access non-handle information for this
+     * working copy will result in <code>CModelException</code>s. Has no effect
+     * if this element is not a working copy.
+     * <p>
+     * If this working copy is shared, it is destroyed only when the number of
+     * calls to <code>destroy()</code> is the same as the number of calls to
+     * <code>
+     * getSharedWorkingCopy(IProgressMonitor, IBufferFactory)</code>. A REMOVED
+     * CElementDelta is then reported on this working copy.
+     */
+    void destroy();
 
-	/**
-	 * Returns the original element the specified working copy element was
-	 * created from, or <code>null</code> if this is not a working copy element.
-	 * 
-	 * @param workingCopyElement
-	 *            the specified working copy element
-	 * @return the original element the specified working copy element was
-	 *         created from, or <code>null</code> if this is not a working copy
-	 *         element
-	 */
-	IErlElement getOriginal(IErlElement workingCopyElement);
+    /**
+     * Returns the original element the specified working copy element was
+     * created from, or <code>null</code> if this is not a working copy element.
+     * 
+     * @param workingCopyElement
+     *            the specified working copy element
+     * @return the original element the specified working copy element was
+     *         created from, or <code>null</code> if this is not a working copy
+     *         element
+     */
+    IErlElement getOriginal(IErlElement workingCopyElement);
 
-	/**
-	 * Returns the original element this working copy was created from, or
-	 * <code>null</code> if this is not a working copy.
-	 */
-	IErlModule getOriginalElement();
+    /**
+     * Returns the original element this working copy was created from, or
+     * <code>null</code> if this is not a working copy.
+     */
+    IErlModule getOriginalElement();
 
-	/**
-	 * Returns whether this working copy's original element's content has not
-	 * changed since the inception of this working copy.
-	 * 
-	 * @return true if this working copy's original element's content has not
-	 *         changed since the inception of this working copy, false otherwise
-	 */
-	boolean isBasedOn(IResource resource);
+    /**
+     * Returns whether this working copy's original element's content has not
+     * changed since the inception of this working copy.
+     * 
+     * @return true if this working copy's original element's content has not
+     *         changed since the inception of this working copy, false otherwise
+     */
+    boolean isBasedOn(IResource resource);
 
-	/**
-	 * Reconciles the contents of this working copy. It performs the
-	 * reconciliation by locally caching the contents of the working copy,
-	 * updating the contents, then creating a delta over the cached contents and
-	 * the new contents, and finally firing this delta.
-	 * <p>
-	 * If the working copy hasn't changed, then no problem will be detected,
-	 * this is equivalent to <code>IWorkingCopy#reconcile(false, null)</code>.
-	 * <p>
-	 */
-	IMarker[] reconcile() throws ErlModelException;
+    /**
+     * Reconciles the contents of this working copy. It performs the
+     * reconciliation by locally caching the contents of the working copy,
+     * updating the contents, then creating a delta over the cached contents and
+     * the new contents, and finally firing this delta.
+     * <p>
+     * If the working copy hasn't changed, then no problem will be detected,
+     * this is equivalent to <code>IWorkingCopy#reconcile(false, null)</code>.
+     * <p>
+     */
+    IMarker[] reconcile() throws ErlModelException;
 
-	/**
-	 * Reconciles the contents of this working copy. It performs the
-	 * reconciliation by locally caching the contents of the working copy,
-	 * updating the contents, then creating a delta over the cached contents and
-	 * the new contents, and finally firing this delta.
-	 * <p>
-	 * The boolean argument allows to force problem detection even if the
-	 * working copy is already consistent.
-	 */
-	void reconcile(boolean forceProblemDetection, IProgressMonitor monitor)
-			throws ErlModelException;
+    /**
+     * Reconciles the contents of this working copy. It performs the
+     * reconciliation by locally caching the contents of the working copy,
+     * updating the contents, then creating a delta over the cached contents and
+     * the new contents, and finally firing this delta.
+     * <p>
+     * The boolean argument allows to force problem detection even if the
+     * working copy is already consistent.
+     */
+    void reconcile(boolean forceProblemDetection, IProgressMonitor monitor)
+            throws ErlModelException;
 
-	/**
-	 * Restores the contents of this working copy to the current contents of
-	 * this working copy's original element. Has no effect if this element is
-	 * not a working copy.
-	 */
-	void restore() throws ErlModelException;
+    /**
+     * Restores the contents of this working copy to the current contents of
+     * this working copy's original element. Has no effect if this element is
+     * not a working copy.
+     */
+    void restore() throws ErlModelException;
 }

@@ -26,21 +26,20 @@ public class UIStringUtils {
 
     public static final Object EMPTY = "";
 
-
-    public static String removeWhitespaceColumnsToLeft(String hoverInfo) {
-        StringBuilder buf = new StringBuilder();
+    public static String removeWhitespaceColumnsToLeft(final String hoverInfo) {
+        final StringBuilder buf = new StringBuilder();
         int firstCharPosition = Integer.MAX_VALUE;
 
-        List<String> splitted = StringUtils.splitLines(hoverInfo);
-        for (String line : splitted) {
+        final List<String> splitted = StringUtils.splitLines(hoverInfo);
+        for (final String line : splitted) {
             if (line.trim().length() > 0) {
-                int found = ErlideSelection.getFirstCharPosition(line);
+                final int found = ErlideSelection.getFirstCharPosition(line);
                 firstCharPosition = Math.min(found, firstCharPosition);
             }
         }
 
         if (firstCharPosition != Integer.MAX_VALUE) {
-            for (String line : splitted) {
+            for (final String line : splitted) {
                 if (line.length() > firstCharPosition) {
                     buf.append(line.substring(firstCharPosition));
                 }
@@ -54,23 +53,23 @@ public class UIStringUtils {
     /**
      * Given some html, extracts its text.
      */
-    public static String extractTextFromHTML(String html) {
+    public static String extractTextFromHTML(final String html) {
         try {
-            EditorKit kit = new HTMLEditorKit();
-            Document doc = kit.createDefaultDocument();
+            final EditorKit kit = new HTMLEditorKit();
+            final Document doc = kit.createDefaultDocument();
 
             // The Document class does not yet handle charset's properly.
             doc.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
 
             // Create a reader on the HTML content.
-            Reader rd = new StringReader(html);
+            final Reader rd = new StringReader(html);
 
             // Parse the HTML.
             kit.read(rd, doc, 0);
 
             // The HTML text is now stored in the document
             return doc.getText(0, doc.getLength());
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return "";
     }

@@ -44,174 +44,175 @@ import erlang.ErlangXref;
 import erlang.FunctionRef;
 
 public class CallHierarchyView extends ViewPart {
-	Tree tree;
-	TreeViewer treeViewer;
-	Label lblRoot;
+    Tree tree;
+    TreeViewer treeViewer;
+    Label lblRoot;
 
-	static class ViewerLabelProvider extends LabelProvider {
-		@Override
-		public Image getImage(Object element) {
-			return super.getImage(element);
-		}
+    static class ViewerLabelProvider extends LabelProvider {
+        @Override
+        public Image getImage(final Object element) {
+            return super.getImage(element);
+        }
 
-		@Override
-		public String getText(Object element) {
-			if (element instanceof IErlFunction) {
-				IErlFunction ref = (IErlFunction) element;
-				String n = ref.getModule().getModuleName();
-				return n + " : " + ref.toString();
-			}
-			return super.getText(element);
-		}
-	}
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof IErlFunction) {
+                final IErlFunction ref = (IErlFunction) element;
+                final String n = ref.getModule().getModuleName();
+                return n + " : " + ref.toString();
+            }
+            return super.getText(element);
+        }
+    }
 
-	class TreeContentProvider implements ITreeContentProvider {
+    class TreeContentProvider implements ITreeContentProvider {
 
-		private Object input;
+        private Object input;
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			input = newInput;
-			if (newInput instanceof IErlFunction) {
-				IErlFunction fun = (IErlFunction) newInput;
-				lblRoot.setText(fun.getModule().getModuleName() + " : "
-						+ fun.getNameWithArity());
-			} else if (input instanceof String) {
-				lblRoot.setText((String) input);
-			}
-		}
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
+            input = newInput;
+            if (newInput instanceof IErlFunction) {
+                final IErlFunction fun = (IErlFunction) newInput;
+                lblRoot.setText(fun.getModule().getModuleName() + " : "
+                        + fun.getNameWithArity());
+            } else if (input instanceof String) {
+                lblRoot.setText((String) input);
+            }
+        }
 
-		public void dispose() {
-		}
+        public void dispose() {
+        }
 
-		public Object[] getElements(Object inputElement) {
-			return getChildren(inputElement);
-		}
+        public Object[] getElements(final Object inputElement) {
+            return getChildren(inputElement);
+        }
 
-		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof String) {
-				return new Object[0];
-			}
-			IErlFunction parent = (IErlFunction) parentElement;
-			FunctionRef ref = new FunctionRef(parent);
-			Backend b = ErlangCore.getBackendManager().getIdeBackend();
-			FunctionRef[] children = ErlangXref.functionUse(b, ref);
-			if (children == null) {
-				return new Object[0];
-			}
-			if (parentElement == input && children.length == 0) {
-				// TODO ErlangXref should cache _all_ projects added to it
-				return new Object[] { "<no callers from project "
-						+ parent.getModule().getProject().getName() + ">" };
-			}
-			List<IErlFunction> result = new ArrayList<IErlFunction>();
-			for (FunctionRef r : children) {
-				IErlFunction fun = parent.getModel().findFunction(r);
-				if (fun != null) {
-					result.add(fun);
-				}
-			}
-			return result.toArray(new IErlFunction[result.size()]);
-		}
+        public Object[] getChildren(final Object parentElement) {
+            if (parentElement instanceof String) {
+                return new Object[0];
+            }
+            final IErlFunction parent = (IErlFunction) parentElement;
+            final FunctionRef ref = new FunctionRef(parent);
+            final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+            final FunctionRef[] children = ErlangXref.functionUse(b, ref);
+            if (children == null) {
+                return new Object[0];
+            }
+            if (parentElement == input && children.length == 0) {
+                // TODO ErlangXref should cache _all_ projects added to it
+                return new Object[] { "<no callers from project "
+                        + parent.getModule().getProject().getName() + ">" };
+            }
+            final List<IErlFunction> result = new ArrayList<IErlFunction>();
+            for (final FunctionRef r : children) {
+                final IErlFunction fun = parent.getModel().findFunction(r);
+                if (fun != null) {
+                    result.add(fun);
+                }
+            }
+            return result.toArray(new IErlFunction[result.size()]);
+        }
 
-		public Object getParent(Object element) {
-			return null;
-		}
+        public Object getParent(final Object element) {
+            return null;
+        }
 
-		public boolean hasChildren(Object element) {
-			return getChildren(element).length > 0;
-		}
-	}
+        public boolean hasChildren(final Object element) {
+            return getChildren(element).length > 0;
+        }
+    }
 
-	public CallHierarchyView() {
-		Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		ErlangXref.start(b);
-	}
+    public CallHierarchyView() {
+        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        ErlangXref.start(b);
+    }
 
-	@Override
-	public void createPartControl(Composite parent) {
-		{
-			final Composite composite = new Composite(parent, SWT.NONE);
-			composite.setLayout(new GridLayout(2, false));
-			{
-				lblRoot = new Label(composite, SWT.NONE);
-				lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-						false, 1, 1));
-				lblRoot.setText("<no function>");
-			}
-			{
-				final ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
-				toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
-						false, 1, 1));
-				{
-					final ToolItem tltmRefresh = new ToolItem(toolBar, SWT.NONE);
-					tltmRefresh.addSelectionListener(new SelectionAdapter() {
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							Backend b = ErlangCore.getBackendManager()
-									.getIdeBackend();
-							ErlangXref.update(b);
-							treeViewer.refresh();
-						}
-					});
-					tltmRefresh.setText("refresh");
-				}
-			}
-			{
-				treeViewer = new TreeViewer(composite, SWT.NONE);
-				treeViewer.setLabelProvider(new ViewerLabelProvider());
-				treeViewer.setContentProvider(new TreeContentProvider());
-				tree = treeViewer.getTree();
-				tree.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDoubleClick(MouseEvent e) {
-						TreeItem[] sel = tree.getSelection();
-						IErlFunction el = (IErlFunction) sel[0].getData();
-						final boolean activateOnOpen = (getSite() != null) ? true
-								: OpenStrategy.activateOnOpen();
-						try {
-							// TODO we want to find the exact place in the code
-							EditorUtility.openElementInEditor(el,
-									activateOnOpen);
-						} catch (PartInitException e1) {
-							e1.printStackTrace();
-						} catch (ErlModelException e1) {
-							e1.printStackTrace();
-						}
-					}
-				});
-				tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-						true, 2, 1));
-			}
-		}
-	}
+    @Override
+    public void createPartControl(final Composite parent) {
+        {
+            final Composite composite = new Composite(parent, SWT.NONE);
+            composite.setLayout(new GridLayout(2, false));
+            {
+                lblRoot = new Label(composite, SWT.NONE);
+                lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                        false, 1, 1));
+                lblRoot.setText("<no function>");
+            }
+            {
+                final ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
+                toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
+                        false, 1, 1));
+                {
+                    final ToolItem tltmRefresh = new ToolItem(toolBar, SWT.NONE);
+                    tltmRefresh.addSelectionListener(new SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(final SelectionEvent e) {
+                            final Backend b = ErlangCore.getBackendManager()
+                                    .getIdeBackend();
+                            ErlangXref.update(b);
+                            treeViewer.refresh();
+                        }
+                    });
+                    tltmRefresh.setText("refresh");
+                }
+            }
+            {
+                treeViewer = new TreeViewer(composite, SWT.NONE);
+                treeViewer.setLabelProvider(new ViewerLabelProvider());
+                treeViewer.setContentProvider(new TreeContentProvider());
+                tree = treeViewer.getTree();
+                tree.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseDoubleClick(final MouseEvent e) {
+                        final TreeItem[] sel = tree.getSelection();
+                        final IErlFunction el = (IErlFunction) sel[0].getData();
+                        final boolean activateOnOpen = getSite() != null ? true
+                                : OpenStrategy.activateOnOpen();
+                        try {
+                            // TODO we want to find the exact place in the code
+                            EditorUtility.openElementInEditor(el,
+                                    activateOnOpen);
+                        } catch (final PartInitException e1) {
+                            e1.printStackTrace();
+                        } catch (final ErlModelException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+                tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+                        true, 2, 1));
+            }
+        }
+    }
 
-	@Override
-	public void dispose() {
-		Backend b = ErlangCore.getBackendManager().getIdeBackend();
-		ErlangXref.stop(b);
-		super.dispose();
-	}
+    @Override
+    public void dispose() {
+        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        ErlangXref.stop(b);
+        super.dispose();
+    }
 
-	@Override
-	public void setFocus() {
-		tree.setFocus();
-	}
+    @Override
+    public void setFocus() {
+        tree.setFocus();
+    }
 
-	public void setRoot(IErlFunction ref) {
-		if (ref == null) {
-			return;
-		}
-		treeViewer.setInput(ref);
-		// treeViewer.expandToLevel(2);
-		treeViewer.refresh();
-	}
+    public void setRoot(final IErlFunction ref) {
+        if (ref == null) {
+            return;
+        }
+        treeViewer.setInput(ref);
+        // treeViewer.expandToLevel(2);
+        treeViewer.refresh();
+    }
 
-	public void setMessage(String msg) {
-		if (msg == null) {
-			return;
-		}
-		treeViewer.setInput(msg);
-		treeViewer.refresh();
-	}
+    public void setMessage(final String msg) {
+        if (msg == null) {
+            return;
+        }
+        treeViewer.setInput(msg);
+        treeViewer.refresh();
+    }
 
 }

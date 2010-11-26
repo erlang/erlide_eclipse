@@ -13,6 +13,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public interface RpcCallback {
 
-	void run(OtpErlangObject value);
+    void run(OtpErlangObject value);
 
 }

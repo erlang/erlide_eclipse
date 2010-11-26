@@ -12,9 +12,9 @@ package org.erlide.jinterface.util;
 
 public class ParserException extends Exception {
 
-	private static final long serialVersionUID = -6173136408234923943L;
+    private static final long serialVersionUID = -6173136408234923943L;
 
-	public ParserException(final String string) {
-		super(string);
-	}
+    public ParserException(final String string) {
+        super(string);
+    }
 }

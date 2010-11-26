@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ericsson.otp.erlang;
 
-
 /**
  * Provides a Java representation of Erlang variables.
  * <p>
@@ -18,52 +17,52 @@ package com.ericsson.otp.erlang;
  */
 public class OtpPatternVariable extends OtpErlangObject {
 
-	private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = -1L;
 
-	private final String name;
-	private Signature sign;
+    private final String name;
+    private Signature sign;
 
-	public OtpPatternVariable(final String n) {
-		final String[] v = n.split(":");
-		this.name = v[0];
-		if (v.length > 1) {
-			this.sign = new Signature(v[1].charAt(0));
-		} else {
-			this.sign = new Signature('x');
-		}
-	}
+    public OtpPatternVariable(final String n) {
+        final String[] v = n.split(":");
+        name = v[0];
+        if (v.length > 1) {
+            sign = new Signature(v[1].charAt(0));
+        } else {
+            sign = new Signature('x');
+        }
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Signature getSignature() {
-		return this.sign;
-	}
+    public Signature getSignature() {
+        return sign;
+    }
 
-	@Override
-	public String toString() {
-		return "'%" + this.name + ":" + this.sign.kind + "'";
-	}
+    @Override
+    public String toString() {
+        return "'%" + name + ":" + sign.kind + "'";
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!(o instanceof OtpPatternVariable)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof OtpPatternVariable)) {
+            return false;
+        }
 
-		final OtpPatternVariable l = (OtpPatternVariable) o;
-		return this.name.equals(l.name) && this.sign.equals(l.sign);
-	}
+        final OtpPatternVariable l = (OtpPatternVariable) o;
+        return name.equals(l.name) && sign.equals(l.sign);
+    }
 
-	@Override
-	public int hashCode() {
-		return this.name.hashCode() + this.sign.hashCode() * 31;
-	}
+    @Override
+    public int hashCode() {
+        return name.hashCode() + sign.hashCode() * 31;
+    }
 
-	@Override
-	public void encode(final OtpOutputStream arg0) {
-		// throw new NotImplementedException();
-	}
+    @Override
+    public void encode(final OtpOutputStream arg0) {
+        // throw new NotImplementedException();
+    }
 
 }

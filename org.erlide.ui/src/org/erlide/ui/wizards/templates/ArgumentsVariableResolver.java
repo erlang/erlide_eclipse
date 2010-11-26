@@ -15,46 +15,46 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ArgumentsVariableResolver extends TemplateVariableResolver {
 
-	private static ArgumentsVariableResolver fInstance;
+    private static ArgumentsVariableResolver fInstance;
 
-	private int fArity;
+    private int fArity;
 
-	public static ArgumentsVariableResolver getDefault() {
-		if (fInstance == null) {
-			fInstance = new ArgumentsVariableResolver();
-		}
-		return fInstance;
-	}
+    public static ArgumentsVariableResolver getDefault() {
+        if (fInstance == null) {
+            fInstance = new ArgumentsVariableResolver();
+        }
+        return fInstance;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-	 * .eclipse.jface.text.templates.TemplateContext)
-	 */
-	@Override
-	protected String resolve(final TemplateContext context) {
-		final StringBuilder buff = new StringBuilder();
-		buff.append((fArity != 0) ? "_Arg0" : "");
-		for (int i = 1; i < fArity; i++) {
-			buff.append(", _Arg" + i);
-		}
-		return buff.toString();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+     * .eclipse.jface.text.templates.TemplateContext)
+     */
+    @Override
+    protected String resolve(final TemplateContext context) {
+        final StringBuilder buff = new StringBuilder();
+        buff.append(fArity != 0 ? "_Arg0" : "");
+        for (int i = 1; i < fArity; i++) {
+            buff.append(", _Arg" + i);
+        }
+        return buff.toString();
+    }
 
-	/**
-	 * @return Returns the arity.
-	 */
-	public int getArity() {
-		return fArity;
-	}
+    /**
+     * @return Returns the arity.
+     */
+    public int getArity() {
+        return fArity;
+    }
 
-	/**
-	 * @param arity
-	 *            The arity to set.
-	 */
-	public void setArity(final int arity) {
-		fArity = arity;
-	}
+    /**
+     * @param arity
+     *            The arity to set.
+     */
+    public void setArity(final int arity) {
+        fArity = arity;
+    }
 }

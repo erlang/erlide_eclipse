@@ -11,6 +11,6 @@ package org.erlide.jinterface.backend;
 
 public interface IDisposable {
 
-	public abstract void dispose();
+    public abstract void dispose();
 
 }

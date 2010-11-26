@@ -23,17 +23,17 @@ package com.ericsson.otp.erlang;
  */
 @SuppressWarnings("serial")
 public abstract class OtpException extends Exception {
-	/**
-	 * Provides no message.
-	 */
-	public OtpException() {
-		super();
-	}
+    /**
+     * Provides no message.
+     */
+    public OtpException() {
+        super();
+    }
 
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpException(final String msg) {
-		super(msg);
-	}
+    /**
+     * Provides a detailed message.
+     */
+    public OtpException(final String msg) {
+        super(msg);
+    }
 }

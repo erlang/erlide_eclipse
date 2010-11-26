@@ -18,45 +18,45 @@ package org.erlide.jinterface.backend;
  */
 public class BackendException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor
-	 */
-	public BackendException() {
-		super();
-	}
+    /**
+     * Default constructor
+     */
+    public BackendException() {
+        super();
+    }
 
-	/**
-	 * Constructor with message
-	 * 
-	 * @param message
-	 *            The message to pass up
-	 */
-	public BackendException(final String message) {
-		super(message);
-	}
+    /**
+     * Constructor with message
+     * 
+     * @param message
+     *            The message to pass up
+     */
+    public BackendException(final String message) {
+        super(message);
+    }
 
-	/**
-	 * Constructor with message and cause
-	 * 
-	 * @param message
-	 *            The message
-	 * @param cause
-	 *            The cause
-	 */
-	public BackendException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Constructor with message and cause
+     * 
+     * @param message
+     *            The message
+     * @param cause
+     *            The cause
+     */
+    public BackendException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	/**
-	 * Constructor with cause only
-	 * 
-	 * @param cause
-	 *            The cause.
-	 */
-	public BackendException(final Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Constructor with cause only
+     * 
+     * @param cause
+     *            The cause.
+     */
+    public BackendException(final Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -19,25 +19,25 @@ package org.erlide.core.erlang;
  */
 public interface ISourceRange {
 
-	/**
-	 * Returns the number of characters of the source code for this element,
-	 * relative to the source buffer in which this element is contained.
-	 * 
-	 * @return the number of characters of the source code for this element,
-	 *         relative to the source buffer in which this element is contained
-	 */
-	int getLength();
+    /**
+     * Returns the number of characters of the source code for this element,
+     * relative to the source buffer in which this element is contained.
+     * 
+     * @return the number of characters of the source code for this element,
+     *         relative to the source buffer in which this element is contained
+     */
+    int getLength();
 
-	/**
-	 * Returns the 0-based index of the first character of the source code for
-	 * this element, relative to the source buffer in which this element is
-	 * contained.
-	 * 
-	 * @return the 0-based index of the first character of the source code for
-	 *         this element, relative to the source buffer in which this element
-	 *         is contained
-	 */
-	int getOffset();
+    /**
+     * Returns the 0-based index of the first character of the source code for
+     * this element, relative to the source buffer in which this element is
+     * contained.
+     * 
+     * @return the 0-based index of the first character of the source code for
+     *         this element, relative to the source buffer in which this element
+     *         is contained
+     */
+    int getOffset();
 
-	boolean hasPosition(int position);
+    boolean hasPosition(int position);
 }

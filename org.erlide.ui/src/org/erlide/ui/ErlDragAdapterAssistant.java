@@ -10,20 +10,20 @@ import org.eclipse.ui.part.PluginTransfer;
 
 public class ErlDragAdapterAssistant extends CommonDragAdapterAssistant {
 
-	public ErlDragAdapterAssistant() {
-	}
+    public ErlDragAdapterAssistant() {
+    }
 
-	@Override
-	public Transfer[] getSupportedTransferTypes() {
-		return new Transfer[] { PluginTransfer.getInstance(),
-				TextTransfer.getInstance(),
-				LocalSelectionTransfer.getTransfer() };
-	}
+    @Override
+    public Transfer[] getSupportedTransferTypes() {
+        return new Transfer[] { PluginTransfer.getInstance(),
+                TextTransfer.getInstance(),
+                LocalSelectionTransfer.getTransfer() };
+    }
 
-	@Override
-	public boolean setDragData(final DragSourceEvent anEvent,
-			final IStructuredSelection selection) {
-		return false;
-	}
+    @Override
+    public boolean setDragData(final DragSourceEvent anEvent,
+            final IStructuredSelection selection) {
+        return false;
+    }
 
 }

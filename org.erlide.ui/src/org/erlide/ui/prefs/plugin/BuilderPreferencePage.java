@@ -22,82 +22,82 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class BuilderPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	// private PathEditor pathA;
+    // private PathEditor pathA;
 
-	// private PathEditor pathZ;
+    // private PathEditor pathZ;
 
-	// private BooleanFieldEditor longName;
-	// private StringFieldEditor extra;
+    // private BooleanFieldEditor longName;
+    // private StringFieldEditor extra;
 
-	/**
-	 * Initialize the system preferences
-	 * 
-	 */
-	public BuilderPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-	}
+    /**
+     * Initialize the system preferences
+     * 
+     */
+    public BuilderPreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+    }
 
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
-	@Override
-	protected void createFieldEditors() {
-		// pathZ = new PathEditor(PreferenceConstants.ERTS_PATH_Z,
-		// ErlideBasicUIPlugin
-		// .getResourceString("prefs.system.pathz"),
-		// "Add a library directory to code:pathz()",
-		// getFieldEditorParent());
-		// addField(pathZ);
+    /**
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+     */
+    @Override
+    protected void createFieldEditors() {
+        // pathZ = new PathEditor(PreferenceConstants.ERTS_PATH_Z,
+        // ErlideBasicUIPlugin
+        // .getResourceString("prefs.system.pathz"),
+        // "Add a library directory to code:pathz()",
+        // getFieldEditorParent());
+        // addField(pathZ);
 
-		// extra = new StringFieldEditor(PreferenceConstants.ERTS_EXTRA_ARGS,
-		// ErlideBasicUIPlugin.getResourceString("prefs.system.extra"),
-		// getFieldEditorParent());
-		// addField(extra);
+        // extra = new StringFieldEditor(PreferenceConstants.ERTS_EXTRA_ARGS,
+        // ErlideBasicUIPlugin.getResourceString("prefs.system.extra"),
+        // getFieldEditorParent());
+        // addField(extra);
 
-	}
+    }
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(final IWorkbench workbench) {
-	}
+    /**
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(final IWorkbench workbench) {
+    }
 
-	@Override
-	protected void performDefaults() {
-		super.performDefaults();
-	}
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
-	@Override
-	public boolean performOk() {
-		return super.performOk();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        return super.performOk();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
-	 */
-	@Override
-	protected void initialize() {
-		super.initialize();
-		// ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
-		// .getPreferences();
-		// home.setStringValue(prefs.getOtpHome());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
+     */
+    @Override
+    protected void initialize() {
+        super.initialize();
+        // ErtsPreferences prefs = ErlideBasicUIPlugin.getDefault()
+        // .getPreferences();
+        // home.setStringValue(prefs.getOtpHome());
 
-		// pathA.setStringValue(prefs.getPathA());
-		// pathZ.setStringValue(prefs.getPathZ());
+        // pathA.setStringValue(prefs.getPathA());
+        // pathZ.setStringValue(prefs.getPathZ());
 
-		// longName.g(prefs.getErtsPrefs().getExtraErtsArgs());
-		// setStringValue shouldn't be used
-		// extra.setStringValue(prefs.getExtraErtsArgs());
+        // longName.g(prefs.getErtsPrefs().getExtraErtsArgs());
+        // setStringValue shouldn't be used
+        // extra.setStringValue(prefs.getExtraErtsArgs());
 
-	}
+    }
 
 }

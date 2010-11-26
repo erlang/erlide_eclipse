@@ -23,20 +23,20 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
  */
 public class OpenModuleDialog extends FilteredModulesSelectionDialog {
 
-	/**
-	 * Creates a new instance of the class.
-	 * 
-	 * @param parentShell
-	 *            the parent shell
-	 * @param container
-	 *            the container
-	 * @param typesMask
-	 *            the types mask
-	 */
-	public OpenModuleDialog(Shell parentShell, IContainer container) {
-		super(parentShell, true, container, IResource.FILE);
-		setTitle("Open module");
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parentShell,
-				IErlangHelpContextIds.OPEN_MODULE_DIALOG);
-	}
+    /**
+     * Creates a new instance of the class.
+     * 
+     * @param parentShell
+     *            the parent shell
+     * @param container
+     *            the container
+     * @param typesMask
+     *            the types mask
+     */
+    public OpenModuleDialog(final Shell parentShell, final IContainer container) {
+        super(parentShell, true, container, IResource.FILE);
+        setTitle("Open module");
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(parentShell, IErlangHelpContextIds.OPEN_MODULE_DIALOG);
+    }
 }

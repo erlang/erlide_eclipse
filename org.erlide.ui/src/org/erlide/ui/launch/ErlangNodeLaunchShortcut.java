@@ -17,15 +17,15 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
-	public void launch(final ISelection selection, final String mode) {
-		// TODO Auto-generated method stub
-		ErlLogger.debug("** Launch:: " + selection.toString());
+    public void launch(final ISelection selection, final String mode) {
+        // TODO Auto-generated method stub
+        ErlLogger.debug("** Launch:: " + selection.toString());
 
-	}
+    }
 
-	public void launch(final IEditorPart editor, final String mode) {
-		// TODO Auto-generated method stub
-		ErlLogger.debug("** Launch :: " + editor.getTitle());
-	}
+    public void launch(final IEditorPart editor, final String mode) {
+        // TODO Auto-generated method stub
+        ErlLogger.debug("** Launch :: " + editor.getTitle());
+    }
 
 }

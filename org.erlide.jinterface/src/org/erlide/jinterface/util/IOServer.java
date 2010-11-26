@@ -56,7 +56,7 @@ public class IOServer implements Runnable {
                         ErlLogger.debug("IOServer: unknown message " + msg);
                     }
                 }
-            } catch (OtpErlangExit e) {
+            } catch (final OtpErlangExit e) {
                 done = true;
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -186,7 +186,7 @@ public class IOServer implements Runnable {
                                 return error;
                             }
                         }
-                        return (val == null) ? error : val;
+                        return val == null ? error : val;
                     }
                 } else if ("setopts".equals(tag)) {
                     b = ErlUtils.match("{setopts, Opts:lx}", request);

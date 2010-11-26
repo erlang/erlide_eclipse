@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface IErlRecordDef extends IErlPreprocessorDef {
 
-	public List<String> getFields();
+    public List<String> getFields();
 }

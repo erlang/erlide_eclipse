@@ -24,36 +24,36 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang floats and doubles.
  */
 public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = -2231546377289456934L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = -2231546377289456934L;
 
-	/**
-	 * Create an Erlang float from the given float value.
-	 */
-	public OtpErlangFloat(final float f) {
-		super(f);
-	}
+    /**
+     * Create an Erlang float from the given float value.
+     */
+    public OtpErlangFloat(final float f) {
+        super(f);
+    }
 
-	/**
-	 * Create an Erlang float from a stream containing a float encoded in Erlang
-	 * external format.
-	 * 
-	 * @param buf
-	 *            the stream containing the encoded value.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang float.
-	 * 
-	 * @exception OtpErlangRangeException
-	 *                if the value cannot be represented as a Java float.
-	 */
-	public OtpErlangFloat(final OtpInputStream buf)
-			throws OtpErlangDecodeException, OtpErlangRangeException {
-		super(buf);
+    /**
+     * Create an Erlang float from a stream containing a float encoded in Erlang
+     * external format.
+     * 
+     * @param buf
+     *            the stream containing the encoded value.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang float.
+     * 
+     * @exception OtpErlangRangeException
+     *                if the value cannot be represented as a Java float.
+     */
+    public OtpErlangFloat(final OtpInputStream buf)
+            throws OtpErlangDecodeException, OtpErlangRangeException {
+        super(buf);
 
-		@SuppressWarnings("unused")
-		final float f = floatValue();
-	}
+        @SuppressWarnings("unused")
+        final float f = floatValue();
+    }
 }

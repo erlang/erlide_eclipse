@@ -12,14 +12,14 @@ package org.erlide.jinterface.rpc;
 
 public class RpcException extends Exception {
 
-	private static final long serialVersionUID = -3985020542523854596L;
+    private static final long serialVersionUID = -3985020542523854596L;
 
-	public RpcException(final Exception e) {
-		super(e);
-	}
+    public RpcException(final Exception e) {
+        super(e);
+    }
 
-	public RpcException(final String string) {
-		super(string);
-	}
+    public RpcException(final String string) {
+        super(string);
+    }
 
 }

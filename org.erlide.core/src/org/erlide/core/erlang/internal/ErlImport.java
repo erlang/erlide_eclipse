@@ -12,42 +12,41 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlImport extends ErlImportExport implements IErlImport {
 
-	String fImportModule;
+    String fImportModule;
 
-	/**
-	 * @param parent
-	 * @param imports
-	 * @param module
-	 */
-	protected ErlImport(final IErlElement parent, final String importModule,
-			final ErlangFunction[] imports) {
-		super(parent, "import", imports);
-		fImportModule = importModule;
-	}
+    /**
+     * @param parent
+     * @param imports
+     * @param module
+     */
+    protected ErlImport(final IErlElement parent, final String importModule,
+            final ErlangFunction[] imports) {
+        super(parent, "import", imports);
+        fImportModule = importModule;
+    }
 
-	public ErlImport(final IErlModule parent, final String importModule,
-			final OtpErlangList functionList) {
-		super(parent, "import", functionList);
-		fImportModule = importModule;
-	}
+    public ErlImport(final IErlModule parent, final String importModule,
+            final OtpErlangList functionList) {
+        super(parent, "import", functionList);
+        fImportModule = importModule;
+    }
 
-	public Kind getKind() {
-		return Kind.IMPORT;
-	}
+    public Kind getKind() {
+        return Kind.IMPORT;
+    }
 
-	public String getImportModule() {
-		return fImportModule;
-	}
+    public String getImportModule() {
+        return fImportModule;
+    }
 
-	@Override
-	public String toString() {
-		return getName() + ": " + getImportModule();
-	}
+    @Override
+    public String toString() {
+        return getName() + ": " + getImportModule();
+    }
 
-	@Override
-	public OtpErlangObject toErlangObject() {
-		final OtpErlangObject funcs = super.toErlangObject();
-		return OtpErlang.mkTuple(new OtpErlangAtom(getImportModule()),
-				funcs);
-	}
+    @Override
+    public OtpErlangObject toErlangObject() {
+        final OtpErlangObject funcs = super.toErlangObject();
+        return OtpErlang.mkTuple(new OtpErlangAtom(getImportModule()), funcs);
+    }
 }

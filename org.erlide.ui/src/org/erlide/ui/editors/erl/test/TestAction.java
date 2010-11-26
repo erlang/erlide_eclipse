@@ -22,45 +22,45 @@ import erlang.ErlideScanner;
  */
 public class TestAction extends TextEditorAction {
 
-	private final IErlModule module;
+    private final IErlModule module;
 
-	public TestAction(final ResourceBundle bundle, final String prefix,
-			final ITextEditor editor, final IErlModule module) {
-		super(bundle, prefix, editor);
-		this.module = module;
-	}
+    public TestAction(final ResourceBundle bundle, final String prefix,
+            final ITextEditor editor, final IErlModule module) {
+        super(bundle, prefix, editor);
+        this.module = module;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	@Override
-	public void run() {
-		super.run();
-		if (module == null) {
-			return;
-		}
-		final ITextEditor textEditor = getTextEditor();
-		{
-			final IDocument document = textEditor.getDocumentProvider()
-					.getDocument(textEditor.getEditorInput());
-			final String text = document.get();
-			final String s = ErlideScanner.checkAll(ErlangToolkit
-					.createScannerModuleName(module), text);
-			ErlLogger.debug("%s", s);
-			// return;
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        super.run();
+        if (module == null) {
+            return;
+        }
+        final ITextEditor textEditor = getTextEditor();
+        {
+            final IDocument document = textEditor.getDocumentProvider()
+                    .getDocument(textEditor.getEditorInput());
+            final String text = document.get();
+            final String s = ErlideScanner.checkAll(
+                    ErlangToolkit.createScannerModuleName(module), text);
+            ErlLogger.debug("%s", s);
+            // return;
+        }
 
-		Set<IErlModule> deps;
-		try {
-			deps = module.getDirectDependents();
-			ErlLogger.debug(deps.toString());
-			deps = module.getAllDependents();
-			ErlLogger.debug(deps.toString());
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
-		}
+        Set<IErlModule> deps;
+        try {
+            deps = module.getDirectDependents();
+            ErlLogger.debug(deps.toString());
+            deps = module.getAllDependents();
+            ErlLogger.debug(deps.toString());
+        } catch (final ErlModelException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 }

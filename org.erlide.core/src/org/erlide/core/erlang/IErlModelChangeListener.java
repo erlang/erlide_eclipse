@@ -12,6 +12,6 @@ package org.erlide.core.erlang;
 
 public interface IErlModelChangeListener {
 
-	void elementChanged(IErlElement element);
+    void elementChanged(IErlElement element);
 
 }

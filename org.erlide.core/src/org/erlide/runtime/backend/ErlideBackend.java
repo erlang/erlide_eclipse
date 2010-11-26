@@ -261,7 +261,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
         return managed;
     }
 
-    public void setManaged(boolean b) {
+    public void setManaged(final boolean b) {
         managed = b;
     }
 

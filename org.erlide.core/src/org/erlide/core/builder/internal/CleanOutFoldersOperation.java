@@ -21,48 +21,48 @@ import org.erlide.core.erlang.util.ResourceUtil;
  */
 class CleanOutFoldersOperation implements IWorkspaceRunnable {
 
-	private static final IResourceProxyVisitor folderCleaner = new FolderCleaner();
+    private static final IResourceProxyVisitor folderCleaner = new FolderCleaner();
 
-	private final IProject project;
+    private final IProject project;
 
-	CleanOutFoldersOperation(final IProject project) {
-		this.project = project;
-	}
+    CleanOutFoldersOperation(final IProject project) {
+        this.project = project;
+    }
 
-	public void run(final IProgressMonitor mon) throws CoreException {
-		mon.beginTask("Cleaning output folder", 15);
-		try {
-			shrubOutFolder(mon); // (15)
-		} finally {
-			mon.done();
-		}
-	}
+    public void run(final IProgressMonitor mon) throws CoreException {
+        mon.beginTask("Cleaning output folder", 15);
+        try {
+            shrubOutFolder(mon); // (15)
+        } finally {
+            mon.done();
+        }
+    }
 
-	// helping methods
-	// ////////////////
+    // helping methods
+    // ////////////////
 
-	private void shrubOutFolder(final IProgressMonitor mon)
-			throws CoreException {
-		mon.subTask("Shrubbing output folder.");
-		final IContainer outFolder = ResourceUtil.getOutFolder(project);
-		if (outFolder != null && !outFolder.equals(project)) {
-			outFolder.accept(folderCleaner, IContainer.INCLUDE_PHANTOMS);
-		}
-		mon.worked(15);
-	}
+    private void shrubOutFolder(final IProgressMonitor mon)
+            throws CoreException {
+        mon.subTask("Shrubbing output folder.");
+        final IContainer outFolder = ResourceUtil.getOutFolder(project);
+        if (outFolder != null && !outFolder.equals(project)) {
+            outFolder.accept(folderCleaner, IContainer.INCLUDE_PHANTOMS);
+        }
+        mon.worked(15);
+    }
 
-	// inner classes
-	// //////////////
+    // inner classes
+    // //////////////
 
-	static class FolderCleaner implements IResourceProxyVisitor {
+    static class FolderCleaner implements IResourceProxyVisitor {
 
-		public boolean visit(final IResourceProxy proxy) throws CoreException {
-			if (proxy.getType() == IResource.FILE) {
-				final IResource resource = proxy.requestResource();
-				System.err.println("Deleting " + resource.toString());
-				resource.delete(IResource.FORCE, null);
-			}
-			return true;
-		}
-	}
+        public boolean visit(final IResourceProxy proxy) throws CoreException {
+            if (proxy.getType() == IResource.FILE) {
+                final IResource resource = proxy.requestResource();
+                System.err.println("Deleting " + resource.toString());
+                resource.delete(IResource.FORCE, null);
+            }
+            return true;
+        }
+    }
 }

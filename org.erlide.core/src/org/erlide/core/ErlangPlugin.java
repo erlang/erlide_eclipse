@@ -93,7 +93,7 @@ public class ErlangPlugin extends Plugin {
         final ResourceBundle bundle = ErlangPlugin.getDefault()
                 .getResourceBundle();
         try {
-            return (bundle != null) ? bundle.getString(key) : key;
+            return bundle != null ? bundle.getString(key) : key;
         } catch (final MissingResourceException e) {
             return key;
         }
@@ -152,7 +152,7 @@ public class ErlangPlugin extends Plugin {
         if (ErlideUtil.isTest()) {
             dev += " test ***";
         }
-        String version = getFeatureVersion();
+        final String version = getFeatureVersion();
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
         ErlangCore.initializeRuntimesList();
@@ -174,8 +174,8 @@ public class ErlangPlugin extends Plugin {
                     public void saving(final ISaveContext context1)
                             throws CoreException {
                         try {
-                            (new InstanceScope()).getNode(PLUGIN_ID).flush();
-                        } catch (BackingStoreException e) {
+                            new InstanceScope().getNode(PLUGIN_ID).flush();
+                        } catch (final BackingStoreException e) {
                             // ignore
                         }
                     }
@@ -187,13 +187,14 @@ public class ErlangPlugin extends Plugin {
     public String getFeatureVersion() {
         String version = null;
         try {
-            IBundleGroupProvider[] providers = Platform
+            final IBundleGroupProvider[] providers = Platform
                     .getBundleGroupProviders();
             if (providers != null) {
-                for (IBundleGroupProvider provider : providers) {
-                    IBundleGroup[] bundleGroups = provider.getBundleGroups();
-                    for (IBundleGroup group : bundleGroups) {
-                        String id = group.getIdentifier();
+                for (final IBundleGroupProvider provider : providers) {
+                    final IBundleGroup[] bundleGroups = provider
+                            .getBundleGroups();
+                    for (final IBundleGroup group : bundleGroups) {
+                        final String id = group.getIdentifier();
                         if (id.equals("org.erlide")
                                 || id.equals("org.erlide.headless")) {
                             version = group.getVersion();
@@ -207,12 +208,12 @@ public class ErlangPlugin extends Plugin {
             } else {
                 ErlLogger.debug("***: no bundle group providers");
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // ignore
             e.printStackTrace();
         }
-        Version coreVersion = getBundle().getVersion();
-        version = (version == null) ? "?" : version;
+        final Version coreVersion = getBundle().getVersion();
+        version = version == null ? "?" : version;
         version = version + " (core=" + coreVersion.toString() + ")";
         return version;
     }
@@ -234,7 +235,7 @@ public class ErlangPlugin extends Plugin {
                 lvl = Level.FINEST;
             }
             ErlLogger.log(lvl, status.getMessage());
-            Throwable exception = status.getException();
+            final Throwable exception = status.getException();
             if (exception != null) {
                 ErlLogger.log(lvl, exception);
             }

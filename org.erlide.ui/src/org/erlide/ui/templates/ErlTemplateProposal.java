@@ -11,33 +11,33 @@ import org.eclipse.swt.graphics.Image;
 
 public class ErlTemplateProposal extends TemplateProposal {
 
-	public ErlTemplateProposal(final Template template,
-			final TemplateContext context, final IRegion region,
-			final Image image, final int relevance) {
-		super(template, context, region, image, relevance);
-	}
+    public ErlTemplateProposal(final Template template,
+            final TemplateContext context, final IRegion region,
+            final Image image, final int relevance) {
+        super(template, context, region, image, relevance);
+    }
 
-	@Override
-	public String getAdditionalProposalInfo() {
-		try {
-			final TemplateContext context = getContext();
-			context.setReadOnly(true);
-			TemplateBuffer templateBuffer;
-			try {
-				final Template template = getTemplate();
-				if (context instanceof ErlangTemplateContext) {
-					final ErlangTemplateContext etc = (ErlangTemplateContext) context;
-					templateBuffer = etc.evaluate(template, true);
-				} else {
-					templateBuffer = context.evaluate(template);
-				}
-			} catch (final TemplateException e) {
-				return null;
-			}
-			return templateBuffer.getString();
-		} catch (final BadLocationException e) {
-			return null;
-		}
-	}
+    @Override
+    public String getAdditionalProposalInfo() {
+        try {
+            final TemplateContext context = getContext();
+            context.setReadOnly(true);
+            TemplateBuffer templateBuffer;
+            try {
+                final Template template = getTemplate();
+                if (context instanceof ErlangTemplateContext) {
+                    final ErlangTemplateContext etc = (ErlangTemplateContext) context;
+                    templateBuffer = etc.evaluate(template, true);
+                } else {
+                    templateBuffer = context.evaluate(template);
+                }
+            } catch (final TemplateException e) {
+                return null;
+            }
+            return templateBuffer.getString();
+        } catch (final BadLocationException e) {
+            return null;
+        }
+    }
 
 }

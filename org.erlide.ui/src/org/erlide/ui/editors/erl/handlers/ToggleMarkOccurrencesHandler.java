@@ -9,14 +9,14 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ToggleMarkOccurrencesHandler extends AbstractHandler implements
-		IHandler {
+        IHandler {
 
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final boolean oldValue = HandlerUtil.toggleCommandState(event
-				.getCommand());
-		final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
-		prefsNode.putBoolean("markingOccurences", !oldValue);
-		return null;
-	}
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
+        final boolean oldValue = HandlerUtil.toggleCommandState(event
+                .getCommand());
+        final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
+        prefsNode.putBoolean("markingOccurences", !oldValue);
+        return null;
+    }
 
 }

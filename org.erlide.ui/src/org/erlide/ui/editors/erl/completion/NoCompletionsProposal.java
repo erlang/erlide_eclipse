@@ -25,54 +25,54 @@ import org.eclipse.swt.graphics.Point;
  */
 public final class NoCompletionsProposal implements ICompletionProposal {
 
-	/*
-	 * @see
-	 * org.eclipse.jface.text.contentassist.ICompletionProposal#apply(org.eclipse
-	 * .jface.text.IDocument)
-	 */
-	public void apply(final IDocument document) {
-		// do nothing
-	}
+    /*
+     * @see
+     * org.eclipse.jface.text.contentassist.ICompletionProposal#apply(org.eclipse
+     * .jface.text.IDocument)
+     */
+    public void apply(final IDocument document) {
+        // do nothing
+    }
 
-	/*
-	 * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
-	 * getAdditionalProposalInfo()
-	 */
-	public String getAdditionalProposalInfo() {
-		return null;
-	}
+    /*
+     * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
+     * getAdditionalProposalInfo()
+     */
+    public String getAdditionalProposalInfo() {
+        return null;
+    }
 
-	/*
-	 * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
-	 * getContextInformation()
-	 */
-	public IContextInformation getContextInformation() {
-		return null;
-	}
+    /*
+     * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
+     * getContextInformation()
+     */
+    public IContextInformation getContextInformation() {
+        return null;
+    }
 
-	/*
-	 * @see
-	 * org.eclipse.jface.text.contentassist.ICompletionProposal#getDisplayString
-	 * ()
-	 */
-	public String getDisplayString() {
-		return "No suggestions available";
-	}
+    /*
+     * @see
+     * org.eclipse.jface.text.contentassist.ICompletionProposal#getDisplayString
+     * ()
+     */
+    public String getDisplayString() {
+        return "No suggestions available";
+    }
 
-	/*
-	 * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getImage()
-	 */
-	public Image getImage() {
-		return null;
-	}
+    /*
+     * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getImage()
+     */
+    public Image getImage() {
+        return null;
+    }
 
-	/*
-	 * @see
-	 * org.eclipse.jface.text.contentassist.ICompletionProposal#getSelection
-	 * (org.eclipse.jface.text.IDocument)
-	 */
-	public Point getSelection(final IDocument document) {
-		return null;
-	}
+    /*
+     * @see
+     * org.eclipse.jface.text.contentassist.ICompletionProposal#getSelection
+     * (org.eclipse.jface.text.IDocument)
+     */
+    public Point getSelection(final IDocument document) {
+        return null;
+    }
 
 }

@@ -15,27 +15,27 @@ import org.eclipse.debug.core.model.IDebugTarget;
 
 public class ErlangDebugElement extends DebugElement {
 
-	public ErlangDebugElement(final IDebugTarget target) {
-		super(target);
-	}
+    public ErlangDebugElement(final IDebugTarget target) {
+        super(target);
+    }
 
-	public String getModelIdentifier() {
-		return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
-	}
+    public String getModelIdentifier() {
+        return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
+    }
 
-	public ErlangDebugTarget getErlangDebugTarget() {
-		final IErlangDebugNode edn = (IErlangDebugNode) getDebugTarget();
-		return edn.getErlangDebugTarget();
-	}
+    public ErlangDebugTarget getErlangDebugTarget() {
+        final IErlangDebugNode edn = (IErlangDebugNode) getDebugTarget();
+        return edn.getErlangDebugTarget();
+    }
 
-	// @SuppressWarnings("unchecked")
-	// @Override
-	// public Object getAdapter(Class adapter) {
-	// if (adapter == IDebugElement.class) {
-	// return this;
-	// }
-	//
-	// return super.getAdapter(adapter);
-	// }
+    // @SuppressWarnings("unchecked")
+    // @Override
+    // public Object getAdapter(Class adapter) {
+    // if (adapter == IDebugElement.class) {
+    // return this;
+    // }
+    //
+    // return super.getAdapter(adapter);
+    // }
 
 }

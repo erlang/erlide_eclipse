@@ -25,61 +25,62 @@ import com.google.common.collect.Lists;
 
 public class CodeBundle {
 
-	public static enum CodeContext {
-		ANY, COMMON, BUILDER, IDE, DEBUGGER
-	}
+    public static enum CodeContext {
+        ANY, COMMON, BUILDER, IDE, DEBUGGER
+    }
 
-	private final Bundle bundle;
-	private final Collection<Tuple<String, CodeContext>> paths;
-	private final Tuple<String, String> init;
+    private final Bundle bundle;
+    private final Collection<Tuple<String, CodeContext>> paths;
+    private final Tuple<String, String> init;
 
-	public CodeBundle(Bundle b, Collection<Tuple<String, CodeContext>> paths,
-			Tuple<String, String> init) {
-		this.bundle = b;
-		this.paths = Lists.newArrayList(paths);
-		this.init = init;
-	}
+    public CodeBundle(final Bundle b,
+            final Collection<Tuple<String, CodeContext>> paths,
+            final Tuple<String, String> init) {
+        bundle = b;
+        this.paths = Lists.newArrayList(paths);
+        this.init = init;
+    }
 
-	public Bundle getBundle() {
-		return bundle;
-	}
+    public Bundle getBundle() {
+        return bundle;
+    }
 
-	public Collection<String> getEbinDirs() {
-		List<String> result = Lists.newArrayList();
-		for (Tuple<String, CodeContext> path : paths) {
-			String myPath = ErlideUtil.getPath(path.o1, bundle);
-			if (myPath != null) {
-				result.add(myPath);
-			} else {
-				ErlLogger.warn("Can't access path %s, "
-						+ "erlide plugins may be incorrectly built", path.o1);
-			}
-		}
-		return result;
-	}
+    public Collection<String> getEbinDirs() {
+        final List<String> result = Lists.newArrayList();
+        for (final Tuple<String, CodeContext> path : paths) {
+            final String myPath = ErlideUtil.getPath(path.o1, bundle);
+            if (myPath != null) {
+                result.add(myPath);
+            } else {
+                ErlLogger.warn("Can't access path %s, "
+                        + "erlide plugins may be incorrectly built", path.o1);
+            }
+        }
+        return result;
+    }
 
-	public Collection<String> getPluginCode() {
-		List<String> result = new ArrayList<String>();
-		for (Tuple<String, CodeContext> dir : paths) {
-			final Path path = new Path(dir.o1);
-			if (path.getFileExtension() != null
-					&& "beam".compareTo(path.getFileExtension()) == 0) {
-				final String m = path.removeFileExtension().lastSegment();
-				result.add(m);
-			}
-		}
-		return result;
-	}
+    public Collection<String> getPluginCode() {
+        final List<String> result = new ArrayList<String>();
+        for (final Tuple<String, CodeContext> dir : paths) {
+            final Path path = new Path(dir.o1);
+            if (path.getFileExtension() != null
+                    && "beam".compareTo(path.getFileExtension()) == 0) {
+                final String m = path.removeFileExtension().lastSegment();
+                result.add(m);
+            }
+        }
+        return result;
+    }
 
-	public Collection<Tuple<String, CodeContext>> getPaths() {
-		return Collections.unmodifiableCollection(paths);
-	}
+    public Collection<Tuple<String, CodeContext>> getPaths() {
+        return Collections.unmodifiableCollection(paths);
+    }
 
-	public Tuple<String, String> getInit() {
-		if (init == null) {
-			return null;
-		}
-		return new Tuple<String, String>(init);
-	}
+    public Tuple<String, String> getInit() {
+        if (init == null) {
+            return null;
+        }
+        return new Tuple<String, String>(init);
+    }
 
 }

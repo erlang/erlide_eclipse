@@ -36,128 +36,126 @@ import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.information.ErlInformationPresenter;
 
 final class ErlangConsoleSourceViewerConfiguration extends
-		TextSourceViewerConfiguration {
+        TextSourceViewerConfiguration {
 
-	ErlangConsoleSourceViewerConfiguration() {
-		super();
-	}
+    ErlangConsoleSourceViewerConfiguration() {
+        super();
+    }
 
-	private DoubleClickStrategy doubleClickStrategy;
-	private ICharacterPairMatcher fBracketMatcher;
+    private DoubleClickStrategy doubleClickStrategy;
+    private ICharacterPairMatcher fBracketMatcher;
 
-	@Override
-	public IContentAssistant getContentAssistant(
-			final ISourceViewer sourceViewer) {
+    @Override
+    public IContentAssistant getContentAssistant(
+            final ISourceViewer sourceViewer) {
 
-		final ContentAssistant asst = new ContentAssistant();
+        final ContentAssistant asst = new ContentAssistant();
 
-		// TODO vi vill ha in en punkt h�r, men den f�r return till
-		// styledtext o skickar allt f�r tidigt...
-		asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-				sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
+        // TODO vi vill ha in en punkt h�r, men den f�r return till
+        // styledtext o skickar allt f�r tidigt...
+        asst.setContentAssistProcessor(new ErlContentAssistProcessor(
+                sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
 
-		asst.enableAutoActivation(true);
-		asst.setAutoActivationDelay(500);
-		asst.enableAutoInsert(true);
-		asst.enablePrefixCompletion(false);
-		// asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
-		// );
+        asst.enableAutoActivation(true);
+        asst.setAutoActivationDelay(500);
+        asst.enableAutoInsert(true);
+        asst.enablePrefixCompletion(false);
+        // asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
+        // );
 
-		asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-		asst
-				.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		asst
-				.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+        asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+        asst.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+        asst.setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
-		return asst;
-	}
+        return asst;
+    }
 
-	/*
-	 * @see
-	 * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-	 * 
-	 * @since 2.0
-	 */
-	@Override
-	public IInformationControlCreator getInformationControlCreator(
-			final ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
+    /*
+     * @see
+     * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+     * 
+     * @since 2.0
+     */
+    @Override
+    public IInformationControlCreator getInformationControlCreator(
+            final ISourceViewer sourceViewer) {
+        return new IInformationControlCreator() {
 
-			public IInformationControl createInformationControl(
-					final Shell parent) {
-				return new DefaultInformationControl(parent,
-						new ErlInformationPresenter(true));
-			}
-		};
-	}
+            public IInformationControl createInformationControl(
+                    final Shell parent) {
+                return new DefaultInformationControl(parent,
+                        new ErlInformationPresenter(true));
+            }
+        };
+    }
 
-	/**
-	 * The double click strategy
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
-	 *      java.lang.String)
-	 */
-	@Override
-	public ITextDoubleClickStrategy getDoubleClickStrategy(
-			final ISourceViewer sourceViewer, final String contentType) {
-		if (doubleClickStrategy == null) {
-			// doubleClickStrategy = new
-			// ErlDoubleClickSelector(getBracketMatcher());
-			doubleClickStrategy = new DoubleClickStrategy(getBracketMatcher());
-		}
-		return doubleClickStrategy;
-	}
+    /**
+     * The double click strategy
+     * 
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
+     *      java.lang.String)
+     */
+    @Override
+    public ITextDoubleClickStrategy getDoubleClickStrategy(
+            final ISourceViewer sourceViewer, final String contentType) {
+        if (doubleClickStrategy == null) {
+            // doubleClickStrategy = new
+            // ErlDoubleClickSelector(getBracketMatcher());
+            doubleClickStrategy = new DoubleClickStrategy(getBracketMatcher());
+        }
+        return doubleClickStrategy;
+    }
 
-	public ICharacterPairMatcher getBracketMatcher() {
-		if (fBracketMatcher == null) {
-			fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
-					"{", "}", "[", "]", "<<", ">>" });
-		}
-		return fBracketMatcher;
-	}
+    public ICharacterPairMatcher getBracketMatcher() {
+        if (fBracketMatcher == null) {
+            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
+                    "{", "}", "[", "]", "<<", ">>" });
+        }
+        return fBracketMatcher;
+    }
 
-	/**
-	 * Creates the reconciler
-	 * 
-	 * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
-	 */
-	@Override
-	public IPresentationReconciler getPresentationReconciler(
-			final ISourceViewer sourceViewer) {
-		final PresentationReconciler reconciler = new PresentationReconciler();
-		DefaultDamagerRepairer dr;
+    /**
+     * Creates the reconciler
+     * 
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
+     */
+    @Override
+    public IPresentationReconciler getPresentationReconciler(
+            final ISourceViewer sourceViewer) {
+        final PresentationReconciler reconciler = new PresentationReconciler();
+        DefaultDamagerRepairer dr;
 
-		ColorManager colorManager = new ColorManager();
-		final ITokenScanner scan = new ErlHighlightScanner(colorManager,
-				sourceViewer, false, new RGB(245, 245, 245));
-		dr = new ErlDamagerRepairer(scan);
-		reconciler.setDamager(dr, IoRequestKind.INPUT.name());
-		reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
+        final ColorManager colorManager = new ColorManager();
+        final ITokenScanner scan = new ErlHighlightScanner(colorManager,
+                sourceViewer, false, new RGB(245, 245, 245));
+        dr = new ErlDamagerRepairer(scan);
+        reconciler.setDamager(dr, IoRequestKind.INPUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
 
-		final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
-		dr = new ErlDamagerRepairer(scan3);
-		reconciler.setDamager(dr, IoRequestKind.OUTPUT.name());
-		reconciler.setRepairer(dr, IoRequestKind.OUTPUT.name());
+        final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
+        dr = new ErlDamagerRepairer(scan3);
+        reconciler.setDamager(dr, IoRequestKind.OUTPUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.OUTPUT.name());
 
-		reconciler.setDamager(dr, IoRequestKind.PROMPT.name());
-		reconciler.setRepairer(dr, IoRequestKind.PROMPT.name());
+        reconciler.setDamager(dr, IoRequestKind.PROMPT.name());
+        reconciler.setRepairer(dr, IoRequestKind.PROMPT.name());
 
-		reconciler.setDamager(dr, IoRequestKind.STDOUT.name());
-		reconciler.setRepairer(dr, IoRequestKind.STDOUT.name());
+        reconciler.setDamager(dr, IoRequestKind.STDOUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.STDOUT.name());
 
-		reconciler.setDamager(dr, IoRequestKind.STDERR.name());
-		reconciler.setRepairer(dr, IoRequestKind.STDERR.name());
+        reconciler.setDamager(dr, IoRequestKind.STDERR.name());
+        reconciler.setRepairer(dr, IoRequestKind.STDERR.name());
 
-		reconciler.setDamager(dr, IoRequestKind.HEADER.name());
-		reconciler.setRepairer(dr, IoRequestKind.HEADER.name());
+        reconciler.setDamager(dr, IoRequestKind.HEADER.name());
+        reconciler.setRepairer(dr, IoRequestKind.HEADER.name());
 
-		// this is for the input field
-		final ITokenScanner scan2 = new ErlHighlightScanner(colorManager,
-				sourceViewer, false);
-		dr = new ErlDamagerRepairer(scan2);
-		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+        // this is for the input field
+        final ITokenScanner scan2 = new ErlHighlightScanner(colorManager,
+                sourceViewer, false);
+        dr = new ErlDamagerRepairer(scan2);
+        reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+        reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		return reconciler;
-	}
+        return reconciler;
+    }
 }

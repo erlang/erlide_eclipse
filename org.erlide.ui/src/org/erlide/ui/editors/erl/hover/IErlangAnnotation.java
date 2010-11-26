@@ -21,72 +21,72 @@ import java.util.Iterator;
  */
 public interface IErlangAnnotation {
 
-	/**
-	 * @see org.eclipse.jface.text.source.Annotation#getType()
-	 */
-	String getType();
+    /**
+     * @see org.eclipse.jface.text.source.Annotation#getType()
+     */
+    String getType();
 
-	/**
-	 * @see org.eclipse.jface.text.source.Annotation#isPersistent()
-	 */
-	boolean isPersistent();
+    /**
+     * @see org.eclipse.jface.text.source.Annotation#isPersistent()
+     */
+    boolean isPersistent();
 
-	/**
-	 * @see org.eclipse.jface.text.source.Annotation#isMarkedDeleted()
-	 */
-	boolean isMarkedDeleted();
+    /**
+     * @see org.eclipse.jface.text.source.Annotation#isMarkedDeleted()
+     */
+    boolean isMarkedDeleted();
 
-	/**
-	 * @see org.eclipse.jface.text.source.Annotation#getText()
-	 */
-	String getText();
+    /**
+     * @see org.eclipse.jface.text.source.Annotation#getText()
+     */
+    String getText();
 
-	/**
-	 * Returns whether this annotation is overlaid.
-	 * 
-	 * @return <code>true</code> if overlaid
-	 */
-	boolean hasOverlay();
+    /**
+     * Returns whether this annotation is overlaid.
+     * 
+     * @return <code>true</code> if overlaid
+     */
+    boolean hasOverlay();
 
-	/**
-	 * Returns the overlay of this annotation.
-	 * 
-	 * @return the annotation's overlay
-	 * @since 3.0
-	 */
-	IErlangAnnotation getOverlay();
+    /**
+     * Returns the overlay of this annotation.
+     * 
+     * @return the annotation's overlay
+     * @since 3.0
+     */
+    IErlangAnnotation getOverlay();
 
-	/**
-	 * Returns an iterator for iterating over the annotation which are overlaid
-	 * by this annotation.
-	 * 
-	 * @return an iterator over the overlaid annotations
-	 */
-	Iterator<IErlangAnnotation> getOverlaidIterator();
+    /**
+     * Returns an iterator for iterating over the annotation which are overlaid
+     * by this annotation.
+     * 
+     * @return an iterator over the overlaid annotations
+     */
+    Iterator<IErlangAnnotation> getOverlaidIterator();
 
-	/**
-	 * Adds the given annotation to the list of annotations which are overlaid
-	 * by this annotations.
-	 * 
-	 * @param annotation
-	 *            the problem annotation
-	 */
-	void addOverlaid(IErlangAnnotation annotation);
+    /**
+     * Adds the given annotation to the list of annotations which are overlaid
+     * by this annotations.
+     * 
+     * @param annotation
+     *            the problem annotation
+     */
+    void addOverlaid(IErlangAnnotation annotation);
 
-	/**
-	 * Removes the given annotation from the list of annotations which are
-	 * overlaid by this annotation.
-	 * 
-	 * @param annotation
-	 *            the problem annotation
-	 */
-	void removeOverlaid(IErlangAnnotation annotation);
+    /**
+     * Removes the given annotation from the list of annotations which are
+     * overlaid by this annotation.
+     * 
+     * @param annotation
+     *            the problem annotation
+     */
+    void removeOverlaid(IErlangAnnotation annotation);
 
-	/**
-	 * Tells whether this annotation is a problem annotation.
-	 * 
-	 * @return <code>true</code> if it is a problem annotation
-	 */
-	boolean isProblem();
+    /**
+     * Tells whether this annotation is a problem annotation.
+     * 
+     * @return <code>true</code> if it is a problem annotation
+     */
+    boolean isProblem();
 
 }

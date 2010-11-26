@@ -11,19 +11,19 @@
 package org.erlide.jinterface.backend.util;
 
 public class ProblemData {
-	public String summary;
-	public String reporter;
-	public String description;
-	public String platformLog;
-	public String erlideLog;
+    public String summary;
+    public String reporter;
+    public String description;
+    public String platformLog;
+    public String erlideLog;
 
-	public ProblemData(final String title, final String body,
-			final String contact, final String plog, final String elog) {
-		this.summary = title;
-		this.reporter = contact;
-		this.description = body;
-		this.platformLog = plog;
-		this.erlideLog = elog;
-	}
+    public ProblemData(final String title, final String body,
+            final String contact, final String plog, final String elog) {
+        summary = title;
+        reporter = contact;
+        description = body;
+        platformLog = plog;
+        erlideLog = elog;
+    }
 
 }

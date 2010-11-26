@@ -15,41 +15,41 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class BodyVariableResolver extends TemplateVariableResolver {
 
-	private static BodyVariableResolver fInstance;
+    private static BodyVariableResolver fInstance;
 
-	private String fBody = "ok";
+    private String fBody = "ok";
 
-	public static BodyVariableResolver getDefault() {
-		if (fInstance == null) {
-			fInstance = new BodyVariableResolver();
-		}
-		return fInstance;
-	}
+    public static BodyVariableResolver getDefault() {
+        if (fInstance == null) {
+            fInstance = new BodyVariableResolver();
+        }
+        return fInstance;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-	 * .eclipse.jface.text.templates.TemplateContext)
-	 */
-	@Override
-	protected String resolve(final TemplateContext context) {
-		return fBody;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+     * .eclipse.jface.text.templates.TemplateContext)
+     */
+    @Override
+    protected String resolve(final TemplateContext context) {
+        return fBody;
+    }
 
-	/**
-	 * @return Returns the body.
-	 */
-	public String getBody() {
-		return fBody;
-	}
+    /**
+     * @return Returns the body.
+     */
+    public String getBody() {
+        return fBody;
+    }
 
-	/**
-	 * @param body
-	 *            The body to set.
-	 */
-	public void setBody(final String body) {
-		fBody = body;
-	}
+    /**
+     * @param body
+     *            The body to set.
+     */
+    public void setBody(final String body) {
+        fBody = body;
+    }
 }

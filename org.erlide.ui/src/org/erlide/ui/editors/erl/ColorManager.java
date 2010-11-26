@@ -27,106 +27,106 @@ import org.erlide.ui.util.IColorManager;
  */
 public class ColorManager implements IColorManager {
 
-	protected Map<String, RGB> fKeyTable = new HashMap<String, RGB>(10);
+    protected Map<String, RGB> fKeyTable = new HashMap<String, RGB>(10);
 
-	protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<Display, Map<RGB, Color>>(
-			2);
+    protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<Display, Map<RGB, Color>>(
+            2);
 
-	/**
-	 * Flag which tells if the colors are automatically disposed when the
-	 * current display gets disposed.
-	 */
-	private final boolean fAutoDisposeOnDisplayDispose;
+    /**
+     * Flag which tells if the colors are automatically disposed when the
+     * current display gets disposed.
+     */
+    private final boolean fAutoDisposeOnDisplayDispose;
 
-	/**
-	 * Creates a new Java color manager which automatically disposes the
-	 * allocated colors when the current display gets disposed.
-	 */
-	public ColorManager() {
-		this(true);
-	}
+    /**
+     * Creates a new Java color manager which automatically disposes the
+     * allocated colors when the current display gets disposed.
+     */
+    public ColorManager() {
+        this(true);
+    }
 
-	/**
-	 * Creates a new Java color manager.
-	 * 
-	 * @param autoDisposeOnDisplayDispose
-	 *            if <code>true</code> the color manager automatically disposes
-	 *            all managed colors when the current display gets disposed and
-	 *            all calls to
-	 *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
-	 *            are ignored.
-	 * 
-	 */
-	public ColorManager(final boolean autoDisposeOnDisplayDispose) {
-		fAutoDisposeOnDisplayDispose = autoDisposeOnDisplayDispose;
-	}
+    /**
+     * Creates a new Java color manager.
+     * 
+     * @param autoDisposeOnDisplayDispose
+     *            if <code>true</code> the color manager automatically disposes
+     *            all managed colors when the current display gets disposed and
+     *            all calls to
+     *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
+     *            are ignored.
+     * 
+     */
+    public ColorManager(final boolean autoDisposeOnDisplayDispose) {
+        fAutoDisposeOnDisplayDispose = autoDisposeOnDisplayDispose;
+    }
 
-	public void dispose(final Display display) {
-		final Map<RGB, Color> colorTable = fDisplayTable.get(display);
-		if (colorTable != null) {
-			final Iterator<Color> e = colorTable.values().iterator();
-			while (e.hasNext()) {
-				final Color color = e.next();
-				if (color != null && !color.isDisposed()) {
-					color.dispose();
-				}
-			}
-		}
-	}
+    public void dispose(final Display display) {
+        final Map<RGB, Color> colorTable = fDisplayTable.get(display);
+        if (colorTable != null) {
+            final Iterator<Color> e = colorTable.values().iterator();
+            while (e.hasNext()) {
+                final Color color = e.next();
+                if (color != null && !color.isDisposed()) {
+                    color.dispose();
+                }
+            }
+        }
+    }
 
-	/*
-	 * @see IColorManager#getColor(RGB)
-	 */
-	public Color getColor(final RGB rgb) {
+    /*
+     * @see IColorManager#getColor(RGB)
+     */
+    public Color getColor(final RGB rgb) {
 
-		if (rgb == null) {
-			return null;
-		}
+        if (rgb == null) {
+            return null;
+        }
 
-		final Display display = Display.getCurrent();
-		Map<RGB, Color> colorTable = fDisplayTable.get(display);
-		if (colorTable == null) {
-			colorTable = new HashMap<RGB, Color>(10);
-			fDisplayTable.put(display, colorTable);
-			if (fAutoDisposeOnDisplayDispose) {
-				display.disposeExec(new Runnable() {
+        final Display display = Display.getCurrent();
+        Map<RGB, Color> colorTable = fDisplayTable.get(display);
+        if (colorTable == null) {
+            colorTable = new HashMap<RGB, Color>(10);
+            fDisplayTable.put(display, colorTable);
+            if (fAutoDisposeOnDisplayDispose) {
+                display.disposeExec(new Runnable() {
 
-					public void run() {
-						dispose(display);
-					}
-				});
-			}
-		}
+                    public void run() {
+                        dispose(display);
+                    }
+                });
+            }
+        }
 
-		Color color = colorTable.get(rgb);
-		if (color == null) {
-			color = new Color(Display.getCurrent(), rgb);
-			colorTable.put(rgb, color);
-		}
+        Color color = colorTable.get(rgb);
+        if (color == null) {
+            color = new Color(Display.getCurrent(), rgb);
+            colorTable.put(rgb, color);
+        }
 
-		return color;
-	}
+        return color;
+    }
 
-	/*
-	 * @see IColorManager#dispose
-	 */
-	public void dispose() {
-		if (!fAutoDisposeOnDisplayDispose) {
-			dispose(Display.getCurrent());
-		}
-	}
+    /*
+     * @see IColorManager#dispose
+     */
+    public void dispose() {
+        if (!fAutoDisposeOnDisplayDispose) {
+            dispose(Display.getCurrent());
+        }
+    }
 
-	/*
-	 * @see IColorManager#getColor(String)
-	 */
-	public Color getColor(final String key) {
+    /*
+     * @see IColorManager#getColor(String)
+     */
+    public Color getColor(final String key) {
 
-		if (key == null) {
-			return null;
-		}
+        if (key == null) {
+            return null;
+        }
 
-		final RGB rgb = fKeyTable.get(key);
-		return getColor(rgb);
-	}
+        final RGB rgb = fKeyTable.get(key);
+        return getColor(rgb);
+    }
 
 }

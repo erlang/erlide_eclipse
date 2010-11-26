@@ -15,31 +15,31 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 public class SelectionUtil {
 
-	// public static List toList(ISelection selection) {
-	// if (selection instanceof IStructuredSelection) {
-	// return ((IStructuredSelection) selection).toList();
-	// }
-	// return null;
-	// }
+    // public static List toList(ISelection selection) {
+    // if (selection instanceof IStructuredSelection) {
+    // return ((IStructuredSelection) selection).toList();
+    // }
+    // return null;
+    // }
 
-	/**
-	 * Returns the selected element if the selection consists of a single
-	 * element only.
-	 * 
-	 * @param selection
-	 *            the selection
-	 * @return the selected first element or null
-	 * 
-	 */
-	public static Object getSingleElement(final ISelection s) {
-		if (!(s instanceof IStructuredSelection)) {
-			return null;
-		}
-		final IStructuredSelection selection = (IStructuredSelection) s;
-		if (selection.size() != 1) {
-			return null;
-		}
+    /**
+     * Returns the selected element if the selection consists of a single
+     * element only.
+     * 
+     * @param selection
+     *            the selection
+     * @return the selected first element or null
+     * 
+     */
+    public static Object getSingleElement(final ISelection s) {
+        if (!(s instanceof IStructuredSelection)) {
+            return null;
+        }
+        final IStructuredSelection selection = (IStructuredSelection) s;
+        if (selection.size() != 1) {
+            return null;
+        }
 
-		return selection.getFirstElement();
-	}
+        return selection.getFirstElement();
+    }
 }

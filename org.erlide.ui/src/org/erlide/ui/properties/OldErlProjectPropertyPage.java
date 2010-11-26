@@ -44,26 +44,26 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
 
     @Override
     protected void createFieldEditors() {
-        IProject prj = (IProject) getElement().getAdapter(IProject.class);
+        final IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
         try {
             prj.getFolder(new Path(".settings")).refreshLocal(
                     IResource.DEPTH_ONE, null);
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
         }
 
-        Composite fieldEditorParent = getFieldEditorParent();
-        ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
+        final Composite fieldEditorParent = getFieldEditorParent();
+        final ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
                 ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
                 fieldEditorParent, prj);
         addField(out);
 
-        ProjectPathEditor src = new ProjectPathEditor(
+        final ProjectPathEditor src = new ProjectPathEditor(
                 ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
                 "Select directory:", fieldEditorParent, prj);
         addField(src);
 
-        ProjectPathEditor inc = new ProjectPathEditor(
+        final ProjectPathEditor inc = new ProjectPathEditor(
                 ProjectPreferencesConstants.INCLUDE_DIRS,
                 "Include directories:", "Select directory:", fieldEditorParent,
                 prj);
@@ -83,10 +83,10 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
+        final Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
                 .getRuntimes();
-        String[][] runtimes = new String[rs.size()][2];
-        Iterator<RuntimeInfo> it = rs.iterator();
+        final String[][] runtimes = new String[rs.size()][2];
+        final Iterator<RuntimeInfo> it = rs.iterator();
         for (int i = 0; i < rs.size(); i++) {
             runtimes[i][0] = it.next().getVersion().asMinor().toString();
             runtimes[i][1] = runtimes[i][0];
@@ -101,6 +101,6 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         return "org.erlide.core";
     }
 
-    public void init(IWorkbench workbench) {
+    public void init(final IWorkbench workbench) {
     }
 }

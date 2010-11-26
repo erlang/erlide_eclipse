@@ -11,6 +11,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public interface IConvertible {
 
-	public OtpErlangObject toErlangObject();
+    public OtpErlangObject toErlangObject();
 
 }

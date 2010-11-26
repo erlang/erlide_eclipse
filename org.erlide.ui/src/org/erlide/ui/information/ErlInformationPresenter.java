@@ -41,7 +41,7 @@ public class ErlInformationPresenter implements
     private int fCounter;
     private final boolean fEnforceUpperLineLimit;
 
-    public ErlInformationPresenter(boolean enforceUpperLineLimit) {
+    public ErlInformationPresenter(final boolean enforceUpperLineLimit) {
         super();
         fEnforceUpperLineLimit = enforceUpperLineLimit;
     }
@@ -53,8 +53,8 @@ public class ErlInformationPresenter implements
     /**
      * Creates the reader and properly puts the presentation into place.
      */
-    protected Reader createReader(String hoverInfo,
-            TextPresentation presentation) {
+    protected Reader createReader(final String hoverInfo,
+            final TextPresentation presentation) {
         String str = UIStringUtils.removeWhitespaceColumnsToLeft(hoverInfo);
 
         str = correctLineDelimiters(str);
@@ -69,7 +69,7 @@ public class ErlInformationPresenter implements
      * dependent on the platform
      */
     private String correctLineDelimiters(String str) {
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         for (String s : StringUtils.splitLines(str)) {
 
             boolean found = false;
@@ -89,12 +89,13 @@ public class ErlInformationPresenter implements
     /**
      * Changes the @xxx bbb: things for bold
      */
-    private String makeEdocBold(TextPresentation presentation, String str) {
+    private String makeEdocBold(final TextPresentation presentation,
+            final String str) {
         int lastIndex = 0;
 
         // 1st, let's mark in bold the things generated in edoc.
         while (true) {
-            int start = str.indexOf('@', lastIndex);
+            final int start = str.indexOf('@', lastIndex);
             if (start == -1) {
                 break;
             }
@@ -119,19 +120,19 @@ public class ErlInformationPresenter implements
     }
 
     @SuppressWarnings("unchecked")
-    protected void adaptTextPresentation(TextPresentation presentation,
-            int offset, int insertLength) {
+    protected void adaptTextPresentation(final TextPresentation presentation,
+            final int offset, final int insertLength) {
 
-        int yoursStart = offset;
+        final int yoursStart = offset;
         int yoursEnd = offset + insertLength - 1;
         yoursEnd = Math.max(yoursStart, yoursEnd);
 
-        Iterator<StyleRange> e = presentation.getAllStyleRangeIterator();
+        final Iterator<StyleRange> e = presentation.getAllStyleRangeIterator();
         while (e.hasNext()) {
 
-            StyleRange range = e.next();
+            final StyleRange range = e.next();
 
-            int myStart = range.start;
+            final int myStart = range.start;
             int myEnd = range.start + range.length - 1;
             myEnd = Math.max(myStart, myEnd);
 
@@ -147,10 +148,10 @@ public class ErlInformationPresenter implements
         }
     }
 
-    private void append(StringBuffer buffer, String string,
-            TextPresentation presentation) {
+    private void append(final StringBuffer buffer, final String string,
+            final TextPresentation presentation) {
 
-        int length = string.length();
+        final int length = string.length();
         buffer.append(string);
 
         if (presentation != null) {
@@ -160,23 +161,24 @@ public class ErlInformationPresenter implements
         fCounter += length;
     }
 
-    private String getIndent(String line) {
-        int length = line.length();
+    private String getIndent(final String line) {
+        final int length = line.length();
 
         int i = 0;
         while (i < length && Character.isWhitespace(line.charAt(i))) {
             ++i;
         }
 
-        return ((i == length) ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
+        return (i == length ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
     }
 
     /*
      * @see IHoverInformationPresenter#updatePresentation(Display display,
      * String, TextPresentation, int, int)
      */
-    public String updatePresentation(Display display, String hoverInfo,
-            TextPresentation presentation, int maxWidth, int maxHeight) {
+    public String updatePresentation(final Display display,
+            final String hoverInfo, final TextPresentation presentation,
+            final int maxWidth, final int maxHeight) {
         return updatePresentation((Drawable) display, hoverInfo, presentation,
                 maxWidth, maxHeight);
     }
@@ -187,23 +189,24 @@ public class ErlInformationPresenter implements
      * 
      * @since 3.2
      */
-    public String updatePresentation(Drawable drawable, String hoverInfo,
-            TextPresentation presentation, int maxWidth, int maxHeight) {
+    public String updatePresentation(final Drawable drawable,
+            final String hoverInfo, final TextPresentation presentation,
+            final int maxWidth, final int maxHeight) {
 
         if (hoverInfo == null) {
             return null;
         }
 
-        GC gc = new GC(drawable);
+        final GC gc = new GC(drawable);
         try {
 
-            StringBuffer buffer = new StringBuffer();
+            final StringBuffer buffer = new StringBuffer();
             int maxNumberOfLines = Math.round((float) maxHeight
                     / (float) gc.getFontMetrics().getHeight());
 
             fCounter = 0;
-            ErlLineBreakReader reader = new ErlLineBreakReader(createReader(
-                    hoverInfo, presentation), gc, maxWidth);
+            final ErlLineBreakReader reader = new ErlLineBreakReader(
+                    createReader(hoverInfo, presentation), gc, maxWidth);
 
             boolean lastLineFormatted = false;
             String lastLineIndent = null;
@@ -250,7 +253,7 @@ public class ErlInformationPresenter implements
             }
             return trim(buffer, presentation);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // ignore TODO do something else?
             return null;
         } finally {
@@ -258,8 +261,9 @@ public class ErlInformationPresenter implements
         }
     }
 
-    private String trim(StringBuffer buffer, TextPresentation presentation) {
-        int length = buffer.length();
+    private String trim(final StringBuffer buffer,
+            final TextPresentation presentation) {
+        final int length = buffer.length();
 
         int end = length - 1;
         while (end >= 0 && Character.isWhitespace(buffer.charAt(end))) {

@@ -339,8 +339,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
             }
             final IErlModel model = ErlangCore.getModel();
             // add external modules
-            final List<String> mods = ModelUtils.getExternalModules(b,
-                    prefix, erlProject);
+            final List<String> mods = ModelUtils.getExternalModules(b, prefix,
+                    erlProject);
             for (final String m : mods) {
                 final String name = ErlideUtil.basenameWithoutExtension(m);
                 if (!allErlangFiles.contains(name)) {

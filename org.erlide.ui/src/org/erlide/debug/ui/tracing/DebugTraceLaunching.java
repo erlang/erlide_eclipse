@@ -17,32 +17,34 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class DebugTraceLaunching {
 
-	public static void launch(final IDebugTarget target,
-			final DebuggerTraceView debuggerTraceView) {
-		if (target == null) {
-			return;
-		}
-		try {
-			final ILaunchConfigurationType lcType = DebugPlugin.getDefault()
-					.getLaunchManager().getLaunchConfigurationType(
-							"org.erlide.runtime.debug.launchDebugTrace");
-			final String name = target.toString();
-			final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null,
-					name);
-			final Set<String> modes = new HashSet<String>();
-			modes.add(ILaunchManager.DEBUG_MODE);
-			final ILaunchDelegate[] delegates = lcType.getDelegates(modes);
-			final ILaunchConfigurationDelegate delegate = delegates[0]
-					.getDelegate();
-			if (!(delegate instanceof DebugTraceLaunchConfigurationDelegate)) {
-				return;
-			}
-			final DebugTraceLaunchConfigurationDelegate ldtlcd = (DebugTraceLaunchConfigurationDelegate) delegate;
-			ldtlcd.setInfo(target.getLaunch(), target, debuggerTraceView
-					.getEventsForLaunch(target));
-			final ILaunch launch = wc.launch(ILaunchManager.DEBUG_MODE, null);
-		} catch (final CoreException e) {
-			ErlLogger.error(e);
-		}
-	}
+    public static void launch(final IDebugTarget target,
+            final DebuggerTraceView debuggerTraceView) {
+        if (target == null) {
+            return;
+        }
+        try {
+            final ILaunchConfigurationType lcType = DebugPlugin
+                    .getDefault()
+                    .getLaunchManager()
+                    .getLaunchConfigurationType(
+                            "org.erlide.runtime.debug.launchDebugTrace");
+            final String name = target.toString();
+            final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null,
+                    name);
+            final Set<String> modes = new HashSet<String>();
+            modes.add(ILaunchManager.DEBUG_MODE);
+            final ILaunchDelegate[] delegates = lcType.getDelegates(modes);
+            final ILaunchConfigurationDelegate delegate = delegates[0]
+                    .getDelegate();
+            if (!(delegate instanceof DebugTraceLaunchConfigurationDelegate)) {
+                return;
+            }
+            final DebugTraceLaunchConfigurationDelegate ldtlcd = (DebugTraceLaunchConfigurationDelegate) delegate;
+            ldtlcd.setInfo(target.getLaunch(), target,
+                    debuggerTraceView.getEventsForLaunch(target));
+            final ILaunch launch = wc.launch(ILaunchManager.DEBUG_MODE, null);
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+    }
 }

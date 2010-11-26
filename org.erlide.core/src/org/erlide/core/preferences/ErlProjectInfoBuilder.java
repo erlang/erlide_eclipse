@@ -8,13 +8,13 @@ public class ErlProjectInfoBuilder {
     public ErlProjectInfoBuilder() {
     }
 
-    public ErlProjectInfo loadFromPreferences(
-            final IEclipsePreferences root) throws BackingStoreException {
+    public ErlProjectInfo loadFromPreferences(final IEclipsePreferences root)
+            throws BackingStoreException {
         // TODO implement!
         return null;
     }
 
-    public void storeToPreferences(ErlProjectInfo info,
+    public void storeToPreferences(final ErlProjectInfo info,
             final IEclipsePreferences root) throws BackingStoreException {
         // TODO implement!
     }

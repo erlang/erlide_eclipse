@@ -23,40 +23,40 @@ import org.erlide.jinterface.util.EpmdWatcher;
  */
 public class EpmdWatchJob extends Job {
 
-	private static final int defaultInterval = 2000;
-	private int interval = defaultInterval;
-	private final EpmdWatcher watcher;
+    private static final int defaultInterval = 2000;
+    private int interval = defaultInterval;
+    private final EpmdWatcher watcher;
 
-	public EpmdWatchJob(final EpmdWatcher aWatcher, final int anInterval) {
-		super("Checking EPMD for new backends");
-		assert (aWatcher != null);
+    public EpmdWatchJob(final EpmdWatcher aWatcher, final int anInterval) {
+        super("Checking EPMD for new backends");
+        assert aWatcher != null;
 
-		watcher = aWatcher;
-		interval = (anInterval < 0) ? defaultInterval : anInterval;
+        watcher = aWatcher;
+        interval = anInterval < 0 ? defaultInterval : anInterval;
 
-		setSystem(true);
-		setPriority(SHORT);
-	}
+        setSystem(true);
+        setPriority(SHORT);
+    }
 
-	public EpmdWatchJob(final EpmdWatcher watcher) {
-		this(watcher, defaultInterval);
-	}
+    public EpmdWatchJob(final EpmdWatcher watcher) {
+        this(watcher, defaultInterval);
+    }
 
-	@Override
-	protected IStatus run(final IProgressMonitor monitor) {
+    @Override
+    protected IStatus run(final IProgressMonitor monitor) {
 
-		watcher.checkEpmd();
+        watcher.checkEpmd();
 
-		this.schedule(interval);
-		return Status.OK_STATUS;
-	}
+        this.schedule(interval);
+        return Status.OK_STATUS;
+    }
 
-	public void setInterval(final int interval) {
-		this.interval = interval;
-	}
+    public void setInterval(final int interval) {
+        this.interval = interval;
+    }
 
-	public int getInterval() {
-		return this.interval;
-	}
+    public int getInterval() {
+        return interval;
+    }
 
 }

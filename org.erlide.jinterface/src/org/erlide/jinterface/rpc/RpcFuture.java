@@ -10,38 +10,37 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;
 
 public class RpcFuture {
 
-	private final OtpMbox mbox;
-	private OtpErlangObject result = null;
-	private String env;
+    private final OtpMbox mbox;
+    private OtpErlangObject result = null;
+    private final String env;
 
-	public RpcFuture(final OtpMbox mbox, String env) {
-		this.mbox = mbox;
-		this.env = env;
-	}
+    public RpcFuture(final OtpMbox mbox, final String env) {
+        this.mbox = mbox;
+        this.env = env;
+    }
 
-	public OtpErlangObject get() throws RpcException {
-		if (isDone()) {
-			return result;
-		}
-		return get(RpcUtil.INFINITY);
-	}
+    public OtpErlangObject get() throws RpcException {
+        if (isDone()) {
+            return result;
+        }
+        return get(RpcUtil.INFINITY);
+    }
 
-	public OtpErlangObject get(final long timeout) throws RpcException {
-		if (isDone()) {
-			return result;
-		}
-		result = RpcUtil.getRpcResult(mbox, timeout, env);
-		return result;
-	}
+    public OtpErlangObject get(final long timeout) throws RpcException {
+        if (isDone()) {
+            return result;
+        }
+        result = RpcUtil.getRpcResult(mbox, timeout, env);
+        return result;
+    }
 
-	public boolean isDone() {
-		return result != null;
-	}
+    public boolean isDone() {
+        return result != null;
+    }
 
 }

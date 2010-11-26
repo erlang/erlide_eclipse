@@ -19,18 +19,18 @@ import org.erlide.core.erlang.util.ErlangFunction;
  * @author Vlad Dumitrescu
  */
 public interface IErlFunction extends IErlFunctionClause, IParent {
-	boolean isExported();
+    boolean isExported();
 
-	List<IErlFunctionClause> getClauses();
+    List<IErlFunctionClause> getClauses();
 
-	ErlangFunction getFunction();
+    ErlangFunction getFunction();
 
-	String getNameWithArity();
+    String getNameWithArity();
 
-	/**
-	 * @return the function name with _ for each parameter, used for completion
-	 */
-	String getNameWithParameters();
+    /**
+     * @return the function name with _ for each parameter, used for completion
+     */
+    String getNameWithParameters();
 
-	String getComment();
+    String getComment();
 }

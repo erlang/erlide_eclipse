@@ -17,52 +17,52 @@ import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlangSourceContextTypeModule extends TemplateContextType {
 
-	private static ErlangSourceContextTypeModule fInstance;
+    private static ErlangSourceContextTypeModule fInstance;
 
-	/** This context's id */
-	public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
+    /** This context's id */
+    public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
 
-	/**
-	 * Creates a new XML context type.
-	 */
-	public ErlangSourceContextTypeModule() {
-		addGlobalResolvers();
-		addModuleResolver();
-		// TODO should we set fInstance here?
-		fInstance = this;
-	}
+    /**
+     * Creates a new XML context type.
+     */
+    public ErlangSourceContextTypeModule() {
+        addGlobalResolvers();
+        addModuleResolver();
+        // TODO should we set fInstance here?
+        fInstance = this;
+    }
 
-	private void addModuleResolver() {
-		addResolver(new ModuleVariableResolver()); // .getDefault());
-	}
+    private void addModuleResolver() {
+        addResolver(new ModuleVariableResolver()); // .getDefault());
+    }
 
-	private void addGlobalResolvers() {
-		addResolver(new GlobalTemplateVariables.LineSelection());
-		addResolver(new GlobalTemplateVariables.Dollar());
-		addResolver(new GlobalTemplateVariables.Date());
-		addResolver(new GlobalTemplateVariables.Year());
-		addResolver(new GlobalTemplateVariables.Time());
-		addResolver(new GlobalTemplateVariables.User());
-	}
+    private void addGlobalResolvers() {
+        addResolver(new GlobalTemplateVariables.LineSelection());
+        addResolver(new GlobalTemplateVariables.Dollar());
+        addResolver(new GlobalTemplateVariables.Date());
+        addResolver(new GlobalTemplateVariables.Year());
+        addResolver(new GlobalTemplateVariables.Time());
+        addResolver(new GlobalTemplateVariables.User());
+    }
 
-	public void addElementResolvers() {
-		final Template[] templates = ErlideUIPlugin
-				.getDefault()
-				.getTemplateStore()
-				.getTemplates(
-						ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
-		for (final Template template : templates) {
-			addResolver(new ModuleElementVariableResolver(template.getName(),
-					template));
-		}
-	}
+    public void addElementResolvers() {
+        final Template[] templates = ErlideUIPlugin
+                .getDefault()
+                .getTemplateStore()
+                .getTemplates(
+                        ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+        for (final Template template : templates) {
+            addResolver(new ModuleElementVariableResolver(template.getName(),
+                    template));
+        }
+    }
 
-	public static ErlangSourceContextTypeModule getDefault() {
-		if (fInstance == null) {
-			new ErlangSourceContextTypeModule();
-			// fInstance = new ErlangSourceContextTypeModule();
-		}
-		return fInstance;
-	}
+    public static ErlangSourceContextTypeModule getDefault() {
+        if (fInstance == null) {
+            new ErlangSourceContextTypeModule();
+            // fInstance = new ErlangSourceContextTypeModule();
+        }
+        return fInstance;
+    }
 
 }

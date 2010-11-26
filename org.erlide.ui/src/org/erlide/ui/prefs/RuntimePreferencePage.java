@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -211,7 +212,7 @@ public class RuntimePreferencePage extends PreferencePage implements
             @Override
             public int compare(final Viewer viewer, final Object e1,
                     final Object e2) {
-                if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
+                if (e1 instanceof RuntimeInfo && e2 instanceof RuntimeInfo) {
                     final RuntimeInfo left = (RuntimeInfo) e1;
                     final RuntimeInfo right = (RuntimeInfo) e2;
                     return left.getName().compareToIgnoreCase(right.getName());
@@ -237,7 +238,7 @@ public class RuntimePreferencePage extends PreferencePage implements
             @Override
             public int compare(final Viewer viewer, final Object e1,
                     final Object e2) {
-                if ((e1 instanceof RuntimeInfo) && (e2 instanceof RuntimeInfo)) {
+                if (e1 instanceof RuntimeInfo && e2 instanceof RuntimeInfo) {
                     final RuntimeInfo left = (RuntimeInfo) e1;
                     final RuntimeInfo right = (RuntimeInfo) e2;
                     return left.getOtpHome().compareToIgnoreCase(
@@ -468,7 +469,8 @@ public class RuntimePreferencePage extends PreferencePage implements
     public void removeRuntimes(final RuntimeInfo[] vms) {
         final IStructuredSelection prev = (IStructuredSelection) getSelection();
         if (runtimes.size() == 1) {
-            setMessage("You can't delete the last runtime definition", PreferencePage.INFORMATION);
+            setMessage("You can't delete the last runtime definition",
+                    IMessageProvider.INFORMATION);
             return;
         }
         for (final RuntimeInfo element : vms) {
@@ -544,7 +546,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         final int tableWidth = table.getSize().x;
         final int columnWidth = table.getColumn(col).getWidth();
         if (tableWidth > columnWidth) {
-            return ((float) columnWidth) / tableWidth;
+            return (float) columnWidth / tableWidth;
         }
         return 1 / 3F;
     }

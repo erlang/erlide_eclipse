@@ -17,28 +17,28 @@ import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.jinterface.backend.RuntimeInfo;
 
 public class ErlangSourcePathComputerDelegate implements
-		ISourcePathComputerDelegate {
+        ISourcePathComputerDelegate {
 
-	public ISourceContainer[] computeSourceContainers(
-			final ILaunchConfiguration configuration,
-			final IProgressMonitor monitor) throws CoreException {
-		final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
-		final String projectNames = configuration.getAttribute(
-				ErlLaunchAttributes.PROJECTS, "");
-		final IProject[] projects = BackendUtils.getProjects(projectNames);
-		for (final IProject p : projects) {
-			containers.add(new ProjectSourceContainer(p, false));
-		}
-		if (containers.isEmpty()) {
-			containers.add(new WorkspaceSourceContainer());
-		}
-		String runtimeName = configuration.getAttribute(
-				ErlLaunchAttributes.RUNTIME_NAME, "").trim();
-		final RuntimeInfo info = ErlangCore.getRuntimeInfoManager().getRuntime(
-				runtimeName);
-		containers
-				.add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
-		return containers.toArray(new ISourceContainer[containers.size()]);
-	}
+    public ISourceContainer[] computeSourceContainers(
+            final ILaunchConfiguration configuration,
+            final IProgressMonitor monitor) throws CoreException {
+        final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
+        final String projectNames = configuration.getAttribute(
+                ErlLaunchAttributes.PROJECTS, "");
+        final IProject[] projects = BackendUtils.getProjects(projectNames);
+        for (final IProject p : projects) {
+            containers.add(new ProjectSourceContainer(p, false));
+        }
+        if (containers.isEmpty()) {
+            containers.add(new WorkspaceSourceContainer());
+        }
+        final String runtimeName = configuration.getAttribute(
+                ErlLaunchAttributes.RUNTIME_NAME, "").trim();
+        final RuntimeInfo info = ErlangCore.getRuntimeInfoManager().getRuntime(
+                runtimeName);
+        containers
+                .add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
+        return containers.toArray(new ISourceContainer[containers.size()]);
+    }
 
 }
