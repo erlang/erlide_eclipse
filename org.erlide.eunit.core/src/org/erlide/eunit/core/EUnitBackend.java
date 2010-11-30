@@ -43,7 +43,7 @@ public class EUnitBackend {
 	private EUnitLaunchData eunitData;
 	private String type;
 	private String nodeName;
-	private List<IEUnitObserver> listeners = new LinkedList<IEUnitObserver>();
+	//private List<IEUnitObserver> listeners = new LinkedList<IEUnitObserver>();
 
 	public static EUnitBackend getInstance(){
 		if(instance == null)
@@ -52,7 +52,7 @@ public class EUnitBackend {
 	}
 	
 	private EUnitBackend() {
-			
+		handler = new EUnitEventHandler();
 	}
 	
 	public void initialize(ErlLaunchData data, EUnitLaunchData eunitData) 
@@ -83,15 +83,14 @@ public class EUnitBackend {
 		
 		this.backend = createBackend();
 		
+		backend.getEventDaemon().addHandler(handler);
+		
 	}
 	
 
 	
 	
 	public void start() {
-		
-		handler = new EUnitEventHandler(this);
-		backend.getEventDaemon().addHandler(handler);
 		
 		String path;
 		String pName = eunitData.getProject();
@@ -131,11 +130,11 @@ public class EUnitBackend {
 	}
 	
 	public void addListener(IEUnitObserver listener) {
-		listeners.add(listener);
+		handler.addListener(listener);
 	}
 	
 	public List<IEUnitObserver> getListeners(){
-		return listeners;
+		return handler.getListeners();
 	}
 	
 	private Backend createBackend() throws BackendException{

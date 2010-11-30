@@ -1,7 +1,9 @@
-package org.erlide.eunit.ui.views.helpers;
+package org.erlide.eunit.views.model;
 
 import java.util.LinkedList;
 import java.util.List;
+
+
 
 /*
  * The content provider class is responsible for
@@ -17,7 +19,7 @@ public class StatsTreeObject implements IStatsTreeObject{
 	private String label;
 	private int all;
 	private int covered;
-	private int percentage;
+	private double percentage;
 	
 	private IStatsTreeObject parent;
 	private List<IStatsTreeObject> children;
@@ -31,7 +33,7 @@ public class StatsTreeObject implements IStatsTreeObject{
 		this.parent = parent;
 	}
 	
-	public StatsTreeObject(String label, int all, int covered, int percentage) {
+	public StatsTreeObject(String label, int all, int covered, double percentage) {
 		this();
 		this.label = label;
 		this.all = all;
@@ -44,7 +46,17 @@ public class StatsTreeObject implements IStatsTreeObject{
 	}
 	
 	public String toString() {
-		return label;
+		
+		StringBuffer bf = new StringBuffer();
+		bf.append(label).append(" ").
+			append(all).append(" ").
+			append(covered).append(" ").
+			append(percentage).append('\n');
+		
+		for(IStatsTreeObject child : children)
+			bf.append('\t').append(child.toString()).append('\n');
+		
+		return bf.toString();
 	}
 	
 	public Object getAdapter(Class key) {
@@ -97,11 +109,11 @@ public class StatsTreeObject implements IStatsTreeObject{
 		covered = count;
 	}
 
-	public int getPrecentage() {
+	public double getPrecentage() {
 		return percentage;
 	}
 
-	public void setPercentage(int count) {
+	public void setPercentage(double count) {
 		percentage = count;
 	}
 
@@ -111,7 +123,7 @@ public class StatsTreeObject implements IStatsTreeObject{
 
 	public String[] getStringRepr() {
 		return new String[] {label, Integer.toString(all),
-				Integer.toString(covered), Integer.toString(percentage)};
+				Integer.toString(covered), Double.toString(percentage)};
 	}
 
 	

@@ -6,24 +6,31 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IViewSite;
+import org.erlide.eunit.views.model.IStatsTreeObject;
+import org.erlide.eunit.views.model.StatsTreeModel;
 
 public class StatsViewContentProvider implements IStructuredContentProvider, 
 ITreeContentProvider {
 	
 	private IViewSite viewSite;
-	private IStatsTreeObject invisibleRoot;
+	private StatsTreeModel model;
 	
 	public StatsViewContentProvider(IViewSite viewSite){
 		this.viewSite = viewSite;
-		initialize();
 	}
 
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		if(newInput instanceof IStatsTreeObject){
+		if(newInput instanceof StatsTreeModel) {
+			System.out.println("model is set");
+			this.model = (StatsTreeModel)newInput;
+			System.out.println(model.getRoot());
+		}
+		
+		/*if(newInput instanceof IStatsTreeObject){
 			invisibleRoot.removeAllChildren();
 			invisibleRoot.addChild((IStatsTreeObject)newInput);
 		}
-		/*	if(newInput instanceof Collection<?>){
+			if(newInput instanceof Collection<?>){
 			root.removeAllChildren();
 			Collection<IStatsTreeObject> newChildren = (Collection<IStatsTreeObject>)newInput;
 			for(IStatsTreeObject child : newChildren) {
@@ -37,9 +44,13 @@ ITreeContentProvider {
 	}
 	
 	public Object[] getElements(Object parent) {
-		if (parent.equals(viewSite)) {
-			return getChildren(invisibleRoot);
+		System.out.println("getElements");
+		if ( (parent.equals(viewSite) && model != null) ||
+				parent.equals(model)) {
+			System.out.println(model.getRoot());
+			return new IStatsTreeObject[] {model.getRoot()};
 		}
+		
 		return getChildren(parent);
 	}
 	
@@ -51,6 +62,7 @@ ITreeContentProvider {
 	}
 	
 	public Object [] getChildren(Object parent) {
+		System.out.println("has children " + parent);
 		if (parent instanceof IStatsTreeObject &&
 				((IStatsTreeObject)parent).hasChildren()) {
 			return ((IStatsTreeObject)parent).getChildren();
@@ -63,26 +75,5 @@ ITreeContentProvider {
 			return ((IStatsTreeObject)parent).hasChildren();
 		return false;
 	}
-/*
-* We will set up a dummy model to initialize tree heararchy.
-* In a real code, you will connect to a real model and
-* expose its hierarchy.
-*/
-	private void initialize() {
-		
-		invisibleRoot = new StatsTreeObject();
-		
-		StatsTreeObject root = new StatsTreeObject("total", 0, 0, 0);
-		invisibleRoot.addChild(root);
-		
-		for(int i = 1; i < 5; i++) {
-			IStatsTreeObject module = new StatsTreeObject("module" +i, 12+i, 10, 52);
-			root.addChild(module);
-			for(int j = 1; j < 3; j++) {
-				IStatsTreeObject function = new StatsTreeObject("function"+j, 4+j, 2, 10*j);
-				module.addChild(function);
-			}
-		}
-		
-	}
+	
 }
