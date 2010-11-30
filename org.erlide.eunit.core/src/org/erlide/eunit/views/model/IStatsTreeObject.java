@@ -1,4 +1,4 @@
-package org.erlide.eunit.ui.views.helpers;
+package org.erlide.eunit.views.model;
 
 import org.eclipse.core.runtime.IAdaptable;
 
@@ -29,8 +29,8 @@ public interface IStatsTreeObject extends IAdaptable {
 	public int getCoverCount();
 	public void setCoverCount(int count);
 	
-	public int getPrecentage();
-	public void setPercentage(int count);
+	public double getPrecentage();
+	public void setPercentage(double count);
 	
 	public String[] getStringRepr();
 

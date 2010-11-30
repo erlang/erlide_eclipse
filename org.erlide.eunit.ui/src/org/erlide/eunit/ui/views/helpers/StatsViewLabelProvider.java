@@ -5,12 +5,13 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.eunit.views.model.IStatsTreeObject;
 
 public class StatsViewLabelProvider extends LabelProvider
 		implements ITableLabelProvider
 		{
 
-	public String getText(Object obj) {
+/*	public String getText(Object obj) {
 		return obj.toString();
 	}
 	public Image getImage(Object obj) {
@@ -18,7 +19,7 @@ public class StatsViewLabelProvider extends LabelProvider
 		if (obj instanceof StatsTreeParent)
 		   imageKey = ISharedImages.IMG_OBJ_FOLDER;
 		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-	}
+	}*/
 	
 	public Image getColumnImage(Object element, int columnIndex) {
 		//no image
@@ -41,7 +42,7 @@ public class StatsViewLabelProvider extends LabelProvider
 			text = Integer.toString(statsEl.getCoverCount()); 
 			break;
 		case 3:
-			text = Integer.toString(statsEl.getPrecentage()); 
+			text = Double.toString(statsEl.getPrecentage()); 
 			break;
 		}
 		return text;

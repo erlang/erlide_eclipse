@@ -1,7 +1,6 @@
 package org.erlide.eunit.ui.views;
 
-import java.util.Map;
-
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -22,19 +21,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.eunit.core.CoverResults;
 import org.erlide.eunit.core.EUnitBackend;
 import org.erlide.eunit.core.IEUnitObserver;
 import org.erlide.eunit.ui.views.helpers.StatsNameSorter;
 import org.erlide.eunit.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.eunit.ui.views.helpers.StatsViewLabelProvider;
+import org.erlide.eunit.views.model.StatsTreeModel;
 
 
 /**
@@ -64,11 +62,21 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
-	private Action action2;
+	
+	private Action openItem;
+	private Action showHtml;
+	private Action save;
+	private Action clear;
+	private Action refresh;
+	private Action restore;
 	private Action doubleClickAction;
 	
 	private EUnitBackend backend;
+	
+	private TreeColumn colName;
+	private TreeColumn colLines;
+	private TreeColumn colCovered;
+	private TreeColumn colPercentage;
 	
 	
 	/**
@@ -100,12 +108,15 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 		viewer.setInput(getViewSite());
 		viewer.getTree().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		viewer.setInput(StatsTreeModel.getInstance());
 		
 		createTableTree();
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.erlide.eunit.core.viewer");
+		
 		makeActions();
+		
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
@@ -118,33 +129,21 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 		tree.setLinesVisible(true);	
 		tree.setHeaderVisible(true);
 		
-		TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-		column1.setText("Name");
-		column1.setWidth(540);
-		TreeColumn column2 = new TreeColumn(tree, SWT.RIGHT);
-		column2.setText("Lines");
-		column2.setWidth(150);
-		TreeColumn column3 = new TreeColumn(tree, SWT.RIGHT);
-		column3.setText("Total");
-		column3.setWidth(150);
-		TreeColumn column4 = new TreeColumn(tree, SWT.RIGHT);
-		column4.setText("%");
-		column4.setWidth(150);
+		colName = new TreeColumn(tree, SWT.LEFT);
+		colName.setText("Name");
+		colName.setWidth(540);
 		
+		colLines = new TreeColumn(tree, SWT.RIGHT);
+		colLines.setText("Covered Lines");
+		colLines.setWidth(150);
 		
-	/*	TreeItem total = new TreeItem(tree, SWT.NONE);
-		total.setText(new String[] {"total", "1000", "250", "25"});
+		colCovered = new TreeColumn(tree, SWT.RIGHT);
+		colCovered.setText("Total Lines");
+		colCovered.setWidth(150);
 		
-		for (int i = 0; i < 6; i++) {
-		      TreeItem item = new TreeItem(total, SWT.NONE);
-		      item.setText(new String[] { "module" + i, "100", "12", "12" });
-		      for (int j = 0; j < 4; j++) {
-		        TreeItem subItem = new TreeItem(item, SWT.NONE);
-		        subItem
-		            .setText(new String[] { "function" + j, "20", "3", "3" });
-		      }
-		}*/
-		
+		colPercentage = new TreeColumn(tree, SWT.RIGHT);
+		colPercentage.setText("Coverage");
+		colPercentage.setWidth(150);
 		
 	}
 
@@ -168,14 +167,16 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(clear);
+		manager.add(refresh);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(restore);
+		manager.add(save);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(openItem);
+		manager.add(showHtml);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -183,32 +184,96 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(clear);
+		manager.add(refresh);
+		manager.add(new Separator());
+		manager.add(restore);
+		manager.add(save);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		makeClearAction();
+		makeDoubleClickAction();
+		makeOpenItemAction();
+		makeRestoreAction();
+		makeSaveAction();
+		makeShowHtmlAction();
+		makeRefreshAction();
+	}
+	
+	private void makeOpenItemAction() {
+		openItem = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				showMessage("Action open item");
 			}
 		};
-		action1.setText("Open in editor");
-		action1.setToolTipText("Opens the including file in editor");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		openItem.setText("Open in editor");
+		openItem.setToolTipText("Opens the including file in editor");
+		openItem.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
-		action2 = new Action() {
+	}
+	
+	private void makeShowHtmlAction() {
+		showHtml = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				showMessage("Action show html");
 			}
 		};
-		action2.setText("Show html report");
-		action2.setToolTipText("Shows generated html report");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		showHtml.setText("Show html report");
+		showHtml.setToolTipText("Shows generated html report");
+		showHtml.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+	}
+	
+	private void makeClearAction() {
+		clear = new Action() {
+            
+            public void run() {
+            	showMessage("Action clear");
+            }
+        };
+        clear.setImageDescriptor(DebugUITools.getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
+        clear.setToolTipText("Clear results");
+	}
+	
+	private void makeRestoreAction() {
+		restore = new Action() {
+            
+            public void run() {
+            	showMessage("Action save");
+            }
+        };
+        restore.setImageDescriptor(DebugUITools.getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
+        restore.setToolTipText("Restore previous results");
+	}	
+	
+	private void makeSaveAction() {
+		save = new Action() {
+            
+            public void run() {
+            	showMessage("Action save");
+            }
+        };
+        save.setImageDescriptor(DebugUITools.getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
+        save.setToolTipText("Save coverage results");
+	}
+	
+	private void makeRefreshAction() {
+		refresh = new Action() {
+            
+            public void run() {
+            	showMessage("Action refresh");
+            }
+        };
+        //TODO change image 
+        refresh.setImageDescriptor(DebugUITools.getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
+        refresh.setToolTipText("Refresh coverage statistics view");
+	}
+	
+	private void makeDoubleClickAction() {
+		//TODO: use it
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
@@ -241,18 +306,19 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 
 	public void finishCovering() {
 		System.out.println("Updating viewer");
+		
 		Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                updateTable(); //TODO: change this
+                viewer.refresh();
             }
         });
 	}
 	
 	private void updateTable(){
 		
-		System.out.println("updating....");
+
 		
-		int totalNum = backend.getHandler().getTotal();
+	/*	int totalNum = backend.getHandler().getTotal();
 		Map<String, CoverResults> results = backend.getHandler().getResults();
 		
 		Tree tree = viewer.getTree();
@@ -270,7 +336,7 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 			System.out.format("%s, %s, %s, %s\n", res, linesNum, linesCov, percent);
 			
 			subItem.setText(new String[] {res, linesNum, linesCov, percent});
-		}
+		}*/
 	}
 	
 }

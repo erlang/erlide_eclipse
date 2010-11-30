@@ -15,17 +15,6 @@
             class="org.erlide.eunit.ui.views.CoverStatsView"
             id="org.erlide.eunit.core.views.TestResultView">
       </view>
-      <category
-            id="org.erlide.eunit.ui"
-            name="Test Category">
-      </category>
-      <view
-            category="org.erlide.eunit.ui"
-            class="org.erlide.eunit.ui.views.TestTableView"
-            icon="icons/sample.gif"
-            id="org.erlide.eunit.ui.views.TestTableView"
-            name="Test Table View">
-      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
