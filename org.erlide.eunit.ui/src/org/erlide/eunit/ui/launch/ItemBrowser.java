@@ -33,7 +33,7 @@ public class ItemBrowser
 		
 		text = new Text(comp, style);               
         text.setLayoutData(gd);
-        //text.setEditable(false);
+        text.setEditable(false);
         
         button = new Button(comp, SWT.CENTER | SWT.PUSH);
 		button.setText("Browse");
@@ -42,7 +42,9 @@ public class ItemBrowser
 			public void widgetSelected(SelectionEvent e) {
 				
 				dialog.open();
-				text.setText(dialog.getResult().toString());
+				
+				Object[] res = dialog.getResult();
+				text.setText(res[0].toString());
 				//TODO: better serving results
 			}
 			
@@ -68,6 +70,11 @@ public class ItemBrowser
 	
 	public GridData getTextGridData(){
 		return (GridData)text.getLayoutData();
+	}
+	
+	public void setEnabled(boolean enabled) {
+	    text.setEnabled(enabled);
+	    button.setEnabled(enabled);
 	}
 	
 }

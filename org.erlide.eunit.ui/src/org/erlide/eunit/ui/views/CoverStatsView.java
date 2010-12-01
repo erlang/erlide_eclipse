@@ -324,29 +324,5 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
         });
 	}
 	
-	private void updateTable(){
-		
-
-		
-	/*	int totalNum = backend.getHandler().getTotal();
-		Map<String, CoverResults> results = backend.getHandler().getResults();
-		
-		Tree tree = viewer.getTree();
-		tree.clearAll(true);
-		
-		TreeItem total = new TreeItem(tree, SWT.NONE);
-		total.setText(new String[] {"total", "", "", Integer.toString(totalNum)});
-		
-		for(String res : results.keySet()){
-			TreeItem subItem = new TreeItem(total, SWT.NONE);
-			String linesNum = Integer.toString(results.get(res).linesTotal);
-			String linesCov = Integer.toString(results.get(res).linesCovered);
-			String percent = Double.toString(results.get(res).percent);
-			
-			System.out.format("%s, %s, %s, %s\n", res, linesNum, linesCov, percent);
-			
-			subItem.setText(new String[] {res, linesNum, linesCov, percent});
-		}*/
-	}
 	
 }

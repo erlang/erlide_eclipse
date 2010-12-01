@@ -115,7 +115,9 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.editors.erl.handlers,
  org.erlide.ui.editors.erl.hover;x-internal:=true,
  org.erlide.ui.editors.erl.hyperlink;x-internal:=true,
- org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.gunit";
+ org.erlide.ui.editors.erl.outline;
+  x-friends:="org.erlide.gunit,
+   org.erlide.eunit.ui";
   uses:="org.eclipse.jface.text,
    org.eclipse.jface.action,
    org.erlide.ui.editors.erl,
