@@ -26,7 +26,7 @@ ITreeContentProvider {
 			System.out.println(model.getRoot());
 		}
 		
-		/*if(newInput instanceof IStatsTreeObject){
+		/*if(newInput instanceof IStatsTreeObject){ 
 			invisibleRoot.removeAllChildren();
 			invisibleRoot.addChild((IStatsTreeObject)newInput);
 		}

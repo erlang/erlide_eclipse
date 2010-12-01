@@ -102,7 +102,7 @@ public class EUnitEventHandler extends EventHandler {
             	OtpErlangTuple res = (OtpErlangTuple)mesgTuple.elementAt(1);
             	System.out.println("0:: " + res);
             	
-            	changeStatModel(res);
+            	changeStatModel(res); 
 				
                 return true;
             }
