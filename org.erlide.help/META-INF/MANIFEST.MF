@@ -7,4 +7,5 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.help,
  org.eclipse.help.ui,
- org.eclipse.help.webapp
+ org.eclipse.help.webapp,
+ org.eclipse.ui.cheatsheets;bundle-version="3.3.200"
