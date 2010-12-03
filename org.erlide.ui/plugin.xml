@@ -1733,4 +1733,33 @@
             id="org.erlide.ui.ErlangExternalEditorInputFactory">
       </factory>
    </extension>
-</plugin>
+    <extension point="org.eclipse.ui.menus">
+         <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+             <toolbar
+                id="org.erlide.ui.toolbars.creation"
+                label="Erlang creation wizards">
+                <command
+                      commandId="org.eclipse.ui.newWizard"
+                      icon="icons/full/obj16/erlang_NewModule.png"
+                      label="New Erlang module"
+                      style="push"
+                      tooltip="Create a new erlang module">
+                   <parameter
+                         name="newWizardId"
+                         value="org.erlide.ui.wizards.ErlangSourceFile">
+                   </parameter>
+                   <visibleWhen
+                        checkEnabled="false">
+                        <with
+                            variable="activeWorkbenchWindow.activePerspective">
+                            <equals
+                                value="org.erlide.ui.perspectives.ErlangPerspective">
+                            </equals>
+                        </with>
+                    </visibleWhen>
+                </command>
+             </toolbar>
+         </menuContribution>
+</extension>
+ </plugin>
