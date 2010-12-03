@@ -78,7 +78,8 @@ public class EUnitBackend {
         System.out.println("Create backend");
                 
 		this.info = buildRuntimeInfo(data, rt0);
-		EnumSet<BackendOptions> options = EnumSet.of(BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
+		EnumSet<BackendOptions> options = 
+		    EnumSet.of(BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
 		this.config = getLaunchConfiguration(info, options);
 		
 		this.backend = createBackend();
@@ -110,8 +111,9 @@ public class EUnitBackend {
 			System.out.println("Starting cover..");
 			
 			try {
+			    String moduleName = eunitData.getModule().replace(".erl", "");
 				backend.cast(Constants.ERLANG_HELPER, Constants.FUN_START, "sss",
-						type , eunitData.getModule(), path);
+						type , moduleName, path);
 				System.out.println("Cast sent");
 			} catch (BackendException e) {
 				e.printStackTrace();
@@ -146,7 +148,8 @@ public class EUnitBackend {
 	            ErlLogger.debug("launching....");
 	            System.out.println("Creating Backend");
 	            
-	            config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor(), false, false);
+	            config.launch(ILaunchManager.RUN_MODE, 
+	                    new NullProgressMonitor(), false, false);
 	            
 	            System.out.println("after launching");
 	            
@@ -186,21 +189,34 @@ public class EUnitBackend {
         return rt;
     }
 	
-	private ILaunchConfiguration getLaunchConfiguration(RuntimeInfo info, Set<BackendOptions> options) {
+	private ILaunchConfiguration getLaunchConfiguration(
+	        RuntimeInfo info, Set<BackendOptions> options) {
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-        ILaunchConfigurationType type = manager.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+        ILaunchConfigurationType type = 
+            manager.getLaunchConfigurationType(
+                    ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         
         nodeName = info.getNodeName();
         try {
-            workingCopy = type.newInstance(null, "internal " + info.getNodeName());
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, "ISO-8859-1");
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME, info.getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, info.getCookie());
-            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE, !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL, options.contains(BackendOptions.INTERNAL));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
+            workingCopy = type.newInstance(null,
+                    "internal " + info.getNodeName());
+            workingCopy.setAttribute(
+                    DebugPlugin.ATTR_CONSOLE_ENCODING, "ISO-8859-1");
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.NODE_NAME, info.getNodeName());
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.RUNTIME_NAME, info.getName());
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.COOKIE, info.getCookie());
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.CONSOLE, !options.contains(
+                            BackendOptions.NO_CONSOLE));
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.INTERNAL, options.contains(
+                            BackendOptions.INTERNAL));
+            workingCopy.setAttribute(
+                    ErlLaunchAttributes.USE_LONG_NAME, false);
             return workingCopy.doSave();
         } catch (CoreException e) {
             e.printStackTrace();

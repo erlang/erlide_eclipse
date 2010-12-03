@@ -1,14 +1,15 @@
 package org.erlide.eunit.ui.launch;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
 /**
@@ -23,6 +24,7 @@ public class ItemBrowser
 	private Text text;
 	private Button button;
 	private SelectionDialog dialog;
+	private char type;
 	
 	public ItemBrowser(Composite comp, int style, SelectionDialog dial){
 		
@@ -43,8 +45,18 @@ public class ItemBrowser
 				
 				dialog.open();
 				
-				Object[] res = dialog.getResult();
-				text.setText(res[0].toString());
+				if(dialog.getReturnCode() == Window.OK &&
+				        dialog.getResult() != null &&
+				        dialog.getResult().length > 0) {
+				    
+    				Object[] res = dialog.getResult();
+    				String result = res[0].toString();
+    				if(dialog instanceof ElementTreeSelectionDialog) {
+    				    type = result.charAt(0);
+    				    result = result.substring(2);
+    				}
+    				text.setText(result);
+				}
 				//TODO: better serving results
 			}
 			
@@ -75,6 +87,10 @@ public class ItemBrowser
 	public void setEnabled(boolean enabled) {
 	    text.setEnabled(enabled);
 	    button.setEnabled(enabled);
+	}
+	
+	public char getType() {
+	    return type;
 	}
 	
 }

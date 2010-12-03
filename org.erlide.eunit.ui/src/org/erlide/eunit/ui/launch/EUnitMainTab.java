@@ -372,27 +372,19 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	private void createAllTestsGroup(final Composite comp){
-        
-    //    ElementListSelectionDialog dialogFile = 
-	//		new ElementListSelectionDialog(this.getShell(), 
-	//				new LabelProvider());
-        
+           
         ElementTreeSelectionDialog fileDialog = new ElementTreeSelectionDialog(
                 this.getShell(),
                 new WorkbenchLabelProvider(),
                 new BaseWorkbenchContentProvider());
         fileDialog.setTitle("Select file ore directory");
         fileDialog.setMessage("Select project, directory or file: ");
-        try {
-            fileDialog.setInput(ErlangCore.getModel().getErlangProjects());
-        } catch (ErlModelException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        fileDialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        fileDialog.setAllowMultiple(false);
         
         
-     /*   fileDialog.addFilter(new ViewerFilter() {
-
+        fileDialog.addFilter(new ViewerFilter() {
+            
             @Override
             public boolean select(Viewer viewer, Object parentElement,
                     Object element) {
@@ -403,15 +395,22 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
                 if(parentElement.equals(workspaceRoot) && 
                         element instanceof IProject){
                     String name = ((IProject)element).getName();
-                    if(ErlangCore.getModel().getErlangProject(name) != null) {
-                        return true;
+                    
+                    try {
+                        if(!ErlangCore.getModel().getErlangProject(name).
+                                getModules().isEmpty()) {
+                            return true;
+                        }
+                    } catch (ErlModelException e) {
+                        e.printStackTrace();
                     }
+                    return false;
                 }
                     
-                return false;
+                return true;
             }
             
-        });*/
+        });
         
         fileBr = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, fileDialog);
         fileBr.setFiledLength(600);
@@ -423,7 +422,7 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 		
 		ElementListSelectionDialog projectDialog = 
 			new ElementListSelectionDialog(this.getShell(), 
-					new LabelProvider());
+					new ProjectLabelProvider());
 		
 		Object[] elements = createProjectArray();
 		
@@ -454,8 +453,6 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 			String text, SelectionDialog dialog){
 	    
 		GridData gData = new GridData();
-		//gData.widthHint = 50;
-		//gData.horizontalSpan = 1;
 		
 		Label label = new Label(comp, SWT.NONE);
 		label.setLayoutData(gData);
@@ -463,7 +460,6 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 		
 		ItemBrowser browser = new ItemBrowser(
 				comp, SWT.SINGLE | SWT.BORDER, dialog);
-		//browser.addModifyListener(ml);
 		
 	    return browser;
 	}
@@ -480,6 +476,8 @@ public class EUnitMainTab extends AbstractLaunchConfigurationTab {
 
         public void widgetSelected(SelectionEvent e) {
         
+            updateLaunchConfigurationDialog();
+            
             if(e.widget.equals(singleRadio)){
                 projectMBr.setEnabled(true);
                 moduleBr.setEnabled(true);
