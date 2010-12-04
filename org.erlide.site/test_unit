@@ -1,3 +1,5 @@
+# this script runs all unit tests, i.e. that don't need Eclipse
+
 # arguments:
 # WORKSPACE - location of the source code root
 # JAVA_HOME - location of JDK
