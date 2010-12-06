@@ -13,7 +13,6 @@ package org.erlide.core;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
@@ -53,9 +52,7 @@ public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ResourceBundle resourceBundle;
     private PlatformChangeListener platformListener;
-    // this must be here, otherwise ErlideLogger messages look weird
-    @SuppressWarnings("unused")
-    private Logger logger;
+    private ErlLogger logger;
 
     public ErlangPlugin() {
         super();
@@ -121,7 +118,7 @@ public class ErlangPlugin extends Plugin {
             ErlangCore.getModelManager().shutdown();
             platformListener.dispose();
         } finally {
-            logger = null;
+            logger.dispose();
             // ensure we call super.stop as the last thing
             super.stop(context);
             plugin = null;
@@ -138,8 +135,9 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        logger = ErlLogger.init(ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toPortableString(), Platform.inDebugMode());
+        String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                .toPortableString();
+        logger = ErlLogger.init(dir, Platform.inDebugMode());
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         super.start(context);
 
@@ -218,37 +216,35 @@ public class ErlangPlugin extends Plugin {
         return version;
     }
 
-    public static void log(final IStatus status) {
-        if (plugin != null) {
-            Level lvl;
-            switch (status.getSeverity()) {
-            case IStatus.ERROR:
-                lvl = Level.SEVERE;
-                break;
-            case IStatus.WARNING:
-                lvl = Level.WARNING;
-                break;
-            case IStatus.INFO:
-                lvl = Level.INFO;
-                break;
-            default:
-                lvl = Level.FINEST;
-            }
-            ErlLogger.log(lvl, status.getMessage());
-            final Throwable exception = status.getException();
-            if (exception != null) {
-                ErlLogger.log(lvl, exception);
-            }
-            plugin.getLog().log(status);
+    public void log(final IStatus status) {
+        Level lvl;
+        switch (status.getSeverity()) {
+        case IStatus.ERROR:
+            lvl = Level.SEVERE;
+            break;
+        case IStatus.WARNING:
+            lvl = Level.WARNING;
+            break;
+        case IStatus.INFO:
+            lvl = Level.INFO;
+            break;
+        default:
+            lvl = Level.FINEST;
         }
+        logger.log(lvl, status.getMessage());
+        final Throwable exception = status.getException();
+        if (exception != null) {
+            logger.log(lvl, exception);
+        }
+        plugin.getLog().log(status);
     }
 
-    public static void logErrorMessage(final String message) {
+    public void logErrorMessage(final String message) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatusConstants.INTERNAL_ERROR, message, null));
     }
 
-    public static void logErrorStatus(final String message, final IStatus status) {
+    public void logErrorStatus(final String message, final IStatus status) {
         if (status == null) {
             logErrorMessage(message);
             return;
@@ -259,7 +255,7 @@ public class ErlangPlugin extends Plugin {
         log(multi);
     }
 
-    public static void log(final Throwable e) {
+    public void log(final Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
                 e));

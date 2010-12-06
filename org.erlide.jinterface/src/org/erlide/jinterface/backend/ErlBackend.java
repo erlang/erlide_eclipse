@@ -264,7 +264,8 @@ public class ErlBackend {
                     "get_system_info", "");
             return ErlUtils.asString(val);
         } catch (final Exception e) {
-            return "System information could not be retrieved...";
+            return "System information could not be retrieved "
+                    + "(node not monitored)... ";
         }
     }
 

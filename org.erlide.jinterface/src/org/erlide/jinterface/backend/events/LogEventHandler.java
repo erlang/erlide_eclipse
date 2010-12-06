@@ -35,7 +35,7 @@ public class LogEventHandler extends EventHandler {
                 ss = new String(backtrace.binaryValue());
             }
             try {
-                ErlLogger.erlangLog(module.atomValue() + ".erl",
+                ErlLogger.getInstance().erlangLog(module.atomValue() + ".erl",
                         line.uIntValue(), level.atomValue().toUpperCase(),
                         "%s %s", logEvent.toString(), ss);
             } catch (final Exception e) {

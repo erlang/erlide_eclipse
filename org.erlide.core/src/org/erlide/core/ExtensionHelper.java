@@ -127,7 +127,7 @@ public class ExtensionHelper {
                 try {
                     list.add(element.createExecutableExtension("class"));
                 } catch (final Exception e) {
-                    ErlangPlugin.log(e);
+                    ErlangPlugin.getDefault().log(e);
                 }
             }
         }

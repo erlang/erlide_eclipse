@@ -578,7 +578,7 @@ public class ColoringPreferencePage extends PreferencePage implements
                 buffer.append(separator);
             }
         } catch (final IOException io) {
-            ErlangPlugin.log(io);
+            ErlangPlugin.getDefault().log(io);
         } finally {
             if (reader != null) {
                 try {
