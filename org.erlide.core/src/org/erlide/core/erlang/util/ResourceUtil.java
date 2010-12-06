@@ -20,11 +20,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.util.Assert;
 
 /**
  * <p>
@@ -46,48 +41,6 @@ public class ResourceUtil {
     public static boolean hasErlangExtension(final IResource resource) {
         final String ext = resource.getFileExtension();
         return ErlideUtil.isModuleExtension(ext);
-    }
-
-    /**
-     * <p>
-     * returns the output folder of the passed project as resource. The project
-     * must have the Erlang nature.
-     * </p>
-     */
-    public static IContainer getOutFolder(final IProject project)
-            throws CoreException {
-        Assert.isTrue(project.hasNature(ErlangPlugin.NATURE_ID));
-
-        final IPath outputPath = getErlProject(project).getOutputLocation();
-        IContainer result;
-        if (outputPath.equals(project.getProjectRelativePath())) {
-            result = project;
-        } else {
-            result = project.getFolder(outputPath);
-        }
-        return result;
-    }
-
-    /**
-     * <p>
-     * returns the source folder of the passed project as resource. The project
-     * must have the Erlang nature.
-     * </p>
-     */
-    public static IContainer getSourceFolder(final IProject project)
-            throws CoreException {
-        Assert.isTrue(project.hasNature(ErlangPlugin.NATURE_ID));
-
-        final IContainer result = null;
-        // IPath sourcePath = getErlProject(project).getSourcePath();
-        // if (sourcePath.equals(project.getProjectRelativePath()))
-        // {
-        // result = project;
-        // } else
-        // {
-        // result = project.getFolder(sourcePath);
-        // }
-        return result;
     }
 
     /**
@@ -168,10 +121,6 @@ public class ResourceUtil {
             }
         }
         return null;
-    }
-
-    private static IErlProject getErlProject(final IProject project) {
-        return ErlangCore.getModel().findProject(project);
     }
 
     public static IFile getFileFromLocation(final String location) {
