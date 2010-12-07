@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Cover Views"
+            id="org.erlide.cover.core">
+      </category>
+      <view
+            name="Coverage Statistics"
+            icon="icons/sample.gif"
+            category="org.erlide.cover.core"
+            class="org.erlide.cover.ui.views.CoverStatsView"
+            id="org.erlide.cover.core.views.TestResultView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.erlide.cover.core.perspectives.CoverPerspective">
+         <view
+               id="org.erlide.cover.core.views.TestResultView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="org.erlide.eunit.ui.views.TestTableView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.TaskList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.erlide.cover.ui.perspectives.CoverPerspective"
+            icon="icons/releng_gears.gif"
+            id="org.erlide.cover.core.perspectives.CoverPerspective"
+            name="Cover">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.erlide.cover.ui.launch.CoverTabGroup"
+            id="org.erlide.cover.ui.launchConfigurationTabGroupEUnit"
+            type="org.erlide.cover.core.launchConfigurationCover">
+      </launchConfigurationTabGroup>
+   </extension>
+
+</plugin>
