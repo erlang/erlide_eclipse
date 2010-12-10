@@ -2100,7 +2100,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     protected boolean isMarkingOccurrences() {
         final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
-        return prefsNode.getBoolean("markingOccurences", true);
+        return prefsNode.getBoolean("markingOccurences", false);
     }
 
     /**
