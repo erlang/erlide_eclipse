@@ -484,7 +484,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         boolean foundInModel = false;
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlModule m : modules) {
-            if (ErlideUtil.withoutExtension(m.getName()).equals(moduleName)) {
+            if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
+                    moduleName)) {
                 try {
                     m.open(null);
                     for (final IErlElement e : m.getChildren()) {

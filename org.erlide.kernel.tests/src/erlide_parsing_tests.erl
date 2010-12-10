@@ -14,6 +14,8 @@
 %% Exported Functions
 %%
 
+-compile(export_all).
+
 %%
 %% API Functions
 %%
@@ -54,6 +56,9 @@ parsing_define_with_record_ref_test_() ->
                                             extra="xx, #x{}"}],
                           comments=[]},
                    test_parse("-define(xx, #x{})."))].
+
+parsing_record_ref_within_type_spec() ->
+    ok.
 
 %%
 %% Local Functions

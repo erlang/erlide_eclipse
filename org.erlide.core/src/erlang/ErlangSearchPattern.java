@@ -1,5 +1,7 @@
 package erlang;
 
+import java.util.EnumSet;
+
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
@@ -54,13 +56,17 @@ public abstract class ErlangSearchPattern {
 
     // search for
     public enum SearchFor {
-        FUNCTION, MACRO, RECORD, INCLUDE, TYPE, VARIABLE
+        FUNCTION, MACRO, RECORD, INCLUDE, TYPE, VARIABLE;
     };
+
+    public EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
 
     // limit to
     public enum LimitTo {
         REFERENCES, DEFINITIONS, ALL_OCCURRENCES
     };
+
+    public EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 
     protected final LimitTo limitTo;
 
