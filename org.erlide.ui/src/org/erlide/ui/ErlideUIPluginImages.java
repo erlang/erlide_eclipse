@@ -83,6 +83,9 @@ public class ErlideUIPluginImages {
     public static final String IMG_RECORD_DEF = NAME_PREFIX
             + "typevariable_obj.gif"; //$NON-NLS-1$
 
+    public static final String IMG_RECORD_FIELD = NAME_PREFIX
+            + "typevariable_obj.gif"; //$NON-NLS-1$
+
     public static final String IMG_MACRO_DEF = NAME_PREFIX
             + "typevariable_obj.gif"; //$NON-NLS-1$
 
@@ -129,6 +132,9 @@ public class ErlideUIPluginImages {
 
     public static final ImageDescriptor DESC_RECORD_DEF = createManaged(T_OBJ,
             IMG_RECORD_DEF);
+
+    public static final ImageDescriptor DESC_RECORD_FIELD = createManaged(
+            T_OBJ, IMG_RECORD_FIELD);
 
     public static final ImageDescriptor DESC_MACRO_DEF = createManaged(T_OBJ,
             IMG_MACRO_DEF);

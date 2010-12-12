@@ -328,10 +328,6 @@ public final class ErlParser {
             if (val instanceof OtpErlangTuple) {
                 final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
                 if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
-                    // final String recordName = ((OtpErlangAtom) recordTuple
-                    // .elementAt(0)).toString();
-                    // TODO use above code rather than java string hacking to
-                    // find record name!
                     final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
                             .stringValue() : null;
                     final OtpErlangList l = (OtpErlangList) recordTuple

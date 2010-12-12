@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.erlang.IErlElement;
@@ -10,7 +9,11 @@ import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
@@ -28,12 +31,25 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
         super(parent, "record_definition");
         record = uptoCommaOrParen(extra);
         this.extra = extra;
-        this.fields = new ArrayList<String>();
+        this.fields = Lists.newArrayListWithCapacity(fields.arity());
+        final List<ErlRecordField> children = Lists
+                .newArrayListWithCapacity(fields.arity());
         if (fields != null) {
             for (final OtpErlangObject o : fields.elements()) {
-                final OtpErlangAtom a = (OtpErlangAtom) o;
-                this.fields.add(a.atomValue());
+                final OtpErlangTuple t = (OtpErlangTuple) o;
+                final OtpErlangAtom fileNameA = (OtpErlangAtom) t.elementAt(0);
+                final String fieldName = fileNameA.atomValue();
+                final OtpErlangLong lineL = (OtpErlangLong) t.elementAt(1);
+                final OtpErlangLong offsetL = (OtpErlangLong) t.elementAt(2);
+                final OtpErlangLong lengthL = (OtpErlangLong) t.elementAt(3);
+                this.fields.add(fieldName);
+                try {
+                    children.add(new ErlRecordField(this, fieldName, lineL
+                            .intValue(), offsetL.intValue(), lengthL.intValue()));
+                } catch (final OtpErlangRangeException e) {
+                }
             }
+            setChildren(children);
         }
     }
 

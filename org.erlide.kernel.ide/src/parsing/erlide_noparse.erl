@@ -21,7 +21,7 @@
 %% -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 22).
+-define(CACHE_VERSION, 24).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -320,8 +320,9 @@ fun_arity_from_tokens([_ | Rest]) ->
 fun_arity_from_tokens(_) ->
     [].
 
-field_list_from_tokens([#token{kind=atom, value=Field} | Rest]) ->
-    [Field | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
+field_list_from_tokens([#token{kind=atom, value=Field, line=Line, 
+                               offset=Offset, length=Length} | Rest]) ->
+    [{Field, Line, Offset, Length} | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
 field_list_from_tokens([_ | Rest]) ->
     field_list_from_tokens(Rest);
 field_list_from_tokens(_) ->
@@ -333,26 +334,24 @@ to_string(Tokens) ->
 %%     unspacify(S).
 
 get_head(T) ->
-    case get_args(T) of
+    A = get_args(T),
+    case get_guards(T) of
         "" ->
-            "";
-        A ->
-            case get_guards(T) of
-                "" ->
-                    A;
-                G ->
-                    A ++ " when " ++ G
-            end
+            A;
+        G ->
+            A ++ " when " ++ G
     end.
 
 get_args(T) ->
     case erlide_np_util:get_between_outer_pars(T, '(', ')') of
-        "" ->
+        [] ->
             "";
         P ->
             "("++to_string(P)++")"
     end.
 
+get_guards([]) ->
+    "";
 get_guards(T) ->
     to_string(get_between(T, 'when', '->')). 
 
