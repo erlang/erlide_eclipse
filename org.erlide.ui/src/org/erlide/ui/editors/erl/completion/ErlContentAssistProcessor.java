@@ -16,7 +16,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -67,6 +69,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Sets;
 
 import erlang.ErlideContextAssist;
 import erlang.ErlideContextAssist.RecordCompletion;
@@ -92,18 +95,22 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
     // private final String externalIncludes;
     private static URL fgStyleSheet;
 
-    private static final int DECLARED_FUNCTIONS = 1;
-    private static final int EXTERNAL_FUNCTIONS = 2;
-    private static final int VARIABLES = 4;
-    private static final int RECORD_FIELDS = 8;
-    private static final int RECORD_DEFS = 0x10;
-    private static final int MODULES = 0x20;
-    private static final int MACRO_DEFS = 0x40;
-    private static final int IMPORTED_FUNCTIONS = 0x80;
-    private static final int AUTO_IMPORTED_FUNCTIONS = 0x100;
+    enum Kinds {
+        DECLARED_FUNCTIONS, EXTERNAL_FUNCTIONS, VARIABLES, RECORD_FIELDS, RECORD_DEFS, MODULES, MACRO_DEFS, IMPORTED_FUNCTIONS, AUTO_IMPORTED_FUNCTIONS, ARITY_ONLY, UNEXPORTED_ONLY
+    };
 
-    private static final int ARITY_ONLY = 0x1000;
-    private static final int UNEXPORTED_ONLY = 0x2000;
+    // private static final int DECLARED_FUNCTIONS = 1;
+    // private static final int EXTERNAL_FUNCTIONS = 2;
+    // private static final int VARIABLES = 4;
+    // private static final int RECORD_FIELDS = 8;
+    // private static final int RECORD_DEFS = 0x10;
+    // private static final int MODULES = 0x20;
+    // private static final int MACRO_DEFS = 0x40;
+    // private static final int IMPORTED_FUNCTIONS = 0x80;
+    // private static final int AUTO_IMPORTED_FUNCTIONS = 0x100;
+    //
+    // private static final int ARITY_ONLY = 0x1000;
+    // private static final int UNEXPORTED_ONLY = 0x2000;
 
     private static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
 
@@ -136,7 +143,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
             final String prefix = getPrefix(before);
             List<String> fieldsSoFar = null;
             List<ICompletionProposal> result;
-            int flags;
+            Set<Kinds> flags;
             int pos;
             String moduleOrRecord = null;
             final IErlProject erlProject = module.getProject();
@@ -149,11 +156,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
                         BackendUtils.getBuildOrIdeBackend(project), before);
             }
             if (rc != null && rc.isNameWanted()) {
-                flags = RECORD_DEFS;
+                flags = EnumSet.of(Kinds.RECORD_DEFS);
                 pos = hashMarkPos;
                 before = rc.getPrefix();
             } else if (rc != null && rc.isFieldWanted()) {
-                flags = RECORD_FIELDS;
+                flags = EnumSet.of(Kinds.RECORD_FIELDS);
                 pos = hashMarkPos;
                 if (dotPos > hashMarkPos) {
                     pos = dotPos;
@@ -168,38 +175,43 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
             } else if (colonPos > commaPos && colonPos > parenPos) {
                 moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
                         0, colonPos)));
-                flags = EXTERNAL_FUNCTIONS;
+                flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
                 pos = colonPos;
                 before = before.substring(colonPos + 1);
             } else if (interrogationMarkPos > hashMarkPos
                     && interrogationMarkPos > commaPos
                     && interrogationMarkPos > colonPos) {
-                flags = MACRO_DEFS;
+                flags = EnumSet.of(Kinds.MACRO_DEFS);
                 pos = interrogationMarkPos;
                 before = before.substring(interrogationMarkPos + 1);
             } else {
                 // TODO add more contexts...
-                flags = 0;
                 pos = colonPos;
                 before = prefix;
                 if (element != null) {
                     if (element.getKind() == IErlElement.Kind.EXPORT) {
-                        flags = DECLARED_FUNCTIONS | ARITY_ONLY
-                                | UNEXPORTED_ONLY;
+                        flags = EnumSet.of(Kinds.DECLARED_FUNCTIONS,
+                                Kinds.ARITY_ONLY, Kinds.UNEXPORTED_ONLY);
                     } else if (element.getKind() == IErlElement.Kind.IMPORT) {
                         final IErlImport i = (IErlImport) element;
                         moduleOrRecord = i.getImportModule();
-                        flags = EXTERNAL_FUNCTIONS | ARITY_ONLY;
+                        flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS,
+                                Kinds.ARITY_ONLY);
                     } else if (element.getKind() == IErlElement.Kind.FUNCTION
                             || element.getKind() == IErlElement.Kind.CLAUSE) {
-                        flags = MODULES;
+                        flags = EnumSet.of(Kinds.MODULES);
                         if (module != null) {
-                            flags |= VARIABLES | DECLARED_FUNCTIONS
-                                    | IMPORTED_FUNCTIONS
-                                    | AUTO_IMPORTED_FUNCTIONS;
+                            flags = Sets.union(flags, EnumSet.of(
+                                    Kinds.VARIABLES, Kinds.DECLARED_FUNCTIONS,
+                                    Kinds.IMPORTED_FUNCTIONS,
+                                    Kinds.AUTO_IMPORTED_FUNCTIONS));
 
                         }
+                    } else {
+                        flags = EnumSet.noneOf(Kinds.class);
                     }
+                } else {
+                    flags = EnumSet.noneOf(Kinds.class);
                 }
             }
             result = addCompletions(flags, offset, before, moduleOrRecord, pos,
@@ -215,56 +227,56 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         }
     }
 
-    private List<ICompletionProposal> addCompletions(final int flags,
+    private List<ICompletionProposal> addCompletions(final Set<Kinds> flags,
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
         final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        if ((flags & DECLARED_FUNCTIONS) != 0) {
+        if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
                     result,
                     getDeclaredFunctions(offset, prefix,
-                            (flags & UNEXPORTED_ONLY) != 0,
-                            (flags & ARITY_ONLY) != 0));
+                            flags.contains(Kinds.UNEXPORTED_ONLY),
+                            flags.contains(Kinds.ARITY_ONLY)));
         }
-        if ((flags & VARIABLES) != 0) {
+        if (flags.contains(Kinds.VARIABLES)) {
             addSorted(result, getVariables(backend, offset, prefix));
         }
-        if ((flags & IMPORTED_FUNCTIONS) != 0) {
+        if (flags.contains(Kinds.IMPORTED_FUNCTIONS)) {
             addSorted(result, getImportedFunctions(backend, offset, prefix));
         }
-        if ((flags & AUTO_IMPORTED_FUNCTIONS) != 0) {
+        if (flags.contains(Kinds.AUTO_IMPORTED_FUNCTIONS)) {
             addSorted(result, getAutoImportedFunctions(backend, offset, prefix));
         }
-        if ((flags & MODULES) != 0) {
+        if (flags.contains(Kinds.MODULES)) {
             addSorted(result, getModules(backend, offset, prefix));
         }
-        if ((flags & RECORD_DEFS) != 0) {
+        if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
                     result,
                     getMacroOrRecordCompletions(backend, offset, prefix,
                             IErlElement.Kind.RECORD_DEF, erlProject, project));
         }
-        if ((flags & RECORD_FIELDS) != 0) {
+        if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
                     result,
                     getRecordFieldCompletions(backend, moduleOrRecord, offset,
                             prefix, pos, fieldsSoFar));
         }
-        if ((flags & MACRO_DEFS) != 0) {
+        if (flags.contains(Kinds.MACRO_DEFS)) {
             addSorted(
                     result,
                     getMacroOrRecordCompletions(backend, offset, prefix,
                             IErlElement.Kind.MACRO_DEF, erlProject, project));
         }
-        if ((flags & EXTERNAL_FUNCTIONS) != 0) {
+        if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
             addSorted(
                     result,
                     getExternalCallCompletions(backend, erlProject,
                             moduleOrRecord, offset, prefix,
-                            (flags & ARITY_ONLY) != 0));
+                            flags.contains(Kinds.ARITY_ONLY)));
         }
         return result;
     }
