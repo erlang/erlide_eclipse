@@ -55,6 +55,15 @@ parsing_define_with_record_ref_test_() ->
                           comments=[]},
                    test_parse("-define(xx, #x{})."))].
 
+parsing_record_def_test_() ->
+    Expected = #model{forms = [#attribute{pos = {{0, 0, 0}, 32},
+                                          name = record,
+                                          args = {a,[{b, 0, 12, 1}, {c, 0, 15, 1}]},
+                                          extra = "a, {b, c :: integer()}"}],
+                      comments = []},
+    S = "-record(a, {b, c :: integer()}).",
+    [?_assertEqual(Expected, test_parse(S))].
+
 %%
 %% Local Functions
 %%

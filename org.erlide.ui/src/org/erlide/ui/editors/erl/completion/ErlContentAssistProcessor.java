@@ -44,6 +44,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.BackendUtils;
@@ -297,12 +298,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         }
         if (pd instanceof IErlRecordDef) {
             final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-            final IErlRecordDef recordDef = (IErlRecordDef) pd;
-            final List<String> fields = recordDef.getFields();
-            for (final String field : fields) {
-                if (!fieldsSoFar.contains(field)) {
-                    addIfMatches(field, prefix, offset, result);
+            try {
+                for (final IErlElement i : pd.getChildren()) {
+                    final IErlRecordField field = (IErlRecordField) i;
+                    final String fieldName = field.getFieldName();
+                    if (!fieldsSoFar.contains(fieldName)) {
+                        addIfMatches(fieldName, prefix, offset, result);
+                    }
                 }
+            } catch (final ErlModelException e) {
             }
             return result;
         }
@@ -337,7 +341,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
                 }
             } catch (final CoreException e) {
             }
-            final IErlModel model = ErlangCore.getModel();
             // add external modules
             final List<String> mods = ModelUtils.getExternalModules(b, prefix,
                     erlProject);

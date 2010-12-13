@@ -339,7 +339,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IParent
      */
     public boolean hasChildren() {
-        // if I am not open, return true to avoid opening (case of a Erlang
+        // if I am not open, return true to avoid opening (case of an Erlang
         // project, a compilation unit or a class file).
         // also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
         final Object elementInfo = ErlangCore.getModelManager().getInfo(this);
@@ -552,6 +552,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return fChildren;
     }
 
+    public int getChildCount() {
+        return fChildren.size();
+    }
+
     /**
      * Returns a collection of (immediate) children of this node of the
      * specified type.
@@ -559,7 +563,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @param type
      *            - one of the constants defined by IErlElement
      */
-    public Collection<IErlElement> getChildrenOfKind(final Kind kind)
+    public List<IErlElement> getChildrenOfKind(final Kind kind)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
         for (final IErlElement element : fChildren) {

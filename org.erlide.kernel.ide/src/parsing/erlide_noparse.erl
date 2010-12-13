@@ -322,7 +322,8 @@ fun_arity_from_tokens(_) ->
 
 field_list_from_tokens([#token{kind=atom, value=Field, line=Line, 
                                offset=Offset, length=Length} | Rest]) ->
-    [{Field, Line, Offset, Length} | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
+    [{Field, {{Line, Line, Offset}, Length}}
+         | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
 field_list_from_tokens([_ | Rest]) ->
     field_list_from_tokens(Rest);
 field_list_from_tokens(_) ->

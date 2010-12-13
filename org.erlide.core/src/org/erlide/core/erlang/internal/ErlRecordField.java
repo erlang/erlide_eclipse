@@ -7,15 +7,9 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
 
     private final String fieldName;
 
-    protected ErlRecordField(final IErlRecordDef parent, final String name,
-            final int line, final int offset, final int length) {
+    protected ErlRecordField(final IErlRecordDef parent, final String name) {
         super(parent, "record_field");
         fieldName = name;
-        setLineStart(line);
-        setLineEnd(line);
-        setNameRange(offset, length);
-        setSourceRangeOffset(offset);
-        setSourceRangeLength(length);
     }
 
     public Kind getKind() {

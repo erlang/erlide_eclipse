@@ -13,9 +13,11 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.backend.Backend;
 
@@ -26,8 +28,11 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
+    private static final List<IErlElement> EMPTY_LIST = Lists.newArrayList();
+
     // FIXME JC Maybe we should use polymorphism for records?
     protected IErlRecordDef record; // set if this value is a record
     protected OtpErlangList list; // set if this value is a string-coded list
@@ -69,8 +74,18 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
     }
 
     public IVariable getVariable(final int offset) throws DebugException {
-        final String name = record != null ? record.getFields().get(offset)
-                : varName + ":" + offset;
+        String name;
+        if (record != null) {
+            try {
+                final IErlRecordField recordField = (IErlRecordField) record
+                        .getChildren().get(offset);
+                name = recordField.getFieldName();
+            } catch (final ErlModelException e) {
+                name = varName + ":" + offset;
+            }
+        } else {
+            name = varName + ":" + offset;
+        }
         return new ErlangVariable(getDebugTarget(), name, true,
                 getElementAt(offset), process, moduleName, -1);
     }
@@ -95,10 +110,9 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final IErlPreprocessorDef pd = ModelUtils.findPreprocessorDef(
                         b, target.getProjects(), moduleName, a.atomValue(),
                         IErlElement.Kind.RECORD_DEF, "");
-                if (pd != null) {
+                if (pd instanceof IErlRecordDef) {
                     final IErlRecordDef r = (IErlRecordDef) pd;
-                    final List<String> fields = r.getFields();
-                    if (fields != null && fields.size() + 1 == t.arity()) {
+                    if (r.hasChildren() && r.getChildCount() + 1 == t.arity()) {
                         return r;
                     }
                 }
@@ -152,13 +166,19 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
     private String getRecordValueString(final IErlRecordDef r,
             final OtpErlangObject o) {
         final StringBuilder b = new StringBuilder();
-        final List<String> fields = r.getFields();
+        List<IErlElement> children;
+        try {
+            children = r.getChildren();
+        } catch (final ErlModelException e) {
+            children = EMPTY_LIST;
+        }
         final OtpErlangTuple t = (OtpErlangTuple) o;
         b.append(t.elementAt(0)).append("#{");
-        final int n = fields.size();
+        final int n = children.size();
         if (n > 0) {
             for (int i = 0; i < n; i++) {
-                b.append(fields.get(i)).append('=')
+                final IErlRecordField field = (IErlRecordField) children.get(i);
+                b.append(field.getFieldName()).append('=')
                         .append(t.elementAt(i + 1).toString()).append(", ");
             }
             b.setLength(b.length() - 2);
