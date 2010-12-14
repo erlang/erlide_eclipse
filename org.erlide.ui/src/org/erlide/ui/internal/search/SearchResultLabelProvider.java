@@ -14,7 +14,10 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
@@ -142,6 +145,19 @@ public class SearchResultLabelProvider extends LabelProvider implements
         } else if (element instanceof ErlangSearchElement) {
             final ErlangSearchElement ese = (ErlangSearchElement) element;
             kind = ese.getKind();
+            if (kind == Kind.FUNCTION) {
+                final IErlModule module = ese.getModule();
+                try {
+                    module.open(null);
+                } catch (final ErlModelException e) {
+                }
+                final IErlFunction function = module
+                        .findFunction(new ErlangFunction(ese.getName(), ese
+                                .getArity()));
+                if (function != null && function.isExported()) {
+                    kind = Kind.EXPORTFUNCTION;
+                }
+            }
         } else if (element instanceof ErlangFunction) {
             kind = Kind.FUNCTION;
         }

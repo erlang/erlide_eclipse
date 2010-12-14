@@ -30,7 +30,7 @@
 %% called from Erlang
 -export([remove_module/1,
          add_module_refs/2,
-		 check_pattern/6]).
+         check_pattern/6]).
 
 
 %% for testing

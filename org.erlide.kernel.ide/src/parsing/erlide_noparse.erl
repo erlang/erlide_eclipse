@@ -237,7 +237,7 @@ cac(attribute, Attribute, _Exports, _Imports) ->
             ?D(Extra),
             {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
             ?D({AttrArgs, Extra}),
-            ExternalRefs = get_refs(Extra, ?ARI_TYPESPEC, AttrArgs),
+            ExternalRefs = get_refs(tl(AttrArgs), Extra, ?ARI_TYPESPEC),
             {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                         name=Name, args=AttrArgs, extra=Extra},
              [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
