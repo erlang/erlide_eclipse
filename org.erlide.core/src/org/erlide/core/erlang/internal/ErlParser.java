@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import java.util.List;
+
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
+import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
@@ -31,6 +36,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 import erlang.ErlideNoparse;
 
@@ -295,28 +301,12 @@ public final class ErlParser {
             final OtpErlangObject pos, final OtpErlangAtom name,
             final OtpErlangObject val, final OtpErlangObject extra) {
         final String nameS = name.atomValue();
-        if ("module".equals(nameS)) {
-            if (val instanceof OtpErlangAtom) {
-                final OtpErlangAtom o = (OtpErlangAtom) val;
-                final String s = Util.stringValue(extra);
-                final ErlAttribute r = new ErlAttribute(parent, nameS, o, s);
-                setPos(r, pos);
-                return r;
-            }
+        if ("module".equals(nameS) && val instanceof OtpErlangAtom) {
+            return addModuleAttribute(parent, pos, (OtpErlangAtom) val, extra,
+                    nameS);
         } else if ("import".equals(nameS)) {
             if (val instanceof OtpErlangTuple) {
-                final OtpErlangTuple t = (OtpErlangTuple) val;
-                if (t.elementAt(0) instanceof OtpErlangAtom
-                        && t.elementAt(1) instanceof OtpErlangList) {
-                    final OtpErlangAtom importModule = (OtpErlangAtom) t
-                            .elementAt(0);
-                    final OtpErlangList functionList = (OtpErlangList) t
-                            .elementAt(1);
-                    final ErlImport imp = new ErlImport(parent,
-                            importModule.atomValue(), functionList);
-                    setPos(imp, pos);
-                    return imp;
-                }
+                addImportAttribute(parent, pos, val);
             }
         } else if ("export".equals(nameS)) {
             final OtpErlangList functionList = (OtpErlangList) val;
@@ -325,42 +315,10 @@ public final class ErlParser {
             setPos(ex, pos);
             return ex;
         } else if ("record".equals(nameS)) {
-            if (val instanceof OtpErlangTuple) {
-                final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
-                if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
-                    // final String recordName = ((OtpErlangAtom) recordTuple
-                    // .elementAt(0)).toString();
-                    // TODO use above code rather than java string hacking to
-                    // find record name!
-                    final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-                            .stringValue() : null;
-                    final OtpErlangList l = (OtpErlangList) recordTuple
-                            .elementAt(1);
-                    final ErlRecordDef r = new ErlRecordDef(parent, s, l);
-                    setPos(r, pos);
-                    return r;
-                }
-            }
-            if (val instanceof OtpErlangAtom) {
-                // final OtpErlangAtom nameA = (OtpErlangAtom) val;
-                // final String recordName = nameA.atomValue();
-                // TODO use above code rather than java string hacking to find
-                // record name!
-                final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-                        .stringValue() : null;
-                final ErlRecordDef r = new ErlRecordDef(parent, s);
-                setPos(r, pos);
-                return r;
-            }
+            return addRecordDef(parent, pos, val, extra);
         } else if ("type".equals(nameS) || "spec".equals(nameS)
                 || "opaque".equals(nameS)) {
-            final String s = Util.stringValue(extra);
-            final int p = s.indexOf('(');
-            final String typeName = p < 0 ? s : s.substring(0, p);
-            final ErlTypespec a = new ErlTypespec((ErlElement) parent,
-                    typeName, null, s);
-            setPos(a, pos);
-            return a;
+            return addTypespec(parent, pos, extra);
 
         } else if ("define".equals(nameS)) {
             if (val instanceof OtpErlangAtom) {
@@ -424,6 +382,81 @@ public final class ErlParser {
         // a.setParseTree(val);
         return a;
 
+    }
+
+    private static IErlRecordDef addRecordDef(final IErlModule parent,
+            final OtpErlangObject pos, final OtpErlangObject val,
+            final OtpErlangObject extra) {
+        if (val instanceof OtpErlangTuple) {
+            final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
+            if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
+                final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
+                        .stringValue() : null;
+                final OtpErlangList fields = (OtpErlangList) recordTuple
+                        .elementAt(1);
+                final ErlRecordDef r = new ErlRecordDef(parent, s);
+                setPos(r, pos);
+                final List<ErlRecordField> children = Lists
+                        .newArrayListWithCapacity(fields.arity());
+                if (fields != null) {
+                    for (final OtpErlangObject o : fields.elements()) {
+                        final OtpErlangTuple posTuple = (OtpErlangTuple) o;
+                        final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) posTuple
+                                .elementAt(0);
+                        final String fieldName = fieldNameAtom.atomValue();
+                        final ErlRecordField field = new ErlRecordField(r,
+                                fieldName);
+                        setPos(field, posTuple);
+                        children.add(field);
+                    }
+                }
+                r.setChildren(children);
+                return r;
+            }
+        }
+        if (val instanceof OtpErlangAtom) {
+            final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
+                    .stringValue() : null;
+            final ErlRecordDef r = new ErlRecordDef(parent, s);
+            setPos(r, pos);
+            return r;
+        }
+        return null;
+    }
+
+    private static IErlMember addTypespec(final IErlModule parent,
+            final OtpErlangObject pos, final OtpErlangObject extra) {
+        final String s = Util.stringValue(extra);
+        final int p = s.indexOf('(');
+        final String typeName = p < 0 ? s : s.substring(0, p);
+        final ErlTypespec a = new ErlTypespec((ErlElement) parent, typeName,
+                null, s);
+        setPos(a, pos);
+        return a;
+    }
+
+    private static IErlImport addImportAttribute(final IErlModule parent,
+            final OtpErlangObject pos, final OtpErlangObject val) {
+        final OtpErlangTuple t = (OtpErlangTuple) val;
+        if (t.elementAt(0) instanceof OtpErlangAtom
+                && t.elementAt(1) instanceof OtpErlangList) {
+            final OtpErlangAtom importModule = (OtpErlangAtom) t.elementAt(0);
+            final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
+            final ErlImport imp = new ErlImport(parent,
+                    importModule.atomValue(), functionList);
+            setPos(imp, pos);
+            return imp;
+        }
+        return null;
+    }
+
+    private static IErlAttribute addModuleAttribute(final IErlModule parent,
+            final OtpErlangObject pos, final OtpErlangAtom value,
+            final OtpErlangObject extra, final String nameS) {
+        final String s = Util.stringValue(extra);
+        final ErlAttribute r = new ErlAttribute(parent, nameS, value, s);
+        setPos(r, pos);
+        return r;
     }
 
     private static boolean setPos(final SourceRefElement e,

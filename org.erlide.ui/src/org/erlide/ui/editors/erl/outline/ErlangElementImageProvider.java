@@ -232,6 +232,8 @@ public class ErlangElementImageProvider {
             return ErlideUIPluginImages.DESC_RECORD_DEF;
         case TYPESPEC:
             return ErlideUIPluginImages.DESC_TYPESPEC_DEF;
+        case RECORD_FIELD:
+            return ErlideUIPluginImages.DESC_RECORD_FIELD;
         }
         return ErlideUIPluginImages.DESC_UNKNOWN;
     }
