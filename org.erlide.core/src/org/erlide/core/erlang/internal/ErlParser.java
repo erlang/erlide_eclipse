@@ -400,12 +400,14 @@ public final class ErlParser {
                         .newArrayListWithCapacity(fields.arity());
                 if (fields != null) {
                     for (final OtpErlangObject o : fields.elements()) {
-                        final OtpErlangTuple posTuple = (OtpErlangTuple) o;
-                        final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) posTuple
+                        final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
+                        final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
                                 .elementAt(0);
                         final String fieldName = fieldNameAtom.atomValue();
                         final ErlRecordField field = new ErlRecordField(r,
                                 fieldName);
+                        final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
+                                .elementAt(1);
                         setPos(field, posTuple);
                         children.add(field);
                     }
