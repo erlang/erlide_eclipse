@@ -230,7 +230,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IResource r = ResourceUtil
                 .recursiveFindNamedResourceWithReferences(project,
                         res.getName(),
-                        PluginUtils.getIncludePathFilter(project, parent));
+                        PluginUtils.getIncludePathFilterCreator(parent));
         if (r instanceof IFile) {
             final IFile file = (IFile) r;
             return model.findModule(file);

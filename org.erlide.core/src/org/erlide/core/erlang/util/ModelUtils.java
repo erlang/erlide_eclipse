@@ -116,7 +116,7 @@ public class ModelUtils {
 
     /**
      * @param project
-     * @param m
+     * @param module
      * @param definedName
      * @param type
      * @param externalIncludes
@@ -124,21 +124,23 @@ public class ModelUtils {
      * @return
      * @throws CoreException
      */
-    private static IErlPreprocessorDef findPreprocessorDef(final Backend b,
-            final Collection<IProject> projects, IErlModule m,
-            final String definedName, final IErlElement.Kind type,
-            final String externalIncludes, final List<IErlModule> modulesDone)
-            throws CoreException {
-        if (m == null) {
+    private static IErlPreprocessorDef findPreprocessorDef(
+            final Backend backend, final Collection<IProject> projects,
+            IErlModule module, final String definedName,
+            final IErlElement.Kind type, final String externalIncludes,
+            final List<IErlModule> modulesDone) throws CoreException {
+        if (module == null) {
             return null;
         }
-        modulesDone.add(m);
-        m.open(null);
-        final IErlPreprocessorDef pd = m.findPreprocessorDef(definedName, type);
+        modulesDone.add(module);
+        module.open(null);
+        final IErlPreprocessorDef pd = module.findPreprocessorDef(definedName,
+                type);
         if (pd != null) {
             return pd;
         }
-        final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
+        final Collection<ErlangIncludeFile> includes = module
+                .getIncludedFiles();
         for (final ErlangIncludeFile element : includes) {
             IResource re = null;
             IProject project = null;
@@ -146,8 +148,8 @@ public class ModelUtils {
                 re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
                         element.getFilenameLastPart(),
                         org.erlide.core.erlang.util.PluginUtils
-                                .getIncludePathFilter(p, m.getResource()
-                                        .getParent()));
+                                .getIncludePathFilterCreator(module
+                                        .getResource().getParent()));
                 if (re != null) {
                     project = p;
                     break;
@@ -157,24 +159,24 @@ public class ModelUtils {
                 try {
                     String s = element.getFilename();
                     if (element.isSystemInclude()) {
-                        s = ErlideOpen.getIncludeLib(b, s);
+                        s = ErlideOpen.getIncludeLib(backend, s);
                     } else {
                         s = findIncludeFile(project, s, externalIncludes);
                     }
                     re = ResourceUtil.recursiveFindNamedResourceWithReferences(
                             project, s, org.erlide.core.erlang.util.PluginUtils
-                                    .getIncludePathFilter(project, m
+                                    .getIncludePathFilterCreator(module
                                             .getResource().getParent()));
                 } catch (final Exception e) {
                     // ErlLogger.warn(e);
                 }
             } else if (re instanceof IFile) {
-                m = ErlModelManager.getDefault().getErlangModel()
+                module = ErlModelManager.getDefault().getErlangModel()
                         .findModule((IFile) re);
-                if (m != null && !modulesDone.contains(m)) {
-                    final IErlPreprocessorDef pd2 = findPreprocessorDef(b,
-                            projects, m, definedName, type, externalIncludes,
-                            modulesDone);
+                if (module != null && !modulesDone.contains(module)) {
+                    final IErlPreprocessorDef pd2 = findPreprocessorDef(
+                            backend, projects, module, definedName, type,
+                            externalIncludes, modulesDone);
                     if (pd2 != null) {
                         return pd2;
                     }
