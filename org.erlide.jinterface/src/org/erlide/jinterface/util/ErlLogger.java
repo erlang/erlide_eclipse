@@ -52,7 +52,9 @@ public class ErlLogger {
         final String str = o.length == 0 ? fmt : String.format(fmt, o);
         final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
                 + ") : " + str;
-        logger.log(kind, msg);
+        if (logger != null) {
+            logger.log(kind, msg);
+        }
     }
 
     public void log(final Level kind, final Throwable exception) {
@@ -60,7 +62,9 @@ public class ErlLogger {
         final String str = exception.getMessage();
         final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
                 + ") : " + str;
-        logger.log(kind, msg, exception);
+        if (logger != null) {
+            logger.log(kind, msg, exception);
+        }
     }
 
     public void erlangLog(final String module, final int line,
@@ -68,7 +72,9 @@ public class ErlLogger {
         final Level kind = Level.parse(skind);
         final String str = o.length == 0 ? fmt : String.format(fmt, o);
         final String msg = "(" + module + ":" + line + ") : " + str;
-        logger.log(kind, msg);
+        if (logger != null) {
+            logger.log(kind, msg);
+        }
     }
 
     public static void debug(final String fmt, final Object... o) {
