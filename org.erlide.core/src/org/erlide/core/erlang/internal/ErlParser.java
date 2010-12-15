@@ -306,7 +306,7 @@ public final class ErlParser {
                     nameS);
         } else if ("import".equals(nameS)) {
             if (val instanceof OtpErlangTuple) {
-                addImportAttribute(parent, pos, val);
+                return addImportAttribute(parent, pos, val);
             }
         } else if ("export".equals(nameS)) {
             final OtpErlangList functionList = (OtpErlangList) val;
