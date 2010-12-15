@@ -19,19 +19,19 @@ import org.erlide.runtime.backend.ErlideBackend;
 
 public class BackendContentProvider implements IStructuredContentProvider {
 
-	public void dispose() {
-		// TODO unsubscribe from backend manager
+    public void dispose() {
+        // TODO unsubscribe from backend manager
 
-	}
+    }
 
-	public void inputChanged(final Viewer vwr, final Object oldInput,
-			final Object newInput) {
-		// TODO subscribe to backendmanager events
-	}
+    public void inputChanged(final Viewer vwr, final Object oldInput,
+            final Object newInput) {
+        // TODO subscribe to backendmanager events
+    }
 
-	public Object[] getElements(final Object inputElement) {
-		Collection<ErlideBackend> bs = ErlangCore.getBackendManager()
-				.getAllBackends();
-		return bs.toArray(new ErlideBackend[bs.size()]);
-	}
+    public Object[] getElements(final Object inputElement) {
+        final Collection<ErlideBackend> bs = ErlangCore.getBackendManager()
+                .getAllBackends();
+        return bs.toArray(new ErlideBackend[bs.size()]);
+    }
 }

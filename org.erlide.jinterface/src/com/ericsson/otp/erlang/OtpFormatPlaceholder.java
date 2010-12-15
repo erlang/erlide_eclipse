@@ -17,41 +17,41 @@ package com.ericsson.otp.erlang;
  */
 public class OtpFormatPlaceholder extends OtpErlangObject {
 
-	private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = -1L;
 
-	private final String name;
+    private final String name;
 
-	public OtpFormatPlaceholder(final String n) {
-		this.name = n;
-	}
+    public OtpFormatPlaceholder(final String n) {
+        name = n;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String toString() {
-		return "~" + this.name;
-	}
+    @Override
+    public String toString() {
+        return "~" + name;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!(o instanceof OtpFormatPlaceholder)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof OtpFormatPlaceholder)) {
+            return false;
+        }
 
-		final OtpFormatPlaceholder l = (OtpFormatPlaceholder) o;
-		return this.name.equals(l.name);
-	}
+        final OtpFormatPlaceholder l = (OtpFormatPlaceholder) o;
+        return name.equals(l.name);
+    }
 
-	@Override
-	public int hashCode() {
-		return this.name.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 
-	@Override
-	public void encode(final OtpOutputStream arg0) {
-		// throw new NotImplementedException();
-	}
+    @Override
+    public void encode(final OtpOutputStream arg0) {
+        // throw new NotImplementedException();
+    }
 
 }

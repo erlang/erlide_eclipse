@@ -22,57 +22,57 @@ import org.erlide.jinterface.backend.BackendShellListener;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 
 public final class ErlConsoleDocument extends Document implements
-		BackendShellListener {
+        BackendShellListener {
 
-	private static String[] LEGAL_CONTENT_TYPES = null;
+    private static String[] LEGAL_CONTENT_TYPES = null;
 
-	private final BackendShell shell;
+    private final BackendShell shell;
 
-	public ErlConsoleDocument(final BackendShell shell) {
-		super();
+    public ErlConsoleDocument(final BackendShell shell) {
+        super();
 
-		if (LEGAL_CONTENT_TYPES == null) {
-			IoRequestKind[] values = IoRequestKind.values();
-			String[] ss = new String[values.length];
-			for (int i = 0; i < values.length; i++) {
-				ss[i] = values[i].name();
-			}
-			LEGAL_CONTENT_TYPES = ss;
-		}
+        if (LEGAL_CONTENT_TYPES == null) {
+            final IoRequestKind[] values = IoRequestKind.values();
+            final String[] ss = new String[values.length];
+            for (int i = 0; i < values.length; i++) {
+                ss[i] = values[i].name();
+            }
+            LEGAL_CONTENT_TYPES = ss;
+        }
 
-		Assert.isNotNull(shell);
-		this.shell = shell;
-		shell.addListener(this);
-		changed(shell);
+        Assert.isNotNull(shell);
+        this.shell = shell;
+        shell.addListener(this);
+        changed(shell);
 
-		final IDocumentPartitioner partitioner = new FastPartitioner(
-				createScanner(), LEGAL_CONTENT_TYPES);
-		partitioner.connect(this);
-		setDocumentPartitioner(partitioner);
-	}
+        final IDocumentPartitioner partitioner = new FastPartitioner(
+                createScanner(), LEGAL_CONTENT_TYPES);
+        partitioner.connect(this);
+        setDocumentPartitioner(partitioner);
+    }
 
-	private IPartitionTokenScanner createScanner() {
-		return new IoRequestScanner(shell);
-	}
+    private IPartitionTokenScanner createScanner() {
+        return new IoRequestScanner(shell);
+    }
 
-	public void changed(BackendShell aShell) {
-		if (aShell != shell) {
-			return;
-		}
-		final String text = shell.getText();
-		Display.getDefault().asyncExec(new Runnable() {
+    public void changed(final BackendShell aShell) {
+        if (aShell != shell) {
+            return;
+        }
+        final String text = shell.getText();
+        Display.getDefault().asyncExec(new Runnable() {
 
-			public void run() {
-				try {
-					replace(0, getLength(), text);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+            public void run() {
+                try {
+                    replace(0, getLength(), text);
+                } catch (final BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-	public BackendShell getShell() {
-		return shell;
-	}
+    public BackendShell getShell() {
+        return shell;
+    }
 }

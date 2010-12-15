@@ -36,15 +36,15 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ErlangBreakpointPropertiesRulerActionDelegate extends
-		AbstractRulerActionDelegate {
+        AbstractRulerActionDelegate {
 
-	/**
-	 * @see AbstractRulerActionDelegate#createAction(ITextEditor,
-	 *      IVerticalRulerInfo)
-	 */
-	@Override
-	protected IAction createAction(final ITextEditor editor,
-			final IVerticalRulerInfo rulerInfo) {
-		return new ErlangBreakpointPropertiesRulerAction(editor, rulerInfo);
-	}
+    /**
+     * @see AbstractRulerActionDelegate#createAction(ITextEditor,
+     *      IVerticalRulerInfo)
+     */
+    @Override
+    protected IAction createAction(final ITextEditor editor,
+            final IVerticalRulerInfo rulerInfo) {
+        return new ErlangBreakpointPropertiesRulerAction(editor, rulerInfo);
+    }
 }

@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
-
 public interface ErlideBackendVisitor {
 
-	void visit(ErlideBackend b);
+    void visit(ErlideBackend b);
 
 }

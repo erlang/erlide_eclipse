@@ -21,88 +21,88 @@ import org.eclipse.jface.text.source.IAnnotationModel;
  */
 public class ErlangAnnotationIterator implements Iterator<Annotation> {
 
-	private Iterator<?> fIterator;
+    private Iterator<?> fIterator;
 
-	private Annotation fNext;
+    private Annotation fNext;
 
-	private final boolean fSkipIrrelevants;
+    private final boolean fSkipIrrelevants;
 
-	private final boolean fReturnAllAnnotations;
+    private final boolean fReturnAllAnnotations;
 
-	/**
-	 * Equivalent to
-	 * <code>RubyAnnotationIterator(model, skipIrrelevants, false)</code>.
-	 */
-	public ErlangAnnotationIterator(final IAnnotationModel model,
-			final boolean skipIrrelevants) {
-		this(model, skipIrrelevants, false);
-	}
+    /**
+     * Equivalent to
+     * <code>RubyAnnotationIterator(model, skipIrrelevants, false)</code>.
+     */
+    public ErlangAnnotationIterator(final IAnnotationModel model,
+            final boolean skipIrrelevants) {
+        this(model, skipIrrelevants, false);
+    }
 
-	/**
-	 * Returns a new RubyAnnotationIterator.
-	 * 
-	 * @param model
-	 *            the annotation model
-	 * @param skipIrrelevants
-	 *            whether to skip irrelevant annotations
-	 * @param returnAllAnnotations
-	 *            Whether to return non IJavaAnnotations as well
-	 */
-	public ErlangAnnotationIterator(final IAnnotationModel model,
-			final boolean skipIrrelevants, final boolean returnAllAnnotations) {
-		fReturnAllAnnotations = returnAllAnnotations;
-		if (model != null) {
-			fIterator = model.getAnnotationIterator();
-		} else {
-			fIterator = Collections.EMPTY_LIST.iterator();
-		}
-		fSkipIrrelevants = skipIrrelevants;
-		skip();
-	}
+    /**
+     * Returns a new RubyAnnotationIterator.
+     * 
+     * @param model
+     *            the annotation model
+     * @param skipIrrelevants
+     *            whether to skip irrelevant annotations
+     * @param returnAllAnnotations
+     *            Whether to return non IJavaAnnotations as well
+     */
+    public ErlangAnnotationIterator(final IAnnotationModel model,
+            final boolean skipIrrelevants, final boolean returnAllAnnotations) {
+        fReturnAllAnnotations = returnAllAnnotations;
+        if (model != null) {
+            fIterator = model.getAnnotationIterator();
+        } else {
+            fIterator = Collections.EMPTY_LIST.iterator();
+        }
+        fSkipIrrelevants = skipIrrelevants;
+        skip();
+    }
 
-	private void skip() {
-		while (fIterator.hasNext()) {
-			final Annotation next = (Annotation) fIterator.next();
-			if (next instanceof IErlangAnnotation) {
-				if (fSkipIrrelevants) {
-					if (!next.isMarkedDeleted()) {
-						fNext = next;
-						return;
-					}
-				} else {
-					fNext = next;
-					return;
-				}
-			} else if (fReturnAllAnnotations) {
-				fNext = next;
-				return;
-			}
-		}
-		fNext = null;
-	}
+    private void skip() {
+        while (fIterator.hasNext()) {
+            final Annotation next = (Annotation) fIterator.next();
+            if (next instanceof IErlangAnnotation) {
+                if (fSkipIrrelevants) {
+                    if (!next.isMarkedDeleted()) {
+                        fNext = next;
+                        return;
+                    }
+                } else {
+                    fNext = next;
+                    return;
+                }
+            } else if (fReturnAllAnnotations) {
+                fNext = next;
+                return;
+            }
+        }
+        fNext = null;
+    }
 
-	/*
-	 * @see Iterator#hasNext()
-	 */
-	public boolean hasNext() {
-		return fNext != null;
-	}
+    /*
+     * @see Iterator#hasNext()
+     */
+    public boolean hasNext() {
+        return fNext != null;
+    }
 
-	/*
-	 * @see Iterator#next()
-	 */
-	public Annotation next() {
-		try {
-			return fNext;
-		} finally {
-			skip();
-		}
-	}
+    /*
+     * @see Iterator#next()
+     */
+    public Annotation next() {
+        try {
+            return fNext;
+        } finally {
+            skip();
+        }
+    }
 
-	/*
-	 * @see Iterator#remove()
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * @see Iterator#remove()
+     */
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

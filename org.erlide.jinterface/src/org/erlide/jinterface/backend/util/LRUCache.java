@@ -24,16 +24,16 @@ import java.util.Map;
  * 
  */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
-	private static final long serialVersionUID = -5423610637179253987L;
-	private final int max;
+    private static final long serialVersionUID = -5423610637179253987L;
+    private final int max;
 
-	public LRUCache(final int MAX_ENTRIES) {
-		super(MAX_ENTRIES, .75F, true);
-		max = MAX_ENTRIES;
-	}
+    public LRUCache(final int MAX_ENTRIES) {
+        super(MAX_ENTRIES, .75F, true);
+        max = MAX_ENTRIES;
+    }
 
-	@Override
-	protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
-		return size() > max;
-	}
+    @Override
+    protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+        return size() > max;
+    }
 }

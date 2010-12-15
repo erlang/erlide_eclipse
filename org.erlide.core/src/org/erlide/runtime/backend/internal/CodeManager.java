@@ -70,7 +70,7 @@ public class CodeManager {
     }
 
     public void reRegisterBundles() {
-        for (CodeBundle p : registeredBundles) {
+        for (final CodeBundle p : registeredBundles) {
             registerBundle(p);
         }
     }
@@ -81,7 +81,7 @@ public class CodeManager {
     }
 
     public void unregister(final Bundle b) {
-        CodeBundle p = findBundle(b);
+        final CodeBundle p = findBundle(b);
         if (p == null) {
             return;
         }
@@ -190,7 +190,7 @@ public class CodeManager {
     }
 
     private void registerBundle(final CodeBundle p) {
-        String externalPath = System.getProperty(p.getBundle()
+        final String externalPath = System.getProperty(p.getBundle()
                 .getSymbolicName() + ".ebin");
         if (externalPath != null) {
             final boolean accessible = ErlideUtil.isAccessible(backend,
@@ -208,7 +208,7 @@ public class CodeManager {
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
         if (ebinDirs != null) {
-            for (String ebinDir : ebinDirs) {
+            for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
                 final boolean accessible = ErlideUtil.isAccessible(backend,
                         localDir);
@@ -229,8 +229,8 @@ public class CodeManager {
         }
     }
 
-    private CodeBundle findBundle(Bundle b) {
-        for (CodeBundle p : registeredBundles) {
+    private CodeBundle findBundle(final Bundle b) {
+        for (final CodeBundle p : registeredBundles) {
             if (p.getBundle() == b) {
                 return p;
             }

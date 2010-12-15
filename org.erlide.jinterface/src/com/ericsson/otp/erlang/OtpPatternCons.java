@@ -19,32 +19,32 @@ package com.ericsson.otp.erlang;
  */
 public class OtpPatternCons extends OtpErlangObject {
 
-	private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = -1L;
 
-	public OtpPatternCons() {
-	}
+    public OtpPatternCons() {
+    }
 
-	@Override
-	public String toString() {
-		return "|";
-	}
+    @Override
+    public String toString() {
+        return "|";
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!(o instanceof OtpPatternCons)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof OtpPatternCons)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return "|".hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return "|".hashCode();
+    }
 
-	@Override
-	public void encode(final OtpOutputStream arg0) {
-		// throw new NotImplementedException();
-	}
+    @Override
+    public void encode(final OtpOutputStream arg0) {
+        // throw new NotImplementedException();
+    }
 
 }

@@ -13,7 +13,6 @@ package org.erlide.core;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
@@ -53,9 +52,7 @@ public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ResourceBundle resourceBundle;
     private PlatformChangeListener platformListener;
-    // this must be here, otherwise ErlideLogger messages look weird
-    @SuppressWarnings("unused")
-    private Logger logger;
+    private ErlLogger logger;
 
     public ErlangPlugin() {
         super();
@@ -93,7 +90,7 @@ public class ErlangPlugin extends Plugin {
         final ResourceBundle bundle = ErlangPlugin.getDefault()
                 .getResourceBundle();
         try {
-            return (bundle != null) ? bundle.getString(key) : key;
+            return bundle != null ? bundle.getString(key) : key;
         } catch (final MissingResourceException e) {
             return key;
         }
@@ -121,7 +118,7 @@ public class ErlangPlugin extends Plugin {
             ErlangCore.getModelManager().shutdown();
             platformListener.dispose();
         } finally {
-            logger = null;
+            logger.dispose();
             // ensure we call super.stop as the last thing
             super.stop(context);
             plugin = null;
@@ -138,8 +135,9 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        logger = ErlLogger.init(ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toPortableString(), Platform.inDebugMode());
+        String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                .toPortableString();
+        logger = ErlLogger.init(dir, Platform.inDebugMode());
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         super.start(context);
 
@@ -152,7 +150,7 @@ public class ErlangPlugin extends Plugin {
         if (ErlideUtil.isTest()) {
             dev += " test ***";
         }
-        String version = getFeatureVersion();
+        final String version = getFeatureVersion();
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
         ErlangCore.initializeRuntimesList();
@@ -174,8 +172,8 @@ public class ErlangPlugin extends Plugin {
                     public void saving(final ISaveContext context1)
                             throws CoreException {
                         try {
-                            (new InstanceScope()).getNode(PLUGIN_ID).flush();
-                        } catch (BackingStoreException e) {
+                            new InstanceScope().getNode(PLUGIN_ID).flush();
+                        } catch (final BackingStoreException e) {
                             // ignore
                         }
                     }
@@ -187,13 +185,14 @@ public class ErlangPlugin extends Plugin {
     public String getFeatureVersion() {
         String version = null;
         try {
-            IBundleGroupProvider[] providers = Platform
+            final IBundleGroupProvider[] providers = Platform
                     .getBundleGroupProviders();
             if (providers != null) {
-                for (IBundleGroupProvider provider : providers) {
-                    IBundleGroup[] bundleGroups = provider.getBundleGroups();
-                    for (IBundleGroup group : bundleGroups) {
-                        String id = group.getIdentifier();
+                for (final IBundleGroupProvider provider : providers) {
+                    final IBundleGroup[] bundleGroups = provider
+                            .getBundleGroups();
+                    for (final IBundleGroup group : bundleGroups) {
+                        final String id = group.getIdentifier();
                         if (id.equals("org.erlide")
                                 || id.equals("org.erlide.headless")) {
                             version = group.getVersion();
@@ -207,47 +206,45 @@ public class ErlangPlugin extends Plugin {
             } else {
                 ErlLogger.debug("***: no bundle group providers");
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // ignore
             e.printStackTrace();
         }
-        Version coreVersion = getBundle().getVersion();
-        version = (version == null) ? "?" : version;
+        final Version coreVersion = getBundle().getVersion();
+        version = version == null ? "?" : version;
         version = version + " (core=" + coreVersion.toString() + ")";
         return version;
     }
 
-    public static void log(final IStatus status) {
-        if (plugin != null) {
-            Level lvl;
-            switch (status.getSeverity()) {
-            case IStatus.ERROR:
-                lvl = Level.SEVERE;
-                break;
-            case IStatus.WARNING:
-                lvl = Level.WARNING;
-                break;
-            case IStatus.INFO:
-                lvl = Level.INFO;
-                break;
-            default:
-                lvl = Level.FINEST;
-            }
-            ErlLogger.log(lvl, status.getMessage());
-            Throwable exception = status.getException();
-            if (exception != null) {
-                ErlLogger.log(lvl, exception);
-            }
-            plugin.getLog().log(status);
+    public void log(final IStatus status) {
+        Level lvl;
+        switch (status.getSeverity()) {
+        case IStatus.ERROR:
+            lvl = Level.SEVERE;
+            break;
+        case IStatus.WARNING:
+            lvl = Level.WARNING;
+            break;
+        case IStatus.INFO:
+            lvl = Level.INFO;
+            break;
+        default:
+            lvl = Level.FINEST;
         }
+        logger.log(lvl, status.getMessage());
+        final Throwable exception = status.getException();
+        if (exception != null) {
+            logger.log(lvl, exception);
+        }
+        plugin.getLog().log(status);
     }
 
-    public static void logErrorMessage(final String message) {
+    public void logErrorMessage(final String message) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatusConstants.INTERNAL_ERROR, message, null));
     }
 
-    public static void logErrorStatus(final String message, final IStatus status) {
+    public void logErrorStatus(final String message, final IStatus status) {
         if (status == null) {
             logErrorMessage(message);
             return;
@@ -258,7 +255,7 @@ public class ErlangPlugin extends Plugin {
         log(multi);
     }
 
-    public static void log(final Throwable e) {
+    public void log(final Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
                 e));

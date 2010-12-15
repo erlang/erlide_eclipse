@@ -443,7 +443,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
         try {
             ErlBackend.parseTerm(b, string + " .");
-        } catch (NoBackendException e) {
+        } catch (final NoBackendException e) {
             return OptionStatus.NO_RUNTIME;
         } catch (final BackendException e) {
             try {

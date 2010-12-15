@@ -22,65 +22,65 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 
-	public ErlDamagerRepairer(final ITokenScanner scanner) {
-		super(scanner);
-	}
+    public ErlDamagerRepairer(final ITokenScanner scanner) {
+        super(scanner);
+    }
 
-	/*
-	 * @see IPresentationRepairer#createPresentation(TextPresentation,
-	 * ITypedRegion)
-	 */
-	@Override
-	public void createPresentation(final TextPresentation presentation,
-			final ITypedRegion region) {
+    /*
+     * @see IPresentationRepairer#createPresentation(TextPresentation,
+     * ITypedRegion)
+     */
+    @Override
+    public void createPresentation(final TextPresentation presentation,
+            final ITypedRegion region) {
 
-		if (fScanner == null) {
-			// will be removed if deprecated constructor will be removed
-			addRange(presentation, region.getOffset(), region.getLength(),
-					fDefaultTextAttribute);
-			return;
-		}
+        if (fScanner == null) {
+            // will be removed if deprecated constructor will be removed
+            addRange(presentation, region.getOffset(), region.getLength(),
+                    fDefaultTextAttribute);
+            return;
+        }
 
-		int lastStart = region.getOffset();
-		int length = 0;
-		boolean firstToken = true;
-		IToken lastToken = Token.UNDEFINED;
-		TextAttribute lastAttribute = getTokenTextAttribute(lastToken);
+        int lastStart = region.getOffset();
+        int length = 0;
+        boolean firstToken = true;
+        IToken lastToken = Token.UNDEFINED;
+        TextAttribute lastAttribute = getTokenTextAttribute(lastToken);
 
-		fScanner.setRange(fDocument, lastStart, region.getLength());
+        fScanner.setRange(fDocument, lastStart, region.getLength());
 
-		while (true) {
-			final IToken token = fScanner.nextToken();
-			if (token == null) {
-				try {
-					ErlLogger.warn("null token from '%s'>>>", fDocument.get(
-							lastStart, region.getLength()));
-				} catch (final BadLocationException e) {
-					ErlLogger.warn("null token from '%s'", fDocument.get());
-				}
-				break;
-			}
-			if (token.isEOF()) {
-				break;
-			}
+        while (true) {
+            final IToken token = fScanner.nextToken();
+            if (token == null) {
+                try {
+                    ErlLogger.warn("null token from '%s'>>>",
+                            fDocument.get(lastStart, region.getLength()));
+                } catch (final BadLocationException e) {
+                    ErlLogger.warn("null token from '%s'", fDocument.get());
+                }
+                break;
+            }
+            if (token.isEOF()) {
+                break;
+            }
 
-			final TextAttribute attribute = getTokenTextAttribute(token);
-			// if (lastAttribute != null && lastAttribute.equals(attribute)) {
-			// length += fScanner.getTokenLength();
-			// firstToken= false;
-			// } else {
-			if (!firstToken) {
-				addRange(presentation, lastStart, length, lastAttribute);
-			}
-			firstToken = false;
-			lastToken = token;
-			lastAttribute = attribute;
-			lastStart = fScanner.getTokenOffset();
-			length = fScanner.getTokenLength();
-			// }
-		}
+            final TextAttribute attribute = getTokenTextAttribute(token);
+            // if (lastAttribute != null && lastAttribute.equals(attribute)) {
+            // length += fScanner.getTokenLength();
+            // firstToken= false;
+            // } else {
+            if (!firstToken) {
+                addRange(presentation, lastStart, length, lastAttribute);
+            }
+            firstToken = false;
+            lastToken = token;
+            lastAttribute = attribute;
+            lastStart = fScanner.getTokenOffset();
+            length = fScanner.getTokenLength();
+            // }
+        }
 
-		addRange(presentation, lastStart, length, lastAttribute);
-	}
+        addRange(presentation, lastStart, length, lastAttribute);
+    }
 
 }

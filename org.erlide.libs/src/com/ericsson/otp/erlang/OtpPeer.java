@@ -27,60 +27,60 @@ import java.net.UnknownHostException;
  * {@link OtpConnection} class.
  */
 public class OtpPeer extends AbstractNode {
-	int distChoose = 0; /*
-						 * this is set by OtpConnection and is the highest
-						 * common protocol version we both support
-						 */
+    int distChoose = 0; /*
+                         * this is set by OtpConnection and is the highest
+                         * common protocol version we both support
+                         */
 
-	OtpPeer() {
-		super();
-	}
+    OtpPeer() {
+        super();
+    }
 
-	/**
-	 * Create a peer node.
-	 * 
-	 * @param node
-	 *            the name of the node.
-	 */
-	public OtpPeer(final String node) {
-		super(node);
-	}
+    /**
+     * Create a peer node.
+     * 
+     * @param node
+     *            the name of the node.
+     */
+    public OtpPeer(final String node) {
+        super(node);
+    }
 
-	/**
-	 * Create a connection to a remote node.
-	 * 
-	 * @param self
-	 *            the local node from which you wish to connect.
-	 * 
-	 * @return a connection to the remote node.
-	 * 
-	 * @exception java.net.UnknownHostException
-	 *                if the remote host could not be found.
-	 * 
-	 * @exception java.io.IOException
-	 *                if it was not possible to connect to the remote node.
-	 * 
-	 * @exception OtpAuthException
-	 *                if the connection was refused by the remote node.
-	 * 
-	 * @deprecated Use the corresponding method in {@link OtpSelf} instead.
-	 */
-	@Deprecated
-	public OtpConnection connect(final OtpSelf self) throws IOException,
-			UnknownHostException, OtpAuthException {
-		return new OtpConnection(self, this);
-	}
+    /**
+     * Create a connection to a remote node.
+     * 
+     * @param self
+     *            the local node from which you wish to connect.
+     * 
+     * @return a connection to the remote node.
+     * 
+     * @exception java.net.UnknownHostException
+     *                if the remote host could not be found.
+     * 
+     * @exception java.io.IOException
+     *                if it was not possible to connect to the remote node.
+     * 
+     * @exception OtpAuthException
+     *                if the connection was refused by the remote node.
+     * 
+     * @deprecated Use the corresponding method in {@link OtpSelf} instead.
+     */
+    @Deprecated
+    public OtpConnection connect(final OtpSelf self) throws IOException,
+            UnknownHostException, OtpAuthException {
+        return new OtpConnection(self, this);
+    }
 
-	// package
-	/*
-	 * Get the port number used by the remote node.
-	 * 
-	 * @return the port number used by the remote node, or 0 if the node was not
-	 * registered with the port mapper.
-	 * 
-	 * @exception java.io.IOException if the port mapper could not be contacted.
-	 */
-	int port() throws IOException {
-		return OtpEpmd.lookupPort(this);
-	}
+    // package
+    /*
+     * Get the port number used by the remote node.
+     * 
+     * @return the port number used by the remote node, or 0 if the node was not
+     * registered with the port mapper.
+     * 
+     * @exception java.io.IOException if the port mapper could not be contacted.
+     */
+    int port() throws IOException {
+        return OtpEpmd.lookupPort(this);
+    }
 }

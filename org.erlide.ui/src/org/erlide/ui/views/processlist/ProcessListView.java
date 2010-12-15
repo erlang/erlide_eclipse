@@ -66,300 +66,300 @@ import erlang.ErlideProclist;
  */
 public class ProcessListView extends ViewPart {
 
-	public static final String ID = "org.erlide.ui.views.processlist.ProcessListView";
-	private ComboViewer backends;
-	TableViewer viewer;
-	private Action refreshAction;
-	Action doubleClickAction;
+    public static final String ID = "org.erlide.ui.views.processlist.ProcessListView";
+    private ComboViewer backends;
+    TableViewer viewer;
+    private Action refreshAction;
+    Action doubleClickAction;
 
-	/*
-	 * The content provider class is responsible for providing objects to the
-	 * view. It can wrap existing objects in adapters or simply return objects
-	 * as-is. These objects may be sensitive to the current input of the view,
-	 * or ignore it and always show the same content (like Task List, for
-	 * example).
-	 */
-	class ViewContentProvider implements IStructuredContentProvider {
+    /*
+     * The content provider class is responsible for providing objects to the
+     * view. It can wrap existing objects in adapters or simply return objects
+     * as-is. These objects may be sensitive to the current input of the view,
+     * or ignore it and always show the same content (like Task List, for
+     * example).
+     */
+    class ViewContentProvider implements IStructuredContentProvider {
 
-		private final ProcessEventHandler handler = new ProcessEventHandler();
+        private final ProcessEventHandler handler = new ProcessEventHandler();
 
-		public void inputChanged(final Viewer v, final Object oldInput,
-				final Object newInput) {
-		}
+        public void inputChanged(final Viewer v, final Object oldInput,
+                final Object newInput) {
+        }
 
-		public void dispose() {
-			final ErlideBackend backend = getBackend();
-			if (backend != null) {
-				backend.getEventDaemon().removeHandler(handler);
-			}
-		}
+        public void dispose() {
+            final ErlideBackend backend = getBackend();
+            if (backend != null) {
+                backend.getEventDaemon().removeHandler(handler);
+            }
+        }
 
-		public Object[] getElements(final Object parent) {
-			final ErlideBackend bk = getBackend();
-			if (bk == null) {
-				return new OtpErlangObject[] {};
-			}
-			bk.getEventDaemon().addHandler(handler);
+        public Object[] getElements(final Object parent) {
+            final ErlideBackend bk = getBackend();
+            if (bk == null) {
+                return new OtpErlangObject[] {};
+            }
+            bk.getEventDaemon().addHandler(handler);
 
-			final OtpErlangList r = ErlideProclist.getProcessList(bk);
-			if (r.arity() == 0) {
-				return new OtpErlangObject[] {};
-			}
-			final OtpErlangObject[] ss = new OtpErlangObject[r.elements().length];
+            final OtpErlangList r = ErlideProclist.getProcessList(bk);
+            if (r.arity() == 0) {
+                return new OtpErlangObject[] {};
+            }
+            final OtpErlangObject[] ss = new OtpErlangObject[r.elements().length];
 
-			for (int i = 0; i < r.elements().length; i++) {
-				final OtpErlangTuple e = (OtpErlangTuple) r.elementAt(i);
-				ss[i] = e;
-			}
+            for (int i = 0; i < r.elements().length; i++) {
+                final OtpErlangTuple e = (OtpErlangTuple) r.elementAt(i);
+                ss[i] = e;
+            }
 
-			return ss;
-		}
+            return ss;
+        }
 
-		class ProcessEventHandler extends EventHandler {
+        class ProcessEventHandler extends EventHandler {
 
-			@Override
-			protected void doHandleMsg(final OtpErlangObject msg)
-					throws Exception {
-				if (getStandardEvent(msg, "processlist") == null) {
-					return;
-				}
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						if (!viewer.getControl().isDisposed()) {
-							viewer.refresh();
-						}
-					}
-				});
-			}
-		}
+            @Override
+            protected void doHandleMsg(final OtpErlangObject msg)
+                    throws Exception {
+                if (getStandardEvent(msg, "processlist") == null) {
+                    return;
+                }
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        if (!viewer.getControl().isDisposed()) {
+                            viewer.refresh();
+                        }
+                    }
+                });
+            }
+        }
 
-	}
+    }
 
-	static class ViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+    static class ViewLabelProvider extends LabelProvider implements
+            ITableLabelProvider {
 
-		public String getColumnText(final Object obj, final int index) {
-			final OtpErlangTuple t = (OtpErlangTuple) obj;
-			final OtpErlangObject e = t.elementAt(index + 1);
-			if (e instanceof OtpErlangString) {
-				return ((OtpErlangString) e).stringValue();
-			}
-			return e.toString();
-		}
+        public String getColumnText(final Object obj, final int index) {
+            final OtpErlangTuple t = (OtpErlangTuple) obj;
+            final OtpErlangObject e = t.elementAt(index + 1);
+            if (e instanceof OtpErlangString) {
+                return ((OtpErlangString) e).stringValue();
+            }
+            return e.toString();
+        }
 
-		public Image getColumnImage(final Object obj, final int index) {
-			if (index == 0) {
-				return getImage(obj);
-			}
-			return null;
-		}
+        public Image getColumnImage(final Object obj, final int index) {
+            if (index == 0) {
+                return getImage(obj);
+            }
+            return null;
+        }
 
-		@Override
-		public Image getImage(final Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJ_ELEMENT);
-		}
-	}
+        @Override
+        public Image getImage(final Object obj) {
+            return PlatformUI.getWorkbench().getSharedImages()
+                    .getImage(ISharedImages.IMG_OBJ_ELEMENT);
+        }
+    }
 
-	/**
-	 * The constructor.
-	 */
-	public ProcessListView() {
-	}
+    /**
+     * The constructor.
+     */
+    public ProcessListView() {
+    }
 
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		final Composite container = new Composite(parent, SWT.NONE);
-		final GridLayout thisLayout = new GridLayout(2, false);
-		container.setLayout(thisLayout);
-		thisLayout.marginWidth = 5;
-		thisLayout.marginHeight = 5;
-		thisLayout.makeColumnsEqualWidth = false;
-		thisLayout.verticalSpacing = 1;
+    /**
+     * This is a callback that will allow us to create the viewer and initialize
+     * it.
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        final Composite container = new Composite(parent, SWT.NONE);
+        final GridLayout thisLayout = new GridLayout(2, false);
+        container.setLayout(thisLayout);
+        thisLayout.marginWidth = 5;
+        thisLayout.marginHeight = 5;
+        thisLayout.makeColumnsEqualWidth = false;
+        thisLayout.verticalSpacing = 1;
 
-		final Label label = new Label(container, SWT.SHADOW_NONE);
-		label.setText("Erlang backend node");
+        final Label label = new Label(container, SWT.SHADOW_NONE);
+        label.setText("Erlang backend node");
 
-		backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
-		final Combo combo = backends.getCombo();
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-				1));
-		backends.getControl().setSize(
-				new org.eclipse.swt.graphics.Point(319, 18));
-		backends.setContentProvider(new BackendContentProvider());
-		backends.setLabelProvider(new BackendLabelProvider());
-		backends.setInput(ErlangCore.getBackendManager());
-		viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
-		final Table table = viewer.getTable();
-		final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false,
-				true, 2, 1);
-		table.setLayoutData(layoutData);
-		final Table t = (Table) viewer.getControl();
-		final TableColumn colPid = new TableColumn(t, SWT.LEAD);
-		colPid.setText("Pid/Name");
-		colPid.setWidth(150);
-		final TableColumn colStart = new TableColumn(t, SWT.LEAD);
-		colStart.setText("Initial call");
-		colStart.setWidth(300);
-		final TableColumn colReds = new TableColumn(t, SWT.LEAD);
-		colReds.setText("Reds");
-		colReds.setWidth(80);
-		final TableColumn colMsgs = new TableColumn(t, SWT.LEAD);
-		colMsgs.setText("Msgs");
-		colMsgs.setWidth(60);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		// viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(final DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
+        backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
+        final Combo combo = backends.getCombo();
+        combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
+        backends.getControl().setSize(
+                new org.eclipse.swt.graphics.Point(319, 18));
+        backends.setContentProvider(new BackendContentProvider());
+        backends.setLabelProvider(new BackendLabelProvider());
+        backends.setInput(ErlangCore.getBackendManager());
+        viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
+                | SWT.FULL_SELECTION);
+        final Table table = viewer.getTable();
+        final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false,
+                true, 2, 1);
+        table.setLayoutData(layoutData);
+        final Table t = (Table) viewer.getControl();
+        final TableColumn colPid = new TableColumn(t, SWT.LEAD);
+        colPid.setText("Pid/Name");
+        colPid.setWidth(150);
+        final TableColumn colStart = new TableColumn(t, SWT.LEAD);
+        colStart.setText("Initial call");
+        colStart.setWidth(300);
+        final TableColumn colReds = new TableColumn(t, SWT.LEAD);
+        colReds.setText("Reds");
+        colReds.setWidth(80);
+        final TableColumn colMsgs = new TableColumn(t, SWT.LEAD);
+        colMsgs.setText("Msgs");
+        colMsgs.setWidth(60);
+        viewer.setContentProvider(new ViewContentProvider());
+        viewer.setLabelProvider(new ViewLabelProvider());
+        // viewer.setSorter(new NameSorter());
+        viewer.setInput(getViewSite());
+        viewer.addDoubleClickListener(new IDoubleClickListener() {
+            public void doubleClick(final DoubleClickEvent event) {
+                doubleClickAction.run();
+            }
+        });
 
-		t.setLinesVisible(true);
-		t.setHeaderVisible(true);
+        t.setLinesVisible(true);
+        t.setHeaderVisible(true);
 
-		// TODO this is wrong - all backends should be inited
-		final ErlideBackend ideBackend = ErlangCore.getBackendManager()
-				.getIdeBackend();
-		if (ideBackend != null) {
-			ErlideProclist.processListInit(ideBackend);
-		}
-		ErlangCore.getBackendManager().forEachBackend(
-				new ErlideBackendVisitor() {
-					public void visit(final ErlideBackend b) {
-						ErlideProclist.processListInit(b);
-					}
-				});
+        // TODO this is wrong - all backends should be inited
+        final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+                .getIdeBackend();
+        if (ideBackend != null) {
+            ErlideProclist.processListInit(ideBackend);
+        }
+        ErlangCore.getBackendManager().forEachBackend(
+                new ErlideBackendVisitor() {
+                    public void visit(final ErlideBackend b) {
+                        ErlideProclist.processListInit(b);
+                    }
+                });
 
-		makeActions();
-		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
-	}
+        makeActions();
+        hookContextMenu();
+        hookDoubleClickAction();
+        contributeToActionBars();
+    }
 
-	private void hookContextMenu() {
-		final MenuManager menuMgr = new MenuManager("#PopupMenu");
-		final Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
+    private void hookContextMenu() {
+        final MenuManager menuMgr = new MenuManager("#PopupMenu");
+        final Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        viewer.getControl().setMenu(menu);
+        getSite().registerContextMenu(menuMgr, viewer);
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
 
-			public void menuAboutToShow(final IMenuManager manager) {
-				ProcessListView.this.fillContextMenu(manager);
-			}
-		});
-	}
+            public void menuAboutToShow(final IMenuManager manager) {
+                ProcessListView.this.fillContextMenu(manager);
+            }
+        });
+    }
 
-	private void contributeToActionBars() {
-		final IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
+    private void contributeToActionBars() {
+        final IActionBars bars = getViewSite().getActionBars();
+        fillLocalPullDown(bars.getMenuManager());
+        fillLocalToolBar(bars.getToolBarManager());
+    }
 
-	private void fillLocalPullDown(final IMenuManager manager) {
-		manager.add(refreshAction);
-		manager.add(new Separator());
-	}
+    private void fillLocalPullDown(final IMenuManager manager) {
+        manager.add(refreshAction);
+        manager.add(new Separator());
+    }
 
-	void fillContextMenu(final IMenuManager manager) {
-		manager.add(refreshAction);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+    void fillContextMenu(final IMenuManager manager) {
+        manager.add(refreshAction);
+        // Other plug-ins can contribute there actions here
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+    }
 
-	private void fillLocalToolBar(final IToolBarManager manager) {
-		manager.add(refreshAction);
-	}
+    private void fillLocalToolBar(final IToolBarManager manager) {
+        manager.add(refreshAction);
+    }
 
-	private void makeActions() {
-		refreshAction = new Action() {
+    private void makeActions() {
+        refreshAction = new Action() {
 
-			@Override
-			public void run() {
-				viewer.refresh();
-			}
-		};
-		refreshAction.setText("Refresh");
-		refreshAction.setToolTipText("Refresh process list");
-		refreshAction.setImageDescriptor(PlatformUI.getWorkbench()
-				.getSharedImages().getImageDescriptor(
-						ISharedImages.IMG_OBJS_INFO_TSK));
+            @Override
+            public void run() {
+                viewer.refresh();
+            }
+        };
+        refreshAction.setText("Refresh");
+        refreshAction.setToolTipText("Refresh process list");
+        refreshAction.setImageDescriptor(PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
-		doubleClickAction = new Action() {
+        doubleClickAction = new Action() {
 
-			@Override
-			public void run() {
-				final ISelection selection = viewer.getSelection();
-				final Object obj = ((IStructuredSelection) selection)
-						.getFirstElement();
+            @Override
+            public void run() {
+                final ISelection selection = viewer.getSelection();
+                final Object obj = ((IStructuredSelection) selection)
+                        .getFirstElement();
 
-				if (obj == null) {
-					return;
-				}
+                if (obj == null) {
+                    return;
+                }
 
-				final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
-						.elementAt(0);
+                final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
+                        .elementAt(0);
 
-				final OtpErlangObject r = ErlideProclist.getProcessInfo(
-						getBackend(), pid);
-				if (r instanceof OtpErlangList) {
-					final OtpErlangList l = (OtpErlangList) r;
-					StringBuilder s = new StringBuilder();
-					for (int i = 0; i < l.arity(); i++) {
-						final OtpErlangTuple e = (OtpErlangTuple) l
-								.elementAt(i);
-						s.append(' ').append(e.elementAt(0).toString()).append(
-								"\t= ").append(e.elementAt(1).toString())
-								.append('\n');
-					}
-					showMessage(s.toString());
-				} else {
-					showMessage("Process "
-							+ pid.toString()
-							+ " is probably dead.\nPlease refresh process list.");
-				}
-			}
-		};
-	}
+                final OtpErlangObject r = ErlideProclist.getProcessInfo(
+                        getBackend(), pid);
+                if (r instanceof OtpErlangList) {
+                    final OtpErlangList l = (OtpErlangList) r;
+                    final StringBuilder s = new StringBuilder();
+                    for (int i = 0; i < l.arity(); i++) {
+                        final OtpErlangTuple e = (OtpErlangTuple) l
+                                .elementAt(i);
+                        s.append(' ').append(e.elementAt(0).toString())
+                                .append("\t= ")
+                                .append(e.elementAt(1).toString()).append('\n');
+                    }
+                    showMessage(s.toString());
+                } else {
+                    showMessage("Process "
+                            + pid.toString()
+                            + " is probably dead.\nPlease refresh process list.");
+                }
+            }
+        };
+    }
 
-	private void hookDoubleClickAction() {
-	}
+    private void hookDoubleClickAction() {
+    }
 
-	void showMessage(final String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(),
-				"Process list view", message);
-	}
+    void showMessage(final String message) {
+        MessageDialog.openInformation(viewer.getControl().getShell(),
+                "Process list view", message);
+    }
 
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
-	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
-	}
+    /**
+     * Passing the focus request to the viewer's control.
+     */
+    @Override
+    public void setFocus() {
+        viewer.getControl().setFocus();
+    }
 
-	public ErlideBackend getBackend() {
-		final IStructuredSelection sel = (IStructuredSelection) backends
-				.getSelection();
-		if (sel.getFirstElement() != null) {
-			final ErlideBackend b = (ErlideBackend) sel.getFirstElement();
-			return b;
-		}
-		final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
-		if (b != null) {
-			backends.setSelection(new StructuredSelection(b));
-			return b;
-		}
-		return null;
+    public ErlideBackend getBackend() {
+        final IStructuredSelection sel = (IStructuredSelection) backends
+                .getSelection();
+        if (sel.getFirstElement() != null) {
+            final ErlideBackend b = (ErlideBackend) sel.getFirstElement();
+            return b;
+        }
+        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+        if (b != null) {
+            backends.setSelection(new StructuredSelection(b));
+            return b;
+        }
+        return null;
 
-	}
+    }
 
 }

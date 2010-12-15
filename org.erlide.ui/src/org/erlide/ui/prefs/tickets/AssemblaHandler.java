@@ -20,45 +20,46 @@ import org.erlide.jinterface.backend.util.ProblemData;
 
 public class AssemblaHandler extends TicketHandlerImpl {
 
-	private static final String MYURL = "http://www.assembla.com/spaces/erlide/tickets/";
-	// private static final String LOGINURL =
-	// "https://www.assembla.com/users/login";
+    private static final String MYURL = "http://www.assembla.com/spaces/erlide/tickets/";
+    // private static final String LOGINURL =
+    // "https://www.assembla.com/users/login";
 
-	private static final byte[] userHash = { (byte) 248, (byte) 254,
-			(byte) 185, (byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147,
-			(byte) 211, (byte) 177, 10, 93, (byte) 209, (byte) 151, 59 };
+    private static final byte[] userHash = { (byte) 248, (byte) 254,
+            (byte) 185, (byte) 157, (byte) 211, 11, 33, (byte) 206, (byte) 147,
+            (byte) 211, (byte) 177, 10, 93, (byte) 209, (byte) 151, 59 };
 
-	private boolean checkUser(final String user) {
-		try {
-			final MessageDigest algorithm = MessageDigest.getInstance("MD5");
-			algorithm.reset();
-			algorithm.update(user.getBytes());
-			final byte[] messageDigest = algorithm.digest();
-			return Arrays.equals(messageDigest, userHash);
-		} catch (final NoSuchAlgorithmException nsae) {
-		}
-		return false;
-	}
+    private boolean checkUser(final String user) {
+        try {
+            final MessageDigest algorithm = MessageDigest.getInstance("MD5");
+            algorithm.reset();
+            algorithm.update(user.getBytes());
+            final byte[] messageDigest = algorithm.digest();
+            return Arrays.equals(messageDigest, userHash);
+        } catch (final NoSuchAlgorithmException nsae) {
+        }
+        return false;
+    }
 
-	public String infoToMessage(final ProblemData info) {
-		return "<ticket><summary>" + info.summary + "</summary></ticket>";
-	}
+    public String infoToMessage(final ProblemData info) {
+        return "<ticket><summary>" + info.summary + "</summary></ticket>";
+    }
 
-	public TicketStatus parseMessage(final String message) {
-		final boolean ok = false;
-		final int id = 0;
+    public TicketStatus parseMessage(final String message) {
+        final boolean ok = false;
+        final int id = 0;
 
-		final TicketStatus result = new TicketStatus(ok, id);
-		return result;
-	}
+        final TicketStatus result = new TicketStatus(ok, id);
+        return result;
+    }
 
-	public URL getLoginURL(final String user, final String pass)
-			throws MalformedURLException {
-		if (checkUser(user)) {
-			final String str = String.format(MYURL+"?user=%s&pass=%s", user, pass);
-			return new URL(str);
-		}
-		return null;
-	}
+    public URL getLoginURL(final String user, final String pass)
+            throws MalformedURLException {
+        if (checkUser(user)) {
+            final String str = String.format(MYURL + "?user=%s&pass=%s", user,
+                    pass);
+            return new URL(str);
+        }
+        return null;
+    }
 
 }

@@ -28,128 +28,129 @@ import org.erlide.core.erlang.util.PluginUtils;
  * 
  */
 public class ErlFolder extends Openable implements IErlFolder {
-	private final IFolder folder;
+    private final IFolder folder;
 
-	protected ErlFolder(final IFolder folder, final IErlElement parent) {
-		super(parent, folder.getName());
-		this.folder = folder;
-	}
+    protected ErlFolder(final IFolder folder, final IErlElement parent) {
+        super(parent, folder.getName());
+        this.folder = folder;
+    }
 
-	@Override
-	protected boolean buildStructure(final IProgressMonitor pm)
-			throws ErlModelException {
-		final IErlModelManager manager = ErlangCore.getModelManager();
-		final IContainer c = (IContainer) getResource();
-		try {
-			// FIXME this is general stuff, should we put it in, say, model or
-			// model manager?
-			final IResource[] members = c.members();
-			for (final IResource resource : members) {
-				manager.create(resource, this);
-			}
-		} catch (final CoreException e) {
-			throw new ErlModelException(e,
-					ErlModelStatusConstants.CORE_EXCEPTION);
-		}
-		return true;
-	}
+    @Override
+    protected boolean buildStructure(final IProgressMonitor pm)
+            throws ErlModelException {
+        final IErlModelManager manager = ErlangCore.getModelManager();
+        final IContainer c = (IContainer) getResource();
+        try {
+            // FIXME this is general stuff, should we put it in, say, model or
+            // model manager?
+            final IResource[] members = c.members();
+            for (final IResource resource : members) {
+                manager.create(resource, this);
+            }
+        } catch (final CoreException e) {
+            throw new ErlModelException(e,
+                    ErlModelStatusConstants.CORE_EXCEPTION);
+        }
+        return true;
+    }
 
-	@Override
-	protected void closing(final Object info) throws ErlModelException {
-		// FIXME general stuff, move to model or manager
-		for (final IErlElement e : getChildren()) {
-			if (e instanceof ErlElement) {
-				final ErlElement ee = (ErlElement) e;
-				ee.closing(info);
-			}
-		}
-	}
+    @Override
+    protected void closing(final Object info) throws ErlModelException {
+        // FIXME general stuff, move to model or manager
+        for (final IErlElement e : getChildren()) {
+            if (e instanceof ErlElement) {
+                final ErlElement ee = (ErlElement) e;
+                ee.closing(info);
+            }
+        }
+    }
 
-	/**
-	 * Find named module, search recursively. Should we use a visitor instead?
-	 * 
-	 * @param parent
-	 * @param name
-	 * @return
-	 */
-	public static IErlModule getModule(final IParent parent, final String name,
-			boolean caseinsensitive) {
-		try {
-			if (parent instanceof IOpenable) {
-				final IOpenable o = (IOpenable) parent;
-				o.open(null);
-			}
-			boolean hasExtension = ErlideUtil.hasExtension(name);
-			for (final IErlElement e : parent.getChildren()) {
-				if (e instanceof IErlModule) {
-					final IErlModule m = (IErlModule) e;
-					String moduleName = hasExtension ? m.getName() : m
-							.getModuleName();
-					if (caseinsensitive) {
-						if (moduleName.equalsIgnoreCase(name)) {
-							return m;
-						}
-					} else {
-						if (moduleName.equals(name)) {
-							return m;
-						}
-					}
-				} else if (e instanceof IParent) {
-					final IParent p = (IParent) e;
-					final IErlModule m = getModule(p, name, caseinsensitive);
-					if (m != null) {
-						return m;
-					}
-				}
-			}
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    /**
+     * Find named module, search recursively. Should we use a visitor instead?
+     * 
+     * @param parent
+     * @param name
+     * @return
+     */
+    public static IErlModule getModule(final IParent parent, final String name,
+            final boolean caseinsensitive) {
+        try {
+            if (parent instanceof IOpenable) {
+                final IOpenable o = (IOpenable) parent;
+                o.open(null);
+            }
+            final boolean hasExtension = ErlideUtil.hasExtension(name);
+            for (final IErlElement e : parent.getChildren()) {
+                if (e instanceof IErlModule) {
+                    final IErlModule m = (IErlModule) e;
+                    final String moduleName = hasExtension ? m.getName() : m
+                            .getModuleName();
+                    if (caseinsensitive) {
+                        if (moduleName.equalsIgnoreCase(name)) {
+                            return m;
+                        }
+                    } else {
+                        if (moduleName.equals(name)) {
+                            return m;
+                        }
+                    }
+                } else if (e instanceof IParent) {
+                    final IParent p = (IParent) e;
+                    final IErlModule m = getModule(p, name, caseinsensitive);
+                    if (m != null) {
+                        return m;
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public IErlModule getModule(final String name) throws ErlModelException {
-		return getModule(this, name, false);
-	}
+    public IErlModule getModule(final String name) throws ErlModelException {
+        return getModule(this, name, false);
+    }
 
-	public IErlModule getModuleExt(final String name) {
-		return getModule(this, name, true);
-	}
+    public IErlModule getModuleExt(final String name) {
+        return getModule(this, name, true);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.erlide.core.erlang.IErlFolder#getModules()
-	 */
-	public Collection<IErlModule> getModules() throws ErlModelException {
-		final List<IErlModule> result = new ArrayList<IErlModule>();
-		addModules(result);
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.core.erlang.IErlFolder#getModules()
+     */
+    public Collection<IErlModule> getModules() throws ErlModelException {
+        final List<IErlModule> result = new ArrayList<IErlModule>();
+        addModules(result);
+        return result;
+    }
 
-	public Collection<IResource> getNonErlangResources() throws ErlModelException {
-		return null;
-	}
+    public Collection<IResource> getNonErlangResources()
+            throws ErlModelException {
+        return null;
+    }
 
-	public Kind getKind() {
-		return Kind.FOLDER;
-	}
+    public Kind getKind() {
+        return Kind.FOLDER;
+    }
 
-	@Override
-	public IResource getResource() {
-		return getCorrespondingResource();
-	}
+    @Override
+    public IResource getResource() {
+        return getCorrespondingResource();
+    }
 
-	@Override
-	public IResource getCorrespondingResource() {
-		return folder;
-	}
+    @Override
+    public IResource getCorrespondingResource() {
+        return folder;
+    }
 
-	public boolean isOnSourcePath() {
-		return PluginUtils.isOnSourcePath(folder);
-	}
+    public boolean isOnSourcePath() {
+        return PluginUtils.isOnSourcePath(folder);
+    }
 
-	public boolean isSourcePathParent() {
-		return PluginUtils.isSourcePathParent(folder);
-	}
+    public boolean isSourcePathParent() {
+        return PluginUtils.isSourcePathParent(folder);
+    }
 }

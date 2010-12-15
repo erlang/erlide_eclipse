@@ -25,32 +25,32 @@ import java.io.Serializable;
  * atoms with values 'true' and 'false'.
  */
 public class OtpErlangBoolean extends OtpErlangAtom implements Serializable,
-		Cloneable {
-	// don't change this!
-	static final long serialVersionUID = 1087178844844988393L;
+        Cloneable {
+    // don't change this!
+    static final long serialVersionUID = 1087178844844988393L;
 
-	/**
-	 * Create a boolean from the given value
-	 * 
-	 * @param t
-	 *            the boolean value to represent as an atom.
-	 */
-	public OtpErlangBoolean(final boolean t) {
-		super(t);
-	}
+    /**
+     * Create a boolean from the given value
+     * 
+     * @param t
+     *            the boolean value to represent as an atom.
+     */
+    public OtpErlangBoolean(final boolean t) {
+        super(t);
+    }
 
-	/**
-	 * Create a boolean from a stream containing an atom encoded in Erlang
-	 * external format. The value of the boolean will be true if the atom
-	 * represented by the stream is "true" without regard to case. For other
-	 * atom values, the boolean will have the value false.
-	 * 
-	 * @exception OtpErlangDecodeException
-	 *                if the buffer does not contain a valid external
-	 *                representation of an Erlang atom.
-	 */
-	public OtpErlangBoolean(final OtpInputStream buf)
-			throws OtpErlangDecodeException {
-		super(buf);
-	}
+    /**
+     * Create a boolean from a stream containing an atom encoded in Erlang
+     * external format. The value of the boolean will be true if the atom
+     * represented by the stream is "true" without regard to case. For other
+     * atom values, the boolean will have the value false.
+     * 
+     * @exception OtpErlangDecodeException
+     *                if the buffer does not contain a valid external
+     *                representation of an Erlang atom.
+     */
+    public OtpErlangBoolean(final OtpInputStream buf)
+            throws OtpErlangDecodeException {
+        super(buf);
+    }
 }

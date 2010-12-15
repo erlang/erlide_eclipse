@@ -14,9 +14,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IErlangReconcilingListener {
 
-	void aboutToBeReconciled();
+    void aboutToBeReconciled();
 
-	void reconciled(IErlModule ast, boolean forced,
-			IProgressMonitor progressMonitor);
+    void reconciled(IErlModule ast, boolean forced,
+            IProgressMonitor progressMonitor);
 
 }

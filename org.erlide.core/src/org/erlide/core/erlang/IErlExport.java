@@ -10,5 +10,5 @@ import org.erlide.core.erlang.util.ErlangFunction;
  * 
  */
 public interface IErlExport extends IErlImportExport, IErlMember, IParent {
-	public boolean hasFunction(final ErlangFunction f);
+    public boolean hasFunction(final ErlangFunction f);
 }

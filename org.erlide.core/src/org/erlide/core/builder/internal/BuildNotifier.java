@@ -51,8 +51,8 @@ public class BuildNotifier {
      */
     public void aboutToCompile(final IResource unit) {
         checkCancel();
-        final String message = NLS.bind(BuilderMessages.build_compiling, unit
-                .getFullPath());
+        final String message = NLS.bind(BuilderMessages.build_compiling,
+                unit.getFullPath());
         subTask(message);
         if (BuilderHelper.isDebugging()) {
             ErlLogger.debug(">>" + message);
@@ -93,8 +93,8 @@ public class BuildNotifier {
      * compiled.
      */
     public void compiled(final IResource unit) {
-        final String message = NLS.bind(BuilderMessages.build_compiling, unit
-                .getFullPath());
+        final String message = NLS.bind(BuilderMessages.build_compiling,
+                unit.getFullPath());
         subTask(message);
         if (BuilderHelper.isDebugging()) {
             ErlLogger.debug("<<" + message);
@@ -134,8 +134,8 @@ public class BuildNotifier {
                     buffer.append(BuilderMessages.build_oneError);
                 } else {
                     buffer.append(NLS.bind(
-                            BuilderMessages.build_multipleErrors, String
-                                    .valueOf(fNewErrorCount)));
+                            BuilderMessages.build_multipleErrors,
+                            String.valueOf(fNewErrorCount)));
                 }
                 if (displayBoth || fNewWarningCount > 0) {
                     buffer.append(" + "); //$NON-NLS-1$
@@ -146,8 +146,8 @@ public class BuildNotifier {
                     buffer.append(BuilderMessages.build_oneWarning);
                 } else {
                     buffer.append(NLS.bind(
-                            BuilderMessages.build_multipleWarnings, String
-                                    .valueOf(fNewWarningCount)));
+                            BuilderMessages.build_multipleWarnings,
+                            String.valueOf(fNewWarningCount)));
                 }
             }
             if (numFixed > 0) {
@@ -169,8 +169,8 @@ public class BuildNotifier {
                         buffer.append(BuilderMessages.build_oneError);
                     } else {
                         buffer.append(NLS.bind(
-                                BuilderMessages.build_multipleErrors, String
-                                        .valueOf(fFixedErrorCount)));
+                                BuilderMessages.build_multipleErrors,
+                                String.valueOf(fFixedErrorCount)));
                     }
                     if (fFixedWarningCount > 0) {
                         buffer.append(" + "); //$NON-NLS-1$
@@ -181,8 +181,8 @@ public class BuildNotifier {
                         buffer.append(BuilderMessages.build_oneWarning);
                     } else {
                         buffer.append(NLS.bind(
-                                BuilderMessages.build_multipleWarnings, String
-                                        .valueOf(fFixedWarningCount)));
+                                BuilderMessages.build_multipleWarnings,
+                                String.valueOf(fFixedWarningCount)));
                     }
                 }
             }
@@ -209,7 +209,7 @@ public class BuildNotifier {
 
     public void subTask(final String message) {
         final String pm = problemsMessage();
-        final String msg = (pm.length() == 0) ? message : pm + " " + message; //$NON-NLS-1$
+        final String msg = pm.length() == 0 ? message : pm + " " + message; //$NON-NLS-1$
 
         if (msg.equals(previousSubtask)) {
             return; // avoid refreshing with same one
@@ -310,7 +310,7 @@ public class BuildNotifier {
                 }
                 if (BuilderHelper.isDebugging()) {
                     ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
-                            .format(this.percentComplete));
+                            .format(percentComplete));
                 }
                 fWorkDone = work;
             }

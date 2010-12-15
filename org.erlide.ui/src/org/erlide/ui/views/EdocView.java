@@ -56,407 +56,410 @@ import org.osgi.framework.Bundle;
 
 /**
  * View which shows Edoc for a given Erlang element.
- *
+ * 
  */
 public class EdocView extends AbstractInfoView {
 
-	public static final String ID = "org.erlide.ui.views.EdocView";
-	/**
-	 * Preference key for the preference whether to show a dialog when the SWT
-	 * Browser widget is not available.
-	 *
-	 * @since 3.0
-	 */
-	private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
+    public static final String ID = "org.erlide.ui.views.EdocView";
+    /**
+     * Preference key for the preference whether to show a dialog when the SWT
+     * Browser widget is not available.
+     * 
+     * @since 3.0
+     */
+    private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
-	private static final boolean WARNING_DIALOG_ENABLED = true;
+    private static final boolean WARNING_DIALOG_ENABLED = true;
 
-	// /** Flags used to render a label in the text widget. */
-	// private static final long LABEL_FLAGS=
-	// JavaElementLabels.ALL_FULLY_QUALIFIED
-	// | JavaElementLabels.M_PRE_RETURNTYPE |
-	// JavaElementLabels.M_PARAMETER_TYPES |
-	// JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS
-	// | JavaElementLabels.F_PRE_TYPE_SIGNATURE |
-	// JavaElementLabels.T_TYPE_PARAMETERS;
+    // /** Flags used to render a label in the text widget. */
+    // private static final long LABEL_FLAGS=
+    // JavaElementLabels.ALL_FULLY_QUALIFIED
+    // | JavaElementLabels.M_PRE_RETURNTYPE |
+    // JavaElementLabels.M_PARAMETER_TYPES |
+    // JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS
+    // | JavaElementLabels.F_PRE_TYPE_SIGNATURE |
+    // JavaElementLabels.T_TYPE_PARAMETERS;
 
-	/** The HTML widget. */
-	private Browser fBrowser;
+    /** The HTML widget. */
+    private Browser fBrowser;
 
-	/** The text widget. */
-	StyledText fText;
+    /** The text widget. */
+    StyledText fText;
 
-	/** The information presenter. */
-	private DefaultInformationControl.IInformationPresenterExtension fPresenter;
+    /** The information presenter. */
+    private DefaultInformationControl.IInformationPresenterExtension fPresenter;
 
-	/** The text presentation. */
-	private final TextPresentation fPresentation = new TextPresentation();
+    /** The text presentation. */
+    private final TextPresentation fPresentation = new TextPresentation();
 
-	/** The select all action */
-	private SelectAllAction fSelectAllAction;
+    /** The select all action */
+    private SelectAllAction fSelectAllAction;
 
-	/** The Browser widget */
-	boolean fIsUsingBrowserWidget;
+    /** The Browser widget */
+    boolean fIsUsingBrowserWidget;
 
-	private static URL fgStyleSheet;
+    private static URL fgStyleSheet;
 
-	/**
-	 * The Javadoc view's select all action.
-	 */
-	private static class SelectAllAction extends Action {
+    /**
+     * The Javadoc view's select all action.
+     */
+    private static class SelectAllAction extends Action {
 
-		/** The control. */
-		private final Control fControl;
+        /** The control. */
+        private final Control fControl;
 
-		/** The selection provider. */
-		private final SelectionProvider fSelectionProvider;
+        /** The selection provider. */
+        private final SelectionProvider fSelectionProvider;
 
-		/**
-		 * Creates the action.
-		 *
-		 * @param control
-		 *            the widget
-		 * @param selectionProvider
-		 *            the selection provider
-		 */
-		public SelectAllAction(final Control control,
-				final SelectionProvider selectionProvider,
-				final boolean useBrowserWidget) {
-			super("selectAll");
+        /**
+         * Creates the action.
+         * 
+         * @param control
+         *            the widget
+         * @param selectionProvider
+         *            the selection provider
+         */
+        public SelectAllAction(final Control control,
+                final SelectionProvider selectionProvider,
+                final boolean useBrowserWidget) {
+            super("selectAll");
 
-			Assert.isNotNull(control);
-			Assert.isNotNull(selectionProvider);
-			fControl = control;
-			fSelectionProvider = selectionProvider;
+            Assert.isNotNull(control);
+            Assert.isNotNull(selectionProvider);
+            fControl = control;
+            fSelectionProvider = selectionProvider;
 
-			setEnabled(!useBrowserWidget);
+            setEnabled(!useBrowserWidget);
 
-			setText("Select All");
-			setToolTipText("Select All");
-			setDescription("Select All");
+            setText("Select All");
+            setToolTipText("Select All");
+            setDescription("Select All");
 
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-					IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
-		}
+            PlatformUI
+                    .getWorkbench()
+                    .getHelpSystem()
+                    .setHelp(this,
+                            IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
+        }
 
-		/**
-		 * Selects all in the view.
-		 */
-		@Override
-		public void run() {
-			if (fControl instanceof StyledText) {
-				((StyledText) fControl).selectAll();
-			} else {
-				// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
-				// ((Browser)fControl).selectAll();
-				if (fSelectionProvider != null) {
-					fSelectionProvider.fireSelectionChanged();
-				}
-			}
-		}
-	}
+        /**
+         * Selects all in the view.
+         */
+        @Override
+        public void run() {
+            if (fControl instanceof StyledText) {
+                ((StyledText) fControl).selectAll();
+            } else {
+                // FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+                // ((Browser)fControl).selectAll();
+                if (fSelectionProvider != null) {
+                    fSelectionProvider.fireSelectionChanged();
+                }
+            }
+        }
+    }
 
-	/**
-	 * The Javadoc view's selection provider.
-	 */
-	private static class SelectionProvider implements ISelectionProvider {
+    /**
+     * The Javadoc view's selection provider.
+     */
+    private static class SelectionProvider implements ISelectionProvider {
 
-		/** The selection changed listeners. */
-		private final List<ISelectionChangedListener> fListeners = new ArrayList<ISelectionChangedListener>(
-				0);
+        /** The selection changed listeners. */
+        private final List<ISelectionChangedListener> fListeners = new ArrayList<ISelectionChangedListener>(
+                0);
 
-		/** The widget. */
-		private final Control fControl;
+        /** The widget. */
+        private final Control fControl;
 
-		/**
-		 * Creates a new selection provider.
-		 *
-		 * @param control
-		 *            the widget
-		 */
-		public SelectionProvider(final Control control) {
-			Assert.isNotNull(control);
-			fControl = control;
-			if (fControl instanceof StyledText) {
-				((StyledText) fControl)
-						.addSelectionListener(new SelectionAdapter() {
+        /**
+         * Creates a new selection provider.
+         * 
+         * @param control
+         *            the widget
+         */
+        public SelectionProvider(final Control control) {
+            Assert.isNotNull(control);
+            fControl = control;
+            if (fControl instanceof StyledText) {
+                ((StyledText) fControl)
+                        .addSelectionListener(new SelectionAdapter() {
 
-							@Override
-							public void widgetSelected(final SelectionEvent e) {
-								fireSelectionChanged();
-							}
-						});
-			} else {
-				// FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
-				// ((Browser)fControl).addSelectionListener(new
-				// SelectionAdapter() {
-				// public void widgetSelected(SelectionEvent e) {
-				// fireSelectionChanged();
-				// }
-				// });
-			}
-		}
+                            @Override
+                            public void widgetSelected(final SelectionEvent e) {
+                                fireSelectionChanged();
+                            }
+                        });
+            } else {
+                // FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+                // ((Browser)fControl).addSelectionListener(new
+                // SelectionAdapter() {
+                // public void widgetSelected(SelectionEvent e) {
+                // fireSelectionChanged();
+                // }
+                // });
+            }
+        }
 
-		/**
-		 * Sends a selection changed event to all listeners.
-		 */
-		public void fireSelectionChanged() {
-			final ISelection selection = getSelection();
-			final SelectionChangedEvent event = new SelectionChangedEvent(this,
-					selection);
-			final Object[] selectionChangedListeners = fListeners.toArray();
-			for (final Object element : selectionChangedListeners) {
-				((ISelectionChangedListener) element).selectionChanged(event);
-			}
-		}
+        /**
+         * Sends a selection changed event to all listeners.
+         */
+        public void fireSelectionChanged() {
+            final ISelection selection = getSelection();
+            final SelectionChangedEvent event = new SelectionChangedEvent(this,
+                    selection);
+            final Object[] selectionChangedListeners = fListeners.toArray();
+            for (final Object element : selectionChangedListeners) {
+                ((ISelectionChangedListener) element).selectionChanged(event);
+            }
+        }
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-		 * (org.eclipse.jface.viewers.ISelectionChangedListener)
-		 */
-		public void addSelectionChangedListener(
-				final ISelectionChangedListener listener) {
-			fListeners.add(listener);
-		}
+        /*
+         * @see
+         * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
+         * (org.eclipse.jface.viewers.ISelectionChangedListener)
+         */
+        public void addSelectionChangedListener(
+                final ISelectionChangedListener listener) {
+            fListeners.add(listener);
+        }
 
-		/*
-		 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-		 */
-		public ISelection getSelection() {
-			if (fControl instanceof StyledText) {
-				final IDocument document = new Document(((StyledText) fControl)
-						.getSelectionText());
-				return new TextSelection(document, 0, document.getLength());
-			}
-			return StructuredSelection.EMPTY;
-		}
+        /*
+         * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+         */
+        public ISelection getSelection() {
+            if (fControl instanceof StyledText) {
+                final IDocument document = new Document(
+                        ((StyledText) fControl).getSelectionText());
+                return new TextSelection(document, 0, document.getLength());
+            }
+            return StructuredSelection.EMPTY;
+        }
 
-		/*
-		 * @seeorg.eclipse.jface.viewers.ISelectionProvider#
-		 * removeSelectionChangedListener
-		 * (org.eclipse.jface.viewers.ISelectionChangedListener)
-		 */
-		public void removeSelectionChangedListener(
-				final ISelectionChangedListener listener) {
-			fListeners.remove(listener);
-		}
+        /*
+         * @seeorg.eclipse.jface.viewers.ISelectionProvider#
+         * removeSelectionChangedListener
+         * (org.eclipse.jface.viewers.ISelectionChangedListener)
+         */
+        public void removeSelectionChangedListener(
+                final ISelectionChangedListener listener) {
+            fListeners.remove(listener);
+        }
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-		 * .jface.viewers.ISelection)
-		 */
-		public void setSelection(final ISelection selection) {
-			// not supported
-		}
-	}
+        /*
+         * @see
+         * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
+         * .jface.viewers.ISelection)
+         */
+        public void setSelection(final ISelection selection) {
+            // not supported
+        }
+    }
 
-	/*
-	 * @see AbstractInfoView#internalCreatePartControl(Composite)
-	 */
-	@Override
-	protected void internalCreatePartControl(final Composite parent) {
-		try {
-			fBrowser = new Browser(parent, SWT.NONE);
-			fIsUsingBrowserWidget = true;
-		} catch (final SWTError er) {
+    /*
+     * @see AbstractInfoView#internalCreatePartControl(Composite)
+     */
+    @Override
+    protected void internalCreatePartControl(final Composite parent) {
+        try {
+            fBrowser = new Browser(parent, SWT.NONE);
+            fIsUsingBrowserWidget = true;
+        } catch (final SWTError er) {
 
-			/*
-			 * The Browser widget throws an SWTError if it fails to instantiate
-			 * properly. Application code should catch this SWTError and disable
-			 * any feature requiring the Browser widget. Platform requirements
-			 * for the SWT Browser widget are available from the SWT FAQ web
-			 * site.
-			 */
+            /*
+             * The Browser widget throws an SWTError if it fails to instantiate
+             * properly. Application code should catch this SWTError and disable
+             * any feature requiring the Browser widget. Platform requirements
+             * for the SWT Browser widget are available from the SWT FAQ web
+             * site.
+             */
 
-			final IPreferenceStore store = ErlideUIPlugin.getDefault()
-					.getPreferenceStore();
-			final boolean doNotWarn = store
-					.getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
-			if (WARNING_DIALOG_ENABLED && !doNotWarn) {
-				final String title = "Error";
-				final String message = "Error no browser found";
-				final String toggleMessage = "Don't show this again";
-				final MessageDialogWithToggle dialog = MessageDialogWithToggle
-						.openError(parent.getShell(), title, message,
-								toggleMessage, false, null, null);
-				if (dialog.getReturnCode() == Window.OK) {
-					store.setValue(DO_NOT_WARN_PREFERENCE_KEY, dialog
-							.getToggleState());
-				}
-			}
+            final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                    .getPreferenceStore();
+            final boolean doNotWarn = store
+                    .getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
+            if (WARNING_DIALOG_ENABLED && !doNotWarn) {
+                final String title = "Error";
+                final String message = "Error no browser found";
+                final String toggleMessage = "Don't show this again";
+                final MessageDialogWithToggle dialog = MessageDialogWithToggle
+                        .openError(parent.getShell(), title, message,
+                                toggleMessage, false, null, null);
+                if (dialog.getReturnCode() == Window.OK) {
+                    store.setValue(DO_NOT_WARN_PREFERENCE_KEY,
+                            dialog.getToggleState());
+                }
+            }
 
-			fIsUsingBrowserWidget = false;
-		}
+            fIsUsingBrowserWidget = false;
+        }
 
-		if (!fIsUsingBrowserWidget) {
-			fText = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-			fText.setEditable(false);
-			fPresenter = new HTMLTextPresenter(false);
+        if (!fIsUsingBrowserWidget) {
+            fText = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+            fText.setEditable(false);
+            fPresenter = new HTMLTextPresenter(false);
 
-			fText.addControlListener(new ControlAdapter() {
+            fText.addControlListener(new ControlAdapter() {
 
-				/*
-				 * @see
-				 * org.eclipse.swt.events.ControlAdapter#controlResized(org.
-				 * eclipse.swt.events.ControlEvent)
-				 */
-				@Override
-				public void controlResized(final ControlEvent e) {
-					setInfo(fText.getText());
-				}
-			});
-		}
+                /*
+                 * @see
+                 * org.eclipse.swt.events.ControlAdapter#controlResized(org.
+                 * eclipse.swt.events.ControlEvent)
+                 */
+                @Override
+                public void controlResized(final ControlEvent e) {
+                    setInfo(fText.getText());
+                }
+            });
+        }
 
-		initStyleSheet();
-		getViewSite().setSelectionProvider(new SelectionProvider(getControl()));
-	}
+        initStyleSheet();
+        getViewSite().setSelectionProvider(new SelectionProvider(getControl()));
+    }
 
-	private void initStyleSheet() {
-		final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-		fgStyleSheet = bundle.getEntry("/edoc.css");
-		if (fgStyleSheet != null) {
+    private void initStyleSheet() {
+        final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+        fgStyleSheet = bundle.getEntry("/edoc.css");
+        if (fgStyleSheet != null) {
 
-			try {
-				fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
-			} catch (final Exception e) {
-			}
-		}
-	}
+            try {
+                fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+            } catch (final Exception e) {
+            }
+        }
+    }
 
-	/*
-	 * @see AbstractInfoView#createActions()
-	 */
-	@Override
-	protected void createActions() {
-		super.createActions();
-		fSelectAllAction = new SelectAllAction(getControl(),
-				(SelectionProvider) getSelectionProvider(),
-				fIsUsingBrowserWidget);
-	}
+    /*
+     * @see AbstractInfoView#createActions()
+     */
+    @Override
+    protected void createActions() {
+        super.createActions();
+        fSelectAllAction = new SelectAllAction(getControl(),
+                (SelectionProvider) getSelectionProvider(),
+                fIsUsingBrowserWidget);
+    }
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction
-	 * ()
-	 *
-	 * @since 3.0
-	 */
-	@Override
-	protected IAction getSelectAllAction() {
-		if (fIsUsingBrowserWidget) {
-			return null;
-		}
+    /*
+     * @see
+     * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction
+     * ()
+     * 
+     * @since 3.0
+     */
+    @Override
+    protected IAction getSelectAllAction() {
+        if (fIsUsingBrowserWidget) {
+            return null;
+        }
 
-		return fSelectAllAction;
-	}
+        return fSelectAllAction;
+    }
 
-	/*
-	 * @seeorg.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#
-	 * getCopyToClipboardAction()
-	 *
-	 * @since 3.0
-	 */
-	@Override
-	protected IAction getCopyToClipboardAction() {
-		if (fIsUsingBrowserWidget) {
-			return null;
-		}
+    /*
+     * @seeorg.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#
+     * getCopyToClipboardAction()
+     * 
+     * @since 3.0
+     */
+    @Override
+    protected IAction getCopyToClipboardAction() {
+        if (fIsUsingBrowserWidget) {
+            return null;
+        }
 
-		return super.getCopyToClipboardAction();
-	}
+        return super.getCopyToClipboardAction();
+    }
 
-	/*
-	 * @see AbstractInfoView#setForeground(Color)
-	 */
-	@Override
-	protected void setForeground(final Color color) {
-		getControl().setForeground(color);
-	}
+    /*
+     * @see AbstractInfoView#setForeground(Color)
+     */
+    @Override
+    protected void setForeground(final Color color) {
+        getControl().setForeground(color);
+    }
 
-	/*
-	 * @see AbstractInfoView#setBackground(Color)
-	 */
-	@Override
-	protected void setBackground(final Color color) {
-		getControl().setBackground(color);
-	}
+    /*
+     * @see AbstractInfoView#setBackground(Color)
+     */
+    @Override
+    protected void setBackground(final Color color) {
+        getControl().setBackground(color);
+    }
 
-	/*
-	 * @see AbstractInfoView#internalDispose()
-	 */
-	@Override
-	protected void internalDispose() {
-		fText = null;
-		fBrowser = null;
-	}
+    /*
+     * @see AbstractInfoView#internalDispose()
+     */
+    @Override
+    protected void internalDispose() {
+        fText = null;
+        fBrowser = null;
+    }
 
-	/*
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		getControl().setFocus();
-	}
+    /*
+     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+     */
+    @Override
+    public void setFocus() {
+        getControl().setFocus();
+    }
 
-	@Override
-	protected void setInfo(final String info) {
-		String edocHtml = info;
+    @Override
+    protected void setInfo(final String info) {
+        String edocHtml = info;
 
-		if (fIsUsingBrowserWidget) {
-			fBrowser.setText(edocHtml);
-		} else {
-			fPresentation.clear();
-			final Rectangle size = fText.getClientArea();
+        if (fIsUsingBrowserWidget) {
+            fBrowser.setText(edocHtml);
+        } else {
+            fPresentation.clear();
+            final Rectangle size = fText.getClientArea();
 
-			try {
-				edocHtml = fPresenter.updatePresentation(getSite().getShell(),
-						edocHtml, fPresentation, size.width, size.height);
-			} catch (final IllegalArgumentException ex) {
-				// the edoc might no longer be valid
-				return;
-			}
-			fText.setText(edocHtml);
-			TextPresentation.applyTextPresentation(fPresentation, fText);
-		}
-	}
+            try {
+                edocHtml = fPresenter.updatePresentation(getSite().getShell(),
+                        edocHtml, fPresentation, size.width, size.height);
+            } catch (final IllegalArgumentException ex) {
+                // the edoc might no longer be valid
+                return;
+            }
+            fText.setText(edocHtml);
+            TextPresentation.applyTextPresentation(fPresentation, fText);
+        }
+    }
 
-	public void setText(final String s) {
-		setInfo(s);
-	}
+    public void setText(final String s) {
+        setInfo(s);
+    }
 
-	/*
-	 * @see AbstractInfoView#getControl()
-	 */
-	@Override
-	protected Control getControl() {
-		if (fIsUsingBrowserWidget) {
-			return fBrowser;
-		}
-		return fText;
-	}
+    /*
+     * @see AbstractInfoView#getControl()
+     */
+    @Override
+    protected Control getControl() {
+        if (fIsUsingBrowserWidget) {
+            return fBrowser;
+        }
+        return fText;
+    }
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
-	 *
-	 * @since 3.1
-	 */
-	@Override
-	protected String getHelpContextId() {
-		return ""; // TODO return IJavaHelpContextIds.JAVADOC_VIEW;
-	}
+    /*
+     * @see
+     * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
+     * 
+     * @since 3.1
+     */
+    @Override
+    protected String getHelpContextId() {
+        return ""; // TODO return IJavaHelpContextIds.JAVADOC_VIEW;
+    }
 
-	@Override
-	protected String getInfoForSelection(final IWorkbenchPart part,
-			final ISelection selection) {
-		if (selection instanceof ITextSelection && part instanceof ErlangEditor) {
-			final ITextSelection sel = (ITextSelection) selection;
-			final ErlangEditor editor = (ErlangEditor) part;
-			return ErlTextHover.getHoverTextForOffset(sel.getOffset(), editor);
-		}
-		return null;
-	}
+    @Override
+    protected String getInfoForSelection(final IWorkbenchPart part,
+            final ISelection selection) {
+        if (selection instanceof ITextSelection && part instanceof ErlangEditor) {
+            final ITextSelection sel = (ITextSelection) selection;
+            final ErlangEditor editor = (ErlangEditor) part;
+            return ErlTextHover.getHoverTextForOffset(sel.getOffset(), editor);
+        }
+        return null;
+    }
 
 }

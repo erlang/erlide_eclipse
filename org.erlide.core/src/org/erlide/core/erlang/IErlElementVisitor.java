@@ -7,15 +7,15 @@ package org.erlide.core.erlang;
  * 
  */
 public interface IErlElementVisitor {
-	/**
-	 * Visits the given element.
-	 * 
-	 * @param element
-	 *            the element to visit
-	 * @return <code>true</code> if the children should be visited
-	 *         <code>false</code> if they should be skipped
-	 * @throws ErlModelException
-	 */
-	public boolean visit(IErlElement element) throws ErlModelException;
+    /**
+     * Visits the given element.
+     * 
+     * @param element
+     *            the element to visit
+     * @return <code>true</code> if the children should be visited
+     *         <code>false</code> if they should be skipped
+     * @throws ErlModelException
+     */
+    public boolean visit(IErlElement element) throws ErlModelException;
 
 }

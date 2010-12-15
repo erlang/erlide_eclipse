@@ -15,32 +15,32 @@ import java.util.ResourceBundle;
 
 public class Messages {
 
-	private final static String RESOURCE_BUNDLE = "com.bdaum.overlayPages.Messages";//$NON-NLS-1$
+    private final static String RESOURCE_BUNDLE = "com.bdaum.overlayPages.Messages";//$NON-NLS-1$
 
-	private static ResourceBundle fgResourceBundle = null;
+    private static ResourceBundle fgResourceBundle = null;
 
-	private static boolean notRead = true;
+    private static boolean notRead = true;
 
-	public Messages() {
-	}
+    public Messages() {
+    }
 
-	public static ResourceBundle getResourceBundle() {
-		if (notRead) {
-			notRead = false;
-			try {
-				fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
-			} catch (final Exception e) {
-			}
-		}
+    public static ResourceBundle getResourceBundle() {
+        if (notRead) {
+            notRead = false;
+            try {
+                fgResourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
+            } catch (final Exception e) {
+            }
+        }
 
-		return fgResourceBundle;
-	}
+        return fgResourceBundle;
+    }
 
-	public static String getString(final String key) {
-		try {
-			return getResourceBundle().getString(key);
-		} catch (final Exception e) {
-			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
-		}
-	}
+    public static String getString(final String key) {
+        try {
+            return getResourceBundle().getString(key);
+        } catch (final Exception e) {
+            return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
+        }
+    }
 }

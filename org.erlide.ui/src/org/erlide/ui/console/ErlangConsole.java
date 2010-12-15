@@ -26,83 +26,84 @@ import org.erlide.jinterface.backend.BackendShell;
 import org.erlide.runtime.backend.ErlideBackend;
 
 public class ErlangConsole extends TextConsole {
-	private final BackendShell shell;
-	protected ListenerList consoleListeners;
-	protected ErlangConsolePartitioner partitioner;
-	private boolean stopped = false;
+    private final BackendShell shell;
+    protected ListenerList consoleListeners;
+    protected ErlangConsolePartitioner partitioner;
+    private boolean stopped = false;
 
-	public ErlangConsole(ErlideBackend backend) {
-		super(backend.getName(), null, null, true);
-		shell = backend.getShell("main");
-		this.consoleListeners = new ListenerList(ListenerList.IDENTITY);
+    public ErlangConsole(final ErlideBackend backend) {
+        super(backend.getName(), null, null, true);
+        shell = backend.getShell("main");
+        consoleListeners = new ListenerList(ListenerList.IDENTITY);
 
-		partitioner = new ErlangConsolePartitioner();
-		getDocument().setDocumentPartitioner(partitioner);
-		partitioner.connect(getDocument());
-	}
+        partitioner = new ErlangConsolePartitioner();
+        getDocument().setDocumentPartitioner(partitioner);
+        partitioner.connect(getDocument());
+    }
 
-	@Override
-	public IPageBookViewPage createPage(IConsoleView view) {
-		return new ErlangConsolePage(view, this);
-	}
+    @Override
+    public IPageBookViewPage createPage(final IConsoleView view) {
+        return new ErlangConsolePage(view, this);
+    }
 
-	public Backend getBackend() {
-		return shell.getBackend();
-	}
+    public Backend getBackend() {
+        return shell.getBackend();
+    }
 
-	public BackendShell getShell() {
-		return shell;
-	}
+    public BackendShell getShell() {
+        return shell;
+    }
 
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
 
-	@Override
-	public String getName() {
-		return "Erlang: " + shell.getBackend().getInfo().toString() + " "
-				+ shell.hashCode();
-	}
+    @Override
+    public String getName() {
+        return "Erlang: " + shell.getBackend().getInfo().toString() + " "
+                + shell.hashCode();
+    }
 
-	@Override
-	public String getType() {
-		return null;
-	}
+    @Override
+    public String getType() {
+        return null;
+    }
 
-	@Override
-	public void addPropertyChangeListener(IPropertyChangeListener listener) {
-	}
+    @Override
+    public void addPropertyChangeListener(final IPropertyChangeListener listener) {
+    }
 
-	@Override
-	public void removePropertyChangeListener(IPropertyChangeListener listener) {
-	}
+    @Override
+    public void removePropertyChangeListener(
+            final IPropertyChangeListener listener) {
+    }
 
-	public void show() {
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		String id = IConsoleConstants.ID_CONSOLE_VIEW;
-		IConsoleView view;
-		try {
-			view = (IConsoleView) page.showView(id);
-			view.display(this);
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public void show() {
+        final IWorkbenchPage page = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        final String id = IConsoleConstants.ID_CONSOLE_VIEW;
+        IConsoleView view;
+        try {
+            view = (IConsoleView) page.showView(id);
+            view.display(this);
+        } catch (final PartInitException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	protected IConsoleDocumentPartitioner getPartitioner() {
-		return partitioner;
-	}
+    @Override
+    protected IConsoleDocumentPartitioner getPartitioner() {
+        return partitioner;
+    }
 
-	public void stop() {
-		stopped  = true;
-	}
+    public void stop() {
+        stopped = true;
+    }
 
-	public boolean isStopped() {
-		return stopped;
-	}
+    public boolean isStopped() {
+        return stopped;
+    }
 
 }

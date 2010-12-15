@@ -68,7 +68,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             root = getRootPreferenceNode();
 
             for (final RuntimeInfo rt : fRuntimes.values()) {
-                RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
+                final RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
                 rtl.store(root);
             }
             if (defaultRuntimeName != null) {
@@ -139,7 +139,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             children = root.childrenNames();
             for (final String name : children) {
                 final RuntimeInfo rt = new RuntimeInfo();
-                RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
+                final RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
                 rtl.load(root.node(name));
                 fRuntimes.put(name, rt);
             }
@@ -154,7 +154,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             }
         }
         final RuntimeInfo rt = getRuntime(root.get("erlide", null));
-        setErlideRuntime((rt == null) ? getDefaultRuntime() : rt);
+        setErlideRuntime(rt == null ? getDefaultRuntime() : rt);
     }
 
     protected IEclipsePreferences getRootPreferenceNode() {
@@ -197,21 +197,21 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     public void removeRuntime(final String name) {
         fRuntimes.remove(name);
-        if(erlideRuntime.getName().equals(name)) {
+        if (erlideRuntime.getName().equals(name)) {
             erlideRuntime = fRuntimes.values().iterator().next();
         }
-        if(defaultRuntimeName.equals(name)) {
+        if (defaultRuntimeName.equals(name)) {
             defaultRuntimeName = fRuntimes.keySet().iterator().next();
         }
         notifyListeners();
     }
 
     public synchronized String getDefaultRuntimeName() {
-        return this.defaultRuntimeName;
+        return defaultRuntimeName;
     }
 
     public synchronized void setDefaultRuntime(final String name) {
-        this.defaultRuntimeName = name;
+        defaultRuntimeName = name;
         notifyListeners();
     }
 
@@ -219,9 +219,9 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         if (runtime != null) {
             runtime.setNodeName("erlide");
         }
-        final RuntimeInfo old = this.erlideRuntime;
+        final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
-            this.erlideRuntime = runtime;
+            erlideRuntime = runtime;
             notifyListeners();
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();

@@ -42,119 +42,119 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class EdocExportWizardPage extends WizardPage {
 
-	private CheckboxTableViewer checkboxTableViewer;
+    private CheckboxTableViewer checkboxTableViewer;
 
-	static class TableLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-		public String getColumnText(final Object element, final int columnIndex) {
-			return ((IProject) element).getName();
-		}
+    static class TableLabelProvider extends LabelProvider implements
+            ITableLabelProvider {
+        public String getColumnText(final Object element, final int columnIndex) {
+            return ((IProject) element).getName();
+        }
 
-		public Image getColumnImage(final Object element, final int columnIndex) {
-			return null;
-		}
-	}
+        public Image getColumnImage(final Object element, final int columnIndex) {
+            return null;
+        }
+    }
 
-	static class TableContentProvider implements IStructuredContentProvider {
+    static class TableContentProvider implements IStructuredContentProvider {
 
-		public Object[] getElements(final Object inputElement) {
-			final java.util.List<IProject> ps = new ArrayList<IProject>();
+        public Object[] getElements(final Object inputElement) {
+            final java.util.List<IProject> ps = new ArrayList<IProject>();
 
-			final IProject[] projects = ResourcesPlugin.getWorkspace()
-					.getRoot().getProjects();
-			for (final IProject p : projects) {
-				if (p.isAccessible()) {
-					IProjectNature n = null;
-					try {
-						n = p.getNature(ErlangPlugin.NATURE_ID);
-						if (n != null) {
-							ps.add(p);
-						}
-					} catch (final CoreException e) {
-					}
-				}
-			}
-			return ps.toArray(new IProject[0]);
-		}
+            final IProject[] projects = ResourcesPlugin.getWorkspace()
+                    .getRoot().getProjects();
+            for (final IProject p : projects) {
+                if (p.isAccessible()) {
+                    IProjectNature n = null;
+                    try {
+                        n = p.getNature(ErlangPlugin.NATURE_ID);
+                        if (n != null) {
+                            ps.add(p);
+                        }
+                    } catch (final CoreException e) {
+                    }
+                }
+            }
+            return ps.toArray(new IProject[0]);
+        }
 
-		public void dispose() {
-		}
+        public void dispose() {
+        }
 
-		public void inputChanged(final Viewer viewer, final Object oldInput,
-				final Object newInput) {
-		}
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
+        }
 
-	}
+    }
 
-	private Text destination;
-	private Table table;
+    private Text destination;
+    private Table table;
 
-	protected EdocExportWizardPage(final String pageName,
-			final IStructuredSelection selection) {
-		super(pageName);
-		setTitle("eDoc export (work in progress!)");
-		setDescription("Select the projects and files for which you want to generate eDoc documentation");
-	}
+    protected EdocExportWizardPage(final String pageName,
+            final IStructuredSelection selection) {
+        super(pageName);
+        setTitle("eDoc export (work in progress!)");
+        setDescription("Select the projects and files for which you want to generate eDoc documentation");
+    }
 
-	public void createControl(final Composite parent) {
-		final Composite composite = new Composite(parent, SWT.NONE);
-		final GridLayout gridLayout = new GridLayout();
-		composite.setLayout(gridLayout);
-		setControl(composite);
+    public void createControl(final Composite parent) {
+        final Composite composite = new Composite(parent, SWT.NONE);
+        final GridLayout gridLayout = new GridLayout();
+        composite.setLayout(gridLayout);
+        setControl(composite);
 
-		final Label selectProjectsForLabel = new Label(composite, SWT.NONE);
-		selectProjectsForLabel.setLayoutData(new GridData());
-		selectProjectsForLabel
-				.setText("Select projects for which edoc documentation will be generated:");
+        final Label selectProjectsForLabel = new Label(composite, SWT.NONE);
+        selectProjectsForLabel.setLayoutData(new GridData());
+        selectProjectsForLabel
+                .setText("Select projects for which edoc documentation will be generated:");
 
-		checkboxTableViewer = CheckboxTableViewer.newCheckList(composite,
-				SWT.BORDER);
-		checkboxTableViewer.setContentProvider(new TableContentProvider());
-		checkboxTableViewer.setLabelProvider(new TableLabelProvider());
-		table = checkboxTableViewer.getTable();
-		final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd_table.widthHint = 423;
-		table.setLayoutData(gd_table);
-		checkboxTableViewer.setInput(this);
+        checkboxTableViewer = CheckboxTableViewer.newCheckList(composite,
+                SWT.BORDER);
+        checkboxTableViewer.setContentProvider(new TableContentProvider());
+        checkboxTableViewer.setLabelProvider(new TableLabelProvider());
+        table = checkboxTableViewer.getTable();
+        final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd_table.widthHint = 423;
+        table.setLayoutData(gd_table);
+        checkboxTableViewer.setInput(this);
 
-		final Group optionsGroup = new Group(composite, SWT.NONE);
-		optionsGroup.setText("Options");
-		final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
-				false, false);
-		optionsGroup.setLayoutData(gd_optionsGroup);
-		final GridLayout gridLayout_1 = new GridLayout();
-		gridLayout_1.numColumns = 2;
-		optionsGroup.setLayout(gridLayout_1);
+        final Group optionsGroup = new Group(composite, SWT.NONE);
+        optionsGroup.setText("Options");
+        final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
+                false, false);
+        optionsGroup.setLayoutData(gd_optionsGroup);
+        final GridLayout gridLayout_1 = new GridLayout();
+        gridLayout_1.numColumns = 2;
+        optionsGroup.setLayout(gridLayout_1);
 
-		final Label selectLabel = new Label(optionsGroup, SWT.NONE);
-		selectLabel.setText("Destination (relative to each project):");
+        final Label selectLabel = new Label(optionsGroup, SWT.NONE);
+        selectLabel.setText("Destination (relative to each project):");
 
-		destination = new Text(optionsGroup, SWT.BORDER);
-		final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER,
-				false, false);
-		gd_destination.widthHint = 179;
-		destination.setLayoutData(gd_destination);
-		destination.setText("doc");
-	}
+        destination = new Text(optionsGroup, SWT.BORDER);
+        final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER,
+                false, false);
+        gd_destination.widthHint = 179;
+        destination.setLayoutData(gd_destination);
+        destination.setText("doc");
+    }
 
-	public Collection<IProject> getSelectedResources() {
-		final ArrayList<IProject> result = new ArrayList<IProject>();
-		final Object[] sel = checkboxTableViewer.getCheckedElements();
-		for (final Object o : sel) {
-			result.add((IProject) o);
-		}
-		return result;
-	}
+    public Collection<IProject> getSelectedResources() {
+        final ArrayList<IProject> result = new ArrayList<IProject>();
+        final Object[] sel = checkboxTableViewer.getCheckedElements();
+        for (final Object o : sel) {
+            result.add((IProject) o);
+        }
+        return result;
+    }
 
-	public Map<String, OtpErlangObject> getOptions() {
-		final HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
-		result.put("dir", new OtpErlangString(destination.getText()));
-		// result.put("preprocess", new OtpErlangBoolean(false));
-		return result;
-	}
+    public Map<String, OtpErlangObject> getOptions() {
+        final HashMap<String, OtpErlangObject> result = new HashMap<String, OtpErlangObject>();
+        result.put("dir", new OtpErlangString(destination.getText()));
+        // result.put("preprocess", new OtpErlangBoolean(false));
+        return result;
+    }
 
-	public String getDestination() {
-		return destination.getText();
-	}
+    public String getDestination() {
+        return destination.getText();
+    }
 
 }

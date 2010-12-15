@@ -14,57 +14,57 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class BackendEvalResult {
 
-	private boolean ok;
+    private boolean ok;
 
-	private OtpErlangObject value;
+    private OtpErlangObject value;
 
-	private OtpErlangObject bindings;
+    private OtpErlangObject bindings;
 
-	private OtpErlangObject errorReason;
+    private OtpErlangObject errorReason;
 
-	/**
-	 * @return Returns the errorReason.
-	 */
-	public final OtpErlangObject getErrorReason() {
-		return errorReason;
-	}
+    /**
+     * @return Returns the errorReason.
+     */
+    public final OtpErlangObject getErrorReason() {
+        return errorReason;
+    }
 
-	/**
-	 * @return Returns the bindings.
-	 */
-	public final OtpErlangObject getBindings() {
-		return bindings;
-	}
+    /**
+     * @return Returns the bindings.
+     */
+    public final OtpErlangObject getBindings() {
+        return bindings;
+    }
 
-	/**
-	 * @return Returns the ok.
-	 */
-	public final boolean isOk() {
-		return ok;
-	}
+    /**
+     * @return Returns the ok.
+     */
+    public final boolean isOk() {
+        return ok;
+    }
 
-	/**
-	 * @return Returns the value.
-	 */
-	public final OtpErlangObject getValue() {
-		return value;
-	}
+    /**
+     * @return Returns the value.
+     */
+    public final OtpErlangObject getValue() {
+        return value;
+    }
 
-	public void setError(final String r) {
-		setError(new OtpErlangString(r));
-	}
+    public void setError(final String r) {
+        setError(new OtpErlangString(r));
+    }
 
-	public void setError(final OtpErlangObject r) {
-		ok = false;
-		errorReason = r;
-		value = null;
-		bindings = null;
-	}
+    public void setError(final OtpErlangObject r) {
+        ok = false;
+        errorReason = r;
+        value = null;
+        bindings = null;
+    }
 
-	public void setValue(final OtpErlangObject r, final OtpErlangObject b) {
-		ok = true;
-		value = r;
-		bindings = b;
-		errorReason = null;
-	}
+    public void setValue(final OtpErlangObject r, final OtpErlangObject b) {
+        ok = true;
+        value = r;
+        bindings = b;
+        errorReason = null;
+    }
 }

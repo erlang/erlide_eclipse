@@ -11,7 +11,7 @@
 package org.erlide.jinterface.util;
 
 public interface IEpmdMonitor {
-	void nodeUp(String name);
+    void nodeUp(String name);
 
-	void nodeDown(String name);
+    void nodeDown(String name);
 }

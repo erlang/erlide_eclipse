@@ -15,41 +15,41 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class FunctionNameVariableResolver extends TemplateVariableResolver {
 
-	private static FunctionNameVariableResolver fInstance;
+    private static FunctionNameVariableResolver fInstance;
 
-	private String fFunctionName;
+    private String fFunctionName;
 
-	public static FunctionNameVariableResolver getDefault() {
-		if (fInstance == null) {
-			fInstance = new FunctionNameVariableResolver();
-		}
-		return fInstance;
-	}
+    public static FunctionNameVariableResolver getDefault() {
+        if (fInstance == null) {
+            fInstance = new FunctionNameVariableResolver();
+        }
+        return fInstance;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-	 * .eclipse.jface.text.templates.TemplateContext)
-	 */
-	@Override
-	protected String resolve(final TemplateContext context) {
-		return getFunctionName();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+     * .eclipse.jface.text.templates.TemplateContext)
+     */
+    @Override
+    protected String resolve(final TemplateContext context) {
+        return getFunctionName();
+    }
 
-	/**
-	 * @return Returns the functionName.
-	 */
-	public String getFunctionName() {
-		return fFunctionName;
-	}
+    /**
+     * @return Returns the functionName.
+     */
+    public String getFunctionName() {
+        return fFunctionName;
+    }
 
-	/**
-	 * @param functionName
-	 *            The functionName to set.
-	 */
-	public void setFunctionName(final String functionName) {
-		fFunctionName = functionName;
-	}
+    /**
+     * @param functionName
+     *            The functionName to set.
+     */
+    public void setFunctionName(final String functionName) {
+        fFunctionName = functionName;
+    }
 }

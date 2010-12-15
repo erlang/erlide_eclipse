@@ -57,6 +57,13 @@
             Create an Erlang project.
          </description>
       </wizard>
+      <wizard
+            category="org.erlide.ui.wizards.newWizards"
+            class="org.erlide.ui.wizards.ErlangFileWizard"
+            icon="icons/full/obj16/erlang_NewModule.png"
+            id="org.erlide.ui.wizards.ErlangSourceFile"
+            name="Module">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -69,19 +76,6 @@
                value="erlidenature">
          </filter>
       </objectContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="org.erlide.ui.prefs.ErlangPreferencePage"
-            id="org.erlide.ui.preferences"
-            name="Erlang"/>
-      <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.ReportPreferencePage"
-            id="org.erlide.ui.reporting"
-            name="Report problems">
-      </page>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -121,34 +115,42 @@
             id="org.erlide.ui.preferences.templates"
             name="%editorTemplatePage">
       </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.RuntimePreferencePage"
+            id="org.erlide.ui.preferences.runtimes"
+            name="Installed runtimes">
+      </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.CompilerPreferencePage"
+            id="org.erlide.ui.preferences.compiler"
+            name="Compiler">
+      </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.DialyzerPreferencePage"
+            id="org.erlide.ui.preferences.dialyzer"
+            name="Dialyzer">
+      </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.plugin.NavigationPreferencePage"
+            id="org.erlide.ui.preferences.navigation"
+            name="Navigation">
+      </page>
+      <page
+            class="org.erlide.ui.prefs.ErlangPreferencePage"
+            id="org.erlide.ui.preferences"
+            name="Erlang">
+      </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.ReportPreferencePage"
+            id="org.erlide.ui.reporting"
+            name="Report problems">
+      </page>
    </extension>
-     <extension
-         point="org.eclipse.ui.preferencePages">
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.RuntimePreferencePage"
-             id="org.erlide.ui.preferences.runtimes"
-             name="Installed runtimes">
-       </page>
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.CompilerPreferencePage"
-             id="org.erlide.ui.preferences.compiler"
-             name="Compiler">
-       </page>
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.DialyzerPreferencePage"
-             id="org.erlide.ui.preferences.dialyzer"
-             name="Dialyzer">
-       </page>
-       <page
-             category="org.erlide.ui.preferences"
-             class="org.erlide.ui.prefs.plugin.NavigationPreferencePage"
-             id="org.erlide.ui.preferences.navigation"
-             name="Navigation">
-       </page>
-  </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -393,16 +395,6 @@
          </action>
       </objectContribution>
    </extension>
-  <extension
-         point="org.eclipse.ui.newWizards">
-    <wizard
-          category="org.erlide.ui.wizards.newWizards"
-          class="org.erlide.ui.wizards.ErlangFileWizard"
-          icon="icons/full/obj16/erlang_NewModule.png"
-          id="org.erlide.ui.wizards.ErlangSourceFile"
-          name="Module">
-      </wizard>
-     </extension>
  <extension
        point="org.eclipse.ui.contexts">
     <context
@@ -642,9 +634,45 @@
                  label="Toggle Mark Occurences"
                  style="toggle"
                  tooltip="%toggleMarkOccurrences.tooltip">
+              <visibleWhen
+                    checkEnabled="false">
+                 <with
+                       variable="activeEditorId">
+                    <equals
+                          value="org.erlide.ui.editors.erl.ErlangEditor">
+                    </equals>
+                 </with>
+              </visibleWhen>
            </command>
         </toolbar>
      </menuContribution>
+    <menuContribution
+          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+       <toolbar
+             id="org.erlide.ui.toolbars.creation"
+             label="Erlang creation wizards">
+          <command
+                commandId="org.eclipse.ui.newWizard"
+                icon="icons/full/obj16/erlang_NewModule.png"
+                label="New Erlang module"
+                style="push"
+                tooltip="Create a new erlang module">
+             <parameter
+                   name="newWizardId"
+                   value="org.erlide.ui.wizards.ErlangSourceFile">
+             </parameter>
+             <visibleWhen
+                   checkEnabled="false">
+                <with
+                      variable="activeWorkbenchWindow.activePerspective">
+                   <equals
+                         value="org.erlide.ui.perspectives.ErlangPerspective">
+                   </equals>
+                </with>
+             </visibleWhen>
+          </command>
+       </toolbar>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -763,6 +791,14 @@
     <handler
           class="org.erlide.ui.editors.erl.handlers.ToggleMarkOccurrencesHandler"
           commandId="org.erlide.ui.commands.toggleMarkOccurrences">
+       <enabledWhen>
+          <with
+                variable="activePart">
+             <instanceof
+                   value="org.erlide.ui.editors.erl.ErlangEditor">
+             </instanceof>
+          </with>
+       </enabledWhen>                    
     </handler>
  </extension>
  <extension
@@ -1214,6 +1250,16 @@
             </possibleDropTargets>
          </dropAssistant>
       </navigatorContent>
+      <commonWizard
+            type="new"
+            wizardId="org.erlide.ui.wizards.newproject">
+         <enablement></enablement>
+      </commonWizard>
+      <commonWizard
+            type="new"
+            wizardId="org.erlide.ui.wizards.ErlangSourceFile">
+         <enablement></enablement>
+      </commonWizard>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.linkHelper">
@@ -1262,32 +1308,6 @@
             Import an existing erlang project from the local file system into the workspace.
          </description>
       </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.erlide.ui.navigatorObjectContribution"
-            objectClass="org.eclipse.core.resources.IResource">
-         <action
-               class="org.erlide.ui.actions.NewErlangModuleAction"
-               icon="icons/full/obj16/erlang_NewModule.png"
-               id="org.erlide.ui.menuModuleAction"
-               label="New Module"
-               menubarPath="erlideMenu2">
-         </action>
-
-      </objectContribution>
-      <viewerContribution
-            id="org.erlide.ui.navigatorViewerContribution"
-            targetID="org.erlide.ui.views.navigator.view#PopupMenu">
-         <action
-               class="org.erlide.ui.actions.NewErlangProjectAction"
-               icon="icons/full/obj16/newproject.png"
-               id="org.erlide.ui.menuProjectAction"
-               label="New Erlang Project"
-               menubarPath="erlidemenu1">
-         </action>
-      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.ui.decorators">
@@ -1757,4 +1777,4 @@
             id="org.erlide.ui.ErlangExternalEditorInputFactory">
       </factory>
    </extension>
-</plugin>
+ </plugin>

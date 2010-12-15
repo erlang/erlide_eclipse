@@ -17,44 +17,44 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public abstract class ErlImportExport extends ErlMember implements IParent {
 
-	protected List<ErlangFunction> fFunctions;
+    protected List<ErlangFunction> fFunctions;
 
-	protected ErlImportExport(final IErlElement parent, final String name,
-			final ErlangFunction[] imports) {
-		super(parent, name);
-		fFunctions = new ArrayList<ErlangFunction>(imports.length);
-		for (final ErlangFunction element : imports) {
-			fFunctions.add(element);
-		}
-	}
+    protected ErlImportExport(final IErlElement parent, final String name,
+            final ErlangFunction[] imports) {
+        super(parent, name);
+        fFunctions = new ArrayList<ErlangFunction>(imports.length);
+        for (final ErlangFunction element : imports) {
+            fFunctions.add(element);
+        }
+    }
 
-	public ErlImportExport(final IErlModule module, final String name,
-			final OtpErlangList functionList) {
-		super(module, name);
-		fFunctions = new ArrayList<ErlangFunction>(functionList.arity());
-		for (final OtpErlangObject i : functionList.elements()) {
-			final OtpErlangTuple function = (OtpErlangTuple) i;
-			fFunctions.add(new ErlangFunction(function));
-		}
-	}
+    public ErlImportExport(final IErlModule module, final String name,
+            final OtpErlangList functionList) {
+        super(module, name);
+        fFunctions = new ArrayList<ErlangFunction>(functionList.arity());
+        for (final OtpErlangObject i : functionList.elements()) {
+            final OtpErlangTuple function = (OtpErlangTuple) i;
+            fFunctions.add(new ErlangFunction(function));
+        }
+    }
 
-	public boolean hasFunction(final ErlangFunction f) {
-		return fFunctions.contains(f);
-	}
+    public boolean hasFunction(final ErlangFunction f) {
+        return fFunctions.contains(f);
+    }
 
-	public List<ErlangFunction> getFunctions() {
-		return fFunctions;
-	}
+    public List<ErlangFunction> getFunctions() {
+        return fFunctions;
+    }
 
-	public OtpErlangObject toErlangObject() {
-		final OtpErlangObject[] funcTuples = new OtpErlangObject[fFunctions
-				.size()];
-		int i = 0;
-		for (final ErlangFunction f : fFunctions) {
-			funcTuples[i++] = OtpErlang.mkTuple(new OtpErlangAtom(
-					f.name), new OtpErlangLong(f.arity));
-		}
-		return new OtpErlangList(funcTuples);
-	}
+    public OtpErlangObject toErlangObject() {
+        final OtpErlangObject[] funcTuples = new OtpErlangObject[fFunctions
+                .size()];
+        int i = 0;
+        for (final ErlangFunction f : fFunctions) {
+            funcTuples[i++] = OtpErlang.mkTuple(new OtpErlangAtom(f.name),
+                    new OtpErlangLong(f.arity));
+        }
+        return new OtpErlangList(funcTuples);
+    }
 
 }

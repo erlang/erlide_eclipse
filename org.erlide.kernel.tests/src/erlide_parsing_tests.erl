@@ -14,6 +14,8 @@
 %% Exported Functions
 %%
 
+-compile(export_all).
+
 %%
 %% API Functions
 %%
@@ -55,6 +57,22 @@ parsing_define_with_record_ref_test_() ->
                           comments=[]},
                    test_parse("-define(xx, #x{})."))].
 
+parsing_record_def_test_() ->
+    Expected = #model{forms = [#attribute{pos = {{0, 0, 0}, 32},
+                                          name = record,
+                                          args = {a,[{b, {{0, 0, 12}, 1}},
+                                                     {c, {{0, 0, 15}, 1}}]},
+                                          extra = "a, {b, c :: integer()}"}],
+                      comments = []},
+    Value = test_parse("-record(a, {b, c :: integer()})."),
+    [?_assertEqual(Expected, Value)].
+
+parsing_record_ref_within_type_spec() ->
+    S = "-record(a, {b, c :: #rec{}}).",
+    Expected = {ok,[{"xxx",a,-4,[],false,20,4,false}]},
+    Value = test_refs(S, [{record_ref, rec}]),
+    [?_assertEqual(Expected, Value)].
+
 %%
 %% Local Functions
 %%
@@ -63,6 +81,10 @@ test_parse(S) ->
     erlide_scanner_server:initialScan(testing, "", S, "/tmp", false),
     {ok, Res, unused} = erlide_noparse:reparse(testing),
     Res.
+
+test_refs(S, SearchPattern) ->
+    test_parse(S),
+    erlide_search_server:find_refs([SearchPattern], [{testing, "xxx"}], "/tmp").
 
 %% t() ->
 %%     erlide_noparse:initial_parse(testing, ModuleFileName, StateDir, UpdateCaches, UpdateSearchServer),

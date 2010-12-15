@@ -27,265 +27,265 @@ import org.eclipse.swt.widgets.Label;
  */
 public class SelectionButtonDialogFieldGroup extends DialogField {
 
-	private Composite fButtonComposite;
+    private Composite fButtonComposite;
 
-	private Button[] fButtons;
+    private Button[] fButtons;
 
-	private final String[] fButtonNames;
+    private final String[] fButtonNames;
 
-	private final boolean[] fButtonsSelected;
+    private final boolean[] fButtonsSelected;
 
-	private final boolean[] fButtonsEnabled;
+    private final boolean[] fButtonsEnabled;
 
-	private final int fGroupBorderStyle;
+    private final int fGroupBorderStyle;
 
-	private final int fGroupNumberOfColumns;
+    private final int fGroupNumberOfColumns;
 
-	private final int fButtonsStyle;
+    private final int fButtonsStyle;
 
-	/**
-	 * Creates a group without border.
-	 */
-	public SelectionButtonDialogFieldGroup(final int buttonsStyle,
-			final String[] buttonNames, final int nColumns) {
-		this(buttonsStyle, buttonNames, nColumns, SWT.NONE);
-	}
+    /**
+     * Creates a group without border.
+     */
+    public SelectionButtonDialogFieldGroup(final int buttonsStyle,
+            final String[] buttonNames, final int nColumns) {
+        this(buttonsStyle, buttonNames, nColumns, SWT.NONE);
+    }
 
-	/**
-	 * Creates a group with border (label in border). Accepted button styles
-	 * are: SWT.RADIO, SWT.CHECK, SWT.TOGGLE For border styles see
-	 * <code>Group</code>
-	 */
-	public SelectionButtonDialogFieldGroup(final int buttonsStyle,
-			final String[] buttonNames, final int nColumns,
-			final int borderStyle) {
-		super();
+    /**
+     * Creates a group with border (label in border). Accepted button styles
+     * are: SWT.RADIO, SWT.CHECK, SWT.TOGGLE For border styles see
+     * <code>Group</code>
+     */
+    public SelectionButtonDialogFieldGroup(final int buttonsStyle,
+            final String[] buttonNames, final int nColumns,
+            final int borderStyle) {
+        super();
 
-		Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
-				|| buttonsStyle == SWT.TOGGLE);
-		fButtonNames = buttonNames;
+        Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
+                || buttonsStyle == SWT.TOGGLE);
+        fButtonNames = buttonNames;
 
-		final int nButtons = buttonNames.length;
-		fButtonsSelected = new boolean[nButtons];
-		fButtonsEnabled = new boolean[nButtons];
-		for (int i = 0; i < nButtons; i++) {
-			fButtonsSelected[i] = false;
-			fButtonsEnabled[i] = true;
-		}
-		if (buttonsStyle == SWT.RADIO) {
-			fButtonsSelected[0] = true;
-		}
+        final int nButtons = buttonNames.length;
+        fButtonsSelected = new boolean[nButtons];
+        fButtonsEnabled = new boolean[nButtons];
+        for (int i = 0; i < nButtons; i++) {
+            fButtonsSelected[i] = false;
+            fButtonsEnabled[i] = true;
+        }
+        if (buttonsStyle == SWT.RADIO) {
+            fButtonsSelected[0] = true;
+        }
 
-		fGroupBorderStyle = borderStyle;
-		fGroupNumberOfColumns = (nColumns <= 0) ? nButtons : nColumns;
+        fGroupBorderStyle = borderStyle;
+        fGroupNumberOfColumns = nColumns <= 0 ? nButtons : nColumns;
 
-		fButtonsStyle = buttonsStyle;
+        fButtonsStyle = buttonsStyle;
 
-	}
+    }
 
-	// ------- layout helpers
+    // ------- layout helpers
 
-	/*
-	 * @see DialogField#doFillIntoGrid
-	 */
-	@Override
-	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
-		assertEnoughColumns(nColumns);
+    /*
+     * @see DialogField#doFillIntoGrid
+     */
+    @Override
+    public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
+        assertEnoughColumns(nColumns);
 
-		if (fGroupBorderStyle == SWT.NONE) {
-			final Label label = getLabelControl(parent);
-			label.setLayoutData(gridDataForLabel(1));
+        if (fGroupBorderStyle == SWT.NONE) {
+            final Label label = getLabelControl(parent);
+            label.setLayoutData(gridDataForLabel(1));
 
-			final Composite buttonsgroup = getSelectionButtonsGroup(parent);
-			final GridData gd = new GridData();
-			gd.horizontalSpan = nColumns - 1;
-			buttonsgroup.setLayoutData(gd);
+            final Composite buttonsgroup = getSelectionButtonsGroup(parent);
+            final GridData gd = new GridData();
+            gd.horizontalSpan = nColumns - 1;
+            buttonsgroup.setLayoutData(gd);
 
-			return new Control[] { label, buttonsgroup };
-		}
-		final Composite buttonsgroup = getSelectionButtonsGroup(parent);
-		final GridData gd = new GridData();
-		gd.horizontalSpan = nColumns;
-		buttonsgroup.setLayoutData(gd);
+            return new Control[] { label, buttonsgroup };
+        }
+        final Composite buttonsgroup = getSelectionButtonsGroup(parent);
+        final GridData gd = new GridData();
+        gd.horizontalSpan = nColumns;
+        buttonsgroup.setLayoutData(gd);
 
-		return new Control[] { buttonsgroup };
-	}
+        return new Control[] { buttonsgroup };
+    }
 
-	/*
-	 * @see DialogField#doFillIntoGrid
-	 */
-	@Override
-	public int getNumberOfControls() {
-		return (fGroupBorderStyle == SWT.NONE) ? 2 : 1;
-	}
+    /*
+     * @see DialogField#doFillIntoGrid
+     */
+    @Override
+    public int getNumberOfControls() {
+        return fGroupBorderStyle == SWT.NONE ? 2 : 1;
+    }
 
-	// ------- ui creation
+    // ------- ui creation
 
-	private Button createSelectionButton(final int index,
-			final Composite group, final SelectionListener listener) {
-		final Button button = new Button(group, fButtonsStyle | SWT.LEFT);
-		button.setFont(group.getFont());
-		button.setText(fButtonNames[index]);
-		button.setEnabled(isEnabled() && fButtonsEnabled[index]);
-		button.setSelection(fButtonsSelected[index]);
-		button.addSelectionListener(listener);
-		button.setLayoutData(new GridData());
-		return button;
-	}
+    private Button createSelectionButton(final int index,
+            final Composite group, final SelectionListener listener) {
+        final Button button = new Button(group, fButtonsStyle | SWT.LEFT);
+        button.setFont(group.getFont());
+        button.setText(fButtonNames[index]);
+        button.setEnabled(isEnabled() && fButtonsEnabled[index]);
+        button.setSelection(fButtonsSelected[index]);
+        button.addSelectionListener(listener);
+        button.setLayoutData(new GridData());
+        return button;
+    }
 
-	/**
-	 * Returns the group widget. When called the first time, the widget will be
-	 * created.
-	 * 
-	 * @param parent
-	 *            The parent composite when called the first time, or
-	 *            <code>null</code> after.
-	 */
-	public Composite getSelectionButtonsGroup(final Composite parent) {
-		if (fButtonComposite == null) {
-			assertCompositeNotNull(parent);
+    /**
+     * Returns the group widget. When called the first time, the widget will be
+     * created.
+     * 
+     * @param parent
+     *            The parent composite when called the first time, or
+     *            <code>null</code> after.
+     */
+    public Composite getSelectionButtonsGroup(final Composite parent) {
+        if (fButtonComposite == null) {
+            assertCompositeNotNull(parent);
 
-			final GridLayout layout = new GridLayout();
-			layout.makeColumnsEqualWidth = true;
-			layout.numColumns = fGroupNumberOfColumns;
+            final GridLayout layout = new GridLayout();
+            layout.makeColumnsEqualWidth = true;
+            layout.numColumns = fGroupNumberOfColumns;
 
-			if (fGroupBorderStyle != SWT.NONE) {
-				final Group group = new Group(parent, fGroupBorderStyle);
-				if (fLabelText != null && fLabelText.length() > 0) {
-					group.setText(fLabelText);
-				}
-				fButtonComposite = group;
-			} else {
-				fButtonComposite = new Composite(parent, SWT.NULL);
-				layout.marginHeight = 0;
-				layout.marginWidth = 0;
-			}
+            if (fGroupBorderStyle != SWT.NONE) {
+                final Group group = new Group(parent, fGroupBorderStyle);
+                if (fLabelText != null && fLabelText.length() > 0) {
+                    group.setText(fLabelText);
+                }
+                fButtonComposite = group;
+            } else {
+                fButtonComposite = new Composite(parent, SWT.NULL);
+                layout.marginHeight = 0;
+                layout.marginWidth = 0;
+            }
 
-			fButtonComposite.setLayout(layout);
+            fButtonComposite.setLayout(layout);
 
-			final SelectionListener listener = new SelectionListener() {
+            final SelectionListener listener = new SelectionListener() {
 
-				public void widgetDefaultSelected(final SelectionEvent e) {
-					doWidgetSelected(e);
-				}
+                public void widgetDefaultSelected(final SelectionEvent e) {
+                    doWidgetSelected(e);
+                }
 
-				public void widgetSelected(final SelectionEvent e) {
-					doWidgetSelected(e);
-				}
-			};
-			final int nButtons = fButtonNames.length;
-			fButtons = new Button[nButtons];
-			for (int i = 0; i < nButtons; i++) {
-				fButtons[i] = createSelectionButton(i, fButtonComposite,
-						listener);
-			}
-			final int nRows = nButtons / fGroupNumberOfColumns;
-			final int nFillElements = nRows * fGroupNumberOfColumns - nButtons;
-			for (int i = 0; i < nFillElements; i++) {
-				createEmptySpace(fButtonComposite);
-			}
-		}
-		return fButtonComposite;
-	}
+                public void widgetSelected(final SelectionEvent e) {
+                    doWidgetSelected(e);
+                }
+            };
+            final int nButtons = fButtonNames.length;
+            fButtons = new Button[nButtons];
+            for (int i = 0; i < nButtons; i++) {
+                fButtons[i] = createSelectionButton(i, fButtonComposite,
+                        listener);
+            }
+            final int nRows = nButtons / fGroupNumberOfColumns;
+            final int nFillElements = nRows * fGroupNumberOfColumns - nButtons;
+            for (int i = 0; i < nFillElements; i++) {
+                createEmptySpace(fButtonComposite);
+            }
+        }
+        return fButtonComposite;
+    }
 
-	/**
-	 * Returns a button from the group or <code>null</code> if not yet created.
-	 */
-	public Button getSelectionButton(final int index) {
-		if (index >= 0 && index < fButtons.length) {
-			return fButtons[index];
-		}
-		return null;
-	}
+    /**
+     * Returns a button from the group or <code>null</code> if not yet created.
+     */
+    public Button getSelectionButton(final int index) {
+        if (index >= 0 && index < fButtons.length) {
+            return fButtons[index];
+        }
+        return null;
+    }
 
-	protected void doWidgetSelected(final SelectionEvent e) {
-		final Button button = (Button) e.widget;
-		for (int i = 0; i < fButtons.length; i++) {
-			if (fButtons[i] == button) {
-				fButtonsSelected[i] = button.getSelection();
-				dialogFieldChanged();
-				return;
-			}
-		}
-	}
+    protected void doWidgetSelected(final SelectionEvent e) {
+        final Button button = (Button) e.widget;
+        for (int i = 0; i < fButtons.length; i++) {
+            if (fButtons[i] == button) {
+                fButtonsSelected[i] = button.getSelection();
+                dialogFieldChanged();
+                return;
+            }
+        }
+    }
 
-	// ------ model access
+    // ------ model access
 
-	/**
-	 * Returns the selection state of a button contained in the group.
-	 * 
-	 * @param index
-	 *            The index of the button
-	 */
-	public boolean isSelected(final int index) {
-		if (index >= 0 && index < fButtonsSelected.length) {
-			return fButtonsSelected[index];
-		}
-		return false;
-	}
+    /**
+     * Returns the selection state of a button contained in the group.
+     * 
+     * @param index
+     *            The index of the button
+     */
+    public boolean isSelected(final int index) {
+        if (index >= 0 && index < fButtonsSelected.length) {
+            return fButtonsSelected[index];
+        }
+        return false;
+    }
 
-	/**
-	 * Sets the selection state of a button contained in the group.
-	 */
-	public void setSelection(final int index, final boolean selected) {
-		if (index >= 0 && index < fButtonsSelected.length) {
-			if (fButtonsSelected[index] != selected) {
-				fButtonsSelected[index] = selected;
-				if (fButtons != null) {
-					final Button button = fButtons[index];
-					if (isOkToUse(button)) {
-						button.setSelection(selected);
-					}
-				}
-			}
-		}
-	}
+    /**
+     * Sets the selection state of a button contained in the group.
+     */
+    public void setSelection(final int index, final boolean selected) {
+        if (index >= 0 && index < fButtonsSelected.length) {
+            if (fButtonsSelected[index] != selected) {
+                fButtonsSelected[index] = selected;
+                if (fButtons != null) {
+                    final Button button = fButtons[index];
+                    if (isOkToUse(button)) {
+                        button.setSelection(selected);
+                    }
+                }
+            }
+        }
+    }
 
-	// ------ enable / disable management
+    // ------ enable / disable management
 
-	@Override
-	protected void updateEnableState() {
-		super.updateEnableState();
-		if (fButtons != null) {
-			final boolean enabled = isEnabled();
-			for (int i = 0; i < fButtons.length; i++) {
-				final Button button = fButtons[i];
-				if (isOkToUse(button)) {
-					button.setEnabled(enabled && fButtonsEnabled[i]);
-				}
-			}
-		}
-	}
+    @Override
+    protected void updateEnableState() {
+        super.updateEnableState();
+        if (fButtons != null) {
+            final boolean enabled = isEnabled();
+            for (int i = 0; i < fButtons.length; i++) {
+                final Button button = fButtons[i];
+                if (isOkToUse(button)) {
+                    button.setEnabled(enabled && fButtonsEnabled[i]);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Sets the enable state of a button contained in the group.
-	 */
-	public void enableSelectionButton(final int index, final boolean enable) {
-		if (index >= 0 && index < fButtonsEnabled.length) {
-			fButtonsEnabled[index] = enable;
-			if (fButtons != null) {
-				final Button button = fButtons[index];
-				if (isOkToUse(button)) {
-					button.setEnabled(isEnabled() && enable);
-				}
-			}
-		}
-	}
+    /**
+     * Sets the enable state of a button contained in the group.
+     */
+    public void enableSelectionButton(final int index, final boolean enable) {
+        if (index >= 0 && index < fButtonsEnabled.length) {
+            fButtonsEnabled[index] = enable;
+            if (fButtons != null) {
+                final Button button = fButtons[index];
+                if (isOkToUse(button)) {
+                    button.setEnabled(isEnabled() && enable);
+                }
+            }
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.erlide.ui.internal.dialogfields.DialogField#refresh()
-	 */
-	@Override
-	public void refresh() {
-		super.refresh();
-		for (int i = 0; i < fButtons.length; i++) {
-			final Button button = fButtons[i];
-			if (isOkToUse(button)) {
-				button.setSelection(fButtonsSelected[i]);
-			}
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.ui.internal.dialogfields.DialogField#refresh()
+     */
+    @Override
+    public void refresh() {
+        super.refresh();
+        for (int i = 0; i < fButtons.length; i++) {
+            final Button button = fButtons[i];
+            if (isOkToUse(button)) {
+                button.setSelection(fButtonsSelected[i]);
+            }
+        }
+    }
 
 }

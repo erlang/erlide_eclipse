@@ -14,31 +14,31 @@ import org.eclipse.osgi.util.NLS;
 
 public final class PreferencesMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.erlide.ui.prefs.plugin.PreferencesMessages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.ui.prefs.plugin.PreferencesMessages"; //$NON-NLS-1$
 
-	public static String ErlEditorPreferencePage_coloring_category_erlang;
-	public static String ErlEditorPreferencePage_coloring_category_edoc;
-	public static String ErlEditorColoringConfigurationBlock_link;
-	public static String ErlEditorPreferencePage_coloring_element;
-	public static String ErlEditorPreferencePage_enable;
-	public static String ErlEditorPreferencePage_color;
-	public static String ErlEditorPreferencePage_bold;
-	public static String ErlEditorPreferencePage_italic;
-	public static String ErlEditorPreferencePage_strikeout;
-	public static String ErlEditorPreferencePage_underline;
-	public static String ErlEditorPreferencePage_preview;
-	public static String ErlEditorPreferencePage_folding_title;
-	public static String FoldingConfigurationBlock_enable;
-	public static String FoldingConfigurationBlock_combo_caption;
-	public static String FoldingConfigurationBlock_info_no_preferences;
-	public static String FoldingConfigurationBlock_error_not_exist;
+    public static String ErlEditorPreferencePage_coloring_category_erlang;
+    public static String ErlEditorPreferencePage_coloring_category_edoc;
+    public static String ErlEditorColoringConfigurationBlock_link;
+    public static String ErlEditorPreferencePage_coloring_element;
+    public static String ErlEditorPreferencePage_enable;
+    public static String ErlEditorPreferencePage_color;
+    public static String ErlEditorPreferencePage_bold;
+    public static String ErlEditorPreferencePage_italic;
+    public static String ErlEditorPreferencePage_strikeout;
+    public static String ErlEditorPreferencePage_underline;
+    public static String ErlEditorPreferencePage_preview;
+    public static String ErlEditorPreferencePage_folding_title;
+    public static String FoldingConfigurationBlock_enable;
+    public static String FoldingConfigurationBlock_combo_caption;
+    public static String FoldingConfigurationBlock_info_no_preferences;
+    public static String FoldingConfigurationBlock_error_not_exist;
 
-	private PreferencesMessages() {
-		// Do not instantiate
-	}
+    private PreferencesMessages() {
+        // Do not instantiate
+    }
 
-	static {
-		NLS.initializeMessages(BUNDLE_NAME, PreferencesMessages.class);
-	}
+    static {
+        NLS.initializeMessages(BUNDLE_NAME, PreferencesMessages.class);
+    }
 
 }

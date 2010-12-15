@@ -20,34 +20,34 @@ package com.ericsson.otp.erlang;
 
 final class OtpSystem {
 
-	// Place status variables here
+    // Place status variables here
 
-	static {
+    static {
 
-		final String rel = System.getProperty("OtpCompatRel", "0");
+        final String rel = System.getProperty("OtpCompatRel", "0");
 
-		try {
+        try {
 
-			switch (Integer.parseInt(rel)) {
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 0:
-			default:
-				break;
-			}
-		} catch (final NumberFormatException e) {
-			/* Ignore ... */
-		}
+            switch (Integer.parseInt(rel)) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 0:
+            default:
+                break;
+            }
+        } catch (final NumberFormatException e) {
+            /* Ignore ... */
+        }
 
-	}
+    }
 
-	// Place query functions here
+    // Place query functions here
 
 }

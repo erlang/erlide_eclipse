@@ -15,28 +15,28 @@ import org.eclipse.jface.action.Action;
 
 class GotoInputAction extends Action {
 
-	// private AbstractInfoView fInfoView;
+    // private AbstractInfoView fInfoView;
 
-	public GotoInputAction(final AbstractInfoView infoView) {
-		Assert.isNotNull(infoView);
-		// fInfoView = infoView;
+    public GotoInputAction(final AbstractInfoView infoView) {
+        Assert.isNotNull(infoView);
+        // fInfoView = infoView;
 
-		// TODO JavaPluginImages.setLocalImageDescriptors(this,
-		// "goto_input.gif");
-		// //$NON-NLS-1$
-		setText("Goto Input");
-		setToolTipText("Go to input");
-		setDescription("Go to input");
+        // TODO JavaPluginImages.setLocalImageDescriptors(this,
+        // "goto_input.gif");
+        // //$NON-NLS-1$
+        setText("Goto Input");
+        setToolTipText("Go to input");
+        setDescription("Go to input");
 
-		// TODO PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-		// IJavaHelpContextIds.OPEN_INPUT_ACTION);
-	}
+        // TODO PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+        // IJavaHelpContextIds.OPEN_INPUT_ACTION);
+    }
 
-	@Override
-	public void run() {
-		// TODO not yet implemented
-		// IErlElement inputElement= fInfoView.getInput();
-		// new OpenAction(fInfoView.getViewSite()).run(new Object[] {
-		// inputElement });
-	}
+    @Override
+    public void run() {
+        // TODO not yet implemented
+        // IErlElement inputElement= fInfoView.getInput();
+        // new OpenAction(fInfoView.getViewSite()).run(new Object[] {
+        // inputElement });
+    }
 }

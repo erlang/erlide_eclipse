@@ -14,32 +14,32 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 
 public class ErlangSourceContextTypeLayout extends TemplateContextType {
 
-	private static ErlangSourceContextTypeLayout fInstance;
+    private static ErlangSourceContextTypeLayout fInstance;
 
-	/**
-	 * Creates a new XML context type.
-	 */
-	public ErlangSourceContextTypeLayout() {
-		addGlobalResolvers();
-		fInstance = this;
-	}
+    /**
+     * Creates a new XML context type.
+     */
+    public ErlangSourceContextTypeLayout() {
+        addGlobalResolvers();
+        fInstance = this;
+    }
 
-	private void addGlobalResolvers() {
-		addResolver(new GlobalTemplateVariables.Cursor());
-		addResolver(new GlobalTemplateVariables.WordSelection());
-		addResolver(new GlobalTemplateVariables.LineSelection());
-		addResolver(new GlobalTemplateVariables.Dollar());
-		addResolver(new GlobalTemplateVariables.Date());
-		addResolver(new GlobalTemplateVariables.Year());
-		addResolver(new GlobalTemplateVariables.Time());
-		addResolver(new GlobalTemplateVariables.User());
-	}
+    private void addGlobalResolvers() {
+        addResolver(new GlobalTemplateVariables.Cursor());
+        addResolver(new GlobalTemplateVariables.WordSelection());
+        addResolver(new GlobalTemplateVariables.LineSelection());
+        addResolver(new GlobalTemplateVariables.Dollar());
+        addResolver(new GlobalTemplateVariables.Date());
+        addResolver(new GlobalTemplateVariables.Year());
+        addResolver(new GlobalTemplateVariables.Time());
+        addResolver(new GlobalTemplateVariables.User());
+    }
 
-	public static ErlangSourceContextTypeLayout getDefault() {
-		if (fInstance == null) {
-			new ErlangSourceContextTypeLayout();
-		}
-		return fInstance;
-	}
+    public static ErlangSourceContextTypeLayout getDefault() {
+        if (fInstance == null) {
+            new ErlangSourceContextTypeLayout();
+        }
+        return fInstance;
+    }
 
 }

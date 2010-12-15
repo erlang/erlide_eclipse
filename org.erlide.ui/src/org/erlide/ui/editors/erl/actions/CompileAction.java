@@ -48,20 +48,20 @@ public class CompileAction extends Action {
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();
-        BuildResource bres = new BuildResource(resource);
-        CompilerPreferences prefs = new CompilerPreferences(project);
+        final BuildResource bres = new BuildResource(resource);
+        final CompilerPreferences prefs = new CompilerPreferences(project);
         try {
             prefs.load();
-        } catch (BackingStoreException e1) {
+        } catch (final BackingStoreException e1) {
             e1.printStackTrace();
         }
-        OtpErlangList compilerOptions = prefs.export();
+        final OtpErlangList compilerOptions = prefs.export();
         final IOldErlangProjectProperties pprefs = ErlangCore
                 .getProjectProperties(project);
 
         if ("erl".equals(resource.getFileExtension())) {
-            helper.compileErl(project, bres, pprefs.getOutputDir()
-                    .toString(), b, compilerOptions);
+            helper.compileErl(project, bres, pprefs.getOutputDir().toString(),
+                    b, compilerOptions);
         }
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);

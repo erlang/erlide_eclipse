@@ -52,60 +52,60 @@ import java.io.IOException;
  */
 @Deprecated
 public class OtpServer extends OtpSelf {
-	/**
-	 * Create an {@link OtpServer} from an existing {@link OtpSelf}.
-	 * 
-	 * @param self
-	 *            an existing self node.
-	 * 
-	 * @exception java.io.IOException
-	 *                if a ServerSocket could not be created.
-	 * 
-	 */
-	public OtpServer(final OtpSelf self) throws IOException {
-		super(self.node(), self.cookie());
-	}
+    /**
+     * Create an {@link OtpServer} from an existing {@link OtpSelf}.
+     * 
+     * @param self
+     *            an existing self node.
+     * 
+     * @exception java.io.IOException
+     *                if a ServerSocket could not be created.
+     * 
+     */
+    public OtpServer(final OtpSelf self) throws IOException {
+        super(self.node(), self.cookie());
+    }
 
-	/**
-	 * Create an OtpServer, using a vacant port chosen by the operating system.
-	 * To determine what port was chosen, call the object's {@link #port()}
-	 * method.
-	 * 
-	 * @param node
-	 *            the name of the node.
-	 * 
-	 * @param cookie
-	 *            the authorization cookie that will be used by this node when
-	 *            accepts connections from remote nodes.
-	 * 
-	 * @exception java.io.IOException
-	 *                if a ServerSocket could not be created.
-	 * 
-	 */
-	public OtpServer(final String node, final String cookie) throws IOException {
-		super(node, cookie);
-	}
+    /**
+     * Create an OtpServer, using a vacant port chosen by the operating system.
+     * To determine what port was chosen, call the object's {@link #port()}
+     * method.
+     * 
+     * @param node
+     *            the name of the node.
+     * 
+     * @param cookie
+     *            the authorization cookie that will be used by this node when
+     *            accepts connections from remote nodes.
+     * 
+     * @exception java.io.IOException
+     *                if a ServerSocket could not be created.
+     * 
+     */
+    public OtpServer(final String node, final String cookie) throws IOException {
+        super(node, cookie);
+    }
 
-	/**
-	 * Create an OtpServer, using the specified port number.
-	 * 
-	 * @param node
-	 *            a name for this node, as above.
-	 * 
-	 * @param cookie
-	 *            the authorization cookie that will be used by this node when
-	 *            accepts connections from remote nodes.
-	 * 
-	 * @param port
-	 *            the port number to bind the socket to.
-	 * 
-	 * @exception java.io.IOException
-	 *                if a ServerSocket could not be created or if the chosen
-	 *                port number was not available.
-	 * 
-	 */
-	public OtpServer(final String node, final String cookie, final int port)
-			throws IOException {
-		super(node, cookie, port);
-	}
+    /**
+     * Create an OtpServer, using the specified port number.
+     * 
+     * @param node
+     *            a name for this node, as above.
+     * 
+     * @param cookie
+     *            the authorization cookie that will be used by this node when
+     *            accepts connections from remote nodes.
+     * 
+     * @param port
+     *            the port number to bind the socket to.
+     * 
+     * @exception java.io.IOException
+     *                if a ServerSocket could not be created or if the chosen
+     *                port number was not available.
+     * 
+     */
+    public OtpServer(final String node, final String cookie, final int port)
+            throws IOException {
+        super(node, cookie, port);
+    }
 }

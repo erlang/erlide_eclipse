@@ -19,42 +19,42 @@ import erlang.ErlideScanner;
  * Erlang syntax scanner
  */
 public class ErlScanner implements IDisposable {
-	private final String moduleName;
-	private int refCount = 0;
+    private final String moduleName;
+    private int refCount = 0;
 
-	public ErlScanner(final IErlModule module, final String initialText,
-			final String moduleFileName) {
-		moduleName = ErlangToolkit.createScannerModuleName(module);
-		ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
-				false);
-	}
+    public ErlScanner(final IErlModule module, final String initialText,
+            final String moduleFileName) {
+        moduleName = ErlangToolkit.createScannerModuleName(module);
+        ErlideScanner.initialScan(moduleName, moduleFileName, initialText,
+                false);
+    }
 
-	public void addRef() {
-		++refCount;
-	}
+    public void addRef() {
+        ++refCount;
+    }
 
-	public boolean willDispose() {
-		return refCount == 1;
-	}
+    public boolean willDispose() {
+        return refCount == 1;
+    }
 
-	public void dispose() {
-		--refCount;
-		if (refCount == 0) {
-			ErlideScanner.destroy(moduleName);
-		}
-	}
+    public void dispose() {
+        --refCount;
+        if (refCount == 0) {
+            ErlideScanner.destroy(moduleName);
+        }
+    }
 
-	public void replaceText(final int offset, final int removeLength,
-			final String newText) {
-		ErlideScanner.replaceText(moduleName, offset, removeLength, newText);
-	}
+    public void replaceText(final int offset, final int removeLength,
+            final String newText) {
+        ErlideScanner.replaceText(moduleName, offset, removeLength, newText);
+    }
 
-	public ErlToken getTokenAt(final int offset) {
-		return ErlideScanner.getTokenAt(moduleName, offset);
-	}
+    public ErlToken getTokenAt(final int offset) {
+        return ErlideScanner.getTokenAt(moduleName, offset);
+    }
 
-	public String getScannerModuleName() {
-		return moduleName;
-	}
+    public String getScannerModuleName() {
+        return moduleName;
+    }
 
 }

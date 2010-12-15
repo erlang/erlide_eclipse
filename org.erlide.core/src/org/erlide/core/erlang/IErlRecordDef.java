@@ -3,7 +3,6 @@
  */
 package org.erlide.core.erlang;
 
-import java.util.List;
 
 /**
  * @author jakob
@@ -11,5 +10,4 @@ import java.util.List;
  */
 public interface IErlRecordDef extends IErlPreprocessorDef {
 
-	public List<String> getFields();
 }

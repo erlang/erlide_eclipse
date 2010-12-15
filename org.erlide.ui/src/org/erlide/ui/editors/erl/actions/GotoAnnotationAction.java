@@ -19,37 +19,42 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 public class GotoAnnotationAction extends TextEditorAction {
 
-	private final boolean fForward;
+    private final boolean fForward;
 
-	public GotoAnnotationAction(final String prefix, final boolean forward) {
-		super(ErlangEditorMessages.getBundleForConstructedKeys(), prefix, null);
+    public GotoAnnotationAction(final String prefix, final boolean forward) {
+        super(ErlangEditorMessages.getBundleForConstructedKeys(), prefix, null);
 
-		fForward = forward;
-		if (forward) {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-					IErlangHelpContextIds.GOTO_NEXT_ERROR_ACTION);
-		} else {
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-					IErlangHelpContextIds.GOTO_PREVIOUS_ERROR_ACTION);
-		}
-	}
+        fForward = forward;
+        if (forward) {
+            PlatformUI
+                    .getWorkbench()
+                    .getHelpSystem()
+                    .setHelp(this, IErlangHelpContextIds.GOTO_NEXT_ERROR_ACTION);
+        } else {
+            PlatformUI
+                    .getWorkbench()
+                    .getHelpSystem()
+                    .setHelp(this,
+                            IErlangHelpContextIds.GOTO_PREVIOUS_ERROR_ACTION);
+        }
+    }
 
-	@Override
-	public void run() {
-		final ErlangEditor e = (ErlangEditor) getTextEditor();
-		e.gotoAnnotation(fForward);
-	}
+    @Override
+    public void run() {
+        final ErlangEditor e = (ErlangEditor) getTextEditor();
+        e.gotoAnnotation(fForward);
+    }
 
-	@Override
-	public void setEditor(final ITextEditor editor) {
-		if (editor instanceof ErlangEditor) {
-			super.setEditor(editor);
-		}
-		update();
-	}
+    @Override
+    public void setEditor(final ITextEditor editor) {
+        if (editor instanceof ErlangEditor) {
+            super.setEditor(editor);
+        }
+        update();
+    }
 
-	@Override
-	public void update() {
-		setEnabled(getTextEditor() instanceof ErlangEditor);
-	}
+    @Override
+    public void update() {
+        setEnabled(getTextEditor() instanceof ErlangEditor);
+    }
 }

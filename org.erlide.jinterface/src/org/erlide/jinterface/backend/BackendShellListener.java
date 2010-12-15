@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
-
 public interface BackendShellListener {
 
-	void changed(BackendShell erlConsoleModel);
+    void changed(BackendShell erlConsoleModel);
 
 }

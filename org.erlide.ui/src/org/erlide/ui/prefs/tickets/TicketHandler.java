@@ -17,11 +17,11 @@ import org.erlide.jinterface.backend.util.ProblemData;
 
 public interface TicketHandler {
 
-	TicketStatus send(ProblemData info);
+    TicketStatus send(ProblemData info);
 
-	String infoToMessage(ProblemData info);
+    String infoToMessage(ProblemData info);
 
-	TicketStatus parseMessage(String message);
+    TicketStatus parseMessage(String message);
 
-	URL getLoginURL(String user, String pass) throws MalformedURLException;
+    URL getLoginURL(String user, String pass) throws MalformedURLException;
 }

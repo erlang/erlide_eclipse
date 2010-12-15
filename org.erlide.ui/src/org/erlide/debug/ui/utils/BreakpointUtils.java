@@ -9,21 +9,21 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class BreakpointUtils {
 
-	public static IErlElement getElement(final ILineBreakpoint breakpoint) {
-		final IErlModel model = ErlangCore.getModel();
-		final IErlElement element = model.findElement(breakpoint.getMarker()
-				.getResource());
-		if (element instanceof IErlModule) {
-			final IErlModule m = (IErlModule) element;
-			try {
-				m.open(null);
-				final int lineNumber = breakpoint.getLineNumber();
-				return m.getElementAtLine(lineNumber - 1);
-			} catch (final Exception e) {
-				ErlLogger.warn(e);
-			}
-		}
-		return null;
-	}
+    public static IErlElement getElement(final ILineBreakpoint breakpoint) {
+        final IErlModel model = ErlangCore.getModel();
+        final IErlElement element = model.findElement(breakpoint.getMarker()
+                .getResource());
+        if (element instanceof IErlModule) {
+            final IErlModule m = (IErlModule) element;
+            try {
+                m.open(null);
+                final int lineNumber = breakpoint.getLineNumber();
+                return m.getElementAtLine(lineNumber - 1);
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
+            }
+        }
+        return null;
+    }
 
 }

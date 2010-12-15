@@ -9,26 +9,28 @@ import org.erlide.ui.util.ErlideSelection;
 
 public class ErlangEditorListenerAdapter implements IErlangEditorListener {
 
-	public void handleCursorPositionChanged(ErlangEditor edit,
-			ErlideSelection ps) {
-	}
+    public void handleCursorPositionChanged(final ErlangEditor edit,
+            final ErlideSelection ps) {
+    }
 
-	public void onCreateActions(ListResourceBundle resources,
-			ErlangEditor edit, IProgressMonitor monitor) {
-	}
+    public void onCreateActions(final ListResourceBundle resources,
+            final ErlangEditor edit, final IProgressMonitor monitor) {
+    }
 
-	public void onDispose(ErlangEditor edit, IProgressMonitor monitor) {
-	}
+    public void onDispose(final ErlangEditor edit,
+            final IProgressMonitor monitor) {
+    }
 
-	public void onInputChanged(ErlangEditor edit, IEditorInput oldInput,
-			IEditorInput input, IProgressMonitor monitor) {
-	}
+    public void onInputChanged(final ErlangEditor edit,
+            final IEditorInput oldInput, final IEditorInput input,
+            final IProgressMonitor monitor) {
+    }
 
-	public void onSave(ErlangEditor edit, IProgressMonitor monitor) {
-	}
+    public void onSave(final ErlangEditor edit, final IProgressMonitor monitor) {
+    }
 
-	public void onSetDocument(IDocument document, ErlangEditor edit,
-			IProgressMonitor monitor) {
-	}
+    public void onSetDocument(final IDocument document,
+            final ErlangEditor edit, final IProgressMonitor monitor) {
+    }
 
 }

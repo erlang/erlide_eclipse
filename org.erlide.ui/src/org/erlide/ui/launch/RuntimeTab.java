@@ -86,7 +86,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final String[] rts = rtl.toArray(new String[] {});
         final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
                 .getDefaultRuntime();
-        final int db = (defaultRuntime == null) ? 0 : Arrays.binarySearch(rts,
+        final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
                 defaultRuntime.getName());
 
         runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);
@@ -118,7 +118,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 if (isRemote) {
                     startNodeCheckbox.setSelection(false);
                 }
-                boolean isNotDistributed = nameText.getText().trim().equals("");
+                final boolean isNotDistributed = nameText.getText().trim()
+                        .equals("");
                 longNameButton.setEnabled(!isNotDistributed);
                 shortNameButton.setEnabled(!isNotDistributed);
                 cookieText.setEnabled(!isNotDistributed);
@@ -222,11 +223,11 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
                 false, false, 2, 1));
         distributedLoadCheck.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 updateLaunchConfigurationDialog();
             }
 
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 updateLaunchConfigurationDialog();
             }
         });
@@ -329,7 +330,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     @Override
     public boolean isValid(final ILaunchConfiguration config) {
         setErrorMessage(null);
-        String name = nameText.getText().trim();
+        final String name = nameText.getText().trim();
         if (!name.equals("") && !RuntimeInfo.validateNodeName(name)) {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
@@ -343,7 +344,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 return false;
             }
         } else {
-            String wspace = ResourcesPlugin.getWorkspace().getRoot()
+            final String wspace = ResourcesPlugin.getWorkspace().getRoot()
                     .getLocation().toPortableString();
             workingDir = wspace + "/" + workingDir;
             d = new File(workingDir);

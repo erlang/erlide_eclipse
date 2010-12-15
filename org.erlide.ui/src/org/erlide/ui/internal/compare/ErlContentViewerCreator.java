@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ErlContentViewerCreator implements IViewerCreator {
 
-	public Viewer createViewer(final Composite parent,
-			final CompareConfiguration config) {
-		return new ErlContentViewer(parent);
-	}
+    public Viewer createViewer(final Composite parent,
+            final CompareConfiguration config) {
+        return new ErlContentViewer(parent);
+    }
 
 }

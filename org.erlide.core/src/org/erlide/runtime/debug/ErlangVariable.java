@@ -27,89 +27,89 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import erlang.ErlideDebug;
 
 public class ErlangVariable extends ErlangDebugElement implements IVariable {
-	private final String name;
-	private final boolean subVariable;
-	private final ErlangValue value;
-	private final ErlangProcess process;
-	private final int stackFrameNo;
+    private final String name;
+    private final boolean subVariable;
+    private final ErlangValue value;
+    private final ErlangProcess process;
+    private final int stackFrameNo;
 
-	public ErlangVariable(final IDebugTarget target, final String name,
-			final boolean subVariable, final OtpErlangObject value,
-			final ErlangProcess process, final String moduleName,
-			final int stackFrameNo) {
-		super(target);
-		this.name = name;
-		this.subVariable = subVariable;
-		this.value = createErlangValue(name, value, process, moduleName);
-		this.process = process;
-		this.stackFrameNo = stackFrameNo;
-	}
+    public ErlangVariable(final IDebugTarget target, final String name,
+            final boolean subVariable, final OtpErlangObject value,
+            final ErlangProcess process, final String moduleName,
+            final int stackFrameNo) {
+        super(target);
+        this.name = name;
+        this.subVariable = subVariable;
+        this.value = createErlangValue(name, value, process, moduleName);
+        this.process = process;
+        this.stackFrameNo = stackFrameNo;
+    }
 
-	private ErlangValue createErlangValue(final String aname,
-			final OtpErlangObject avalue, final ErlangProcess aprocess,
-			final String moduleName) {
-		if (avalue instanceof OtpErlangList || avalue instanceof OtpErlangTuple
-				|| avalue instanceof OtpErlangBinary
-				|| avalue instanceof OtpErlangString) {
-			return new IndexedErlangValue(getDebugTarget(), aname, avalue,
-					aprocess, moduleName);
-		} else {
-			return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
-					moduleName);
-		}
-	}
+    private ErlangValue createErlangValue(final String aname,
+            final OtpErlangObject avalue, final ErlangProcess aprocess,
+            final String moduleName) {
+        if (avalue instanceof OtpErlangList || avalue instanceof OtpErlangTuple
+                || avalue instanceof OtpErlangBinary
+                || avalue instanceof OtpErlangString) {
+            return new IndexedErlangValue(getDebugTarget(), aname, avalue,
+                    aprocess, moduleName);
+        } else {
+            return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
+                    moduleName);
+        }
+    }
 
-	public IValue getValue() throws DebugException {
-		return value;
-	}
+    public IValue getValue() throws DebugException {
+        return value;
+    }
 
-	public String getName() throws DebugException {
-		return name;
-	}
+    public String getName() throws DebugException {
+        return name;
+    }
 
-	public String getReferenceTypeName() throws DebugException {
-		if (value == null) {
-			return null;
-		}
-		return value.getReferenceTypeName();
-	}
+    public String getReferenceTypeName() throws DebugException {
+        if (value == null) {
+            return null;
+        }
+        return value.getReferenceTypeName();
+    }
 
-	public boolean hasValueChanged() throws DebugException {
-		return false;
-	}
+    public boolean hasValueChanged() throws DebugException {
+        return false;
+    }
 
-	public void setValue(final String expression) throws DebugException {
-		if (subVariable) {
-			throw new DebugException(new Status(IStatus.ERROR,
-					ErlangPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
-					"Can't set value of part of expression", null));
-		}
-		final ErlangDebugTarget edt = getErlangDebugTarget();
-		final String err = ErlideDebug.setVariableValue(edt.getBackend(), name,
-				expression, stackFrameNo, process.getMeta());
-		if (err != null) {
-			throw new DebugException(new Status(IStatus.ERROR,
-					ErlangPlugin.PLUGIN_ID,
-					DebugException.TARGET_REQUEST_FAILED, "Bad expression",
-					null));
-		}
+    public void setValue(final String expression) throws DebugException {
+        if (subVariable) {
+            throw new DebugException(new Status(IStatus.ERROR,
+                    ErlangPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
+                    "Can't set value of part of expression", null));
+        }
+        final ErlangDebugTarget edt = getErlangDebugTarget();
+        final String err = ErlideDebug.setVariableValue(edt.getBackend(), name,
+                expression, stackFrameNo, process.getMeta());
+        if (err != null) {
+            throw new DebugException(new Status(IStatus.ERROR,
+                    ErlangPlugin.PLUGIN_ID,
+                    DebugException.TARGET_REQUEST_FAILED, "Bad expression",
+                    null));
+        }
 
-	}
+    }
 
-	public void setValue(final IValue value) throws DebugException {
-		setValue(value.toString());
-	}
+    public void setValue(final IValue value) throws DebugException {
+        setValue(value.toString());
+    }
 
-	public boolean supportsValueModification() {
-		return !subVariable;
-	}
+    public boolean supportsValueModification() {
+        return !subVariable;
+    }
 
-	public boolean verifyValue(final String expression) throws DebugException {
-		return true;
-	}
+    public boolean verifyValue(final String expression) throws DebugException {
+        return true;
+    }
 
-	public boolean verifyValue(final IValue aValue) throws DebugException {
-		return verifyValue(aValue.toString());
-	}
+    public boolean verifyValue(final IValue aValue) throws DebugException {
+        return verifyValue(aValue.toString());
+    }
 
 }

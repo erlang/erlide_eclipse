@@ -15,29 +15,29 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class RpcSteps {
 
-	private Backend backend;
-	private OtpErlangObject result = null;
+    private Backend backend;
+    private OtpErlangObject result = null;
 
-	@Given("a backend")
-	public void aBackend() {
-		System.out.println("GIVEN");
-		backend = BackendManager.getDefault().getIdeBackend();
-	}
+    @Given("a backend")
+    public void aBackend() {
+        System.out.println("GIVEN");
+        backend = BackendManager.getDefault().getIdeBackend();
+    }
 
-	@When("a rpc is done with args $m:$f($a)")
-	public void aRpcIsDoneWith(String m, String f, String a)
-			throws BackendException, ParserException {
-		System.out.println("WHEN " + m + ":" + f + " " + a);
-		OtpErlangObject args = TermParser.parse(a);
-		String sig = "x";
-		result = backend.call(m, f, sig, args);
-	}
+    @When("a rpc is done with args $m:$f($a)")
+    public void aRpcIsDoneWith(final String m, final String f, final String a)
+            throws BackendException, ParserException {
+        System.out.println("WHEN " + m + ":" + f + " " + a);
+        final OtpErlangObject args = TermParser.parse(a);
+        final String sig = "x";
+        result = backend.call(m, f, sig, args);
+    }
 
-	@Then("the result should be $value")
-	public void theResultShouldBe(String value) throws ParserException {
-		System.out.println("THEN " + value + " expect " + value);
-		OtpErlangObject v = TermParser.parse(value);
-		assertThat("ok", result.equals(v));
-	}
+    @Then("the result should be $value")
+    public void theResultShouldBe(final String value) throws ParserException {
+        System.out.println("THEN " + value + " expect " + value);
+        final OtpErlangObject v = TermParser.parse(value);
+        assertThat("ok", result.equals(v));
+    }
 
 }

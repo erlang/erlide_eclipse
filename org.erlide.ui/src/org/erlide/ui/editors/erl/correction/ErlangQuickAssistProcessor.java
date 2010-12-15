@@ -18,23 +18,23 @@ import org.erlide.ui.editors.erl.completion.NoCompletionsProposal;
 
 public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
 
-	public boolean canAssist(
-			final IQuickAssistInvocationContext invocationContext) {
-		return false;
-	}
+    public boolean canAssist(
+            final IQuickAssistInvocationContext invocationContext) {
+        return false;
+    }
 
-	public boolean canFix(final Annotation annotation) {
-		return true;
-	}
+    public boolean canFix(final Annotation annotation) {
+        return true;
+    }
 
-	public ICompletionProposal[] computeQuickAssistProposals(
-			final IQuickAssistInvocationContext invocationContext) {
-		final ICompletionProposal[] result = new ICompletionProposal[] { new NoCompletionsProposal() };
-		return result;
-	}
+    public ICompletionProposal[] computeQuickAssistProposals(
+            final IQuickAssistInvocationContext invocationContext) {
+        final ICompletionProposal[] result = new ICompletionProposal[] { new NoCompletionsProposal() };
+        return result;
+    }
 
-	public String getErrorMessage() {
-		return "not implemented yet";
-	}
+    public String getErrorMessage() {
+        return "not implemented yet";
+    }
 
 }

@@ -22,112 +22,112 @@ import org.erlide.ui.navigator.ErlElementSorter;
 
 public class SortAction extends Action {
 
-	private boolean fSorted;
-	private int fSortedHow;
+    private boolean fSorted;
+    private int fSortedHow;
 
-	private final StructuredViewer fViewer;
+    private final StructuredViewer fViewer;
 
-	private final ViewerComparator fComparator;
-	private final ViewerComparator fComparator2;
+    private final ViewerComparator fComparator;
+    private final ViewerComparator fComparator2;
 
-	private final ViewerComparator fDefaultComparator;
+    private final ViewerComparator fDefaultComparator;
 
-	private final IPreferenceStore fStore;
+    private final IPreferenceStore fStore;
 
-	/**
-	 * @param viewer
-	 * @param tooltipText
-	 * @param sorter
-	 * @param defaultSorter
-	 * @param listener
-	 * @param useMiniImage
-	 */
-	public SortAction(final StructuredViewer viewer, final String tooltipText,
-			final ViewerComparator comparator,
-			final ViewerComparator comparator2,
-			final IPropertyChangeListener listener, final boolean useMiniImage,
-			final IPreferenceStore store) {
+    /**
+     * @param viewer
+     * @param tooltipText
+     * @param sorter
+     * @param defaultSorter
+     * @param listener
+     * @param useMiniImage
+     */
+    public SortAction(final StructuredViewer viewer, final String tooltipText,
+            final ViewerComparator comparator,
+            final ViewerComparator comparator2,
+            final IPropertyChangeListener listener, final boolean useMiniImage,
+            final IPreferenceStore store) {
 
-		super(tooltipText, IAction.AS_CHECK_BOX);
-		// Set the tooltip
-		setToolTipText(tooltipText);
-		// Set the default comparator
-		fDefaultComparator = null;
-		// Set the viewer
-		fViewer = viewer;
-		// Set prefs store
-		fStore = store;
-		// Set the comparators
-		fComparator = comparator;
-		fComparator2 = comparator2;
+        super(tooltipText, IAction.AS_CHECK_BOX);
+        // Set the tooltip
+        setToolTipText(tooltipText);
+        // Set the default comparator
+        fDefaultComparator = null;
+        // Set the viewer
+        fViewer = viewer;
+        // Set prefs store
+        fStore = store;
+        // Set the comparators
+        fComparator = comparator;
+        fComparator2 = comparator2;
 
-		// Determine if the viewer is already sorted
-		fSorted = fStore != null && fStore.getBoolean("erlide.sortedOutline");
-		fSortedHow = (fStore != null) ? fStore.getInt("erlide.sortedOutlineHow")
-				: ErlElementSorter.SORT_ON_NAME;
-		setComparator();
-		// Set the status of this action depending on whether it is sorted or
-		// not
-		setChecked(fSorted);
-		// Set the image
-		setImage();
-		// If a listener was specified, use it
-		if (listener != null) {
-			addListenerObject(listener);
-		}
-	}
+        // Determine if the viewer is already sorted
+        fSorted = fStore != null && fStore.getBoolean("erlide.sortedOutline");
+        fSortedHow = fStore != null ? fStore.getInt("erlide.sortedOutlineHow")
+                : ErlElementSorter.SORT_ON_NAME;
+        setComparator();
+        // Set the status of this action depending on whether it is sorted or
+        // not
+        setChecked(fSorted);
+        // Set the image
+        setImage();
+        // If a listener was specified, use it
+        if (listener != null) {
+            addListenerObject(listener);
+        }
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	private void setComparator() {
-		if (fSorted) {
-			if (fSortedHow == ErlElementSorter.SORT_ON_EXPORT) {
-				fViewer.setComparator(fComparator2);
-			} else {
-				fViewer.setComparator(fComparator);
-			}
-		} else {
-			fViewer.setComparator(fDefaultComparator);
-		}
-	}
+    private void setComparator() {
+        if (fSorted) {
+            if (fSortedHow == ErlElementSorter.SORT_ON_EXPORT) {
+                fViewer.setComparator(fComparator2);
+            } else {
+                fViewer.setComparator(fComparator);
+            }
+        } else {
+            fViewer.setComparator(fDefaultComparator);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	@Override
-	public void run() {
-		// Toggle sorting in three steps
-		if (fSorted) {
-			if (fSortedHow == ErlElementSorter.SORT_ON_NAME) {
-				fSortedHow = ErlElementSorter.SORT_ON_EXPORT;
-			} else {
-				fSorted = false;
-			}
-		} else {
-			// Sorting is off
-			// Turn it on (name)
-			fSorted = true;
-			fSortedHow = ErlElementSorter.SORT_ON_NAME;
-		}
-		setComparator();
-		if (fStore != null) {
-			fStore.setValue("erlide.sortedOutline", fSorted);
-			final int how = (fViewer.getComparator() == fComparator2) ? ErlElementSorter.SORT_ON_EXPORT
-					: ErlElementSorter.SORT_ON_NAME;
-			fStore.setValue("erlide.sortedOutlineHow", how);
-		}
-		setChecked(fSorted);
-		setImage();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        // Toggle sorting in three steps
+        if (fSorted) {
+            if (fSortedHow == ErlElementSorter.SORT_ON_NAME) {
+                fSortedHow = ErlElementSorter.SORT_ON_EXPORT;
+            } else {
+                fSorted = false;
+            }
+        } else {
+            // Sorting is off
+            // Turn it on (name)
+            fSorted = true;
+            fSortedHow = ErlElementSorter.SORT_ON_NAME;
+        }
+        setComparator();
+        if (fStore != null) {
+            fStore.setValue("erlide.sortedOutline", fSorted);
+            final int how = fViewer.getComparator() == fComparator2 ? ErlElementSorter.SORT_ON_EXPORT
+                    : ErlElementSorter.SORT_ON_NAME;
+            fStore.setValue("erlide.sortedOutlineHow", how);
+        }
+        setChecked(fSorted);
+        setImage();
+    }
 
-	private void setImage() {
-		final ImageDescriptor desc = (fSorted
-				&& fSortedHow == ErlElementSorter.SORT_ON_EXPORT) ? ErlideUIPluginImages.DESC_EXPORTED_SORT
-				: ErlideUIPluginImages.DESC_ALPHAB_SORT;
-		setImageDescriptor(desc);
-	}
+    private void setImage() {
+        final ImageDescriptor desc = fSorted
+                && fSortedHow == ErlElementSorter.SORT_ON_EXPORT ? ErlideUIPluginImages.DESC_EXPORTED_SORT
+                : ErlideUIPluginImages.DESC_ALPHAB_SORT;
+        setImageDescriptor(desc);
+    }
 
 }

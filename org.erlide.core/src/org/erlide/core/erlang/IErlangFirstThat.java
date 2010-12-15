@@ -6,12 +6,12 @@ package org.erlide.core.erlang;
  */
 public interface IErlangFirstThat {
 
-	/**
-	 * A boolean function returning true for the element that we're looking for
-	 * 
-	 * @param e
-	 * @return
-	 */
-	boolean firstThat(IErlElement e);
+    /**
+     * A boolean function returning true for the element that we're looking for
+     * 
+     * @param e
+     * @return
+     */
+    boolean firstThat(IErlElement e);
 
 }

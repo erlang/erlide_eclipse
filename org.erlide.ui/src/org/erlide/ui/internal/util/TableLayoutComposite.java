@@ -33,148 +33,148 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class TableLayoutComposite extends Composite {
 
-	private final List<ColumnLayoutData> columns = new ArrayList<ColumnLayoutData>();
+    private final List<ColumnLayoutData> columns = new ArrayList<ColumnLayoutData>();
 
-	/**
-	 * Creates a new <code>TableLayoutComposite</code>.
-	 */
-	public TableLayoutComposite(final Composite parent, final int style) {
-		super(parent, style);
-		addControlListener(new ControlAdapter() {
+    /**
+     * Creates a new <code>TableLayoutComposite</code>.
+     */
+    public TableLayoutComposite(final Composite parent, final int style) {
+        super(parent, style);
+        addControlListener(new ControlAdapter() {
 
-			@Override
-			public void controlResized(final ControlEvent e) {
-				final Rectangle area = getClientArea();
-				final Table table = (Table) getChildren()[0];
-				final Point preferredSize = computeTableSize(table);
-				int width = area.width - 2 * table.getBorderWidth();
-				if (preferredSize.y > area.height) {
-					// Subtract the scrollbar width from the total column width
-					// if a vertical scrollbar will be required
-					final Point vBarSize = table.getVerticalBar().getSize();
-					width -= vBarSize.x;
-				}
-				layoutTable(table, width, area, table.getSize().x < area.width);
-			}
-		});
-	}
+            @Override
+            public void controlResized(final ControlEvent e) {
+                final Rectangle area = getClientArea();
+                final Table table = (Table) getChildren()[0];
+                final Point preferredSize = computeTableSize(table);
+                int width = area.width - 2 * table.getBorderWidth();
+                if (preferredSize.y > area.height) {
+                    // Subtract the scrollbar width from the total column width
+                    // if a vertical scrollbar will be required
+                    final Point vBarSize = table.getVerticalBar().getSize();
+                    width -= vBarSize.x;
+                }
+                layoutTable(table, width, area, table.getSize().x < area.width);
+            }
+        });
+    }
 
-	/**
-	 * Adds a new column of data to this table layout.
-	 * 
-	 * @param data
-	 *            the column layout data
-	 */
-	public void addColumnData(final ColumnLayoutData data) {
-		columns.add(data);
-	}
+    /**
+     * Adds a new column of data to this table layout.
+     * 
+     * @param data
+     *            the column layout data
+     */
+    public void addColumnData(final ColumnLayoutData data) {
+        columns.add(data);
+    }
 
-	// ---- Helpers
-	// -------------------------------------------------------------------------------------
+    // ---- Helpers
+    // -------------------------------------------------------------------------------------
 
-	protected Point computeTableSize(final Table table) {
-		final Point result = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+    protected Point computeTableSize(final Table table) {
+        final Point result = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-		int width = 0;
-		final int size = columns.size();
-		for (int i = 0; i < size; ++i) {
-			final ColumnLayoutData layoutData = columns.get(i);
-			if (layoutData instanceof ColumnPixelData) {
-				final ColumnPixelData col = (ColumnPixelData) layoutData;
-				width += col.width;
-			} else if (layoutData instanceof ColumnWeightData) {
-				final ColumnWeightData col = (ColumnWeightData) layoutData;
-				width += col.minimumWidth;
-			} else {
-				Assert.isTrue(false, "Unknown column layout data"); //$NON-NLS-1$
-			}
-		}
-		if (width > result.x) {
-			result.x = width;
-		}
-		return result;
-	}
+        int width = 0;
+        final int size = columns.size();
+        for (int i = 0; i < size; ++i) {
+            final ColumnLayoutData layoutData = columns.get(i);
+            if (layoutData instanceof ColumnPixelData) {
+                final ColumnPixelData col = (ColumnPixelData) layoutData;
+                width += col.width;
+            } else if (layoutData instanceof ColumnWeightData) {
+                final ColumnWeightData col = (ColumnWeightData) layoutData;
+                width += col.minimumWidth;
+            } else {
+                Assert.isTrue(false, "Unknown column layout data"); //$NON-NLS-1$
+            }
+        }
+        if (width > result.x) {
+            result.x = width;
+        }
+        return result;
+    }
 
-	protected void layoutTable(final Table table, final int width,
-			final Rectangle area, final boolean increase) {
-		if (width <= 1) {
-			return;
-		}
+    protected void layoutTable(final Table table, final int width,
+            final Rectangle area, final boolean increase) {
+        if (width <= 1) {
+            return;
+        }
 
-		final TableColumn[] tableColumns = table.getColumns();
-		final int size = Math.min(columns.size(), tableColumns.length);
-		final int[] widths = new int[size];
-		int fixedWidth = 0;
-		int numberOfWeightColumns = 0;
-		int totalWeight = 0;
+        final TableColumn[] tableColumns = table.getColumns();
+        final int size = Math.min(columns.size(), tableColumns.length);
+        final int[] widths = new int[size];
+        int fixedWidth = 0;
+        int numberOfWeightColumns = 0;
+        int totalWeight = 0;
 
-		// First calc space occupied by fixed columns
-		for (int i = 0; i < size; i++) {
-			final ColumnLayoutData col = columns.get(i);
-			if (col instanceof ColumnPixelData) {
-				final int pixels = ((ColumnPixelData) col).width;
-				widths[i] = pixels;
-				fixedWidth += pixels;
-			} else if (col instanceof ColumnWeightData) {
-				final ColumnWeightData cw = (ColumnWeightData) col;
-				numberOfWeightColumns++;
-				// first time, use the weight specified by the column data,
-				// otherwise use
-				// the actual width as the weight
-				// int weight = firstTime ? cw.weight :
-				// tableColumns[i].getWidth();
-				final int weight = cw.weight;
-				totalWeight += weight;
-			} else {
-				Assert.isTrue(false, "Unknown column layout data"); //$NON-NLS-1$
-			}
-		}
+        // First calc space occupied by fixed columns
+        for (int i = 0; i < size; i++) {
+            final ColumnLayoutData col = columns.get(i);
+            if (col instanceof ColumnPixelData) {
+                final int pixels = ((ColumnPixelData) col).width;
+                widths[i] = pixels;
+                fixedWidth += pixels;
+            } else if (col instanceof ColumnWeightData) {
+                final ColumnWeightData cw = (ColumnWeightData) col;
+                numberOfWeightColumns++;
+                // first time, use the weight specified by the column data,
+                // otherwise use
+                // the actual width as the weight
+                // int weight = firstTime ? cw.weight :
+                // tableColumns[i].getWidth();
+                final int weight = cw.weight;
+                totalWeight += weight;
+            } else {
+                Assert.isTrue(false, "Unknown column layout data"); //$NON-NLS-1$
+            }
+        }
 
-		// Do we have columns that have a weight
-		if (numberOfWeightColumns > 0) {
-			// Now distribute the rest to the columns with weight.
-			final int rest = width - fixedWidth;
-			int totalDistributed = 0;
-			for (int i = 0; i < size; ++i) {
-				final ColumnLayoutData col = columns.get(i);
-				if (col instanceof ColumnWeightData) {
-					final ColumnWeightData cw = (ColumnWeightData) col;
-					// calculate weight as above
-					// int weight = firstTime ? cw.weight :
-					// tableColumns[i].getWidth();
-					final int weight = cw.weight;
-					int pixels = (totalWeight == 0) ? 0 : weight * rest
-							/ totalWeight;
-					if (pixels < cw.minimumWidth) {
-						pixels = cw.minimumWidth;
-					}
-					totalDistributed += pixels;
-					widths[i] = pixels;
-				}
-			}
+        // Do we have columns that have a weight
+        if (numberOfWeightColumns > 0) {
+            // Now distribute the rest to the columns with weight.
+            final int rest = width - fixedWidth;
+            int totalDistributed = 0;
+            for (int i = 0; i < size; ++i) {
+                final ColumnLayoutData col = columns.get(i);
+                if (col instanceof ColumnWeightData) {
+                    final ColumnWeightData cw = (ColumnWeightData) col;
+                    // calculate weight as above
+                    // int weight = firstTime ? cw.weight :
+                    // tableColumns[i].getWidth();
+                    final int weight = cw.weight;
+                    int pixels = totalWeight == 0 ? 0 : weight * rest
+                            / totalWeight;
+                    if (pixels < cw.minimumWidth) {
+                        pixels = cw.minimumWidth;
+                    }
+                    totalDistributed += pixels;
+                    widths[i] = pixels;
+                }
+            }
 
-			// Distribute any remaining pixels to columns with weight.
-			int diff = rest - totalDistributed;
-			for (int i = 0; diff > 0; ++i) {
-				if (i == size) {
-					i = 0;
-				}
-				final ColumnLayoutData col = columns.get(i);
-				if (col instanceof ColumnWeightData) {
-					++widths[i];
-					--diff;
-				}
-			}
-		}
+            // Distribute any remaining pixels to columns with weight.
+            int diff = rest - totalDistributed;
+            for (int i = 0; diff > 0; ++i) {
+                if (i == size) {
+                    i = 0;
+                }
+                final ColumnLayoutData col = columns.get(i);
+                if (col instanceof ColumnWeightData) {
+                    ++widths[i];
+                    --diff;
+                }
+            }
+        }
 
-		if (increase) {
-			table.setSize(area.width, area.height);
-		}
-		for (int i = 0; i < size; i++) {
-			tableColumns[i].setWidth(widths[i]);
-		}
-		if (!increase) {
-			table.setSize(area.width, area.height);
-		}
-	}
+        if (increase) {
+            table.setSize(area.width, area.height);
+        }
+        for (int i = 0; i < size; i++) {
+            tableColumns[i].setWidth(widths[i]);
+        }
+        if (!increase) {
+            table.setSize(area.width, area.height);
+        }
+    }
 }

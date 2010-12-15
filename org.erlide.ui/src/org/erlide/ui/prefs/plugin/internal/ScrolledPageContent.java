@@ -21,35 +21,35 @@ import org.eclipse.ui.forms.widgets.SharedScrolledComposite;
 
 public class ScrolledPageContent extends SharedScrolledComposite {
 
-	private final FormToolkit fToolkit;
+    private final FormToolkit fToolkit;
 
-	public ScrolledPageContent(final Composite parent) {
-		this(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-	}
+    public ScrolledPageContent(final Composite parent) {
+        this(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+    }
 
-	public ScrolledPageContent(final Composite parent, final int style) {
-		super(parent, style);
+    public ScrolledPageContent(final Composite parent, final int style) {
+        super(parent, style);
 
-		setFont(parent.getFont());
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final Display display = workbench.getDisplay();
+        setFont(parent.getFont());
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final Display display = workbench.getDisplay();
 
-		fToolkit = new FormToolkit(display);
+        fToolkit = new FormToolkit(display);
 
-		setExpandHorizontal(true);
-		setExpandVertical(true);
+        setExpandHorizontal(true);
+        setExpandVertical(true);
 
-		final Composite body = new Composite(this, SWT.NONE);
-		body.setFont(parent.getFont());
-		setContent(body);
-	}
+        final Composite body = new Composite(this, SWT.NONE);
+        body.setFont(parent.getFont());
+        setContent(body);
+    }
 
-	public void adaptChild(final Control childControl) {
-		fToolkit.adapt(childControl, true, true);
-	}
+    public void adaptChild(final Control childControl) {
+        fToolkit.adapt(childControl, true, true);
+    }
 
-	public Composite getBody() {
-		return (Composite) getContent();
-	}
+    public Composite getBody() {
+        return (Composite) getContent();
+    }
 
 }

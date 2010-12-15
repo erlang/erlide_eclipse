@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
@@ -34,7 +34,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
     private final BuilderHelper helper;
 
     public BuilderVisitor(final Set<BuildResource> result,
-            final IProgressMonitor monitor, BuilderHelper helper) {
+            final IProgressMonitor monitor, final BuilderHelper helper) {
         this.result = result;
         this.monitor = monitor;
         this.helper = helper;
@@ -49,7 +49,8 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         return visit(resource, IResourceDelta.ADDED, true);
     }
 
-    private boolean visit(IResource resource, int kind, boolean fullBuild) {
+    private boolean visit(final IResource resource, final int kind,
+            final boolean fullBuild) {
         final IProject my_project = resource.getProject();
         if (resource.getType() == IResource.PROJECT) {
             prefs = ErlangCore.getProjectProperties(my_project);
@@ -59,8 +60,8 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             return true;
         }
 
-        IPath path = resource.getParent().getProjectRelativePath();
-        String ext = resource.getFileExtension();
+        final IPath path = resource.getParent().getProjectRelativePath();
+        final String ext = resource.getFileExtension();
         if (prefs.getSourceDirs().contains(path)) {
             if ("erl".equals(ext)) {
                 handleErlFile(kind, resource);
@@ -74,7 +75,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         if (prefs.getIncludeDirs().contains(path) && "hrl".equals(ext)) {
             try {
                 handleHrlFile(kind, resource, fullBuild);
-            } catch (ErlModelException e) {
+            } catch (final ErlModelException e) {
                 ErlLogger.warn(e);
             }
             return false;
@@ -82,7 +83,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         if (prefs.getOutputDir().equals(path) && "beam".equals(ext)) {
             try {
                 handleBeamFile(kind, resource);
-            } catch (CoreException e) {
+            } catch (final CoreException e) {
                 ErlLogger.warn(e);
             }
             return false;
@@ -101,8 +102,8 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             final SearchVisitor searcher = helper.new SearchVisitor(p[0], null);
             resource.getProject().accept(searcher);
             if (searcher.getResult() != null) {
-                final BuildResource bres = new BuildResource(searcher
-                        .getResult());
+                final BuildResource bres = new BuildResource(
+                        searcher.getResult());
                 result.add(bres);
                 monitor.worked(1);
             }
@@ -122,7 +123,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         case IResourceDelta.REMOVED:
             MarkerUtils.deleteMarkers(resource);
 
-            IPath erl = helper.getErlForYrl(resource);
+            final IPath erl = helper.getErlForYrl(resource);
             final IResource br = resource.getProject().findMember(erl);
             if (br != null) {
                 try {
@@ -137,7 +138,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
     }
 
     private void handleHrlFile(final int kind, final IResource resource,
-            boolean fullBuild) throws ErlModelException {
+            final boolean fullBuild) throws ErlModelException {
         switch (kind) {
         case IResourceDelta.ADDED:
         case IResourceDelta.REMOVED:

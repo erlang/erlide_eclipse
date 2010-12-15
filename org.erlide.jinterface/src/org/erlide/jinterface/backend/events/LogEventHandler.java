@@ -19,7 +19,7 @@ public class LogEventHandler extends EventHandler {
     }
 
     private void handleErlangLog(final OtpErlangObject msg) {
-        OtpErlangObject log = getStandardEvent(msg, "erlang_log");
+        final OtpErlangObject log = getStandardEvent(msg, "erlang_log");
         if (log != null) {
             final OtpErlangTuple t = (OtpErlangTuple) log;
             final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);
@@ -35,9 +35,9 @@ public class LogEventHandler extends EventHandler {
                 ss = new String(backtrace.binaryValue());
             }
             try {
-                ErlLogger.erlangLog(module.atomValue() + ".erl", line
-                        .uIntValue(), level.atomValue().toUpperCase(), "%s %s",
-                        logEvent.toString(), ss);
+                ErlLogger.getInstance().erlangLog(module.atomValue() + ".erl",
+                        line.uIntValue(), level.atomValue().toUpperCase(),
+                        "%s %s", logEvent.toString(), ss);
             } catch (final Exception e) {
                 ErlLogger.warn(e);
             }
@@ -45,7 +45,7 @@ public class LogEventHandler extends EventHandler {
     }
 
     private void handleJavaLog(final OtpErlangObject msg) {
-        OtpErlangObject log = getStandardEvent(msg, "log");
+        final OtpErlangObject log = getStandardEvent(msg, "log");
         if (log != null) {
             try {
                 final Bindings b = ErlUtils.match("{K:a,M}", log);

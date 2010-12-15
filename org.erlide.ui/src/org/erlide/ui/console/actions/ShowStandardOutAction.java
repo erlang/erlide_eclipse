@@ -21,28 +21,31 @@ import org.erlide.ui.console.ConsoleMessages;
 /**
  * Toggles preference show the console when output is written to standard output
  * stream.
- *
+ * 
  * @since 3.3
  */
 @SuppressWarnings("restriction")
 public class ShowStandardOutAction extends ShowWhenContentChangesAction {
 
-	/**
-	 * Constructs an action to toggle console auto activation preferences
-	 */
-	public ShowStandardOutAction() {
-		super(ConsoleMessages.ShowStandardOutAction_0);
-		setId(DebugUIPlugin.getUniqueIdentifier()
-				+ ".ShowWhenStdoutChangesAction"); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IDebugHelpContextIds.SHOW_WHEN_STDOUT_CHANGES_ACTION);
-		setImageDescriptor(DebugUITools
-				.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_STANDARD_OUT));
-	}
+    /**
+     * Constructs an action to toggle console auto activation preferences
+     */
+    public ShowStandardOutAction() {
+        super(ConsoleMessages.ShowStandardOutAction_0);
+        setId(DebugUIPlugin.getUniqueIdentifier()
+                + ".ShowWhenStdoutChangesAction"); //$NON-NLS-1$
+        PlatformUI
+                .getWorkbench()
+                .getHelpSystem()
+                .setHelp(this,
+                        IDebugHelpContextIds.SHOW_WHEN_STDOUT_CHANGES_ACTION);
+        setImageDescriptor(DebugUITools
+                .getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_STANDARD_OUT));
+    }
 
-	@Override
-	protected String getKey() {
-		return IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT;
-	}
+    @Override
+    protected String getKey() {
+        return IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT;
+    }
 
 }

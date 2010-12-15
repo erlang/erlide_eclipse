@@ -1233,7 +1233,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     @Override
     public void createPartControl(final Composite parent) {
-        super.createPartControl(parent);
+        try {
+            super.createPartControl(parent);
+        } catch (final IllegalArgumentException e) {
+            // #661: nicer message if file is encoded in utf-8
+            throw filterUTF8Exception(e);
+        }
 
         getBracketInserterPrefs();
 
@@ -1268,6 +1273,29 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         if (isMarkingOccurrences()) {
             installOccurrencesFinder(false);
+        }
+    }
+
+    private IllegalArgumentException filterUTF8Exception(
+            final IllegalArgumentException e) {
+        final StackTraceElement[] stack = e.getStackTrace();
+        boolean filterIt = false;
+        for (final StackTraceElement element : stack) {
+            if (filterIt) {
+                break;
+            }
+            if (!element.getClassName().equals("org.eclipse.swt.SWT")) {
+                filterIt = element.getClassName().equals(
+                        "org.eclipse.swt.custom.StyledText")
+                        && element.getMethodName().equals("setStyleRanges");
+            }
+        }
+        if (filterIt) {
+            return new IllegalArgumentException(
+                    "Erlang tools do not support source files encoded in UTF-8",
+                    e);
+        } else {
+            return e;
         }
     }
 
@@ -2072,7 +2100,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     protected boolean isMarkingOccurrences() {
         final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
-        return prefsNode.getBoolean("markingOccurences", true);
+        return prefsNode.getBoolean("markingOccurences", false);
     }
 
     /**

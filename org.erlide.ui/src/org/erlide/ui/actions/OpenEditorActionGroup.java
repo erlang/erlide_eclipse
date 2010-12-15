@@ -39,116 +39,114 @@ import org.erlide.ui.util.IContextMenuConstants;
  */
 public class OpenEditorActionGroup extends ActionGroup {
 
-	private final IWorkbenchSite fSite;
+    private final IWorkbenchSite fSite;
 
-	private boolean fIsEditorOwner;
+    private boolean fIsEditorOwner;
 
-	private final OpenAction fOpen;
+    private final OpenAction fOpen;
 
-	/**
-	 * Creates a new <code>OpenActionGroup</code>. The group requires that the
-	 * selection provided by the part's selection provider is of type <code>
-	 * org.eclipse.jface.viewers.IStructuredSelection</code>
-	 * .
-	 * 
-	 * @param part
-	 *            the view part that owns this action group
-	 */
-	public OpenEditorActionGroup(final IViewPart part) {
-		fSite = part.getSite();
-		fOpen = new OpenAction(fSite);
-		fOpen
-				.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
-		initialize(fSite.getSelectionProvider());
-	}
+    /**
+     * Creates a new <code>OpenActionGroup</code>. The group requires that the
+     * selection provided by the part's selection provider is of type <code>
+     * org.eclipse.jface.viewers.IStructuredSelection</code> .
+     * 
+     * @param part
+     *            the view part that owns this action group
+     */
+    public OpenEditorActionGroup(final IViewPart part) {
+        fSite = part.getSite();
+        fOpen = new OpenAction(fSite);
+        fOpen.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
+        initialize(fSite.getSelectionProvider());
+    }
 
-	/**
-	 * Returns the open action managed by this action group.
-	 * 
-	 * @return the open action. Returns <code>null</code> if the group doesn't
-	 *         provide any open action
-	 */
-	public IAction getOpenAction() {
-		return fOpen;
-	}
+    /**
+     * Returns the open action managed by this action group.
+     * 
+     * @return the open action. Returns <code>null</code> if the group doesn't
+     *         provide any open action
+     */
+    public IAction getOpenAction() {
+        return fOpen;
+    }
 
-	private void initialize(final ISelectionProvider provider) {
-		final ISelection selection = provider.getSelection();
-		fOpen.update(selection);
-		if (!fIsEditorOwner) {
-			provider.addSelectionChangedListener(fOpen);
-		}
-	}
+    private void initialize(final ISelectionProvider provider) {
+        final ISelection selection = provider.getSelection();
+        fOpen.update(selection);
+        if (!fIsEditorOwner) {
+            provider.addSelectionChangedListener(fOpen);
+        }
+    }
 
-	/*
-	 * (non-Javadoc) Method declared in ActionGroup
-	 */
-	@Override
-	public void fillActionBars(final IActionBars actionBar) {
-		super.fillActionBars(actionBar);
-		setGlobalActionHandlers(actionBar);
-	}
+    /*
+     * (non-Javadoc) Method declared in ActionGroup
+     */
+    @Override
+    public void fillActionBars(final IActionBars actionBar) {
+        super.fillActionBars(actionBar);
+        setGlobalActionHandlers(actionBar);
+    }
 
-	/*
-	 * (non-Javadoc) Method declared in ActionGroup
-	 */
-	@Override
-	public void fillContextMenu(final IMenuManager menu) {
-		super.fillContextMenu(menu);
-		appendToGroup(menu, fOpen);
-		if (!fIsEditorOwner) {
-			addOpenWithMenu(menu);
-		}
-	}
+    /*
+     * (non-Javadoc) Method declared in ActionGroup
+     */
+    @Override
+    public void fillContextMenu(final IMenuManager menu) {
+        super.fillContextMenu(menu);
+        appendToGroup(menu, fOpen);
+        if (!fIsEditorOwner) {
+            addOpenWithMenu(menu);
+        }
+    }
 
-	/*
-	 * @see ActionGroup#dispose()
-	 */
-	@Override
-	public void dispose() {
-		final ISelectionProvider provider = fSite.getSelectionProvider();
-		provider.removeSelectionChangedListener(fOpen);
-		super.dispose();
-	}
+    /*
+     * @see ActionGroup#dispose()
+     */
+    @Override
+    public void dispose() {
+        final ISelectionProvider provider = fSite.getSelectionProvider();
+        provider.removeSelectionChangedListener(fOpen);
+        super.dispose();
+    }
 
-	private void setGlobalActionHandlers(final IActionBars actionBars) {
-		actionBars.setGlobalActionHandler(
-				IErlangEditorActionDefinitionIds.OPEN_EDITOR, fOpen);
-	}
+    private void setGlobalActionHandlers(final IActionBars actionBars) {
+        actionBars.setGlobalActionHandler(
+                IErlangEditorActionDefinitionIds.OPEN_EDITOR, fOpen);
+    }
 
-	private void appendToGroup(final IMenuManager menu, final IAction action) {
-		if (action.isEnabled()) {
-			menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, action);
-		}
-	}
+    private void appendToGroup(final IMenuManager menu, final IAction action) {
+        if (action.isEnabled()) {
+            menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, action);
+        }
+    }
 
-	private void addOpenWithMenu(final IMenuManager menu) {
-		final ISelection selection = getContext().getSelection();
-		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-			return;
-		}
-		final IStructuredSelection ss = (IStructuredSelection) selection;
-		if (ss.size() != 1) {
-			return;
-		}
+    private void addOpenWithMenu(final IMenuManager menu) {
+        final ISelection selection = getContext().getSelection();
+        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+            return;
+        }
+        final IStructuredSelection ss = (IStructuredSelection) selection;
+        if (ss.size() != 1) {
+            return;
+        }
 
-		final Object o = ss.getFirstElement();
-		if (!(o instanceof IAdaptable)) {
-			return;
-		}
+        final Object o = ss.getFirstElement();
+        if (!(o instanceof IAdaptable)) {
+            return;
+        }
 
-		final IAdaptable element = (IAdaptable) o;
-		final Object resource = element.getAdapter(IResource.class);
-		if (!(resource instanceof IFile)) {
-			return;
-		}
+        final IAdaptable element = (IAdaptable) o;
+        final Object resource = element.getAdapter(IResource.class);
+        if (!(resource instanceof IFile)) {
+            return;
+        }
 
-		// Create a menu.
-		final IMenuManager submenu = new MenuManager(
-				ActionMessages.OpenWithMenu_label);
-		submenu.add(new OpenWithMenu(fSite.getPage(), (IFile) resource));
+        // Create a menu.
+        final IMenuManager submenu = new MenuManager(
+                ActionMessages.OpenWithMenu_label);
+        submenu.add(new OpenWithMenu(fSite.getPage(), (IFile) resource));
 
-		// Add the submenu.
-		menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, submenu);
-	}
+        // Add the submenu.
+        menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, submenu);
+    }
 }

@@ -14,8 +14,8 @@ import org.eclipse.jface.text.IDocument;
 
 public interface IErlangPartitions {
 
-	String ERLANG_PARTITIONING = "___erlang_partitioning"; //$NON-NLS-1$
+    String ERLANG_PARTITIONING = "___erlang_partitioning"; //$NON-NLS-1$
 
-	String[] LEGAL_PARTITIONS = new String[] { IDocument.DEFAULT_CONTENT_TYPE };
+    String[] LEGAL_PARTITIONS = new String[] { IDocument.DEFAULT_CONTENT_TYPE };
 
 }

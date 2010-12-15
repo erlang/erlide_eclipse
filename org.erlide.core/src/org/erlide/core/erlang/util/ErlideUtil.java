@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
@@ -200,7 +199,6 @@ public final class ErlideUtil {
     public static String getPath(final String name, final Bundle b) {
         final URL entry = b.getEntry(name.replace(" ", "%20"));
         if (entry != null) {
-            final String file = entry.getFile();
             URLConnection connection;
             try {
                 connection = entry.openConnection();
@@ -371,11 +369,7 @@ public final class ErlideUtil {
 
     public static String fetchErlideLog() {
         final StringBuffer result = new StringBuffer();
-        String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                .toPortableString();
-        dir = dir == null ? "c:/" : dir;
-        final File log = new File(dir + "_erlide.log");
-
+        final File log = new File(ErlLogger.getInstance().getLogLocation());
         try {
             final BufferedReader reader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(log), "UTF-8"));

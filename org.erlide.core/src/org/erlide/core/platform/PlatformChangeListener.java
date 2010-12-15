@@ -13,52 +13,52 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 
 public class PlatformChangeListener implements IResourceChangeListener,
-		IPreferenceChangeListener, IRegistryEventListener {
+        IPreferenceChangeListener, IRegistryEventListener {
 
-	public PlatformChangeListener() {
-		IWorkspace wspace = ResourcesPlugin.getWorkspace();
-		wspace.addResourceChangeListener(this);
+    public PlatformChangeListener() {
+        final IWorkspace wspace = ResourcesPlugin.getWorkspace();
+        wspace.addResourceChangeListener(this);
 
-		// preferencechangelistener is registered per preference node...
-		// which ones do we listen to?
+        // preferencechangelistener is registered per preference node...
+        // which ones do we listen to?
 
-		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		registry.addListener(this);
-	}
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        registry.addListener(this);
+    }
 
-	public void dispose() {
-		IWorkspace wspace = ResourcesPlugin.getWorkspace();
-		wspace.removeResourceChangeListener(this);
+    public void dispose() {
+        final IWorkspace wspace = ResourcesPlugin.getWorkspace();
+        wspace.removeResourceChangeListener(this);
 
-		// preferencechangelistener is registered per preference node...
+        // preferencechangelistener is registered per preference node...
 
-		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		registry.removeListener(this);
-	}
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        registry.removeListener(this);
+    }
 
-	public void resourceChanged(IResourceChangeEvent event) {
-		// System.out.println("### resources changed: " + event);
-	}
+    public void resourceChanged(final IResourceChangeEvent event) {
+        // System.out.println("### resources changed: " + event);
+    }
 
-	public void preferenceChange(PreferenceChangeEvent event) {
-		// System.out.println("### preferences changed: " + event);
-	}
+    public void preferenceChange(final PreferenceChangeEvent event) {
+        // System.out.println("### preferences changed: " + event);
+    }
 
-	public void added(IExtension[] extensions) {
-		// System.out.println("### extensions added: " + extensions);
-	}
+    public void added(final IExtension[] extensions) {
+        // System.out.println("### extensions added: " + extensions);
+    }
 
-	public void added(IExtensionPoint[] extensionPoints) {
-		// System.out.println("### extensionPoints added: " + extensionPoints);
-	}
+    public void added(final IExtensionPoint[] extensionPoints) {
+        // System.out.println("### extensionPoints added: " + extensionPoints);
+    }
 
-	public void removed(IExtension[] extensions) {
-		// System.out.println("### extensions removed: " + extensions);
-	}
+    public void removed(final IExtension[] extensions) {
+        // System.out.println("### extensions removed: " + extensions);
+    }
 
-	public void removed(IExtensionPoint[] extensionPoints) {
-		// System.out.println("### extensionPoints removed: " +
-		// extensionPoints);
-	}
+    public void removed(final IExtensionPoint[] extensionPoints) {
+        // System.out.println("### extensionPoints removed: " +
+        // extensionPoints);
+    }
 
 }

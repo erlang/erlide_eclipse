@@ -31,75 +31,75 @@ import org.erlide.ui.console.ErlangConsole;
 @SuppressWarnings("restriction")
 public class ConsoleTerminateAction extends Action implements IUpdate {
 
-	private ErlangConsole fConsole;
+    private ErlangConsole fConsole;
 
-	/**
-	 * Creates a terminate action for the console
-	 */
-	public ConsoleTerminateAction(ErlangConsole fConsole2) {
-		super(ConsoleMessages.ConsoleTerminateAction_0);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
-		fConsole = fConsole2;
-		setToolTipText(ConsoleMessages.ConsoleTerminateAction_1);
-		setImageDescriptor(DebugPluginImages
-				.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
-		setDisabledImageDescriptor(DebugPluginImages
-				.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE));
-		setHoverImageDescriptor(DebugPluginImages
-				.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
-		update();
-	}
+    /**
+     * Creates a terminate action for the console
+     */
+    public ConsoleTerminateAction(final ErlangConsole fConsole2) {
+        super(ConsoleMessages.ConsoleTerminateAction_0);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(this, IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
+        fConsole = fConsole2;
+        setToolTipText(ConsoleMessages.ConsoleTerminateAction_1);
+        setImageDescriptor(DebugPluginImages
+                .getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
+        setDisabledImageDescriptor(DebugPluginImages
+                .getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE));
+        setHoverImageDescriptor(DebugPluginImages
+                .getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(this, IDebugHelpContextIds.CONSOLE_TERMINATE_ACTION);
+        update();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.texteditor.IUpdate#update()
-	 */
-	public void update() {
-		ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
-		setEnabled(backend.isManaged() && !backend.isStopped()
-				&& backend != BackendManager.getDefault().getIdeBackend());
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.texteditor.IUpdate#update()
+     */
+    public void update() {
+        final ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
+        setEnabled(backend.isManaged() && !backend.isStopped()
+                && backend != BackendManager.getDefault().getIdeBackend());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
-	@Override
-	public void run() {
-		try {
-			final ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
-			ILaunch launch = backend.getLaunch();
-			if (launch != null) {
-				terminate(launch);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.IAction#run()
+     */
+    @Override
+    public void run() {
+        try {
+            final ErlideBackend backend = (ErlideBackend) fConsole.getBackend();
+            final ILaunch launch = backend.getLaunch();
+            if (launch != null) {
+                terminate(launch);
 
-				setEnabled(false);
-				fConsole.stop();
-			}
-			ErlangCore.getBackendManager().dispose(backend);
-		} catch (DebugException e) {
-			// TODO: report exception
-		}
-	}
+                setEnabled(false);
+                fConsole.stop();
+            }
+            ErlangCore.getBackendManager().dispose(backend);
+        } catch (final DebugException e) {
+            // TODO: report exception
+        }
+    }
 
-	private void terminate(ILaunch launch) throws DebugException {
-		IDebugTarget[] debugTargets = launch.getDebugTargets();
-		for (IDebugTarget target : debugTargets) {
-			if (target.canTerminate()) {
-				target.terminate();
-			}
-		}
-		if (launch.canTerminate()) {
-			launch.terminate();
-		}
-	}
+    private void terminate(final ILaunch launch) throws DebugException {
+        final IDebugTarget[] debugTargets = launch.getDebugTargets();
+        for (final IDebugTarget target : debugTargets) {
+            if (target.canTerminate()) {
+                target.terminate();
+            }
+        }
+        if (launch.canTerminate()) {
+            launch.terminate();
+        }
+    }
 
-	public void dispose() {
-		fConsole = null;
-	}
+    public void dispose() {
+        fConsole = null;
+    }
 
 }

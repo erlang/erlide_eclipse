@@ -21,46 +21,47 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.swtdesigner.SWTResourceManager;
 
 public class ErlModulePropertyPage extends PropertyPage implements
-		IWorkbenchPropertyPage {
+        IWorkbenchPropertyPage {
 
-	private Text text;
+    private Text text;
 
-	public ErlModulePropertyPage() {
-		super();
-	}
+    public ErlModulePropertyPage() {
+        super();
+    }
 
-	@Override
-	protected Control createContents(Composite parent) {
-		Composite control = new Composite(parent, SWT.NONE);
-		control.setLayout(new FillLayout());
+    @Override
+    protected Control createContents(final Composite parent) {
+        final Composite control = new Composite(parent, SWT.NONE);
+        control.setLayout(new FillLayout());
 
-		text = new Text(control, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL);
-		text.setFont(SWTResourceManager.getFont("Courier New", 10, SWT.NONE));
+        text = new Text(control, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL);
+        text.setFont(SWTResourceManager.getFont("Courier New", 10, SWT.NONE));
 
-		IAdaptable element = getElement();
-		IFile file = (IFile) element.getAdapter(IFile.class);
-		IErlModule module = ErlangCore.getModel().findModule(file);
-		String value = "There is no module information about this file.";
-		if (module != null) {
-			IErlProject project = module.getErlProject();
-			IOldErlangProjectProperties prefs = project.getProperties();
-			IPath beamPath = prefs.getOutputDir().append(
-					module.getModuleName()).addFileExtension("beam");
-			IFile beam = project.getProject().getFile(beamPath);
+        final IAdaptable element = getElement();
+        final IFile file = (IFile) element.getAdapter(IFile.class);
+        final IErlModule module = ErlangCore.getModel().findModule(file);
+        String value = "There is no module information about this file.";
+        if (module != null) {
+            final IErlProject project = module.getErlProject();
+            final IOldErlangProjectProperties prefs = project.getProperties();
+            final IPath beamPath = prefs.getOutputDir()
+                    .append(module.getModuleName()).addFileExtension("beam");
+            final IFile beam = project.getProject().getFile(beamPath);
 
-			// TODO should it be the build backend?
-			Backend backend = ErlangCore.getBackendManager().getIdeBackend();
-			try {
-				OtpErlangObject info = backend.call("erlide_backend",
-						"get_module_info", "s", beam.getLocation()
-								.toPortableString());
-				value = (String) TypeConverter.erlang2java(info, String.class);
-			} catch (Exception e) {
-			}
-		}
-		text.setText(value);
+            // TODO should it be the build backend?
+            final Backend backend = ErlangCore.getBackendManager()
+                    .getIdeBackend();
+            try {
+                final OtpErlangObject info = backend.call("erlide_backend",
+                        "get_module_info", "s", beam.getLocation()
+                                .toPortableString());
+                value = (String) TypeConverter.erlang2java(info, String.class);
+            } catch (final Exception e) {
+            }
+        }
+        text.setText(value);
 
-		return control;
-	}
+        return control;
+    }
 
 }

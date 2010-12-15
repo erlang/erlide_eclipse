@@ -26,45 +26,45 @@ package org.erlide.core.erlang;
  */
 public interface ISourceReference {
 
-	/**
-	 * Returns whether this element exists in the model.
-	 * 
-	 * @return <code>true</code> if this element exists in the Erlang model
-	 * 
-	 */
-	boolean exists();
+    /**
+     * Returns whether this element exists in the model.
+     * 
+     * @return <code>true</code> if this element exists in the Erlang model
+     * 
+     */
+    boolean exists();
 
-	/**
-	 * Returns the source code associated with this element. This extracts the
-	 * substring from the source buffer containing this source element. This
-	 * corresponds to the source range that would be returned by
-	 * <code>getSourceRange</code>.
-	 * <p>
-	 * For beam files, this returns the source of the entire compilation unit
-	 * associated with the beam file (if there is one).
-	 * </p>
-	 * 
-	 * @return the source code, or <code>null</code> if this element has no
-	 *         associated source code
-	 * @exception ErlModelException
-	 *                if an exception occurs while accessing its corresponding
-	 *                resource
-	 */
-	// String getSource() throws ErlModelException;
-	/**
-	 * Returns the source range associated with this element.
-	 * <p>
-	 * For beam files, this returns the range of the entire compilation unit
-	 * associated with the beam file (if there is one).
-	 * </p>
-	 * 
-	 * @return the source range, or <code>null</code> if this element has no
-	 *         associated source code
-	 */
-	ISourceRange getSourceRange() throws ErlModelException;
+    /**
+     * Returns the source code associated with this element. This extracts the
+     * substring from the source buffer containing this source element. This
+     * corresponds to the source range that would be returned by
+     * <code>getSourceRange</code>.
+     * <p>
+     * For beam files, this returns the source of the entire compilation unit
+     * associated with the beam file (if there is one).
+     * </p>
+     * 
+     * @return the source code, or <code>null</code> if this element has no
+     *         associated source code
+     * @exception ErlModelException
+     *                if an exception occurs while accessing its corresponding
+     *                resource
+     */
+    // String getSource() throws ErlModelException;
+    /**
+     * Returns the source range associated with this element.
+     * <p>
+     * For beam files, this returns the range of the entire compilation unit
+     * associated with the beam file (if there is one).
+     * </p>
+     * 
+     * @return the source range, or <code>null</code> if this element has no
+     *         associated source code
+     */
+    ISourceRange getSourceRange() throws ErlModelException;
 
-	public int getLineStart();
+    public int getLineStart();
 
-	public int getLineEnd();
+    public int getLineEnd();
 
 }

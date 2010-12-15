@@ -90,8 +90,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
         final TemplateContextType contextType = getContextType(viewer, region);
         if (contextType instanceof ErlangContextType) {
             final IDocument document = viewer.getDocument();
-            return new ErlangTemplateContext(contextType, document, region
-                    .getOffset(), region.getLength());
+            return new ErlangTemplateContext(contextType, document,
+                    region.getOffset(), region.getLength());
         }
         return super.createContext(viewer, region);
     }

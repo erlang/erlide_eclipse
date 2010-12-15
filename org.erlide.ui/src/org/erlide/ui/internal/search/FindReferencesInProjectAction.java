@@ -29,46 +29,46 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class FindReferencesInProjectAction extends FindReferencesAction {
 
-	/**
-	 * Creates a new <code>FindReferencesInProjectAction</code>. The action
-	 * requires that the selection provided by the site's selection provider is
-	 * of type <code>IStructuredSelection</code>.
-	 * 
-	 * @param site
-	 *            the site providing context information for this action
-	 */
-	public FindReferencesInProjectAction(final IWorkbenchSite site) {
-		super(site);
-	}
+    /**
+     * Creates a new <code>FindReferencesInProjectAction</code>. The action
+     * requires that the selection provided by the site's selection provider is
+     * of type <code>IStructuredSelection</code>.
+     * 
+     * @param site
+     *            the site providing context information for this action
+     */
+    public FindReferencesInProjectAction(final IWorkbenchSite site) {
+        super(site);
+    }
 
-	/**
-	 * Note: This constructor is for internal use only. Clients should not call
-	 * this constructor.
-	 * 
-	 * @param editor
-	 *            the Java editor
-	 */
-	public FindReferencesInProjectAction(final ErlangEditor editor) {
-		super(editor);
-	}
+    /**
+     * Note: This constructor is for internal use only. Clients should not call
+     * this constructor.
+     * 
+     * @param editor
+     *            the Java editor
+     */
+    public FindReferencesInProjectAction(final ErlangEditor editor) {
+        super(editor);
+    }
 
-	@Override
-	void init() {
-		setText("Project");
-		setToolTipText("Find references in selected projects");
-		// FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
-		// FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-		// IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);
-	}
+    @Override
+    void init() {
+        setText("Project");
+        setToolTipText("Find references in selected projects");
+        // FIXME setImageDescriptor(JavaPluginImages.DESC_OBJS_SEARCH_REF);
+        // FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+        // IJavaHelpContextIds.FIND_REFERENCES_IN_PROJECT_ACTION);
+    }
 
-	@Override
-	protected Collection<IResource> getScope() {
-		return getProjectScope();
-	}
+    @Override
+    protected Collection<IResource> getScope() {
+        return getProjectScope();
+    }
 
-	@Override
-	protected String getScopeDescription() {
-		return SearchUtil.getProjectScopeDescription(getProjectScope());
-	}
+    @Override
+    protected String getScopeDescription() {
+        return SearchUtil.getProjectScopeDescription(getProjectScope());
+    }
 
 }

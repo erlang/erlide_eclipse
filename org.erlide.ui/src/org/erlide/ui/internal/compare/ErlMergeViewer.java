@@ -33,137 +33,137 @@ import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 
 public class ErlMergeViewer extends TextMergeViewer {
 
-	private IPropertyChangeListener fPreferenceChangeListener;
+    private IPropertyChangeListener fPreferenceChangeListener;
 
-	private final IPreferenceStore fPreferenceStore;
+    private final IPreferenceStore fPreferenceStore;
 
-	private boolean fUseSystemColors;
+    private boolean fUseSystemColors;
 
-	private ErlangSourceViewerConfiguration fSourceViewerConfiguration;
+    private ErlangSourceViewerConfiguration fSourceViewerConfiguration;
 
-	public ErlMergeViewer(final Composite parent, final int styles,
-			final CompareConfiguration mp) {
-		super(parent, styles, mp);
-		fPreferenceStore = ErlangEditor.getErlangEditorPreferenceStore();
-		if (fPreferenceStore != null) {
-			fPreferenceChangeListener = new IPropertyChangeListener() {
+    public ErlMergeViewer(final Composite parent, final int styles,
+            final CompareConfiguration mp) {
+        super(parent, styles, mp);
+        fPreferenceStore = ErlangEditor.getErlangEditorPreferenceStore();
+        if (fPreferenceStore != null) {
+            fPreferenceChangeListener = new IPropertyChangeListener() {
 
-				public void propertyChange(final PropertyChangeEvent event) {
-					handlePropertyChange(event);
-				}
-			};
-			fPreferenceStore
-					.addPropertyChangeListener(fPreferenceChangeListener);
+                public void propertyChange(final PropertyChangeEvent event) {
+                    handlePropertyChange(event);
+                }
+            };
+            fPreferenceStore
+                    .addPropertyChangeListener(fPreferenceChangeListener);
 
-			fUseSystemColors = fPreferenceStore
-					.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
-			if (!fUseSystemColors) {
-				final RGB bg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
-				setBackgroundColor(bg);
-				final RGB fg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
-				setForegroundColor(fg);
-			}
-		}
-	}
+            fUseSystemColors = fPreferenceStore
+                    .getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+            if (!fUseSystemColors) {
+                final RGB bg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
+                setBackgroundColor(bg);
+                final RGB fg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
+                setForegroundColor(fg);
+            }
+        }
+    }
 
-	@Override
-	protected void handleDispose(final DisposeEvent event) {
-		if (fPreferenceChangeListener != null) {
-			fPreferenceStore
-					.removePropertyChangeListener(fPreferenceChangeListener);
-			fPreferenceChangeListener = null;
-		}
-		super.handleDispose(event);
-	}
+    @Override
+    protected void handleDispose(final DisposeEvent event) {
+        if (fPreferenceChangeListener != null) {
+            fPreferenceStore
+                    .removePropertyChangeListener(fPreferenceChangeListener);
+            fPreferenceChangeListener = null;
+        }
+        super.handleDispose(event);
+    }
 
-	protected void handlePropertyChange(final PropertyChangeEvent event) {
+    protected void handlePropertyChange(final PropertyChangeEvent event) {
 
-		final String key = event.getProperty();
+        final String key = event.getProperty();
 
-		if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND)) {
+        if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND)) {
 
-			if (!fUseSystemColors) {
-				final RGB bg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
-				setBackgroundColor(bg);
-			}
+            if (!fUseSystemColors) {
+                final RGB bg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
+                setBackgroundColor(bg);
+            }
 
-		} else if (key
-				.equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT)) {
+        } else if (key
+                .equals(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT)) {
 
-			fUseSystemColors = fPreferenceStore
-					.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
-			if (fUseSystemColors) {
-				setBackgroundColor(null);
-				setForegroundColor(null);
-			} else {
-				final RGB bg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
-				setBackgroundColor(bg);
-				final RGB fg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
-				setForegroundColor(fg);
-			}
-		} else if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND)) {
+            fUseSystemColors = fPreferenceStore
+                    .getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
+            if (fUseSystemColors) {
+                setBackgroundColor(null);
+                setForegroundColor(null);
+            } else {
+                final RGB bg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
+                setBackgroundColor(bg);
+                final RGB fg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
+                setForegroundColor(fg);
+            }
+        } else if (key.equals(AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND)) {
 
-			if (!fUseSystemColors) {
-				final RGB fg = createColor(fPreferenceStore,
-						AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
-				setForegroundColor(fg);
-			}
-		}
+            if (!fUseSystemColors) {
+                final RGB fg = createColor(fPreferenceStore,
+                        AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND);
+                setForegroundColor(fg);
+            }
+        }
 
-		// if (getSourceViewerConfiguration().affectsBehavior(event)) {
-		// getSourceViewerConfiguration().adaptToPreferenceChange(event);
-		// invalidateTextPresentation();
-		// }
-	}
+        // if (getSourceViewerConfiguration().affectsBehavior(event)) {
+        // getSourceViewerConfiguration().adaptToPreferenceChange(event);
+        // invalidateTextPresentation();
+        // }
+    }
 
-	/**
-	 * Creates a color from the information stored in the given preference
-	 * store. Returns <code>null</code> if there is no such information
-	 * available.
-	 */
-	private static RGB createColor(final IPreferenceStore store,
-			final String key) {
-		if (!store.contains(key)) {
-			return null;
-		}
-		if (store.isDefault(key)) {
-			return PreferenceConverter.getDefaultColor(store, key);
-		}
-		return PreferenceConverter.getColor(store, key);
-	}
+    /**
+     * Creates a color from the information stored in the given preference
+     * store. Returns <code>null</code> if there is no such information
+     * available.
+     */
+    private static RGB createColor(final IPreferenceStore store,
+            final String key) {
+        if (!store.contains(key)) {
+            return null;
+        }
+        if (store.isDefault(key)) {
+            return PreferenceConverter.getDefaultColor(store, key);
+        }
+        return PreferenceConverter.getColor(store, key);
+    }
 
-	private ErlangSourceViewerConfiguration getSourceViewerConfiguration() {
-		if (fSourceViewerConfiguration == null) {
-			fSourceViewerConfiguration = new EditorConfiguration(
-					fPreferenceStore, null, new ColorManager()) {
+    private ErlangSourceViewerConfiguration getSourceViewerConfiguration() {
+        if (fSourceViewerConfiguration == null) {
+            fSourceViewerConfiguration = new EditorConfiguration(
+                    fPreferenceStore, null, new ColorManager()) {
 
-				@Override
-				public String getConfiguredDocumentPartitioning(
-						final ISourceViewer sourceViewer) {
-					return IDocumentExtension3.DEFAULT_PARTITIONING;
-				}
+                @Override
+                public String getConfiguredDocumentPartitioning(
+                        final ISourceViewer sourceViewer) {
+                    return IDocumentExtension3.DEFAULT_PARTITIONING;
+                }
 
-			};
-		}
-		return fSourceViewerConfiguration;
-	}
+            };
+        }
+        return fSourceViewerConfiguration;
+    }
 
-	@Override
-	public String getTitle() {
-		return ErlideUIPlugin.getResourceString("Erlang Source Compare");
-	}
+    @Override
+    public String getTitle() {
+        return ErlideUIPlugin.getResourceString("Erlang Source Compare");
+    }
 
-	@Override
-	protected void configureTextViewer(final TextViewer textViewer) {
-		if (textViewer instanceof SourceViewer) {
-			((SourceViewer) textViewer)
-					.configure(getSourceViewerConfiguration());
-		}
-	}
+    @Override
+    protected void configureTextViewer(final TextViewer textViewer) {
+        if (textViewer instanceof SourceViewer) {
+            ((SourceViewer) textViewer)
+                    .configure(getSourceViewerConfiguration());
+        }
+    }
 
 }

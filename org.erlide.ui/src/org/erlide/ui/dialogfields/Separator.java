@@ -21,82 +21,82 @@ import org.eclipse.swt.widgets.Label;
  */
 public class Separator extends DialogField {
 
-	private Label fSeparator;
+    private Label fSeparator;
 
-	private final int fStyle;
+    private final int fStyle;
 
-	public Separator() {
-		this(SWT.NONE);
-	}
+    public Separator() {
+        this(SWT.NONE);
+    }
 
-	/**
-	 * @param style
-	 *            of the separator. See <code>Label</code> for possible styles.
-	 */
-	public Separator(final int style) {
-		super();
-		fStyle = style;
-	}
+    /**
+     * @param style
+     *            of the separator. See <code>Label</code> for possible styles.
+     */
+    public Separator(final int style) {
+        super();
+        fStyle = style;
+    }
 
-	// ------- layout helpers
+    // ------- layout helpers
 
-	/**
-	 * Creates the separator and fills it in a MGridLayout.
-	 * 
-	 * @param height
-	 *            The height of the separator
-	 */
-	public Control[] doFillIntoGrid(final Composite parent, final int nColumns,
-			final int height) {
-		assertEnoughColumns(nColumns);
+    /**
+     * Creates the separator and fills it in a MGridLayout.
+     * 
+     * @param height
+     *            The height of the separator
+     */
+    public Control[] doFillIntoGrid(final Composite parent, final int nColumns,
+            final int height) {
+        assertEnoughColumns(nColumns);
 
-		final Control separator = getSeparator(parent);
-		separator.setLayoutData(gridDataForSeperator(nColumns, height));
+        final Control separator = getSeparator(parent);
+        separator.setLayoutData(gridDataForSeperator(nColumns, height));
 
-		return new Control[] { separator };
-	}
+        return new Control[] { separator };
+    }
 
-	/*
-	 * @see DialogField#doFillIntoGrid
-	 */
-	@Override
-	public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
-		return doFillIntoGrid(parent, nColumns, 4);
-	}
+    /*
+     * @see DialogField#doFillIntoGrid
+     */
+    @Override
+    public Control[] doFillIntoGrid(final Composite parent, final int nColumns) {
+        return doFillIntoGrid(parent, nColumns, 4);
+    }
 
-	/*
-	 * @see DialogField#getNumberOfControls
-	 */
-	@Override
-	public int getNumberOfControls() {
-		return 1;
-	}
+    /*
+     * @see DialogField#getNumberOfControls
+     */
+    @Override
+    public int getNumberOfControls() {
+        return 1;
+    }
 
-	protected static GridData gridDataForSeperator(final int span,
-			final int height) {
-		final GridData gd = new GridData();
-		gd.horizontalAlignment = GridData.FILL;
-		gd.verticalAlignment = GridData.BEGINNING;
-		gd.heightHint = height;
-		gd.horizontalSpan = span;
-		return gd;
-	}
+    protected static GridData gridDataForSeperator(final int span,
+            final int height) {
+        final GridData gd = new GridData();
+        gd.horizontalAlignment = GridData.FILL;
+        gd.verticalAlignment = GridData.BEGINNING;
+        gd.heightHint = height;
+        gd.horizontalSpan = span;
+        return gd;
+    }
 
-	// ------- ui creation
+    // ------- ui creation
 
-	/**
-	 * Creates or returns the created separator.
-	 * 
-	 * @param parent
-	 *            The parent composite or <code>null</code> if the widget has
-	 *            already been created.
-	 */
-	public Control getSeparator(final Composite parent) {
-		if (fSeparator == null) {
-			assertCompositeNotNull(parent);
-			fSeparator = new Label(parent, fStyle);
-		}
-		return fSeparator;
-	}
+    /**
+     * Creates or returns the created separator.
+     * 
+     * @param parent
+     *            The parent composite or <code>null</code> if the widget has
+     *            already been created.
+     */
+    public Control getSeparator(final Composite parent) {
+        if (fSeparator == null) {
+            assertCompositeNotNull(parent);
+            fSeparator = new Label(parent, fStyle);
+        }
+        return fSeparator;
+    }
 
 }

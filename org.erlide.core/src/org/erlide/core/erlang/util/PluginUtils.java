@@ -136,7 +136,7 @@ public class PluginUtils {
         return false;
     }
 
-    public static ContainerFilter getIncludePathFilter(final IProject project,
+    private static ContainerFilter getIncludePathFilter(final IProject project,
             final IContainer current) {
         return new ContainerFilter() {
             private final Set<IPath> paths = getFullPaths(project, ErlangCore
@@ -169,6 +169,25 @@ public class PluginUtils {
 
     public static ContainerFilter getSourcePathFilter(final IProject project) {
         return new SourcePathContainerFilter(project);
+    }
+
+    public static ContainerFilterCreator getSourcePathFilterCreator() {
+        return new ContainerFilterCreator() {
+
+            public ContainerFilter createFilterForProject(final IProject project) {
+                return getSourcePathFilter(project);
+            }
+        };
+    }
+
+    public static ContainerFilterCreator getIncludePathFilterCreator(
+            final IContainer current) {
+        return new ContainerFilterCreator() {
+
+            public ContainerFilter createFilterForProject(final IProject project) {
+                return getIncludePathFilter(project, current);
+            }
+        };
     }
 
     public static boolean isOnExtraPath(final IContainer con) {

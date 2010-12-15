@@ -14,54 +14,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ErlangConsoleHistory {
-	private final List<String> history;
-	private int navIndex;
+    private final List<String> history;
+    private int navIndex;
 
-	public ErlangConsoleHistory() {
-		history = new ArrayList<String>();
-	}
+    public ErlangConsoleHistory() {
+        history = new ArrayList<String>();
+    }
 
-	public void addToHistory(final String in) {
-		history.add(in);
-		if (history.size() > 50) {
-			history.remove(0);
-		}
-	}
+    public void addToHistory(final String in) {
+        history.add(in);
+        if (history.size() > 50) {
+            history.remove(0);
+        }
+    }
 
-	public List<String> getHistory() {
-		return history;
-	}
+    public List<String> getHistory() {
+        return history;
+    }
 
-	public String get() {
-		return history.get(navIndex);
-	}
+    public String get() {
+        return history.get(navIndex);
+    }
 
-	public int size() {
-		return history.size();
-	}
+    public int size() {
+        return history.size();
+    }
 
-	void next() {
-		if (navIndex == -1) {
-			navIndex = 0;
-		} else if (navIndex < history.size() - 1) {
-			navIndex++;
-		}
-	}
+    void next() {
+        if (navIndex == -1) {
+            navIndex = 0;
+        } else if (navIndex < history.size() - 1) {
+            navIndex++;
+        }
+    }
 
-	void prev() {
-		if (navIndex == -1) {
-			navIndex = history.size() - 1;
-		} else if (navIndex > 0) {
-			navIndex--;
-		}
-	}
+    void prev() {
+        if (navIndex == -1) {
+            navIndex = history.size() - 1;
+        } else if (navIndex > 0) {
+            navIndex--;
+        }
+    }
 
-	public void gotoLast() {
-		navIndex = history.size() - 1;
-	}
+    public void gotoLast() {
+        navIndex = history.size() - 1;
+    }
 
-	public void gotoFirst() {
-		navIndex = 0;
-	}
+    public void gotoFirst() {
+        navIndex = 0;
+    }
 
 }

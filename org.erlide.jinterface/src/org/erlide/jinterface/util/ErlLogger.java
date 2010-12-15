@@ -26,13 +26,123 @@ import java.util.logging.Logger;
 public class ErlLogger {
 
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.launching/debug";
-    private static int minLevel = Level.FINEST.intValue();
+    private static ErlLogger instance;
+    private Logger logger;
+    private final String logDir;
 
-    {
-        // This is not run?!?
-        final String lvl = System.getProperty("erlide.logger.level");
-        minLevel = (lvl == null ? Level.INFO : Level.parse(lvl.toUpperCase()))
-                .intValue();
+    public static ErlLogger getInstance() {
+        return instance;
+    }
+
+    public void dispose() {
+        logger = null;
+    }
+
+    public static ErlLogger init(final String dir, final boolean debug) {
+        instance = new ErlLogger(dir, debug);
+        return instance;
+    }
+
+    public String getLogLocation() {
+        return logDir + "/erlide.log";
+    }
+
+    public void log(final Level kind, final String fmt, final Object... o) {
+        final StackTraceElement el = getCaller();
+        final String str = o.length == 0 ? fmt : String.format(fmt, o);
+        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
+                + ") : " + str;
+        if (logger != null) {
+            logger.log(kind, msg);
+        }
+    }
+
+    public void log(final Level kind, final Throwable exception) {
+        final StackTraceElement el = getCaller();
+        final String str = exception.getMessage();
+        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
+                + ") : " + str;
+        if (logger != null) {
+            logger.log(kind, msg, exception);
+        }
+    }
+
+    public void erlangLog(final String module, final int line,
+            final String skind, final String fmt, final Object... o) {
+        final Level kind = Level.parse(skind);
+        final String str = o.length == 0 ? fmt : String.format(fmt, o);
+        final String msg = "(" + module + ":" + line + ") : " + str;
+        if (logger != null) {
+            logger.log(kind, msg);
+        }
+    }
+
+    public static void debug(final String fmt, final Object... o) {
+        getInstance().log(Level.FINEST, fmt, o);
+    }
+
+    public static void info(final String fmt, final Object... o) {
+        getInstance().log(Level.INFO, fmt, o);
+    }
+
+    public static void warn(final String fmt, final Object... o) {
+        getInstance().log(Level.WARNING, fmt, o);
+    }
+
+    public static void error(final String fmt, final Object... o) {
+        getInstance().log(Level.SEVERE, fmt, o);
+    }
+
+    public static void debug(final Throwable e) {
+        getInstance().log(Level.FINEST, e);
+    }
+
+    public static void info(final Throwable e) {
+        getInstance().log(Level.INFO, e);
+    }
+
+    public static void warn(final Throwable e) {
+        getInstance().log(Level.WARNING, e);
+    }
+
+    public static void error(final Throwable exception) {
+        getInstance().log(Level.SEVERE, exception);
+    }
+
+    private ErlLogger(String dir, boolean debug) {
+        final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
+        logger = Logger.getLogger("org.erlide");
+        logDir = dir == null ? "./" : dir;
+
+        addFileHandler(erlSimpleFormatter);
+        addConsoleHandler(debug, erlSimpleFormatter);
+
+        logger.setUseParentHandlers(false);
+        logger.setLevel(java.util.logging.Level.FINEST);
+    }
+
+    private void addConsoleHandler(boolean debug,
+            final ErlSimpleFormatter erlSimpleFormatter) {
+        final ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setFormatter(erlSimpleFormatter);
+        final Level lvl = debug ? java.util.logging.Level.FINEST
+                : java.util.logging.Level.CONFIG;
+        consoleHandler.setLevel(lvl);
+        logger.addHandler(consoleHandler);
+    }
+
+    private void addFileHandler(final ErlSimpleFormatter erlSimpleFormatter) {
+        Handler fh;
+        try {
+            fh = new FileHandler(getLogLocation());
+            fh.setFormatter(erlSimpleFormatter);
+            fh.setLevel(java.util.logging.Level.FINEST);
+            logger.addHandler(fh);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static StackTraceElement getCaller() {
@@ -43,72 +153,6 @@ public class ErlLogger {
             el = st[i++];
         } while (el.getClassName().equals(ErlLogger.class.getName()));
         return el;
-    }
-
-    public static void log(final Level kind, final String fmt,
-            final Object... o) {
-        if (kind.intValue() < minLevel) {
-            return;
-        }
-        final StackTraceElement el = getCaller();
-        final String str = o.length == 0 ? fmt : String.format(fmt, o);
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
-                + ") : " + str;
-        Logger.getLogger("org.erlide").log(kind, msg);
-    }
-
-    public static void log(final Level kind, final Throwable exception) {
-        if (kind.intValue() < minLevel) {
-            return;
-        }
-        final StackTraceElement el = getCaller();
-        final String str = exception.getMessage();
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
-                + ") : " + str;
-        Logger.getLogger("org.erlide").log(kind, msg, exception);
-    }
-
-    public static void erlangLog(final String module, final int line,
-            final String skind, final String fmt, final Object... o) {
-        final Level kind = Level.parse(skind);
-        if (kind.intValue() < minLevel) {
-            return;
-        }
-        final String str = o.length == 0 ? fmt : String.format(fmt, o);
-        final String msg = "(" + module + ":" + line + ") : " + str;
-        Logger.getLogger("org.erlide").log(kind, msg);
-    }
-
-    public static void debug(final String fmt, final Object... o) {
-        log(Level.FINEST, fmt, o);
-    }
-
-    public static void info(final String fmt, final Object... o) {
-        log(Level.INFO, fmt, o);
-    }
-
-    public static void warn(final String fmt, final Object... o) {
-        log(Level.WARNING, fmt, o);
-    }
-
-    public static void error(final String fmt, final Object... o) {
-        log(Level.SEVERE, fmt, o);
-    }
-
-    public static void debug(final Throwable e) {
-        log(Level.FINEST, e);
-    }
-
-    public static void info(final Throwable e) {
-        log(Level.INFO, e);
-    }
-
-    public static void warn(final Throwable e) {
-        log(Level.WARNING, e);
-    }
-
-    public static void error(final Throwable exception) {
-        log(Level.SEVERE, exception);
     }
 
     public static class ErlSimpleFormatter extends Formatter {
@@ -153,36 +197,6 @@ public class ErlLogger {
             }
             return sb.toString();
         }
-    }
-
-    public static Logger init(final String dir, final boolean debug) {
-        try {
-            final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
-            final Logger logger = Logger.getLogger("org.erlide");
-
-            final String aDir = dir == null ? "./" : dir;
-            final Handler fh = new FileHandler(aDir + "_erlide.log");
-            fh.setFormatter(erlSimpleFormatter);
-            fh.setLevel(java.util.logging.Level.FINEST);
-            logger.addHandler(fh);
-
-            final ConsoleHandler consoleHandler = new ConsoleHandler();
-            consoleHandler.setFormatter(erlSimpleFormatter);
-            final Level lvl = debug ? java.util.logging.Level.FINEST
-                    : java.util.logging.Level.SEVERE;
-            consoleHandler.setLevel(lvl);
-            logger.addHandler(consoleHandler);
-
-            logger.setUseParentHandlers(false);
-            logger.setLevel(java.util.logging.Level.FINEST);
-
-            return logger;
-        } catch (final SecurityException e) {
-            e.printStackTrace();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }

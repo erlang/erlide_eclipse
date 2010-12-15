@@ -29,133 +29,133 @@ import org.eclipse.jface.viewers.StructuredViewer;
  */
 public abstract class OpenAndLinkWithEditorHelper {
 
-	private final StructuredViewer viewer;
+    private final StructuredViewer viewer;
 
-	private boolean isLinkingEnabled;
+    private boolean isLinkingEnabled;
 
-	private ISelection lastOpenSelection;
+    private ISelection lastOpenSelection;
 
-	private InternalListener listener;
+    private InternalListener listener;
 
-	private final class InternalListener implements IOpenListener,
-			ISelectionChangedListener, IDoubleClickListener {
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers
-		 * .OpenEvent)
-		 */
-		public final void open(final OpenEvent event) {
-			lastOpenSelection = event.getSelection();
-			OpenAndLinkWithEditorHelper.this.open(lastOpenSelection,
-					OpenStrategy.activateOnOpen());
-		}
+    private final class InternalListener implements IOpenListener,
+            ISelectionChangedListener, IDoubleClickListener {
+        /*
+         * @see
+         * org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers
+         * .OpenEvent)
+         */
+        public final void open(final OpenEvent event) {
+            lastOpenSelection = event.getSelection();
+            OpenAndLinkWithEditorHelper.this.open(lastOpenSelection,
+                    OpenStrategy.activateOnOpen());
+        }
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
-		 */
-		public void selectionChanged(final SelectionChangedEvent event) {
-			final ISelection selection = event.getSelection();
-			if (isLinkingEnabled && !selection.equals(lastOpenSelection)
-					&& viewer.getControl().isFocusControl()) {
-				linkToEditor(selection);
-			}
-			lastOpenSelection = null;
-		}
+        /*
+         * @see
+         * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
+         * (org.eclipse.jface.viewers.SelectionChangedEvent)
+         */
+        public void selectionChanged(final SelectionChangedEvent event) {
+            final ISelection selection = event.getSelection();
+            if (isLinkingEnabled && !selection.equals(lastOpenSelection)
+                    && viewer.getControl().isFocusControl()) {
+                linkToEditor(selection);
+            }
+            lastOpenSelection = null;
+        }
 
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
-		 * .jface.viewers.DoubleClickEvent)
-		 */
-		public void doubleClick(final DoubleClickEvent event) {
-			if (!OpenStrategy.activateOnOpen()) {
-				activate(event.getSelection());
-			}
-		}
+        /*
+         * @see
+         * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
+         * .jface.viewers.DoubleClickEvent)
+         */
+        public void doubleClick(final DoubleClickEvent event) {
+            if (!OpenStrategy.activateOnOpen()) {
+                activate(event.getSelection());
+            }
+        }
 
-	}
+    }
 
-	/**
-	 * Creates a new helper for the given viewer.
-	 * 
-	 * @param viewer
-	 *            the viewer
-	 */
-	public OpenAndLinkWithEditorHelper(final StructuredViewer viewer) {
-		Assert.isLegal(viewer != null);
-		this.viewer = viewer;
-		listener = new InternalListener();
-		viewer.addPostSelectionChangedListener(listener);
-		viewer.addOpenListener(listener);
-		viewer.addDoubleClickListener(listener);
-	}
+    /**
+     * Creates a new helper for the given viewer.
+     * 
+     * @param viewer
+     *            the viewer
+     */
+    public OpenAndLinkWithEditorHelper(final StructuredViewer viewer) {
+        Assert.isLegal(viewer != null);
+        this.viewer = viewer;
+        listener = new InternalListener();
+        viewer.addPostSelectionChangedListener(listener);
+        viewer.addOpenListener(listener);
+        viewer.addDoubleClickListener(listener);
+    }
 
-	/**
-	 * Sets whether editor that corresponds to the viewer's selection should be
-	 * brought to front.
-	 * 
-	 * @param enabled
-	 *            <code>true</code> to enable, <code>false</code> to disable
-	 */
-	public void setLinkWithEditor(final boolean enabled) {
-		isLinkingEnabled = enabled;
-	}
+    /**
+     * Sets whether editor that corresponds to the viewer's selection should be
+     * brought to front.
+     * 
+     * @param enabled
+     *            <code>true</code> to enable, <code>false</code> to disable
+     */
+    public void setLinkWithEditor(final boolean enabled) {
+        isLinkingEnabled = enabled;
+    }
 
-	/**
-	 * Disposes this helper.
-	 * <p>
-	 * Clients only need to call this method if their viewer has a longer
-	 * life-cycle than this helper.
-	 * </p>
-	 */
-	public void dispose() {
-		viewer.removePostSelectionChangedListener(listener);
-		viewer.removeOpenListener(listener);
-		viewer.removeDoubleClickListener(listener);
-		listener = null;
-	}
+    /**
+     * Disposes this helper.
+     * <p>
+     * Clients only need to call this method if their viewer has a longer
+     * life-cycle than this helper.
+     * </p>
+     */
+    public void dispose() {
+        viewer.removePostSelectionChangedListener(listener);
+        viewer.removeOpenListener(listener);
+        viewer.removeDoubleClickListener(listener);
+        listener = null;
+    }
 
-	/**
-	 * Tells to activate the editor that is open on the given selection.
-	 * <p>
-	 * <strong>Note:</strong> The implementation must not open a new editor.
-	 * </p>
-	 * 
-	 * @param selection
-	 *            the viewer's selection
-	 * @since 3.5
-	 */
-	protected abstract void activate(ISelection selection);
+    /**
+     * Tells to activate the editor that is open on the given selection.
+     * <p>
+     * <strong>Note:</strong> The implementation must not open a new editor.
+     * </p>
+     * 
+     * @param selection
+     *            the viewer's selection
+     * @since 3.5
+     */
+    protected abstract void activate(ISelection selection);
 
-	/**
-	 * Tells to open an editor for the given selection.
-	 * 
-	 * @param selection
-	 *            the viewer's selection
-	 * @param activate
-	 *            <code>true</code> if the editor should be activated,
-	 *            <code>false</code> otherwise
-	 * @since 3.5
-	 */
-	protected abstract void open(ISelection selection, boolean activate);
+    /**
+     * Tells to open an editor for the given selection.
+     * 
+     * @param selection
+     *            the viewer's selection
+     * @param activate
+     *            <code>true</code> if the editor should be activated,
+     *            <code>false</code> otherwise
+     * @since 3.5
+     */
+    protected abstract void open(ISelection selection, boolean activate);
 
-	/**
-	 * Tells to link the given selection to the editor that is open on the given
-	 * selection but does nothing if no matching editor can be found.
-	 * <p>
-	 * The common implementation brings that editor to front but more advanced
-	 * implementations may also select the given selection inside the editor.
-	 * </p>
-	 * <p>
-	 * <strong>Note:</strong> The implementation must not open a new editor.
-	 * </p>
-	 * 
-	 * @param selection
-	 *            the viewer's selection
-	 * @since 3.5
-	 */
-	protected abstract void linkToEditor(ISelection selection);
+    /**
+     * Tells to link the given selection to the editor that is open on the given
+     * selection but does nothing if no matching editor can be found.
+     * <p>
+     * The common implementation brings that editor to front but more advanced
+     * implementations may also select the given selection inside the editor.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> The implementation must not open a new editor.
+     * </p>
+     * 
+     * @param selection
+     *            the viewer's selection
+     * @since 3.5
+     */
+    protected abstract void linkToEditor(ISelection selection);
 
 }

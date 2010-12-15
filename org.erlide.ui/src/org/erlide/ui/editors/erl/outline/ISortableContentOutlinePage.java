@@ -16,12 +16,12 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * IConentOutlinePage with externally enabled/disabled element sorting
  */
 public interface ISortableContentOutlinePage extends IContentOutlinePage {
-	/**
-	 * Turns sorting on or off
-	 * 
-	 * @param sorting
-	 *            - boolean value indicating if sorting should be enabled
-	 */
-	public void sort(boolean sorting);
+    /**
+     * Turns sorting on or off
+     * 
+     * @param sorting
+     *            - boolean value indicating if sorting should be enabled
+     */
+    public void sort(boolean sorting);
 
 }

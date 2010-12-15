@@ -35,83 +35,88 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 /**
   */
 public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
-		ISelectionChangedListener {
+        ISelectionChangedListener {
 
-	private Button fNewFolderButton;
-	private IContainer fSelectedContainer;
+    private Button fNewFolderButton;
+    private IContainer fSelectedContainer;
 
-	public FolderSelectionDialog(Shell parent, ILabelProvider labelProvider,
-			ITreeContentProvider contentProvider) {
-		super(parent, labelProvider, contentProvider);
-		setComparator(new ResourceComparator(ResourceComparator.NAME));
-	}
+    public FolderSelectionDialog(final Shell parent,
+            final ILabelProvider labelProvider,
+            final ITreeContentProvider contentProvider) {
+        super(parent, labelProvider, contentProvider);
+        setComparator(new ResourceComparator(ResourceComparator.NAME));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
-	 * .Composite)
-	 */
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite result = (Composite) super.createDialogArea(parent);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
+     * .Composite)
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        final Composite result = (Composite) super.createDialogArea(parent);
 
-		getTreeViewer().addSelectionChangedListener(this);
+        getTreeViewer().addSelectionChangedListener(this);
 
-		Button button = new Button(result, SWT.PUSH);
-		button.setText("Create &New Folder...");
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				newFolderButtonPressed();
-			}
-		});
-		button.setFont(parent.getFont());
-		fNewFolderButton = button;
+        final Button button = new Button(result, SWT.PUSH);
+        button.setText("Create &New Folder...");
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent event) {
+                newFolderButtonPressed();
+            }
+        });
+        button.setFont(parent.getFont());
+        fNewFolderButton = button;
 
-		applyDialogFont(result);
+        applyDialogFont(result);
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-				IErlangHelpContextIds.BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG);
+        PlatformUI
+                .getWorkbench()
+                .getHelpSystem()
+                .setHelp(
+                        parent,
+                        IErlangHelpContextIds.BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG);
 
-		return result;
-	}
+        return result;
+    }
 
-	private void updateNewFolderButtonState() {
-		IStructuredSelection selection = (IStructuredSelection) getTreeViewer()
-				.getSelection();
-		fSelectedContainer = null;
-		if (selection.size() == 1) {
-			Object first = selection.getFirstElement();
-			if (first instanceof IContainer) {
-				fSelectedContainer = (IContainer) first;
-			}
-		}
-		fNewFolderButton.setEnabled(fSelectedContainer != null);
-	}
+    private void updateNewFolderButtonState() {
+        final IStructuredSelection selection = (IStructuredSelection) getTreeViewer()
+                .getSelection();
+        fSelectedContainer = null;
+        if (selection.size() == 1) {
+            final Object first = selection.getFirstElement();
+            if (first instanceof IContainer) {
+                fSelectedContainer = (IContainer) first;
+            }
+        }
+        fNewFolderButton.setEnabled(fSelectedContainer != null);
+    }
 
-	protected void newFolderButtonPressed() {
-		NewFolderDialog dialog = new NewFolderDialog(getShell(),
-				fSelectedContainer);
-		if (dialog.open() == Window.OK) {
-			TreeViewer treeViewer = getTreeViewer();
-			treeViewer.refresh(fSelectedContainer);
-			Object createdFolder = dialog.getResult()[0];
-			treeViewer.reveal(createdFolder);
-			treeViewer.setSelection(new StructuredSelection(createdFolder));
-		}
-	}
+    protected void newFolderButtonPressed() {
+        final NewFolderDialog dialog = new NewFolderDialog(getShell(),
+                fSelectedContainer);
+        if (dialog.open() == Window.OK) {
+            final TreeViewer treeViewer = getTreeViewer();
+            treeViewer.refresh(fSelectedContainer);
+            final Object createdFolder = dialog.getResult()[0];
+            treeViewer.reveal(createdFolder);
+            treeViewer.setSelection(new StructuredSelection(createdFolder));
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(
-	 * org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
-	public void selectionChanged(SelectionChangedEvent event) {
-		updateNewFolderButtonState();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(
+     * org.eclipse.jface.viewers.SelectionChangedEvent)
+     */
+    public void selectionChanged(final SelectionChangedEvent event) {
+        updateNewFolderButtonState();
+    }
 
 }

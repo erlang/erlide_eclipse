@@ -8,12 +8,13 @@ import com.ericsson.otp.erlang.OtpErlangList;
 
 public class ErlangUninterpretedStackFrame extends ErlangStackFrame {
 
-    private ErlangFunction function;
+    private final ErlangFunction function;
 
     public ErlangUninterpretedStackFrame(final String module,
-            ErlangFunction function,
-            final ErlangProcess erlangProcess, final IDebugTarget target) {
-        super(module, erlangProcess, target, -1, function, new OtpErlangList(), -1);
+            final ErlangFunction function, final ErlangProcess erlangProcess,
+            final IDebugTarget target) {
+        super(module, erlangProcess, target, -1, function, new OtpErlangList(),
+                -1);
         this.function = function;
     }
 

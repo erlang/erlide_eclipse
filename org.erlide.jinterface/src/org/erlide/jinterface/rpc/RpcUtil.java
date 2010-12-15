@@ -210,13 +210,13 @@ public final class RpcUtil {
                 }
             }
             if (res == null) {
-                String msg = (env != null) ? env : "??";
+                final String msg = env != null ? env : "??";
                 throw new RpcTimeoutException(msg);
             }
             if (!(res instanceof OtpErlangTuple)) {
                 throw new RpcException(res.toString());
             }
-            OtpErlangTuple t = (OtpErlangTuple) res;
+            final OtpErlangTuple t = (OtpErlangTuple) res;
             if (t.arity() != 2) {
                 throw new RpcException(res.toString());
             }

@@ -17,120 +17,88 @@ import com.google.common.collect.Lists;
 
 public class ExtensionHelper {
 
-	/**
-	 * This should be used to add participants at test-time. It should be the
-	 * name of the extension point to a list (which will be returned)
-	 */
-	public static Map<String, List<Object>> testingParticipants;
+    /**
+     * This should be used to add participants at test-time. It should be the
+     * name of the extension point to a list (which will be returned)
+     */
+    public static Map<String, List<Object>> testingParticipants;
 
-	private static Map<String, IExtension[]> extensionsCache = new HashMap<String, IExtension[]>();
+    private static Map<String, IExtension[]> extensionsCache = new HashMap<String, IExtension[]>();
 
-	// TODO list the extension points
-	public static final String EDITOR_LISTENER = "org.erlide.editor_listener";
-	// public final static String PYDEV_COMPLETION =
-	// "org.python.pydev.pydev_completion";
-	// public final static String PYDEV_BUILDER =
-	// "org.python.pydev.pydev_builder";
-	// public final static String PYDEV_MODULES_OBSERVER =
-	// "org.python.pydev.pydev_modules_observer";
-	// public final static String PYDEV_INTERPRETER_OBSERVER =
-	// "org.python.pydev.pydev_interpreter_observer";
-	// public final static String PYDEV_MANAGER_OBSERVER =
-	// "org.python.pydev.pydev_manager_observer";
-	// public final static String PYDEV_PARSER_OBSERVER =
-	// "org.python.pydev.parser.pydev_parser_observer";
-	// public static final String PYDEV_CTRL_1 =
-	// "org.python.pydev.pydev_ctrl_1";
-	// public static final String PYDEV_SIMPLE_ASSIST =
-	// "org.python.pydev.pydev_simpleassist";
-	// public static final String PYDEV_ORGANIZE_IMPORTS =
-	// "org.python.pydev.pydev_organize_imports";
-	// public static final String PYDEV_REFACTORING =
-	// "org.python.pydev.pydev_refactoring";
-	// public static final String PYDEV_QUICK_OUTLINE =
-	// "org.python.pydev.pydev_quick_outline";
-	// public static final String PYDEV_FORMATTER =
-	// "org.python.pydev.pydev_formatter";
-	// public static final String PYDEV_GLOBALS_BROWSER =
-	// "org.python.pydev.pydev_globals_browser";
-	// public static final String PYDEV_DEBUG_PREFERENCES_PAGE =
-	// "org.python.pydev.pydev_debug_preferences_page";
-	// public static final String PYDEV_HOVER = "org.python.pydev.pydev_hover";
+    // TODO list the extension points
+    public static final String EDITOR_LISTENER = "org.erlide.editor_listener";
 
-	// debug
-	public static final String PYDEV_DEBUG_CONSOLE_INPUT_LISTENER = "org.python.pydev.debug.pydev_debug_console_input_listener";
+    public static IExtension[] getExtensions(final String type) {
+        IExtension[] extensions = extensionsCache.get(type);
+        if (extensions == null) {
+            final IExtensionRegistry registry = Platform.getExtensionRegistry();
+            if (registry != null) { // we may not be in eclipse env when testing
+                try {
+                    final IExtensionPoint extensionPoint = registry
+                            .getExtensionPoint(type);
+                    extensions = extensionPoint.getExtensions();
+                    extensionsCache.put(type, extensions);
+                } catch (final Exception e) {
+                    ErlangPlugin.log("Error getting extension for:" + type, e);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                extensions = new IExtension[0];
+            }
+        }
+        return extensions;
+    }
 
-	public static IExtension[] getExtensions(String type) {
-		IExtension[] extensions = extensionsCache.get(type);
-		if (extensions == null) {
-			IExtensionRegistry registry = Platform.getExtensionRegistry();
-			if (registry != null) { // we may not be in eclipse env when testing
-				try {
-					IExtensionPoint extensionPoint = registry
-							.getExtensionPoint(type);
-					extensions = extensionPoint.getExtensions();
-					extensionsCache.put(type, extensions);
-				} catch (Exception e) {
-					ErlangPlugin.log("Error getting extension for:" + type, e);
-					throw new RuntimeException(e);
-				}
-			} else {
-				extensions = new IExtension[0];
-			}
-		}
-		return extensions;
-	}
+    @SuppressWarnings("unchecked")
+    public static Object getParticipant(final String type) {
+        // only one participant may be used for this
+        final List<Object> participants = getParticipants(type);
+        if (participants.size() == 1) {
+            return participants.get(0);
+        }
 
-	@SuppressWarnings("unchecked")
-	public static Object getParticipant(String type) {
-		// only one participant may be used for this
-		List<Object> participants = getParticipants(type);
-		if (participants.size() == 1) {
-			return participants.get(0);
-		}
+        if (participants.size() == 0) {
+            return null;
+        }
 
-		if (participants.size() == 0) {
-			return null;
-		}
+        if (participants.size() > 1) {
+            throw new RuntimeException(
+                    "More than one participant is registered for type:" + type);
+        }
 
-		if (participants.size() > 1) {
-			throw new RuntimeException(
-					"More than one participant is registered for type:" + type);
-		}
+        throw new RuntimeException("Should never get here!");
 
-		throw new RuntimeException("Should never get here!");
+    }
 
-	}
+    /**
+     * @param type
+     *            the extension we want to get
+     * @return a list of classes created from those extensions
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static List getParticipants(final String type) {
+        if (testingParticipants != null) {
+            return testingParticipants.get(type);
+        }
 
-	/**
-	 * @param type
-	 *            the extension we want to get
-	 * @return a list of classes created from those extensions
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static List getParticipants(String type) {
-		if (testingParticipants != null) {
-			return testingParticipants.get(type);
-		}
+        final List list = Lists.newArrayList();
+        final IExtension[] extensions = getExtensions(type);
+        // For each extension ...
+        for (int i = 0; i < extensions.length; i++) {
+            final IExtension extension = extensions[i];
+            final IConfigurationElement[] elements = extension
+                    .getConfigurationElements();
+            // For each member of the extension ...
+            for (int j = 0; j < elements.length; j++) {
+                final IConfigurationElement element = elements[j];
 
-		List list = Lists.newArrayList();
-		IExtension[] extensions = getExtensions(type);
-		// For each extension ...
-		for (int i = 0; i < extensions.length; i++) {
-			IExtension extension = extensions[i];
-			IConfigurationElement[] elements = extension
-					.getConfigurationElements();
-			// For each member of the extension ...
-			for (int j = 0; j < elements.length; j++) {
-				IConfigurationElement element = elements[j];
-
-				try {
-					list.add(element.createExecutableExtension("class"));
-				} catch (Exception e) {
-					ErlangPlugin.log(e);
-				}
-			}
-		}
-		return list;
-	}
+                try {
+                    list.add(element.createExecutableExtension("class"));
+                } catch (final Exception e) {
+                    ErlangPlugin.getDefault().log(e);
+                }
+            }
+        }
+        return list;
+    }
 }

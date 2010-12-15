@@ -18,15 +18,16 @@ public abstract class PathEntry {
     private final String name;
     private final ErlProjectLayout layout;
 
-    public PathEntry(String name) {
+    public PathEntry(final String name) {
         this(name, null);
     }
 
-    public PathEntry(String name, IPath path) {
+    public PathEntry(final String name, final IPath path) {
         this(name, path, null);
     }
 
-    public PathEntry(String name, IPath path, ErlProjectLayout layout) {
+    public PathEntry(final String name, final IPath path,
+            final ErlProjectLayout layout) {
         this.name = name;
         this.path = path;
         this.layout = layout;

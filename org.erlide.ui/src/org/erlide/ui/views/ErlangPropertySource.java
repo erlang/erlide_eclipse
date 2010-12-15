@@ -20,54 +20,54 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class ErlangPropertySource implements IPropertySource {
 
-	/**
-	 * @param editor
-	 */
-	public ErlangPropertySource(final ErlangEditor editor) {
-	}
+    /**
+     * @param editor
+     */
+    public ErlangPropertySource(final ErlangEditor editor) {
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
-	 */
-	public Object getEditableValue() {
-		return null;
-	}
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
+     */
+    public Object getEditableValue() {
+        return null;
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
-	 */
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return new IPropertyDescriptor[] { new PropertyDescriptor("hello",
-				"balh") };
-	}
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
+     */
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        return new IPropertyDescriptor[] { new PropertyDescriptor("hello",
+                "balh") };
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-	 */
-	public Object getPropertyValue(final Object id) {
-		return id.getClass().getName();
-	}
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
+     */
+    public Object getPropertyValue(final Object id) {
+        return id.getClass().getName();
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
-	 */
-	public boolean isPropertySet(final Object id) {
-		return false;
-	}
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
+     */
+    public boolean isPropertySet(final Object id) {
+        return false;
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-	 */
-	public void resetPropertyValue(final Object id) {
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
+     */
+    public void resetPropertyValue(final Object id) {
 
-	}
+    }
 
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object,
-	 *      java.lang.Object)
-	 */
-	public void setPropertyValue(final Object id, final Object value) {
+    /**
+     * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object,
+     *      java.lang.Object)
+     */
+    public void setPropertyValue(final Object id, final Object value) {
 
-	}
+    }
 
 }

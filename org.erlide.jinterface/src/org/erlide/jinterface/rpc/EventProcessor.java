@@ -11,59 +11,59 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public final class EventProcessor implements Runnable {
 
-	private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 10000;
 
-	private final EventHandler handler;
-	private final OtpMbox mbox;
-	private volatile boolean terminated = true;
+    private final EventHandler handler;
+    private final OtpMbox mbox;
+    private volatile boolean terminated = true;
 
-	private OtpErlangPid starter;
+    private OtpErlangPid starter;
 
-	public EventProcessor(final EventHandler h, final Backend backend) {
-		handler = h;
-		mbox = backend.createMbox();
-	}
+    public EventProcessor(final EventHandler h, final Backend backend) {
+        handler = h;
+        mbox = backend.createMbox();
+    }
 
-	public void run() {
-		terminated = false;
-		mbox.send(starter, new OtpErlangAtom("start"));
-		while (!terminated) {
-			OtpErlangObject msg;
-			try {
-				msg = mbox.receive(TIMEOUT);
-				if (msg != null) {
-					terminated = handler.handleEvent(msg);
-				}
-			} catch (final OtpErlangExit e) {
-				terminated = true;
-			} catch (final Exception e) {
-				ErlLogger.warn("EventProcessor %s got exception:", mbox.self());
-				ErlLogger.warn(e);
-			}
+    public void run() {
+        terminated = false;
+        mbox.send(starter, new OtpErlangAtom("start"));
+        while (!terminated) {
+            OtpErlangObject msg;
+            try {
+                msg = mbox.receive(TIMEOUT);
+                if (msg != null) {
+                    terminated = handler.handleEvent(msg);
+                }
+            } catch (final OtpErlangExit e) {
+                terminated = true;
+            } catch (final Exception e) {
+                ErlLogger.warn("EventProcessor %s got exception:", mbox.self());
+                ErlLogger.warn(e);
+            }
 
-		}
-	}
+        }
+    }
 
-	public void start() {
-		if (!terminated) {
-			return;
-		}
-		Thread t = new Thread(this);
-		t.setPriority(3); // low
-		t.setDaemon(true);
-		t.start();
-	}
+    public void start() {
+        if (!terminated) {
+            return;
+        }
+        final Thread t = new Thread(this);
+        t.setPriority(3); // low
+        t.setDaemon(true);
+        t.start();
+    }
 
-	public void stop() {
-		terminated = true;
-	}
+    public void stop() {
+        terminated = true;
+    }
 
-	public OtpErlangPid getPid() {
-		return mbox.self();
-	}
+    public OtpErlangPid getPid() {
+        return mbox.self();
+    }
 
-	public void setStarter(OtpErlangPid starter) {
-		this.starter = starter;
-	}
+    public void setStarter(final OtpErlangPid starter) {
+        this.starter = starter;
+    }
 
 }

@@ -18,38 +18,38 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class ClearCacheAction extends TextEditorAction {
 
-	private final ErlangEditor erlangEditor;
-	private final String NOPARSE_CACHE_SUFFIX = ".noparse";
-	private final String SCANNER_CACHE_SUFFIX = ".scan";
-	private final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
-			SCANNER_CACHE_SUFFIX };
+    private final ErlangEditor erlangEditor;
+    private final String NOPARSE_CACHE_SUFFIX = ".noparse";
+    private final String SCANNER_CACHE_SUFFIX = ".scan";
+    private final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
+            SCANNER_CACHE_SUFFIX };
 
-	public ClearCacheAction(final ResourceBundle bundle, final String prefix,
-			final ErlangEditor erlangEditor) {
-		super(bundle, prefix, erlangEditor);
-		this.erlangEditor = erlangEditor;
-	}
+    public ClearCacheAction(final ResourceBundle bundle, final String prefix,
+            final ErlangEditor erlangEditor) {
+        super(bundle, prefix, erlangEditor);
+        this.erlangEditor = erlangEditor;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	@Override
-	public void run() {
-		final IErlModule module = erlangEditor.getModule();
-		if (module == null) {
-			return;
-		}
-		for (String suffix : suffixes) {
-			final String cacheFileOSPath = ErlangPlugin
-					.getDefault()
-					.getStateLocation()
-					.append(ErlangToolkit.createScannerModuleName(module) + suffix)
-					.toOSString();
-			final File cacheFile = new File(cacheFileOSPath);
-			cacheFile.delete();
-		}
-		erlangEditor.resetAndCacheScannerAndParser();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        final IErlModule module = erlangEditor.getModule();
+        if (module == null) {
+            return;
+        }
+        for (final String suffix : suffixes) {
+            final String cacheFileOSPath = ErlangPlugin
+                    .getDefault()
+                    .getStateLocation()
+                    .append(ErlangToolkit.createScannerModuleName(module)
+                            + suffix).toOSString();
+            final File cacheFile = new File(cacheFileOSPath);
+            cacheFile.delete();
+        }
+        erlangEditor.resetAndCacheScannerAndParser();
+    }
 }

@@ -22,19 +22,19 @@ package com.ericsson.otp.erlang;
  * Base class for the other OTP erlang exception classes.
  */
 public class OtpErlangException extends OtpException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Provides no message.
-	 */
-	public OtpErlangException() {
-		super();
-	}
+    /**
+     * Provides no message.
+     */
+    public OtpErlangException() {
+        super();
+    }
 
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpErlangException(final String msg) {
-		super(msg);
-	}
+    /**
+     * Provides a detailed message.
+     */
+    public OtpErlangException(final String msg) {
+        super(msg);
+    }
 }

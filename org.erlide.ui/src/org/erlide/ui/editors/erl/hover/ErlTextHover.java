@@ -346,7 +346,7 @@ public class ErlTextHover implements ITextHover,
                                                     project,
                                                     modFileName,
                                                     PluginUtils
-                                                            .getSourcePathFilter(project));
+                                                            .getSourcePathFilterCreator());
                                 }
                             }
                             if (!(r instanceof IFile)) {

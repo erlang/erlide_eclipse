@@ -27,10 +27,10 @@ package com.ericsson.otp.erlang;
  */
 @SuppressWarnings("serial")
 public class OtpErlangDecodeException extends OtpErlangException {
-	/**
-	 * Provides a detailed message.
-	 */
-	public OtpErlangDecodeException(final String msg) {
-		super(msg);
-	}
+    /**
+     * Provides a detailed message.
+     */
+    public OtpErlangDecodeException(final String msg) {
+        super(msg);
+    }
 }

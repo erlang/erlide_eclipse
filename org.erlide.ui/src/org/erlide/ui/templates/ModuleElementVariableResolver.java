@@ -22,41 +22,41 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ModuleElementVariableResolver extends TemplateVariableResolver {
 
-	private final Template fTemplate;
-	private boolean reentry = false;
+    private final Template fTemplate;
+    private boolean reentry = false;
 
-	public ModuleElementVariableResolver(final String type,
-			final Template template) {
-		super(type, "");
-		fTemplate = template;
-	}
+    public ModuleElementVariableResolver(final String type,
+            final Template template) {
+        super(type, "");
+        fTemplate = template;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-	 * .eclipse.jface.text.templates.TemplateVariable,
-	 * org.eclipse.jface.text.templates.TemplateContext)
-	 */
-	@Override
-	public void resolve(final TemplateVariable variable,
-			final TemplateContext theContext) {
-		if (reentry) {
-			return;
-		}
-		reentry = true;
-		final DocumentTemplateContext context = new DocumentTemplateContext(
-				ErlangSourceContextTypeModule.getDefault(), new Document(
-						fTemplate.getPattern()), 0, fTemplate.getPattern()
-						.length());
-		TemplateBuffer tb;
-		try {
-			tb = context.evaluate(fTemplate);
-			variable.setValue(tb.getString());
-		} catch (final BadLocationException e) {
-		} catch (final TemplateException e) {
-		}
-		reentry = false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
+     * .eclipse.jface.text.templates.TemplateVariable,
+     * org.eclipse.jface.text.templates.TemplateContext)
+     */
+    @Override
+    public void resolve(final TemplateVariable variable,
+            final TemplateContext theContext) {
+        if (reentry) {
+            return;
+        }
+        reentry = true;
+        final DocumentTemplateContext context = new DocumentTemplateContext(
+                ErlangSourceContextTypeModule.getDefault(), new Document(
+                        fTemplate.getPattern()), 0, fTemplate.getPattern()
+                        .length());
+        TemplateBuffer tb;
+        try {
+            tb = context.evaluate(fTemplate);
+            variable.setValue(tb.getString());
+        } catch (final BadLocationException e) {
+        } catch (final TemplateException e) {
+        }
+        reentry = false;
+    }
 }

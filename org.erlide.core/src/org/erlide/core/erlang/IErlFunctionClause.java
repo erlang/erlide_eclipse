@@ -14,12 +14,12 @@ import java.util.List;
 
 public interface IErlFunctionClause extends IErlMember {
 
-	public String getHead();
+    public String getHead();
 
-	public String getFunctionName();
+    public String getFunctionName();
 
-	public List<String> getParameters();
+    public List<String> getParameters();
 
-	int getArity();
+    int getArity();
 
 }

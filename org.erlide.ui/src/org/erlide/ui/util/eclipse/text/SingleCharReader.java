@@ -21,52 +21,53 @@ import java.io.Reader;
  */
 public abstract class SingleCharReader extends Reader {
 
-	/**
-	 * @see Reader#read()
-	 */
-	@Override
-	public abstract int read() throws IOException;
+    /**
+     * @see Reader#read()
+     */
+    @Override
+    public abstract int read() throws IOException;
 
-	/**
-	 * @see Reader#read(char[],int,int)
-	 */
-	@Override
-	public int read(char cbuf[], int off, int len) throws IOException {
-		int end = off + len;
-		for (int i = off; i < end; i++) {
-			int ch = read();
-			if (ch == -1) {
-				if (i == off) {
-					return -1;
-				}
-				return i - off;
-			}
-			cbuf[i] = (char) ch;
-		}
-		return len;
-	}
+    /**
+     * @see Reader#read(char[],int,int)
+     */
+    @Override
+    public int read(final char cbuf[], final int off, final int len)
+            throws IOException {
+        final int end = off + len;
+        for (int i = off; i < end; i++) {
+            final int ch = read();
+            if (ch == -1) {
+                if (i == off) {
+                    return -1;
+                }
+                return i - off;
+            }
+            cbuf[i] = (char) ch;
+        }
+        return len;
+    }
 
-	/**
-	 * @see Reader#ready()
-	 */
-	@Override
-	public boolean ready() throws IOException {
-		return true;
-	}
+    /**
+     * @see Reader#ready()
+     */
+    @Override
+    public boolean ready() throws IOException {
+        return true;
+    }
 
-	/**
-	 * Returns the readable content as string.
-	 * 
-	 * @return the readable content as string
-	 * @exception IOException
-	 *                in case reading fails
-	 */
-	public String getString() throws IOException {
-		StringBuffer buf = new StringBuffer();
-		int ch;
-		while ((ch = read()) != -1) {
-			buf.append((char) ch);
-		}
-		return buf.toString();
-	}
+    /**
+     * Returns the readable content as string.
+     * 
+     * @return the readable content as string
+     * @exception IOException
+     *                in case reading fails
+     */
+    public String getString() throws IOException {
+        final StringBuffer buf = new StringBuffer();
+        int ch;
+        while ((ch = read()) != -1) {
+            buf.append((char) ch);
+        }
+        return buf.toString();
+    }
 }

@@ -18,51 +18,51 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class DummyProcess implements IProcess {
 
-	private final ILaunch fLaunch;
+    private final ILaunch fLaunch;
 
-	public DummyProcess(final ILaunch launch) {
-		super();
-		fLaunch = launch;
-	}
+    public DummyProcess(final ILaunch launch) {
+        super();
+        fLaunch = launch;
+    }
 
-	public String getLabel() {
-		ErlLogger.debug("getlabel");
-		return "...";
-	}
+    public String getLabel() {
+        ErlLogger.debug("getlabel");
+        return "...";
+    }
 
-	public ILaunch getLaunch() {
-		return fLaunch;
-	}
+    public ILaunch getLaunch() {
+        return fLaunch;
+    }
 
-	public IStreamsProxy getStreamsProxy() {
-		return null;
-	}
+    public IStreamsProxy getStreamsProxy() {
+        return null;
+    }
 
-	public void setAttribute(final String key, final String value) {
-	}
+    public void setAttribute(final String key, final String value) {
+    }
 
-	public String getAttribute(final String key) {
-		return "?" + key;
-	}
+    public String getAttribute(final String key) {
+        return "?" + key;
+    }
 
-	public int getExitValue() throws DebugException {
-		return 0;
-	}
+    public int getExitValue() throws DebugException {
+        return 0;
+    }
 
-	public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
-		ErlLogger.debug("--> adapt as " + adapter.getName());
-		return null;
-	}
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+        ErlLogger.debug("--> adapt as " + adapter.getName());
+        return null;
+    }
 
-	public boolean canTerminate() {
-		return false;
-	}
+    public boolean canTerminate() {
+        return false;
+    }
 
-	public boolean isTerminated() {
-		return false;
-	}
+    public boolean isTerminated() {
+        return false;
+    }
 
-	public void terminate() throws DebugException {
-	}
+    public void terminate() throws DebugException {
+    }
 
 }

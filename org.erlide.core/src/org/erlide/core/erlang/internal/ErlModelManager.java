@@ -898,7 +898,7 @@ public final class ErlModelManager implements IErlModelManager {
                         // CCorePlugin.log(exception, "Exception occurred in
                         // listener of C
                         // element change notification"); //$NON-NLS-1$
-                        ErlangPlugin.log(exception);
+                        ErlangPlugin.getDefault().log(exception);
                     }
 
                     public void run() throws Exception {

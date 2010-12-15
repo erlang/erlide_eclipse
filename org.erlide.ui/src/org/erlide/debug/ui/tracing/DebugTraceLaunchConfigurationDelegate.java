@@ -14,28 +14,28 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
 
 public class DebugTraceLaunchConfigurationDelegate extends
-		LaunchConfigurationDelegate {
-	private ILaunch parentLaunch;
-	private IDebugTarget node;
-	private List<DebugTraceEvent> events;
+        LaunchConfigurationDelegate {
+    private ILaunch parentLaunch;
+    private IDebugTarget node;
+    private List<DebugTraceEvent> events;
 
-	public void setInfo(final ILaunch parentLaunch, final IDebugTarget node,
-			final List<DebugTraceEvent> events) {
-		this.parentLaunch = parentLaunch;
-		this.node = node;
-		this.events = events;
-	}
+    public void setInfo(final ILaunch parentLaunch, final IDebugTarget node,
+            final List<DebugTraceEvent> events) {
+        this.parentLaunch = parentLaunch;
+        this.node = node;
+        this.events = events;
+    }
 
-	public void launch(final ILaunchConfiguration configuration,
-			final String mode, final ILaunch launch,
-			final IProgressMonitor monitor) throws CoreException {
-		if (!mode.equals(ILaunchManager.DEBUG_MODE)) {
-			throw new CoreException(new Status(IStatus.ERROR,
-					ErlangPlugin.PLUGIN_ID, "debug mode not set"));
-		}
-		final DebugTraceTarget target = new DebugTraceTarget(launch,
-				parentLaunch, node, events);
-		launch.addDebugTarget(target);
-	}
+    public void launch(final ILaunchConfiguration configuration,
+            final String mode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
+        if (!mode.equals(ILaunchManager.DEBUG_MODE)) {
+            throw new CoreException(new Status(IStatus.ERROR,
+                    ErlangPlugin.PLUGIN_ID, "debug mode not set"));
+        }
+        final DebugTraceTarget target = new DebugTraceTarget(launch,
+                parentLaunch, node, events);
+        launch.addDebugTarget(target);
+    }
 
 }

@@ -15,16 +15,16 @@ import java.util.ResourceBundle;
 
 public class ErlangMessages {
 
-	private static final String RESOURCE_BUNDLE = "org.erlide.core.ErlangMessages"; //$NON-NLS-1$
+    private static final String RESOURCE_BUNDLE = "org.erlide.core.ErlangMessages"; //$NON-NLS-1$
 
-	private static final ResourceBundle fgResourceBundle = ResourceBundle
-			.getBundle(RESOURCE_BUNDLE);
+    private static final ResourceBundle fgResourceBundle = ResourceBundle
+            .getBundle(RESOURCE_BUNDLE);
 
-	public static String getString(final String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (final MissingResourceException e) {
-			return "!" + key + "!"; //$NON-NLS-2$ //$NON-NLS-1$
-		}
-	}
+    public static String getString(final String key) {
+        try {
+            return fgResourceBundle.getString(key);
+        } catch (final MissingResourceException e) {
+            return "!" + key + "!"; //$NON-NLS-2$ //$NON-NLS-1$
+        }
+    }
 }
