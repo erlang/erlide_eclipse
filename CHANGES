@@ -1,3 +1,40 @@
+List of user visible changes between 0.9.3 and 0.9.4 (20101215)
+
+3e6b9ab fixed exception when list was empty
+1916b50 Merge branch 'navigation' into pu
+f493b9d 678-navigation--navigating-to-erlide-modules-doesn-t-work
+7638075 renamed core_tests to kernel_test in scripts
+51cb888 Merge remote branch 'upstream/pu' into pu
+e52e128 Merge branch 'record-fields' into pu
+8fae7ac Fixed parse bug for imports
+19fe502 fix NPE in ErlLogger
+525c706 Merge branch 'record-fields' into pu
+bd7f504 Fixed parse bug in records
+d0c3e64 Made tests
+221ad1f Merge branch 'record-fields' into pu
+0bbee4c Minor change in content assist processor
+9a96885 Use record children in model
+5b7e618 Added record fields to model and parser
+a4303d4 612-mark-occurrences---the-toggle-shows-up-over-java-files
+f5c6c40 http://www.assembla.com/spaces/erlide/tickets/647-mark-occurrences--off-by-default
+9fb132d 654-searching--should-show-exported-functions-as-green-in-search-result
+497de83 635-erlang-search--doesn-t-find-records-in-type-specs
+0691b4d removed commented-out code
+3bc959f fixed preference page id
+6f2c432 removed unused methods in ResourceUtil
+535dc1b removed unused CleanOutFoldersOperation
+6c194fc 516- changed erlide.log file location; also rewritten logger a bit.
+92e52cf renamed test scripts
+1db94c6 added test2 script
+c4f62a2 added toolbar item for "new module"
+022fc51 #661 nicer error message if erlang source is utf-8
+5624a59 666 moved "new" wizards to right menu
+c2dbce2 hacked dialyser test
+4d21f1b reformatted sources (tests)
+1f01ec8 reformatted sources
+783bb22 Merge branch 'master' into next
+bc9e90f Merge branch 'master' into pu
+
 List of user visible changes between 0.9.2 and 0.9.3 (20101125)
 
 2069b48 629-navigator--use-external-references-instead-of--external_files-
