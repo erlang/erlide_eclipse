@@ -108,14 +108,18 @@ public class ResourceUtil {
     // FIXME can't we use erlang model instead?
     public static IResource recursiveFindNamedResourceWithReferences(
             final IContainer container, final String name,
-            final ContainerFilter filter) throws CoreException {
+            final ContainerFilterCreator filterCreator) throws CoreException {
+        final IProject project = container.getProject();
+        final ContainerFilter filter = filterCreator
+                .createFilterForProject(project);
         final IResource r = recursiveFindNamedResource(container, name, filter);
         if (r != null) {
             return r;
         }
-        final IProject project = container.getProject();
         for (final IProject p : project.getReferencedProjects()) {
-            final IResource r1 = recursiveFindNamedResource(p, name, filter);
+            final ContainerFilter pFilter = filterCreator
+                    .createFilterForProject(p);
+            final IResource r1 = recursiveFindNamedResource(p, name, pFilter);
             if (r1 != null) {
                 return r1;
             }

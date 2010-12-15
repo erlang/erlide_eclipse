@@ -44,7 +44,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.SourceRange;
-import org.erlide.core.erlang.util.ContainerFilter;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -174,10 +173,9 @@ public class ErlModelUtils {
             IResource re = null;
             if (resource != null) {
                 re = ResourceUtil.recursiveFindNamedResourceWithReferences(
-                        project,
-                        element.getFilenameLastPart(),
-                        PluginUtils.getIncludePathFilter(project,
-                                resource.getParent()));
+                        project, element.getFilenameLastPart(), PluginUtils
+                                .getIncludePathFilterCreator(resource
+                                        .getParent()));
             }
             if (re instanceof IFile) {
                 module = ModelUtils.getModule((IFile) re);
@@ -220,7 +218,7 @@ public class ErlModelUtils {
             final IResource re = ResourceUtil
                     .recursiveFindNamedResourceWithReferences(project, element
                             .getFilenameLastPart(), PluginUtils
-                            .getIncludePathFilter(project, m.getResource()
+                            .getIncludePathFilterCreator(m.getResource()
                                     .getParent()));
             final IErlModule included;
             if (re instanceof IFile) {
@@ -279,11 +277,10 @@ public class ErlModelUtils {
                 final String filenameLastPart = element.getFilenameLastPart();
                 final IResource resource = module.getResource();
                 final IContainer parent = resource.getParent();
-                final ContainerFilter includePathFilter = PluginUtils
-                        .getIncludePathFilter(project, parent);
                 final IResource re = ResourceUtil
                         .recursiveFindNamedResourceWithReferences(project,
-                                filenameLastPart, includePathFilter);
+                                filenameLastPart,
+                                PluginUtils.getIncludePathFilterCreator(parent));
                 final IErlModule m2;
                 if (re instanceof IFile) {
                     m2 = ModelUtils.getModule((IFile) re);
@@ -435,37 +432,36 @@ public class ErlModelUtils {
         IResource r = null;
         if (project != null) {
             r = ResourceUtil.recursiveFindNamedResourceWithReferences(project,
-                    modFileName, PluginUtils.getSourcePathFilter(project));
+                    modFileName, PluginUtils.getSourcePathFilterCreator());
 
             if (r == null) {
-                final IErlModule module = ModelUtils.openExternal(project,
-                        modulePath);
-                if (module != null) {
-                    return module;
-                    // if (r != null &&
-                    // !PluginUtils.isOnSourcePath(r.getParent())) {
-                    // r = null;
-                    // }
+                if (checkAllProjects) {
+                    final IWorkspaceRoot workspaceRoot = ResourcesPlugin
+                            .getWorkspace().getRoot();
+                    final IProject[] projects = workspaceRoot.getProjects();
+                    for (final IProject p : projects) {
+                        if (ErlideUtil.hasErlangNature(p)) {
+                            ErlLogger
+                                    .debug("searching project %s", p.getName());
+                            r = ResourceUtil.recursiveFindNamedResource(p,
+                                    modFileName,
+                                    PluginUtils.getSourcePathFilter(p));
+                            if (r != null) {
+                                ErlLogger.debug("found %s", r);
+                                break;
+                            }
+                        }
+                    }
                 }
-            }
-        }
-        if (r == null) {
-            ErlLogger.debug(
-                    "findExternalModule not found yet, checkAllProjects %b",
-                    checkAllProjects);
-        }
-        if (r == null && checkAllProjects) {
-            final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
-                    .getRoot();
-            final IProject[] projects = workspaceRoot.getProjects();
-            for (final IProject p : projects) {
-                if (ErlideUtil.hasErlangNature(p)) {
-                    ErlLogger.debug("searching project %s", p.getName());
-                    r = ResourceUtil.recursiveFindNamedResource(p, modFileName,
-                            PluginUtils.getSourcePathFilter(p));
-                    if (r != null) {
-                        ErlLogger.debug("found %s", r);
-                        break;
+                if (r == null) {
+                    final IErlModule module = ModelUtils.openExternal(project,
+                            modulePath);
+                    if (module != null) {
+                        return module;
+                        // if (r != null &&
+                        // !PluginUtils.isOnSourcePath(r.getParent())) {
+                        // r = null;
+                        // }
                     }
                 }
             }
