@@ -2,6 +2,7 @@ package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.jinterface.backend.util.Util;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
@@ -61,6 +62,18 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
     public String getExtra() {
         return extra;
+    }
+
+    public IErlRecordField getFieldNamed(final String name) {
+        for (final IErlElement e : fChildren) {
+            if (e instanceof IErlRecordField) {
+                final IErlRecordField field = (IErlRecordField) e;
+                if (field.getFieldName().equals(name)) {
+                    return field;
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -408,6 +408,11 @@ public final class ErlParser {
                                 fieldName);
                         final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
                                 .elementAt(1);
+                        if (fieldTuple.arity() > 2) {
+                            final OtpErlangObject fieldExtra = fieldTuple
+                                    .elementAt(2);
+                            field.setExtra(Util.stringValue(fieldExtra));
+                        }
                         setPos(field, posTuple);
                         children.add(field);
                     }

@@ -406,6 +406,8 @@ get_doc(Module, Input, StateDir) ->
 		{macro, Macro};
 	    {record, Record} ->
 		{record, Record};
+            {field, Record, Field} ->
+                {field, Record, Field};
 	    Error ->
 		?D(Error),
 		{error, Error}

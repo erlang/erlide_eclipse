@@ -48,7 +48,7 @@ open(Mod, Offset, #open_context{imports=Imports0}=Context) ->
     Imports = erlide_util:add_auto_imported(Imports0),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner_server:getTokenWindow(Mod, Offset, 5, 100),
+            erlide_scanner_server:getTokenWindow(Mod, Offset, 45, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Offset, TokensWComments, BeforeReversed,
                  Context#open_context{imports=Imports}),
@@ -95,7 +95,7 @@ try_open_aux(Offset, Tokens, BeforeReversed, Context) ->
     case Tokens of
         [#token{offset=O} | _] = Tokens when O =< Offset ->
             ?D(Tokens),
-            o_tokens(Tokens, Context, BeforeReversed),
+            o_tokens(Tokens, Offset, Context, BeforeReversed),
             case BeforeReversed of
                 [] ->
                     not_found;
@@ -151,43 +151,42 @@ consider_macro_def(_) ->
 %% TODO: rewrite this with some kind of table, and make it possible to
 %% add new items, e.g. gen_server calls
 
-o_tokens([#token{kind=atom, value=include} | Rest], _, [#token{kind='-'} | _]) ->
+o_tokens([#token{kind=atom, value=include} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_include(Rest);
-o_tokens([#token{kind=atom, value=include_lib} | Rest], _, [#token{kind='-'} | _]) ->
+o_tokens([#token{kind=atom, value=include_lib} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_include_lib(Rest);
-o_tokens([#token{kind=atom, value=define} | Rest], _, _) ->
+o_tokens([#token{kind=atom, value=define} | Rest], _, _, _) ->
     o_macro_def(Rest);
-o_tokens([#token{kind=atom, value=record} | Rest], _, [#token{kind='-'} | _]) ->
+o_tokens([#token{kind=atom, value=record} | Rest], _, _, [#token{kind='-'} | _]) ->
     o_record_def(Rest);
-o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _], _, _) ->
-    o_record(Value);
-o_tokens([#token{kind='#'}, #token{kind=macro, value=Value} | _], _, _) ->
-    o_record(Value);
+o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _] = Tokens, Offset, _, _) ->
+    o_record(Tokens, Offset, Value);
+o_tokens([#token{kind='#'}, #token{kind=macro, value=Value} | _] = Tokens, Offset, _, _) ->
+    o_record(Tokens, Offset, Value);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function},
-          #token{kind='/'}, #token{kind=integer, value=Arity} | _],
-         Context, _) ->
+          #token{kind='/'}, #token{kind=integer, value=Arity} | _], _, Context, _) ->
     o_external(Module, Function, Arity, Context);
 o_tokens([#token{kind=atom, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
-         Context, _) ->
+         _, Context, _) ->
     o_external(Module, Function, Rest, Context);
 o_tokens([#token{kind=macro, value=Module}, #token{kind=':'}, #token{kind=atom, value=Function} | Rest],
-         Context, _) ->
+         _, Context, _) ->
     o_external(Module, Function, Rest, Context);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
-         Context, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
+         _, Context, [#token{kind=':'}, #token{kind=atom, value=Module} | _]) ->
     o_external(Module, Function, Arity, Context);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integer, value=Arity} | _],
-         Context, _BeforeReversed) ->
+         _, Context, _BeforeReversed) ->
     o_local(Function, Arity, Context);
 o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _],
-         Context, [#token{kind=atom, value=Function} | _]) ->
+         _, Context, [#token{kind=atom, value=Function} | _]) ->
     o_local(Function, Arity, Context);
-o_tokens([#token{kind=macro, value=Value} | _], _, [#token{kind='#'} | _]) ->
-    o_record(Value);
-o_tokens([#token{kind=macro, value=Value} | _], _, _) ->
+o_tokens([#token{kind=macro, value=Value} | _] = Tokens, Offset, _, [#token{kind='#'} | _]) ->
+    o_record(Tokens, Offset, Value);
+o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
     o_macro(Value);
 o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest],
-         Context, BeforeReversed) ->
+         _, Context, BeforeReversed) ->
     case consider_local(BeforeReversed) of
         true ->
             ?D(Rest),
@@ -196,14 +195,14 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest],
         false ->
             continue
     end;
-o_tokens([#token{kind=var, value=VarName} | _], _, BeforeReversed) ->
+o_tokens([#token{kind=var, value=VarName} | _], _, _, BeforeReversed) ->
     case consider_macro_def(BeforeReversed) of
         true ->
             throw({open, {macro_def, VarName}});
         false ->
             throw({open, {variable, VarName}})
     end;
-o_tokens(_, _, _) ->
+o_tokens(_, _, _, _) ->
     no.
 
 o_include([#token{kind='('}, #token{kind=string, value=File} | _]) ->
@@ -225,8 +224,23 @@ o_macro_def([#token{kind='('}, #token{kind=var, value=Value} | _]) ->
 o_macro_def([#token{kind='('}, #token{kind=atom, value=Value} | _]) ->
     throw({open, {macro, Value}}).
 
-o_record(Value) ->
-    throw({open, {record, Value}}).
+o_record(Tokens, Offset, Value) ->
+    {State, _Name, Prefix, _Fields} =
+        erlide_content_assist:check_record_tokens(upto_offset(Tokens, Offset)),
+    case State of
+        record_want_field -> throw({open, {field, Value, Prefix}});
+        record_want_dot_field -> throw({open, {field, Value, Prefix}});
+        record_dot_field -> throw({open, {field, Value, Prefix}});
+        record_field -> throw({open, {field, Value, Prefix}});
+        _ -> throw({open, {record, Value}})
+    end.
+
+upto_offset([#token{offset=O, length=L}=T | Rest], Offset) when Offset>=O+L ->
+    [T | upto_offset(Rest, Offset)];
+upto_offset([], _) ->
+    [];
+upto_offset([T | _], _) ->
+    [T].
 
 o_record_def([#token{kind='('}, #token{kind=atom, value=Value} | _]) ->
     throw({open, {record, Value}}).

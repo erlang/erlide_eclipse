@@ -21,7 +21,7 @@
 %% -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 24).
+-define(CACHE_VERSION, 25).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -322,8 +322,9 @@ fun_arity_from_tokens(_) ->
 
 field_list_from_tokens([#token{kind=atom, value=Field, line=Line, 
                                offset=Offset, length=Length} | Rest]) ->
-    [{Field, {{Line, Line, Offset}, Length}}
-         | field_list_from_tokens(erlide_np_util:skip_to(Rest, ','))];
+    {Extra, NewRest} = get_upto2(Rest, ','),
+    [{Field, {{Line, Line, Offset}, Length}, to_string(Extra)}
+         | field_list_from_tokens(NewRest)];
 field_list_from_tokens([_ | Rest]) ->
     field_list_from_tokens(Rest);
 field_list_from_tokens(_) ->
@@ -372,14 +373,24 @@ get_between(L, A, B) ->
     lists:reverse(get_upto(lists:reverse(R), A)).
 
 get_upto(L, Delim) ->
-	get_upto(L, Delim, []).
+        get_upto(L, Delim, []).
 
 get_upto([], _Delim, _Acc) ->
     [];
 get_upto([#token{kind=Delim} | _], Delim, Acc) ->
-	lists:reverse(Acc);
+        lists:reverse(Acc);
 get_upto([T | Rest], Delim, Acc) ->
     get_upto(Rest, Delim, [T | Acc]).
+
+get_upto2(L, Delim) ->
+    get_upto2(L, Delim, []).
+
+get_upto2([], _Delim, Acc) ->
+    {lists:reverse(Acc), []};
+get_upto2([#token{kind=Delim} | Rest], Delim, Acc) ->
+    {lists:reverse(Acc), Rest};
+get_upto2([T | Rest], Delim, Acc) ->
+    get_upto2(Rest, Delim, [T | Acc]).
 
 check_clause([#token{kind = ';'} | Rest]) ->
     check_class(Rest) == function;
