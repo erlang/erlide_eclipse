@@ -25,11 +25,13 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -206,11 +208,18 @@ public class OpenAction extends SelectionDispatchAction {
             foundSourceRange = ErlModelUtils.findVariable(backend, range,
                     res.getName(), elementText);
         } else if (res.isRecord() || res.isMacro()) {
-            final IErlElement.Kind kind = res.isMacro() ? IErlElement.Kind.MACRO_DEF
-                    : IErlElement.Kind.RECORD_DEF;
+            final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
             foundElement = ErlModelUtils.findPreprocessorDef(backend, project,
                     module, res.getName(), kind,
                     model.getExternalIncludes(erlProject));
+        } else if (res.isField()) {
+            final IErlRecordDef def = (IErlRecordDef) ErlModelUtils
+                    .findPreprocessorDef(backend, project, module,
+                            res.getFun(), Kind.RECORD_DEF,
+                            model.getExternalIncludes(erlProject));
+            if (def != null) {
+                foundElement = def.getFieldNamed(res.getName());
+            }
         }
         if (foundElement != null) {
             ErlModelUtils.openElement(foundElement);

@@ -4,4 +4,6 @@ public interface IErlRecordField extends IErlMember {
 
     String getFieldName();
 
+    String getExtra();
+
 }

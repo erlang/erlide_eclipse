@@ -16,40 +16,47 @@ public class OpenResult {
     private String fun;
     private int arity;
     private String path;
+    // TODO rewrite this to use SearchFor
     private boolean isRecord = false;
     private boolean isMacro = false;
     private boolean isLocalCall = false;
     private boolean isInclude = false;
     private boolean isVariable = false;
     private boolean isDefine = false;
+    private boolean isField = false;
 
     public OpenResult(final OtpErlangObject res) {
         if (!(res instanceof OtpErlangTuple)) {
             return; // not a call, ignore
         }
-        final OtpErlangTuple tres = (OtpErlangTuple) res;
-        final String kind = ((OtpErlangAtom) tres.elementAt(0)).atomValue();
+        final OtpErlangTuple openTuple = (OtpErlangTuple) res;
+        final String kind = ((OtpErlangAtom) openTuple.elementAt(0))
+                .atomValue();
         try {
             if (kind.equals("external")) {
-                final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple
+                        .elementAt(1);
                 isExternalCall = true;
                 name = element.atomValue();
-                fun = ((OtpErlangAtom) tres.elementAt(2)).atomValue();
-                arity = ((OtpErlangLong) tres.elementAt(3)).intValue();
+                fun = ((OtpErlangAtom) openTuple.elementAt(2)).atomValue();
+                arity = ((OtpErlangLong) openTuple.elementAt(3)).intValue();
                 path = null;
-                if (tres.arity() > 4
-                        && tres.elementAt(4) instanceof OtpErlangString) {
-                    path = ((OtpErlangString) tres.elementAt(4)).stringValue();
+                if (openTuple.arity() > 4
+                        && openTuple.elementAt(4) instanceof OtpErlangString) {
+                    path = ((OtpErlangString) openTuple.elementAt(4))
+                            .stringValue();
                 }
             } else if (kind.equals("include")) {
                 isInclude = true;
-                final OtpErlangString s = (OtpErlangString) tres.elementAt(1);
+                final OtpErlangString s = (OtpErlangString) openTuple
+                        .elementAt(1);
                 name = s.stringValue();
             } else if (kind.equals("local")) { // local call
                 isLocalCall = true;
-                final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple
+                        .elementAt(1);
                 fun = element.atomValue();
-                arity = ((OtpErlangLong) tres.elementAt(2)).intValue();
+                arity = ((OtpErlangLong) openTuple.elementAt(2)).intValue();
                 // } else if (external.equals("variable")) {
                 // final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
                 // final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
@@ -57,14 +64,15 @@ public class OpenResult {
                 isMacro = kind.startsWith("macro");
                 isRecord = kind.startsWith("record");
                 isDefine = kind.endsWith("_def");
-                final OtpErlangAtom element = (OtpErlangAtom) tres.elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple
+                        .elementAt(1);
                 name = element.toString();
                 if (isMacro) {
                     name = removeQuestionMark(name);
                 }
             } else if (kind.equals("variable")) {
                 isVariable = true;
-                final OtpErlangObject o = tres.elementAt(1);
+                final OtpErlangObject o = openTuple.elementAt(1);
                 if (o instanceof OtpErlangTuple) {
                     final OtpErlangTuple t = (OtpErlangTuple) o;
                     final OtpErlangAtom a = (OtpErlangAtom) t.elementAt(0);
@@ -73,6 +81,14 @@ public class OpenResult {
                     final OtpErlangAtom a = (OtpErlangAtom) o;
                     name = a.atomValue();
                 }
+            } else if (kind.equals("field")) {
+                isField = true;
+                final OtpErlangAtom recordNameA = (OtpErlangAtom) openTuple
+                        .elementAt(1);
+                fun = recordNameA.atomValue();
+                final OtpErlangAtom fieldNameA = (OtpErlangAtom) openTuple
+                        .elementAt(2);
+                name = fieldNameA.atomValue();
             }
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -172,5 +188,9 @@ public class OpenResult {
         }
         b.append('}');
         return b.toString();
+    }
+
+    public boolean isField() {
+        return isField;
     }
 }

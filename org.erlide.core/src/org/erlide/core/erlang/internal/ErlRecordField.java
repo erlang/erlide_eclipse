@@ -6,10 +6,12 @@ import org.erlide.core.erlang.IErlRecordField;
 public class ErlRecordField extends ErlMember implements IErlRecordField {
 
     private final String fieldName;
+    private String extra;
 
     protected ErlRecordField(final IErlRecordDef parent, final String name) {
         super(parent, "record_field");
         fieldName = name;
+        extra = "";
     }
 
     public Kind getKind() {
@@ -23,6 +25,14 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public void setExtra(final String extra) {
+        this.extra = extra;
+    }
+
+    public String getExtra() {
+        return extra;
     }
 
 }

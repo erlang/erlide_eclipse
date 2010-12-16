@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -44,11 +45,14 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
@@ -56,6 +60,7 @@ import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -310,101 +315,21 @@ public class ErlTextHover implements ITextHover,
                     if (openKind.equals("error")) {
                         return null;
                     }
-                    String definedName = a1.atomValue();
+                    final String definedName = a1.atomValue();
                     // TODO code below should be cleaned up, we should factorize
                     // and
                     // use same code for content assist, open and hover
                     if (openKind.equals("local") || openKind.equals("external")) {
-                        IErlModule m = null;
-                        OtpErlangLong arityLong = null;
-                        if (openKind.equals("local")) {
-                            arityLong = (OtpErlangLong) t.elementAt(2);
-                            m = module;
-                        } else if (openKind.equals("external")) {
-                            final OtpErlangAtom a2 = (OtpErlangAtom) t
-                                    .elementAt(2);
-                            final String mod = ErlModelUtils.resolveMacroValue(
-                                    definedName, module);
-                            definedName = a2.atomValue();
-                            arityLong = (OtpErlangLong) t.elementAt(3);
-                            IResource r = null;
-                            if (t.arity() > 3
-                                    && t.elementAt(4) instanceof OtpErlangString) {
-                                final OtpErlangString s4 = (OtpErlangString) t
-                                        .elementAt(4);
-                                // XXX final String path = Util.stringValue(s4);
-                                // try {
-                                // r = ErlModelUtils.findExternalModule(mod,
-                                // path, project, true);
-                                // } catch (final CoreException e2) {
-                                // }
-                            } else {
-                                final String modFileName = mod + ".erl";
-                                if (project != null) {
-                                    r = ResourceUtil
-                                            .recursiveFindNamedResourceWithReferences(
-                                                    project,
-                                                    modFileName,
-                                                    PluginUtils
-                                                            .getSourcePathFilterCreator());
-                                }
-                            }
-                            if (!(r instanceof IFile)) {
-                                return null;
-                            }
-                            final IFile file = (IFile) r;
-                            m = ModelUtils.getModule(file);
-                        }
-                        int arity = -1;
-                        try {
-                            if (arityLong != null) {
-                                arity = arityLong.intValue();
-                            }
-                        } catch (final OtpErlangRangeException e) {
-                        }
-                        final ErlangFunction erlangFunction = new ErlangFunction(
-                                definedName, arity);
-                        if (m == null) {
-                            return null;
-                        }
-                        IErlFunction f = null;
-                        try {
-                            m.open(null);
-                            f = ModelUtils.findFunction(m, erlangFunction);
-                            element = f;
-                        } catch (final ErlModelException e) {
-                        }
-                        if (f == null) {
-                            return null;
-                        }
-                        final String comment = f.getComment();
-                        if (comment == null) {
-                            return null;
-                        }
-                        result.append(comment);
-                    } else {
-                        if (definedName.charAt(0) == '?') {
-                            definedName = definedName.substring(1);
-                        }
-                        final IErlElement.Kind kindToFind = openKind
-                                .equals("record") ? IErlElement.Kind.RECORD_DEF
-                                : IErlElement.Kind.MACRO_DEF;
-                        final String externalIncludes = model
-                                .getExternalIncludes(erlProject);
-                        IErlPreprocessorDef pd = ErlModelUtils
-                                .findPreprocessorDef(ide, project, module,
-                                        definedName, kindToFind,
-                                        externalIncludes);
-                        if (pd == null) {
-                            pd = ErlModelUtils.findPreprocessorDef(ide,
-                                    project, module,
-                                    ErlideUtil.unquote(definedName),
-                                    kindToFind, externalIncludes);
-                        }
-                        if (pd != null) {
-                            element = pd;
-                            result.append(pd.getExtra());
-                        }
+                        element = getFunctionDoc(module, result, element,
+                                project, t, openKind, definedName);
+                    } else if (openKind.equals("record")
+                            || openKind.equals("macro")) {
+                        element = getPreprocessorDoc(module, result, element,
+                                erlProject, ide, project, model, openKind,
+                                definedName);
+                    } else if (openKind.equals("field")) {
+                        element = getRecordFieldDoc(module, result, erlProject,
+                                ide, project, model, t, definedName);
                     }
                 }
             }
@@ -418,6 +343,123 @@ public class ErlTextHover implements ITextHover,
         // TODO set element
         return new ErlBrowserInformationControlInput(null, element,
                 result.toString(), 20);
+    }
+
+    private static IErlPreprocessorDef getRecordFieldDoc(
+            final IErlModule module, final StringBuffer result,
+            final IErlProject erlProject, final Backend ide,
+            final IProject project, final IErlModel model,
+            final OtpErlangTuple t, final String definedName)
+            throws CoreException, BackendException {
+        final OtpErlangAtom recordFieldAtom = (OtpErlangAtom) t.elementAt(2);
+        final String recordField = recordFieldAtom.atomValue();
+        final String externalIncludes = model.getExternalIncludes(erlProject);
+        final IErlPreprocessorDef pd = ErlModelUtils
+                .findPreprocessorDef(ide, project, module, definedName,
+                        Kind.RECORD_DEF, externalIncludes);
+        if (pd instanceof IErlRecordDef) {
+            final IErlRecordDef rd = (IErlRecordDef) pd;
+            final IErlRecordField field = rd.getFieldNamed(recordField);
+            if (field != null) {
+                result.append("#" + definedName + "." + field.getFieldName()
+                        + field.getExtra());
+            }
+        }
+        return pd;
+    }
+
+    private static Object getPreprocessorDoc(final IErlModule module,
+            final StringBuffer result, Object element,
+            final IErlProject erlProject, final Backend ide,
+            final IProject project, final IErlModel model,
+            final String openKind, String definedName) throws CoreException,
+            BackendException {
+        if (definedName.charAt(0) == '?') {
+            definedName = definedName.substring(1);
+        }
+        final IErlElement.Kind kindToFind = openKind.equals("record") ? IErlElement.Kind.RECORD_DEF
+                : IErlElement.Kind.MACRO_DEF;
+        final String externalIncludes = model.getExternalIncludes(erlProject);
+        IErlPreprocessorDef pd = ErlModelUtils.findPreprocessorDef(ide,
+                project, module, definedName, kindToFind, externalIncludes);
+        if (pd == null) {
+            pd = ErlModelUtils.findPreprocessorDef(ide, project, module,
+                    ErlideUtil.unquote(definedName), kindToFind,
+                    externalIncludes);
+        }
+        if (pd != null) {
+            element = pd;
+            result.append(pd.getExtra());
+        }
+        return element;
+    }
+
+    private static Object getFunctionDoc(final IErlModule module,
+            final StringBuffer result, Object element, final IProject project,
+            final OtpErlangTuple t, final String openKind, String definedName)
+            throws CoreException {
+        IErlModule m = null;
+        OtpErlangLong arityLong = null;
+        if (openKind.equals("local")) {
+            arityLong = (OtpErlangLong) t.elementAt(2);
+            m = module;
+        } else if (openKind.equals("external")) {
+            final OtpErlangAtom a2 = (OtpErlangAtom) t.elementAt(2);
+            final String mod = ErlModelUtils.resolveMacroValue(definedName,
+                    module);
+            definedName = a2.atomValue();
+            arityLong = (OtpErlangLong) t.elementAt(3);
+            IResource r = null;
+            if (t.arity() > 3 && t.elementAt(4) instanceof OtpErlangString) {
+                final OtpErlangString s4 = (OtpErlangString) t.elementAt(4);
+                // XXX final String path = Util.stringValue(s4);
+                // try {
+                // r = ErlModelUtils.findExternalModule(mod,
+                // path, project, true);
+                // } catch (final CoreException e2) {
+                // }
+            } else {
+                final String modFileName = mod + ".erl";
+                if (project != null) {
+                    r = ResourceUtil.recursiveFindNamedResourceWithReferences(
+                            project, modFileName,
+                            PluginUtils.getSourcePathFilterCreator());
+                }
+            }
+            if (!(r instanceof IFile)) {
+                return null;
+            }
+            final IFile file = (IFile) r;
+            m = ModelUtils.getModule(file);
+        }
+        int arity = -1;
+        try {
+            if (arityLong != null) {
+                arity = arityLong.intValue();
+            }
+        } catch (final OtpErlangRangeException e) {
+        }
+        final ErlangFunction erlangFunction = new ErlangFunction(definedName,
+                arity);
+        if (m == null) {
+            return null;
+        }
+        IErlFunction f = null;
+        try {
+            m.open(null);
+            f = ModelUtils.findFunction(m, erlangFunction);
+            element = f;
+        } catch (final ErlModelException e) {
+        }
+        if (f == null) {
+            return null;
+        }
+        final String comment = f.getComment();
+        if (comment == null) {
+            return null;
+        }
+        result.append(comment);
+        return element;
     }
 
 }
