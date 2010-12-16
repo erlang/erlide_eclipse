@@ -137,7 +137,8 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                 .toPortableString();
-        logger = ErlLogger.init(dir, Platform.inDebugMode());
+        logger = ErlLogger.getInstance();
+        logger.setLogDir(dir);
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         super.start(context);
 
