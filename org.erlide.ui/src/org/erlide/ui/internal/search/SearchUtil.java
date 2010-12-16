@@ -64,6 +64,7 @@ import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlangSearchPattern.SearchFor;
 import erlang.OpenResult;
+import erlang.RecordFieldPattern;
 
 public class SearchUtil {
 
@@ -383,6 +384,8 @@ public class SearchUtil {
                     }
                 }
             }
+        } else if (res.isField()) {
+            return new RecordFieldPattern(unquoted, res.getFun(), limitTo);
         }
         return ref;
     }

@@ -542,7 +542,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 createRadioButton(result, "Record", SearchFor.RECORD),
                 createRadioButton(result, "Macro", SearchFor.MACRO),
                 createRadioButton(result, "Type", SearchFor.TYPE),
-                createRadioButton(result, "Include", SearchFor.INCLUDE) };
+                createRadioButton(result, "Include", SearchFor.INCLUDE),
+                createRadioButton(result, "Record field",
+                        SearchFor.RECORD_FIELD) };
 
         // Fill with dummy radio buttons
         final Label filler = new Label(result, SWT.NONE);

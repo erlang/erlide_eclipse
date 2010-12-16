@@ -53,10 +53,14 @@ public abstract class ErlangSearchPattern {
             "var_def");
     protected static final OtpErlangAtom VARIABLE_REF_ATOM = new OtpErlangAtom(
             "var_ref");
+    protected static final OtpErlangAtom RECORD_FIELD_DEF_ATOM = new OtpErlangAtom(
+            "record_field_def");
+    protected static final OtpErlangAtom RECORD_FIELD_REF_ATOM = new OtpErlangAtom(
+            "record_field_ref");
 
     // search for
     public enum SearchFor {
-        FUNCTION, MACRO, RECORD, INCLUDE, TYPE, VARIABLE;
+        FUNCTION, MACRO, RECORD, INCLUDE, TYPE, VARIABLE, RECORD_FIELD;
     };
 
     public EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
@@ -84,6 +88,8 @@ public abstract class ErlangSearchPattern {
             return new RecordPattern(name, limitTo);
         case TYPE:
             return new TypeRefPattern(module, name, limitTo);
+        case RECORD_FIELD:
+            return new RecordFieldPattern(module, name, limitTo);
         case VARIABLE:
             return null; // FIXME
         }
