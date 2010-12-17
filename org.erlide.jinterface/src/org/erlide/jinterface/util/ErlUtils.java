@@ -115,7 +115,7 @@ public final class ErlUtils {
         }
         if (pattern instanceof OtpPatternVariable) {
             final OtpPatternVariable var = (OtpPatternVariable) pattern;
-            if (!TypeConverter.matchSignature(term, var.getSignature())) {
+            if (!TypeConverter.doesMatchSignature(term, var.getSignature())) {
                 return null;
             }
             if (var.getName().equals("_")) {
