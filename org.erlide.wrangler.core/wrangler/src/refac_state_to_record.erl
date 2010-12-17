@@ -156,11 +156,11 @@ gen_fsm_to_record(FileName, RecordName, RecordFields, StateFuns, IsTuple, Search
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  format refactoring command                                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-format_args(FileName, RecordName, RecordFields, StateFuns, IsTuple, SearchPaths, TabWidth, FunName) ->
-    ?wrangler_io("\nCMD: ~p:" ++ FunName ++ "(~p,~p,", [?MODULE, FileName, RecordName]),
-    ?wrangler_io(format_field_names(RecordFields) ++ ",", []),
-    ?wrangler_io(format_state_funs(StateFuns), []),
-    ?wrangler_io(",~p,~p, ~p).\n", [IsTuple, SearchPaths, TabWidth]).
+format_args(_FileName, _RecordName, _RecordFields, _StateFuns, _IsTuple, _SearchPaths, _TabWidth, _FunName) ->
+    ?wrangler_io("\nCMD: ~p:" ++ FunName ++ "(~p,~p,", [?MODULE, _FileName, _ecordName]),
+    ?wrangler_io(format_field_names(_RecordFields) ++ ",", []),
+    ?wrangler_io(format_state_funs(_StateFuns), []),
+    ?wrangler_io(",~p,~p, ~p).\n", [_IsTuple, _SearchPaths, _TabWidth]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

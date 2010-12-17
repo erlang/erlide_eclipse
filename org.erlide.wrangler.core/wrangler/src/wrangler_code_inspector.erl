@@ -567,23 +567,23 @@ improper_inter_module_calls(OutputDotFileName, SearchPaths)->
 %%==========================================================================================
 %%             Some internal functions.
 %%==========================================================================================
-format_nested_expr_result(Funs, NestLevel, ExprType) ->
+format_nested_expr_result(Funs, _NestLevel, _ExprType) ->
     case Funs of
       [] ->
 	  ?wrangler_io("\nNo function with ~p expressions nested ~p or more levels has been found.\n",
-		       [ExprType, NestLevel]);
+		       [_ExprType, _NestLevel]);
       _ -> ?wrangler_io("\nThe following function(s) contains ~p expressions nested ~p or more levels:\n",
-			[ExprType, NestLevel]),
+			[_ExprType, _NestLevel]),
 	   format_result_1(Funs)
     end.
 
 
 format_result_1([]) ->
     ?wrangler_io(".\n",[]);
-format_result_1([{M, F, A}|Fs]) ->
+format_result_1([{_M, _F, _A}|Fs]) ->
     case Fs of 
-	[] -> ?wrangler_io("~p:~p/~p", [M, F, A]);
-	_ -> ?wrangler_io("~p:~p/~p,\n", [M, F, A])
+	[] -> ?wrangler_io("~p:~p/~p", [_M, _F, _A]);
+	_ -> ?wrangler_io("~p:~p/~p,\n", [_M, _F, _A])
     end,
     format_result_1(Fs).
 
@@ -594,28 +594,28 @@ calls_to_fun_format_results(Callers)->
 	    ?wrangler_io("The function selected is not called by any other functions.\n", []);
 	_ ->
 	    ?wrangler_io("The function selected is called by the following function(s):\n", []),
-	    lists:foreach(fun ({File, F, A}) -> ?wrangler_io("File:~p, function/arity: ~p/~p\n", [File, F, A]) end, Callers)
+	    lists:foreach(fun ({_File, _F, _A}) -> ?wrangler_io("File:~p, function/arity: ~p/~p\n", [_File, _F, _A]) end, Callers)
     end.
 
-long_funs_format_results(LongFuns, Lines) ->
+long_funs_format_results(LongFuns, _Lines) ->
     case LongFuns of
 	[] ->
 	    ?wrangler_io("\n No Function in this module has more than ~p lines.\n",
-		       [Lines]);
+		       [_Lines]);
 	_ ->
 	    ?wrangler_io("\n The following function(s) have more than ~p lines of code:\n",
-			 [Lines]),
+			 [_Lines]),
 	    format_result_1(LongFuns)
     end.
 
-large_modules_format_results(LargeModules, Lines)->
+large_modules_format_results(LargeModules, _Lines)->
     case LargeModules of
 	[] ->
 	    ?wrangler_io("\n No module with more than ~p lines of code has been found.\n", 
-			 [Lines]);
+			 [_Lines]);
 	_ ->
 	    ?wrangler_io("The following modules have more than ~p lines of code:\n",
-			 [Lines]),
+			 [_Lines]),
 	    ?wrangler_io("~p\n", [LargeModules])
     end.
 

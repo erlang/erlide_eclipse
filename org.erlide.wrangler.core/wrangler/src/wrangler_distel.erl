@@ -259,5 +259,5 @@ check_undo_process() ->
     end.
 
 output_logged_msg() ->
-    Msg = wrangler:get_log_msg(),
-    ?wrangler_io(Msg, []).
+    _Msg = wrangler:get_log_msg(),
+    ?wrangler_io(_Msg, []).

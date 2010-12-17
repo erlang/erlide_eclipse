@@ -50,7 +50,7 @@ load_data(Path, Start, Stop) ->
 	end.
 
 create_load_handler(Start, Stop) ->
-	fun(Fd, Trace, _TraceInfo, State) ->
+	fun(_Fd, Trace, _TraceInfo, State) ->
 			if
 				State >= Start, State =< Stop ->
 					case Trace of
@@ -73,7 +73,7 @@ create_load_handler(Start, Stop) ->
 	end.
 
 create_info_handler(Path) ->
-	fun(Fd, Trace, _TraceInfo, State) ->
+	fun(_Fd, Trace, _TraceInfo, State) ->
 			{First, Count, Start_date, End_date} = State,
 			case Trace of
 				end_of_trace ->
