@@ -32,7 +32,11 @@ public class TermParser {
 
     private static Map<String, OtpErlangObject> cache = new HashMap<String, OtpErlangObject>();
 
-    public static OtpErlangObject parse(final String s) throws ParserException {
+    public static TermParser getParser() {
+        return new TermParser();
+    }
+
+    public OtpErlangObject parse(final String s) throws ParserException {
         OtpErlangObject value = cache.get(s);
         if (value == null) {
             value = parse(scan(s));

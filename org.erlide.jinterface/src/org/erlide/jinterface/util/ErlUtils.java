@@ -30,9 +30,11 @@ public final class ErlUtils {
     private ErlUtils() {
     }
 
+    final static private TermParser termParser = TermParser.getParser();
+
     public static OtpErlangObject parse(final String string)
             throws ParserException {
-        return TermParser.parse(string);
+        return termParser.parse(string);
     }
 
     /**

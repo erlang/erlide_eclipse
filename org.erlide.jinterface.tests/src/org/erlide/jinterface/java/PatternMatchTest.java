@@ -29,6 +29,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public class PatternMatchTest {
 
+    private final TermParser termParser = TermParser.getParser();
+
     @Test
     public void testFormatParser_simple_1() throws Exception {
         final OtpErlangObject value = ErlUtils.format("~a", "hej");
@@ -143,7 +145,7 @@ public class PatternMatchTest {
 
     @Test
     public void testMatch_ellipsis_1() throws Exception {
-        final OtpErlangObject r = TermParser.parse("[x|_]");
+        final OtpErlangObject r = termParser.parse("[x|_]");
         Assert.assertNotNull(r);
     }
 
@@ -152,7 +154,7 @@ public class PatternMatchTest {
         final Bindings r = ErlUtils.match("[X | T]", "[x,y,z]");
         Assert.assertNotNull(r);
         Assert.assertEquals(new OtpErlangAtom("x"), r.get("X"));
-        Assert.assertEquals(TermParser.parse("[y,z]"), r.get("T"));
+        Assert.assertEquals(termParser.parse("[y,z]"), r.get("T"));
     }
 
     @Test()
