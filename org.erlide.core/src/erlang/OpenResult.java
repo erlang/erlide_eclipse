@@ -182,6 +182,8 @@ public class OpenResult {
             b.append("local ").append(fun).append('/').append(arity);
         } else if (isVariable) {
             b.append("variable ").append(name);
+        } else if (isField) {
+            b.append("record_field ").append(name).append('.').append(fun);
         }
         if (path != null && path.length() > 0) {
             b.append(" \"").append(path).append('"');

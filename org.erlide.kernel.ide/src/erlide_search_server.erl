@@ -220,6 +220,7 @@ is_def(#macro_def{}) -> true;
 is_def(#type_def{}) -> true;
 is_def(#module_def{}) -> true;
 is_def(#var_def{}) -> true;
+is_def(#record_field_def{}) -> true;
 is_def(_) -> false.
 
 check_pattern(Pattern, Mod, #local_call{function=F, arity=A}, _, _, _)->
@@ -234,6 +235,7 @@ check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->
 check_pattern(Pattern, _Mod, #var_def{}=VD, F, A, C) ->
 	check_var_pattern(Pattern, VD, F, A, C);
 check_pattern(Pattern, _Mod, D, _, _, _) ->
+    ?D({check_pattern, Pattern, D}),
     lists:member(D, Pattern).
 
 check_var_pattern([], _, _, _, _) ->

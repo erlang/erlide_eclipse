@@ -1,6 +1,10 @@
-package erlang;
+package org.erlide.core.search;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+
+import erlang.ErlangSearchPattern;
+import erlang.ErlangSearchPattern.LimitTo;
+import erlang.ErlangSearchPattern.SearchFor;
 
 public class RecordFieldPattern extends ErlangSearchPattern {
 

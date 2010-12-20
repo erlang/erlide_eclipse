@@ -19,6 +19,8 @@
 -record(var_def, {variable}).
 -record(var_ref, {variable}).
 -record(var_pattern, {vardefref, function, arity, clause}).
+-record(record_field_def, {record, field}).
+-record(record_field_ref, {record, field}).
 
 %% förslag på hur scanner, parser och search jobbar ihop:
 %%

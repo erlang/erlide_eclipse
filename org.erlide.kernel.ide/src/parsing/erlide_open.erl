@@ -157,8 +157,8 @@ o_tokens([#token{kind=atom, value=include_lib} | Rest], _, _, [#token{kind='-'} 
     o_include_lib(Rest);
 o_tokens([#token{kind=atom, value=define} | Rest], _, _, _) ->
     o_macro_def(Rest);
-o_tokens([#token{kind=atom, value=record} | Rest], _, _, [#token{kind='-'} | _]) ->
-    o_record_def(Rest);
+o_tokens([#token{kind=atom, value=record} | Rest], Offset, _, [#token{kind='-'} | _]) ->
+    o_record_def(Rest, Offset);
 o_tokens([#token{kind='#'}, #token{kind=atom, value=Value} | _] = Tokens, Offset, _, _) ->
     o_record(Tokens, Offset, Value);
 o_tokens([#token{kind='#'}, #token{kind=macro, value=Value} | _] = Tokens, Offset, _, _) ->
@@ -242,8 +242,21 @@ upto_offset([], _) ->
 upto_offset([T | _], _) ->
     [T].
 
-o_record_def([#token{kind='('}, #token{kind=atom, value=Value} | _]) ->
-    throw({open, {record, Value}}).
+o_record_def([#token{kind='('}, #token{value=Value}, #token{kind=','} | Tokens], Offset) ->
+    Between = erlide_np_util:get_between_outer_pars(Tokens, '{', '}'),
+    o_record_def_aux(Between, Offset, Value, want_field).
+
+o_record_def_aux([], _Offset, Record, _) ->
+    throw({open, {record, Record}});
+o_record_def_aux([#token{offset=O, length=L, value=Field} | _], Offset, Record, want_field) when Offset<O+L ->
+    throw({open, {field, Record, Field}});
+o_record_def_aux([#token{value=V} | _]=Tokens, Offset, Record, _) when V=:='('; V=:='{'; V=:='['; V=:='<<' ->
+    Rest = erlide_text:skip_expr(Tokens),
+    o_record_def_aux(Rest, Offset, Record, want_comma);
+o_record_def_aux([#token{value=','} | Rest], Offset, Record, want_comma) ->
+    o_record_def_aux(Rest, Offset, Record, want_field);
+o_record_def_aux([_ | Rest], Offset, Record, W) ->
+    o_record_def_aux(Rest, Offset, Record, W).
 
 o_external(Module, Function, [_ | ParameterListTokens], Context) ->
     ?D({Module, Function, ParameterListTokens}),

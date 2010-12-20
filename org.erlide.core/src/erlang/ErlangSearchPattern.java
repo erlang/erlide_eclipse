@@ -12,6 +12,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
+import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
 import org.erlide.jinterface.backend.util.Util;

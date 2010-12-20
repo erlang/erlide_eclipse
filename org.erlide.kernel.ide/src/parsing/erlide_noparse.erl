@@ -35,6 +35,7 @@
 -define(ARI_RECORD_DEF, -4).
 -define(ARI_MACRO_DEF, -5).
 -define(ARI_INCLUDE, -6).
+-define(ARI_RECORD_FIELD_DEF, -7).
 
 %%
 %% API Functions
@@ -474,35 +475,36 @@ fix_imported_ref(RefData, _Imports) ->
 %% returns {Offset, Length, Ref}, which is made into proper refs
 %% by fix_refs
 get_refs_in_code(L) ->
-	get_refs_in_code(L, []).
+    get_refs_in_code(L, []).
 
 get_refs_in_code([], Acc) ->
     lists:reverse(Acc);
 get_refs_in_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
-          #token{kind=atom, value=F, offset=Offset2, length=Length2},
-          #token{kind='('} | Rest], Acc) ->
+                  #token{kind=atom, value=F, offset=Offset2, length=Length2},
+                  #token{kind='('} | Rest], Acc) ->
     Arity = erlide_text:guess_arity(Rest),
     R = {Offset, Length2+Offset2-Offset, 
-          #external_call{module = M, function=F, arity=Arity}},
-	get_refs_in_code(Rest, [R | Acc]);
+         #external_call{module = M, function=F, arity=Arity}},
+    get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
-          #token{kind='('} | Rest], Acc) ->
+                  #token{kind='('} | Rest], Acc) ->
     Arity = erlide_text:guess_arity(Rest),
     R = {Offset, Length, #local_call{function=F, arity=Arity}},
-	get_refs_in_code(Rest, [R | Acc]);
+    get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest], 
-		 Acc) ->
+                 Acc) ->
     R = {Offset, Length, #macro_ref{macro=M}},
-	get_refs_in_code(Rest, [R | Acc]);
+    get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind='#', offset=Offset}, 
-          #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
-		 Acc) ->
+                  #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
+                 Acc) ->
     R = {Offset, Length2+Offset2-Offset, #record_ref{record=Record}},
-	get_refs_in_code(Rest, [R | Acc]);
+    {NewRest, Fields} = erlide_np_records:check_fields(Rest, Record),
+    get_refs_in_code(NewRest, Fields ++ [R | Acc]);
 get_refs_in_code([#token{kind=var, value=V, offset=Offset, length=Length} | Rest],
-		 Acc) ->
+                 Acc) ->
     R = {Offset, Length, make_var_def_ref(Acc, V)},
-	get_refs_in_code(Rest, [R | Acc]);
+    get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([_ | Rest], Acc) ->
     get_refs_in_code(Rest, Acc).
 
@@ -549,6 +551,14 @@ get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
 get_refs([_ | Rest], Name, Arity, Acc) ->
     get_refs(Rest, Name, Arity, Acc).
 
+get_record_field_defs([], _) ->
+    [];
+get_record_field_defs([{FieldName, {{_, _, Offset}, Length}, _Extra} | Rest],
+                      RecordName) ->
+    [make_ref(Offset, Length, #record_field_def{record=RecordName, field=FieldName}, 
+              FieldName, ?ARI_RECORD_FIELD_DEF)
+         | get_record_field_defs(Rest, RecordName)].
+
 make_ref(Offset, Length, Data, Name, Arity) ->
     #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
          clause="", sub_clause=false}.
@@ -557,8 +567,8 @@ make_attribute_arg_refs(define, Name, [#token{}, #token{kind='('} | Rest]) ->
     get_refs(skip_to_rparen(Rest), Name, ?ARI_MACRO_DEF);
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind=','} | Rest]) ->
     get_refs(Rest, Name, ?ARI_MACRO_DEF);
-make_attribute_arg_refs(record, {Name, _}, [#token{}, #token{kind=','} | Rest]) ->
-    get_refs(Rest, Name, ?ARI_RECORD_DEF);
+make_attribute_arg_refs(record, {Name, Fields}, [#token{}, #token{kind=','} | Rest]) ->
+    get_record_field_defs(Fields, Name) ++ get_refs(Rest, Name, ?ARI_RECORD_DEF);
 make_attribute_arg_refs(_, _, _) ->
     [].
 

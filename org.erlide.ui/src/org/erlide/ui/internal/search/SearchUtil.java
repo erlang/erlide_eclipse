@@ -50,6 +50,7 @@ import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
+import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
 import org.erlide.core.search.VariablePattern;
@@ -64,7 +65,6 @@ import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlangSearchPattern.SearchFor;
 import erlang.OpenResult;
-import erlang.RecordFieldPattern;
 
 public class SearchUtil {
 
@@ -77,6 +77,7 @@ public class SearchUtil {
     private static final int ARI_RECORD_DEF = -4;
     private static final int ARI_MACRO_DEF = -5;
     private static final int ARI_INCLUDE = -6;
+    private static final int ARI_RECORD_FIELD_DEF = -7;
 
     public static final class WorkingSetComparator implements
             Comparator<IWorkingSet> {
@@ -303,8 +304,10 @@ public class SearchUtil {
         case ARI_MACRO_DEF:
             return Kind.MACRO_DEF;
         case ARI_INCLUDE:
-            return Kind.ATTRIBUTE; // include actually, attributes are not saved
-            // (yet)
+            return Kind.ATTRIBUTE;
+            // include actually, attributes are not saved (yet)
+        case ARI_RECORD_FIELD_DEF:
+            return Kind.RECORD_FIELD;
         default:
             if (ref.isSubClause()) {
                 return Kind.CLAUSE;
@@ -319,7 +322,6 @@ public class SearchUtil {
         if (res == null) {
             return null;
         }
-        final ErlangSearchPattern ref = null;
         String name = res.getName();
         final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
         if (res.isExternalCall()) {
@@ -385,9 +387,9 @@ public class SearchUtil {
                 }
             }
         } else if (res.isField()) {
-            return new RecordFieldPattern(unquoted, res.getFun(), limitTo);
+            return new RecordFieldPattern(res.getFun(), unquoted, limitTo);
         }
-        return ref;
+        return null;
     }
 
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
