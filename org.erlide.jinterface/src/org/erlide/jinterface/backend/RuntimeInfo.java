@@ -25,13 +25,14 @@ public class RuntimeInfo {
 
     private String homeDir = "";
     private String args = "";
+    private String name;
+    private List<String> codePath;
+
     private String cookie = "";
     private String nodeName = "";
     private String workingDir = "";
     private boolean managed; // will it be started/stopped by us?
     private RuntimeVersion version;
-    private String name;
-    private List<String> codePath;
     private String suffix = "";
     private boolean useLongName = true;
     private boolean startShell = false;

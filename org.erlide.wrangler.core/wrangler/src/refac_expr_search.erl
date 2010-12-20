@@ -57,9 +57,9 @@
 
 %%-spec(expr_search_in_buffer/5::(filename(), pos(), pos(), [dir()], integer()) -> 
 %%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).
-expr_search_in_buffer(FileName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, TabWidth) ->
+expr_search_in_buffer(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search_in_buffer(~p, {~p,~p},{~p,~p},~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, TabWidth]),
+		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, TabWidth]),
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = do_expr_search(FileName, Es, SearchPaths, TabWidth),
     SE = refac_misc:get_start_end_loc(Es),
@@ -88,9 +88,9 @@ expr_search_in_buffer(FileName, Start = {Line, Col}, End = {Line1, Col1}, Search
 %% =================================================================================================         
 %%-spec(expr_search_in_dirs/5::(filename(), pos(), pos(), [dir()], integer()) -> 
 %%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).   
-expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SearchPaths, TabWidth) ->
+expr_search_in_dirs(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, SearchPaths, TabWidth]),
+		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, SearchPaths, TabWidth]),
     Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = lists:append([do_expr_search(F, Es, SearchPaths, TabWidth) || F <- Files]),

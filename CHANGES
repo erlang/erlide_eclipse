@@ -1,3 +1,16 @@
+List of user visible changes between 0.9.3 and 0.9.4 (20101215)
+
+f493b9d 678-navigation--navigating-to-erlide-modules-doesn-t-work
+19fe502 fix NPE in ErlLogger
+a4303d4 612-mark-occurrences---the-toggle-shows-up-over-java-files
+f5c6c40 647-mark-occurrences--off-by-default
+9fb132d 654-searching--should-show-exported-functions-as-green-in-search-result
+497de83 635-erlang-search--doesn-t-find-records-in-type-specs
+6c194fc 516- changed erlide.log file location; also rewritten logger a bit.
+c4f62a2 added toolbar item for "new module"
+022fc51 #661 nicer error message if erlang source is utf-8
+5624a59 666 moved "new" wizards to right menu
+
 List of user visible changes between 0.9.2 and 0.9.3 (20101125)
 
 2069b48 629-navigator--use-external-references-instead-of--external_files-

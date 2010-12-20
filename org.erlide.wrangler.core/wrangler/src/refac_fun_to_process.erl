@@ -147,8 +147,8 @@ pre_cond_check(AnnAST, Pos, ModName, FunName, Arity, ProcessName, SearchPaths, T
 		       " by this refactoring, and this could possibly change the behaviour of the program!\n", []),
 	  lists:foreach(fun ({{File, _Fun, _Ari}, SelfExpr, _}) ->
 				{{Line, _}, _} = refac_misc:get_start_end_loc(SelfExpr),
-				Msg = File ++ io_lib:format(":~p: \n", [Line]),
-				?wrangler_io(Msg, [])
+				_Msg = File ++ io_lib:format(":~p: \n", [Line]),
+				?wrangler_io(_Msg, [])
 			end, SelfRes),
 	  throw({undecidables, "there are undecidable cases.", Cmd});
       {_, []} ->
@@ -156,8 +156,8 @@ pre_cond_check(AnnAST, Pos, ModName, FunName, Arity, ProcessName, SearchPaths, T
 	  ?wrangler_io("Wrangler could not decide whether the process name provided conflicts with the process name(s) "
 		       "used by the following registeration expression(s):\n", []),
 	  lists:foreach(fun ({File, L}) ->
-				Msg = File ++ io_lib:format(":~p: \n", [L]),
-				?wrangler_io(Msg, [])
+				_Msg = File ++ io_lib:format(":~p: \n", [L]),
+				?wrangler_io(_Msg, [])
 			end, UnKnowns),
 	  throw({undecidables, "there are undecidable cases.", Cmd});
       _ ->
@@ -165,16 +165,16 @@ pre_cond_check(AnnAST, Pos, ModName, FunName, Arity, ProcessName, SearchPaths, T
 	  ?wrangler_io("Wrangler could not decide whether the process name provided conflicts with the process name(s) "
 		       "used by the following registeration expression(s):\n", []),
 	  lists:foreach(fun ({File, L}) ->
-				Msg = File ++ io_lib:format(":~p: \n", [L]),
-				?wrangler_io(Msg, [])
+				_Msg = File ++ io_lib:format(":~p: \n", [L]),
+				?wrangler_io(_Msg, [])
 			end, UnKnowns),
 	  ?wrangler_io("\n*************************************Warning****************************************\n", []),
 	  ?wrangler_io("The value returned by 'self()', which is used at the location(s) listed below, will be changed "
 		       " by this refactoring, and this could possibly change the behaviour of the program!\n", []),
 	  lists:foreach(fun ({{File, _Fun, _Ari}, SelfExpr, _}) ->
 				{{Line, _}, _} = refac_misc:get_start_end_loc(SelfExpr),
-				Msg = File ++ io_lib:format(":~p: \n", [Line]),
-				?wrangler_io(Msg, [])
+				_Msg = File ++ io_lib:format(":~p: \n", [Line]),
+				?wrangler_io(_Msg, [])
 			end, SelfRes),
 	  throw({undecidables, "there are undecidable cases.", Cmd})
     end.

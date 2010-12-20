@@ -32,7 +32,7 @@ public class ErlProjectImport {
         l = (OtpErlangList) t.elementAt(3);
         directories = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
-        directories.set(0, ".");
+        directories.add(0, ".");
     }
 
     private static Collection<String> erlangStringList2Collection(

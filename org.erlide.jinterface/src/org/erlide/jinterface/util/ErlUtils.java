@@ -30,9 +30,11 @@ public final class ErlUtils {
     private ErlUtils() {
     }
 
+    final static private TermParser termParser = TermParser.getParser();
+
     public static OtpErlangObject parse(final String string)
             throws ParserException {
-        return TermParser.parse(string);
+        return termParser.parse(string);
     }
 
     /**
@@ -115,7 +117,7 @@ public final class ErlUtils {
         }
         if (pattern instanceof OtpPatternVariable) {
             final OtpPatternVariable var = (OtpPatternVariable) pattern;
-            if (!TypeConverter.matchSignature(term, var.getSignature())) {
+            if (!TypeConverter.doesMatchSignature(term, var.getSignature())) {
                 return null;
             }
             if (var.getName().equals("_")) {
