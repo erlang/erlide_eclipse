@@ -36,9 +36,9 @@ public class ErlangFileActionProvider extends CommonActionProvider {
         final ICommonViewerSite viewSite = aSite.getViewSite();
         if (viewSite instanceof ICommonViewerWorkbenchSite) {
             final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
-            openAction = new OpenErlangAction(workbenchSite.getPage(),
+            final IWorkbenchPartSite site = workbenchSite.getSite();
+            openAction = new OpenErlangAction(site,
                     workbenchSite.getSelectionProvider());
-            final IWorkbenchPartSite site = workbenchSite.getPart().getSite();
             searchActionGroup = new ErlangSearchActionGroup(site);
             final IContextService service = (IContextService) site
                     .getService(IContextService.class);

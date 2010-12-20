@@ -1094,6 +1094,9 @@
             <actionExtension
                   pattern="org.erlide.ui.search.*">
             </actionExtension>
+            <actionExtension
+                  pattern="org.erlide.ui.navigator.actions.erlang.*">
+            </actionExtension>
          </includes>
       </viewerActionBinding>
       <dragAssistant
@@ -1191,7 +1194,7 @@
          </possibleChildren>
          <actionProvider
                class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
-               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
+               id="org.erlide.ui.navigator.actions.erlang">
          </actionProvider>
          <commonSorter
                class="org.erlide.ui.navigator.ErlElementPositionSorter"
@@ -1260,6 +1263,16 @@
             wizardId="org.erlide.ui.wizards.ErlangSourceFile">
          <enablement></enablement>
       </commonWizard>
+      <actionProvider
+            class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
+            id="org.erlide.ui.navigator.actions.erlangfileactions"
+            priority="lowest">
+         <enablement>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+            </adapt>
+         </enablement>
+      </actionProvider>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.linkHelper">
