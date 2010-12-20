@@ -363,37 +363,6 @@
                menubarPath="debug">
          </action>
       </viewerContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze2"
-            objectClass="org.eclipse.core.resources.IFolder">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze3"
-            objectClass="org.eclipse.core.resources.IFile">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
    </extension>
  <extension
        point="org.eclipse.ui.contexts">
@@ -571,6 +540,18 @@
                 id="org.eclipse.ui.commands.toggleState">
           </state>
        </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Run Dialyzer"
+             id="org.erlide.ui.commands.runDialyzer"
+             name="Run Dialyzer">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Remove Dialyzer Warnings"
+             id="org.erlide.ui.command.removeDialyzerWarnings"
+             name="Remove Dialyzer Warnings">
+       </command>
 
  </extension>
  <extension
@@ -672,6 +653,17 @@
              </visibleWhen>
           </command>
        </toolbar>
+    </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.views.navigator.view?after=additions">
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
     </menuContribution>
  </extension>
  <extension
@@ -799,6 +791,26 @@
              </instanceof>
           </with>
        </enabledWhen>                    
+    </handler>
+    <handler
+          class="RunDialyzerCommandHandler"
+          commandId="org.erlide.ui.commands.RunDialyzer">
+       <enabledWhen>
+          <with
+                variable="selection">
+             <iterate
+                   ifEmpty="false"
+                   operator="or">
+                <instanceof
+                      value="org.eclipse.core.resources.IFile">
+                </instanceof>
+             </iterate>
+          </with>
+       </enabledWhen>
+    </handler>
+    <handler
+          class="RemoveDialyzerWarningsCommandHandler"
+          commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
  </extension>
  <extension
