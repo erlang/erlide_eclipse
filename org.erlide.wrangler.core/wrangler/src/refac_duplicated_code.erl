@@ -483,8 +483,8 @@ rm_loc_in_tok(T) ->
 	{char, _L, V}  -> {char, D, V};
 	{atom, _L, V} -> {atom, D, V};
 	{A, _L} ->{A, D};
-	Other  -> 
-	    erlang:error(?wrangler_io("Unhandled token:\n~p\n", [Other]))
+	_Other  -> 
+	    erlang:error(?wrangler_io("Unhandled token:\n~p\n", [_Other]))
     end.
 
 token_loc(T) ->

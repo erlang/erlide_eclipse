@@ -143,7 +143,7 @@ public final class CoreUtil {
     /**
      * Returns whether the given resource path matches one of the
      * inclusion/exclusion patterns. NOTE: should not be asked directly using
-     * pkg root pathes
+     * pkg root paths
      * 
      * @see IClasspathEntry#getInclusionPatterns
      * @see IClasspathEntry#getExclusionPatterns

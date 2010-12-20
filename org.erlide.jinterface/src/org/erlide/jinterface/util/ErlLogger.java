@@ -28,9 +28,12 @@ public class ErlLogger {
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.launching/debug";
     private static ErlLogger instance;
     private Logger logger;
-    private final String logDir;
+    private String logDir;
 
     public static ErlLogger getInstance() {
+        if (instance == null) {
+            instance = new ErlLogger(".");
+        }
         return instance;
     }
 
@@ -38,9 +41,8 @@ public class ErlLogger {
         logger = null;
     }
 
-    public static ErlLogger init(final String dir, final boolean debug) {
-        instance = new ErlLogger(dir, debug);
-        return instance;
+    public final void setLogDir(final String dir) {
+        logDir = (dir == null) ? "./" : dir;
     }
 
     public String getLogLocation() {
@@ -109,24 +111,22 @@ public class ErlLogger {
         getInstance().log(Level.SEVERE, exception);
     }
 
-    private ErlLogger(String dir, boolean debug) {
+    private ErlLogger(String dir) {
         final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
         logger = Logger.getLogger("org.erlide");
-        logDir = dir == null ? "./" : dir;
 
+        setLogDir(dir);
         addFileHandler(erlSimpleFormatter);
-        addConsoleHandler(debug, erlSimpleFormatter);
+        addConsoleHandler(erlSimpleFormatter);
 
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
     }
 
-    private void addConsoleHandler(boolean debug,
-            final ErlSimpleFormatter erlSimpleFormatter) {
+    private void addConsoleHandler(final ErlSimpleFormatter erlSimpleFormatter) {
         final ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setFormatter(erlSimpleFormatter);
-        final Level lvl = debug ? java.util.logging.Level.FINEST
-                : java.util.logging.Level.CONFIG;
+        final Level lvl = java.util.logging.Level.FINEST;
         consoleHandler.setLevel(lvl);
         logger.addHandler(consoleHandler);
     }
