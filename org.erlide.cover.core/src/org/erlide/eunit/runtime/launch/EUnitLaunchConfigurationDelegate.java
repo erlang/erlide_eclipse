@@ -67,24 +67,5 @@ public class EUnitLaunchConfigurationDelegate extends
 	    return backend;
 	}
 	 
-	//temporarly unused
-	private ILaunchConfiguration prepareConfig(final ILaunchConfiguration config,
-			EUnitLaunchData eData) throws CoreException {
-		
-		ILaunchConfigurationWorkingCopy conf2 = config.getWorkingCopy();
-		
-		conf2.setAttribute(ErlLaunchAttributes.PROJECTS, "org.erlide.eunit.erlang");
-		conf2.setAttribute(ErlLaunchAttributes.MODULE, "e_cover");
-		
-		/*Set modes = new HashSet();
-		modes.add(ILaunchManager.RUN_MODE);
-		
-		conf2.setPreferredLaunchDelegate(modes , "org.erlide.core.launch.erlangProcess");*/
-		
-		
-		
-		return conf2;
-	}
-	 
 
 }

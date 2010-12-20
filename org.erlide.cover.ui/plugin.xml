@@ -4,14 +4,10 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="Cover Views"
-            id="org.erlide.cover.core">
-      </category>
       <view
             name="Coverage Statistics"
             icon="icons/sample.gif"
-            category="org.erlide.cover.core"
+            category="org.erlide.views"
             class="org.erlide.cover.ui.views.CoverStatsView"
             id="org.erlide.cover.core.views.TestResultView">
       </view>

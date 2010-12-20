@@ -3,11 +3,10 @@ package org.erlide.cover.runtime.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.eunit.runtime.launch.IErlTestAttributes;
-import org.erlide.eunit.runtime.launch.TestType;
 
 public class CoverLaunchData {
 
-    private TestType type;
+    private LaunchType type;
     private String project;
     private String module;
     private String file;
@@ -18,8 +17,8 @@ public class CoverLaunchData {
     public CoverLaunchData(ILaunchConfiguration config)
             throws CoreException {
         
-        type = TestType.valueOf(config.getAttribute(IErlTestAttributes.TYPE,
-                TestType.MODULE.toString()));
+        type = LaunchType.valueOf(config.getAttribute(IErlTestAttributes.TYPE,
+                LaunchType.MODULE.toString()));
         
         project = config.getAttribute(IErlTestAttributes.PROJECT, "");
         module = config.getAttribute(IErlTestAttributes.MODULE, "");
@@ -29,7 +28,7 @@ public class CoverLaunchData {
         
     }
     
-    public TestType getType() {
+    public LaunchType getType() {
         return type;
     }
     

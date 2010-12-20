@@ -13,7 +13,9 @@ public interface IErlTestAttributes {
 	public final String APP_PROJECT = prefix + ".app_project";
 	public final String APPLICATION = prefix + ".application";
 	
+	//TODO: remove it later
 	public final String COVER = prefix + ".cover";
+	public final String COMBO = prefix + ".framework";
 
 	
 }

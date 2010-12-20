@@ -2,7 +2,6 @@ package org.erlide.eunit.core;
 
 import java.io.File;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 

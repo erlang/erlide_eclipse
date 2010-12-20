@@ -3,10 +3,11 @@ package org.erlide.eunit.runtime.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.cover.runtime.launch.LaunchType;
 
 public class EUnitLaunchData {
 	
-	private TestType type;
+	private LaunchType type;
 	private String project;
 	private String module;
 	private String file;
@@ -17,8 +18,8 @@ public class EUnitLaunchData {
 	public EUnitLaunchData(ILaunchConfiguration config)
 			throws CoreException {
 		
-		type = TestType.valueOf(config.getAttribute(IErlTestAttributes.TYPE,
-				TestType.MODULE.toString()));
+		type = LaunchType.valueOf(config.getAttribute(IErlTestAttributes.TYPE,
+				LaunchType.MODULE.toString()));
 		
 		project = config.getAttribute(IErlTestAttributes.PROJECT, "");
 		module = config.getAttribute(IErlTestAttributes.MODULE, "");
@@ -28,7 +29,7 @@ public class EUnitLaunchData {
 		
 	}
 	
-	public TestType getType() {
+	public LaunchType getType() {
 		return type;
 	}
 	

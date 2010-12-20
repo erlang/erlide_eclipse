@@ -1,4 +1,4 @@
-package org.erlide.eunit.core;
+package org.erlide.cover.core;
 
 import java.util.Collection;
 import java.util.LinkedList;

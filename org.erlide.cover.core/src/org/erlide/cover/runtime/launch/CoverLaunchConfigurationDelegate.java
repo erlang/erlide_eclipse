@@ -42,6 +42,7 @@ public class CoverLaunchConfigurationDelegate extends
         System.out.println("LAUNCHING!!!!");
         try {
             
+            //TODO: change to CoverBackend
             EUnitBackend eunitBackend = EUnitBackend.getInstance();
             eunitBackend.initialize(lData, eunitData);
             System.out.println("Backend created");

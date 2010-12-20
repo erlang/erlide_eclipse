@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -36,10 +37,10 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
 import org.erlide.eunit.runtime.launch.IErlTestAttributes;
-import org.erlide.eunit.runtime.launch.TestType;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
@@ -56,10 +57,11 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 	private ItemBrowser fileBr;		// file/directory browser
 	private ItemBrowser projectAppBr;	// project browser for applications
 	private ItemBrowser appBr;		// application browser
-	private Button ifCover;				// checkbox about performing cover
+//	private Button ifCover;				// checkbox about performing cover
 	private Button singleRadio;			//radio button for single module
 	private Button allRadio;			// radio button for running all tests
 	private Button appRadio;			// radio button for application
+	private Combo  testCombo;          // framework
 	
 	private ElementListSelectionDialog moduleDialog;
 	
@@ -104,9 +106,15 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         
         createApplicationGroup(comp);
         
-        ifCover = new Button(comp, SWT.CHECK);
+     /*   ifCover = new Button(comp, SWT.CHECK);
         ifCover.setText("Prepare coverage report");
-        ifCover.setLayoutData(gData);
+        ifCover.setLayoutData(gData);*/
+        
+        Label testLabel = new Label(comp, SWT.NONE);
+        testLabel.setText("Testing framework: ");
+        testCombo = new Combo(comp, SWT.NONE);
+        testCombo.setItems(new String[]{"EUnit"});
+        
         
         Collection<IErlProject> projects;
         try {
@@ -127,7 +135,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(IErlTestAttributes.FILE, "");
         config.setAttribute(IErlTestAttributes.APPLICATION, "");
         config.setAttribute(IErlTestAttributes.TYPE,
-                TestType.MODULE.toString());
+                LaunchType.MODULE.toString());
         config.setAttribute(IErlTestAttributes.COVER,
                 Boolean.toString(true));
 	}
@@ -184,9 +192,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 		
 		try {
 			String type = config.getAttribute(IErlTestAttributes.TYPE, 
-				TestType.MODULE.toString());
+				LaunchType.MODULE.toString());
 			
-			TestType typeT = TestType.valueOf(type);
+			LaunchType typeT = LaunchType.valueOf(type);
 			switch(typeT){
 			case MODULE :	
 			    
@@ -240,13 +248,15 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 			singleRadio.setSelection(true);
 		}
 		
-		try {
-			String cover = config.getAttribute(IErlTestAttributes.COVER,
-					Boolean.toString(true));
-			ifCover.setSelection(Boolean.parseBoolean(cover));
-		} catch (CoreException e) {
-			ifCover.setSelection(true);
-		}
+		String combo;
+        try {
+            combo = config.getAttribute(IErlTestAttributes.COMBO,
+                    "0");
+            testCombo.select(Integer.parseInt(combo));
+        } catch (CoreException e) {
+            testCombo.select(0);
+        }
+		
 				
 	}
 
@@ -254,24 +264,26 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 	public void performApply(ILaunchConfigurationWorkingCopy config) {
 		
 		//TODO: inform, when nothing sellected; is it possible?
-		TestType type;
+		LaunchType type;
 		if(allRadio.getSelection()) {
-			type = TestType.ALL;
+			type = LaunchType.ALL;
 		} else if(appRadio.getSelection()) {
-			type = TestType.APPLICATION;
+			type = LaunchType.APPLICATION;
 		} else {
-			type = TestType.MODULE;
+			type = LaunchType.MODULE;
 		}
 		
-		boolean cover = ifCover.getSelection();
+		//boolean cover = ifCover.getSelection();
 		
 		config.setAttribute(IErlTestAttributes.PROJECT, projectMBr.getText());
         config.setAttribute(IErlTestAttributes.MODULE, moduleBr.getText());
         config.setAttribute(IErlTestAttributes.FILE, fileBr.getText());
         config.setAttribute(IErlTestAttributes.APPLICATION, appBr.getText());
         config.setAttribute(IErlTestAttributes.TYPE, type.toString());
-        config.setAttribute(IErlTestAttributes.COVER,
-                Boolean.toString(cover));
+        //config.setAttribute(IErlTestAttributes.COVER,
+        //        Boolean.toString(cover));
+        config.setAttribute(IErlTestAttributes.COMBO,
+                Integer.toString(testCombo.getSelectionIndex()));
 	}
 
 	

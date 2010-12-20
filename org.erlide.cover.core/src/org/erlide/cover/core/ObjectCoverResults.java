@@ -1,4 +1,5 @@
-package org.erlide.eunit.core;
+package org.erlide.cover.core;
+
 
 public class ObjectCoverResults extends MainCoverResults{
 
