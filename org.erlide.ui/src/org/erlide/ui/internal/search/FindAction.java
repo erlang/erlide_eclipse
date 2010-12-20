@@ -44,6 +44,9 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
 import org.erlide.ui.util.ErlModelUtils;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlideOpen;
@@ -333,7 +336,8 @@ public abstract class FindAction extends SelectionDispatchAction {
         return fEditor;
     }
 
-    protected Collection<IResource> getProjectScope() {
+    protected Collection<IProject> getProjects() {
+
         final TextEditor editor = getEditor();
         if (editor != null) {
             final IEditorInput editorInput = editor.getEditorInput();
@@ -341,7 +345,7 @@ public abstract class FindAction extends SelectionDispatchAction {
                 final IFileEditorInput input = (IFileEditorInput) editorInput;
                 final IFile file = input.getFile();
                 final IProject project = file.getProject();
-                return SearchUtil.getProjectScope(project);
+                return Lists.newArrayList(project);
             }
         } else {
             final IWorkbenchSite site = getSite();
@@ -349,18 +353,24 @@ public abstract class FindAction extends SelectionDispatchAction {
                     .getSelection();
             if (selection instanceof IStructuredSelection) {
                 final IStructuredSelection ss = (IStructuredSelection) selection;
-                final Object element = ss.getFirstElement();
-                if (element instanceof IErlElement) {
-                    final IErlElement e = (IErlElement) element;
-                    return SearchUtil.getProjectScope(e.getResource()
-                            .getProject());
-                } else if (element instanceof IResource) {
-                    final IResource r = (IResource) element;
-                    return SearchUtil.getProjectScope(r.getProject());
+                final Collection<IProject> result = Sets.newHashSet();
+                for (final Object element : ss.toList()) {
+                    if (element instanceof IErlElement) {
+                        final IErlElement e = (IErlElement) element;
+                        result.add(e.getResource().getProject());
+                    } else if (element instanceof IResource) {
+                        final IResource r = (IResource) element;
+                        result.add(r.getProject());
+                    }
                 }
+                return result;
             }
         }
         return null;
+    }
+
+    protected Collection<IResource> getProjectScope() {
+        return SearchUtil.getProjectsScope(getProjects());
     }
 
     protected Collection<IResource> getWorkingSetsScope(

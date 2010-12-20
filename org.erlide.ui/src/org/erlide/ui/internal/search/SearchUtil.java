@@ -60,6 +60,7 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
@@ -88,9 +89,12 @@ public class SearchUtil {
         }
     }
 
-    static public Collection<IResource> getProjectScope(final IProject project) {
+    static public Collection<IResource> getProjectsScope(
+            final Collection<IProject> projects) {
         final Set<IResource> result = new HashSet<IResource>();
-        addProjectToScope(project, result);
+        for (final IProject project : projects) {
+            addProjectToScope(project, result);
+        }
         return result;
     }
 
@@ -191,13 +195,13 @@ public class SearchUtil {
         }
     }
 
-    public static Collection<IResource> getProjectsScope(
-            final String[] projectNames) {
-        final Set<IResource> result = new HashSet<IResource>();
+    public static Collection<IProject> getProjects(final String[] projectNames) {
+        final Collection<IProject> result = Sets
+                .newHashSetWithExpectedSize(projectNames.length);
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String i : projectNames) {
             final IProject project = root.getProject(i);
-            addProjectToScope(project, result);
+            result.add(project);
         }
         return result;
     }
@@ -535,14 +539,14 @@ public class SearchUtil {
     }
 
     public static String getProjectScopeDescription(
-            final Collection<IResource> projectScope) {
-        if (projectScope.size() == 0) {
+            final Collection<IProject> projects) {
+        if (projects == null || projects.isEmpty()) {
             return "";
         } else {
             final StringBuilder sb = new StringBuilder(
-                    projectScope.size() == 1 ? "project" : "projects");
+                    projects.size() == 1 ? "project" : "projects");
             sb.append(' ');
-            for (final IResource p : projectScope) {
+            for (final IProject p : projects) {
                 sb.append('\'').append(p.getName()).append("', ");
             }
             return sb.substring(0, sb.length() - 2);

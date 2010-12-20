@@ -68,7 +68,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
 
     @Override
     protected String getScopeDescription() {
-        return SearchUtil.getProjectScopeDescription(getProjectScope());
+        return SearchUtil.getProjectScopeDescription(getProjects());
     }
 
 }
