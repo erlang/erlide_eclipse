@@ -380,12 +380,14 @@ public class ErlModelUtils {
             final IProject project, final boolean checkAllProjects,
             final IErlModule module) {
         try {
-            moduleName = resolveMacroValue(moduleName, module);
-            final IErlModule module2 = findExternalModule(moduleName,
-                    modulePath, project, checkAllProjects);
-            if (module2 != null) {
-                module2.open(null);
-                return module2.findFunction(erlangFunction);
+            if (moduleName != null) {
+                moduleName = resolveMacroValue(moduleName, module);
+                final IErlModule module2 = findExternalModule(moduleName,
+                        modulePath, project, checkAllProjects);
+                if (module2 != null) {
+                    module2.open(null);
+                    return module2.findFunction(erlangFunction);
+                }
             }
         } catch (final ErlModelException e) {
         } catch (final CoreException e) {

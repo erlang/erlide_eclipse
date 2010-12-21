@@ -464,9 +464,17 @@ public class SearchUtil {
     private static String workingSetLabels(final IWorkingSet[] workingSets,
             final String s, final String surround) {
         final StringBuilder sb = new StringBuilder(s);
+        int i = 0;
         for (final IWorkingSet ws : workingSets) {
             sb.append(surround).append(ws.getLabel()).append(surround)
                     .append(", ");
+            i++;
+            if (i == 2) {
+                break;
+            }
+        }
+        if (workingSets.length > 2) {
+            return sb.append("... ").toString();
         }
         return sb.substring(0, sb.length() - 2);
     }
@@ -546,11 +554,42 @@ public class SearchUtil {
             final StringBuilder sb = new StringBuilder(
                     projects.size() == 1 ? "project" : "projects");
             sb.append(' ');
+            int i = 0;
             for (final IProject p : projects) {
                 sb.append('\'').append(p.getName()).append("', ");
+                i++;
+                if (i == 2) {
+                    break;
+                }
+            }
+            if (projects.size() > 2) {
+                return sb.append("... ").toString();
             }
             return sb.substring(0, sb.length() - 2);
         }
+    }
+
+    public static String getSelectionScopeDescription(final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            final StringBuilder sb = new StringBuilder();
+            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            int i = 0;
+            for (final Object o : structuredSelection.toList()) {
+                if (o instanceof IResource) {
+                    final IResource resource = (IResource) o;
+                    sb.append('\'').append(resource.getName()).append("', ");
+                    i++;
+                    if (i == 2) {
+                        break;
+                    }
+                }
+            }
+            if (structuredSelection.size() > 2) {
+                return sb.append("...").toString();
+            }
+            return sb.substring(0, sb.length() - 2);
+        }
+        return "";
     }
 
     public static String getWorkspaceScopeDescription() {

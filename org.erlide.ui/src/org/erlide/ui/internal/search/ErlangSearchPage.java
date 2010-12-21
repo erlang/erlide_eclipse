@@ -250,6 +250,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getSelectionExternalScope(getContainer()
                                 .getSelection());
             }
+            scopeDescription = SearchUtil
+                    .getSelectionScopeDescription(getContainer().getSelection());
             break;
         case ISearchPageContainer.WORKING_SET_SCOPE: {
             final IWorkingSet[] workingSets = getContainer()
