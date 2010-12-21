@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.erlide.cover.core.CoverBackend;
 import org.erlide.eunit.core.EUnitBackend;
 import org.erlide.eunit.runtime.launch.EUnitLaunchData;
 import org.erlide.jinterface.backend.Backend;
@@ -31,7 +32,7 @@ public class CoverLaunchConfigurationDelegate extends
              final String mode, final ILaunch launch, final boolean internal,
              final Map<String, String> env) throws CoreException {
          
-        EUnitLaunchData eunitData = new EUnitLaunchData(config);
+        CoverLaunchData coverData = new CoverLaunchData(config);
         ErlLaunchData lData = new ErlLaunchData(config, internal);
          
          
@@ -43,11 +44,11 @@ public class CoverLaunchConfigurationDelegate extends
         try {
             
             //TODO: change to CoverBackend
-            EUnitBackend eunitBackend = EUnitBackend.getInstance();
-            eunitBackend.initialize(lData, eunitData);
+            CoverBackend coverBackend = CoverBackend.getInstance();
+            coverBackend.initialize(lData, coverData);
             System.out.println("Backend created");
-            backend = eunitBackend.getBackend();
-            eunitBackend.start();
+            backend = coverBackend.getBackend();
+            coverBackend.start();
             System.out.println("Started");
             
         } catch (RuntimeException e) {

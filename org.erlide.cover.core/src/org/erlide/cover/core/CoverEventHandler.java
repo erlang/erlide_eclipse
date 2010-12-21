@@ -105,14 +105,17 @@ public class CoverEventHandler extends EventHandler {
         return null;
     }
     
+    /**
+     * appends new results to statistics tree
+     * @param res
+     */
     private void changeStatModel(OtpErlangTuple res) {
         
-        
+        //TODO: append should be possible on some conditions
         
         StatsTreeModel model = StatsTreeModel.getInstance();
-        //TODO: shoudl be changed at some point probably
+        //TODO: should be changed at some point probably
         IStatsTreeObject root = model.getRoot();
-        root.removeAllChildren();
         
         try {
             System.out.println("1: " + res.elementAt(0));

@@ -17,6 +17,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.LaunchType;
+import org.erlide.cover.views.model.IStatsTreeObject;
+import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.eunit.core.Constants;
 import org.erlide.eunit.core.EUnitEventHandler;
 import org.erlide.eunit.core.IEUnitObserver;
@@ -47,7 +49,7 @@ public class CoverBackend {
     private CoverEventHandler handler;
     
     private CoverLaunchData coverData;
-    private LaunchType type;
+    private CoverSettings settings;
     private String nodeName;
     
     public static CoverBackend getInstance(){
@@ -63,6 +65,9 @@ public class CoverBackend {
     public void initialize(ErlLaunchData data, CoverLaunchData coverData) 
             throws RuntimeException, BackendException {
         
+        if(backend != null)
+            backend.stop();
+        
         final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
        
@@ -73,7 +78,7 @@ public class CoverBackend {
                 
         this.coverData = coverData;
         
-        type = coverData.getType();
+        settings = new CoverSettings(coverData.getType(), coverData);
         
         ErlLogger.debug("Backend created...");
         System.out.println("Create backend");
@@ -85,23 +90,35 @@ public class CoverBackend {
         
         this.backend = createBackend();
         
+        
         backend.getEventDaemon().addHandler(handler);
         
     }
+   
+    public void attachBackend(Backend b, LaunchType type) {
+        backend.stop();
+        backend = b;
+        
+        settings = new CoverSettings(type, null);
+        this.info = b.getInfo();
+        //no set config
+        
+    }
     
-
+    public void attachToNode(String nodeName) {
+        //TODO: check how you can attach to nodes
+        // see how to obtain backend
+    }
     
     
     public void start() {
         
-        String path;
-        String pName = coverData.getProject();
-    
-        IProject p = ResourcesPlugin.getWorkspace().getRoot()
-        .getProject(pName);
+        //clear statistics tree - prepare it for new results
+        StatsTreeModel model = StatsTreeModel.getInstance();
+        IStatsTreeObject root = model.getRoot();
+        root.removeAllChildren();
         
-        if(p != null) {
-             path = p.getLocation().toString() + "/src";
+        for(String path : settings.getPaths()) {
             
         //  ErlLogger.debug(path);
             
@@ -114,8 +131,9 @@ public class CoverBackend {
             try {
                 String moduleName = coverData.getModule().replace(".erl", "");
                 backend.cast(Constants.ERLANG_HELPER, Constants.FUN_START, "sss",
-                        type , moduleName, path);
+                        settings.getTypeAsString() , moduleName, path);
                 System.out.println("Cast sent");
+                System.out.println(settings.getTypeAsString());
             } catch (BackendException e) {
                 e.printStackTrace();
                 //TODO: throw exception or show a dialog - not started
@@ -139,6 +157,12 @@ public class CoverBackend {
     public List<IEUnitObserver> getListeners(){
         return handler.getListeners();
     }
+    
+    //input from external plugins
+    public void setPathsToCover(List<String> filePaths) {
+        //TODO: ~custom coverage
+    }
+    
     
     private Backend createBackend() throws BackendException{
         if (info != null) {
@@ -223,6 +247,5 @@ public class CoverBackend {
             return null;
         }
     }
-    
     
 }

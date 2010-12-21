@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views;
 
-import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -27,6 +26,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
@@ -71,7 +71,7 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 	private Action restore;
 	private Action doubleClickAction;
 	
-	private EUnitBackend backend;
+	private CoverBackend backend;
 	
 	private TreeColumn colName;
 	private TreeColumn colLines;
@@ -83,7 +83,7 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
 	 * The constructor.
 	 */
 	public CoverStatsView(){
-		backend = EUnitBackend.getInstance();
+		backend = CoverBackend.getInstance();
 		backend.addListener(this);
 	}
 
