@@ -355,19 +355,6 @@ public final class MarkerUtils {
         }
     }
 
-    public static void removeDialyzerWarningMarkers(final IProject project) {
-        try {
-            final IMarker[] markers = project.findMarkers(
-                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
-            for (final IMarker m : markers) {
-                m.delete();
-            }
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
-        }
-
-    }
-
     public static IMarker createSearchResultMarker(final IErlModule module,
             final String type, final int offset, final int length)
             throws CoreException {

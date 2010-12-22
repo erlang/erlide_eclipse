@@ -60,7 +60,7 @@ public class DialyzerUtils {
         final String pltPath = prefs.getPltPath();
         for (final IErlProject p : keySet) {
             final IProject project = p.getProject();
-            MarkerUtils.removeDialyzerWarningMarkers(project);
+            MarkerUtils.removeDialyzerMarkers(project);
             try {
                 final Backend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);

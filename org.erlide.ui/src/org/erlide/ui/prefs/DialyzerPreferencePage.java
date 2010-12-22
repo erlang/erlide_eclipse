@@ -11,7 +11,6 @@
 package org.erlide.ui.prefs;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,10 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ControlEnableState;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,7 +31,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -43,23 +38,17 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
+import org.erlide.ui.handlers.CheckDialyzerPltFileHandler;
+import org.erlide.ui.internal.util.CommandRunnerSelectionAdapter;
 import org.osgi.service.prefs.BackingStoreException;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
-
-import erlang.ErlideDialyze;
 
 public class DialyzerPreferencePage extends PropertyPage implements
         IWorkbenchPreferencePage {
@@ -104,58 +93,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
         return prefsComposite;
     }
 
-    private final class CheckPltOperation implements IRunnableWithProgress {
-
-        public void run(final IProgressMonitor monitor)
-                throws InvocationTargetException, InterruptedException {
-            final String plt = pltEdit.getText();
-            monitor.beginTask("Checking PLT file " + plt, 1);
-            Backend backend;
-            final BackendManager backendManager = ErlangCore
-                    .getBackendManager();
-            try {
-                if (fProject != null) {
-                    backend = backendManager.getBuildBackend(fProject);
-                } else {
-                    backend = backendManager.getIdeBackend();
-                }
-                final OtpErlangObject result = ErlideDialyze.checkPlt(backend,
-                        plt);
-                DialyzerUtils.checkDialyzeError(result);
-                monitor.done();
-            } catch (final Exception e) {
-                throw new InvocationTargetException(e);
-            }
-        }
-    }
-
     private void createPltCheck(final Group group) {
         final Composite comp = new Composite(group, SWT.NONE);
         comp.setLayout(new GridLayout(2, false));
         final Button b = new Button(comp, SWT.PUSH);
         b.setText("Check PLT");
-        b.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                final IRunnableWithProgress op = new CheckPltOperation();
-                try {
-                    final IWorkbench wb = PlatformUI.getWorkbench();
-                    wb.getProgressService().run(false, true, op);
-                    // FIXME setting "fork" to true gives
-                    // "Invalid Thread Access" exception, why?
-                } catch (final InvocationTargetException e1) {
-                    final Throwable t = e1.getCause();
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            MessageDialog.openError(getShell(),
-                                    "Dialyzer error", t.getMessage());
-                        }
-                    });
-                } catch (final InterruptedException e1) {
-                    ErlLogger.error(e1);
-                }
-            }
-        });
+        b.addSelectionListener(new CommandRunnerSelectionAdapter(
+                CheckDialyzerPltFileHandler.COMMAND_ID));
         final Label l = new Label(comp, SWT.NONE);
         l.setText("Warning: this can take some time");
     }

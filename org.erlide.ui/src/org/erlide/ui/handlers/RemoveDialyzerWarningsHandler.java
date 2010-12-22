@@ -1,4 +1,5 @@
 package org.erlide.ui.handlers;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -11,8 +12,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.erlide.core.builder.MarkerUtils;
 
-public class RemoveDialyzerWarningsHandler extends AbstractHandler
-        implements IHandler {
+public class RemoveDialyzerWarningsHandler extends AbstractHandler implements
+        IHandler {
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final ISelection selection = HandlerUtil.getCurrentSelection(event);

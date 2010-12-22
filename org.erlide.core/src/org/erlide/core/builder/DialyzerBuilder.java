@@ -63,7 +63,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (project == null || !project.isAccessible()) {
             return;
         }
-        MarkerUtils.removeDialyzerWarningMarkers(project);
+        MarkerUtils.removeDialyzerMarkers(project);
     }
 
 }

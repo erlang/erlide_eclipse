@@ -552,7 +552,17 @@
              id="org.erlide.ui.command.removeDialyzerWarnings"
              name="Remove Dialyzer Warnings">
        </command>
-
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Check PLT"
+             id="org.erlide.ui.command.checkDialyzerPLTFile"
+             name="Check PLT">
+       </command>
+       <category
+             description="Dialyzer Commands"
+             id="org.erlide.ui.commandCategories.dialyzer"
+             name="Dialyzer Commands">
+       </category>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -630,8 +640,7 @@
     <menuContribution
           locationURI="toolbar:org.eclipse.ui.main.toolbar">
        <toolbar
-             id="org.erlide.ui.toolbars.creation"
-             label="Erlang creation wizards">
+             id="org.erlide.ui.toolbars.creation">
           <command
                 commandId="org.eclipse.ui.newWizard"
                 icon="icons/full/obj16/erlang_NewModule.png"
@@ -813,6 +822,10 @@
     <handler
           class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
+          commandId="org.erlide.ui.command.checkDialyzerPLTFile">
     </handler>
  </extension>
  <extension
