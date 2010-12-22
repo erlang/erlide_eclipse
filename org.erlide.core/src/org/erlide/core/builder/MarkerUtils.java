@@ -335,17 +335,24 @@ public final class MarkerUtils {
         }
     }
 
-    public static void removeDialyzerWarningMarkers(final IProject project) {
+    public static void removeDialyzerMarkers(final IResource resource) {
         try {
-            final IMarker[] markers = project.findMarkers(
-                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
-            for (final IMarker m : markers) {
-                m.delete();
-            }
+            resource.deleteMarkers(DIALYZE_WARNING_MARKER, true,
+                    IResource.DEPTH_INFINITE);
         } catch (final CoreException e) {
             ErlLogger.error(e);
         }
+    }
 
+    public static boolean haveDialyzerMarkers(final IResource resource) {
+        try {
+            final IMarker[] findMarkers = resource.findMarkers(
+                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+            return findMarkers.length > 0;
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+        return false;
     }
 
     public static IMarker createSearchResultMarker(final IErlModule module,

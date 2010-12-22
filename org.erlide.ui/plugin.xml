@@ -571,7 +571,29 @@
                 id="org.eclipse.ui.commands.toggleState">
           </state>
        </command>
-
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Run Dialyzer"
+             id="org.erlide.ui.commands.runDialyzer"
+             name="Run Dialyzer">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Remove Dialyzer Warnings"
+             id="org.erlide.ui.command.removeDialyzerWarnings"
+             name="Remove Dialyzer Warnings">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Check PLT"
+             id="org.erlide.ui.command.checkDialyzerPLTFile"
+             name="Check PLT">
+       </command>
+       <category
+             description="Dialyzer Commands"
+             id="org.erlide.ui.commandCategories.dialyzer"
+             name="Dialyzer Commands">
+       </category>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -799,6 +821,18 @@
              </instanceof>
           </with>
        </enabledWhen>                    
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.RunDialyzerHandler"
+          commandId="org.erlide.ui.commands.runDialyzer">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
+          commandId="org.erlide.ui.command.removeDialyzerWarnings">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
+          commandId="org.erlide.ui.command.checkDialyzerPLTFile">
     </handler>
  </extension>
  <extension
