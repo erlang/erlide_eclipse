@@ -148,13 +148,16 @@ public class DialyzerUtils {
         if (e instanceof IErlFolder) {
             final IErlFolder f = (IErlFolder) e;
             f.open(null);
-            final IErlProject p = f.getErlProject();
-            Set<IErlModule> ms = modules.get(p);
-            if (ms == null) {
-                ms = new HashSet<IErlModule>();
+            final Collection<IErlModule> folderModules = f.getModules();
+            if (!folderModules.isEmpty()) {
+                final IErlProject p = f.getErlProject();
+                Set<IErlModule> ms = modules.get(p);
+                if (ms == null) {
+                    ms = new HashSet<IErlModule>();
+                }
+                ms.addAll(folderModules);
+                modules.put(p, ms);
             }
-            ms.addAll(f.getModules());
-            modules.put(p, ms);
         } else if (e instanceof IErlModule) {
             final IErlModule m = (IErlModule) e;
             final IErlProject p = m.getErlProject();

@@ -363,37 +363,6 @@
                menubarPath="debug">
          </action>
       </viewerContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze2"
-            objectClass="org.eclipse.core.resources.IFolder">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze3"
-            objectClass="org.eclipse.core.resources.IFile">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
    </extension>
  <extension
        point="org.eclipse.ui.contexts">
@@ -493,7 +462,7 @@
       </category>
       <command
             categoryId="org.eclipse.ui.category.navigate"
-            defaultHandler="org.erlide.ui.actions.OpenModuleHandler"
+            defaultHandler="org.erlide.ui.handlers.OpenModuleHandler"
             id="org.erlide.ui.open.module"
             name="Open Module">
 		    <commandParameter
@@ -503,7 +472,7 @@
        </command>
       <command
             categoryId="org.erlide.ui.erlideCategory"
-            defaultHandler="org.erlide.ui.actions.ReportProblemHandler"
+            defaultHandler="org.erlide.ui.handlers.ReportProblemHandler"
             id="org.erlide.ui.command.reportProblem"
             name="Report problems">
       </command>
@@ -570,6 +539,18 @@
                 class="org.eclipse.ui.handlers.RegistryToggleState:true"
                 id="org.eclipse.ui.commands.toggleState">
           </state>
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Run Dialyzer"
+             id="org.erlide.ui.commands.runDialyzer"
+             name="Run Dialyzer">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Remove Dialyzer Warnings"
+             id="org.erlide.ui.command.removeDialyzerWarnings"
+             name="Remove Dialyzer Warnings">
        </command>
 
  </extension>
@@ -672,6 +653,31 @@
              </visibleWhen>
           </command>
        </toolbar>
+    </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="menu:project?after=additions">
+       <separator
+             name="org.erlide.ui.separator1">
+       </separator>
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
     </menuContribution>
  </extension>
  <extension
@@ -800,6 +806,14 @@
           </with>
        </enabledWhen>                    
     </handler>
+    <handler
+          class="org.erlide.ui.handlers.RunDialyzerHandler"
+          commandId="org.erlide.ui.commands.runDialyzer">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
+          commandId="org.erlide.ui.command.removeDialyzerWarnings">
+    </handler>
  </extension>
  <extension
        point="org.eclipse.ui.actionSets">
@@ -818,7 +832,7 @@
              <action
                label="Open Module"
                helpContextId="org.erlide.ui.openModule"
-               class="org.erlide.ui.actions.OpenModuleHandler"
+               class="org.erlide.ui.handlers.OpenModuleHandler"
                menubarPath="navigate/open.ext2"
                id="org.erlide.action.openModule"
                definitionId="org.erlide.ui.open.module">

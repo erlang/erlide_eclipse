@@ -311,6 +311,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs"
 Require-Bundle: org.eclipse.compare,
+ org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
