@@ -1,4 +1,4 @@
-package org.erlide.ui.actions;
+package org.erlide.ui.handlers;
 
 import java.net.URI;
 import java.net.URISyntaxException;

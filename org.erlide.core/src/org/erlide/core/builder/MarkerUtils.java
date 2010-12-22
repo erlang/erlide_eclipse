@@ -239,6 +239,26 @@ public final class MarkerUtils {
         }
     }
 
+    public static void removeDialyzerMarkers(final IResource resource) {
+        try {
+            resource.deleteMarkers(DIALYZE_WARNING_MARKER, true,
+                    IResource.DEPTH_INFINITE);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean haveDialyzerMarkers(final IResource resource) {
+        try {
+            final IMarker[] markers = resource.findMarkers(
+                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+            return markers != null && markers.length > 0;
+        } catch (final CoreException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void deleteMarkers(final IResource resource) {
         try {
             resource.deleteMarkers(PROBLEM_MARKER, false, IResource.DEPTH_ZERO);

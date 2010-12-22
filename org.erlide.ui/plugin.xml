@@ -462,7 +462,7 @@
       </category>
       <command
             categoryId="org.eclipse.ui.category.navigate"
-            defaultHandler="org.erlide.ui.actions.OpenModuleHandler"
+            defaultHandler="org.erlide.ui.handlers.OpenModuleHandler"
             id="org.erlide.ui.open.module"
             name="Open Module">
 		    <commandParameter
@@ -472,7 +472,7 @@
        </command>
       <command
             categoryId="org.erlide.ui.erlideCategory"
-            defaultHandler="org.erlide.ui.actions.ReportProblemHandler"
+            defaultHandler="org.erlide.ui.handlers.ReportProblemHandler"
             id="org.erlide.ui.command.reportProblem"
             name="Report problems">
       </command>
@@ -655,7 +655,21 @@
        </toolbar>
     </menuContribution>
     <menuContribution
-          locationURI="popup:org.erlide.ui.views.navigator.view?after=additions">
+          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="menu:project?after=additions">
+       <separator
+             name="org.erlide.ui.separator1">
+       </separator>
        <command
              commandId="org.erlide.ui.commands.runDialyzer"
              style="push">
@@ -793,23 +807,11 @@
        </enabledWhen>                    
     </handler>
     <handler
-          class="RunDialyzerCommandHandler"
-          commandId="org.erlide.ui.commands.RunDialyzer">
-       <enabledWhen>
-          <with
-                variable="selection">
-             <iterate
-                   ifEmpty="false"
-                   operator="or">
-                <instanceof
-                      value="org.eclipse.core.resources.IFile">
-                </instanceof>
-             </iterate>
-          </with>
-       </enabledWhen>
+          class="org.erlide.ui.handlers.RunDialyzerHandler"
+          commandId="org.erlide.ui.commands.runDialyzer">
     </handler>
     <handler
-          class="RemoveDialyzerWarningsCommandHandler"
+          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
  </extension>
@@ -830,7 +832,7 @@
              <action
                label="Open Module"
                helpContextId="org.erlide.ui.openModule"
-               class="org.erlide.ui.actions.OpenModuleHandler"
+               class="org.erlide.ui.handlers.OpenModuleHandler"
                menubarPath="navigate/open.ext2"
                id="org.erlide.action.openModule"
                definitionId="org.erlide.ui.open.module">

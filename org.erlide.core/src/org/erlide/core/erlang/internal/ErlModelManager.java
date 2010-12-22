@@ -330,6 +330,9 @@ public final class ErlModelManager implements IErlModelManager {
         final IContainer resourceParent = resource.getParent();
         if (resourceParent != null) {
             parent = erlangModel.findElement(resourceParent);
+            if (parent == null) {
+                parent = create(resourceParent);
+            }
         }
         return create(resource, parent);
     }
