@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ui.Saveable;
 import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.erlang.ErlModelException;
@@ -198,26 +197,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
     public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (SaveablesProvider.class.equals(required)) {
-            return new SaveablesProvider() {
-
-                @Override
-                public Object[] getElements(final Saveable saveable) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public Saveable getSaveable(final Object element) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public Saveable[] getSaveables() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            };
+            // TODO return something useful
+            return null;
         }
         return null;
     }

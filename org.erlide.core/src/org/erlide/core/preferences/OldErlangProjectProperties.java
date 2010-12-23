@@ -167,10 +167,6 @@ public final class OldErlangProjectProperties implements
             } else {
                 node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
             }
-            // TODO remove these later
-            node.remove("backend_cookie");
-            node.remove("backend_node");
-            // end todo
             node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                     externalModulesFile);
 

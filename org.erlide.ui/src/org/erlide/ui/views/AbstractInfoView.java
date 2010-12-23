@@ -529,11 +529,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 
         fGotoInputAction.setEnabled(true);
 
-        // TODO
-        // setContentDescription(JavaElementLabels.getElementLabel(fCurrentViewInput,
-        // TITLE_LABEL_FLAGS));
-        // TODO
-        // setTitleToolTip(JavaElementLabels.getElementLabel(fCurrentViewInput,
-        // TOOLTIP_LABEL_FLAGS));
+        // TODO setContentDescription
+        // TODO setTitleToolTip
     }
 }

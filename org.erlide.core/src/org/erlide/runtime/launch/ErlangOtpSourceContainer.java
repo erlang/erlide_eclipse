@@ -75,32 +75,28 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
     }
 
     public ISourceContainerType getType() {
+        // FIXME implement this properly!
         return new ISourceContainerType() {
 
             public String getMemento(final ISourceContainer container)
                     throws CoreException {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public ISourceContainer createSourceContainer(final String memento)
                     throws CoreException {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public String getName() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public String getId() {
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public String getDescription() {
-                // TODO Auto-generated method stub
                 return null;
             }
         };

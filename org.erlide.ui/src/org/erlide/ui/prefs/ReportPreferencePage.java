@@ -165,7 +165,6 @@ public class ReportPreferencePage extends PreferencePage implements
                 final ProblemData data = gatherProblemData(attach, title,
                         contact, body);
                 sendToDisk(location, data);
-                // new AssemblaHandler().send(data);
 
                 final Job inner = new UIJob("update report ui") {
                     @Override

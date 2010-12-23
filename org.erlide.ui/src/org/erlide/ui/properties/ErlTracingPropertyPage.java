@@ -37,18 +37,11 @@ import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
 
-/**
- * TODO review this, it looks weird and unused...
- * 
- * Property page used to set the project's edoc location
- */
+// TODO review this, it looks weird and unused...
 public class ErlTracingPropertyPage extends PropertyPage implements
         IPreferenceChangeListener, IPropertyChangeListener {
 
-    public static final String PROP_ID = "org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"; //$NON-NLS-1$
-
     // private boolean fIsValidElement;
-
     // private IPath fContainerPath;
     @SuppressWarnings("unused")
     private URL fInitialLocation;
