@@ -13,62 +13,113 @@
 %%----------------------------------------------
 %% Exported Functions
 %%----------------------------------------------
--export([prepare/3, create_report/2]).
+-export([compile/2, compile_dir/1, prepare/3, create_report/2]).
 
 %%----------------------------------------------
 %% API Functions
 %%----------------------------------------------
 
-%prepare module
-prepare(eunit, Module, Path) ->
+%compile module
+compile(Module, Path) ->
 	io:format("inside prepare~n"),
-	ok = case cover:compile(Path) of		%%TODO: include files	
-				{ok, M} -> 
-					io:format("compilation ok~n"),
-					ok;
-				{error, Err} -> 
-					io:format("~n~p", [Err]),
-					erlide_jrpc:event(?EVENT, {?ERROR, compilation}),
-					error
-			end, % whar really should be done in backend?
-	io:format("2"),
+	case cover:compile(Path) of		%%TODO: include files	
+			{ok, _M} -> 
+				io:format("compilation ok~n"),
+				ok;
+			{error, Err} -> 
+				io:format("~n~p", [Err]),
+				erlide_jrpc:event(?EVENT, {?ERROR, {Module, compilation}}),
+				{error, compilation}
+	end.
+
+%compile directory
+compile_dir(Dir) ->
+	case cover:compile_directory(Dir) of
+		{error, _Reason} ->
+			erlide_jrpc:event(?EVENT, {?ERROR, {Dir, compilation}}),
+			{error, compilation};
+		Res -> {ok, Res}
+	end.
+
+%prepare module
+prepare(eunit, Module, _Path) ->
+	io:format("inside prepare~n"),
 	case eunit:test(Module) of
 			ok ->
 				ok;
 			Er ->
-				erlide_jrpc:event(?EVENT, {?ERROR, testing, Er}),
-				{error, failed_tests}
+				erlide_jrpc:event(?EVENT, {?ERROR, {Module, testing, Er}}),
+				{error, testing}
 	end.
 
 %creates report
-create_report(Dir, Module) ->
+create_report(_Dir, Module) ->
 	ModRes = cover:analyse(Module, module),
 	FunRes = cover:analyse(Module, function),
-	LineRes = cover:analyse(Module, line),
-	LineResCalls = cover:analyse(Module, calls, line),
-	io:format("~p~n~p~n~p~n~p~n", [ModRes, FunRes, LineRes, LineResCalls]),
+	LineRes = cover:analyse(Module, calls, line), %%calls!
+	io:format("~p~n~p~n~p~n", [ModRes, FunRes, LineRes]),
 	
-	ok = case { ModRes, FunRes, LineRes, LineResCalls } of
-		{{ok, _}, {ok, _}, {ok, _}, {ok, _}} ->
-			ok;
+	ok = case { ModRes, FunRes, LineRes} of
+		{{ok, _}, {ok, _}, {ok, _}} ->
+			Res = prepare_result(ModRes, FunRes, LineRes, Module),
+			{ok, Res};
 		_ -> 
-			erlide_jrpc:event(?EVENT, {?ERROR, analyse}),
-			error
-	end,
+			{error, analyse}
+	end.
 			
-	FileHtml = filename:join([".",  "mod_" ++ atom_to_list(Module) ++ ".html"]),
-    Res = cover:analyse_to_file(Module, FileHtml, [html]),
-    filename:basename(FileHtml), %%
 	
-	
-	
-	ok.
 
 %%----------------------------------------------
 %% Local Functions
 %%----------------------------------------------
 
-percentage(Covered, Total) ->
+
+prepare_result(ModRes, FunRes, LineRes, Module) ->
+	FileHtml = filename:join([".",  "mod_" ++ atom_to_list(Module) ++ ".html"]),
+    ResHtml = cover:analyse_to_file(Module, FileHtml, [html]),
+    %%filename:basename(FileHtml), %%
+	Out = case ResHtml of
+			{ok, OutFile} -> OutFile;
+			{error, _} -> ?NO_FILE
+		  end,
+			
+	
+	%% functions
+	FunList = get_fun_stats(FunRes),
+	%% lines
+	LineList = get_line_stats(LineRes),
+	
+	%%module
+	{ok, {Name, {Cov, Uncov}}} = ModRes,
+	Result = #module_res{name = Name,
+				name_html = Out,
+				line_num = Cov + Uncov,
+				covered_num = Cov,
+				percentage = count_percent(Cov, Cov + Uncov),
+				functions = FunList,
+				lines = LineList},
+	io:format("~p~n", [Result]),
+	Result.
+
+count_percent(Covered, Total) ->
 	Covered/Total * 100.
 
+
+get_fun_stats({ok, FunRes}) ->
+	lists:map(fun({{_, Name, Arity}, {Cov, Uncov}}) ->
+								#unit_res{name = Name,
+										  arity = Arity,
+										  total_l = Cov + Uncov,
+										  covered_l = Cov,
+										  percentage = count_percent(Cov, Cov + Uncov)
+										  }
+								end,
+								FunRes).
+
+get_line_stats({ok, Calls}) ->
+	
+	lists:map(fun({{_, No}, CallNum}) ->
+					#line_res{num = No, calls = CallNum}
+					end,
+					Calls).
 

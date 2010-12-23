@@ -7,6 +7,7 @@
 -define(OK, cover_ok).
 -define(ERROR, cover_error).
 -define(COVER_DIR, "cover_report").
+-define(NO_FILE, nofile).
 
 
 %state
@@ -17,12 +18,14 @@
 					 name_html, 
 					 line_num,
 					 covered_num,
+					 percentage,
 					 lines = [], 
-					 functions = [], 
-					 percentage}).
+					 functions = []}).
 
 %results per unit (module, function)
--record(unit_res, {total_l,
+-record(unit_res, {name,
+				   arity,
+				   total_l,
 				   covered_l,
 				   percentage}).
 
