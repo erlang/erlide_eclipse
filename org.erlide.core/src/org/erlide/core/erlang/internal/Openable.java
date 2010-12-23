@@ -69,10 +69,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * Returns true if successful, or false if an error is encountered while
      * determining the structure of this element.
      * 
-     * <<<<<<< HEAD =======
-     * 
      * @param dirtyRegion
-     *            TODO >>>>>>> cleanup
      */
     protected abstract boolean buildStructure(IProgressMonitor pm)
             throws ErlModelException;
@@ -172,29 +169,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return this;
     }
 
-    // /**
-    // * @see IErlElement
-    // */
-    // public IResource getUnderlyingResource() throws ErlModelException {
-    // final IResource parentResource = fParent.getUnderlyingResource();
-    // if (parentResource == null) {
-    // return null;
-    // }
-    // final int type = parentResource.getType();
-    // if (type == IResource.FOLDER || type == IResource.PROJECT) {
-    // final IContainer topfolder = (IContainer) parentResource;
-    //
-    // // TODO use project properties
-    // final IResource resource = findFile(topfolder, fName);
-    //
-    // if (resource == null) {
-    // throw newNotPresentException();
-    // }
-    // return resource;
-    // }
-    // return parentResource;
-    // }
-
     class ErlangResourceVisitor implements IResourceVisitor {
 
         private final String aname;
@@ -213,23 +187,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
             return true;
         }
     }
-
-    // private IResource findFile(final IContainer topfolder, final String
-    // string) {
-    // final IResource result = topfolder.findMember(string);
-    // if (result != null) {
-    // return result;
-    // }
-    //
-    // findResult = null;
-    // final IResourceVisitor v = new ErlangResourceVisitor(string);
-    // try {
-    // topfolder.accept(v);
-    // } catch (final CoreException e) {
-    // ErlLogger.warn(e);
-    // }
-    // return findResult;
-    // }
 
     /**
      * Returns true if this element may have an associated source buffer,
