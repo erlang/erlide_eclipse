@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Maps;
 
 import erlang.ErlideDebug;
 
@@ -131,6 +133,13 @@ public class ErlangLaunchConfigurationDelegate implements
         if (data.loadAllNodes) {
             options.add(BackendOptions.LOAD_ALL_NODES);
         }
+        HashMap<String, String> myenv;
+        if (env == null) {
+            myenv = Maps.newHashMap();
+        } else {
+            myenv = Maps.newHashMap(env);
+        }
+        myenv.putAll(data.env);
 
         // important, so that we don't get the "normal" console for the erlide
         // backend
@@ -146,7 +155,7 @@ public class ErlangLaunchConfigurationDelegate implements
         ErlideBackend backend = null;
         try {
             backend = ErlangCore.getBackendManager().createBackend(rt, options,
-                    launch, env);
+                    launch, myenv);
             if (backend == null) {
                 ErlLogger.error("Launch: could not create backend!");
                 final Status s = new Status(IStatus.ERROR,
