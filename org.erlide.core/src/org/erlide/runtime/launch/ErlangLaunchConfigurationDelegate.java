@@ -222,9 +222,8 @@ public class ErlangLaunchConfigurationDelegate implements
                 addNodesAsDebugTargets(backend, launch);
             }
             interpretModules(data, backend, distributed);
-            registerDebugEventListener(data, backend);
+            registerStartupFunctionStarter(data, backend);
             target.sendStarted();
-
         } else {
             runInitial(data.module, data.function, data.args, backend);
         }
@@ -253,7 +252,7 @@ public class ErlangLaunchConfigurationDelegate implements
         }
     }
 
-    private void registerDebugEventListener(final ErlLaunchData data,
+    private void registerStartupFunctionStarter(final ErlLaunchData data,
             final ErlideBackend backend) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
@@ -375,6 +374,7 @@ public class ErlangLaunchConfigurationDelegate implements
 
     void runInitial(final String module, final String function,
             final String args, final Backend backend) {
+        ErlLogger.debug("calling startup function %s:%s", module, function);
         try {
             if (module.length() > 0 && function.length() > 0) {
                 if (args.length() > 0) {
