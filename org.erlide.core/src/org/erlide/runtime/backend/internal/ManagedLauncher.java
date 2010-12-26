@@ -58,21 +58,7 @@ public class ManagedLauncher implements IDisposable {
         ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
                 + workingDirectory);
 
-        final ProcessBuilder builder = new ProcessBuilder(cmds);
-        builder.directory(workingDirectory);
-        final Map<String, String> env = builder.environment();
-        if (!ErlideUtil.isOnWindows() && ErlideUtil.isEricssonUser()) {
-            env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
-        }
-        if (my_env != null) {
-            env.putAll(my_env);
-        }
-        try {
-            runtime = builder.start();
-        } catch (final IOException e1) {
-            e1.printStackTrace();
-            return;
-        }
+        runtime = createRuntime(my_env, cmds, workingDirectory);
 
         final ErtsProcess erts = new ErtsProcess(launch, runtime,
                 info.getNodeName(), null);
@@ -83,6 +69,25 @@ public class ManagedLauncher implements IDisposable {
         checkIfRuntimeIsRunning();
 
         startWatcher(info, workingDirectory);
+    }
+
+    private Process createRuntime(final Map<String, String> my_env,
+            final String[] cmds, final File workingDirectory) {
+        final ProcessBuilder builder = new ProcessBuilder(cmds);
+        builder.directory(workingDirectory);
+        final Map<String, String> env = builder.environment();
+        if (!ErlideUtil.isOnWindows() && ErlideUtil.isEricssonUser()) {
+            env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
+        }
+        if (my_env != null) {
+            env.putAll(my_env);
+        }
+        try {
+            return builder.start();
+        } catch (final IOException e1) {
+            e1.printStackTrace();
+        }
+        return null;
     }
 
     private void checkIfRuntimeIsRunning() {
