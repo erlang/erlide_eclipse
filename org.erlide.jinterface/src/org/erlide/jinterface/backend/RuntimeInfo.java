@@ -172,7 +172,8 @@ public class RuntimeInfo {
                 : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
-            nameOption = BackendUtil.buildNodeName(getNodeName(), useLongName);
+            nameOption = BackendUtil.buildLocalNodeName(getNodeName(),
+                    useLongName);
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();

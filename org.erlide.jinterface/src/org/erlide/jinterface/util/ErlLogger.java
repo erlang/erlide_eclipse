@@ -42,7 +42,7 @@ public class ErlLogger {
     }
 
     public final void setLogDir(final String dir) {
-        logDir = (dir == null) ? "./" : dir;
+        logDir = dir == null ? "./" : dir;
     }
 
     public String getLogLocation() {
@@ -111,7 +111,7 @@ public class ErlLogger {
         getInstance().log(Level.SEVERE, exception);
     }
 
-    private ErlLogger(String dir) {
+    private ErlLogger(final String dir) {
         final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
         logger = Logger.getLogger("org.erlide");
 
@@ -138,9 +138,9 @@ public class ErlLogger {
             fh.setFormatter(erlSimpleFormatter);
             fh.setLevel(java.util.logging.Level.FINEST);
             logger.addHandler(fh);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

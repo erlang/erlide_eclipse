@@ -1,4 +1,5 @@
 package org.erlide.ui.handlers;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
@@ -40,8 +41,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class RunDialyzerHandler extends AbstractHandler implements
-        IHandler {
+public class RunDialyzerHandler extends AbstractHandler implements IHandler {
 
     final Map<IErlProject, Set<IErlModule>> modules = Maps.newHashMap();
     private final DialyzerPreferences prefs = new DialyzerPreferences();

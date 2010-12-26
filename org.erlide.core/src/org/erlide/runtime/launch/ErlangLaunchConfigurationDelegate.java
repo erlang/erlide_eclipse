@@ -86,6 +86,11 @@ public class ErlangLaunchConfigurationDelegate implements
             final Map<String, String> env) throws CoreException {
         final ErlLaunchData data = new ErlLaunchData(config, internal);
 
+        if (data.isInternal) {
+            ErlLogger.debug("Not creating a backend");
+            return null;
+        }
+
         final Set<IProject> projects = new HashSet<IProject>();
         for (final String s : data.projectNames) {
             final IProject project = ResourcesPlugin.getWorkspace().getRoot()
@@ -146,11 +151,6 @@ public class ErlangLaunchConfigurationDelegate implements
         final String captureOutput = System.getProperty(
                 "erlide.console.stdout", "false");
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
-
-        if (data.isInternal) {
-            ErlLogger.debug("Not creating a backend");
-            return null;
-        }
 
         ErlideBackend backend = null;
         try {

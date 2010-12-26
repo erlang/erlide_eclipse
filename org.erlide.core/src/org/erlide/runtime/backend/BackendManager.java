@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -107,6 +108,7 @@ public final class BackendManager extends OtpNodeStatus implements
         listeners = new ArrayList<BackendListener>();
         codeBundles = Maps.newHashMap();
 
+        // ManagedLauncher.startEpmdProcess();
         epmdWatcher = new EpmdWatcher();
         epmdWatcher.addEpmdListener(this);
         new EpmdWatchJob(epmdWatcher).schedule(100);
@@ -131,8 +133,8 @@ public final class BackendManager extends OtpNodeStatus implements
                     + "' " + Thread.currentThread());
             b = new ErlideBackend(info);
 
-            final ManagedLauncher launcher = new ManagedLauncher(launch);
-            launcher.startRuntime(info, env);
+            final ManagedLauncher launcher = new ManagedLauncher(launch, info,
+                    env);
             final IStreamsProxy streamsProxy = launcher.getStreamsProxy();
             b.setStreamsProxy(streamsProxy);
             b.setManaged(true);
@@ -146,16 +148,23 @@ public final class BackendManager extends OtpNodeStatus implements
         if (launch != null) {
             DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
         }
-        initializeBackend(options, b, watch);
+        try {
+            initializeBackend(options, b, watch);
+        } catch (final IOException e) {
+            ErlLogger.error(e);
+            // throw new BackendException(e);
+        }
         return b;
     }
 
-    private synchronized void addBackend(final ErlideBackend b) {
-        allBackends.add(b);
+    private void addBackend(final ErlideBackend b) {
+        synchronized (allBackends) {
+            allBackends.add(b);
+        }
     }
 
     private void initializeBackend(final Set<BackendOptions> options,
-            final ErlideBackend b, final boolean watchNode) {
+            final ErlideBackend b, final boolean watchNode) throws IOException {
         b.initializeRuntime();
         if (b.isDistributed()) {
             b.connect();
@@ -327,7 +336,9 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public Collection<ErlideBackend> getAllBackends() {
-        return Collections.unmodifiableCollection(allBackends);
+        synchronized (allBackends) {
+            return Collections.unmodifiableCollection(allBackends);
+        }
     }
 
     private void addCodeBundle(final IExtension extension) {
@@ -435,7 +446,8 @@ public final class BackendManager extends OtpNodeStatus implements
                     .entrySet()) {
                 for (final Backend be : e.getValue()) {
                     final String bnode = be.getInfo().getNodeName();
-                    if (BackendUtil.buildNodeName(bnode, true).equals(node)) {
+                    if (BackendUtil.buildLocalNodeName(bnode, true)
+                            .equals(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
                     }

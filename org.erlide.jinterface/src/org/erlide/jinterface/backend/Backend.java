@@ -209,7 +209,37 @@ public class Backend extends OtpNodeStatus {
     }
 
     public void connect() {
-        doConnect(getName());
+        final String label = getName();
+        ErlLogger.debug(label + ": waiting connection to peer...");
+        try {
+            wait_for_epmd();
+
+            // FIXME
+            fPeer = BackendUtil.buildLocalNodeName(label, true);
+
+            eventBox = getNode().createMbox("rex");
+            int tries = 20;
+            while (!available && tries > 0) {
+                ErlLogger.debug("# ping...");
+                available = getNode().ping(getPeer(),
+                        RETRY_DELAY + (20 - tries) * RETRY_DELAY / 5);
+                tries--;
+            }
+            if (available) {
+                available = waitForCodeServer();
+            }
+
+            if (available) {
+                ErlLogger.debug("connected!");
+            } else {
+                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+            }
+
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+            available = false;
+            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+        }
     }
 
     public void dispose() {
@@ -230,53 +260,6 @@ public class Backend extends OtpNodeStatus {
         }
         if (restart) {
             return;
-        }
-    }
-
-    @SuppressWarnings("boxing")
-    public synchronized void doConnect(final String label) {
-        ErlLogger.debug("connect to:: '" + label + "' "
-                + Thread.currentThread());
-        // Thread.dumpStack();
-        try {
-            wait_for_epmd();
-
-            final String cookie = getInfo().getCookie();
-            if (cookie == null) {
-                fNode = new OtpNode(BackendUtil.createJavaNodeName());
-            } else {
-                fNode = new OtpNode(BackendUtil.createJavaNodeName(), cookie);
-            }
-            final String nodeCookie = fNode.cookie();
-            final int len = nodeCookie.length();
-            final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
-                    : nodeCookie;
-            ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed,
-                    len, cookie);
-            fPeer = BackendUtil.buildNodeName(label, true);
-
-            eventBox = getNode().createMbox("rex");
-            int tries = 20;
-            while (!available && tries > 0) {
-                ErlLogger.debug("# try to connect...");
-                available = getNode().ping(getPeer(),
-                        RETRY_DELAY + (20 - tries) * RETRY_DELAY / 5);
-                tries--;
-            }
-            if (available) {
-                available = waitForCodeServer();
-            }
-
-            if (available) {
-                ErlLogger.debug("connected!");
-            } else {
-                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-            }
-
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-            available = false;
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
         }
     }
 
@@ -317,8 +300,10 @@ public class Backend extends OtpNodeStatus {
         return fInfo.getNodeName();
     }
 
-    public synchronized String getPeer() {
-        return fPeer;
+    public String getPeer() {
+        synchronized (fPeer) {
+            return fPeer;
+        }
     }
 
     private synchronized OtpNode getNode() {
@@ -365,9 +350,22 @@ public class Backend extends OtpNodeStatus {
         eventDaemon.addHandler(new LogEventHandler());
     }
 
-    public void initializeRuntime() {
+    public void initializeRuntime() throws IOException {
         dispose(true);
         shellManager = new BackendShellManager();
+
+        final String cookie = getInfo().getCookie();
+        if (cookie == null) {
+            fNode = new OtpNode(BackendUtil.createJavaNodeName());
+        } else {
+            fNode = new OtpNode(BackendUtil.createJavaNodeName(), cookie);
+        }
+        final String nodeCookie = fNode.cookie();
+        final int len = nodeCookie.length();
+        final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
+                : nodeCookie;
+        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
+                cookie);
     }
 
     public boolean isDebug() {
@@ -484,9 +482,13 @@ public class Backend extends OtpNodeStatus {
             getNode().close();
             fNode = null;
         }
-        initializeRuntime();
-        connect();
-        initErlang(monitor, watch);
+        try {
+            initializeRuntime();
+            connect();
+            initErlang(monitor, watch);
+        } catch (final IOException e) {
+            ErlLogger.error(e);
+        }
     }
 
     public synchronized void setAvailable(final boolean up) {

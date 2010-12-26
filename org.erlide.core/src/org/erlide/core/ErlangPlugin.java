@@ -135,8 +135,8 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                .toPortableString();
+        final String dir = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
@@ -223,7 +223,7 @@ public class ErlangPlugin extends Plugin {
     }
 
     public void log(final IStatus status) {
-        Level lvl = getLevelFromStatus(status);
+        final Level lvl = getLevelFromStatus(status);
         logger.log(lvl, status.getMessage());
         final Throwable exception = status.getException();
         if (exception != null) {
