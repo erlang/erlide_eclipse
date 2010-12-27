@@ -23,7 +23,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RpcConverterTest {
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangDouble;
+import com.ericsson.otp.erlang.OtpErlangFloat;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.Signature;
+import com.ericsson.otp.erlang.SignatureException;
+
+public class TypeConverterTest {
 
     private void test(final Object o, final String sig,
             final OtpErlangObject expect) throws SignatureException {
