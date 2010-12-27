@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui;
+package org.erlide.ui.tests;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;

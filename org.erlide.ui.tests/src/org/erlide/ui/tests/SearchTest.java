@@ -1,4 +1,4 @@
-package org.erlide.ui;
+package org.erlide.ui.tests;
 
 import static org.junit.Assert.assertEquals;
 

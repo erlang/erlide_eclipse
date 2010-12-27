@@ -1,4 +1,4 @@
-package org.erlide.ui;
+package org.erlide.ui.tests;
 
 import junit.framework.Assert;
 
