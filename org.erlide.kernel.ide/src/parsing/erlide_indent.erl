@@ -716,8 +716,14 @@ i_form(R0, I) ->
 i_declaration(R0, I) ->
     i_check(R0, I),
     R1 = i_kind('-', R0, I),
-    {R, _A} = i_expr(R1, I, none),
-    i_kind(dot, R, I).
+    case i_sniff(R1) of
+        'spec' ->
+            R2 = i_kind('spec', R1, I),
+            i_form(R2, I);
+        _ ->
+            {R2, _A} = i_expr(R1, I, none),
+            i_kind(dot, R2, I)
+    end.
 
 i_fun_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
