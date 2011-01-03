@@ -1,4 +1,4 @@
-package org.erlide.eunit.core;
+package org.erlide.cover.core;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -14,12 +14,14 @@ import java.util.List;
  * it and always show the same content 
  * (like Task List, for example).
  */
-public class StatsTreeObject implements IStatsTreeObject{
+public class StatsTreeObject implements 
+        IStatsTreeObject, ICoverageStats {
 
-	private String label;
-	private int all;
-	private int covered;
-	private double percentage;
+	private String label;          // name
+	private int all;               // total line number
+	private int covered;           // covered line number
+	private double percentage;     // percentage
+	
 	
 	private IStatsTreeObject parent;
 	private List<IStatsTreeObject> children;
@@ -121,7 +123,7 @@ public class StatsTreeObject implements IStatsTreeObject{
 		children.clear();
 	}
 
-	public String[] getStringRepr() {
+	public String[] getStringArray() {
 		return new String[] {label, Integer.toString(all),
 				Integer.toString(covered), Double.toString(percentage)};
 	}

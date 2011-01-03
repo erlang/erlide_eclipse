@@ -3,9 +3,7 @@ package org.erlide.cover.ui.views.helpers;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
-import org.erlide.cover.views.model.IStatsTreeObject;
+import org.erlide.cover.views.model.ICoverageStats;
 
 public class StatsViewLabelProvider extends LabelProvider
 		implements ITableLabelProvider
@@ -28,7 +26,7 @@ public class StatsViewLabelProvider extends LabelProvider
 	
 
 	public String getColumnText(Object element, int columnIndex) {
-		IStatsTreeObject statsEl = (IStatsTreeObject)element;
+		ICoverageStats statsEl = (ICoverageStats)element;
 		String text = "";
 		
 		switch(columnIndex) {

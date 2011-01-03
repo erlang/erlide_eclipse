@@ -37,10 +37,10 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.cover.runtime.launch.IErlTestAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
-import org.erlide.eunit.runtime.launch.IErlTestAttributes;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 

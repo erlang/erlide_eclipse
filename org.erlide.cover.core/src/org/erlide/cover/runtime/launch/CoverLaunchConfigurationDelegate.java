@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.cover.core.CoverBackend;
-import org.erlide.eunit.core.EUnitBackend;
-import org.erlide.eunit.runtime.launch.EUnitLaunchData;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;

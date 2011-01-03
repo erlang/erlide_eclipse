@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: EUnit Core
 Bundle-SymbolicName: org.erlide.cover.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.erlide.eunit.core.Activator
+Bundle-Activator: org.erlide.cover.core.Activator
 Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core;bundle-version="3.6.0",
@@ -13,6 +13,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.cover.core,
  org.erlide.cover.runtime.launch,
- org.erlide.cover.views.model,
- org.erlide.eunit.core,
- org.erlide.eunit.runtime.launch
+ org.erlide.cover.views.model

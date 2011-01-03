@@ -1,11 +1,14 @@
 package org.erlide.cover.ui.views;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -18,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
@@ -27,12 +31,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.eunit.core.EUnitBackend;
-import org.erlide.eunit.core.IEUnitObserver;
 
 
 /**
@@ -53,7 +56,7 @@ import org.erlide.eunit.core.IEUnitObserver;
  * <p>
  */
 
-public class CoverStatsView extends ViewPart implements IEUnitObserver{
+public class CoverStatsView extends ViewPart implements ICoverObserver{
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -323,6 +326,21 @@ public class CoverStatsView extends ViewPart implements IEUnitObserver{
             }
         });
 	}
+
+    public void showError(String place, String type, String info) {
+        
+        Shell activeShell = PlatformUI.getWorkbench().
+                getDisplay().getActiveShell();
+        
+        
+        ErrorDialog dial = new ErrorDialog(activeShell,
+                "Coverage error", 
+                String.format("Error at %s while %s: %s\n",
+                        place, type, info),
+                Status.OK_STATUS,
+                Status.ERROR);
+       
+    }
 	
 	
 }

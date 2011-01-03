@@ -28,15 +28,19 @@ compile(Module, Path) ->
 				ok;
 			{error, Err} -> 
 				io:format("~n~p", [Err]),
-				erlide_jrpc:event(?EVENT, {?ERROR, {Module, compilation}}),
+				erlide_jrpc:event(?EVENT, #cover_error{place = Module, 
+													   type = compiling,
+													   info = Err}),
 				{error, compilation}
 	end.
 
 %compile directory
 compile_dir(Dir) ->
 	case cover:compile_directory(Dir) of
-		{error, _Reason} ->
-			erlide_jrpc:event(?EVENT, {?ERROR, {Dir, compilation}}),
+		{error, Reason} ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = Dir,
+												   type = compiling,
+												   info = Reason}),
 			{error, compilation};
 		Res -> {ok, Res}
 	end.
@@ -48,7 +52,9 @@ prepare(eunit, Module, _Path) ->
 			ok ->
 				ok;
 			Er ->
-				erlide_jrpc:event(?EVENT, {?ERROR, {Module, testing, Er}}),
+				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+													   type = testing,
+													   info = Er}),
 				{error, testing}
 	end.
 

@@ -1,4 +1,4 @@
-package org.erlide.eunit.runtime.launch;
+package org.erlide.cover.runtime.launch;
 
 import org.erlide.core.ErlangPlugin;
 

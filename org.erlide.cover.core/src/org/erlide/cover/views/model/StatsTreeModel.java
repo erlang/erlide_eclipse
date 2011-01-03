@@ -6,7 +6,7 @@ public class StatsTreeModel {
 	
 	private static StatsTreeModel model;
 	
-	private IStatsTreeObject root;
+	private StatsTreeObject root;
 	
 	private StatsTreeModel() {
 		initialize();
@@ -21,6 +21,21 @@ public class StatsTreeModel {
 	
 	public IStatsTreeObject getRoot() {
 		return root;
+	}
+	
+	public void clear() {
+	    root.removeAllChildren();
+	    root.setLiniesCount(0);
+	    root.setCoverCount(0);
+	    root.setPercentage(0.0);
+	}
+	
+	public void addTotal(int allLines, int coveredLines) {
+	    int all = root.getLinesCount() + allLines;
+	    int cov = root.getCoverCount() + coveredLines;
+	    root.setLiniesCount(all);
+	    root.setCoverCount(cov);
+	    root.setPercentage(cov/(double)all);
 	}
 	
 	private void initialize() {

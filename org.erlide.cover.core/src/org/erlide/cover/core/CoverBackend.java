@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -17,11 +16,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.LaunchType;
-import org.erlide.cover.views.model.IStatsTreeObject;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.eunit.core.Constants;
-import org.erlide.eunit.core.EUnitEventHandler;
-import org.erlide.eunit.core.IEUnitObserver;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -115,8 +110,9 @@ public class CoverBackend {
         
         //clear statistics tree - prepare it for new results
         StatsTreeModel model = StatsTreeModel.getInstance();
-        IStatsTreeObject root = model.getRoot();
-        root.removeAllChildren();
+        model.clear();
+        
+        //TODO: change calls to erlang backend
         
         for(String path : settings.getPaths()) {
             
@@ -150,11 +146,11 @@ public class CoverBackend {
         return backend;
     }
     
-    public void addListener(IEUnitObserver listener) {
+    public void addListener(ICoverObserver listener) {
         handler.addListener(listener);
     }
     
-    public List<IEUnitObserver> getListeners(){
+    public List<ICoverObserver> getListeners(){
         return handler.getListeners();
     }
     
@@ -167,7 +163,7 @@ public class CoverBackend {
     private Backend createBackend() throws BackendException{
         if (info != null) {
             try {
-                info.setStartShell(false);
+                info.setStartShell(true);
                 
                 ErlLogger.debug("launching....");
                 System.out.println("Creating Backend");

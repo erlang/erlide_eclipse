@@ -2,7 +2,6 @@ package org.erlide.cover.runtime.launch;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.eunit.runtime.launch.IErlTestAttributes;
 
 public class CoverLaunchData {
 

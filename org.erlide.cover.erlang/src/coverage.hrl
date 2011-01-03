@@ -5,7 +5,6 @@
 
 -define(EVENT, cover_event).
 -define(OK, cover_ok).
--define(ERROR, cover_error).
 -define(COVER_DIR, "cover_report").
 -define(NO_FILE, nofile).
 
@@ -32,6 +31,11 @@
 %results: lines
 -record(line_res, {num,
 				   calls}).
+
+%error record
+-record(cover_error, {place,
+					  type,
+					  info = ""}).
 
 
 
