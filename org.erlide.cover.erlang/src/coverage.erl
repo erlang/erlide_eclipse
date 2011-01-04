@@ -22,6 +22,7 @@
 %compile module
 compile(Module, Path) ->
 	io:format("inside prepare~n"),
+	erlide_jrpc:event(?EVENT, {Module, Path}),
 	case cover:compile(Path) of		%%TODO: include files	
 			{ok, _M} -> 
 				io:format("compilation ok~n"),
@@ -48,8 +49,10 @@ compile_dir(Dir) ->
 %prepare module
 prepare(eunit, Module, _Path) ->
 	io:format("inside prepare~n"),
+	erlide_jrpc:event(?EVENT, {Module, eunit}),
 	case eunit:test(Module) of
 			ok ->
+				erlide_jrpc:event(?EVENT, {Module, test_ok}),
 				ok;
 			Er ->
 				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
@@ -65,7 +68,8 @@ create_report(_Dir, Module) ->
 	LineRes = cover:analyse(Module, calls, line), %%calls!
 	io:format("~p~n~p~n~p~n", [ModRes, FunRes, LineRes]),
 	
-	ok = case { ModRes, FunRes, LineRes} of
+	erlide_jrpc:event(?EVENT, {Module, ModRes, FunRes}),
+	case { ModRes, FunRes, LineRes} of
 		{{ok, _}, {ok, _}, {ok, _}} ->
 			Res = prepare_result(ModRes, FunRes, LineRes, Module),
 			{ok, Res};

@@ -1,7 +1,13 @@
 package org.erlide.cover.views.model;
 
 
-
+/**
+ * 
+ * Data model for stats viewer
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
+ *
+ */
 public class StatsTreeModel {
 	
 	private static StatsTreeModel model;
@@ -35,7 +41,7 @@ public class StatsTreeModel {
 	    int cov = root.getCoverCount() + coveredLines;
 	    root.setLiniesCount(all);
 	    root.setCoverCount(cov);
-	    root.setPercentage(cov/(double)all);
+	    root.setPercentage(cov/(double)all * 100);
 	}
 	
 	private void initialize() {

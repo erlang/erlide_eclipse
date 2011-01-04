@@ -37,7 +37,8 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.cover.runtime.launch.IErlTestAttributes;
+import org.erlide.cover.runtime.launch.FrameworkType;
+import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
@@ -113,7 +114,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         Label testLabel = new Label(comp, SWT.NONE);
         testLabel.setText("Testing framework: ");
         testCombo = new Combo(comp, SWT.NONE);
-        testCombo.setItems(new String[]{"EUnit"});
+        testCombo.setItems(new String[]{FrameworkType.EUNIT.getRepr(),
+                FrameworkType.CT.getRepr(), FrameworkType.QC.getRepr()});
+        testCombo.addModifyListener(basicModifyListener);
         
         
         Collection<IErlProject> projects;
@@ -130,14 +133,14 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IErlTestAttributes.PROJECT, "");
-        config.setAttribute(IErlTestAttributes.MODULE, "");
-        config.setAttribute(IErlTestAttributes.FILE, "");
-        config.setAttribute(IErlTestAttributes.APPLICATION, "");
-        config.setAttribute(IErlTestAttributes.TYPE,
+		config.setAttribute(ICoverAttributes.PROJECT, "");
+        config.setAttribute(ICoverAttributes.MODULE, "");
+        config.setAttribute(ICoverAttributes.FILE, "");
+        config.setAttribute(ICoverAttributes.APPLICATION, "");
+        config.setAttribute(ICoverAttributes.TYPE,
                 LaunchType.MODULE.toString());
-        config.setAttribute(IErlTestAttributes.COVER,
-                Boolean.toString(true));
+        config.setAttribute(ICoverAttributes.COMBO,
+               "0");
 	}
 
 	
@@ -146,7 +149,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 		try {
 		    
 		    String projectName = config.getAttribute(
-	                IErlTestAttributes.PROJECT, "");
+	                ICoverAttributes.PROJECT, "");
 		    
 			projectMBr.setText(projectName);
 			
@@ -164,34 +167,34 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 		
 		try {
 			moduleBr.setText(config.getAttribute(
-				IErlTestAttributes.MODULE, ""));
+				ICoverAttributes.MODULE, ""));
 		} catch (CoreException e) {
 			moduleBr.setText("");
 		}
 		
 		try {
 			fileBr.setText(config.getAttribute(
-				IErlTestAttributes.FILE, ""));
+				ICoverAttributes.FILE, ""));
 		} catch (CoreException e) {
 			fileBr.setText("");
 		}
 		
 		try {
 			projectAppBr.setText(config.getAttribute(
-				IErlTestAttributes.APP_PROJECT, ""));
+				ICoverAttributes.APP_PROJECT, ""));
 		} catch (CoreException e) {
 			projectAppBr.setText("");
 		}
 		
 		try {
 			appBr.setText(config.getAttribute(
-				IErlTestAttributes.APPLICATION, ""));
+				ICoverAttributes.APPLICATION, ""));
 		} catch (CoreException e) {
 			appBr.setText("");
 		}
 		
 		try {
-			String type = config.getAttribute(IErlTestAttributes.TYPE, 
+			String type = config.getAttribute(ICoverAttributes.TYPE, 
 				LaunchType.MODULE.toString());
 			
 			LaunchType typeT = LaunchType.valueOf(type);
@@ -250,9 +253,10 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 		
 		String combo;
         try {
-            combo = config.getAttribute(IErlTestAttributes.COMBO,
-                    "0");
-            testCombo.select(Integer.parseInt(combo));
+            combo = config.getAttribute(ICoverAttributes.COMBO,
+                    FrameworkType.EUNIT.getRepr());
+            int idx = testCombo.indexOf(combo);
+            testCombo.select(idx);
         } catch (CoreException e) {
             testCombo.select(0);
         }
@@ -275,20 +279,21 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 		
 		//boolean cover = ifCover.getSelection();
 		
-		config.setAttribute(IErlTestAttributes.PROJECT, projectMBr.getText());
-        config.setAttribute(IErlTestAttributes.MODULE, moduleBr.getText());
-        config.setAttribute(IErlTestAttributes.FILE, fileBr.getText());
-        config.setAttribute(IErlTestAttributes.APPLICATION, appBr.getText());
-        config.setAttribute(IErlTestAttributes.TYPE, type.toString());
+		config.setAttribute(ICoverAttributes.PROJECT, projectMBr.getText());
+        config.setAttribute(ICoverAttributes.MODULE, moduleBr.getText());
+        config.setAttribute(ICoverAttributes.FILE, fileBr.getText());
+        config.setAttribute(ICoverAttributes.APPLICATION, appBr.getText());
+        config.setAttribute(ICoverAttributes.TYPE, type.toString());
         //config.setAttribute(IErlTestAttributes.COVER,
         //        Boolean.toString(cover));
-        config.setAttribute(IErlTestAttributes.COMBO,
-                Integer.toString(testCombo.getSelectionIndex()));
+        System.out.println("apply" + testCombo.getText());
+        config.setAttribute(ICoverAttributes.COMBO,
+                testCombo.getText());
 	}
 
 	
 	public String getName() {
-		return "EUnit";
+		return "Cover";
 	}
 	
 	private void createModuleGroup(final Composite comp) {

@@ -140,11 +140,11 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 		colName.setWidth(540);
 		
 		colLines = new TreeColumn(tree, SWT.RIGHT);
-		colLines.setText("Covered Lines");
+		colLines.setText("Total Lines");
 		colLines.setWidth(150);
 		
 		colCovered = new TreeColumn(tree, SWT.RIGHT);
-		colCovered.setText("Total Lines");
+		colCovered.setText("Covered Lines");
 		colCovered.setWidth(150);
 		
 		colPercentage = new TreeColumn(tree, SWT.RIGHT);
@@ -314,7 +314,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 		viewer.getControl().setFocus();
 	}
 
-	public void finishCovering() {
+	public void updateViewer() {
 		System.out.println("Updating viewer");
 		
 		System.out.println(StatsTreeModel.getInstance().getRoot());

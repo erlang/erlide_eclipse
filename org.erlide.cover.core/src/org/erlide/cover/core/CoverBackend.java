@@ -14,6 +14,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.cover.constants.Constants;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.views.model.StatsTreeModel;
@@ -26,6 +27,8 @@ import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlLaunchData;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
  * Core backend for Cover-plugin
@@ -80,7 +83,7 @@ public class CoverBackend {
                 
         this.info = buildRuntimeInfo(data, rt0);
         EnumSet<BackendOptions> options = 
-            EnumSet.of(BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
+            EnumSet.of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE*/);
         this.config = getLaunchConfiguration(info, options);
         
         this.backend = createBackend();
@@ -111,10 +114,20 @@ public class CoverBackend {
         //clear statistics tree - prepare it for new results
         StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
+        for (ICoverObserver obs : getListeners())
+            obs.updateViewer();
         
         //TODO: change calls to erlang backend
         
-        for(String path : settings.getPaths()) {
+        try {
+            backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
+                    new OtpErlangAtom(settings.getFramework()));
+        } catch (BackendException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        for(String module : settings.modules()) {
             
         //  ErlLogger.debug(path);
             
@@ -125,9 +138,9 @@ public class CoverBackend {
             System.out.println("Starting cover..");
             
             try {
-                String moduleName = coverData.getModule().replace(".erl", "");
-                backend.cast(Constants.ERLANG_HELPER, Constants.FUN_START, "sss",
-                        settings.getTypeAsString() , moduleName, path);
+               // String moduleName = coverData.getModule().replace(".erl", "");
+                backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_COVER_PREP, "sss",
+                        settings.getTypeAsString() , module, settings.getPath(module));
                 System.out.println("Cast sent");
                 System.out.println(settings.getTypeAsString());
             } catch (BackendException e) {

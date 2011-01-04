@@ -1,11 +1,14 @@
 package org.erlide.cover.core;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
+import org.erlide.cover.runtime.launch.FrameworkType;
 import org.erlide.cover.runtime.launch.LaunchType;
 
 /**
@@ -17,16 +20,18 @@ import org.erlide.cover.runtime.launch.LaunchType;
 public class CoverSettings {
     
     private LaunchType type;
-    private List<String> paths; 
-    
+    private Map<String, String> paths;
+    private FrameworkType frameworkType;
+
     /**
      * Create coverage settings, depend mainly on launch type
      * @param t
      * @param data
      */
     public CoverSettings(LaunchType t, CoverLaunchData data) {
-        paths = new LinkedList<String>();
+        paths = new HashMap<String, String>();
         type = t;
+        frameworkType = data.getFramework();
         
         if(data == null)
             return;
@@ -35,9 +40,9 @@ public class CoverSettings {
         case MODULE: 
             IProject p = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(data.getProject());
-            String path = p.getLocation().toString() + "/src";
+            String path = p.getLocation().toString() + "/src/" + data.getModule();
             //TODO: better mechanizm for finding file paths within project
-            paths.add(path);
+            paths.put(data.getModule().replace(".erl", ""), path);
             break;
         case ALL:
             //TODO: getting path for directories / files
@@ -59,16 +64,25 @@ public class CoverSettings {
         return type.name().toLowerCase();
     }
 
-    public List<String> getPaths() {
-        return paths;
+    public Set<String> modules() {
+        return paths.keySet();
     }
     
-    public void addPath(String path) {
-        paths.add(path);
+    public String getPath(String module) {
+        return paths.get(module);
+    }
+    
+    public void addPath(String module, String path) {
+        paths.put(module, path);
     }
     
     public void addPaths(List<String> files) {
-        paths.addAll(files);
+        //TODO:prepare data
+        //paths.addAll(files);
+    }
+    
+    public String getFramework() {
+        return frameworkType.name().toLowerCase();
     }
     
 

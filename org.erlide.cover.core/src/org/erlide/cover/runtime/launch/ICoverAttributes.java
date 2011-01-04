@@ -2,9 +2,9 @@ package org.erlide.cover.runtime.launch;
 
 import org.erlide.core.ErlangPlugin;
 
-public class ICoverAttributes {
+public interface ICoverAttributes {
 
-public final String prefix = ErlangPlugin.PLUGIN_ID;
+    public final String prefix = ErlangPlugin.PLUGIN_ID;
     
     //TODO: change it, that it could several resting frameworks
 
@@ -15,6 +15,6 @@ public final String prefix = ErlangPlugin.PLUGIN_ID;
     public final String APP_PROJECT = prefix + ".app_project";
     public final String APPLICATION = prefix + ".application";
     
-    public final String COVER = prefix + ".cover";
+    public final String COMBO = prefix + ".framework";
     
 }

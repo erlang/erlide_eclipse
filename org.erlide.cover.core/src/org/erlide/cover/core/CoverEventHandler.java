@@ -60,7 +60,7 @@ public class CoverEventHandler extends EventHandler {
 
         if (gotResults(event)) {
             for (ICoverObserver obs : listeners)
-                obs.finishCovering();
+                obs.updateViewer();
             System.out.println("Got results!");
         } else if ((errorReason = getErrorReason(event)) != null) {
 
@@ -81,20 +81,23 @@ public class CoverEventHandler extends EventHandler {
                     && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
                             .equals(COVER_RES)) {
 
-                System.out.println(resTuple);
+                System.out.println("Results: " + resTuple);
                 
                 StatsTreeModel model = StatsTreeModel.getInstance();
                 IStatsTreeObject root = model.getRoot();
                 
                 String moduleName = resTuple.elementAt(1).toString();
-                System.out.println(moduleName);
+                
                 String htmlPath = resTuple.elementAt(2).toString();
                 int allLines = Integer.parseInt(
                         resTuple.elementAt(3).toString());
                 int coveredLines = Integer.parseInt(
                         resTuple.elementAt(4).toString());
-                double percent = Integer.parseInt(
+                double percent = Double.parseDouble(
                         resTuple.elementAt(5).toString());
+                
+                System.out.format("Module %s %s %d %d %f", moduleName,
+                        htmlPath, allLines, coveredLines, percent);
                 
                 ModuleStats moduleStats = new ModuleStats();
                 
@@ -142,6 +145,8 @@ public class CoverEventHandler extends EventHandler {
             func.setPercentage(percent);
             func.setArity(arity);
             
+            System.out.println(func);
+            
             stats.addChild(func);
         }
         
@@ -157,6 +162,7 @@ public class CoverEventHandler extends EventHandler {
             int num = Integer.parseInt(res.elementAt(1).toString());
             int calls = Integer.parseInt(res.elementAt(2).toString());
             LineResult lineRes = new LineResult(num, calls);
+            System.out.println(lineRes);
             
             stats.addLine(lineRes);
             
@@ -201,6 +207,9 @@ public class CoverEventHandler extends EventHandler {
                 
 
                 ErlLogger.debug("Mesg error");
+                
+                for (ICoverObserver obs : listeners)
+                    obs.showError(place, type, info);
 
                 return tuple.elementAt(1);
             }

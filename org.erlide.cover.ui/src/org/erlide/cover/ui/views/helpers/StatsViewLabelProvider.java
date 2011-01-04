@@ -40,7 +40,7 @@ public class StatsViewLabelProvider extends LabelProvider
 			text = Integer.toString(statsEl.getCoverCount()); 
 			break;
 		case 3:
-			text = Double.toString(statsEl.getPrecentage()); 
+			text =  String.format("%.2f", statsEl.getPrecentage()); 
 			break;
 		}
 		return text;

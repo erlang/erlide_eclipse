@@ -11,19 +11,25 @@ public class CoverLaunchData {
     private String file;
     private String appProject;
     private String application;
-    private boolean cover;
+    private FrameworkType framework;
     
     public CoverLaunchData(ILaunchConfiguration config)
             throws CoreException {
         
-        type = LaunchType.valueOf(config.getAttribute(IErlTestAttributes.TYPE,
+        System.out.println("Cover launch data!");
+        
+        type = LaunchType.valueOf(config.getAttribute(ICoverAttributes.TYPE,
                 LaunchType.MODULE.toString()));
         
-        project = config.getAttribute(IErlTestAttributes.PROJECT, "");
-        module = config.getAttribute(IErlTestAttributes.MODULE, "");
-        file = config.getAttribute(IErlTestAttributes.FILE, "");
-        appProject = config.getAttribute(IErlTestAttributes.APP_PROJECT, "");
-        cover = Boolean.parseBoolean(config.getAttribute(IErlTestAttributes.APP_PROJECT, Boolean.toString(true)));
+        project = config.getAttribute(ICoverAttributes.PROJECT, "");
+        module = config.getAttribute(ICoverAttributes.MODULE, "");
+        file = config.getAttribute(ICoverAttributes.FILE, "");
+        appProject = config.getAttribute(ICoverAttributes.APP_PROJECT, "");
+        System.out.println("cover launch data " + config.getAttribute(ICoverAttributes.COMBO, 
+                FrameworkType.EUNIT.getRepr()));
+        framework = FrameworkType.find(
+                config.getAttribute(ICoverAttributes.COMBO, 
+                        FrameworkType.EUNIT.getRepr()));
         
     }
     
@@ -51,8 +57,8 @@ public class CoverLaunchData {
         return application;
     }
     
-    public boolean ifCover() {
-        return cover;
+    public FrameworkType getFramework() {
+        return framework;
     }
 
 }

@@ -71,10 +71,12 @@ handle_cast({module, Module, _Path}, State) ->
 	io:format("inside cast1~n"),
 	Report = coverage:create_report(?COVER_DIR, Module),
 	case Report of		
-		ok ->
-			erlide_jrpc:event(?EVENT, {?OK, Report});
+		{ok, Res} ->
+			erlide_jrpc:event(?EVENT, Res);
 		{error, Reason} ->
-			erlide_jrpc:event(?EVENT, {?ERROR, {Module, Reason}})
+			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+												   type = "creating report",
+												   info = Reason})
 	end,
 	{noreply, State};
 
@@ -94,10 +96,13 @@ handle_cast({dir, _Name, Path}, State) ->
 	lists:foreach(fun(Module) ->
 						  Report = coverage:create_report(?COVER_DIR, Module),
 						  case Report of		
-								ok ->
-									erlide_jrpc:event(?EVENT, {?OK, Report});
+								{ok, Res} ->
+									erlide_jrpc:event(?EVENT, Res);
 								{error, Reason} ->
-									erlide_jrpc:event(?EVENT, {?ERROR, {Module, Reason}})
+									erlide_jrpc:event(?EVENT,
+													   #cover_error{place = Module,
+												   		type = "creating report",
+												   		info = Reason})
 						  end
 					end,Modules),	
 	{noreply, State};
@@ -109,10 +114,12 @@ handle_cast({prep, module, Module, Path}, State) ->
 	ok = coverage:prepare(State#state.cover_type, Module, Path),
 	Report = coverage:create_report(?COVER_DIR, Module),
 	case Report of		
-		ok ->
-			erlide_jrpc:event(?EVENT, {?OK, Report});
+		{ok, Res} ->
+			erlide_jrpc:event(?EVENT, Res);
 		{error, Reason} ->
-			erlide_jrpc:event(?EVENT, {?ERROR, {Module, Reason}})
+			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+												   type = "creating report",
+												   info = Reason})
 	end,
 	{noreply, State};
 
@@ -136,10 +143,12 @@ handle_cast({prep, dir, _Name, Path}, State) ->  %%tree?
 						  ok = coverage:prepare(State#state.cover_type, Module, PathM),
 						  Report = coverage:create_report(?COVER_DIR, Module),
 						  case Report of		
-								ok ->
-									erlide_jrpc:event(?EVENT, {?OK, Report});
+								{ok, Res} ->
+									erlide_jrpc:event(?EVENT, Res);
 								{error, Reason} ->
-									erlide_jrpc:event(?EVENT, {?ERROR, {Module, Reason}})
+									erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+												   type = "creating report",
+												   info = Reason})
 						  end
 					end,Modules),
 	{noreply, State};
