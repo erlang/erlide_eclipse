@@ -219,7 +219,7 @@
          point="org.eclipse.ui.propertyPages">
       <page
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
-            id="org.erlide.ui.properties.erlangProjectPropertyPage"
+            id="org.erlide.core"
             name="Erlang">
 		<enabledWhen>
  			<adapt type="org.eclipse.core.resources.IProject">
