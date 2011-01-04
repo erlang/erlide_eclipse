@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime.backend;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
@@ -112,6 +114,9 @@ public final class BackendManager extends OtpNodeStatus implements
         epmdWatcher = new EpmdWatcher();
         epmdWatcher.addEpmdListener(this);
         new EpmdWatchJob(epmdWatcher).schedule(100);
+
+        // TODO remove this when all users have cleaned up
+        cleanupInternalLCs();
     }
 
     public ErlideBackend createBackend(final RuntimeInfo info,
@@ -520,4 +525,24 @@ public final class BackendManager extends OtpNodeStatus implements
         return null;
     }
 
+    private void cleanupInternalLCs() {
+        final ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
+        try {
+            final ILaunchConfiguration[] cfgs = lm.getLaunchConfigurations();
+            int n = 0;
+            for (final ILaunchConfiguration cfg : cfgs) {
+                final String name = cfg.getName();
+                if (name.startsWith("internal")) {
+                    @SuppressWarnings("deprecation")
+                    final IPath path = cfg.getLocation();
+                    final File file = new File(path.toString());
+                    file.delete();
+                    n++;
+                }
+            }
+            ErlLogger.debug("Cleaned up %d old LCs", n);
+        } catch (final Exception e) {
+            // ignore
+        }
+    }
 }
