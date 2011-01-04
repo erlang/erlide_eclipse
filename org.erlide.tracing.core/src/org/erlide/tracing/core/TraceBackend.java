@@ -172,10 +172,15 @@ public class TraceBackend {
                         OtpErlangList nodes = new OtpErlangList(erlangObjects.toArray(new OtpErlangObject[erlangObjects.size()]));
 
                         // net tick time
-                        int tickTimeValue = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TICK_TIME);
-                        OtpErlangInt netTickTime = new OtpErlangInt(tickTimeValue);
+                        final int tickTimeValue = Activator.getDefault()
+                                .getPreferenceStore()
+                                .getInt(PreferenceNames.TICK_TIME);
+                        final OtpErlangInt netTickTime = new OtpErlangInt(
+                                tickTimeValue);
 
-                        OtpErlangObject callResult = tracerBackend.call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xsi", nodes, Constants.OUTPUT_FILE,
+                        final OtpErlangObject callResult = tracerBackend.call(
+                                Constants.ERLANG_HELPER_MODULE, FUN_START,
+                                "xsi", nodes, Constants.OUTPUT_FILE,
                                 netTickTime);
                         status = processResult(callResult);
 
@@ -263,7 +268,10 @@ public class TraceBackend {
             }
         } else {
             // setting global flags
-            tracerBackend.call(Constants.TTB_MODULE, FUN_P, "ax", processMode.toAtom(), createProcessFlagsArray(processFlags));
+            tracerBackend
+                    .call(Constants.TTB_MODULE, FUN_P, "ax",
+                            processMode.toAtom(),
+                            createProcessFlagsArray(processFlags));
         }
     }
 
@@ -588,16 +596,23 @@ public class TraceBackend {
         ILaunchConfigurationType type = manager.getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
-            workingCopy = type.newInstance(null, "internal " + info.getNodeName());
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, "ISO-8859-1");
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME, info.getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, info.getCookie());
-            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE, !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL, options.contains(BackendOptions.INTERNAL));
+            workingCopy = type.newInstance(null,
+                    "internal " + info.getNodeName());
+            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+                    "ISO-8859-1");
+            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
+                    info.getNodeName());
+            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                    info.getName());
+            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
+                    info.getCookie());
+            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
+                    !options.contains(BackendOptions.NO_CONSOLE));
+            workingCopy.setAttribute(ErlLaunchAttributes.BACKEND_ID,
+                    Long.toString(Backend.NO_ID));
             workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
-            return workingCopy.doSave();
-        } catch (CoreException e) {
+            return workingCopy;
+        } catch (final CoreException e) {
             e.printStackTrace();
             return null;
         }
