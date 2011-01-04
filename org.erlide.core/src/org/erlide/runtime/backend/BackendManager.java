@@ -241,8 +241,8 @@ public final class BackendManager extends OtpNodeStatus implements
                 .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
-            workingCopy = type.newInstance(null,
-                    "internal " + info.getNodeName());
+            final String name = getLaunchName(info, options);
+            workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     "ISO-8859-1");
             workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
@@ -261,11 +261,16 @@ public final class BackendManager extends OtpNodeStatus implements
                         false);
                 info.useLongName(false);
             }
-            return workingCopy.doSave();
+            return workingCopy;
         } catch (final CoreException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getLaunchName(final RuntimeInfo info,
+            final Set<BackendOptions> options) {
+        return "internal_" + info.getNodeName();
     }
 
     public synchronized Set<ErlideBackend> getExecutionBackends(
