@@ -102,7 +102,7 @@ prepare_result(ModRes, FunRes, LineRes, Module) ->
 	%%module
 	{ok, {Name, {Cov, Uncov}}} = ModRes,
 	Result = #module_res{name = Name,
-				name_html = Out,
+				name_html = filename:absname(Out),
 				line_num = Cov + Uncov,
 				covered_num = Cov,
 				percentage = count_percent(Cov, Cov + Uncov),

@@ -89,6 +89,7 @@ public class CoverEventHandler extends EventHandler {
                 String moduleName = resTuple.elementAt(1).toString();
                 
                 String htmlPath = resTuple.elementAt(2).toString();
+                htmlPath = htmlPath.substring(1, htmlPath.length()-1);
                 int allLines = Integer.parseInt(
                         resTuple.elementAt(3).toString());
                 int coveredLines = Integer.parseInt(

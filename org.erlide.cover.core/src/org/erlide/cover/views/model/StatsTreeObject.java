@@ -125,7 +125,7 @@ public class StatsTreeObject implements
 
 	public String[] getStringArray() {
 		return new String[] {label, Integer.toString(all),
-				Integer.toString(covered), String.format("%'5.2f", percentage)};
+				Integer.toString(covered), String.format("%.2f", percentage)};
 	}
 
 	

@@ -15,7 +15,7 @@ public class ModuleStats extends StatsTreeObject {
     private List<LineResult> lineResults = 
         new LinkedList<LineResult>();   //results per line
     
-    public String getNameHtml() {
+    public String getHtmlPath() {
         return htmlPath;
     }
     

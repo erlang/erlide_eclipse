@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -16,6 +15,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,6 +32,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.ICoverObserver;
+import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
@@ -120,6 +121,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.erlide.eunit.core.viewer");
+		
 		
 		makeActions();
 		
@@ -222,11 +224,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 	}
 	
 	private void makeShowHtmlAction() {
-		showHtml = new Action() {
-			public void run() {
-				showMessage("Action show html");
-			}
-		};
+	    System.out.println(viewer.getSelection());
+		showHtml = new HtmlReportAction(viewer);
 		showHtml.setText("Show html report");
 		showHtml.setToolTipText("Shows generated html report");
 		showHtml.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().

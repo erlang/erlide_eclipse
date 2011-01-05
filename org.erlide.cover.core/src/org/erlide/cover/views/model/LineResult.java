@@ -29,8 +29,10 @@ public class LineResult {
     }
     
     public String toString() {
-        StringBuffer buf = new StringBuffer(lineNum);
-        buf.append(" ").append(lineCalls);
+        StringBuffer buf = new StringBuffer();
+        
+        buf.append(lineNum).append(" ").append(lineCalls);
+        
         return buf.toString();
     }
     
