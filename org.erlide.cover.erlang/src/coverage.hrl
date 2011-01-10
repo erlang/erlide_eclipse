@@ -10,7 +10,8 @@
 
 
 %state
--record(state, {cover_type}).
+-record(state, {cover_type,
+				results_list = []}).
 
 %results per module
 -record(module_res, {name, 

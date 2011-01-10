@@ -14,10 +14,10 @@
 %% Exported Functions
 %%----------------------------------------------
 -export([start/1,
-		 start_link/1,
-		 perform/3,
-		 prepare_and_perform/3,
-		 get_results/0]).
+	 start_link/1,
+	 perform/3,
+	 prepare_and_perform/3,
+	 get_index/0]).
 
 -export([init/1,
 		 handle_call/3,
@@ -48,11 +48,9 @@ perform(Type,Name,Path) ->
     AName = list_to_atom(Name), 
     gen_server:cast(?MODULE,{TypeAtom,AName,Path}).
 
-
 %get results of coverage
-get_results() ->
-	%get results of coverage, gen_server:call
-	ok.
+get_index() ->
+    gen_server:call(?MODULE,index).
 
 %%----------------------------------------------
 %% Local Functions
@@ -70,15 +68,18 @@ init(Args) ->
 handle_cast({module, Module, _Path}, State) ->
 	io:format("inside cast1~n"),
 	Report = coverage:create_report(?COVER_DIR, Module),
-	case Report of		
+	NewState = case Report of		
 		{ok, Res} ->
-			erlide_jrpc:event(?EVENT, Res);
+			erlide_jrpc:event(?EVENT, Res),
+			ResList = State#state.results_list,
+			State#state{results_list = [Res | ResList]};
 		{error, Reason} ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
 												   type = "creating report",
-												   info = Reason})
-	end,
-	{noreply, State};
+												   info = Reason}),
+			State
+	end,	
+	{noreply, NewState};
 
 handle_cast({application, Name, Src}, State) ->
 	io:format("inside cast2~n"),
@@ -113,15 +114,18 @@ handle_cast({prep, module, Module, Path}, State) ->
 	ok = coverage:compile(Module, Path),
 	ok = coverage:prepare(State#state.cover_type, Module, Path),
 	Report = coverage:create_report(?COVER_DIR, Module),
-	case Report of		
+	NewState = case Report of		
 		{ok, Res} ->
-			erlide_jrpc:event(?EVENT, Res);
+			erlide_jrpc:event(?EVENT, Res),
+			ResList = State#state.results_list,
+			State#state{results_list = [Res | ResList]};
 		{error, Reason} ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
 												   type = "creating report",
-												   info = Reason})
+												   info = Reason}),
+			State
 	end,
-	{noreply, State};
+	{noreply, NewState};
 
 handle_cast({prep, application, Name, Src}, State) ->
 	io:format("inside cast6~n"),
@@ -159,13 +163,13 @@ handle_cast(_, State) ->
 	{noreply, State}.
 
 % call
-handle_call(results, _From, State) ->
-	Results = new_results,
-	{reply, Results, State}.
+handle_call(index, _From, State) ->
+	Path = coverage:create_index(State#state.results_list),
+	{reply, Path, State}.
 
 %terminate
 terminate(normal, State) ->
-	init:stop(0). %% ?
+	init:stop(0). %% TODO imporove terminate
 
 
 %%----------------------------------------------

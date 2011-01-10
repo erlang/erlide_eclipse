@@ -29,6 +29,7 @@ import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlLaunchData;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Core backend for Cover-plugin
@@ -147,6 +148,15 @@ public class CoverBackend {
                 e.printStackTrace();
                 //TODO: throw exception or show a dialog - not started
             }
+        }
+        
+        try {
+            OtpErlangObject htmlPath = backend.call(Constants.ERLANG_BACKEND,
+                    Constants.FUN_INDEX, "");
+            System.out.println(htmlPath);
+            model.setIndex(htmlPath.toString());
+        } catch (BackendException e) {
+            e.printStackTrace();
         }
     
     }

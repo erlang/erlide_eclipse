@@ -21,7 +21,7 @@ public class StatsTreeObject implements
 	private int all;               // total line number
 	private int covered;           // covered line number
 	private double percentage;     // percentage
-	
+    private String htmlPath;            //name of html file
 	
 	private IStatsTreeObject parent;
 	private List<IStatsTreeObject> children;
@@ -128,5 +128,12 @@ public class StatsTreeObject implements
 				Integer.toString(covered), String.format("%.2f", percentage)};
 	}
 
+	public String getHtmlPath() {
+        return htmlPath;
+    }
+    
+    public void setHtmlPath(String htmlPath) {
+        this.htmlPath = htmlPath;
+    }
 	
 }

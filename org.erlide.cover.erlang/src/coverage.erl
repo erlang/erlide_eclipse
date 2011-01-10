@@ -13,7 +13,11 @@
 %%----------------------------------------------
 %% Exported Functions
 %%----------------------------------------------
--export([compile/2, compile_dir/1, prepare/3, create_report/2]).
+-export([compile/2,
+		 compile_dir/1,
+		 prepare/3,
+		 create_report/2,
+		 create_index/1]).
 
 %%----------------------------------------------
 %% API Functions
@@ -72,12 +76,36 @@ create_report(_Dir, Module) ->
 	case { ModRes, FunRes, LineRes} of
 		{{ok, _}, {ok, _}, {ok, _}} ->
 			Res = prepare_result(ModRes, FunRes, LineRes, Module),
+			
 			{ok, Res};
 		_ -> 
 			{error, analyse}
 	end.
+
+create_index(Results) ->
+	IndexPath = filename:join([?COVER_DIR,  "index.html"]),
+	case filelib:ensure_dir(IndexPath) of
+		{error, Res} ->
+			erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index'},
+							  	info = Res),
+		   	#cover_error{};
+		_ -> 
+			Total_percent = percentage_total(Results),
+			output_index(IndexPath, Results, Total_percent),
+			filename:absname(IndexPath)
+	end.
 			
-	
+%create new index file - at the begining
+%%new_index_file(IndexFile) ->
+%%	filelib:ensure_dir(IndexFile),		%TODO: error handling
+%%	IoDevice = case file:open(IndexFile, [write]) of
+%%                   {ok, IoD}       -> IoD;
+%%                   {error, Reason} -> exit({invalid_file, Reason}) %%!
+%%               end,
+%%    io:format(IoDevice, output_header(IoDevice), []),
+%%	io:format(IoDevice, output_footer(IoDevice), []),
+%%	file:close(IoDevice),
+%%    ok.
 
 %%----------------------------------------------
 %% Local Functions
@@ -85,7 +113,8 @@ create_report(_Dir, Module) ->
 
 
 prepare_result(ModRes, FunRes, LineRes, Module) ->
-	FileHtml = filename:join([".",  "mod_" ++ atom_to_list(Module) ++ ".html"]),
+	FileHtml = filename:join([?COVER_DIR,  "mod_" ++ atom_to_list(Module) ++ ".html"]),
+	filelib:ensure_dir(FileHtml),		%TODO: error handling
     ResHtml = cover:analyse_to_file(Module, FileHtml, [html]),
     %%filename:basename(FileHtml), %%
 	Out = case ResHtml of
@@ -133,3 +162,54 @@ get_line_stats({ok, Calls}) ->
 					end,
 					Calls).
 
+output_index(Path, Results, Total) ->
+    IoDevice = case file:open(Path, [write]) of
+                   {ok, IoD}       -> IoD;
+                   {error, Reason} -> 
+					   exit({invalid_file, Reason})
+               end,
+    io:format(IoDevice, output_header(IoDevice), []),
+    lists:foreach(fun(#module_res{name = Module,
+								  name_html = File, 
+								  percentage = Percentage}) ->
+                          io:format(IoDevice, "~s~n", [
+                                                [ "<li><a href=\"",
+                                                  File,
+                                                  "\">",
+                                                  atom_to_list(Module),
+                                                  "</a> Covered: ",
+                                                  io_lib:format("~.2f",[Percentage]),
+                                                  "%",
+                                                  "</a>"
+                                                ]
+                                               ])
+                  end, lists:keysort(2, Results)),
+    io:format(IoDevice, "~s~n", [["<p>Total percentage: ", io_lib:format("~.2f",[Total]), "%</p>"]]),
+    io:format(IoDevice, output_footer(IoDevice), []),
+    file:close(IoDevice).
+
+output_header(IoDevice) ->
+    "<html>~n<head></head><body>".
+
+output_footer(IoDevice) ->
+    "</body>~n</html>~n".
+
+
+percentage_total(Results) ->
+    {Covered, All} = 
+		lists:foldl(
+          fun(#module_res{covered_num = C, line_num = A}, {Covered, All}) ->
+                  {Covered + C, All + A}
+          end, {0, 0}, Results),
+    case All of
+        0 -> 0.0;
+        _ -> 100 * Covered / All
+    end.
+
+
+%%previous_content(IndexFile) ->
+%%	IODevice = case file:open(IndexFile, [read]) of
+%%				   {ok, IoD}       -> IoD;
+%%                   {error, Reason} -> exit({invalid_file, Reason}) %%!
+%%               end,
+%%	Data = case file:read().

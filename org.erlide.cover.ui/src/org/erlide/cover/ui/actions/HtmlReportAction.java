@@ -53,12 +53,11 @@ public class HtmlReportAction extends Action {
         BrowserDialog browser = new BrowserDialog(
                 shell , SWT.DIALOG_TRIM | SWT.RESIZE);
         
-        if(selObj instanceof ModuleStats) {
-            ModuleStats module = (ModuleStats) selObj;
-            browser.setFilePath(module.getHtmlPath());
-        } else if (selObj instanceof FunctionStats) {
+        if (selObj instanceof FunctionStats) {
             ModuleStats module = (ModuleStats) selObj.getParent();
             browser.setFilePath(module.getHtmlPath());
+        } else {
+            browser.setFilePath(selObj.getHtmlPath());
         }
              
         browser.open();

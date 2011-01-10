@@ -44,6 +44,10 @@ public class StatsTreeModel {
 	    root.setPercentage(cov/(double)all * 100);
 	}
 	
+	public void setIndex(String path) {
+	    root.setHtmlPath(path);
+	}
+	
 	private void initialize() {
 		System.out.println("Initialize Stats model");
 		root = new StatsTreeObject("total", 120, 20, 16);
