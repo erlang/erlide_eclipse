@@ -17,7 +17,8 @@
 	 start_link/1,
 	 perform/3,
 	 prepare_and_perform/3,
-	 get_index/0]).
+	 get_index/0,
+	 get_module_num/3]).
 
 -export([init/1,
 		 handle_call/3,
@@ -50,7 +51,13 @@ perform(Type,Name,Path) ->
 
 %get results of coverage
 get_index() ->
+%	gen_server:cast(?MODULE, index).
     gen_server:call(?MODULE,index).
+
+get_module_num(Type, Name, Path) ->
+	%%TODO implemenation
+	%% gen_server:call
+	ok.
 
 %%----------------------------------------------
 %% Local Functions
@@ -65,6 +72,8 @@ init(Args) ->
 	{ok, State}.
 
 % cast -> only coverage
+%handle_cast(index, State) ->
+%	coverage:create_index(State#state.results_list);
 handle_cast({module, Module, _Path}, State) ->
 	io:format("inside cast1~n"),
 	Report = coverage:create_report(?COVER_DIR, Module),
@@ -131,8 +140,24 @@ handle_cast({prep, application, Name, Src}, State) ->
 	io:format("inside cast6~n"),
 	{noreply, State};
 
-handle_cast({prep, file, Name, Src}, State) ->
-	io:format("inside cast7~n"),
+handle_cast({prep, file, _Name, Path}, State) ->
+	Module = list_to_atom(filename:basename(Path,".erl")),  %% java should check if file is an Erlang file
+%	io:format("inside cast7~n"),
+%	ok = coverage:compile(Module, Path),%
+%	ok = coverage:prepare_file(State#state.cover_type, Module, Path),
+%	Report = coverage:create_report(?COVER_DIR, Module),
+%	NewState = case Report of		
+%		{ok, Res} ->
+%			erlide_jrpc:event(?EVENT, Res),
+%			ResList = State#state.results_list,
+%			State#state{results_list = [Res | ResList]};
+%		{error, Reason} ->
+%			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+%												   type = "creating report",
+%												   info = Reason}),
+%			State
+%	end,
+	gen_server:cast(?MODULE, {prep, module, Module, Path}),
 	{noreply, State};
 
 handle_cast({prep, dir, _Name, Path}, State) ->  %%tree?
@@ -143,7 +168,9 @@ handle_cast({prep, dir, _Name, Path}, State) ->  %%tree?
 								Mod
 						end, Comp),
 	lists:foreach(fun(Module) ->
-						  PathM = filename:join(Path, atom_to_list(Module) ++ ".src"),
+						 % PathM = filename:join(Path, atom_to_list(Module) ++ ".erl"),
+						  io:format(Module),
+						  PathM = search_module(Path, Module),
 						  ok = coverage:prepare(State#state.cover_type, Module, PathM),
 						  Report = coverage:create_report(?COVER_DIR, Module),
 						  case Report of		
@@ -163,6 +190,7 @@ handle_cast(_, State) ->
 	{noreply, State}.
 
 % call
+%call(index, ...) 
 handle_call(index, _From, State) ->
 	Path = coverage:create_index(State#state.results_list),
 	{reply, Path, State}.
@@ -179,3 +207,16 @@ terminate(normal, State) ->
 get_modules(Path) ->
 	%%TODO
 	[].
+
+search_module(Dir, Name) ->
+	filelib:fold_files(Dir,
+					   ".*\.erl",
+					   true,
+					   fun(F, Acc) -> 
+							   io:format("~p~n", [F]),
+							   Module = filename:basename(F, ".erl"),
+							   case Module of
+								   Name -> [F | Acc];
+								   _ -> Acc
+							   end
+					   end, []).

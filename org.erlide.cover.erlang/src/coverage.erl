@@ -16,6 +16,7 @@
 -export([compile/2,
 		 compile_dir/1,
 		 prepare/3,
+		 prepare_file/3,
 		 create_report/2,
 		 create_index/1]).
 
@@ -25,7 +26,7 @@
 
 %compile module
 compile(Module, Path) ->
-	io:format("inside prepare~n"),
+	io:format("inside compile~n"),
 	erlide_jrpc:event(?EVENT, {Module, Path}),
 	case cover:compile(Path) of		%%TODO: include files	
 			{ok, _M} -> 
@@ -54,6 +55,7 @@ compile_dir(Dir) ->
 prepare(eunit, Module, _Path) ->
 	io:format("inside prepare~n"),
 	erlide_jrpc:event(?EVENT, {Module, eunit}),
+	io:format("~p~n", [Module]),
 	case eunit:test(Module) of
 			ok ->
 				erlide_jrpc:event(?EVENT, {Module, test_ok}),
@@ -65,8 +67,23 @@ prepare(eunit, Module, _Path) ->
 				{error, testing}
 	end.
 
+%prepare file
+prepare_file(eunit, Module, Path) ->
+	io:format("inside prepare file ~p~n", [Path]),
+	case eunit:test({file, Path}) of
+		ok ->
+			io:format("prepare file ok"),
+			ok;
+		Er ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+													   type = testing,
+													   info = Er}),
+			{error, testing}
+	end.
+
 %creates report
 create_report(_Dir, Module) ->
+	io:format(Module),
 	ModRes = cover:analyse(Module, module),
 	FunRes = cover:analyse(Module, function),
 	LineRes = cover:analyse(Module, calls, line), %%calls!
@@ -86,13 +103,15 @@ create_index(Results) ->
 	IndexPath = filename:join([?COVER_DIR,  "index.html"]),
 	case filelib:ensure_dir(IndexPath) of
 		{error, Res} ->
-			erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index'},
-							  	info = Res),
+			erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index',
+							  	info = Res}),
 		   	#cover_error{};
 		_ -> 
 			Total_percent = percentage_total(Results),
 			output_index(IndexPath, Results, Total_percent),
-			filename:absname(IndexPath)
+			AbsPath = filename:absname(IndexPath),
+	%		erlide_jrpc:event(?EVENT, {?INDEX, AbsPath}),
+			AbsPath
 	end.
 			
 %create new index file - at the begining

@@ -33,169 +33,187 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Core backend for Cover-plugin
- *  
+ * 
  * @author Aleksandra Lipiec
- *
+ * 
  */
 public class CoverBackend {
 
-
     public static CoverBackend instance;
-    
+
     private Backend backend;
+
     private RuntimeInfo info;
+
     private ILaunchConfiguration config;
+
     private CoverEventHandler handler;
-    
+
     private CoverLaunchData coverData;
+
     private CoverSettings settings;
+
     private String nodeName;
-    
-    public static CoverBackend getInstance(){
-        if(instance == null)
+
+    public static CoverBackend getInstance() {
+        if (instance == null)
             instance = new CoverBackend();
         return instance;
     }
-    
+
     private CoverBackend() {
         handler = new CoverEventHandler();
     }
-    
-    public void initialize(ErlLaunchData data, CoverLaunchData coverData) 
+
+    public void initialize(ErlLaunchData data, CoverLaunchData coverData)
             throws RuntimeException, BackendException {
-        
-        if(backend != null)
+
+        if (backend != null)
             backend.stop();
-        
+
         final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
-       
+
         if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);
             throw new RuntimeException();
         }
-                
+
         this.coverData = coverData;
-        
+
         settings = new CoverSettings(coverData.getType(), coverData);
-        
+
         ErlLogger.debug("Backend created...");
         System.out.println("Create backend");
-                
+
         this.info = buildRuntimeInfo(data, rt0);
-        EnumSet<BackendOptions> options = 
-            EnumSet.of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE*/);
+        EnumSet<BackendOptions> options = EnumSet
+                .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
         this.config = getLaunchConfiguration(info, options);
-        
+
         this.backend = createBackend();
-        
-        
+
         backend.getEventDaemon().addHandler(handler);
-        
+
     }
-   
+
     public void attachBackend(Backend b, LaunchType type) {
         backend.stop();
         backend = b;
-        
+
         settings = new CoverSettings(type, null);
         this.info = b.getInfo();
-        //no set config
-        
+        // no set config
+
     }
-    
+
     public void attachToNode(String nodeName) {
-        //TODO: check how you can attach to nodes
+        // TODO: check how you can attach to nodes
         // see how to obtain backend
     }
-    
-    
+
     public void start() {
-        
-        //clear statistics tree - prepare it for new results
+
+        // clear statistics tree - prepare it for new results
         StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
         for (ICoverObserver obs : getListeners())
             obs.updateViewer();
-        
-        //TODO: change calls to erlang backend
-        
+
+        // TODO: change calls to erlang backend
+
         try {
             backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
                     new OtpErlangAtom(settings.getFramework()));
+            
+            for(String module : settings.modules()) {
+            
+                backend.call(Constants.ERLANG_BACKEND, Constants.FUN_MODULE_NUM,
+                        "sss", settings.getTypeAsString(), module,
+                        settings.getPath(module));
+            }
+            
         } catch (BackendException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         
-        for(String module : settings.modules()) {
-            
-        //  ErlLogger.debug(path);
-            
-        //  IErlProject erlProj = ErlangCore.getModel().getErlangProject(pName);
-            
+        handler.reset(settings.modules().size());
+
+        for (String module : settings.modules()) {
+
+            // ErlLogger.debug(path);
+
+            // IErlProject erlProj =
+            // ErlangCore.getModel().getErlangProject(pName);
+
             ErlLogger.debug("Starting cover ..");
-            
+
             System.out.println("Starting cover..");
-            
+
             try {
-               // String moduleName = coverData.getModule().replace(".erl", "");
-                backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_COVER_PREP, "sss",
-                        settings.getTypeAsString() , module, settings.getPath(module));
+                // String moduleName = coverData.getModule().replace(".erl",
+                // "");
+                backend.cast(Constants.ERLANG_BACKEND,
+                        Constants.FUN_COVER_PREP, "sss",
+                        settings.getTypeAsString(), module,
+                        settings.getPath(module));
                 System.out.println("Cast sent");
                 System.out.println(settings.getTypeAsString());
             } catch (BackendException e) {
                 e.printStackTrace();
-                //TODO: throw exception or show a dialog - not started
+                // TODO: throw exception or show a dialog - not started
             }
         }
-        
+
         try {
+            handler.waitForReport();
             OtpErlangObject htmlPath = backend.call(Constants.ERLANG_BACKEND,
                     Constants.FUN_INDEX, "");
             System.out.println(htmlPath);
-            model.setIndex(htmlPath.toString());
+            model.setIndex(htmlPath.toString().substring(1,
+                    htmlPath.toString().length() - 1));
+
         } catch (BackendException e) {
             e.printStackTrace();
         }
-    
+
     }
-    
+
     public CoverEventHandler getHandler() {
         return handler;
     }
-    
-    public Backend getBackend(){
+
+    public Backend getBackend() {
         return backend;
     }
-    
+
     public void addListener(ICoverObserver listener) {
         handler.addListener(listener);
     }
-    
-    public List<ICoverObserver> getListeners(){
+
+    public List<ICoverObserver> getListeners() {
         return handler.getListeners();
     }
-    
-    //input from external plugins
+
+    // input from external plugins
     public void setPathsToCover(List<String> filePaths) {
-        //TODO: ~custom coverage
+        // TODO: ~custom coverage
     }
-    
-    
-    private Backend createBackend() throws BackendException{
+
+    private Backend createBackend() throws BackendException {
         if (info != null) {
             try {
                 info.setStartShell(true);
-                
+
                 ErlLogger.debug("launching....");
                 System.out.println("Creating Backend");
-                
-                config.launch(ILaunchManager.RUN_MODE, 
+
+                config.launch(ILaunchManager.RUN_MODE,
                         new NullProgressMonitor(), false, false);
-                
+
                 System.out.println("after launching");
-                
+
                 return BackendManager.getDefault().getByName(nodeName);
             } catch (Exception e) {
                 ErlLogger.error(e);
@@ -205,8 +223,7 @@ public class CoverBackend {
         }
         throw new BackendException();
     }
-    
-    
+
     private RuntimeInfo buildRuntimeInfo(final ErlLaunchData data,
             final RuntimeInfo rt0) {
         final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
@@ -226,45 +243,41 @@ public class CoverBackend {
         rt.useLongName(data.longName);
         rt.hasConsole(data.console);
         rt.setLoadAllNodes(data.loadAllNodes);
-        
+
         System.out.println("runtimeInfo build");
-        
+
         return rt;
     }
-    
-    private ILaunchConfiguration getLaunchConfiguration(
-            RuntimeInfo info, Set<BackendOptions> options) {
+
+    private ILaunchConfiguration getLaunchConfiguration(RuntimeInfo info,
+            Set<BackendOptions> options) {
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-        ILaunchConfigurationType type = 
-            manager.getLaunchConfigurationType(
-                    ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+        ILaunchConfigurationType type = manager
+                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
-        
+
         nodeName = info.getNodeName();
         try {
             workingCopy = type.newInstance(null,
                     "internal " + info.getNodeName());
-            workingCopy.setAttribute(
-                    DebugPlugin.ATTR_CONSOLE_ENCODING, "ISO-8859-1");
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.NODE_NAME, info.getNodeName());
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.RUNTIME_NAME, info.getName());
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.COOKIE, info.getCookie());
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.CONSOLE, !options.contains(
-                            BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.INTERNAL, options.contains(
-                            BackendOptions.INTERNAL));
-            workingCopy.setAttribute(
-                    ErlLaunchAttributes.USE_LONG_NAME, false);
+            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+                    "ISO-8859-1");
+            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
+                    info.getNodeName());
+            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                    info.getName());
+            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
+                    info.getCookie());
+            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
+                    !options.contains(BackendOptions.NO_CONSOLE));
+            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL,
+                    options.contains(BackendOptions.INTERNAL));
+            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
             return workingCopy.doSave();
         } catch (CoreException e) {
             e.printStackTrace();
             return null;
         }
     }
-    
+
 }

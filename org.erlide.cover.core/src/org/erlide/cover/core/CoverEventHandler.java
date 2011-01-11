@@ -26,16 +26,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class CoverEventHandler extends EventHandler {
 
     private static final String EVENT_NAME = "cover_event";
-
     private static final String COVER_OK = "cover_ok";
-
     private static final String COVER_ERROR = "cover_error";
-
     private static final String COVER_RES = "module_res";
-
     private static final String TESTING_FINISHED = "tst_finish";
+    private static final String INDEX = "index";
 
     private List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
+    private int moduleNum;
+    private int counter;
 
     public void addListener(ICoverObserver listener) {
         System.out.println("adding listener");
@@ -45,11 +44,32 @@ public class CoverEventHandler extends EventHandler {
     public List<ICoverObserver> getListeners() {
         return listeners;
     }
+    
+    public synchronized void reset(int n) {
+        moduleNum = n;
+        counter = 0;
+    }
+    
+    public synchronized void increaseCounter() {
+        counter++;
+        if(counter == moduleNum)
+            notify();
+    }
+    
+    public synchronized boolean waitForReport() {
+        if(counter < moduleNum)
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                return true;
+            }
+        return true;
+    }
 
     @Override
     protected void doHandleMsg(OtpErlangObject msg) throws Exception {
         OtpErlangObject event = getStandardEvent(msg, EVENT_NAME);
-        OtpErlangObject errorReason = null;
+        OtpErlangTuple tuple = null;
 
         System.out.println("Received mesg " + msg);
 
@@ -62,10 +82,35 @@ public class CoverEventHandler extends EventHandler {
             for (ICoverObserver obs : listeners)
                 obs.updateViewer();
             System.out.println("Got results!");
-        } else if ((errorReason = getErrorReason(event)) != null) {
+            increaseCounter();
+        } else if ((tuple = getErrorReason(event)) != null) {
+            String place = tuple.elementAt(1).toString();
+            String type = tuple.elementAt(2).toString();
+            String info = tuple.elementAt(3).toString();
+            
+            
 
+            ErlLogger.debug("Mesg error");
+            
+            for (ICoverObserver obs : listeners)
+                obs.showError(place, type, info);
+        } 
+
+    }
+
+    private boolean gotIndex(OtpErlangObject msg) {
+        if( msg instanceof OtpErlangTuple) {
+            OtpErlangTuple resTuple = (OtpErlangTuple) msg;
+            if(resTuple.elementAt(0) instanceof OtpErlangAtom &&
+                    resTuple.elementAt(0).toString().equals(INDEX)) {
+                
+                String htmlPath = resTuple.elementAt(1).toString();
+                System.out.println(htmlPath);
+                StatsTreeModel.getInstance().setIndex(htmlPath.substring(1,
+                        htmlPath.toString().length() -1));
+            }
         }
-
+        return false;
     }
 
     /**
@@ -194,25 +239,16 @@ public class CoverEventHandler extends EventHandler {
         return false;
     }*/
 
-    private OtpErlangObject getErrorReason(OtpErlangObject message) {
+    private OtpErlangTuple getErrorReason(OtpErlangObject message) {
         if (message instanceof OtpErlangTuple) {
             OtpErlangTuple tuple = (OtpErlangTuple) message;
             if (tuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals(
                             COVER_ERROR)) {
                 
-                String place = tuple.elementAt(1).toString();
-                String type = tuple.elementAt(2).toString();
-                String info = tuple.elementAt(3).toString();
-                
                 
 
-                ErlLogger.debug("Mesg error");
-                
-                for (ICoverObserver obs : listeners)
-                    obs.showError(place, type, info);
-
-                return tuple.elementAt(1);
+                return tuple;
             }
         }
         return null;

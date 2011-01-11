@@ -45,7 +45,11 @@ public class CoverSettings {
             paths.put(data.getModule().replace(".erl", ""), path);
             break;
         case ALL:
-            //TODO: getting path for directories / files
+            path = ResourcesPlugin.getWorkspace().
+                    getRoot().getRawLocation().toString();
+            path += "/" + data.getFile();
+            System.out.println(path);
+            paths.put( "", path);
             break;
         case APPLICATION:
             //TODO: finding application - should be simmilar to finding module

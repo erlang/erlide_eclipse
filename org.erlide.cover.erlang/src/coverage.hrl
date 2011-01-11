@@ -7,7 +7,7 @@
 -define(OK, cover_ok).
 -define(COVER_DIR, "cover_report").
 -define(NO_FILE, nofile).
-
+-define(INDEX, index).
 
 %state
 -record(state, {cover_type,
