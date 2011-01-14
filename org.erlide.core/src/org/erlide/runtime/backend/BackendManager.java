@@ -12,7 +12,6 @@ package org.erlide.runtime.backend;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -49,8 +48,8 @@ import org.erlide.core.util.MessageReporter.ReporterPosition;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.BackendListener;
 import org.erlide.jinterface.backend.BackendUtil;
+import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.util.EpmdWatcher;
@@ -76,7 +75,7 @@ public final class BackendManager extends OtpNodeStatus implements
             "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
 
     public enum BackendEvent {
-        ADDED, REMOVED
+        ADDED, REMOVED, MODULE_LOADED
     }
 
     public enum BackendOptions {
@@ -87,7 +86,7 @@ public final class BackendManager extends OtpNodeStatus implements
     private final Object ideBackendLock = new Object();
     private final Map<IProject, Set<ErlideBackend>> executionBackends;
     private final Map<String, ErlideBackend> buildBackends;
-    final List<BackendListener> listeners;
+    final List<IBackendListener> listeners;
     private final Map<Bundle, CodeBundle> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
@@ -107,7 +106,7 @@ public final class BackendManager extends OtpNodeStatus implements
         executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
         buildBackends = new HashMap<String, ErlideBackend>();
         allBackends = Sets.newHashSet();
-        listeners = new ArrayList<BackendListener>();
+        listeners = Lists.newArrayList();
         codeBundles = Maps.newHashMap();
 
         // ManagedLauncher.startEpmdProcess();
@@ -183,7 +182,7 @@ public final class BackendManager extends OtpNodeStatus implements
             b.setDebug(options.contains(BackendOptions.DEBUG));
             b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
         }
-        notifyBackendChange(b, BackendEvent.ADDED);
+        notifyBackendChange(b, BackendEvent.ADDED, null, null);
     }
 
     private ErlideBackend createInternalBackend(final RuntimeInfo info,
@@ -266,7 +265,7 @@ public final class BackendManager extends OtpNodeStatus implements
                         false);
                 info.useLongName(false);
             }
-            return workingCopy;
+            return workingCopy.doSave();
         } catch (final CoreException e) {
             e.printStackTrace();
             return null;
@@ -330,18 +329,16 @@ public final class BackendManager extends OtpNodeStatus implements
             }
             ideBackend = createInternalBackend(info, options, null);
         } else {
-            final String msg = "There is no erlideRuntime defined! "
-                    + "Could not start IDE backend.";
-            MessageReporter.show(msg, ReporterPosition.MODAL);
-            ErlLogger.error(msg);
+            ErlLogger.error("There is no erlideRuntime defined! "
+                    + "Could not start IDE backend.");
         }
     }
 
-    public void addBackendListener(final BackendListener listener) {
+    public void addBackendListener(final IBackendListener listener) {
         listeners.add(listener);
     }
 
-    public void removeBackendListener(final BackendListener listener) {
+    public void removeBackendListener(final IBackendListener listener) {
         listeners.remove(listener);
     }
 
@@ -480,14 +477,15 @@ public final class BackendManager extends OtpNodeStatus implements
         remoteNodeStatus(node, up, info);
     }
 
-    void notifyBackendChange(final Backend b, final BackendEvent type) {
+    void notifyBackendChange(final Backend b, final BackendEvent type,
+            final IProject project, final String moduleName) {
         if (listeners == null) {
             return;
         }
 
         final Object[] copiedListeners = listeners.toArray();
         for (final Object element : copiedListeners) {
-            final BackendListener listener = (BackendListener) element;
+            final IBackendListener listener = (IBackendListener) element;
             switch (type) {
             case ADDED:
                 listener.runtimeAdded(b);
@@ -495,6 +493,9 @@ public final class BackendManager extends OtpNodeStatus implements
             case REMOVED:
                 listener.runtimeRemoved(b);
                 break;
+            case MODULE_LOADED:
+                listener.moduleLoaded(b,
+                        project == null ? null : project.getName(), moduleName);
             }
         }
     }
@@ -544,5 +545,10 @@ public final class BackendManager extends OtpNodeStatus implements
         } catch (final Exception e) {
             // ignore
         }
+    }
+
+    public void moduleLoaded(final Backend b, final IProject project,
+            final String moduleName) {
+        notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
     }
 }

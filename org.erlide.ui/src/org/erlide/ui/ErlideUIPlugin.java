@@ -47,6 +47,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatusConstants;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.JRpcUtil;
@@ -149,6 +150,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         }
 
         startPeriodicDump();
+        erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
+        ErlangCore.getBackendManager().addBackendListener(
+                erlangDebuggerBackendListener);
     }
 
     /**
@@ -162,8 +166,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         erlConMan.dispose();
-
         super.stop(context);
+        ErlangCore.getBackendManager().removeBackendListener(
+                erlangDebuggerBackendListener);
         plugin = null;
     }
 
@@ -445,6 +450,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     private ContributionContextTypeRegistry fContextTypeRegistry;
     private ContributionTemplateStore fStore;
+
+    private ErlangDebuggerBackendListener erlangDebuggerBackendListener;
 
     private void startPeriodicDump() {
         final String env = System.getenv("erlide.internal.coredump");

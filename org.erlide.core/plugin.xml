@@ -96,8 +96,9 @@
             name="%erlangLineBreakpoint.name"/>
    </extension>
   <extension
-         id="erlang.lineBreakpoint.marker"
-         point="org.eclipse.core.resources.markers">
+        id="erlang.lineBreakpoint.marker"
+        name="Erlang Line Breakpoint"
+        point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
    </extension>
@@ -111,6 +112,10 @@
       <persistent
             value="true">
       </persistent>
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
+            id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">

@@ -32,6 +32,9 @@ import erlang.ErlideDebug;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
         IErlangBreakpoint, ILineBreakpoint {
+
+    public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.erlang.lineBreakpoint.marker";
+
     private ErlangDebugTarget target;
     private String clauseHead;
     private int fHitCount;
@@ -56,7 +59,6 @@ public class ErlangLineBreakpoint extends Breakpoint implements
                 setMarker(marker);
                 resetClauseHead(lineNumber - 1, resource);
             }
-
         };
         run(getMarkerRule(resource), runnable);
     }
@@ -89,9 +91,11 @@ public class ErlangLineBreakpoint extends Breakpoint implements
      * @param target
      *            debug target
      */
-    public void install(final ErlangDebugTarget atarget) {
-        target = atarget;
-        createRequest(ErlDebugConstants.REQUEST_INSTALL);
+    public void install(final ErlangDebugTarget target) {
+        this.target = target;
+        if (target != null) {
+            createRequest(ErlDebugConstants.REQUEST_INSTALL);
+        }
     }
 
     private void createRequest(final int request) {
@@ -150,9 +154,11 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         return -1;
     }
 
-    public void remove(final ErlangDebugTarget atarget) {
-        target = atarget;
-        createRequest(ErlDebugConstants.REQUEST_REMOVE);
+    public void remove(final ErlangDebugTarget target) {
+        this.target = target;
+        if (target != null) {
+            createRequest(ErlDebugConstants.REQUEST_REMOVE);
+        }
     }
 
     public String getClauseHead() {
@@ -209,6 +215,17 @@ public class ErlangLineBreakpoint extends Breakpoint implements
 
     public void setBreakAction(final int traceAction) {
         fBreakAction = traceAction;
+    }
+
+    public ErlangDebugTarget getTarget() {
+        return target;
+    }
+
+    public String getMessage() {
+        final IMarker marker = getMarker();
+        return "Line Breakpoint: " + marker.getResource().getName()
+                + " [line: " + marker.getAttribute(IMarker.LINE_NUMBER, -1)
+                + "]";
     }
 
 }

@@ -209,10 +209,12 @@ public final class ErlideBackend extends Backend implements IDisposable,
                 if (accessible) {
                     addPath(false/* prefs.getUsePathZ() */, outDir);
                 } else {
-                    loadBeamsFromDir(outDir);
+                    loadBeamsFromDir(project, outDir);
                 }
             } else {
                 final File f = new File(outDir);
+                final BackendManager backendManager = ErlangCore
+                        .getBackendManager();
                 for (final File file : f.listFiles()) {
                     String name = file.getName();
                     if (!name.endsWith(".beam")) {
@@ -221,6 +223,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                     name = name.substring(0, name.length() - 5);
                     try {
                         ErlideUtil.loadModuleViaInput(this, project, name);
+                        backendManager.moduleLoaded(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();
                     } catch (final IOException e) {
@@ -231,9 +234,11 @@ public final class ErlideBackend extends Backend implements IDisposable,
         }
     }
 
-    private void loadBeamsFromDir(final String outDir) {
+    private void loadBeamsFromDir(final IProject project, final String outDir) {
         final File dir = new File(outDir);
         if (dir.isDirectory()) {
+            final BackendManager backendManager = ErlangCore
+                    .getBackendManager();
             for (final File f : dir.listFiles()) {
                 final Path path = new Path(f.getPath());
                 if (path.getFileExtension() != null
@@ -249,6 +254,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                         if (!ok) {
                             ErlLogger.error("Could not load %s", m);
                         }
+                        backendManager.moduleLoaded(this, project, m);
                     } catch (final Exception ex) {
                         ErlLogger.warn(ex);
                     }

@@ -104,5 +104,6 @@ public interface IErlangBreakpoint extends IBreakpoint {
 
     public int getBreakAction();
 
+    public String getMessage();
     // public String getTypeName();
 }

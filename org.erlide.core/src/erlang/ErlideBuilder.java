@@ -11,6 +11,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -55,7 +56,9 @@ public class ErlideBuilder {
 
     public static void loadModule(final IProject project, final String module) {
         try {
-            for (final ErlideBackend b : ErlangCore.getBackendManager()
+            final BackendManager backendManager = ErlangCore
+                    .getBackendManager();
+            for (final ErlideBackend b : backendManager
                     .getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
                         .toString());
@@ -65,6 +68,7 @@ public class ErlideBuilder {
                 } else {
                     ErlideUtil.loadModuleViaInput(b, project, module);
                 }
+                backendManager.moduleLoaded(b, project, module);
             }
         } catch (final Exception e) {
             ErlLogger.debug(e);

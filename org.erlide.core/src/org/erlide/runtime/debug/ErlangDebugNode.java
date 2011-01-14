@@ -12,6 +12,14 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
+/**
+ * A debug node is a distributed node connected to the debug target. It is only
+ * created when debugging distributed systems, and only for the "other" nodes
+ * connected.
+ * 
+ * @author jakob
+ * 
+ */
 public class ErlangDebugNode extends ErlangDebugElement implements
         IDebugTarget, IErlangDebugNode {
 

@@ -31,6 +31,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.debug.ErlangDebugOptionsManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;
@@ -179,7 +180,7 @@ public class ErlangPlugin extends Plugin {
                         }
                     }
                 });
-
+        ErlangDebugOptionsManager.getDefault().startup();
         ErlLogger.debug("Started CORE");
     }
 

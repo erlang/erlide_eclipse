@@ -16,29 +16,30 @@ import erlang.ErlideDebug;
 
 public class ErlangDebugHelper {
 
-    public void interpret(final Backend backend, final String project,
-            final String module, final boolean distributed,
-            final boolean interpret) {
+    public static void interpret(final Backend backend,
+            final String projectName, final String moduleName,
+            final boolean distributed, final boolean interpret) {
         try {
-            final IFile beam = findModuleBeam(project, module);
+            final IFile beam = findModuleBeam(projectName, moduleName);
             if (beam != null && beam.exists()) {
                 final String de = interpret ? "" : "de";
                 ErlLogger.debug(de + "interpret " + beam.getLocation());
-                ErlideDebug.interpret(backend, beam.getLocation().toString(),
-                        distributed, interpret);
+                boolean b = ErlideDebug.interpret(backend, beam.getLocation()
+                        .toString(), distributed, interpret);
+                b = !b;
             } else {
-                ErlLogger.debug("IGNORED MISSING interpret " + project + ":"
-                        + module);
+                ErlLogger.debug("IGNORED MISSING interpret " + projectName
+                        + ":" + moduleName);
             }
         } catch (final ErlModelException e) {
             ErlLogger.warn(e);
         }
     }
 
-    protected IFile findModuleBeam(final String project, final String module)
-            throws ErlModelException {
-        final IErlProject eprj = ErlangCore.getModel()
-                .getErlangProject(project);
+    protected static IFile findModuleBeam(final String projectName,
+            final String module) throws ErlModelException {
+        final IErlProject eprj = ErlangCore.getModel().getErlangProject(
+                projectName);
         final IProject iprj = eprj.getProject();
         final IFolder r = iprj.getFolder(eprj.getOutputLocation());
         try {
@@ -47,6 +48,10 @@ public class ErlangDebugHelper {
         }
         final String beam = ErlideUtil.withoutExtension(module) + ".beam";
         return r.getFile(beam);
+    }
+
+    private ErlangDebugHelper() {
+        // static
     }
 
 }

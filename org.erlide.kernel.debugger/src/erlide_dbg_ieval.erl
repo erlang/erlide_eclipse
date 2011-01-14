@@ -20,7 +20,7 @@
 -export([eval/3,exit_info/5]).
 -export([eval_expr/3]).
 -export([check_exit_msg/3,exception/4,in_use_p/2]).
--export([stack_level/0, bindings/1, stack_frame/2, backtrace/1, all_frames/0]).
+-export([stack_level/0, bindings/1, stack_frame/2, backtrace/1, all_frames/0, all_modules_on_stack/0]).
 
 -include("erlide_dbg_ieval.hrl").
 
@@ -438,6 +438,12 @@ all_frames() ->
 
 all_frames(Stack) ->
     [{{M, F, args2arity(As)}, Wh, orddict:to_list(Bs), X} || {X, {{M, F, As}, Wh, Bs}} <- Stack].
+
+all_modules_on_stack() ->
+    all_modules_on_stack(get(stack)).
+
+all_modules_on_stack(Stack) ->
+    [M || {X, {{M, _F, _As}, _Wh, _Bs}} <- Stack].
 
 saved_frames() ->
 %%     erlang:display(hej),

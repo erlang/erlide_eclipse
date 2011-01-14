@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class EventDaemon implements BackendListener {
+public class EventDaemon implements IBackendListener {
 
     private Backend runtime;
     volatile boolean stopped = false;
@@ -117,5 +117,9 @@ public class EventDaemon implements BackendListener {
         synchronized (handlersLock) {
             handlers.remove(l);
         }
+    }
+
+    public void moduleLoaded(final Backend backend, final String projectName,
+            final String moduleName) {
     }
 }
