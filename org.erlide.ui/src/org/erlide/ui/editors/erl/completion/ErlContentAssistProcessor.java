@@ -492,7 +492,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
         final IErlModule external = ErlModelUtils.getExternalModule(moduleName,
-                model.getExternalModules(erlProject));
+                model.getExternalModules(erlProject), erlProject);
         if (external != null) {
             modules.add(external);
         }

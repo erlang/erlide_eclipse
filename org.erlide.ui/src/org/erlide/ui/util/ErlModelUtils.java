@@ -475,12 +475,13 @@ public class ErlModelUtils {
     }
 
     public static IErlModule getExternalModule(final String mod,
-            final String externalModules) throws CoreException {
+            final String externalModules, final IErlProject erlProject)
+            throws CoreException {
         final String path = ErlideOpen.getExternalModule(ErlangCore
                 .getBackendManager().getIdeBackend(), mod, externalModules,
                 ErlangCore.getModel().getPathVars());
         if (path != null) {
-            ModelUtils.openExternal(null, path);
+            return ModelUtils.openExternal(erlProject.getProject(), path);
         }
         return null;
     }
