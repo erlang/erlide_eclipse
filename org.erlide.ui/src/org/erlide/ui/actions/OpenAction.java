@@ -286,8 +286,7 @@ public class OpenAction extends SelectionDispatchAction {
                     res.getFunction(), modulePath, project, checkAllProjects,
                     module);
         } else {
-            return ErlModelUtils.findExternalFunction(moduleName,
-                    res.getFunction(), null, project, checkAllProjects, module);
+            return null;
         }
     }
 

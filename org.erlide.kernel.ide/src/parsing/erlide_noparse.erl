@@ -293,7 +293,8 @@ get_attribute_args(record, Between, _Args) ->
 get_attribute_args(_, _Between, Args) ->
     {Args, [], []}.
 
-check_class([#token{kind = atom}, #token{kind = '('} | _]) ->
+check_class([#token{kind = AtomOrMacro}, #token{kind = '('} | _])
+  when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
     attribute;
@@ -423,7 +424,8 @@ fix_clauses([C | Rest], Acc) ->
     {Clause, Refs} = fix_clause(C),
     fix_clauses(Rest, [{Clause, Refs} | Acc]).
 
-fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest]) ->
+fix_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest]) 
+  when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength+1,
     ExternalRefs = get_refs_in_code(Rest),
