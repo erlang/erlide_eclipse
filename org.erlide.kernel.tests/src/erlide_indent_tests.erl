@@ -92,6 +92,25 @@ binary_2_test_() ->
             "      1>>.",
     ?Test_indent(SIndent, S).
 
+spec_test_() ->
+    S = ""++
+            "-spec start_link(config()) ->\n"++
+            "{ok, pid()}.",
+    SIndent = ""++
+                  "-spec start_link(config()) ->\n"++
+                  "          {ok, pid()}.",
+    ?Test_indent(SIndent, S).
+
+export_test_() ->
+    S = ""++
+            "-export([f/1,\n"++
+            "f/2]).",
+    SIndent = ""++
+                  "-export([f/1,\n"++
+                  "         f/2]).",
+    ?Test_indent(SIndent, S).
+
+
 %%
 %% Local Functions
 %%
