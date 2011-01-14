@@ -292,7 +292,8 @@ public class ModelUtils {
     public static IErlModule openExternal(final IProject project,
             final String path) throws CoreException {
         final IErlModel model = ErlangCore.getModel();
-        final IErlProject erlProject = model.findProject(project);
+        final IErlProject erlProject = project == null ? null : model
+                .findProject(project);
         if (erlProject != null) {
             final Collection<IErlElement> children = erlProject
                     .getChildrenOfKind(Kind.EXTERNAL);
@@ -323,8 +324,14 @@ public class ModelUtils {
                             return true;
                         }
                     } else if (isExternal) {
-                        final IOpenable openable = (IOpenable) element;
-                        openable.open(null);
+                        if (external instanceof IErlExternal) {
+                            final IErlExternal erlExternal = (IErlExternal) external;
+                            if (erlExternal.isRoot()
+                                    || erlExternal.hasModuleWithPath(path)) {
+                                final IOpenable openable = (IOpenable) element;
+                                openable.open(null);
+                            }
+                        }
                     }
                     return isExternal;
                 }

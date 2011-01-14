@@ -23,10 +23,10 @@ import com.google.common.collect.Lists;
 
 public class ErlideOpen {
 
-    public static String getIncludeLib(final Backend b, String s)
+    public static String getIncludeLib(final Backend backend, String s)
             throws BackendException {
-        final OtpErlangObject t = b.call("erlide_open", "get_include_lib", "s",
-                s);
+        final OtpErlangObject t = backend.call("erlide_open",
+                "get_include_lib", "s", s);
         if (t instanceof OtpErlangTuple) {
             final OtpErlangObject es = ((OtpErlangTuple) t).elementAt(1);
             s = ((OtpErlangString) es).stringValue();
@@ -34,23 +34,23 @@ public class ErlideOpen {
         return s;
     }
 
-    public static OtpErlangObject getSourceFromModule(final Backend b,
+    public static OtpErlangObject getSourceFromModule(final Backend backend,
             final OtpErlangList pathVars, final String mod,
             final String externalModules) throws BackendException {
-        final OtpErlangObject res2 = b.call("erlide_open",
+        final OtpErlangObject res2 = backend.call("erlide_open",
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
         return res2;
     }
 
     @SuppressWarnings("boxing")
-    public static OpenResult open(final Backend b, final String scannerName,
-            final int offset, final List<OtpErlangObject> imports,
-            final String externalModules, final OtpErlangList pathVars)
-            throws BackendException {
+    public static OpenResult open(final Backend backend,
+            final String scannerName, final int offset,
+            final List<OtpErlangObject> imports, final String externalModules,
+            final OtpErlangList pathVars) throws BackendException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<String> extra = getExtraSourcePaths();
-        final OtpErlangObject res = b.call("erlide_open", "open", "aix",
+        final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scannerName, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
         // ErlLogger.debug(">>>> " + res);
@@ -92,11 +92,11 @@ public class ErlideOpen {
         return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
     }
 
-    public static OtpErlangTuple findFirstVar(final Backend b,
+    public static OtpErlangTuple findFirstVar(final Backend backend,
             final String name, final String source) {
-        OtpErlangObject res;
         try {
-            res = b.call("erlide_open", "find_first_var", "as", name, source);
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "find_first_var", "as", name, source);
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
@@ -106,11 +106,11 @@ public class ErlideOpen {
         return null;
     }
 
-    public static List<String> getExternalModules(final Backend b,
+    public static List<String> getExternalModules(final Backend backend,
             final String prefix, final String externalModules,
             final OtpErlangList pathVars) {
         try {
-            final OtpErlangObject res = b.call("erlide_open",
+            final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_modules", "sx", prefix,
                     mkContext(externalModules, null, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -128,12 +128,12 @@ public class ErlideOpen {
         return new ArrayList<String>();
     }
 
-    public static List<String> getExternal1(final Backend b,
+    public static List<String> getExternal1(final Backend backend,
             final String externalModules, final OtpErlangList pathVars,
             final boolean isRoot) {
         try {
-            final OtpErlangObject res = b.call("erlide_open", "get_external_1",
-                    "sxo", externalModules, pathVars, isRoot);
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "get_external_1", "sxo", externalModules, pathVars, isRoot);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
@@ -150,10 +150,10 @@ public class ErlideOpen {
     }
 
     public static List<Tuple<String, List<String>>> getExternalModuleTree(
-            final Backend b, final String externalModules,
+            final Backend backend, final String externalModules,
             final OtpErlangList pathVars) {
         try {
-            final OtpErlangObject res = b.call("erlide_open",
+            final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_module_tree", "x",
                     mkContext(externalModules, null, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -183,11 +183,11 @@ public class ErlideOpen {
         return Lists.newArrayList();
     }
 
-    public static String getExternalInclude(final Backend b,
+    public static String getExternalInclude(final Backend backend,
             final String filePath, final String externalIncludes,
             final OtpErlangList pathVars) {
         try {
-            final OtpErlangObject res = b.call("erlide_open",
+            final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_include", "sx", filePath,
                     mkContext(null, externalIncludes, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -200,10 +200,11 @@ public class ErlideOpen {
         return null;
     }
 
-    public static String getExternalModule(final Backend b, final String mod,
-            final String externalModules, final OtpErlangList pathVars) {
+    public static String getExternalModule(final Backend backend,
+            final String mod, final String externalModules,
+            final OtpErlangList pathVars) {
         try {
-            final OtpErlangObject res = b.call("erlide_open",
+            final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_module", "sx", mod,
                     mkContext(externalModules, null, pathVars, null, null));
             if (Util.isOk(res)) {
@@ -214,5 +215,21 @@ public class ErlideOpen {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static boolean hasExternalWithPath(final Backend backend,
+            final String externalModules, final String path,
+            final OtpErlangList pathVars) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "has_external_with_path", "sx", path,
+                    mkContext(externalModules, null, pathVars, null, null));
+            if (Util.isOk(res)) {
+                return true;
+            }
+        } catch (final BackendException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

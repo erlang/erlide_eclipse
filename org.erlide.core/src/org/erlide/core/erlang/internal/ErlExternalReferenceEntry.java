@@ -104,4 +104,15 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return entry;
     }
 
+    public boolean hasModuleWithPath(final String path) {
+        final Backend backend = BackendUtils
+                .getBuildOrIdeBackend(getErlProject().getProject());
+        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
+        return ErlideOpen.hasExternalWithPath(backend, entry, path, pathVars);
+    }
+
+    public boolean isRoot() {
+        return false; // isRoot;
+    }
+
 }

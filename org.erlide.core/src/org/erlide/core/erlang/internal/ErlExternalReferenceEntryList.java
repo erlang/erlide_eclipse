@@ -75,4 +75,12 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return externalName;
     }
 
+    public boolean hasModuleWithPath(final String path) {
+        return false;
+    }
+
+    public boolean isRoot() {
+        return true;
+    }
+
 }
