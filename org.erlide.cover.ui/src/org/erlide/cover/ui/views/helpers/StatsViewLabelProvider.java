@@ -2,7 +2,11 @@ package org.erlide.cover.ui.views.helpers;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.erlide.cover.views.model.ICoverageStats;
 
 public class StatsViewLabelProvider extends LabelProvider
@@ -20,7 +24,10 @@ public class StatsViewLabelProvider extends LabelProvider
 	}*/
 	
 	public Image getColumnImage(Object element, int columnIndex) {
-		//no image
+		if(columnIndex == 3){
+		    ICoverageStats statsEl = (ICoverageStats)element;
+		    return drawPercentage(statsEl.getPrecentage());
+		}
 		return null;
 	}
 	
@@ -44,6 +51,19 @@ public class StatsViewLabelProvider extends LabelProvider
 			break;
 		}
 		return text;
+	}
+	
+	private Image drawPercentage(double percentage) {
+	    
+	    Image img = new Image(Display.getCurrent(), new Rectangle(2, 2, 85, 15));
+	
+	    GC graphic = new GC(img);
+	    graphic.setForeground(new Color(Display.getCurrent(), 30, 120, 230));
+	    graphic.setBackground(new Color(Display.getCurrent(), 30, 120, 230));
+	    graphic.drawRectangle(2, 2, 80, 10);
+	    graphic.fillRectangle(2, 2, (int)(80*percentage/100), 10);
+	    
+	    return img;
 	}
 	
 }

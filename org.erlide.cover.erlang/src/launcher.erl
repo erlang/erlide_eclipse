@@ -18,7 +18,7 @@
 	 perform/3,
 	 prepare_and_perform/3,
 	 get_index/0,
-	 get_module_num/3]).
+	 get_module_num/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -54,9 +54,8 @@ get_index() ->
 %	gen_server:cast(?MODULE, index).
     gen_server:call(?MODULE,index).
 
-get_module_num(Type, Name, Path) ->
-	%%TODO implemenation
-	%% gen_server:call
+get_module_num(Path) ->
+	gen_server:call(?MODULE, {module_num, Path}),
 	ok.
 
 %%----------------------------------------------
@@ -193,7 +192,11 @@ handle_cast(_, State) ->
 %call(index, ...) 
 handle_call(index, _From, State) ->
 	Path = coverage:create_index(State#state.results_list),
-	{reply, Path, State}.
+	{reply, Path, State};
+handle_call({module_num, Path}, _From, State) ->
+	Num = length(get_modules(Path)),
+	io:format("~p~n", [Num]),
+	{reply, Num, State}.
 
 %terminate
 terminate(normal, State) ->
@@ -204,9 +207,19 @@ terminate(normal, State) ->
 %% Helpers
 %%----------------------------------------------
 
-get_modules(Path) ->
-	%%TODO
-	[].
+get_modules(Dir) ->
+	filelib:fold_files(Dir,
+					   ".*\.erl",
+					   true,
+					   fun(F, Acc) -> 
+							   io:format("~p~n", [F]),
+							   case filename:extension(F) of
+								   ".erl" ->
+									   [filename:basename(F, ".erl") | Acc];
+								   _ ->
+									   Acc
+							   end
+					   end, []).
 
 search_module(Dir, Name) ->
 	filelib:fold_files(Dir,

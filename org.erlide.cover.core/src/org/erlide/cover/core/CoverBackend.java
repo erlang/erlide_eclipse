@@ -122,15 +122,23 @@ public class CoverBackend {
 
         // TODO: change calls to erlang backend
 
+        int moduleNum = 0;
         try {
             backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
                     new OtpErlangAtom(settings.getFramework()));
             
-            for(String module : settings.modules()) {
+            for(CoverObject obj : settings.objects()) {
             
-                backend.call(Constants.ERLANG_BACKEND, Constants.FUN_MODULE_NUM,
-                        "sss", settings.getTypeAsString(), module,
-                        settings.getPath(module));
+                if(obj.getType() == CoverObject.DIR) {
+                    OtpErlangObject num = backend.call(
+                            Constants.ERLANG_BACKEND, 
+                            Constants.FUN_MODULE_NUM,
+                            "s", 
+                            obj.getPath());
+                    moduleNum += Integer.parseInt(num.toString());
+                } else if (obj.getType() == CoverObject.MODULE) {
+                    moduleNum ++;
+                }
             }
             
         } catch (BackendException e1) {
@@ -138,9 +146,9 @@ public class CoverBackend {
             e1.printStackTrace();
         }
         
-        handler.reset(settings.modules().size());
+        handler.reset(moduleNum);
 
-        for (String module : settings.modules()) {
+        for (CoverObject obj : settings.objects()) {
 
             // ErlLogger.debug(path);
 
@@ -156,8 +164,8 @@ public class CoverBackend {
                 // "");
                 backend.cast(Constants.ERLANG_BACKEND,
                         Constants.FUN_COVER_PREP, "sss",
-                        settings.getTypeAsString(), module,
-                        settings.getPath(module));
+                        settings.getTypeAsString(), obj.getName(),
+                        obj.getPath());
                 System.out.println("Cast sent");
                 System.out.println(settings.getTypeAsString());
             } catch (BackendException e) {
@@ -177,7 +185,6 @@ public class CoverBackend {
         } catch (BackendException e) {
             e.printStackTrace();
         }
-
     }
 
     public CoverEventHandler getHandler() {
@@ -243,6 +250,7 @@ public class CoverBackend {
         rt.useLongName(data.longName);
         rt.hasConsole(data.console);
         rt.setLoadAllNodes(data.loadAllNodes);
+        
 
         System.out.println("runtimeInfo build");
 

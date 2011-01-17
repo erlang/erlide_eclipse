@@ -1,8 +1,7 @@
 package org.erlide.cover.core;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -20,7 +19,7 @@ import org.erlide.cover.runtime.launch.LaunchType;
 public class CoverSettings {
     
     private LaunchType type;
-    private Map<String, String> paths;
+    private List<CoverObject> objs;
     private FrameworkType frameworkType;
 
     /**
@@ -29,7 +28,7 @@ public class CoverSettings {
      * @param data
      */
     public CoverSettings(LaunchType t, CoverLaunchData data) {
-        paths = new HashMap<String, String>();
+        objs = new LinkedList<CoverObject>();
         type = t;
         frameworkType = data.getFramework();
         
@@ -42,14 +41,15 @@ public class CoverSettings {
                 .getProject(data.getProject());
             String path = p.getLocation().toString() + "/src/" + data.getModule();
             //TODO: better mechanizm for finding file paths within project
-            paths.put(data.getModule().replace(".erl", ""), path);
+            objs.add(new CoverObject(CoverObject.MODULE, 
+                    data.getModule().replace(".erl", ""), path));
             break;
         case ALL:
             path = ResourcesPlugin.getWorkspace().
                     getRoot().getRawLocation().toString();
             path += "/" + data.getFile();
             System.out.println(path);
-            paths.put( "", path);
+            objs.add(new CoverObject(CoverObject.DIR, path));
             break;
         case APPLICATION:
             //TODO: finding application - should be simmilar to finding module
@@ -68,23 +68,10 @@ public class CoverSettings {
         return type.name().toLowerCase();
     }
 
-    public Set<String> modules() {
-        return paths.keySet();
+    public List<CoverObject> objects() {
+        return objs;
     }
-    
-    public String getPath(String module) {
-        return paths.get(module);
-    }
-    
-    public void addPath(String module, String path) {
-        paths.put(module, path);
-    }
-    
-    public void addPaths(List<String> files) {
-        //TODO:prepare data
-        //paths.addAll(files);
-    }
-    
+        
     public String getFramework() {
         return frameworkType.name().toLowerCase();
     }
