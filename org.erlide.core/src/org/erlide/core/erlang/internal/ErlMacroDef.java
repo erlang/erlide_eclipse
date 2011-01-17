@@ -1,8 +1,7 @@
 package org.erlide.core.erlang.internal;
 
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMacroDef;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.backend.util.Util;
 
 public class ErlMacroDef extends ErlMember implements IErlMacroDef {
@@ -15,14 +14,14 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
      * @param imports
      * @param module
      */
-    protected ErlMacroDef(final IErlElement parent, final String macro,
+    protected ErlMacroDef(final IParent parent, final String macro,
             final String extra) {
         super(parent, "macro_definition");
         this.macro = macro;
         this.extra = extra;
     }
 
-    public ErlMacroDef(final IErlModule parent, final String extra) {
+    public ErlMacroDef(final IParent parent, final String extra) {
         super(parent, "macro_definition");
         this.extra = extra;
         macro = uptoCommaOrParen(extra);

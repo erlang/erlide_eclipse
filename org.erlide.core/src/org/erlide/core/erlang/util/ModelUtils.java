@@ -145,11 +145,12 @@ public class ModelUtils {
             IResource re = null;
             IProject project = null;
             for (final IProject p : projects) {
-                re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
-                        element.getFilenameLastPart(),
-                        org.erlide.core.erlang.util.PluginUtils
-                                .getIncludePathFilterCreator(module
-                                        .getResource().getParent()));
+                re = ResourceUtil
+                        .recursiveFindNamedModuleResourceWithReferences(p,
+                                element.getFilenameLastPart(),
+                                org.erlide.core.erlang.util.PluginUtils
+                                        .getIncludePathFilterCreator(module
+                                                .getResource().getParent()));
                 if (re != null) {
                     project = p;
                     break;
@@ -163,10 +164,12 @@ public class ModelUtils {
                     } else {
                         s = findIncludeFile(project, s, externalIncludes);
                     }
-                    re = ResourceUtil.recursiveFindNamedResourceWithReferences(
-                            project, s, org.erlide.core.erlang.util.PluginUtils
-                                    .getIncludePathFilterCreator(module
-                                            .getResource().getParent()));
+                    re = ResourceUtil
+                            .recursiveFindNamedModuleResourceWithReferences(
+                                    project, s,
+                                    org.erlide.core.erlang.util.PluginUtils
+                                            .getIncludePathFilterCreator(module
+                                                    .getResource().getParent()));
                 } catch (final Exception e) {
                     // ErlLogger.warn(e);
                 }
@@ -305,6 +308,23 @@ public class ModelUtils {
         return openInExternalFilesProject(path);
     }
 
+    public static IErlModule findExternalModuleFromName(
+            final String moduleName, final IProject project)
+            throws ErlModelException {
+        final IErlModel model = ErlangCore.getModel();
+        final IErlProject erlProject = model.findProject(project);
+        if (erlProject != null) {
+            final Collection<IErlElement> children = erlProject
+                    .getChildrenOfKind(Kind.EXTERNAL);
+            final List<IErlModule> result = findExternalModuleFromName(
+                    moduleName, children);
+            if (!result.isEmpty()) {
+                return result.get(0);
+            }
+        }
+        return null;
+    }
+
     private static List<IErlModule> findExternalModuleFromPath(
             final String path, final Collection<IErlElement> children)
             throws ErlModelException {
@@ -331,6 +351,37 @@ public class ModelUtils {
             }, 0, Kind.MODULE);
         }
         return result;
+    }
+
+    private static List<IErlModule> findExternalModuleFromName(
+            final String moduleName, final Collection<IErlElement> children)
+            throws ErlModelException {
+        final List<IErlModule> result = Lists.newArrayList();
+        for (final IErlElement external : children) {
+            external.accept(new IErlElementVisitor() {
+
+                public boolean visit(final IErlElement element)
+                        throws ErlModelException {
+                    final boolean isExternal = element.getKind() == Kind.EXTERNAL;
+                    if (element instanceof IErlModule) {
+                        final IErlModule module = (IErlModule) element;
+                        if (module.getModuleName().equals(moduleName)) {
+                            result.add(module);
+                            return true;
+                        }
+                    } else if (isExternal) {
+                        final IOpenable openable = (IOpenable) element;
+                        openable.open(null);
+                    }
+                    return isExternal;
+                }
+            }, 0, Kind.MODULE);
+        }
+        return result;
+    }
+
+    public static boolean isExternalFilesProject(final IProject project) {
+        return project.getName().equals("External_Files");
     }
 
     static public IErlModule openInExternalFilesProject(final String path)
@@ -403,7 +454,7 @@ public class ModelUtils {
             } else {
                 result.add(element.getName());
             }
-            element = element.getParent();
+            element = (IErlElement) element.getParent();
         }
         return StringUtils.join(DELIMITER, Lists.reverse(result));
     }

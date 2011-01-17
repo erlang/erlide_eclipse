@@ -88,12 +88,12 @@ public interface IErlElement extends IAdaptable {
      * type. Returns <code>null</code> if no such an ancestor can be found. This
      * is a handle-only method.
      * 
-     * @param ancestorType
-     *            the given type
+     * @param kind
+     *            the given kind
      * @return the first ancestor of this Erlang element that has the given
-     *         type, null if no such an ancestor can be found
+     *         kind, null if no such an ancestor can be found
      */
-    IErlElement getAncestor(Kind ancestorType);
+    IErlElement getAncestorOfKind(Kind kind);
 
     /**
      * Returns the enclosing IErlProject if there is one
@@ -106,6 +106,8 @@ public interface IErlElement extends IAdaptable {
      * @return module or null
      */
     IErlModule getModule();
+
+    String getModuleName();
 
     /**
      * Returns the resource that corresponds directly to this element, or
@@ -158,7 +160,7 @@ public interface IErlElement extends IAdaptable {
      * @return the parent element, or <code>null</code> if this element has no
      *         parent
      */
-    IErlElement getParent();
+    IParent getParent();
 
     /**
      * Returns the innermost resource enclosing this element. This is a
@@ -242,6 +244,12 @@ public interface IErlElement extends IAdaptable {
     // in the label provider...
     String getLabelString();
 
+    /**
+     * Return the file path of the underlying element, i.e. if it's a module,
+     * the file path to the element being edited
+     * 
+     * @return path or null if not a file-based element
+     */
     public abstract String getFilePath();
 
 }

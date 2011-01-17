@@ -200,7 +200,7 @@ public class ErlideOpen {
         return null;
     }
 
-    public static String getExternalModule(final Backend b, final String mod,
+    private static String getExternalModule(final Backend b, final String mod,
             final String externalModules, final OtpErlangList pathVars) {
         try {
             final OtpErlangObject res = b.call("erlide_open",

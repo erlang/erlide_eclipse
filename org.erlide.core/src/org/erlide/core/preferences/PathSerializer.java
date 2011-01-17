@@ -11,8 +11,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+import com.google.common.collect.Lists;
+
 public final class PathSerializer {
 
+    private static final ArrayList<IPath> EMPTY_LIST = Lists.newArrayList();
     public static final String SEP = ";";
 
     public static String packList(final Iterable<IPath> list) {
@@ -61,6 +64,9 @@ public final class PathSerializer {
     }
 
     public static List<IPath> unpackList(final String string, final String sep) {
+        if (string.length() == 0) {
+            return EMPTY_LIST;
+        }
         final String[] v = string.split(sep);
         final List<String> sresult = new ArrayList<String>(Arrays.asList(v));
         final List<IPath> result = new ArrayList<IPath>();

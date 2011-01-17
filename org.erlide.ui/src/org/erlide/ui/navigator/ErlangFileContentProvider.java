@@ -88,10 +88,11 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object getParent(final Object element) {
         if (element instanceof IErlElement) {
             final IErlElement elt = (IErlElement) element;
-            final IErlElement parent = elt.getParent();
+            final IParent parent = elt.getParent();
             if (parent instanceof IErlModule || parent instanceof IErlProject) {
                 try {
-                    return parent.getCorrespondingResource();
+                    final IErlElement e = (IErlElement) parent;
+                    return e.getCorrespondingResource();
                 } catch (final ErlModelException e) {
                     ErlLogger.warn(e);
                 }

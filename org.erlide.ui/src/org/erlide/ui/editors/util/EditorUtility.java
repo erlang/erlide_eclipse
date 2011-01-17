@@ -46,6 +46,8 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleInternal;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -287,11 +289,20 @@ public class EditorUtility {
         if (resource instanceof IFile) {
             return new FileEditorInput((IFile) resource);
         }
-        if (!(element instanceof IErlModule)) {
-            element = element.getParent();
+        String filePath = element.getFilePath();
+        while (filePath == null) {
+            final IParent parent = element.getParent();
+            if (parent instanceof IErlModuleInternal) {
+                final IErlModuleInternal internal = (IErlModuleInternal) parent;
+                filePath = internal.getPath();
+            } else if (parent instanceof IErlElement) {
+                element = (IErlElement) parent;
+            } else {
+                break;
+            }
         }
-        if (element.getFilePath() != null) {
-            final IPath path = new Path(element.getFilePath());
+        if (filePath != null) {
+            final IPath path = new Path(filePath);
             IFileStore fileStore = EFS.getLocalFileSystem().getStore(
                     path.removeLastSegments(1));
             fileStore = fileStore.getChild(path.lastSegment());

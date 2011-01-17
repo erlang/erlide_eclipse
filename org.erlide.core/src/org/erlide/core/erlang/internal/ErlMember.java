@@ -1,8 +1,8 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.SourceRange;
 import org.erlide.jinterface.util.ErlLogger;
@@ -37,7 +37,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         return s.substring(0, j);
     }
 
-    protected ErlMember(final IErlElement parent, final String name) {
+    protected ErlMember(final IParent parent, final String name) {
         super(parent, name);
     }
 

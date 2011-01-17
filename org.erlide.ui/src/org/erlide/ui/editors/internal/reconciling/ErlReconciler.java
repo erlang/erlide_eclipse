@@ -15,15 +15,18 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlReconciler implements IReconciler {
 
     /** The reconciling strategy. */
     private final IErlReconcilingStrategy fStrategy;
+    private final String path;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
-            final boolean isIncremental, final boolean chunkReconciler) {
+            final boolean isIncremental, final boolean chunkReconciler,
+            final String path) {
 
         super();
 
@@ -32,6 +35,8 @@ public class ErlReconciler implements IReconciler {
         fStrategy = strategy;
         setIsIncrementalReconciler(isIncremental);
         fChunkReconciler = chunkReconciler;
+        ErlangCore.getModelMap().putEdited(path);
+        this.path = path;
     }
 
     /**
@@ -496,7 +501,7 @@ public class ErlReconciler implements IReconciler {
 
         final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
-
+        ErlangCore.getModelMap().removeEdited(path);
     }
 
     /**

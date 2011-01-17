@@ -295,8 +295,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
      */
     IErlFunction findFunction(FunctionRef r);
 
-    IErlModule getModuleFor(IErlElement elem);
-
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;
 }

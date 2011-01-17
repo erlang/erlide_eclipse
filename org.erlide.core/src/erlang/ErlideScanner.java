@@ -22,7 +22,7 @@ public class ErlideScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner_server";
 
     public static void initialScan(final String module,
-            final String moduleFileName, final String initialText,
+            final String path, final String initialText,
             final boolean updateCaches) {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
@@ -31,7 +31,7 @@ public class ErlideScanner {
                     .getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "initialScan", "assso", module,
-                            moduleFileName, initialText, stateDir, updateCaches);
+                            path, initialText, stateDir, updateCaches);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }

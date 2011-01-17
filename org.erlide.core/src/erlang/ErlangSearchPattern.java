@@ -210,7 +210,7 @@ public abstract class ErlangSearchPattern {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
             final String withoutExtension = ErlideUtil
-                    .withoutExtension(function.getModule().getName());
+                    .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
                     true);
@@ -224,8 +224,8 @@ public abstract class ErlangSearchPattern {
             return new RecordPattern(unquoted, limitTo);
         } else if (element instanceof IErlFunctionClause) {
             final IErlFunctionClause clause = (IErlFunctionClause) element;
-            return getSearchPatternFromErlElementAndLimitTo(clause.getParent(),
-                    limitTo);
+            return getSearchPatternFromErlElementAndLimitTo(
+                    (IErlElement) clause.getParent(), limitTo);
         } else if (element instanceof IErlAttribute) {
             final IErlAttribute a = (IErlAttribute) element;
             if (a.getName().startsWith("include")) {

@@ -400,6 +400,9 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlElement findElement(final IResource rsrc,
             final boolean openElements) {
+        if (rsrc == null) {
+            return null;
+        }
         final IPath path = rsrc.getFullPath();
         IParent p = this;
         for (final String segment : path.segments()) {
@@ -654,13 +657,6 @@ public class ErlModel extends Openable implements IErlModel {
         } catch (final ErlModelException e) {
         }
         return null;
-    }
-
-    public IErlModule getModuleFor(IErlElement elem) {
-        while (elem != null && !(elem instanceof IErlModule)) {
-            elem = elem.getParent();
-        }
-        return (IErlModule) elem;
     }
 
     public IErlModule findModuleExt(final String name) {

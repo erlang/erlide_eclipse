@@ -11,10 +11,13 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IRegion;
+
+import com.google.common.collect.Lists;
 
 /**
  * @see IRegion
@@ -54,7 +57,7 @@ public class Region implements IRegion {
     public boolean contains(final IErlElement element) {
 
         final int size = fRootElements.size();
-        final ArrayList<IErlElement> parents = getAncestors(element);
+        final List<IParent> parents = getAncestors(element);
 
         for (int i = 0; i < size; i++) {
             final IErlElement aTop = fRootElements.get(i);
@@ -76,12 +79,17 @@ public class Region implements IRegion {
      * order.
      * 
      */
-    private ArrayList<IErlElement> getAncestors(final IErlElement element) {
-        final ArrayList<IErlElement> parents = new ArrayList<IErlElement>();
-        IErlElement parent = element.getParent();
+    private List<IParent> getAncestors(IErlElement element) {
+        final ArrayList<IParent> parents = Lists.newArrayList();
+        IParent parent = element.getParent();
         while (parent != null) {
             parents.add(parent);
-            parent = parent.getParent();
+            if (parent instanceof IErlElement) {
+                element = (IErlElement) parent;
+                parent = element.getParent();
+            } else {
+                break;
+            }
         }
         parents.trimToSize();
         return parents;
@@ -122,14 +130,19 @@ public class Region implements IRegion {
             for (int i = 0, size = fRootElements.size(); i < size; i++) {
                 final IErlElement currentRoot = fRootElements.get(i);
                 // walk the current root hierarchy
-                IErlElement parent = currentRoot.getParent();
+                IParent parent = currentRoot.getParent();
                 boolean isChild = false;
                 while (parent != null) {
                     if (parent.equals(element)) {
                         isChild = true;
                         break;
                     }
-                    parent = parent.getParent();
+                    if (parent instanceof IErlElement) {
+                        final IErlElement element2 = (IErlElement) parent;
+                        parent = element2.getParent();
+                    } else {
+                        break;
+                    }
                 }
                 if (!isChild) {
                     newRootElements.add(currentRoot);

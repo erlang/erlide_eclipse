@@ -479,52 +479,61 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
 
     private List<ICompletionProposal> getExternalCallCompletions(
             final Backend b, final IErlProject project, String moduleName,
-            final int offset, final String aprefix, final boolean arityOnly)
+            final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
         moduleName = ErlModelUtils.resolveMacroValue(moduleName, module);
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         // we have an external call
-        // first check in project, refs and external modules
-        final List<IErlModule> modules = ErlModelUtils
-                .getModulesWithReferencedProjects(project);
-        final IErlModel model = ErlangCore.getModel();
+        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
-        final IErlModule external = ErlModelUtils.getExternalModule(moduleName,
-                model.getExternalModules(erlProject));
-        if (external != null) {
-            modules.add(external);
-        }
-        boolean foundInModel = false;
-        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        for (final IErlModule m : modules) {
-            if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
-                    moduleName)) {
-                try {
-                    m.open(null);
-                    for (final IErlElement e : m.getChildren()) {
-                        if (e instanceof IErlFunction) {
-                            final IErlFunction f = (IErlFunction) e;
-                            if (f.isExported()) {
-                                addFunctionCompletion(offset, aprefix, result,
-                                        f, arityOnly);
-                                foundInModel = true;
-                            }
-                        }
-                    }
-                } catch (final ErlModelException e) {
-                    e.printStackTrace();
+        final IErlModule module = ErlModelUtils.getExternalModule(moduleName,
+                erlProject);
+        if (module != null) {
+            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        } else {
+            boolean foundInModel = false;
+            // first check in project, refs and external modules
+            final List<IErlModule> modules = ErlModelUtils
+                    .getModulesWithReferencedProjects(project);
+            for (final IErlModule m : modules) {
+                if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
+                        moduleName)) {
+                    foundInModel = addFunctionsFromModule(offset, prefix,
+                            arityOnly, result, m);
                 }
             }
-        }
 
-        // then check built stuff and otp
-        if (!foundInModel) {
-            final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-                    moduleName, aprefix, stateDir);
-            addFunctionProposalsWithDoc(offset, aprefix, result, res, null,
-                    arityOnly);
+            // then check built stuff and otp
+            if (!foundInModel) {
+                final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                        moduleName, prefix, stateDir);
+                addFunctionProposalsWithDoc(offset, prefix, result, res, null,
+                        arityOnly);
+            }
+        }
+        return result;
+    }
+
+    private boolean addFunctionsFromModule(final int offset,
+            final String prefix, final boolean arityOnly,
+            final List<ICompletionProposal> proposals, final IErlModule m) {
+        boolean result = false;
+        try {
+            m.open(null);
+            for (final IErlElement e : m.getChildren()) {
+                if (e instanceof IErlFunction) {
+                    final IErlFunction f = (IErlFunction) e;
+                    if (f.isExported()) {
+                        addFunctionCompletion(offset, prefix, proposals, f,
+                                arityOnly);
+                        result = true;
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+            e.printStackTrace();
         }
         return result;
     }
