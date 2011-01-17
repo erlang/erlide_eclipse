@@ -38,7 +38,7 @@ public interface IErlModelManager extends ISaveParticipant {
      * Creating a Erlang element has the side effect of creating and opening all
      * of the element's parents if they are not yet open.
      */
-    IErlElement create(IResource resource, IErlElement parent);
+    IErlElement create(IResource resource, IParent parent);
 
     /**
      * Create a reference OTP project
@@ -128,10 +128,10 @@ public interface IErlModelManager extends ISaveParticipant {
 
     void fire(int post_change);
 
-    IErlModule getModuleFromFile(IErlElement parent, String name,
+    IErlModule getModuleFromFile(IParent parent, String name,
             String initialText, String path, String key);
 
-    IErlModule getModuleFromText(IErlElement parent, String name,
+    IErlModule getModuleFromText(IParent parent, String name,
             String initialText, String key);
 
     public void removeModule(final IErlModule module);

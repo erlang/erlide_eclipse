@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
@@ -56,10 +57,13 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
     public List<IErlFunctionClause> getClauses() {
         final ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
-        for (final IErlElement el : fChildren) {
-            if (el instanceof IErlFunctionClause) {
-                fc.add((IErlFunctionClause) el);
+        try {
+            for (final IErlElement el : getChildren()) {
+                if (el instanceof IErlFunctionClause) {
+                    fc.add((IErlFunctionClause) el);
+                }
             }
+        } catch (final ErlModelException e) {
         }
         return fc;
     }

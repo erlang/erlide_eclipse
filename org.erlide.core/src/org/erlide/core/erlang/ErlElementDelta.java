@@ -1,8 +1,11 @@
 package org.erlide.core.erlang;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IResourceDelta;
+
+import com.google.common.collect.Lists;
 
 public class ErlElementDelta implements IErlElementDelta {
 
@@ -116,7 +119,7 @@ public class ErlElementDelta implements IErlElementDelta {
     protected ErlElementDelta createDeltaTree(final IErlElement element,
             final ErlElementDelta delta) {
         ErlElementDelta childDelta = delta;
-        final ArrayList<IErlElement> ancestors = getAncestors(element);
+        final List<IParent> ancestors = getAncestors(element);
         if (ancestors == null) {
             if (equalsAndSameParent(delta.getElement(), getElement())) {
                 // handle case of two jars that can be equals but not in the
@@ -131,10 +134,10 @@ public class ErlElementDelta implements IErlElementDelta {
                 // Assert.isTrue(false);
             }
         } else {
-            for (int i = 0, size = ancestors.size(); i < size; i++) {
-                final IErlElement ancestor = ancestors.get(i);
+            for (final IParent ancestor : ancestors) {
+                final IErlElement element2 = (IErlElement) ancestor;
                 final ErlElementDelta ancestorDelta = new ErlElementDelta(0, 0,
-                        ancestor);
+                        element2);
                 ancestorDelta.addAffectedChild(childDelta);
                 childDelta = ancestorDelta;
             }
@@ -257,17 +260,22 @@ public class ErlElementDelta implements IErlElementDelta {
         }
     }
 
-    private ArrayList<IErlElement> getAncestors(final IErlElement element) {
-        IErlElement parent = element.getParent();
+    private List<IParent> getAncestors(IErlElement element) {
+        IParent parent = element.getParent();
         if (parent == null) {
             return null;
         }
-        final ArrayList<IErlElement> parents = new ArrayList<IErlElement>();
+        final ArrayList<IParent> parents = Lists.newArrayList();
         while (!parent.equals(fElement)) {
             parents.add(parent);
-            parent = parent.getParent();
+            if (parent instanceof IErlElement) {
+                element = (IErlElement) parent;
+                parent = element.getParent();
+            } else {
+                break;
+            }
             if (parent == null) {
-                return null;
+                break;
             }
         }
         parents.trimToSize();
@@ -280,7 +288,8 @@ public class ErlElementDelta implements IErlElementDelta {
     protected boolean equalsAndSameParent(final IErlElement e1,
             final IErlElement e2) {
         IErlElement parent1;
-        return e1.equals(e2) && (parent1 = e1.getParent()) != null
+        return e1.equals(e2)
+                && (parent1 = (IErlElement) e1.getParent()) != null
                 && parent1.equals(e2.getParent());
     }
 

@@ -288,7 +288,7 @@ public class EditorUtility {
             return new FileEditorInput((IFile) resource);
         }
         if (!(element instanceof IErlModule)) {
-            element = element.getParent();
+            element = element.getModule();
         }
         if (element.getFilePath() != null) {
             final IPath path = new Path(element.getFilePath());

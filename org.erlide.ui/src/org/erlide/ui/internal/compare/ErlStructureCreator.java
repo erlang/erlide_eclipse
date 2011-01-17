@@ -345,7 +345,7 @@ public class ErlStructureCreator extends StructureCreator {
                 if (e instanceof IErlModule) {
                     break;
                 }
-                e = e.getParent();
+                e = (IErlElement) e.getParent();
             }
             Collections.reverse(args);
             return args.toArray(new String[args.size()]);

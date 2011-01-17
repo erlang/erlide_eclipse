@@ -403,7 +403,7 @@ public class ModelUtils {
             } else {
                 result.add(element.getName());
             }
-            element = element.getParent();
+            element = (IErlElement) element.getParent();
         }
         return StringUtils.join(DELIMITER, Lists.reverse(result));
     }
