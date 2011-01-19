@@ -45,7 +45,7 @@ public class CoverEventHandler extends EventHandler {
         return listeners;
     }
     
-    public synchronized void reset(int n) {
+  /*  public synchronized void reset(int n) {
         moduleNum = n;
         counter = 0;
     }
@@ -64,7 +64,7 @@ public class CoverEventHandler extends EventHandler {
                 return true;
             }
         return true;
-    }
+    }*/
 
     @Override
     protected void doHandleMsg(OtpErlangObject msg) throws Exception {
@@ -82,7 +82,7 @@ public class CoverEventHandler extends EventHandler {
             for (ICoverObserver obs : listeners)
                 obs.updateViewer();
             System.out.println("Got results!");
-            increaseCounter();
+//            increaseCounter();
         } else if ((tuple = getErrorReason(event)) != null) {
             String place = tuple.elementAt(1).toString();
             String type = tuple.elementAt(2).toString();

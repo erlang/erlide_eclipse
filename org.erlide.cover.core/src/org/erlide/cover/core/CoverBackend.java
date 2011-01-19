@@ -40,20 +40,15 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class CoverBackend {
 
     public static CoverBackend instance;
-
+    
     private Backend backend;
-
     private RuntimeInfo info;
-
     private ILaunchConfiguration config;
-
     private CoverEventHandler handler;
-
     private CoverLaunchData coverData;
-
     private CoverSettings settings;
-
     private String nodeName;
+    private boolean coverRunning;
 
     public static CoverBackend getInstance() {
         if (instance == null)
@@ -63,6 +58,7 @@ public class CoverBackend {
 
     private CoverBackend() {
         handler = new CoverEventHandler();
+        coverRunning = false;
     }
 
     public void initialize(ErlLaunchData data, CoverLaunchData coverData)
@@ -112,79 +108,17 @@ public class CoverBackend {
         // see how to obtain backend
     }
 
-    public void start() {
-
-        // clear statistics tree - prepare it for new results
-        StatsTreeModel model = StatsTreeModel.getInstance();
-        model.clear();
-        for (ICoverObserver obs : getListeners())
-            obs.updateViewer();
-
-        // TODO: change calls to erlang backend
-
-        int moduleNum = 0;
-        try {
-            backend.cast(Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
-                    new OtpErlangAtom(settings.getFramework()));
-            
-            for(CoverObject obj : settings.objects()) {
-            
-                if(obj.getType() == CoverObject.DIR) {
-                    OtpErlangObject num = backend.call(
-                            Constants.ERLANG_BACKEND, 
-                            Constants.FUN_MODULE_NUM,
-                            "s", 
-                            obj.getPath());
-                    moduleNum += Integer.parseInt(num.toString());
-                } else if (obj.getType() == CoverObject.MODULE) {
-                    moduleNum ++;
-                }
-            }
-            
-        } catch (BackendException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+    public synchronized void start() {
         
-        handler.reset(moduleNum);
-
-        for (CoverObject obj : settings.objects()) {
-
-            // ErlLogger.debug(path);
-
-            // IErlProject erlProj =
-            // ErlangCore.getModel().getErlangProject(pName);
-
-            ErlLogger.debug("Starting cover ..");
-
-            System.out.println("Starting cover..");
-
-            try {
-                // String moduleName = coverData.getModule().replace(".erl",
-                // "");
-                backend.cast(Constants.ERLANG_BACKEND,
-                        Constants.FUN_COVER_PREP, "sss",
-                        settings.getTypeAsString(), obj.getName(),
-                        obj.getPath());
-                System.out.println("Cast sent");
-                System.out.println(settings.getTypeAsString());
-            } catch (BackendException e) {
-                e.printStackTrace();
-                // TODO: throw exception or show a dialog - not started
-            }
+        if(!coverRunning) {
+            coverRunning = true;
+            new CoverRunner(this).start();
         }
-
-        try {
-            handler.waitForReport();
-            OtpErlangObject htmlPath = backend.call(Constants.ERLANG_BACKEND,
-                    Constants.FUN_INDEX, "");
-            System.out.println(htmlPath);
-            model.setIndex(htmlPath.toString().substring(1,
-                    htmlPath.toString().length() - 1));
-
-        } catch (BackendException e) {
-            e.printStackTrace();
-        }
+       
+    }
+    
+    public synchronized void coverageFinished() {
+        coverRunning = false;
     }
 
     public CoverEventHandler getHandler() {
@@ -201,6 +135,10 @@ public class CoverBackend {
 
     public List<ICoverObserver> getListeners() {
         return handler.getListeners();
+    }
+    
+    public CoverSettings getSettings() {
+        return settings;
     }
 
     // input from external plugins

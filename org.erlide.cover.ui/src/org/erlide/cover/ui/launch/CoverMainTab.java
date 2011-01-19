@@ -94,7 +94,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         createModuleGroup(comp);
         
         allRadio = new Button(comp, SWT.RADIO);
-        allRadio.setText("Run all tests in specific project, folder or file");
+        allRadio.setText("Run all tests in specific project");
         allRadio.setLayoutData(gData);
         allRadio.addSelectionListener(radioSelectionListener);
         
@@ -104,6 +104,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         appRadio.setText("Run tests for an application");
         appRadio.setLayoutData(gData);
         appRadio.addSelectionListener(radioSelectionListener);
+        appRadio.setEnabled(false);
         
         createApplicationGroup(comp);
         
@@ -390,7 +391,11 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 	
 	private void createAllTestsGroup(final Composite comp){
            
-        ElementTreeSelectionDialog fileDialog = new ElementTreeSelectionDialog(
+     /*
+      * For later use:
+      *
+      *    ElementTreeSelectionDialog fileDialog = new ElementTreeSelectionDialog(
+      
                 this.getShell(),
                 new WorkbenchLabelProvider(),
                 new BaseWorkbenchContentProvider());
@@ -427,9 +432,19 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 return true;
             }
             
-        });
+        });*/
+	        
+	    ElementListSelectionDialog projectDialog = 
+            new ElementListSelectionDialog(this.getShell(), 
+                    new ProjectLabelProvider());
         
-        fileBr = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, fileDialog);
+        Object[] elements = createProjectArray();
+        
+        projectDialog.setElements(elements);
+        projectDialog.setTitle("Select project");
+        projectDialog.setMessage("Select Erlang project: ");
+        
+        fileBr = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, projectDialog);
         fileBr.setFiledLength(600);
         fileBr.getTextGridData().horizontalSpan = 2;
         fileBr.addModifyListener(basicModifyListener);		

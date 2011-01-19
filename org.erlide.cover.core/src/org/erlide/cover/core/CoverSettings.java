@@ -42,14 +42,17 @@ public class CoverSettings {
             String path = p.getLocation().toString() + "/src/" + data.getModule();
             //TODO: better mechanizm for finding file paths within project
             objs.add(new CoverObject(CoverObject.MODULE, 
-                    data.getModule().replace(".erl", ""), path));
+                    data.getModule().replace(".erl", ""), path, path));
             break;
         case ALL:
-            path = ResourcesPlugin.getWorkspace().
-                    getRoot().getRawLocation().toString();
-            path += "/" + data.getFile();
-            System.out.println(path);
-            objs.add(new CoverObject(CoverObject.DIR, path));
+            System.out.println("all: " + data.getFile());
+            StringBuffer bf = new StringBuffer(ResourcesPlugin.getWorkspace().
+                    getRoot().getRawLocation().toString());
+            bf.append("/").append(data.getFile()).append("/");
+            System.out.println(bf);
+            String pathSrc = bf.toString() + "src";
+            String pathTst = bf.toString() + "test";
+            objs.add(new CoverObject(CoverObject.PROJ, pathSrc, pathTst));
             break;
         case APPLICATION:
             //TODO: finding application - should be simmilar to finding module

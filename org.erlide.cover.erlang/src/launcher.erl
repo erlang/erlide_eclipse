@@ -14,11 +14,11 @@
 %% Exported Functions
 %%----------------------------------------------
 -export([start/1,
-	 start_link/1,
-	 perform/3,
-	 prepare_and_perform/3,
-	 get_index/0,
-	 get_module_num/1]).
+		 start_link/1,
+		 stop/0,
+	 	 perform/3,
+	 	 prepare_and_perform/3,
+	 	 set_includes/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -35,28 +35,48 @@ start(Type) ->
 start_link(Type) ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE, [Type], []).
 
+stop() ->
+	gen_server:cast(?MODULE, stop).
+
 %% should be called if no cover-compilation
 %% over selected modules were performed (external launching)
-prepare_and_perform(Type, Name, Path) ->
+%% NameOrPathSrc -> module Name or Path to source files
+%% PathTst -> path to test files (or to module on its own)
+prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
 	TypeAtom = list_to_atom(Type),
-	AName = list_to_atom(Name),
 	io:format("prepare ~p ~n", [TypeAtom]),
-	gen_server:cast(?MODULE, {prep, TypeAtom, AName, Path}).
+	case TypeAtom of
+		module ->
+			MName = list_to_atom(NameOrPathSrc),
+			gen_server:call(?MODULE, {prep, TypeAtom, MName, PathTst});
+		application ->
+			AName = list_to_atom(NameOrPathSrc),
+			gen_server:call(?MODULE, {prep, TypeAtom, AName , PathTst});
+		_ ->
+			PathSrc = NameOrPathSrc,
+			gen_server:call(?MODULE, {prep, TypeAtom, PathSrc , PathTst})
+	end.
 
 %perform coverage (on cover_compiled data - after performing some tests)
-perform(Type,Name,Path) ->
+perform(Type,NameOrPathSrc,PathTst) ->
     TypeAtom = list_to_atom(Type), 
-    AName = list_to_atom(Name), 
-    gen_server:cast(?MODULE,{TypeAtom,AName,Path}).
+    io:format("prepare ~p ~n", [TypeAtom]),
+	case TypeAtom of
+		module ->
+			MName = list_to_atom(NameOrPathSrc),
+			gen_server:call(?MODULE, {TypeAtom, MName, PathTst});
+		application ->
+			AName = list_to_atom(NameOrPathSrc),
+			gen_server:call(?MODULE, {TypeAtom, AName , PathTst});
+		_ ->
+			PathSrc = NameOrPathSrc,
+			gen_server:call(?MODULE, {TypeAtom, PathSrc , PathTst})
+	end.
 
-%get results of coverage
-get_index() ->
-%	gen_server:cast(?MODULE, index).
-    gen_server:call(?MODULE,index).
+% set include directories
+set_includes(Includes) ->
+	gen_server:call(?MODULE, {includes, Includes}).
 
-get_module_num(Path) ->
-	gen_server:call(?MODULE, {module_num, Path}),
-	ok.
 
 %%----------------------------------------------
 %% Local Functions
@@ -70,137 +90,96 @@ init(Args) ->
 	State = #state{cover_type = Type},
 	{ok, State}.
 
-% cast -> only coverage
-%handle_cast(index, State) ->
-%	coverage:create_index(State#state.results_list);
-handle_cast({module, Module, _Path}, State) ->
+% cast 
+handle_cast(stop, State) ->
+	{stop, normal, State}.
+
+% call 
+handle_call({includes, Includes}, _From, State) ->
+	{reply, ok, State#state{includes = Includes}};
+
+handle_call({module, Module, _Path}, _From, State) ->
 	io:format("inside cast1~n"),
 	Report = coverage:create_report(?COVER_DIR, Module),
-	NewState = case Report of		
+	case Report of		
 		{ok, Res} ->
-			erlide_jrpc:event(?EVENT, Res),
-			ResList = State#state.results_list,
-			State#state{results_list = [Res | ResList]};
+			erlide_jrpc:event(?EVENT, Res);
 		{error, Reason} ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-												   type = "creating report",
-												   info = Reason}),
-			State
+												   type = 'creating report',
+												   info = Reason})
 	end,	
-	{noreply, NewState};
+	{reply, ok, State};
 
-handle_cast({application, Name, Src}, State) ->
+handle_call({all, Name}, _From, State) ->
+	{reply, ok, State};
+
+handle_call({application, Name, Src}, _From,  State) ->
 	io:format("inside cast2~n"),
-	{noreply, State};
+	{reply, ok, State};
 
-handle_cast({file, Name, Src}, State) ->
-	io:format("inside cast3~n"),
-	{noreply, State};
 
-handle_cast({dir, _Name, Path}, State) ->
-	io:format("inside cast4~n"),
-	
-	Modules = get_modules(Path),
-	
-	lists:foreach(fun(Module) ->
-						  Report = coverage:create_report(?COVER_DIR, Module),
-						  case Report of		
-								{ok, Res} ->
-									erlide_jrpc:event(?EVENT, Res);
-								{error, Reason} ->
-									erlide_jrpc:event(?EVENT,
-													   #cover_error{place = Module,
-												   		type = "creating report",
-												   		info = Reason})
-						  end
-					end,Modules),	
-	{noreply, State};
-
-% cast -> covarage with preparation
-handle_cast({prep, module, Module, Path}, State) ->
+% call -> covarage with preparation
+handle_call({prep, module, Module, Path}, _From, State) ->
 	io:format("inside cast5, ~p ~n", [State#state.cover_type]),
 	ok = coverage:compile(Module, Path),
 	ok = coverage:prepare(State#state.cover_type, Module, Path),
-	Report = coverage:create_report(?COVER_DIR, Module),
-	NewState = case Report of		
+	Report = coverage:create_report(Module),
+	PathIdx = case Report of		
 		{ok, Res} ->
 			erlide_jrpc:event(?EVENT, Res),
-			ResList = State#state.results_list,
-			State#state{results_list = [Res | ResList]};
+			coverage:create_index([Res]);
 		{error, Reason} ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-												   type = "creating report",
+												   type = 'creating report',
 												   info = Reason}),
-			State
+			no_file
 	end,
-	{noreply, NewState};
+	io:format("indexpath ~p~n", PathIdx),
+	{reply, PathIdx, State};
 
-handle_cast({prep, application, Name, Src}, State) ->
-	io:format("inside cast6~n"),
-	{noreply, State};
-
-handle_cast({prep, file, _Name, Path}, State) ->
-	Module = list_to_atom(filename:basename(Path,".erl")),  %% java should check if file is an Erlang file
-%	io:format("inside cast7~n"),
-%	ok = coverage:compile(Module, Path),%
-%	ok = coverage:prepare_file(State#state.cover_type, Module, Path),
-%	Report = coverage:create_report(?COVER_DIR, Module),
-%	NewState = case Report of		
-%		{ok, Res} ->
-%			erlide_jrpc:event(?EVENT, Res),
-%			ResList = State#state.results_list,
-%			State#state{results_list = [Res | ResList]};
-%		{error, Reason} ->
-%			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-%												   type = "creating report",
-%												   info = Reason}),
-%			State
-%	end,
-	gen_server:cast(?MODULE, {prep, module, Module, Path}),
-	{noreply, State};
-
-handle_cast({prep, dir, _Name, Path}, State) ->  %%tree?
-	io:format("inside cast8~n"),
-	{ok, Comp} = coverage:compile_dir(Path),
-	%% what if error??
-	Modules = lists:map(fun({ok, Mod}) ->
+handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
+	
+	{ok, Comp} = coverage:compile_dir(PathSrc),
+	
+	ModulesSrc = lists:map(fun({ok, Mod}) ->
 								Mod
 						end, Comp),
-	lists:foreach(fun(Module) ->
+	
+	ModulesTst = get_modules(PathTst),
+	Res = lists:foldl(fun(Test, _) ->
 						 % PathM = filename:join(Path, atom_to_list(Module) ++ ".erl"),
-						  io:format(Module),
-						  PathM = search_module(Path, Module),
-						  ok = coverage:prepare(State#state.cover_type, Module, PathM),
-						  Report = coverage:create_report(?COVER_DIR, Module),
-						  case Report of		
-								{ok, Res} ->
-									erlide_jrpc:event(?EVENT, Res);
-								{error, Reason} ->
-									erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-												   type = "creating report",
-												   info = Reason})
-						  end
-					end,Modules),
-	{noreply, State};
+						  io:format("test: ~p~n", [Test]),
+						  [PathM] = search_module(PathTst, Test),
+						  TestA = list_to_atom(Test),
+						  coverage:compile_test(TestA, PathM),
+						  ok = coverage:prepare(State#state.cover_type, TestA, PathM),
+						  coverage:create_report(ModulesSrc)
+					end, #cover_error{place = 'the begining',
+									  type = 'creating report',
+									  info = 'no tests'}, ModulesTst),
+	 Path = case Res of
+				#cover_error{} ->
+					erlide_jrpc:event(?EVENT, Res);
+				_ ->
+					coverage:create_index(Res)
+			end,
+	{reply, Path, State};
+
+handle_call({prep, application, Name, Src}, _From, State) ->
+	io:format("inside cast6~n"),
+	{reply, ok, State};
 
 %% cast default
-handle_cast(_, State) ->
-	io:format("ioioio~n"),
-	{noreply, State}.
-
-% call
-%call(index, ...) 
-handle_call(index, _From, State) ->
-	Path = coverage:create_index(State#state.results_list),
-	{reply, Path, State};
-handle_call({module_num, Path}, _From, State) ->
-	Num = length(get_modules(Path)),
-	io:format("~p~n", [Num]),
-	{reply, Num, State}.
+handle_call(_, _From, State) ->
+	io:format("else~n"),
+	{reply, ok, State}.
 
 %terminate
-terminate(normal, State) ->
-	init:stop(0). %% TODO imporove terminate
+terminate(normal, _State) ->
+	init:stop(0);
+terminate(_Reason, _State) ->
+	init:stop(1).
 
 
 %%----------------------------------------------

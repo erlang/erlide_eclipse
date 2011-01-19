@@ -15,9 +15,10 @@
 %%----------------------------------------------
 -export([compile/2,
 		 compile_dir/1,
+		 compile_test/2,
 		 prepare/3,
 		 prepare_file/3,
-		 create_report/2,
+		 create_report/1,
 		 create_index/1]).
 
 %%----------------------------------------------
@@ -27,7 +28,6 @@
 %compile module
 compile(Module, Path) ->
 	io:format("inside compile~n"),
-	erlide_jrpc:event(?EVENT, {Module, Path}),
 	case cover:compile(Path) of		%%TODO: include files	
 			{ok, _M} -> 
 				io:format("compilation ok~n"),
@@ -51,11 +51,25 @@ compile_dir(Dir) ->
 		Res -> {ok, Res}
 	end.
 
+%tests compilation (if modules with tests are diffrent then tested modules)
+compile_test(Module, Path) ->
+	io:format("~p~n~p~n", [Module, Path]),
+	Options = [debug_info,binary, report_errors, report_warings],
+	Binary = case compile:file(Path, Options) of
+				 {ok, Module, Bin} ->
+					Bin;
+				 _ ->
+					 erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+												   type = 'preparing test',
+												   info = "compilation error"}),
+					 launcher:stop()
+			 end,
+	code:load_binary(Module, Path, Binary).
+
 %prepare module
-prepare(eunit, Module, _Path) ->
+prepare(eunit, Module,  Path) ->
 	io:format("inside prepare~n"),
-	erlide_jrpc:event(?EVENT, {Module, eunit}),
-	io:format("~p~n", [Module]),
+	
 	case eunit:test(Module) of
 			ok ->
 				erlide_jrpc:event(?EVENT, {Module, test_ok}),
@@ -82,14 +96,31 @@ prepare_file(eunit, Module, Path) ->
 	end.
 
 %creates report
-create_report(_Dir, Module) ->
+create_report(Modules) when is_list(Modules) ->
+	%io:format(Modules),
+	lists:foldl(fun(Module, Acc) ->
+						Res = create_report(Module),
+						case Res of
+							{ok, Result} ->
+								erlide_jrpc:event(?EVENT, Result),
+								[Result | Acc];
+							{error, Reason} ->
+								erlide_jrpc:event(?EVENT, 
+												#cover_error{place = Module,
+												   type = 'creating report',
+												   info = Reason}),
+								Acc
+						end
+				end, [], Modules);
+
+create_report(Module) ->
 	io:format(Module),
 	ModRes = cover:analyse(Module, module),
 	FunRes = cover:analyse(Module, function),
 	LineRes = cover:analyse(Module, calls, line), %%calls!
 	io:format("~p~n~p~n~p~n", [ModRes, FunRes, LineRes]),
 	
-	erlide_jrpc:event(?EVENT, {Module, ModRes, FunRes}),
+%	erlide_jrpc:event(?EVENT, {Module, ModRes, FunRes}),
 	case { ModRes, FunRes, LineRes} of
 		{{ok, _}, {ok, _}, {ok, _}} ->
 			Res = prepare_result(ModRes, FunRes, LineRes, Module),
@@ -105,7 +136,7 @@ create_index(Results) ->
 		{error, Res} ->
 			erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index',
 							  	info = Res}),
-		   	#cover_error{};
+		   	no_file;
 		_ -> 
 			Total_percent = percentage_total(Results),
 			output_index(IndexPath, Results, Total_percent),

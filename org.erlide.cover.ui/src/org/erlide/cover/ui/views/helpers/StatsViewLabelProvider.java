@@ -7,28 +7,47 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.cover.views.model.ICoverageStats;
+import org.erlide.cover.views.model.ModuleStats;
+import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 public class StatsViewLabelProvider extends LabelProvider
 		implements ITableLabelProvider
 		{
-
-/*	public String getText(Object obj) {
-		return obj.toString();
-	}
-	public Image getImage(Object obj) {
-		String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-		if (obj instanceof StatsTreeParent)
-		   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-	}*/
 	
 	public Image getColumnImage(Object element, int columnIndex) {
-		if(columnIndex == 3){
-		    ICoverageStats statsEl = (ICoverageStats)element;
-		    return drawPercentage(statsEl.getPrecentage());
-		}
-		return null;
+	    Image img;
+	    switch(columnIndex) {
+	    case 0:
+	        if(element instanceof ModuleStats) {
+	            
+	         /*   IErlModule m = ErlangCore.getModel().
+	                findModule(((ModuleStats)element).getLabel());
+	            img = ErlangElementImageProvider
+                .getErlImageDescriptor(m,
+                        ErlangElementImageProvider.SMALL_ICONS).
+                        createImage(); */
+	            //TODO: correct the image size
+	            img = null;
+	            
+	        } else {
+	            img = null;
+	        }
+	        break;
+	    case 3:
+	        IErlModule m = ErlangCore.getModel().
+            findModule(((StatsTreeObject)element).getLabel());
+	        ICoverageStats statsEl = (ICoverageStats)element;
+            img = drawPercentage(statsEl.getPrecentage());
+            break;
+        default:
+            img = null;    
+	    }
+	    
+		return img;
 	}
 	
 

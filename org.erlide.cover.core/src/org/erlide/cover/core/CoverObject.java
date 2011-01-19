@@ -9,20 +9,22 @@ package org.erlide.cover.core;
 public class CoverObject {
     
     public static final int MODULE = 0;
-    public static final int DIR = 1;
+    public static final int PROJ = 1;
     
     private int type;
     private String name;
-    private String path;
+    private String pathSrc;
+    private String pathTst;
     
-    public CoverObject(int type, String path) {
-        this(type, "", path);
+    public CoverObject(int type, String pathSrc, String pathTst) {
+        this(type, "", pathSrc, pathTst);
     }
     
-    public CoverObject(int type, String name, String path) {
+    public CoverObject(int type, String name, String pathSrc, String pathTst) {
         this.type = type;
         this.name = name;
-        this.path = path;
+        this.pathSrc = pathSrc;
+        this.pathTst = pathTst;
     }
 
     public int getType() {
@@ -33,8 +35,12 @@ public class CoverObject {
         return name;
     }
 
-    public String getPath() {
-        return path;
+    public String getPathSrc() {
+        return pathSrc;
+    }
+    
+    public String getPathTst() {
+        return pathTst;
     }
     
 }
