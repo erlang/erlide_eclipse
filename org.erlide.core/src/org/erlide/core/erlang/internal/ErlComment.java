@@ -4,7 +4,7 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlComment;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 
 /**
@@ -16,7 +16,7 @@ public class ErlComment extends SourceRefElement implements IErlComment {
     private final boolean fIsEdoc;
     private final boolean fIsHeader;
 
-    public ErlComment(final IErlElement parent, final String name,
+    public ErlComment(final IParent parent, final String name,
             final boolean isEdoc, final boolean isHeader) {
         super(parent, name);
         fIsEdoc = isEdoc;

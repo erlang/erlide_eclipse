@@ -16,6 +16,7 @@ import java.util.List;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -26,7 +27,7 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     final String head;
     final List<String> parameters;
 
-    protected ErlFunctionClause(final IErlElement parent, final String name,
+    protected ErlFunctionClause(final IParent parent, final String name,
             final String head, final OtpErlangList parameters) {
         super(parent, name);
         this.head = head;
@@ -69,7 +70,12 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     }
 
     public String getFunctionName() {
-        return getParent().getName();
+        final IParent parent = getParent();
+        if (parent instanceof IErlElement) {
+            final IErlElement element = (IErlElement) parent;
+            return element.getName();
+        }
+        return null;
     }
 
     public int getArity() {

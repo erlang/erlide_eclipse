@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -17,7 +18,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
     private final List<String> entries;
     private final String externalName;
 
-    public ErlExternalReferenceEntryList(final IErlElement parent,
+    public ErlExternalReferenceEntryList(final IParent parent,
             final String name, final String externalName,
             final String externalIncludes, final String externalModules) {
         super(parent, name);

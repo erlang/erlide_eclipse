@@ -9,6 +9,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -24,7 +25,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     private final String entry;
     private final boolean isRoot;
 
-    protected ErlExternalReferenceEntry(final IErlElement parent,
+    protected ErlExternalReferenceEntry(final IParent parent,
             final String name, final String entry, final boolean isRoot) {
         super(parent, name);
         this.entry = entry;
@@ -47,7 +48,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return true;
     }
 
-    public static List<IErlElement> getEntryChildren(final IErlElement parent,
+    public static List<IErlElement> getEntryChildren(final IParent parent,
             final String fileName, final boolean isRoot, final Backend backend,
             final OtpErlangList pathVars) {
         final List<String> external1 = ErlideOpen.getExternal1(backend,

@@ -237,7 +237,7 @@ public class OpenAction extends SelectionDispatchAction {
             parent = resource.getParent();
         }
         final IResource r = ResourceUtil
-                .recursiveFindNamedResourceWithReferences(project,
+                .recursiveFindNamedModuleResourceWithReferences(project,
                         res.getName(),
                         PluginUtils.getIncludePathFilterCreator(parent));
         if (r instanceof IFile) {

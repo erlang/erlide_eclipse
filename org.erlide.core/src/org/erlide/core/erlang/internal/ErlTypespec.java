@@ -10,6 +10,7 @@
 package org.erlide.core.erlang.internal;
 
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.IParent;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -27,7 +28,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
      * @param parent
      * @param name
      */
-    protected ErlTypespec(final ErlElement parent, final String name,
+    protected ErlTypespec(final IParent parent, final String name,
             final OtpErlangObject value, final String extra) {
         super(parent, name);
         fValue = value;

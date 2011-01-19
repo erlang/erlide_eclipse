@@ -25,6 +25,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -37,7 +38,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
     protected IResource findResult;
 
-    protected Openable(final IErlElement parent, final String name) {
+    protected Openable(final IParent parent, final String name) {
         super(parent, name);
     }
 
@@ -291,12 +292,15 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * 
      */
     protected boolean parentExists() {
-
-        final IErlElement parentElement = getParent();
-        if (parentElement == null) {
+        final IParent parent = getParent();
+        if (parent == null) {
             return true;
         }
-        return parentElement.exists();
+        if (parent instanceof IErlElement) {
+            final IErlElement element = (IErlElement) parent;
+            return element.exists();
+        }
+        return false;
     }
 
     /**
@@ -330,13 +334,16 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     protected void addModules(final List<IErlModule> modules) {
-        for (final IErlElement e : fChildren) {
-            if (e instanceof IErlModule) {
-                modules.add((IErlModule) e);
-            } else if (e instanceof ErlFolder) {
-                final ErlFolder f = (ErlFolder) e;
-                f.addModules(modules);
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlModule) {
+                    modules.add((IErlModule) e);
+                } else if (e instanceof ErlFolder) {
+                    final ErlFolder f = (ErlFolder) e;
+                    f.addModules(modules);
+                }
             }
+        } catch (final ErlModelException e) {
         }
     }
 }
