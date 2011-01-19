@@ -2,6 +2,6 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler Core Plugin
 Bundle-SymbolicName: org.erlide.wrangler.core;singleton:=true
-Bundle-Version: 0.9.1.qualifier
+Bundle-Version: 0.9.2.qualifier
 Bundle-Vendor: UKC
 Require-Bundle: org.erlide.core
