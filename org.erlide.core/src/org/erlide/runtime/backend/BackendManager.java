@@ -265,7 +265,7 @@ public final class BackendManager extends OtpNodeStatus implements
                         false);
                 info.useLongName(false);
             }
-            return workingCopy.doSave();
+            return workingCopy;
         } catch (final CoreException e) {
             e.printStackTrace();
             return null;
