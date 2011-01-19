@@ -29,7 +29,9 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
+import org.erlide.core.erlang.IErlModelMap;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
@@ -63,15 +65,16 @@ public class ErlModule extends Openable implements IErlModule {
         moduleKind = ErlideUtil.nameToModuleKind(name);
         this.path = path;
         if (ErlModelManager.verbose) {
-            IErlElement element = (IErlElement) parent;
+            final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        final ErlModelMap erlModelMap = ErlModelMap.getDefault();
-        final ErlModuleInternal moduleInternal = new ErlModuleInternal(path,
+        final IErlModelMap erlModelMap = ErlangCore.getModelMap();
+        final IErlModuleInternal moduleInternal = new ErlModuleInternal(path,
                 ErlangToolkit.createScannerModuleName(this), initialText);
         erlModelMap.put(path, moduleInternal);
+        erlModelMap.putModule(this);
     }
 
     @Override
@@ -89,9 +92,10 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
-    /**
-     * @param underlyingResource
-     * @return
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.core.erlang.internal.ErlElement#getFilePath()
      */
     @Override
     public String getFilePath() {
@@ -391,6 +395,7 @@ public class ErlModule extends Openable implements IErlModule {
         // currently unused
     }
 
+    @Override
     public String getModuleName() {
         return ErlideUtil.withoutExtension(getName());
     }
@@ -414,6 +419,7 @@ public class ErlModule extends Openable implements IErlModule {
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
+        ErlangCore.getModelMap().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {

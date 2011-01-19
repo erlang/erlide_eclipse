@@ -400,6 +400,9 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlElement findElement(final IResource rsrc,
             final boolean openElements) {
+        if (rsrc == null) {
+            return null;
+        }
         final IPath path = rsrc.getFullPath();
         IParent p = this;
         for (final String segment : path.segments()) {

@@ -145,7 +145,7 @@ public class ModelUtils {
             IResource re = null;
             IProject project = null;
             for (final IProject p : projects) {
-                re = ResourceUtil.recursiveFindNamedResourceWithReferences(p,
+                re = ResourceUtil.recursiveFindNamedModuleResourceWithReferences(p,
                         element.getFilenameLastPart(),
                         org.erlide.core.erlang.util.PluginUtils
                                 .getIncludePathFilterCreator(module
@@ -163,7 +163,7 @@ public class ModelUtils {
                     } else {
                         s = findIncludeFile(project, s, externalIncludes);
                     }
-                    re = ResourceUtil.recursiveFindNamedResourceWithReferences(
+                    re = ResourceUtil.recursiveFindNamedModuleResourceWithReferences(
                             project, s, org.erlide.core.erlang.util.PluginUtils
                                     .getIncludePathFilterCreator(module
                                             .getResource().getParent()));
@@ -331,6 +331,10 @@ public class ModelUtils {
             }, 0, Kind.MODULE);
         }
         return result;
+    }
+
+    public static boolean isExternalFilesProject(final IProject project) {
+        return project.getName().equals("External_Files");
     }
 
     static public IErlModule openInExternalFilesProject(final String path)

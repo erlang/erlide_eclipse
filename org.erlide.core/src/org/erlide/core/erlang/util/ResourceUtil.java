@@ -106,20 +106,22 @@ public class ResourceUtil {
     }
 
     // FIXME can't we use erlang model instead?
-    public static IResource recursiveFindNamedResourceWithReferences(
-            final IContainer container, final String name,
+    public static IResource recursiveFindNamedModuleResourceWithReferences(
+            final IContainer container, final String fileName,
             final ContainerFilterCreator filterCreator) throws CoreException {
         final IProject project = container.getProject();
         final ContainerFilter filter = filterCreator
                 .createFilterForProject(project);
-        final IResource r = recursiveFindNamedResource(container, name, filter);
+        final IResource r = recursiveFindNamedResource(container, fileName,
+                filter);
         if (r != null) {
             return r;
         }
         for (final IProject p : project.getReferencedProjects()) {
             final ContainerFilter pFilter = filterCreator
                     .createFilterForProject(p);
-            final IResource r1 = recursiveFindNamedResource(p, name, pFilter);
+            final IResource r1 = recursiveFindNamedResource(p, fileName,
+                    pFilter);
             if (r1 != null) {
                 return r1;
             }

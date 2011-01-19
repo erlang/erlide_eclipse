@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.erlang.ErlModelException;
@@ -28,6 +29,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
@@ -438,11 +440,18 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Debugging purposes
      */
     protected void toStringAncestors(final StringBuilder buffer) {
-        final ErlElement parentElement = (ErlElement) getParent();
-        if (parentElement != null && parentElement.getParent() != null) {
-            buffer.append("[> "); //$NON-NLS-1$
-            parentElement.toStringInfo(0, buffer, NO_INFO);
-            parentElement.toStringAncestors(buffer);
+        final IParent parent = getParent();
+        if (parent != null) {
+            if (parent instanceof ErlElement) {
+                final ErlElement parentElement = (ErlElement) parent;
+                buffer.append("[> "); //$NON-NLS-1$
+                parentElement.toStringInfo(0, buffer, NO_INFO);
+                parentElement.toStringAncestors(buffer);
+            } else if (parent instanceof IErlModuleInternal) {
+                final IErlModuleInternal internal = (IErlModuleInternal) parent;
+                buffer.append("[ "); //$NON-NLS-1$
+                buffer.append(internal.getPath());
+            }
             buffer.append("] "); //$NON-NLS-1$
         }
     }
@@ -667,7 +676,25 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return Util.normalizeSpaces(toString());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.core.erlang.IErlElement#getFilePath()
+     */
     public String getFilePath() {
         return null;
     }
+
+    public String getModuleName() {
+        final IErlModule module = getModule();
+        if (module != null) {
+            return module.getName();
+        }
+        final String path = getFilePath();
+        if (path != null) {
+            return new Path(path).lastSegment();
+        }
+        return null;
+    }
+
 }

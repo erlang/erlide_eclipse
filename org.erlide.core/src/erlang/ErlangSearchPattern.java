@@ -210,7 +210,7 @@ public abstract class ErlangSearchPattern {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
             final String withoutExtension = ErlideUtil
-                    .withoutExtension(function.getModule().getName());
+                    .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
                     true);

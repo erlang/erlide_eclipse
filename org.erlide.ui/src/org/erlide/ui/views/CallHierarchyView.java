@@ -58,7 +58,7 @@ public class CallHierarchyView extends ViewPart {
         public String getText(final Object element) {
             if (element instanceof IErlFunction) {
                 final IErlFunction ref = (IErlFunction) element;
-                final String n = ref.getModule().getModuleName();
+                final String n = ref.getModuleName();
                 return n + " : " + ref.toString();
             }
             return super.getText(element);
@@ -74,7 +74,7 @@ public class CallHierarchyView extends ViewPart {
             input = newInput;
             if (newInput instanceof IErlFunction) {
                 final IErlFunction fun = (IErlFunction) newInput;
-                lblRoot.setText(fun.getModule().getModuleName() + " : "
+                lblRoot.setText(fun.getModuleName() + " : "
                         + fun.getNameWithArity());
             } else if (input instanceof String) {
                 lblRoot.setText((String) input);

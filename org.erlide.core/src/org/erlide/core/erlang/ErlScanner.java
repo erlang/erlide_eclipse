@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
-import org.erlide.core.erlang.internal.IErlModuleInternal;
 import org.erlide.jinterface.backend.IDisposable;
 
 import erlang.ErlideScanner;

@@ -259,7 +259,7 @@ public final class ErlModelManager implements IErlModelManager {
             }
             final String name = file.getName();
             final IErlModule module = new ErlModule(parent, name, initialText,
-                    file, null);
+                    file, file.getLocation().toPortableString());
             if (parent != null) {
                 parent.addChild(module);
             }

@@ -18,6 +18,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.Util;
@@ -241,9 +242,9 @@ public final class ErlParser {
             if (comment != null) {
                 comment = comment.replaceAll("\n", "<br/>");
             }
-            f = new ErlFunction((ErlElement) erlModuleInternal,
-                    name.atomValue(), arity.intValue(), Util.stringValue(head),
-                    comment, exported, parameters);
+            f = new ErlFunction(erlModuleInternal, name.atomValue(),
+                    arity.intValue(), Util.stringValue(head), comment,
+                    exported, parameters);
         } catch (final OtpErlangRangeException e) {
             return f;
         }
@@ -447,8 +448,8 @@ public final class ErlParser {
         final String s = Util.stringValue(extra);
         final int p = s.indexOf('(');
         final String typeName = p < 0 ? s : s.substring(0, p);
-        final ErlTypespec a = new ErlTypespec((ErlElement) erlModuleInternal,
-                typeName, null, s);
+        final ErlTypespec a = new ErlTypespec(erlModuleInternal, typeName,
+                null, s);
         setPos(a, pos, false);
         return a;
     }
@@ -496,12 +497,16 @@ public final class ErlParser {
             return false;
         }
         try {
-            // pos={{Line, LastLine, Offset}, PosLength} or {{Line, Offset},
-            // PosLength}
+            // pos=
+            // {{Line, LastLine, Offset}, PosLength} or
+            // {{Line, Offset}, PosLength}
             final OtpErlangTuple tpos = (OtpErlangTuple) pos;
             final OtpErlangTuple tpos1 = (OtpErlangTuple) tpos.elementAt(0);
-            final int line = ((OtpErlangLong) tpos1.elementAt(0)).intValue();
-            int lastLine = ((OtpErlangLong) tpos1.elementAt(1)).intValue();
+            final OtpErlangLong lenL = (OtpErlangLong) tpos.elementAt(1);
+            final OtpErlangLong lineL = (OtpErlangLong) tpos1.elementAt(0);
+            final OtpErlangLong lastLineL = (OtpErlangLong) tpos1.elementAt(1);
+            final int line = lineL.intValue();
+            int lastLine = lastLineL.intValue();
             int ofs;
             if (tpos1.arity() > 2) {
                 ofs = ((OtpErlangLong) tpos1.elementAt(2)).intValue();
@@ -509,7 +514,7 @@ public final class ErlParser {
                 ofs = lastLine;
                 lastLine = line;
             }
-            final int len = ((OtpErlangLong) tpos.elementAt(1)).intValue();
+            final int len = lenL.intValue();
             setPos(e, line, lastLine, ofs, len, minusOne);
             return true;
         } catch (final OtpErlangRangeException ex) {

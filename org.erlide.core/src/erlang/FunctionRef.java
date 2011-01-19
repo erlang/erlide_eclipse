@@ -1,7 +1,6 @@
 package erlang;
 
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModule;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
 
@@ -43,8 +42,7 @@ public class FunctionRef {
     }
 
     public FunctionRef(final IErlFunction parent) {
-        final IErlModule m = parent.getModule();
-        module = m.getModuleName();
+        module = parent.getModuleName();
         function = parent.getName();
         arity = parent.getArity();
     }

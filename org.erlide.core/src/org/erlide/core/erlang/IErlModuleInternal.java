@@ -1,11 +1,8 @@
-package org.erlide.core.erlang.internal;
+package org.erlide.core.erlang;
 
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.erlang.ErlToken;
-import org.erlide.core.erlang.IErlComment;
-import org.erlide.core.erlang.IParent;
 
 public interface IErlModuleInternal extends IParent {
 

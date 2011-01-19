@@ -11,6 +11,7 @@ import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlModel;
 

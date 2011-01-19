@@ -2519,4 +2519,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return stateDirCached;
     }
 
+    public String getPath() {
+        return getModule().getFilePath();
+    }
+
 }

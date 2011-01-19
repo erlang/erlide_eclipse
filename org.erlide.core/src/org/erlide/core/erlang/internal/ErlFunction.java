@@ -44,7 +44,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
      * @param head
      * @param comment
      */
-    protected ErlFunction(final ErlElement parent, final String name,
+    protected ErlFunction(final IParent parent, final String name,
             final int arity, final String head, final String comment,
             final boolean exported, final OtpErlangList parameters) {
         super(parent, name);
