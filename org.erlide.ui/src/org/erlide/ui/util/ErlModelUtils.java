@@ -397,14 +397,13 @@ public class ErlModelUtils {
     }
 
     public static void openElement(final IErlElement element)
-            throws PartInitException, ErlModelException {
+            throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(element);
         EditorUtility.revealInEditor(editor, element);
     }
 
     public static void openSourceRange(final IErlModule module,
-            final ISourceRange sourceRange) throws PartInitException,
-            ErlModelException {
+            final ISourceRange sourceRange) throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(module);
         EditorUtility.revealInEditor(editor, sourceRange);
     }
