@@ -22,9 +22,9 @@ public class ErlScanner implements IDisposable {
     private final String scannerName;
 
     public ErlScanner(final String scannerName, final String initialText,
-            final String path) {
+            final String path, final boolean updateCaches) {
         this.scannerName = scannerName;
-        ErlideScanner.initialScan(scannerName, path, initialText, false);
+        ErlideScanner.initialScan(scannerName, path, initialText, updateCaches);
     }
 
     public void addRef() {

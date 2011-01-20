@@ -74,7 +74,7 @@ public class ErlModule extends Openable implements IErlModule {
         parsed = false;
         scannerName = ErlangToolkit.createScannerModuleName(this);
         scanner = null;
-        updateCaches = false;
+        updateCaches = true;
         comments = Lists.newArrayList();
         if (ErlModelManager.verbose) {
             final IErlElement element = (IErlElement) parent;
@@ -235,7 +235,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public void removeChildren() {
         super.removeChildren();
-
+        comments.clear();
     }
 
     public synchronized long getTimestamp() {
@@ -529,7 +529,10 @@ public class ErlModule extends Openable implements IErlModule {
         if (path == null) {
             return null;
         }
-        return new ErlScanner(scannerName, initialText, path);
+        if (initialText == null) {
+            initialText = "";
+        }
+        return new ErlScanner(scannerName, initialText, path, updateCaches);
     }
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {

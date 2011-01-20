@@ -291,10 +291,9 @@ public class EditorUtility {
         String filePath = element.getFilePath();
         while (filePath == null) {
             final IParent parent = element.getParent();
-            if (parent instanceof IErlModule) {
-                filePath = element.getFilePath();
-            } else if (parent instanceof IErlElement) {
+            if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;
+                filePath = element.getFilePath();
             } else {
                 break;
             }

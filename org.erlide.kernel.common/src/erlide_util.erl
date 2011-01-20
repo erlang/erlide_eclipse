@@ -86,7 +86,7 @@ check_and_renew_cached(SourceFileName, CacheFileName,
         {no_cache, SourceModDate} ->
 	    ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
-            ?D({renewing, CacheFileName}),
+            ?D({renewing, CacheFileName, UpdateCache}),
 	    case UpdateCache of
 		true ->
 		    renew_cache(SourceModDate, Version, CacheFileName, Term),
@@ -179,7 +179,9 @@ renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
     BinDate = date_to_bin(SourceFileModDate),
     B = term_to_binary(Term, [compressed]),
     _Delete = file:delete(CacheFileName),
-    _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>).
+    _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>),
+    ?D(_Write),
+    ?D(CacheFileName).
 
 bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
     {{Y, Mo, D}, {H, M, S*2}}.

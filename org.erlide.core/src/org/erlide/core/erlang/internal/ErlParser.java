@@ -246,7 +246,7 @@ public final class ErlParser {
         } catch (final OtpErlangRangeException e) {
             return f;
         }
-        setPos(f, pos, false);
+        setPos(f, pos, true);
         try {
             setNamePos(f, namePos);
         } catch (final OtpErlangRangeException e) {
@@ -279,7 +279,7 @@ public final class ErlParser {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.warn(e);
         }
-        setPos(cl, cpos, false);
+        setPos(cl, cpos, true);
         return cl;
     }
 
