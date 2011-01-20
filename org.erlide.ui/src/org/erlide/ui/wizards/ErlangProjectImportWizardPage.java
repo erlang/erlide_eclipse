@@ -236,30 +236,34 @@ public class ErlangProjectImportWizardPage extends
                 .setText(WizardMessages.FileImport_overwriteExisting);
         overwriteExistingResourcesCheckbox.setEnabled(false);
 
-        // copy projects into workspace
-        copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup, SWT.CHECK);
-        copyProjectsIntoWorkspaceCheckbox.setFont(optionsGroup.getFont());
-        copyProjectsIntoWorkspaceCheckbox
-                .setText(WizardMessages.FileImport_copyProjectIntoWorkspace);
-        copyProjectsIntoWorkspaceCheckbox
-                .addSelectionListener(new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(final SelectionEvent e) {
-                        copyFiles = copyProjectsIntoWorkspaceCheckbox
-                                .getSelection();
-                        if (copyFiles) {
-                            enableButtonGroup(false);
-                            enableSourceGroup(true);
-                            enableResourceTreeGroup(true);
-                            // setAllSelections(false);
-                        } else {
-                            // setAllSelections(tr);
-                            enableButtonGroup(false);
-                            enableResourceTreeGroup(true);
+        if (!ErlangProjectImportWizard.COPY_ONLY) {
+            // copy projects into workspace
+            copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup,
+                    SWT.CHECK);
+            copyProjectsIntoWorkspaceCheckbox.setFont(optionsGroup.getFont());
+            copyProjectsIntoWorkspaceCheckbox
+                    .setText(WizardMessages.FileImport_copyProjectIntoWorkspace);
+            copyProjectsIntoWorkspaceCheckbox
+                    .addSelectionListener(new SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(final SelectionEvent e) {
+                            copyFiles = ErlangProjectImportWizard.COPY_ONLY
+                                    || copyProjectsIntoWorkspaceCheckbox
+                                            .getSelection();
+                            if (copyFiles) {
+                                enableButtonGroup(false);
+                                enableSourceGroup(true);
+                                enableResourceTreeGroup(true);
+                                // setAllSelections(false);
+                            } else {
+                                // setAllSelections(tr);
+                                enableButtonGroup(false);
+                                enableResourceTreeGroup(true);
+                            }
                         }
-                    }
-                });
-        // copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+                    });
+            // copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+        }
     }
 
     /**
@@ -924,7 +928,9 @@ public class ErlangProjectImportWizardPage extends
             // .getBoolean(STORE_CREATE_CONTAINER_STRUCTURE_ID);
             // createContainerStructureButton.setSelection(createStructure);
             // createOnlySelectedButton.setSelection(!createStructure);
-            copyProjectsIntoWorkspaceCheckbox.setSelection(copyFiles);
+            if (!ErlangProjectImportWizard.COPY_ONLY) {
+                copyProjectsIntoWorkspaceCheckbox.setSelection(copyFiles);
+            }
 
         }
     }

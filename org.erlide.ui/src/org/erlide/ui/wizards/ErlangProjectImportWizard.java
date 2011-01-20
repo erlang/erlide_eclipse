@@ -62,6 +62,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
     private ErlangProjectImportIncludeAndSourceDirsWizardPage importIncludeAndSourceDirsPage;
     private Collection<String> resources;
 
+    public static boolean COPY_ONLY = true;
+
     // WizardFileSystemResourceImportPage1 mainPage;
 
     @SuppressWarnings("deprecation")
