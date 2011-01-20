@@ -344,8 +344,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
                         .getModulesWithReferencedProjects(erlProject);
                 for (final IErlModule m : modules) {
                     if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
-                        final String name = ErlideUtil.withoutExtension(m
-                                .getName());
+                        final String name = m.getModuleName();
                         if (!allErlangFiles.contains(name)) {
                             allErlangFiles.add(name);
                         }
