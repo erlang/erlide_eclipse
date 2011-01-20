@@ -285,8 +285,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
-            ErlangDebugHelper.interpret(backend, project, module, distributed,
-                    interpret);
+            new ErlangDebugHelper().interpret(backend, project, module,
+                    distributed, interpret);
         }
     }
 }

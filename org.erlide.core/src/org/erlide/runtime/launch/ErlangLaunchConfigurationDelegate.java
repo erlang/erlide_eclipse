@@ -250,8 +250,8 @@ public class ErlangLaunchConfigurationDelegate implements
             final ErlideBackend backend, final boolean distributed) {
         for (final String pm : data.interpretedModules) {
             final String[] pms = pm.split(":");
-            ErlangDebugHelper.interpret(backend, pms[0], pms[1], distributed,
-                    true);
+            new ErlangDebugHelper().interpret(backend, pms[0], pms[1],
+                    distributed, true);
         }
     }
 
