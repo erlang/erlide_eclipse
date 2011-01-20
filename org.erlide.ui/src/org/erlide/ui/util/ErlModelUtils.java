@@ -513,18 +513,13 @@ public class ErlModelUtils {
         }
         final IErlModel model = ErlangCore.getModel();
         final String externalModules = model.getExternalModules(erlProject);
-        return getExternalModule(moduleName, externalModules);
+        return getExternalModule(moduleName, externalModules, project);
     }
 
     public static IErlModule getExternalModule(final String moduleName,
-            final String externalModules) throws CoreException {
-        final String path = ErlideOpen.getExternalModule(ErlangCore
-                .getBackendManager().getIdeBackend(), moduleName,
-                externalModules, ErlangCore.getModel().getPathVars());
-        if (path != null) {
-            return ModelUtils.openExternal(null, path);
-        }
-        return null;
+            final String externalModules, final IProject project)
+            throws CoreException {
+        return ModelUtils.findExternalModuleFromName(moduleName, project);
     }
 
     /**

@@ -56,7 +56,7 @@ public class ParsingTests {
 				.createScannerModuleName(module);
 		ErlideScanner.initialScan(scannerModuleName, "", s, false);
 		final IErlModuleInternal erlModuleInternal = ErlModelMap.getDefault()
-				.get(module.getFilePath());
+				.get(module);
 		return ErlParser.parse(erlModuleInternal, scannerModuleName, false, "",
 				false);
 	}

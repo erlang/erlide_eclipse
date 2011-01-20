@@ -6,6 +6,7 @@ import java.util.Set;
 import org.erlide.core.erlang.IErlModelMap;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModuleInternal;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.util.LRUCache;
 
 import com.google.common.collect.Maps;
@@ -93,6 +94,28 @@ public class ErlModelMap implements IErlModelMap {
      */
     public boolean has(final IErlModuleInternal moduleInternal) {
         return pathToModuleInternalCache.containsValue(moduleInternal);
+    }
+
+    public IErlModuleInternal get(final IErlModule module) {
+        final String path = module.getFilePath();
+        IErlModuleInternal moduleInternal = edited.get(path);
+        if (moduleInternal != null) {
+            return moduleInternal;
+        }
+        moduleInternal = pathToModuleInternalCache.get(path);
+        if (moduleInternal != null) {
+            return moduleInternal;
+        }
+        final String scannerName = ErlangToolkit
+                .createScannerModuleName(module);
+        String initialText = module.getInitialText();
+        if (initialText == null) {
+            initialText = "";
+        }
+        moduleInternal = new ErlModuleInternal(path, scannerName, initialText);
+        pathToModuleInternalCache.put(path, moduleInternal);
+        return moduleInternal;
+
     }
 
 }

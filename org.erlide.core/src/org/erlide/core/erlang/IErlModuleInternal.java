@@ -29,4 +29,5 @@ public interface IErlModuleInternal extends IParent {
 
     String getPath();
 
+    void setStructureKnown(boolean newStructureKnown);
 }

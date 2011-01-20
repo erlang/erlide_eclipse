@@ -39,13 +39,17 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure");
+        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
+                externalName);
         final List<IErlElement> result = new ArrayList<IErlElement>(
                 entries.size());
         for (final String entry : entries) {
             final String name = new Path(entry).lastSegment().replaceAll(
                     "\\.erlidex", "");
-            result.add(new ErlExternalReferenceEntry(this, name, entry, true));
+            final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
+                    this, name, entry, true);
+            result.add(child);
+            child.open(pm);
         }
         setChildren(result);
         return true;

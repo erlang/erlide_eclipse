@@ -13,7 +13,7 @@
          get_include_lib/1,
          get_external_modules/2,
          get_external_module/2,
-	 get_external_module_tree/1,
+         get_external_module_tree/1,
          get_external_include/2,
 	 get_external_1/3,
          has_external_with_path/2
@@ -135,7 +135,7 @@ get_external_module(Name, #open_context{externalModules=ExternalModulesFiles, pa
     end.
 
 get_external_module_tree(PackedFileNames, PathVars) ->
-    Fun = fun(Parent, FileName, Acc) -> [{Parent, FileName} | Acc] end,
+    Fun = fun(Parent, FileName, Acc) -> [{Parent, replace_path_var(FileName, PathVars)} | Acc] end,
     FileNames = erlide_util:unpack(PackedFileNames),
     R = fold_externals(Fun, FileNames, PathVars),
     R.
@@ -319,11 +319,14 @@ get_source_from_module(Mod, Context) ->
 
 get_external_modules_files(PackedFileNames, PathVars) ->
     ?D(PackedFileNames),
-    Fun = fun(_Parent, FileNames, Acc) -> FileNames ++ Acc end,
+    Fun = fun(_Parent, FileName, Acc) -> [replace_path_var(FileName, PathVars) | Acc] end,
     FileNames = erlide_util:unpack(PackedFileNames),
     R = fold_externals(Fun, FileNames, PathVars), 
     ?D(R),
     R.
+
+replace_path_vars(FileNames, PathVars) ->
+    [replace_path_var(F, PathVars) || F <- FileNames].
 
 replace_path_var(FileName, PathVars) ->
     case filename:split(FileName) of
@@ -341,46 +344,49 @@ replace_path_var_aux(Var, PathVars) ->
             Var
     end.
 
-get_external_1(FileName, PathVars, IsRoot) ->
+get_external_1(FileName0, PathVars, IsRoot) ->
+    FileName = replace_path_var(FileName0, PathVars),
     FileNames = case IsRoot orelse filename:extension(FileName) == ".erlidex" of
-		    true ->
-			case file:read_file(FileName) of
-			    {ok, B} ->
-				erlide_util:split_lines(B);
-			    _ ->
-				[FileName]
-			end;
-		    false ->
-			[FileName]
-		end,
-    R = [replace_path_var(F, PathVars) || F <- FileNames],
+                    true ->
+                        case file:read_file(FileName) of
+                            {ok, B} ->
+                                erlide_util:split_lines(B);
+                            _ ->
+                                [FileName]
+                        end;
+                    false ->
+                        [FileName]
+                end,
+    R = replace_path_vars(FileNames, PathVars),
     {ok, R}.
 
 fold_externals(Fun, FileNames, PathVars) ->
-    {Result, _Done} = fx(FileNames, Fun, PathVars, top, [], []),
-    Result.
+    {Acc, _Done} = fx(FileNames, Fun, PathVars, top, [], []),
+    Acc.
 
-fx([], _Fun, _PathVars, _Top, Done, Acc) ->
-    {Done, lists:reverse(Acc)};
-fx([FN0 | Rest], Fun, PathVars, Top, Done, Acc) ->
+fx([], _Fun, _PathVars, _Parent, Done, Acc) ->
+    {Done, Acc};
+fx([FN0 | Rest], Fun, PathVars, Parent, Done, Acc) ->
     FN = replace_path_var(FN0, PathVars),
     case lists:member(FN, Done) of
         true ->
-            fx(Rest, Fun, PathVars, Top, Done, Acc);
+            fx(Rest, Fun, PathVars, Parent, Done, Acc);
         false ->
-            case Top=:=top orelse filename:extension(FN) == ".erlidex" of
+            case Parent=:=top orelse filename:extension(FN) == ".erlidex" of
                 true ->
-                    fx2(FN, Fun, PathVars, Done, Acc);
+                    {NewDone, NewAcc} = fx2(FN, Fun, PathVars, Done, Acc),
+                    fx(Rest, Fun, PathVars, Parent, NewDone, NewAcc);
                 false ->
-                    fx(Rest, Fun, PathVars, Top, [FN | Done], [FN | Acc])
+                    fx(Rest, Fun, PathVars, Parent, [FN | Done], Fun(Parent, FN, Acc))
             end
     end.
 
 fx2(FN, Fun, PathVars, Done, Acc) ->
+    io:format("reading \"~s\"\n", [FN]),
     case file:read_file(FN) of
         {ok, B} ->
             Lines = erlide_util:split_lines(B),
-            fx(Lines, Fun, PathVars, sub, Done, Acc);
+            fx(Lines, Fun, PathVars, FN, Done, Acc);
         _ ->
             {Done, Acc}
     end.

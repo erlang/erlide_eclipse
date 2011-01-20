@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.internal;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -8,12 +7,13 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
+import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.util.Util;
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;
@@ -43,35 +43,32 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                 .getBuildOrIdeBackend(getErlProject().getProject());
         final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
         final List<IErlElement> children = getEntryChildren(this, entry,
-                isRoot, backend, pathVars);
+                isRoot, backend, pathVars, pm);
         setChildren(children);
         return true;
     }
 
     public static List<IErlElement> getEntryChildren(final IParent parent,
             final String fileName, final boolean isRoot, final Backend backend,
-            final OtpErlangList pathVars) {
+            final OtpErlangList pathVars, final IProgressMonitor pm)
+            throws ErlModelException {
+        ErlLogger.debug("reading external %s", fileName);
         final List<String> external1 = ErlideOpen.getExternal1(backend,
                 fileName, pathVars, isRoot);
         final List<IErlElement> children = Lists
                 .newArrayListWithCapacity(external1.size());
+        final IErlModelManager modelManager = ErlangCore.getModelManager();
         for (final String path : external1) {
             final String name = getNameFromExternalPath(path);
             if (ErlideUtil.hasModuleExtension(path)) {
-                String initialText;
-                try {
-                    initialText = new String(Util.getFileCharContent(path,
-                            "UTF8"));
-                } catch (final IOException e) {
-                    initialText = "";
-                }
-                final IErlModule module = ErlangCore.getModelManager()
-                        .getModuleFromFile(parent, name, initialText, path,
-                                path);
+                final IErlModule module = modelManager.getModuleFromFile(
+                        parent, name, null, path, path);
                 children.add(module);
-            } else if (ErlideUtil.hasErlideExternalExtension(path)) {
-                children.add(new ErlExternalReferenceEntry(parent, name, path,
-                        false));
+            } else if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
+                final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
+                        parent, name, path, false);
+                children.add(child);
+                child.open(pm);
             }
         }
         return children;

@@ -135,4 +135,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     void setResource(IFile file);
 
+    String getInitialText();
+
 }

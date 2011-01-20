@@ -23,10 +23,9 @@ public class ErlScanner implements IDisposable {
 
     public ErlScanner(final IErlModuleInternal module,
             final String scannerName, final String initialText,
-            final String moduleFileName) {
+            final String path) {
         this.scannerName = scannerName;
-        ErlideScanner.initialScan(scannerName, moduleFileName, initialText,
-                false);
+        ErlideScanner.initialScan(scannerName, path, initialText, false);
     }
 
     public void addRef() {

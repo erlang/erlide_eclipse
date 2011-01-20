@@ -10,6 +10,8 @@ public interface IErlModelMap {
 
     void put(String path, IErlModuleInternal moduleInternal);
 
+    IErlModuleInternal get(IErlModule module);
+
     void putModule(IErlModule module);
 
     void removeModule(IErlModule module);

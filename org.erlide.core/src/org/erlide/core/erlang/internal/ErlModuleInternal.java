@@ -11,9 +11,9 @@ import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.erlang.IErlModuleInternal;
 
 import com.google.common.collect.Lists;
 
@@ -175,7 +175,7 @@ public class ErlModuleInternal implements IErlModuleInternal {
         disposeScanner();
     }
 
-    private void setStructureKnown(final boolean b) {
+    public void setStructureKnown(final boolean b) {
         structureKnown = b;
     }
 

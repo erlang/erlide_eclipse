@@ -54,13 +54,14 @@ public class ErlModule extends Openable implements IErlModule {
 
     private long timestamp = IResource.NULL_STAMP;
     private IFile fFile;
-
     private final ModuleKind moduleKind;
     protected final String path;
+    private final String initialText;
 
     protected ErlModule(final IParent parent, final String name,
             final String initialText, final IFile file, final String path) {
         super(parent, name);
+        this.initialText = initialText;
         fFile = file;
         moduleKind = ErlideUtil.nameToModuleKind(name);
         this.path = path;
@@ -200,7 +201,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private IErlModuleInternal getModuleInternal() {
-        return ErlModelMap.getDefault().get(path);
+        return ErlModelMap.getDefault().get(this);
     }
 
     @Override
@@ -509,6 +510,11 @@ public class ErlModule extends Openable implements IErlModule {
 
     }
 
+    @Override
+    public void setStructureKnown(final boolean newStructureKnown) {
+        getModuleInternal().setStructureKnown(newStructureKnown);
+    }
+
     public IErlProject getProject() {
         final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
         if (ancestor instanceof IErlProject) {
@@ -516,4 +522,9 @@ public class ErlModule extends Openable implements IErlModule {
         }
         return null;
     }
+
+    public String getInitialText() {
+        return initialText;
+    }
+
 }
