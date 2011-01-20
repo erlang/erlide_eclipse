@@ -346,4 +346,5 @@ public abstract class Openable extends ErlElement implements IOpenable {
         } catch (final ErlModelException e) {
         }
     }
+
 }

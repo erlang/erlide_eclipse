@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
@@ -29,9 +30,9 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
-import org.erlide.core.erlang.IErlModelMap;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
@@ -56,32 +57,60 @@ public class ErlModule extends Openable implements IErlModule {
     private IFile fFile;
     private final ModuleKind moduleKind;
     protected final String path;
-    private final String initialText;
+    private String initialText;
+    private boolean parsed;
+    private final String scannerName;
+    private ErlScanner scanner;
+    private boolean updateCaches;
+    private final Collection<IErlComment> comments;
 
     protected ErlModule(final IParent parent, final String name,
             final String initialText, final IFile file, final String path) {
         super(parent, name);
-        this.initialText = initialText;
         fFile = file;
         moduleKind = ErlideUtil.nameToModuleKind(name);
         this.path = path;
+        this.initialText = initialText;
+        parsed = false;
+        scannerName = ErlangToolkit.createScannerModuleName(this);
+        scanner = null;
+        updateCaches = false;
+        comments = Lists.newArrayList();
         if (ErlModelManager.verbose) {
             final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        final IErlModelMap erlModelMap = ErlangCore.getModelMap();
-        final IErlModuleInternal moduleInternal = new ErlModuleInternal(path,
-                ErlangToolkit.createScannerModuleName(this), initialText);
-        erlModelMap.put(path, moduleInternal);
+        final IErlModuleMap erlModelMap = ErlangCore.getModelMap();
         erlModelMap.putModule(this);
+    }
+
+    public boolean internalBuildStructure(final IProgressMonitor pm) {
+        if (scanner == null) {
+            parsed = false;
+        }
+        final boolean initialParse = !parsed;
+        if (scanner == null) {
+            // There are two places that we make the initial scanner... this
+            // is one
+            getScanner();
+        }
+        parsed = ErlParser.parse(this, scannerName, initialParse, path,
+                updateCaches);
+        getScanner();
+        disposeScanner();
+        return parsed;
     }
 
     @Override
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        if (getModuleInternal().buildStructure(pm)) {
+        if (internalBuildStructure(pm)) {
+            final IErlModel model = ErlangCore.getModel();
+            if (model != null) {
+                model.notifyChange(this);
+            }
             final IResource r = getResource();
             if (r instanceof IFile) {
                 timestamp = ((IFile) r).getLocalTimeStamp();
@@ -195,50 +224,22 @@ public class ErlModule extends Openable implements IErlModule {
         return true;
     }
 
-    @Override
-    public void addChild(final IErlElement child) {
-        getModuleInternal().addChild(child);
-    }
-
-    private IErlModuleInternal getModuleInternal() {
-        return ErlModelMap.getDefault().get(this);
-    }
-
-    @Override
-    public int getChildCount() {
-        return getModuleInternal().getChildCount();
-    }
-
-    @Override
-    public List<IErlElement> getChildren() throws ErlModelException {
-        return getModuleInternal().getChildren();
-    }
-
-    @Override
-    public IErlElement getChildNamed(final String name) {
-        return getModuleInternal().getChildNamed(name);
-    }
-
-    @Override
-    public List<IErlElement> getChildrenOfKind(final Kind kind)
-            throws ErlModelException {
-        return getModuleInternal().getChildrenOfKind(kind);
-    }
-
     public void addComment(final IErlComment c) {
-        getModuleInternal().addComment(c);
+        comments.add(c);
     }
 
+    public Collection<IErlComment> getComments() {
+        return comments;
+    }
+
+    @Override
     public void removeChildren() {
-        getModuleInternal().removeChildren();
+        super.removeChildren();
+
     }
 
     public synchronized long getTimestamp() {
         return timestamp;
-    }
-
-    public Collection<IErlComment> getComments() {
-        return getModuleInternal().getComments();
     }
 
     public IErlImport findImport(final ErlangFunction function) {
@@ -359,7 +360,20 @@ public class ErlModule extends Openable implements IErlModule {
     public synchronized void reconcileText(final int offset,
             final int removeLength, final String newText,
             final IProgressMonitor mon) {
-        getModuleInternal().reconcileText(offset, removeLength, newText, mon);
+        if (scanner == null) {
+            // There are two places that we make the initial scanner... this
+            // is one too
+            getScanner();
+        }
+        getScanner();
+        if (scanner != null) {
+            scanner.replaceText(offset, removeLength, newText);
+        }
+        if (mon != null) {
+            mon.worked(1);
+        }
+        setStructureKnown(false);
+        disposeScanner();
     }
 
     /*
@@ -402,7 +416,15 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public void disposeScanner() {
-        getModuleInternal().disposeScanner();
+        if (scanner == null) {
+            return;
+        }
+        final ErlScanner s = scanner;
+        if (s.willDispose()) {
+            scanner = null;
+        }
+        s.dispose();
+        setStructureKnown(false);
     }
 
     // public synchronized void disposeParser() {
@@ -467,12 +489,24 @@ public class ErlModule extends Openable implements IErlModule {
         }
     }
 
-    public synchronized void resetAndCacheScannerAndParser(final String newText) {
-        getModuleInternal().resetAndCacheScannerAndParser(newText);
+    public synchronized void resetAndCacheScannerAndParser(final String newText)
+            throws ErlModelException {
+        while (scanner != null) {
+            disposeScanner();
+        }
+        initialText = newText;
+        parsed = false;
+        updateCaches = true;
+        setStructureKnown(false);
+        final boolean built = buildStructure(null);
+        setStructureKnown(built);
     }
 
     public ErlToken getScannerTokenAt(final int offset) {
-        return getModuleInternal().getScannerTokenAt(offset);
+        if (scanner != null) {
+            return scanner.getTokenAt(offset);
+        }
+        return null;
     }
 
     public void setResource(final IFile file) {
@@ -485,7 +519,17 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public void getScanner() {
-        getModuleInternal().getScanner();
+        if (scanner == null) {
+            scanner = getNewScanner();
+        }
+        scanner.addRef();
+    }
+
+    private ErlScanner getNewScanner() {
+        if (path == null) {
+            return null;
+        }
+        return new ErlScanner(scannerName, initialText, path);
     }
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
@@ -502,17 +546,6 @@ public class ErlModule extends Openable implements IErlModule {
         } catch (final ErlModelException e) {
         }
         return result;
-    }
-
-    @Override
-    public boolean isStructureKnown() {
-        return getModuleInternal().isStructureKnown();
-
-    }
-
-    @Override
-    public void setStructureKnown(final boolean newStructureKnown) {
-        getModuleInternal().setStructureKnown(newStructureKnown);
     }
 
     public IErlProject getProject() {

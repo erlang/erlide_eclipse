@@ -14,9 +14,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.TestingSupport;
-import org.erlide.core.erlang.internal.ErlModelMap;
 import org.erlide.core.erlang.internal.ErlParser;
 import org.erlide.core.text.ErlangToolkit;
 import org.junit.After;
@@ -55,10 +53,7 @@ public class ParsingTests {
 		final String scannerModuleName = ErlangToolkit
 				.createScannerModuleName(module);
 		ErlideScanner.initialScan(scannerModuleName, "", s, false);
-		final IErlModuleInternal erlModuleInternal = ErlModelMap.getDefault()
-				.get(module);
-		return ErlParser.parse(erlModuleInternal, scannerModuleName, false, "",
-				false);
+		return ErlParser.parse(module, scannerModuleName, false, "", false);
 	}
 
 	@Test
@@ -71,7 +66,7 @@ public class ParsingTests {
 		final List<IErlElement> expected = new ArrayList<IErlElement>(1);
 		expected.add(attribute);
 		final Collection<IErlElement> actual = module.getChildren();
-        // assertEquals(expected, actual);
+		// assertEquals(expected, actual);
 		assertEquals(expected.toString(), actual.toString());
 	}
 

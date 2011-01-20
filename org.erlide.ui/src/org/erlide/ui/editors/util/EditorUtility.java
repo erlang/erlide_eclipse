@@ -46,7 +46,6 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
@@ -292,9 +291,8 @@ public class EditorUtility {
         String filePath = element.getFilePath();
         while (filePath == null) {
             final IParent parent = element.getParent();
-            if (parent instanceof IErlModuleInternal) {
-                final IErlModuleInternal internal = (IErlModuleInternal) parent;
-                filePath = internal.getPath();
+            if (parent instanceof IErlModule) {
+                filePath = element.getFilePath();
             } else if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;
             } else {

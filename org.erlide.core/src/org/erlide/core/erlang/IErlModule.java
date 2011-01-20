@@ -117,8 +117,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
      * updating the parser cache
      * 
      * @param newText
+     * @throws ErlModelException
      */
-    void resetAndCacheScannerAndParser(String newText);
+    void resetAndCacheScannerAndParser(String newText) throws ErlModelException;
 
     /**
      * Get the module name without extension
@@ -136,5 +137,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     void setResource(IFile file);
 
     String getInitialText();
+
+    void addComment(IErlComment c);
 
 }
