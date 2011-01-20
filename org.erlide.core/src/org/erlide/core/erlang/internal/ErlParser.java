@@ -18,7 +18,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModuleInternal;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.Util;
@@ -49,18 +49,18 @@ public final class ErlParser {
     }
 
     /**
-     * @param erlModuleInternal
+     * @param module
      * @param scannerName
      * @param initialParse
      * @param path
      * @param updateCaches
      * @return
      */
-    public static boolean parse(final IErlModuleInternal erlModuleInternal,
+    public static boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
             final String path, final boolean updateCaches) {
         final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
-        if (b == null || erlModuleInternal == null) {
+        if (b == null || module == null) {
             return false;
         }
         OtpErlangList forms = null;
@@ -91,25 +91,24 @@ public final class ErlParser {
         } else {
             ErlLogger.error("rpc error when parsing %s: %s", path, res);
         }
-        erlModuleInternal.removeChildren();
+        module.removeChildren();
         // mm.setParseTree(forms);
         if (forms == null) {
             return true;
         }
 
         for (final OtpErlangObject form : forms) {
-            final IErlMember elem = create(erlModuleInternal,
-                    (OtpErlangTuple) form);
+            final IErlMember elem = create(module, (OtpErlangTuple) form);
             if (elem != null) {
-                erlModuleInternal.addChild(elem);
+                module.addChild(elem);
             }
         }
         if (comments != null) {
             for (final OtpErlangObject comment : comments) {
-                final IErlComment c = createComment(erlModuleInternal,
+                final IErlComment c = createComment(module,
                         (OtpErlangTuple) comment);
                 if (c != null) {
-                    erlModuleInternal.addComment(c);
+                    module.addComment(c);
                 }
             }
         }
@@ -125,8 +124,8 @@ public final class ErlParser {
      *            token record from noparse
      * @return IErlComment
      */
-    public static IErlComment createComment(
-            final IErlModuleInternal erlModuleInternal, final OtpErlangTuple c) {
+    public static IErlComment createComment(final IErlModule module,
+            final OtpErlangTuple c) {
         // from erlide_scanner.hrl:
         // -record(token, {kind, line = {Line, LastLine}, offset, length, value,
         // text}).
@@ -148,8 +147,8 @@ public final class ErlParser {
             }
         } catch (final OtpErlangRangeException e1) {
         }
-        final ErlComment comment = new ErlComment(erlModuleInternal,
-                Util.stringValue(s), false, line == 0 || line == 1);
+        final ErlComment comment = new ErlComment(module, Util.stringValue(s),
+                false, line == 0 || line == 1);
         try {
             final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
             final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
@@ -167,8 +166,8 @@ public final class ErlParser {
      *            the tuple, either function or attribute
      * @return
      */
-    private static IErlMember create(
-            final IErlModuleInternal erlModuleInternal, final OtpErlangTuple el) {
+    private static IErlMember create(final IErlModule module,
+            final OtpErlangTuple el) {
         final OtpErlangAtom type = (OtpErlangAtom) el.elementAt(0);
         final String typeS = type.atomValue();
         if ("error".equals(typeS)) {
@@ -177,7 +176,7 @@ public final class ErlParser {
             final String msg = ErlBackend.format_error(ErlangCore
                     .getBackendManager().getIdeBackend(), er);
 
-            final ErlMessage e = new ErlMessage(erlModuleInternal,
+            final ErlMessage e = new ErlMessage(module,
                     ErlMessage.MessageKind.ERROR, msg);
             setPos(e, er.elementAt(0), false);
             return e;
@@ -190,16 +189,16 @@ public final class ErlParser {
             final OtpErlangObject val = atr.elementAt(2);
             final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
                     : null;
-            return addAttribute(erlModuleInternal, pos, n, val, extra);
+            return addAttribute(module, pos, n, val, extra);
         } else if ("attribute".equals(typeS)) {
             final OtpErlangObject pos = el.elementAt(1);
             final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
             final OtpErlangObject val = el.elementAt(3);
             final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
                     : null;
-            return addAttribute(erlModuleInternal, pos, name, val, extra);
+            return addAttribute(module, pos, name, val, extra);
         } else if ("function".equals(typeS)) {
-            final ErlFunction f = makeErlFunction(erlModuleInternal, el);
+            final ErlFunction f = makeErlFunction(module, el);
             final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
             final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
                     .arity()];
@@ -218,15 +217,15 @@ public final class ErlParser {
     }
 
     /**
-     * @param erlModuleInternal
+     * @param module
      *            module
      * @param el
      *            -record(function, {pos, name, arity, args, head, clauses,
      *            name_pos, comment, exported}).
      * @return ErlFunction
      */
-    private static ErlFunction makeErlFunction(
-            final IErlModuleInternal erlModuleInternal, final OtpErlangTuple el) {
+    private static ErlFunction makeErlFunction(final IErlModule module,
+            final OtpErlangTuple el) {
         final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
         final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
         final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
@@ -242,13 +241,12 @@ public final class ErlParser {
             if (comment != null) {
                 comment = comment.replaceAll("\n", "<br/>");
             }
-            f = new ErlFunction(erlModuleInternal, name.atomValue(),
-                    arity.intValue(), Util.stringValue(head), comment,
-                    exported, parameters);
+            f = new ErlFunction(module, name.atomValue(), arity.intValue(),
+                    Util.stringValue(head), comment, exported, parameters);
         } catch (final OtpErlangRangeException e) {
             return f;
         }
-        setPos(f, pos, false);
+        setPos(f, pos, true);
         try {
             setNamePos(f, namePos);
         } catch (final OtpErlangRangeException e) {
@@ -281,7 +279,7 @@ public final class ErlParser {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.warn(e);
         }
-        setPos(cl, cpos, false);
+        setPos(cl, cpos, true);
         return cl;
     }
 
@@ -293,44 +291,41 @@ public final class ErlParser {
         f.setNameRange(ofs, len);
     }
 
-    private static IErlMember addAttribute(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlMember addAttribute(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangAtom name,
             final OtpErlangObject val, final OtpErlangObject extra) {
         final String nameS = name.atomValue();
         if ("module".equals(nameS) && val instanceof OtpErlangAtom) {
-            return addModuleAttribute(erlModuleInternal, pos,
-                    (OtpErlangAtom) val, extra, nameS);
+            return addModuleAttribute(module, pos, (OtpErlangAtom) val, extra,
+                    nameS);
         } else if ("import".equals(nameS)) {
             if (val instanceof OtpErlangTuple) {
-                return addImportAttribute(erlModuleInternal, pos, val);
+                return addImportAttribute(module, pos, val);
             }
         } else if ("export".equals(nameS)) {
-            return addExportAttribute(erlModuleInternal, pos, val, extra);
+            return addExportAttribute(module, pos, val, extra);
         } else if ("record".equals(nameS)) {
-            return addRecordDef(erlModuleInternal, pos, val, extra);
+            return addRecordDef(module, pos, val, extra);
         } else if ("type".equals(nameS) || "spec".equals(nameS)
                 || "opaque".equals(nameS)) {
-            return addTypespec(erlModuleInternal, pos, extra);
+            return addTypespec(module, pos, extra);
         } else if ("define".equals(nameS)) {
-            return addMacroDef(erlModuleInternal, pos, val, extra, nameS);
+            return addMacroDef(module, pos, val, extra, nameS);
         }
-        return addOtherAttribute(erlModuleInternal, pos, val, extra, nameS);
+        return addOtherAttribute(module, pos, val, extra, nameS);
     }
 
-    private static IErlMember addExportAttribute(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlMember addExportAttribute(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra) {
         final OtpErlangList functionList = (OtpErlangList) val;
-        final ErlExport ex = new ErlExport(erlModuleInternal, functionList,
+        final ErlExport ex = new ErlExport(module, functionList,
                 Util.stringValue(extra));
         setPos(ex, pos, false);
         return ex;
     }
 
-    private static IErlMember addMacroDef(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlMember addMacroDef(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra, final String nameS) {
         if (val instanceof OtpErlangAtom) {
@@ -338,7 +333,7 @@ public final class ErlParser {
             final String s = Util.stringValue(extra);
             // final ErlMacroDef r = new ErlMacroDef(parent, o.toString(),
             // s);
-            final ErlMember r = new ErlMacroDef(erlModuleInternal, s);
+            final ErlMember r = new ErlMacroDef(module, s);
             setPos(r, pos, false);
             // r.setParseTree(val);
             return r;
@@ -354,24 +349,23 @@ public final class ErlParser {
                 ErlMember r;
                 if (o instanceof OtpErlangAtom) {
                     final String macroName = ((OtpErlangAtom) o).atomValue();
-                    r = new ErlMacroDef(erlModuleInternal, macroName, null);
+                    r = new ErlMacroDef(module, macroName, null);
                 } else {
                     // what do we do here? the define isn't correct
                     // Erlang...
                     ErlLogger.warn("Strange macro definition in %s: %s",
-                            erlModuleInternal.getPath(), o.toString());
-                    r = new ErlMacroDef(erlModuleInternal, o.toString(), null);
+                            module.getName(), o.toString());
+                    r = new ErlMacroDef(module, o.toString(), null);
                 }
                 setPos(r, pos, false);
                 // r.setParseTree(val);
                 return r;
             }
         }
-        return addOtherAttribute(erlModuleInternal, pos, val, extra, nameS);
+        return addOtherAttribute(module, pos, val, extra, nameS);
     }
 
-    private static IErlAttribute addOtherAttribute(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlAttribute addOtherAttribute(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra, final String nameS) {
         // user-defined attribute? or maybe if else endif...
@@ -391,15 +385,14 @@ public final class ErlParser {
                 o = null;
             }
         }
-        final ErlAttribute a = new ErlAttribute(erlModuleInternal, nameS, o,
+        final ErlAttribute a = new ErlAttribute(module, nameS, o,
                 Util.stringValue(extra));
         setPos(a, pos, false);
         // a.setParseTree(val);
         return a;
     }
 
-    private static IErlRecordDef addRecordDef(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlRecordDef addRecordDef(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra) {
         if (val instanceof OtpErlangTuple) {
@@ -409,7 +402,7 @@ public final class ErlParser {
                         .stringValue() : null;
                 final OtpErlangList fields = (OtpErlangList) recordTuple
                         .elementAt(1);
-                final ErlRecordDef r = new ErlRecordDef(erlModuleInternal, s);
+                final ErlRecordDef r = new ErlRecordDef(module, s);
                 setPos(r, pos, false);
                 final List<ErlRecordField> children = Lists
                         .newArrayListWithCapacity(fields.arity());
@@ -439,34 +432,31 @@ public final class ErlParser {
         if (val instanceof OtpErlangAtom) {
             final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
                     .stringValue() : null;
-            final ErlRecordDef r = new ErlRecordDef(erlModuleInternal, s);
+            final ErlRecordDef r = new ErlRecordDef(module, s);
             setPos(r, pos, false);
             return r;
         }
         return null;
     }
 
-    private static IErlMember addTypespec(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlMember addTypespec(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject extra) {
         final String s = Util.stringValue(extra);
         final int p = s.indexOf('(');
         final String typeName = p < 0 ? s : s.substring(0, p);
-        final ErlTypespec a = new ErlTypespec(erlModuleInternal, typeName,
-                null, s);
+        final ErlTypespec a = new ErlTypespec(module, typeName, null, s);
         setPos(a, pos, false);
         return a;
     }
 
-    private static IErlImport addImportAttribute(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlImport addImportAttribute(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangObject val) {
         final OtpErlangTuple t = (OtpErlangTuple) val;
         if (t.elementAt(0) instanceof OtpErlangAtom
                 && t.elementAt(1) instanceof OtpErlangList) {
             final OtpErlangAtom importModule = (OtpErlangAtom) t.elementAt(0);
             final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
-            final ErlImport imp = new ErlImport(erlModuleInternal,
+            final ErlImport imp = new ErlImport(module,
                     importModule.atomValue(), functionList);
             setPos(imp, pos, false);
             return imp;
@@ -474,13 +464,11 @@ public final class ErlParser {
         return null;
     }
 
-    private static IErlAttribute addModuleAttribute(
-            final IErlModuleInternal erlModuleInternal,
+    private static IErlAttribute addModuleAttribute(final IErlModule module,
             final OtpErlangObject pos, final OtpErlangAtom value,
             final OtpErlangObject extra, final String nameS) {
         final String s = Util.stringValue(extra);
-        final ErlAttribute r = new ErlAttribute(erlModuleInternal, nameS,
-                value, s);
+        final ErlAttribute r = new ErlAttribute(module, nameS, value, s);
         setPos(r, pos, false);
         return r;
     }

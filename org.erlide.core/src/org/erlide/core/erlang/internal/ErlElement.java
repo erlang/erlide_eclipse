@@ -29,7 +29,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
@@ -447,10 +446,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
                 buffer.append("[> "); //$NON-NLS-1$
                 parentElement.toStringInfo(0, buffer, NO_INFO);
                 parentElement.toStringAncestors(buffer);
-            } else if (parent instanceof IErlModuleInternal) {
-                final IErlModuleInternal internal = (IErlModuleInternal) parent;
-                buffer.append("[ "); //$NON-NLS-1$
-                buffer.append(internal.getPath());
             }
             buffer.append("] "); //$NON-NLS-1$
         }
@@ -513,7 +508,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Collection of handles of immediate children of this object. This is an
      * empty array if this element has no children.
      */
-    private List<IErlElement> fChildren = new ArrayList<IErlElement>();
+    private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
     /**
      * Is the structure of this element known
@@ -598,13 +593,17 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         fChildren.remove(child);
     }
 
+    public void removeChildren() {
+        fChildren.clear();
+    }
+
     public void setChildren(final Collection<? extends IErlElement> c) {
         fChildren.clear();
         fChildren.addAll(c);
     }
 
     public void setChildren(final IErlElement[] children) {
-        fChildren = Arrays.asList(children);
+        setChildren(Arrays.asList(children));
     }
 
     /**

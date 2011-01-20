@@ -45,7 +45,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.ui.ErlideUIPlugin;
@@ -281,11 +280,9 @@ public class EditorUtility {
         String filePath = element.getFilePath();
         while (filePath == null) {
             final IParent parent = element.getParent();
-            if (parent instanceof IErlModuleInternal) {
-                final IErlModuleInternal internal = (IErlModuleInternal) parent;
-                filePath = internal.getPath();
-            } else if (parent instanceof IErlElement) {
+            if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;
+                filePath = element.getFilePath();
             } else {
                 break;
             }
