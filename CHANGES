@@ -2,7 +2,7 @@ List of user visible changes between 0.9.4 and 0.9.5 (20110122)
 
 8146742 702 externals: make external reference faster and less memory-hungry
 6fd25fb updated lambdaj to 2.3.2
-0503ee7 669-dialyzer---add-plt-to-project-settings 683-dialyzer---update-plt-files
+0503ee7 669-dialyzer---add-plt-to-project-settings 
 290df20 659-navigator--double-click-on-project-should-open-it
 36ee402 652-searching--support-record-fields
 58fc001 224-variables-from-the--environment--tab-in-launch-config-are-not-set-in-the-started-process
@@ -12,7 +12,13 @@ b1d3e44 NPE in open when there are macro-defined function names
 b40ba63 680-searching--wrong-display-in-result-header
 da95208 618-dialyzer--remove-warnings-for-project use command framework
 ea799e3 651-navigation--support-record-fields 653-hover--support-record-fields
-fd1f9fa 625-debugger---should-present-terminate--continue--restart-when-reloading-code 386-debugger--modifying-code-disables-breakpoints
+fd1f9fa 625-debugger---should-present-terminate--continue--restart-when-reloading-code 
+		386-debugger--modifying-code-disables-breakpoints
+        668 indentation confused by -spec directives
+        653 hover: support record fields
+        670 dialyzer: opens external files even if file is present in workspace
+        683 dialyzer: update plt files
+        691 internal launch config should not be saved on disk
 
 List of user visible changes between 0.9.3 and 0.9.4 (20101215)
 
