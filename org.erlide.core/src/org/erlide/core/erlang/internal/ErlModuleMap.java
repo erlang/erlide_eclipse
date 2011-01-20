@@ -56,7 +56,11 @@ public class ErlModuleMap implements IErlModuleMap {
     }
 
     public Set<IErlModule> getModulesByName(final String moduleName) {
-        return nameToModuleMap.get(moduleName);
+        Set<IErlModule> modules = nameToModuleMap.get(moduleName);
+        if (modules == null) {
+            modules = Sets.newHashSet();
+        }
+        return modules;
     }
 
     public void put(final String path, final IErlModule module) {
