@@ -118,7 +118,6 @@ create_report(Module) ->
 	ModRes = cover:analyse(Module, module),
 	FunRes = cover:analyse(Module, function),
 	LineRes = cover:analyse(Module, calls, line), %%calls!
-	io:format("~p~n~p~n~p~n", [ModRes, FunRes, LineRes]),
 	
 %	erlide_jrpc:event(?EVENT, {Module, ModRes, FunRes}),
 	case { ModRes, FunRes, LineRes} of

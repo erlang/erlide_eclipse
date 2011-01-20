@@ -64,13 +64,15 @@ public class CoverRunner extends Thread {
                 System.out.println(htmlPath);
                 model.setIndex(htmlPath.toString().substring(1,
                         htmlPath.toString().length() - 1));
+                
 
             } catch (BackendException e) {
                 e.printStackTrace();
                 // TODO: throw exception or show a dialog - not started
             }
         }
-
+        
+        
         // TODO: index should be created here.
 
         backend.coverageFinished();

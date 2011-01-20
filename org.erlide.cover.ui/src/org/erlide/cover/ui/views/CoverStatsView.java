@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -28,11 +27,13 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.ui.actions.HtmlReportAction;
+import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
@@ -89,6 +90,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 	public CoverStatsView(){
 		backend = CoverBackend.getInstance();
 		backend.addListener(this);
+		
+		//TODO: find better place for this
+		backend.addAnnotationMaker(new EditorTracker(PlatformUI.getWorkbench()));
+		
 	}
 
 	/**

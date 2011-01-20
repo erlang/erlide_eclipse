@@ -7,6 +7,7 @@ import java.util.List;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.IStatsTreeObject;
 import org.erlide.cover.views.model.LineResult;
+import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.events.EventHandler;
@@ -35,6 +36,7 @@ public class CoverEventHandler extends EventHandler {
     private List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
     private int moduleNum;
     private int counter;
+    private ICoverAnnotationMarker annotationMarker;
 
     public void addListener(ICoverObserver listener) {
         System.out.println("adding listener");
@@ -43,6 +45,14 @@ public class CoverEventHandler extends EventHandler {
 
     public List<ICoverObserver> getListeners() {
         return listeners;
+    }
+    
+    public void addAnnotationMaker(ICoverAnnotationMarker am) {
+        annotationMarker = am;
+    }
+    
+    public ICoverAnnotationMarker getAnnotationMaker() {
+        return annotationMarker;
     }
     
   /*  public synchronized void reset(int n) {
@@ -161,6 +171,10 @@ public class CoverEventHandler extends EventHandler {
                 
                 model.addTotal(allLines, coveredLines);
                 root.addChild(moduleStats);
+                
+                ModuleSet.add(moduleStats);
+                
+                getAnnotationMaker().addAnnotations();
                 
                 return true;
             }

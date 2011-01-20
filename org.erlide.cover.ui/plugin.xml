@@ -59,5 +59,33 @@
             type="org.erlide.cover.core.launchConfigurationCover">
       </launchConfigurationTabGroup>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.cover.ui.fullCoverageAnnotation"
+            colorPreferenceKey="fullCoverage_Color"
+            colorPreferenceValue="130,230,100"
+            contributesToHeader="false"
+            highlightPreferenceKey="fullCoverage_Highlight"
+            highlightPreferenceValue="true"
+            includeOnPreferencePage="true"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="fullCoverage_IsGoToNext"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="fullCoverage_IsGoToPrev"
+            label="FullCoverage"
+            overviewRulerPreferenceKey="fullCoverage_OvervierRuler"
+            overviewRulerPreferenceValue="false"
+            presentationLayer="0"
+            showInNextPrevDropdownToolbarAction="false"
+            showInNextPrevDropdownToolbarActionKey="fullCoverage_ShowInNextPrevDropdown"
+            textPreferenceKey="fullCoverage_Text"
+            textPreferenceValue="true"
+            textStylePreferenceKey="fullCoverage_TextStyle"
+            textStylePreferenceValue="BOX"
+            verticalRulerPreferenceKey="fullCoverage_VerticalRuler"
+            verticalRulerPreferenceValue="false">
+      </specification>
+   </extension>
 
 </plugin>

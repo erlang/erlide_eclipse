@@ -49,6 +49,7 @@ public class CoverBackend {
     private CoverSettings settings;
     private String nodeName;
     private boolean coverRunning;
+    
 
     public static CoverBackend getInstance() {
         if (instance == null)
@@ -135,6 +136,14 @@ public class CoverBackend {
 
     public List<ICoverObserver> getListeners() {
         return handler.getListeners();
+    }
+    
+    public void addAnnotationMaker(ICoverAnnotationMarker am) {
+        handler.addAnnotationMaker(am);
+    }
+    
+    public ICoverAnnotationMarker getAnnotationMaker() {
+        return handler.getAnnotationMaker();
     }
     
     public CoverSettings getSettings() {

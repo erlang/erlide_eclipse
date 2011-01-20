@@ -6,7 +6,7 @@ package org.erlide.cover.views.model;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  *
  */
-public class LineResult {
+public class LineResult implements Comparable<LineResult> {
     
     private int lineNum;
     private int lineCalls;
@@ -34,6 +34,10 @@ public class LineResult {
         buf.append(lineNum).append(" ").append(lineCalls);
         
         return buf.toString();
+    }
+
+    public int compareTo(LineResult lineRes2) {
+        return lineNum - lineRes2.getLineNum();
     }
     
 }

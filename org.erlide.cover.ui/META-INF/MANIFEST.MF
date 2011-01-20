@@ -14,6 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.core;bundle-version="0.9.0",
  org.erlide.jinterface;bundle-version="0.9.0",
  org.erlide.cover.core;bundle-version="1.0.0",
- org.eclipse.ui.ide;bundle-version="3.6.1"
+ org.eclipse.ui.ide;bundle-version="3.6.1",
+ org.eclipse.ui.workbench.texteditor;bundle-version="3.6.1",
+ org.eclipse.ui.editors;bundle-version="3.6.1",
+ org.eclipse.jface.text;bundle-version="3.6.1"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
