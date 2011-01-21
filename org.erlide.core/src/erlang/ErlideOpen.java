@@ -1,13 +1,11 @@
 package erlang;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.erlang.util.SourcePathProvider;
-import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -106,50 +104,83 @@ public class ErlideOpen {
         return null;
     }
 
-    public static List<String> getExternalModules(final Backend backend,
-            final String prefix, final String externalModules,
-            final OtpErlangList pathVars) {
-        try {
-            final OtpErlangObject res = backend.call("erlide_open",
-                    "get_external_modules", "sx", prefix,
-                    mkContext(externalModules, null, pathVars, null, null));
-            if (Util.isOk(res)) {
-                final OtpErlangTuple t = (OtpErlangTuple) res;
-                final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                final List<String> result = new ArrayList<String>(l.arity());
-                for (final OtpErlangObject i : l.elements()) {
-                    result.add(Util.stringValue(i));
-                }
-                return result;
-            }
-        } catch (final BackendException e) {
-            ErlLogger.warn(e);
+    // public static List<String> getExternalModules(final Backend backend,
+    // final String prefix, final String externalModules,
+    // final OtpErlangList pathVars) {
+    // try {
+    // final OtpErlangObject res = backend.call("erlide_open",
+    // "get_external_modules", "sx", prefix,
+    // mkContext(externalModules, null, pathVars, null, null));
+    // if (Util.isOk(res)) {
+    // final OtpErlangTuple t = (OtpErlangTuple) res;
+    // final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+    // final List<String> result = new ArrayList<String>(l.arity());
+    // for (final OtpErlangObject i : l.elements()) {
+    // result.add(Util.stringValue(i));
+    // }
+    // return result;
+    // }
+    // } catch (final BackendException e) {
+    // ErlLogger.warn(e);
+    // }
+    // return new ArrayList<String>();
+    // }
+
+    // public static List<String> getExternal1(final Backend backend,
+    // final String externalModules, final OtpErlangList pathVars,
+    // final boolean isRoot) {
+    // try {
+    // final OtpErlangObject res = backend.call("erlide_open",
+    // "get_external_1", "sxo", externalModules, pathVars, isRoot);
+    // if (Util.isOk(res)) {
+    // final OtpErlangTuple t = (OtpErlangTuple) res;
+    // final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+    // final List<String> result = new ArrayList<String>(l.arity());
+    // for (final OtpErlangObject i : l.elements()) {
+    // result.add(Util.stringValue(i));
+    // }
+    // return result;
+    // }
+    // } catch (final BackendException e) {
+    // ErlLogger.warn(e);
+    // }
+    // return new ArrayList<String>();
+    // }
+
+    public static class ExternalTreeEntry {
+        private final String parentPath;
+        private final String path;
+        // private final String name;
+        private final boolean isModule;
+
+        public ExternalTreeEntry(final String parentPath, final String path,
+        // final String name,
+                final boolean isModule) {
+            super();
+            this.parentPath = parentPath;
+            this.path = path;
+            // this.name = name;
+            this.isModule = isModule;
         }
-        return new ArrayList<String>();
+
+        public String getParentPath() {
+            return parentPath;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        // public String getName() {
+        // return name;
+        // }
+
+        public boolean isModule() {
+            return isModule;
+        }
     }
 
-    public static List<String> getExternal1(final Backend backend,
-            final String externalModules, final OtpErlangList pathVars,
-            final boolean isRoot) {
-        try {
-            final OtpErlangObject res = backend.call("erlide_open",
-                    "get_external_1", "sxo", externalModules, pathVars, isRoot);
-            if (Util.isOk(res)) {
-                final OtpErlangTuple t = (OtpErlangTuple) res;
-                final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                final List<String> result = new ArrayList<String>(l.arity());
-                for (final OtpErlangObject i : l.elements()) {
-                    result.add(Util.stringValue(i));
-                }
-                return result;
-            }
-        } catch (final BackendException e) {
-            ErlLogger.warn(e);
-        }
-        return new ArrayList<String>();
-    }
-
-    public static List<Tuple<String, List<String>>> getExternalModuleTree(
+    public static List<ExternalTreeEntry> getExternalModuleTree(
             final Backend backend, final String externalModules,
             final OtpErlangList pathVars) {
         try {
@@ -159,21 +190,19 @@ public class ErlideOpen {
             if (Util.isOk(res)) {
                 OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                final List<Tuple<String, List<String>>> result = Lists
+                final List<ExternalTreeEntry> result = Lists
                         .newArrayListWithCapacity(l.arity());
                 for (final OtpErlangObject i : l) {
                     t = (OtpErlangTuple) i;
-                    final OtpErlangString parentS = (OtpErlangString) t
-                            .elementAt(0);
-                    final String parent = Util.stringValue(parentS);
-                    final OtpErlangList childrenL = (OtpErlangList) t
-                            .elementAt(1);
-                    final List<String> children = Lists
-                            .newArrayListWithCapacity(childrenL.arity());
-                    for (final OtpErlangObject child : childrenL) {
-                        children.add(Util.stringValue(child));
-                    }
-                    result.add(new Tuple<String, List<String>>(parent, children));
+                    final String parentPath = Util.stringValue(t.elementAt(0));
+                    final String path = Util.stringValue(t.elementAt(1));
+                    // final String name = Util.stringValue(t.elementAt(2));
+                    // final OtpErlangAtom isModuleA = (OtpErlangAtom) t
+                    // .elementAt(3);
+                    final OtpErlangAtom isModuleA = (OtpErlangAtom) t
+                            .elementAt(2);
+                    result.add(new ExternalTreeEntry(parentPath, path,// name,
+                            isModuleA.atomValue().equals("module")));
                 }
                 return result;
             }
@@ -200,35 +229,36 @@ public class ErlideOpen {
         return null;
     }
 
-    private static String getExternalModule(final Backend b, final String mod,
-            final String externalModules, final OtpErlangList pathVars) {
-        try {
-            final OtpErlangObject res = b.call("erlide_open",
-                    "get_external_module", "sx", mod,
-                    mkContext(externalModules, null, pathVars, null, null));
-            if (Util.isOk(res)) {
-                final OtpErlangTuple t = (OtpErlangTuple) res;
-                return Util.stringValue(t.elementAt(1));
-            }
-        } catch (final BackendException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    // private static String getExternalModule(final Backend b, final String
+    // mod,
+    // final String externalModules, final OtpErlangList pathVars) {
+    // try {
+    // final OtpErlangObject res = b.call("erlide_open",
+    // "get_external_module", "sx", mod,
+    // mkContext(externalModules, null, pathVars, null, null));
+    // if (Util.isOk(res)) {
+    // final OtpErlangTuple t = (OtpErlangTuple) res;
+    // return Util.stringValue(t.elementAt(1));
+    // }
+    // } catch (final BackendException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
 
-    public static boolean hasExternalWithPath(final Backend backend,
-            final String externalModules, final String path,
-            final OtpErlangList pathVars) {
-        try {
-            final OtpErlangObject res = backend.call("erlide_open",
-                    "has_external_with_path", "sx", path,
-                    mkContext(externalModules, null, pathVars, null, null));
-            if (Util.isOk(res)) {
-                return true;
-            }
-        } catch (final BackendException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    // public static boolean hasExternalWithPath(final Backend backend,
+    // final String externalModules, final String path,
+    // final OtpErlangList pathVars) {
+    // try {
+    // final OtpErlangObject res = backend.call("erlide_open",
+    // "has_external_with_path", "sx", path,
+    // mkContext(externalModules, null, pathVars, null, null));
+    // if (Util.isOk(res)) {
+    // return true;
+    // }
+    // } catch (final BackendException e) {
+    // e.printStackTrace();
+    // }
+    // return false;
+    // }
 }

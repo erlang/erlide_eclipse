@@ -1,21 +1,31 @@
 package org.erlide.core.erlang.internal;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlExternal;
+import org.erlide.core.erlang.IErlModelManager;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.google.common.collect.Maps;
+
+import erlang.ErlideOpen;
+import erlang.ErlideOpen.ExternalTreeEntry;
 
 public class ErlExternalReferenceEntryList extends Openable implements
         IErlExternal {
 
-    private final List<String> entries;
+    private final String externalIncludes, externalModules;
     private final String externalName;
 
     public ErlExternalReferenceEntryList(final IParent parent,
@@ -23,13 +33,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
             final String externalIncludes, final String externalModules) {
         super(parent, name);
         this.externalName = externalName;
-        entries = new ArrayList<String>();
-        final List<String> modules = PreferencesUtils
-                .unpackList(externalModules);
-        entries.addAll(modules);
-        final List<String> includes = PreferencesUtils
-                .unpackList(externalIncludes);
-        entries.addAll(includes);
+        this.externalIncludes = externalIncludes;
+        this.externalModules = externalModules;
     }
 
     public Kind getKind() {
@@ -41,18 +46,65 @@ public class ErlExternalReferenceEntryList extends Openable implements
             throws ErlModelException {
         ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
                 externalName);
-        final List<IErlElement> result = new ArrayList<IErlElement>(
-                entries.size());
-        for (final String entry : entries) {
-            final String name = new Path(entry).lastSegment().replaceAll(
-                    "\\.erlidex", "");
-            final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
-                    this, name, entry, true);
-            result.add(child);
-            child.open(pm);
+        final Backend backend = BackendUtils
+                .getBuildOrIdeBackend(getErlProject().getProject());
+        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
+        final List<ExternalTreeEntry> externalModuleTree = ErlideOpen
+                .getExternalModuleTree(backend, externalModules, pathVars);
+        final List<ExternalTreeEntry> externalIncludeTree = ErlideOpen
+                .getExternalModuleTree(backend, externalIncludes, pathVars);
+        final IErlModelManager modelManager = ErlangCore.getModelManager();
+        removeChildren();
+        if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
+            addExternalEntries(pm, externalModuleTree, modelManager, "modules",
+                    externalModules);
         }
-        setChildren(result);
+        if (externalIncludeTree != null && !externalIncludeTree.isEmpty()) {
+            addExternalEntries(pm, externalIncludeTree, modelManager,
+                    "includes", externalIncludes);
+        }
         return true;
+    }
+
+    private void addExternalEntries(final IProgressMonitor pm,
+            final List<ExternalTreeEntry> externalIncludeTree,
+            final IErlModelManager modelManager, final String rootName,
+            final String rootEntry) throws ErlModelException {
+        final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
+        pathToEntryMap.put("root", this);
+        for (final ExternalTreeEntry entry : externalIncludeTree) {
+            final String path = entry.getPath();
+            // final String name = entry.getName();
+            final IErlExternal parent = pathToEntryMap.get(entry
+                    .getParentPath());
+            if (entry.isModule()) {
+                final IPath p = new Path(path);
+                final String name = p.lastSegment();
+                final IErlModule module = modelManager.getModuleFromFile(
+                        parent, name, null, path, path);
+                parent.addChild(module);
+            } else {
+                final String name = getNameFromExternalPath(path);
+                final ErlExternalReferenceEntry externalReferenceEntry = new ErlExternalReferenceEntry(
+                        parent, name, path, false);
+                pathToEntryMap.put(path, externalReferenceEntry);
+                externalReferenceEntry.open(pm);
+                parent.addChild(externalReferenceEntry);
+            }
+        }
+    }
+
+    private static String getNameFromExternalPath(String path) {
+        int i = path.indexOf(".settings");
+        if (i > 2) {
+            path = path.substring(0, i - 1);
+        }
+        i = path.lastIndexOf('/');
+        path = path.substring(i + 1);
+        if (path.endsWith(".erlidex")) {
+            path = path.substring(0, path.length() - 8);
+        }
+        return path;
     }
 
     @Override

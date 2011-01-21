@@ -11,7 +11,7 @@ public interface IErlExternal extends IErlElement, IParent, IOpenable {
 
     String getExternalName();
 
-    boolean hasModuleWithPath(String path);
+    // boolean hasModuleWithPath(String path);
 
     boolean isRoot();
 

@@ -125,12 +125,7 @@ public class ErlProject extends Openable implements IErlProject {
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
-            final IErlModel model = ErlangCore.getModel();
-            final String externalIncludes = model.getExternalIncludes(this);
-            final String externalModules = model.getExternalModules(this);
-            if (externalIncludes.length() != 0 || externalModules.length() != 0) {
-                children.add(getExternalChild(externalIncludes, externalModules));
-            }
+            addExternals(children);
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -156,6 +151,15 @@ public class ErlProject extends Openable implements IErlProject {
             return false;
         }
         return true;
+    }
+
+    private void addExternals(final List<IErlElement> children) {
+        final IErlModel model = ErlangCore.getModel();
+        final String externalIncludes = model.getExternalIncludes(this);
+        final String externalModules = model.getExternalModules(this);
+        if (externalIncludes.length() != 0 || externalModules.length() != 0) {
+            children.add(getExternalChild(externalIncludes, externalModules));
+        }
     }
 
     private IErlElement getExternalChild(final String externalIncludes,
@@ -706,4 +710,5 @@ public class ErlProject extends Openable implements IErlProject {
     public IOldErlangProjectProperties getProperties() {
         return new OldErlangProjectProperties(fProject);
     }
+
 }
