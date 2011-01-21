@@ -129,7 +129,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
         final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-        reconciler = new ErlReconciler(strategy, true, true);
+        reconciler = new ErlReconciler(strategy, true, true, editor.getPath());
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setDelay(500);
         return reconciler;

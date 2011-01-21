@@ -10,7 +10,6 @@
 package org.erlide.runtime.backend;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -20,18 +19,12 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
-import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.jinterface.util.ErlLogger;
 
-@SuppressWarnings("restriction")
 public class ErtsProcess extends RuntimeProcess {
 
     public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
     public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
-
-    @SuppressWarnings({ "unused", "rawtypes" })
-    private final Map fAttributes = new HashMap();
-    private IStreamsProxy streamsProxy;
 
     public ErtsProcess(final ILaunch launch, final Process process,
             final String name,
@@ -133,11 +126,4 @@ public class ErtsProcess extends RuntimeProcess {
         super.terminate();
     }
 
-    public IStreamsProxy getPrivateStreamsProxy() {
-        final IStreamsProxy proxy = getStreamsProxy();
-        if (proxy instanceof StreamsProxy) {
-            return proxy;
-        }
-        return streamsProxy;
-    }
 }

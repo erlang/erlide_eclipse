@@ -31,6 +31,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
+import org.erlide.runtime.debug.ErlangDebugOptionsManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;
@@ -135,8 +136,8 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        String dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                .toPortableString();
+        final String dir = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
@@ -179,7 +180,7 @@ public class ErlangPlugin extends Plugin {
                         }
                     }
                 });
-
+        ErlangDebugOptionsManager.getDefault().startup();
         ErlLogger.debug("Started CORE");
     }
 
@@ -189,21 +190,7 @@ public class ErlangPlugin extends Plugin {
             final IBundleGroupProvider[] providers = Platform
                     .getBundleGroupProviders();
             if (providers != null) {
-                for (final IBundleGroupProvider provider : providers) {
-                    final IBundleGroup[] bundleGroups = provider
-                            .getBundleGroups();
-                    for (final IBundleGroup group : bundleGroups) {
-                        final String id = group.getIdentifier();
-                        if (id.equals("org.erlide")
-                                || id.equals("org.erlide.headless")) {
-                            version = group.getVersion();
-                            break;
-                        }
-                    }
-                    if (version != null) {
-                        break;
-                    }
-                }
+                version = findErlideFeatureVersion(providers);
             } else {
                 ErlLogger.debug("***: no bundle group providers");
             }
@@ -217,7 +204,36 @@ public class ErlangPlugin extends Plugin {
         return version;
     }
 
+    private String findErlideFeatureVersion(
+            final IBundleGroupProvider[] providers) {
+        String version = null;
+        for (final IBundleGroupProvider provider : providers) {
+            final IBundleGroup[] bundleGroups = provider.getBundleGroups();
+            for (final IBundleGroup group : bundleGroups) {
+                final String id = group.getIdentifier();
+                if ("org.erlide".equals(id) || "org.erlide.headless".equals(id)) {
+                    version = group.getVersion();
+                    break;
+                }
+            }
+            if (version != null) {
+                break;
+            }
+        }
+        return version;
+    }
+
     public void log(final IStatus status) {
+        final Level lvl = getLevelFromStatus(status);
+        logger.log(lvl, status.getMessage());
+        final Throwable exception = status.getException();
+        if (exception != null) {
+            logger.log(lvl, exception);
+        }
+        plugin.getLog().log(status);
+    }
+
+    private Level getLevelFromStatus(final IStatus status) {
         Level lvl;
         switch (status.getSeverity()) {
         case IStatus.ERROR:
@@ -232,12 +248,7 @@ public class ErlangPlugin extends Plugin {
         default:
             lvl = Level.FINEST;
         }
-        logger.log(lvl, status.getMessage());
-        final Throwable exception = status.getException();
-        if (exception != null) {
-            logger.log(lvl, exception);
-        }
-        plugin.getLog().log(status);
+        return lvl;
     }
 
     public void logErrorMessage(final String message) {

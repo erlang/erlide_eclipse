@@ -219,7 +219,7 @@
          point="org.eclipse.ui.propertyPages">
       <page
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
-            id="org.erlide.ui.properties.erlangProjectPropertyPage"
+            id="org.erlide.core"
             name="Erlang">
 		<enabledWhen>
  			<adapt type="org.eclipse.core.resources.IProject">
@@ -363,37 +363,6 @@
                menubarPath="debug">
          </action>
       </viewerContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze2"
-            objectClass="org.eclipse.core.resources.IFolder">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.ui.actions.dialyze3"
-            objectClass="org.eclipse.core.resources.IFile">
-         <action
-               class="org.erlide.ui.actions.DialyzeAction"
-               id="org.erlide.ui.actions.dialyze"
-               label="Dialyze">
-         </action>
-      </objectContribution>
    </extension>
  <extension
        point="org.eclipse.ui.contexts">
@@ -493,7 +462,7 @@
       </category>
       <command
             categoryId="org.eclipse.ui.category.navigate"
-            defaultHandler="org.erlide.ui.actions.OpenModuleHandler"
+            defaultHandler="org.erlide.ui.handlers.OpenModuleHandler"
             id="org.erlide.ui.open.module"
             name="Open Module">
 		    <commandParameter
@@ -503,7 +472,7 @@
        </command>
       <command
             categoryId="org.erlide.ui.erlideCategory"
-            defaultHandler="org.erlide.ui.actions.ReportProblemHandler"
+            defaultHandler="org.erlide.ui.handlers.ReportProblemHandler"
             id="org.erlide.ui.command.reportProblem"
             name="Report problems">
       </command>
@@ -571,7 +540,29 @@
                 id="org.eclipse.ui.commands.toggleState">
           </state>
        </command>
-
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Run Dialyzer"
+             id="org.erlide.ui.commands.runDialyzer"
+             name="Run Dialyzer">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Remove Dialyzer Warnings"
+             id="org.erlide.ui.command.removeDialyzerWarnings"
+             name="Remove Dialyzer Warnings">
+       </command>
+       <command
+             categoryId="org.erlide.ui.commandCategories.dialyzer"
+             description="Check PLT"
+             id="org.erlide.ui.command.checkDialyzerPLTFile"
+             name="Check PLT">
+       </command>
+       <category
+             description="Dialyzer Commands"
+             id="org.erlide.ui.commandCategories.dialyzer"
+             name="Dialyzer Commands">
+       </category>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -649,8 +640,7 @@
     <menuContribution
           locationURI="toolbar:org.eclipse.ui.main.toolbar">
        <toolbar
-             id="org.erlide.ui.toolbars.creation"
-             label="Erlang creation wizards">
+             id="org.erlide.ui.toolbars.creation">
           <command
                 commandId="org.eclipse.ui.newWizard"
                 icon="icons/full/obj16/erlang_NewModule.png"
@@ -672,6 +662,31 @@
              </visibleWhen>
           </command>
        </toolbar>
+    </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="menu:project?after=additions">
+       <separator
+             name="org.erlide.ui.separator1">
+       </separator>
+       <command
+             commandId="org.erlide.ui.commands.runDialyzer"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
     </menuContribution>
  </extension>
  <extension
@@ -800,6 +815,18 @@
           </with>
        </enabledWhen>                    
     </handler>
+    <handler
+          class="org.erlide.ui.handlers.RunDialyzerHandler"
+          commandId="org.erlide.ui.commands.runDialyzer">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
+          commandId="org.erlide.ui.command.removeDialyzerWarnings">
+    </handler>
+    <handler
+          class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
+          commandId="org.erlide.ui.command.checkDialyzerPLTFile">
+    </handler>
  </extension>
  <extension
        point="org.eclipse.ui.actionSets">
@@ -818,7 +845,7 @@
              <action
                label="Open Module"
                helpContextId="org.erlide.ui.openModule"
-               class="org.erlide.ui.actions.OpenModuleHandler"
+               class="org.erlide.ui.handlers.OpenModuleHandler"
                menubarPath="navigate/open.ext2"
                id="org.erlide.action.openModule"
                definitionId="org.erlide.ui.open.module">
@@ -1094,6 +1121,9 @@
             <actionExtension
                   pattern="org.erlide.ui.search.*">
             </actionExtension>
+            <actionExtension
+                  pattern="org.erlide.ui.navigator.actions.erlang.*">
+            </actionExtension>
          </includes>
       </viewerActionBinding>
       <dragAssistant
@@ -1191,7 +1221,7 @@
          </possibleChildren>
          <actionProvider
                class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
-               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
+               id="org.erlide.ui.navigator.actions.erlang">
          </actionProvider>
          <commonSorter
                class="org.erlide.ui.navigator.ErlElementPositionSorter"
@@ -1260,6 +1290,16 @@
             wizardId="org.erlide.ui.wizards.ErlangSourceFile">
          <enablement></enablement>
       </commonWizard>
+      <actionProvider
+            class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
+            id="org.erlide.ui.navigator.actions.erlangfileactions"
+            priority="lowest">
+         <enablement>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+            </adapt>
+         </enablement>
+      </actionProvider>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.linkHelper">
@@ -1777,4 +1817,12 @@
             id="org.erlide.ui.ErlangExternalEditorInputFactory">
       </factory>
    </extension>
- </plugin>
+   <extension
+         point="org.eclipse.ui.editors.markerUpdaters">
+      <updater
+            class="org.erlide.debug.ui.utils.BreakpointMarkerUpdater"
+            id="org.erlide.ui.erlangLineBreakpointUpdater"
+            markerType="org.erlide.core.erlang.lineBreakpoint.marker">
+      </updater>
+   </extension>
+</plugin>

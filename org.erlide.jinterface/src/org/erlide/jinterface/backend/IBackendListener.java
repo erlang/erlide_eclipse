@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
-public interface BackendListener {
+public interface IBackendListener {
 
-    public void runtimeAdded(Backend b);
+    public void runtimeAdded(Backend backend);
 
-    public void runtimeRemoved(Backend b);
+    public void runtimeRemoved(Backend backend);
+
+    public void moduleLoaded(Backend backend, String projectName,
+            String moduleName);
 
 }

@@ -30,54 +30,64 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
-import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.IErlangFirstThat;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.collect.Lists;
 
 public class ErlModule extends Openable implements IErlModule {
 
     private long timestamp = IResource.NULL_STAMP;
-    private final List<IErlComment> comments = new ArrayList<IErlComment>(0);
-    private String initialText;
-    private ErlScanner scanner = null;
     private IFile fFile;
-    private boolean parsed = false;
-    private boolean updateCaches = true;
-
     private final ModuleKind moduleKind;
     protected final String path;
+    private String initialText;
+    private boolean parsed;
+    private final String scannerName;
+    private ErlScanner scanner;
+    private final boolean useCaches;
+    private final Collection<IErlComment> comments;
 
-    protected ErlModule(final IErlElement parent, final String name,
-            final String initialText, final IFile file, final String path) {
+    protected ErlModule(final IParent parent, final String name,
+            final String initialText, final IFile file, final String path,
+            final boolean useCaches) {
         super(parent, name);
         fFile = file;
         moduleKind = ErlideUtil.nameToModuleKind(name);
-        this.initialText = initialText;
-        if (ErlModelManager.verbose) {
-            ErlLogger.debug("...creating " + parent.getName() + "/" + getName()
-                    + " " + moduleKind);
-        }
         this.path = path;
+        this.initialText = initialText;
+        parsed = false;
+        scannerName = ErlangToolkit.createScannerModuleName(this);
+        scanner = null;
+        this.useCaches = useCaches;
+        comments = Lists.newArrayList();
+        if (ErlModelManager.verbose) {
+            final IErlElement element = (IErlElement) parent;
+            final String parentName = element.getName();
+            ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
+                    + moduleKind);
+        }
+        final IErlModuleMap erlModelMap = ErlangCore.getModelMap();
+        erlModelMap.putModule(this);
     }
 
-    @Override
-    protected synchronized boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
-        final String path = getFilePath();
+    public boolean internalBuildStructure(final IProgressMonitor pm) {
         if (scanner == null) {
             parsed = false;
         }
@@ -87,32 +97,36 @@ public class ErlModule extends Openable implements IErlModule {
             // is one
             getScanner();
         }
-        parsed = ErlParser.parse(this, initialParse, path, updateCaches
-                && useCaches());
-        final IErlModel model = getModel();
-        if (model != null) {
-            model.notifyChange(this);
-        }
+        parsed = ErlParser.parse(this, scannerName, initialParse, path,
+                useCaches);
         getScanner();
-        // update timestamp (might be IResource.NULL_STAMP if original does not
-        // exist)
-        final IResource r = getResource();
-        if (r instanceof IFile) {
-            timestamp = ((IFile) r).getLocalTimeStamp();
-        } else {
-            timestamp = IResource.NULL_STAMP;
-        }
         disposeScanner();
         return parsed;
     }
 
-    protected boolean useCaches() {
-        return fFile != null;
+    @Override
+    protected synchronized boolean buildStructure(final IProgressMonitor pm)
+            throws ErlModelException {
+        if (internalBuildStructure(pm)) {
+            final IErlModel model = ErlangCore.getModel();
+            if (model != null) {
+                model.notifyChange(this);
+            }
+            final IResource r = getResource();
+            if (r instanceof IFile) {
+                timestamp = ((IFile) r).getLocalTimeStamp();
+            } else {
+                timestamp = IResource.NULL_STAMP;
+            }
+            return true;
+        }
+        return false;
     }
 
-    /**
-     * @param underlyingResource
-     * @return
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.core.erlang.internal.ErlElement#getFilePath()
      */
     @Override
     public String getFilePath() {
@@ -211,16 +225,17 @@ public class ErlModule extends Openable implements IErlModule {
         return true;
     }
 
-    public void addMember(final IErlMember elem) {
-        addChild(elem);
-    }
-
     public void addComment(final IErlComment c) {
         comments.add(c);
     }
 
+    public Collection<IErlComment> getComments() {
+        return comments;
+    }
+
+    @Override
     public void removeChildren() {
-        fChildren.clear();
+        super.removeChildren();
         comments.clear();
     }
 
@@ -228,84 +243,82 @@ public class ErlModule extends Openable implements IErlModule {
         return timestamp;
     }
 
-    public Collection<IErlComment> getComments() {
-        return comments;
-    }
-
     public IErlImport findImport(final ErlangFunction function) {
-        for (final IErlElement m : fChildren) {
-            if (m instanceof IErlImport) {
-                final IErlImport ei = (IErlImport) m;
-                if (ei.hasFunction(function)) {
-                    return ei;
+        try {
+            for (final IErlElement e : getChildrenOfKind(Kind.IMPORT)) {
+                if (e instanceof IErlImport) {
+                    final IErlImport ei = (IErlImport) e;
+                    if (ei.hasFunction(function)) {
+                        return ei;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlExport findExport(final ErlangFunction function) {
-        for (final IErlElement m : fChildren) {
-            if (m instanceof IErlExport) {
-                final IErlExport ei = (IErlExport) m;
-                if (ei.hasFunction(function)) {
-                    return ei;
+        try {
+            for (final IErlElement e : getChildrenOfKind(Kind.EXPORT)) {
+                if (e instanceof IErlExport) {
+                    final IErlExport ee = (IErlExport) e;
+                    if (ee.hasFunction(function)) {
+                        return ee;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        for (final IErlElement fun : fChildren) {
-            if (fun instanceof IErlFunction) {
-                final IErlFunction f = (IErlFunction) fun;
-                if (f.getName().equals(function.name)
-                        && (function.arity < 0 || f.getArity() == function.arity)) {
-                    return f;
+        try {
+            for (final IErlElement fun : getChildren()) {
+                if (fun instanceof IErlFunction) {
+                    final IErlFunction f = (IErlFunction) fun;
+                    if (f.getName().equals(function.name)
+                            && (function.arity < 0 || f.getArity() == function.arity)) {
+                        return f;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlTypespec findTypespec(final String typeName) {
-        for (final IErlElement child : fChildren) {
-            if (child instanceof IErlTypespec) {
-                final IErlTypespec typespec = (IErlTypespec) child;
-                if (typespec.getName().equals(typeName)) {
-                    return typespec;
+        try {
+            for (final IErlElement child : getChildren()) {
+                if (child instanceof IErlTypespec) {
+                    final IErlTypespec typespec = (IErlTypespec) child;
+                    if (typespec.getName().equals(typeName)) {
+                        return typespec;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlPreprocessorDef findPreprocessorDef(final String definedName,
-            final Kind type) {
-        for (final IErlElement m : fChildren) {
-            if (m instanceof IErlPreprocessorDef) {
-                final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-                if (pd.getKind().equals(type)
-                        && pd.getDefinedName().equals(definedName)) {
-                    return pd;
+            final Kind kind) {
+        try {
+            for (final IErlElement m : getChildren()) {
+                if (m instanceof IErlPreprocessorDef) {
+                    final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
+                    if (pd.getKind() == kind
+                            && pd.getDefinedName().equals(definedName)) {
+                        return pd;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
         }
         return null;
-    }
-
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind type) {
-        final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
-        for (final IErlElement m : fChildren) {
-            if (m instanceof IErlPreprocessorDef) {
-                final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-                if (pd.getKind().equals(type) || type.equals(Kind.ERROR)) {
-                    res.add(pd);
-                }
-            }
-        }
-        return res;
     }
 
     public Collection<ErlangIncludeFile> getIncludedFiles()
@@ -314,7 +327,7 @@ public class ErlModule extends Openable implements IErlModule {
             open(null);
         }
         final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
-        for (final IErlElement m : fChildren) {
+        for (final IErlElement m : getChildren()) {
             if (m instanceof IErlAttribute) {
                 final IErlAttribute a = (IErlAttribute) m;
                 final OtpErlangObject v = a.getValue();
@@ -332,28 +345,17 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public Collection<IErlImport> getImports() {
-        final List<IErlImport> r = new ArrayList<IErlImport>();
-        for (final IErlElement m : fChildren) {
-            if (m instanceof IErlImport) {
-                r.add((IErlImport) m);
+        final List<IErlImport> result = new ArrayList<IErlImport>();
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlImport) {
+                    final IErlImport ei = (IErlImport) e;
+                    result.add(ei);
+                }
             }
+        } catch (final ErlModelException e) {
         }
-        return r;
-    }
-
-    public void getScanner() {
-        if (scanner == null) {
-            scanner = getNewScanner();
-        }
-        scanner.addRef();
-    }
-
-    private ErlScanner getNewScanner() {
-        final String path = getFilePath();
-        if (path == null) {
-            return null;
-        }
-        return new ErlScanner(this, initialText, path);
+        return result;
     }
 
     public synchronized void reconcileText(final int offset,
@@ -409,6 +411,7 @@ public class ErlModule extends Openable implements IErlModule {
         // currently unused
     }
 
+    @Override
     public String getModuleName() {
         return ErlideUtil.withoutExtension(getName());
     }
@@ -433,15 +436,6 @@ public class ErlModule extends Openable implements IErlModule {
     // parsed = false;
     // }
 
-    public IErlProject getProject() {
-        for (IErlElement p = this; p != null; p = p.getParent()) {
-            if (p instanceof IErlProject) {
-                return (IErlProject) p;
-            }
-        }
-        return null;
-    }
-
     public Kind getKind() {
         return Kind.MODULE;
     }
@@ -449,6 +443,7 @@ public class ErlModule extends Openable implements IErlModule {
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
+        ErlangCore.getModelMap().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {
@@ -495,20 +490,16 @@ public class ErlModule extends Openable implements IErlModule {
         }
     }
 
-    public synchronized void resetAndCacheScannerAndParser(final String newText) {
+    public synchronized void resetAndCacheScannerAndParser(final String newText)
+            throws ErlModelException {
         while (scanner != null) {
             disposeScanner();
         }
         initialText = newText;
         parsed = false;
-        updateCaches = true;
         setStructureKnown(false);
-        try {
-            final boolean built = buildStructure(null);
-            setStructureKnown(built);
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-        }
+        final boolean built = buildStructure(null);
+        setStructureKnown(built);
     }
 
     public ErlToken getScannerTokenAt(final int offset) {
@@ -526,4 +517,50 @@ public class ErlModule extends Openable implements IErlModule {
     public String getLabelString() {
         return getName();
     }
+
+    public void getScanner() {
+        if (scanner == null) {
+            scanner = getNewScanner();
+        }
+        scanner.addRef();
+    }
+
+    private ErlScanner getNewScanner() {
+        if (path == null) {
+            return null;
+        }
+        if (initialText == null) {
+            initialText = "";
+        }
+        return new ErlScanner(scannerName, initialText, path, useCaches);
+    }
+
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
+        final List<IErlPreprocessorDef> result = Lists.newArrayList();
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlPreprocessorDef) {
+                    final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
+                    if (pd.getKind() == kind || kind == Kind.ERROR) {
+                        result.add(pd);
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+        }
+        return result;
+    }
+
+    public IErlProject getProject() {
+        final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
+        if (ancestor instanceof IErlProject) {
+            return (IErlProject) ancestor;
+        }
+        return null;
+    }
+
+    public String getInitialText() {
+        return initialText;
+    }
+
 }

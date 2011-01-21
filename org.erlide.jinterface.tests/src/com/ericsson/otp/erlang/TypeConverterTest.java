@@ -23,7 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RpcConverterTest {
+public class TypeConverterTest {
 
     private void test(final Object o, final String sig,
             final OtpErlangObject expect) throws SignatureException {

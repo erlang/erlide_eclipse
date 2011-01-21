@@ -43,6 +43,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
@@ -549,23 +550,31 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IErlModule> getModulesAndHeaders()
             throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final IOldErlangProjectProperties props = getProperties();
-        final List<IPath> folders = Lists.newArrayList();
-        folders.addAll(props.getSourceDirs());
-        folders.addAll(props.getIncludeDirs());
-        for (final IPath f : folders) {
-            final IFolder folder = fProject.getFolder(f);
-            IResource[] members;
-            try {
-                members = folder.members();
-                for (final IResource res : members) {
-                    final IErlModule module = getModule(res.getName());
-                    if (module != null) {
-                        result.add(module);
-                    }
+        if (ModelUtils.isExternalFilesProject(fProject)) {
+            for (final IErlElement child : getChildren()) {
+                if (child instanceof IErlModule) {
+                    result.add((IErlModule) child);
                 }
-            } catch (final CoreException e) {
-                // e.printStackTrace();
+            }
+        } else {
+            final IOldErlangProjectProperties props = getProperties();
+            final List<IPath> folders = Lists.newArrayList();
+            folders.addAll(props.getSourceDirs());
+            folders.addAll(props.getIncludeDirs());
+            for (final IPath f : folders) {
+                final IFolder folder = fProject.getFolder(f);
+                IResource[] members;
+                try {
+                    members = folder.members();
+                    for (final IResource res : members) {
+                        final IErlModule module = getModule(res.getName());
+                        if (module != null) {
+                            result.add(module);
+                        }
+                    }
+                } catch (final CoreException e) {
+                    // e.printStackTrace();
+                }
             }
         }
         return result;

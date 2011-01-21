@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.erlang.ErlModelException;
@@ -44,7 +45,7 @@ import com.google.common.collect.Lists;
  * @see IErlElement
  */
 public abstract class ErlElement extends PlatformObject implements IErlElement,
-        Cloneable {
+        IParent, Cloneable {
 
     public static final char EM_ESCAPE = '\\';
 
@@ -77,7 +78,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * This element's parent, or <code>null</code> if this element does not have
      * a parent.
      */
-    protected IErlElement fParent;
+    protected IParent fParent;
 
     /**
      * This element's name, or an empty <code>String</code> if this element does
@@ -103,7 +104,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      *             constants
      * 
      */
-    protected ErlElement(final IErlElement parent, final String name) {
+    protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
         Assert.isNotNull(fName);
@@ -188,14 +189,18 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * @see IErlElement
      */
-    public IErlElement getAncestor(final Kind ancestorType) {
-
+    public IErlElement getAncestorOfKind(final Kind kind) {
         IErlElement element = this;
         while (element != null) {
-            if (element.getKind() == ancestorType) {
+            if (element.getKind() == kind) {
                 return element;
             }
-            element = element.getParent();
+            final IParent parent = element.getParent();
+            if (parent instanceof IErlElement) {
+                element = (IErlElement) parent;
+            } else {
+                break;
+            }
         }
         return null;
     }
@@ -211,12 +216,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     public ErlModel getModel() {
-        IErlElement current = this;
-        do {
-            if (current instanceof ErlModel) {
-                return (ErlModel) current;
-            }
-        } while ((current = current.getParent()) != null);
+        final IErlElement ancestor = getAncestorOfKind(Kind.MODEL);
+        if (ancestor instanceof ErlModel) {
+            return (ErlModel) ancestor;
+        }
         return null;
     }
 
@@ -224,25 +227,18 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     public IErlProject getErlProject() {
-        IErlElement current = this;
-        do {
-            if (current instanceof IErlProject) {
-                return (IErlProject) current;
-            }
-        } while ((current = current.getParent()) != null);
+        final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
+        if (ancestor instanceof IErlProject) {
+            return (IErlProject) ancestor;
+        }
         return null;
     }
 
     public IErlModule getModule() {
-        IErlElement current = this;
-        do {
-            if (current instanceof IErlModule) {
-                return (IErlModule) current;
-            }
-            if (current instanceof IErlProject) {
-                return null;
-            }
-        } while ((current = current.getParent()) != null);
+        final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
+        if (ancestor instanceof IErlModule) {
+            return (IErlModule) ancestor;
+        }
         return null;
     }
 
@@ -260,7 +256,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * @see IErlElement
      */
-    public IErlElement getParent() {
+    public IParent getParent() {
         return fParent;
     }
 
@@ -372,18 +368,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     /**
-     * Returns true if this element is an ancestor of the given element,
-     * otherwise false.
-     */
-    public boolean isAncestorOf(final IErlElement e) {
-        IErlElement parentElement = e.getParent();
-        while (parentElement != null && !parentElement.equals(this)) {
-            parentElement = parentElement.getParent();
-        }
-        return parentElement != null;
-    }
-
-    /**
      * @see IErlElement
      */
     public boolean isReadOnly() {
@@ -455,11 +439,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Debugging purposes
      */
     protected void toStringAncestors(final StringBuilder buffer) {
-        final ErlElement parentElement = (ErlElement) getParent();
-        if (parentElement != null && parentElement.getParent() != null) {
-            buffer.append("[> "); //$NON-NLS-1$
-            parentElement.toStringInfo(0, buffer, NO_INFO);
-            parentElement.toStringAncestors(buffer);
+        final IParent parent = getParent();
+        if (parent != null) {
+            if (parent instanceof ErlElement) {
+                final ErlElement parentElement = (ErlElement) parent;
+                buffer.append("[> "); //$NON-NLS-1$
+                parentElement.toStringInfo(0, buffer, NO_INFO);
+                parentElement.toStringAncestors(buffer);
+            }
             buffer.append("] "); //$NON-NLS-1$
         }
     }
@@ -521,7 +508,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Collection of handles of immediate children of this object. This is an
      * empty array if this element has no children.
      */
-    protected List<IErlElement> fChildren = new ArrayList<IErlElement>();
+    private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
     /**
      * Is the structure of this element known
@@ -576,14 +563,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     public IErlElement getChildNamed(final String name) {
         if (this instanceof IParent) {
-            return getChildNamed((IParent) this, name);
+            return getChildNamed(this, name);
         }
         return null;
     }
 
     public IErlElement getChildWithResource(final IResource rsrc) {
         if (this instanceof IParent) {
-            return getChildWithResource((IParent) this, rsrc);
+            return getChildWithResource(this, rsrc);
         }
         return null;
     }
@@ -606,13 +593,17 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         fChildren.remove(child);
     }
 
+    public void removeChildren() {
+        fChildren.clear();
+    }
+
     public void setChildren(final Collection<? extends IErlElement> c) {
         fChildren.clear();
         fChildren.addAll(c);
     }
 
     public void setChildren(final IErlElement[] children) {
-        fChildren = Arrays.asList(children);
+        setChildren(Arrays.asList(children));
     }
 
     /**
@@ -673,8 +664,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public IResource getResource() {
-        if (fParent != null) {
-            return fParent.getResource();
+        if (fParent instanceof IErlElement) {
+            final IErlElement parentElement = (IErlElement) fParent;
+            return parentElement.getResource();
         }
         return null;
     }
@@ -683,7 +675,25 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return Util.normalizeSpaces(toString());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.erlide.core.erlang.IErlElement#getFilePath()
+     */
     public String getFilePath() {
         return null;
     }
+
+    public String getModuleName() {
+        final IErlModule module = getModule();
+        if (module != null) {
+            return module.getName();
+        }
+        final String path = getFilePath();
+        if (path != null) {
+            return new Path(path).lastSegment();
+        }
+        return null;
+    }
+
 }

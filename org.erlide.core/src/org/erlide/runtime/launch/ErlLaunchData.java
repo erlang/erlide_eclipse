@@ -12,11 +12,14 @@ package org.erlide.runtime.launch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.debug.ErlDebugConstants;
+
+import com.google.common.collect.Maps;
 
 public class ErlLaunchData {
 
@@ -37,6 +40,7 @@ public class ErlLaunchData {
     public final boolean console;
     public final boolean isInternal;
     public final boolean loadAllNodes;
+    public final Map<String, String> env;
 
     @SuppressWarnings("unchecked")
     public ErlLaunchData(final ILaunchConfiguration config,
@@ -68,6 +72,9 @@ public class ErlLaunchData {
         isInternal = config.getAttribute(ErlLaunchAttributes.INTERNAL, false);
         loadAllNodes = config.getAttribute(ErlLaunchAttributes.LOAD_ALL_NODES,
                 false);
+        env = config.getAttribute(
+                "org.eclipse.debug.core.environmentVariables",
+                Maps.newHashMap());
     }
 
     public void debugPrint(final String mode) {
@@ -90,6 +97,7 @@ public class ErlLaunchData {
         ErlLogger.info("  debugFlags: " + debugFlags);
         ErlLogger.info("  interpretedModules: " + interpretedModules);
         ErlLogger.info("  loadAllNodes: " + loadAllNodes);
+        ErlLogger.info("  env: " + env);
         if (startMe) {
             ErlLogger.info("  * start it if not running");
         }

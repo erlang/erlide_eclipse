@@ -59,11 +59,11 @@ getTokenWindow(ScannerName, Offset, Before, After)
 getTokenAt(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
     server_cmd(ScannerName, get_token_at, Offset).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache) 
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) 
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
 	spawn_server(ScannerName),
     server_cmd(ScannerName, initial_scan,
-               {ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache}).
+               {ScannerName, ModuleFileName, InitialText, StateDir, UseCache}).
 
 %% scan_uncached(ScannerName, ModuleFileName) ->
 %%     spawn_server(ScannerName),
@@ -168,6 +168,7 @@ spawn_server(ScannerName) ->
 loop(Module) ->
     receive
 	{stop, From, []} ->
+            ?D({stop, erlang:process_info(self(), registered_name)}),
 	    reply(stop, From, stopped);
 	{Cmd, From, Args} ->
 	    NewModule = cmd(Cmd, From, Args, Module),
@@ -205,9 +206,9 @@ reply(Cmd, From, R) ->
 %% do_cmd(scan_uncached, {Mod, ModuleFileName}, _) ->
 %%     NewMod = erlide_scanner:do_scan_uncached(Mod, ModuleFileName),
 %%     NewMod;
-do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, UpdateCache}, _Module) ->
+do_cmd(initial_scan, {Mod, ModuleFileName, InitialText, StateDir, UseCache}, _Module) ->
     ?D({initial_scan, Mod, length(InitialText)}),
-    {Cached, NewMod} = erlide_scanner:initial_scan(Mod, ModuleFileName, InitialText, StateDir, UpdateCache),
+    {Cached, NewMod} = erlide_scanner:initial_scan(Mod, ModuleFileName, InitialText, StateDir, UseCache),
     {{ok, Cached}, NewMod};
 do_cmd(dump_module, [], Module) ->
     {Module, Module};

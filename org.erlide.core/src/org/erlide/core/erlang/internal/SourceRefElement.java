@@ -32,7 +32,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
     protected int fSourceRangeLength;
     protected int lineStart, lineEnd;
 
-    protected SourceRefElement(final IErlElement parent, final String name) {
+    protected SourceRefElement(final IParent parent, final String name) {
         super(parent, name);
     }
 
@@ -120,12 +120,17 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
      */
     @Override
     public IOpenable getOpenableParent() {
-        IErlElement current = getParent();
-        while (current != null) {
-            if (current instanceof IOpenable) {
-                return (IOpenable) current;
+        IParent parent = getParent();
+        while (parent != null) {
+            if (parent instanceof IOpenable) {
+                return (IOpenable) parent;
             }
-            current = current.getParent();
+            if (parent instanceof IErlElement) {
+                final IErlElement parentElement = (IErlElement) parent;
+                parent = parentElement.getParent();
+            } else {
+                break;
+            }
         }
         return null;
     }
@@ -214,7 +219,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
             throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
         }
         final IErlElement[] elements = new IErlElement[] { this };
-        final IErlElement[] dests = new IErlElement[] { getParent() };
+        final IErlElement[] dests = new IErlElement[] { (IErlElement) getParent() };
         final String[] renamings = new String[] { newName };
         getModel().rename(elements, dests, renamings, force, monitor);
     }

@@ -25,6 +25,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IOpenable;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -37,7 +38,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
     protected IResource findResult;
 
-    protected Openable(final IErlElement parent, final String name) {
+    protected Openable(final IParent parent, final String name) {
         super(parent, name);
     }
 
@@ -69,10 +70,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * Returns true if successful, or false if an error is encountered while
      * determining the structure of this element.
      * 
-     * <<<<<<< HEAD =======
-     * 
      * @param dirtyRegion
-     *            TODO >>>>>>> cleanup
      */
     protected abstract boolean buildStructure(IProgressMonitor pm)
             throws ErlModelException;
@@ -172,29 +170,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return this;
     }
 
-    // /**
-    // * @see IErlElement
-    // */
-    // public IResource getUnderlyingResource() throws ErlModelException {
-    // final IResource parentResource = fParent.getUnderlyingResource();
-    // if (parentResource == null) {
-    // return null;
-    // }
-    // final int type = parentResource.getType();
-    // if (type == IResource.FOLDER || type == IResource.PROJECT) {
-    // final IContainer topfolder = (IContainer) parentResource;
-    //
-    // // TODO use project properties
-    // final IResource resource = findFile(topfolder, fName);
-    //
-    // if (resource == null) {
-    // throw newNotPresentException();
-    // }
-    // return resource;
-    // }
-    // return parentResource;
-    // }
-
     class ErlangResourceVisitor implements IResourceVisitor {
 
         private final String aname;
@@ -213,23 +188,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
             return true;
         }
     }
-
-    // private IResource findFile(final IContainer topfolder, final String
-    // string) {
-    // final IResource result = topfolder.findMember(string);
-    // if (result != null) {
-    // return result;
-    // }
-    //
-    // findResult = null;
-    // final IResourceVisitor v = new ErlangResourceVisitor(string);
-    // try {
-    // topfolder.accept(v);
-    // } catch (final CoreException e) {
-    // ErlLogger.warn(e);
-    // }
-    // return findResult;
-    // }
 
     /**
      * Returns true if this element may have an associated source buffer,
@@ -334,12 +292,15 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * 
      */
     protected boolean parentExists() {
-
-        final IErlElement parentElement = getParent();
-        if (parentElement == null) {
+        final IParent parent = getParent();
+        if (parent == null) {
             return true;
         }
-        return parentElement.exists();
+        if (parent instanceof IErlElement) {
+            final IErlElement element = (IErlElement) parent;
+            return element.exists();
+        }
+        return false;
     }
 
     /**
@@ -373,13 +334,17 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     protected void addModules(final List<IErlModule> modules) {
-        for (final IErlElement e : fChildren) {
-            if (e instanceof IErlModule) {
-                modules.add((IErlModule) e);
-            } else if (e instanceof ErlFolder) {
-                final ErlFolder f = (ErlFolder) e;
-                f.addModules(modules);
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlModule) {
+                    modules.add((IErlModule) e);
+                } else if (e instanceof ErlFolder) {
+                    final ErlFolder f = (ErlFolder) e;
+                    f.addModules(modules);
+                }
             }
+        } catch (final ErlModelException e) {
         }
     }
+
 }

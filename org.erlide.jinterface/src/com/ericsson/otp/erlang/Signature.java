@@ -95,10 +95,11 @@ public class Signature {
             final ParseState sub = parseOne(signature.substring(1));
             return new ParseState(new Signature(crt, sub.sign), sub.rest);
         } else if ("0123456789".indexOf(crt) >= 0) {
-            final int n = Integer.parseInt(signature.substring(0, 1));
-            final Signature[] sub = new Signature[n];
+            final int numTupleElements = Integer.parseInt(signature.substring(
+                    0, 1));
+            final Signature[] sub = new Signature[numTupleElements];
             String s = signature.substring(1);
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < numTupleElements; i++) {
                 final ParseState state = parseOne(s);
                 sub[i] = state.sign;
                 s = state.rest;

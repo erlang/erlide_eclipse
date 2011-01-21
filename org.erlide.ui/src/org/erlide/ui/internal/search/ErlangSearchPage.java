@@ -224,19 +224,21 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             if (searchExternals) {
                 externalScope = SearchUtil.getWorkspaceExternalScope();
             }
-            scopeDescription = "workspace";
+            scopeDescription = SearchUtil.getWorkspaceScopeDescription();
             break;
         case ISearchPageContainer.SELECTED_PROJECTS_SCOPE:
             final String[] projectNames = getContainer()
                     .getSelectedProjectNames();
             if (searchSources) {
-                scope = SearchUtil.getProjectsScope(projectNames);
+                scope = SearchUtil.getProjectsScope(SearchUtil
+                        .getProjects(projectNames));
             }
             if (searchExternals) {
                 externalScope = SearchUtil
                         .getProjectsExternalScope(projectNames);
             }
-            scopeDescription = "projects";
+            scopeDescription = SearchUtil.getProjectScopeDescription(SearchUtil
+                    .getProjects(projectNames));
             break;
         case ISearchPageContainer.SELECTION_SCOPE:
             if (searchSources) {
@@ -248,6 +250,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getSelectionExternalScope(getContainer()
                                 .getSelection());
             }
+            scopeDescription = SearchUtil
+                    .getSelectionScopeDescription(getContainer().getSelection());
             break;
         case ISearchPageContainer.WORKING_SET_SCOPE: {
             final IWorkingSet[] workingSets = getContainer()
@@ -542,7 +546,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 createRadioButton(result, "Record", SearchFor.RECORD),
                 createRadioButton(result, "Macro", SearchFor.MACRO),
                 createRadioButton(result, "Type", SearchFor.TYPE),
-                createRadioButton(result, "Include", SearchFor.INCLUDE) };
+                createRadioButton(result, "Include", SearchFor.INCLUDE),
+                createRadioButton(result, "Record field",
+                        SearchFor.RECORD_FIELD) };
 
         // Fill with dummy radio buttons
         final Label filler = new Label(result, SWT.NONE);

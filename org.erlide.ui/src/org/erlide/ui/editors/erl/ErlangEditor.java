@@ -1773,7 +1773,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return;
         }
         resetReconciler();
-        module.resetAndCacheScannerAndParser(getDocument().get());
+        try {
+            module.resetAndCacheScannerAndParser(getDocument().get());
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e);
+        }
     }
 
     public void resetReconciler() {
@@ -2517,6 +2521,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     .toString();
         }
         return stateDirCached;
+    }
+
+    public String getPath() {
+        return getModule().getFilePath();
     }
 
 }

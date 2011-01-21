@@ -8,12 +8,12 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 
-public class ErlConsoleManager implements IDisposable, BackendListener {
+public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<Backend, IConsole> consoles;
     private final IConsoleManager conMan;
 
@@ -52,4 +52,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         ErlangCore.getBackendManager().removeBackendListener(this);
     }
 
+    public void moduleLoaded(final Backend backend, final String projectName,
+            final String moduleName) {
+    }
 }

@@ -68,7 +68,7 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
 
     @Override
     protected String getScopeDescription() {
-        return SearchUtil.getProjectScopeDescription(getProjectScope());
+        return SearchUtil.getProjectScopeDescription(getProjects());
     }
     // QuerySpecification createQuery(IErlElement element)
     // throws JavaModelException {

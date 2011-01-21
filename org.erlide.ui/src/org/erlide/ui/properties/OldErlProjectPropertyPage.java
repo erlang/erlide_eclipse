@@ -98,7 +98,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
 
     @Override
     protected String getPageId() {
-        return "org.erlide.ui.properties.erlangProjectPropertyPage";
+        return "org.erlide.core";
     }
 
     public void init(final IWorkbench workbench) {

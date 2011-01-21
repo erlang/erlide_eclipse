@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -195,7 +196,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return fTerminated;
     }
 
-    public void terminate() {
+    public void terminate() throws DebugException {
         if (fTerminated) {
             return;
         }
@@ -208,6 +209,15 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
         }
 
+        final ILaunch launch = getLaunch();
+        if (launch != null) {
+            launch.terminate();
+        }
+        fBackend.dispose();
+        final IProcess process = getProcess();
+        if (process != null) {
+            process.terminate();
+        }
         fireTerminateEvent();
     }
 
@@ -265,7 +275,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
                     erlangLineBreakpoint.install(this);
                 }
             } catch (final CoreException e) {
-                ErlLogger.warn(e);
+                ErlLogger.error(e);
             }
         }
 
@@ -273,6 +283,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     public void breakpointRemoved(final IBreakpoint breakpoint,
             final IMarkerDelta delta) {
+        try {
+            ErlLogger.debug("breakpointRemoved "
+                    + breakpoint.getMarker().toString()
+                    + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
+        } catch (final CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         if (supportsBreakpoint(breakpoint)) {
             final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
             erlangLineBreakpoint.remove(this);
@@ -405,9 +423,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             }
             if (module != null && line != -1) {
                 if (what == META_BREAK_AT) {
-                    // FIXME det funkar inte att h�mta stack i wait-l�ge...
-                    // borde det g�? borde funka enligt dbg_ui_trace_win....
-                    // skit ocks�...
+                    // FIXME can't get stack in wait...
+                    // should be possible according to dbg_ui_trace_win....
                     erlangProcess.getStackAndBindings(module, line);
                     if (erlangProcess.isStepping()) {
                         erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
@@ -676,4 +693,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         fTraceList.add(traceTuple);
     }
 
+    public Collection<OtpErlangPid> getAllMetaPids() {
+        return metaPids.values();
+    }
 }

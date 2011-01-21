@@ -19,7 +19,7 @@
 %%
 %% Exported Functions
 %%
--export([get_variables/2, check_record/1, get_function_head/2]).
+-export([get_variables/2, check_record/1, get_function_head/2, check_record_tokens/1, check_record_tokens/7]).
 
 %%
 %% API Functions
@@ -30,11 +30,15 @@
 check_record(S) ->
     case erlide_scan:string(S) of
 	{ok, Tokens, _Pos} ->
-	    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
+            {State, Name, Prefix, Fields} =
+                check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
+            {ok, {state_to_num(State), Name, Prefix, Fields}};
         {error, {_, _, {atom, $', ""}}, _} ->
             case erlide_scan:string(S++"><'") of
                 {ok, Tokens, _Pos} ->
-                    {ok, check_record_tokens(erlide_scanner:convert_tokens(Tokens))};
+                    {State, Name, Prefix, Fields} =
+                        check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
+                    {ok, {state_to_num(State), Name, Prefix, Fields}};
                 _ ->
                     none
             end;
@@ -94,7 +98,7 @@ check_record_tokens(Tokens) ->
     ?D(Tokens),
     case check_record_tokens(no_record, Tokens, false, '', '<>', [], '') of
         L when is_list(L) -> check_record_tokens(L); % Shouldn't happen
-        {State, Name, Prefix, Fields} -> {state_to_num(State), Name, Prefix, Fields}
+        {State, Name, Prefix, Fields} -> {State, Name, Prefix, Fields}
     end.
 
 state_to_num(record_want_name) -> ?RECORD_NAME;

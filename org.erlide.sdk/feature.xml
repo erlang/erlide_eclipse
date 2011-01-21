@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.sdk"
       label="erlide SDK"
-      version="0.9.4.qualifier"
+      version="0.9.5.qualifier"
       provider-name="erlide.org">
 
    <description>

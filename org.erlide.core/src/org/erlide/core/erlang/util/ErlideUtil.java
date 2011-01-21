@@ -356,7 +356,6 @@ public final class ErlideUtil {
             }
         }
         final File dir = new File(s);
-        // TODO this takes a few seconds if windows share doesn't exist - fix!
         if (!dir.exists()) {
             s = System.getProperty("user.home");
         }

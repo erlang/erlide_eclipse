@@ -11,7 +11,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author jakob
  */
 public final class TestingSupport {
-    public static IErlElement createErlAttribute(final IErlElement parent,
+    public static IErlElement createErlAttribute(final IParent parent,
             final String name, final OtpErlangObject value, final String extra,
             final int sourceRangeOffset, final int sourceRangeLength) {
         final ErlAttribute attribute = new ErlAttribute(parent, name, value,

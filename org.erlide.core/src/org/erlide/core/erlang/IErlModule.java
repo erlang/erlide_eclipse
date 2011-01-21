@@ -77,9 +77,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     Collection<IErlImport> getImports();
 
-    IErlPreprocessorDef findPreprocessorDef(String definedName, Kind type);
+    IErlPreprocessorDef findPreprocessorDef(String definedName, Kind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind type);
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind);
 
     Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
 
@@ -117,8 +117,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
      * updating the parser cache
      * 
      * @param newText
+     * @throws ErlModelException
      */
-    void resetAndCacheScannerAndParser(String newText);
+    void resetAndCacheScannerAndParser(String newText) throws ErlModelException;
 
     /**
      * Get the module name without extension
@@ -134,5 +135,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     ErlToken getScannerTokenAt(int offset);
 
     void setResource(IFile file);
+
+    String getInitialText();
+
+    void addComment(IErlComment c);
 
 }

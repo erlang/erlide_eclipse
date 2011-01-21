@@ -15,12 +15,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendListener;
+import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
 
-public class BackendManagerPopup implements BackendListener {
+public class BackendManagerPopup implements IBackendListener {
 
-    private static final BackendListener fInstance = new BackendManagerPopup();
+    private static final IBackendListener fInstance = new BackendManagerPopup();
 
     private BackendManagerPopup() {
     }
@@ -53,5 +53,9 @@ public class BackendManagerPopup implements BackendListener {
                 // + b.getInfo().getName(), DELAY);
             }
         });
+    }
+
+    public void moduleLoaded(final Backend backend, final String projectName,
+            final String moduleName) {
     }
 }

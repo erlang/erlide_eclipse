@@ -34,6 +34,7 @@
          step_return/1,
          interpret/3, 
          all_stack_frames/1,
+	 all_modules_on_stack/1,
 	 tracing/2,
          eval/2, 
          set_variable_value/4,
@@ -135,6 +136,9 @@ eval(Expr, MetaPid) ->
 
 all_stack_frames(MetaPid) ->
     erlide_dbg_mon:all_stack_frames(MetaPid).
+
+all_modules_on_stack(MetaPid) ->
+    erlide_dbg_mon:all_modules_on_stack(MetaPid).
 
 tracing(Bool, MetaPid) ->
     erlide_dbg_mon:tracing(Bool, MetaPid).

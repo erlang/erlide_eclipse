@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.2.2
+Bundle-Version: 1.2.3
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- lambdaj-2.3.1-with-dependencies.jar,
- guava-r07.jar
+ guava-r07.jar,
+ lambdaj-2.3.2-with-dependencies.jar
 Export-Package: ch.lambdaj,
  ch.lambdaj.collection,
  ch.lambdaj.function.aggregate,
@@ -26,6 +26,10 @@ Export-Package: ch.lambdaj,
  com.google.common.base;uses:="new com.google.common.base",
  com.google.common.base.internal,
  com.google.common.collect;uses:="com.google.common.base,new new com.google.common.collect,new com.google.common.collect",
+ com.google.common.io,
+ com.google.common.net,
+ com.google.common.primitives,
+ com.google.common.util.concurrent,
  net.sf.cglib.asm;x-internal:=true,
  net.sf.cglib.asm.signature;x-internal:=true,
  net.sf.cglib.beans;x-internal:=true,
@@ -35,8 +39,6 @@ Export-Package: ch.lambdaj,
  net.sf.cglib.transform;x-internal:=true,
  net.sf.cglib.transform.impl;x-internal:=true,
  net.sf.cglib.util;x-internal:=true,
- org.apache.commons.logging,
- org.apache.commons.logging.impl,
  org.hamcrest,
  org.hamcrest.beans,
  org.hamcrest.collection,

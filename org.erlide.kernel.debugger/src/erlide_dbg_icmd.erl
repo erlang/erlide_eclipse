@@ -357,6 +357,8 @@ handle_user_msg({set,stack_trace,Flag}, _Status, _Bs, _Ieval) ->
     set_stack_trace(Flag);
 handle_user_msg({get, all_stack_frames, From, _}, _Status, Bs, _Ieval) ->
     reply(From, all_stack_frames, {all_frames(), Bs});
+handle_user_msg({get, all_modules_on_stack, From, _}, _Status, _Bs, _Ieval) ->
+    reply(From, all_modules_on_stack, all_modules_on_stack());
 handle_user_msg({get,bindings,From,SP}, _Status, Bs, _Ieval) ->
     reply(From, bindings, bindings(Bs, SP));
 handle_user_msg({get,stack_frame,From,{Dir,SP}}, _Status, _Bs,_Ieval) ->
@@ -365,6 +367,9 @@ handle_user_msg({get,messages,From,_}, _Status, _Bs, _Ieval) ->
     reply(From, messages, messages());
 handle_user_msg({get,backtrace,From,N}, _Status, _Bs, _Ieval) ->
     reply(From, backtrace, erlide_dbg_ieval:backtrace(N)).
+
+all_modules_on_stack() ->
+    erlide_dbg_ieval:all_modules_on_stack().
 
 all_frames() ->
     erlide_dbg_ieval:all_frames().

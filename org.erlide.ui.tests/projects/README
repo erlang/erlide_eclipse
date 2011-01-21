@@ -1,8 +1,24 @@
 In this directory add test projects that can be imported in a workspace 
 and tests can be run on them.
 
-The goal is to have a set of projects that depend on each other and recreate
+One of the goals is to have a set of projects that depend on each other and recreate
 the most complex settings at user's site, including use of external_modules 
 and external_includes.
 
 This way we don't need to rely on testing at in a Shade environment.
+
+== Project structure and references ==
+
+external_modules and external_includes include all files in p1, p2 and p3
+
+p1 -> p2 
+ - m11 -> m12, m21, h11, h21
+ - h11 -> h22
+ 
+p2 : this prj should be tested as both open and closed (we check that stuff is found in the right place anyway)
+ - m21
+ - h21 
+ 
+With these, we must test navigation and completion. To be defined.
+ 
+ 

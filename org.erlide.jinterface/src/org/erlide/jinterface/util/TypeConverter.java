@@ -160,6 +160,7 @@ public final class TypeConverter {
                 final Object o = method.invoke(null, obj);
                 return o;
             } catch (final NoSuchMethodException e) {
+                // ignore, continue
             }
 
             if (cls.isArray()) {
@@ -401,37 +402,33 @@ public final class TypeConverter {
     }
 
     private static void checkConversion(final Object obj) {
-        if (TypeConverter.isCheckConversion()) {
+        if (TypeConverter.willCheckConversion()) {
             StackTraceElement el = null;
-            StackTraceElement[] st = null;
-            try {
-                throw new Exception("");
-            } catch (final Exception e) {
-                boolean found = false;
-                st = e.getStackTrace();
-                for (final StackTraceElement ste : st) {
-                    if (found) {
-                        if (!((ste.getMethodName().equals("send")
-                                || ste.getMethodName().equals("sendRpc")
-                                || ste.getMethodName().equals("rpc")
-                                || ste.getMethodName().equals("rpct")
-                                || ste.getMethodName().equals("rpcx") || ste
-                                .getMethodName().equals("rpcxt")) && ste
-                                .getClassName().endsWith("Backend"))) {
-                            el = ste;
-                            break;
-                        }
-                    }
-                    if ((ste.getMethodName().equals("send")
+            boolean found = false;
+            final StackTraceElement[] st = Thread.currentThread()
+                    .getStackTrace();
+            for (final StackTraceElement ste : st) {
+                if (found) {
+                    if (!((ste.getMethodName().equals("send")
                             || ste.getMethodName().equals("sendRpc")
                             || ste.getMethodName().equals("rpc")
                             || ste.getMethodName().equals("rpct")
                             || ste.getMethodName().equals("rpcx") || ste
-                            .getMethodName().equals("rpcxt"))
-                            && ste.getClassName().endsWith("Backend")) {
-                        found = true;
-
+                            .getMethodName().equals("rpcxt")) && ste
+                            .getClassName().endsWith("Backend"))) {
+                        el = ste;
+                        break;
                     }
+                }
+                if ((ste.getMethodName().equals("send")
+                        || ste.getMethodName().equals("sendRpc")
+                        || ste.getMethodName().equals("rpc")
+                        || ste.getMethodName().equals("rpct")
+                        || ste.getMethodName().equals("rpcx") || ste
+                        .getMethodName().equals("rpcxt"))
+                        && ste.getClassName().endsWith("Backend")) {
+                    found = true;
+
                 }
             }
             ErlLogger.debug(" *** deprecated use of java2erlang: "
@@ -575,7 +572,7 @@ public final class TypeConverter {
                         .getName(), obj.toString(), type.toString()));
     }
 
-    public static boolean isCheckConversion() {
+    public static boolean willCheckConversion() {
         final String dev = System.getProperty("erlide.test_rpc");
         return dev != null && "true".equals(dev);
     }
@@ -583,7 +580,7 @@ public final class TypeConverter {
     /**
      * @noreference This method is not intended to be referenced by clients.
      */
-    public static boolean matchSignature(final OtpErlangObject term,
+    public static boolean doesMatchSignature(final OtpErlangObject term,
             final Signature signature) {
         if (signature.kind == 'x') {
             return true;
@@ -598,11 +595,6 @@ public final class TypeConverter {
             return signature.kind == 'p';
         }
         return false;
-    }
-
-    public static boolean matchSignature(final OtpErlangObject term,
-            final String signature) throws SignatureException {
-        return matchSignature(term, Signature.parse(signature)[0]);
     }
 
     public static OtpErlangObject mapToProplist(

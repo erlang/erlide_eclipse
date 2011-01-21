@@ -21,17 +21,16 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner_server";
 
-    public static void initialScan(final String module,
-            final String moduleFileName, final String initialText,
-            final boolean updateCaches) {
+    public static void initialScan(final String module, final String path,
+            final String initialText, final boolean useCaches) {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
         try {
             ErlangCore
                     .getBackendManager()
                     .getIdeBackend()
-                    .call(ERLIDE_SCANNER, "initialScan", "assso", module,
-                            moduleFileName, initialText, stateDir, updateCaches);
+                    .call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
+                            initialText, stateDir, useCaches);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }

@@ -176,17 +176,6 @@ public class ErlBackend {
         return result;
     }
 
-    public static void generateRpcStub(final Backend b, final String s) {
-        // try {
-        // final RpcResult r = b.rpc(ERL_BACKEND, "compile_string", "s", s);
-        // if (!r.isOk()) {
-        // ErlLogger.debug("rpcstub::" + r.toString());
-        // }
-        // } catch (final Exception e) {
-        // ErlLogger.debug(e);
-        // }
-    }
-
     public static boolean loadBeam(final Backend backend,
             final String moduleName, final OtpErlangBinary bin) {
         OtpErlangObject r = null;

@@ -1,9 +1,8 @@
 package org.erlide.core.erlang.internal;
 
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.IParent;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -15,13 +14,13 @@ public class ErlImport extends ErlImportExport implements IErlImport {
     String fImportModule;
 
     /**
-     * @param parent
-     * @param imports
+     * @param erlModuleInternal
+     * @param functionList
      * @param module
      */
-    protected ErlImport(final IErlElement parent, final String importModule,
-            final ErlangFunction[] imports) {
-        super(parent, "import", imports);
+    protected ErlImport(final IParent parent, final String importModule,
+            final OtpErlangList functionList) {
+        super(parent, "import", functionList);
         fImportModule = importModule;
     }
 

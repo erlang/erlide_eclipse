@@ -54,9 +54,9 @@
 
 %%-spec(sim_expr_search_in_buffer/6::(filename(), pos(), pos(), string(),[dir()],integer())
 %%      -> {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).    
-sim_expr_search_in_buffer(FName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
+sim_expr_search_in_buffer(FName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_buffer(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
-		 [?MODULE, FName, Line, Col, Line1, Col1, SimiScore0, SearchPaths, TabWidth]),
+		 [?MODULE, FName, _Line, _Col, _Line1, _Col1, SimiScore0, SearchPaths, TabWidth]),
     SimiScore = get_simi_score(SimiScore0),
     {FunDef, Exprs, SE} = get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth),
     {Ranges, AntiUnifier} = search_and_gen_anti_unifier([FName], {FName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
@@ -65,9 +65,9 @@ sim_expr_search_in_buffer(FName, Start = {Line, Col}, End = {Line1, Col1}, SimiS
 
 %%-spec(sim_expr_search_in_dirs/6::(filename(), pos(), pos(), string(),[dir()],integer())
 %%      ->{ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).     
-sim_expr_search_in_dirs(FileName, Start = {Line, Col}, End = {Line1, Col1}, SimiScore0, SearchPaths, TabWidth) ->
+sim_expr_search_in_dirs(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col, Line1, Col1, SearchPaths, SearchPaths, TabWidth]),
+		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, SearchPaths, TabWidth]),
     Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
     SimiScore = get_simi_score(SimiScore0),
     {FunDef, Exprs, SE} = get_fundef_and_expr(FileName, Start, End, SearchPaths, TabWidth),

@@ -342,7 +342,7 @@ public class ErlTextHover implements ITextHover,
                                 final String modFileName = mod + ".erl";
                                 if (project != null) {
                                     r = ResourceUtil
-                                            .recursiveFindNamedResourceWithReferences(
+                                            .recursiveFindNamedModuleResourceWithReferences(
                                                     project,
                                                     modFileName,
                                                     PluginUtils

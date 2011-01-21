@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.jinterface.backend.Backend;
@@ -58,7 +57,7 @@ public class CallHierarchyView extends ViewPart {
         public String getText(final Object element) {
             if (element instanceof IErlFunction) {
                 final IErlFunction ref = (IErlFunction) element;
-                final String n = ref.getModule().getModuleName();
+                final String n = ref.getModuleName();
                 return n + " : " + ref.toString();
             }
             return super.getText(element);
@@ -74,7 +73,7 @@ public class CallHierarchyView extends ViewPart {
             input = newInput;
             if (newInput instanceof IErlFunction) {
                 final IErlFunction fun = (IErlFunction) newInput;
-                lblRoot.setText(fun.getModule().getModuleName() + " : "
+                lblRoot.setText(fun.getModuleName() + " : "
                         + fun.getNameWithArity());
             } else if (input instanceof String) {
                 lblRoot.setText((String) input);
@@ -174,8 +173,6 @@ public class CallHierarchyView extends ViewPart {
                             EditorUtility.openElementInEditor(el,
                                     activateOnOpen);
                         } catch (final PartInitException e1) {
-                            e1.printStackTrace();
-                        } catch (final ErlModelException e1) {
                             e1.printStackTrace();
                         }
                     }

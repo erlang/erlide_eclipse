@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
+import org.erlide.core.erlang.internal.ErlModuleMap;
 import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.RuntimeInfoManager;
@@ -68,6 +69,10 @@ public final class ErlangCore {
 
     public static final IErlModel getModel() {
         return getModelManager().getErlangModel();
+    }
+
+    public static final IErlModuleMap getModelMap() {
+        return ErlModuleMap.getDefault();
     }
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {

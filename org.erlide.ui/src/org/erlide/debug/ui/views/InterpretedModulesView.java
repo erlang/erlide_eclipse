@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -214,7 +213,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
                     try {
                         EditorUtility.openInEditor(item.getItem());
                     } catch (final PartInitException e) {
-                    } catch (final ErlModelException e) {
                     }
                 }
             }

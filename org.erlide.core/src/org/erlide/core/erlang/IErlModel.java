@@ -272,7 +272,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     IErlElement findElement(IResource resource, boolean openElements);
 
-    IErlProject findProject(IProject p);
+    IErlProject findProject(IProject project);
 
     IErlModule findModule(IFile file);
 
@@ -294,8 +294,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
      * name and module can be regexps.
      */
     IErlFunction findFunction(FunctionRef r);
-
-    IErlModule getModuleFor(IErlElement elem);
 
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;

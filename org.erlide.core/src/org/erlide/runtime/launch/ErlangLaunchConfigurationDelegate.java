@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Maps;
 
 import erlang.ErlideDebug;
 
@@ -79,21 +81,16 @@ public class ErlangLaunchConfigurationDelegate implements
         doLaunch(config, mode, launch, false, null);
     }
 
-    protected Backend doLaunch(final ILaunchConfiguration config,
+    protected void doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch, final boolean internal,
             final Map<String, String> env) throws CoreException {
         final ErlLaunchData data = new ErlLaunchData(config, internal);
 
-        final Set<IProject> projects = new HashSet<IProject>();
-        for (final String s : data.projectNames) {
-            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                    .getProject(s);
-            if (project == null) {
-                ErlLogger.error("Launch: project not found: '%s'!", s);
-                return null;
-            }
-            projects.add(project);
+        if (data.isInternal) {
+            return;
         }
+
+        final Set<IProject> projects = gatherProjects(data);
         data.interpretedModules = addBreakpointProjectsAndModules(projects,
                 data.interpretedModules);
 
@@ -105,10 +102,35 @@ public class ErlangLaunchConfigurationDelegate implements
                 data.runtime);
         if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);
-            return null;
+            return;
         }
         final RuntimeInfo rt = buildRuntimeInfo(internal, data, rt0);
+        final EnumSet<BackendOptions> options = setupBackendOptions(mode, data);
+        Map<String, String> myenv = setupEnvironment(env, data);
+        setCaptureOutput(launch);
 
+        ErlideBackend backend = null;
+        try {
+            backend = ErlangCore.getBackendManager().createBackend(rt, options,
+                    launch, myenv);
+            if (backend == null) {
+                ErlLogger.error("Launch: could not create backend!");
+                final Status s = new Status(IStatus.ERROR,
+                        ErlangPlugin.PLUGIN_ID, DebugException.REQUEST_FAILED,
+                        "Couldn't find the node " + data.nodeName, null);
+                throw new DebugException(s);
+            }
+            postLaunch(mode, data, projects, rt, options, backend);
+        } catch (final BackendException e) {
+            ErlLogger.error("Launch: backend error!");
+            final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+                    DebugException.REQUEST_FAILED, e.getMessage(), null);
+            throw new DebugException(s);
+        }
+    }
+
+    private EnumSet<BackendOptions> setupBackendOptions(final String mode,
+            final ErlLaunchData data) throws CoreException {
         final EnumSet<BackendOptions> options = EnumSet
                 .noneOf(BackendOptions.class);
         if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -131,37 +153,41 @@ public class ErlangLaunchConfigurationDelegate implements
         if (data.loadAllNodes) {
             options.add(BackendOptions.LOAD_ALL_NODES);
         }
+        return options;
+    }
 
+    private HashMap<String, String> setupEnvironment(
+            final Map<String, String> env, final ErlLaunchData data) {
+        HashMap<String, String> myenv;
+        if (env == null) {
+            myenv = Maps.newHashMap();
+        } else {
+            myenv = Maps.newHashMap(env);
+        }
+        myenv.putAll(data.env);
+        return myenv;
+    }
+
+    private void setCaptureOutput(final ILaunch launch) {
         // important, so that we don't get the "normal" console for the erlide
         // backend
         final String captureOutput = System.getProperty(
                 "erlide.console.stdout", "false");
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
+    }
 
-        if (data.isInternal) {
-            ErlLogger.debug("Not creating a backend");
-            return null;
-        }
-
-        ErlideBackend backend = null;
-        try {
-            backend = ErlangCore.getBackendManager().createBackend(rt, options,
-                    launch, env);
-            if (backend == null) {
-                ErlLogger.error("Launch: could not create backend!");
-                final Status s = new Status(IStatus.ERROR,
-                        ErlangPlugin.PLUGIN_ID, DebugException.REQUEST_FAILED,
-                        "Couldn't find the node " + data.nodeName, null);
-                throw new DebugException(s);
+    private Set<IProject> gatherProjects(final ErlLaunchData data) {
+        final Set<IProject> projects = new HashSet<IProject>();
+        for (final String s : data.projectNames) {
+            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(s);
+            if (project == null) {
+                ErlLogger.error("Launch: project not found: '%s'!", s);
+                continue;
             }
-            postLaunch(mode, data, projects, rt, options, backend);
-        } catch (final BackendException e) {
-            ErlLogger.error("Launch: backend error!");
-            final Status s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
-                    DebugException.REQUEST_FAILED, e.getMessage(), null);
-            throw new DebugException(s);
+            projects.add(project);
         }
-        return backend;
+        return projects;
     }
 
     private RuntimeInfo buildRuntimeInfo(final boolean internal,
@@ -213,9 +239,8 @@ public class ErlangLaunchConfigurationDelegate implements
                 addNodesAsDebugTargets(backend, launch);
             }
             interpretModules(data, backend, distributed);
-            registerDebugEventListener(data, backend);
+            registerStartupFunctionStarter(data, backend);
             target.sendStarted();
-
         } else {
             runInitial(data.module, data.function, data.args, backend);
         }
@@ -225,8 +250,8 @@ public class ErlangLaunchConfigurationDelegate implements
             final ErlideBackend backend, final boolean distributed) {
         for (final String pm : data.interpretedModules) {
             final String[] pms = pm.split(":");
-            getDebugHelper().interpret(backend, pms[0], pms[1], distributed,
-                    true);
+            new ErlangDebugHelper().interpret(backend, pms[0], pms[1],
+                    distributed, true);
         }
     }
 
@@ -244,7 +269,7 @@ public class ErlangLaunchConfigurationDelegate implements
         }
     }
 
-    private void registerDebugEventListener(final ErlLaunchData data,
+    private void registerStartupFunctionStarter(final ErlLaunchData data,
             final ErlideBackend backend) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
@@ -254,10 +279,6 @@ public class ErlangLaunchConfigurationDelegate implements
                         DebugPlugin.getDefault().removeDebugEventListener(this);
                     }
                 });
-    }
-
-    protected ErlangDebugHelper getDebugHelper() {
-        return new ErlangDebugHelper();
     }
 
     private static void registerProjectsWithExecutionBackend(
@@ -366,6 +387,7 @@ public class ErlangLaunchConfigurationDelegate implements
 
     void runInitial(final String module, final String function,
             final String args, final Backend backend) {
+        ErlLogger.debug("calling startup function %s:%s", module, function);
         try {
             if (module.length() > 0 && function.length() > 0) {
                 if (args.length() > 0) {

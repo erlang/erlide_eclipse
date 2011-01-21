@@ -1,8 +1,7 @@
-package org.erlide.runtime.backend;
+package org.erlide.jinterface.backend;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.backend.RuntimeVersion;
 import org.junit.Test;
 
 public class RuntimeVersionTest {

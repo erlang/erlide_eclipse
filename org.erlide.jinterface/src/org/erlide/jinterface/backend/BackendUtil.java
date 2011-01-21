@@ -38,7 +38,7 @@ public final class BackendUtil {
         return v;
     }
 
-    public static String buildNodeName(final String label,
+    public static String buildLocalNodeName(final String label,
             final boolean longName) {
         if (label.indexOf('@') > 0) {
             // ignore unique here?

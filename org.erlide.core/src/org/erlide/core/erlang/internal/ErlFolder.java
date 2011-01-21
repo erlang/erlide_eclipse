@@ -30,7 +30,7 @@ import org.erlide.core.erlang.util.PluginUtils;
 public class ErlFolder extends Openable implements IErlFolder {
     private final IFolder folder;
 
-    protected ErlFolder(final IFolder folder, final IErlElement parent) {
+    protected ErlFolder(final IFolder folder, final IParent parent) {
         super(parent, folder.getName());
         this.folder = folder;
     }

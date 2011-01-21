@@ -147,10 +147,17 @@ lines_to_text(Lines) ->
                  cachedTokens = [],
                  log = []}).
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UpdateCache) ->
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
+    Text = case InitialText of
+               "" ->
+                   {ok, B} = file:read_file(ModuleFileName),
+                   binary_to_list(B);
+               _ ->
+                   InitialText
+           end,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
-    RenewFun = fun(_F) -> do_scan(ScannerName, InitialText) end,
-    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UpdateCache).
+    RenewFun = fun(_F) -> do_scan(ScannerName, Text) end,
+    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache).
 
 %% do_scan_uncached(ScannerName, ModuleFileName) ->
 %%     {ok, B} = file:read_file(ModuleFileName),

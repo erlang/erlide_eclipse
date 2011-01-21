@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
+import org.erlide.core.erlang.IParent;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -17,7 +18,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
     private final List<String> entries;
     private final String externalName;
 
-    public ErlExternalReferenceEntryList(final IErlElement parent,
+    public ErlExternalReferenceEntryList(final IParent parent,
             final String name, final String externalName,
             final String externalIncludes, final String externalModules) {
         super(parent, name);
@@ -38,13 +39,17 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure");
+        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
+                externalName);
         final List<IErlElement> result = new ArrayList<IErlElement>(
                 entries.size());
         for (final String entry : entries) {
             final String name = new Path(entry).lastSegment().replaceAll(
                     "\\.erlidex", "");
-            result.add(new ErlExternalReferenceEntry(this, name, entry, true));
+            final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
+                    this, name, entry, true);
+            result.add(child);
+            child.open(pm);
         }
         setChildren(result);
         return true;
@@ -73,6 +78,14 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
     public String getExternalName() {
         return externalName;
+    }
+
+    public boolean hasModuleWithPath(final String path) {
+        return false;
+    }
+
+    public boolean isRoot() {
+        return true;
     }
 
 }

@@ -1,10 +1,9 @@
-package org.erlide.runtime.backend;
+package org.erlide.jinterface.backend;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.jinterface.backend.RuntimeInfo;
 import org.junit.Test;
 
 public class RuntimeInfoTest {

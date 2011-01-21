@@ -2,7 +2,7 @@
  * Original code from:
  * 		http://www.dzone.com/links/r/some_junit_tricks_for_easier_and_better_test_cases.html
  */
-package org.erlide.jinterface.util;
+package org.erlide.test.support;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;

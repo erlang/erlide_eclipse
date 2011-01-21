@@ -50,6 +50,7 @@ import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
+import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
 import org.erlide.core.search.VariablePattern;
@@ -59,6 +60,7 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
@@ -76,6 +78,7 @@ public class SearchUtil {
     private static final int ARI_RECORD_DEF = -4;
     private static final int ARI_MACRO_DEF = -5;
     private static final int ARI_INCLUDE = -6;
+    private static final int ARI_RECORD_FIELD_DEF = -7;
 
     public static final class WorkingSetComparator implements
             Comparator<IWorkingSet> {
@@ -86,9 +89,12 @@ public class SearchUtil {
         }
     }
 
-    static public Collection<IResource> getProjectScope(final IProject project) {
+    static public Collection<IResource> getProjectsScope(
+            final Collection<IProject> projects) {
         final Set<IResource> result = new HashSet<IResource>();
-        addProjectToScope(project, result);
+        for (final IProject project : projects) {
+            addProjectToScope(project, result);
+        }
         return result;
     }
 
@@ -189,13 +195,13 @@ public class SearchUtil {
         }
     }
 
-    public static Collection<IResource> getProjectsScope(
-            final String[] projectNames) {
-        final Set<IResource> result = new HashSet<IResource>();
+    public static Collection<IProject> getProjects(final String[] projectNames) {
+        final Collection<IProject> result = Sets
+                .newHashSetWithExpectedSize(projectNames.length);
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String i : projectNames) {
             final IProject project = root.getProject(i);
-            addProjectToScope(project, result);
+            result.add(project);
         }
         return result;
     }
@@ -302,8 +308,10 @@ public class SearchUtil {
         case ARI_MACRO_DEF:
             return Kind.MACRO_DEF;
         case ARI_INCLUDE:
-            return Kind.ATTRIBUTE; // include actually, attributes are not saved
-            // (yet)
+            return Kind.ATTRIBUTE;
+            // include actually, attributes are not saved (yet)
+        case ARI_RECORD_FIELD_DEF:
+            return Kind.RECORD_FIELD;
         default:
             if (ref.isSubClause()) {
                 return Kind.CLAUSE;
@@ -318,7 +326,6 @@ public class SearchUtil {
         if (res == null) {
             return null;
         }
-        final ErlangSearchPattern ref = null;
         String name = res.getName();
         final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
         if (res.isExternalCall()) {
@@ -383,8 +390,10 @@ public class SearchUtil {
                     }
                 }
             }
+        } else if (res.isField()) {
+            return new RecordFieldPattern(res.getFun(), unquoted, limitTo);
         }
-        return ref;
+        return null;
     }
 
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
@@ -455,9 +464,17 @@ public class SearchUtil {
     private static String workingSetLabels(final IWorkingSet[] workingSets,
             final String s, final String surround) {
         final StringBuilder sb = new StringBuilder(s);
+        int i = 0;
         for (final IWorkingSet ws : workingSets) {
             sb.append(surround).append(ws.getLabel()).append(surround)
                     .append(", ");
+            i++;
+            if (i == 2) {
+                break;
+            }
+        }
+        if (workingSets.length > 2) {
+            return sb.append("... ").toString();
         }
         return sb.substring(0, sb.length() - 2);
     }
@@ -530,18 +547,49 @@ public class SearchUtil {
     }
 
     public static String getProjectScopeDescription(
-            final Collection<IResource> projectScope) {
-        if (projectScope.size() == 0) {
+            final Collection<IProject> projects) {
+        if (projects == null || projects.isEmpty()) {
             return "";
         } else {
             final StringBuilder sb = new StringBuilder(
-                    projectScope.size() == 1 ? "project" : "projects");
+                    projects.size() == 1 ? "project" : "projects");
             sb.append(' ');
-            for (final IResource p : projectScope) {
+            int i = 0;
+            for (final IProject p : projects) {
                 sb.append('\'').append(p.getName()).append("', ");
+                i++;
+                if (i == 2) {
+                    break;
+                }
+            }
+            if (projects.size() > 2) {
+                return sb.append("... ").toString();
             }
             return sb.substring(0, sb.length() - 2);
         }
+    }
+
+    public static String getSelectionScopeDescription(final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            final StringBuilder sb = new StringBuilder();
+            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            int i = 0;
+            for (final Object o : structuredSelection.toList()) {
+                if (o instanceof IResource) {
+                    final IResource resource = (IResource) o;
+                    sb.append('\'').append(resource.getName()).append("', ");
+                    i++;
+                    if (i == 2) {
+                        break;
+                    }
+                }
+            }
+            if (structuredSelection.size() > 2) {
+                return sb.append("...").toString();
+            }
+            return sb.substring(0, sb.length() - 2);
+        }
+        return "";
     }
 
     public static String getWorkspaceScopeDescription() {

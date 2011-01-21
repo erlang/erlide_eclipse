@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
@@ -148,6 +149,8 @@ public class CodeManager {
                             if (!ok) {
                                 ErlLogger.error("Could not load %s", m);
                             }
+                            ErlangCore.getBackendManager().moduleLoaded(
+                                    backend, null, m);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
                         }
