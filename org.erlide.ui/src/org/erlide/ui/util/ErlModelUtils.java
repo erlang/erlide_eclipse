@@ -171,6 +171,9 @@ public class ErlModelUtils {
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
         for (final ErlangIncludeFile element : includes) {
+            if (module == null) {
+                continue;
+            }
             final IResource resource = module.getResource();
             IResource re = null;
             if (resource != null) {
