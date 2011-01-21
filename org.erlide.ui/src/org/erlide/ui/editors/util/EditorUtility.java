@@ -11,6 +11,7 @@
 
 package org.erlide.ui.editors.util;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.filesystem.EFS;
@@ -47,6 +48,7 @@ import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -275,7 +277,9 @@ public class EditorUtility {
     private static IEditorInput getEditorInput(IErlElement element) {
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
-            return new FileEditorInput((IFile) resource);
+            IFile file = (IFile) resource;
+            file = resolveFile(file);
+            return new FileEditorInput(file);
         }
         String filePath = element.getFilePath();
         while (filePath == null) {
@@ -303,6 +307,24 @@ public class EditorUtility {
             }
         }
         return null;
+    }
+
+    private static IFile resolveFile(IFile file) {
+        if (file.getResourceAttributes().isSymbolicLink()) {
+            try {
+                final File f = new File(file.getLocation().toString());
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
+                        .fromLocalFile(f).fetchInfo();
+                final String target = info
+                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                if (target != null) {
+                    file = (IFile) file.getParent().findMember(target);
+                }
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
+            }
+        }
+        return file;
     }
 
     public static IEditorInput getEditorInput(final Object input) {
