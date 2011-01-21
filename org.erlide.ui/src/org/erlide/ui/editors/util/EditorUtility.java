@@ -11,6 +11,7 @@
 
 package org.erlide.ui.editors.util;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.filesystem.EFS;
@@ -42,11 +43,9 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleInternal;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.jinterface.util.ErlLogger;
@@ -65,11 +64,7 @@ public class EditorUtility {
     public static boolean isEditorInput(final Object element,
             final IEditorPart editor) {
         if (editor != null) {
-            try {
-                return editor.getEditorInput().equals(getEditorInput(element));
-            } catch (final ErlModelException e) {
-                ErlLogger.warn(e);
-            }
+            return editor.getEditorInput().equals(getEditorInput(element));
         }
         return false;
     }
@@ -83,11 +78,7 @@ public class EditorUtility {
     public static IEditorPart isOpenInEditor(final Object inputElement) {
         IEditorInput input = null;
 
-        try {
-            input = getEditorInput(inputElement);
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
-        }
+        input = getEditorInput(inputElement);
 
         if (input != null) {
             final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
@@ -107,7 +98,7 @@ public class EditorUtility {
      * @return the IEditorPart or null if wrong element type or opening failed
      */
     public static IEditorPart openInEditor(final Object inputElement)
-            throws ErlModelException, PartInitException {
+            throws PartInitException {
         return openInEditor(inputElement, true);
     }
 
@@ -117,7 +108,7 @@ public class EditorUtility {
      * @return the IEditorPart or null if wrong element type or opening failed
      */
     public static IEditorPart openInEditor(final Object inputElement,
-            final boolean activate) throws ErlModelException, PartInitException {
+            final boolean activate) throws PartInitException {
 
         if (inputElement instanceof IFile) {
             return openInEditor((IFile) inputElement, activate);
@@ -283,20 +274,19 @@ public class EditorUtility {
         return null;
     }
 
-    private static IEditorInput getEditorInput(IErlElement element)
-            throws ErlModelException {
+    private static IEditorInput getEditorInput(IErlElement element) {
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
-            return new FileEditorInput((IFile) resource);
+            IFile file = (IFile) resource;
+            file = resolveFile(file);
+            return new FileEditorInput(file);
         }
         String filePath = element.getFilePath();
         while (filePath == null) {
             final IParent parent = element.getParent();
-            if (parent instanceof IErlModuleInternal) {
-                final IErlModuleInternal internal = (IErlModuleInternal) parent;
-                filePath = internal.getPath();
-            } else if (parent instanceof IErlElement) {
+            if (parent instanceof IErlElement) {
                 element = (IErlElement) parent;
+                filePath = element.getFilePath();
             } else {
                 break;
             }
@@ -319,8 +309,25 @@ public class EditorUtility {
         return null;
     }
 
-    public static IEditorInput getEditorInput(final Object input)
-            throws ErlModelException {
+    private static IFile resolveFile(IFile file) {
+        if (file.getResourceAttributes().isSymbolicLink()) {
+            try {
+                final File f = new File(file.getLocation().toString());
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
+                        .fromLocalFile(f).fetchInfo();
+                final String target = info
+                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                if (target != null) {
+                    file = (IFile) file.getParent().findMember(target);
+                }
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
+            }
+        }
+        return file;
+    }
+
+    public static IEditorInput getEditorInput(final Object input) {
         if (input instanceof IErlElement) {
             return getEditorInput((IErlElement) input);
         }
@@ -339,7 +346,7 @@ public class EditorUtility {
      * Opens the editor on the given element and subsequently selects it.
      */
     public static void openElementInEditor(final Object element,
-            final boolean activate) throws ErlModelException, PartInitException {
+            final boolean activate) throws PartInitException {
         final IEditorPart part = EditorUtility.openInEditor(element, activate);
         if (element instanceof IErlElement) {
             EditorUtility.revealInEditor(part, (IErlElement) element);

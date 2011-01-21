@@ -32,7 +32,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.erlide.core.builder.MarkerUtils;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -187,17 +186,14 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
         if (element instanceof ErlangSearchElement) {
             final ErlangSearchElement ese = (ErlangSearchElement) element;
             final IErlModule module = ese.getModule();
-            try {
-                final IEditorPart editor = EditorUtility.openInEditor(module);
-                if (offset != 0) {
-                    if (editor instanceof ErlangEditor) {
-                        final ErlangEditor ee = (ErlangEditor) editor;
-                        ee.selectAndReveal(offset, length);
-                    } else if (editor != null) {
-                        showWithMarker(editor, module, offset, length);
-                    }
+            final IEditorPart editor = EditorUtility.openInEditor(module);
+            if (offset != 0) {
+                if (editor instanceof ErlangEditor) {
+                    final ErlangEditor ee = (ErlangEditor) editor;
+                    ee.selectAndReveal(offset, length);
+                } else if (editor != null) {
+                    showWithMarker(editor, module, offset, length);
                 }
-            } catch (final ErlModelException e) {
             }
         }
     }

@@ -43,7 +43,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
@@ -568,10 +567,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         final IErlModel model = ErlangCore.getModel();
         final IErlModule m = model.findModule(module);
         IEditorInput input = null;
-        try {
-            input = EditorUtility.getEditorInput(m);
-        } catch (final ErlModelException e1) {
-        }
+        input = EditorUtility.getEditorInput(m);
         if (input != null) {
             final String editorId = EditorUtility.getEditorID(input, m);
             if (editorId != null) {

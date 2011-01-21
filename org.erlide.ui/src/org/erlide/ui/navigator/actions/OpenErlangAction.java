@@ -11,7 +11,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.OpenResourceAction;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -94,8 +93,6 @@ public class OpenErlangAction extends Action {
                     openResourceAction.run();
                 }
             } catch (final PartInitException e) {
-                ErlLogger.warn(e);
-            } catch (final ErlModelException e) {
                 ErlLogger.warn(e);
             }
         }

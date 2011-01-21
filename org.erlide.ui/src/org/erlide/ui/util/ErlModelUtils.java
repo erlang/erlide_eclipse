@@ -39,9 +39,11 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -169,6 +171,9 @@ public class ErlModelUtils {
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
         for (final ErlangIncludeFile element : includes) {
+            if (module == null) {
+                continue;
+            }
             final IResource resource = module.getResource();
             IResource re = null;
             if (resource != null) {
@@ -386,7 +391,12 @@ public class ErlModelUtils {
                         modulePath, project, checkAllProjects);
                 if (module2 != null) {
                     module2.open(null);
-                    return module2.findFunction(erlangFunction);
+                    final IErlFunction function = module2
+                            .findFunction(erlangFunction);
+                    if (function != null) {
+                        return function;
+                    }
+                    return module2;
                 }
             }
         } catch (final ErlModelException e) {
@@ -397,14 +407,13 @@ public class ErlModelUtils {
     }
 
     public static void openElement(final IErlElement element)
-            throws PartInitException, ErlModelException {
+            throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(element);
         EditorUtility.revealInEditor(editor, element);
     }
 
     public static void openSourceRange(final IErlModule module,
-            final ISourceRange sourceRange) throws PartInitException,
-            ErlModelException {
+            final ISourceRange sourceRange) throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(module);
         EditorUtility.revealInEditor(editor, sourceRange);
     }
@@ -473,15 +482,35 @@ public class ErlModelUtils {
 
     private static IErlModule getModuleByName(final String moduleName,
             final String modulePath, final IProject project) {
-        final Set<IErlModule> modules = ErlangCore.getModelMap()
-                .getModulesByName(moduleName);
-        if (modules != null) {
-            for (final IErlModule module : modules) {
-                final String filePath = module.getFilePath();
-                if (modulePath != null && filePath != null
-                        && modulePath.equals(filePath)) {
-                    return module;
+        final IErlModuleMap modelMap = ErlangCore.getModelMap();
+        final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
+        for (final IErlModule module : modules) {
+            if (moduleInProject(module, project)) {
+                final IParent parent = module.getParent();
+                if (parent instanceof IErlElement) {
+                    final IErlElement element = (IErlElement) parent;
+                    if (element.getKind() != Kind.EXTERNAL) {
+                        return module;
+                    }
                 }
+            }
+        }
+        if (modulePath != null) {
+            final IErlModule module = modelMap.getModuleByPath(modulePath);
+            if (module != null) {
+                return module;
+            }
+        }
+        if (modules != null) {
+            if (modulePath != null) {
+                for (final IErlModule module : modules) {
+                    final String filePath = module.getFilePath();
+                    if (filePath != null && modulePath.equals(filePath)) {
+                        return module;
+                    }
+                }
+            }
+            for (final IErlModule module : modules) {
                 if (moduleInProject(module, project)) {
                     return module;
                 }

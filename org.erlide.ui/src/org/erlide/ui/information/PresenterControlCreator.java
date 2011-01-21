@@ -24,7 +24,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.jinterface.util.ErlLogger;
@@ -207,8 +206,6 @@ public final class PresenterControlCreator extends
                     }
                 }
             } catch (final PartInitException e) {
-                e.printStackTrace();
-            } catch (final ErlModelException e) {
                 e.printStackTrace();
             }
         }

@@ -50,7 +50,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                             ErlLaunchAttributes.DEBUG_FLAGS,
                             ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
                     final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-                    ErlangDebugHelper.interpret(backend, projectName,
+                    new ErlangDebugHelper().interpret(backend, projectName,
                             moduleName, distributed, true);
                 }
             }

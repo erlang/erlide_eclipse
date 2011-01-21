@@ -16,7 +16,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 
@@ -33,18 +33,18 @@ get_exported(M, Prefix) when is_atom(M), is_list(Prefix) ->
             lists:filter(fun({N,_A}) ->
                                  lists:prefix(Prefix,atom_to_list(N))
                          end, Val);
-    	_Error ->
+        _Error ->
             ?D(_Error),
             error
     end.
 
 get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
     M = Modules++[atom_to_list(I) || {I, _} <- code:all_loaded()],
-	L = [I || I <- M, lists:prefix(Prefix, I)],
+    L = [I || I <- M, lists:prefix(Prefix, I)],
     lists:usort(L).
 
 find_tags(L, Fun) ->
-     lists:filter(Fun, L).
+    lists:filter(Fun, L).
 
 %% return true for tags which is either <div> or <a name=...>
 %% (used for extracting those with recu_find_tags in extract_from_file)
@@ -155,7 +155,7 @@ scan([_ | Rest], I, Acc) -> % just text w/o tag, skip
     scan(Rest, I+1, Acc);
 scan([], _I, Acc) -> % done, let's split tags on attribute
     lists:map(fun({Tag, Offset}) ->
-                  split_tag(Tag, Offset)
+                      split_tag(Tag, Offset)
               end, lists:reverse(Acc)).
 
 %% scan tag to end of tag, considering / and !
@@ -207,12 +207,12 @@ split_tag(S, Tag, Acc) ->
 %%     lists:reverse(Acc);
 %% tags_to_tuples([{begin_tag, Tag, Attrs, Offset} | Rest0], CurTag, CurAttrs,
 %%                Lvl, BeginOffset, Acc) ->
-    %%io:format("begin_tag ~p Lvl ~p\n", [Tag, Lvl]),
+%%io:format("begin_tag ~p Lvl ~p\n", [Tag, Lvl]),
 %%     {Rest1, Children} = tags_to_tuples(Rest0, Tag, Attrs, Lvl+1, Offset, []),
 %%     tags_to_tuples(Rest1, CurTag, CurAttrs, Lvl, BeginOffset, [Children | Acc]);
 %% tags_to_tuples([{end_tag, CurTag, [], _Offset} | Rest], CurTag, CurAttrs, _Lvl,
 %%                BeginOffset, Acc) ->
-    %%io:format("end_tag ~p Lvl ~p length(Rest) ~p\n", [CurTag, _Lvl, length(Rest)]),
+%%io:format("end_tag ~p Lvl ~p length(Rest) ~p\n", [CurTag, _Lvl, length(Rest)]),
 %%     {Rest, {tag, CurTag, CurAttrs, lists:reverse(Acc), BeginOffset}};
 %% tags_to_tuples([S | Rest], CurTag, CurAttrs, Lvl, BeginOffset, Acc) ->
 %%     tags_to_tuples(Rest, CurTag, CurAttrs, Lvl, BeginOffset, [S | Acc]).
@@ -284,10 +284,10 @@ hack_erts_bad_doc_location(BeamFile) ->
     Dir1 = filename:basename(Dir0),
     ?D(Dir1),
     case Dir1 of
-	"erts"++_ ->
-	    filename:join([filename:dirname(filename:dirname(Dir0)), Dir1]);
-	_ ->
-	    Dir0
+        "erts"++_ ->
+            filename:join([filename:dirname(filename:dirname(Dir0)), Dir1]);
+        _ ->
+            Dir0
     end.    
 
 extract_doc_for_func(Doc, Func) ->
@@ -323,9 +323,9 @@ get_all_doc_dirs() ->
                                     string:str(Path, "otp") =/= 0
                             end, Paths),
     Dirs0 = lists:map(fun(D) ->
-                             ModDir = filename:dirname(D),
-                             {filename:join([ModDir, "doc", "html"]), D}
-                     end, OtpPaths),
+                              ModDir = filename:dirname(D),
+                              {filename:join([ModDir, "doc", "html"]), D}
+                      end, OtpPaths),
     lists:filter(fun({D,_}) -> filelib:is_dir(D) end, Dirs0).
 
 remove_ext(F) ->
@@ -386,37 +386,37 @@ get_all_links_to_other() ->
 get_doc(Module, Input, StateDir) ->
     try
         ?D(Input),
-	case Input of
-	    {external, M, F, A, _Path} = External ->
-		?D({open, External}),
-		case get_doc_for_external(StateDir, M, [{F, A}]) of
-		    D when is_list(D) ->
-			{ok, lists:flatten(D), External};
-		    _Error ->
-			External
-		end;
-	    {local, F, A} = Local ->
-		case get_doc_for_external(StateDir, Module, [{F, A}]) of
-		    D when is_list(D) ->
-			{ok, lists:flatten(D), Local};
-		    _Error ->
-			Local
-		end;
-	    {macro, Macro} ->
-		{macro, Macro};
-	    {record, Record} ->
-		{record, Record};
+        case Input of
+            {external, M, F, A, _Path} = External ->
+                ?D({open, External}),
+                case get_doc_for_external(StateDir, M, [{F, A}]) of
+                    D when is_list(D) ->
+                        {ok, lists:flatten(D), External};
+                    _Error ->
+                        {error, lists:flatten(io_lib:format("Documentation for ~s:~s not found (~p)", [M, F, _Error]))}
+                end;
+            {local, F, A} = Local ->
+                case get_doc_for_external(StateDir, Module, [{F, A}]) of
+                    D when is_list(D) ->
+                        {ok, lists:flatten(D), Local};
+                    _Error ->
+                        {error, lists:flatten(io_lib:format("Documentation for ~s not found (~p)", [F, _Error]))}
+                end;
+            {macro, Macro} ->
+                {macro, Macro};
+            {record, Record} ->
+                {record, Record};
             {field, Record, Field} ->
                 {field, Record, Field};
-	    Error ->
-		?D(Error),
-		{error, Error}
-	end
+            Error ->
+                ?D(Error),
+                {error, Error}
+        end
     catch
-	error:E ->
-	    {error, E};
-	exit:E ->
-	    {error, E}
+        error:E ->
+            {error, E};
+        exit:E ->
+            {error, E}
     end.
 
 e(E) ->
@@ -433,20 +433,20 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
                                        Module ++ ".erlide_doc_x"]),
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
-		?D({DocFileName, IndexFileName, Renew}),
+        ?D({DocFileName, IndexFileName, Renew}),
         {_Cached, Doc} = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew, true),
         ?D({doc, _Cached, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         get_doc(DocFileName, PosLens)
     catch
-	exit:E ->
-	    ?D(E),
-	    e(E),
-	    E;
-	error:E ->
-	    ?D(E),
-	    e(E),
-	    E
+        exit:E ->
+            ?D(E),
+            e(E),
+            E;
+        error:E ->
+            ?D(E),
+            e(E),
+            E
     end.
 
 get_doc_from_fun_arity_list(Mod, List, StateDir) ->
@@ -475,26 +475,26 @@ get_sublist([_ | Rest], [F | FRest], Acc) ->
 
 get_proposals(Mod0, Prefix, StateDir) ->
     {Mod, Functions} = case Mod0 of
-		    '<auto_imported>' ->
-			{erlang, erlide_util:get_auto_imported(Prefix)};
-		    _ ->
-			{Mod0, get_exported(Mod0, Prefix)}
-		end,
+                           '<auto_imported>' ->
+                               {erlang, erlide_util:get_auto_imported(Prefix)};
+                           _ ->
+                               {Mod0, get_exported(Mod0, Prefix)}
+                       end,
     case Functions of
-	L when is_list(L) ->
-	    DocList = case get_doc_from_fun_arity_list(Mod, L, StateDir) of
-			  S when is_list(S) ->
-			      S;
-			  _ ->
-			      lists:duplicate(length(L), "")
-		      end,
-	    fix_proposals(L, DocList, length(Prefix));
-	Error ->
-	    Error
+        L when is_list(L) ->
+            DocList = case get_doc_from_fun_arity_list(Mod, L, StateDir) of
+                          S when is_list(S) ->
+                              S;
+                          _ ->
+                              lists:duplicate(length(L), "")
+                      end,
+            fix_proposals(L, DocList, length(Prefix));
+        Error ->
+            Error
     end.
 
 fix_proposals(FunArityList, DocList, PrefixLength) ->
-%%     ?Debug({prefixLength, PrefixLength}),
+    %%     ?Debug({prefixLength, PrefixLength}),
     fix_proposals(FunArityList, DocList, PrefixLength, []).
 
 fix_proposals([], _, _, Acc) ->
@@ -520,18 +520,18 @@ try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
 try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
     case erl_scan:string(Sub) of
-	{ok, Tokens, _} ->
-	    ?D(Tokens),
-	    case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
-		bad_tokens ->
-		    try_make_pars(Rest, FunctionName, Arity, Offset);
-		T ->
-		    ?D(T),
-		    T
-	    end;
-	_E ->
-	    ?D(_E),
-	    try_make_pars(Rest, FunctionName, Arity, Offset)
+        {ok, Tokens, _} ->
+            ?D(Tokens),
+            case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of
+                bad_tokens ->
+                    try_make_pars(Rest, FunctionName, Arity, Offset);
+                T ->
+                    ?D(T),
+                    T
+            end;
+        _E ->
+            ?D(_E),
+            try_make_pars(Rest, FunctionName, Arity, Offset)
     end.
 
 skip_lpar([{'(', _} | Rest]) ->
@@ -547,10 +547,10 @@ make_pars_from_tokens([{atom, _, FunctionName} | Rest], FunctionName, Arity, Off
     ?D(Pars),
     ?D(Arity),
     case length(Pars) of
-	Arity ->
-	    {make_parameters(Pars), make_par_offs_length(0, Arity, Pars, Offset)};
-	_ ->
-	    bad_tokens
+        Arity ->
+            {make_parameters(Pars), make_par_offs_length(0, Arity, Pars, Offset)};
+        _ ->
+            bad_tokens
     end;
 make_pars_from_tokens([_ | Rest], FunctionName, Arity, Offset) ->
     make_pars_from_tokens(Rest, FunctionName, Arity, Offset);

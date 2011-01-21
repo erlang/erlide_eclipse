@@ -16,9 +16,9 @@ import erlang.ErlideDebug;
 
 public class ErlangDebugHelper {
 
-    public static void interpret(final Backend backend,
-            final String projectName, final String moduleName,
-            final boolean distributed, final boolean interpret) {
+    public void interpret(final Backend backend, final String projectName,
+            final String moduleName, final boolean distributed,
+            final boolean interpret) {
         try {
             final IFile beam = findModuleBeam(projectName, moduleName);
             if (beam != null && beam.exists()) {
@@ -36,8 +36,8 @@ public class ErlangDebugHelper {
         }
     }
 
-    protected static IFile findModuleBeam(final String projectName,
-            final String module) throws ErlModelException {
+    protected IFile findModuleBeam(final String projectName, final String module)
+            throws ErlModelException {
         final IErlProject eprj = ErlangCore.getModel().getErlangProject(
                 projectName);
         final IProject iprj = eprj.getProject();
@@ -48,10 +48,6 @@ public class ErlangDebugHelper {
         }
         final String beam = ErlideUtil.withoutExtension(module) + ".beam";
         return r.getFile(beam);
-    }
-
-    private ErlangDebugHelper() {
-        // static
     }
 
 }

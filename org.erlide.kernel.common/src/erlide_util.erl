@@ -69,31 +69,30 @@ renew_cached(SourceFileName, CacheFileName, Version, Term) ->
     renew_cache(SourceModDate, Version, CacheFileName, Term).                    
 
 check_and_renew_cached(SourceFileName, CacheFileName, Version, 
-		       RenewFun, UpdateCache) ->
+		       RenewFun, UseCache) ->
     check_and_renew_cached(SourceFileName, CacheFileName, Version,
-			   RenewFun, fun(D) -> D end, UpdateCache).
+			   RenewFun, fun(D) -> D end, UseCache).
 
+check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
+                       RenewFun, _CachedFun, false) ->
+    Term = RenewFun(SourceFileName),
+    {dont_use_cache, Term};
 check_and_renew_cached(SourceFileName, CacheFileName, 
-		       Version, RenewFun, CachedFun, 
-		       UpdateCache) ->
+                       Version, RenewFun, CachedFun, 
+                       true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
             R = {cached, CachedFun(Cached)},
-	    ?D(got_cached),
-	    R;
+            ?D(got_cached),
+            R;
         {no_cache, SourceModDate} ->
-	    ?D(SourceModDate),
+            ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
-            ?D({renewing, CacheFileName}),
-	    case UpdateCache of
-		true ->
+            ?D({renewing, CacheFileName, UpdateCache}),
 		    renew_cache(SourceModDate, Version, CacheFileName, Term),
-		    {renewed, Term};
-		false ->
-		    {uncached, Term}
-	    end
+            {renewed, Term}
     end.
 
 get_from_str(Text, Start) ->
@@ -179,7 +178,9 @@ renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
     BinDate = date_to_bin(SourceFileModDate),
     B = term_to_binary(Term, [compressed]),
     _Delete = file:delete(CacheFileName),
-    _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>).
+    _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>),
+    ?D(_Write),
+    ?D(CacheFileName).
 
 bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
     {{Y, Mo, D}, {H, M, S*2}}.
