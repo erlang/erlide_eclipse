@@ -58,7 +58,7 @@ public final class ErlParser {
      */
     public static boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
-            final String path, final boolean updateCaches) {
+            final String path, final boolean useCaches) {
         final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
@@ -71,7 +71,7 @@ public final class ErlParser {
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
             res = ErlideNoparse.initialParse(b, scannerName, path, stateDir,
-                    updateCaches, true);
+                    useCaches, true);
         } else {
             res = ErlideNoparse.reparse(b, scannerName);
         }

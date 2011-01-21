@@ -41,7 +41,7 @@
 %% API Functions
 %%
 
-initial_parse(ScannerName, ModuleFileName, StateDir, UpdateCaches,
+initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               UpdateSearchServer) ->
     try
 %%         ?D({StateDir, ModuleFileName}),
@@ -54,7 +54,7 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UpdateCaches,
         ?D(CacheFileName),
         {Cached, Res} = erlide_util:check_and_renew_cached(
                           ModuleFileName, CacheFileName, ?CACHE_VERSION, 
-                          RenewFun, UpdateCaches),
+                          RenewFun, UseCache),
         %%erlide_noparse_server:update_state(ScannerName, Res),
         ?D(updated),
         {ok, Res, Cached}

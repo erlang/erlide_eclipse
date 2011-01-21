@@ -18,13 +18,13 @@ public class ErlideNoparse {
 
     public static OtpErlangTuple initialParse(final Backend b,
             final String scannerModuleName, final String moduleFileName,
-            final String stateDir, final boolean updateCaches,
+            final String stateDir, final boolean useCaches,
             final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
             res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
                     "initial_parse", "assoo", scannerModuleName,
-                    moduleFileName, stateDir, updateCaches, updateRefs);
+                    moduleFileName, stateDir, useCaches, updateRefs);
             if (res.arity() > 2) {
                 // ErlLogger.debug("initialParse " + res.elementAt(2));
             }
