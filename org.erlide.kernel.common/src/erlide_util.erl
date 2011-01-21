@@ -69,13 +69,17 @@ renew_cached(SourceFileName, CacheFileName, Version, Term) ->
     renew_cache(SourceModDate, Version, CacheFileName, Term).                    
 
 check_and_renew_cached(SourceFileName, CacheFileName, Version, 
-		       RenewFun, UpdateCache) ->
+		       RenewFun, UseCache) ->
     check_and_renew_cached(SourceFileName, CacheFileName, Version,
-			   RenewFun, fun(D) -> D end, UpdateCache).
+			   RenewFun, fun(D) -> D end, UseCache).
 
+check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
+                       RenewFun, _CachedFun, false) ->
+    Term = RenewFun(SourceFileName),
+    {dont_use_cache, Term};
 check_and_renew_cached(SourceFileName, CacheFileName, 
                        Version, RenewFun, CachedFun, 
-                       UpdateCache) ->
+                       true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
@@ -87,13 +91,8 @@ check_and_renew_cached(SourceFileName, CacheFileName,
             ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
             ?D({renewing, CacheFileName, UpdateCache}),
-            case UpdateCache of
-                true ->
-                    renew_cache(SourceModDate, Version, CacheFileName, Term),
-                    {renewed, Term};
-                false ->
-                    {uncached, Term}
-            end
+		    renew_cache(SourceModDate, Version, CacheFileName, Term),
+            {renewed, Term}
     end.
 
 get_from_str(Text, Start) ->

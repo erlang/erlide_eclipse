@@ -61,11 +61,12 @@ public class ErlModule extends Openable implements IErlModule {
     private boolean parsed;
     private final String scannerName;
     private ErlScanner scanner;
-    private boolean updateCaches;
+    private final boolean useCaches;
     private final Collection<IErlComment> comments;
 
     protected ErlModule(final IParent parent, final String name,
-            final String initialText, final IFile file, final String path) {
+            final String initialText, final IFile file, final String path,
+            final boolean useCaches) {
         super(parent, name);
         fFile = file;
         moduleKind = ErlideUtil.nameToModuleKind(name);
@@ -74,7 +75,7 @@ public class ErlModule extends Openable implements IErlModule {
         parsed = false;
         scannerName = ErlangToolkit.createScannerModuleName(this);
         scanner = null;
-        updateCaches = true;
+        this.useCaches = useCaches;
         comments = Lists.newArrayList();
         if (ErlModelManager.verbose) {
             final IErlElement element = (IErlElement) parent;
@@ -97,7 +98,7 @@ public class ErlModule extends Openable implements IErlModule {
             getScanner();
         }
         parsed = ErlParser.parse(this, scannerName, initialParse, path,
-                updateCaches);
+                useCaches);
         getScanner();
         disposeScanner();
         return parsed;
@@ -496,7 +497,6 @@ public class ErlModule extends Openable implements IErlModule {
         }
         initialText = newText;
         parsed = false;
-        updateCaches = true;
         setStructureKnown(false);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
@@ -532,7 +532,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return new ErlScanner(scannerName, initialText, path, updateCaches);
+        return new ErlScanner(scannerName, initialText, path, useCaches);
     }
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {

@@ -69,9 +69,8 @@ public class ErlideTestUtils {
 		final IFile file = (IFile) module.getResource();
 		if (file != null) {
 			file.delete(true, null);
-		} else {
-			ErlangCore.getModelManager().removeModule(module);
 		}
+		module.dispose();
 		modules.remove(module);
 	}
 
