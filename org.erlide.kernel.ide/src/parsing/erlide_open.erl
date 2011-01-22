@@ -382,7 +382,6 @@ fx([FN0 | Rest], Fun, PathVars, Parent, Done, Acc) ->
     end.
 
 fx2(FN, Fun, PathVars, Done, Acc) ->
-    io:format("reading \"~s\"\n", [FN]),
     case file:read_file(FN) of
         {ok, B} ->
             Lines = erlide_util:split_lines(B),

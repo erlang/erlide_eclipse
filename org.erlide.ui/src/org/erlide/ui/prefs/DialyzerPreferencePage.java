@@ -31,11 +31,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -45,6 +45,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.handlers.CheckDialyzerPltFileHandler;
 import org.erlide.ui.internal.util.CommandRunnerSelectionAdapter;
@@ -58,10 +59,15 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private Button fUseProjectSettings;
     private Link fChangeWorkspaceSettings;
     protected ControlEnableState fBlockEnableState;
-    private Text pltEdit = null;
+    // private final Text pltEdit = null;
     private Combo fromCombo;
     private Button dialyzeCheckbox;
     private Composite prefsComposite;
+    private org.eclipse.swt.widgets.List fPLTList;
+    private Button fAddButton;
+    private Button fEditButton;
+    private Button fRemoveButton;
+    private Button fCheckPLTButton;
 
     public DialyzerPreferencePage() {
         super();
@@ -72,33 +78,36 @@ public class DialyzerPreferencePage extends PropertyPage implements
     @Override
     protected Control createContents(final Composite parent) {
 
-        performDefaults();
-
         prefsComposite = new Composite(parent, SWT.NONE);
         prefsComposite.setLayout(new GridLayout());
 
-        final Group group = new Group(prefsComposite, SWT.NONE);
+        // final Group group = new Group(prefsComposite, SWT.NONE);
+        final Composite group = prefsComposite;// new Composite(prefsComposite,
+                                               // SWT.NONE);
         group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         group.setLayout(new GridLayout(1, false));
         createDialyzeCheckbox(group);
         createPltSelection(group);
         createPltCheck(group);
         createFromSelection(group);
+        enableButtons();
 
         if (isProjectPreferencePage()) {
             final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
             enableProjectSpecificSettings(useProjectSettings);
         }
 
+        performDefaults();
+
         return prefsComposite;
     }
 
-    private void createPltCheck(final Group group) {
+    private void createPltCheck(final Composite group) {
         final Composite comp = new Composite(group, SWT.NONE);
         comp.setLayout(new GridLayout(2, false));
-        final Button b = new Button(comp, SWT.PUSH);
-        b.setText("Check PLT");
-        b.addSelectionListener(new CommandRunnerSelectionAdapter(
+        fCheckPLTButton = new Button(comp, SWT.PUSH);
+        fCheckPLTButton.setText("Check PLT");
+        fCheckPLTButton.addSelectionListener(new CommandRunnerSelectionAdapter(
                 CheckDialyzerPltFileHandler.COMMAND_ID));
         final Label l = new Label(comp, SWT.NONE);
         l.setText("Warning: this can take some time");
@@ -128,34 +137,72 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     private void createPltSelection(final Composite group) {
         final Composite comp = new Composite(group, SWT.NONE);
-        // comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
-        // false));
         comp.setLayout(new GridLayout(3, false));
         GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
         comp.setLayoutData(gd);
         final Label l = new Label(comp, SWT.NONE);
-        l.setText("Select PLT");
-        pltEdit = new Text(comp, SWT.BORDER);
-        gd = new GridData(SWT.FILL, GridData.CENTER, true, false);
-        pltEdit.setLayoutData(gd);
-        final Button b = new Button(comp, SWT.PUSH);
-        b.setText("Browse...");
-        b.addSelectionListener(new SelectionAdapter() {
+        l.setText("PLT files (multiple PLT requires Erlang/OTP R14B01 or later)");
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        l.setLayoutData(gd);
+        fPLTList = new org.eclipse.swt.widgets.List(comp, SWT.MULTI
+                | SWT.V_SCROLL | SWT.BORDER);
+        fPLTList.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String s = pltEdit.getText();
-                final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
-                dialog.setText("Select PLT file");
-                dialog.setFileName(s);
-                dialog.setFilterExtensions(new String[] { "*.plt" });
-                final String result = dialog.open();
-                if (result == null) {
-                    return;
-                }
-                pltEdit.setText(result);
+                enableButtons();
             }
         });
-        pltEdit.setText(prefs.getPltPath());
+        // gd = new GridData(SWT.DEFAULT, SWT.DEFAULT, false, false, 3, 1);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+                | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
+        gd.horizontalSpan = 2;
+        fPLTList.setLayoutData(gd);
+        gd.heightHint = convertHeightInCharsToPixels(12);
+        final Composite buttons = new Composite(comp, SWT.NULL);
+        buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+        final GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        buttons.setLayout(layout);
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
+        fAddButton = new Button(buttons, SWT.PUSH);
+        fAddButton.setText("Add...");
+        fAddButton.setLayoutData(gd);
+        fAddButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                final String result = selectPLTDialog(null);
+                if (result != null) {
+                    fPLTList.add(result);
+                }
+            }
+        });
+
+        fEditButton = new Button(buttons, SWT.PUSH);
+        fEditButton.setText("Change...");
+        fEditButton.setLayoutData(gd);
+        fEditButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(final Event evt) {
+                final String[] selection = fPLTList.getSelection();
+                final int[] selectionIndices = fPLTList.getSelectionIndices();
+                final String result = selectPLTDialog(selection[0]);
+                if (result != null) {
+                    fPLTList.setItem(selectionIndices[0], result);
+                }
+            }
+        });
+
+        fRemoveButton = new Button(buttons, SWT.PUSH);
+        fRemoveButton.setText("Remove");
+        fRemoveButton.setLayoutData(gd);
+        fRemoveButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(final Event evt) {
+                final int[] selectionIndices = fPLTList.getSelectionIndices();
+                fPLTList.remove(selectionIndices[0]);
+            }
+        });
     }
 
     protected boolean hasProjectSpecificOptions(final IProject project) {
@@ -303,6 +350,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
     }
 
+    protected void enableButtons() {
+        final int selectionCount = fPLTList.getSelectionCount();
+        fEditButton.setEnabled(selectionCount == 1);
+        fRemoveButton.setEnabled(selectionCount > 0);
+        fCheckPLTButton.setEnabled(selectionCount == 1);
+    }
+
     private void openProjectProperties(final IProject project) {
         final String id = getPropertyPageID();
         if (id != null) {
@@ -326,14 +380,19 @@ public class DialyzerPreferencePage extends PropertyPage implements
     }
 
     boolean optionsAreOk() {
-        final File f = new File(pltEdit.getText());
-        return f.exists();
+        for (final String s : fPLTList.getItems()) {
+            final File f = new File(s);
+            if (!f.exists()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean performOk() {
         try {
-            prefs.setPltPath(pltEdit.getText());
+            prefs.setPltPath(PreferencesUtils.packArray(fPLTList.getItems()));
             prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
             prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
             if (fUseProjectSettings != null
@@ -358,8 +417,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
         try {
             prefs.load();
-            if (pltEdit != null) {
-                pltEdit.setText(prefs.getPltPath());
+            if (fPLTList != null) {
+                final String[] strings = PreferencesUtils.unpackArray(prefs
+                        .getPltPath());
+                fPLTList.setItems(strings);
             }
             if (fromCombo != null) {
                 fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0
@@ -382,5 +443,17 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     public void init(final IWorkbench workbench) {
         performDefaults();
+    }
+
+    private String selectPLTDialog(final String s) {
+        final FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+        dialog.setText("Select PLT file");
+        dialog.setFileName(s);
+        dialog.setFilterPath(s);
+        dialog.setFilterNames(new String[] { "Dialyzer PLT file (*.plt)",
+                "Any File" });
+        dialog.setFilterExtensions(new String[] { "*.plt", "*.*" });
+        final String result = dialog.open();
+        return result;
     }
 }
