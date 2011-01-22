@@ -315,7 +315,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         // cancel possible running computation
         fMarkOccurrenceAnnotations = false;
         uninstallOccurrencesFinder();
-
+        if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
+            final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
+            ec.getContentAssistProcessor().dispose();
+        }
         if (fActivationListener != null) {
             PlatformUI.getWorkbench().removeWindowListener(fActivationListener);
             fActivationListener = null;

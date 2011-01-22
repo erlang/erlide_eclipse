@@ -448,7 +448,6 @@ public class EditorPreferencePage extends PreferencePage implements
         fOverlayStore.start();
 
         final Control control = createAppearancePage(parent);
-
         initialize();
         Dialog.applyDialogFont(control);
         return control;
@@ -659,7 +658,7 @@ public class EditorPreferencePage extends PreferencePage implements
         updateStatus(status);
     }
 
-    private IStatus validatePositiveNumber(final String number) {
+    public static IStatus validatePositiveNumber(final String number) {
         final StatusInfo status = new StatusInfo();
         if (number.length() == 0) {
             status.setError(ErlEditorMessages.ErlEditorPreferencePage_empty_input);
@@ -704,7 +703,8 @@ public class EditorPreferencePage extends PreferencePage implements
      * @param status
      *            the status
      */
-    public void applyToStatusLine(final DialogPage page, final IStatus status) {
+    public static void applyToStatusLine(final DialogPage page,
+            final IStatus status) {
         String message = status.getMessage();
         switch (status.getSeverity()) {
         case IStatus.OK:

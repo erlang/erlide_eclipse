@@ -24,16 +24,21 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -58,10 +63,12 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -75,7 +82,8 @@ import erlang.ErlideContextAssist;
 import erlang.ErlideContextAssist.RecordCompletion;
 import erlang.ErlideDoc;
 
-public class ErlContentAssistProcessor implements IContentAssistProcessor {
+public class ErlContentAssistProcessor implements IContentAssistProcessor,
+        IDisposable {
 
     public static class CompletionNameComparer implements
             Comparator<ICompletionProposal> {
@@ -115,13 +123,20 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
     private static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
 
     private final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
+    private char[] fCompletionProposalAutoActivationCharacters;
+    private final IPreferenceChangeListener fPreferenceChangeListener;
+    private final ContentAssistant contentAssistant;
 
     public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-            final IErlModule module) {
+            final IErlModule module, final ContentAssistant contentAssistant) {
         this.sourceViewer = sourceViewer;
         this.module = module;
+        this.contentAssistant = contentAssistant;
         // this.externalModules = externalModules;
         // this.externalIncludes = externalIncludes;
+        fPreferenceChangeListener = new PreferenceChangeListener();
+        final IEclipsePreferences node = CodeAssistPreferences.getNode();
+        node.addPreferenceChangeListener(fPreferenceChangeListener);
         initStyleSheet();
     }
 
@@ -807,8 +822,28 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
         return null;
     }
 
+    public void setToPrefs() {
+        final CodeAssistPreferences prefs = new CodeAssistPreferences();
+        try {
+            prefs.load();
+            fCompletionProposalAutoActivationCharacters = prefs
+                    .getErlangTriggers().toCharArray();
+            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
+            contentAssistant.enableAutoActivation(prefs.isAutoActivate());
+            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
+        } catch (final BackingStoreException e) {
+            fCompletionProposalAutoActivationCharacters = new char[0];
+        }
+    }
+
+    private class PreferenceChangeListener implements IPreferenceChangeListener {
+        public void preferenceChange(final PreferenceChangeEvent event) {
+            setToPrefs();
+        }
+    }
+
     public char[] getCompletionProposalAutoActivationCharacters() {
-        return new char[] { ':', '?', '#' };
+        return fCompletionProposalAutoActivationCharacters;
     }
 
     public char[] getContextInformationAutoActivationCharacters() {
@@ -853,6 +888,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor {
             } catch (final Exception e) {
             }
         }
+    }
+
+    public void dispose() {
+        final IEclipsePreferences node = CodeAssistPreferences.getNode();
+        node.removePreferenceChangeListener(fPreferenceChangeListener);
     }
 
 }
