@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
 import org.erlide.jinterface.backend.util.Assert;
@@ -188,8 +185,8 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         try {
             final FileInputStream is = new FileInputStream(boot);
             is.skip(14);
-            RuntimeInfo.readstring(is);
-            result = RuntimeInfo.readstring(is);
+            readstring(is);
+            result = readstring(is);
         } catch (final IOException e) {
         }
         return result;
@@ -249,6 +246,21 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         final String label = RuntimeVersion.getRuntimeVersion(homeDir);
         final String micro = RuntimeVersion.getMicroRuntimeVersion(homeDir);
         return new RuntimeVersion(label, micro);
+    }
+
+    static String readstring(final InputStream is) {
+        try {
+            is.read();
+            byte[] b = new byte[2];
+            is.read(b);
+            final int len = b[0] * 256 + b[1];
+            b = new byte[len];
+            is.read(b);
+            final String s = new String(b);
+            return s;
+        } catch (final IOException e) {
+            return null;
+        }
     }
 
 }

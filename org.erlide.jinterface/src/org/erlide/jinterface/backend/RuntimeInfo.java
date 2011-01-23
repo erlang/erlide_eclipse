@@ -11,8 +11,6 @@
 package org.erlide.jinterface.backend;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -266,21 +264,6 @@ public class RuntimeInfo {
     public static boolean validateLocation(final String path) {
         final String v = RuntimeVersion.getRuntimeVersion(path);
         return v != null;
-    }
-
-    static String readstring(final InputStream is) {
-        try {
-            is.read();
-            byte[] b = new byte[2];
-            is.read(b);
-            final int len = b[0] * 256 + b[1];
-            b = new byte[len];
-            is.read(b);
-            final String s = new String(b);
-            return s;
-        } catch (final IOException e) {
-            return null;
-        }
     }
 
     public static boolean isValidOtpHome(final String otpHome) {
