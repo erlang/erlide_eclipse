@@ -65,6 +65,7 @@ public class Backend extends OtpNodeStatus {
     private boolean monitor = false;
     private boolean watch = true;
     private BackendShellManager shellManager;
+    private boolean logCalls = false;
 
     protected Backend(final RuntimeInfo info) throws BackendException {
         if (info == null) {
@@ -380,8 +381,8 @@ public class Backend extends OtpNodeStatus {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         checkAvailability();
-        return RpcUtil.sendRpcCall(getNode(), getPeer(), gleader, module, fun,
-                signature, args0);
+        return RpcUtil.sendRpcCall(getNode(), getPeer(), logCalls, gleader,
+                module, fun, signature, args0);
     }
 
     protected RpcFuture makeAsyncCall(final String module, final String fun,
@@ -411,8 +412,8 @@ public class Backend extends OtpNodeStatus {
             throws RpcException, SignatureException {
         checkAvailability();
 
-        final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, gleader,
-                module, fun, signature, args);
+        final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, logCalls,
+                gleader, module, fun, signature, args);
         final Runnable target = new Runnable() {
             public void run() {
                 OtpErlangObject result;
@@ -439,7 +440,7 @@ public class Backend extends OtpNodeStatus {
             throws RpcException, SignatureException {
         checkAvailability();
         final OtpErlangObject result = RpcUtil.rpcCall(getNode(), getPeer(),
-                gleader, module, fun, timeout, signature, args0);
+                logCalls, gleader, module, fun, timeout, signature, args0);
         return result;
     }
 
@@ -454,8 +455,8 @@ public class Backend extends OtpNodeStatus {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         checkAvailability();
-        RpcUtil.rpcCast(getNode(), getPeer(), gleader, module, fun, signature,
-                args0);
+        RpcUtil.rpcCast(getNode(), getPeer(), logCalls, gleader, module, fun,
+                signature, args0);
     }
 
     protected void makeCast(final String module, final String fun,
@@ -651,6 +652,10 @@ public class Backend extends OtpNodeStatus {
 
     public BackendShell getShell(final String id) {
         return shellManager.openShell(id);
+    }
+
+    public void setLogCalls(final boolean logCalls) {
+        this.logCalls = logCalls;
     }
 
 }
