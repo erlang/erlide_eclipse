@@ -210,7 +210,7 @@ public final class ErlModelManager implements IErlModelManager {
                 }
             }
         }
-        if (ErlideUtil.hasModuleExtension(file.getName())) {
+        if (ErlideUtil.hasModuleExtension(file.getName()) || true) {
             return createModuleFrom(file, parent);
         }
         return null;
@@ -246,7 +246,7 @@ public final class ErlModelManager implements IErlModelManager {
         // return (IErlModule) elements.get(key);
         // }
         final String ext = file.getFileExtension();
-        if (ErlideUtil.isModuleExtension(ext)) {
+        if (ErlideUtil.isModuleExtension(ext) || true) {
             final String initialText = null;
             // if (file.exists()) {
             // try {
@@ -380,7 +380,8 @@ public final class ErlModelManager implements IErlModelManager {
                     final IResource resource = delta.getResource();
                     final boolean erlangFile = resource.getType() == IResource.FILE
                             && ErlideUtil
-                                    .hasModuleExtension(resource.getName());
+                                    .hasModuleExtension(resource.getName())
+                            || true;
                     final boolean erlangProject = resource.getType() == IResource.PROJECT
                             && ErlideUtil.hasErlangNature((IProject) resource);
                     final boolean erlangFolder = resource.getType() == IResource.FOLDER;

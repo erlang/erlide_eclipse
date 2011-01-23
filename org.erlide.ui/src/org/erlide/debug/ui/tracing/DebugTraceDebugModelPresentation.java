@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.erlide.runtime.debug.ErlangStackFrame;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class DebugTraceDebugModelPresentation extends LabelProvider implements
         IDebugModelPresentation {
@@ -33,7 +34,7 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
 
     public String getEditorId(final IEditorInput input, final Object element) {
         if (element instanceof IFile || element instanceof ILineBreakpoint) {
-            return "org.erlide.ui.editors.erl.ErlangEditor";
+            return ErlangEditor.ERLANG_EDITOR_ID;
         }
         return null;
     }
