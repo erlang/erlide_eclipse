@@ -78,17 +78,17 @@ check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
 check_and_renew_cached(SourceFileName, CacheFileName, 
-                       Version, RenewFun, CachedFun, 
+		       Version, RenewFun, CachedFun, 
                        true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
             R = {cached, CachedFun(Cached)},
-            ?D(got_cached),
-            R;
+	    ?D(got_cached),
+	    R;
         {no_cache, SourceModDate} ->
-            ?D(SourceModDate),
+	    ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
             ?D({renewing, CacheFileName, UpdateCache}),
 		    renew_cache(SourceModDate, Version, CacheFileName, Term),
