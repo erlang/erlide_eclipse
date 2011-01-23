@@ -164,7 +164,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             return true;
         case IResource.FILE:
             final IFile file = (IFile) source;
-            if (ErlideUtil.hasModuleExtension(file.getName())) {
+            if (ErlideUtil.hasModuleExtension(file.getName()) || true) {
                 doRefresh(file);
             }
             return false;

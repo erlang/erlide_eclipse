@@ -60,15 +60,15 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         final IErlModelManager modelManager = ErlangCore.getModelManager();
         for (final String path : external1) {
             final String name = getNameFromExternalPath(path);
-            if (ErlideUtil.hasModuleExtension(path)) {
-                final IErlModule module = modelManager.getModuleFromFile(
-                        parent, name, null, path, path);
-                children.add(module);
-            } else if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
+            if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
                 final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
                         parent, name, path, false);
                 children.add(child);
                 child.open(pm);
+            } else if (ErlideUtil.hasModuleExtension(path)) {
+                final IErlModule module = modelManager.getModuleFromFile(
+                        parent, name, null, path, path);
+                children.add(module);
             }
         }
         return children;

@@ -272,7 +272,7 @@ public final class ErlideUtil {
     }
 
     public static boolean hasModuleExtension(final String name) {
-        return nameToModuleKind(name) != ModuleKind.BAD;
+        return nameToModuleKind(name) != ModuleKind.BAD || true;
     }
 
     public static boolean hasExtension(final String name) {

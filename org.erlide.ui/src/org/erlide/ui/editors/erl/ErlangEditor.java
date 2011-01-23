@@ -258,6 +258,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     /** The occurrences finder job canceler */
     private OccurrencesFinderJobCanceler fOccurrencesFinderJobCanceler;
     private String stateDirCached;
+    public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
     /**
      * Simple constructor
