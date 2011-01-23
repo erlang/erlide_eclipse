@@ -231,7 +231,14 @@ public class ModelUtils {
         final IErlModel model = ErlangCore.getModel();
         try {
             model.open(null);
-            return model.findModule(file);
+            final IErlModule module = model.findModule(file);
+            if (module != null) {
+                return module;
+            }
+            ErlangCore.getModelManager().create(file, model);
+            // final String path = file.getLocation().toPortableString();
+            // return ErlangCore.getModelManager().getModuleFromFile(model,
+            // file.getName(), null, path, path);
         } catch (final ErlModelException e) {
         }
         return null;
