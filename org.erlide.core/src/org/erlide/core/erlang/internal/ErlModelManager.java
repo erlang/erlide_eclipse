@@ -48,7 +48,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
-import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
@@ -248,15 +247,15 @@ public final class ErlModelManager implements IErlModelManager {
         // }
         final String ext = file.getFileExtension();
         if (ErlideUtil.isModuleExtension(ext)) {
-            String initialText = null;
-            if (file.exists()) {
-                try {
-                    initialText = new String(
-                            CoreUtil.getResourceContentsAsCharArray(file));
-                } catch (final Exception e) {
-                    initialText = "";
-                }
-            }
+            final String initialText = null;
+            // if (file.exists()) {
+            // try {
+            // initialText = new String(
+            // CoreUtil.getResourceContentsAsCharArray(file));
+            // } catch (final Exception e) {
+            // initialText = "";
+            // }
+            // }
             final String name = file.getName();
             final IErlModule module = new ErlModule(parent, name, initialText,
                     file, file.getLocation().toPortableString(), true);
