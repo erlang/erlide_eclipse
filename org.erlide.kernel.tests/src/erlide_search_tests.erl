@@ -13,6 +13,7 @@
 %% Exported Functions
 %%
 
+-compile(export_all).
 %%
 %% API Functions
 %%
@@ -24,18 +25,25 @@
 -define(ARI_INCLUDE, -6).
 -define(ARI_RECORD_FIELD_DEF, -7).
 
-record_ref_within_type_spec_test() ->
+record_ref_within_type_spec_test_() ->
     S = "-record(a, {b, c :: #rec{}}).",
     Expected = {ok, [{"xxx", a, ?ARI_RECORD_DEF, [], false, 20, 4, false}]},
     Value = test_refs(S, {record_ref, rec}),
     [?_assertEqual(Expected, Value)].
 
-record_field_ref_test() ->
+record_field_ref_test_() ->
     S = "f() -> #record{a=ok}, #record.a.",
     Expected = {ok, [{"xxx",f,0,[],false,30,1,false},
                      {"xxx", f, 0, [], false, 15, 1, false}]},
     Value = test_refs(S, {record_field_ref, record, a}),
     [?_assertEqual(Expected, Value)].
+
+external_call_after_record_dot_field_test_() ->
+    S = "f() ->\n    #a.b,\n    a:f().\n",
+    Expected = {ok, [{"xxx", f, 0, [], false, 21, 3, false}]},
+    Value = test_refs(S, {external_call, a, f, 0}),
+    [?_assertEqual(Expected, Value)].
+
 
 %%
 %% Local Functions

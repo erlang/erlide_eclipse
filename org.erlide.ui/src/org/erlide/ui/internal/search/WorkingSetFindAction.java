@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
-import java.util.Collection;
-
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangSearchPattern.LimitTo;
@@ -94,13 +91,12 @@ public class WorkingSetFindAction extends FindAction {
     }
 
     @Override
-    protected Collection<IResource> getScope() {
+    protected ErlSearchScope getScope() {
         return fAction.getScope();
     }
 
     @Override
-    protected Collection<IErlModule> getExternalScope() {
-        // TODO Auto-generated method stub
+    protected ErlSearchScope getExternalScope() {
         return fAction.getExternalScope();
     }
 
