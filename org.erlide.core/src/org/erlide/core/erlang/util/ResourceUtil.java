@@ -34,17 +34,6 @@ public class ResourceUtil {
 
     /**
      * <p>
-     * returns whether the passed resource is an Erlang source file, as
-     * recognized by the file extensions '.erl' and '.hrl'.
-     * </p>
-     */
-    public static boolean hasErlangExtension(final IResource resource) {
-        final String ext = resource.getFileExtension();
-        return ErlideUtil.isModuleExtension(ext);
-    }
-
-    /**
-     * <p>
      * reads an input stream and returns the contents as String.
      * </p>
      */

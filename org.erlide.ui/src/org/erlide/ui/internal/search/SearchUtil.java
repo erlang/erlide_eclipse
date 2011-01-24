@@ -130,7 +130,7 @@ public class SearchUtil {
 
     private static void addFileToScope(final IFile file,
             final Collection<IResource> result) {
-        if (ErlideUtil.hasModuleExtension(file.getName())) {
+        if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
             result.add(file);
         }
     }

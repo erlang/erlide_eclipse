@@ -138,4 +138,14 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
+  <extension
+        point="org.eclipse.core.runtime.adapters">
+     <factory
+           adaptableType="org.erlide.core.IFile"
+           class="org.erlide.core.">
+        <adapter
+              type="org.erlide.core.Adapter2">
+        </adapter>
+     </factory>
+  </extension>
 </plugin>

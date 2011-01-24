@@ -2,7 +2,9 @@ package org.erlide.core.erlang.internal;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -59,16 +61,18 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                 .newArrayListWithCapacity(external1.size());
         final IErlModelManager modelManager = ErlangCore.getModelManager();
         for (final String path : external1) {
-            final String name = getNameFromExternalPath(path);
-            if (ErlideUtil.hasModuleExtension(path)) {
-                final IErlModule module = modelManager.getModuleFromFile(
-                        parent, name, null, path, path);
-                children.add(module);
-            } else if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
+            if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
+                final String name = getNameFromExternalPath(path);
                 final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
                         parent, name, path, false);
                 children.add(child);
                 child.open(pm);
+            } else if (ErlideUtil.isErlangFileContentFileName(path)) {
+                final IPath p = new Path(path);
+                final String name = p.lastSegment();
+                final IErlModule module = modelManager.getModuleFromFile(
+                        parent, name, null, path, path);
+                children.add(module);
             }
         }
         return children;

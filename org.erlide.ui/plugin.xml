@@ -1210,6 +1210,9 @@
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
+               <adapt
+                     type="org.erlide.core.erlang.IErlModule">
+               </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>

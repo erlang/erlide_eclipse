@@ -24,6 +24,7 @@ import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.runtime.debug.ErlangStackFrame;
 import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
 import org.erlide.ui.ErlideUIDebugImages;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 /**
@@ -258,7 +259,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
     public String getEditorId(final IEditorInput input, final Object element) {
         if (element instanceof IFile || element instanceof ILineBreakpoint
                 || element instanceof LocalFileStorage) {
-            return "org.erlide.ui.editors.erl.ErlangEditor";
+            return ErlangEditor.ERLANG_EDITOR_ID;
         }
         return null;
     }

@@ -235,10 +235,8 @@ public class ModelUtils {
             if (module != null) {
                 return module;
             }
-            ErlangCore.getModelManager().create(file, model);
-            // final String path = file.getLocation().toPortableString();
-            // return ErlangCore.getModelManager().getModuleFromFile(model,
-            // file.getName(), null, path, path);
+            return (IErlModule) ErlangCore.getModelManager()
+                    .create(file, model);
         } catch (final ErlModelException e) {
         }
         return null;
