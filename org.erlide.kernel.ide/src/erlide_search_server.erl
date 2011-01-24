@@ -235,7 +235,7 @@ check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->
 check_pattern(Pattern, _Mod, #var_def{}=VD, F, A, C) ->
 	check_var_pattern(Pattern, VD, F, A, C);
 check_pattern(Pattern, _Mod, D, _, _, _) ->
-    ?D({check_pattern, Pattern, D}),
+%%     ?D({check_pattern, Pattern, D}),
     lists:member(D, Pattern).
 
 check_var_pattern([], _, _, _, _) ->
@@ -260,13 +260,12 @@ get_module_refs(ScannerName, ModulePath, StateDir, Modules) ->
     end.
 
 read_module_refs(ScannerName, ModulePath, StateDir) ->
+    ?D({read_module_refs, ScannerName, ModulePath}),
     R = erlide_noparse:read_module_refs(ScannerName, ModulePath, StateDir),
+    ?D(R),
     R.
 
 do_add_module_refs(ScannerName, Refs, #state{modules=Modules0} = State) ->
-    ?D(ScannerName),
     Modules1 = lists:keydelete(ScannerName, #module.scanner_name, Modules0),
     Modules2 = [#module{scanner_name=ScannerName, refs=Refs} | Modules1],
-    ?D(Modules1),
-    ?D(Modules2),
     State#state{modules=Modules2}.

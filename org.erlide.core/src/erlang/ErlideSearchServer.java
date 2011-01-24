@@ -58,7 +58,6 @@ public class ErlideSearchServer {
         try {
             // ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
             // getModulesFromScope(scope));
-            b.setLogCalls(true);
             final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
                     "erlide_search_server", "find_refs", "xxs",
                     ref.getSearchObject(),
@@ -75,7 +74,6 @@ public class ErlideSearchServer {
     public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
             final ErlangSearchPattern ref, final IErlModule module,
             final String stateDir) {
-        b.setLogCalls(true);
         final ErlSearchScope scope = new ErlSearchScope();
         final ErlSearchScope externalScope = new ErlSearchScope();
         final IResource r = module.getResource();

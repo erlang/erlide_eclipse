@@ -100,4 +100,35 @@ public class SearchTest {
 		final List<ErlangSearchElement> result = searchResult.getResult();
 		// TODO check result
 	}
+
+	@Test
+	public void findCallAfterRecordRef() throws Exception {
+		// given
+		// a module a with an exported function f
+		// and a module b which calls a:f()
+		final IErlModule moduleA = ErlideTestUtils.createModule(projects[0],
+				"a.erl", "-module(a).\n-export([f/0]).\nf() ->\n    ok.\n");
+		final IErlModule moduleB = ErlideTestUtils
+				.createModule(projects[0], "b.erl",
+						"-module(b).\n-export([f/0]).\nf() ->\n    #a.b,\n    a:f().\n");
+		moduleA.open(null);
+		moduleB.open(null);
+		// when
+		// searching for the call to a:f
+		final ErlangSearchPattern ref = ErlangSearchPattern.getSearchPattern(
+				SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES);
+		final ErlSearchScope scope = new ErlSearchScope();
+		scope.addModule(moduleA);
+		scope.addModule(moduleB);
+		final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
+		query.run(null);
+		// then
+		// it should be found in module b
+		final ErlangSearchResult searchResult = (ErlangSearchResult) query
+				.getSearchResult();
+		assertEquals(1, searchResult.getMatchCount());
+		// final List<ErlangSearchElement> result = searchResult.getResult();
+		// TODO check result
+
+	}
 }
