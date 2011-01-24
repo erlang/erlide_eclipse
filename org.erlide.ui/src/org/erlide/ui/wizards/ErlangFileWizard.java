@@ -130,8 +130,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         }
         final IContainer container = (IContainer) resource;
         IPath path = new Path(fileName);
-        final String ext = path.getFileExtension();
-        if (!ErlideUtil.isModuleExtension(ext)) {
+        if (!ErlideUtil.isErlangFileContentFileName(fileName)) {
             path = path.addFileExtension("erl");
         }
         final IFile file = container.getFile(path);

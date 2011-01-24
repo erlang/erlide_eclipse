@@ -38,6 +38,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -246,7 +248,7 @@ public final class ErlideUtil {
         return isEricssonUser;
     }
 
-    public static boolean isModuleExtension(final String ext) {
+    public static boolean isModuleExtensionx(final String ext) {
         return extensionToModuleKind(ext) != ModuleKind.BAD;
     }
 
@@ -488,5 +490,18 @@ public final class ErlideUtil {
     }
 
     private ErlideUtil() {
+    }
+
+    public static boolean isErlangFileContentFileName(final String fileName) {
+        final IContentTypeManager contentTypeManager = Platform
+                .getContentTypeManager();
+        final IContentType[] contentTypes = contentTypeManager
+                .findContentTypesFor(fileName);
+        for (final IContentType contentType : contentTypes) {
+            if (contentType.getId().equals("org.erlide.core.content.erlang")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

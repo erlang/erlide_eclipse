@@ -134,15 +134,15 @@ public class ErlProject extends Openable implements IErlProject {
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
-                    final IFolder f = (IFolder) element;
-                    final IErlFolder ef = (IErlFolder) modelManager.create(f,
-                            this);
-                    children.add(ef);
+                    final IFolder folder = (IFolder) element;
+                    final IErlFolder erlFolder = (IErlFolder) modelManager
+                            .create(folder, this);
+                    children.add(erlFolder);
                 } else if (element instanceof IFile) {
-                    final IFile f = (IFile) element;
-                    if (ErlideUtil.hasModuleExtension(f.getName()) || true) {
+                    final IFile file = (IFile) element;
+                    if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
                         final IErlModule m = (IErlModule) modelManager.create(
-                                f, this);
+                                file, this);
                         children.add(m);
                     }
                 }
