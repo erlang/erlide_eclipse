@@ -64,7 +64,7 @@
       <specification
             annotationType="org.erlide.cover.ui.fullCoverageAnnotation"
             colorPreferenceKey="fullCoverage_Color"
-            colorPreferenceValue="130,230,100"
+            colorPreferenceValue="150,220,80"
             contributesToHeader="false"
             highlightPreferenceKey="fullCoverage_Highlight"
             highlightPreferenceValue="true"
@@ -84,6 +84,31 @@
             textStylePreferenceKey="fullCoverage_TextStyle"
             textStylePreferenceValue="BOX"
             verticalRulerPreferenceKey="fullCoverage_VerticalRuler"
+            verticalRulerPreferenceValue="false">
+      </specification>
+      <specification
+            annotationType="org.erlide.cover.ui.noCoverageAnnotation"
+            colorPreferenceKey="noCoverage_Color"
+            colorPreferenceValue="255,210,210"
+            contributesToHeader="false"
+            highlightPreferenceKey="noCoverage_Highlight"
+            highlightPreferenceValue="true"
+            includeOnPreferencePage="true"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="noCoverage_IsGoToNext"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="noCoverage_IsGoToPrev"
+            label="NoCoverage"
+            overviewRulerPreferenceKey="noCoverage_OverviewRuler"
+            overviewRulerPreferenceValue="false"
+            presentationLayer="0"
+            showInNextPrevDropdownToolbarAction="false"
+            showInNextPrevDropdownToolbarActionKey="noCoverage_ShowInNextPrecDropnown"
+            textPreferenceKey="noCoverage_Text"
+            textPreferenceValue="false"
+            textStylePreferenceKey="noCoerage_TextStyle"
+            textStylePreferenceValue="BOX"
+            verticalRulerPreferenceKey="noCoverage_VerticalRuler"
             verticalRulerPreferenceValue="false">
       </specification>
    </extension>

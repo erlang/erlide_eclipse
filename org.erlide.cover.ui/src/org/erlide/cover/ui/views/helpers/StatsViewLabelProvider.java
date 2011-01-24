@@ -77,8 +77,8 @@ public class StatsViewLabelProvider extends LabelProvider
 	    Image img = new Image(Display.getCurrent(), new Rectangle(2, 2, 85, 15));
 	
 	    GC graphic = new GC(img);
-	    graphic.setForeground(new Color(Display.getCurrent(), 30, 120, 230));
-	    graphic.setBackground(new Color(Display.getCurrent(), 30, 120, 230));
+	    graphic.setForeground(new Color(Display.getCurrent(), 60, 140, 10));
+	    graphic.setBackground(new Color(Display.getCurrent(), 60, 140, 10));
 	    graphic.drawRectangle(2, 2, 80, 10);
 	    graphic.fillRectangle(2, 2, (int)(80*percentage/100), 10);
 	    

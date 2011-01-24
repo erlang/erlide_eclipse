@@ -75,6 +75,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 	private Action refresh;
 	private Action restore;
 	private Action doubleClickAction;
+	private Action showCoverage;
+	private Action hideCoverage;
 	
 	private CoverBackend backend;
 	
@@ -190,6 +192,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(openItem);
 		manager.add(showHtml);
+		manager.add(showCoverage);
+		manager.add(hideCoverage);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -214,9 +218,37 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 		makeSaveAction();
 		makeShowHtmlAction();
 		makeRefreshAction();
+		makeShowCoverageAction();
+		makeHideCoverageAction();
 	}
 	
-	private void makeOpenItemAction() {
+	private void makeShowCoverageAction() {
+	    showCoverage = new Action() {
+	      public void run() {
+	          //TODO: implement showing code coverage for specified modules
+	          showMessage("show coverage");
+	      }
+	    };
+	    showCoverage.setText("Show coverage");
+        showCoverage.setToolTipText("Shows item's coverage");
+        showCoverage.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+            getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+    }
+	
+	private void makeHideCoverageAction() {
+        hideCoverage = new Action() {
+          public void run() {
+              //TODO: implement hiding code coverage for specified modules
+              showMessage("hide coverage");
+          }
+        };
+        hideCoverage.setText("Hide coverage");
+        hideCoverage.setToolTipText("Hides item's coverage");
+        hideCoverage.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+            getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+    }
+
+    private void makeOpenItemAction() {
 		openItem = new Action() {
 			public void run() {
 				showMessage("Action open item");

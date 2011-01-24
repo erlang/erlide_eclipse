@@ -1,5 +1,6 @@
 package org.erlide.cover.ui.annotations;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -68,7 +69,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
         }
     }
 
-    private void annotateEditor(IWorkbenchPartReference partref) {
+    public void annotateEditor(IWorkbenchPartReference partref) {
         IWorkbenchPart part = partref.getPart(false);
 
         if (part instanceof ITextEditor) {
@@ -80,41 +81,85 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             StatsTreeModel model = StatsTreeModel.getInstance();
             System.out.println(model.getRoot().getChildren().getClass());
-           
 
             String modName = editor.getTitle().replace(".erl", "");
             ModuleStats module = ModuleSet.get(modName);
-            
-            if(module == null)
+
+            if (module == null)
                 return;
-            
+
             List<LineResult> list = module.getLineResults();
             for (LineResult lr : list) {
-                if (lr.called()) {
+                // if (lr.called()) {
 
-                    try {
-                        IRegion reg = doc.getLineInformation(lr.getLineNum() -1);
-                        int length = reg.getLength();
-                        int offset = reg.getOffset();
-                        Position pos = new Position(offset, length);
+                try {
+                    IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
+                    int length = reg.getLength();
+                    int offset = reg.getOffset();
+                    Position pos = new Position(offset, length);
 
-                        Annotation annotation = new CoverageAnnotation(
+                    Annotation annotation;
+                    if (lr.called()) {
+                        annotation = new CoverageAnnotation(
                                 CoverageAnnotation.FULL_COVERAGE);
-
-                        IAnnotationModel annMod = editor.getDocumentProvider()
-                                .getAnnotationModel(editor.getEditorInput());
-
-                        annMod.addAnnotation(annotation, pos);
-
-                    } catch (BadLocationException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } else {
+                        annotation = new CoverageAnnotation(
+                                CoverageAnnotation.NO_COVERAGE);
                     }
+                    IAnnotationModel annMod = editor.getDocumentProvider()
+                            .getAnnotationModel(editor.getEditorInput());
 
+                    annMod.addAnnotation(annotation, pos);
+
+                } catch (BadLocationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
+
+                // }
             }
             // }
             // }
+        }
+    }
+
+    /**
+     * clears coverage annotations from all files opened in the editor
+     */
+    public void clearAllAnnotations() {
+        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+
+        System.out.println("Annotation maker!");
+
+        for (IWorkbenchWindow w : windows) {
+            for (IWorkbenchPage page : w.getPages()) {
+                for (IEditorReference editor : page.getEditorReferences()) {
+                    clearAnnotations(editor);
+                }
+            }
+        }
+    }
+
+    public void clearAnnotations(IWorkbenchPartReference partref) {
+        IWorkbenchPart part = partref.getPart(false);
+
+        if (part instanceof ITextEditor) {
+            ITextEditor editor = (ITextEditor) part;
+
+            IAnnotationModel annMod = editor.getDocumentProvider()
+                    .getAnnotationModel(editor.getEditorInput());
+
+            Iterator it = annMod.getAnnotationIterator();
+
+            while (it.hasNext()) {
+                Annotation annotation = (Annotation) it.next();
+                if (annotation.getType().equals(
+                        CoverageAnnotation.FULL_COVERAGE)
+                        || annotation.getType().equals(
+                                CoverageAnnotation.NO_COVERAGE)) {
+                    annMod.removeAnnotation(annotation);
+                }
+            }
         }
     }
 

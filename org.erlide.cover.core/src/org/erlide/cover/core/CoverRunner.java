@@ -26,6 +26,7 @@ public class CoverRunner extends Thread {
 
         StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
+        backend.getAnnotationMaker().clearAllAnnotations();
         for (ICoverObserver obs : backend.getListeners())
             obs.updateViewer();
 
