@@ -61,7 +61,12 @@ public class ErlideTestUtils {
 		f.delete();
 		file.create(new ByteArrayInputStream(moduleContents.getBytes()), true,
 				null);
-		final IErlModule module = ErlangCore.getModel().findModule(file);
+		IErlModule module = ErlangCore.getModel().findModule(file);
+		if (module == null) {
+			final String path = file.getLocation().toPortableString();
+			module = ErlangCore.getModelManager().getModuleFromFile(
+					ErlangCore.getModel(), file.getName(), null, path, path);
+		}
 		modules.add(module);
 		return module;
 	}
@@ -181,6 +186,11 @@ public class ErlideTestUtils {
 						"test1");
 		modules.add(module);
 		return module;
+	}
+
+	public static IErlProject createTmpErlProject(final String projectName)
+			throws CoreException {
+		return createProject(getTmpPath(projectName), projectName);
 	}
 
 }

@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
@@ -95,7 +94,7 @@ public class DialyzerUtilsTest {
             // given
             // an erlang module in an erlang project
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String moduleName = "test.erl";
             final IErlModule erlModule = ErlideTestUtils
                     .createModule(erlProject, moduleName,
@@ -138,7 +137,7 @@ public class DialyzerUtilsTest {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.hrl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                     "f([_ | _]=L ->\n    atom_to_list(L).\n");
@@ -189,7 +188,7 @@ public class DialyzerUtilsTest {
             // given
             // a project with two erlang modules, one of them selected
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
                     .createModule(
@@ -315,7 +314,7 @@ public class DialyzerUtilsTest {
             // a project with two erlang modules, one of them with an erlang
             // error, preventing it from generating a beam-file
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
                     .createModule(
@@ -352,11 +351,5 @@ public class DialyzerUtilsTest {
                 ErlideTestUtils.deleteProject(erlProject);
             }
         }
-    }
-
-    private IErlProject createTmpErlProject(final String projectName)
-            throws CoreException {
-        return ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(projectName), projectName);
     }
 }
