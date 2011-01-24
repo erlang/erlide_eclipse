@@ -28,7 +28,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -164,9 +163,9 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             return true;
         case IResource.FILE:
             final IFile file = (IFile) source;
-            if (ErlideUtil.hasModuleExtension(file.getName()) || true) {
-                doRefresh(file);
-            }
+            // if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
+            doRefresh(file);
+            // }
             return false;
         }
         return false;

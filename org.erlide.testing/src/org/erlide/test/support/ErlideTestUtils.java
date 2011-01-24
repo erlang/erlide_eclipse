@@ -57,6 +57,8 @@ public class ErlideTestUtils {
 		final IProject project = erlProject.getProject();
 		final IFolder folder = project.getFolder("src");
 		final IFile file = folder.getFile(moduleName);
+		final File f = new File(file.getLocation().toOSString());
+		f.delete();
 		file.create(new ByteArrayInputStream(moduleContents.getBytes()), true,
 				null);
 		final IErlModule module = ErlangCore.getModel().findModule(file);

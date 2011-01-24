@@ -1467,13 +1467,6 @@
             class="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory">
          <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
       </factory>
-      <factory
-            adaptableType="org.eclipse.core.resources.IFile"
-            class="org.erlide.ui.internal.util.ErlangFileAdaptorFactory">
-         <adapter
-               type="org.erlide.core.erlang.IErlModule">
-         </adapter>
-      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

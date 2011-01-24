@@ -615,7 +615,16 @@ public class ErlModelUtils {
     public static IErlModule getModule(final IEditorInput editorInput) {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
-            return ModelUtils.getModule(input.getFile());
+            final IFile file = input.getFile();
+            IErlModule module = ModelUtils.getModule(file);
+            if (module != null) {
+                return module;
+            }
+            final String path = file.getLocation().toPortableString();
+            module = ErlangCore.getModelManager().getModuleFromFile(
+                    ErlangCore.getModel(), file.getName(), null, path, path);
+            module.setResource(file);
+            return module;
         }
         if (editorInput instanceof ErlangExternalEditorInput) {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;

@@ -210,7 +210,7 @@ public final class ErlModelManager implements IErlModelManager {
                 }
             }
         }
-        if (ErlideUtil.hasModuleExtension(file.getName()) || true) {
+        if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
             return createModuleFrom(file, parent);
         }
         return null;
@@ -232,33 +232,13 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     public IErlModule createModuleFrom(final IFile file, final IParent parent) {
-        // ErlLogger.debug("createModuleFrom:: " + file + " " + project);
         if (file == null) {
             return null;
         }
-
-        // if (project == null) {
-        // project = createProject(file.getProject());
-        // }
-
-        // final String key = parent.getName() + "/" + file.getName();
-        // if (elements.containsKey(key)) {
-        // return (IErlModule) elements.get(key);
-        // }
-        final String ext = file.getFileExtension();
-        if (ErlideUtil.isModuleExtension(ext) || true) {
-            final String initialText = null;
-            // if (file.exists()) {
-            // try {
-            // initialText = new String(
-            // CoreUtil.getResourceContentsAsCharArray(file));
-            // } catch (final Exception e) {
-            // initialText = "";
-            // }
-            // }
-            final String name = file.getName();
-            final IErlModule module = new ErlModule(parent, name, initialText,
-                    file, file.getLocation().toPortableString(), true);
+        final String name = file.getName();
+        if (ErlideUtil.isErlangFileContentFileName(name)) {
+            final IErlModule module = new ErlModule(parent, name, null, file,
+                    file.getLocation().toPortableString(), true);
             if (parent != null) {
                 parent.addChild(module);
             }
@@ -355,13 +335,6 @@ public final class ErlModelManager implements IErlModelManager {
         return getDefault().getErlangModel();
     }
 
-    /**
-     * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile)
-     */
-    public IErlModule createModuleFrom(final IFile file) {
-        return createModuleFrom(file, null);
-    }
-
     class ResourceChangeListener implements IResourceChangeListener {
         public void resourceChanged(final IResourceChangeEvent event) {
             if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
@@ -379,9 +352,8 @@ public final class ErlModelManager implements IErlModelManager {
                     }
                     final IResource resource = delta.getResource();
                     final boolean erlangFile = resource.getType() == IResource.FILE
-                            && ErlideUtil
-                                    .hasModuleExtension(resource.getName())
-                            || true;
+                            && ErlideUtil.isErlangFileContentFileName(resource
+                                    .getName());
                     final boolean erlangProject = resource.getType() == IResource.PROJECT
                             && ErlideUtil.hasErlangNature((IProject) resource);
                     final boolean erlangFolder = resource.getType() == IResource.FOLDER;

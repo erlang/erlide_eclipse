@@ -460,6 +460,11 @@ public class ErlModel extends Openable implements IErlModel {
             // Ok, if it's not found, we'll try to build it...
             element = findElement(file, true);
         }
+        // if (element == null) {
+        // final String path = file.getLocation().toPortableString();
+        // element = ErlangCore.getModelManager().getModuleFromFile(this,
+        // file.getName(), null, path, path);
+        // }
         return (IErlModule) element;
     }
 
