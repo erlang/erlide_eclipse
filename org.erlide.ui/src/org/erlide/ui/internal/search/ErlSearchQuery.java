@@ -1,12 +1,8 @@
 package org.erlide.ui.internal.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -16,20 +12,21 @@ import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import erlang.ErlangSearchPattern;
 import erlang.ErlideSearchServer;
 
 public class ErlSearchQuery implements ISearchQuery {
     private final ErlangSearchPattern pattern;
-    private final Collection<IResource> scope;
-    private final Collection<IErlModule> externalScope;
+    private final ErlSearchScope scope;
+    private final ErlSearchScope externalScope;
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
     private List<ModuleLineFunctionArityRef> fResult;
@@ -37,32 +34,41 @@ public class ErlSearchQuery implements ISearchQuery {
     private String stateDirCached = null;
     private final String scopeDescription;
 
-    public ErlSearchQuery(final ErlangSearchPattern pattern,
-            final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope,
-            final String scopeDescription) {
+    public ErlSearchQuery(final ErlangSearchPattern pattern, final ErlSearchScope scope,
+            final ErlSearchScope externalScope, final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
-        this.externalScope = externalScope == null ? new ArrayList<IErlModule>()
+        this.externalScope = externalScope == null ? new ErlSearchScope()
                 : externalScope;
         this.scopeDescription = scopeDescription;
-        pathToModuleMap = new HashMap<String, IErlModule>();
+        pathToModuleMap = Maps.newHashMap();
         setupPathToModuleMap();
     }
 
     private void setupPathToModuleMap() {
-        for (final IResource i : scope) {
-            final IErlElement element = ErlangCore.getModel().findElement(i);
-            if (element instanceof IErlModule) {
-                final IErlModule module = (IErlModule) element;
-                final String path = i.getLocation().toPortableString();
+        addToModuleMap(scope);
+        addToModuleMap(externalScope);
+    }
+
+    private void addToModuleMap(final ErlSearchScope scope) {
+        for (final IErlModule module : scope.getModules()) {
+            final String path = module.getFilePath();
+            if (path != null) {
                 pathToModuleMap.put(path, module);
             }
         }
-        for (final IErlModule i : externalScope) {
-            pathToModuleMap.put(i.getFilePath(), i);
-        }
     }
+
+    // private void setupPathToModuleMap() {
+    // for (final IErlModule i : scope.getModules()) {
+    // final String path = i.getLocation().toPortableString();
+    // pathToModuleMap.put(path, module);
+    // }
+    // }
+    // for (final IErlModule i : externalScope) {
+    // pathToModuleMap.put(i.getFilePath(), i);
+    // }
+    // }
 
     public boolean canRerun() {
         return true;

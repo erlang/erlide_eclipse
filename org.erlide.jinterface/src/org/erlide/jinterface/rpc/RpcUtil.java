@@ -94,12 +94,12 @@ public final class RpcUtil {
      * @throws RpcException
      */
     public static OtpErlangObject rpcCall(final OtpNode node,
-            final String peer, final OtpErlangObject gleader,
-            final String module, final String fun, final int timeout,
-            final String signature, final Object... args0) throws RpcException,
-            SignatureException {
-        final RpcFuture future = sendRpcCall(node, peer, gleader, module, fun,
-                signature, args0);
+            final String peer, final boolean logCalls,
+            final OtpErlangObject gleader, final String module,
+            final String fun, final int timeout, final String signature,
+            final Object... args0) throws RpcException, SignatureException {
+        final RpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
+                module, fun, signature, args0);
         OtpErlangObject result;
         result = future.get(timeout);
         if (CHECK_RPC) {
@@ -127,7 +127,7 @@ public final class RpcUtil {
      * argument is implicit and is the pid where the reports are to be sent.
      */
     public static void rpcCallWithProgress(final RpcResultCallback callback,
-            final OtpNode node, final String peer,
+            final OtpNode node, final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final int timeout, final String signature,
             final Object... args0) throws SignatureException {
@@ -136,7 +136,7 @@ public final class RpcUtil {
         final OtpMbox mbox = node.createMbox();
         args[0] = mbox.self();
         new RpcResultReceiver(mbox, callback);
-        rpcCast(node, peer, gleader, module, fun, signature, args);
+        rpcCast(node, peer, logCalls, gleader, module, fun, signature, args);
     }
 
     /**
@@ -153,19 +153,37 @@ public final class RpcUtil {
      * @throws RpcException
      */
     public static synchronized RpcFuture sendRpcCall(final OtpNode node,
-            final String peer, final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws SignatureException {
+            final String peer, final boolean logCalls,
+            final OtpErlangObject gleader, final String module,
+            final String fun, final String signature, final Object... args0)
+            throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
         OtpErlangObject res = null;
         final OtpMbox mbox = node.createMbox();
         res = RpcUtil.buildRpcCall(mbox.self(), gleader, module, fun, args);
+        if (logCalls) {
+            debugLogCallArgs("call -> %s:%s(%s)", module, fun, argString(args));
+        }
         mbox.send("rex", peer, res);
         if (CHECK_RPC) {
             debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFuture(mbox, module + ":" + fun + "/" + args0.length);
+        return new RpcFuture(mbox, module + ":" + fun + "/" + args0.length,
+                logCalls);
+    }
+
+    final static String SEP = ", ";
+
+    private static Object argString(final OtpErlangObject[] args) {
+        final StringBuilder result = new StringBuilder();
+        for (final OtpErlangObject arg : args) {
+            final String s = arg.toString();
+            result.append(s).append(SEP);
+        }
+        final String r = result.length() == 0 ? "" : result.substring(0,
+                result.length() - SEP.length());
+        return r;
     }
 
     /**
@@ -245,6 +263,7 @@ public final class RpcUtil {
      * 
      * @param node
      * @param peer
+     * @param logCalls
      * @param module
      * @param fun
      * @param signature
@@ -252,17 +271,24 @@ public final class RpcUtil {
      * @throws RpcException
      */
     public static void rpcCast(final OtpNode node, final String peer,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws SignatureException {
+            final boolean logCalls, final OtpErlangObject gleader,
+            final String module, final String fun, final String signature,
+            final Object... args0) throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
         OtpErlangObject res = null;
         res = RpcUtil.buildRpcCastMsg(gleader, module, fun, args);
+        if (logCalls) {
+            debugLogCallArgs("cast -> %s:%s(%s)", module, fun, argString(args));
+        }
         RpcUtil.send(node, peer, "rex", res);
         if (CHECK_RPC) {
             debug("RPC _cast_" + "=> " + res);
         }
+    }
+
+    public static void debugLogCallArgs(final String fmt, final Object... args0) {
+        ErlLogger.debug(fmt, args0);
     }
 
     private static OtpErlangObject[] convertArgs(final String signature,

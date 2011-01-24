@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
-import java.util.Collection;
-
-import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangSearchPattern.LimitTo;
@@ -69,7 +66,7 @@ public class FindReferencesAction extends FindAction {
     }
 
     @Override
-    protected Collection<IResource> getScope() {
+    protected ErlSearchScope getScope() {
         return SearchUtil.getWorkspaceScope();
     }
 
@@ -79,7 +76,7 @@ public class FindReferencesAction extends FindAction {
     }
 
     @Override
-    protected Collection<IErlModule> getExternalScope() {
+    protected ErlSearchScope getExternalScope() {
         return SearchUtil.getWorkspaceExternalScope();
     }
 }

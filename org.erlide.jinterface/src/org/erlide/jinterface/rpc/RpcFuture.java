@@ -18,14 +18,20 @@ public class RpcFuture {
     private final OtpMbox mbox;
     private OtpErlangObject result = null;
     private final String env;
+    private final boolean logCalls;
 
-    public RpcFuture(final OtpMbox mbox, final String env) {
+    public RpcFuture(final OtpMbox mbox, final String env,
+            final boolean logCalls) {
         this.mbox = mbox;
         this.env = env;
+        this.logCalls = logCalls;
     }
 
     public OtpErlangObject get() throws RpcException {
         if (isDone()) {
+            if (logCalls) {
+                RpcUtil.debugLogCallArgs("call <- %s", result);
+            }
             return result;
         }
         return get(RpcUtil.INFINITY);
@@ -36,6 +42,9 @@ public class RpcFuture {
             return result;
         }
         result = RpcUtil.getRpcResult(mbox, timeout, env);
+        if (logCalls) {
+            RpcUtil.debugLogCallArgs("call <- %s", result);
+        }
         return result;
     }
 
