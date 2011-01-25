@@ -51,7 +51,7 @@ public class CoverBackend {
     private boolean coverRunning;
     
 
-    public static CoverBackend getInstance() {
+    public static synchronized CoverBackend getInstance() {
         if (instance == null)
             instance = new CoverBackend();
         return instance;

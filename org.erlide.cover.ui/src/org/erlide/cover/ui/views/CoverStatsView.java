@@ -32,6 +32,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.ICoverObserver;
+import org.erlide.cover.ui.actions.ClearCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
@@ -94,7 +95,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 		backend.addListener(this);
 		
 		//TODO: find better place for this
-		backend.addAnnotationMaker(new EditorTracker(PlatformUI.getWorkbench()));
+		backend.addAnnotationMaker(EditorTracker.getInstance());
 		
 	}
 
@@ -270,15 +271,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver{
 	}
 	
 	private void makeClearAction() {
-		clear = new Action() {
-            
-            public void run() {
-            	showMessage("Action clear");
-            }
-        };
+		clear = new ClearCoverageAction();
         clear.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
         		.getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
-        clear.setToolTipText("Clear results");
+        clear.setToolTipText("Clear coverage marking from editor");
 	}
 	
 	private void makeRestoreAction() {

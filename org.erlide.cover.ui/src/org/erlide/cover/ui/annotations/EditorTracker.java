@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.cover.core.ICoverAnnotationMarker;
 import org.erlide.cover.views.model.LineResult;
@@ -31,9 +32,11 @@ import org.erlide.cover.views.model.StatsTreeModel;
  */
 public class EditorTracker implements ICoverAnnotationMarker {
 
+    private static EditorTracker editorTracker;
+    
     private final IWorkbench workbench;
 
-    public EditorTracker(IWorkbench workbench) {
+    private EditorTracker(IWorkbench workbench) {
         this.workbench = workbench;
 
         IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
@@ -43,6 +46,13 @@ public class EditorTracker implements ICoverAnnotationMarker {
         }
 
         workbench.addWindowListener(windowListener);
+    }
+    
+    public static synchronized EditorTracker getInstance() {
+        if(editorTracker == null) {
+            editorTracker = new EditorTracker(PlatformUI.getWorkbench());
+        }
+        return editorTracker;
     }
 
     public void dispose() {
@@ -90,7 +100,6 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             List<LineResult> list = module.getLineResults();
             for (LineResult lr : list) {
-                // if (lr.called()) {
 
                 try {
                     IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
@@ -116,10 +125,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
                     e.printStackTrace();
                 }
 
-                // }
             }
-            // }
-            // }
         }
     }
 
