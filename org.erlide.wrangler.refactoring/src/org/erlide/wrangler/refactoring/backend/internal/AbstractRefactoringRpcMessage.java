@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.backend.internal;
 
 import java.util.ArrayList;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 
@@ -42,16 +42,15 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
         ArrayList<ChangedFile> ret = new ArrayList<ChangedFile>();
 
         OtpErlangTuple e;
-        OtpErlangString oldPath, newPath, newContent;
+        OtpErlangString oldPath, newPath;
         for (int i = 0; i < fileList.arity(); ++i) {
             e = (OtpErlangTuple) fileList.elementAt(i);
             oldPath = (OtpErlangString) e.elementAt(0);
             newPath = (OtpErlangString) e.elementAt(1);
-            ErlLogger.debug("newContent: %s", e.elementAt(2));
-            newContent = (OtpErlangString) e.elementAt(2);
+            String newContent = ErlUtils.asString(e.elementAt(2));
 
             ret.add(new ChangedFile(oldPath.stringValue(), newPath
-                    .stringValue(), newContent.stringValue()));
+                    .stringValue(), newContent));
         }
         return ret;
     }
