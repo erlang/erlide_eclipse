@@ -125,12 +125,7 @@ public class ErlProject extends Openable implements IErlProject {
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
-            final IErlModel model = ErlangCore.getModel();
-            final String externalIncludes = model.getExternalIncludes(this);
-            final String externalModules = model.getExternalModules(this);
-            if (externalIncludes.length() != 0 || externalModules.length() != 0) {
-                children.add(getExternalChild(externalIncludes, externalModules));
-            }
+            addExternals(children);
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -156,6 +151,15 @@ public class ErlProject extends Openable implements IErlProject {
             return false;
         }
         return true;
+    }
+
+    private void addExternals(final List<IErlElement> children) {
+        final IErlModel model = ErlangCore.getModel();
+        final String externalIncludes = model.getExternalIncludes(this);
+        final String externalModules = model.getExternalModules(this);
+        if (externalIncludes.length() != 0 || externalModules.length() != 0) {
+            children.add(getExternalChild(externalIncludes, externalModules));
+        }
     }
 
     private IErlElement getExternalChild(final String externalIncludes,
@@ -528,23 +532,52 @@ public class ErlProject extends Openable implements IErlProject {
     // FIXME
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final IOldErlangProjectProperties props = getProperties();
-        for (final IPath src : props.getSourceDirs()) {
-            final IFolder folder = fProject.getFolder(src);
-            IResource[] members;
-            try {
-                members = folder.members();
-                for (final IResource res : members) {
-                    final IErlModule module = getModule(res.getName());
-                    if (module != null) {
-                        result.add(module);
-                    }
+        if (ModelUtils.isExternalFilesProject(fProject)) {
+            for (final IErlElement child : getChildren()) {
+                if (child instanceof IErlModule
+                        && ErlideUtil.hasErlExtension(child.getName())) {
+                    result.add((IErlModule) child);
                 }
-            } catch (final CoreException e) {
-                // e.printStackTrace();
             }
+        } else {
+            final IOldErlangProjectProperties props = getProperties();
+            addModulesOrIncludes(result, props, fProject, getModel(),
+                    props.getSourceDirs());
         }
         return result;
+    }
+
+    private static void addModulesOrIncludes(final List<IErlModule> result,
+            final IOldErlangProjectProperties props, final IProject project,
+            final IErlModel model, final Collection<IPath> dirs)
+            throws ErlModelException {
+        for (final IPath src : dirs) {
+            final IFolder folder = project.getFolder(src);
+            final IErlElement element = model.findElement(folder, true);
+            if (element instanceof IErlFolder) {
+                final IErlFolder erlFolder = (IErlFolder) element;
+                erlFolder.open(null);
+                for (final IErlElement e : erlFolder
+                        .getChildrenOfKind(Kind.MODULE)) {
+                    if (e instanceof IErlModule) {
+                        final IErlModule m = (IErlModule) e;
+                        result.add(m);
+                    }
+                }
+            }
+            // IResource[] members;
+            // try {
+            // members = folder.members();
+            // for (final IResource res : members) {
+            // final IErlModule module = getModule(res.getName());
+            // if (module != null) {
+            // result.add(module);
+            // }
+            // }
+            // } catch (final CoreException e) {
+            // // e.printStackTrace();
+            // }
+        }
     }
 
     public Collection<IErlModule> getModulesAndHeaders()
@@ -552,30 +585,17 @@ public class ErlProject extends Openable implements IErlProject {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         if (ModelUtils.isExternalFilesProject(fProject)) {
             for (final IErlElement child : getChildren()) {
-                if (child instanceof IErlModule) {
+                if (child instanceof IErlModule
+                        && ErlideUtil.hasModuleExtension(child.getName())) {
                     result.add((IErlModule) child);
                 }
             }
         } else {
             final IOldErlangProjectProperties props = getProperties();
-            final List<IPath> folders = Lists.newArrayList();
-            folders.addAll(props.getSourceDirs());
-            folders.addAll(props.getIncludeDirs());
-            for (final IPath f : folders) {
-                final IFolder folder = fProject.getFolder(f);
-                IResource[] members;
-                try {
-                    members = folder.members();
-                    for (final IResource res : members) {
-                        final IErlModule module = getModule(res.getName());
-                        if (module != null) {
-                            result.add(module);
-                        }
-                    }
-                } catch (final CoreException e) {
-                    // e.printStackTrace();
-                }
-            }
+            addModulesOrIncludes(result, props, fProject, getModel(),
+                    props.getSourceDirs());
+            addModulesOrIncludes(result, props, fProject, getModel(),
+                    props.getIncludeDirs());
         }
         return result;
     }
@@ -670,8 +690,8 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public boolean isOnSourcePath() {
-        return true; // FIXME eller? ska man kolla nature? fast det �r v�l
-        // redan klart... kanske den inte ska �rva fr�n
+        return true; // FIXME eller? ska man kolla nature? fast det ar val
+        // redan klart... kanske den inte ska arva fran
         // IErlFolder? jaja....
     }
 
@@ -690,4 +710,5 @@ public class ErlProject extends Openable implements IErlProject {
     public IOldErlangProjectProperties getProperties() {
         return new OldErlangProjectProperties(fProject);
     }
+
 }
