@@ -56,6 +56,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     private ITextDoubleClickStrategy doubleClickStrategy;
     private ICharacterPairMatcher fBracketMatcher;
     private ErlReconciler reconciler;
+    private ErlContentAssistProcessor contentAssistProcessor;
 
     /**
      * Default configuration constructor
@@ -139,23 +140,26 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     public IContentAssistant getContentAssistant(
             final ISourceViewer sourceViewer) {
         if (getEditor() != null) {
-            final ContentAssistant asst = new ContentAssistant();
+            final ContentAssistant contentAssistant = new ContentAssistant();
 
-            asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-                    sourceViewer, editor.getModule()),
+            contentAssistProcessor = new ErlContentAssistProcessor(
+                    sourceViewer, editor.getModule(), contentAssistant);
+            contentAssistProcessor.setToPrefs();
+            contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                     IDocument.DEFAULT_CONTENT_TYPE);
+            contentAssistant.enableAutoInsert(true);
+            contentAssistant.enablePrefixCompletion(false);
+            contentAssistant
+                    .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
 
-            asst.enableAutoActivation(true);
-            asst.setAutoActivationDelay(500);
-            asst.enableAutoInsert(true);
-            asst.enablePrefixCompletion(false);
-            asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+            contentAssistant
+                    .setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+            contentAssistant
+                    .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+            contentAssistant
+                    .setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
-            asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-            asst.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-            asst.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-
-            return asst;
+            return contentAssistant;
         }
         return null;
     }
@@ -248,6 +252,10 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         }
 
         return "Press 'Tab' from proposal table or click for focus";
+    }
+
+    public ErlContentAssistProcessor getContentAssistProcessor() {
+        return contentAssistProcessor;
     }
 
 }

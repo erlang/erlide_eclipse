@@ -87,6 +87,12 @@
       </page>
       <page
             category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.CodeAssistPreferencePage"
+            id="org.erlide.ui.preferences.editor.codeassist"
+            name="Content Assist">
+      </page>
+      <page
+            category="org.erlide.ui.preferences.editor"
             class="org.erlide.ui.prefs.plugin.ColoringPreferencePage"
             id="org.erlide.ui.preferences.editor.coloring"
             name="Syntax coloring">

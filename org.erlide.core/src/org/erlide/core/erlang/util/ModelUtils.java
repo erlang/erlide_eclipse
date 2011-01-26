@@ -261,19 +261,19 @@ public class ModelUtils {
         return result;
     }
 
-    public static List<String> getExternalModules(final Backend b,
-            final String prefix, final IErlModel model,
-            final String externalModules) {
-        return ErlideOpen.getExternalModules(b, prefix, externalModules,
-                model.getPathVars());
-    }
-
-    public static List<String> getExternalModules(final Backend b,
-            final String prefix, final IErlProject erlProject) {
-        final IErlModel model = ErlangCore.getModel();
-        final String externalModules = model.getExternalModules(erlProject);
-        return getExternalModules(b, prefix, model, externalModules);
-    }
+    // public static List<String> getExternalModules(final Backend b,
+    // final String prefix, final IErlModel model,
+    // final String externalModules) {
+    // return ErlideOpen.getExternalModules(b, prefix, externalModules,
+    // model.getPathVars());
+    // }
+    //
+    // public static List<String> getExternalModules(final Backend b,
+    // final String prefix, final IErlProject erlProject) {
+    // final IErlModel model = ErlangCore.getModel();
+    // final String externalModules = model.getExternalModules(erlProject);
+    // return getExternalModules(b, prefix, model, externalModules);
+    // }
 
     public static IErlModule findExternalModuleFromPath(final String path) {
         try {
@@ -351,11 +351,12 @@ public class ModelUtils {
                     } else if (isExternal) {
                         if (external instanceof IErlExternal) {
                             final IErlExternal erlExternal = (IErlExternal) external;
-                            if (erlExternal.isRoot()
-                                    || erlExternal.hasModuleWithPath(path)) {
-                                final IOpenable openable = (IOpenable) element;
-                                openable.open(null);
-                            }
+                            erlExternal.open(null);
+                            // if (erlExternal.isRoot()
+                            // || erlExternal.hasModuleWithPath(path)) {
+                            // final IOpenable openable = (IOpenable) element;
+                            // openable.open(null);
+                            // }
                         }
                     }
                     return isExternal;
@@ -511,6 +512,31 @@ public class ModelUtils {
             if (child instanceof IErlModule) {
                 return (IErlModule) child;
             }
+        }
+        return null;
+    }
+
+    public static List<String> getExternalModules(final Backend b,
+            final String prefix, final IErlProject erlProject) {
+        try {
+            final List<IErlElement> externals = erlProject
+                    .getChildrenOfKind(Kind.EXTERNAL);
+            final List<String> result = Lists.newArrayList();
+            for (final IErlElement e : externals) {
+                e.accept(new IErlElementVisitor() {
+
+                    public boolean visit(final IErlElement element)
+                            throws ErlModelException {
+                        final String name = element.getName();
+                        if (name.startsWith(prefix)) {
+                            result.add(name);
+                        }
+                        return false;
+                    }
+                }, IErlElement.VISIT_LEAFS_ONLY, Kind.MODULE);
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e);
         }
         return null;
     }
