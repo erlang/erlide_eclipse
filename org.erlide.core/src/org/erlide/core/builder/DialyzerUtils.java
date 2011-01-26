@@ -22,7 +22,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -54,16 +53,17 @@ public class DialyzerUtils {
     }
 
     public static void doDialyze(final IProgressMonitor monitor,
-            final Map<IErlProject, Set<IErlModule>> modules,
-            final DialyzerPreferences prefs) throws InvocationTargetException {
-        final boolean fromSource = prefs.getFromSource();
+            final Map<IErlProject, Set<IErlModule>> modules)
+            throws InvocationTargetException {
         final Set<IErlProject> keySet = modules.keySet();
-        final List<String> pltPaths = PreferencesUtils.unpackList(prefs
-                .getPltPath());
         for (final IErlProject p : keySet) {
             final IProject project = p.getProject();
-            MarkerUtils.removeDialyzerMarkers(project);
             try {
+                final DialyzerPreferences prefs = DialyzerPreferences
+                        .get(project);
+                final List<String> pltPaths = prefs.getEnabledPltPaths();
+                final boolean fromSource = prefs.getFromSource();
+                MarkerUtils.removeDialyzerMarkers(project);
                 final Backend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();

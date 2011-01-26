@@ -18,13 +18,26 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,23 +49,79 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.DialyzerPreferences;
+import org.erlide.core.builder.DialyzerUtils;
+import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.ui.handlers.CheckDialyzerPltFileHandler;
-import org.erlide.ui.internal.util.CommandRunnerSelectionAdapter;
+import org.erlide.runtime.backend.BackendManager;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Lists;
+
+import erlang.ErlideDialyze;
 
 public class DialyzerPreferencePage extends PropertyPage implements
         IWorkbenchPreferencePage {
+
+    public class ContentProvider implements IStructuredContentProvider {
+
+        public void dispose() {
+        }
+
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
+        }
+
+        public Object[] getElements(final Object inputElement) {
+            return shownPLTFiles.toArray();
+        }
+
+    }
+
+    private class LabelProvider implements ILabelProvider {
+
+        public void addListener(final ILabelProviderListener listener) {
+        }
+
+        public void dispose() {
+        }
+
+        public boolean isLabelProperty(final Object element,
+                final String property) {
+            return true;
+        }
+
+        public void removeListener(final ILabelProviderListener listener) {
+        }
+
+        public Image getImage(final Object element) {
+            return null;
+        }
+
+        public String getText(final Object element) {
+            if (element instanceof String) {
+                final String s = (String) element;
+                return s;
+            }
+            return null;
+        }
+
+    }
+
+    private static final int MAX_PLT_FILES = 256;
 
     DialyzerPreferences prefs;
     private IProject fProject;
@@ -63,21 +132,23 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private Combo fromCombo;
     private Button dialyzeCheckbox;
     private Composite prefsComposite;
-    private org.eclipse.swt.widgets.List fPLTList;
+    private CheckboxTableViewer fPLTTableViewer;
     private Button fAddButton;
     private Button fEditButton;
     private Button fRemoveButton;
-    private Button fCheckPLTButton;
+    private Button fUpdatePLTButton;
+    private final List<String> shownPLTFiles;
 
     public DialyzerPreferencePage() {
         super();
         setTitle("Dialyzer options");
         setDescription("Select the options for dialyzer.");
+        shownPLTFiles = Lists.newArrayList();
     }
 
     @Override
     protected Control createContents(final Composite parent) {
-
+        loadPrefs();
         prefsComposite = new Composite(parent, SWT.NONE);
         prefsComposite.setLayout(new GridLayout());
 
@@ -105,10 +176,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private void createPltCheck(final Composite group) {
         final Composite comp = new Composite(group, SWT.NONE);
         comp.setLayout(new GridLayout(2, false));
-        fCheckPLTButton = new Button(comp, SWT.PUSH);
-        fCheckPLTButton.setText("Check PLT");
-        fCheckPLTButton.addSelectionListener(new CommandRunnerSelectionAdapter(
-                CheckDialyzerPltFileHandler.COMMAND_ID));
+        fUpdatePLTButton = new Button(comp, SWT.PUSH);
+        fUpdatePLTButton.setText("Update PLT");
+        fUpdatePLTButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                checkSelectedPltFiles();
+            }
+        });
         final Label l = new Label(comp, SWT.NONE);
         l.setText("Warning: this can take some time");
     }
@@ -136,18 +211,26 @@ public class DialyzerPreferencePage extends PropertyPage implements
     }
 
     private void createPltSelection(final Composite group) {
-        final Composite comp = new Composite(group, SWT.NONE);
-        comp.setLayout(new GridLayout(3, false));
+        final Composite composite = new Composite(group, SWT.NONE);
+        composite.setLayout(new GridLayout(3, false));
         GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-        comp.setLayoutData(gd);
-        final Label l = new Label(comp, SWT.NONE);
+        composite.setLayoutData(gd);
+        final Label l = new Label(composite, SWT.NONE);
         l.setText("PLT files (multiple PLT requires Erlang/OTP R14B01 or later)");
         gd = new GridData();
         gd.horizontalSpan = 2;
         l.setLayoutData(gd);
-        fPLTList = new org.eclipse.swt.widgets.List(comp, SWT.MULTI
-                | SWT.V_SCROLL | SWT.BORDER);
-        fPLTList.addSelectionListener(new SelectionAdapter() {
+        fPLTTableViewer = CheckboxTableViewer.newCheckList(composite,
+                SWT.BORDER);
+        fPLTTableViewer.setLabelProvider(new LabelProvider());
+        fPLTTableViewer.setContentProvider(new ContentProvider());
+        fPLTTableViewer.setInput(this);
+        // fPLTList = new org.eclipse.swt.widgets.List(composite, SWT.MULTI
+        // | SWT.V_SCROLL | SWT.BORDER);
+        final Table table = fPLTTableViewer.getTable();
+        table.
+
+        addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 enableButtons();
@@ -157,9 +240,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
                 | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
         gd.horizontalSpan = 2;
-        fPLTList.setLayoutData(gd);
+        table.setLayoutData(gd);
         gd.heightHint = convertHeightInCharsToPixels(12);
-        final Composite buttons = new Composite(comp, SWT.NULL);
+        final Composite buttons = new Composite(composite, SWT.NULL);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         final GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -173,10 +256,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         fAddButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String result = selectPLTDialog(null);
-                if (result != null) {
-                    fPLTList.add(result);
-                }
+                addPLTFile();
             }
         });
 
@@ -185,12 +265,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         fEditButton.setLayoutData(gd);
         fEditButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(final Event evt) {
-                final String[] selection = fPLTList.getSelection();
-                final int[] selectionIndices = fPLTList.getSelectionIndices();
-                final String result = selectPLTDialog(selection[0]);
-                if (result != null) {
-                    fPLTList.setItem(selectionIndices[0], result);
-                }
+                changeSelectedPLTFiles();
             }
         });
 
@@ -199,15 +274,25 @@ public class DialyzerPreferencePage extends PropertyPage implements
         fRemoveButton.setLayoutData(gd);
         fRemoveButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(final Event evt) {
-                final int[] selectionIndices = fPLTList.getSelectionIndices();
-                fPLTList.remove(selectionIndices[0]);
+                removeSelectedPLTFiles();
+
             }
         });
+
+        if (isProjectPreferencePage()) {
+            fAddButton.setVisible(false);
+            fEditButton.setVisible(false);
+            fRemoveButton.setVisible(false);
+        }
     }
 
     protected boolean hasProjectSpecificOptions(final IProject project) {
-        final DialyzerPreferences p = new DialyzerPreferences(project);
-        return p.hasOptionsAtLowestScope();
+        try {
+            final DialyzerPreferences p = DialyzerPreferences.get(project);
+            return p.hasOptionsAtLowestScope();
+        } catch (final CoreException e) {
+        }
+        return false;
     }
 
     private boolean isProjectPreferencePage() {
@@ -254,19 +339,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
             composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                     false));
 
-            // final IDialogFieldListener listener = new IDialogFieldListener()
-            // {
-            // public void dialogFieldChanged(final DialogField field) {
-            // final boolean enabled = ((SelectionButtonDialogField) field)
-            // .isSelected();
-            // enableProjectSpecificSettings(enabled);
-            //
-            // if (enabled && getData() != null) {
-            // applyData(getData());
-            // }
-            // }
-            // };
-
             fUseProjectSettings = new Button(composite, SWT.CHECK);
             fUseProjectSettings.setText("Enable project specific settings");
             fUseProjectSettings.addSelectionListener(new SelectionAdapter() {
@@ -277,22 +349,11 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     super.widgetSelected(e);
                 }
             });
-            // fUseProjectSettings.setDialogFieldListener(listener);
-            // fUseProjectSettings
-            // .setLabelText(PreferencesMessages.PropertyAndPreferencePage_useprojectsettings_label);
-            // LayoutUtil.setHorizontalGrabbing(fUseProjectSettings
-            // .getSelectionButton(null));
 
-            if (true) { // if (offerLink()) {
-                fChangeWorkspaceSettings = createLink(composite,
-                        "Configure Workspace settings...");
-                fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
-                        SWT.CENTER, false, false));
-            }
-            // else {
-            // LayoutUtil.setHorizontalSpan(fUseProjectSettings
-            // .getSelectionButton(null), 2);
-            // }
+            fChangeWorkspaceSettings = createLink(composite,
+                    "Configure Workspace settings...");
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
+                    SWT.CENTER, false, false));
 
             final Label horizontalLine = new Label(composite, SWT.SEPARATOR
                     | SWT.HORIZONTAL);
@@ -312,12 +373,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
         final Link link = new Link(composite, SWT.NONE);
         link.setFont(composite.getFont());
         link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
-        link.addSelectionListener(new SelectionListener() {
+        link.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(final SelectionEvent e) {
-                doLinkActivated((Link) e.widget);
-            }
-
-            public void widgetDefaultSelected(final SelectionEvent e) {
                 doLinkActivated((Link) e.widget);
             }
         });
@@ -351,10 +409,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
     }
 
     protected void enableButtons() {
-        final int selectionCount = fPLTList.getSelectionCount();
+        final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
+                .getSelection();
+        final int selectionCount = selection.size();
         fEditButton.setEnabled(selectionCount == 1);
         fRemoveButton.setEnabled(selectionCount > 0);
-        fCheckPLTButton.setEnabled(selectionCount == 1);
+        fUpdatePLTButton.setEnabled(selectionCount > 0);
+        fAddButton.setEnabled(shownPLTFiles.size() < MAX_PLT_FILES);
     }
 
     private void openProjectProperties(final IProject project) {
@@ -371,16 +432,16 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 new String[] { id }, data).open();
     }
 
-    protected String getPreferencePageID() {
+    protected static String getPreferencePageID() {
         return "org.erlide.ui.preferences.dialyzer";
     }
 
-    protected String getPropertyPageID() {
+    protected static String getPropertyPageID() {
         return "org.erlide.ui.properties.dialyzerPreferencePage";
     }
 
     boolean optionsAreOk() {
-        for (final String s : fPLTList.getItems()) {
+        for (final String s : shownPLTFiles) {
             final File f = new File(s);
             if (!f.exists()) {
                 return false;
@@ -392,14 +453,21 @@ public class DialyzerPreferencePage extends PropertyPage implements
     @Override
     public boolean performOk() {
         try {
-            prefs.setPltPath(PreferencesUtils.packArray(fPLTList.getItems()));
-            prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
-            prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
             if (fUseProjectSettings != null
                     && !fUseProjectSettings.getSelection()
                     && isProjectPreferencePage()) {
                 prefs.removeAllProjectSpecificSettings();
             } else {
+                if (fPLTTableViewer != null) {
+                    prefs.setPltPaths(shownPLTFiles);
+                    final List<String> l = Lists.newArrayList();
+                    for (final Object o : fPLTTableViewer.getCheckedElements()) {
+                        l.add((String) o);
+                    }
+                    prefs.setEnabledPltPaths(l);
+                }
+                prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
+                prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
                 prefs.store();
             }
         } catch (final BackingStoreException e) {
@@ -410,29 +478,31 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     @Override
     protected void performDefaults() {
-        if (fProject == null) {
-            prefs = new DialyzerPreferences();
-        } else {
-            prefs = new DialyzerPreferences(fProject);
+        loadPrefs();
+        shownPLTFiles.clear();
+        shownPLTFiles.addAll(prefs.getPltPaths());
+        if (fPLTTableViewer != null) {
+            fPLTTableViewer.refresh();
+            fPLTTableViewer.setAllChecked(false);
+            for (final String s : prefs.getEnabledPltPaths()) {
+                fPLTTableViewer.setChecked(s, true);
+            }
         }
-        try {
-            prefs.load();
-            if (fPLTList != null) {
-                final String[] strings = PreferencesUtils.unpackArray(prefs
-                        .getPltPath());
-                fPLTList.setItems(strings);
-            }
-            if (fromCombo != null) {
-                fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0
-                        : 1));
-            }
-            if (dialyzeCheckbox != null) {
-                dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
-            }
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
+        if (fromCombo != null) {
+            fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
+        }
+        if (dialyzeCheckbox != null) {
+            dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
         }
         super.performDefaults();
+    }
+
+    private void loadPrefs() {
+        try {
+            prefs = DialyzerPreferences.get(fProject);
+        } catch (final CoreException e) {
+            // FIXME apply to status line or setErrorMessage
+        }
     }
 
     @Override
@@ -442,7 +512,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
     }
 
     public void init(final IWorkbench workbench) {
-        performDefaults();
     }
 
     private String selectPLTDialog(final String s) {
@@ -456,4 +525,127 @@ public class DialyzerPreferencePage extends PropertyPage implements
         final String result = dialog.open();
         return result;
     }
+
+    private void changeSelectedPLTFiles() {
+        final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
+                .getSelection();
+        if (selection.size() != 1) {
+            return;
+        }
+        final Object selectedElement = selection.getFirstElement();
+        final int i = shownPLTFiles.indexOf(selectedElement);
+        if (i == -1) {
+            return;
+        }
+        final String result = selectPLTDialog((String) selectedElement);
+        if (result == null) {
+            return;
+        }
+        shownPLTFiles.set(i, result);
+        fPLTTableViewer.refresh();
+    }
+
+    protected void removeSelectedPLTFiles() {
+        final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
+                .getSelection();
+        for (final Object o : selection.toList()) {
+            shownPLTFiles.remove(o);
+        }
+        fPLTTableViewer.refresh();
+    }
+
+    protected void addPLTFile() {
+        final String result = selectPLTDialog(null);
+        if (result == null) {
+            return;
+        }
+        shownPLTFiles.add(result);
+        fPLTTableViewer.refresh();
+    }
+
+    protected void checkSelectedPltFiles() {
+        final Job job = new UpdateDialyzerPLTFileOperation("Checking PLT file",
+                getSelectedPltFiles());
+        final ISchedulingRule rule = fProject;
+        job.setRule(rule);
+        job.setUser(true);
+        job.setSystem(false);
+        job.schedule();
+    }
+
+    private List<String> getSelectedPltFiles() {
+        final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
+                .getSelection();
+        final List<String> result = Lists.newArrayListWithCapacity(selection
+                .size());
+        for (final Object o : selection.toList()) {
+            final String s = (String) o;
+            result.add(s);
+        }
+        return result;
+    }
+
+    private final class UpdateDialyzerPLTFileOperation extends Job {
+
+        private final List<String> selectedPLTPaths;
+
+        public UpdateDialyzerPLTFileOperation(final String name,
+                final List<String> selectedPLTPaths) {
+            super(name);
+            this.selectedPLTPaths = selectedPLTPaths;
+        }
+
+        IStatus newErrorStatus(final Throwable throwable) {
+            return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+                    throwable.getMessage());
+        }
+
+        @Override
+        protected IStatus run(final IProgressMonitor monitor) {
+            final BackendManager backendManager = ErlangCore
+                    .getBackendManager();
+            try {
+                Backend backend;
+                if (fProject != null) {
+                    backend = backendManager.getBuildBackend(fProject);
+                } else {
+                    backend = backendManager.getIdeBackend();
+                }
+                for (final String pltPath : selectedPLTPaths) {
+                    checkPlt(pltPath, monitor, backend);
+                }
+            } catch (final DialyzerErrorException e) {
+                return newErrorStatus(e);
+            } catch (final BackendException e) {
+                return newErrorStatus(e);
+            } catch (final BackingStoreException e) {
+                return newErrorStatus(e);
+            } finally {
+                monitor.done();
+            }
+            return Status.OK_STATUS;
+        }
+
+        private void checkPlt(final String pltPath,
+                final IProgressMonitor monitor, final Backend backend)
+                throws DialyzerErrorException, BackingStoreException {
+            try {
+                monitor.subTask("Checking PLT file " + pltPath);
+                final OtpErlangObject result = ErlideDialyze.checkPlt(backend,
+                        pltPath);
+                DialyzerUtils.checkDialyzeError(result);
+            } finally {
+                monitor.worked(1);
+            }
+        }
+    }
+
+    public ISchedulingRule createRule(final Set<IProject> projects) {
+        ISchedulingRule combinedRule = null;
+        for (final IProject project : projects) {
+            combinedRule = MultiRule.combine(project, combinedRule);
+        }
+        return combinedRule;
+    }
+
 }
