@@ -47,7 +47,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         try {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
-                parentElement = ErlangCore.getModel().findProject(project);
+                if (project.isOpen()) {
+                    parentElement = ErlangCore.getModel().findProject(project);
+                }
             }
             if (parentElement instanceof IErlModule) {
                 return erlangFileContentProvider.getChildren(parentElement);
@@ -101,7 +103,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     public boolean hasChildren(Object element) {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
-            element = ErlangCore.getModel().findProject(project);
+            if (project.isOpen()) {
+                element = ErlangCore.getModel().findProject(project);
+            }
         }
         if (element instanceof IErlModule) {
             return erlangFileContentProvider.hasChildren(element);
