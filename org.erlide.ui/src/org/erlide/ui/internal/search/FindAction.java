@@ -35,6 +35,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -209,17 +210,11 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     @Override
     public void run(final ITextSelection selection) {
-        performNewSearch(selection, getScope());
-    }
-
-    protected void performNewSearch(final ITextSelection selection,
-            final Collection<IResource> scope) {
         performNewSearch(selection, getScope(), getExternalScope());
     }
 
     protected void performNewSearch(final ITextSelection selection,
-            final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope) {
+            final ErlSearchScope scope, final ErlSearchScope externalScope) {
         // if (!ActionUtil.isProcessable(fEditor)) {
         // return;
         // }
@@ -254,9 +249,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     abstract LimitTo getLimitTo();
 
-    abstract protected Collection<IResource> getScope();
+    abstract protected ErlSearchScope getScope();
 
-    abstract protected Collection<IErlModule> getExternalScope();
+    abstract protected ErlSearchScope getExternalScope();
 
     abstract protected String getScopeDescription();
 
@@ -287,8 +282,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     }
 
     protected void performNewSearch(final IErlElement element,
-            final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope) {
+            final ErlSearchScope scope, final ErlSearchScope externalScope) {
         final ErlangSearchPattern pattern = ErlangSearchPattern
                 .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
         SearchUtil.runQuery(pattern, scope, externalScope,
@@ -296,8 +290,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     }
 
     private void performNewSearch(final ErlangSearchPattern ref,
-            final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope) {
+            final ErlSearchScope scope, final ErlSearchScope externalScope) {
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
                 externalScope, getScopeDescription());
         if (query.canRunInBackground()) {
@@ -369,12 +362,12 @@ public abstract class FindAction extends SelectionDispatchAction {
         return null;
     }
 
-    protected Collection<IResource> getProjectScope() {
+    protected ErlSearchScope getProjectScope() {
         return SearchUtil.getProjectsScope(getProjects());
     }
 
-    protected Collection<IResource> getWorkingSetsScope(
-            final IWorkingSet[] workingSets) throws InterruptedException {
+    protected ErlSearchScope getWorkingSetsScope(final IWorkingSet[] workingSets)
+            throws InterruptedException {
         IWorkingSet[] ws = workingSets;
         if (ws == null) {
             ws = SearchUtil.queryWorkingSets();
@@ -387,7 +380,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         }
     }
 
-    protected Collection<IErlModule> getWorkingSetsExternalScope(
+    protected ErlSearchScope getWorkingSetsExternalScope(
             final IWorkingSet[] workingSets) throws InterruptedException {
         IWorkingSet[] ws = workingSets;
         if (ws == null) {

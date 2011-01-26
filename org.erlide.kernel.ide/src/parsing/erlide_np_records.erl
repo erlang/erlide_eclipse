@@ -46,9 +46,9 @@ check_fields(record_name, [#token{kind=Dot} | Rest], RecordName, Fields, PrevRec
   when Dot=:='.'; Dot=:=dot->
     check_fields(record_want_dot_field, Rest, RecordName, Fields, PrevRecordName);
 check_fields(record_want_dot_field, [#token{kind=atom, value=FieldName, offset=Offset, length=Length} | Rest],
-             RecordName, Fields, PrevRecordName) -> % 4
+             RecordName, Fields, _PrevRecordName) -> % 4
     NewFields = [{Offset, Length, #record_field_ref{field=FieldName, record=RecordName}} | Fields],
-    check_fields(record_dot_field, Rest, RecordName, NewFields, PrevRecordName);
+    {Rest, NewFields};
 check_fields(record_name, [#token{kind='{'} | Rest], RecordName, Fields, PrevRecordName) -> % 5
     {NewRest, NewFields} = check_fields(record_want_field, Rest, RecordName, Fields, PrevRecordName),
     check_fields(no_record, NewRest, PrevRecordName, NewFields, PrevRecordName);

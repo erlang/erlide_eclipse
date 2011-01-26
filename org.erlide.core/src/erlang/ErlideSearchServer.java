@@ -1,10 +1,10 @@
 package erlang;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -25,18 +25,17 @@ public class ErlideSearchServer {
     private static final int SEARCH_LONG_TIMEOUT = 50000;
 
     private static OtpErlangList getModulesFromScope(
-            final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope) {
+            final ErlSearchScope scope, final ErlSearchScope externalScope) {
         final OtpErlangObject result[] = new OtpErlangObject[scope.size()
                 + externalScope.size()];
         int i = 0;
-        for (final IResource r : scope) {
+        for (final IErlModule module : scope.getModules()) {
             result[i] = make2Tuple(
-                    ErlangToolkit.createScannerModuleNameFromResource(r), r
-                            .getLocation().toPortableString());
+                    ErlangToolkit.createScannerModuleName(module),
+                    module.getFilePath());
             i++;
         }
-        for (final IErlModule module : externalScope) {
+        for (final IErlModule module : externalScope.getModules()) {
             result[i] = make2Tuple(
                     ErlangToolkit.createScannerModuleName(module),
                     module.getFilePath());
@@ -53,8 +52,8 @@ public class ErlideSearchServer {
     }
 
     public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
-            final ErlangSearchPattern ref, final Collection<IResource> scope,
-            final Collection<IErlModule> externalScope, final String stateDir) {
+            final ErlangSearchPattern ref, final ErlSearchScope scope,
+            final ErlSearchScope externalScope, final String stateDir) {
         final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
         try {
             // ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
@@ -75,14 +74,13 @@ public class ErlideSearchServer {
     public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
             final ErlangSearchPattern ref, final IErlModule module,
             final String stateDir) {
-        final List<IResource> scope = Lists.newArrayListWithCapacity(1);
-        final List<IErlModule> externalScope = Lists
-                .newArrayListWithCapacity(1);
+        final ErlSearchScope scope = new ErlSearchScope();
+        final ErlSearchScope externalScope = new ErlSearchScope();
         final IResource r = module.getResource();
         if (r != null) {
-            scope.add(r);
+            scope.addModule(module);
         } else {
-            externalScope.add(module);
+            externalScope.addModule(module);
         }
         return findRefs(b, ref, scope, externalScope, stateDir);
     }
