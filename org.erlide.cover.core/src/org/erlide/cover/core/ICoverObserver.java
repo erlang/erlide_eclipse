@@ -2,8 +2,6 @@ package org.erlide.cover.core;
 
 public interface ICoverObserver {
 	
-	public void updateViewer();
+	public void eventOccured(ICoverEvent e);
 	
-	public void showError(String place, String type, String info);
-
 }

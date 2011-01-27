@@ -28,15 +28,15 @@ public class CoverRunner extends Thread {
         model.clear();
         backend.getAnnotationMaker().clearAllAnnotations();
         for (ICoverObserver obs : backend.getListeners())
-            obs.updateViewer();
+            obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
 
         try {
             backend.getBackend().call(Constants.ERLANG_BACKEND,
                     Constants.FUN_START, "x",
                     new OtpErlangAtom(backend.getSettings().getFramework()));
-        } catch (BackendException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (BackendException e) {
+            e.printStackTrace();
+            backend.handleError("Exception while running cover occured: " + e);
         }
 
         // the loop is a preparation for possible custom configuration
@@ -66,10 +66,12 @@ public class CoverRunner extends Thread {
                 model.setIndex(htmlPath.toString().substring(1,
                         htmlPath.toString().length() - 1));
                 
-
+                backend.getBackend().call(Constants.ERLANG_BACKEND, 
+                        Constants.FUN_STOP, "");
+                
             } catch (BackendException e) {
                 e.printStackTrace();
-                // TODO: throw exception or show a dialog - not started
+                backend.handleError("Exception while running cover occured: " + e);
             }
         }
         

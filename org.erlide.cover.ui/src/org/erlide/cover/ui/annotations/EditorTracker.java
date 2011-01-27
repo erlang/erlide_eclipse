@@ -101,7 +101,10 @@ public class EditorTracker implements ICoverAnnotationMarker {
             List<LineResult> list = module.getLineResults();
             for (LineResult lr : list) {
 
+                if(lr.getLineNum() == 0)
+                    continue;
                 try {
+                    
                     IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
                     int length = reg.getLength();
                     int offset = reg.getOffset();

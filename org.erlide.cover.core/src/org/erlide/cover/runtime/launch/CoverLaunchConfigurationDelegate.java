@@ -4,9 +4,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.core.ICoverObserver;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
@@ -39,7 +42,7 @@ public class CoverLaunchConfigurationDelegate extends
         Backend backend = null;
         ErlLogger.info("Launching...");
         System.out.println("LAUNCHING!!!!");
-        try {
+      //  try {
             
             //TODO: change to CoverBackend
             CoverBackend coverBackend = CoverBackend.getInstance();
@@ -49,13 +52,19 @@ public class CoverLaunchConfigurationDelegate extends
             coverBackend.start();
             System.out.println("Started");
             
-        } catch (RuntimeException e) {
+        /*} catch (RuntimeException e) {
             ErlLogger.error("Cannot obtain runtime info");
             e.printStackTrace();
+            throw new CoreException(new Status(Status.ERROR,
+                    "org.erlide.cover.core", "Cannot obtain runtime info", e));
+            
+            
         } catch (BackendException e) {
             ErlLogger.error("Cannot create backend");
             e.printStackTrace();
-        }        
+            throw new CoreException(new Status(Status.ERROR,
+                    "org.erlide.cover.core", "Cannot create backend", e));
+        }        */
         
          
         return backend;

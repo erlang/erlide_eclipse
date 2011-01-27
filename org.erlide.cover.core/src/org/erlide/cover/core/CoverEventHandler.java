@@ -38,6 +38,7 @@ public class CoverEventHandler extends EventHandler {
     private int counter;
     private ICoverAnnotationMarker annotationMarker;
 
+
     public void addListener(ICoverObserver listener) {
         System.out.println("adding listener");
         listeners.add(listener);
@@ -55,26 +56,6 @@ public class CoverEventHandler extends EventHandler {
         return annotationMarker;
     }
     
-  /*  public synchronized void reset(int n) {
-        moduleNum = n;
-        counter = 0;
-    }
-    
-    public synchronized void increaseCounter() {
-        counter++;
-        if(counter == moduleNum)
-            notify();
-    }
-    
-    public synchronized boolean waitForReport() {
-        if(counter < moduleNum)
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                return true;
-            }
-        return true;
-    }*/
 
     @Override
     protected void doHandleMsg(OtpErlangObject msg) throws Exception {
@@ -90,24 +71,29 @@ public class CoverEventHandler extends EventHandler {
 
         if (gotResults(event)) {
             for (ICoverObserver obs : listeners)
-                obs.updateViewer();
+                obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
             System.out.println("Got results!");
-//            increaseCounter();
         } else if ((tuple = getErrorReason(event)) != null) {
             String place = tuple.elementAt(1).toString();
             String type = tuple.elementAt(2).toString();
             String info = tuple.elementAt(3).toString();
             
-            
-
             ErlLogger.debug("Mesg error");
             
             for (ICoverObserver obs : listeners)
-                obs.showError(place, type, info);
+                obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
+                        String.format("Error at %s while %s: %s\n",
+                                place, type, info)));
+            System.out.println("Got results!");
         } 
 
     }
 
+    /**
+     * @deprecated
+     * @param msg
+     * @return
+     */
     private boolean gotIndex(OtpErlangObject msg) {
         if( msg instanceof OtpErlangTuple) {
             OtpErlangTuple resTuple = (OtpErlangTuple) msg;
@@ -230,29 +216,6 @@ public class CoverEventHandler extends EventHandler {
         
     }
 
-    // remove
-  /*  private boolean isCoveringFinished(OtpErlangObject msg) {
-        if (msg instanceof OtpErlangTuple) {
-            OtpErlangTuple mesgTuple = (OtpErlangTuple) msg;
-            if (mesgTuple.elementAt(0) instanceof OtpErlangAtom
-                    && ((OtpErlangAtom) mesgTuple.elementAt(0)).atomValue()
-                            .equals(COVER_OK)) {
-
-                ErlLogger.debug("Mesg ok");
-
-                System.out.println(mesgTuple.toString());
-
-                OtpErlangTuple res = (OtpErlangTuple) mesgTuple.elementAt(1);
-                System.out.println("0:: " + res);
-
-              //  changeStatModel(res);
-
-                return true;
-            }
-        }
-        return false;
-    }*/
-
     private OtpErlangTuple getErrorReason(OtpErlangObject message) {
         if (message instanceof OtpErlangTuple) {
             OtpErlangTuple tuple = (OtpErlangTuple) message;
@@ -267,98 +230,5 @@ public class CoverEventHandler extends EventHandler {
         }
         return null;
     }
-
-    /**
-     * appends new results to statistics tree
-     * 
-     * @param res
-     */
-   /* private void changeStatModel(OtpErlangTuple res) {
-
-        // TODO: append should be possible on some conditions
-
-        StatsTreeModel model = StatsTreeModel.getInstance();
-        // TODO: should be changed at some point probably
-        IStatsTreeObject root = model.getRoot();
-
-        try {
-            System.out.println("1: " + res.elementAt(0));
-            System.out.println("1: "
-                    + ((OtpErlangTuple) res.elementAt(0)).elementAt(1));
-            OtpErlangObject tot = ((OtpErlangTuple) res.elementAt(0))
-                    .elementAt(1);
-            System.out.println("1: " + tot);
-            int total = Integer.parseInt(tot.toString());
-
-            root.setPercentage(total);
-
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        Map<String, CoverResults> results = prepareData(res);
-
-        for (String name : results.keySet()) {
-            CoverResults unitRes = results.get(name);
-            IStatsTreeObject obj = new FunctionStats(name,
-                    unitRes.linesTotal, unitRes.linesCovered,
-                    unitRes.percentage);
-            root.addChild(obj);
-        }
-
-    }
-
-    private Map<String, CoverResults> prepareData(OtpErlangTuple res) {
-
-        Map<String, CoverResults> results = new HashMap<String, CoverResults>();
-
-        OtpErlangList list = (OtpErlangList) ((OtpErlangTuple) res.elementAt(1))
-                .elementAt(1);
-        System.out.println("2: " + list);
-
-        Iterator<OtpErlangObject> it = list.iterator();
-        while (it.hasNext()) {
-            OtpErlangTuple fileTuple = (OtpErlangTuple) it.next();
-            System.out.println("3: " + fileTuple);
-            String name = fileTuple.elementAt(0).toString();
-            System.out.println("4: " + name);
-            CoverResults unitRes = new CoverResults();
-
-            unitRes.percentage = Integer.parseInt(fileTuple.elementAt(1)
-                    .toString());
-            System.out.println("5: " + unitRes.percentage);
-
-            results.put(name, unitRes);
-
-        }
-
-        OtpErlangList list2 = (OtpErlangList) ((OtpErlangTuple) res
-                .elementAt(2)).elementAt(1);
-        System.out.println("6: " + list2);
-
-        it = list2.iterator();
-        while (it.hasNext()) {
-            OtpErlangTuple fileTuple = (OtpErlangTuple) it.next();
-            System.out.println("7: " + fileTuple);
-            String name = fileTuple.elementAt(0).toString();
-            System.out.println("8: " + name);
-            CoverResults unitRes = results.get(name);
-
-            OtpErlangTuple lines = (OtpErlangTuple) fileTuple.elementAt(1);
-            System.out.println("9: " + lines);
-
-            unitRes.linesTotal = Integer
-                    .parseInt(lines.elementAt(0).toString());
-            System.out.println("10: " + unitRes.linesTotal);
-            unitRes.linesCovered = Integer.parseInt(lines.elementAt(1)
-                    .toString());
-            System.out.println("11: " + unitRes.linesCovered);
-
-        }
-
-        return results;
-
-    }*/
 
 }

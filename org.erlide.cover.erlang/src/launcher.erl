@@ -135,7 +135,7 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 												   info = Reason}),
 			no_file
 	end,
-	io:format("indexpath ~p~n", PathIdx),
+	io:format("indexpath ~p~n", [PathIdx]),
 	{reply, PathIdx, State};
 
 handle_call({prep, all, PathSrc, PathTst}, _From, State) ->

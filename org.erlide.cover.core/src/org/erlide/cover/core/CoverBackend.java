@@ -14,10 +14,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.cover.constants.Constants;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.LaunchType;
-import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -27,9 +25,6 @@ import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErtsProcess;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlLaunchData;
-
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Core backend for Cover-plugin
@@ -49,6 +44,7 @@ public class CoverBackend {
     private CoverSettings settings;
     private String nodeName;
     private boolean coverRunning;
+ 
     
 
     public static synchronized CoverBackend getInstance() {
@@ -62,8 +58,7 @@ public class CoverBackend {
         coverRunning = false;
     }
 
-    public void initialize(ErlLaunchData data, CoverLaunchData coverData)
-            throws RuntimeException, BackendException {
+    public void initialize(ErlLaunchData data, CoverLaunchData coverData) {
 
         if (backend != null)
             backend.stop();
@@ -73,7 +68,7 @@ public class CoverBackend {
 
         if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);
-            throw new RuntimeException();
+            handleError("Could not find runtime");
         }
 
         this.coverData = coverData;
@@ -88,8 +83,11 @@ public class CoverBackend {
                 .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
         this.config = getLaunchConfiguration(info, options);
 
-        this.backend = createBackend();
-
+        try {
+            this.backend = createBackend();
+        } catch (BackendException e ) {
+            handleError("Could not create backend " + e);
+        }
         backend.getEventDaemon().addHandler(handler);
 
     }
@@ -146,11 +144,17 @@ public class CoverBackend {
         return handler.getAnnotationMaker();
     }
     
+    public void handleError(String msg) {
+        for(ICoverObserver obs : handler.getListeners()) {
+            obs.eventOccured(new CoverEvent(CoverStatus.ERROR, msg));
+        }
+    }
+    
     public CoverSettings getSettings() {
         return settings;
     }
 
-    // input from external plugins
+    // input from external plugins 
     public void setPathsToCover(List<String> filePaths) {
         // TODO: ~custom coverage
     }
@@ -173,7 +177,7 @@ public class CoverBackend {
                 ErlLogger.error(e);
                 e.printStackTrace();
                 throw new BackendException(e);
-            }
+            }  
         }
         throw new BackendException();
     }
@@ -231,6 +235,9 @@ public class CoverBackend {
             return workingCopy.doSave();
         } catch (CoreException e) {
             e.printStackTrace();
+            handleError("Error while launching backend: " + e);
+            
+            
             return null;
         }
     }
