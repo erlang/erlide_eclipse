@@ -554,39 +554,24 @@ public class ModelUtils {
         return null;
     }
 
-    /**
-     * @param project
-     * @param m
-     * @param definedName
-     * @param type
-     * @param externalIncludes
-     *            TODO
-     * @param modulesDone
-     * @return
-     * @throws CoreException
-     * @throws BackendException
-     */
-    public static IErlPreprocessorDef internalFindPreprocessorDef(
-            final Backend b, final IProject project, IErlModule module,
-            final String name, final IErlElement.Kind kind,
-            final String externalIncludes, final List<IErlModule> modulesDone)
+    public static List<IErlModule> findAllIncludedFiles(
+            final IErlModule module, final String externalIncludes)
             throws CoreException, BackendException {
-        if (module == null) {
-            return null;
-        }
-        modulesDone.add(module);
-        module.open(null);
-        final IErlPreprocessorDef pd = module.findPreprocessorDef(name, kind);
-        if (pd != null) {
-            return pd;
-        }
+        final List<IErlModule> checked = Lists.newArrayList(module);
+        return findAllIncludedFiles(module, checked, externalIncludes);
+    }
+
+    private static List<IErlModule> findAllIncludedFiles(
+            final IErlModule module, final List<IErlModule> checked,
+            final String externalIncludes) throws CoreException,
+            BackendException {
+        final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
+        final IResource resource = module.getResource();
+        final IProject project = module.getProject().getProject();
+        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
         for (final ErlangIncludeFile element : includes) {
-            if (module == null) {
-                continue;
-            }
-            final IResource resource = module.getResource();
             IResource re = null;
             if (resource != null) {
                 re = ResourceUtil
@@ -596,22 +581,21 @@ public class ModelUtils {
                                         .getIncludePathFilterCreator(resource
                                                 .getParent()));
             }
+            IErlModule includeModule = null;
             if (re instanceof IFile) {
-                module = getModule((IFile) re);
+                includeModule = getModule((IFile) re);
             } else {
-                module = getExternalInclude(b, project, externalIncludes,
-                        element);
+                includeModule = getExternalInclude(backend, project,
+                        externalIncludes, element);
             }
-            if (module != null && !modulesDone.contains(module)) {
-                final IErlPreprocessorDef pd2 = internalFindPreprocessorDef(b,
-                        project, module, name, kind, externalIncludes,
-                        modulesDone);
-                if (pd2 != null) {
-                    return pd2;
-                }
+            if (includeModule != null && !checked.contains(includeModule)) {
+                checked.add(includeModule);
+                result.add(includeModule);
+                result.addAll(findAllIncludedFiles(includeModule, checked,
+                        externalIncludes));
             }
         }
-        return null;
+        return result;
     }
 
     public static IErlModule getExternalInclude(final Backend backend,
@@ -634,7 +618,8 @@ public class ModelUtils {
             return m.getModuleName();
         }
         final IErlPreprocessorDef def = m.findPreprocessorDef(
-                ErlideUtil.withoutInterrogationMark(definedName), Kind.MACRO_DEF);
+                ErlideUtil.withoutInterrogationMark(definedName),
+                Kind.MACRO_DEF);
         if (def != null) {
             final String extra = def.getExtra();
             final int p = extra.indexOf(',');
@@ -809,12 +794,17 @@ public class ModelUtils {
             names.add(unquoted);
         }
         names.add(definedName);
-        for (final String name : names) {
-            final IErlPreprocessorDef pd = internalFindPreprocessorDef(backend,
-                    project, module, name, kind, externalIncludes,
-                    new ArrayList<IErlModule>());
-            if (pd != null) {
-                return pd;
+        final List<IErlModule> allIncludedFiles = findAllIncludedFiles(module,
+                externalIncludes);
+        allIncludedFiles.add(0, module);
+        for (final IErlModule includedFile : allIncludedFiles) {
+            for (final String name : names) {
+                includedFile.open(null);
+                final IErlPreprocessorDef preprocessorDef = includedFile
+                        .findPreprocessorDef(name, kind);
+                if (preprocessorDef != null) {
+                    return preprocessorDef;
+                }
             }
         }
         return null;
