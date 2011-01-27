@@ -119,6 +119,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.BackendException;
@@ -2203,7 +2204,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             try {
                 final int offset = selection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend,
-                        scannerModuleName, offset, ErlModelUtils
+                        scannerModuleName, offset, ModelUtils
                                 .getImportsAsList(module), "", ErlangCore
                                 .getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil

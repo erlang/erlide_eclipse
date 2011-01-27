@@ -65,7 +65,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
-import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
@@ -315,7 +314,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final IErlModel model = ErlangCore.getModel();
         IErlPreprocessorDef pd;
         try {
-            pd = ErlModelUtils.findPreprocessorDef(b, project, module,
+            pd = ModelUtils.findPreprocessorDef(b, project, module,
                     recordName, Kind.RECORD_DEF,
                     model.getExternalIncludes(erlProject));
         } catch (final CoreException e) {
@@ -355,7 +354,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (module != null) {
             final IErlProject erlProject = module.getProject();
             try {
-                final List<IErlModule> modules = ErlModelUtils
+                final List<IErlModule> modules = ModelUtils
                         .getModulesWithReferencedProjects(erlProject);
                 for (final IErlModule m : modules) {
                     if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
@@ -468,7 +467,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final IErlModel model = ErlangCore.getModel();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlModelUtils
+            final List<IErlPreprocessorDef> defs = ModelUtils
                     .getPreprocessorDefs(b, project, module, kind,
                             model.getExternalIncludes(erlProject));
             for (final IErlPreprocessorDef pd : defs) {
@@ -483,7 +482,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             e.printStackTrace();
         }
         if (kind == Kind.MACRO_DEF) {
-            final String[] names = ErlModelUtils.getPredefinedMacroNames();
+            final String[] names = ModelUtils.getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
@@ -495,21 +494,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final Backend b, final IErlProject project, String moduleName,
             final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
-        moduleName = ErlModelUtils.resolveMacroValue(moduleName, module);
+        moduleName = ModelUtils.resolveMacroValue(moduleName, module);
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
-        final IErlModule module = ErlModelUtils.getExternalModule(moduleName,
+        final IErlModule module = ModelUtils.getExternalModule(moduleName,
                 erlProject);
         if (module != null) {
             addFunctionsFromModule(offset, prefix, arityOnly, result, module);
         } else {
             boolean foundInModel = false;
             // first check in project, refs and external modules
-            final List<IErlModule> modules = ErlModelUtils
+            final List<IErlModule> modules = ModelUtils
                     .getModulesWithReferencedProjects(project);
             for (final IErlModule m : modules) {
                 if (ErlideUtil.withoutExtension(m.getModuleName()).equals(

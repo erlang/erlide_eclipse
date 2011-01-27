@@ -35,6 +35,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -43,7 +44,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
-import org.erlide.ui.util.ErlModelUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -230,7 +230,7 @@ public abstract class FindAction extends SelectionDispatchAction {
                 .createScannerModuleName(module);
         OpenResult res;
         try {
-            res = ErlideOpen.open(b, scannerModuleName, offset, ErlModelUtils
+            res = ErlideOpen.open(b, scannerModuleName, offset, ModelUtils
                     .getImportsAsList(module), "", ErlangCore.getModel()
                     .getPathVars());
             ErlLogger.debug("find " + res);

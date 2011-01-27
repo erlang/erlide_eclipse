@@ -151,7 +151,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlModel model = ErlangCore.getModel();
             final OpenResult res = ErlideOpen.open(b,
                     ErlangToolkit.createScannerModuleName(module), offset,
-                    ErlModelUtils.getImportsAsList(module),
+                    ModelUtils.getImportsAsList(module),
                     model.getExternalModules(erlProject), model.getPathVars());
             ErlLogger.debug("open " + res);
             openOpenResult(editor, module, b, offset, erlProject, res);
@@ -205,15 +205,15 @@ public class OpenAction extends SelectionDispatchAction {
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            foundSourceRange = ErlModelUtils.findVariable(backend, range,
+            foundSourceRange = ModelUtils.findVariable(backend, range,
                     res.getName(), elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
-            foundElement = ErlModelUtils.findPreprocessorDef(backend, project,
+            foundElement = ModelUtils.findPreprocessorDef(backend, project,
                     module, res.getName(), kind,
                     model.getExternalIncludes(erlProject));
         } else if (res.isField()) {
-            final IErlRecordDef def = (IErlRecordDef) ErlModelUtils
+            final IErlRecordDef def = (IErlRecordDef) ModelUtils
                     .findPreprocessorDef(backend, project, module,
                             res.getFun(), Kind.RECORD_DEF,
                             model.getExternalIncludes(erlProject));
@@ -258,7 +258,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IProject project,
             final IErlElement element, final boolean checkAllProjects)
             throws ErlModelException, BackendException {
-        if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
+        if (ModelUtils.isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = ModelUtils.findFunction(module,
@@ -282,7 +282,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (res2 instanceof OtpErlangString && moduleName != null) {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            return ErlModelUtils.findExternalFunction(moduleName,
+            return ModelUtils.findExternalFunction(moduleName,
                     res.getFunction(), modulePath, project, checkAllProjects,
                     module);
         } else {
@@ -294,17 +294,17 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IProject project,
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
-        if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
-            return ErlModelUtils.findExternalType(module, res.getName(),
+        if (ModelUtils.isTypeDefOrRecordDef(element)) {
+            return ModelUtils.findExternalType(module, res.getName(),
                     res.getFun(), res.getPath(), project, checkAllProjects);
         }
-        final IErlElement result = ErlModelUtils.findExternalFunction(
+        final IErlElement result = ModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 checkAllProjects, module);
         if (result instanceof IErlFunction) {
             return result;
         }
-        return ErlModelUtils.findExternalFunction(res.getName(),
+        return ModelUtils.findExternalFunction(res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
                 res.getPath(), project, checkAllProjects, module);
     }

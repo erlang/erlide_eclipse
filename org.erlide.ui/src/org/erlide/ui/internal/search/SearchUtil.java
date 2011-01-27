@@ -45,6 +45,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
@@ -56,7 +57,6 @@ import org.erlide.core.search.TypeRefPattern;
 import org.erlide.core.search.VariablePattern;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.util.ErlModelUtils;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
@@ -343,7 +343,7 @@ public class SearchUtil {
             name = unquoted;
             do {
                 oldName = name;
-                name = ErlModelUtils.resolveMacroValue(name, module);
+                name = ModelUtils.resolveMacroValue(name, module);
             } while (!name.equals(oldName));
             return new FunctionPattern(name, res.getFun(), res.getArity(),
                     limitTo, matchAnyFunctionDefinition);
