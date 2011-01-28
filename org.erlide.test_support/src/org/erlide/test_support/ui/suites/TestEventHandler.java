@@ -6,13 +6,21 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class TestEventHandler extends EventHandler {
 
+    private final ResultsView view;
+
+    public TestEventHandler(final ResultsView view) {
+        this.view = view;
+    }
+
     @Override
     protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
         final OtpErlangObject event = getStandardEvent(msg, "bterl");
         if (event == null) {
             return;
         }
-        System.out.println("!!!!!!!!!!" + event);
+        if (view != null) {
+            view.notifyEvent(msg);
+        }
     }
 
 }

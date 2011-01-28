@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -18,21 +21,26 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.RuntimeVersion;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
+import org.erlide.runtime.backend.BackendManager.BackendOptions;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
+import org.erlide.runtime.launch.ErlLaunchData;
 import org.erlide.runtime.launch.ErlangDebugHelper;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.test_support.Activator;
@@ -297,6 +305,16 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 ILaunchManager.RUN_MODE));
 
         return wc;
+    }
+
+    @Override
+    protected void postLaunch(final String mode, final ErlLaunchData data,
+            final Set<IProject> projects, final RuntimeInfo rt,
+            final EnumSet<BackendOptions> options, final ErlideBackend backend)
+            throws DebugException {
+        super.postLaunch(mode, data, projects, rt, options, backend);
+
+        // FIXME backend.getEventDaemon().addHandler(new TestEventHandler());
     }
 
     private static String getOSIndependentPath(final File dir) {

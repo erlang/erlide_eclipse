@@ -75,27 +75,35 @@ init_debugger() ->
     end.
 
 
+%% Event callbacks
+
 init(Args) ->
     os:cmd("touch /home/qvladum/zzz"),
-    ?Info({tc_init, Args}),
+    notify({tc_init, Args}),
     ok.
 
 start_failed(Reason) ->
-    erlide_log:log(Reason),
+    notify({start_failed, Reason}),
     ok.
 
 tc_result(Result) ->
-    ?Info({result, Result}),
+    notify({result, Result}),
     ok.
 
 tc_fail(Result) ->
-    ?Info({fail, Result}),
+    notify({fail, Result}),
     ok.
 
 log_started(Arg) ->
-    ?Info({log_started, Arg}),
+    notify({log_started, Arg}),
     ok.
 
 done(Arg) ->
-    ?Info({done, Arg}),
+    notify({done, Arg}),
     ok.
+
+%%
+
+notify(Event) ->
+    erlide_jrpc:event(bterl, Event).
+
