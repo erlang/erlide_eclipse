@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui.browser;
+package shade.bterl.browser;
 
 import java.net.URL;
 
@@ -14,16 +14,16 @@ import org.eclipse.ui.internal.browser.WebBrowserUIPlugin;
 import org.erlide.jinterface.util.ErlLogger;
 
 @SuppressWarnings("restriction")
-public class TestBrowserEditorInstance extends InternalBrowserEditorInstance {
+public class BterlBrowserEditorInstance extends InternalBrowserEditorInstance {
 
-    public TestBrowserEditorInstance(final String id, final int style,
+    public BterlBrowserEditorInstance(final String id, final int style,
             final String name, final String tooltip) {
         super(id, style, name, tooltip);
     }
 
     @Override
     public void openURL(final URL url) throws PartInitException {
-        if (part != null && !(part instanceof TestWebBrowserEditor)) {
+        if (part != null && !(part instanceof BterlWebBrowserEditor)) {
             ErlLogger.warn("Bterl: browser already hooked (%s)", part
                     .getClass().getName());
             super.openURL(url);
@@ -46,14 +46,14 @@ public class TestBrowserEditorInstance extends InternalBrowserEditorInstance {
                     Messages.errorCouldNotLaunchInternalWebBrowser);
         }
 
-        final TestWebBrowserEditor editor = (TestWebBrowserEditor) part;
+        final BterlWebBrowserEditor editor = (BterlWebBrowserEditor) part;
         if (editor != null) {
             editor.init(editor.getEditorSite(), input);
             page.activate(editor);
         } else {
             try {
                 final IEditorPart editorPart = page.openEditor(input,
-                        TestWebBrowserEditor.WEB_BROWSER_EDITOR_ID);
+                        BterlWebBrowserEditor.WEB_BROWSER_EDITOR_ID);
                 hookPart(page, editorPart);
             } catch (final Exception e) {
                 Trace.trace(Trace.SEVERE, "Error opening Web browser", e); //$NON-NLS-1$
