@@ -164,20 +164,6 @@ public class ModelUtils {
         return result;
     }
 
-    // public static List<String> getExternalModules(final Backend b,
-    // final String prefix, final IErlModel model,
-    // final String externalModules) {
-    // return ErlideOpen.getExternalModules(b, prefix, externalModules,
-    // model.getPathVars());
-    // }
-    //
-    // public static List<String> getExternalModules(final Backend b,
-    // final String prefix, final IErlProject erlProject) {
-    // final IErlModel model = ErlangCore.getModel();
-    // final String externalModules = model.getExternalModules(erlProject);
-    // return getExternalModules(b, prefix, model, externalModules);
-    // }
-
     public static IErlModule findExternalModuleFromPath(final String path) {
         try {
             final Collection<IErlElement> children = ErlangCore.getModel()
@@ -418,18 +404,29 @@ public class ModelUtils {
                     .getChildrenOfKind(Kind.EXTERNAL);
             final List<String> result = Lists.newArrayList();
             for (final IErlElement e : externals) {
+                final IOpenable o = (IOpenable) e;
+                o.open(null);
                 e.accept(new IErlElementVisitor() {
 
                     public boolean visit(final IErlElement element)
                             throws ErlModelException {
-                        final String name = element.getName();
-                        if (name.startsWith(prefix)) {
-                            result.add(name);
+
+                        final boolean isExternal = element.getKind() == Kind.EXTERNAL;
+                        if (isExternal) {
+                            final IOpenable openable = (IOpenable) element;
+                            openable.open(null);
+                        } else if (element instanceof IErlModule) {
+                            final IErlModule module = (IErlModule) element;
+                            final String name = module.getModuleName();
+                            if (name.startsWith(prefix)) {
+                                result.add(name);
+                            }
                         }
-                        return false;
+                        return isExternal;
                     }
                 }, IErlElement.VISIT_LEAFS_ONLY, Kind.MODULE);
             }
+            return result;
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
         }

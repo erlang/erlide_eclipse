@@ -25,6 +25,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
@@ -314,5 +315,52 @@ public class ModelUtilsTests {
 			}
 		}
 
+	}
+
+	@Test
+	public void getExternalModuleWithPrefix() throws Exception {
+
+		File externalFile = null;
+		IErlProject erlProject = null;
+		try {
+			// given
+			// an erlang project and an external file not in any project
+			final String projectName = "testproject";
+			erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+			final String externalFileName = "external.erl";
+			externalFile = ErlideTestUtils
+					.createTmpFile(externalFileName,
+							"-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+			final String absolutePath = externalFile.getAbsolutePath();
+			final String externalsFileName = "x.erlidex";
+			final File externalsFile = ErlideTestUtils.createTmpFile(
+					externalsFileName, absolutePath);
+			final IProject project = erlProject.getProject();
+			final IOldErlangProjectProperties properties = erlProject
+					.getProperties();
+			final IEclipsePreferences root = new ProjectScope(project)
+					.getNode(ErlangPlugin.PLUGIN_ID);
+			properties.setExternalModulesFile(externalsFile.getAbsolutePath());
+			properties.store(root);
+			erlProject.open(null);
+			// when
+			// looking for it
+			final Backend backend = BackendUtils
+					.getBuildOrIdeBackend(erlProject.getProject());
+			final List<String> modules = ModelUtils
+					.getExternalModulesWithPrefix(backend, "ex", erlProject);
+			// then
+			// we should find it
+			assertEquals(modules.size(), 1);
+			assertEquals(ErlideUtil.withoutExtension(externalFileName),
+					modules.get(0));
+		} finally {
+			if (externalFile != null && externalFile.exists()) {
+				externalFile.delete();
+			}
+			if (erlProject != null) {
+				ErlideTestUtils.deleteProject(erlProject);
+			}
+		}
 	}
 }
