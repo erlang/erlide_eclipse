@@ -52,8 +52,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class TestLaunchDelegate extends
-        ErlangLaunchDelegate {
+public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
     private String testcase;
     private String suite;
@@ -75,7 +74,7 @@ public class TestLaunchDelegate extends
 
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
-            RegressionLauncher.doLaunchRegression(wdir, monitor);
+            RegressionLauncher.getInstance().launch(wdir, monitor);
         } else {
             doLaunch(cfg, launch, monitor);
         }
