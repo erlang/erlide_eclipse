@@ -56,7 +56,12 @@ start_bterl(Str) ->
 %%             []
 %%     end,
     Pids = [],
-    bt_run:run(Flags, Cmd, Pids, ?MODULE),
+	case catch bt_run:run(Flags, Cmd, Pids, ?MODULE) of
+		{'EXIT', Reason} ->
+			?Info({"Could not start bterl", Reason});
+		_ ->
+			ok
+	end,
 
     %% sent 'finished' event to caller
     ok.
