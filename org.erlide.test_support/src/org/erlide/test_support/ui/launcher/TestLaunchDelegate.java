@@ -34,7 +34,7 @@ import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangDebugHelper;
-import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
+import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.test_support.Activator;
 import org.osgi.framework.Bundle;
 
@@ -52,8 +52,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class TestLaunchConfigurationDelegate extends
-        ErlangLaunchConfigurationDelegate {
+public class TestLaunchDelegate extends
+        ErlangLaunchDelegate {
 
     private String testcase;
     private String suite;
@@ -224,7 +224,7 @@ public class TestLaunchConfigurationDelegate extends
         final ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
 
         final boolean vobBterl = "false".equals(System.getProperty(
-                "org.erlide.test_support.local", "true"));
+                "shade.bterl.local", "true"));
         System.out.println(".... vobBterl: " + vobBterl);
 
         final String bterlPath = getBterlPath();
@@ -234,7 +234,7 @@ public class TestLaunchConfigurationDelegate extends
                 .getRuntime(new RuntimeVersion("R13B"), "").getName();
 
         final List<String> paths = Lists.newArrayList();
-        String workdirPath = getOSIndependentPath(workdir);
+        final String workdirPath = getOSIndependentPath(workdir);
         paths.add(workdirPath);
         if (vobBterl) {
             System.out.println("will use bt_erl from vob");
@@ -305,9 +305,9 @@ public class TestLaunchConfigurationDelegate extends
         return wc;
     }
 
-    private static String getOSIndependentPath(File dir) {
-        String path = dir.getAbsolutePath();
-        Iterable<String> spath = Splitter.on('\\').split(path);
+    private static String getOSIndependentPath(final File dir) {
+        final String path = dir.getAbsolutePath();
+        final Iterable<String> spath = Splitter.on('\\').split(path);
         return Joiner.on('/').join(spath);
     }
 

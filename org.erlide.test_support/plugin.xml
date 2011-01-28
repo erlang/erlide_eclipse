@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.test_support.ui.launcher.TestLaunchConfigurationDelegate"
+            delegate="org.erlide.test_support.ui.launcher.TestLaunchDelegate"
             id="org.erlide.test_support.launchConfigurationType"
             modes="run,debug"
             name="BTerl test"
@@ -218,7 +218,7 @@
 <extension
       point="org.eclipse.ui.editors">
    <editor
-         class="org.erlide.test_support.ui.browser.TestWebBrowserEditor"
+         class="shade.bterl.browser.BterlWebBrowserEditor"
          contributorClass="org.eclipse.ui.internal.browser.WebBrowserEditorActionBarContributor"
          id="org.erlide.test_support.browser"
          name="Bterl Web Browser">

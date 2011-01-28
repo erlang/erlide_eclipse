@@ -8,17 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.test_support.ui.browser;
+package shade.bterl.browser;
 
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.internal.browser.DefaultWorkbenchBrowserSupport;
 
-public class TestBrowserSupport extends DefaultWorkbenchBrowserSupport {
+public class BterlBrowserSupport extends DefaultWorkbenchBrowserSupport {
 
     @Override
     protected IWebBrowser doCreateBrowser(final int style,
             final String browserId, final String name, final String tooltip) {
-        return new TestBrowserEditorInstance(browserId, style, name, null);
+        return new BterlBrowserEditorInstance(browserId, style, name, null);
     }
 
 }

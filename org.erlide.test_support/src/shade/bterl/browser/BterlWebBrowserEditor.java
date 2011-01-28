@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui.browser;
+package shade.bterl.browser;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -22,7 +22,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 @SuppressWarnings("restriction")
-public class TestWebBrowserEditor extends WebBrowserEditor {
+public class BterlWebBrowserEditor extends WebBrowserEditor {
     public static final String WEB_BROWSER_EDITOR_ID = "org.erlide.test_support.browser"; //$NON-NLS-1$
 
     @Override
