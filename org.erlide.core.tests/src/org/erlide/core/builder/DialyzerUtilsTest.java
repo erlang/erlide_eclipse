@@ -141,6 +141,12 @@ public class DialyzerUtilsTest {
 			final String externalFileName = "external.hrl";
 			externalFile = ErlideTestUtils.createTmpFile(externalFileName,
 					"f([_ | _]=L ->\n    atom_to_list(L).\n");
+			// to getter coverage, let's delete External_Projects
+			final IProject x = ResourcesPlugin.getWorkspace().getRoot()
+					.getProject(ModelUtils.EXTERNAL_FILES_PROJECT_NAME);
+			if (x != null) {
+				x.delete(true, null);
+			}
 			// when
 			// putting dialyzer warning markers on the external file
 			final String message = "test message";
@@ -154,6 +160,8 @@ public class DialyzerUtilsTest {
 					.getExternalFilesProject();
 			final IFile file = externalFilesProject.getFile(new Path(
 					externalFileName));
+			x.close(null); // let's close it, too
+			ModelUtils.getExternalFilesProject();
 			assertNotNull(file);
 			final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
 					.getRoot();

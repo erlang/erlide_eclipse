@@ -60,6 +60,8 @@ import erlang.ErlideOpen;
 
 public class ModelUtils {
 
+    public static final String EXTERNAL_FILES_PROJECT_NAME = "External_Files";
+
     private static final String DELIMITER = "<>";
 
     /**
@@ -74,7 +76,7 @@ public class ModelUtils {
      * @param externalIncludes
      * @return the path to the include file
      */
-    public static String findIncludeFile(final IProject project,
+    public static String findIncludeFile(final IErlProject project,
             final String filePath, final String externalIncludes) {
         if (project == null) {
             return filePath;
@@ -82,7 +84,7 @@ public class ModelUtils {
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
         final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
+                .getProjectProperties(project.getProject());
         for (final IPath includeDir : prefs.getIncludeDirs()) {
             IPath path = includeDir.append(filePath);
             path = PluginUtils.resolvePVMPath(pvm, path);
@@ -124,16 +126,6 @@ public class ModelUtils {
                     return f;
                 }
             }
-        }
-        return null;
-    }
-
-    public static IErlModule getModule(final String moduleName) {
-        final IErlModel model = ErlangCore.getModel();
-        try {
-            model.open(null);
-            return model.findModule(moduleName);
-        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -208,13 +200,10 @@ public class ModelUtils {
         return null;
     }
 
-    public static IErlModule openExternal(final IProject project,
+    public static IErlModule openExternal(final IErlProject project,
             final String path) throws CoreException {
-        final IErlModel model = ErlangCore.getModel();
-        final IErlProject erlProject = project == null ? null : model
-                .findProject(project);
-        if (erlProject != null) {
-            final Collection<IErlElement> children = erlProject
+        if (project != null) {
+            final Collection<IErlElement> children = project
                     .getChildrenOfKind(Kind.EXTERNAL);
             final List<IErlModule> result = findExternalModuleFromPath(path,
                     children);
@@ -226,12 +215,10 @@ public class ModelUtils {
     }
 
     public static IErlModule findExternalModuleFromName(
-            final String moduleName, final IProject project)
+            final String moduleName, final IErlProject project)
             throws ErlModelException {
-        final IErlModel model = ErlangCore.getModel();
-        final IErlProject erlProject = model.findProject(project);
-        if (erlProject != null) {
-            final Collection<IErlElement> children = erlProject
+        if (project != null) {
+            final Collection<IErlElement> children = project
                     .getChildrenOfKind(Kind.EXTERNAL);
             final List<IErlModule> result = findExternalModuleFromName(
                     moduleName, children);
@@ -305,7 +292,7 @@ public class ModelUtils {
     }
 
     public static boolean isExternalFilesProject(final IProject project) {
-        return project.getName().equals("External_Files");
+        return project.getName().equals(EXTERNAL_FILES_PROJECT_NAME);
     }
 
     static public IErlModule createModuleInExternalFilesProject(
@@ -323,11 +310,11 @@ public class ModelUtils {
     }
 
     public static IProject getExternalFilesProject() {
-        final String prjName = "External_Files";
-        final IWorkspace ws = ResourcesPlugin.getWorkspace();
-        final IProject project = ws.getRoot().getProject(prjName);
-        if (!project.exists()) {
-            try {
+        try {
+            final String prjName = EXTERNAL_FILES_PROJECT_NAME;
+            final IWorkspace ws = ResourcesPlugin.getWorkspace();
+            final IProject project = ws.getRoot().getProject(prjName);
+            if (!project.exists()) {
                 project.create(null);
                 project.open(null);
                 final IProjectDescription description = project
@@ -335,18 +322,15 @@ public class ModelUtils {
                 description
                         .setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
                 project.setDescription(description, null);
-            } catch (final CoreException e) {
-                e.printStackTrace();
             }
-        }
-        if (!project.isOpen()) {
-            try {
+            if (!project.isOpen()) {
                 project.open(null);
-            } catch (final CoreException e) {
-                e.printStackTrace();
             }
+            return project;
+        } catch (final CoreException e) {
+            e.printStackTrace();
         }
-        return project;
+        return null;
     }
 
     private static void createExternalFile(final IFile file, final String path,
@@ -472,14 +456,15 @@ public class ModelUtils {
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
         final IResource resource = module.getResource();
-        final IProject project = module.getProject().getProject();
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
+        final IErlProject project = module.getProject();
+        final Backend backend = BackendUtils.getBuildOrIdeBackend(project
+                .getProject());
         for (final ErlangIncludeFile element : includes) {
             IResource re = null;
             if (resource != null) {
                 re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, element.getFilenameLastPart(),
+                        .recursiveFindNamedModuleResourceWithReferences(project
+                                .getProject(), element.getFilenameLastPart(),
                                 PluginUtils
                                         .getIncludePathFilterCreator(resource
                                                 .getParent()));
@@ -503,7 +488,7 @@ public class ModelUtils {
     }
 
     public static IErlModule getExternalInclude(final Backend backend,
-            final IProject project, final String externalIncludes,
+            final IErlProject project, final String externalIncludes,
             final ErlangIncludeFile element) throws BackendException,
             CoreException {
         String s = element.getFilename();
@@ -539,7 +524,7 @@ public class ModelUtils {
 
     public static IErlElement findExternalFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
-            final IProject project, final boolean checkAllProjects,
+            final IErlProject project, final boolean checkAllProjects,
             final IErlModule module) {
         try {
             if (moduleName != null) {
@@ -565,7 +550,7 @@ public class ModelUtils {
 
     public static IErlElement findExternalType(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IProject project, final boolean checkAllProjects) {
+            final IErlProject project, final boolean checkAllProjects) {
         try {
             moduleName = resolveMacroValue(moduleName, module);
             final IErlModule module2 = findExternalModule(moduleName,
@@ -582,7 +567,7 @@ public class ModelUtils {
     }
 
     public static IErlModule findExternalModule(final String moduleName,
-            final String modulePath, final IProject project,
+            final String modulePath, final IErlProject project,
             final boolean checkAllProjects) throws CoreException {
         IErlModule module = getModuleByName(moduleName, modulePath, project);
         if (module == null) {
@@ -591,7 +576,7 @@ public class ModelUtils {
             if (project != null) {
                 r = ResourceUtil
                         .recursiveFindNamedModuleResourceWithReferences(
-                                project, moduleFileName,
+                                project.getProject(), moduleFileName,
                                 PluginUtils.getSourcePathFilterCreator());
 
                 if (r == null) {
@@ -626,7 +611,7 @@ public class ModelUtils {
     }
 
     public static IErlModule getModuleByName(final String moduleName,
-            final String modulePath, final IProject project) {
+            final String modulePath, final IErlProject project) {
         final IErlModuleMap modelMap = ErlangCore.getModuleMap();
         final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
         for (final IErlModule module : modules) {
@@ -665,20 +650,18 @@ public class ModelUtils {
     }
 
     public static IErlModule getExternalModule(final String moduleName,
-            final IErlProject erlProject) throws CoreException {
-        final IProject project = erlProject != null ? erlProject.getProject()
-                : null;
+            final IErlProject project) throws CoreException {
         final IErlModule module = getModuleByName(moduleName, null, project);
         if (module != null) {
             return module;
         }
         final IErlModel model = ErlangCore.getModel();
-        final String externalModules = model.getExternalModules(erlProject);
+        final String externalModules = model.getExternalModules(project);
         return getExternalModule(moduleName, externalModules, project);
     }
 
     public static IErlModule getExternalModule(final String moduleName,
-            final String externalModules, final IProject project)
+            final String externalModules, final IErlProject project)
             throws CoreException {
         return findExternalModuleFromName(moduleName, project);
     }
@@ -829,7 +812,7 @@ public class ModelUtils {
     }
 
     public static boolean moduleInProject(final IErlModule module,
-            final IProject project) {
+            final IErlProject project) {
         final IErlProject project2 = module.getProject();
         if (project == null) {
             return true;
@@ -837,7 +820,6 @@ public class ModelUtils {
         if (project2 == null) {
             return false;
         }
-        final IProject project3 = project2.getProject();
-        return project.equals(project3);
+        return project.equals(project2);
     }
 }

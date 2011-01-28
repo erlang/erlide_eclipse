@@ -11,7 +11,6 @@
 package org.erlide.ui.util;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorInput;
@@ -24,6 +23,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -52,7 +52,7 @@ public class ErlModelUtils {
      */
     public static boolean openExternalFunction(final String moduleName,
             final ErlangFunction function, final String path,
-            final IErlModule module, final IProject project,
+            final IErlModule module, final IErlProject project,
             final boolean checkAllProjects) throws CoreException {
         final IErlModule module2 = ModelUtils.findExternalModule(moduleName,
                 path, project, checkAllProjects);

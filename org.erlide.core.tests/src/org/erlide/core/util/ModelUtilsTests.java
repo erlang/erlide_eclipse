@@ -5,9 +5,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
@@ -19,7 +24,9 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -122,17 +129,17 @@ public class ModelUtilsTests {
 		// within project
 		final IErlElement element1 = ModelUtils.findExternalType(moduleB, "bx",
 				"concat_thing", moduleB.getResource().getLocation()
-						.toPortableString(), projects[0].getProject(), false);
+						.toPortableString(), projects[0], false);
 		// in other project but path given
 		final IErlElement element2 = ModelUtils.findExternalType(moduleB, "bx",
 				"concat_thing", moduleB.getResource().getLocation()
-						.toPortableString(), projects[1].getProject(), false);
+						.toPortableString(), projects[1], false);
 		// in other project no path given, search all projects true
 		final IErlElement element3 = ModelUtils.findExternalType(moduleB, "bx",
-				"concat_thing", null, projects[1].getProject(), true);
+				"concat_thing", null, projects[1], true);
 		// in other project no path given, search all projects false, -> null
 		final IErlElement element4 = ModelUtils.findExternalType(moduleB, "bx",
-				"concat_thing", null, projects[1].getProject(), false);
+				"concat_thing", null, projects[1], false);
 		// then
 		// it should be returned if found
 		assertTrue(element1 instanceof IErlTypespec);
@@ -152,8 +159,7 @@ public class ModelUtilsTests {
 		// when
 		// looking for it with ?MODULE
 		final IErlElement element1 = ModelUtils.findExternalFunction("?MODULE",
-				new ErlangFunction("f", 0), null, projects[0].getProject(),
-				false, moduleD);
+				new ErlangFunction("f", 0), null, projects[0], false, moduleD);
 		// then
 		// it should be found
 		assertTrue(element1 instanceof IErlFunction);
@@ -179,15 +185,14 @@ public class ModelUtilsTests {
 				ModelUtils.getImportsAsList(moduleE),
 				model.getExternalModules(project), model.getPathVars());
 		final IErlElement function = ModelUtils.findExternalFunction(
-				res.getName(), res.getFunction(), res.getPath(),
-				project.getProject(), false, moduleE);
+				res.getName(), res.getFunction(), res.getPath(), project,
+				false, moduleE);
 		// final OpenResult res2 = ErlideOpen.open(backend,
 		// ErlangToolkit.createScannerModuleName(moduleE), 81,
 		// ModelUtils.getImportsAsList(moduleE),
 		// model.getExternalModules(project), model.getPathVars());
 		final IErlElement module = ModelUtils.findExternalModule(
-				function.getModuleName(), res.getPath(), project.getProject(),
-				false);
+				function.getModuleName(), res.getPath(), project, false);
 		// then
 		// the function should be returned and the module, in External Files
 		assertNotNull(function);
@@ -265,7 +270,49 @@ public class ModelUtilsTests {
 								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
 		module.open(null);
 		ModelUtils.getPreprocessorDefs(module, Kind.MACRO_DEF, "");
-
 	}
 
+	@Test
+	public void getExternalModule() throws Exception {
+		File externalFile = null;
+		IErlProject erlProject = null;
+		try {
+			// given
+			// an erlang project and an external file not in any project
+			final String projectName = "testproject";
+			erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+			final String externalFileName = "external.erl";
+			externalFile = ErlideTestUtils
+					.createTmpFile(externalFileName,
+							"-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+			final String absolutePath = externalFile.getAbsolutePath();
+			final String externalsFileName = "x.erlidex";
+			final File externalsFile = ErlideTestUtils.createTmpFile(
+					externalsFileName, absolutePath);
+			final IProject project = erlProject.getProject();
+			final IOldErlangProjectProperties properties = erlProject
+					.getProperties();
+			final IEclipsePreferences root = new ProjectScope(project)
+					.getNode(ErlangPlugin.PLUGIN_ID);
+			properties.setExternalModulesFile(externalsFile.getAbsolutePath());
+			properties.store(root);
+			erlProject.open(null);
+			// when
+			// looking for it
+			final IErlModule externalModule = ModelUtils.getExternalModule(
+					ErlideUtil.withoutExtension(externalFileName), erlProject);
+			// then
+			// we should find it
+			assertNotNull(externalModule);
+			assertEquals(absolutePath, externalModule.getFilePath());
+		} finally {
+			if (externalFile != null && externalFile.exists()) {
+				externalFile.delete();
+			}
+			if (erlProject != null) {
+				ErlideTestUtils.deleteProject(erlProject);
+			}
+		}
+
+	}
 }
