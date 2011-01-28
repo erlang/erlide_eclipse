@@ -270,19 +270,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
                     result,
-                    getMacroOrRecordCompletions(backend, offset, prefix,
+                    getMacroOrRecordCompletions(offset, prefix,
                             IErlElement.Kind.RECORD_DEF, erlProject, project));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
                     result,
-                    getRecordFieldCompletions(backend, moduleOrRecord, offset,
-                            prefix, pos, fieldsSoFar));
+                    getRecordFieldCompletions(moduleOrRecord, offset, prefix,
+                            pos, fieldsSoFar));
         }
         if (flags.contains(Kinds.MACRO_DEFS)) {
             addSorted(
                     result,
-                    getMacroOrRecordCompletions(backend, offset, prefix,
+                    getMacroOrRecordCompletions(offset, prefix,
                             IErlElement.Kind.MACRO_DEF, erlProject, project));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
@@ -302,21 +302,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getRecordFieldCompletions(
-            final Backend b, final String recordName, final int offset,
-            final String prefix, final int hashMarkPos,
-            final List<String> fieldsSoFar) {
+            final String recordName, final int offset, final String prefix,
+            final int hashMarkPos, final List<String> fieldsSoFar) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
         final IErlProject erlProject = module.getProject();
-        final IProject project = erlProject == null ? null
-                : (IProject) erlProject.getResource();
         final IErlModel model = ErlangCore.getModel();
         IErlPreprocessorDef pd;
         try {
-            pd = ModelUtils.findPreprocessorDef(b, project, module,
-                    recordName, Kind.RECORD_DEF,
-                    model.getExternalIncludes(erlProject));
+            pd = ModelUtils.findPreprocessorDef(module, recordName,
+                    Kind.RECORD_DEF, model.getExternalIncludes(erlProject));
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         } catch (final BackendException e) {
@@ -458,9 +454,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getMacroOrRecordCompletions(
-            final Backend b, final int offset, final String prefix,
-            final Kind kind, final IErlProject erlProject,
-            final IProject project) {
+            final int offset, final String prefix, final Kind kind,
+            final IErlProject erlProject, final IProject project) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
@@ -468,7 +463,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
             final List<IErlPreprocessorDef> defs = ModelUtils
-                    .getPreprocessorDefs(b, project, module, kind,
+                    .getPreprocessorDefs(module, kind,
                             model.getExternalIncludes(erlProject));
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();

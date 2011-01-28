@@ -35,7 +35,7 @@ public class ErlReconciler implements IReconciler {
         fStrategy = strategy;
         setIsIncrementalReconciler(isIncremental);
         fChunkReconciler = chunkReconciler;
-        ErlangCore.getModelMap().putEdited(path);
+        ErlangCore.getModuleMap().putEdited(path);
         this.path = path;
     }
 
@@ -501,7 +501,7 @@ public class ErlReconciler implements IReconciler {
 
         final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
-        ErlangCore.getModelMap().removeEdited(path);
+        ErlangCore.getModuleMap().removeEdited(path);
     }
 
     /**

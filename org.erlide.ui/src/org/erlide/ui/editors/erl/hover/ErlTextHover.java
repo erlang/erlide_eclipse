@@ -391,12 +391,10 @@ public class ErlTextHover implements ITextHover,
                         final String externalIncludes = model
                                 .getExternalIncludes(erlProject);
                         IErlPreprocessorDef pd = ModelUtils
-                                .findPreprocessorDef(ide, project, module,
-                                        definedName, kindToFind,
-                                        externalIncludes);
+                                .findPreprocessorDef(module, definedName,
+                                        kindToFind, externalIncludes);
                         if (pd == null) {
-                            pd = ModelUtils.findPreprocessorDef(ide,
-                                    project, module,
+                            pd = ModelUtils.findPreprocessorDef(module,
                                     ErlideUtil.unquote(definedName),
                                     kindToFind, externalIncludes);
                         }

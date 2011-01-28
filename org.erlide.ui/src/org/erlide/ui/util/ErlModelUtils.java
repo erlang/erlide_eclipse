@@ -156,7 +156,7 @@ public class ErlModelUtils {
             }
         }
         try {
-            return ModelUtils.openInExternalFilesProject(path);
+            return ModelUtils.createModuleInExternalFilesProject(path);
         } catch (final CoreException e) {
         }
         return null;

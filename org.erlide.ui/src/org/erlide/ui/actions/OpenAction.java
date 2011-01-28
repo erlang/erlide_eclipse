@@ -209,13 +209,11 @@ public class OpenAction extends SelectionDispatchAction {
                     res.getName(), elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
-            foundElement = ModelUtils.findPreprocessorDef(backend, project,
-                    module, res.getName(), kind,
-                    model.getExternalIncludes(erlProject));
+            foundElement = ModelUtils.findPreprocessorDef(module,
+                    res.getName(), kind, model.getExternalIncludes(erlProject));
         } else if (res.isField()) {
             final IErlRecordDef def = (IErlRecordDef) ModelUtils
-                    .findPreprocessorDef(backend, project, module,
-                            res.getFun(), Kind.RECORD_DEF,
+                    .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF,
                             model.getExternalIncludes(erlProject));
             if (def != null) {
                 foundElement = def.getFieldNamed(res.getName());
