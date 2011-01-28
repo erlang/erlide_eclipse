@@ -111,6 +111,19 @@ export_test_() ->
     ?Test_indent(SIndent, S).
 
 
+%% binary comprensions
+%% http://www.assembla.com/spaces/erlide/tickets/729-indent--can-t-handle-binary-compehensions
+binary_3_test_() ->
+    S = ""++
+            "foo(BS) ->\n"++
+            "S = [A || <<A>> <= BS],\n"++
+            "ok.",
+    SIndent = ""++ 
+                  "foo(BS) ->\n"++
+                  "    S = [A || <<A>> <= BS],\n"++
+                  "    ok.",
+    ?Test_indent(SIndent, S).
+
 %%
 %% Local Functions
 %%
