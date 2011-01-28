@@ -411,7 +411,7 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> getExternalModules(final Backend b,
+    public static List<String> getExternalModulesWithPrefix(final Backend b,
             final String prefix, final IErlProject erlProject) {
         try {
             final List<IErlElement> externals = erlProject
