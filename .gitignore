@@ -11,4 +11,5 @@ safe_erlide.log
 External_Files
 org.erlide.eunit.erlang.bak
 junit-*.log
+refac_proj
 *.html

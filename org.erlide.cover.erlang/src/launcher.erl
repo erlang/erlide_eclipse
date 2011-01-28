@@ -122,17 +122,25 @@ handle_call({application, Name, Src}, _From,  State) ->
 % call -> covarage with preparation
 handle_call({prep, module, Module, Path}, _From, State) ->
 	io:format("inside cast5, ~p ~n", [State#state.cover_type]),
-	ok = coverage:compile(Module, Path),
-	ok = coverage:prepare(State#state.cover_type, Module, Path),
-	Report = coverage:create_report(Module),
-	PathIdx = case Report of		
-		{ok, Res} ->
-			erlide_jrpc:event(?EVENT, Res),
-			coverage:create_index([Res]);
-		{error, Reason} ->
-			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+	PathIdx = case coverage:compile(Module, Path) of
+		ok ->
+			case coverage:prepare(State#state.cover_type, Module, Path) of
+				ok ->
+					Report = coverage:create_report(Module),
+						 case Report of		
+							{ok, Res} ->
+								erlide_jrpc:event(?EVENT, Res),
+								coverage:create_index([Res]);
+							{error, Reason} ->
+								erlide_jrpc:event(?EVENT, #cover_error{place = Module,
 												   type = 'creating report',
 												   info = Reason}),
+								no_file
+						 end;
+				{error, _} ->
+					no_file
+			end;
+		{error, _} ->
 			no_file
 	end,
 	io:format("indexpath ~p~n", [PathIdx]),
@@ -140,30 +148,56 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 
 handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 	
-	{ok, Comp} = coverage:compile_dir(PathSrc),
-	
-	ModulesSrc = lists:map(fun({ok, Mod}) ->
-								Mod
-						end, Comp),
-	
-	ModulesTst = get_modules(PathTst),
-	Res = lists:foldl(fun(Test, _) ->
-						 % PathM = filename:join(Path, atom_to_list(Module) ++ ".erl"),
-						  io:format("test: ~p~n", [Test]),
-						  [PathM] = search_module(PathTst, Test),
-						  TestA = list_to_atom(Test),
-						  coverage:compile_test(TestA, PathM),
-						  ok = coverage:prepare(State#state.cover_type, TestA, PathM),
-						  coverage:create_report(ModulesSrc)
-					end, #cover_error{place = 'the begining',
-									  type = 'creating report',
-									  info = 'no tests'}, ModulesTst),
-	 Path = case Res of
-				#cover_error{} ->
-					erlide_jrpc:event(?EVENT, Res);
+	Path = case coverage:compile_dir(PathSrc) of
+		{ok, Comp} ->
+			ModulesSrc = lists:foldl(fun(Res, Acc) ->
+										case {Res, Acc} of
+											{_, error} ->
+												error;
+											{{ok, Mod}, _} ->
+												[Mod | Acc];
+											{{error, Reason}, _} ->
+												erlide_jrpc:event(?EVENT, #cover_error{place = Reason,
+												   type = 'compilation',
+												   info = ""}),
+												error
+										end
+									end, [], Comp),
+			case ModulesSrc of
+				error ->
+					no_file;
 				_ ->
-					coverage:create_index(Res)
-			end,
+					
+					ModulesTst = get_modules(PathTst),
+					Res = lists:foldl(fun(Test, _) ->
+								 % PathM = filename:join(Path, atom_to_list(Module) ++ ".erl"),
+								  io:format("test: ~p~n", [Test]),
+								  [PathM] = search_module(PathTst, Test),
+								  TestA = list_to_atom(Test),
+								  coverage:compile_test(TestA, PathM),
+								  case coverage:prepare(State#state.cover_type, TestA, PathM) of
+										{error, _} ->
+												stop();
+						  				_ ->
+												coverage:create_report(ModulesSrc)
+						  		  end
+							end, #cover_error{place = 'the begining',
+											  type = 'creating report',
+											  info = 'no tests'}, ModulesTst),
+	 				case Res of
+						#cover_error{} ->
+								erlide_jrpc:event(?EVENT, Res),
+								no_file;
+						_ ->
+							coverage:create_index(Res)
+					end
+			end;
+		_ ->
+			no_file
+	end,
+	
+	
+	
 	{reply, Path, State};
 
 handle_call({prep, application, Name, Src}, _From, State) ->

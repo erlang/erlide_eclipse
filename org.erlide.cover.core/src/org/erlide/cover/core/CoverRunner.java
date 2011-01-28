@@ -66,13 +66,18 @@ public class CoverRunner extends Thread {
                 model.setIndex(htmlPath.toString().substring(1,
                         htmlPath.toString().length() - 1));
                 
-                backend.getBackend().call(Constants.ERLANG_BACKEND, 
-                        Constants.FUN_STOP, "");
                 
             } catch (BackendException e) {
                 e.printStackTrace();
                 backend.handleError("Exception while running cover occured: " + e);
             }
+        }
+        
+        try {
+            backend.getBackend().call(Constants.ERLANG_BACKEND, 
+                    Constants.FUN_STOP, "");
+        } catch (BackendException e) {
+            e.printStackTrace();
         }
         
         
