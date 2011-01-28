@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.test_support.ui.launcher.TestLaunchConfigurationDelegate"
+            delegate="org.erlide.test_support.ui.launcher.TestLaunchDelegate"
             id="org.erlide.test_support.launchConfigurationType"
             modes="run,debug"
             name="BTerl test"

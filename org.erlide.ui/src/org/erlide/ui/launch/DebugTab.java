@@ -54,7 +54,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
-import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
+import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.ui.util.SWTUtil;
 
 /**
@@ -471,7 +471,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             projects.add(project);
         }
 
-        interpret = ErlangLaunchConfigurationDelegate
+        interpret = ErlangLaunchDelegate
                 .addBreakpointProjectsAndModules(projects, interpret);
         interpretedModules = new ArrayList<IErlModule>();
 

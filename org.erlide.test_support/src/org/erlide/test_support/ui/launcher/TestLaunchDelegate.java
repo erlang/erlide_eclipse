@@ -34,7 +34,7 @@ import org.erlide.runtime.backend.RuntimeInfoManager;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangDebugHelper;
-import org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate;
+import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.test_support.Activator;
 import org.osgi.framework.Bundle;
 
@@ -52,8 +52,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class TestLaunchConfigurationDelegate extends
-        ErlangLaunchConfigurationDelegate {
+public class TestLaunchDelegate extends
+        ErlangLaunchDelegate {
 
     private String testcase;
     private String suite;

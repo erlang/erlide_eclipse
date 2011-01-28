@@ -70,7 +70,7 @@ import com.google.common.collect.Maps;
 
 import erlang.ErlideDebug;
 
-public class ErlangLaunchConfigurationDelegate implements
+public class ErlangLaunchDelegate implements
         ILaunchConfigurationDelegate {
 
     private ErlangDebugTarget target;
