@@ -530,4 +530,11 @@ public final class ErlideUtil {
         }
         return false;
     }
+
+    public static String withoutInterrogationMark(final String definedName) {
+        if (definedName.startsWith("?")) {
+            return definedName.substring(1);
+        }
+        return definedName;
+    }
 }

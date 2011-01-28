@@ -65,7 +65,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
-import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
@@ -271,19 +270,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
                     result,
-                    getMacroOrRecordCompletions(backend, offset, prefix,
+                    getMacroOrRecordCompletions(offset, prefix,
                             IErlElement.Kind.RECORD_DEF, erlProject, project));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
                     result,
-                    getRecordFieldCompletions(backend, moduleOrRecord, offset,
-                            prefix, pos, fieldsSoFar));
+                    getRecordFieldCompletions(moduleOrRecord, offset, prefix,
+                            pos, fieldsSoFar));
         }
         if (flags.contains(Kinds.MACRO_DEFS)) {
             addSorted(
                     result,
-                    getMacroOrRecordCompletions(backend, offset, prefix,
+                    getMacroOrRecordCompletions(offset, prefix,
                             IErlElement.Kind.MACRO_DEF, erlProject, project));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
@@ -303,21 +302,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getRecordFieldCompletions(
-            final Backend b, final String recordName, final int offset,
-            final String prefix, final int hashMarkPos,
-            final List<String> fieldsSoFar) {
+            final String recordName, final int offset, final String prefix,
+            final int hashMarkPos, final List<String> fieldsSoFar) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
         final IErlProject erlProject = module.getProject();
-        final IProject project = erlProject == null ? null
-                : (IProject) erlProject.getResource();
         final IErlModel model = ErlangCore.getModel();
         IErlPreprocessorDef pd;
         try {
-            pd = ErlModelUtils.findPreprocessorDef(b, project, module,
-                    recordName, Kind.RECORD_DEF,
-                    model.getExternalIncludes(erlProject));
+            pd = ModelUtils.findPreprocessorDef(module, recordName,
+                    Kind.RECORD_DEF, model.getExternalIncludes(erlProject));
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         } catch (final BackendException e) {
@@ -355,7 +350,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (module != null) {
             final IErlProject erlProject = module.getProject();
             try {
-                final List<IErlModule> modules = ErlModelUtils
+                final List<IErlModule> modules = ModelUtils
                         .getModulesWithReferencedProjects(erlProject);
                 for (final IErlModule m : modules) {
                     if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
@@ -368,7 +363,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             } catch (final CoreException e) {
             }
             // add external modules
-            final List<String> mods = ModelUtils.getExternalModules(b, prefix,
+            final List<String> mods = ModelUtils.getExternalModulesWithPrefix(b, prefix,
                     erlProject);
             for (final String m : mods) {
                 final String name = ErlideUtil.basenameWithoutExtension(m);
@@ -459,17 +454,16 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getMacroOrRecordCompletions(
-            final Backend b, final int offset, final String prefix,
-            final Kind kind, final IErlProject erlProject,
-            final IProject project) {
+            final int offset, final String prefix, final Kind kind,
+            final IErlProject erlProject, final IProject project) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
         final IErlModel model = ErlangCore.getModel();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlModelUtils
-                    .getPreprocessorDefs(b, project, module, kind,
+            final List<IErlPreprocessorDef> defs = ModelUtils
+                    .getPreprocessorDefs(module, kind,
                             model.getExternalIncludes(erlProject));
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
@@ -483,7 +477,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             e.printStackTrace();
         }
         if (kind == Kind.MACRO_DEF) {
-            final String[] names = ErlModelUtils.getPredefinedMacroNames();
+            final String[] names = ModelUtils.getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
@@ -495,21 +489,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final Backend b, final IErlProject project, String moduleName,
             final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
-        moduleName = ErlModelUtils.resolveMacroValue(moduleName, module);
+        moduleName = ModelUtils.resolveMacroValue(moduleName, module);
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
-        final IErlModule module = ErlModelUtils.getExternalModule(moduleName,
+        final IErlModule module = ModelUtils.getExternalModule(moduleName,
                 erlProject);
         if (module != null) {
             addFunctionsFromModule(offset, prefix, arityOnly, result, module);
         } else {
             boolean foundInModel = false;
             // first check in project, refs and external modules
-            final List<IErlModule> modules = ErlModelUtils
+            final List<IErlModule> modules = ModelUtils
                     .getModulesWithReferencedProjects(project);
             for (final IErlModule m : modules) {
                 if (ErlideUtil.withoutExtension(m.getModuleName()).equals(

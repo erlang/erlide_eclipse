@@ -12,7 +12,6 @@ package org.erlide.ui.actions;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
@@ -151,7 +150,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlModel model = ErlangCore.getModel();
             final OpenResult res = ErlideOpen.open(b,
                     ErlangToolkit.createScannerModuleName(module), offset,
-                    ErlModelUtils.getImportsAsList(module),
+                    ModelUtils.getImportsAsList(module),
                     model.getExternalModules(erlProject), model.getPathVars());
             ErlLogger.debug("open " + res);
             openOpenResult(editor, module, b, offset, erlProject, res);
@@ -185,37 +184,33 @@ public class OpenAction extends SelectionDispatchAction {
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException {
         final IErlModel model = ErlangCore.getModel();
-        final IProject project = erlProject == null ? null : erlProject
-                .getProject();
         final IErlElement element = editor.getElementAt(offset, true);
         IErlElement foundElement = null;
         ISourceRange foundSourceRange = null;
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         if (res.isExternalCall()) {
-            foundElement = findExternalCallOrType(module, res, project,
+            foundElement = findExternalCallOrType(module, res, erlProject,
                     element, checkAllProjects);
         } else if (res.isInclude()) {
-            foundElement = findInclude(module, erlProject, res, model, project);
+            foundElement = findInclude(module, erlProject, res, model);
         } else if (res.isLocalCall()) {
             foundElement = findLocalCall(module, backend, erlProject, res,
-                    project, element, checkAllProjects);
+                    element, checkAllProjects);
         } else if (res.isVariable() && element instanceof ISourceReference) {
             final ISourceReference sref = (ISourceReference) element;
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            foundSourceRange = ErlModelUtils.findVariable(backend, range,
+            foundSourceRange = ModelUtils.findVariable(backend, range,
                     res.getName(), elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
-            foundElement = ErlModelUtils.findPreprocessorDef(backend, project,
-                    module, res.getName(), kind,
-                    model.getExternalIncludes(erlProject));
+            foundElement = ModelUtils.findPreprocessorDef(module,
+                    res.getName(), kind, model.getExternalIncludes(erlProject));
         } else if (res.isField()) {
-            final IErlRecordDef def = (IErlRecordDef) ErlModelUtils
-                    .findPreprocessorDef(backend, project, module,
-                            res.getFun(), Kind.RECORD_DEF,
+            final IErlRecordDef def = (IErlRecordDef) ModelUtils
+                    .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF,
                             model.getExternalIncludes(erlProject));
             if (def != null) {
                 foundElement = def.getFieldNamed(res.getName());
@@ -229,23 +224,23 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     private static IErlElement findInclude(final IErlModule module,
-            final IErlProject erlProject, final OpenResult res,
-            final IErlModel model, final IProject project) throws CoreException {
+            final IErlProject project, final OpenResult res,
+            final IErlModel model) throws CoreException {
         IContainer parent = null;
         if (module != null) {
             final IResource resource = module.getResource();
             parent = resource.getParent();
         }
         final IResource r = ResourceUtil
-                .recursiveFindNamedModuleResourceWithReferences(project,
-                        res.getName(),
+                .recursiveFindNamedModuleResourceWithReferences(
+                        project.getProject(), res.getName(),
                         PluginUtils.getIncludePathFilterCreator(parent));
         if (r instanceof IFile) {
             final IFile file = (IFile) r;
             return model.findModule(file);
         } else {
             final String includeFile = ModelUtils.findIncludeFile(project,
-                    res.getName(), model.getExternalIncludes(erlProject));
+                    res.getName(), model.getExternalIncludes(project));
             if (includeFile != null) {
                 return ModelUtils.openExternal(project, includeFile);
             }
@@ -255,10 +250,10 @@ public class OpenAction extends SelectionDispatchAction {
 
     private static IErlElement findLocalCall(final IErlModule module,
             final Backend backend, final IErlProject erlProject,
-            final OpenResult res, final IProject project,
-            final IErlElement element, final boolean checkAllProjects)
-            throws ErlModelException, BackendException {
-        if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
+            final OpenResult res, final IErlElement element,
+            final boolean checkAllProjects) throws ErlModelException,
+            BackendException {
+        if (ModelUtils.isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = ModelUtils.findFunction(module,
@@ -282,29 +277,29 @@ public class OpenAction extends SelectionDispatchAction {
         if (res2 instanceof OtpErlangString && moduleName != null) {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            return ErlModelUtils.findExternalFunction(moduleName,
-                    res.getFunction(), modulePath, project, checkAllProjects,
-                    module);
+            return ModelUtils.findExternalFunction(moduleName,
+                    res.getFunction(), modulePath, erlProject,
+                    checkAllProjects, module);
         } else {
             return null;
         }
     }
 
     private static IErlElement findExternalCallOrType(final IErlModule module,
-            final OpenResult res, final IProject project,
+            final OpenResult res, final IErlProject project,
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
-        if (ErlModelUtils.isTypeDefOrRecordDef(element)) {
-            return ErlModelUtils.findExternalType(module, res.getName(),
+        if (ModelUtils.isTypeDefOrRecordDef(element)) {
+            return ModelUtils.findExternalType(module, res.getName(),
                     res.getFun(), res.getPath(), project, checkAllProjects);
         }
-        final IErlElement result = ErlModelUtils.findExternalFunction(
+        final IErlElement result = ModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 checkAllProjects, module);
         if (result instanceof IErlFunction) {
             return result;
         }
-        return ErlModelUtils.findExternalFunction(res.getName(),
+        return ModelUtils.findExternalFunction(res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
                 res.getPath(), project, checkAllProjects, module);
     }

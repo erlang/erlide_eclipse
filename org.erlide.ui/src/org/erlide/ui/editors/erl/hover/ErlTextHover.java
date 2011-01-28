@@ -64,7 +64,6 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.information.ErlInformationPresenter;
 import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
-import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
@@ -265,7 +264,7 @@ public class ErlTextHover implements ITextHover,
         // element = module.getElementAt(hoverRegion.getOffset());
         // } catch (Exception e) {
         // }
-        final Collection<OtpErlangObject> fImports = ErlModelUtils
+        final Collection<OtpErlangObject> fImports = ModelUtils
                 .getImportsAsList(module);
 
         final int offset = hoverRegion.getOffset();
@@ -323,7 +322,7 @@ public class ErlTextHover implements ITextHover,
                         } else if (openKind.equals("external")) {
                             final OtpErlangAtom a2 = (OtpErlangAtom) t
                                     .elementAt(2);
-                            final String mod = ErlModelUtils.resolveMacroValue(
+                            final String mod = ModelUtils.resolveMacroValue(
                                     definedName, module);
                             definedName = a2.atomValue();
                             arityLong = (OtpErlangLong) t.elementAt(3);
@@ -391,13 +390,11 @@ public class ErlTextHover implements ITextHover,
                                 : IErlElement.Kind.MACRO_DEF;
                         final String externalIncludes = model
                                 .getExternalIncludes(erlProject);
-                        IErlPreprocessorDef pd = ErlModelUtils
-                                .findPreprocessorDef(ide, project, module,
-                                        definedName, kindToFind,
-                                        externalIncludes);
+                        IErlPreprocessorDef pd = ModelUtils
+                                .findPreprocessorDef(module, definedName,
+                                        kindToFind, externalIncludes);
                         if (pd == null) {
-                            pd = ErlModelUtils.findPreprocessorDef(ide,
-                                    project, module,
+                            pd = ModelUtils.findPreprocessorDef(module,
                                     ErlideUtil.unquote(definedName),
                                     kindToFind, externalIncludes);
                         }

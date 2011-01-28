@@ -42,6 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
@@ -50,7 +51,6 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.ui.util.ErlModelUtils;
 
 import com.google.common.collect.Lists;
 
@@ -617,7 +617,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         final String scannerModuleName = ErlangToolkit
                                 .createScannerModuleName(module);
                         res = ErlideOpen.open(b, scannerModuleName, offset,
-                                ErlModelUtils.getImportsAsList(module), "",
+                                ModelUtils.getImportsAsList(module), "",
                                 ErlangCore.getModel().getPathVars());
                     } catch (final BackendException e) {
                         res = null;

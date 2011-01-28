@@ -1,25 +1,31 @@
 package org.erlide.core.erlang.internal;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModuleMap;
+import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.util.LRUCache;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ErlModuleMap implements IErlModuleMap {
+public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     private static final int CACHE_SIZE = 100; // TODO make a more educated
                                                // guess here...
+    private static ErlModuleMap erlModelMap = null;
 
-    static ErlModuleMap erlModelMap = null;
-
+    private final LRUCache<IErlModule, List<IErlModule>> moduleIncludeMap;
     private final LRUCache<String, IErlModule> pathToModuleCache;
     private final Map<String, IErlModule> edited;
     private final Map<String, Set<IErlModule>> nameToModuleMap;
+    private final ModelChangeListener modelChangeListener;
 
     public static ErlModuleMap getDefault() {
         if (erlModelMap == null) {
@@ -28,10 +34,25 @@ public class ErlModuleMap implements IErlModuleMap {
         return erlModelMap;
     }
 
+    private class ModelChangeListener implements IErlModelChangeListener {
+
+        public void elementChanged(final IErlElement element) {
+            if (element instanceof IErlModule) {
+                final IErlModule module = (IErlModule) element;
+                moduleIncludeMap.remove(module);
+            }
+        }
+
+    }
+
     private ErlModuleMap() {
         pathToModuleCache = new LRUCache<String, IErlModule>(CACHE_SIZE);
         edited = Maps.newHashMap();
         nameToModuleMap = Maps.newHashMap();
+        moduleIncludeMap = new LRUCache<IErlModule, List<IErlModule>>(
+                CACHE_SIZE);
+        modelChangeListener = new ModelChangeListener();
+        ErlangCore.getModel().addModelChangeListener(modelChangeListener);
     }
 
     public void putModule(final IErlModule module) {
@@ -82,6 +103,19 @@ public class ErlModuleMap implements IErlModuleMap {
             return module;
         }
         return pathToModuleCache.get(path);
+    }
+
+    public void setIncludedFilesForModule(final IErlModule module,
+            final List<IErlModule> result) {
+        moduleIncludeMap.put(module, result);
+    }
+
+    public List<IErlModule> getIncludedFilesForModule(final IErlModule module) {
+        return moduleIncludeMap.get(module);
+    }
+
+    public void dispose() {
+        ErlangCore.getModel().removeModelChangeListener(modelChangeListener);
     }
 
 }

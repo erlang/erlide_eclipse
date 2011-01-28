@@ -112,10 +112,13 @@ public final class MarkerUtils {
                     if (res == null) {
                         try {
                             final IErlModel model = ErlangCore.getModel();
+                            final IErlProject erlProject = model
+                                    .findProject(project);
+                            final String externalIncludes = model
+                                    .getExternalIncludes(erlProject);
                             final String includeFile = ModelUtils
-                                    .findIncludeFile(project, fileName, model
-                                            .getExternalIncludes(model
-                                                    .findProject(project)));
+                                    .findIncludeFile(erlProject, fileName,
+                                            externalIncludes);
                             if (includeFile != null) {
                                 final IWorkspaceRoot workspaceRoot = ResourcesPlugin
                                         .getWorkspace().getRoot();

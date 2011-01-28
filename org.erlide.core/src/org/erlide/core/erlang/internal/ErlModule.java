@@ -83,7 +83,7 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        final IErlModuleMap erlModelMap = ErlangCore.getModelMap();
+        final IErlModuleMap erlModelMap = ErlangCore.getModuleMap();
         erlModelMap.putModule(this);
     }
 
@@ -443,7 +443,7 @@ public class ErlModule extends Openable implements IErlModule {
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
-        ErlangCore.getModelMap().removeModule(this);
+        ErlangCore.getModuleMap().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {

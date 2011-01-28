@@ -71,7 +71,7 @@ public final class ErlangCore {
         return getModelManager().getErlangModel();
     }
 
-    public static final IErlModuleMap getModelMap() {
+    public static final IErlModuleMap getModuleMap() {
         return ErlModuleMap.getDefault();
     }
 
