@@ -48,9 +48,10 @@ public class CodeBundle {
     public Collection<String> getEbinDirs() {
         final List<String> result = Lists.newArrayList();
         for (final Tuple<String, CodeContext> path : paths) {
-            final String myPath = ErlideUtil.getPath(path.o1, bundle);
+            final Collection<String> myPath = ErlideUtil.getPaths(path.o1,
+                    bundle);
             if (myPath != null) {
-                result.add(myPath);
+                result.addAll(myPath);
             } else {
                 ErlLogger.warn("Can't access path %s, "
                         + "erlide plugins may be incorrectly built", path.o1);

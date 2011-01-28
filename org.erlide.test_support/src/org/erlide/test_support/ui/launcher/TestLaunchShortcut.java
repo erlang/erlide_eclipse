@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -30,6 +31,8 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.test_support.ui.suites.ResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {
 
@@ -49,8 +52,15 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         final ILaunchConfiguration launchConfig = getLaunchConfiguration(target);
         try {
             if (launchConfig != null) {
-                launchConfig.launch(mode, Job.getJobManager()
-                        .createProgressGroup(), false, true);
+                final ILaunch launch = launchConfig.launch(mode, Job
+                        .getJobManager().createProgressGroup(), false, true);
+                final ErlideBackend backend = ErlangCore.getBackendManager()
+                        .getBackendForLaunch(launch);
+                // TODO locate results view
+                final ResultsView view = null;
+                if (view != null) {
+                    backend.getEventDaemon().addHandler(view.getEventHandler());
+                }
             }
         } catch (final CoreException e) {
             e.printStackTrace();

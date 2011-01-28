@@ -3,6 +3,7 @@
 	<name>org.erlide.test_support</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.kernel.common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

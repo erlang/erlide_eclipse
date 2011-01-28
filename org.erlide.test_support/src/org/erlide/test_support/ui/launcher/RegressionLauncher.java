@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -22,13 +21,28 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test_support.popup.actions.OpenResultsJob;
 
 public class RegressionLauncher {
-    static final String watcherThreadName = "bterl regression watcher";
+    private static RegressionLauncher instance;
 
-    static public void doLaunchRegression(final String dir,
-            final IProgressMonitor monitor) {
+    final String watcherThreadName = "bterl regression watcher";
+
+    private volatile Thread watcherThread = null;
+    private final Object watcherLock = new Object();
+
+    public static RegressionLauncher getInstance() {
+        if (instance == null) {
+            instance = new RegressionLauncher();
+        }
+        return instance;
+    }
+
+    private RegressionLauncher() {
+    }
+
+    public void launch(final String dir, final IProgressMonitor monitor) {
         // TODO queue requests for different directories? we need a manager...
         if (isAlreadyRunning()) {
-            // TODO any feedback to user?
+            // TODO feedback to user!
+            System.out.println("!!!!!!!!!!!! regression already running");
             return;
         }
         try {
@@ -44,15 +58,18 @@ public class RegressionLauncher {
             final BufferedReader is = new BufferedReader(new InputStreamReader(
                     in));
 
-            Thread thread = new Thread(new ListenerRunnable(is, monitor));
+            final Thread thread = new Thread(new ListenerRunnable(is, monitor));
             thread.setDaemon(true);
             thread.setName("bterl regression listener");
             thread.start();
 
-            thread = new Thread(new WatcherRunnable(container, cmake));
-            thread.setDaemon(true);
-            thread.setName(watcherThreadName);
-            thread.start();
+            synchronized (watcherLock) {
+                watcherThread = new Thread(
+                        new WatcherRunnable(container, cmake));
+                watcherThread.setDaemon(true);
+                watcherThread.setName(watcherThreadName);
+                watcherThread.start();
+            }
         } catch (final CoreException e) {
             // there is no make_links
             System.out.println("error running regression tests: "
@@ -64,22 +81,11 @@ public class RegressionLauncher {
         }
     }
 
-    private static boolean isAlreadyRunning() {
-        int n = ManagementFactory.getThreadMXBean().getThreadCount();
-        Thread[] tarray = new Thread[n];
-        System.out.println(n);
-        n = Thread.enumerate(tarray);
-        System.out.println(n);
-        for (int i = 0; i < n; i++) {
-            if (watcherThreadName.equals(tarray[i].getName())) {
-                return true;
-            }
-        }
-        tarray = null;
-        return false;
+    private boolean isAlreadyRunning() {
+        return watcherThread != null;
     }
 
-    private static final class WatcherRunnable implements Runnable {
+    private final class WatcherRunnable implements Runnable {
         private final IContainer container;
         private final Process cmake;
 
@@ -106,6 +112,9 @@ public class RegressionLauncher {
                 final OpenResultsJob job = new OpenResultsJob(
                         "bterl.regression.report", log, null);
                 job.schedule();
+                synchronized (watcherLock) {
+                    watcherThread = null;
+                }
             } catch (final CoreException e) {
                 // ignore
                 e.printStackTrace();

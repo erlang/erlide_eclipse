@@ -143,9 +143,16 @@
 <extension
       point="org.eclipse.ui.views">
    <category
-         id="shade.views"
-         name="Shade ">
+         id="erlide.test.views"
+         name="Erlide tests">
    </category>
+   <view
+         category="erlide.test.views"
+         class="org.erlide.test_support.ui.suites.ResultsView"
+         id="org.erlide.test_support.views.testresults"
+         name="Test results"
+         restorable="true">
+   </view>
 </extension>
 <extension
       id="builder"

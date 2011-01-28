@@ -52,8 +52,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class TestLaunchDelegate extends
-        ErlangLaunchDelegate {
+public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
     private String testcase;
     private String suite;
@@ -75,7 +74,7 @@ public class TestLaunchDelegate extends
 
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
-            RegressionLauncher.doLaunchRegression(wdir, monitor);
+            RegressionLauncher.getInstance().launch(wdir, monitor);
         } else {
             doLaunch(cfg, launch, monitor);
         }
@@ -236,12 +235,7 @@ public class TestLaunchDelegate extends
         final List<String> paths = Lists.newArrayList();
         final String workdirPath = getOSIndependentPath(workdir);
         paths.add(workdirPath);
-        if (vobBterl) {
-            System.out.println("will use bt_erl from vob");
-            paths.add("/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool");
-        }
-        // TODO add bt_info path
-        // paths.add(bterlPath);
+        paths.add(bterlPath);
 
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimeName);
         // FIXME: unique node name!

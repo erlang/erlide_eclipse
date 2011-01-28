@@ -9,9 +9,11 @@
          start_failed/1,
          tc_result/1,
          tc_fail/1,
-         log_started/1
+         log_started/1,
+         done/1
         ]).
 
+-include("erlide.hrl").
 
 start() ->
 	spawn(fun() ->
@@ -44,8 +46,8 @@ wait_start() ->
 start_bterl(Str) ->
     erlide_log:log({start_bterl, Str}),
     {ok, {Flags, Cmd, Trace, Cb, Dir}=X} = erlide_backend:parse_term(Str++"."),
-    erlide_log:log({start_bterl, X}),
-%%     Pids = case bt_run:has_flag($t, Flags) of
+    ?Info({start_bterl, X}),
+%%     Pids = case bt_run:has_flag($t, Flags) of 
 %%         true ->
 %%             Spec = [],
 %%             TracePid = bt_run:start_trace(Dir, Spec),
@@ -54,9 +56,13 @@ start_bterl(Str) ->
 %%             []
 %%     end,
     Pids = [],
-    %bt_run:run(Flags, Cmd, Pids, ?MODULE),
-      
-    
+	case catch bt_run:run(Flags, Cmd, Pids, ?MODULE) of
+		{'EXIT', Reason} ->
+			?Info({"Could not start bterl", Reason});
+		_ ->
+			ok
+	end,
+
     %% sent 'finished' event to caller
     ok.
 
@@ -66,32 +72,43 @@ init_debugger() ->
     erlide_jrpc:event(bterl_debugger, self()),
     receive
         ok ->
-            erlide_log:log("Debugger initialized!"),
+            ?Info("Debugger initialized!"),
             ok
     after 30000 ->
-            erlide_log:log(warning, "Debugger initialization failed..."),
+            ?Info("Debugger initialization failed..."),
             nok
     end.
 
 
+%% Event callbacks
+
 init(Args) ->
-    
     os:cmd("touch /home/qvladum/zzz"),
-    erlide_log:log(Args),
+    notify({tc_init, Args}),
     ok.
 
 start_failed(Reason) ->
-    erlide_log:log(Reason),
+    notify({start_failed, Reason}),
     ok.
 
 tc_result(Result) ->
-    erlide_log:log({result, Result}),
+    notify({result, Result}),
     ok.
 
 tc_fail(Result) ->
-    erlide_log:log({fail, Result}),
+    notify({fail, Result}),
     ok.
 
 log_started(Arg) ->
-    erlide_log:log(Arg),
+    notify({log_started, Arg}),
     ok.
+
+done(Arg) ->
+    notify({done, Arg}),
+    ok.
+
+%%
+
+notify(Event) ->
+    erlide_jrpc:event(bterl, Event).
+
