@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.eclipse.core.internal.runtime.Activator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -59,6 +60,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public final class ErlideUtil {
 
@@ -198,25 +200,49 @@ public final class ErlideUtil {
     }
 
     @SuppressWarnings("restriction")
-    public static String getPath(final String name, final Bundle b) {
-        final URL entry = b.getEntry(name.replace(" ", "%20"));
+    public static Collection<String> getPaths(final String name, final Bundle b) {
+        final List<String> result = Lists.newArrayList();
+        final String entryName = name.replace(" ", "%20");
+        URL entry = b.getEntry(entryName);
         if (entry != null) {
-            URLConnection connection;
-            try {
-                connection = entry.openConnection();
-                if (connection instanceof BundleURLConnection) {
-                    final URL fileURL = ((BundleURLConnection) connection)
-                            .getFileURL();
-                    final URI uri = new URI(fileURL.toString().replace(" ",
-                            "%20"));
-                    final String path = new File(uri).getAbsolutePath();
-                    return path;
-                }
-            } catch (final IOException e) {
-                ErlLogger.warn(e.getMessage());
-            } catch (final URISyntaxException e) {
-                ErlLogger.warn(e.getMessage());
+            final String aPath = getPathFromUrl(entry);
+            if (aPath != null) {
+                result.add(aPath);
             }
+        }
+
+        final Activator activator = Activator.getDefault();
+        if (activator != null) {
+            final Bundle[] fragments = activator.getFragments(b);
+            if (fragments != null) {
+                for (int i = 0; i < fragments.length; i++) {
+                    entry = fragments[i].getEntry(entryName);
+                    if (entry != null) {
+                        final String aPath = getPathFromUrl(entry);
+                        result.add(aPath);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @SuppressWarnings("restriction")
+    private static String getPathFromUrl(final URL entry) {
+        URLConnection connection;
+        try {
+            connection = entry.openConnection();
+            if (connection instanceof BundleURLConnection) {
+                final URL fileURL = ((BundleURLConnection) connection)
+                        .getFileURL();
+                final URI uri = new URI(fileURL.toString().replace(" ", "%20"));
+                final String path = new File(uri).getAbsolutePath();
+                return path;
+            }
+        } catch (final IOException e) {
+            ErlLogger.warn(e.getMessage());
+        } catch (final URISyntaxException e) {
+            ErlLogger.warn(e.getMessage());
         }
         return null;
     }
