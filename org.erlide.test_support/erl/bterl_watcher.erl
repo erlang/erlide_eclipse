@@ -83,7 +83,7 @@ init_debugger() ->
 %% Event callbacks
 
 init(Args) ->
-    os:cmd("touch /home/qvladum/zzz"),
+    %os:cmd("touch /home/qvladum/zzz"),
     notify({tc_init, Args}),
     ok.
 
