@@ -15,6 +15,10 @@ public class ResultsView extends ViewPart {
         eventHandler = new TestEventHandler(this);
     }
 
+    public TestEventHandler getEventHandler() {
+        return eventHandler;
+    }
+
     @Override
     public void createPartControl(final Composite parent) {
         control = new Composite(parent, SWT.NONE);

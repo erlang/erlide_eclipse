@@ -551,4 +551,9 @@ public final class BackendManager extends OtpNodeStatus implements
             final String moduleName) {
         notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
     }
+
+    public ErlideBackend getBackendForLaunch(final ILaunch launch) {
+        // FIXME implement
+        return null;
+    }
 }
