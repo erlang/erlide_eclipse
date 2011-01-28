@@ -235,12 +235,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final List<String> paths = Lists.newArrayList();
         final String workdirPath = getOSIndependentPath(workdir);
         paths.add(workdirPath);
-        if (vobBterl) {
-            System.out.println("will use bt_erl from vob");
-            paths.add("/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool");
-        }
-        // TODO add bt_info path
-        // paths.add(bterlPath);
+        paths.add(bterlPath);
 
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimeName);
         // FIXME: unique node name!
