@@ -7,15 +7,20 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlPreprocessorDef;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.util.ModelUtils;
@@ -106,8 +111,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final OtpErlangAtom a = (OtpErlangAtom) h;
                 final ErlangDebugTarget target = getErlangDebugTarget();
                 final IErlPreprocessorDef pd = ModelUtils.findPreprocessorDef(
-                        target.getProjects(), moduleName, a.atomValue(),
-                        IErlElement.Kind.RECORD_DEF, "");
+                        getErlProjects(target.getProjects()), moduleName,
+                        a.atomValue(), IErlElement.Kind.RECORD_DEF, "");
                 if (pd instanceof IErlRecordDef) {
                     final IErlRecordDef r = (IErlRecordDef) pd;
                     if (r.hasChildren() && r.getChildCount() + 1 == t.arity()) {
@@ -117,6 +122,21 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             }
         }
         return null;
+    }
+
+    private Collection<IErlProject> getErlProjects(
+            final Collection<IProject> projects) {
+        final List<IErlProject> result = Lists
+                .newArrayListWithCapacity(projects.size());
+        final IErlModel model = ErlangCore.getModel();
+        for (final IProject project : projects) {
+            final IErlElement element = model.getChildWithResource(project);
+            if (element instanceof IErlProject) {
+                final IErlProject erlProject = (IErlProject) element;
+                result.add(erlProject);
+            }
+        }
+        return result;
     }
 
     @Override

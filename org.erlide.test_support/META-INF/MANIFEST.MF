@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test frameworks support plug-in
+Bundle-SymbolicName: org.erlide.test_support;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.erlide.test_support.Activator
+Bundle-Vendor: erlide.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ org.eclipse.core.expressions,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.console,
+ org.eclipse.jface.text,
+ org.erlide.kernel.builder,
+ org.erlide.kernel.common,
+ org.erlide.kernel.debugger,
+ org.erlide.kernel.ide,
+ org.erlide.libs,
+ org.erlide.core;bundle-version="0.9.5",
+ org.erlide.jinterface,
+ org.erlide.ui,
+ org.eclipse.ui.browser,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui.editors
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Export-Package: org.erlide.test_support,
+ org.erlide.test_support.popup.actions,
+ org.erlide.test_support.ui,
+ org.erlide.test_support.ui.launcher,
+ org.erlide.test_support.ui.suites
+Bundle-ClassPath: .
+

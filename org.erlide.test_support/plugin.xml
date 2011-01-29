@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.test_support.ui.launcher.TestLaunchDelegate"
+            id="org.erlide.test_support.launchConfigurationType"
+            modes="run,debug"
+            name="BTerl test"
+            public="false"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+<extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="org.erlide.test_support.ui.launcher.TestLaunchShortcutRegression"
+          description="run the BTerl regression tests for this project"
+          id="org.erlide.test_support.regression"
+          label="Test regression"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canRegression"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.test_support.ui.launcher.TestLaunchShortcutRun"
+          description="run the BTerl tests"
+          id="org.erlide.test_support.run"
+          label="BTerl test"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canRun"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.test_support.ui.launcher.TestLaunchShortcutCover"
+          description="run the BTerl tests with cover information"
+          id="org.erlide.test_support.cover"
+          label="BTerl test with cover"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canCover"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.test_support.ui.launcher.TestLaunchShortcutTrace"
+          description="run the BTerl tests with trace enabled"
+          id="org.erlide.test_support.trace"
+          label="BTerl test with trace"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canTrace"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.test_support.ui.launcher.TestLaunchShortcutRun"
+          description="run the BTerl tests"
+          id="org.erlide.test_support.debug"
+          label="BTerl test"
+          modes="debug">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canDebug"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+</extension>
+<extension
+      point="org.eclipse.core.expressions.propertyTesters">
+   <propertyTester
+         class="org.erlide.test_support.ui.TestRunnableTester"
+         id="org.erlide.test_support.ui.bterlRunnable"
+         namespace="org.erlide.test_support.ui.run"
+         properties="canRun,canRegression,canCover,canTrace,canDebug"
+         type="java.lang.Object">
+   </propertyTester>
+</extension>
+<extension
+      point="org.eclipse.ui.views">
+   <category
+         id="erlide.test.views"
+         name="Erlide tests">
+   </category>
+   <view
+         category="erlide.test.views"
+         class="org.erlide.test_support.ui.suites.ResultsView"
+         id="org.erlide.test_support.views.testresults"
+         name="Test results"
+         restorable="true">
+   </view>
+</extension>
+<extension
+      id="builder"
+      name="Test code builder"
+      point="org.eclipse.core.resources.builders">
+   <builder
+         hasNature="true">
+      <run
+            class="org.erlide.test_support.builder.TestCodeBuilder">
+      </run>
+   </builder>
+</extension>
+<extension
+      id="nature"
+      name="Erlang Test Project Nature"
+      point="org.eclipse.core.resources.natures">
+   <runtime>
+      <run
+            class="org.erlide.test_support.builder.ErlTestNature">
+      </run>
+   </runtime>
+   <builder
+         id="org.erlide.test_support.builder">
+   </builder>
+   <requires-nature
+         id="org.erlide.core.erlnature">
+   </requires-nature>
+</extension>
+<extension
+      id="bterlProblem"
+      name="bt_erl problem"
+      point="org.eclipse.core.resources.markers">
+   <super
+         type="org.eclipse.core.resources.problemmarker">
+   </super>
+   <persistent
+         value="true">
+   </persistent>
+</extension>
+<extension
+      point="org.erlide.core.sourcePathProvider">
+   <sourcePathProvider
+         class="org.erlide.test_support.TestSourcePathProvider">
+   </sourcePathProvider>
+</extension>
+<extension
+      point="org.eclipse.core.runtime.adapters">
+   <factory
+         adaptableType="org.erlide.core.erlang.IErlFunction"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+   <factory
+         adaptableType="org.erlide.core.erlang.IErlFunctionClause"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+   <factory
+         adaptableType="org.erlide.core.erlang.IErlModule"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+</extension>
+<extension
+      point="org.eclipse.ui.editors">
+   <editor
+         class="shade.bterl.browser.BterlWebBrowserEditor"
+         contributorClass="org.eclipse.ui.internal.browser.WebBrowserEditorActionBarContributor"
+         id="org.erlide.test_support.browser"
+         name="Bterl Web Browser">
+   </editor>
+</extension>
+<extension
+      point="org.eclipse.core.contenttype.contentTypes">
+   <content-type
+         base-type="org.eclipse.core.runtime.text"
+         file-names="tr.txt"
+         id="org.erlide.test_support.trace_file"
+         name="Bterl trace file"
+         priority="normal">
+   </content-type>
+</extension>
+<extension
+      point="org.eclipse.ui.editors">
+   <editor
+         class="org.erlide.test_support.ui.trace.TraceEditor"
+         default="false"
+         id="org.erlide.test_support.editor.trace_file"
+         name="Trace file editor"
+         symbolicFontName="org.eclipse.jface.textfont">
+      <contentTypeBinding
+            contentTypeId="org.erlide.test_support.trace_file">
+      </contentTypeBinding>
+   </editor>
+</extension>
+<extension
+      point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+   <hyperlinkDetector
+         activate="true"
+         class="org.erlide.test_support.ui.trace.HyperlinkDetector"
+         id="org.erlide.test_support.erlang.hyperlinkDetector"
+         name="trace hyperlink detector"
+         targetId="org.erlide.test_support.trace.target">
+   </hyperlinkDetector>
+</extension>
+<extension
+      point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+   <target
+         description="trace target"
+         id="org.erlide.test_support.trace.target"
+         name="Trace editor">
+      <context
+            type="org.erlide.test_support.ui.trace.TraceEditor">
+      </context>
+   </target>
+</extension>
+<extension
+      point="org.eclipse.ui.editors.annotationTypes">
+   <type
+         name="org.erlide.test_support.trace.call">
+   </type>
+</extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.test_support.trace.call"
+            label="Trace file occurences"
+            icon=""
+            textPreferenceKey="occurrenceIndication"
+            textPreferenceValue="false"
+            highlightPreferenceKey="occurrenceHighlighting"
+            highlightPreferenceValue="true"
+            contributesToHeader="false"
+            overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false"
+            colorPreferenceKey="occurrenceIndicationColor"
+            colorPreferenceValue="212,212,212"
+            presentationLayer="4"
+            showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
+            isGoToNextNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
+            isGoToPreviousNavigationTarget="false"
+            textStylePreferenceKey="occurrenceTextStyle"
+            textStylePreferenceValue="NONE">
+      </specification>
+</extension>
+   <!--extension
+         point="org.eclipse.ui.browserSupport">
+      <support
+            class="org.erlide.test_support.ui.browser.TestBrowserSupport"
+            default="false">
+      </support>
+   </extension-->
+   <extension
+         point="org.erlide.core.codepath">
+      <beam_dir
+            context="any"
+            path="ebin">
+      </beam_dir>
+   </extension>
+</plugin>

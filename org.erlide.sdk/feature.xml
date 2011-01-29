@@ -76,4 +76,12 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          install-size="0"
          version="0.0.0"/>
 
+   <plugin
+         id="org.erlide.test_support.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
 </feature>

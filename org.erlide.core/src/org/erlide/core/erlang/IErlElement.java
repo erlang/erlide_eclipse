@@ -224,8 +224,8 @@ public interface IErlElement extends IAdaptable {
 
     void resourceChanged();
 
-    static final int VISIT_REFERENCED = 0x0001;
-    static final int VISIT_EXTERNALS = 0x0002;
+    // static final int VISIT_REFERENCED = 0x0001;
+    // static final int VISIT_EXTERNALS = 0x0002;
     static final int VISIT_LEAFS_ONLY = 0x0004;
 
     /**
