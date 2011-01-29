@@ -343,10 +343,10 @@ public class CompilerPreferencePage extends PropertyPage implements
 
     }
 
-    private Link createLink(final Composite composite, final String text) {
+    private Link createLink(final Composite composite, final String theText) {
         final Link link = new Link(composite, SWT.NONE);
         link.setFont(composite.getFont());
-        link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
+        link.setText("<A>" + theText + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
         link.addSelectionListener(new SelectionListener() {
             public void widgetSelected(final SelectionEvent e) {
                 doLinkActivated((Link) e.widget);
@@ -407,30 +407,30 @@ public class CompilerPreferencePage extends PropertyPage implements
         return "org.erlide.ui.properties.compilerPreferencePage";
     }
 
-    private void newCheckButtonInvertedOption(final String text,
+    private void newCheckButtonInvertedOption(final String theText,
             final String toolTipText, final String optionKey) {
-        newCheckButtonWithInvertOption(text, toolTipText, optionKey, true);
+        newCheckButtonWithInvertOption(theText, toolTipText, optionKey, true);
     }
 
-    private void newCheckButton(final String text, final String toolTipText,
+    private void newCheckButton(final String theText, final String toolTipText,
             final String optionKey) {
-        newCheckButtonWithInvertOption(text, toolTipText, optionKey, false);
+        newCheckButtonWithInvertOption(theText, toolTipText, optionKey, false);
     }
 
-    private void newCheckButtonWithInvertOption(final String text,
+    private void newCheckButtonWithInvertOption(final String theText,
             final String toolTipText, final String optionKey,
             final boolean inverted) {
         final Button b = new Button(curGroup, SWT.CHECK);
-        b.setText(text);
+        b.setText(theText);
         b.setToolTipText(toolTipText);
         b.setSelection(prefs.getBooleanOption(optionKey) == !inverted);
         b.setData(optionKey);
         b.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final Button b = (Button) e.widget;
-                prefs.setBooleanOption((String) b.getData(),
-                        b.getSelection() == !inverted);
+                final Button button = (Button) e.widget;
+                prefs.setBooleanOption((String) button.getData(),
+                        button.getSelection() == !inverted);
             }
         });
     }

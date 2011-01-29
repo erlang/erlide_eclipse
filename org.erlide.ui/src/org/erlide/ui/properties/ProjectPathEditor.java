@@ -76,11 +76,11 @@ public class ProjectPathEditor extends PathEditor {
         dialog.setTitle(dirChooserLabelText);
 
         final ISelectionStatusValidator validator = new ISelectionStatusValidator() {
-            ISelectionStatusValidator validator = new TypedElementSelectionValidator(
+            ISelectionStatusValidator myValidator = new TypedElementSelectionValidator(
                     acceptedClasses, false);
 
             public IStatus validate(final Object[] selection) {
-                final IStatus typedStatus = validator.validate(selection);
+                final IStatus typedStatus = myValidator.validate(selection);
                 if (!typedStatus.isOK()) {
                     return typedStatus;
                 }

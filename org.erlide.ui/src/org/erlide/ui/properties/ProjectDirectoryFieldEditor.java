@@ -88,11 +88,11 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
         dialog.setTitle("Choose folder");
 
         final ISelectionStatusValidator validator = new ISelectionStatusValidator() {
-            ISelectionStatusValidator validator = new TypedElementSelectionValidator(
+            ISelectionStatusValidator myValidator = new TypedElementSelectionValidator(
                     acceptedClasses, false);
 
             public IStatus validate(final Object[] selection) {
-                final IStatus typedStatus = validator.validate(selection);
+                final IStatus typedStatus = myValidator.validate(selection);
                 if (!typedStatus.isOK()) {
                     return typedStatus;
                 }

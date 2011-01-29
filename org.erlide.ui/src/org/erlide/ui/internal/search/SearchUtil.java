@@ -177,14 +177,14 @@ public class SearchUtil {
         for (final IErlElement external : externals) {
             external.accept(new IErlElementVisitor() {
 
-                public boolean visit(final IErlElement element)
+                public boolean visit(final IErlElement theElement)
                         throws ErlModelException {
-                    if (element instanceof IErlExternal) {
-                        final IErlExternal external = (IErlExternal) element;
-                        external.open(null);
+                    if (theElement instanceof IErlExternal) {
+                        final IErlExternal theExternal = (IErlExternal) theElement;
+                        theExternal.open(null);
                     }
-                    if (element instanceof IErlModule) {
-                        final IErlModule module = (IErlModule) element;
+                    if (theElement instanceof IErlModule) {
+                        final IErlModule module = (IErlModule) theElement;
                         if (externalModulePaths.add(module.getFilePath())) {
                             result.addModule(module);
                         }

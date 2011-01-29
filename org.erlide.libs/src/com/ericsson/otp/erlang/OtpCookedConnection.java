@@ -56,6 +56,7 @@ import java.net.Socket;
  * mechanism.
  * </p>
  */
+@SuppressWarnings("hiding")
 public class OtpCookedConnection extends AbstractConnection {
     protected OtpNode self;
 

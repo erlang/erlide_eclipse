@@ -233,7 +233,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                     final OtpErlangAtom akey = (OtpErlangAtom) tuple
                             .elementAt(0);
                     final String key = akey.atomValue();
-                    final OtpErlangObject value = tuple.elementAt(1);
+                    // final OtpErlangObject value = tuple.elementAt(1);
 
                     if ("compile".equals(key)) {
                         // value = {ok, Messages, Files} | {error, Messages}

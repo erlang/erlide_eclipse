@@ -29,6 +29,7 @@ import java.math.BigDecimal;
  * Note that this class is not synchronized, if you need synchronization you
  * must provide it yourself.
  */
+@SuppressWarnings("hiding")
 public class OtpInputStream extends ByteArrayInputStream {
 
     public static int DECODE_INT_LISTS_AS_STRINGS = 1;

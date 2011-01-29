@@ -66,13 +66,13 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     }
 
     private int countMatches(final Object element, final Match[] matches) {
-        int result = 0;
+        int theResult = 0;
         for (final Match match : matches) {
             if (match.getElement().equals(element)) {
-                result++;
+                theResult++;
             }
         }
-        return result;
+        return theResult;
     }
 
     @Override

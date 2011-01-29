@@ -49,9 +49,9 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         list = checkList(value);
     }
 
-    private OtpErlangList checkList(final OtpErlangObject value) {
-        if (value instanceof OtpErlangString) {
-            final OtpErlangString os = (OtpErlangString) value;
+    private OtpErlangList checkList(final OtpErlangObject theValue) {
+        if (theValue instanceof OtpErlangString) {
+            final OtpErlangString os = (OtpErlangString) theValue;
             final String s = os.stringValue();
             try {
                 final byte[] b = s.getBytes("ISO-8859-1");

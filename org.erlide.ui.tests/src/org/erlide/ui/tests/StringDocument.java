@@ -80,9 +80,9 @@ public class StringDocument implements IDocument {
      * 
      * @see org.eclipse.jface.text.IDocument#replace(int, int, java.lang.String)
      */
-    public void replace(final int offset, final int length, final String text) {
-        this.text = this.text.substring(0, offset) + text
-                + this.text.substring(offset + length);
+    public void replace(final int offset, final int length, final String theText) {
+        this.text = text.substring(0, offset) + theText
+                + text.substring(offset + length);
     }
 
     /*
@@ -454,7 +454,7 @@ public class StringDocument implements IDocument {
      * @see
      * org.eclipse.jface.text.IDocument#computeNumberOfLines(java.lang.String)
      */
-    public int computeNumberOfLines(final String text) {
+    public int computeNumberOfLines(final String theText) {
         // defining interface method
         return 0;
     }

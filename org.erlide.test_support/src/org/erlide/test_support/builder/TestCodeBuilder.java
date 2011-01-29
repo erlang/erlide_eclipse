@@ -72,6 +72,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
      * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
      * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
+    @SuppressWarnings("rawtypes")
     @Override
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {

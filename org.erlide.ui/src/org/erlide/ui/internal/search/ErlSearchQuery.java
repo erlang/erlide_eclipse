@@ -50,8 +50,8 @@ public class ErlSearchQuery implements ISearchQuery {
         addToModuleMap(externalScope);
     }
 
-    private void addToModuleMap(final ErlSearchScope scope) {
-        for (final IErlModule module : scope.getModules()) {
+    private void addToModuleMap(final ErlSearchScope theScope) {
+        for (final IErlModule module : theScope.getModules()) {
             final String path = module.getFilePath();
             if (path != null) {
                 pathToModuleMap.put(path, module);

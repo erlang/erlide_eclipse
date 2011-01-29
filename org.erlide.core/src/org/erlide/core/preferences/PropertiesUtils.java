@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.erlide.core.preferences;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
@@ -49,19 +46,20 @@ public final class PropertiesUtils {
         // .packList(old.getIncludeDirs())));
         // result = result.setOutput(old.getOutputDir());
 
-        final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
-                .getPathVariableManager();
+        // final IPathVariableManager pvman = ResourcesPlugin.getWorkspace()
+        // .getPathVariableManager();
 
-        final String exmodf = old.getExternalModulesFile();
-        URI ff = pvman.resolveURI(new URI(exmodf));
-        final List<String> externalModules = PreferencesUtils.readFile(ff
-                .toString());
-        final List<PathEntry> sloc = makeSourceLocations(externalModules);
+        // final String exmodf = old.getExternalModulesFile();
+        // URI ff = pvman.resolveURI(new URI(exmodf));
+        // final List<String> externalModules = PreferencesUtils.readFile(ff
+        // .toString());
+        // final List<PathEntry> sloc = makeSourceLocations(externalModules);
 
-        final String exincf = old.getExternalModulesFile();
-        ff = pvman.resolveURI(new URI(exincf));
+        // final String exincf = old.getExternalModulesFile();
+        // ff = pvman.resolveURI(new URI(exincf));
         // List<String> exinc = PreferencesUtils.readFile(ff.toString());
-        final List<IPath> externalIncludes = null;// PreferencesUtils.unpackList(exinc);
+        // final List<IPath> externalIncludes = null;//
+        // PreferencesUtils.unpackList(exinc);
 
         // final PathEntry loc = new PathEntry(sloc, externalIncludes, null,
         // null);

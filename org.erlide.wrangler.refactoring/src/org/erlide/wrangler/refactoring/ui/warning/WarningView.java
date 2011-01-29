@@ -92,7 +92,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
 	class NameSorter extends ViewerSorter {
 		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
+		public int compare(Viewer theViewer, Object e1, Object e2) {
 			WarningMessage w1 = (WarningMessage) e1;
 			WarningMessage w2 = (WarningMessage) e2;
 			return -1 * w1.getTimestamp().compareTo(w2.getTimestamp());

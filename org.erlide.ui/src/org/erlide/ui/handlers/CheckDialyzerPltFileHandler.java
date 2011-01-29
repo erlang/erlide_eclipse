@@ -98,9 +98,9 @@ public class CheckDialyzerPltFileHandler extends AbstractHandler implements
         }
     }
 
-    public ISchedulingRule createRule(final Set<IProject> projects) {
+    public ISchedulingRule createRule(final Set<IProject> theProjects) {
         ISchedulingRule combinedRule = null;
-        for (final IProject project : projects) {
+        for (final IProject project : theProjects) {
             combinedRule = MultiRule.combine(project, combinedRule);
         }
         return combinedRule;

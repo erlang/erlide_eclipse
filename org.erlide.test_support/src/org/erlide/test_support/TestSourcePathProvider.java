@@ -66,22 +66,22 @@ public class TestSourcePathProvider implements SourcePathProvider,
         // System.out.println("@@ >> BterlSrcPathProvider: resources updated...");
         try {
             delta.accept(new IResourceDeltaVisitor() {
-                public boolean visit(final IResourceDelta delta)
+                public boolean visit(final IResourceDelta theDelta)
                         throws CoreException {
-                    final IResource resource = delta.getResource();
+                    final IResource resource = theDelta.getResource();
                     final IContainer parent = resource.getParent();
                     if (parent == null) {
                         return true;
                     }
                     // TODO isintestpath is slow...
                     final IPath parentLocation = parent.getLocation();
-                    if (delta.getKind() == IResourceDelta.ADDED
+                    if (theDelta.getKind() == IResourceDelta.ADDED
                             && !paths.contains(parentLocation)
                             && isTestDir(parent)) {
                         paths.add(parentLocation);
 
                     }
-                    if (delta.getKind() == IResourceDelta.REMOVED
+                    if (theDelta.getKind() == IResourceDelta.REMOVED
                             && paths.contains(parentLocation)) {
                         paths.remove(parentLocation);
                     }

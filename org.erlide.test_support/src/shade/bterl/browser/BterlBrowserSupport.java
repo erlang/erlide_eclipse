@@ -13,6 +13,7 @@ package shade.bterl.browser;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.internal.browser.DefaultWorkbenchBrowserSupport;
 
+@SuppressWarnings("restriction")
 public class BterlBrowserSupport extends DefaultWorkbenchBrowserSupport {
 
     @Override

@@ -175,11 +175,11 @@ public class BackendShell {
         }
     }
 
-    public IoRequest findAtPos(final int pos) {
+    public IoRequest findAtPos(final int thePos) {
         synchronized (requests) {
             for (final IoRequest req : requests) {
-                if (req.getStart() <= pos
-                        && req.getStart() + req.getLength() > pos) {
+                if (req.getStart() <= thePos
+                        && req.getStart() + req.getLength() > thePos) {
                     return req;
                 }
             }
