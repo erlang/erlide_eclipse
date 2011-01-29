@@ -446,22 +446,23 @@ public class ModelUtils {
             BackendException {
         final List<IErlModule> includedFilesForModule = ErlangCore
                 .getModuleMap().getIncludedFilesForModule(module);
-        if (includedFilesForModule != null) {
+        if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
         final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includes = module
                 .getIncludedFiles();
         final IResource resource = module.getResource();
-        final IErlProject project = module.getProject();
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project
-                .getProject());
+        final IErlProject erlProject = module.getProject();
+        final IProject project = erlProject == null ? null : erlProject
+                .getProject();
+        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
         for (final ErlangIncludeFile element : includes) {
             IResource re = null;
             if (resource != null) {
                 re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(project
-                                .getProject(), element.getFilenameLastPart(),
+                        .recursiveFindNamedModuleResourceWithReferences(
+                                project, element.getFilenameLastPart(),
                                 PluginUtils
                                         .getIncludePathFilterCreator(resource
                                                 .getParent()));
@@ -470,7 +471,7 @@ public class ModelUtils {
             if (re instanceof IFile) {
                 includeModule = getModule((IFile) re);
             } else {
-                includeModule = getExternalInclude(backend, project,
+                includeModule = getExternalInclude(backend, erlProject,
                         externalIncludes, element);
             }
             if (includeModule != null && !checked.contains(includeModule)) {
@@ -764,8 +765,9 @@ public class ModelUtils {
     public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
-    public static List<IErlModule> getModulesWithReferencedProjects(
-            final IErlProject project) throws CoreException {
+    public static List<IErlModule> getModulesWithReferencedProjectsWithPrefix(
+            final IErlProject project, final String prefix)
+            throws CoreException {
         final IErlModel model = ErlangCore.getModel();
         final List<IErlModule> result = new ArrayList<IErlModule>();
         if (project == null) {
@@ -777,7 +779,12 @@ public class ModelUtils {
             final IErlProject ep = model.findProject(p);
             if (ep != null) {
                 ep.open(null);
-                result.addAll(ep.getModules());
+                final Collection<IErlModule> modules = ep.getModules();
+                for (final IErlModule module : modules) {
+                    if (module.getModuleName().startsWith(prefix)) {
+                        result.addAll(modules);
+                    }
+                }
             }
         }
         return result;

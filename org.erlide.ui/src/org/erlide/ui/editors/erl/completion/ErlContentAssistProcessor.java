@@ -351,7 +351,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final IErlProject erlProject = module.getProject();
             try {
                 final List<IErlModule> modules = ModelUtils
-                        .getModulesWithReferencedProjects(erlProject);
+                        .getModulesWithReferencedProjectsWithPrefix(erlProject,
+                                prefix);
                 for (final IErlModule m : modules) {
                     if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
                         final String name = m.getModuleName();
@@ -363,8 +364,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             } catch (final CoreException e) {
             }
             // add external modules
-            final List<String> mods = ModelUtils.getExternalModulesWithPrefix(b, prefix,
-                    erlProject);
+            final List<String> mods = ModelUtils.getExternalModulesWithPrefix(
+                    b, prefix, erlProject);
             for (final String m : mods) {
                 final String name = ErlideUtil.basenameWithoutExtension(m);
                 if (!allErlangFiles.contains(name)) {
@@ -504,7 +505,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             boolean foundInModel = false;
             // first check in project, refs and external modules
             final List<IErlModule> modules = ModelUtils
-                    .getModulesWithReferencedProjects(project);
+                    .getModulesWithReferencedProjectsWithPrefix(project, prefix);
             for (final IErlModule m : modules) {
                 if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
                         moduleName)) {

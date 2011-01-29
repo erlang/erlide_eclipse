@@ -12,6 +12,7 @@ import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.util.LRUCache;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -77,11 +78,11 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
     }
 
     public Set<IErlModule> getModulesByName(final String moduleName) {
-        Set<IErlModule> modules = nameToModuleMap.get(moduleName);
+        final Set<IErlModule> modules = nameToModuleMap.get(moduleName);
         if (modules == null) {
-            modules = Sets.newHashSet();
+            return Sets.newHashSet();
         }
-        return modules;
+        return Sets.newHashSet(modules);
     }
 
     public void put(final String path, final IErlModule module) {
@@ -107,11 +108,15 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     public void setIncludedFilesForModule(final IErlModule module,
             final List<IErlModule> result) {
-        moduleIncludeMap.put(module, result);
+        moduleIncludeMap.put(module, Lists.newArrayList(result));
     }
 
     public List<IErlModule> getIncludedFilesForModule(final IErlModule module) {
-        return moduleIncludeMap.get(module);
+        final List<IErlModule> modules = moduleIncludeMap.get(module);
+        if (modules == null) {
+            return Lists.newArrayList();
+        }
+        return Lists.newArrayList(modules);
     }
 
     public void dispose() {
