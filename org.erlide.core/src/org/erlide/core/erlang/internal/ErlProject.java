@@ -154,6 +154,9 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addExternals(final List<IErlElement> children) {
+        if (ModelUtils.isExternalFilesProject(getProject())) {
+            return;
+        }
         final IErlModel model = ErlangCore.getModel();
         final String externalIncludes = model.getExternalIncludes(this);
         final String externalModules = model.getExternalModules(this);

@@ -3,6 +3,8 @@ package org.erlide.core.erlang;
 import java.util.List;
 import java.util.Set;
 
+import erlang.ErlideOpen.ExternalTreeEntry;
+
 public interface IErlModuleMap {
 
     void putEdited(String path);
@@ -20,5 +22,10 @@ public interface IErlModuleMap {
     void setIncludedFilesForModule(IErlModule module, List<IErlModule> result);
 
     List<IErlModule> getIncludedFilesForModule(IErlModule module);
+
+    public List<ExternalTreeEntry> getExternalTree(final String externalPath);
+
+    public void putExternalTree(final String externalPath,
+            final List<ExternalTreeEntry> externalTree);
 
 }
