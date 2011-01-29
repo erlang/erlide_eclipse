@@ -248,12 +248,18 @@ public class OpenAction extends SelectionDispatchAction {
         return null;
     }
 
+    public static boolean isTypeDefOrRecordDef(final IErlElement element) {
+        return element != null
+                && (element.getKind() == IErlElement.Kind.TYPESPEC || element
+                        .getKind() == IErlElement.Kind.RECORD_DEF);
+    }
+
     private static IErlElement findLocalCall(final IErlModule module,
             final Backend backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
             final boolean checkAllProjects) throws ErlModelException,
             BackendException {
-        if (ModelUtils.isTypeDefOrRecordDef(element)) {
+        if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = ModelUtils.findFunction(module,
@@ -289,7 +295,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IErlProject project,
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
-        if (ModelUtils.isTypeDefOrRecordDef(element)) {
+        if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findExternalType(module, res.getName(),
                     res.getFun(), res.getPath(), project, checkAllProjects);
         }

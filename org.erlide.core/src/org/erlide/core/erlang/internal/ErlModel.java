@@ -571,29 +571,29 @@ public class ErlModel extends Openable implements IErlModel {
                 for (final IErlElement child : parent.getChildren()) {
                     accept(child, visitor, flags, leafKind);
                 }
-                if (parent instanceof IErlProject) {
-                    final IErlProject project = (IErlProject) parent;
-                    if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
-                        final IProject p = project.getProject();
-                        try {
-                            for (final IProject referenced : p
-                                    .getReferencedProjects()) {
-                                final IErlElement e = findElement(referenced);
-                                if (e instanceof IErlProject) {
-                                    final IErlProject ep = (IErlProject) e;
-                                    accept(ep, visitor, flags
-                                            & ~IErlElement.VISIT_REFERENCED,
-                                            leafKind);
-                                }
-                            }
-                        } catch (final CoreException e) {
-                            ErlLogger.warn(e);
-                        }
-                    }
-                    if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
-                        // FIXME how do we do that?
-                    }
-                }
+                // if (parent instanceof IErlProject) {
+                // final IErlProject project = (IErlProject) parent;
+                // if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
+                // final IProject p = project.getProject();
+                // try {
+                // for (final IProject referenced : p
+                // .getReferencedProjects()) {
+                // final IErlElement e = findElement(referenced);
+                // if (e instanceof IErlProject) {
+                // final IErlProject ep = (IErlProject) e;
+                // accept(ep, visitor, flags
+                // & ~IErlElement.VISIT_REFERENCED,
+                // leafKind);
+                // }
+                // }
+                // } catch (final CoreException e) {
+                // ErlLogger.warn(e);
+                // }
+                // }
+                // if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
+                // // FIXME how do we do that?
+                // }
+                // }
             }
         }
     }

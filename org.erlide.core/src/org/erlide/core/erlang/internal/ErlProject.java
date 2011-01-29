@@ -35,6 +35,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
@@ -42,6 +43,7 @@ import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -709,6 +711,30 @@ public class ErlProject extends Openable implements IErlProject {
 
     public IOldErlangProjectProperties getProperties() {
         return new OldErlangProjectProperties(fProject);
+    }
+
+    public Collection<IErlModule> getExternalModules() throws CoreException {
+        final List<IErlModule> result = Lists.newArrayList();
+        accept(new IErlElementVisitor() {
+
+            public boolean visit(final IErlElement element)
+                    throws ErlModelException {
+                final boolean isExternalOrProject = element.getKind() == Kind.EXTERNAL
+                        || element.getKind() == Kind.PROJECT;
+                if (element instanceof IErlModule) {
+                    final IErlModule module = (IErlModule) element;
+                    result.add(module);
+                    return false;
+                } else if (isExternalOrProject) {
+                    if (element instanceof IOpenable) {
+                        final IOpenable openable = (IOpenable) element;
+                        openable.open(null);
+                    }
+                }
+                return isExternalOrProject;
+            }
+        }, 0, Kind.MODULE);
+        return result;
     }
 
 }
