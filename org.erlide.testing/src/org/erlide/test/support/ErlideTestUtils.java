@@ -152,7 +152,7 @@ public class ErlideTestUtils {
 		}
 		projects.remove(project);
 		final IErlModel model = ErlangCore.getModel();
-		model.resourceChanged();
+		model.resourceChanged(null);
 		model.open(null);
 	}
 

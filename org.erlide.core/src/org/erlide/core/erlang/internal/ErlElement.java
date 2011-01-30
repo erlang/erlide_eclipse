@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -607,7 +608,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         structureKnown = newStructureKnown;
     }
 
-    public void resourceChanged() {
+    public void resourceChanged(final IResourceDelta delta) {
         // FIXME is this enough? it will rebuild at next occasion, and modules
         // are handled with reconciles, containers children through add and
         // remove, but... e.g. name change of folder?

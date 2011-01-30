@@ -53,6 +53,9 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 /**
  * The <code>ErlModelManager</code> manages instances of <code>IErlModel</code>.
  * <code>IElementChangedListener</code>s register with the
@@ -171,10 +174,10 @@ public final class ErlModelManager implements IErlModelManager {
         // TODO should we make Erlidemodelevents and fire them?
     }
 
-    void change(final IResource rsrc) {
+    void change(final IResource rsrc, final IResourceDelta delta) {
         final IErlElement e = erlangModel.findElement(rsrc);
         if (e != null) {
-            e.resourceChanged();
+            e.resourceChanged(delta);
         }
         // TODO should we make Erlidemodelevents and fire them?
     }
@@ -341,9 +344,11 @@ public final class ErlModelManager implements IErlModelManager {
                 return;
             }
             final IResourceDelta rootDelta = event.getDelta();
-            final ArrayList<IResource> added = new ArrayList<IResource>();
-            final ArrayList<IResource> changed = new ArrayList<IResource>();
-            final ArrayList<IResource> removed = new ArrayList<IResource>();
+            final ArrayList<IResource> added = Lists.newArrayList();
+            final ArrayList<IResource> changed = Lists.newArrayList();
+            final ArrayList<IResource> removed = Lists.newArrayList();
+            final Map<IResource, IResourceDelta> changedDelta = Maps
+                    .newHashMap();
             final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
                 public boolean visit(final IResourceDelta delta) {
                     if (verbose) {
@@ -367,6 +372,7 @@ public final class ErlModelManager implements IErlModelManager {
                         }
                         if (delta.getKind() == IResourceDelta.CHANGED) {
                             changed.add(resource);
+                            changedDelta.put(resource, delta);
                         }
                         if (delta.getKind() == IResourceDelta.REMOVED) {
                             removed.add(resource);
@@ -384,7 +390,7 @@ public final class ErlModelManager implements IErlModelManager {
                 create(rsrc);
             }
             for (final IResource rsrc : changed) {
-                change(rsrc);
+                change(rsrc, changedDelta.get(rsrc));
             }
             // make sure we don't dispose trees before leaves...
             Collections.sort(removed, new Comparator<IResource>() {
