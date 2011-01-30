@@ -41,16 +41,6 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         super(parent, name);
     }
 
-    // private OtpErlangObject fTree;
-
-    // public void setParseTree(OtpErlangObject tree) {
-    // fTree = tree;
-    // }
-
-    // public OtpErlangObject getParseTree() {
-    // return fTree;
-    // }
-
     public boolean isVisibleInOutline() {
         return true;
     }

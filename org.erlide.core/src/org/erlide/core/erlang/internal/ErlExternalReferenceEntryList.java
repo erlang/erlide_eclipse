@@ -11,6 +11,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.jinterface.backend.Backend;
@@ -44,24 +45,44 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
+        // TODO some code duplication within this function
         ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
                 externalName);
-        final Backend backend = BackendUtils
-                .getBuildOrIdeBackend(getErlProject().getProject());
-        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-        final List<ExternalTreeEntry> externalModuleTree = ErlideOpen
-                .getExternalModuleTree(backend, externalModules, pathVars);
-        final List<ExternalTreeEntry> externalIncludeTree = ErlideOpen
-                .getExternalModuleTree(backend, externalIncludes, pathVars);
+        final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
+        List<ExternalTreeEntry> externalModuleTree = moduleMap
+                .getExternalTree(externalModules);
+        List<ExternalTreeEntry> externalIncludeTree = moduleMap
+                .getExternalTree(externalIncludes);
+        if (externalModuleTree == null || externalIncludeTree == null) {
+            final Backend backend = BackendUtils
+                    .getBuildOrIdeBackend(getErlProject().getProject());
+            final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
+            if (externalModuleTree == null && externalModules.length() > 0) {
+                if (pm != null) {
+                    pm.worked(1);
+                }
+                externalModuleTree = ErlideOpen.getExternalModuleTree(backend,
+                        externalModules, pathVars);
+            }
+            if (externalIncludeTree == null && externalIncludes.length() > 0) {
+                if (pm != null) {
+                    pm.worked(1);
+                }
+                externalIncludeTree = ErlideOpen.getExternalModuleTree(backend,
+                        externalIncludes, pathVars);
+            }
+        }
         final IErlModelManager modelManager = ErlangCore.getModelManager();
         removeChildren();
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
             addExternalEntries(pm, externalModuleTree, modelManager, "modules",
                     externalModules);
+            moduleMap.putExternalTree(externalModules, externalModuleTree);
         }
         if (externalIncludeTree != null && !externalIncludeTree.isEmpty()) {
             addExternalEntries(pm, externalIncludeTree, modelManager,
                     "includes", externalIncludes);
+            moduleMap.putExternalTree(externalIncludes, externalIncludeTree);
         }
         return true;
     }

@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -41,6 +42,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
@@ -156,6 +158,9 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addExternals(final List<IErlElement> children) {
+        if (ModelUtils.isExternalFilesProject(getProject())) {
+            return;
+        }
         final IErlModel model = ErlangCore.getModel();
         final String externalIncludes = model.getExternalIncludes(this);
         final String externalModules = model.getExternalModules(this);
@@ -531,7 +536,6 @@ public class ErlProject extends Openable implements IErlProject {
         fName = project.getName();
     }
 
-    // FIXME
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         if (ModelUtils.isExternalFilesProject(fProject)) {
@@ -543,18 +547,18 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } else {
             final IOldErlangProjectProperties props = getProperties();
-            addModulesOrIncludes(result, props, fProject, getModel(),
-                    props.getSourceDirs());
+            result.addAll(getModulesOrIncludes(fProject, getModel(),
+                    props.getSourceDirs()));
         }
         return result;
     }
 
-    private static void addModulesOrIncludes(final List<IErlModule> result,
-            final IOldErlangProjectProperties props, final IProject project,
-            final IErlModel model, final Collection<IPath> dirs)
-            throws ErlModelException {
-        for (final IPath src : dirs) {
-            final IFolder folder = project.getFolder(src);
+    private static List<IErlModule> getModulesOrIncludes(
+            final IProject project, final IErlModel model,
+            final Collection<IPath> dirs) throws ErlModelException {
+        final List<IErlModule> result = Lists.newArrayList();
+        for (final IPath dir : dirs) {
+            final IFolder folder = project.getFolder(dir);
             final IErlElement element = model.findElement(folder, true);
             if (element instanceof IErlFolder) {
                 final IErlFolder erlFolder = (IErlFolder) element;
@@ -567,19 +571,8 @@ public class ErlProject extends Openable implements IErlProject {
                     }
                 }
             }
-            // IResource[] members;
-            // try {
-            // members = folder.members();
-            // for (final IResource res : members) {
-            // final IErlModule module = getModule(res.getName());
-            // if (module != null) {
-            // result.add(module);
-            // }
-            // }
-            // } catch (final CoreException e) {
-            // // e.printStackTrace();
-            // }
         }
+        return result;
     }
 
     public Collection<IErlModule> getModulesAndHeaders()
@@ -594,10 +587,26 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } else {
             final IOldErlangProjectProperties props = getProperties();
-            addModulesOrIncludes(result, props, fProject, getModel(),
-                    props.getSourceDirs());
-            addModulesOrIncludes(result, props, fProject, getModel(),
-                    props.getIncludeDirs());
+            final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
+            List<IErlModule> cached = moduleMap.getModulesForProject(this);
+            final ErlModel model = getModel();
+            if (cached != null) {
+                result.addAll(cached);
+            } else {
+                final List<IErlModule> modules = getModulesOrIncludes(fProject,
+                        model, props.getSourceDirs());
+                moduleMap.setModulesForProject(this, modules);
+                result.addAll(modules);
+            }
+            cached = moduleMap.getIncludesForProject(this);
+            if (cached != null) {
+                result.addAll(cached);
+            } else {
+                final List<IErlModule> includes = getModulesOrIncludes(
+                        fProject, model, props.getIncludeDirs());
+                moduleMap.setIncludesForProject(this, includes);
+                result.addAll(includes);
+            }
         }
         return result;
     }
@@ -735,6 +744,17 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }, 0, Kind.MODULE);
         return result;
+    }
+
+    @Override
+    public void resourceChanged(final IResourceDelta delta) {
+        if ((delta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
+            // TODO when we have cache in ErlModuleMap for referenced projects,
+            // we should purge it here
+            int i = 0;
+            ++i;
+        }
+        super.resourceChanged(delta);
     }
 
 }

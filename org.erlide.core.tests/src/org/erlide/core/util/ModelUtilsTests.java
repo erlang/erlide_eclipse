@@ -2,6 +2,7 @@ package org.erlide.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -251,6 +252,8 @@ public class ModelUtilsTests {
 						"-module(g).\n-include_lib(\"kernel/include/file.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
 								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
 		module.open(null);
+		// when
+		// looking for the record
 		final IErlPreprocessorDef preprocessorDef = ModelUtils
 				.findPreprocessorDef(module, "file_info", Kind.RECORD_DEF, "");
 		// then
@@ -277,7 +280,12 @@ public class ModelUtilsTests {
 						"-module(g).\n-include_lib(\"kernel/include/file.hrl\").\n-export([f/0]).\n-define(A(B), '++B++').\n-record(rec2, {a, b}).\n"
 								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
 		module.open(null);
-		ModelUtils.getPreprocessorDefs(module, Kind.MACRO_DEF, "");
+		final List<IErlPreprocessorDef> macrodDefs = ModelUtils
+				.getPreprocessorDefs(module, Kind.MACRO_DEF, "");
+		final List<IErlPreprocessorDef> recordDefs = ModelUtils
+				.getPreprocessorDefs(module, Kind.RECORD_DEF, "");
+		assertEquals(2, macrodDefs.size());
+		assertEquals(3, recordDefs.size());
 	}
 
 	@Test
@@ -485,6 +493,36 @@ public class ModelUtilsTests {
 				ErlideTestUtils.deleteProject(erlProject);
 			}
 		}
+	}
+
+	@Test
+	public void findIncludeFile() throws Exception {
+		// given
+		// a project with a module and an include including file.hrl
+		final IErlProject project = projects[0];
+		final String headerName = "a.hrl";
+		final IErlModule header = ErlideTestUtils
+				.createModule(
+						project,
+						headerName,
+						"-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
+		final IErlModule module = ErlideTestUtils
+				.createModule(
+						project,
+						"f.erl",
+						"-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
+								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+		module.open(null);
+		// when
+		// looking for the include
+		final String s = ModelUtils.findIncludeFile(project, headerName, "");
+		final String filePath = ModelUtils.findIncludeFile(project, "file.hrl",
+				"");
+		// then
+		// it should be found
+		assertEquals(header.getFilePath(), s);
+		assertNotNull(filePath);
+		assertNotSame("file.hrl", filePath);
 	}
 
 }
