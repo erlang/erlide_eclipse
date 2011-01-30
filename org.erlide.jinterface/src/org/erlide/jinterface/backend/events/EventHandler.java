@@ -31,30 +31,41 @@ public abstract class EventHandler {
     protected abstract void doHandleMsg(OtpErlangObject msg) throws Exception;
 
     public static OtpErlangObject getStandardEvent(final OtpErlangObject msg,
+            final OtpErlangAtom id) {
+        return getStandardEvent(msg, id.atomValue());
+    }
+
+    public static OtpErlangObject getStandardEvent(final OtpErlangObject msg,
             final String id) {
         try {
-            final OtpErlangTuple t = (OtpErlangTuple) msg;
-            OtpErlangObject el0 = t.elementAt(0);
-            if (el0 instanceof OtpErlangAtom) {
-                if (!((OtpErlangAtom) el0).atomValue().equals("event")) {
-                    return null;
+            if (isEventMessage(msg)) {
+                final String topic = getEventTopic(msg);
+                if (id.equals(topic)) {
+                    return getEventData(msg);
                 }
-            }
-            el0 = t.elementAt(1);
-            if (el0 instanceof OtpErlangAtom) {
-                final OtpErlangAtom a = (OtpErlangAtom) el0;
-                final String event = a.atomValue();
-                if (id.equals(event)) {
-                    return t.elementAt(2);
-                }
+
             }
         } catch (final Exception e) {
         }
         return null;
     }
 
-    public static OtpErlangObject getStandardEvent(final OtpErlangObject msg,
-            final OtpErlangAtom id) {
-        return getStandardEvent(msg, id.atomValue());
+    public static OtpErlangObject getEventData(final OtpErlangObject msg) {
+        final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
+        return tmsg.elementAt(2);
     }
+
+    public static String getEventTopic(final OtpErlangObject msg) {
+        final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
+        final Object el0 = tmsg.elementAt(1);
+        final OtpErlangAtom a = (OtpErlangAtom) el0;
+        return a.atomValue();
+    }
+
+    private static boolean isEventMessage(final OtpErlangObject msg) {
+        final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
+        final OtpErlangObject el0 = tmsg.elementAt(0);
+        return ((OtpErlangAtom) el0).atomValue().equals("event");
+    }
+
 }
