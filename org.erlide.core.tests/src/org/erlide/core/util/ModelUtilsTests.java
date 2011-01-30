@@ -506,6 +506,7 @@ public class ModelUtilsTests {
 						project,
 						headerName,
 						"-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
+		header.open(null);
 		final IErlModule module = ErlideTestUtils
 				.createModule(
 						project,
