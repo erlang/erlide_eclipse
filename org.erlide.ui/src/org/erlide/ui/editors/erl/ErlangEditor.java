@@ -2067,18 +2067,21 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             }
         };
         final ISelectionProvider selectionProvider = getSelectionProvider();
-        ((IPostSelectionProvider) selectionProvider)
-                .addPostSelectionChangedListener(fPostSelectionListener);
-        if (forceUpdate && selectionProvider != null) {
-            fForcedMarkOccurrencesSelection = selectionProvider.getSelection();
-            final IErlModule module = getModule();
-            if (module != null) {
-                updateOccurrenceAnnotations(
-                        (ITextSelection) fForcedMarkOccurrencesSelection,
-                        module);
+        if (selectionProvider != null) {
+            ((IPostSelectionProvider) selectionProvider)
+                    .addPostSelectionChangedListener(fPostSelectionListener);
+
+            if (forceUpdate) {
+                fForcedMarkOccurrencesSelection = selectionProvider
+                        .getSelection();
+                final IErlModule module = getModule();
+                if (module != null) {
+                    updateOccurrenceAnnotations(
+                            (ITextSelection) fForcedMarkOccurrencesSelection,
+                            module);
+                }
             }
         }
-
         if (fOccurrencesFinderJobCanceler == null) {
             fOccurrencesFinderJobCanceler = new OccurrencesFinderJobCanceler();
             fOccurrencesFinderJobCanceler.install();
@@ -2190,10 +2193,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             fHasChanged = hasChanged;
         }
 
-        private void findRefs(final IErlModule module,
+        private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
             final String scannerModuleName = ErlangToolkit
-                    .createScannerModuleName(module);
+                    .createScannerModuleName(theModule);
             final ErlideBackend ideBackend = ErlangCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
@@ -2205,19 +2208,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 final int offset = selection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend,
                         scannerModuleName, offset, ModelUtils
-                                .getImportsAsList(module), "", ErlangCore
+                                .getImportsAsList(theModule), "", ErlangCore
                                 .getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
-                        .getSearchPatternFromOpenResultAndLimitTo(module,
+                        .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
                 if (fCanceled) {
                     return;
                 }
                 if (pattern != null) {
                     final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
-                            .findRefs(ideBackend, pattern, module,
+                            .findRefs(ideBackend, pattern, theModule,
                                     getStateDir());
-                    fRefs = getErlangRefs(module, findRefs);
+                    fRefs = getErlangRefs(theModule, findRefs);
                 }
             } catch (final BackendException e) {
                 ErlLogger.debug(e);

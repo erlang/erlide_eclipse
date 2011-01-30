@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchDelegate;
@@ -42,7 +41,7 @@ public class DebugTraceLaunching {
             final DebugTraceLaunchConfigurationDelegate ldtlcd = (DebugTraceLaunchConfigurationDelegate) delegate;
             ldtlcd.setInfo(target.getLaunch(), target,
                     debuggerTraceView.getEventsForLaunch(target));
-            final ILaunch launch = wc.launch(ILaunchManager.DEBUG_MODE, null);
+            wc.launch(ILaunchManager.DEBUG_MODE, null);
         } catch (final CoreException e) {
             ErlLogger.error(e);
         }

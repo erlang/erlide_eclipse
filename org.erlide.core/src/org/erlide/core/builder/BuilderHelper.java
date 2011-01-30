@@ -313,10 +313,10 @@ public final class BuilderHelper {
         }
 
         private boolean compare(final IResource resource, final String s,
-                final int how) {
-            if (how == FIND_BY_NAME) {
+                final int theHow) {
+            if (theHow == FIND_BY_NAME) {
                 return samePath(resource.getName(), s);
-            } else if (how == FIND_BY_LOCATION) {
+            } else if (theHow == FIND_BY_LOCATION) {
                 return samePath(resource.getLocation().toString(), s);
             } else {
                 return false;

@@ -329,9 +329,11 @@ public class ErlTextHover implements ITextHover,
                             IResource r = null;
                             if (t.arity() > 3
                                     && t.elementAt(4) instanceof OtpErlangString) {
-                                final OtpErlangString s4 = (OtpErlangString) t
-                                        .elementAt(4);
-                                // XXX final String path = Util.stringValue(s4);
+                                // final OtpErlangString s4 = (OtpErlangString)
+                                // t
+                                // .elementAt(4);
+                                // XXX final String path =
+                                // Util.stringValue(s4);
                                 // try {
                                 // r = ErlModelUtils.findExternalModule(mod,
                                 // path, project, true);

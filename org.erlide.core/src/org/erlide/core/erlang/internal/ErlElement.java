@@ -189,6 +189,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * @see IErlElement
      */
+    @SuppressWarnings("null")
     public IErlElement getAncestorOfKind(final Kind kind) {
         IErlElement element = this;
         while (element != null) {
@@ -277,10 +278,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
                     final int start = range.getOffset();
                     final int end = start + range.getLength();
                     if (start <= position && position <= end) {
-                        if (child instanceof IParent) {
-                            return child.getSourceElementAt(position);
-                        }
-                        return child;
+                        return child.getSourceElementAt(position);
                     }
                 }
             }
@@ -562,17 +560,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public IErlElement getChildNamed(final String name) {
-        if (this instanceof IParent) {
-            return getChildNamed(this, name);
-        }
-        return null;
+        return getChildNamed(this, name);
     }
 
     public IErlElement getChildWithResource(final IResource rsrc) {
-        if (this instanceof IParent) {
-            return getChildWithResource(this, rsrc);
-        }
-        return null;
+        return getChildWithResource(this, rsrc);
     }
 
     /**

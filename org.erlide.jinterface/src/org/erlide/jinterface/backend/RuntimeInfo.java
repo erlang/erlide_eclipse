@@ -187,12 +187,12 @@ public class RuntimeInfo {
     /**
      * split on spaces but respect quotes
      * 
-     * @param args
+     * @param theArgs
      * @return
      */
-    private String[] split(final String args) {
+    private String[] split(final String theArgs) {
         final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
-        final Matcher m = p.matcher(args);
+        final Matcher m = p.matcher(theArgs);
         final List<String> tokens = new ArrayList<String>();
         while (m.find()) {
             tokens.add(m.group(1));
@@ -344,7 +344,7 @@ public class RuntimeInfo {
         return startShell;
     }
 
-    public void hasConsole(final boolean console) {
+    public void setHasConsole(final boolean console) {
         this.console = console;
     }
 

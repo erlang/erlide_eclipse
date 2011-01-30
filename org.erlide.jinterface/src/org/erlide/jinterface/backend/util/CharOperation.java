@@ -826,6 +826,7 @@ public final class CharOperation {
      *         separator between each part and appending the given name at the
      *         end
      */
+    @SuppressWarnings("null")
     public static char[] concatWith(final char[] name, final char[][] array,
             final char separator) {
         final int nameLength = name == null ? 0 : name.length;
@@ -907,6 +908,7 @@ public final class CharOperation {
      *         separator between each part and appending the given name at the
      *         end
      */
+    @SuppressWarnings("null")
     public static char[] concatWith(final char[][] array, final char[] name,
             final char separator) {
         final int nameLength = name == null ? 0 : name.length;
@@ -973,6 +975,7 @@ public final class CharOperation {
      * @return the concatenation of the given array parts using the given
      *         separator between each part
      */
+    @SuppressWarnings("null")
     public static char[] concatWith(final char[][] array, final char separator) {
         int length = array == null ? 0 : array.length;
         if (length == 0) {
@@ -2850,6 +2853,7 @@ public final class CharOperation {
      *         divider and triming each subarray to remove whitespaces equals to
      *         ' '
      */
+    @SuppressWarnings("null")
     public static char[][] splitAndTrimOn(final char divider, final char[] array) {
         final int length = array == null ? 0 : array.length;
         if (length == 0) {
@@ -2933,6 +2937,7 @@ public final class CharOperation {
      * @return a new array which is the split of the given array using the given
      *         divider
      */
+    @SuppressWarnings("null")
     public static char[][] splitOn(final char divider, final char[] array) {
         final int length = array == null ? 0 : array.length;
         if (length == 0) {
@@ -2992,6 +2997,7 @@ public final class CharOperation {
      *             if start is lower than 0 or end is greater than the array
      *             length
      */
+    @SuppressWarnings("null")
     public static char[][] splitOn(final char divider, final char[] array,
             final int start, final int end) {
         final int length = array == null ? 0 : array.length;

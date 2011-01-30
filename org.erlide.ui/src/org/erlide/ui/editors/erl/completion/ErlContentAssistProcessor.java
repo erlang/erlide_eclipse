@@ -497,10 +497,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
-        final IErlModule module = ModelUtils.getExternalModule(moduleName,
+        final IErlModule theModule = ModelUtils.getExternalModule(moduleName,
                 erlProject);
-        if (module != null) {
-            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        if (theModule != null) {
+            addFunctionsFromModule(offset, prefix, arityOnly, result, theModule);
         } else {
             boolean foundInModel = false;
             // first check in project, refs and external modules

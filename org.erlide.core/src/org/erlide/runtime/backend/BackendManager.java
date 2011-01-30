@@ -223,7 +223,7 @@ public final class BackendManager extends OtpNodeStatus implements
             info.setNodeName(version);
             info.setNodeNameSuffix("_" + BackendUtils.getErlideNameTag());
             info.setCookie("erlide");
-            info.hasConsole(false);
+            info.setHasConsole(false);
             // will add workspace unique id
             final EnumSet<BackendOptions> options = EnumSet.of(
                     BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
@@ -319,7 +319,7 @@ public final class BackendManager extends OtpNodeStatus implements
                 info.setNodeName(nodeName);
             }
             info.setCookie("erlide");
-            info.hasConsole(ErlideUtil.isDeveloper());
+            info.setHasConsole(ErlideUtil.isDeveloper());
             ErlLogger.debug("creating IDE backend %s", info.getName());
             final EnumSet<BackendOptions> options = EnumSet.of(
                     BackendOptions.AUTOSTART, BackendOptions.INTERNAL,

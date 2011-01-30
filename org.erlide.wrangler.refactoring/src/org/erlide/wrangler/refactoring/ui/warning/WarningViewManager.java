@@ -21,71 +21,70 @@ import org.eclipse.ui.PlatformUI;
  * @version %I%, %G%
  */
 public class WarningViewManager {
-	/**
-	 * Warning view ID
-	 */
-	public static final String warningViewID = WarningView.ID;
+    /**
+     * Warning view ID
+     */
+    public static final String warningViewID = WarningView.ID;
 
-	private static IWarningHandler view;
+    private static IWarningHandler view;
 
-	/**
-	 * Sets the warning view
-	 * 
-	 * @param _view
-	 *            Warning message view
-	 */
-	public static void setWarningView(IWarningHandler _view) {
-		view = _view;
-	}
+    /**
+     * Sets the warning view
+     * 
+     * @param _view
+     *            Warning message view
+     */
+    public static void setWarningView(IWarningHandler _view) {
+        view = _view;
+    }
 
-	/**
-	 * Adds a warning message to the view
-	 * 
-	 * @param message
-	 *            warning message
-	 */
-	public static void addWarningMessage(String message) {
-		try {
-			// if (view == null) {
-			setWarningView((IWarningHandler) showWarningView());
-			// }
-			view.addMessage(message);
-			view.refresh();
+    /**
+     * Adds a warning message to the view
+     * 
+     * @param message
+     *            warning message
+     */
+    public static void addWarningMessage(String message) {
+        try {
+            // if (view == null) {
+            setWarningView((IWarningHandler) showWarningView());
+            // }
+            view.addMessage(message);
+            view.refresh();
 
-		} catch (Exception t) {
-			t.printStackTrace();
-		}
+        } catch (Exception t) {
+            t.printStackTrace();
+        }
 
-	}
+    }
 
-	/**
-	 * Shows the warning view.
-	 * 
-	 * @return view which is shown
-	 */
-	public static IViewPart showWarningView() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+    /**
+     * Shows the warning view.
+     * 
+     * @return view which is shown
+     */
+    public static IViewPart showWarningView() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
 
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		try {
-			IViewPart view = window.getActivePage().showView(warningViewID);
-			return view;
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        try {
+            IViewPart theView = window.getActivePage().showView(warningViewID);
+            return theView;
+        } catch (PartInitException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	/**
-	 * Hides the warning view.
-	 */
-	public static void closeWarningView() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+    /**
+     * Hides the warning view.
+     */
+    public static void closeWarningView() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
 
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		IViewPart view;
-		view = window.getActivePage().findView(warningViewID);
-		window.getActivePage().hideView(view);
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        IViewPart theView = window.getActivePage().findView(warningViewID);
+        window.getActivePage().hideView(theView);
 
-	}
+    }
 }

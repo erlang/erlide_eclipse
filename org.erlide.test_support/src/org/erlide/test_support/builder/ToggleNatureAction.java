@@ -21,7 +21,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
      * 
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "rawtypes" })
     public void run(final IAction action) {
         if (selection instanceof IStructuredSelection) {
             for (final Iterator it = ((IStructuredSelection) selection)
@@ -42,8 +42,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
     }
 
     public void selectionChanged(final IAction action,
-            final ISelection selection) {
-        this.selection = selection;
+            final ISelection theSelection) {
+        selection = theSelection;
     }
 
     public void setActivePart(final IAction action,

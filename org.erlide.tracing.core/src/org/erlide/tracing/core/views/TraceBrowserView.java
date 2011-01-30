@@ -60,7 +60,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     }
 
     @Override
-    public void createPartControl(Composite parent) {
+    public void createPartControl(final Composite parent) {
         // layout
         final GridLayout containerLayout = new GridLayout(1, false);
         containerLayout.marginWidth = 0;
@@ -82,8 +82,10 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         loadAction = new Action() {
             @Override
             public void run() {
-                DirectoryDialog dialog = new DirectoryDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
-                dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
+                final DirectoryDialog dialog = new DirectoryDialog(PlatformUI
+                        .getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+                dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot()
+                        .getLocation().toString());
                 // dialog.setFilterExtensions(new String[] { "*.*" });
                 dialog.setText("Load trace data...");
                 final String selected = dialog.open();
@@ -95,10 +97,11 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                         }
                     };
                     try {
-                        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                        final Shell shell = PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow().getShell();
                         new ProgressMonitorDialog(shell).run(true, false, task);
                         doAfterLoadingFile();
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         ErlLogger.error(e);
                     } finally {
                         task = null;
@@ -106,19 +109,23 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         };
-        loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
+        loadAction.setImageDescriptor(PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         loadAction.setToolTipText("Load results from disk...");
 
         removeAction = new Action() {
             @Override
             public void run() {
-                TracingResultsNode node = (TracingResultsNode) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+                final TracingResultsNode node = (TracingResultsNode) ((IStructuredSelection) treeViewer
+                        .getSelection()).getFirstElement();
                 if (node != null) {
                     TraceBackend.getInstance().removeTracingResult(node);
                 }
             }
         };
-        removeAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
+        removeAction.setImageDescriptor(DebugUITools
+                .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
         removeAction.setToolTipText("Remove selected");
 
         removeAllAction = new Action() {
@@ -127,33 +134,37 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 TraceBackend.getInstance().clearTraceLists();
             }
         };
-        removeAllAction.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
+        removeAllAction.setImageDescriptor(DebugUITools
+                .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
         removeAllAction.setToolTipText("Remove all");
 
-        IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
+        final IToolBarManager manager = getViewSite().getActionBars()
+                .getToolBarManager();
         manager.add(loadAction);
         manager.add(removeAction);
         manager.add(removeAllAction);
     }
 
-    private void enableActions(boolean enabled) {
+    private void enableActions(final boolean enabled) {
         loadAction.setEnabled(enabled);
         removeAction.setEnabled(enabled);
         removeAllAction.setEnabled(enabled);
         treeViewer.getTree().setEnabled(enabled);
     }
 
-    private void createTreeViewerPanel(Composite parent) {
+    private void createTreeViewerPanel(final Composite parent) {
         final Composite container = new Composite(parent, SWT.NONE);
         container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         container.setLayout(new GridLayout());
 
         // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
         treeViewer = new TreeViewer(container, SWT.SINGLE);
-        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        treeViewer.getTree().setLayoutData(
+                new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
-        treeViewer.setContentProvider(new TreeContentProvider(treeViewer, false));
+        treeViewer
+                .setContentProvider(new TreeContentProvider(treeViewer, false));
         treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
@@ -162,7 +173,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         // listener
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void selectionChanged(final SelectionChangedEvent event) {
                 doSelection(event);
             }
         });
@@ -174,22 +185,27 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
      * @param event
      */
     private void doSelection(final SelectionChangedEvent event) {
-        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        final IStructuredSelection selection = (IStructuredSelection) event
+                .getSelection();
         final ITreeNode treeNode = (ITreeNode) selection.getFirstElement();
         if (treeNode != null) {
             task = new RunnableWithProgress("Loading trace results...") {
                 @Override
                 public void doAction() {
-                    TraceBackend.getInstance().setActiveResultSet((TracingResultsNode) treeNode);
-                    int limit = Activator.getDefault().getPreferenceStore().getInt(PreferenceNames.TRACES_LOAD_LIMIT);
+                    TraceBackend.getInstance().setActiveResultSet(
+                            (TracingResultsNode) treeNode);
+                    final int limit = Activator.getDefault()
+                            .getPreferenceStore()
+                            .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                     TraceBackend.getInstance().loadDataFromFile(1, limit);
                 }
             };
             try {
-                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                final Shell shell = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell();
                 new ProgressMonitorDialog(shell).run(true, false, task);
                 doAfterLoadingFile();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 ErlLogger.error(e);
             } finally {
                 task = null;
@@ -198,12 +214,14 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     }
 
     private void doAfterLoadingFile() {
-        if (TracingStatus.OK.equals(status))
+        if (TracingStatus.OK.equals(status)) {
             treeViewer.refresh();
-        if (task != null)
+        }
+        if (task != null) {
             // task was executed from this class so this class is responsible
             // for handling status
             TracingStatusHandler.handleStatus(status);
+        }
         enableActions(true);
     }
 
@@ -219,8 +237,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void finishLoadingFile(final TracingStatus status) {
-        this.status = status;
+    public void finishLoadingFile(final TracingStatus theStatus) {
+        status = theStatus;
         if (task != null) {
             // when loading was initialized from this view
             task.finish();
@@ -234,8 +252,8 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
-    public void finishLoadingTraces(TracingStatus status) {
-        this.status = status;
+    public void finishLoadingTraces(final TracingStatus theStatus) {
+        status = theStatus;
         if (task != null) {
             task.finish();
         }

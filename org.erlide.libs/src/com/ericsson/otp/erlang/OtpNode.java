@@ -58,6 +58,7 @@ import java.util.Iterator;
  * other means. See the Erlang documentation for more information about this.
  * </p>
  */
+@SuppressWarnings("hiding")
 public class OtpNode extends OtpLocalNode {
     private boolean initDone = false;
 

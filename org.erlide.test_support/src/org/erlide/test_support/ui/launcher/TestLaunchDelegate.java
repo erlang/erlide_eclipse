@@ -202,15 +202,15 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         backend.getEventDaemon().addHandler(handler);
     }
 
-    private OtpErlangList getFlags(final String mode) {
+    private OtpErlangList getFlags(final String theMode) {
         final List<OtpErlangObject> e_flags = Lists.newArrayList();
-        if ("cover".equals(mode)) {
+        if ("cover".equals(theMode)) {
             e_flags.add(new OtpErlangChar('c'));
         }
-        if ("trace".equals(mode)) {
+        if ("trace".equals(theMode)) {
             e_flags.add(new OtpErlangChar('t'));
         }
-        if ("debug".equals(mode)) {
+        if ("debug".equals(theMode)) {
             // we start debugger ourselves
             // e_flags.add(new OtpErlangChar('d'));
         }
@@ -327,32 +327,32 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @SuppressWarnings("unused")
-    private void doLaunchWithScript(final File workdir, final String suite,
-            final String testcase, final String mode, final ILaunch launch,
+    private void doLaunchWithScript(final File theWorkdir, final String theSuite,
+            final String theTestCase, final String theMode, final ILaunch launch,
             final IProgressMonitor monitor) {
-        System.out.println("---@> launch " + workdir.getAbsolutePath() + " -> "
-                + suite + ":" + testcase + " (" + mode + ")");
-        if (!workdir.exists()) {
+        System.out.println("---@> launch " + theWorkdir.getAbsolutePath() + " -> "
+                + theSuite + ":" + theTestCase + " (" + theMode + ")");
+        if (!theWorkdir.exists()) {
             return;
         }
         final List<String> cmds = Lists.newArrayList();
-        if ("regression".equals(mode)) {
+        if ("regression".equals(theMode)) {
             cmds.add("clearmake");
             cmds.add("posttest");
         } else {
             cmds.add("bt_erl");
-            if (suite.length() > 0) {
-                cmds.add(suite);
-                if (testcase.length() > 0) {
-                    cmds.add(testcase);
+            if (theSuite.length() > 0) {
+                cmds.add(theSuite);
+                if (theTestCase.length() > 0) {
+                    cmds.add(theTestCase);
                 }
             }
-            if (!mode.equals("run")) {
-                cmds.add("-" + mode);
+            if (!theMode.equals("run")) {
+                cmds.add("-" + theMode);
             }
         }
         final String[] cmdline = cmds.toArray(new String[cmds.size()]);
-        System.out.println("---   cmdline (" + workdir.getAbsolutePath()
+        System.out.println("---   cmdline (" + theWorkdir.getAbsolutePath()
                 + ")= " + Arrays.toString(cmdline));
     }
 

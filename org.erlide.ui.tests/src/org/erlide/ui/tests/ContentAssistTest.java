@@ -105,7 +105,7 @@ public class ContentAssistTest {
 				final String contentType) {
 		}
 
-		public void revealRange(final int offset, final int length) {
+		public void revealRange(final int theOffset, final int length) {
 		}
 
 		public void resetVisibleRegion() {
@@ -123,7 +123,7 @@ public class ContentAssistTest {
 		public void removeTextInputListener(final ITextInputListener listener) {
 		}
 
-		public boolean overlapsWithVisibleRegion(final int offset,
+		public boolean overlapsWithVisibleRegion(final int theOffset,
 				final int length) {
 			return false;
 		}

@@ -57,6 +57,7 @@ import java.util.Random;
  * connections.
  * </p>
  */
+@SuppressWarnings("hiding")
 public abstract class AbstractConnection extends Thread {
     protected static final int headerLen = 2048; // more than enough
 

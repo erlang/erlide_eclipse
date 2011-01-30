@@ -9,8 +9,6 @@ import org.eclipse.jface.viewers.Viewer;
 public class ErlangSearchTableContentProvider extends
         ErlangSearchContentProvider {
 
-    private final Object[] EMPTY_ARR = new Object[0];
-
     private ErlangSearchResult fResult;
 
     ErlangSearchTableContentProvider(final ErlangSearchResultPage page) {

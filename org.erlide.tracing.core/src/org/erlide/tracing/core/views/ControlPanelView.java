@@ -766,14 +766,14 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void finishLoadingFile(TracingStatus status) {
-        this.status = status;
+    public void finishLoadingFile(TracingStatus theStatus) {
+        this.status = theStatus;
         if (task != null) {
             task.finish();
         }
     }
 
-    public void finishLoadingTraces(TracingStatus status) {
+    public void finishLoadingTraces(TracingStatus theStatus) {
     }
 
     public void removeFile() {

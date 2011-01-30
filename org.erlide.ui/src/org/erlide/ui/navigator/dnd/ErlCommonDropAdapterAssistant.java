@@ -41,10 +41,10 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                         }
 
                         public void run() throws Exception {
-                            final IStatus status = ((INavigatorDropHandler) o)
+                            final IStatus theStatus = ((INavigatorDropHandler) o)
                                     .handleDrop(dropAdapter, dropTargetEvent,
                                             target);
-                            setStatus(status);
+                            setStatus(theStatus);
                         }
                     };
                     SafeRunner.run(runnable);
@@ -74,10 +74,10 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                         }
 
                         public void run() throws Exception {
-                            final IStatus status = ((INavigatorDropHandler) o)
+                            final IStatus theStatus = ((INavigatorDropHandler) o)
                                     .validateDrop(target, operation,
                                             transferType);
-                            setStatus(status);
+                            setStatus(theStatus);
                         }
                     };
                     SafeRunner.run(runnable);

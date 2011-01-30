@@ -211,7 +211,7 @@ public class ErlangLaunchDelegate implements
         }
         rt.setArgs(data.xtraArgs);
         rt.useLongName(data.longName);
-        rt.hasConsole(data.console);
+        rt.setHasConsole(data.console);
         rt.setLoadAllNodes(data.loadAllNodes);
         return rt;
     }

@@ -16,8 +16,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
 public class ErlangSearchTreeContentProvider extends
         ErlangSearchContentProvider implements ITreeContentProvider {
 
-    private final Object[] EMPTY_ARR = new Object[0];
-
     private final TreeViewer fTreeViewer;
     private final Map<Object, List<Object>> childMap;
     private final Map<Object, Object> parentMap;

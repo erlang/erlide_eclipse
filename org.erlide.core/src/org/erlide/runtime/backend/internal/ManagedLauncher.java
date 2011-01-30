@@ -140,7 +140,7 @@ public class ManagedLauncher implements IDisposable {
         @SuppressWarnings("boxing")
         public void run() {
             try {
-                deleteOldCoreDumps(workingDirectory);
+                deleteOldCoreDumps();
 
                 final int v = runtime.waitFor();
                 final String msg = "Backend '%s' terminated with exit code %d.";
@@ -151,7 +151,7 @@ public class ManagedLauncher implements IDisposable {
                 // 137 = SIGKILL (probably killed by user)
                 if (v > 1 && v != 143 && v != 129 && v != 137
                         && ErlideUtil.isEricssonUser()) {
-                    createReport(info, workingDirectory, v, msg);
+                    createReport(info, v, msg);
                 }
                 // FIXME backend.setExitStatus(v);
             } catch (final InterruptedException e) {
@@ -159,10 +159,10 @@ public class ManagedLauncher implements IDisposable {
             }
         }
 
-        private void createReport(final RuntimeInfo ainfo,
-                final File aworkingDirectory, final int v, final String msg) {
+        private void createReport(final RuntimeInfo ainfo, final int v,
+                final String msg) {
             String createdDump = null;
-            createdDump = createCoreDump(aworkingDirectory, createdDump);
+            createdDump = createCoreDump(createdDump);
 
             final String plog = ErlideUtil.fetchPlatformLog();
             final String elog = ErlideUtil.fetchErlideLog();
@@ -198,9 +198,8 @@ public class ManagedLauncher implements IDisposable {
             }
         }
 
-        private String createCoreDump(final File workingDirectory,
-                String createdDump) {
-            final File[] dumps = getCoreDumpFiles(workingDirectory);
+        private String createCoreDump(String createdDump) {
+            final File[] dumps = getCoreDumpFiles();
             if (dumps.length != 0) {
                 final File dump = dumps[0];
                 final File dest = new File(ErlideUtil.getReportLocation() + "/"
@@ -232,8 +231,8 @@ public class ManagedLauncher implements IDisposable {
             }
         }
 
-        private void deleteOldCoreDumps(final File workingDirectory) {
-            final File[] fs = getCoreDumpFiles(workingDirectory);
+        private void deleteOldCoreDumps() {
+            final File[] fs = getCoreDumpFiles();
             if (fs == null) {
                 return;
             }
@@ -242,7 +241,7 @@ public class ManagedLauncher implements IDisposable {
             }
         }
 
-        private File[] getCoreDumpFiles(final File workingDirectory) {
+        private File[] getCoreDumpFiles() {
             final File[] fs = workingDirectory.listFiles(filter);
             return fs;
         }

@@ -538,24 +538,24 @@ public class ModelUtils {
             final String modulePath, final IErlProject project) {
         final IErlModuleMap modelMap = ErlangCore.getModuleMap();
         final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
-        for (final IErlModule module : modules) {
-            if (moduleInProject(module, project)) {
-                final IParent parent = module.getParent();
-                if (parent instanceof IErlElement) {
-                    final IErlElement element = (IErlElement) parent;
-                    if (element.getKind() != Kind.EXTERNAL) {
-                        return module;
+        if (modules != null) {
+            for (final IErlModule module : modules) {
+                if (moduleInProject(module, project)) {
+                    final IParent parent = module.getParent();
+                    if (parent instanceof IErlElement) {
+                        final IErlElement element = (IErlElement) parent;
+                        if (element.getKind() != Kind.EXTERNAL) {
+                            return module;
+                        }
                     }
                 }
             }
-        }
-        if (modulePath != null) {
-            final IErlModule module = modelMap.getModuleByPath(modulePath);
-            if (module != null) {
-                return module;
+            if (modulePath != null) {
+                final IErlModule module = modelMap.getModuleByPath(modulePath);
+                if (module != null) {
+                    return module;
+                }
             }
-        }
-        if (modules != null) {
             if (modulePath != null) {
                 for (final IErlModule module : modules) {
                     final String filePath = module.getFilePath();

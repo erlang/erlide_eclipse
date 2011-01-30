@@ -8,8 +8,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -84,8 +82,6 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
         }
 
         public void open() {
-            final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-
             final String[] mf = text.split(":");
             final String module = mf[0];
             String function = mf[1];
