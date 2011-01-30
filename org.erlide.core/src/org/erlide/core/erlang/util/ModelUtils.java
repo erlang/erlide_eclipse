@@ -1,6 +1,5 @@
 package org.erlide.core.erlang.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -37,7 +35,6 @@ import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
@@ -80,31 +77,29 @@ public class ModelUtils {
         if (project == null) {
             return filePath;
         }
-        final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-                .getPathVariableManager();
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project.getProject());
-        for (final IPath includeDir : prefs.getIncludeDirs()) {
-            IPath path = includeDir.append(filePath);
-            path = PluginUtils.resolvePVMPath(pvm, path);
-            final File f = new File(path.toOSString());
-            if (f.exists()) {
-                return path.toString();
+        try {
+            for (final IErlModule module : project.getModules()) {
+                final List<IErlModule> allIncludedFiles = findAllIncludedFiles(
+                        module, externalIncludes);
+                for (final IErlModule includeFile : allIncludedFiles) {
+                    if (includeFile.getFilePath().equals(filePath)
+                            || includeFile.getName().equals(filePath)) {
+                        return includeFile.getFilePath();
+                    }
+                }
             }
-        }
-        final String s = ErlideOpen.getExternalInclude(ErlangCore
-                .getBackendManager().getIdeBackend(), filePath,
-                externalIncludes, ErlangCore.getModel().getPathVars());
-        if (s != null) {
-            return s;
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
         }
         return filePath;
     }
 
     public static IErlTypespec findTypespec(final IErlModule module,
             final String name) throws ErlModelException {
-        final Collection<IErlElement> children = module.getChildren();
-        for (final IErlElement element : children) {
+        for (final IErlElement element : module
+                .getChildrenOfKind(Kind.TYPESPEC)) {
             if (element instanceof IErlTypespec) {
                 final IErlTypespec t = (IErlTypespec) element;
                 if (t.getName().equals(name)) {
@@ -117,8 +112,8 @@ public class ModelUtils {
 
     public static IErlFunction findFunction(final IErlModule module,
             final ErlangFunction erlangFunction) throws ErlModelException {
-        final Collection<IErlElement> children = module.getChildren();
-        for (final IErlElement element : children) {
+        for (final IErlElement element : module
+                .getChildrenOfKind(Kind.FUNCTION)) {
             if (element instanceof IErlFunction) {
                 final IErlFunction f = (IErlFunction) element;
                 if (f.getFunction().equals(erlangFunction)) {
@@ -418,9 +413,10 @@ public class ModelUtils {
         String s = element.getFilename();
         if (element.isSystemInclude()) {
             s = ErlideOpen.getIncludeLib(backend, s);
-        } else {
-            s = findIncludeFile(project, s, externalIncludes);
         }
+        // else {
+        // s = findIncludeFile(project, s, externalIncludes);
+        // }
         final IErlModule module = openExternal(project, s);
         return module;
     }

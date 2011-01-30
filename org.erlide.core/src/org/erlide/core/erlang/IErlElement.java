@@ -12,6 +12,7 @@
 package org.erlide.core.erlang;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
@@ -222,7 +223,7 @@ public interface IErlElement extends IAdaptable {
      */
     boolean isStructureKnown() throws ErlModelException;
 
-    void resourceChanged();
+    void resourceChanged(IResourceDelta delta);
 
     // static final int VISIT_REFERENCED = 0x0001;
     // static final int VISIT_EXTERNALS = 0x0002;

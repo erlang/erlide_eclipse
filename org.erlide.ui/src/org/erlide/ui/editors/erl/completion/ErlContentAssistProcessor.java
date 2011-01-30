@@ -491,8 +491,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
         moduleName = ModelUtils.resolveMacroValue(moduleName, module);
-        final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
-                .toString();
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
@@ -516,6 +514,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
 
             // then check built stuff and otp
             if (!foundInModel) {
+                final String stateDir = ErlideUIPlugin.getDefault()
+                        .getStateLocation().toString();
                 final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
                         moduleName, prefix, stateDir);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null,

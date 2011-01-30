@@ -28,4 +28,14 @@ public interface IErlModuleMap {
     public void putExternalTree(final String externalPath,
             final List<ExternalTreeEntry> externalTree);
 
+    List<IErlModule> getModulesForProject(IErlProject project);
+
+    List<IErlModule> getIncludesForProject(IErlProject project);
+
+    void setModulesForProject(IErlProject project,
+            List<IErlModule> modulesAndIncludes);
+
+    void setIncludesForProject(IErlProject project,
+            List<IErlModule> modulesAndIncludes);
+
 }

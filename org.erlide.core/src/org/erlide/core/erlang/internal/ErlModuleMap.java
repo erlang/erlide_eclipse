@@ -9,6 +9,7 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModuleMap;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.util.LRUCache;
 
@@ -24,12 +25,14 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
                                                // guess here...
     private static IErlModuleMap erlModelMap = null;
 
-    private final LRUCache<IErlModule, List<IErlModule>> moduleIncludeMap;
+    private final LRUCache<IErlModule, List<IErlModule>> moduleIncludeCache;
     private final LRUCache<String, IErlModule> pathToModuleCache;
-    private final LRUCache<String, List<ExternalTreeEntry>> externalTreeMap;
-    private final Map<String, IErlModule> edited;
+    private final LRUCache<String, List<ExternalTreeEntry>> externalTreeCache;
+    private final Map<String, IErlModule> editedModulesSet;
     private final Map<String, Set<IErlModule>> nameToModuleMap;
     private final ModelChangeListener modelChangeListener;
+    private final LRUCache<IErlProject, List<IErlModule>> projectModuleCache;
+    private final LRUCache<IErlProject, List<IErlModule>> projectIncludeCache;
 
     public static IErlModuleMap getDefault() {
         if (erlModelMap == null) {
@@ -40,10 +43,13 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     private class ModelChangeListener implements IErlModelChangeListener {
 
+        // TODO should we handle changes of projects and includes too?
+        // Which is hard, since the IOldErlangProjectProperties doesn't have
+        // listeners
         public void elementChanged(final IErlElement element) {
             if (element instanceof IErlModule) {
                 final IErlModule module = (IErlModule) element;
-                moduleIncludeMap.remove(module);
+                moduleIncludeCache.remove(module);
             }
         }
 
@@ -51,11 +57,15 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     private ErlModuleMap() {
         pathToModuleCache = new LRUCache<String, IErlModule>(CACHE_SIZE);
-        edited = Maps.newHashMap();
+        editedModulesSet = Maps.newHashMap();
         nameToModuleMap = Maps.newHashMap();
-        moduleIncludeMap = new LRUCache<IErlModule, List<IErlModule>>(
+        moduleIncludeCache = new LRUCache<IErlModule, List<IErlModule>>(
                 CACHE_SIZE);
-        externalTreeMap = new LRUCache<String, List<ExternalTreeEntry>>(
+        externalTreeCache = new LRUCache<String, List<ExternalTreeEntry>>(
+                CACHE_SIZE);
+        projectModuleCache = new LRUCache<IErlProject, List<IErlModule>>(
+                CACHE_SIZE);
+        projectIncludeCache = new LRUCache<IErlProject, List<IErlModule>>(
                 CACHE_SIZE);
         modelChangeListener = new ModelChangeListener();
         ErlangCore.getModel().addModelChangeListener(modelChangeListener);
@@ -96,15 +106,15 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     public void putEdited(final String path) {
         final IErlModule module = pathToModuleCache.get(path);
-        edited.put(path, module);
+        editedModulesSet.put(path, module);
     }
 
     public void removeEdited(final String path) {
-        edited.remove(path);
+        editedModulesSet.remove(path);
     }
 
     public IErlModule getModuleByPath(final String path) {
-        final IErlModule module = edited.get(path);
+        final IErlModule module = editedModulesSet.get(path);
         if (module != null) {
             return module;
         }
@@ -113,11 +123,11 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     public void setIncludedFilesForModule(final IErlModule module,
             final List<IErlModule> result) {
-        moduleIncludeMap.put(module, Lists.newArrayList(result));
+        moduleIncludeCache.put(module, Lists.newArrayList(result));
     }
 
     public List<IErlModule> getIncludedFilesForModule(final IErlModule module) {
-        final List<IErlModule> modules = moduleIncludeMap.get(module);
+        final List<IErlModule> modules = moduleIncludeCache.get(module);
         if (modules == null) {
             return Lists.newArrayList();
         }
@@ -130,15 +140,41 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     public void putExternalTree(final String externalPath,
             final List<ExternalTreeEntry> externalTree) {
-        externalTreeMap.put(externalPath, Lists.newArrayList(externalTree));
+        externalTreeCache.put(externalPath, Lists.newArrayList(externalTree));
     }
 
     public List<ExternalTreeEntry> getExternalTree(final String externalPath) {
-        final List<ExternalTreeEntry> entries = externalTreeMap
+        final List<ExternalTreeEntry> entries = externalTreeCache
                 .get(externalPath);
         if (entries == null) {
             return null;
         }
         return Lists.newArrayList(entries);
+    }
+
+    public List<IErlModule> getModulesForProject(final IErlProject project) {
+        final List<IErlModule> modules = projectModuleCache.get(project);
+        if (modules == null) {
+            return null;
+        }
+        return Lists.newArrayList(modules);
+    }
+
+    public List<IErlModule> getIncludesForProject(final IErlProject project) {
+        final List<IErlModule> includes = projectIncludeCache.get(project);
+        if (includes == null) {
+            return null;
+        }
+        return Lists.newArrayList(includes);
+    }
+
+    public void setModulesForProject(final IErlProject project,
+            final List<IErlModule> modules) {
+        projectModuleCache.put(project, Lists.newArrayList(modules));
+    }
+
+    public void setIncludesForProject(final IErlProject project,
+            final List<IErlModule> includes) {
+        projectIncludeCache.put(project, Lists.newArrayList(includes));
     }
 }
