@@ -361,16 +361,16 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                         }
                     }
                 }
-            } catch (final CoreException e) {
-            }
-            // add external modules
-            final List<String> mods = ModelUtils.getExternalModulesWithPrefix(
-                    b, prefix, erlProject);
-            for (final String m : mods) {
-                final String name = ErlideUtil.basenameWithoutExtension(m);
-                if (!allErlangFiles.contains(name)) {
-                    allErlangFiles.add(name);
+                // add external modules
+                final List<String> mods = ModelUtils
+                        .getExternalModulesWithPrefix(b, prefix, erlProject);
+                for (final String m : mods) {
+                    final String name = ErlideUtil.basenameWithoutExtension(m);
+                    if (!allErlangFiles.contains(name)) {
+                        allErlangFiles.add(name);
+                    }
                 }
+            } catch (final CoreException e) {
             }
         }
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();

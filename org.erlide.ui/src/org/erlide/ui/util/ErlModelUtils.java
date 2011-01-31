@@ -119,7 +119,8 @@ public class ErlModelUtils {
         return true;
     }
 
-    public static IErlModule getModule(final IEditorInput editorInput) {
+    public static IErlModule getModule(final IEditorInput editorInput)
+            throws CoreException {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
@@ -157,11 +158,7 @@ public class ErlModelUtils {
                 return module;
             }
         }
-        try {
-            return ModelUtils.createModuleInExternalFilesProject(path);
-        } catch (final CoreException e) {
-        }
-        return null;
+        return ModelUtils.createModuleInExternalFilesProject(path);
     }
 
     public static void openMFA(final String module, final String function,

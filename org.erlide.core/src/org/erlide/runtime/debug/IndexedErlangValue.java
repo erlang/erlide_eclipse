@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
@@ -24,6 +25,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.jinterface.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -110,14 +112,20 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             if (h instanceof OtpErlangAtom) {
                 final OtpErlangAtom a = (OtpErlangAtom) h;
                 final ErlangDebugTarget target = getErlangDebugTarget();
-                final IErlPreprocessorDef pd = ModelUtils.findPreprocessorDef(
-                        getErlProjects(target.getProjects()), moduleName,
-                        a.atomValue(), IErlElement.Kind.RECORD_DEF, "");
-                if (pd instanceof IErlRecordDef) {
-                    final IErlRecordDef r = (IErlRecordDef) pd;
-                    if (r.hasChildren() && r.getChildCount() + 1 == t.arity()) {
-                        return r;
+                IErlPreprocessorDef pd;
+                try {
+                    pd = ModelUtils.findPreprocessorDef(
+                            getErlProjects(target.getProjects()), moduleName,
+                            a.atomValue(), IErlElement.Kind.RECORD_DEF, "");
+                    if (pd instanceof IErlRecordDef) {
+                        final IErlRecordDef r = (IErlRecordDef) pd;
+                        if (r.hasChildren()
+                                && r.getChildCount() + 1 == t.arity()) {
+                            return r;
+                        }
                     }
+                } catch (final CoreException e) {
+                } catch (final BackendException e) {
                 }
             }
         }
