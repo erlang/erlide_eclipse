@@ -21,62 +21,6 @@ public class EventDaemon implements IBackendListener {
     final static boolean DEBUG = "true".equals(System
             .getProperty("erlide.event.daemon"));
 
-    private final class HandlerJob implements Runnable {
-        private final Backend backend;
-
-        public HandlerJob(final Backend backend) {
-            this.backend = backend;
-        }
-
-        public void run() {
-            try {
-                OtpErlangObject msg = null;
-                final List<ErlangEvent> events = Lists.newArrayList();
-                do {
-                    try {
-                        msg = backend.receiveEvent(200);
-                        if (msg != null) {
-                            events.add(ErlangEvent.parseEvent(backend, msg));
-                            // if there are more queued events, retrieve not
-                            // more than 10 of them
-                            int count = 0;
-                            do {
-                                msg = backend.receiveEvent(0);
-                                if (msg != null) {
-                                    events.add(ErlangEvent.parseEvent(backend,
-                                            msg));
-                                    count++;
-                                }
-                            } while (count < 10 && msg != null && !stopped);
-                        }
-                        if (events.size() != 0) {
-                            if (DEBUG) {
-                                for (final ErlangEvent event : events) {
-                                    ErlLogger.debug("MSG: %s", event);
-                                }
-                            }
-                            for (final EventHandler handler : getHandlers()) {
-                                handler.handleEvents(events);
-                            }
-                            events.clear();
-                        }
-                    } catch (final OtpErlangExit e) {
-                        if (!backend.isStopped()) {
-                            // backend crashed -- restart?
-                            ErlLogger.warn(e);
-                        }
-                    } catch (final Exception e) {
-                        ErlLogger.warn(e);
-                    }
-                } while (!stopped);
-            } finally {
-                synchronized (handlersLock) {
-                    handlers.clear();
-                }
-            }
-        }
-    }
-
     public EventDaemon(final Backend b) {
         runtime = b;
     }
@@ -124,4 +68,60 @@ public class EventDaemon implements IBackendListener {
     public void moduleLoaded(final Backend backend, final String projectName,
             final String moduleName) {
     }
+
+    private final class HandlerJob implements Runnable {
+        private final Backend backend;
+
+        public HandlerJob(final Backend backend) {
+            this.backend = backend;
+        }
+
+        public void run() {
+            try {
+                OtpErlangObject msg = null;
+                final List<ErlangEvent> events = Lists.newArrayList();
+                do {
+                    try {
+                        msg = backend.receiveEvent(200);
+                        if (msg != null) {
+                            events.add(ErlangEvent.parseEvent(msg));
+                            // if there are more queued events, retrieve not
+                            // more than 10 of them
+                            int count = 0;
+                            do {
+                                msg = backend.receiveEvent(0);
+                                if (msg != null) {
+                                    events.add(ErlangEvent.parseEvent(msg));
+                                    count++;
+                                }
+                            } while (count < 10 && msg != null && !stopped);
+                        }
+                        if (events.size() != 0) {
+                            if (DEBUG) {
+                                for (final ErlangEvent event : events) {
+                                    ErlLogger.debug("MSG: %s", event);
+                                }
+                            }
+                            for (final EventHandler handler : getHandlers()) {
+                                handler.handleEvents(events);
+                            }
+                            events.clear();
+                        }
+                    } catch (final OtpErlangExit e) {
+                        if (!backend.isStopped()) {
+                            // backend crashed -- restart?
+                            ErlLogger.warn(e);
+                        }
+                    } catch (final Exception e) {
+                        ErlLogger.warn(e);
+                    }
+                } while (!stopped);
+            } finally {
+                synchronized (handlersLock) {
+                    handlers.clear();
+                }
+            }
+        }
+    }
+
 }

@@ -158,8 +158,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             @Override
             protected void doHandleEvent(final ErlangEvent event)
                     throws Exception {
-                if (!event.hasTopic("bterl_debugger")
-                        || event.backend != backend) {
+                if (!event.matchTopicAndNode("bterl_debugger", backend.getName())) {
                     return;
                 }
                 final String[] modules = workdir.list(new FilenameFilter() {
@@ -191,8 +190,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             @Override
             protected void doHandleEvent(final ErlangEvent event)
                     throws Exception {
-                if (!event.hasTopic("bterl_monitor")
-                        || event.backend != backend) {
+                if (!event.matchTopicAndNode("bterl_monitor", backend.getName())) {
                     return;
                 }
                 // TODO check events and do something

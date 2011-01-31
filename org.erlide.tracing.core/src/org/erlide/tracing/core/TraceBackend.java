@@ -93,7 +93,7 @@ public class TraceBackend {
 
     private class TraceEventHandler extends EventHandler {
 
-        private final TraceDataHandler handler = new TraceDataHandler();
+        private final TraceDataHandler dataHandler = new TraceDataHandler();
         private boolean firstTrace = true;
 
         @Override
@@ -105,14 +105,14 @@ public class TraceBackend {
             if (message != null) {
                 OtpErlangObject errorReason = null;
                 // System.out.println("data: " + data);
-                if (handler.isTracingFinished(message)) {
+                if (dataHandler.isTracingFinished(message)) {
                     finishLoading(firstTrace ? TracingStatus.EMPTY
                             : TracingStatus.OK);
-                } else if ((errorReason = handler.getErrorReson(message)) != null) {
+                } else if ((errorReason = dataHandler.getErrorReson(message)) != null) {
                     errorObject = errorReason;
                     finishLoading(TracingStatus.ERROR);
                 } else {
-                    final ITreeNode newNode = handler.getData(message);
+                    final ITreeNode newNode = dataHandler.getData(message);
                     if (newNode != null) {
                         firstTrace = false;
                         if (!loadingFileInfo) {

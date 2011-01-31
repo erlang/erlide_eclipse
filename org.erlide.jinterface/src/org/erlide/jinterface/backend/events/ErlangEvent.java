@@ -1,6 +1,5 @@
 package org.erlide.jinterface.backend.events;
 
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -9,39 +8,35 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlangEvent {
-    public final Backend backend;
+    public final String node;
     public final String topic;
     public final OtpErlangObject data;
     public final OtpErlangPid sender;
 
-    public static ErlangEvent parseEvent(Backend backend,
-            OtpErlangObject message) throws BackendException {
+    public static ErlangEvent parseEvent(OtpErlangObject message)
+            throws BackendException {
         if (!isEventMessage(message)) {
             throw new BackendException("Bad event data " + message);
         }
         String topic = getEventTopic(message);
         OtpErlangObject data = getEventData(message);
         OtpErlangPid sender = getEventSender(message);
-        return new ErlangEvent(backend, topic, data, sender);
+        return new ErlangEvent(topic, data, sender);
     }
 
-    private ErlangEvent(Backend backend, String topic, OtpErlangObject data,
-            OtpErlangPid sender) {
+    private ErlangEvent(String topic, OtpErlangObject data, OtpErlangPid sender) {
         if (topic == null) {
-            throw new IllegalArgumentException("topic can't be null");
+            throw new IllegalArgumentException("event topic can't be null");
         }
-        if (data == null) {
-            throw new IllegalArgumentException("data can't be null");
-        }
-        this.backend = backend;
         this.topic = topic;
         this.data = data;
         this.sender = sender;
+        this.node = sender.node();
     }
 
     @Override
     public String toString() {
-        return "[" + backend.getName() + ":" + topic + ": " + data + "]";
+        return "[" + node + "::" + topic + ": " + data + "]";
     }
 
     private static OtpErlangPid getEventSender(final OtpErlangObject msg) {
@@ -74,6 +69,10 @@ public final class ErlangEvent {
 
     public boolean hasTopic(String string) {
         return topic.equals(string);
+    }
+
+    public boolean matchTopicAndNode(String aTopic, String aNode) {
+        return topic.equals(aTopic) && node.equals(aNode);
     }
 
 }

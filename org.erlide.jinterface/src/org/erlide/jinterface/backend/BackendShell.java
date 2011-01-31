@@ -83,7 +83,7 @@ public class BackendShell {
 
         @Override
         protected void doHandleEvent(ErlangEvent event) throws Exception {
-            if (!event.hasTopic("io_server") || event.backend != fBackend) {
+            if (!event.matchTopicAndNode("io_server", fBackend.getName())) {
                 return;
             }
             // ErlLogger.debug("************>>> " + event);
