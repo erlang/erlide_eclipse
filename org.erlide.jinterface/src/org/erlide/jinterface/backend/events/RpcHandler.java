@@ -4,7 +4,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.util.JRpcUtil;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -13,7 +12,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class RpcHandler extends EventHandler {
     private final Backend fRuntime;
@@ -25,48 +23,51 @@ public final class RpcHandler extends EventHandler {
     }
 
     @Override
-    protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
+    protected void doHandleEvent(final ErlangEvent event) throws Exception {
         // ErlLogger.debug("-- RPC: " + msg);
-        if (msg instanceof OtpErlangTuple) {
-            final OtpErlangTuple t = (OtpErlangTuple) msg;
-            final OtpErlangObject e0 = t.elementAt(0);
-            if (e0 instanceof OtpErlangAtom) {
-                final OtpErlangAtom kind = (OtpErlangAtom) e0;
-                final OtpErlangObject receiver = t.elementAt(1);
-                final OtpErlangObject target = t.elementAt(2);
-                if ("call".equals(kind.atomValue())) {
-                    final OtpErlangList args = buildArgs(t.elementAt(3));
-                    final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
-                    executor.execute(new Runnable() {
-                        public void run() {
-                            final OtpErlangObject result = JRpcUtil.execute(
-                                    receiver, target, args.elements());
-                            rpcReply(from, result);
-                        }
-                    });
 
-                } else if ("uicall".equals(kind.atomValue())) {
-                    final OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
-                    final OtpErlangList args = buildArgs(t.elementAt(4));
-                    // TODO how to mark this as executable in UI thread?
-                    executor.execute(new Runnable() {
-                        public void run() {
-                            final OtpErlangObject result = JRpcUtil.execute(
-                                    receiver, target, args.elements());
-                            rpcReply(from, result);
-                        }
-                    });
+        // TODO use standard event format
 
-                } else if ("cast".equals(kind.atomValue())) {
-                    final OtpErlangList args = buildArgs(t.elementAt(3));
-                    executor.execute(new Runnable() {
-                        public void run() {
-                            JRpcUtil.execute(receiver, target, args.elements());
-                        }
-                    });
-                }
-            }
-        }
+        // if (msg instanceof OtpErlangTuple) {
+        // final OtpErlangTuple t = (OtpErlangTuple) msg;
+        // final OtpErlangObject e0 = t.elementAt(0);
+        // if (e0 instanceof OtpErlangAtom) {
+        // final OtpErlangAtom kind = (OtpErlangAtom) e0;
+        // final OtpErlangObject receiver = t.elementAt(1);
+        // final OtpErlangObject target = t.elementAt(2);
+        // if ("call".equals(kind.atomValue())) {
+        // final OtpErlangList args = buildArgs(t.elementAt(3));
+        // final OtpErlangPid from = (OtpErlangPid) t.elementAt(4);
+        // executor.execute(new Runnable() {
+        // public void run() {
+        // final OtpErlangObject result = JRpcUtil.execute(
+        // receiver, target, args.elements());
+        // rpcReply(from, result);
+        // }
+        // });
+        //
+        // } else if ("uicall".equals(kind.atomValue())) {
+        // final OtpErlangPid from = (OtpErlangPid) t.elementAt(1);
+        // final OtpErlangList args = buildArgs(t.elementAt(4));
+        // // TODO how to mark this as executable in UI thread?
+        // executor.execute(new Runnable() {
+        // public void run() {
+        // final OtpErlangObject result = JRpcUtil.execute(
+        // receiver, target, args.elements());
+        // rpcReply(from, result);
+        // }
+        // });
+        //
+        // } else if ("cast".equals(kind.atomValue())) {
+        // final OtpErlangList args = buildArgs(t.elementAt(3));
+        // executor.execute(new Runnable() {
+        // public void run() {
+        // JRpcUtil.execute(receiver, target, args.elements());
+        // }
+        // });
+        // }
+        // }
+        // }
     }
 
     private static OtpErlangList buildArgs(final OtpErlangObject a)

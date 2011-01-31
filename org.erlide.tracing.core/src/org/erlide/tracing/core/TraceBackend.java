@@ -20,6 +20,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager;
@@ -96,11 +97,14 @@ public class TraceBackend {
         private boolean firstTrace = true;
 
         @Override
-        protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-            final OtpErlangObject message = getStandardEvent(msg, EVENT_NAME);
+        protected void doHandleEvent(final ErlangEvent event) throws Exception {
+            if (!event.hasTopic(EVENT_NAME)) {
+                return;
+            }
+            final OtpErlangObject message = event.data;
             if (message != null) {
                 OtpErlangObject errorReason = null;
-                // System.out.println("message: " + message);
+                // System.out.println("data: " + data);
                 if (handler.isTracingFinished(message)) {
                     finishLoading(firstTrace ? TracingStatus.EMPTY
                             : TracingStatus.OK);

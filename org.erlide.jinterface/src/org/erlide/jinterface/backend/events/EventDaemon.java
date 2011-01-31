@@ -9,6 +9,7 @@ import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Lists;
 
 public class EventDaemon implements IBackendListener {
 
@@ -30,33 +31,34 @@ public class EventDaemon implements IBackendListener {
         public void run() {
             try {
                 OtpErlangObject msg = null;
-                final List<OtpErlangObject> msgs = new ArrayList<OtpErlangObject>();
+                final List<ErlangEvent> events = Lists.newArrayList();
                 do {
                     try {
                         msg = backend.receiveEvent(200);
                         if (msg != null) {
-                            msgs.add(msg);
+                            events.add(ErlangEvent.parseEvent(backend, msg));
                             // if there are more queued events, retrieve not
                             // more than 10 of them
                             int count = 0;
                             do {
                                 msg = backend.receiveEvent(0);
                                 if (msg != null) {
-                                    msgs.add(msg);
+                                    events.add(ErlangEvent.parseEvent(backend,
+                                            msg));
                                     count++;
                                 }
                             } while (count < 10 && msg != null && !stopped);
                         }
-                        if (msgs.size() != 0) {
+                        if (events.size() != 0) {
                             if (DEBUG) {
-                                for (final OtpErlangObject m : msgs) {
-                                    ErlLogger.debug("MSG: %s", m);
+                                for (final ErlangEvent event : events) {
+                                    ErlLogger.debug("MSG: %s", event);
                                 }
                             }
                             for (final EventHandler handler : getHandlers()) {
-                                handler.handleMsgs(msgs);
+                                handler.handleEvents(events);
                             }
-                            msgs.clear();
+                            events.clear();
                         }
                     } catch (final OtpErlangExit e) {
                         if (!backend.isStopped()) {
@@ -82,7 +84,7 @@ public class EventDaemon implements IBackendListener {
     public synchronized void start() {
         stopped = false;
         new Thread(new HandlerJob(runtime)).start();
-        addHandler(new RpcHandler(runtime));
+        // addHandler(new RpcHandler(runtime));
     }
 
     public synchronized void stop() {

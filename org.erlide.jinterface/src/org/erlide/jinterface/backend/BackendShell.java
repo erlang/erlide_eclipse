@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.erlide.jinterface.backend.console.IoRequest;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
+import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -81,13 +82,12 @@ public class BackendShell {
     public class ConsoleEventHandler extends EventHandler {
 
         @Override
-        protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-            final OtpErlangObject event = getStandardEvent(msg, "io_server");
-            if (event == null) {
+        protected void doHandleEvent(ErlangEvent event) throws Exception {
+            if (!event.hasTopic("io_server") || event.backend != fBackend) {
                 return;
             }
             // ErlLogger.debug("************>>> " + event);
-            add(event);
+            add(event.data);
         }
     }
 

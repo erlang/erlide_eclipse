@@ -1,8 +1,7 @@
 package org.erlide.test_support.ui.suites;
 
+import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class TestEventHandler extends EventHandler {
 
@@ -13,13 +12,12 @@ public class TestEventHandler extends EventHandler {
     }
 
     @Override
-    protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-        final OtpErlangObject event = getStandardEvent(msg, "bterl");
-        if (event == null) {
+    protected void doHandleEvent(ErlangEvent event) throws Exception {
+        if (!event.hasTopic("bterl")) {
             return;
         }
         if (view != null) {
-            view.notifyEvent(msg);
+            view.notifyEvent(event.data);
         }
     }
 

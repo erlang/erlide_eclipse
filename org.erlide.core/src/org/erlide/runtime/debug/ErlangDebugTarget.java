@@ -34,7 +34,6 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 
@@ -51,6 +50,8 @@ import erlang.ErlideDebug;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements
         IDebugTarget, IErlangDebugNode {
+
+    private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
     public static class TraceChangedEventData {
         public static final int ADDED = 1;
@@ -118,6 +119,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     private ArrayList<OtpErlangTuple> fTraceList;
 
+    private final DebuggerEventDaemon debuggerDaemon;
+
     // private final WaitingForDebuggerListener waiter;
 
     public ErlangDebugTarget(final ILaunch launch, final ErlideBackend b,
@@ -133,12 +136,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         fLocalProcesses = new ArrayList<ErlangProcess>();
         interpretedModules = new HashSet<String>();
 
-        b.getEventDaemon().addHandler(new DebugEventHandler());
+        debuggerDaemon = new DebuggerEventDaemon(b, this);
+        debuggerDaemon.start();
+        ErlLogger.debug("debug daemon " + debuggerDaemon.getMBox());
 
         final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
         ErlLogger.debug("debug started " + pid);
         fBackend.send(pid,
-                OtpErlang.mkTuple(new OtpErlangAtom("parent"), b.getEventPid()));
+                OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager()
                 .addBreakpointListener(this);
@@ -217,6 +222,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         final IProcess process = getProcess();
         if (process != null) {
             process.terminate();
+        }
+        if (debuggerDaemon != null) {
+            debuggerDaemon.stop();
         }
         fireTerminateEvent();
     }
@@ -602,7 +610,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     public void sendStarted() {
-        ErlideDebug.sendStarted(fBackend, fBackend.getEventPid());
+        ErlideDebug.sendStarted(fBackend, debuggerDaemon.getMBox());
     }
 
     public OtpErlangPid getMetaFromPid(final OtpErlangPid pid) {
@@ -616,50 +624,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     public void putMetaPid(final OtpErlangPid metaPid, final OtpErlangPid pid) {
         metaPids.put(pid, metaPid);
         pidsFromMeta.put(metaPid, pid);
-    }
-
-    class DebugEventHandler extends EventHandler {
-
-        @Override
-        protected void doHandleMsg(final OtpErlangObject msg) throws Exception {
-            // ErlLogger.debug("@@@ " + msg);
-            // TODO More events from erlide_dbg_mon...
-            final OtpErlangTuple t = (OtpErlangTuple) msg;
-            final OtpErlangObject el0 = t.elementAt(0);
-            if (el0 instanceof OtpErlangAtom) {
-                final OtpErlangAtom a = (OtpErlangAtom) el0;
-                final String tag = a.atomValue();
-                if ("started".equals(tag)) {
-                    started();
-                } else if ("terminated".equals(tag)) {
-                    terminate();
-                } else if ("int".equals(tag)) {
-                    handleIntEvent((OtpErlangTuple) t.elementAt(1));
-                } else if ("attached".equals(tag)) {
-                    final OtpErlangPid pid = (OtpErlangPid) t.elementAt(1);
-                    if (getMetaFromPid(pid) == null) {
-                        final OtpErlangPid self = fBackend.getEventPid();
-                        final OtpErlangPid metaPid = ErlideDebug.attached(
-                                fBackend, pid, self);
-                        ErlLogger.debug("attached: " + pid + ",  meta: "
-                                + metaPid);
-                        if (metaPid != null) {
-                            putMetaPid(metaPid, pid);
-                        }
-                        // ErlideDebug.tracing(runtime, true, metaPid);
-                    }
-                } else {
-                    // ErlLogger.debug("other event: " + msg);
-                }
-            } else if (el0 instanceof OtpErlangPid) { // meta event
-                final OtpErlangPid pid = (OtpErlangPid) el0;
-                final OtpErlangObject metaEvent = t.elementAt(1);
-                if (metaEvent instanceof OtpErlangTuple) {
-                    final OtpErlangTuple metaEventTuple = (OtpErlangTuple) metaEvent;
-                    handleMetaEvent(pid, metaEventTuple);
-                }
-            }
-        }
     }
 
     public Collection<IProject> getProjects() {
@@ -695,5 +659,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     public Collection<OtpErlangPid> getAllMetaPids() {
         return metaPids.values();
+    }
+
+    public OtpErlangPid getEventMBox() {
+        return debuggerDaemon.getMBox();
     }
 }

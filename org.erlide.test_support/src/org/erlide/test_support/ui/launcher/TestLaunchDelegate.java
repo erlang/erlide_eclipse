@@ -25,6 +25,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.RuntimeVersion;
+import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -155,11 +156,10 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final EventHandler handler = new EventHandler() {
             @Override
-            protected void doHandleMsg(final OtpErlangObject msg)
+            protected void doHandleEvent(final ErlangEvent event)
                     throws Exception {
-                final OtpErlangObject event = getStandardEvent(msg,
-                        "bterl_debugger");
-                if (event == null) {
+                if (!event.hasTopic("bterl_debugger")
+                        || event.backend != backend) {
                     return;
                 }
                 final String[] modules = workdir.list(new FilenameFilter() {
@@ -174,7 +174,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 }
                 // getDebugTarget().installDeferredBreakpoints();
 
-                final OtpErlangPid pid = (OtpErlangPid) event;
+                final OtpErlangPid pid = (OtpErlangPid) event.data;
                 backend.send(pid, new OtpErlangAtom("ok"));
                 backend.getEventDaemon().removeHandler(this);
             }
@@ -189,11 +189,10 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final EventHandler handler = new EventHandler() {
             @Override
-            protected void doHandleMsg(final OtpErlangObject msg)
+            protected void doHandleEvent(final ErlangEvent event)
                     throws Exception {
-                final OtpErlangObject event = getStandardEvent(msg,
-                        "bterl_monitor");
-                if (event == null) {
+                if (!event.hasTopic("bterl_monitor")
+                        || event.backend != backend) {
                     return;
                 }
                 // TODO check events and do something
@@ -327,11 +326,12 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @SuppressWarnings("unused")
-    private void doLaunchWithScript(final File theWorkdir, final String theSuite,
-            final String theTestCase, final String theMode, final ILaunch launch,
+    private void doLaunchWithScript(final File theWorkdir,
+            final String theSuite, final String theTestCase,
+            final String theMode, final ILaunch launch,
             final IProgressMonitor monitor) {
-        System.out.println("---@> launch " + theWorkdir.getAbsolutePath() + " -> "
-                + theSuite + ":" + theTestCase + " (" + theMode + ")");
+        System.out.println("---@> launch " + theWorkdir.getAbsolutePath()
+                + " -> " + theSuite + ":" + theTestCase + " (" + theMode + ")");
         if (!theWorkdir.exists()) {
             return;
         }

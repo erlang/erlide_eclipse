@@ -44,6 +44,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.backend.ErlideBackendVisitor;
@@ -118,9 +119,9 @@ public class ProcessListView extends ViewPart {
         class ProcessEventHandler extends EventHandler {
 
             @Override
-            protected void doHandleMsg(final OtpErlangObject msg)
+            protected void doHandleEvent(final ErlangEvent event)
                     throws Exception {
-                if (getStandardEvent(msg, "processlist") == null) {
+                if (!event.hasTopic("processlist")) {
                     return;
                 }
                 Display.getDefault().asyncExec(new Runnable() {
