@@ -27,13 +27,10 @@
 
 %compile module
 compile(Module, Path) ->
-	io:format("inside compile~n"),
 	case cover:compile(Path) of		%%TODO: include files	
 			{ok, _M} -> 
-				io:format("compilation ok~n"),
 				ok;
 			{error, Err} -> 
-				io:format("~n~p", [Err]),
 				erlide_jrpc:event(?EVENT, #cover_error{place = Module, 
 													   type = compiling,
 													   info = Err}),
@@ -53,7 +50,6 @@ compile_dir(Dir) ->
 
 %tests compilation (if modules with tests are diffrent then tested modules)
 compile_test(Module, Path) ->
-	io:format("~p~n~p~n", [Module, Path]),
 	Options = [debug_info,binary, report_errors, report_warings],
 	Binary = case compile:file(Path, Options) of
 				 {ok, Module, Bin} ->
@@ -67,9 +63,7 @@ compile_test(Module, Path) ->
 	code:load_binary(Module, Path, Binary).
 
 %prepare module
-prepare(eunit, Module,  Path) ->
-	io:format("inside prepare~n"),
-	
+prepare(eunit, Module,  Path) ->	
 	case eunit:test(Module) of
 			ok ->
 				erlide_jrpc:event(?EVENT, {Module, test_ok}),
@@ -83,10 +77,8 @@ prepare(eunit, Module,  Path) ->
 
 %prepare file
 prepare_file(eunit, Module, Path) ->
-	io:format("inside prepare file ~p~n", [Path]),
 	case eunit:test({file, Path}) of
 		ok ->
-			io:format("prepare file ok"),
 			ok;
 		Er ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
@@ -119,7 +111,6 @@ create_report(Module) ->
 	FunRes = cover:analyse(Module, function),
 	LineRes = cover:analyse(Module, calls, line), %%calls!
 	
-%	erlide_jrpc:event(?EVENT, {Module, ModRes, FunRes}),
 	case { ModRes, FunRes, LineRes} of
 		{{ok, _}, {ok, _}, {ok, _}} ->
 			Res = prepare_result(ModRes, FunRes, LineRes, Module),
@@ -129,6 +120,7 @@ create_report(Module) ->
 			{error, analyse}
 	end.
 
+% create index file
 create_index(Results) ->
 	IndexPath = filename:join([?COVER_DIR,  "index.html"]),
 	case filelib:ensure_dir(IndexPath) of
@@ -139,22 +131,9 @@ create_index(Results) ->
 		_ -> 
 			Total_percent = percentage_total(Results),
 			output_index(IndexPath, Results, Total_percent),
-			AbsPath = filename:absname(IndexPath),
-	%		erlide_jrpc:event(?EVENT, {?INDEX, AbsPath}),
-			AbsPath
+			filename:absname(IndexPath)
 	end.
 			
-%create new index file - at the begining
-%%new_index_file(IndexFile) ->
-%%	filelib:ensure_dir(IndexFile),		%TODO: error handling
-%%	IoDevice = case file:open(IndexFile, [write]) of
-%%                   {ok, IoD}       -> IoD;
-%%                   {error, Reason} -> exit({invalid_file, Reason}) %%!
-%%               end,
-%%    io:format(IoDevice, output_header(IoDevice), []),
-%%	io:format(IoDevice, output_footer(IoDevice), []),
-%%	file:close(IoDevice),
-%%    ok.
 
 %%----------------------------------------------
 %% Local Functions
@@ -165,7 +144,6 @@ prepare_result(ModRes, FunRes, LineRes, Module) ->
 	FileHtml = filename:join([?COVER_DIR,  "mod_" ++ atom_to_list(Module) ++ ".html"]),
 	filelib:ensure_dir(FileHtml),		%TODO: error handling
     ResHtml = cover:analyse_to_file(Module, FileHtml, [html]),
-    %%filename:basename(FileHtml), %%
 	Out = case ResHtml of
 			{ok, OutFile} -> OutFile;
 			{error, _} -> ?NO_FILE
@@ -186,7 +164,6 @@ prepare_result(ModRes, FunRes, LineRes, Module) ->
 				percentage = count_percent(Cov, Cov + Uncov),
 				functions = FunList,
 				lines = LineList},
-	io:format("~p~n", [Result]),
 	Result.
 
 count_percent(Covered, Total) ->
@@ -244,7 +221,7 @@ output_footer(IoDevice) ->
     "</body>~n</html>~n".
 
 
-percentage_total(Results) ->
+percentage_total(Results) when length(Results) > 0 ->
     {Covered, All} = 
 		lists:foldl(
           fun(#module_res{covered_num = C, line_num = A}, {Covered, All}) ->
@@ -253,12 +230,8 @@ percentage_total(Results) ->
     case All of
         0 -> 0.0;
         _ -> 100 * Covered / All
-    end.
+    end;
+percentage_total(Results)  ->
+	0.0.
 
 
-%%previous_content(IndexFile) ->
-%%	IODevice = case file:open(IndexFile, [read]) of
-%%				   {ok, IoD}       -> IoD;
-%%                   {error, Reason} -> exit({invalid_file, Reason}) %%!
-%%               end,
-%%	Data = case file:read().

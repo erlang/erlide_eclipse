@@ -44,7 +44,6 @@ stop() ->
 %% PathTst -> path to test files (or to module on its own)
 prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
 	TypeAtom = list_to_atom(Type),
-	io:format("prepare ~p ~n", [TypeAtom]),
 	case TypeAtom of
 		module ->
 			MName = list_to_atom(NameOrPathSrc),
@@ -60,7 +59,6 @@ prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
 %perform coverage (on cover_compiled data - after performing some tests)
 perform(Type,NameOrPathSrc,PathTst) ->
     TypeAtom = list_to_atom(Type), 
-    io:format("prepare ~p ~n", [TypeAtom]),
 	case TypeAtom of
 		module ->
 			MName = list_to_atom(NameOrPathSrc),
@@ -99,7 +97,6 @@ handle_call({includes, Includes}, _From, State) ->
 	{reply, ok, State#state{includes = Includes}};
 
 handle_call({module, Module, _Path}, _From, State) ->
-	io:format("inside cast1~n"),
 	Report = coverage:create_report(?COVER_DIR, Module),
 	case Report of		
 		{ok, Res} ->
@@ -115,13 +112,11 @@ handle_call({all, Name}, _From, State) ->
 	{reply, ok, State};
 
 handle_call({application, Name, Src}, _From,  State) ->
-	io:format("inside cast2~n"),
 	{reply, ok, State};
 
 
 % call -> covarage with preparation
 handle_call({prep, module, Module, Path}, _From, State) ->
-	io:format("inside cast5, ~p ~n", [State#state.cover_type]),
 	PathIdx = case coverage:compile(Module, Path) of
 		ok ->
 			case coverage:prepare(State#state.cover_type, Module, Path) of
@@ -143,7 +138,6 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 		{error, _} ->
 			no_file
 	end,
-	io:format("indexpath ~p~n", [PathIdx]),
 	{reply, PathIdx, State};
 
 handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
@@ -170,14 +164,12 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 					
 					ModulesTst = get_modules(PathTst),
 					Res = lists:foldl(fun(Test, _) ->
-								 % PathM = filename:join(Path, atom_to_list(Module) ++ ".erl"),
-								  io:format("test: ~p~n", [Test]),
 								  [PathM] = search_module(PathTst, Test),
 								  TestA = list_to_atom(Test),
 								  coverage:compile_test(TestA, PathM),
 								  case coverage:prepare(State#state.cover_type, TestA, PathM) of
 										{error, _} ->
-												stop();
+												[];
 						  				_ ->
 												coverage:create_report(ModulesSrc)
 						  		  end
@@ -201,12 +193,10 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 	{reply, Path, State};
 
 handle_call({prep, application, Name, Src}, _From, State) ->
-	io:format("inside cast6~n"),
 	{reply, ok, State};
 
 %% cast default
 handle_call(_, _From, State) ->
-	io:format("else~n"),
 	{reply, ok, State}.
 
 %terminate

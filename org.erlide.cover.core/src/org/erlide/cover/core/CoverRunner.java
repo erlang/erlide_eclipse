@@ -73,12 +73,12 @@ public class CoverRunner extends Thread {
             }
         }
         
-        try {
+       /* try {
             backend.getBackend().call(Constants.ERLANG_BACKEND, 
                     Constants.FUN_STOP, "");
         } catch (BackendException e) {
             e.printStackTrace();
-        }
+        }*/
         
         
         // TODO: index should be created here.

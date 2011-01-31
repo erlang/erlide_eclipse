@@ -60,9 +60,20 @@ public class CoverBackend {
 
     public void initialize(ErlLaunchData data, CoverLaunchData coverData) {
 
-        if (backend != null)
-            backend.stop();
+        this.coverData = coverData;
 
+        settings = new CoverSettings(coverData.getType(), coverData);
+        
+        
+        if (backend != null && !backend.isStopped() && 
+                info.getNodeName().equals(data.nodeName) &&
+                info.getName().equals(data.runtime)) {
+            System.out.println("Backend exists");
+            return;
+        } else if (backend != null) {
+            backend.stop();
+        }
+            
         final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
 
@@ -71,9 +82,9 @@ public class CoverBackend {
             handleError("Could not find runtime");
         }
 
-        this.coverData = coverData;
+       /* this.coverData = coverData;
 
-        settings = new CoverSettings(coverData.getType(), coverData);
+        settings = new CoverSettings(coverData.getType(), coverData);*/
 
         ErlLogger.debug("Backend created...");
         System.out.println("Create backend");
@@ -92,14 +103,11 @@ public class CoverBackend {
 
     }
 
+   
     public void attachBackend(Backend b, LaunchType type) {
-        backend.stop();
-        backend = b;
-
-        settings = new CoverSettings(type, null);
-        this.info = b.getInfo();
+        
         // no set config
-
+        //TODO: implement
     }
 
     public void attachToNode(String nodeName) {
