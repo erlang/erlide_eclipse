@@ -15,7 +15,6 @@
 %%----------------------------------------------
 -export([compile/2,
 		 compile_dir/1,
-		 compile_test/2,
 		 prepare/3,
 		 create_report/1,
 		 create_index/1]).
@@ -48,20 +47,20 @@ compile_dir(Dir) ->
 	end.
 
 %tests compilation (if modules with tests are diffrent then tested modules)
-compile_test(Module, Path) ->
-	Options = [debug_info,binary, report_errors, report_warnings],
-	case compile:file(Path, Options) of
-		    {ok, Module, Bin} ->
-				Bin,
-				code:load_binary(Module, Path, Bin),
-				ok;
-			 _ ->
-				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-											   type = 'preparing test',
-											   info = "compilation error"}),
-				%%TODO: check if loaded
-				error
-	end.
+%compile_test(Module, Path) ->
+%	Options = [debug_info,binary, report_errors, report_warnings],
+%	case compile:file(Path, Options) of
+%		    {ok, Module, Bin} ->
+%				Bin,
+%				code:load_binary(Module, Path, Bin),
+%				ok;
+%			 _ ->
+%				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+%											   type = 'preparing test',
+%											   info = "compilation error"}),
+%				%%TODO: check if loaded
+%				error
+%	end.
 	
 
 %prepare module

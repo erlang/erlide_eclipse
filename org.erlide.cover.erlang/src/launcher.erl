@@ -188,7 +188,7 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 					Res = lists:foldl(fun(Test, _) ->
 								  [PathM] = search_module(PathTst, Test),
 								  TestA = list_to_atom(Test),
-								  coverage:compile_test(TestA, PathM),
+								%  coverage:compile_test(TestA, PathM),
 								  case coverage:prepare(State#state.cover_type, TestA, PathM) of
 										{error, _} ->
 												[];
