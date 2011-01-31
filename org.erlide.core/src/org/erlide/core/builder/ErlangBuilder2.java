@@ -33,8 +33,8 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.rpc.EventHandler;
-import org.erlide.jinterface.rpc.EventProcessor;
+import org.erlide.jinterface.rpc.RpcEventHandler;
+import org.erlide.jinterface.rpc.RpcEventProcessor;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -148,7 +148,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                 final Collection<IPath> includeDirs = helper
                         .getAllIncludeDirs(project);
 
-                final EventProcessor processor = new EventProcessor(
+                final RpcEventProcessor processor = new RpcEventProcessor(
                         new BuildHandler(), backend);
                 final OtpErlangPid watcher = processor.getPid();
                 final OtpErlangPid builder = (OtpErlangPid) backend.call(
@@ -221,7 +221,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
         notifier = null;
     }
 
-    class BuildHandler implements EventHandler {
+    class BuildHandler implements RpcEventHandler {
 
         public boolean handleEvent(final OtpErlangObject msg) {
             notifier.checkCancel();

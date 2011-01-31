@@ -2,7 +2,7 @@ package org.erlide.jinterface.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface EventHandler {
+public interface RpcEventHandler {
 
     /**
      * Handle events from erlang. Return true to terminate. Should be stateless.

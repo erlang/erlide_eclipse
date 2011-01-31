@@ -9,17 +9,17 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public final class EventProcessor implements Runnable {
+public final class RpcEventProcessor implements Runnable {
 
     private static final int TIMEOUT = 10000;
 
-    private final EventHandler handler;
+    private final RpcEventHandler handler;
     private final OtpMbox mbox;
     private volatile boolean terminated = true;
 
     private OtpErlangPid starter;
 
-    public EventProcessor(final EventHandler h, final Backend backend) {
+    public RpcEventProcessor(final RpcEventHandler h, final Backend backend) {
         handler = h;
         mbox = backend.createMbox();
     }
@@ -37,7 +37,7 @@ public final class EventProcessor implements Runnable {
             } catch (final OtpErlangExit e) {
                 terminated = true;
             } catch (final Exception e) {
-                ErlLogger.warn("EventProcessor %s got exception:", mbox.self());
+                ErlLogger.warn("RpcEventProcessor %s got exception:", mbox.self());
                 ErlLogger.warn(e);
             }
 
