@@ -13,6 +13,7 @@ package org.erlide.ui.editors.erl.outline;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
@@ -47,7 +48,6 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
@@ -209,12 +209,12 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public void setInput(final IEditorInput editorInput) {
         // ErlLogger.log("> outline set input "+editorInput);
         fModule = null;
-        fModule = ErlModelUtils.getModule(editorInput);
         try {
+            fModule = ErlModelUtils.getModule(editorInput);
             if (fModule != null) {
                 fModule.open(null);
             }
-        } catch (final ErlModelException e) {
+        } catch (final CoreException e) {
         }
     }
 

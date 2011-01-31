@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -586,7 +587,11 @@ public class DefaultErlangFoldingStructureProvider implements
         }
 
         initializePreferences();
-        fModule = ErlModelUtils.getModule(fEditor.getEditorInput());
+        try {
+            fModule = ErlModelUtils.getModule(fEditor.getEditorInput());
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
     }
 
     private void initializePreferences() {

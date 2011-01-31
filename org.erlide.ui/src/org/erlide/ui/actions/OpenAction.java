@@ -225,7 +225,7 @@ public class OpenAction extends SelectionDispatchAction {
 
     private static IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
-            final IErlModel model) throws CoreException {
+            final IErlModel model) throws CoreException, BackendException {
         IContainer parent = null;
         if (module != null) {
             final IResource resource = module.getResource();
