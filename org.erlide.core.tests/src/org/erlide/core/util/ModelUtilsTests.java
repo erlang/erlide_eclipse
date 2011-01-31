@@ -526,4 +526,53 @@ public class ModelUtilsTests {
 		assertNotSame("file.hrl", filePath);
 	}
 
+	@Test
+	public void findTypespec() throws Exception {
+		// given
+		// a project with a module and an include with a typespec
+		final IErlProject project = projects[0];
+		final String headerName = "a.hrl";
+		final IErlModule header = ErlideTestUtils
+				.createModule(project, headerName,
+						"-type date() :: {pos_integer(), pos_integer(), pos_integer()}.\n");
+		header.open(null);
+		final IErlModule module = ErlideTestUtils
+				.createModule(
+						project,
+						"f.erl",
+						"-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
+								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+		module.open(null);
+		// when
+		// looking for the typespec
+		final IErlTypespec typespec = ModelUtils.findTypespec(module, "date",
+				"");
+		// then
+		// it should be found
+		assertNotNull(typespec);
+		assertEquals(typespec.getParent(), header);
+	}
+
+	@Test
+	public void findFunction() throws Exception {
+		// given
+		// a project with a module with a function
+		final IErlProject project = projects[0];
+		final IErlModule module = ErlideTestUtils
+				.createModule(
+						project,
+						"f.erl",
+						"-module(f).\n-export([f/0]).\n-record(rec2, {a, b}).\n"
+								+ "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+		module.open(null);
+		// when
+		// looking for the function
+		final IErlFunction function = ModelUtils.findFunction(module,
+				new ErlangFunction("f", 0));
+		// then
+		// it should be found
+		assertNotNull(function);
+		assertEquals(function.getParent(), module);
+	}
+
 }

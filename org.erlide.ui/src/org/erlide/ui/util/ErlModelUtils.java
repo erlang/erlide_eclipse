@@ -28,6 +28,7 @@ import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.jinterface.backend.BackendException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
@@ -102,14 +103,15 @@ public class ErlModelUtils {
     }
 
     public static boolean openTypeInEditor(final String typeName,
-            final IEditorPart editor) throws CoreException {
+            final IEditorPart editor) throws CoreException, BackendException {
         final ErlangEditor erlangEditor = (ErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName,
+                ErlangCore.getModel().getExternalIncludes(module.getProject()));
         if (typespec == null) {
             return false;
         }

@@ -19,12 +19,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.text.ErlangToolkit;
 
 import com.google.common.collect.Lists;
 
@@ -73,9 +75,18 @@ public class ErlideTestUtils {
 
 	public static void deleteModule(final IErlModule module)
 			throws CoreException {
+		final String scannerName = ErlangToolkit
+				.createScannerModuleName(module);
 		final IFile file = (IFile) module.getResource();
 		if (file != null) {
 			file.delete(true, null);
+		}
+		final IPath stateDir = ErlangPlugin.getDefault().getStateLocation();
+		final String cacheExts[] = { ".noparse", ".refs", ".scan" };
+		for (final String ext : cacheExts) {
+			final IPath p = stateDir.append(scannerName + ext);
+			final File f = new File(p.toOSString());
+			f.delete();
 		}
 		module.dispose();
 		modules.remove(module);

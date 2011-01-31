@@ -97,6 +97,24 @@ public class ModelUtils {
     }
 
     public static IErlTypespec findTypespec(final IErlModule module,
+            final String name, final String externalIncludes)
+            throws CoreException, BackendException {
+        IErlTypespec typespec = findTypespec(module, name);
+        if (typespec != null) {
+            return typespec;
+        }
+        final List<IErlModule> includedFiles = findAllIncludedFiles(module,
+                externalIncludes);
+        for (final IErlModule includedFile : includedFiles) {
+            typespec = findTypespec(includedFile, name);
+            if (typespec != null) {
+                return typespec;
+            }
+        }
+        return null;
+    }
+
+    private static IErlTypespec findTypespec(final IErlModule module,
             final String name) throws ErlModelException {
         for (final IErlElement element : module
                 .getChildrenOfKind(Kind.TYPESPEC)) {

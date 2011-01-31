@@ -257,10 +257,12 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findLocalCall(final IErlModule module,
             final Backend backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
-            final boolean checkAllProjects) throws ErlModelException,
-            BackendException {
+            final boolean checkAllProjects) throws BackendException,
+            CoreException {
+        final IErlModel model = ErlangCore.getModel();
         if (isTypeDefOrRecordDef(element)) {
-            return ModelUtils.findTypespec(module, res.getFun());
+            return ModelUtils.findTypespec(module, res.getFun(),
+                    model.getExternalIncludes(erlProject));
         }
         final IErlFunction foundElement = ModelUtils.findFunction(module,
                 res.getFunction());
@@ -274,7 +276,6 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlImport ei = module.findImport(res.getFunction());
             if (ei != null) {
                 moduleName = ei.getImportModule();
-                final IErlModel model = ErlangCore.getModel();
                 res2 = ErlideOpen.getSourceFromModule(backend,
                         model.getPathVars(), moduleName,
                         model.getExternalModules(erlProject));
