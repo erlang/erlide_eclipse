@@ -18,7 +18,8 @@
 		 stop/0,
 	 	 perform/3,
 	 	 prepare_and_perform/3,
-	 	 set_includes/1]).
+	 	 set_includes/1,
+		 set_beam_dir/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -62,18 +63,22 @@ perform(Type,NameOrPathSrc,PathTst) ->
 	case TypeAtom of
 		module ->
 			MName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {TypeAtom, MName, PathTst});
+			gen_server:call(?MODULE, {perform, TypeAtom, MName, PathTst}); 
 		application ->
 			AName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {TypeAtom, AName , PathTst});
+			gen_server:call(?MODULE, {perform, TypeAtom, AName , PathTst});
 		_ ->
 			PathSrc = NameOrPathSrc,
-			gen_server:call(?MODULE, {TypeAtom, PathSrc , PathTst})
+			gen_server:call(?MODULE, {perform, TypeAtom, PathSrc , PathTst})
 	end.
 
 % set include directories
 set_includes(Includes) ->
 	gen_server:call(?MODULE, {includes, Includes}).
+
+% adds beam dir to the code path
+set_beam_dir(Dir) ->
+	gen_server:call(?MODULE, {beam_dir, Dir}).
 
 
 %%----------------------------------------------
@@ -83,10 +88,23 @@ set_includes(Includes) ->
 %init
 %can be extendnded with the version with multible cover nodes
 init(Args) ->
-	{ok, _} = cover:start(),
-	[Type] = Args,
-	State = #state{cover_type = Type},
-	{ok, State}.
+	try cover:start() of
+		{ok, _} ->
+			[Type] = Args,
+			State = #state{cover_type = Type},
+			{ok, State};
+		{error, Reason} ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
+												   type = starting,
+												   info = Reason}),
+			{stop, Reason}
+	catch
+		_:_ ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
+												   type = starting,
+												   info = "cover error - check if it is installed"}),
+			{stop, "cover error - check if it is installed"}
+	end.
 
 % cast 
 handle_cast(stop, State) ->
@@ -96,7 +114,11 @@ handle_cast(stop, State) ->
 handle_call({includes, Includes}, _From, State) ->
 	{reply, ok, State#state{includes = Includes}};
 
-handle_call({module, Module, _Path}, _From, State) ->
+handle_call({beam_dir, Dir}, _From, State) ->
+	code:add_pathz(Dir),
+	{reply, ok, State};
+
+handle_call({perform, module, Module, _Path}, _From, State) ->
 	Report = coverage:create_report(?COVER_DIR, Module),
 	case Report of		
 		{ok, Res} ->
@@ -108,10 +130,10 @@ handle_call({module, Module, _Path}, _From, State) ->
 	end,	
 	{reply, ok, State};
 
-handle_call({all, Name}, _From, State) ->
+handle_call({perform, all, Name}, _From, State) ->
 	{reply, ok, State};
 
-handle_call({application, Name, Src}, _From,  State) ->
+handle_call({perform, application, Name, Src}, _From,  State) ->
 	{reply, ok, State};
 
 
@@ -215,13 +237,7 @@ get_modules(Dir) ->
 					   ".*\.erl",
 					   true,
 					   fun(F, Acc) -> 
-							   io:format("~p~n", [F]),
-							   case filename:extension(F) of
-								   ".erl" ->
-									   [filename:basename(F, ".erl") | Acc];
-								   _ ->
-									   Acc
-							   end
+								[filename:basename(F, ".erl") | Acc]
 					   end, []).
 
 search_module(Dir, Name) ->
@@ -229,7 +245,6 @@ search_module(Dir, Name) ->
 					   ".*\.erl",
 					   true,
 					   fun(F, Acc) -> 
-							   io:format("~p~n", [F]),
 							   Module = filename:basename(F, ".erl"),
 							   case Module of
 								   Name -> [F | Acc];

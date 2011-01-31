@@ -9,5 +9,6 @@ public class Constants {
 	public static final String FUN_INDEX = "get_index";	
 	public static final String FUN_MODULE_NUM = "get_module_num";
 	public static final String FUN_STOP = "stop";
+	public static final String FUN_BEAM_DIR = "set_beam_dir";
 
 }

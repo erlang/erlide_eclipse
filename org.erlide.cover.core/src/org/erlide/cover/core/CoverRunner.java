@@ -7,6 +7,7 @@ import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Class for launching cover
@@ -31,20 +32,37 @@ public class CoverRunner extends Thread {
             obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
 
         try {
-            backend.getBackend().call(Constants.ERLANG_BACKEND,
-                    Constants.FUN_START, "x",
+            OtpErlangObject res = backend.getBackend().call(
+                    Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
                     new OtpErlangAtom(backend.getSettings().getFramework()));
-        } catch (BackendException e) {
-            e.printStackTrace();
-            backend.handleError("Exception while running cover occured: " + e);
-        }
+            if (res instanceof OtpErlangTuple) {
+                OtpErlangTuple resTuple = (OtpErlangTuple)res;
+                if(!(resTuple.elementAt(0).toString().equals("ok") ||
+                        (resTuple.elementAt(0).toString().equals("error") &&
+                                resTuple.elementAt(1) instanceof OtpErlangTuple &&
+                                ((OtpErlangTuple)resTuple.elementAt(1)).elementAt(0).
+                                toString().equals("already_started")))) {
+                            System.out.println("cover_error");
+                            return;
+                }
+            } else {
+                return;
+            }
+            
 
-        // the loop is a preparation for possible custom configuration
-        for (CoverObject obj : backend.getSettings().objects()) {
+            // the loop is a preparation for possible custom configuration
+            for (CoverObject obj : backend.getSettings().objects()) {
 
-            System.out.println("Starting cover..");
+                System.out.println("Starting cover..");
+                
+                System.out.println(obj.getPathEbin());
+                
+                backend.getBackend().call(
+                        Constants.ERLANG_BACKEND, Constants.FUN_BEAM_DIR, "s",
+                        obj.getPathEbin());
+                
+                System.out.println(obj.getPathEbin());
 
-            try {
                 // TODO: change the way of obtaining reports (that it can serve
                 // many objects)
                 OtpErlangObject htmlPath;
@@ -65,22 +83,14 @@ public class CoverRunner extends Thread {
                 System.out.println(htmlPath);
                 model.setIndex(htmlPath.toString().substring(1,
                         htmlPath.toString().length() - 1));
-                
-                
-            } catch (BackendException e) {
-                e.printStackTrace();
-                backend.handleError("Exception while running cover occured: " + e);
+
             }
-        }
-        
-       /* try {
-            backend.getBackend().call(Constants.ERLANG_BACKEND, 
-                    Constants.FUN_STOP, "");
+
         } catch (BackendException e) {
             e.printStackTrace();
-        }*/
-        
-        
+            backend.handleError("Exception while running cover occured: " + e);
+        }
+
         // TODO: index should be created here.
 
         backend.coverageFinished();

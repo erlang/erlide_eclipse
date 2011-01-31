@@ -15,16 +15,20 @@ public class CoverObject {
     private String name;
     private String pathSrc;
     private String pathTst;
+    private String pathEbin;
     
-    public CoverObject(int type, String pathSrc, String pathTst) {
-        this(type, "", pathSrc, pathTst);
+    public CoverObject(int type, String pathSrc,
+            String pathTst, String pathEbin) {
+        this(type, "", pathSrc, pathTst, pathEbin);
     }
     
-    public CoverObject(int type, String name, String pathSrc, String pathTst) {
+    public CoverObject(int type, String name, String pathSrc, 
+            String pathTst, String pathEbin) {
         this.type = type;
         this.name = name;
         this.pathSrc = pathSrc;
         this.pathTst = pathTst;
+        this.pathEbin = pathEbin;
     }
 
     public int getType() {
@@ -41,6 +45,10 @@ public class CoverObject {
     
     public String getPathTst() {
         return pathTst;
+    }
+    
+    public String getPathEbin() {
+        return pathEbin;
     }
     
 }

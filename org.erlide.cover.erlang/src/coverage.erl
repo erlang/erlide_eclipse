@@ -17,7 +17,6 @@
 		 compile_dir/1,
 		 compile_test/2,
 		 prepare/3,
-		 prepare_file/3,
 		 create_report/1,
 		 create_index/1]).
 
@@ -50,17 +49,20 @@ compile_dir(Dir) ->
 
 %tests compilation (if modules with tests are diffrent then tested modules)
 compile_test(Module, Path) ->
-	Options = [debug_info,binary, report_errors, report_warings],
-	Binary = case compile:file(Path, Options) of
-				 {ok, Module, Bin} ->
-					Bin;
-				 _ ->
-					 erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-												   type = 'preparing test',
-												   info = "compilation error"}),
-					 launcher:stop()
-			 end,
-	code:load_binary(Module, Path, Binary).
+	Options = [debug_info,binary, report_errors, report_warnings],
+	case compile:file(Path, Options) of
+		    {ok, Module, Bin} ->
+				Bin,
+				code:load_binary(Module, Path, Bin),
+				ok;
+			 _ ->
+				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+											   type = 'preparing test',
+											   info = "compilation error"}),
+				%%TODO: check if loaded
+				error
+	end.
+	
 
 %prepare module
 prepare(eunit, Module,  Path) ->	
@@ -75,21 +77,8 @@ prepare(eunit, Module,  Path) ->
 				{error, testing}
 	end.
 
-%prepare file
-prepare_file(eunit, Module, Path) ->
-	case eunit:test({file, Path}) of
-		ok ->
-			ok;
-		Er ->
-			erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-													   type = testing,
-													   info = Er}),
-			{error, testing}
-	end.
-
-%creates report
+%creates html report
 create_report(Modules) when is_list(Modules) ->
-	%io:format(Modules),
 	lists:foldl(fun(Module, Acc) ->
 						Res = create_report(Module),
 						case Res of
@@ -120,7 +109,7 @@ create_report(Module) ->
 			{error, analyse}
 	end.
 
-% create index file
+% create index.html file
 create_index(Results) ->
 	IndexPath = filename:join([?COVER_DIR,  "index.html"]),
 	case filelib:ensure_dir(IndexPath) of
@@ -130,8 +119,12 @@ create_index(Results) ->
 		   	no_file;
 		_ -> 
 			Total_percent = percentage_total(Results),
-			output_index(IndexPath, Results, Total_percent),
-			filename:absname(IndexPath)
+			case output_index(IndexPath, Results, Total_percent) of
+				ok ->
+					filename:absname(IndexPath);
+				no_file ->
+					no_file
+			end
 	end.
 			
 
@@ -170,7 +163,7 @@ count_percent(Covered, Total) ->
 	Covered/Total * 100.
 
 
-get_fun_stats({ok, FunRes}) ->
+get_fun_stats({ok, FunRes}) -> 
 	lists:map(fun({{_, Name, Arity}, {Cov, Uncov}}) ->
 								#unit_res{name = Name,
 										  arity = Arity,
@@ -189,16 +182,13 @@ get_line_stats({ok, Calls}) ->
 					Calls).
 
 output_index(Path, Results, Total) ->
-    IoDevice = case file:open(Path, [write]) of
-                   {ok, IoD}       -> IoD;
-                   {error, Reason} -> 
-					   exit({invalid_file, Reason})
-               end,
-    io:format(IoDevice, output_header(IoDevice), []),
-    lists:foreach(fun(#module_res{name = Module,
+    case file:open(Path, [write]) of
+           {ok, IoDevice}       -> 
+			    io:format(IoDevice, output_header(IoDevice), []), 
+    			lists:foreach(fun(#module_res{name = Module,
 								  name_html = File, 
 								  percentage = Percentage}) ->
-                          io:format(IoDevice, "~s~n", [
+                          				io:format(IoDevice, "~s~n", [
                                                 [ "<li><a href=\"",
                                                   File,
                                                   "\">",
@@ -209,10 +199,16 @@ output_index(Path, Results, Total) ->
                                                   "</a>"
                                                 ]
                                                ])
-                  end, lists:keysort(2, Results)),
-    io:format(IoDevice, "~s~n", [["<p>Total percentage: ", io_lib:format("~.2f",[Total]), "%</p>"]]),
-    io:format(IoDevice, output_footer(IoDevice), []),
-    file:close(IoDevice).
+                  				end, lists:keysort(2, Results)),
+    			io:format(IoDevice, "~s~n", [["<p>Total percentage: ", io_lib:format("~.2f",[Total]), "%</p>"]]),
+    			io:format(IoDevice, output_footer(IoDevice), []),
+   				file:close(IoDevice),
+				ok;
+           {error, Reason} -> 
+				erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index',
+				info = Reason}),
+				no_file
+    end.
 
 output_header(IoDevice) ->
     "<html>~n<head></head><body>".

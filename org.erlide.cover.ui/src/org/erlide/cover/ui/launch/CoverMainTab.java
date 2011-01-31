@@ -108,10 +108,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         
         createApplicationGroup(comp);
         
-     /*   ifCover = new Button(comp, SWT.CHECK);
-        ifCover.setText("Prepare coverage report");
-        ifCover.setLayoutData(gData);*/
-        
         Label testLabel = new Label(comp, SWT.NONE);
         testLabel.setText("Testing framework: ");
         testCombo = new Combo(comp, SWT.NONE);
@@ -278,15 +274,12 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 			type = LaunchType.MODULE;
 		}
 		
-		//boolean cover = ifCover.getSelection();
 		
 		config.setAttribute(ICoverAttributes.PROJECT, projectMBr.getText());
         config.setAttribute(ICoverAttributes.MODULE, moduleBr.getText());
         config.setAttribute(ICoverAttributes.FILE, fileBr.getText());
         config.setAttribute(ICoverAttributes.APPLICATION, appBr.getText());
         config.setAttribute(ICoverAttributes.TYPE, type.toString());
-        //config.setAttribute(IErlTestAttributes.COVER,
-        //        Boolean.toString(cover));
         System.out.println("apply" + testCombo.getText());
         config.setAttribute(ICoverAttributes.COMBO,
                 testCombo.getText());
