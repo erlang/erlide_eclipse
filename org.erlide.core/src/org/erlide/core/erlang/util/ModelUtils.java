@@ -213,7 +213,7 @@ public class ModelUtils {
         final Collection<IErlModule> modules = project.getExternalModules();
         for (final IErlModule module : modules) {
             final String filePath = module.getFilePath();
-            if (filePath != null && path.equals(filePath)) {
+            if (filePath != null && StringUtils.equalFilePaths(path, filePath)) {
                 result.add(module);
             }
         }

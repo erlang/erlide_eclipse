@@ -748,7 +748,8 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public void resourceChanged(final IResourceDelta delta) {
-        if ((delta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
+        if (delta != null
+                && (delta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
             // TODO when we have cache in ErlModuleMap for referenced projects,
             // we should purge it here
             int i = 0;
