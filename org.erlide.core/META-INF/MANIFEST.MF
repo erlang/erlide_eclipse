@@ -45,7 +45,8 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.erlide.jinterface,
- org.erlide.libs
+ org.erlide.libs,
+ org.erlide.backend
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .
