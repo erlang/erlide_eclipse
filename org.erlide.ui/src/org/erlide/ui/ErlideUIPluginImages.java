@@ -97,6 +97,9 @@ public class ErlideUIPluginImages {
 
     public static final String IMG_EXTERNAL = NAME_PREFIX + "external_ref.gif"; //$NON-NLS-1$
 
+    public static final String IMG_ERLANG_SEARCH_RESULTS = NAME_PREFIX
+            + "erlang_search_results.gif"; //$NON-NLS-1$
+
     public static final ImageDescriptor DESC_ALPHAB_SORT = createManaged(
             T_ELCL, IMG_ALPHAB_SORT);
 
@@ -162,6 +165,9 @@ public class ErlideUIPluginImages {
 
     public static final ImageDescriptor DESC_OVR_ERROR = create(T_OVR,
             "error_co.gif");
+
+    public static final ImageDescriptor DESC_ERLANG_SEARCH_RESULTS = createManaged(
+            T_OBJ, IMG_ERLANG_SEARCH_RESULTS);
 
     public static final String IMG_MODULE = NAME_PREFIX + "erlang_srcFile.png";
 
