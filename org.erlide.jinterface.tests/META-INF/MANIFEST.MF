@@ -9,6 +9,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.erlide.testing.libs;bundle-version="0.8.8",
  org.junit4
 Export-Package: com.ericsson.otp.erlang,
- org.erlide.jinterface.backend,
  org.erlide.jinterface.java
 Eclipse-ExtensibleAPI: true 
