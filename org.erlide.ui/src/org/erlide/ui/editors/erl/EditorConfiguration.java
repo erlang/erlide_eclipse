@@ -130,7 +130,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
         final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-        reconciler = new ErlReconciler(strategy, true, true, editor.getPath());
+        final String path = editor != null ? editor.getPath() : null;
+        reconciler = new ErlReconciler(strategy, true, true, path);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setDelay(500);
         return reconciler;
@@ -139,7 +140,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IContentAssistant getContentAssistant(
             final ISourceViewer sourceViewer) {
-        if (getEditor() != null) {
+        if (editor != null) {
             final ContentAssistant contentAssistant = new ContentAssistant();
 
             contentAssistProcessor = new ErlContentAssistProcessor(
@@ -178,7 +179,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 if (parent.getText().length() == 0
-                        && BrowserInformationControl.isAvailable(parent)) {
+                        && BrowserInformationControl.isAvailable(parent)
+                        && editor != null) {
                     final BrowserInformationControl info = new BrowserInformationControl(
                             parent, JFaceResources.DIALOG_FONT,
                             EditorsUI.getTooltipAffordanceString()) {
