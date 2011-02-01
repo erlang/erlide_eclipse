@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.ICommand;
@@ -687,7 +688,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (nonErlangResources == null) {
             nonErlangResources = Lists.newArrayList();
         }
-        return nonErlangResources;
+        return Collections.unmodifiableCollection(nonErlangResources);
     }
 
     public boolean isVisibleInOutline() {

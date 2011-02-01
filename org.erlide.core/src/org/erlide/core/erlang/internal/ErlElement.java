@@ -13,6 +13,7 @@ package org.erlide.core.erlang.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -535,7 +536,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public List<IErlElement> getChildren() throws ErlModelException {
-        return fChildren;
+        return Collections.unmodifiableList(Lists.newArrayList(fChildren));
     }
 
     public int getChildCount() {

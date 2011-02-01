@@ -624,7 +624,7 @@ public class ModelUtils {
         final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
                 imports.size());
         for (final IErlImport i : imports) {
-            final List<ErlangFunction> functions = i.getFunctions();
+            final Collection<ErlangFunction> functions = i.getFunctions();
             final OtpErlangObject funsT[] = new OtpErlangObject[functions
                     .size()];
             int j = 0;

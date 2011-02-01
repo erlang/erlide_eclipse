@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -230,7 +231,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public Collection<IErlComment> getComments() {
-        return comments;
+        return Collections.unmodifiableCollection(comments);
     }
 
     @Override

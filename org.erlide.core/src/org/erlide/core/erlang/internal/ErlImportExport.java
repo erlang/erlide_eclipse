@@ -1,6 +1,8 @@
 package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.erlide.core.erlang.IParent;
@@ -12,6 +14,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public abstract class ErlImportExport extends ErlMember implements IParent {
 
@@ -30,8 +33,9 @@ public abstract class ErlImportExport extends ErlMember implements IParent {
         return fFunctions.contains(f);
     }
 
-    public List<ErlangFunction> getFunctions() {
-        return fFunctions;
+    public Collection<ErlangFunction> getFunctions() {
+        return Collections.unmodifiableCollection(Lists
+                .newArrayList(fFunctions));
     }
 
     public OtpErlangObject toErlangObject() {
