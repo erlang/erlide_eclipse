@@ -48,6 +48,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -70,8 +71,7 @@ import com.google.common.collect.Maps;
 
 import erlang.ErlideDebug;
 
-public class ErlangLaunchDelegate implements
-        ILaunchConfigurationDelegate {
+public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     private ErlangDebugTarget target;
 
@@ -372,8 +372,7 @@ public class ErlangLaunchDelegate implements
                             final String m = path.removeFileExtension()
                                     .lastSegment();
                             try {
-                                return ErlideUtil.getBeamBinary(m,
-                                        b.getEntry(s));
+                                return BeamUtil.getBeamBinary(m, b.getEntry(s));
                             } catch (final Exception ex) {
                                 ErlLogger.warn(ex);
                             }

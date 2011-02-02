@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -48,8 +48,8 @@ public class CodeBundle {
     public Collection<String> getEbinDirs() {
         final List<String> result = Lists.newArrayList();
         for (final Tuple<String, CodeContext> path : paths) {
-            final Collection<String> myPath = ErlideUtil.getPaths(path.o1,
-                    bundle);
+            final Collection<String> myPath = BeamUtil
+                    .getPaths(path.o1, bundle);
             if (myPath != null) {
                 result.addAll(myPath);
             } else {
