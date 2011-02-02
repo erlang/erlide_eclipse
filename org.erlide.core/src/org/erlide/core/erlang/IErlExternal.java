@@ -15,4 +15,5 @@ public interface IErlExternal extends IErlElement, IParent, IOpenable {
 
     Backend getBackend();
 
+    boolean isOTP();
 }

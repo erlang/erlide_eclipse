@@ -86,4 +86,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return entry;
     }
 
+    public boolean isOTP() {
+        return false;
+    }
+
 }
