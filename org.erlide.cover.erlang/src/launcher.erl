@@ -210,7 +210,7 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 			no_file
 	end,
 	
-	
+	erlide_jrpc:event(?EVENT, ?FINISHED),
 	
 	{reply, Path, State};
 

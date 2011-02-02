@@ -241,6 +241,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         showCoverage.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+        showCoverage.setEnabled(false);
     }
 
     private void makeHideCoverageAction() {
@@ -255,6 +256,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         hideCoverage.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+        hideCoverage.setEnabled(false);
     }
 
     private void makeOpenItemAction() {
@@ -267,6 +269,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         openItem.setToolTipText("Opens the including file in editor");
         openItem.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+        openItem.setEnabled(false);
     }
 
     private void makeShowHtmlAction() {
@@ -295,6 +298,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         restore.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         restore.setToolTipText("Restore previous results");
+        restore.setEnabled(false);
     }
 
     private void makeSaveAction() {
@@ -307,6 +311,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         save.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         save.setToolTipText("Save coverage results");
+        save.setEnabled(false);
     }
 
     private void makeRefreshAction() {
@@ -320,10 +325,11 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         refresh.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
         refresh.setToolTipText("Refresh coverage statistics view");
+        refresh.setEnabled(false);
     }
 
     private void makeDoubleClickAction() {
-        // TODO: use it
+        // TODO: use it (open file in editor ?)
         doubleClickAction = new Action() {
             public void run() {
                 ISelection selection = viewer.getSelection();
@@ -332,6 +338,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 showMessage("Double-click detected on " + obj.toString());
             }
         };
+        doubleClickAction.setEnabled(false);
     }
 
     private void hookDoubleClickAction() {

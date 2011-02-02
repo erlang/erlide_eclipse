@@ -1,7 +1,7 @@
 package org.erlide.cover.views.model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -24,10 +24,10 @@ public class StatsTreeObject implements
     private String htmlPath;            //name of html file
 	
 	private IStatsTreeObject parent;
-	private List<IStatsTreeObject> children;
+	private Map<String, StatsTreeObject> children;
 		
 	public StatsTreeObject(){
-		children = new LinkedList<IStatsTreeObject>();
+		children = new HashMap<String, StatsTreeObject>();
 	}
 	
 	public StatsTreeObject(IStatsTreeObject parent){
@@ -55,7 +55,7 @@ public class StatsTreeObject implements
 			append(covered).append(" ").
 			append(percentage).append('\n');
 		
-		for(IStatsTreeObject child : children)
+		for(IStatsTreeObject child : children.values())
 			bf.append('\t').append(child.toString()).append('\n');
 		
 		return bf.toString();
@@ -73,18 +73,19 @@ public class StatsTreeObject implements
 		return parent;
 	}
 
-	public void addChild(IStatsTreeObject child) {
-		children.add(child);
-		child.setParent(this);
+	public void addChild(String name, IStatsTreeObject child) {
+	    if(child instanceof StatsTreeObject) {
+	        children.put(name, (StatsTreeObject)child);
+	        child.setParent(this);
+	    }
 	}
 
-	public void removeChild(IStatsTreeObject child) {
-		children.remove(child);
-		child.setParent(null);
+	public void removeChild(String name) {
+		children.remove(name);
 	}
 
 	public IStatsTreeObject[] getChildren() {
-		return children.toArray(new IStatsTreeObject[0]);
+		return children.values().toArray(new IStatsTreeObject[0]);
 	}
 
 	public boolean hasChildren() {
@@ -134,6 +135,10 @@ public class StatsTreeObject implements
     
     public void setHtmlPath(String htmlPath) {
         this.htmlPath = htmlPath;
+    }
+
+    public ICoverageStats findChild(String name) {
+        return children.get(name);
     }
 	
 }

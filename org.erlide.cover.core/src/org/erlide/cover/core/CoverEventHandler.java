@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.erlide.cover.views.model.FunctionStats;
+import org.erlide.cover.views.model.ICoverageStats;
 import org.erlide.cover.views.model.IStatsTreeObject;
 import org.erlide.cover.views.model.LineResult;
 import org.erlide.cover.views.model.ModuleSet;
@@ -27,10 +28,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class CoverEventHandler extends EventHandler {
 
     private static final String EVENT_NAME = "cover_event";
-    private static final String COVER_OK = "cover_ok";
+    private static final String COVER_FIN = "cover_fin";
     private static final String COVER_ERROR = "cover_error";
     private static final String COVER_RES = "module_res";
-    private static final String TESTING_FINISHED = "tst_finish";
     private static final String INDEX = "index";
 
     private List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
@@ -85,7 +85,10 @@ public class CoverEventHandler extends EventHandler {
                         String.format("Error at %s while %s: %s\n",
                                 place, type, info)));
             System.out.println("Got results!");
-        } 
+        } else if (event.toString().equals(COVER_FIN)) {
+            System.out.println("add Annotations");
+            getAnnotationMaker().addAnnotations();
+        }
 
     }
 
@@ -154,13 +157,18 @@ public class CoverEventHandler extends EventHandler {
                 
                 prepFuncResults((OtpErlangList)resTuple.elementAt(7),
                         moduleStats);
-                
+              
+                ICoverageStats moduleOld = root.findChild(moduleStats.getLabel());
+                if(moduleOld != null) {
+                    allLines -= moduleOld.getLinesCount();
+                    coveredLines -= moduleOld.getCoverCount();
+                }
                 model.addTotal(allLines, coveredLines);
-                root.addChild(moduleStats);
+              
+                
+                root.addChild(moduleStats.getLabel(), moduleStats);
                 
                 ModuleSet.add(moduleStats);
-                
-                getAnnotationMaker().addAnnotations();
                 
                 return true;
             }
@@ -193,7 +201,7 @@ public class CoverEventHandler extends EventHandler {
             
             System.out.println(func);
             
-            stats.addChild(func);
+            stats.addChild(func.getLabel(), func);
         }
         
     }

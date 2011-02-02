@@ -1,7 +1,9 @@
 package org.erlide.cover.ui.annotations;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -99,6 +101,22 @@ public class EditorTracker implements ICoverAnnotationMarker {
                 return;
 
             List<LineResult> list = module.getLineResults();
+            
+            Map<Position, Annotation> curAnn = 
+                new HashMap<Position, Annotation>();
+            
+            IAnnotationModel annMod = editor.getDocumentProvider()
+            .getAnnotationModel(editor.getEditorInput());
+            
+            Iterator it = annMod.getAnnotationIterator();
+            while(it.hasNext()){
+                Annotation ann = (Annotation)it.next();
+                curAnn.put(annMod.getPosition(ann),
+                        ann);
+            } 
+            
+          //  clearAnnotations(partref);
+            
             for (LineResult lr : list) {
 
                 if(lr.getLineNum() == 0)
@@ -118,13 +136,14 @@ public class EditorTracker implements ICoverAnnotationMarker {
                         annotation = new CoverageAnnotation(
                                 CoverageAnnotation.NO_COVERAGE);
                     }
-                    IAnnotationModel annMod = editor.getDocumentProvider()
-                            .getAnnotationModel(editor.getEditorInput());
-
-                    annMod.addAnnotation(annotation, pos);
+                    
+                    if (!curAnn.containsKey(pos) || curAnn.containsKey(pos) &&
+                            curAnn.get(pos).getType().equals(CoverageAnnotation.NO_COVERAGE) &&
+                            annotation.getType().equals(CoverageAnnotation.FULL_COVERAGE) ) {
+                        annMod.addAnnotation(annotation, pos);
+                    }
 
                 } catch (BadLocationException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 

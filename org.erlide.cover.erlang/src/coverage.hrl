@@ -4,7 +4,7 @@
 %%----------------------------------------------
 
 -define(EVENT, cover_event).
--define(OK, cover_ok).
+-define(FINISHED, cover_fin).
 -define(COVER_DIR, "cover_report").
 -define(NO_FILE, nofile).
 -define(INDEX, index).

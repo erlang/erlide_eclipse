@@ -14,11 +14,12 @@ public interface IStatsTreeObject extends IAdaptable {
 	public IStatsTreeObject getParent();
 	public void setParent(IStatsTreeObject parent);
 	
-	public void addChild(IStatsTreeObject child);
-	public void removeChild(IStatsTreeObject child);
+	public void addChild(String name, IStatsTreeObject child);
+	public void removeChild(String name);
 	public void removeAllChildren();
 	public IStatsTreeObject [] getChildren();
 	public boolean hasChildren();
+	public ICoverageStats findChild(String name);
 	
 	
 
