@@ -17,9 +17,9 @@ import org.erlide.cover.runtime.launch.LaunchType;
  */
 public class CoverSettings {
 
-    private LaunchType type;
-    private List<CoverObject> objs;
-    private FrameworkType frameworkType;
+    private final LaunchType type;
+    private final List<CoverObject> objs;
+    private final FrameworkType frameworkType;
 
     /**
      * Create coverage settings, depend mainly on launch type
@@ -31,10 +31,6 @@ public class CoverSettings {
         objs = new LinkedList<CoverObject>();
         type = t;
         frameworkType = data.getFramework();
-
-        if (data == null) {
-            return;
-        }
 
         switch (t) {
         case MODULE:
