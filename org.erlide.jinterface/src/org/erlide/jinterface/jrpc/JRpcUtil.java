@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.jinterface.jrpc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -29,7 +33,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.SignatureException;
 
 public class JRpcUtil {
-    static final String REF_NODE = "jRPC";
+    public static final String REF_NODE = "jRPC";
 
     // eclipse uses different classloaders for each plugin. this one is non-ui
     // so we have to set it from a ui one (when that one is initialized) so that

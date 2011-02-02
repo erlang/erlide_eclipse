@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.jinterface.epmd;
 
 public interface IEpmdMonitor {
     void nodeUp(String name);
