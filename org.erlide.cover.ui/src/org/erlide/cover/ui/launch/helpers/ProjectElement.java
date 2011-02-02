@@ -2,6 +2,12 @@ package org.erlide.cover.ui.launch.helpers;
 
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * Represents project to show it in a browser
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class ProjectElement {
 
     private Image image;

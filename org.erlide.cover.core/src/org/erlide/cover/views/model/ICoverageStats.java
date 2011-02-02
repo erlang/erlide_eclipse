@@ -1,5 +1,11 @@
 package org.erlide.cover.views.model;
 
+/**
+ * Interface for providing coverage statistics of elements
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public interface ICoverageStats {
 
     public String getLabel();

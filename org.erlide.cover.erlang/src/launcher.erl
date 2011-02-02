@@ -141,6 +141,9 @@ handle_call({perform, application, Name, Src}, _From,  State) ->
 handle_call({prep, module, Module, Path}, _From, State) ->
 	PathIdx = case coverage:compile(Module, Path) of
 		ok ->
+			TestA = list_to_atom(atom_to_list(Module) ++ "_tests"),
+			code:purge(TestA),
+			code:load_file(TestA),
 			case coverage:prepare(State#state.cover_type, Module, Path) of
 				ok ->
 					Report = coverage:create_report(Module),
@@ -160,6 +163,7 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 		{error, _} ->
 			no_file
 	end,
+	erlide_jrpc:event(?EVENT, ?FINISHED),
 	{reply, PathIdx, State};
 
 handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
@@ -189,6 +193,8 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 								  [PathM] = search_module(PathTst, Test),
 								  TestA = list_to_atom(Test),
 								%  coverage:compile_test(TestA, PathM),
+								  code:purge(TestA),
+								  code:load_file(TestA),
 								  case coverage:prepare(State#state.cover_type, TestA, PathM) of
 										{error, _} ->
 												[];

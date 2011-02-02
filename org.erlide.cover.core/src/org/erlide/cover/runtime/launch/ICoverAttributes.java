@@ -2,12 +2,16 @@ package org.erlide.cover.runtime.launch;
 
 import org.erlide.core.ErlangPlugin;
 
+/**
+ * Names of attributes in launch configuration
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public interface ICoverAttributes {
 
     public final String prefix = ErlangPlugin.PLUGIN_ID;
     
-    //TODO: change it, that it could several resting frameworks
-
     public final String TYPE = prefix + ".type";
     public final String PROJECT = prefix + ".project";
     public final String MODULE = prefix + ".module";

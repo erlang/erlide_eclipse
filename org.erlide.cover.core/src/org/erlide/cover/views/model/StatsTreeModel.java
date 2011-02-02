@@ -3,7 +3,7 @@ package org.erlide.cover.views.model;
 
 /**
  * 
- * Data model for stats viewer
+ * Data model for statatistics viewer
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  *
@@ -51,7 +51,6 @@ public class StatsTreeModel {
 	}
 	
 	private void initialize() {
-		System.out.println("Initialize Stats model");
 		root = new StatsTreeObject("total", 0, 0, 0);
 		
 	}

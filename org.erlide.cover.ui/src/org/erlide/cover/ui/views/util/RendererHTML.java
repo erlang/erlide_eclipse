@@ -21,6 +21,12 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Displays html reports
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class RendererHTML {
 
   public static void main(String[] args) {

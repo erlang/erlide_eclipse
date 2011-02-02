@@ -1,5 +1,11 @@
 package org.erlide.cover.constants;
 
+/**
+ * Constants used fod communitation with Erlang
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class Constants {
 	
 	public static final String ERLANG_BACKEND = "launcher";

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Module statistics
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public class ModuleStats extends StatsTreeObject {

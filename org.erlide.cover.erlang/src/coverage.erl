@@ -64,7 +64,7 @@ compile_dir(Dir) ->
 	
 
 %prepare module
-prepare(eunit, Module,  Path) ->	
+prepare(eunit, Module,  _Path) ->	
 	case eunit:test(Module) of
 			ok ->
 				erlide_jrpc:event(?EVENT, {Module, test_ok}),

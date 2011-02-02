@@ -7,6 +7,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlProject;
 
+/**
+ * Content provider for projects
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class ProjectTreeContentProvider implements ITreeContentProvider {
 
     private Collection<IErlProject> projects;

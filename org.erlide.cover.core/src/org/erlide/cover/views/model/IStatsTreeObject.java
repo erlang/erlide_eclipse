@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * Interface implemented by each element displayed in coverage
  * statistics viewer
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public interface IStatsTreeObject extends IAdaptable {

@@ -15,7 +15,7 @@ import org.erlide.cover.runtime.launch.LaunchType;
 /**
  * Settings for performing coverage.
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public class CoverSettings {

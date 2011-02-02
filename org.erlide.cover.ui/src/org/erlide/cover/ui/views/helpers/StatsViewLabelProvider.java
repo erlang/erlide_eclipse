@@ -14,6 +14,12 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
+/**
+ * Label provider for statistics view
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class StatsViewLabelProvider extends LabelProvider
 		implements ITableLabelProvider
 		{

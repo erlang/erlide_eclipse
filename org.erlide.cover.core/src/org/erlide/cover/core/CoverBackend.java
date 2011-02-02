@@ -29,7 +29,7 @@ import org.erlide.runtime.launch.ErlLaunchData;
 /**
  * Core backend for Cover-plugin
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
 public class CoverBackend {
@@ -68,7 +68,6 @@ public class CoverBackend {
         if (backend != null && !backend.isStopped() && 
                 info.getNodeName().equals(data.nodeName) &&
                 info.getName().equals(data.runtime)) {
-            System.out.println("Backend exists");
             return;
         } else if (backend != null) {
             backend.stop();
@@ -81,10 +80,6 @@ public class CoverBackend {
             ErlLogger.error("Could not find runtime %s", data.runtime);
             handleError("Could not find runtime");
         }
-
-       /* this.coverData = coverData;
-
-        settings = new CoverSettings(coverData.getType(), coverData);*/
 
         ErlLogger.debug("Backend created...");
         System.out.println("Create backend");
@@ -172,13 +167,8 @@ public class CoverBackend {
             try {
                 info.setStartShell(true);
 
-                ErlLogger.debug("launching....");
-                System.out.println("Creating Backend");
-
                 config.launch(ILaunchManager.RUN_MODE,
                         new NullProgressMonitor(), false, false);
-
-                System.out.println("after launching");
 
                 return BackendManager.getDefault().getByName(nodeName);
             } catch (Exception e) {
@@ -209,9 +199,6 @@ public class CoverBackend {
         rt.useLongName(data.longName);
         rt.hasConsole(data.console);
         rt.setLoadAllNodes(data.loadAllNodes);
-        
-
-        System.out.println("runtimeInfo build");
 
         return rt;
     }

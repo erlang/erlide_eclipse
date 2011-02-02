@@ -20,9 +20,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Handler for cover events
+ * Handler for coverage events
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
 public class CoverEventHandler extends EventHandler {
@@ -67,26 +67,19 @@ public class CoverEventHandler extends EventHandler {
         if (event == null)
             return;
 
-        System.out.println(event.toString());
-
         if (gotResults(event)) {
             for (ICoverObserver obs : listeners)
                 obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
-            System.out.println("Got results!");
         } else if ((tuple = getErrorReason(event)) != null) {
             String place = tuple.elementAt(1).toString();
             String type = tuple.elementAt(2).toString();
             String info = tuple.elementAt(3).toString();
             
-            ErlLogger.debug("Mesg error");
-            
             for (ICoverObserver obs : listeners)
                 obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
                         String.format("Error at %s while %s: %s\n",
                                 place, type, info)));
-            System.out.println("Got results!");
         } else if (event.toString().equals(COVER_FIN)) {
-            System.out.println("add Annotations");
             getAnnotationMaker().addAnnotations();
         }
 
@@ -104,7 +97,6 @@ public class CoverEventHandler extends EventHandler {
                     resTuple.elementAt(0).toString().equals(INDEX)) {
                 
                 String htmlPath = resTuple.elementAt(1).toString();
-                System.out.println(htmlPath);
                 StatsTreeModel.getInstance().setIndex(htmlPath.substring(1,
                         htmlPath.toString().length() -1));
             }
@@ -125,8 +117,6 @@ public class CoverEventHandler extends EventHandler {
                     && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
                             .equals(COVER_RES)) {
 
-                System.out.println("Results: " + resTuple);
-                
                 StatsTreeModel model = StatsTreeModel.getInstance();
                 IStatsTreeObject root = model.getRoot();
                 
@@ -199,8 +189,6 @@ public class CoverEventHandler extends EventHandler {
             func.setPercentage(percent);
             func.setArity(arity);
             
-            System.out.println(func);
-            
             stats.addChild(func.getLabel(), func);
         }
         
@@ -216,7 +204,6 @@ public class CoverEventHandler extends EventHandler {
             int num = Integer.parseInt(res.elementAt(1).toString());
             int calls = Integer.parseInt(res.elementAt(2).toString());
             LineResult lineRes = new LineResult(num, calls);
-            System.out.println(lineRes);
             
             stats.addLine(lineRes);
             
@@ -231,8 +218,6 @@ public class CoverEventHandler extends EventHandler {
                     && ((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals(
                             COVER_ERROR)) {
                 
-                
-
                 return tuple;
             }
         }

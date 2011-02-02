@@ -3,7 +3,7 @@ package org.erlide.cover.views.model;
 /**
  * Coverage statistics per function.
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public class FunctionStats extends StatsTreeObject {

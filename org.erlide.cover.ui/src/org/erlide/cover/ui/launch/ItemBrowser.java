@@ -15,7 +15,7 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 /**
  * Browser for selecting projects, modules or files.
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public class ItemBrowser 

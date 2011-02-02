@@ -53,16 +53,10 @@ public class CoverRunner extends Thread {
             // the loop is a preparation for possible custom configuration
             for (CoverObject obj : backend.getSettings().objects()) {
 
-                System.out.println("Starting cover..");
-                
-                System.out.println(obj.getPathEbin());
-                
                 backend.getBackend().call(
                         Constants.ERLANG_BACKEND, Constants.FUN_BEAM_DIR, "s",
                         obj.getPathEbin());
                 
-                System.out.println(obj.getPathEbin());
-
                 // TODO: change the way of obtaining reports (that it can serve
                 // many objects)
                 OtpErlangObject htmlPath;
@@ -77,10 +71,7 @@ public class CoverRunner extends Thread {
                             "sss", backend.getSettings().getTypeAsString(),
                             obj.getPathSrc(), obj.getPathTst());
                 }
-                System.out.println("Called");
-                System.out.println(backend.getSettings().getTypeAsString());
 
-                System.out.println(htmlPath);
                 model.setIndex(htmlPath.toString().substring(1,
                         htmlPath.toString().length() - 1));
 

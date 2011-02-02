@@ -48,7 +48,7 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 /**
  * Main panel of EUnit run configuration
  * 
- * @author Aleksandra Lipiec
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  *
  */
 public class CoverMainTab extends AbstractLaunchConfigurationTab {
@@ -58,7 +58,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 	private ItemBrowser fileBr;		// file/directory browser
 	private ItemBrowser projectAppBr;	// project browser for applications
 	private ItemBrowser appBr;		// application browser
-//	private Button ifCover;				// checkbox about performing cover
 	private Button singleRadio;			//radio button for single module
 	private Button allRadio;			// radio button for running all tests
 	private Button appRadio;			// radio button for application
@@ -280,7 +279,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ICoverAttributes.FILE, fileBr.getText());
         config.setAttribute(ICoverAttributes.APPLICATION, appBr.getText());
         config.setAttribute(ICoverAttributes.TYPE, type.toString());
-        System.out.println("apply" + testCombo.getText());
         config.setAttribute(ICoverAttributes.COMBO,
                 testCombo.getText());
 	}

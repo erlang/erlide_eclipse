@@ -3,6 +3,12 @@ package org.erlide.cover.runtime.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
+/**
+ * Stores launch configuration data
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class CoverLaunchData {
 
     private LaunchType type;
@@ -16,8 +22,6 @@ public class CoverLaunchData {
     public CoverLaunchData(ILaunchConfiguration config)
             throws CoreException {
         
-        System.out.println("Cover launch data!");
-        
         type = LaunchType.valueOf(config.getAttribute(ICoverAttributes.TYPE,
                 LaunchType.MODULE.toString()));
         
@@ -25,8 +29,7 @@ public class CoverLaunchData {
         module = config.getAttribute(ICoverAttributes.MODULE, "");
         file = config.getAttribute(ICoverAttributes.FILE, "");
         appProject = config.getAttribute(ICoverAttributes.APP_PROJECT, "");
-        System.out.println("cover launch data " + config.getAttribute(ICoverAttributes.COMBO, 
-                FrameworkType.EUNIT.getRepr()));
+        
         framework = FrameworkType.find(
                 config.getAttribute(ICoverAttributes.COMBO, 
                         FrameworkType.EUNIT.getRepr()));

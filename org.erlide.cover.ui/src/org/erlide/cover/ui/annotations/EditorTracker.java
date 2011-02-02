@@ -70,8 +70,6 @@ public class EditorTracker implements ICoverAnnotationMarker {
     public void addAnnotations() {
         IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
-        System.out.println("Annotation maker!");
-
         for (IWorkbenchWindow w : windows) {
             for (IWorkbenchPage page : w.getPages()) {
                 for (IEditorReference editor : page.getEditorReferences()) {
@@ -86,13 +84,11 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         if (part instanceof ITextEditor) {
             ITextEditor editor = (ITextEditor) part;
-            System.out.println(">> " + editor.getTitle());
 
             IDocument doc = editor.getDocumentProvider().getDocument(
                     editor.getEditorInput());
 
             StatsTreeModel model = StatsTreeModel.getInstance();
-            System.out.println(model.getRoot().getChildren().getClass());
 
             String modName = editor.getTitle().replace(".erl", "");
             ModuleStats module = ModuleSet.get(modName);
@@ -130,10 +126,10 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
                     Annotation annotation;
                     if (lr.called()) {
-                        annotation = new CoverageAnnotation(
+                        annotation = CoverageAnnotation.create(
                                 CoverageAnnotation.FULL_COVERAGE);
                     } else {
-                        annotation = new CoverageAnnotation(
+                        annotation = CoverageAnnotation.create(
                                 CoverageAnnotation.NO_COVERAGE);
                     }
                     
@@ -156,8 +152,6 @@ public class EditorTracker implements ICoverAnnotationMarker {
      */
     public void clearAllAnnotations() {
         IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
-
-        System.out.println("Annotation maker!");
 
         for (IWorkbenchWindow w : windows) {
             for (IWorkbenchPage page : w.getPages()) {

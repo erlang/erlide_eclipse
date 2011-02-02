@@ -19,6 +19,12 @@ import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.ErlangMainTab;
 import org.erlide.ui.launch.RuntimeTab;
 
+/**
+ * Tab group for cover launch configuration
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ *
+ */
 public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	
