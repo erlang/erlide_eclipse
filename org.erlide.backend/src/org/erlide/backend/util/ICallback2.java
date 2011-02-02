@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.backend.util;
 
 public interface ICallback2<Ret, Arg, Arg2> {
 
