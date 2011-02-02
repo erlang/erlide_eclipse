@@ -1,4 +1,4 @@
-package org.erlide.core.erlang.util;
+package org.erlide.core.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class LogUtil {

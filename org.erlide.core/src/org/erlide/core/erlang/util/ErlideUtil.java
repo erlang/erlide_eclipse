@@ -12,7 +12,6 @@
 package org.erlide.core.erlang.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IFolder;
@@ -24,18 +23,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 
-import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -195,38 +190,6 @@ public final class ErlideUtil {
         return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
-    public static String unquote(final String s) {
-        final int length = s.length();
-        if (length > 2 && s.charAt(0) == '\'' && s.charAt(length - 1) == '\'') {
-            return s.substring(1, length - 1);
-        } else {
-            return s;
-        }
-    }
-
-    public static void loadModuleViaInput(final ErlideBackend b,
-            final IProject project, final String module)
-            throws ErlModelException, IOException {
-        final IErlProject p = ErlangCore.getModel().findProject(project);
-        final IPath outputLocation = project.getFolder(p.getOutputLocation())
-                .getFile(module + ".beam").getLocation();
-        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,
-                outputLocation);
-        if (bin != null) {
-            final String fmt = "code:load_binary(%s, %s, %s).\n";
-            final StringBuffer strBin = new StringBuffer();
-            strBin.append("<<");
-            for (final byte c : bin.binaryValue()) {
-                strBin.append(c).append(',');
-            }
-            strBin.deleteCharAt(strBin.length() - 1);
-            strBin.append(">>");
-            final String cmd = String.format(fmt, module, module,
-                    strBin.toString());
-            b.input(cmd);
-        }
-    }
-
     private ErlideUtil() {
     }
 
@@ -241,12 +204,5 @@ public final class ErlideUtil {
             }
         }
         return false;
-    }
-
-    public static String withoutInterrogationMark(final String definedName) {
-        if (definedName.startsWith("?")) {
-            return definedName.substring(1);
-        }
-        return definedName;
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -66,7 +66,7 @@ public class ErlideBuilder {
                     b.call("erlide_builder", "load", "ao", module,
                             b.doLoadOnAllNodes());
                 } else {
-                    ErlideUtil.loadModuleViaInput(b, project, module);
+                    BeamUtil.loadModuleViaInput(b, project, module);
                 }
                 backendManager.moduleLoaded(b, project, module);
             }

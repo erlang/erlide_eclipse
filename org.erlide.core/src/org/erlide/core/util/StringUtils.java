@@ -527,4 +527,20 @@ public class StringUtils {
         final Path path2 = new Path(path_2);
         return path1.equals(path2);
     }
+
+    public static String withoutInterrogationMark(final String definedName) {
+        if (definedName.startsWith("?")) {
+            return definedName.substring(1);
+        }
+        return definedName;
+    }
+
+    public static String unquote(final String s) {
+        final int length = s.length();
+        if (length > 2 && s.charAt(0) == '\'' && s.charAt(length - 1) == '\'') {
+            return s.substring(1, length - 1);
+        } else {
+            return s;
+        }
+    }
 }

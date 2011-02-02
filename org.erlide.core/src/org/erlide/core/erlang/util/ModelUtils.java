@@ -417,7 +417,7 @@ public class ModelUtils {
             return m.getModuleName();
         }
         final IErlPreprocessorDef def = m.findPreprocessorDef(
-                ErlideUtil.withoutInterrogationMark(definedName),
+                StringUtils.withoutInterrogationMark(definedName),
                 Kind.MACRO_DEF);
         if (def != null) {
             final String extra = def.getExtra();
@@ -588,7 +588,7 @@ public class ModelUtils {
             final IErlModule module, final String definedName,
             final IErlElement.Kind kind, final String externalIncludes)
             throws CoreException, BackendException {
-        String unquoted = ErlideUtil.unquote(definedName);
+        String unquoted = StringUtils.unquote(definedName);
         final Set<String> names = new HashSet<String>(3);
         if (kind == Kind.RECORD_DEF) {
             while (names.add(unquoted)) {

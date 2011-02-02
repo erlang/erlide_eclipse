@@ -58,6 +58,7 @@ import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -187,7 +188,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 moduleOrRecord = rc.getName();
                 fieldsSoFar = rc.getFields();
             } else if (colonPos > commaPos && colonPos > parenPos) {
-                moduleOrRecord = ErlideUtil.unquote(getPrefix(before.substring(
+                moduleOrRecord = StringUtils.unquote(getPrefix(before.substring(
                         0, colonPos)));
                 flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
                 pos = colonPos;

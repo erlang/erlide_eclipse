@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.eclipse.core.internal.runtime.Activator;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -21,12 +22,17 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.google.common.collect.Lists;
 
+@SuppressWarnings("restriction")
 public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
@@ -184,6 +190,28 @@ public class BeamUtil {
             }
         }
 
+    }
+
+    public static void loadModuleViaInput(final ErlideBackend b,
+            final IProject project, final String module)
+            throws ErlModelException, IOException {
+        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IPath outputLocation = project.getFolder(p.getOutputLocation())
+                .getFile(module + ".beam").getLocation();
+        final OtpErlangBinary bin = getBeamBinary(module, outputLocation);
+        if (bin != null) {
+            final String fmt = "code:load_binary(%s, %s, %s).\n";
+            final StringBuffer strBin = new StringBuffer();
+            strBin.append("<<");
+            for (final byte c : bin.binaryValue()) {
+                strBin.append(c).append(',');
+            }
+            strBin.deleteCharAt(strBin.length() - 1);
+            strBin.append(">>");
+            final String cmd = String.format(fmt, module, module,
+                    strBin.toString());
+            b.input(cmd);
+        }
     }
 
 }
