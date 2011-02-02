@@ -47,9 +47,11 @@ import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
+import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -131,6 +133,7 @@ public class ErlProject extends Openable implements IErlProject {
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
             addExternals(children);
+            addOtpExternals(children);
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -156,6 +159,15 @@ public class ErlProject extends Openable implements IErlProject {
             return false;
         }
         return true;
+    }
+
+    private void addOtpExternals(final List<IErlElement> children) {
+        if (ModelUtils.isExternalFilesProject(getProject())) {
+            return;
+        }
+        final Backend backend = BackendUtils.getBuildOrIdeBackend(getProject());
+        final String name = backend.getInfo().getName();
+        children.add(new ErlOtpExternalReferenceEntryList(this, name, backend));
     }
 
     private void addExternals(final List<IErlElement> children) {

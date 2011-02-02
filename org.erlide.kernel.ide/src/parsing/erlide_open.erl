@@ -16,7 +16,10 @@
          get_external_module_tree/1,
          get_external_include/2,
 	 get_external_1/3,
-         has_external_with_path/2
+         has_external_with_path/2,
+         get_lib_dirs/0,
+         get_lib_src_include/1,
+         get_lib_files/1
         ]).
 
 %% TODO (JC) there are some code duplication in external modules (and includes) handling
@@ -88,10 +91,51 @@ has_external_with_path(FilePath, #open_context{externalModules=ExternalModules,
     ExtModPaths = get_external_modules_files(ExternalModules, PathVars),
     ExtModPaths.
 
+get_lib_dirs() ->
+    CodeLibs = [D || D <- code:get_path(), D =/= "."],
+    LibDir = code:lib_dir(),
+    Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
+    {ok, Libs}.
+
+get_lib_src_include(Dir) ->
+    Dirs = ["src", "include"],
+    R = get_dirs(Dirs, get_lib_dir(Dir), []),
+    {ok, R}.
+
+get_dirs([], _, Acc) ->
+    lists:reverse(Acc);
+get_dirs([Dir | Rest], Base, Acc) ->
+    D = filename:join(Base, Dir),
+    case filelib:is_dir(D) of
+        true ->
+            get_dirs(Rest, Base, [D | Acc]);
+        false ->
+            get_dirs(Rest, Base, Acc)
+    end.
+
+get_lib_files(Dir) ->
+    case file:list_dir(Dir) of
+        %% TODO should we filter for erlang source-files here?
+        {ok, SrcFiles} ->
+            {ok, [filename:join(Dir, SrcFile) || SrcFile <- SrcFiles]};
+        _ ->
+            {ok, []}
+    end.
+
 %%
 %% Local Functions
 %%
 
+get_lib_dir(Dir) ->
+    B = filename:basename(Dir),
+    case B of
+        "ebin" ->
+            filename:dirname(Dir);
+        _ ->
+            Dir
+    end.
+                
+    
 try_open(Offset, TokensWComments, BeforeReversedWComments, Context) ->
     Tokens = erlide_text:strip_comments(TokensWComments),
     BeforeReversed = erlide_text:strip_comments(BeforeReversedWComments),
