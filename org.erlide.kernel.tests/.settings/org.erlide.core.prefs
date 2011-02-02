@@ -1,9 +1,9 @@
-#Sat Nov 14 15:22:29 CET 2009
+#Wed Oct 20 17:13:01 CEST 2010
 backend_version=R13B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
-include_dirs=include
+include_dirs=include;
 output_dir=ebin
-source_dirs=src
+source_dirs=src;
 use_pathz=false

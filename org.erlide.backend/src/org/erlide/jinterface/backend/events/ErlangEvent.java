@@ -13,18 +13,19 @@ public final class ErlangEvent {
     public final OtpErlangObject data;
     public final OtpErlangPid sender;
 
-    public static ErlangEvent parseEvent(OtpErlangObject message)
+    public static ErlangEvent parseEvent(final OtpErlangObject message)
             throws BackendException {
         if (!isEventMessage(message)) {
             throw new BackendException("Bad event data " + message);
         }
-        String topic = getEventTopic(message);
-        OtpErlangObject data = getEventData(message);
-        OtpErlangPid sender = getEventSender(message);
+        final String topic = getEventTopic(message);
+        final OtpErlangObject data = getEventData(message);
+        final OtpErlangPid sender = getEventSender(message);
         return new ErlangEvent(topic, data, sender);
     }
 
-    private ErlangEvent(String topic, OtpErlangObject data, OtpErlangPid sender) {
+    private ErlangEvent(final String topic, final OtpErlangObject data,
+            final OtpErlangPid sender) {
         if (topic == null) {
             throw new IllegalArgumentException("event topic can't be null");
         }
@@ -62,17 +63,16 @@ public final class ErlangEvent {
             final OtpErlangObject el0 = tmsg.elementAt(0);
             return ((OtpErlangAtom) el0).atomValue().equals("event")
                     && tmsg.arity() == 4;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return false;
         }
     }
 
-    public boolean hasTopic(String string) {
+    public boolean hasTopic(final String string) {
         return topic.equals(string);
     }
 
-    public boolean matchTopicAndNode(String aTopic, String aNode) {
-        return topic.equals(aTopic) && node.equals(aNode);
+    public boolean matchTopicAndNode(final String aTopic, final String aNode) {
+        return topic.equals(aTopic) && (aNode == null || node.equals(aNode));
     }
-
 }

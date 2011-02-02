@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.cover.runtime.launch.CoverLaunchConfigurationDelegate"
+            id="org.erlide.cover.core.launchConfigurationCover"
+            modes="run, debug"
+            name="Cover"
+            public="true"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+
+</plugin>
