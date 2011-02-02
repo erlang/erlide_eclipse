@@ -8,7 +8,6 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.ericsson.otp.erlang,
  org.erlide.jinterface.epmd,
- org.erlide.jinterface.jrpc;x-internal:=true,
  org.erlide.jinterface.util
 Require-Bundle: org.erlide.libs
 Bundle-ActivationPolicy: lazy

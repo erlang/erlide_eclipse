@@ -19,9 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.erlide.jinterface.jrpc.JRpcUtil;
-import org.erlide.jinterface.jrpc.ObjRefCache;
-
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -103,7 +100,7 @@ public final class TypeConverter {
             return double.class;
         }
         try {
-            return Class.forName(arg, true, JRpcUtil.loader);
+            return Class.forName(arg);
         } catch (final ClassNotFoundException e) {
             ErlLogger.warn("Rpc TypeConverter: can't find class " + arg);
             return Object.class;
@@ -229,9 +226,6 @@ public final class TypeConverter {
                         + cls.getCanonicalName());
             }
             if (obj instanceof OtpErlangRef) {
-                if (!((OtpErlangRef) obj).node().equals(JRpcUtil.REF_NODE)) {
-                    return ObjRefCache.getTarget((OtpErlangRef) obj);
-                }
                 throw new SignatureException("wrong arg type "
                         + obj.getClass().getName() + ", can't convert to "
                         + cls.getCanonicalName());
@@ -397,9 +391,6 @@ public final class TypeConverter {
                 failConversion(obj, type);
             }
         }
-        if (type.kind == 'j') {
-            return ObjRefCache.registerTarget(obj);
-        }
         failConversion(obj, type);
         return null;
     }
@@ -561,7 +552,7 @@ public final class TypeConverter {
             }
             return new OtpErlangList(vv);
         }
-        return ObjRefCache.registerTarget(obj);
+        return null;
     }
 
     private static void failConversion(final Object obj, final Signature type)
