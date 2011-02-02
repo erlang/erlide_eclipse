@@ -526,22 +526,14 @@ public class ModelUtils {
                     }
                 }
             }
-            if (modulePath != null) {
-                final IErlModule module = modelMap.getModuleByPath(modulePath);
-                if (module != null) {
+            for (final IErlModule module : modules) {
+                if (moduleInProject(module, project)) {
                     return module;
                 }
             }
             if (modulePath != null) {
-                for (final IErlModule module : modules) {
-                    final String filePath = module.getFilePath();
-                    if (filePath != null && modulePath.equals(filePath)) {
-                        return module;
-                    }
-                }
-            }
-            for (final IErlModule module : modules) {
-                if (moduleInProject(module, project)) {
+                final IErlModule module = modelMap.getModuleByPath(modulePath);
+                if (module != null && moduleInProject(module, project)) {
                     return module;
                 }
             }

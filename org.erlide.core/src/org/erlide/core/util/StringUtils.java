@@ -516,6 +516,9 @@ public class StringUtils {
     }
 
     public static boolean equalFilePaths(String path_1, String path_2) {
+        if (path_1 == null || path_2 == null) {
+            return path_1 == path_2;
+        }
         if (!EFS.getLocalFileSystem().isCaseSensitive()) {
             path_1 = path_1.toLowerCase();
             path_2 = path_2.toLowerCase();
