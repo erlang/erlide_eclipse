@@ -75,7 +75,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private Action hideCoverage;
 
-    private CoverBackend backend;
+    private final CoverBackend backend;
 
     private TreeColumn colName;
 
@@ -100,7 +100,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
      * This is a callback that will allow us to create the viewer and initialize
      * it.
      */
-    public void createPartControl(Composite parent) {
+    @Override
+    public void createPartControl(final Composite parent) {
         // layout
         final GridLayout containerLayout = new GridLayout(1, false);
         containerLayout.marginWidth = 0;
@@ -136,7 +137,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void createTableTree() {
 
-        Tree tree = viewer.getTree();
+        final Tree tree = viewer.getTree();
 
         tree.setLinesVisible(true);
         tree.setHeaderVisible(true);
@@ -160,25 +161,25 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void hookContextMenu() {
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
+            public void menuAboutToShow(final IMenuManager manager) {
                 CoverStatsView.this.fillContextMenu(manager);
             }
         });
-        Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
     }
 
     private void contributeToActionBars() {
-        IActionBars bars = getViewSite().getActionBars();
+        final IActionBars bars = getViewSite().getActionBars();
         fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());
     }
 
-    private void fillLocalPullDown(IMenuManager manager) {
+    private void fillLocalPullDown(final IMenuManager manager) {
         manager.add(clear);
         manager.add(refresh);
         manager.add(new Separator());
@@ -186,7 +187,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         manager.add(save);
     }
 
-    private void fillContextMenu(IMenuManager manager) {
+    private void fillContextMenu(final IMenuManager manager) {
         manager.add(openItem);
         manager.add(showHtml);
         manager.add(showCoverage);
@@ -197,7 +198,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
-    private void fillLocalToolBar(IToolBarManager manager) {
+    private void fillLocalToolBar(final IToolBarManager manager) {
         manager.add(clear);
         manager.add(refresh);
         manager.add(new Separator());
@@ -221,6 +222,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void makeShowCoverageAction() {
         showCoverage = new Action() {
+            @Override
             public void run() {
                 // TODO: implement showing code coverage for specified modules
                 showMessage("show coverage");
@@ -236,6 +238,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void makeHideCoverageAction() {
         hideCoverage = new Action() {
+            @Override
             public void run() {
                 // TODO: implement hiding code coverage for specified modules
                 showMessage("hide coverage");
@@ -251,6 +254,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void makeOpenItemAction() {
         openItem = new Action() {
+            @Override
             public void run() {
                 showMessage("Action open item");
             }
@@ -281,6 +285,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeRestoreAction() {
         restore = new Action() {
 
+            @Override
             public void run() {
                 showMessage("Action save");
             }
@@ -294,6 +299,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeSaveAction() {
         save = new Action() {
 
+            @Override
             public void run() {
                 showMessage("Action save");
             }
@@ -307,6 +313,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeRefreshAction() {
         refresh = new Action() {
 
+            @Override
             public void run() {
                 showMessage("Action refresh");
             }
@@ -321,9 +328,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeDoubleClickAction() {
         // TODO: use it (open file in editor ?)
         doubleClickAction = new Action() {
+            @Override
             public void run() {
-                ISelection selection = viewer.getSelection();
-                Object obj = ((IStructuredSelection) selection)
+                final ISelection selection = viewer.getSelection();
+                final Object obj = ((IStructuredSelection) selection)
                         .getFirstElement();
                 showMessage("Double-click detected on " + obj.toString());
             }
@@ -333,13 +341,13 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void hookDoubleClickAction() {
         viewer.addDoubleClickListener(new IDoubleClickListener() {
-            public void doubleClick(DoubleClickEvent event) {
+            public void doubleClick(final DoubleClickEvent event) {
                 doubleClickAction.run();
             }
         });
     }
 
-    private void showMessage(String message) {
+    private void showMessage(final String message) {
         MessageDialog.openInformation(viewer.getControl().getShell(),
                 "Coverage statistics", message);
     }
@@ -347,11 +355,12 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     /**
      * Passing the focus request to the viewer's control.
      */
+    @Override
     public void setFocus() {
         viewer.getControl().setFocus();
     }
 
-    public void eventOccured(ICoverEvent e) {
+    public void eventOccured(final ICoverEvent e) {
 
         switch (e.getType()) {
         case UPDATE:
@@ -363,9 +372,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             });
             break;
         case ERROR:
-            IStatus executionStatus = new Status(IStatus.ERROR,
+            final IStatus executionStatus = new Status(IStatus.ERROR,
                     Activator.PLUGIN_ID, e.getInfo(), null);
-            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
+            StatusManager.getManager().handle(executionStatus,
+                    StatusManager.SHOW);
         }
     }
 

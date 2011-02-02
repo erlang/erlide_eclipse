@@ -19,21 +19,21 @@ public class BrowserDialog extends Dialog {
     private Browser browser;
     private String url;
 
-    public BrowserDialog(Shell parent) {
+    public BrowserDialog(final Shell parent) {
         this(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
     }
-    
-    public BrowserDialog(Shell parent, int style) {
+
+    public BrowserDialog(final Shell parent, final int style) {
         super(parent, style);
-        
+
     }
 
     public void open() {
-        Shell shell = new Shell(getParent(), getStyle());
+        final Shell shell = new Shell(getParent(), getStyle());
         shell.setText("Html report");
         createContent(shell);
         shell.open();
-        Display display = getParent().getDisplay();
+        final Display display = getParent().getDisplay();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -41,19 +41,19 @@ public class BrowserDialog extends Dialog {
         }
     }
 
-    public void setBrowserText(String html) {
+    public void setBrowserText(final String html) {
         browser.setText(html);
     }
-    
-    public void setFilePath(String path) {
-        this.url = "file://" + path;
+
+    public void setFilePath(final String path) {
+        url = "file://" + path;
     }
 
-    private void createContent(Shell shell) {
-    
+    private void createContent(final Shell shell) {
+
         shell.setLayout(new FillLayout());
 
-        GridData gData = new GridData();
+        final GridData gData = new GridData();
         gData.horizontalAlignment = GridData.FILL;
 
         browser = new Browser(shell, SWT.NONE);

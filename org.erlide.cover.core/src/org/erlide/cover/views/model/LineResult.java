@@ -4,18 +4,18 @@ package org.erlide.cover.views.model;
  * Line coverage results
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public class LineResult implements Comparable<LineResult> {
-    
-    private int lineNum;
-    private int lineCalls;
-    
-    public LineResult(int lineNum, int lineCalls) {
+
+    private final int lineNum;
+    private final int lineCalls;
+
+    public LineResult(final int lineNum, final int lineCalls) {
         this.lineNum = lineNum;
         this.lineCalls = lineCalls;
     }
-    
+
     public int getLineNum() {
         return lineNum;
     }
@@ -27,17 +27,18 @@ public class LineResult implements Comparable<LineResult> {
     public boolean called() {
         return lineCalls != 0;
     }
-    
+
+    @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        
+        final StringBuffer buf = new StringBuffer();
+
         buf.append(lineNum).append(" ").append(lineCalls);
-        
+
         return buf.toString();
     }
 
-    public int compareTo(LineResult lineRes2) {
+    public int compareTo(final LineResult lineRes2) {
         return lineNum - lineRes2.getLineNum();
     }
-    
+
 }

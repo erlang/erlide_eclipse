@@ -4,26 +4,26 @@ package org.erlide.cover.core;
  * Helper class for defining type of object to perform coverage
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public class CoverObject {
-    
+
     public static final int MODULE = 0;
     public static final int PROJ = 1;
-    
-    private int type;
-    private String name;
-    private String pathSrc;
-    private String pathTst;
-    private String pathEbin;
-    
-    public CoverObject(int type, String pathSrc,
-            String pathTst, String pathEbin) {
+
+    private final int type;
+    private final String name;
+    private final String pathSrc;
+    private final String pathTst;
+    private final String pathEbin;
+
+    public CoverObject(final int type, final String pathSrc,
+            final String pathTst, final String pathEbin) {
         this(type, "", pathSrc, pathTst, pathEbin);
     }
-    
-    public CoverObject(int type, String name, String pathSrc, 
-            String pathTst, String pathEbin) {
+
+    public CoverObject(final int type, final String name, final String pathSrc,
+            final String pathTst, final String pathEbin) {
         this.type = type;
         this.name = name;
         this.pathSrc = pathSrc;
@@ -34,7 +34,7 @@ public class CoverObject {
     public int getType() {
         return type;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -42,13 +42,13 @@ public class CoverObject {
     public String getPathSrc() {
         return pathSrc;
     }
-    
+
     public String getPathTst() {
         return pathTst;
     }
-    
+
     public String getPathEbin() {
         return pathEbin;
     }
-    
+
 }

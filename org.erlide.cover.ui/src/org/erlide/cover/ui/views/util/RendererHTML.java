@@ -25,27 +25,28 @@ import org.eclipse.swt.widgets.Shell;
  * Displays html reports
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- *
+ * 
  */
 public class RendererHTML {
 
-  public static void main(String[] args) {
-    /* Relative links: use the HTML base tag */
-    String html = "<html><head>"
-        + "<base href=\"http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/platform-swt-home/\" >"
-        + "<title>HTML Test</title></head>"
-        + "<body><a href=\"dev.html\">local link</a></body></html>";
+    public static void main(final String[] args) {
+        /* Relative links: use the HTML base tag */
+        final String html = "<html><head>"
+                + "<base href=\"http://dev.eclipse.org/viewcvs/index.cgi/%7Echeckout%7E/platform-swt-home/\" >"
+                + "<title>HTML Test</title></head>"
+                + "<body><a href=\"dev.html\">local link</a></body></html>";
 
-    Display display = new Display();
-    Shell shell = new Shell(display);
-    shell.setLayout(new FillLayout());
-    Browser browser = new Browser(shell, SWT.NONE);
-    browser.setText(html);
-    shell.open();
-    while (!shell.isDisposed()) {
-      if (!display.readAndDispatch())
-        display.sleep();
+        final Display display = new Display();
+        final Shell shell = new Shell(display);
+        shell.setLayout(new FillLayout());
+        final Browser browser = new Browser(shell, SWT.NONE);
+        browser.setText(html);
+        shell.open();
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        display.dispose();
     }
-    display.dispose();
-  }
 }

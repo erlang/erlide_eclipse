@@ -8,28 +8,28 @@ import java.util.Set;
  * Stores information of covered modules
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- *
+ * 
  */
 public class ModuleSet {
-    
+
     private static Map<String, ModuleStats> map;
-    
+
     static {
         map = new HashMap<String, ModuleStats>();
     }
-    
-    public static void add(ModuleStats module) {
+
+    public static void add(final ModuleStats module) {
         map.put(module.getLabel(), module);
     }
-    
-    public static ModuleStats get(String name) {
+
+    public static ModuleStats get(final String name) {
         return map.get(name);
     }
-    
+
     public static Set<String> getNames() {
         return map.keySet();
     }
-    
+
     public static void clear() {
         map.clear();
     }

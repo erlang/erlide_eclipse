@@ -3,7 +3,6 @@ package org.erlide.cover.core;
 import org.erlide.cover.constants.Constants;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -17,46 +16,47 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class CoverRunner extends Thread {
 
-    private CoverBackend backend;
+    private final CoverBackend backend;
 
-    public CoverRunner(CoverBackend backend) {
+    public CoverRunner(final CoverBackend backend) {
         this.backend = backend;
     }
 
+    @Override
     public void run() {
 
-        StatsTreeModel model = StatsTreeModel.getInstance();
+        final StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
         backend.getAnnotationMaker().clearAllAnnotations();
-        for (ICoverObserver obs : backend.getListeners())
+        for (final ICoverObserver obs : backend.getListeners()) {
             obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
+        }
 
         try {
-            OtpErlangObject res = backend.getBackend().call(
+            final OtpErlangObject res = backend.getBackend().call(
                     Constants.ERLANG_BACKEND, Constants.FUN_START, "x",
                     new OtpErlangAtom(backend.getSettings().getFramework()));
             if (res instanceof OtpErlangTuple) {
-                OtpErlangTuple resTuple = (OtpErlangTuple)res;
-                if(!(resTuple.elementAt(0).toString().equals("ok") ||
-                        (resTuple.elementAt(0).toString().equals("error") &&
-                                resTuple.elementAt(1) instanceof OtpErlangTuple &&
-                                ((OtpErlangTuple)resTuple.elementAt(1)).elementAt(0).
-                                toString().equals("already_started")))) {
-                            System.out.println("cover_error");
-                            return;
+                final OtpErlangTuple resTuple = (OtpErlangTuple) res;
+                if (!(resTuple.elementAt(0).toString().equals("ok") || resTuple
+                        .elementAt(0).toString().equals("error")
+                        && resTuple.elementAt(1) instanceof OtpErlangTuple
+                        && ((OtpErlangTuple) resTuple.elementAt(1))
+                                .elementAt(0).toString()
+                                .equals("already_started"))) {
+                    System.out.println("cover_error");
+                    return;
                 }
             } else {
                 return;
             }
-            
 
             // the loop is a preparation for possible custom configuration
-            for (CoverObject obj : backend.getSettings().objects()) {
+            for (final CoverObject obj : backend.getSettings().objects()) {
 
-                backend.getBackend().call(
-                        Constants.ERLANG_BACKEND, Constants.FUN_BEAM_DIR, "s",
-                        obj.getPathEbin());
-                
+                backend.getBackend().call(Constants.ERLANG_BACKEND,
+                        Constants.FUN_BEAM_DIR, "s", obj.getPathEbin());
+
                 // TODO: change the way of obtaining reports (that it can serve
                 // many objects)
                 OtpErlangObject htmlPath;
@@ -77,7 +77,7 @@ public class CoverRunner extends Thread {
 
             }
 
-        } catch (BackendException e) {
+        } catch (final BackendException e) {
             e.printStackTrace();
             backend.handleError("Exception while running cover occured: " + e);
         }

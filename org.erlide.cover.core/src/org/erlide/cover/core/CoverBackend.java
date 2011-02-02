@@ -83,13 +83,13 @@ public class CoverBackend {
         ErlLogger.debug("Backend created...");
         System.out.println("Create backend");
 
-        this.info = buildRuntimeInfo(data, rt0);
+        info = buildRuntimeInfo(data, rt0);
         final EnumSet<BackendOptions> options = EnumSet
                 .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
-        this.config = getLaunchConfiguration(info, options);
+        config = getLaunchConfiguration(info, options);
 
         try {
-            this.backend = createBackend();
+            backend = createBackend();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
         }

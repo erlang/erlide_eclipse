@@ -35,23 +35,23 @@ import org.erlide.cover.views.model.StatsTreeModel;
 public class EditorTracker implements ICoverAnnotationMarker {
 
     private static EditorTracker editorTracker;
-    
+
     private final IWorkbench workbench;
 
-    private EditorTracker(IWorkbench workbench) {
+    private EditorTracker(final IWorkbench workbench) {
         this.workbench = workbench;
 
-        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+        final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
-        for (IWorkbenchWindow w : windows) {
+        for (final IWorkbenchWindow w : windows) {
             w.getPartService().addPartListener(partListener);
         }
 
         workbench.addWindowListener(windowListener);
     }
-    
+
     public static synchronized EditorTracker getInstance() {
-        if(editorTracker == null) {
+        if (editorTracker == null) {
             editorTracker = new EditorTracker(PlatformUI.getWorkbench());
         }
         return editorTracker;
@@ -60,86 +60,90 @@ public class EditorTracker implements ICoverAnnotationMarker {
     public void dispose() {
         workbench.removeWindowListener(windowListener);
 
-        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+        final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
-        for (IWorkbenchWindow w : windows) {
+        for (final IWorkbenchWindow w : windows) {
             w.getPartService().removePartListener(partListener);
         }
     }
 
     public void addAnnotations() {
-        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+        final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
-        for (IWorkbenchWindow w : windows) {
-            for (IWorkbenchPage page : w.getPages()) {
-                for (IEditorReference editor : page.getEditorReferences()) {
+        for (final IWorkbenchWindow w : windows) {
+            for (final IWorkbenchPage page : w.getPages()) {
+                for (final IEditorReference editor : page.getEditorReferences()) {
                     annotateEditor(editor);
                 }
             }
         }
     }
 
-    public void annotateEditor(IWorkbenchPartReference partref) {
-        IWorkbenchPart part = partref.getPart(false);
+    public void annotateEditor(final IWorkbenchPartReference partref) {
+        final IWorkbenchPart part = partref.getPart(false);
 
         if (part instanceof ITextEditor) {
-            ITextEditor editor = (ITextEditor) part;
+            final ITextEditor editor = (ITextEditor) part;
 
-            IDocument doc = editor.getDocumentProvider().getDocument(
+            final IDocument doc = editor.getDocumentProvider().getDocument(
                     editor.getEditorInput());
 
-            StatsTreeModel model = StatsTreeModel.getInstance();
+            final StatsTreeModel model = StatsTreeModel.getInstance();
 
-            String modName = editor.getTitle().replace(".erl", "");
-            ModuleStats module = ModuleSet.get(modName);
+            final String modName = editor.getTitle().replace(".erl", "");
+            final ModuleStats module = ModuleSet.get(modName);
 
-            if (module == null)
+            if (module == null) {
                 return;
+            }
 
-            List<LineResult> list = module.getLineResults();
-            
-            Map<Position, Annotation> curAnn = 
-                new HashMap<Position, Annotation>();
-            
-            IAnnotationModel annMod = editor.getDocumentProvider()
-            .getAnnotationModel(editor.getEditorInput());
-            
-            Iterator it = annMod.getAnnotationIterator();
-            while(it.hasNext()){
-                Annotation ann = (Annotation)it.next();
-                curAnn.put(annMod.getPosition(ann),
-                        ann);
-            } 
-            
-          //  clearAnnotations(partref);
-            
-            for (LineResult lr : list) {
+            final List<LineResult> list = module.getLineResults();
 
-                if(lr.getLineNum() == 0)
+            final Map<Position, Annotation> curAnn = new HashMap<Position, Annotation>();
+
+            final IAnnotationModel annMod = editor.getDocumentProvider()
+                    .getAnnotationModel(editor.getEditorInput());
+
+            final Iterator it = annMod.getAnnotationIterator();
+            while (it.hasNext()) {
+                final Annotation ann = (Annotation) it.next();
+                curAnn.put(annMod.getPosition(ann), ann);
+            }
+
+            // clearAnnotations(partref);
+
+            for (final LineResult lr : list) {
+
+                if (lr.getLineNum() == 0) {
                     continue;
+                }
                 try {
-                    
-                    IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
-                    int length = reg.getLength();
-                    int offset = reg.getOffset();
-                    Position pos = new Position(offset, length);
+
+                    final IRegion reg = doc
+                            .getLineInformation(lr.getLineNum() - 1);
+                    final int length = reg.getLength();
+                    final int offset = reg.getOffset();
+                    final Position pos = new Position(offset, length);
 
                     Annotation annotation;
                     if (lr.called()) {
-                        annotation = CoverageAnnotation.create(
-                                CoverageAnnotation.FULL_COVERAGE);
+                        annotation = CoverageAnnotation
+                                .create(CoverageAnnotation.FULL_COVERAGE);
                     } else {
-                        annotation = CoverageAnnotation.create(
-                                CoverageAnnotation.NO_COVERAGE);
+                        annotation = CoverageAnnotation
+                                .create(CoverageAnnotation.NO_COVERAGE);
                     }
-                    
-                    if (!curAnn.containsKey(pos) || curAnn.containsKey(pos) &&
-                            curAnn.get(pos).getType().equals(CoverageAnnotation.NO_COVERAGE) &&
-                            annotation.getType().equals(CoverageAnnotation.FULL_COVERAGE) ) {
+
+                    if (!curAnn.containsKey(pos)
+                            || curAnn.containsKey(pos)
+                            && curAnn.get(pos).getType()
+                                    .equals(CoverageAnnotation.NO_COVERAGE)
+                            && annotation.getType().equals(
+                                    CoverageAnnotation.FULL_COVERAGE)) {
                         annMod.addAnnotation(annotation, pos);
                     }
 
-                } catch (BadLocationException e) {
+                } catch (final BadLocationException e) {
                     e.printStackTrace();
                 }
 
@@ -151,30 +155,30 @@ public class EditorTracker implements ICoverAnnotationMarker {
      * clears coverage annotations from all files opened in the editor
      */
     public void clearAllAnnotations() {
-        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+        final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
-        for (IWorkbenchWindow w : windows) {
-            for (IWorkbenchPage page : w.getPages()) {
-                for (IEditorReference editor : page.getEditorReferences()) {
+        for (final IWorkbenchWindow w : windows) {
+            for (final IWorkbenchPage page : w.getPages()) {
+                for (final IEditorReference editor : page.getEditorReferences()) {
                     clearAnnotations(editor);
                 }
             }
         }
     }
 
-    public void clearAnnotations(IWorkbenchPartReference partref) {
-        IWorkbenchPart part = partref.getPart(false);
+    public void clearAnnotations(final IWorkbenchPartReference partref) {
+        final IWorkbenchPart part = partref.getPart(false);
 
         if (part instanceof ITextEditor) {
-            ITextEditor editor = (ITextEditor) part;
+            final ITextEditor editor = (ITextEditor) part;
 
-            IAnnotationModel annMod = editor.getDocumentProvider()
+            final IAnnotationModel annMod = editor.getDocumentProvider()
                     .getAnnotationModel(editor.getEditorInput());
 
-            Iterator it = annMod.getAnnotationIterator();
+            final Iterator it = annMod.getAnnotationIterator();
 
             while (it.hasNext()) {
-                Annotation annotation = (Annotation) it.next();
+                final Annotation annotation = (Annotation) it.next();
                 if (annotation.getType().equals(
                         CoverageAnnotation.FULL_COVERAGE)
                         || annotation.getType().equals(
@@ -185,49 +189,49 @@ public class EditorTracker implements ICoverAnnotationMarker {
         }
     }
 
-    private IWindowListener windowListener = new IWindowListener() {
+    private final IWindowListener windowListener = new IWindowListener() {
 
-        public void windowOpened(IWorkbenchWindow window) {
+        public void windowOpened(final IWorkbenchWindow window) {
             window.getPartService().addPartListener(partListener);
         }
 
-        public void windowClosed(IWorkbenchWindow window) {
+        public void windowClosed(final IWorkbenchWindow window) {
             window.getPartService().removePartListener(partListener);
         }
 
-        public void windowActivated(IWorkbenchWindow window) {
+        public void windowActivated(final IWorkbenchWindow window) {
         }
 
-        public void windowDeactivated(IWorkbenchWindow window) {
+        public void windowDeactivated(final IWorkbenchWindow window) {
         }
 
     };
 
-    private IPartListener2 partListener = new IPartListener2() {
+    private final IPartListener2 partListener = new IPartListener2() {
 
-        public void partOpened(IWorkbenchPartReference partref) {
+        public void partOpened(final IWorkbenchPartReference partref) {
             annotateEditor(partref);
         }
 
-        public void partActivated(IWorkbenchPartReference partref) {
+        public void partActivated(final IWorkbenchPartReference partref) {
         }
 
-        public void partBroughtToTop(IWorkbenchPartReference partref) {
+        public void partBroughtToTop(final IWorkbenchPartReference partref) {
         }
 
-        public void partVisible(IWorkbenchPartReference partref) {
+        public void partVisible(final IWorkbenchPartReference partref) {
         }
 
-        public void partInputChanged(IWorkbenchPartReference partref) {
+        public void partInputChanged(final IWorkbenchPartReference partref) {
         }
 
-        public void partClosed(IWorkbenchPartReference partref) {
+        public void partClosed(final IWorkbenchPartReference partref) {
         }
 
-        public void partDeactivated(IWorkbenchPartReference partref) {
+        public void partDeactivated(final IWorkbenchPartReference partref) {
         }
 
-        public void partHidden(IWorkbenchPartReference partref) {
+        public void partHidden(final IWorkbenchPartReference partref) {
         }
     };
 
