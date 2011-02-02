@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 
 public class StringUtils {
@@ -516,6 +517,8 @@ public class StringUtils {
     }
 
     public static boolean equalFilePaths(String path_1, String path_2) {
+        Assert.isNotNull(path_1);
+        Assert.isNotNull(path_2);
         if (!EFS.getLocalFileSystem().isCaseSensitive()) {
             path_1 = path_1.toLowerCase();
             path_2 = path_2.toLowerCase();
@@ -523,5 +526,21 @@ public class StringUtils {
         final Path path1 = new Path(path_1);
         final Path path2 = new Path(path_2);
         return path1.equals(path2);
+    }
+
+    public static String withoutInterrogationMark(final String definedName) {
+        if (definedName.startsWith("?")) {
+            return definedName.substring(1);
+        }
+        return definedName;
+    }
+
+    public static String unquote(final String s) {
+        final int length = s.length();
+        if (length > 2 && s.charAt(0) == '\'' && s.charAt(length - 1) == '\'') {
+            return s.substring(1, length - 1);
+        } else {
+            return s;
+        }
     }
 }

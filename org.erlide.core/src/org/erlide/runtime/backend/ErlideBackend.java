@@ -24,6 +24,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -222,7 +223,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                     }
                     name = name.substring(0, name.length() - 5);
                     try {
-                        ErlideUtil.loadModuleViaInput(this, project, name);
+                        BeamUtil.loadModuleViaInput(this, project, name);
                         backendManager.moduleLoaded(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();
@@ -246,7 +247,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                     final String m = path.removeFileExtension().lastSegment();
                     try {
                         boolean ok = false;
-                        final OtpErlangBinary bin = ErlideUtil.getBeamBinary(m,
+                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
                                 path);
                         if (bin != null) {
                             ok = ErlBackend.loadBeam(this, m, bin);

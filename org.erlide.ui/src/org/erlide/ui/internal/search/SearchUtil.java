@@ -55,6 +55,7 @@ import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
 import org.erlide.core.search.VariablePattern;
+import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
@@ -326,7 +327,7 @@ public class SearchUtil {
             return null;
         }
         String name = res.getName();
-        final String unquoted = name != null ? ErlideUtil.unquote(name) : null;
+        final String unquoted = name != null ? StringUtils.unquote(name) : null;
         if (res.isExternalCall()) {
             if (module != null && offset != -1) {
                 try {

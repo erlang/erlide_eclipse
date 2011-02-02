@@ -36,7 +36,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.util.LogUtil;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.util.ProblemData;
 import org.erlide.jinterface.util.ErlLogger;
@@ -160,7 +160,7 @@ public class ReportPreferencePage extends PreferencePage implements
         final Job j = new Job("send error report") {
             @Override
             public IStatus run(final IProgressMonitor monitor) {
-                final String location = ErlideUtil.getReportFile();
+                final String location = LogUtil.getReportFile();
 
                 final ProblemData data = gatherProblemData(attach, title,
                         contact, body);
@@ -230,8 +230,8 @@ public class ReportPreferencePage extends PreferencePage implements
         String plog = "N/A";
         String elog = "N/A";
         if (attach) {
-            plog = ErlideUtil.fetchPlatformLog();
-            elog = ErlideUtil.fetchErlideLog();
+            plog = LogUtil.fetchPlatformLog();
+            elog = LogUtil.fetchErlideLog();
         }
         final ProblemData data = new ProblemData(title, contact, body, plog,
                 elog);

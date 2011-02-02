@@ -1,4 +1,4 @@
-package org.erlide.jinterface.util;
+package org.erlide.jinterface.epmd;
 
 import java.util.Collection;
 

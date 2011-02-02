@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.util.LogUtil;
 import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -164,12 +165,12 @@ public class ManagedLauncher implements IDisposable {
             String createdDump = null;
             createdDump = createCoreDump(createdDump);
 
-            final String plog = ErlideUtil.fetchPlatformLog();
-            final String elog = ErlideUtil.fetchErlideLog();
-            final String slog = ErlideUtil.fetchStraceLog(ainfo.getWorkingDir()
+            final String plog = LogUtil.fetchPlatformLog();
+            final String elog = LogUtil.fetchErlideLog();
+            final String slog = LogUtil.fetchStraceLog(ainfo.getWorkingDir()
                     + "/" + ainfo.getNodeName() + ".strace");
             final String delim = "\n==================================\n";
-            final File report = new File(ErlideUtil.getReportFile());
+            final File report = new File(LogUtil.getReportFile());
             try {
                 report.createNewFile();
                 final OutputStream out = new FileOutputStream(report);
@@ -202,7 +203,7 @@ public class ManagedLauncher implements IDisposable {
             final File[] dumps = getCoreDumpFiles();
             if (dumps.length != 0) {
                 final File dump = dumps[0];
-                final File dest = new File(ErlideUtil.getReportLocation() + "/"
+                final File dest = new File(LogUtil.getReportLocation() + "/"
                         + dump.getName());
                 try {
                     move(dump, dest);

@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.jinterface.epmd;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 

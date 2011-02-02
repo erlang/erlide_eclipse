@@ -15,6 +15,7 @@ import org.erlide.core.search.MacroPattern;
 import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
+import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -223,11 +224,11 @@ public abstract class ErlangSearchPattern {
                     true);
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;
-            final String unquoted = ErlideUtil.unquote(m.getDefinedName());
+            final String unquoted = StringUtils.unquote(m.getDefinedName());
             return new MacroPattern(unquoted, limitTo);
         } else if (element instanceof IErlRecordDef) {
             final IErlRecordDef r = (IErlRecordDef) element;
-            final String unquoted = ErlideUtil.unquote(r.getDefinedName());
+            final String unquoted = StringUtils.unquote(r.getDefinedName());
             return new RecordPattern(unquoted, limitTo);
         } else if (element instanceof IErlFunctionClause) {
             final IErlFunctionClause clause = (IErlFunctionClause) element;

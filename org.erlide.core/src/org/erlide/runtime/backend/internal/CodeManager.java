@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlBackend;
@@ -96,8 +97,8 @@ public class CodeManager {
      * @return boolean
      */
     private boolean loadBeam(final String moduleName, final URL beamPath) {
-        final OtpErlangBinary bin = ErlideUtil.getBeamBinary(moduleName,
-                beamPath);
+        final OtpErlangBinary bin = BeamUtil
+                .getBeamBinary(moduleName, beamPath);
         if (bin == null) {
             return false;
         }

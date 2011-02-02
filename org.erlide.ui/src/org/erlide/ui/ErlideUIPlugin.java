@@ -50,7 +50,6 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.jinterface.util.JRpcUtil;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
@@ -133,9 +132,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
-
-        // set this classloader to be used with erlang rpc
-        JRpcUtil.loader = getClass().getClassLoader();
 
         if (ErlideUtil.isDeveloper()) {
             BackendManagerPopup.init();

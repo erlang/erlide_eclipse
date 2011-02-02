@@ -48,9 +48,9 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
+import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
@@ -364,7 +364,7 @@ public class ErlTextHover implements ITextHover,
                                         kindToFind, externalIncludes);
                         if (pd == null) {
                             pd = ModelUtils.findPreprocessorDef(module,
-                                    ErlideUtil.unquote(definedName),
+                                    StringUtils.unquote(definedName),
                                     kindToFind, externalIncludes);
                         }
                         if (pd != null) {
