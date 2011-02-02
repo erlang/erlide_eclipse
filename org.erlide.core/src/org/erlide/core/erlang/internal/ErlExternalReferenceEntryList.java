@@ -107,7 +107,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
             } else {
                 final String name = getNameFromExternalPath(path);
                 final ErlExternalReferenceEntry externalReferenceEntry = new ErlExternalReferenceEntry(
-                        parent, name, path, false);
+                        parent, name, path, true);
                 pathToEntryMap.put(path, externalReferenceEntry);
                 externalReferenceEntry.open(pm);
                 parent.addChild(externalReferenceEntry);
@@ -157,8 +157,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public boolean isRoot() {
-        return true;
+    public Backend getBackend() {
+        return null;
     }
 
 }

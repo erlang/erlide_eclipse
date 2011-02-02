@@ -229,41 +229,58 @@ public class ErlideOpen {
                 return Util.stringValue(t.elementAt(1));
             }
         } catch (final BackendException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }
 
-    // private static String getExternalModule(final Backend b, final String
-    // mod,
-    // final String externalModules, final OtpErlangList pathVars) {
-    // try {
-    // final OtpErlangObject res = b.call("erlide_open",
-    // "get_external_module", "sx", mod,
-    // mkContext(externalModules, null, pathVars, null, null));
-    // if (Util.isOk(res)) {
-    // final OtpErlangTuple t = (OtpErlangTuple) res;
-    // return Util.stringValue(t.elementAt(1));
-    // }
-    // } catch (final BackendException e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
+    public static List<String> getLibDirs(final Backend backend) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "get_lib_dirs", "");
+            return getStringListTuple(res);
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+            return null;
+        }
+    }
 
-    // public static boolean hasExternalWithPath(final Backend backend,
-    // final String externalModules, final String path,
-    // final OtpErlangList pathVars) {
-    // try {
-    // final OtpErlangObject res = backend.call("erlide_open",
-    // "has_external_with_path", "sx", path,
-    // mkContext(externalModules, null, pathVars, null, null));
-    // if (Util.isOk(res)) {
-    // return true;
-    // }
-    // } catch (final BackendException e) {
-    // e.printStackTrace();
-    // }
-    // return false;
-    // }
+    public static List<String> getLibFiles(final Backend backend,
+            final String entry) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "get_lib_files", "s", entry);
+            return getStringListTuple(res);
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+            return null;
+        }
+    }
+
+    public static List<String> getLibSrcInclude(final Backend backend,
+            final String entry) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "get_lib_src_include", "s", entry);
+            return getStringListTuple(res);
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+            return null;
+        }
+    }
+
+    private static List<String> getStringListTuple(final OtpErlangObject res) {
+        if (Util.isOk(res)) {
+            final OtpErlangTuple t = (OtpErlangTuple) res;
+            final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+            final List<String> result = Lists.newArrayListWithCapacity(l
+                    .arity());
+            for (final OtpErlangObject o : l) {
+                result.add(Util.stringValue(o));
+            }
+            return result;
+        }
+        return null;
+    }
+
 }
