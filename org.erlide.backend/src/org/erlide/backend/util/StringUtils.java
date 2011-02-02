@@ -7,7 +7,7 @@
  * License: Common Public License v1.0
  */
 
-package org.erlide.core.util;
+package org.erlide.backend.util;
 
 import java.util.ArrayList;
 import java.util.List;

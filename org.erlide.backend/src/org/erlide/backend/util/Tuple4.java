@@ -1,7 +1,7 @@
 /*
  * Created on Mar 19, 2006
  */
-package org.erlide.core.util;
+package org.erlide.backend.util;
 
 import java.io.Serializable;
 

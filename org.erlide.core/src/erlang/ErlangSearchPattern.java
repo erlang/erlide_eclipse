@@ -2,6 +2,7 @@ package erlang;
 
 import java.util.EnumSet;
 
+import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
@@ -15,7 +16,6 @@ import org.erlide.core.search.MacroPattern;
 import org.erlide.core.search.RecordFieldPattern;
 import org.erlide.core.search.RecordPattern;
 import org.erlide.core.search.TypeRefPattern;
-import org.erlide.core.util.StringUtils;
 import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

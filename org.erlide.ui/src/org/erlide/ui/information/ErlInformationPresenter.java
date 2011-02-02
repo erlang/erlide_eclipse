@@ -22,7 +22,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.core.util.StringUtils;
+import org.erlide.backend.util.StringUtils;
 import org.erlide.ui.util.ErlLineBreakReader;
 import org.erlide.ui.util.UIStringUtils;
 
