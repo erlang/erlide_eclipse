@@ -161,4 +161,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    public boolean isOTP() {
+        return false;
+    }
+
 }

@@ -104,4 +104,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return backend;
     }
 
+    public boolean isOTP() {
+        return true;
+    }
+
 }

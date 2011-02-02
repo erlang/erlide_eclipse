@@ -182,6 +182,9 @@ public class SearchUtil {
                         throws ErlModelException {
                     if (theElement instanceof IErlExternal) {
                         final IErlExternal theExternal = (IErlExternal) theElement;
+                        if (theExternal.isOTP()) {
+                            return false;
+                        }
                         theExternal.open(null);
                     }
                     if (theElement instanceof IErlModule) {
