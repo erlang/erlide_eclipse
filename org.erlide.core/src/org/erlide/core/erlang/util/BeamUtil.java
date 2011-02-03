@@ -72,7 +72,6 @@ public class BeamUtil {
         }
     }
 
-    @SuppressWarnings("restriction")
     public static Collection<String> getPaths(final String name, final Bundle b) {
         final List<String> result = Lists.newArrayList();
         final String entryName = name.replace(" ", "%20");
@@ -100,7 +99,6 @@ public class BeamUtil {
         return result;
     }
 
-    @SuppressWarnings("restriction")
     private static String getPathFromUrl(final URL entry) {
         URLConnection connection;
         try {
