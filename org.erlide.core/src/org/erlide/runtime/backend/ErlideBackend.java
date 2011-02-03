@@ -21,10 +21,11 @@ import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.BeamUtil;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -223,7 +224,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                     }
                     name = name.substring(0, name.length() - 5);
                     try {
-                        BeamUtil.loadModuleViaInput(this, project, name);
+                        CoreUtil.loadModuleViaInput(this, project, name);
                         backendManager.moduleLoaded(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();

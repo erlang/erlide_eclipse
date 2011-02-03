@@ -15,11 +15,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.util.CharOperation;
 import org.erlide.jinterface.backend.util.Util;
+import org.erlide.runtime.backend.ErlideBackend;
+
+import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public final class CoreUtil {
     /**
@@ -194,6 +201,28 @@ public final class CoreUtil {
     }
 
     private CoreUtil() {
+    }
+
+    public static void loadModuleViaInput(final ErlideBackend b,
+            final IProject project, final String module)
+            throws ErlModelException, IOException {
+        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IPath outputLocation = project.getFolder(p.getOutputLocation())
+                .getFile(module + ".beam").getLocation();
+        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module, outputLocation);
+        if (bin != null) {
+            final String fmt = "code:load_binary(%s, %s, %s).\n";
+            final StringBuffer strBin = new StringBuffer();
+            strBin.append("<<");
+            for (final byte c : bin.binaryValue()) {
+                strBin.append(c).append(',');
+            }
+            strBin.deleteCharAt(strBin.length() - 1);
+            strBin.append(">>");
+            final String cmd = String.format(fmt, module, module,
+                    strBin.toString());
+            b.input(cmd);
+        }
     }
 
 }
