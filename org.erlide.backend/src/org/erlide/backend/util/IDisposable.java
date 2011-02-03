@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.backend;
+package org.erlide.backend.util;
 
 public interface IDisposable {
 

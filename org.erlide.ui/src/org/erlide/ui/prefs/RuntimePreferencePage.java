@@ -65,8 +65,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeInfoManager;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeInfoManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
 

@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.erlide.backend.util.IDisposable;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.IDisposable;
 import org.erlide.jinterface.backend.util.LRUCache;
 
 import com.google.common.collect.Lists;

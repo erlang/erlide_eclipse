@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.backend;
+package org.erlide.backend.runtime;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.erlide.jinterface.backend.BackendUtil;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";

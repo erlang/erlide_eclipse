@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.backend;
+package org.erlide.backend.runtime;
 
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;

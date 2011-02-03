@@ -1,6 +1,6 @@
 package org.erlide.backend;
 
-import org.erlide.jinterface.backend.RuntimeInfoManager;
+import org.erlide.backend.runtime.RuntimeInfoManager;
 
 public class BackendCore {
 

@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
-import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.ui.util.SWTUtil;
 

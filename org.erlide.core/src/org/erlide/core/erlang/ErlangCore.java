@@ -35,10 +35,10 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.erlang.internal.ErlModuleMap;
-import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
 
 /**
