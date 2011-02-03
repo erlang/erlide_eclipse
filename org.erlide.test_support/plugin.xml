@@ -193,7 +193,7 @@
    </persistent>
 </extension>
 <extension
-      point="org.erlide.core.sourcePathProvider">
+      point="org.erlide.backend.sourcePathProvider">
    <sourcePathProvider
          class="org.erlide.test_support.TestSourcePathProvider">
    </sourcePathProvider>
