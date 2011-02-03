@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -117,7 +117,7 @@ public class CodeManager {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         // reg.addRegistryChangeListener(this);
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if ("beam_dir".equals(el.getName())

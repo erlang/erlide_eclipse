@@ -38,8 +38,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.util.Tuple;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.BackendUtils;
@@ -503,7 +503,7 @@ public final class BackendManager extends OtpNodeStatus implements
     public void loadCodepathExtensions() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
         final IExtensionPoint exPnt = reg.getExtensionPoint(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();

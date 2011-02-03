@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Backend management
-Bundle-SymbolicName: org.erlide.backend
+Bundle-SymbolicName: org.erlide.backend;singleton:=true
 Bundle-Version: 0.9.5.qualifier
-Bundle-Activator: org.erlide.backend.Activator
+Bundle-Activator: org.erlide.backend.BackendPlugin
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.filesystem;bundle-version="1.2.1",

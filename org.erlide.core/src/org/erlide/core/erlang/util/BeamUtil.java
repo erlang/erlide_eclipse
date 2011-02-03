@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
@@ -150,7 +150,7 @@ public class BeamUtil {
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if (c.getName().equals(b.getSymbolicName())) {
