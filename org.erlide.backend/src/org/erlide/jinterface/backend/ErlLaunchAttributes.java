@@ -8,13 +8,13 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.launch;
+package org.erlide.jinterface.backend;
 
-import org.erlide.core.ErlangPlugin;
+import org.erlide.backend.BackendPlugin;
 
 public interface ErlLaunchAttributes {
 
-    final String prefix = ErlangPlugin.PLUGIN_ID;
+    final String prefix = BackendPlugin.PREFS_ID;
 
     final String PROJECTS = prefix + ".projects";
 

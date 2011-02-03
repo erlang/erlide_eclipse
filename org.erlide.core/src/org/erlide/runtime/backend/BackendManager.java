@@ -54,6 +54,7 @@ import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendUtil;
 import org.erlide.jinterface.backend.CodeBundle;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.backend.CodeBundle.CodeContext;
@@ -61,7 +62,6 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.internal.ManagedLauncher;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;

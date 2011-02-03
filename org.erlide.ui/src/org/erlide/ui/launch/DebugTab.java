@@ -51,9 +51,9 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.ErlDebugConstants;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlDebugConstants;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.ui.util.SWTUtil;
 
