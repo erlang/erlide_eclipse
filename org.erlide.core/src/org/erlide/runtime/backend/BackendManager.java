@@ -39,13 +39,13 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendPlugin;
+import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.Tuple;
+import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.util.MessageReporter;
-import org.erlide.core.util.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendUtil;
@@ -221,7 +221,7 @@ public final class BackendManager extends OtpNodeStatus implements
         ErlideBackend b = buildBackends.get(version);
         if (b == null) {
             info.setNodeName(version);
-            info.setNodeNameSuffix("_" + BackendUtils.getErlideNameTag());
+            info.setNodeNameSuffix("_" + org.erlide.backend.util.BackendUtils.getErlideNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
             // will add workspace unique id
@@ -314,7 +314,7 @@ public final class BackendManager extends OtpNodeStatus implements
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
-                final String nodeName = BackendUtils.getErlideNameTag()
+                final String nodeName = org.erlide.backend.util.BackendUtils.getErlideNameTag()
                         + "_erlide";
                 info.setNodeName(nodeName);
             }

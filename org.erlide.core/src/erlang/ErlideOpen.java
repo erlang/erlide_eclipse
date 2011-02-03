@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.erlang.util.SourcePathProvider;
+import org.erlide.backend.util.BackendUtils;
+import org.erlide.backend.util.SourcePathProvider;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -60,7 +60,7 @@ public class ErlideOpen {
         final List<String> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
-            spps = ModelUtils.getSourcePathProviders();
+            spps = BackendUtils.getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
                 final Collection<IPath> paths = spp.getSourcePaths();
                 for (final IPath p : paths) {

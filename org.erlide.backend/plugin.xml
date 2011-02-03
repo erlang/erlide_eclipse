@@ -2,5 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
+   <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
 
 </plugin>

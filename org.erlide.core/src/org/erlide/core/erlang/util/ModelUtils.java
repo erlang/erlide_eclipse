@@ -15,12 +15,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -148,22 +145,6 @@ public class ModelUtils {
             return module;
         }
         return (IErlModule) ErlangCore.getModelManager().create(file, model);
-    }
-
-    public static Collection<SourcePathProvider> getSourcePathProviders()
-            throws CoreException {
-        // TODO should be cached and listening to plugin changes?
-        final List<SourcePathProvider> result = Lists.newArrayList();
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
-                        "sourcePathProvider");
-        for (final IConfigurationElement element : elements) {
-            final SourcePathProvider provider = (SourcePathProvider) element
-                    .createExecutableExtension("class");
-            result.add(provider);
-        }
-        return result;
     }
 
     public static IErlModule findExternalModuleFromPath(final String path)

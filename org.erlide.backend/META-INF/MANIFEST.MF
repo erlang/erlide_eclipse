@@ -6,6 +6,7 @@ Bundle-Version: 0.9.5.qualifier
 Bundle-Activator: org.erlide.backend.BackendPlugin
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.5.2",
  org.eclipse.core.filesystem;bundle-version="1.2.1",
  org.erlide.jinterface;bundle-version="0.9.5",
  org.erlide.libs;bundle-version="1.2.3"
