@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.IDisposable;
+import org.erlide.jinterface.backend.console.BackendShell;
 import org.erlide.jinterface.backend.events.EventDaemon;
 import org.erlide.jinterface.backend.events.LogEventHandler;
 import org.erlide.jinterface.rpc.RpcException;
