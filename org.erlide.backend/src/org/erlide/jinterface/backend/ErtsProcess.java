@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.jinterface.backend;
 
 import java.io.IOException;
 import java.util.Iterator;

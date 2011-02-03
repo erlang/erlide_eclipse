@@ -31,6 +31,7 @@ import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.CodeBundle;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.backend.console.BackendShell;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;

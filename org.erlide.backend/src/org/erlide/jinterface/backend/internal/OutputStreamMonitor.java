@@ -1,4 +1,4 @@
-package org.erlide.runtime.backend.internal;
+package org.erlide.jinterface.backend.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

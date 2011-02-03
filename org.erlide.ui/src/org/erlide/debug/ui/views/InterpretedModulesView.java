@@ -33,7 +33,7 @@ import org.eclipse.ui.PartInitException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.runtime.backend.ErtsProcess;
+import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugElement;
 import org.erlide.runtime.debug.ErlangDebugHelper;
