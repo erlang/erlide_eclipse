@@ -23,7 +23,7 @@ public class BackendPlugin implements BundleActivator {
      * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
      * )
      */
-    public void start(BundleContext bundleContext) throws Exception {
+    public void start(final BundleContext bundleContext) throws Exception {
         BackendPlugin.context = bundleContext;
     }
 
@@ -33,7 +33,7 @@ public class BackendPlugin implements BundleActivator {
      * @see
      * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
-    public void stop(BundleContext bundleContext) throws Exception {
+    public void stop(final BundleContext bundleContext) throws Exception {
         BackendPlugin.context = null;
     }
 

@@ -17,7 +17,8 @@ public class TestLaunchShortcutRegression extends TestLaunchShortcut {
             final IProject prj = (IProject) target;
             final IFolder dir = getLinkedDir(prj);
             if (dir != null) {
-                cfg.setAttribute(TestLaunchAttributes.WORKDIR, getResolvedPath(dir));
+                cfg.setAttribute(TestLaunchAttributes.WORKDIR,
+                        getResolvedPath(dir));
             }
             cfg.setAttribute(TestLaunchAttributes.MODE, "regression");
         }

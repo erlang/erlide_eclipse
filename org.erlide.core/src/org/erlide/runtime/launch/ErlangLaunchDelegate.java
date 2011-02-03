@@ -55,10 +55,11 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.ErlDebugConstants;
+import org.erlide.jinterface.backend.ErlLaunchData;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.debug.ErlDebugConstants;
 import org.erlide.runtime.debug.ErlangDebugHelper;
 import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
@@ -109,7 +110,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         final RuntimeInfo rt = buildRuntimeInfo(internal, data, rt0);
         final EnumSet<BackendOptions> options = setupBackendOptions(mode, data);
-        Map<String, String> myenv = setupEnvironment(env, data);
+        final Map<String, String> myenv = setupEnvironment(env, data);
         setCaptureOutput(launch);
 
         ErlideBackend backend = null;

@@ -19,8 +19,8 @@ import org.erlide.backend.util.IDisposable;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.util.LogUtil;
+import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErtsProcess;
 
 public class ManagedLauncher implements IDisposable {
 

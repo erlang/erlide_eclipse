@@ -83,8 +83,8 @@ public class TraceEditor extends TextEditor {
 
         final Annotation oldAnnotation = callMatchingLine;
         if (position.getOffset() != 0) {
-            callMatchingLine = new Annotation("org.erlide.test_support.trace.call", false,
-                    description);
+            callMatchingLine = new Annotation(
+                    "org.erlide.test_support.trace.call", false, description);
         } else {
             callMatchingLine = null;
         }

@@ -123,8 +123,8 @@ public final class ErlangCore {
                 BackendCore.getRuntimeInfoManager().addRuntime(rt);
             }
         }
-        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
-                BackendCore.getRuntimeInfoManager().getRuntimes());
+        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(BackendCore
+                .getRuntimeInfoManager().getRuntimes());
         Collections.sort(list, new Comparator<RuntimeInfo>() {
             public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
                 final int x = o2.getVersion().compareTo(o1.getVersion());
@@ -135,7 +135,8 @@ public final class ErlangCore {
             }
         });
         if (list.size() > 0) {
-            BackendCore.getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
+            BackendCore.getRuntimeInfoManager().setDefaultRuntime(
+                    list.get(0).getName());
             BackendCore.getRuntimeInfoManager().setErlideRuntime(
                     BackendCore.getRuntimeInfoManager().getDefaultRuntime());
         }

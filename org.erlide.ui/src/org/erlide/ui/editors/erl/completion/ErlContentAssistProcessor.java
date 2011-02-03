@@ -188,8 +188,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 moduleOrRecord = rc.getName();
                 fieldsSoFar = rc.getFields();
             } else if (colonPos > commaPos && colonPos > parenPos) {
-                moduleOrRecord = StringUtils.unquote(getPrefix(before.substring(
-                        0, colonPos)));
+                moduleOrRecord = StringUtils.unquote(getPrefix(before
+                        .substring(0, colonPos)));
                 flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
                 pos = colonPos;
                 before = before.substring(colonPos + 1);

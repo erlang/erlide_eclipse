@@ -24,15 +24,15 @@ log(Msg) ->
 logp(Msg) ->
     logp("~p", [Msg]).
 
-logp(Fmt, Msgs) ->
+logp(Fmt, Msgs) when is_list(Fmt), is_list(Msgs) ->
     log(?DEFAULT_LEVEL, lists:flatten(io_lib:format(Fmt, Msgs))).
 
-log(Level, Msg) ->
+log(Level, Msg) when is_atom(Level) ->
     erlide_jrpc:event(log, {Level, Msg}).
 
-erlangLog(Module, Line, Level, Msg) ->
+erlangLog(Module, Line, Level, Msg) when is_atom(Level) ->
     erlide_jrpc:event(erlang_log, {Module, Line, Level, Msg}).
 
-erlangLogStack(Module, Line, Level, Msg) ->
+erlangLogStack(Module, Line, Level, Msg) when is_atom(Level) ->
     erlide_jrpc:event(erlang_log, {Module, Line, Level, Msg, erlang:process_info(self(), backtrace)}).
 

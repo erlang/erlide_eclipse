@@ -115,8 +115,8 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 if (sel instanceof ITextSelection && !sel.isEmpty()) {
                     final ITextSelection tsel = (ITextSelection) sel;
                     try {
-                        IErlModule module = ErlangCore.getModel().findModule(
-                                file);
+                        final IErlModule module = ErlangCore.getModel()
+                                .findModule(file);
                         if (module != null) {
                             result = module.getElementAt(tsel.getOffset());
                             result = getFunction(result);

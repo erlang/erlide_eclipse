@@ -8,6 +8,7 @@ Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.5.2",
  org.eclipse.core.filesystem;bundle-version="1.2.1",
+ org.eclipse.debug.core;bundle-version="3.5.1",
  org.erlide.jinterface;bundle-version="0.9.5",
  org.erlide.libs;bundle-version="1.2.3"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -20,5 +21,6 @@ Export-Package: erlang,
  org.erlide.jinterface.backend,
  org.erlide.jinterface.backend.console,
  org.erlide.jinterface.backend.events,
+ org.erlide.jinterface.backend.internal;x-internal:=true,
  org.erlide.jinterface.backend.util,
  org.erlide.jinterface.rpc

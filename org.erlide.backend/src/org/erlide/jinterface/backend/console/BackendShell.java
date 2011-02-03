@@ -82,8 +82,9 @@ public class BackendShell {
     public class ConsoleEventHandler extends EventHandler {
 
         @Override
-        protected void doHandleEvent(ErlangEvent event) throws Exception {
-            if (!event.matchTopicAndNode("io_server", fBackend.getFullNodeName())) {
+        protected void doHandleEvent(final ErlangEvent event) throws Exception {
+            if (!event.matchTopicAndNode("io_server",
+                    fBackend.getFullNodeName())) {
                 return;
             }
             // ErlLogger.debug("************>>> " + event);

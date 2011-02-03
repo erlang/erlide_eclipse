@@ -27,9 +27,9 @@ import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.CodeBundle;
 import org.erlide.jinterface.backend.ErlBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.CodeBundle;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 

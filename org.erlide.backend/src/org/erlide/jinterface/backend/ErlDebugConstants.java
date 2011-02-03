@@ -1,4 +1,4 @@
-package org.erlide.runtime.debug;
+package org.erlide.jinterface.backend;
 
 public final class ErlDebugConstants {
     public static final String ID_ERLANG_DEBUG_MODEL = "org.erlide.debug.model";

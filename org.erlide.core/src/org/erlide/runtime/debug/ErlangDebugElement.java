@@ -12,6 +12,7 @@ package org.erlide.runtime.debug;
 
 import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.erlide.jinterface.backend.ErlDebugConstants;
 
 public class ErlangDebugElement extends DebugElement {
 
