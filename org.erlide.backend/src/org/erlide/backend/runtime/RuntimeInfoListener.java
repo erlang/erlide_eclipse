@@ -1,4 +1,4 @@
-package org.erlide.jinterface.backend;
+package org.erlide.backend.runtime;
 
 public interface RuntimeInfoListener {
 

@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.Tuple;
-import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 

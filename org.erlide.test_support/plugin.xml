@@ -193,7 +193,7 @@
    </persistent>
 </extension>
 <extension
-      point="org.erlide.core.sourcePathProvider">
+      point="org.erlide.backend.sourcePathProvider">
    <sourcePathProvider
          class="org.erlide.test_support.TestSourcePathProvider">
    </sourcePathProvider>
@@ -317,7 +317,7 @@
       </support>
    </extension-->
    <extension
-         point="org.erlide.core.codepath">
+         point="org.erlide.backend.codepath">
       <beam_dir
             context="any"
             path="ebin">

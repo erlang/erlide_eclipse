@@ -1,4 +1,4 @@
-package org.erlide.core.erlang.util;
+package org.erlide.backend.util;
 
 import java.util.Collection;
 

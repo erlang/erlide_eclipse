@@ -3,10 +3,11 @@
 <schema targetNamespace="org.erlide.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.erlide.core" id="messageReporter" name="messageReporter"/>
+         <meta.schema plugin="org.erlide.backend" id="sourcePathProvider" name="sourcePathProvider"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         Points to a class that provides a list of directories (inside the project) to be included in the Erlang model as source folders, but ONLY for the purpose of extra support in the IDE (navigation, completion, etc). The files in these directories aren&apos;t compiled.
+
       </documentation>
    </annotation>
 
@@ -18,7 +19,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="messageReporter"/>
+            <element ref="sourcePathProvider"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,12 +48,7 @@
       </complexType>
    </element>
 
-   <element name="messageReporter">
-      <annotation>
-         <documentation>
-            an object that can display a message to the user
-         </documentation>
-      </annotation>
+   <element name="sourcePathProvider">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -60,7 +56,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.core.MessageReporter:"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.core.erlang.util.SourcePathProvider"/>
                </appInfo>
             </annotation>
          </attribute>

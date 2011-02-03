@@ -46,17 +46,20 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendPlugin;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.debug.ErlDebugConstants;
+import org.erlide.runtime.debug.ErlangDebugHelper;
 import org.erlide.runtime.debug.ErlangDebugNode;
 import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
@@ -98,7 +101,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         data.debugPrint(mode);
         // }
 
-        final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
+        final RuntimeInfo rt0 = BackendCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
         if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);
@@ -346,7 +349,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         final String beamname = module + ".beam";
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         // TODO: this code assumes that the debugged target and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
         final String ver = backend.getCurrentVersion();

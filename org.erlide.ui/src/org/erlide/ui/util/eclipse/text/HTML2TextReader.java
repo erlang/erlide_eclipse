@@ -30,7 +30,7 @@ import org.eclipse.swt.custom.StyleRange;
  * <code>org.eclipse.jface.internal.text.revisions</code>.
  * </p>
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({ "unchecked" })
 public class HTML2TextReader extends SubstitutionTextReader {
 
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$

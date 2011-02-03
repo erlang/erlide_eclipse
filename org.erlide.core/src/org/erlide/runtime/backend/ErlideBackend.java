@@ -21,17 +21,18 @@ import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.util.BeamUtil;
+import org.erlide.backend.util.IDisposable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.BeamUtil;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendShell;
 import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.IDisposable;
-import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.internal.CodeManager;
@@ -223,7 +224,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
                     }
                     name = name.substring(0, name.length() - 5);
                     try {
-                        BeamUtil.loadModuleViaInput(this, project, name);
+                        CoreUtil.loadModuleViaInput(this, project, name);
                         backendManager.moduleLoaded(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();

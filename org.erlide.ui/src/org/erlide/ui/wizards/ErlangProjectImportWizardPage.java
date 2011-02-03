@@ -1138,7 +1138,7 @@ public class ErlangProjectImportWizardPage extends
      */
     @SuppressWarnings("unchecked")
     @Override
-    protected void updateSelections(@SuppressWarnings("rawtypes") final Map map) {
+    protected void updateSelections(final Map map) {
         super.updateSelections(map);
     }
 

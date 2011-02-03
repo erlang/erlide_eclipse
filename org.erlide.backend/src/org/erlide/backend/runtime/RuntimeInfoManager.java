@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.backend.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,10 +25,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeInfoListener;
-import org.erlide.jinterface.backend.RuntimeVersion;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
@@ -93,7 +90,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         loadDefaultPrefs();
 
         IEclipsePreferences root = new DefaultScope()
-                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+                .getNode(BackendPlugin.PREFS_ID + "/runtimes");
         loadPrefs(root);
         root = getRootPreferenceNode();
         loadPrefs(root);
@@ -159,7 +156,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     protected IEclipsePreferences getRootPreferenceNode() {
         return new InstanceScope()
-                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+                .getNode(BackendPlugin.PREFS_ID + "/runtimes");
     }
 
     public void setRuntimes(final Collection<RuntimeInfo> elements) {

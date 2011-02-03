@@ -1,19 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.erlide.jinterface">
+<schema targetNamespace="org.erlide.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.erlide.jinterface" id="javaRpcStubs" name="javaRpcStubs"/>
+         <meta.schema plugin="org.erlide.backend" id="messageReporter" name="messageReporter"/>
       </appInfo>
       <documentation>
-         defines a list of classes for which RPC stubs will be created and added to the backends automagically
+         [Enter description of this extension point.]
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
-         <sequence minOccurs="0" maxOccurs="unbounded">
-            <element ref="stub"/>
+         <sequence>
+            <element ref="messageReporter"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,7 +47,12 @@
       </complexType>
    </element>
 
-   <element name="stub">
+   <element name="messageReporter">
+      <annotation>
+         <documentation>
+            an object that can display a message to the user
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -50,15 +60,8 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.core.MessageReporter:"/>
                </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="onlyDeclared" type="boolean" use="default" value="false">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
             </annotation>
          </attribute>
       </complexType>
@@ -84,7 +87,7 @@
 
    <annotation>
       <appInfo>
-         <meta.section type="apiInfo"/>
+         <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
          [Enter API information here.]
@@ -100,13 +103,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>
