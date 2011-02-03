@@ -1,4 +1,4 @@
-package org.erlide.runtime.launch;
+package org.erlide.runtime.debug;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

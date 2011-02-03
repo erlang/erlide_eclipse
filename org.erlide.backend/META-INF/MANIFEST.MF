@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.backend,
+ org.erlide.backend.epmd,
  org.erlide.backend.util,
  org.erlide.jinterface.backend,
  org.erlide.jinterface.backend.console,

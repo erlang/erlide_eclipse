@@ -40,6 +40,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendPlugin;
+import org.erlide.backend.epmd.EpmdWatchJob;
 import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.Tuple;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
