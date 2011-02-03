@@ -110,7 +110,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         final RuntimeInfo rt = buildRuntimeInfo(internal, data, rt0);
         final EnumSet<BackendOptions> options = setupBackendOptions(mode, data);
-        Map<String, String> myenv = setupEnvironment(env, data);
+        final Map<String, String> myenv = setupEnvironment(env, data);
         setCaptureOutput(launch);
 
         ErlideBackend backend = null;

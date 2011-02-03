@@ -12,7 +12,7 @@ public class TestEventHandler extends EventHandler {
     }
 
     @Override
-    protected void doHandleEvent(ErlangEvent event) throws Exception {
+    protected void doHandleEvent(final ErlangEvent event) throws Exception {
         if (!event.hasTopic("bterl")) {
             return;
         }

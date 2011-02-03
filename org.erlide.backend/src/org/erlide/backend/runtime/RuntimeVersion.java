@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.erlide.backend.runtime;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import org.erlide.jinterface.backend.util.Assert;

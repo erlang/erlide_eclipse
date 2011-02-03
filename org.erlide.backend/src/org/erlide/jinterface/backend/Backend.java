@@ -347,8 +347,8 @@ public class Backend extends OtpNodeStatus {
         if (!inited) {
             setAvailable(false);
         }
-        this.monitor = doMonitor;
-        this.watch = aWatch;
+        monitor = doMonitor;
+        watch = aWatch;
         eventDaemon = new EventDaemon(this);
         eventDaemon.start();
         eventDaemon.addHandler(new LogEventHandler());
@@ -384,8 +384,8 @@ public class Backend extends OtpNodeStatus {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         checkAvailability();
-        return RpcUtil.sendRpcCall(getNode(), getFullNodeName(), logCalls, gleader,
-                module, fun, signature, args0);
+        return RpcUtil.sendRpcCall(getNode(), getFullNodeName(), logCalls,
+                gleader, module, fun, signature, args0);
     }
 
     protected RpcFuture makeAsyncCall(final String module, final String fun,
@@ -442,8 +442,9 @@ public class Backend extends OtpNodeStatus {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         checkAvailability();
-        final OtpErlangObject result = RpcUtil.rpcCall(getNode(), getFullNodeName(),
-                logCalls, gleader, module, fun, timeout, signature, args0);
+        final OtpErlangObject result = RpcUtil.rpcCall(getNode(),
+                getFullNodeName(), logCalls, gleader, module, fun, timeout,
+                signature, args0);
         return result;
     }
 
@@ -458,8 +459,8 @@ public class Backend extends OtpNodeStatus {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         checkAvailability();
-        RpcUtil.rpcCast(getNode(), getFullNodeName(), logCalls, gleader, module, fun,
-                signature, args0);
+        RpcUtil.rpcCast(getNode(), getFullNodeName(), logCalls, gleader,
+                module, fun, signature, args0);
     }
 
     protected void makeCast(final String module, final String fun,

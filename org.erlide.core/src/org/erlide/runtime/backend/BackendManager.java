@@ -44,20 +44,19 @@ import org.erlide.backend.epmd.EpmdWatchJob;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.MessageReporter;
-import org.erlide.backend.util.Tuple;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
+import org.erlide.backend.util.Tuple;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendUtil;
 import org.erlide.jinterface.backend.CodeBundle;
+import org.erlide.jinterface.backend.CodeBundle.CodeContext;
 import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.backend.CodeBundle.CodeContext;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -225,7 +224,8 @@ public final class BackendManager extends OtpNodeStatus implements
         ErlideBackend b = buildBackends.get(version);
         if (b == null) {
             info.setNodeName(version);
-            info.setNodeNameSuffix("_" + org.erlide.backend.util.BackendUtils.getErlideNameTag());
+            info.setNodeNameSuffix("_"
+                    + org.erlide.backend.util.BackendUtils.getErlideNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
             // will add workspace unique id
@@ -318,8 +318,8 @@ public final class BackendManager extends OtpNodeStatus implements
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
-                final String nodeName = org.erlide.backend.util.BackendUtils.getErlideNameTag()
-                        + "_erlide";
+                final String nodeName = org.erlide.backend.util.BackendUtils
+                        .getErlideNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }
             info.setCookie("erlide");

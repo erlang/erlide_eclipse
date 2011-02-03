@@ -471,8 +471,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             projects.add(project);
         }
 
-        interpret = ErlangLaunchDelegate
-                .addBreakpointProjectsAndModules(projects, interpret);
+        interpret = ErlangLaunchDelegate.addBreakpointProjectsAndModules(
+                projects, interpret);
         interpretedModules = new ArrayList<IErlModule>();
 
         addModules(interpret, interpretedModules);

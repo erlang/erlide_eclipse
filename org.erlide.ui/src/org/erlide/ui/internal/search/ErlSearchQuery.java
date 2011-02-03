@@ -34,8 +34,9 @@ public class ErlSearchQuery implements ISearchQuery {
     private String stateDirCached = null;
     private final String scopeDescription;
 
-    public ErlSearchQuery(final ErlangSearchPattern pattern, final ErlSearchScope scope,
-            final ErlSearchScope externalScope, final String scopeDescription) {
+    public ErlSearchQuery(final ErlangSearchPattern pattern,
+            final ErlSearchScope scope, final ErlSearchScope externalScope,
+            final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
         this.externalScope = externalScope == null ? new ErlSearchScope()

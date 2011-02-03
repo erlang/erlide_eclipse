@@ -19,7 +19,8 @@ public class TestLaunchShortcutRun extends TestLaunchShortcut {
                 final IFolder res = (IFolder) target;
                 cfg.setAttribute(TestLaunchAttributes.PROJECT, res.getProject()
                         .getName());
-                cfg.setAttribute(TestLaunchAttributes.WORKDIR, getResolvedPath(res));
+                cfg.setAttribute(TestLaunchAttributes.WORKDIR,
+                        getResolvedPath(res));
             } else if (target instanceof IResource) {
                 final IResource res = (IResource) target;
                 cfg.setAttribute(TestLaunchAttributes.PROJECT, res.getProject()
@@ -33,9 +34,12 @@ public class TestLaunchShortcutRun extends TestLaunchShortcut {
                 final IContainer dir = module.getResource().getParent();
                 cfg.setAttribute(TestLaunchAttributes.PROJECT, dir.getProject()
                         .getName());
-                cfg.setAttribute(TestLaunchAttributes.WORKDIR, getResolvedPath(dir));
-                cfg.setAttribute(TestLaunchAttributes.SUITE, module.getModuleName());
-                cfg.setAttribute(TestLaunchAttributes.CASE, getFunctionName(elem));
+                cfg.setAttribute(TestLaunchAttributes.WORKDIR,
+                        getResolvedPath(dir));
+                cfg.setAttribute(TestLaunchAttributes.SUITE,
+                        module.getModuleName());
+                cfg.setAttribute(TestLaunchAttributes.CASE,
+                        getFunctionName(elem));
             }
             cfg.setAttribute(TestLaunchAttributes.MODE, "run");
         }

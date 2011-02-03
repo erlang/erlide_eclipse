@@ -209,7 +209,8 @@ public final class CoreUtil {
         final IErlProject p = ErlangCore.getModel().findProject(project);
         final IPath outputLocation = project.getFolder(p.getOutputLocation())
                 .getFile(module + ".beam").getLocation();
-        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module, outputLocation);
+        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,
+                outputLocation);
         if (bin != null) {
             final String fmt = "code:load_binary(%s, %s, %s).\n";
             final StringBuffer strBin = new StringBuffer();
