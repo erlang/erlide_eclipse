@@ -77,7 +77,7 @@ public class CoverEventHandler extends EventHandler {
                         String.format("Error at %s while %s: %s\n", place,
                                 type, info)));
             }
-        } else if (event.toString().equals(COVER_FIN)) {
+        } else if (event.data.toString().equals(COVER_FIN)) {
             getAnnotationMaker().addAnnotations();
         }
 
