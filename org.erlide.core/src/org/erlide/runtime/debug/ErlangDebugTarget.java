@@ -128,7 +128,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getPeer();
+        fNodeName = b.getFullNodeName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;

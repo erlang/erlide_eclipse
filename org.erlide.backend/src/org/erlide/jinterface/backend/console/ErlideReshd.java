@@ -1,4 +1,8 @@
-package org.erlide.jinterface.backend;
+package org.erlide.jinterface.backend.console;
+
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.BackendException;
+import org.erlide.jinterface.backend.BackendUtil;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

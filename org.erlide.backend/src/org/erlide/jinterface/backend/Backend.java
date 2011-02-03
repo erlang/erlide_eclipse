@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.IDisposable;
+import org.erlide.jinterface.backend.console.BackendShell;
 import org.erlide.jinterface.backend.events.EventDaemon;
 import org.erlide.jinterface.backend.events.LogEventHandler;
 import org.erlide.jinterface.rpc.RpcException;
@@ -184,7 +185,7 @@ public class Backend extends OtpNodeStatus {
             return;
         }
         try {
-            RpcUtil.send(getNode(), getPeer(), name, msg);
+            RpcUtil.send(getNode(), getFullNodeName(), name, msg);
         } catch (final SignatureException e) {
             // shouldn't happen
             ErlLogger.warn(e);
@@ -224,7 +225,7 @@ public class Backend extends OtpNodeStatus {
             int tries = 20;
             while (!available && tries > 0) {
                 ErlLogger.debug("# ping...");
-                available = getNode().ping(getPeer(),
+                available = getNode().ping(getFullNodeName(),
                         RETRY_DELAY + (20 - tries) * RETRY_DELAY / 5);
                 tries--;
             }
@@ -303,7 +304,7 @@ public class Backend extends OtpNodeStatus {
         return fInfo.getNodeName();
     }
 
-    public String getPeer() {
+    public String getFullNodeName() {
         synchronized (fPeer) {
             return fPeer;
         }
@@ -383,7 +384,7 @@ public class Backend extends OtpNodeStatus {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         checkAvailability();
-        return RpcUtil.sendRpcCall(getNode(), getPeer(), logCalls, gleader,
+        return RpcUtil.sendRpcCall(getNode(), getFullNodeName(), logCalls, gleader,
                 module, fun, signature, args0);
     }
 
@@ -441,7 +442,7 @@ public class Backend extends OtpNodeStatus {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         checkAvailability();
-        final OtpErlangObject result = RpcUtil.rpcCall(getNode(), getPeer(),
+        final OtpErlangObject result = RpcUtil.rpcCall(getNode(), getFullNodeName(),
                 logCalls, gleader, module, fun, timeout, signature, args0);
         return result;
     }
@@ -457,7 +458,7 @@ public class Backend extends OtpNodeStatus {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         checkAvailability();
-        RpcUtil.rpcCast(getNode(), getPeer(), logCalls, gleader, module, fun,
+        RpcUtil.rpcCast(getNode(), getFullNodeName(), logCalls, gleader, module, fun,
                 signature, args0);
     }
 
@@ -598,7 +599,7 @@ public class Backend extends OtpNodeStatus {
     @Override
     public void remoteStatus(final String node, final boolean up,
             final Object info) {
-        if (node.equals(getPeer())) {
+        if (node.equals(getFullNodeName())) {
             // final String dir = up ? "up" : "down";
             // ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
             setAvailable(up);

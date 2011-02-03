@@ -8,13 +8,13 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.backend;
+package org.erlide.jinterface.backend.console;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.jinterface.backend.console.IoRequest;
+import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
 import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
@@ -83,7 +83,7 @@ public class BackendShell {
 
         @Override
         protected void doHandleEvent(ErlangEvent event) throws Exception {
-            if (!event.matchTopicAndNode("io_server", fBackend.getName())) {
+            if (!event.matchTopicAndNode("io_server", fBackend.getFullNodeName())) {
                 return;
             }
             // ErlLogger.debug("************>>> " + event);
