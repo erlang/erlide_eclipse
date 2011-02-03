@@ -38,6 +38,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.Tuple;
@@ -307,7 +308,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     private void createIdeBackend() throws BackendException {
-        final RuntimeInfo info = RuntimeInfo.copy(ErlangCore
+        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
         if (info != null) {
             final String defLabel = BackendUtil.getLabelProperty();

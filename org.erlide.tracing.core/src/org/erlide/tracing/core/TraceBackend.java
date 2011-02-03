@@ -16,7 +16,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.RuntimeInfo;
@@ -607,7 +607,7 @@ public class TraceBackend {
     }
 
     private Backend createBackend() {
-        final RuntimeInfo info = RuntimeInfo.copy(ErlangCore
+        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
         final String nodeName = Activator.getDefault().getPreferenceStore()
                 .getString(PreferenceNames.NODE_NAME);

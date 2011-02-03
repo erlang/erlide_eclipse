@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.RuntimeInfo;
 
 /*TODO ...this should implement IworkspacePreferencePage if it's going to be 
@@ -319,7 +319,7 @@ public class ErlProjectPropertyPage extends PropertyPage {
             }
         }
 
-        final Collection<RuntimeInfo> rs = ErlangCore.getRuntimeInfoManager()
+        final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoManager()
                 .getRuntimes();
         final List<String[]> vv = new ArrayList<String[]>();
         for (final RuntimeInfo ri : rs) {

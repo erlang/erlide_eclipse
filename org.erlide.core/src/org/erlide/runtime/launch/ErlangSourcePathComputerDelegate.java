@@ -14,7 +14,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.jinterface.backend.RuntimeInfo;
 
 public class ErlangSourcePathComputerDelegate implements
@@ -35,7 +35,7 @@ public class ErlangSourcePathComputerDelegate implements
         }
         final String runtimeName = configuration.getAttribute(
                 ErlLaunchAttributes.RUNTIME_NAME, "").trim();
-        final RuntimeInfo info = ErlangCore.getRuntimeInfoManager().getRuntime(
+        final RuntimeInfo info = BackendCore.getRuntimeInfoManager().getRuntime(
                 runtimeName);
         containers
                 .add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));

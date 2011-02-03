@@ -46,6 +46,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
@@ -99,7 +100,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         data.debugPrint(mode);
         // }
 
-        final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
+        final RuntimeInfo rt0 = BackendCore.getRuntimeInfoManager().getRuntime(
                 data.runtime);
         if (rt0 == null) {
             ErlLogger.error("Could not find runtime %s", data.runtime);

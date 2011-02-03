@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.core.preferences.ProjectPreferencesConstants;
 import org.erlide.jinterface.backend.RuntimeInfo;
+import org.erlide.jinterface.backend.RuntimeInfoManager;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
