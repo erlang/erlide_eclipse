@@ -237,6 +237,22 @@ public final class ErlideBackend extends Backend implements IDisposable,
         }
     }
 
+    public void removeProjectPath(final IProject project) {
+        final IOldErlangProjectProperties prefs = ErlangCore
+                .getProjectProperties(project);
+        final String outDir = project.getLocation()
+                .append(prefs.getOutputDir()).toOSString();
+        if (outDir.length() > 0) {
+            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
+            if (isDistributed()) {
+                removePath(outDir);
+            } else {
+                ErlLogger.warn("didn't remove project path for %s from %s",
+                        project.getName(), getName());
+            }
+        }
+    }
+
     private void loadBeamsFromDir(final IProject project, final String outDir) {
         final File dir = new File(outDir);
         if (dir.isDirectory()) {
@@ -277,4 +293,5 @@ public final class ErlideBackend extends Backend implements IDisposable,
     public boolean doLoadOnAllNodes() {
         return getInfo().loadOnAllNodes();
     }
+
 }
