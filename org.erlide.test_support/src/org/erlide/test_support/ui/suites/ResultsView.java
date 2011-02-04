@@ -8,6 +8,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ResultsView extends ViewPart {
 
+    public static final String VIEW_ID = "org.erlide.test_support.views.testresults";
+
     private final TestEventHandler eventHandler;
     private Composite control;
 
@@ -30,7 +32,7 @@ public class ResultsView extends ViewPart {
     }
 
     public void notifyEvent(final OtpErlangObject msg) {
-
+        System.out.println(">>>> " + msg);
     }
 
 }

@@ -111,7 +111,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final ErlideBackend backend = ErlangCore.getBackendManager()
                 .getBackendForLaunch(launch);
         if (backend == null) {
-            System.out.println("NULL BACKEND??");
             return;
         }
         if (amode.equals("debug")) {

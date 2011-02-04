@@ -31,8 +31,6 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.test_support.ui.suites.ResultsView;
 
@@ -62,20 +60,9 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                     System.out.println("NULL backend for bterl");
                     return;
                 }
-                // FIXME
-                backend.getEventDaemon().addHandler(new EventHandler() {
-
-                    @Override
-                    protected void doHandleEvent(final ErlangEvent event)
-                            throws Exception {
-                        if (!event.hasTopic("bterl")) {
-                            return;
-                        }
-                        System.out.println(event);
-                    }
-                });
-                // TODO locate results view
-                final ResultsView view = null;
+                final ResultsView view = (ResultsView) PlatformUI
+                        .getWorkbench().getActiveWorkbenchWindow()
+                        .getActivePage().showView(ResultsView.VIEW_ID);
                 if (view != null) {
                     backend.getEventDaemon().addHandler(view.getEventHandler());
                 }
