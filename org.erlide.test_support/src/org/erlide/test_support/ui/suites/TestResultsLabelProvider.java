@@ -2,7 +2,7 @@ package org.erlide.test_support.ui.suites;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImage;
 
 class TestResultsLabelProvider extends LabelProvider {
     @SuppressWarnings("restriction")
@@ -14,17 +14,13 @@ class TestResultsLabelProvider extends LabelProvider {
             case NOT_RUN:
                 return null;
             case SKIPPED:
-                return ErlideUIPluginImages
-                        .get(ErlideUIPluginImages.IMG_TEST_SKIPPED);
+                return ErlideImage.TEST_SKIPPED.getImage();
             case RUNNING:
-                return ErlideUIPluginImages
-                        .get(ErlideUIPluginImages.IMG_TEST_RUNNING);
+                return ErlideImage.TEST_RUNNING.getImage();
             case SUCCESS:
-                return ErlideUIPluginImages
-                        .get(ErlideUIPluginImages.IMG_TEST_SUCCESS);
+                return ErlideImage.TEST_SUCCEEDED.getImage();
             case FAILURE:
-                return ErlideUIPluginImages
-                        .get(ErlideUIPluginImages.IMG_TEST_FAILED);
+                return ErlideImage.TEST_FAILED.getImage();
             }
         }
         return null;

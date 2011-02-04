@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImages;
 import org.erlide.ui.navigator.ErlElementSorter;
 
 public class SortAction extends Action {
@@ -125,8 +125,8 @@ public class SortAction extends Action {
 
     private void setImage() {
         final ImageDescriptor desc = fSorted
-                && fSortedHow == ErlElementSorter.SORT_ON_EXPORT ? ErlideUIPluginImages.DESC_EXPORTED_SORT
-                : ErlideUIPluginImages.DESC_ALPHAB_SORT;
+                && fSortedHow == ErlElementSorter.SORT_ON_EXPORT ? ErlideImages.DESC_EXPORTED_SORT
+                : ErlideImages.DESC_ALPHAB_SORT;
         setImageDescriptor(desc);
     }
 

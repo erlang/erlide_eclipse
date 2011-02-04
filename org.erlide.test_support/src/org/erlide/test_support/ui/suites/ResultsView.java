@@ -105,8 +105,6 @@ public class ResultsView extends ViewPart {
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
         final OtpErlangObject value = tuple.elementAt(1);
 
-        System.out.println("> " + msg);
-
         TestCaseData test;
         if ("init".equals(tag)) {
             // value = {Dir, Suite, Case}

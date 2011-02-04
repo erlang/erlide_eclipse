@@ -16,7 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImages;
 
 /**
  * An ErlangImageDescriptor consists of a base image and several adornments. The
@@ -177,12 +177,12 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         final Point size = getSize();
         int x = 0;
         if ((fFlags & ERROR) != 0) {
-            final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_ERROR);
+            final ImageData data = getImageData(ErlideImages.DESC_OVR_ERROR);
             drawImage(data, x, size.y - data.height);
             x += data.width;
         }
         if ((fFlags & WARNING) != 0) {
-            final ImageData data = getImageData(ErlideUIPluginImages.DESC_OVR_WARNING);
+            final ImageData data = getImageData(ErlideImages.DESC_OVR_WARNING);
             drawImage(data, x, size.y - data.height);
             x += data.width;
         }

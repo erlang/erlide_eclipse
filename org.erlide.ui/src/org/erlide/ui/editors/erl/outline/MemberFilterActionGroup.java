@@ -35,7 +35,7 @@ import org.erlide.core.erlang.IErlImportExport;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImages;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -155,7 +155,7 @@ public class MemberFilterActionGroup extends ActionGroup {
             hideAttributes
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_attributes_tooltip);
             hideAttributes
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_ATTRIBUTES);
+                    .setImageDescriptor(ErlideImages.DESC_HIDE_ATTRIBUTES);
             fFilterActions.add(hideAttributes);
         }
 
@@ -176,7 +176,7 @@ public class MemberFilterActionGroup extends ActionGroup {
             hideLocalFunctions
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_local_functions_tooltip);
             hideLocalFunctions
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_LOCAL_FUNCTIONS);
+                    .setImageDescriptor(ErlideImages.DESC_HIDE_LOCAL_FUNCTIONS);
             fFilterActions.add(hideLocalFunctions);
         }
 
@@ -197,7 +197,7 @@ public class MemberFilterActionGroup extends ActionGroup {
             hideMacroRecordDefs
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_typespecs_tooltip);
             hideMacroRecordDefs
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_MACRO_RECORD_DEFS);
+                    .setImageDescriptor(ErlideImages.DESC_HIDE_MACRO_RECORD_DEFS);
             fFilterActions.add(hideMacroRecordDefs);
         }
 
