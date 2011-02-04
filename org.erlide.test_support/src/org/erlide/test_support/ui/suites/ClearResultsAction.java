@@ -7,16 +7,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.internal.console.ConsolePluginImages;
 import org.eclipse.ui.internal.console.IInternalConsoleConstants;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 public class ClearResultsAction extends Action {
-    private final List<OtpErlangObject> events;
+    private final List<TestCaseData> events;
     private final TreeViewer treeViewer;
 
     public ClearResultsAction(final TreeViewer treeViewer,
-            final List<OtpErlangObject> events) {
+            final List<TestCaseData> events2) {
         super("Clear results");
-        this.events = events;
+        this.events = events2;
         this.treeViewer = treeViewer;
         setImageDescriptor(ConsolePluginImages
                 .getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLEAR));

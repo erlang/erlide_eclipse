@@ -64,6 +64,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                         .getWorkbench().getActiveWorkbenchWindow()
                         .getActivePage().showView(ResultsView.VIEW_ID);
                 if (view != null) {
+                    view.clearEvents();
                     backend.getEventDaemon().addHandler(view.getEventHandler());
                 }
             }
