@@ -205,7 +205,7 @@ public final class BackendManager extends OtpNodeStatus implements
         return b;
     }
 
-    public Backend getBuildBackend(final IProject project)
+    public ErlideBackend getBuildBackend(final IProject project)
             throws BackendException {
         final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
@@ -235,8 +235,6 @@ public final class BackendManager extends OtpNodeStatus implements
             b = createInternalBackend(info, options, null);
             buildBackends.put(version, b);
         }
-        b.addProjectPath(project);
-
         ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
