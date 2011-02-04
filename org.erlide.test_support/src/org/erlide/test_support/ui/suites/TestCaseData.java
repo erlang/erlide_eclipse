@@ -5,7 +5,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class TestCaseData {
 
     enum TestState {
-        NOT_RUN, RUNNING, SUCCESS, FAILURE
+        // order is important!
+        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILURE
     }
 
     private final String suite;
@@ -50,5 +51,13 @@ public class TestCaseData {
 
     public TestState getState() {
         return state;
+    }
+
+    public String getFailLocations() {
+        return failLocations.toString();
+    }
+
+    public String getFailReason() {
+        return failReason.toString();
     }
 }

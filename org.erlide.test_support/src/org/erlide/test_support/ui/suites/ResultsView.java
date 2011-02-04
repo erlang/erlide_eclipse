@@ -53,9 +53,10 @@ public class ResultsView extends ViewPart {
         label = new Label(control, SWT.NONE);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                 1));
-        label.setText("...");
+        label.setText("");
 
         treeViewer = new TreeViewer(control, SWT.NONE);
+        treeViewer.setSorter(new TestResultSorter());
         final Tree tree = treeViewer.getTree();
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -104,9 +105,9 @@ public class ResultsView extends ViewPart {
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
         final OtpErlangObject value = tuple.elementAt(1);
 
-        System.out.println(tag);
-        System.out.println(value);
-        System.out.println("---");
+        // System.out.println(tag);
+        // System.out.println(value);
+        // System.out.println("---");
 
         TestCaseData test;
         if ("tc_init".equals(tag)) {
@@ -122,16 +123,24 @@ public class ResultsView extends ViewPart {
             final Bindings bindings = ErlUtils.match("{M:a,F:a}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
-            final TestCaseData data = new TestCaseData(mod, fun);
-            events.add(data);
-            data.setRunning();
+            test = findCase(mod, fun);
+            test.setRunning();
         } else if ("result".equals(tag)) {
             // value = {{Module, Function}, Result}
-            final Bindings bindings = ErlUtils.match("{M:a,F:a,_}", value);
+            final Bindings bindings = ErlUtils.match("{M:a,F:a,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
+            final OtpErlangObject result = bindings.get("R");
             test = findCase(mod, fun);
-            test.setSuccesful();
+            if (result instanceof OtpErlangAtom) {
+                test.setSuccesful();
+                // } else {
+                // final Bindings bindings =
+                // ErlUtils.match("{failure,{M:a,F:a},L,R}", result);
+                // final OtpErlangObject locations = bindings.get("L");
+                // final OtpErlangObject reason = bindings.get("R");
+                // test.setFailed(reason, locations);
+            }
         } else if ("fail".equals(tag)) {
             // value = {{Module, Function}, [Locations], Reason
             final Bindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
@@ -142,7 +151,7 @@ public class ResultsView extends ViewPart {
             test = findCase(mod, fun);
             test.setFailed(reason, locations);
         } else if ("done".equals(tag)) {
-            // value = Modle, Log, {Successful,Failed,Skipped}, [Results]}
+            // value = Module, Log, {Successful,Failed,Skipped}, [Results]}
             final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}",
                     value);
             final int successful = bindings.getInt("S");
@@ -160,7 +169,9 @@ public class ResultsView extends ViewPart {
                 return data;
             }
         }
-        return null;
+        final TestCaseData data = new TestCaseData(mod, fun);
+        events.add(data);
+        return data;
     }
 
     public void clearEvents() {

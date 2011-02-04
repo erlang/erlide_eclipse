@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.test_support.ui.suites.TestCaseData.TestState;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -31,6 +32,13 @@ class TestResultsContentProvider implements ITreeContentProvider {
     }
 
     public Object[] getChildren(final Object parentElement) {
+        if (parentElement instanceof TestCaseData) {
+            final TestCaseData data = (TestCaseData) parentElement;
+            if (data.getState() == TestState.FAILURE) {
+                return new String[] { data.getFailLocations(),
+                        data.getFailReason() };
+            }
+        }
         return NO_CHILDREN;
     }
 
