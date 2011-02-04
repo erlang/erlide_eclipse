@@ -18,6 +18,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.erlide.core.erlnature</nature>
-		<nature>org.erlide.test_support.nature</nature>
+		<nature>shade.bterl.nature</nature>
 	</natures>
 </projectDescription>

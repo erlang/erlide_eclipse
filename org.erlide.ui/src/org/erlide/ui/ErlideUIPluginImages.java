@@ -191,6 +191,23 @@ public class ErlideUIPluginImages {
     public static final ImageDescriptor DESC_OBJS_EDOCTAG = createManaged(
             T_OBJ, IMG_OBJS_EDOCTAG);
 
+    public static final String IMG_TEST_SUCCESS = NAME_PREFIX
+            + "methpub_obj.gif"; //$NON-NLS-1$
+
+    public static final String IMG_TEST_FAILED = NAME_PREFIX
+            + "methpri_obj.gif"; //$NON-NLS-1$
+
+    public static final String IMG_TEST_SKIPPED = NAME_PREFIX
+            + "methpro_obj.gif"; //$NON-NLS-1$
+
+    public static final String IMG_TEST_RUNNING = NAME_PREFIX
+            + "searchm_obj.gif"; //$NON-NLS-1$
+
+    public static final ImageDescriptor DESC_TEST_RUNNING = createManaged(
+            T_OBJ, IMG_TEST_RUNNING);
+
+    // //////////////////////////////
+
     /**
      * Returns the image managed under the given key in this registry.
      * 

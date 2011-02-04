@@ -12,18 +12,26 @@ run(Dir, Suite, Arg, Cb) ->
 
 run(Cb) ->
 	timer:sleep(100),
-	notify(Cb, init, init),
+	notify(Cb, init, {"",s,c}),
 	do_tests(Cb, 5).
 
 do_tests(Cb, 0) ->
 	stop(Cb);
+do_tests(Cb, N=2) ->
+	F=list_to_atom("f"++[N+$0]),
+	notify(Cb, tc_start, {m,F}),
+	timer:sleep(800),
+	notify(Cb, tc_fail, {{m,F}, [], reason}),
+	do_tests(Cb, N-1);
 do_tests(Cb, N) ->
-	timer:sleep(200),
-	notify(Cb, tc_result, ok),
+	F=list_to_atom("f"++[N+$0]),
+	notify(Cb, tc_start, {m,F}),
+	timer:sleep(800),
+	notify(Cb, tc_result, {m, F, ok}),
 	do_tests(Cb, N-1).
 
 stop(Cb) ->
-	notify(Cb, done, ok),
+	notify(Cb, done, {m, "", {3,4,5}, []}),
 	ok.
 	
 
