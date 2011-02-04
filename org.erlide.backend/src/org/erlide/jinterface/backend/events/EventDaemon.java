@@ -1,6 +1,8 @@
 package org.erlide.jinterface.backend.events;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.erlide.jinterface.backend.Backend;
@@ -45,23 +47,25 @@ public class EventDaemon implements IBackendListener {
         }
     }
 
-    public List<EventHandler> getHandlers() {
+    public Collection<EventHandler> getHandlers() {
         synchronized (handlersLock) {
-            return new ArrayList<EventHandler>(handlers);
+            return Collections
+                    .unmodifiableCollection(new ArrayList<EventHandler>(
+                            handlers));
         }
     }
 
-    public void addHandler(final EventHandler l) {
+    public void addHandler(final EventHandler handler) {
         synchronized (handlersLock) {
-            if (!handlers.contains(l)) {
-                handlers.add(l);
+            if (!handlers.contains(handler)) {
+                handlers.add(handler);
             }
         }
     }
 
-    public void removeHandler(final EventHandler l) {
+    public void removeHandler(final EventHandler handler) {
         synchronized (handlersLock) {
-            handlers.remove(l);
+            handlers.remove(handler);
         }
     }
 

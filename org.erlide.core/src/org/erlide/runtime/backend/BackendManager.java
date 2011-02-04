@@ -235,7 +235,6 @@ public final class BackendManager extends OtpNodeStatus implements
             b = createInternalBackend(info, options, null);
             buildBackends.put(version, b);
         }
-        ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
 
@@ -555,7 +554,11 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public ErlideBackend getBackendForLaunch(final ILaunch launch) {
-        // FIXME implement
+        for (final ErlideBackend backend : allBackends) {
+            if (backend.getLaunch() == launch) {
+                return backend;
+            }
+        }
         return null;
     }
 }

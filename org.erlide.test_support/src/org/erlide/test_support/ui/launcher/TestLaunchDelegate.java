@@ -25,6 +25,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.backend.runtime.RuntimeInfoManager;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.ErlDebugConstants;
 import org.erlide.jinterface.backend.ErlLaunchAttributes;
@@ -34,6 +35,7 @@ import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
+import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.debug.ErlangDebugHelper;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.test_support.Activator;
@@ -106,16 +108,17 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 : ILaunchManager.RUN_MODE;
         super.doLaunch(cfg, amode, launch, true, null);
 
-        // FIXME if (backend == null) {
-        // return null;
-        // }
-        //
-        // initDebugger(monitor, backend);
-        // startMonitorJob(monitor, backend);
-        //
-        // monitor.worked(1);
-        //
-        // return backend;
+        final ErlideBackend backend = ErlangCore.getBackendManager()
+                .getBackendForLaunch(launch);
+        if (backend == null) {
+            return;
+        }
+        if (amode.equals("debug")) {
+            initDebugger(monitor, backend);
+        }
+        startMonitorJob(monitor, backend);
+
+        monitor.worked(1);
     }
 
     private void runMakeLinks(final IProgressMonitor monitor) {
@@ -162,6 +165,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                         backend.getFullNodeName())) {
                     return;
                 }
+                System.out.println("BTERL DEBUG INIIT");
                 final String[] modules = workdir.list(new FilenameFilter() {
                     public boolean accept(final File dir, final String filename) {
                         return filename.endsWith(".erl");
@@ -172,7 +176,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     getDebugHelper()
                             .interpret(backend, project, pm, true, true);
                 }
-                // getDebugTarget().installDeferredBreakpoints();
+                getDebugTarget().installDeferredBreakpoints();
 
                 final OtpErlangPid pid = (OtpErlangPid) event.data;
                 backend.send(pid, new OtpErlangAtom("ok"));
@@ -357,7 +361,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     public ErlangDebugHelper getDebugHelper() {
-        // FIXME use BterlLauncher instead!
         return new TestDebugHelper(workdir);
     }
 
