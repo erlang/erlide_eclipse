@@ -557,7 +557,11 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public ErlideBackend getBackendForLaunch(final ILaunch launch) {
-        // FIXME implement
+        for (final ErlideBackend backend : allBackends) {
+            if (backend.getLaunch() == launch) {
+                return backend;
+            }
+        }
         return null;
     }
 }

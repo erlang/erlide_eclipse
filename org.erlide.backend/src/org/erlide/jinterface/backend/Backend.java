@@ -349,6 +349,10 @@ public class Backend extends OtpNodeStatus {
         }
         monitor = doMonitor;
         watch = aWatch;
+        initEventDaemon();
+    }
+
+    private void initEventDaemon() {
         eventDaemon = new EventDaemon(this);
         eventDaemon.start();
         eventDaemon.addHandler(new LogEventHandler());
@@ -574,6 +578,9 @@ public class Backend extends OtpNodeStatus {
     }
 
     public EventDaemon getEventDaemon() {
+        if (eventDaemon == null) {
+            initEventDaemon();
+        }
         return eventDaemon;
     }
 
