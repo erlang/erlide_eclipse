@@ -235,7 +235,6 @@ public final class BackendManager extends OtpNodeStatus implements
             b = createInternalBackend(info, options, null);
             buildBackends.put(version, b);
         }
-        ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
 
