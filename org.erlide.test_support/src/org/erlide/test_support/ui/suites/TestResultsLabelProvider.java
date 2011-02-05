@@ -5,7 +5,6 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.ui.ErlideImage;
 
 class TestResultsLabelProvider extends LabelProvider {
-    @SuppressWarnings("restriction")
     @Override
     public Image getImage(final Object element) {
         if (element instanceof TestCaseData) {
